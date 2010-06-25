@@ -3,7 +3,6 @@ package org.jahia.services.render.filter;
 import org.jahia.services.render.*;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.apache.log4j.Logger;
-import org.jahia.services.render.scripting.Script;
 
 import javax.jcr.RepositoryException;
 
@@ -23,22 +22,20 @@ public class WrapperFilter extends AbstractFilter {
         this.wrapper = wrapper;
     }
 
-    public String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
-
-        String output = chain.doFilter(renderContext, resource);
+    public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         if (renderContext.isAjaxRequest()) {
-            return output;
+            return previousOut;
         }
         JCRNodeWrapper node = resource.getNode();
         if (wrapper == null) {
             while (resource.hasWrapper()) {
                 String wrapper = resource.popWrapper();
-                output = wrap(renderContext, resource, output, node, wrapper);
+                previousOut = wrap(renderContext, resource, previousOut, node, wrapper);
             }
         } else {
-            output = wrap(renderContext, resource, output, node, wrapper);
+            previousOut = wrap(renderContext, resource, previousOut, node, wrapper);
         }
-        return output;
+        return previousOut;
     }
 
     private String wrap(RenderContext renderContext, Resource resource, String output, JCRNodeWrapper node,

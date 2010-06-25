@@ -27,7 +27,7 @@ import java.util.Set;
  */
 public class TemplateAttributesFilter extends AbstractFilter {
 
-    public String execute(RenderContext context, Resource resource, RenderChain chain) throws Exception {
+    public String prepare(RenderContext context, Resource resource, RenderChain chain) throws Exception {
         JCRNodeWrapper node = resource.getNode();
 
         final HttpServletRequest request = context.getRequest();
@@ -61,12 +61,10 @@ public class TemplateAttributesFilter extends AbstractFilter {
         chain.pushAttribute(context.getRequest(), Config.FMT_LOCALIZATION_CONTEXT + ".request", new LocalizationContext(
                 new JahiaResourceBundle(resource.getLocale(), script.getTemplate().getModule().getName()),
                 resource.getLocale()));
-
-        String out;
-        out = chain.doFilter(context, resource);
-
-        return out;
+        return null;
     }
+
+
 
     private void overrideProperties(JCRNodeWrapper node, Map<String, Object> params, Map<String, Object> moduleParams,
                                     ExtendedNodeType mixin) throws RepositoryException {

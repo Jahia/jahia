@@ -14,7 +14,8 @@ import javax.jcr.AccessDeniedException;
  * To change this template use File | Settings | File Templates.
  */
 public class TemplatePermissionCheckFilter extends AbstractFilter {
-    protected String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
+
+    public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         Script script = (Script) renderContext.getRequest().getAttribute("script");
         String requirePermissions = script.getTemplate().getProperties().getProperty("requirePermissions");
         if (requirePermissions != null) {
@@ -25,6 +26,7 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
                 }
             }
         }
-        return chain.doFilter(renderContext, resource);
+        return null;
     }
+
 }

@@ -24,13 +24,12 @@ public class URLFilter extends AbstractFilter {
     
     private HtmlTagAttributeVisitor[] handlers;
 
-    protected String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
-        String out = chain.doFilter(renderContext, resource);
+    public  String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         if (handlers != null && handlers.length > 0) {
-            out = urlTraverser.traverse(out, renderContext, resource, handlers);
+            previousOut = urlTraverser.traverse(previousOut, renderContext, resource, handlers);
         }
 
-        return out;
+        return previousOut;
     }
 
     /**

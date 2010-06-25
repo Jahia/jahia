@@ -90,7 +90,7 @@ public class WrapperFilterTest extends TestCase {
         chain.addFilter(filter);
 
         chain.addFilter(new AbstractFilter() {
-            public String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws IOException, RepositoryException {
+            public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain) throws IOException, RepositoryException {
                 return "test";
             }
         });

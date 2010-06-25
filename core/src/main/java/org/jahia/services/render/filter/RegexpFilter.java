@@ -1,12 +1,9 @@
 package org.jahia.services.render.filter;
 
 import net.htmlparser.jericho.*;
-import org.apache.commons.lang.StringUtils;
-import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 
-import javax.jcr.NodeIterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,26 +45,25 @@ public class RegexpFilter extends AbstractFilter {
         this.contentOnly = contentOnly;
     }
 
-    public String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
-        String out = chain.doFilter(renderContext, resource);
 
+    public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         if (regexp == null) {
-            return out;
+            return previousOut;
         }
 
         if (!contentOnly) {
             for (Map.Entry<Pattern, String> replacement : regexp.entrySet()) {
-                out = replacement.getKey().matcher(out).replaceAll(replacement.getValue());
+                previousOut = replacement.getKey().matcher(previousOut).replaceAll(replacement.getValue());
             }
-            return out;
+            return previousOut;
         } else {
-            StringBuffer buffer = new StringBuffer(out);
-            Source source = new Source(out);
+            StringBuffer buffer = new StringBuffer(previousOut);
+            Source source = new Source(previousOut);
             List<Tag> tags = source.getAllTags();
             int offset = 0;
             for (Tag tag : tags) {
                 int begin = tag.getEnd() + offset;
-                int end = tag.getNextTag() != null ? tag.getNextTag().getBegin() + offset : out.length() + offset - 1;
+                int end = tag.getNextTag() != null ? tag.getNextTag().getBegin() + offset : previousOut.length() + offset - 1;
 
                 String repl = buffer.substring(begin, end);
                 for (Map.Entry<Pattern, String> replacement : regexp.entrySet()) {

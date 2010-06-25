@@ -21,6 +21,8 @@ public interface RenderFilter extends RenderServiceAware, Comparable<RenderFilte
      */
     int getPriority();
 
+    public boolean areConditionsMatched(RenderContext renderContext, Resource resource);
+
     /**
      * Execute filtering on output. Return the final filtered output.
      *
@@ -30,6 +32,12 @@ public interface RenderFilter extends RenderServiceAware, Comparable<RenderFilte
      * @return Filtered output
      * @throws RenderFilterException in case of rendering errors
      */
-    String doFilter(RenderContext renderContext, Resource resource, RenderChain chain) throws RenderFilterException;
+//    String doFilter(RenderContext renderContext, Resource resource, RenderChain chain) throws RenderFilterException;
+
+    String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
+            throws Exception;
+
+    String prepare(RenderContext renderContext, Resource resource, RenderChain chain)
+            throws Exception;
 
 }

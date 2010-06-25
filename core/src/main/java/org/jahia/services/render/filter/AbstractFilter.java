@@ -353,7 +353,7 @@ public abstract class AbstractFilter implements RenderFilter {
         conditions.add(condition);
     }
 
-    private boolean areConditionsMatched(RenderContext renderContext, Resource resource) {
+    public boolean areConditionsMatched(RenderContext renderContext, Resource resource) {
         boolean matches = true;
         for (ExecutionCondition condition : conditions) {
             if (!condition.matches(renderContext, resource)) {
@@ -364,22 +364,35 @@ public abstract class AbstractFilter implements RenderFilter {
         return matches;
     }
 
-    public final String doFilter(RenderContext renderContext, Resource resource, RenderChain chain)
-            throws RenderFilterException {
-        try {
-            return areConditionsMatched(renderContext, resource) ? execute(renderContext, resource,
-                                                                           chain) : chain.doFilter(renderContext,
-                                                                                                   resource);
-        } catch (RenderFilterException e) {
-            throw e;
-        } catch (Exception e) {
-            // wrap it
-            throw new RenderFilterException(e);
-        }
+//    public final String doFilter(RenderContext renderContext, Resource resource, RenderChain chain)
+//            throws RenderFilterException {
+//        try {
+//            return areConditionsMatched(renderContext, resource) ? execute(out, renderContext, resource,
+//                                                                           chain) : chain.doFilter(renderContext,
+//                                                                                                   resource);
+//        } catch (RenderFilterException e) {
+//            throw e;
+//        } catch (Exception e) {
+//            // wrap it
+//            throw new RenderFilterException(e);
+//        }
+//    }
+//
+//    public abstract String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
+//            throws Exception;
+//
+//    public abstract String prepare(RenderContext renderContext, Resource resource, RenderChain chain)
+//            throws Exception;
+
+
+    public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
+            throws Exception {
+        return previousOut;
     }
 
-    protected abstract String execute(RenderContext renderContext, Resource resource, RenderChain chain)
-            throws Exception;
+    public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
+        return null;
+    }
 
     /**
      * If set to <code>true</code>, the current filter will only be executed on

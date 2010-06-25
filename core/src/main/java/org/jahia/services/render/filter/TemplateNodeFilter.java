@@ -20,7 +20,7 @@ import javax.jcr.query.QueryResult;
 public class TemplateNodeFilter extends AbstractFilter {
     private static Logger logger = Logger.getLogger(TemplateNodeFilter.class);
 
-    public String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
+    public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         if (renderContext.getRequest().getAttribute("skipWrapper") == null) {
             Wrapper wrapper = null;
             Wrapper previousWrapper = null;
@@ -70,8 +70,9 @@ public class TemplateNodeFilter extends AbstractFilter {
         }
         chain.pushAttribute(renderContext.getRequest(), "inWrapper",
                 (renderContext.isAjaxRequest()) ? Boolean.TRUE : Boolean.FALSE);
-        return chain.doFilter(renderContext, resource);
+        return null;
     }
+
 
     public Wrapper pushBodyWrappers(JCRNodeWrapper node) {
         JCRNodeWrapper current = node;

@@ -10,7 +10,6 @@ import org.apache.pluto.driver.url.PortalURL;
 import org.jahia.bin.Jahia;
 import org.jahia.data.applications.EntryPointInstance;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.applications.pluto.JahiaPortletUtil;
 import org.jahia.services.applications.pluto.JahiaUserRequestWrapper;
@@ -18,7 +17,6 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.RenderChain;
-import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.services.usermanager.JahiaUser;
 
 import javax.portlet.MimeResponse;
@@ -26,7 +24,6 @@ import javax.portlet.PortletException;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -39,7 +36,7 @@ public class PlutoProcessActionFilter extends AbstractFilter {
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(PlutoProcessActionFilter.class);
 
     @Override
-    protected String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
+    public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         try {
             final JahiaUserRequestWrapper request = new JahiaUserRequestWrapper(renderContext.getUser(), renderContext.getRequest());
             final HttpServletResponse response = renderContext.getResponse();
@@ -121,9 +118,7 @@ public class PlutoProcessActionFilter extends AbstractFilter {
         if (logger.isDebugEnabled()) {
             logger.debug(renderContext.getRequest().getRequestURI() + " is a renderURL");
         }
-        return chain.doFilter(renderContext, resource);
-
-
+        return previousOut;
     }
 
     /**

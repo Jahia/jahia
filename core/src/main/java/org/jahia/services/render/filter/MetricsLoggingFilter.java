@@ -22,14 +22,22 @@ public class MetricsLoggingFilter extends AbstractFilter {
         this.loggingService = loggingService;
     }
 
-    public String execute(RenderContext context, Resource resource, RenderChain chain) throws Exception {
+    public String prepare(RenderContext context, Resource resource, RenderChain chain) throws Exception {
         JCRNodeWrapper node = resource.getNode();
 
         String profilerName = "render module " + node.getPath();
         Profiler profiler = loggingService.createNestedProfiler("MAIN", profilerName);
         profiler.start("render filters for "+node.getPath());
         context.getRequest().setAttribute("profiler", profiler);
-        String output = chain.doFilter(context, resource);
+        return null;
+    }
+
+
+    @Override public String execute(String previousOut, RenderContext context, Resource resource,
+                                    RenderChain chain) throws Exception {
+        JCRNodeWrapper node = resource.getNode();
+
+        String profilerName = "render module " + node.getPath();
 
         Script script = (Script) context.getRequest().getAttribute("script");
 
@@ -42,7 +50,6 @@ public class MetricsLoggingFilter extends AbstractFilter {
 
         loggingService.stopNestedProfiler("MAIN", profilerName);
 
-        return output;
+        return previousOut;
     }
-
 }

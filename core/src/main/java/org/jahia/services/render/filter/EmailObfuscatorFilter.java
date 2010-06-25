@@ -45,12 +45,10 @@ public class EmailObfuscatorFilter extends AbstractFilter {
     // compile version to check email within string
     public static final Pattern VALID_EMAIL_IN_STRING_SIMPLE = Pattern.compile(".*" + addrSpec + ".*", Pattern.DOTALL);
 
-    public String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
-        String out = chain.doFilter(renderContext, resource);
+    public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
+        StringBuffer wholeHtml = new StringBuffer(previousOut);
 
-        StringBuffer wholeHtml = new StringBuffer(out);
-
-        StringTokenizer st = new StringTokenizer(out);
+        StringTokenizer st = new StringTokenizer(previousOut);
 
         while (st.hasMoreTokens()) {
             String current = st.nextToken();

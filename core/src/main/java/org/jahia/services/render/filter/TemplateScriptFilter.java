@@ -26,7 +26,7 @@ public class TemplateScriptFilter extends AbstractFilter {
 
     private static Logger logger = Logger.getLogger(TemplateScriptFilter.class);
     
-    public String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws RenderException {
+    public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         Profiler profiler = (Profiler) renderContext.getRequest().getAttribute("profiler");
         if (profiler != null) {
             profiler.start("render template "+resource.getResolvedTemplate());
@@ -43,8 +43,10 @@ public class TemplateScriptFilter extends AbstractFilter {
         } finally {
             renderContext.getResourcesStack().pop();
         }
+
         return output;
     }
+
     
     private static String handleError(String template, RenderException ex, RenderContext ctx, Resource resource) throws RenderException {
 

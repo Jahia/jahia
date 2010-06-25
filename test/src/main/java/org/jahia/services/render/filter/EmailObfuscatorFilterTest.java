@@ -33,7 +33,7 @@ public class EmailObfuscatorFilterTest extends TestCase {
         EmailObfuscatorFilter filter = new EmailObfuscatorFilter();
         chain.addFilter(filter);
         chain.addFilter(new AbstractFilter() {
-            public String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws IOException, RepositoryException {
+            public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain) throws IOException, RepositoryException {
                 return s;
             }
         });

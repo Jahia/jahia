@@ -4,11 +4,8 @@ import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
-import org.jahia.services.render.URLGenerator;
-import org.jahia.services.render.scripting.Script;
 
 import javax.jcr.RepositoryException;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Set contribution template for contentLists set as editable
@@ -19,8 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 public class ContributionFilter extends AbstractFilter {
     private static Logger logger = Logger.getLogger(ContributionFilter.class);
 
-    public String execute(RenderContext context, Resource resource, RenderChain chain) throws Exception {
-
+    public String prepare(RenderContext context, Resource resource, RenderChain chain) throws Exception {
         JCRNodeWrapper node = resource.getNode();
 
         try {
@@ -35,8 +31,7 @@ public class ContributionFilter extends AbstractFilter {
         } catch (RepositoryException e) {
             logger.error(e,e);
         }
-
-        return chain.doFilter(context, resource);
+        return null;
     }
 
 

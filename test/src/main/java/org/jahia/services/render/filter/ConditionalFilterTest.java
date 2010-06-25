@@ -57,7 +57,7 @@ public class ConditionalFilterTest extends TestCase {
 
     private static class TestFilter extends AbstractFilter {
         @Override
-        protected String execute(RenderContext renderContext, Resource resource, RenderChain chain)
+        public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
                 throws Exception {
             return "TestFilter " + chain.doFilter(renderContext, resource);
         }
@@ -109,7 +109,7 @@ public class ConditionalFilterTest extends TestCase {
 
         RenderFilter outFilter = new AbstractFilter() {
             @Override
-            protected String execute(RenderContext renderContext, Resource resource, RenderChain chain)
+            public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
                     throws Exception {
                 return "out";
             }
@@ -185,7 +185,7 @@ public class ConditionalFilterTest extends TestCase {
 
         RenderFilter outFilter = new AbstractFilter() {
             @Override
-            protected String execute(RenderContext renderContext, Resource resource, RenderChain chain)
+            public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
                     throws Exception {
                 return "out";
             }
@@ -265,7 +265,7 @@ public class ConditionalFilterTest extends TestCase {
 
         RenderFilter outFilter = new AbstractFilter() {
             @Override
-            protected String execute(RenderContext renderContext, Resource resource, RenderChain chain)
+            public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
                     throws Exception {
                 return "out";
             }
@@ -336,7 +336,7 @@ public class ConditionalFilterTest extends TestCase {
 
         RenderFilter outFilter = new AbstractFilter() {
             @Override
-            protected String execute(RenderContext renderContext, Resource resource, RenderChain chain)
+            public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
                     throws Exception {
                 return "out";
             }

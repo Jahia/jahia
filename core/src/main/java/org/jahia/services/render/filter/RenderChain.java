@@ -69,19 +69,45 @@ public class RenderChain {
      * @throws RenderFilterException in case of a rendering errors
      */
     public String doFilter(RenderContext renderContext, Resource resource) throws RenderFilterException {
-        if (filters.size() >= index) {
-            RenderFilter filter = filters.get(index++);
+        String out = null;
+        int index=0;
 
-            try {
-                return filter.doFilter(renderContext, resource, this);
-            } finally {
-                if (filter == filters.get(0)) {
-                    popAttributes(renderContext.getRequest());
+        try {
+            for (; index<filters.size() && out == null; index++) {
+                RenderFilter filter = filters.get(index);
+                if (filter.areConditionsMatched(renderContext, resource)) {
+                    out = filter.prepare(renderContext, resource, this);
                 }
             }
-        } else {
+            for (; index>0; index--) {
+                RenderFilter filter = filters.get(index-1);
+                if (filter.areConditionsMatched(renderContext, resource)) {
+                    out = filter.execute(out, renderContext, resource, this);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
             throw new RenderFilterException("No content");
+        } finally {
+            popAttributes(renderContext.getRequest());
         }
+
+        return out;
+
+//        if (filters.size() >= index) {
+//            RenderFilter filter = filters.get(index++);
+//
+//            try {
+//                String out =
+//                return filter.doFilter(renderContext, resource, this);
+//            } finally {
+//                if (filter == filters.get(0)) {
+//                    popAttributes(renderContext.getRequest());
+//                }
+//            }
+//        } else {
+//            throw new RenderFilterException("No content");
+//        }
     }
 
     public String doFilter(RenderContext renderContext, Resource resource, RenderChain chain)

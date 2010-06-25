@@ -1,7 +1,5 @@
 package org.jahia.services.render.filter;
 
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.jahia.services.content.JCRNodeWrapper;
@@ -17,7 +15,8 @@ import org.jahia.services.render.scripting.Script;
  * Time: 3:28:13 PM
  */
 public class BaseAttributesFilter extends AbstractFilter {
-    public String execute(RenderContext context, Resource resource, RenderChain chain) throws Exception {
+    public String prepare(RenderContext context, Resource resource, RenderChain chain)
+            throws Exception {
         JCRNodeWrapper node = resource.getNode();
 
         final HttpServletRequest request = context.getRequest();
@@ -36,11 +35,7 @@ public class BaseAttributesFilter extends AbstractFilter {
             chain.pushAttribute(request, "url",new URLGenerator(context, resource));
         }
 
-        String out;
-        out = chain.doFilter(context, resource);
-
-        return out;
+        return null;
     }
-
 
 }

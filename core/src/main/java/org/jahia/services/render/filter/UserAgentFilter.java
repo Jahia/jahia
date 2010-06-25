@@ -1,12 +1,10 @@
 package org.jahia.services.render.filter;
 
 import org.apache.log4j.Logger;
-import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.TemplateNotFoundException;
 
-import javax.jcr.RepositoryException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -25,8 +23,7 @@ public class UserAgentFilter extends AbstractFilter {
     private Map<String, String> userAgentMatchingRules;
     private Map<Pattern, String> userAgentMatchingPatterns;
 
-    public String execute(RenderContext context, Resource resource, RenderChain chain) throws Exception {
-
+    public String prepare(RenderContext context, Resource resource, RenderChain chain) throws Exception {
         String userAgent = context.getRequest().getHeader("user-agent");
 
         if (userAgent != null && !resource.getTemplateType().contains("-")) {
@@ -46,9 +43,9 @@ public class UserAgentFilter extends AbstractFilter {
                 }
             }
         }
-
-        return chain.doFilter(context, resource);
+        return null;
     }
+
 
     public Map<String,String> getUserAgentMatchingRules() {
         return userAgentMatchingRules;

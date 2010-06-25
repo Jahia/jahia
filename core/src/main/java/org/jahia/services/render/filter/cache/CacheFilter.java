@@ -32,23 +32,17 @@
  */
 package org.jahia.services.render.filter.cache;
 
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-
 import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.LockTimeoutException;
-
 import org.apache.log4j.Logger;
 import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.decorator.JCRFrozenNodeAsRegular;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
-import org.jahia.services.render.scripting.Script;
 import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.RenderChain;
+import org.jahia.services.render.scripting.Script;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -64,19 +58,19 @@ public class CacheFilter extends AbstractFilter {
     private transient static Logger logger = Logger.getLogger(CacheFilter.class);
     private ModuleCacheProvider cacheProvider;
 
-    @Override
-    protected String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
+    public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         if (!(resource.getNode() instanceof JCRFrozenNodeAsRegular)) {
             final Script script = (Script) renderContext.getRequest().getAttribute("script");
-            chain.pushAttribute(renderContext.getRequest(), "cache.perUser", Boolean.valueOf(script.getTemplate().getProperties().getProperty("cache.perUser","false")));
+            chain.pushAttribute(renderContext.getRequest(), "cache.perUser",
+                    Boolean.valueOf(script.getTemplate().getProperties().getProperty("cache.perUser", "false")));
 
             Map<String, Map<String, Integer>> templatesCacheExpiration = renderContext.getTemplatesCacheExpiration();
             boolean debugEnabled = logger.isDebugEnabled();
             boolean displayCacheInfo = Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
             String key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
 
-            if(debugEnabled) {
-                logger.debug("Cache filter for key "+key);
+            if (debugEnabled) {
+                logger.debug("Cache filter for key " + key);
             }
             Element element = null;
             try {
@@ -85,89 +79,113 @@ public class CacheFilter extends AbstractFilter {
                 logger.warn(e.getMessage(), e);
             }
             if (element != null) {
-                if(debugEnabled) logger.debug("Getting content from cache for node : " + key);
+                if (debugEnabled) {
+                    logger.debug("Getting content from cache for node : " + key);
+                }
                 final String cachedContent = (String) ((CacheEntry) element.getValue()).getObject();
-                if(displayCacheInfo && !cachedContent.contains("<body") && cachedContent.trim().length()>0) {
+                if (displayCacheInfo && !cachedContent.contains("<body") && cachedContent.trim().length() > 0) {
                     return appendDebugInformation(renderContext, key, cachedContent, element);
                 } else {
                     return cachedContent;
                 }
-            }
-            else {
-                if(debugEnabled) logger.debug("Generating content for node : " + key);
-                String renderContent = chain.doFilter(renderContext, resource);
-
-                if (chain.getPreviousValue("currentResource") != null) {
-                    ((Resource) chain.getPreviousValue("currentResource")).getDependencies().addAll(resource.getDependencies());
-                }
-
-                String cacheAttribute = (String) renderContext.getRequest().getAttribute("expiration");
-                Long expiration = cacheAttribute != null ?Long.valueOf(cacheAttribute):Long.valueOf(script.getTemplate().getProperties().getProperty("cache.expiration","-1"));
-                Set<JCRNodeWrapper> depNodeWrappers = resource.getDependencies();
-                for (JCRNodeWrapper nodeWrapper : depNodeWrappers) {
-                    Long lowestExpiration = 0L;
-                    String path = nodeWrapper.getPath();
-                    Map<String, Integer> cachesExpiration = templatesCacheExpiration.get(path);
-                    if (cachesExpiration != null) {
-                        for(long cacheExpiration : cachesExpiration.values()) {
-                            lowestExpiration = Math.min(cacheExpiration,lowestExpiration);
-                        }
-                        expiration = lowestExpiration;
-                    }
-                    Element element1 = cacheProvider.getDependenciesCache().get(path);
-                    Set<String> dependencies;
-                    if (element1 != null) {
-                        dependencies = (Set<String>) element1.getValue();
-                    } else {
-                        dependencies = new LinkedHashSet<String>();
-                    }
-                    dependencies.add(key);
-                    cacheProvider.getDependenciesCache().put(new Element(path,dependencies));
-                }
-                CacheEntry<String> cacheEntry = new CacheEntry<String>(renderContent);
-                Element cachedElement = new Element(key, cacheEntry);
-                if (expiration >= 0) {
-                    cachedElement.setTimeToLive(expiration.intValue()+1);
-                    cachedElement.setTimeToIdle(1);
-                    Map<String, Integer> cachesExpiration = templatesCacheExpiration.get(resource.getNode().getPath());
-                    if (cachesExpiration == null) {
-                        cachesExpiration = new HashMap<String,Integer>();
-                    }
-                    cachesExpiration.put(key,expiration.intValue());
-                    templatesCacheExpiration.put(resource.getNode().getPath(),cachesExpiration);
-                    final String hiddenKey = cacheProvider.getKeyGenerator().replaceField(key, "template", "hidden.load");
-                    Element hiddenElement = cacheProvider.getCache().isKeyInCache(hiddenKey) ? cacheProvider.getCache().get(hiddenKey) : null;
-                    if(hiddenElement != null) {
-                        hiddenElement.setTimeToIdle(1);
-                        hiddenElement.setTimeToLive(expiration.intValue()+1);
-                        cacheProvider.getCache().put(hiddenElement);
-                    }
-                }
-                cacheProvider.getCache().put(cachedElement);
-                
+            } else {
                 if (debugEnabled) {
-                    logger.debug("Caching content for node : " + key);
-                    StringBuilder stringBuilder = new StringBuilder();
-                    for (JCRNodeWrapper nodeWrapper : depNodeWrappers) {
-                        stringBuilder.append(nodeWrapper.getPath()).append("\n");
-                    }
-                    logger.debug("Dependencies of " + key + " : \n" + stringBuilder.toString());
+                    logger.debug("Generating content for node : " + key);
                 }
-                if(displayCacheInfo && !renderContent.contains("<body") && renderContent.trim().length()>0) {
-                    return appendDebugInformation(renderContext, key, renderContent, cachedElement);
-                } else {
-                    return renderContent;
-                }
+                return null;
             }
         }
-        return chain.doFilter(renderContext, resource);
+        return null;
+    }
+
+    public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
+            throws Exception {
+        if (!(resource.getNode() instanceof JCRFrozenNodeAsRegular)) {
+            final Script script = (Script) renderContext.getRequest().getAttribute("script");
+            Map<String, Map<String, Integer>> templatesCacheExpiration = renderContext.getTemplatesCacheExpiration();
+            boolean debugEnabled = logger.isDebugEnabled();
+            boolean displayCacheInfo = Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
+            String key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
+
+            if (debugEnabled) {
+                logger.debug("Cache filter for key " + key);
+            }
+
+            if (chain.getPreviousValue("currentResource") != null) {
+                ((Resource) chain.getPreviousValue("currentResource")).getDependencies()
+                        .addAll(resource.getDependencies());
+            }
+
+            String cacheAttribute = (String) renderContext.getRequest().getAttribute("expiration");
+            Long expiration = cacheAttribute != null ? Long.valueOf(cacheAttribute) :
+                    Long.valueOf(script.getTemplate().getProperties().getProperty("cache.expiration", "-1"));
+            Set<JCRNodeWrapper> depNodeWrappers = resource.getDependencies();
+            for (JCRNodeWrapper nodeWrapper : depNodeWrappers) {
+                Long lowestExpiration = 0L;
+                String path = nodeWrapper.getPath();
+                Map<String, Integer> cachesExpiration = templatesCacheExpiration.get(path);
+                if (cachesExpiration != null) {
+                    for (long cacheExpiration : cachesExpiration.values()) {
+                        lowestExpiration = Math.min(cacheExpiration, lowestExpiration);
+                    }
+                    expiration = lowestExpiration;
+                }
+                Element element1 = cacheProvider.getDependenciesCache().get(path);
+                Set<String> dependencies;
+                if (element1 != null) {
+                    dependencies = (Set<String>) element1.getValue();
+                } else {
+                    dependencies = new LinkedHashSet<String>();
+                }
+                dependencies.add(key);
+                cacheProvider.getDependenciesCache().put(new Element(path, dependencies));
+            }
+            CacheEntry<String> cacheEntry = new CacheEntry<String>(previousOut);
+            Element cachedElement = new Element(key, cacheEntry);
+            if (expiration >= 0) {
+                cachedElement.setTimeToLive(expiration.intValue() + 1);
+                cachedElement.setTimeToIdle(1);
+                Map<String, Integer> cachesExpiration = templatesCacheExpiration.get(resource.getNode().getPath());
+                if (cachesExpiration == null) {
+                    cachesExpiration = new HashMap<String, Integer>();
+                }
+                cachesExpiration.put(key, expiration.intValue());
+                templatesCacheExpiration.put(resource.getNode().getPath(), cachesExpiration);
+                final String hiddenKey = cacheProvider.getKeyGenerator().replaceField(key, "template", "hidden.load");
+                Element hiddenElement =
+                        cacheProvider.getCache().isKeyInCache(hiddenKey) ? cacheProvider.getCache().get(hiddenKey) :
+                                null;
+                if (hiddenElement != null) {
+                    hiddenElement.setTimeToIdle(1);
+                    hiddenElement.setTimeToLive(expiration.intValue() + 1);
+                    cacheProvider.getCache().put(hiddenElement);
+                }
+            }
+            cacheProvider.getCache().put(cachedElement);
+
+            if (debugEnabled) {
+                logger.debug("Caching content for node : " + key);
+                StringBuilder stringBuilder = new StringBuilder();
+                for (JCRNodeWrapper nodeWrapper : depNodeWrappers) {
+                    stringBuilder.append(nodeWrapper.getPath()).append("\n");
+                }
+                logger.debug("Dependencies of " + key + " : \n" + stringBuilder.toString());
+            }
+            if (displayCacheInfo && !previousOut.contains("<body") && previousOut.trim().length() > 0) {
+                return appendDebugInformation(renderContext, key, previousOut, cachedElement);
+            } else {
+                return previousOut;
+            }
+        }
+        return previousOut;
     }
 
     public void setCacheProvider(ModuleCacheProvider cacheProvider) {
         this.cacheProvider = cacheProvider;
     }
 
-    private String appendDebugInformation(RenderContext renderContext, String key, String renderContent, Element cachedElement) {
+    private String appendDebugInformation(RenderContext renderContext, String key, String renderContent,
+                                          Element cachedElement) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("<div class=\"cacheDebugInfo\">");
         stringBuilder.append("<span class=\"cacheDebugInfoLabel\">Key: </span><span>");
@@ -177,9 +195,11 @@ public class CacheFilter extends AbstractFilter {
         stringBuilder.append(SimpleDateFormat.getDateTimeInstance().format(new Date(cachedElement.getCreationTime())));
         stringBuilder.append("</span><br/>");
         stringBuilder.append("<span class=\"cacheDebugInfoLabel\">Fragment will expire at: </span><span>");
-        stringBuilder.append(SimpleDateFormat.getDateTimeInstance().format(new Date(cachedElement.getExpirationTime())));
+        stringBuilder
+                .append(SimpleDateFormat.getDateTimeInstance().format(new Date(cachedElement.getExpirationTime())));
         stringBuilder.append("</span>");
-        stringBuilder.append("<form action=\"").append(renderContext.getURLGenerator().getContext()).append("/flushKey.jsp\" method=\"post\"");
+        stringBuilder.append("<form action=\"").append(renderContext.getURLGenerator().getContext())
+                .append("/flushKey.jsp\" method=\"post\"");
         stringBuilder.append("<input type=\"hidden\" name=\"keyToFlush\" value=\"").append(key).append("\"");
         stringBuilder.append("<button type=\"submit\"title=\"Flush it\">Flush It</button>");
         stringBuilder.append("</form>");

@@ -21,7 +21,7 @@ public class GoogleAnalyticsFilter extends AbstractFilter {
     public static final String GOOGLE_ANALYTICS_TRACKED_NODES = "gaTrackedNodes";
 
 
-    protected String execute(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
+    public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         // add current node to gaTrackedNodes
         List<JCRNodeWrapper> trackedNode = (List<JCRNodeWrapper>) renderContext.getRequest().getAttribute(GOOGLE_ANALYTICS_TRACKED_NODES);
 
@@ -37,6 +37,6 @@ public class GoogleAnalyticsFilter extends AbstractFilter {
         }
 
         // execute other filters
-        return chain.doFilter(renderContext, resource, chain);
+        return previousOut;
     }
 }

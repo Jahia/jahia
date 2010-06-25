@@ -259,7 +259,7 @@ public class JahiaShindigService implements PersonService, ActivityService, AppD
                     appDataFolderNode = userNode.addNode("appdata", Constants.JAHIANT_CONTENTLIST);
                     session.save();
                 } else {
-                    appDataFolderNode = userNode.getNode("/users/appdata");
+                    appDataFolderNode = userNode.getNode("appdata");
                 }
                 if (appDataFolderNode != null) {
                     if (fields.contains(Person.Field.APP_DATA.toString())) {

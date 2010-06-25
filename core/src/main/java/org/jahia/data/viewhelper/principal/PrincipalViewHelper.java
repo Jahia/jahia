@@ -92,14 +92,24 @@ public class PrincipalViewHelper implements Serializable {
     public static final String PROPERTIES = "Properties";
     public static final String INHERITANCE = "Inheritance";
 
+    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(PrincipalViewHelper.class);
+    
+    private static final Comparator<Principal> PRINCIPAL_COMPARATOR = new Comparator<Principal>() {
+        public int compare(Principal o1, Principal o2) {
+            if(o1 == o2) { return 0; }
+            if(o1 == null || o1.getName() == null) { return 1; }
+            if(o2 == null || o2.getName() == null) { return -1; }
+            
+            return o1.getName().compareTo(o2.getName());
+        }
+    };
+
     private Map perms;
     private Set inheritance;
 
     private static Set selectBoxFieldsHeading = new HashSet();
     private List selectBoxFieldsSize = new ArrayList();
     private List selectBoxFieldsMethod = new ArrayList();
-
-    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(PrincipalViewHelper.class);
 
     static {
         selectBoxFieldsHeading.add(PRINCIPAL);
@@ -488,7 +498,7 @@ public class PrincipalViewHelper implements Serializable {
                                       String[] providers) {
         JahiaUserManagerService jahiaUserManagerService = ServicesRegistry.getInstance().getJahiaUserManagerService();
         final Properties searchParameters = new Properties();
-        final Set<Principal> searchResults = new HashSet<Principal>();
+        final Set<Principal> searchResults = new TreeSet<Principal>(PRINCIPAL_COMPARATOR);
         if (searchIn == null) { // Necessary condition to say there is no formular.
             logger.debug("No formular transmited. Finding all Jahia DB users.");
             searchParameters.setProperty("*", "*");
@@ -519,6 +529,7 @@ public class PrincipalViewHelper implements Serializable {
                 }
             }
         }
+        
         return searchResults;
     }
 
@@ -623,7 +634,8 @@ public class PrincipalViewHelper implements Serializable {
      * @return a set of users without the Jahia Administrators
      */
     public static Set removeJahiaAdministrators(Set users) {
-        final Set usersWithoutJahiaAdmin = new HashSet(users);
+        final Set usersWithoutJahiaAdmin = new TreeSet(PRINCIPAL_COMPARATOR);
+        usersWithoutJahiaAdmin.addAll(users);
         final JahiaGroup jahiaAdminGroup = ServicesRegistry.getInstance().
                 getJahiaGroupManagerService().getAdministratorGroup(0);
         final Iterator memberEnum = new EnumerationIterator(jahiaAdminGroup.members());

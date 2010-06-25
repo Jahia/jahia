@@ -21,11 +21,11 @@
           <wrappercontent jcr:primaryType="jnt:contentList">
             <row column="2col115" jcr:primaryType="jnt:row">
               <col1 jcr:primaryType="jnt:contentList">
-                <mainResourceArea j:areaName="listA" j:filter="" jcr:primaryType="jnt:mainResourceArea" />
+                <listA j:filter="" jcr:primaryType="jnt:mainResourceArea" />
               </col1>
               <col2 jcr:primaryType="jnt:contentList">
                 <simple-search j:share="/templatesSet/templates-web/contents/site_components/simple-search" />
-                <mainResourceArea j:areaName="listB" j:filter="" jcr:primaryType="jnt:mainResourceArea" />
+                <listB j:filter="" jcr:primaryType="jnt:mainResourceArea" />
               </col2>
             </row>
           </wrappercontent>
@@ -42,8 +42,8 @@
           <wrappercontent jcr:primaryType="jnt:contentList">
             <row1 column="2col115" jcr:primaryType="jnt:row" >
               <col1  jcr:primaryType="jnt:contentList">
-                <mainResourceArea j:areaName="listA" j:filter="" jcr:primaryType="jnt:mainResourceArea" />
-                <mainResourceArea-1 j:areaName="events" j:filter="jnt:event" jcr:primaryType="jnt:mainResourceArea" />                
+                <listA j:filter="" jcr:primaryType="jnt:mainResourceArea" />
+                <events j:filter="jnt:event" jcr:primaryType="jnt:mainResourceArea" />
               </col1>
               <col2 jcr:primaryType="jnt:contentList">
                 <simple-search j:share="/templatesSet/templates-web/contents/site_components/simple-search" />
@@ -62,12 +62,12 @@
           <wrappercontent jcr:primaryType="jnt:contentList">
             <row column="2col115" jcr:primaryType="jnt:row">
               <col1 jcr:primaryType="jnt:contentList">
-                <mainResourceArea j:areaName="listA" j:filter="" jcr:primaryType="jnt:mainResourceArea" />
+                <listA j:filter="" jcr:primaryType="jnt:mainResourceArea" />
               </col1>
               <col2 jcr:primaryType="jnt:contentList">
                 <simple-search j:share="/templatesSet/templates-web/contents/site_components/simple-search" />
                 <side-menu j:share="/templatesSet/templates-web/contents/site_components/side-menu" />
-                <mainResourceArea j:areaName="listB" j:filter="" jcr:primaryType="jnt:mainResourceArea" />
+                <listB j:filter="" jcr:primaryType="jnt:mainResourceArea" />
               </col2>
             </row>
           </wrappercontent>
@@ -77,16 +77,16 @@
             <shortcuts jcr:mixinTypes="jmix:renderable jmix:shareable" j:template="inline" jcr:primaryType="jnt:shortcuts" />
           </header>
           <logo jcr:primaryType="jnt:contentList">
-            <logo j:areaName="logo" j:filter="" jcr:primaryType="jnt:absoluteArea" j:basenode="/templatesSet/templates-web/home"/>
+            <logo j:filter="" jcr:primaryType="jnt:absoluteArea" j:basenode="/templatesSet/templates-web/home"/>
           </logo>
           <topMenu jcr:primaryType="jnt:contentList">
             <top-menu j:menuType="primary" jcr:mixinTypes="jmix:shareable" j:maxDepth="1" jcr:primaryType="jnt:navMenu" j:baselineNode="/templatesSet/templates-web/home" j:styleName="navigationN1" />
           </topMenu>
           <logoFooter jcr:primaryType="jnt:contentList">
-            <logoFooter j:areaName="logoFooter" j:filter="" jcr:primaryType="jnt:absoluteArea" j:basenode="/templatesSet/templates-web/home"/>
+            <logoFooter j:filter="" jcr:primaryType="jnt:absoluteArea" j:basenode="/templatesSet/templates-web/home"/>
           </logoFooter>
           <footer jcr:primaryType="jnt:contentList">
-            <footer j:areaName="footer" j:filter="" jcr:primaryType="jnt:absoluteArea" j:basenode="/templatesSet/templates-web/home"/>
+            <footer j:filter="" jcr:primaryType="jnt:absoluteArea" j:basenode="/templatesSet/templates-web/home"/>
           </footer>
           <wrappercontent jcr:primaryType="jnt:contentList">
             <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" />

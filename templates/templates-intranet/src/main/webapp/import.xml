@@ -19,11 +19,11 @@
             <wrappercontent jcr:primaryType="jnt:contentList">
               <row1 column="2col106" jcr:primaryType="jnt:row">
                 <col1 jcr:primaryType="jnt:contentList" >
-                    <mainResourceArea j:areaName="listA" j:filter="" jcr:primaryType="jnt:mainResourceArea" />
+                    <listA j:filter="" jcr:primaryType="jnt:mainResourceArea" />
                 </col1>
                 <col2 jcr:primaryType="jnt:contentList">
                   <login-to-jahia j:share="/templatesSet/templates-intranet/contents/site_components/login-to-jahia" />
-                    <mainResourceArea j:areaName="listB" j:filter="" jcr:primaryType="jnt:mainResourceArea" />
+                    <listB j:filter="" jcr:primaryType="jnt:mainResourceArea" />
                 </col2>
               </row1>
             </wrappercontent>
@@ -32,10 +32,10 @@
           <wrappercontent jcr:primaryType="jnt:contentList">
             <row1 column="2col124" jcr:primaryType="jnt:row">
                 <col1 jcr:primaryType="jnt:contentList">
-                    <mainResourceArea j:areaName="listA" j:filter="" jcr:primaryType="jnt:mainResourceArea" />
+                    <listA j:filter="" jcr:primaryType="jnt:mainResourceArea" />
                 </col1>
                 <col2 jcr:primaryType="jnt:contentList">
-                    <mainResourceArea j:areaName="listB" j:filter="" jcr:primaryType="jnt:mainResourceArea" />
+                    <listB j:filter="" jcr:primaryType="jnt:mainResourceArea" />
                 </col2>
             </row1>
           </wrappercontent>
@@ -44,13 +44,13 @@
           <wrappercontent jcr:primaryType="jnt:contentList">
             <row1 column="3col664" jcr:primaryType="jnt:row">
                 <col1 jcr:primaryType="jnt:contentList">
-                    <mainResourceArea j:areaName="listA" j:filter="" jcr:primaryType="jnt:mainResourceArea" />
+                    <listA j:filter="" jcr:primaryType="jnt:mainResourceArea" />
                 </col1>
                 <col2 jcr:primaryType="jnt:contentList">
-                    <mainResourceArea j:areaName="listB" j:filter="" jcr:primaryType="jnt:mainResourceArea" />
+                    <listB j:filter="" jcr:primaryType="jnt:mainResourceArea" />
                 </col2>
                 <col3 jcr:primaryType="jnt:contentList">
-                    <mainResourceArea j:areaName="listC" j:filter="" jcr:primaryType="jnt:mainResourceArea" />
+                    <listC j:filter="" jcr:primaryType="jnt:mainResourceArea" />
                 </col3>
             </row1>
           </wrappercontent>
@@ -157,27 +157,29 @@
             </wrappercontent>
           </wrapper>
         </wiki>
-        <forum jcr:primaryType="jnt:template" j:applyOn="jnt:page" jcr:mixinTypes="jmix:hasTemplateNode" j:templateNode="/templatesSet/templates-intranet/templates/sitewrapper">
+        <forum jcr:mixinTypes="jmix:hasTemplateNode" jcr:primaryType="jnt:template" j:templateNode="/templatesSet/templates-intranet/templates/sitewrapper" j:applyOn="jnt:page">
           <wrappercontent jcr:primaryType="jnt:contentList">
             <row column="2col124" jcr:primaryType="jnt:row">
               <col1 jcr:primaryType="jnt:contentList">
-                <boardIndex boardDescription="Board Description" jcr:primaryType="jnt:boardIndex" boardSubject="Board Subject" />
+                <boardindex j:filter="" jcr:primaryType="jnt:mainResourceArea">
+                  <boardIndex boardDescription="Board Description" jcr:primaryType="jnt:boardIndex" boardSubject="Board Subject" /> 
+                </boardindex>
               </col1>
               <col2 jcr:primaryType="jnt:contentList" />
             </row>
           </wrappercontent>
-            <wrapper jcr:primaryType="jnt:template"  j:applyOn="jnt:topic jnt:thread">
-              <wrappercontent jcr:primaryType="jnt:contentList">
-                <row column="2col124" jcr:primaryType="jnt:row">
-                  <col1 jcr:primaryType="jnt:contentList">
-                    <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:referenceTemplate="default" />
-                  </col1>
-                  <col2 jcr:primaryType="jnt:contentList">
-                    <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" />
-                  </col2>
-                </row>
-              </wrappercontent>
-            </wrapper>
+          <wrapper jcr:primaryType="jnt:template" j:applyOn="jnt:topic jnt:thread">
+            <wrappercontent jcr:primaryType="jnt:contentList">
+              <row column="2col124" jcr:primaryType="jnt:row">
+                <col1 jcr:primaryType="jnt:contentList">
+                  <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:referenceTemplate="default" />
+                </col1>
+                <col2 jcr:primaryType="jnt:contentList">
+                  <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" />
+                </col2>
+              </row>
+            </wrappercontent>
+          </wrapper>
         </forum>
         <my-profile jcr:primaryType="jnt:template"  j:applyOn="jnt:page" jcr:mixinTypes="jmix:hasTemplateNode" j:templateNode="/templatesSet/templates-intranet/templates/sitewrapper">
           <wrappercontent jcr:primaryType="jnt:contentList">
@@ -238,7 +240,7 @@
         </events>
           <sitewrapper  j:template="intranet.bodywrapper" jcr:primaryType="jnt:template" jcr:mixinTypes="jmix:renderable" >
             <logo jcr:primaryType="jnt:contentList" >
-                <logo j:areaName="logo" j:filter="" jcr:primaryType="jnt:absoluteArea" j:basenode="/templatesSet/templates-intranet/home"/>
+                <logo j:filter="" jcr:primaryType="jnt:absoluteArea" j:basenode="/templatesSet/templates-intranet/home"/>
             </logo>
             <simpleSearch jcr:primaryType="jnt:contentList">
               <simpleSearchForm result="/templatesSet/templates-intranet/search-results" jcr:mixinTypes="jmix:shareable" jcr:primaryType="jnt:simpleSearchForm" />
@@ -248,7 +250,7 @@
               <shortcuts jcr:mixinTypes="jmix:shareable" jcr:primaryType="jnt:shortcuts" />
             </topMenu>
             <footer jcr:primaryType="jnt:contentList" >
-                <footer j:areaName="footer" j:filter="" jcr:primaryType="jnt:absoluteArea" j:basenode="/templatesSet/templates-intranet/home"/>
+                <footer j:filter="" jcr:primaryType="jnt:absoluteArea" j:basenode="/templatesSet/templates-intranet/home"/>
             </footer>
             <wrappercontent jcr:primaryType="jnt:contentList">
               <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" />

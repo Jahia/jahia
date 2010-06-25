@@ -5,6 +5,9 @@
 	padding:5px;
 	color:#ccc;
 	position:relative;
+    border-width: 5px;
+    border-color:yellow;
+    border-style:ridge;
 }
 #bodywrapper .mainResourceTemplate{
 	background-color: #333;

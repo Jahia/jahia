@@ -39,6 +39,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 
+import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.ConstraintViolationException;
@@ -71,28 +72,31 @@ public class WrappedContentTag extends ModuleTag implements ParamParent {
 //        }
     }
 
-    @Override
-    protected void missingResource(RenderContext renderContext, Resource currentResource) throws RepositoryException, IOException {
+    protected void missingResource(RenderContext renderContext, Resource mainResource, Resource resource) throws RepositoryException, IOException {
         try {
             if (renderContext.isEditMode()) {
-                JCRSessionWrapper session = currentResource.getNode().getSession();
+                JCRSessionWrapper session = resource.getNode().getSession();
                 if (!path.startsWith("/")) {
-                    JCRNodeWrapper nodeWrapper = currentResource.getNode();
+                    JCRNodeWrapper nodeWrapper = resource.getNode();
                     if(!nodeWrapper.isCheckedOut())
                         nodeWrapper.checkout();
                     node = nodeWrapper.addNode(path, areaType);
-                    session.save();
                 } else {
-
+                    // Absolute area
                     JCRNodeWrapper parent = session.getNode(StringUtils.substringBeforeLast(path, "/"));
                     if(!parent.isCheckedOut())
                         parent.checkout();
                     node = parent.addNode(StringUtils.substringAfterLast(path, "/"), areaType);
-                    session.save();
                 }
+                NodeIterator ni = mainResource.getNode().getNodes();
+                while (ni.hasNext()) {
+                    JCRNodeWrapper subNode = (JCRNodeWrapper) ni.next();
+                    subNode.copy(node.getPath());
+                }
+                session.save();
             }
         } catch (ConstraintViolationException e) {
-            super.missingResource(renderContext, currentResource);
+            super.missingResource(renderContext, resource);
         } catch (RepositoryException e) {
             logger.error("Cannot create area",e);
         }
@@ -126,14 +130,14 @@ public class WrappedContentTag extends ModuleTag implements ParamParent {
                     if (!path.equals("*") && node.hasNode(path)) {
                         node = node.getNode(path);
                     } else {
-                        missingResource(renderContext, resource);
+                        missingResource(renderContext, currentResource, resource);
                     }
                 } else if (path.startsWith("/")) {
                     JCRSessionWrapper session = node.getSession();
                     try {
                         node = (JCRNodeWrapper) session.getItem(path);
                     } catch (PathNotFoundException e) {
-                        missingResource(renderContext, resource);
+                        missingResource(renderContext, currentResource, resource);
                     }
                 }
                 renderContext.getRequest().setAttribute("skipWrapper", Boolean.TRUE);

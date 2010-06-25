@@ -9,9 +9,6 @@
     <mashups jcr:primaryType="jnt:portletList" />
 
     <groups jcr:primaryType="jnt:groupsFolder">
-        <guest jcr:primaryType="jnt:group" j:hidden="false">
-            <j:members jcr:primaryType="jnt:members"/>
-        </guest>
         <users jcr:primaryType="jnt:group" j:hidden="false">
             <j:members jcr:primaryType="jnt:members"/>
         </users>

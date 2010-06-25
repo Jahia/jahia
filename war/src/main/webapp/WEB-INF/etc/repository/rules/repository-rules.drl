@@ -24,12 +24,20 @@ rule "Test type"
         Add the type jmix:test
 end
 
-rule "publish user"
+rule "publish user (create)"
     when
        A new node is created
 		- the node has the type jnt:user
 		- its name is not guest
 		- its name is not root
+    then
+        Publish the node
+end
+
+rule "publish groups"
+    when
+       A new node is created
+		- the node has the type jnt:group
     then
         Publish the node
 end

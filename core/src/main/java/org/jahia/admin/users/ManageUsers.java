@@ -162,7 +162,6 @@ public class ManageUsers extends AbstractAdministrationModule {
             displayUserEdit(request, response, session);
         } else if (operation.equals("superAdminProps")) {
             isSuperAdminProp = true;
-            session.setAttribute(JahiaAdministration.CLASS_NAME + "configJahia", Boolean.TRUE);            
             displayUserEdit(request, response, session);
         } else if (operation.equals("remove")) {
             displayUserRemove(request, response, session);
@@ -175,8 +174,7 @@ public class ManageUsers extends AbstractAdministrationModule {
         } else if (operation.equals("processEdit")) {
             if (processUserEdit(request)) {
                 if (isSuperAdminProp) {
-                    session.setAttribute(JahiaAdministration.CLASS_NAME + "configJahia", Boolean.TRUE);
-                    JahiaAdministration.displayMenu(request, response, session);
+                    displayUserEdit(request, response, session);
                 } else {
                     displayUsers(request, response, session);
                 }
@@ -634,12 +632,10 @@ public class ManageUsers extends AbstractAdministrationModule {
                         && homePageParam.length() > 0 ? Integer
                         .parseInt(homePageParam) : -1);
 
-        if (!isSuperAdminProp) {
-            userMessage = getMessage("label.user");
-            userMessage += " [" + username + "] ";
-            userMessage += getMessage("message.successfully.updated");
-            isError = false;
-        }
+        userMessage = getMessage("label.user");
+        userMessage += " [" + username + "] ";
+        userMessage += getMessage("message.successfully.updated");
+        isError = false;
 
         return true;
     }

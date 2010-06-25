@@ -154,7 +154,7 @@
 <%
     if (userMessage.length() > 0) {
 %>
-<p class="errorbold">
+<p class="${not isError ? 'blueColor' : 'errorbold'}">
     <%=userMessage%>
 </p>
 <% } %>
@@ -173,7 +173,7 @@
     </logic:notEqual>
 </logic:present>
 
-<form name="mainForm" action='<%=JahiaAdministration.composeActionURL(request,response,"users","&sub=processEdit")%>'
+<form name="mainForm" action='<%=JahiaAdministration.composeActionURL(request,response, isSuperAdminProp == null ? "users" : "profile","&sub=processEdit")%>'
       method="post">
 <!-- Edit user -->
     <span style="padding: 5px 5px 5px 20px;display: block">

@@ -60,7 +60,7 @@
         <property name="name" value="profile" />
         <property name="icon" value="businessman2" />
         <property name="label" value="label.editSuperAdminProperties" />
-        <property name="urlAction" value="users" />
+        <property name="urlAction" value="profile" />
         <property name="urlParams" value="&amp;sub=superAdminProps" />
         <property name="userManager" ref="JahiaUserManagerService" />
     </bean>

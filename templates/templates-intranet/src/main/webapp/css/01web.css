@@ -2,17 +2,13 @@
 * Fonts import
 ******************************************************************************/
 @font-face {
-	font-family: MetaPro-Black;
-	src: url('fonts/MetaPro-Black.otf');
+	font-family: BorisBlackBloxx;
+	src: url('fonts/BorisBlackBloxx.ttf');
 }
 
 @font-face {
-	font-family: MetaPro-Medium;
-	src: url('fonts/MetaPro-Medium.otf');
-}
-@font-face {
-	font-family: MetaPro-MediumItalic;
-	src: url('fonts/MetaPro-MediumItalic.otf');
+	font-family: STREET;
+	src: url('fonts/STREET.ttf');
 }
 /******************************************************************************
 * Reset 
@@ -384,7 +380,7 @@ body {
 	font-size:1.4em;
 	font-style:italic;
 	line-height:1.2em;
-	font-family: MetaPro-MediumItalic, Arial, Helvetica, sans-serif;
+	font-family: STREET, Arial, Helvetica, sans-serif;
 }
 #bodywrapper div.intro p{
 	padding:10px 0;
@@ -410,7 +406,7 @@ body {
 	padding:0 0 0.5em 0;
 	background:none;
 	text-shadow: 0 1px 1px #b4a79c;
-	font-family: MetaPro-Black, Arial, Helvetica, sans-serif;
+	font-family: BorisBlackBloxx, Arial, Helvetica, sans-serif;
 	text-transform:uppercase
 }
 #bodywrapper h2 {
@@ -420,20 +416,20 @@ body {
 	margin-bottom:10px;
 	margin-top:15px;
 	background:transparent url(img/hr-bg.png) repeat-x bottom left;
-	font-family: MetaPro-Medium, Arial, Helvetica, sans-serif;
+	font-family: STREET, Arial, Helvetica, sans-serif;
 }
 #bodywrapper h3 {
 	font-weight:normal;
 	font-size:1.6em;
 	margin-bottom:10px;
 	margin-top:10px;
-	font-family: MetaPro-Medium, Arial, Helvetica, sans-serif;
+	font-family: STREET, Arial, Helvetica, sans-serif;
 }
 #bodywrapper h4 {
 	font-size:1.2em;
 	margin-bottom:10px;
 	margin-top:10px;
-	font-family: MetaPro-Medium, Arial, Helvetica, sans-serif;
+	font-family: STREET, Arial, Helvetica, sans-serif;
 }
 #bodywrapper h5 {
 	font-weight:bold;

@@ -42,7 +42,7 @@ final String readmefilePath = response.encodeURL(new StringBuffer().append(reque
 <script type="text/javascript">
   function loadFirstPage(){
       var divElement = document.getElementById('connectButtonDiv');
-      divElement.innerHTML = "<div class='disabledButton' id='msg'><internal:message key='org.jahia.loading.button'/></div>";
+      divElement.innerHTML = "<div class='disabledButton' id='msg'><fmt:message key='org.jahia.loading.button'/></div>";
       location.href = "${not empty pageContext.request.contextPath ? pageContext.request.contextPath : '/'}";
   }
   
@@ -64,11 +64,11 @@ final String readmefilePath = response.encodeURL(new StringBuffer().append(reque
             <div id="content" class="full">
               <div class="head">
                 <div class="object-title">
-                  <internal:message key="org.jahia.bin.JahiaConfigurationWizard.congratulations.congratulationsItWork.label"/>
+                  <fmt:message key="org.jahia.bin.JahiaConfigurationWizard.congratulations.congratulationsItWork.label"/>
                 </div>
               </div>
               <p>
-                <internal:message key="org.jahia.bin.JahiaConfigurationWizard.congratulations.readme.label"/>&nbsp;<a href="javascript:openReadmeFile();">Readme</a>.
+                <fmt:message key="org.jahia.bin.JahiaConfigurationWizard.congratulations.readme.label"/>&nbsp;<a href="javascript:openReadmeFile();">Readme</a>.
               </p>
               <% if (allowedDays != null) { %>
               <p>
@@ -84,7 +84,7 @@ final String readmefilePath = response.encodeURL(new StringBuffer().append(reque
 <div id="actionBar">
   <span class="dex-PushButton" id="connectButtonDiv">
     <span class="first-child" id='msg'>
-      <a class="ico-next" href='javascript:loadFirstPage();'><internal:message key='org.jahia.connect.button'/></a>
+      <a class="ico-next" href='javascript:loadFirstPage();'><fmt:message key='org.jahia.connect.button'/></a>
     </span>
   </span>
 </div><%if (isConfigWizard) { %>

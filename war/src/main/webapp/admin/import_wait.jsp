@@ -81,7 +81,7 @@
 
             waitCounter += 1;
             var divElement = document.getElementById('msg');
-            divElement.innerHTML = "<internal:message key='org.jahia.waitingForImport.button'/>" + " (" + waitCounter + ")...";
+            divElement.innerHTML = "<fmt:message key='org.jahia.waitingForImport.button'/>" + " (" + waitCounter + ")...";
         }
     }
     function openReadmeFile() {
@@ -99,7 +99,7 @@
 
 
         var divElement = document.getElementById('msg');
-        divElement.innerHTML = "<internal:message key='org.jahia.waitingForImport.button'/>" + " (" + waitCounter + ")...";
+        divElement.innerHTML = "<fmt:message key='org.jahia.waitingForImport.button'/>" + " (" + waitCounter + ")...";
 
 
     <%
@@ -128,7 +128,7 @@
         <%if(!isConfigWizard){%>
         <fmt:message key="org.jahia.admin.site.ManageSites.manageVirtualSites.label"/>
         <%}else{%>
-        <internal:message key="org.jahia.createSite.siteFactory"/>
+        <fmt:message key="org.jahia.createSite.siteFactory"/>
         <%}%>
     </h2>
 </div>
@@ -145,11 +145,11 @@
                     <div id="content" class="full">
                         <div class="head">
                             <div class="object-title">
-                                <internal:message key="org.jahia.bin.JahiaConfigurationWizard.congratulations.congratulationsItWork.label"/>
+                                <fmt:message key="org.jahia.bin.JahiaConfigurationWizard.congratulations.congratulationsItWork.label"/>
                             </div>
                         </div>
                         <p>
-                            <internal:message
+                            <fmt:message
                                     key="org.jahia.bin.JahiaConfigurationWizard.congratulations.readme.label"/>&nbsp;<a href="javascript:openReadmeFile();">Readme</a>.
                         </p>
 

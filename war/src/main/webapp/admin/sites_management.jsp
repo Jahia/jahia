@@ -614,7 +614,7 @@ else { %>
     <%if (isConfigWizard) { %>
 					<span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-next" href="javascript:submitform();"><internal:message key="label.nextStep"/>
+              <a class="ico-next" href="javascript:submitform();"><fmt:message key="label.nextStep"/>
               </a>
             </span>
           </span>

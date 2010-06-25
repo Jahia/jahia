@@ -117,7 +117,7 @@
 <%if(!isConfigWizard){%>
       <fmt:message key="org.jahia.admin.site.ManageSites.manageVirtualSites.label"/>
       <%}else{%>
-      <internal:message key="org.jahia.createSite.siteFactory"/>
+      <fmt:message key="org.jahia.createSite.siteFactory"/>
       <%}%>
 </h2>
 </div>

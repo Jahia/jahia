@@ -55,7 +55,7 @@
 <%if(!isConfigWizard){%>
       <fmt:message key="org.jahia.admin.site.ManageSites.manageVirtualSites.label"/>
       <%}else{%>
-      <internal:message key="org.jahia.createSite.siteFactory"/>
+      <fmt:message key="org.jahia.createSite.siteFactory"/>
       <%}%>   
 </h2>
 </div>
@@ -209,8 +209,8 @@
   	<% if (session.getAttribute(JahiaAdministration.CLASS_NAME + "redirectToJahia") == null) { %>  	
   	<span class="dex-PushButton"> 
 	  <span class="first-child">
-      	 <a class="ico-ok" href="javascript:document.jahiaAdmin.submit();" onclick="showWorkInProgress(); return true;">          
-          <fmt:message key="label.save"/>
+      	 <a class="ico-next" href="javascript:document.jahiaAdmin.submit();" onclick="showWorkInProgress(); return true;">          
+          <fmt:message key="label.nextStep"/>
         </a>
       </span>
      </span>
@@ -219,14 +219,14 @@
  	<span class="dex-PushButton"> 
 	  <span class="first-child">
 	  	 <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=list")%>' onclick="showWorkInProgress(); return true;">
-           <internal:message key="org.jahia.back.button"/>
+           <fmt:message key="org.jahia.back.button"/>
         </a>
 	  </span>
 	</span>
 	<span class="dex-PushButton"> 
 	  <span class="first-child">
 	  	  <a class="ico-next" href="javascript:document.jahiaAdmin.submit();" onclick="showWorkInProgress(); return true;">          
-          <internal:message key="label.nextStep"/>
+          <fmt:message key="label.nextStep"/>
         </a>
 	  </span>
 	</span>

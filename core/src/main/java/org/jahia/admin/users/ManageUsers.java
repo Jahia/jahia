@@ -34,7 +34,9 @@
 
 package org.jahia.admin.users;
 
+import au.com.bytecode.opencsv.CSVReader;
 import org.apache.commons.collections.iterators.EnumerationIterator;
+import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.admin.AbstractAdministrationModule;
 import org.jahia.bin.Jahia;
@@ -50,13 +52,14 @@ import org.jahia.security.license.License;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.pwdpolicy.PolicyEnforcementResult;
 import org.jahia.services.usermanager.*;
+import org.jahia.tools.files.FileUpload;
 import org.jahia.utils.JahiaTools;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -183,6 +186,10 @@ public class ManageUsers extends AbstractAdministrationModule {
             }
         } else if (operation.equals("processRemove")) {
             processUserRemove(request, response, session);
+        } else if (operation.equals("batchCreate")) {
+            displayBatchCreate(request, response, session);
+        } else if (operation.equals("processBatchCreate")) {
+            processBatchCreate(request, response, session);
         }
     }
 
@@ -351,7 +358,6 @@ public class ManageUsers extends AbstractAdministrationModule {
      *
      * @param request
      * @param response
-     * @param session
      * @return true if operation successed, false otherwise.
      * @throws IOException
      * @throws ServletException
@@ -554,8 +560,6 @@ public class ManageUsers extends AbstractAdministrationModule {
      * 4) Set the home page redirection if one is set.
      *
      * @param request
-     * @param response
-     * @param session
      * @return true if operation successed, false otherwise.
      * @throws IOException
      * @throws ServletException
@@ -731,6 +735,101 @@ public class ManageUsers extends AbstractAdministrationModule {
         } else {
           userMessage = getMessage("org.jahia.admin.userMessage.cannotRemoveGuest.label");
         }*/
+        displayUsers( request, response, session);
+    }
+
+    /**
+     * Display confirmation message for removing or not a Jahia user.
+     * External user cannot be removed actualy.
+     *
+     * @param request
+     * @param response
+     * @param session
+     * @throws IOException
+     * @throws ServletException
+     * @throws JahiaException
+     */
+    private void displayBatchCreate(HttpServletRequest    request,
+                                   HttpServletResponse   response,
+                                   HttpSession           session)
+        throws IOException, ServletException, JahiaException {
+
+        logger.debug("Started");
+            // set request attributes...
+        session.setAttribute("userMessage", userMessage);
+        session.setAttribute("isError", isError);
+        request.setAttribute("jspSource", JSP_PATH + "user_management/user_batchcreate.jsp");
+        request.setAttribute("directMenu", JSP_PATH + "direct_menu.jsp");
+        session.setAttribute("jahiaDisplayMessage", Jahia.COPYRIGHT);
+        doRedirect(request, response, session, JSP_PATH + "admin.jsp");
+        userMessage = "";
+        isError = true;
+    }
+
+    private Properties buildProperties(List<String> headerElementList, List<String> lineElementList) {
+        Properties result = new Properties();
+        for (int i=0; i < headerElementList.size(); i++) {
+            String currentHeader = headerElementList.get(i);
+            String currentValue = lineElementList.get(i);
+            if (!"j:nodename".equals(currentHeader) &&
+                !"j:password".equals(currentHeader)) {
+                result.setProperty(currentHeader.trim(), currentValue);
+            }
+        }
+        return result;
+    }
+
+    private void processBatchCreate(HttpServletRequest    request,
+                                   HttpServletResponse   response,
+                                   HttpSession           session)
+    throws IOException, ServletException, JahiaException
+    {
+        logger.debug("Started");
+
+        FileUpload fileUpload = ((ParamBean) jParams).getFileUpload();
+        if (fileUpload != null) {
+            DiskFileItem fileItem = fileUpload.getFileItems().get("csvFile");
+            if (fileItem == null) {
+                logger.error("Couldn't find CSV file in form parameter name 'csvFile' aborting batch creation !");
+                displayUsers( request, response, session);
+                return;
+            }
+            String csvSeparator = jParams.getParameter("csvSeparator");
+            CSVReader csvReader = new CSVReader(new InputStreamReader(fileItem.getInputStream()), csvSeparator.charAt(0));
+            // the first line contains the column names;
+            String[] headerElements = csvReader.readNext();
+            List<String> headerElementList = Arrays.asList(headerElements);
+            int userNamePos = headerElementList.indexOf("j:nodename");
+            int passwordPos = headerElementList.indexOf("j:password");
+            if ((userNamePos < 0) || (passwordPos < 0)) {
+                logger.error("Couldn't find user name or password column in CSV file, aborting batch creation !");
+                displayUsers( request, response, session);
+                return;
+            }
+            String[] lineElements = null;
+            int errorsCreatingUsers = 0;
+            int usersCreatedSuccessfully = 0;
+            while ((lineElements = csvReader.readNext()) != null) {
+                List<String> lineElementList = Arrays.asList(lineElements);
+                Properties properties = buildProperties(headerElementList, lineElementList);
+                String userName = lineElementList.get(userNamePos);
+                String password = lineElementList.get(passwordPos);
+                JahiaUser jahiaUser = userManager.createUser(userName, password, properties);
+                if (jahiaUser == null) {
+                    logger.warn("Error creating user " + userName);
+                    errorsCreatingUsers++;
+                } else {
+                    logger.info("Successfully created user " + userName);
+                    usersCreatedSuccessfully++;
+                }
+            }
+            userMessage = Integer.toString(usersCreatedSuccessfully) + " " + getMessage("org.jahia.admin.userMessage.usersCreatedSuccessfully.label");
+            userMessage += ", ";
+            userMessage += Integer.toString(errorsCreatingUsers) + " " + getMessage("org.jahia.admin.userMessage.usersNotCreatedBecauseOfErrors.label");
+            isError = false;
+
+        }
+
         displayUsers( request, response, session);
     }
 

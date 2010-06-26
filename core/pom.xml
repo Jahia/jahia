@@ -1145,6 +1145,13 @@
             <version>1.0.0-incubating</version>
         </dependency>        
         <!-- end of Apache Shiro -->
+
+        <dependency>
+           <groupId>net.sf.opencsv</groupId>
+           <artifactId>opencsv</artifactId>
+           <version>2.1</version>
+        </dependency>
+        
     </dependencies>
     <build>
 

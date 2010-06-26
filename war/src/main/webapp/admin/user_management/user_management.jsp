@@ -137,6 +137,11 @@ function setFocus()
                     <a class="ico-user-delete" href="javascript:submitForm('remove');"><fmt:message key="org.jahia.admin.users.ManageUsers.removeSelectedUser.label"/></a>
                     </span> 
                 </span>   --%>
+                <span class="dex-PushButton">
+                    <span class="first-child">
+                    <a class="ico-user-view" href="javascript:submitForm('batchCreate');"><fmt:message key="org.jahia.admin.users.ManageUsers.batchCreateUsers.label"/></a>
+                    </span>
+                </span>
             </div>
             </div>
                 <div class="head">

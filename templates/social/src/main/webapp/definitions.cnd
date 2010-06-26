@@ -10,9 +10,13 @@
  - j:connectedTo (weakreference) < jnt:user
  - j:type (string)
 
+[jnt:socialGroup] > jnt:content, jmix:sandboxContent
+ - j:description (string) i18n
+
 [jnt:userActivityMediaItem] > jnt:content, jmix:sandboxContent
  - j:type (string)
  - j:mimeType (string)
+ - j:taggedPeople (string) multiple
  - j:data (weakreference, file) < jnt:file
  
 [jnt:userActivity] > jnt:content, jmix:sandboxContent

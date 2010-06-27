@@ -117,7 +117,7 @@ public class URLGenerator {
         initializers = getContext() + Initializers.getInitializersServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
         convert = getContext() + DocumentConverter.getPath() + "/" + resource.getWorkspace();
         captcha = getContext() + Captcha.getCaptchaServletPath();
-        templatesPath = getContext() + "/templates";
+        templatesPath = getContext() + "/modules";
     }
 
     public String getContext() {

@@ -657,7 +657,7 @@ public class ExtendedNodeType implements NodeType {
 
     protected String getResourceBundleId() {
         JahiaTemplatesPackage pkg = getTemplatePackage();
-        return pkg != null ? "templates." + pkg.getRootFolder() + "." + pkg.getResourceBundleName() : "JahiaTypesResources";
+        return pkg != null ? "modules." + pkg.getRootFolder() + "." + pkg.getResourceBundleName() : "JahiaTypesResources";
     }
 
     public String getLabel(Locale locale) {

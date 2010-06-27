@@ -162,7 +162,7 @@
     </bean>
     
     <bean id="TemplatePackageApplicationContextLoader" class="org.jahia.services.templates.TemplatePackageApplicationContextLoader">
-    	<property name="contextConfigLocation" value="templates/**/META-INF/spring/*.xml"/>
+    	<property name="contextConfigLocation" value="modules/**/META-INF/spring/*.xml"/>
     </bean>
 
     <bean id="JahiaFieldDefinitionsRegistry" class="org.jahia.registries.JahiaFieldDefinitionsRegistry" factory-method="getInstance" init-method="init">

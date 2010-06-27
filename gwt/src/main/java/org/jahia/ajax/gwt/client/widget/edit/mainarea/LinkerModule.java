@@ -36,7 +36,7 @@ public class LinkerModule extends SimpleModule {
         panel.addStyleName("x-panel-header");
         panel.addStyleName("x-panel-linker");
 
-//        html = new HTML("<img src=\""+JahiaGWTParameters.getContextPath() + "/templates/default/images/add.png"+"\" /> Add new content here");
+//        html = new HTML("<img src=\""+JahiaGWTParameters.getContextPath() + "/modules/default/images/add.png"+"\" /> Add new content here");
         html = new HTML("<p class=\"linkAction\">Drop this to be linked<br/></p>");
         panel.add(html);
         add(panel);

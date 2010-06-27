@@ -150,7 +150,7 @@
                                                 <c:if test="${not empty selectedPackage && not empty selectedPackage.thumbnailUrls['thumbnail']}">
                                                     <td>&nbsp;</td>
                                                     <td>
-                                                        <img id ="themePreview" src="<%=URL%>../templates/<c:out value="${selectedPackage.rootFolder}"/>/<c:out value="${selectedPackage.thumbnailUrls['thumbnail']}"/>"
+                                                        <img id ="themePreview" src="<%=URL%>../modules/<c:out value="${selectedPackage.rootFolder}"/>/<c:out value="${selectedPackage.thumbnailUrls['thumbnail']}"/>"
                                                              width="270" height="141" alt="">
                                                     </td>
                                                 </c:if>

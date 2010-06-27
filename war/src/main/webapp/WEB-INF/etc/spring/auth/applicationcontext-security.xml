@@ -19,13 +19,13 @@
                 
                 /precompileServlet = authcBasic, roles[templateManager]
                 
-                /templates/**/META-INF/** = authcBasic, roles[templateManager]
-                /templates/**/WEB-INF/** = authcBasic, roles[templateManager]
-                /templates/**/*.cnd = authcBasic, roles[templateManager]
-                /templates/**/*.drl = authcBasic, roles[templateManager]
-                /templates/**/*.dsl = authcBasic, roles[templateManager]
-                /templates/**/*.jsp = authcBasic, roles[templateManager]
-                /templates/**/*.properties = authcBasic, roles[templateManager]
+                /modules/**/META-INF/** = authcBasic, roles[templateManager]
+                /modules/**/WEB-INF/** = authcBasic, roles[templateManager]
+                /modules/**/*.cnd = authcBasic, roles[templateManager]
+                /modules/**/*.drl = authcBasic, roles[templateManager]
+                /modules/**/*.dsl = authcBasic, roles[templateManager]
+                /modules/**/*.jsp = authcBasic, roles[templateManager]
+                /modules/**/*.properties = authcBasic, roles[templateManager]
             </value>
         </property>
     </bean>

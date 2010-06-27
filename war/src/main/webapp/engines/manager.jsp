@@ -66,9 +66,9 @@ configToPermissionMapping.put("workflowmanager", "workflow-manager");
     <internal:gwtInit standalone="true"/>
     <internal:gwtImport module="org.jahia.ajax.gwt.module.contentmanager.ContentManager"/>
     <c:if test="${param.conf == 'filemanager' || param.conf == 'contentmanager'}">
-        <link rel="stylesheet" type="text/css" media="screen" href="${pageContext.request.contextPath}/templates/assets/css/jquery.Jcrop.css"/>
-        <script type="text/javascript" src="${pageContext.request.contextPath}/templates/assets/javascript/jquery.min.js"></script>
-        <script type="text/javascript" src="${pageContext.request.contextPath}/templates/assets/javascript/jquery.Jcrop.min.js"></script>
+        <link rel="stylesheet" type="text/css" media="screen" href="${pageContext.request.contextPath}/modules/assets/css/jquery.Jcrop.css"/>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/modules/assets/javascript/jquery.min.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/modules/assets/javascript/jquery.Jcrop.min.js"></script>
     </c:if>
 </head>
 <body>

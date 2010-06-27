@@ -171,7 +171,7 @@ public class ManageAnalytics extends AbstractAdministrationModule {
                 session,
                 JSP_PATH + "manage_analytics_form.jsp");
 
-        //To change body of created methods use File | Settings | File Templates.
+        
     }
 
 

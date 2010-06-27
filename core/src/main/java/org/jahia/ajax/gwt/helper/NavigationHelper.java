@@ -965,7 +965,7 @@ public class NavigationHelper {
     public boolean check(String icon) {
         try {
             if (!iconsPresence.containsKey(icon)) {
-                iconsPresence.put(icon, Jahia.getStaticServletConfig().getServletContext().getResource("/templates/" + icon + ".png") != null);
+                iconsPresence.put(icon, Jahia.getStaticServletConfig().getServletContext().getResource("/modules/" + icon + ".png") != null);
             }
             return iconsPresence.get(icon);
         } catch (MalformedURLException e) {

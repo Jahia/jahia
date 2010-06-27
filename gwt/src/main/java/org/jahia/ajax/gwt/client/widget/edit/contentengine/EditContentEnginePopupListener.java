@@ -11,7 +11,7 @@ public class EditContentEnginePopupListener implements Listener<ComponentEvent> 
     private final EditLinker editLinker;
 
     public EditContentEnginePopupListener(Module module, EditLinker editLinker) {
-        //To change body of created methods use File | Settings | File Templates.
+        
         this.module = module;
         this.editLinker = editLinker;
     }

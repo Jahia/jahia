@@ -353,9 +353,9 @@ class TemplatePackageRegistry {
         // handle resource bundles
         for (JahiaTemplatesPackage sourcePack : registry.values()) {
         	sourcePack.getResourceBundleHierarchy().clear();
-            sourcePack.getResourceBundleHierarchy().add("templates." + sourcePack.getRootFolder() + "." + sourcePack.getResourceBundleName());
+            sourcePack.getResourceBundleHierarchy().add("modules." + sourcePack.getRootFolder() + "." + sourcePack.getResourceBundleName());
             for (String s : sourcePack.getDepends()) {
-                sourcePack.getResourceBundleHierarchy().add("templates." + lookup(s).getRootFolder() + "." + sourcePack.getResourceBundleName());
+                sourcePack.getResourceBundleHierarchy().add("modules." + lookup(s).getRootFolder() + "." + sourcePack.getResourceBundleName());
             }
             if (!sourcePack.isDefault()) {
             	sourcePack.getResourceBundleHierarchy().add("templates.default.resources.DefaultJahiaTemplates");

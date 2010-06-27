@@ -99,7 +99,7 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
         return new AbstractImagePrototype() {
 
             public String getUrl() {
-                return JahiaGWTParameters.getContextPath() + "/templates/" + icon +
+                return JahiaGWTParameters.getContextPath() + "/modules/" + icon +
                         /*( isOpened ? "_opened" : "" ) +*/
                         ( large ? "_large" : "" ) +
                         ".png";

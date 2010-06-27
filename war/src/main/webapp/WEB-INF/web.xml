@@ -251,7 +251,7 @@
     </filter-mapping>
     <filter-mapping>
         <filter-name>ResponseCacheControlFilter</filter-name>
-        <url-pattern>/templates/*</url-pattern>
+        <url-pattern>/modules/*</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>ResponseCacheControlFilter</filter-name>

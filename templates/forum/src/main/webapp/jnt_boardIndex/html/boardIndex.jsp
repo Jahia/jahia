@@ -34,7 +34,7 @@
                         <span>
 					<dfn>Last post</dfn> by <a href="${url.base}${lastModifiedNode.parent.path}.html">
                             <img height="9" width="11" title="View the latest post" alt="View the latest post"
-                                 src="/jahia/templates/jahia_forum/img/icon_topic_latest.gif"/>${createdBy.string}
+                                 src="/jahia/modules/jahia_forum/img/icon_topic_latest.gif"/>${createdBy.string}
                         </a><br/><fmt:formatDate value="${lastModified.time}" dateStyle="full" type="both"/></span>
                     </c:if></dd>
                 </dl>

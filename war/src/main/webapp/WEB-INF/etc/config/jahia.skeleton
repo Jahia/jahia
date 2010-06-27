@@ -38,7 +38,7 @@ serverHome                                             =
 
 jahiaJspDiskPath                                       =   /
 jahiaEnginesDiskPath                                   =   /engines/
-jahiaTemplatesDiskPath                                 =   /templates/
+jahiaTemplatesDiskPath                                 =   /modules/
 jahiaJavaScriptDiskPath                                =   /javascript/
 
 jahiaFilesDiskPath                                     =   $context/WEB-INF

@@ -335,301 +335,301 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>article</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>assets</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>blog</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>bookmarks</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>calendar</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>contact</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>default</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>docConverter</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>docspace</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>event</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>facets</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>faq</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>feedimporter</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>formbuilder</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>forum</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>grid</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>job</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>latestPages</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>location</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>metrics</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>news</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>people</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>poll</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>portal</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>press</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>publication</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>rating</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>remotepublish</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>roles</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>rss</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>scriptlanguages</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>search</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>seo</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>sitemap</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>skins</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>staticHTML</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>tabularList</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>tasks</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>templates-intranet</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>templates-web</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>test</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>topstories</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>wiki</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>

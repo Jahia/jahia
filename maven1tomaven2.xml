@@ -18,7 +18,7 @@
         <property name="maven2.api" value="${maven2.root}/api" />
         <property name="maven2.impl" value="${maven2.root}/impl" />
         <property name="maven2.war" value="${maven2.root}/war" />
-        <property name="maven2.templates" value="${maven2.root}/templates" />
+        <property name="maven2.templates" value="${maven2.root}/modules" />
         <property name="maven2.esi" value="${maven2.root}/esi" />
                 
     </target>

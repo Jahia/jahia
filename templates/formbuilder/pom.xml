@@ -36,11 +36,11 @@
 <project>
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>jahia-templates</artifactId>
-        <groupId>org.jahia.templates</groupId>
+        <artifactId>jahia-modules</artifactId>
+        <groupId>org.jahia.modules</groupId>
         <version>6.5-SNAPSHOT</version>
     </parent>
-    <groupId>org.jahia.templates</groupId>
+    <groupId>org.jahia.modules</groupId>
     <artifactId>formbuilder</artifactId>
     <name>Jahia Form Builder</name>
     <packaging>war</packaging>

@@ -348,7 +348,7 @@
     <module>jackrabbit-ext</module>
     <module>core</module>
     <module>gwt</module>
-    <module>templates</module>
+    <module>modules</module>
     <module>prepackagedSites</module>
     <module>war</module>
   </modules>

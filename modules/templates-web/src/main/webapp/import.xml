@@ -4,33 +4,33 @@
     <templates-web xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" jcr:mixinTypes="jmix:sitemap jmix:accessControlled" jcr:primaryType="jnt:virtualsite" changefreq="monthly" j:installedModules="templates-web" priority="0.5">
       <contents jcr:primaryType="jnt:contentList">
         <site_components  jcr:primaryType="jnt:contentList">
-          <simple-search result="/modulesSet/modules-web/search-results" jcr:mixinTypes="jmix:shareable" jcr:primaryType="jnt:simpleSearchForm" >
+          <simple-search result="/templatesSet/templates-web/search-results" jcr:mixinTypes="jmix:shareable" jcr:primaryType="jnt:simpleSearchForm" >
             <j:translation_en  jcr:primaryType="jnt:translation" jcr:title_en="Simple search" jcr:language="en" />
           </simple-search>
-          <side-menu j:menuType="primary" jcr:mixinTypes="jmix:shareable" j:maxDepth="3" jcr:primaryType="jnt:navMenu" j:baselineNode="/modulesSet/modules-web/home" j:startLevel="1" j:styleName="navigationN2" />
+          <side-menu j:menuType="primary" jcr:mixinTypes="jmix:shareable" j:maxDepth="3" jcr:primaryType="jnt:navMenu" j:baselineNode="/templatesSet/templates-web/home" j:startLevel="1" j:styleName="navigationN2" />
         </site_components>
       </contents>
       <files jcr:primaryType="jnt:folder" />
       <mashups jcr:primaryType="jnt:portletList" />
       <themes jcr:primaryType="jnt:folder" />
-      <home jcr:mixinTypes="jmix:hasTemplateNode jmix:sitemap" j:template="default" j:templateNode="/modulesSet/modules-web/modules/home" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" priority="0.5">
+      <home jcr:mixinTypes="jmix:hasTemplateNode jmix:sitemap" j:template="default" j:templateNode="/templatesSet/templates-web/templates/home" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" priority="0.5">
         <j:translation_en jcr:language="en" jcr:title_en="Home" jcr:primaryType="jnt:translation" />
       </home>
       <templates jcr:primaryType="jnt:templatesFolder">
-        <home jcr:primaryType="jnt:template"  j:applyOn="jnt:page" jcr:mixinTypes="jmix:hasTemplateNode" j:templateNode="/modulesSet/modules-web/modules/sitewrapper">
+        <home jcr:primaryType="jnt:template"  j:applyOn="jnt:page" jcr:mixinTypes="jmix:hasTemplateNode" j:templateNode="/templatesSet/templates-web/templates/sitewrapper">
           <wrappercontent jcr:primaryType="jnt:contentList">
             <row column="2col115" jcr:primaryType="jnt:row">
               <col1 jcr:primaryType="jnt:contentList">
                 <listA j:filter="" jcr:primaryType="jnt:mainResourceArea" />
               </col1>
               <col2 jcr:primaryType="jnt:contentList">
-                <simple-search j:share="/modulesSet/modules-web/contents/site_components/simple-search" />
+                <simple-search j:share="/templatesSet/templates-web/contents/site_components/simple-search" />
                 <listB j:filter="" jcr:primaryType="jnt:mainResourceArea" />
               </col2>
             </row>
           </wrappercontent>
         </home>
-        <my-portal jcr:primaryType="jnt:template" j:applyOn="jnt:page" jcr:mixinTypes="jmix:hasTemplateNode" j:templateNode="/modulesSet/modules-web/modules/sitewrapper">
+        <my-portal jcr:primaryType="jnt:template" j:applyOn="jnt:page" jcr:mixinTypes="jmix:hasTemplateNode" j:templateNode="/templatesSet/templates-web/templates/sitewrapper">
           <wrappercontent jcr:primaryType="jnt:contentList">
             <my-portal jcr:primaryType="jnt:contentList">
               <j:translation_en jcr:title_en="My Portal" jcr:language="en" jcr:primaryType="jnt:translation" />
@@ -38,7 +38,7 @@
             </my-portal>
           </wrappercontent>
         </my-portal>
-        <events jcr:primaryType="jnt:template"  j:applyOn="jnt:page" jcr:mixinTypes="jmix:hasTemplateNode" j:templateNode="/modulesSet/modules-web/modules/sitewrapper">
+        <events jcr:primaryType="jnt:template"  j:applyOn="jnt:page" jcr:mixinTypes="jmix:hasTemplateNode" j:templateNode="/templatesSet/templates-web/templates/sitewrapper">
           <wrappercontent jcr:primaryType="jnt:contentList">
             <row1 column="2col115" jcr:primaryType="jnt:row" >
               <col1  jcr:primaryType="jnt:contentList">
@@ -46,10 +46,10 @@
                 <events j:filter="jnt:event" jcr:primaryType="jnt:mainResourceArea" />
               </col1>
               <col2 jcr:primaryType="jnt:contentList">
-                <simple-search j:share="/modulesSet/modules-web/contents/site_components/simple-search" />
-                <side-menu j:share="/modulesSet/modules-web/contents/site_components/side-menu" />
-                <calendar startDateProperty="startDate" endDateProperty="endDate" jcr:primaryType="jnt:calendar" j:bindedComponent="/modulesSet/modules-web/modules/events/wrappercontent/row1/col1/mainResourceArea-1" />
-                <facets jcr:primaryType="jnt:facets" j:bindedComponent="/modulesSet/modules-web/modules/events/wrappercontent/row1/col1/mainResourceArea-1">
+                <simple-search j:share="/templatesSet/templates-web/contents/site_components/simple-search" />
+                <side-menu j:share="/templatesSet/templates-web/contents/site_components/side-menu" />
+                <calendar startDateProperty="startDate" endDateProperty="endDate" jcr:primaryType="jnt:calendar" j:bindedComponent="/templatesSet/templates-web/templates/events/wrappercontent/row1/col1/mainResourceArea-1" />
+                <facets jcr:primaryType="jnt:facets" j:bindedComponent="/templatesSet/templates-web/templates/events/wrappercontent/row1/col1/mainResourceArea-1">
                   <fieldFacet mincount="1" field="jnt:event;eventsType" jcr:primaryType="jnt:fieldFacet" missing="false" facet="type" offset="0" limit="100">
                     <j:translation_en jcr:primaryType="jnt:translation" jcr:language="en" label_en="Type" />
                   </fieldFacet>
@@ -58,15 +58,15 @@
             </row1>
           </wrappercontent>
         </events>
-        <simple jcr:primaryType="jnt:template" j:applyOn="jnt:page" jcr:mixinTypes="jmix:hasTemplateNode" j:templateNode="/modulesSet/modules-web/modules/sitewrapper">
+        <simple jcr:primaryType="jnt:template" j:applyOn="jnt:page" jcr:mixinTypes="jmix:hasTemplateNode" j:templateNode="/templatesSet/templates-web/templates/sitewrapper">
           <wrappercontent jcr:primaryType="jnt:contentList">
             <row column="2col115" jcr:primaryType="jnt:row">
               <col1 jcr:primaryType="jnt:contentList">
                 <listA j:filter="" jcr:primaryType="jnt:mainResourceArea" />
               </col1>
               <col2 jcr:primaryType="jnt:contentList">
-                <simple-search j:share="/modulesSet/modules-web/contents/site_components/simple-search" />
-                <side-menu j:share="/modulesSet/modules-web/contents/site_components/side-menu" />
+                <simple-search j:share="/templatesSet/templates-web/contents/site_components/simple-search" />
+                <side-menu j:share="/templatesSet/templates-web/contents/site_components/side-menu" />
                 <listB j:filter="" jcr:primaryType="jnt:mainResourceArea" />
               </col2>
             </row>
@@ -77,26 +77,26 @@
             <shortcuts jcr:mixinTypes="jmix:renderable jmix:shareable" j:template="inline" jcr:primaryType="jnt:shortcuts" />
           </header>
           <logo jcr:primaryType="jnt:contentList">
-            <logo j:filter="" jcr:primaryType="jnt:absoluteArea" j:basenode="/modulesSet/modules-web/home"/>
+            <logo j:filter="" jcr:primaryType="jnt:absoluteArea" j:basenode="/templatesSet/templates-web/home"/>
           </logo>
           <topMenu jcr:primaryType="jnt:contentList">
-            <top-menu j:menuType="primary" jcr:mixinTypes="jmix:shareable" j:maxDepth="1" jcr:primaryType="jnt:navMenu" j:baselineNode="/modulesSet/modules-web/home" j:styleName="navigationN1" />
+            <top-menu j:menuType="primary" jcr:mixinTypes="jmix:shareable" j:maxDepth="1" jcr:primaryType="jnt:navMenu" j:baselineNode="/templatesSet/templates-web/home" j:styleName="navigationN1" />
           </topMenu>
           <logoFooter jcr:primaryType="jnt:contentList">
-            <logoFooter j:filter="" jcr:primaryType="jnt:absoluteArea" j:basenode="/modulesSet/modules-web/home"/>
+            <logoFooter j:filter="" jcr:primaryType="jnt:absoluteArea" j:basenode="/templatesSet/templates-web/home"/>
           </logoFooter>
           <footer jcr:primaryType="jnt:contentList">
-            <footer j:filter="" jcr:primaryType="jnt:absoluteArea" j:basenode="/modulesSet/modules-web/home"/>
+            <footer j:filter="" jcr:primaryType="jnt:absoluteArea" j:basenode="/templatesSet/templates-web/home"/>
           </footer>
           <wrappercontent jcr:primaryType="jnt:contentList">
             <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" />
           </wrappercontent>
         </sitewrapper>
-      </modules>
-      <search-results jcr:mixinTypes="jmix:hasTemplateNode jmix:sitemap" j:template="default" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" j:templateNode="/modulesSet/modules-web/modules/simple" priority="0.5">
+      </templates>
+      <search-results jcr:mixinTypes="jmix:hasTemplateNode jmix:sitemap" j:template="default" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" j:templateNode="/templatesSet/templates-web/templates/simple" priority="0.5">
         <j:translation_en jcr:primaryType="jnt:translation" jcr:language="en" jcr:title_en="Search results" />
           <listA jcr:primaryType="jnt:contentList">
-               <simple-search j:share="/modulesSet/modules-web/contents/site_components/simple-search" />
+               <simple-search j:share="/templatesSet/templates-web/contents/site_components/simple-search" />
                <results autoSuggest="true" pageSize="10" jcr:primaryType="jnt:searchResults" autoSuggestHitCount="2" autoSuggestMinimumHitCount="2">
                  <j:translation_en jcr:primaryType="jnt:translation" jcr:title_en="Results" jcr:language="en"  />
                </results>
@@ -125,6 +125,6 @@
           <GRANT_r_publisher j:privileges="review" j:protected="false" j:principal="r:publisher" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
         </nt_base_jBPM_1-step-publication>
       </workflowrules>
-    </modules-web>
-  </modulesSet>
+    </templates-web>
+  </templatesSet>
 </content>

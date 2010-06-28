@@ -1,0 +1,2 @@
+[consequence][]Add activity for user {user} with message {message}=socialService.addActivity({user},{message}, drools);
+[consequence][]Send message {message} from user {fromUser} to user {toUser}=socialService.sendMessage({fromUser}, {toUser}, {message}, drools);

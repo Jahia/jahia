@@ -1151,6 +1151,29 @@
            <artifactId>opencsv</artifactId>
            <version>2.1</version>
         </dependency>
+
+        <!-- Apache Camel dependencies -->
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-core</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-spring</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-rss</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-mail</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+        <!-- End Apache Camel dependencies -->
         
     </dependencies>
     <build>

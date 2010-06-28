@@ -36,7 +36,6 @@
 //
 package org.jahia.services.sites;
 
-import org.jahia.data.JahiaDOMObject;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.JahiaService;
 import org.jahia.services.usermanager.JahiaUser;

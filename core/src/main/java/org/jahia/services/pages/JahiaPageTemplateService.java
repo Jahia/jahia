@@ -34,13 +34,8 @@
 
 package org.jahia.services.pages;
 
-import org.jahia.data.JahiaDOMObject;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.JahiaService;
-import org.jahia.services.usermanager.JahiaUser;
-
-import java.util.Iterator;
-import java.util.List;
 
 
 /**

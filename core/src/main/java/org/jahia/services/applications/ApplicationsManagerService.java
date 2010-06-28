@@ -41,13 +41,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.pluto.container.PortletWindow;
-import org.jahia.data.JahiaDOMObject;
 import org.jahia.data.applications.ApplicationBean;
 import org.jahia.data.applications.EntryPointDefinition;
 import org.jahia.data.applications.EntryPointInstance;
 import org.jahia.data.applications.WebAppContext;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.params.ParamBean;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.decorator.JCRPortletNode;
 import org.jahia.services.usermanager.JahiaUser;
@@ -167,17 +165,6 @@ public abstract class ApplicationsManagerService extends JahiaService {
      * and all its members
      */
     public abstract void deleteApplicationGroups(EntryPointInstance entryPointInstance)
-            throws JahiaException;
-
-    //--------------------------------------------------------------------------
-
-    /**
-     * return a DOM document of applications definitions
-     *
-     * @param siteID the site id
-     * @return JahiaDOMObject a DOM representation of this object
-     */
-    public abstract JahiaDOMObject getApplicationDefsAsDOM(int siteID)
             throws JahiaException;
 
     //--------------------------------------------------------------------------

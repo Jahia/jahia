@@ -38,7 +38,6 @@ import org.apache.pluto.container.driver.PlutoServices;
 import org.apache.pluto.container.driver.PortletRegistryEvent;
 import org.apache.pluto.container.driver.PortletRegistryListener;
 import org.apache.pluto.container.driver.PortletRegistryService;
-import org.jahia.data.JahiaDOMObject;
 import org.jahia.data.applications.ApplicationBean;
 import org.jahia.data.applications.EntryPointDefinition;
 import org.jahia.data.applications.EntryPointInstance;
@@ -526,16 +525,6 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
     }
 
     //--------------------------------------------------------------------------
-
-    /**
-     * return a DOM document of applications definitions
-     *
-     * @param siteID the site id
-     * @return JahiaDOMObject a DOM representation of this object
-     */
-    public JahiaDOMObject getApplicationDefsAsDOM(int siteID) throws JahiaException {
-        return null;
-    }
 
     /**
      * Get an ApplicationContext for a given application id

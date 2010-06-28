@@ -32,7 +32,6 @@
 package org.jahia.services.pages;
 
 import org.jahia.content.TimeBasedPublishingState;
-import org.jahia.data.JahiaDOMObject;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaPageNotFoundException;
 import org.jahia.exceptions.JahiaTemplateNotFoundException;

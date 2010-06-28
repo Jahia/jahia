@@ -39,7 +39,6 @@
 package org.jahia.services.fields;
 
 import org.jahia.content.ContentObjectKey;
-import org.jahia.data.JahiaDOMObject;
 import org.jahia.data.fields.JahiaField;
 import org.jahia.data.fields.JahiaFieldDefinition;
 import org.jahia.exceptions.JahiaException;
@@ -57,7 +56,7 @@ public abstract class JahiaFieldService extends JahiaService {
 
     /**
      * create a JahiaField.
-     * The only method to instanciate a new JahiaField
+     * The only method to instantiate a new JahiaField
      * It call the constructor corresponding to the field type.
      *
      * @param ID
@@ -502,39 +501,6 @@ public abstract class JahiaFieldService extends JahiaService {
      * @param fieldDefID the field def ID
      */
     public abstract void deleteFieldDefinition (int fieldDefID)
-            throws JahiaException;
-
-    //--------------------------------------------------------------------------
-    /**
-     * returns a DOM representation of all fields of a site
-     *
-     * @param siteID siteID
-     *
-     * @auhtor NK
-     */
-    public abstract JahiaDOMObject getFieldsAsDOM (int siteID)
-            throws JahiaException;
-
-    //--------------------------------------------------------------------------
-    /**
-     * returns a DOM representation of all field def of a site
-     *
-     * @param siteID
-     *
-     * @auhtor NK
-     */
-    public abstract JahiaDOMObject getFieldDefsAsDOM (int siteID)
-            throws JahiaException;
-
-    //--------------------------------------------------------------------------
-    /**
-     * returns a DOM representation of all field def props of a site
-     *
-     * @param siteID
-     *
-     * @auhtor NK
-     */
-    public abstract JahiaDOMObject getFieldDefPropsAsDOM (int siteID)
             throws JahiaException;
 
     //--------------------------------------------------------------------------

@@ -31,17 +31,15 @@
  */
 package org.jahia.services.usermanager;
 
-import org.jahia.data.JahiaDOMObject;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.JahiaService;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Map;
 
 
 /**
- * Manage users memberhip in a multi site context
+ * Manage users membership in a multi site context
  *
  * @author Khue Ng
  */

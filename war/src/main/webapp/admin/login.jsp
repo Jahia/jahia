@@ -62,8 +62,12 @@ inputSize = 22;
       }
   }
 </script>
+<div class="grass"></div>
+<div class="grass2"></div>
+<div class="hive"></div>
+<div class="cloud"></div>
+<div class="cloud2"></div>
 <h2 class="loginlogo_community"></h2>
-<center>
 <div id="adminLogin">
 <h3 class="loginIcon"><fmt:message key="org.jahia.admin.jahiaAdministration.label"/></h3>
 <br class="clearFloat" />
@@ -108,8 +112,9 @@ if(message!=null) { %>
   
 </div>
 </div>
-</center>
 <script language="javascript" type="text/javascript">
   setFocus();
 </script>
+<div id="adminLoginFooter">
 <%@include file="/admin/include/footer.inc" %>
+</div>

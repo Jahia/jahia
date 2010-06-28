@@ -26,24 +26,65 @@ padding-left:0;
 .clear {
   clear: both;
 }
-
+html, body {height:100%}
 /* general */
 body {
   font-family:Arial, Verdana, Helvetica, sans-serif;
   background-color:#f1f5fa;
   font-size:11px!important;
-  padding: 20px;
-  margin: 0;
+  margin: 20px;
 }
-
 body.login, #bodyLogin {
-  background:url(images/andromeda/bg-body_community.png) no-repeat 50% 0%;
+  background:url(images/andromeda/bg-body_community.gif) repeat-x bottom left;
   background-color: #FFFFFF;
   margin:0 auto;
   text-align:center
 }
-
-
+div.grass{
+  background: transparent url(images/andromeda/grass.png) no-repeat top left;
+  width:648px;
+  height:192px;
+  position:absolute;
+  bottom:0;
+  left:0;
+  z-index:10
+}
+div.grass2{
+  background: transparent url(images/andromeda/grass2.png) no-repeat top left;
+  width:648px;
+  height:192px;
+  position:absolute;
+  bottom:0;
+  right:0;
+  z-index:10
+}
+div.hive{
+  background: transparent url(images/andromeda/hive.png) no-repeat top left;
+  width:361px;
+  height:223px;
+  position:absolute;
+  bottom:30px;
+  right:20%;
+  z-index:5
+}
+div.cloud{
+  background: transparent url(images/andromeda/cloud.png) no-repeat top left;
+  width:215px;
+  height:100px;
+  position:absolute;
+  top:300px;
+  left:30%;
+  z-index:0
+}
+div.cloud2{
+  background: transparent url(images/andromeda/cloud2.png) no-repeat top left;
+  width:340px;
+  height:145px;
+  position:absolute;
+  top:200px;
+  right:25%;
+  z-index:0
+}
 input[type="text"] {
 	font-size: 11px;
 	}
@@ -98,29 +139,35 @@ font-family:"Courier New",Courier,monospace;
 
 }
 h2.loginlogo{
-	width:100%;
+	width:340px;
 	height:145px;
 	display:block;
 	background:url(images/andromeda/logo_jahia.png) no-repeat 50% 50% ;
-	margin:0 auto;
-	margin-top:80px;
+	position:absolute;
+	top:50px;
+	z-index:100;
+	left:40%
 }
 h2.loginlogo_enterprise{
-	width:100%;
+	width:340px;
 	height:145px;
 	display:block;
 	background:url(images/andromeda/logo_jahia_enterprise.png) no-repeat 50% 50% ;
-	margin:0 auto;
-	margin-top:80px;
+	position:absolute;
+	top:70px;
+	z-index:101;
+	left:40%
 }
 
 h2.loginlogo_community{
-	width:100%;
+	width:340px;
 	height:145px;
 	display:block;
 	background:url(images/andromeda/logo_jahia_community.png) no-repeat 50% 50% ;
-	margin:0 auto;
-	margin-top:80px;
+	position:absolute;
+	top:70px;
+	z-index:101;
+	left:40%
 }
 #adminLogin {
 	clear:both;
@@ -128,7 +175,6 @@ h2.loginlogo_community{
 	background-color: #333;
 	margin:0 auto;
 	margin-top: 10px;
-	padding: 10px;
 	text-align: center;
 	width: 300px;
 	background:#fff url(images/andromeda/toolbar-input.png) repeat-x left top;
@@ -137,16 +183,32 @@ h2.loginlogo_community{
 	-webkit-border-radius: 3px;
 	-moz-box-shadow: 0 1px 3px #999;
 	-webkit-box-shadow: 0 1px 3px #999;
-	padding:10px;
+	padding:20px;
 	border:1px solid #b7cbd8;
 	font-family:Arial,Verdana,Helvetica,sans-serif;
 	font-size:11px !important;
 	margin-bottom:5px;
 	margin:1em 0 0 0;
 	overflow:hidden;
-	margin:0 auto;
+	position:absolute;
+	top:200px;
+	margin: 0 auto;
+	z-index:100;
+	left:40%
 }
-
+#adminLoginFooter {
+    color: #333;
+	font-family:Arial,Verdana,Helvetica,sans-serif;
+	font-size:10px !important;
+	overflow:hidden;
+	position:absolute;
+	bottom:5px;
+	z-index:99;
+	left:40%
+}
+#adminLoginFooter #copyright {
+    color: #333;
+}
 
 #topTitle {
   margin: 12px 20px 20px 20px;
@@ -186,7 +248,6 @@ h1.big {
 
 h3.loginIcon{
   padding: 5px 0 10px 50px;
-  background: url(images/andromeda/icons/key_big.png) no-repeat 40px 0px;
   color: #D32222;
   margin:0 auto 5px auto;
   padding:5px;
@@ -311,7 +372,7 @@ br.clearFloat{
   padding: 2px 0 0 25px;
 }
 
-.dex-license-wrapper, .dex-langbar-wrapper {
+.dex-license-wrapper {
   margin: 0;
   padding: 0;
   position: relative;
@@ -321,7 +382,7 @@ br.clearFloat{
   background: url(images/andromeda/bkg-tab.png) 0 -192px;
 }
 
-.dex-license-wrapper li, .dex-langbar-wrapper li {
+.dex-license-wrapper li {
   margin: 0;
   padding: 0;
   list-style: none;
@@ -333,9 +394,6 @@ br.clearFloat{
   zoom: 1;
   height: 32px;
   color: #333333;
-}
-.dex-langbar-wrapper select {
-  margin-bottom: 16px !important;
 }
 
 /**

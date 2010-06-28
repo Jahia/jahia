@@ -328,7 +328,6 @@
  + * (jmix:droppableContent) = jmix:droppableContent version
 
 [jnt:absoluteArea] > nt:base, jmix:renderableReference, jmix:siteComponentContent
- - j:areaName (string)
  - j:basenode (weakreference)
  - j:filter (string, choicelist[subnodetypes = 'jnt:page,jnt:content,jnt:contentList,jnt:folder,jnt:file',resourceBundle]) multiple
 

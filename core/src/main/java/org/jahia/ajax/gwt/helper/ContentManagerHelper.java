@@ -52,7 +52,6 @@ import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -204,12 +203,14 @@ public class ContentManagerHelper {
             jcrSessionWrapper = currentUserSession;
             parentNode = jcrSessionWrapper.getNode(parentPath);
             if (parentNode.isNodeType("jnt:folder")) {
-                createNode(parentPath, name, "jnt:folder", null, new ArrayList<GWTJahiaNodeProperty>(), currentUserSession);
+                createNode(parentPath, name, "jnt:folder", null, new ArrayList<GWTJahiaNodeProperty>(),
+                        currentUserSession);
             } else {
-                createNode(parentPath, name, "jnt:contentList", null, new ArrayList<GWTJahiaNodeProperty>(), currentUserSession);
+                createNode(parentPath, name, "jnt:contentList", null, new ArrayList<GWTJahiaNodeProperty>(),
+                        currentUserSession);
             }
 
-            currentUserSession.save();            
+            currentUserSession.save();
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(
@@ -391,8 +392,8 @@ public class ContentManagerHelper {
     }
 
     public List<GWTJahiaNode> copy(List<String> pathsToCopy, String destinationPath, String newName, boolean moveOnTop,
-                                   boolean cut, boolean reference, boolean templateToPage, JCRSessionWrapper currentUserSession)
-            throws GWTJahiaServiceException {
+                                   boolean cut, boolean reference, boolean templateToPage,
+                                   JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         List<GWTJahiaNode> res = new ArrayList<GWTJahiaNode>();
 
         List<String> missedPaths = new ArrayList<String>();
@@ -860,8 +861,27 @@ public class ContentManagerHelper {
     }
 
     public void synchro(final JCRNodeWrapper source, final JCRNodeWrapper destinationNode, JCRSessionWrapper session,
-                        Map<String, List<String>> references)
-            throws RepositoryException {
+                        Map<String, List<String>> references) throws RepositoryException {
+        if (source.isNodeType("jnt:template")) {
+            templatesSynchro(source, destinationNode, session, references);
+            return;
+        }
+
+        session.getUuidMapping().put(source.getIdentifier(), destinationNode.getIdentifier());
+
+        NodeIterator ni = source.getNodes();
+        while (ni.hasNext()) {
+            JCRNodeWrapper child = (JCRNodeWrapper) ni.next();
+
+            if (destinationNode.hasNode(child.getName())) {
+                JCRNodeWrapper node = destinationNode.getNode(child.getName());
+                synchro(child, node, session, references);
+            }
+        }
+
+    }
+    public void templatesSynchro(final JCRNodeWrapper source, final JCRNodeWrapper destinationNode, JCRSessionWrapper session,
+                        Map<String, List<String>> references) throws RepositoryException {
         if ("j:acl".equals(destinationNode.getName())) {
             return;
         }
@@ -887,8 +907,10 @@ public class ContentManagerHelper {
             Property property = props.nextProperty();
             names.add(property.getName());
             try {
-                if (!property.getDefinition().isProtected() && !Constants.forbiddenPropertiesToCopy.contains(property.getName())) {
-                    if (property.getType() == PropertyType.REFERENCE || property.getType() == PropertyType.WEAKREFERENCE) {
+                if (!property.getDefinition().isProtected() &&
+                        !Constants.forbiddenPropertiesToCopy.contains(property.getName())) {
+                    if (property.getType() == PropertyType.REFERENCE ||
+                            property.getType() == PropertyType.WEAKREFERENCE) {
                         if (property.getDefinition().isMultiple() && (property.isMultiple())) {
                             Value[] values = property.getValues();
                             for (Value value : values) {
@@ -930,12 +952,12 @@ public class ContentManagerHelper {
             JCRNodeWrapper child = (JCRNodeWrapper) ni.next();
             names.add(child.getName());
 
-                if (destinationNode.hasNode(child.getName())) {
-                    JCRNodeWrapper node = destinationNode.getNode(child.getName());
-                    synchro(child, node, session, references);
-                } else {
-                    child.copy(destinationNode, child.getName(), false);
-                }
+            if (destinationNode.hasNode(child.getName())) {
+                JCRNodeWrapper node = destinationNode.getNode(child.getName());
+                templatesSynchro(child, node, session, references);
+            } else {
+                child.copy(destinationNode, child.getName(), false);
+            }
         }
         ni = destinationNode.getNodes();
         while (ni.hasNext()) {
@@ -947,7 +969,8 @@ public class ContentManagerHelper {
 
     }
 
-    private void keepReference(JCRNodeWrapper destinationNode, Map<String, List<String>> references, Property property, String value) throws RepositoryException {
+    private void keepReference(JCRNodeWrapper destinationNode, Map<String, List<String>> references, Property property,
+                               String value) throws RepositoryException {
         if (!references.containsKey(value)) {
             references.put(value, new ArrayList<String>());
         }

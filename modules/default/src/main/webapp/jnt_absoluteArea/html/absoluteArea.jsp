@@ -44,22 +44,17 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="mainresource.css" />
-<c:set var="mainTemplate" value="${renderContext.mainResource.resolvedTemplate}"/>
-<c:if test="${(not empty currentNode.properties['j:referenceTemplate'].string) and
-(not (currentNode.properties['j:referenceTemplate'].string eq 'default') and (empty mainTemplate or mainTemplate eq 'default'))}">
-    <c:set var="mainTemplate" value="${currentNode.properties['j:referenceTemplate'].string}"/>
-</c:if>
 <c:choose>
      <c:when test="${not inWrapper}">
         <div class="mainResourceArea">
             <div class="mainResourceTemplate">
-                <span>List : ${currentNode.properties['j:areaName'].string}</span>
+                <span>Absolute list : ${currentNode.name}</span>
             </div>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed dignissim tellus in metus viverra pharetra. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Mauris eu risus elit. Donec nibh diam, commodo in adipiscing et, euismod sed orci. Donec eu metus eget mauris fringilla pretium. Mauris vehicula, arcu malesuada malesuada varius, est leo porttitor lacus, id fermentum lacus eros ac sem. Proin non nunc magna, nec euismod diam. Ut faucibus dignissim erat sit amet sagittis. Aenean vestibulum, odio a imperdiet semper, diam lacus egestas velit, non lobortis libero massa et risus. Nunc quis sagittis est. Duis non orci vel quam posuere rutrum. Fusce et fringilla lorem. Nam tempus, dolor pretium consequat bibendum, odio leo feugiat odio, vitae pulvinar velit ipsum sit amet augue. Fusce ultrices ultricies tortor. Nunc vel pulvinar ipsum. Cras et nibh turpis, ac ornare leo. Cras elementum magna et risus porta accumsan. Duis dui leo, tincidunt at blandit non, euismod eu odio.
         </div>
     </c:when>
-    <c:otherwise>
-        <template:wrappedContent path="${currentNode.properties['j:basenode'].node.path}/${currentNode.properties['j:areaName'].string}" />
+    <c:otherwise>  
+        <template:wrappedContent path="${currentNode.properties['j:basenode'].node.path}/${currentNode.name}" />
     </c:otherwise>
 </c:choose>
 

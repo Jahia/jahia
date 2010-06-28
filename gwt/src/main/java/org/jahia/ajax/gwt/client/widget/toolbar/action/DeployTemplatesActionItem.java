@@ -93,11 +93,7 @@ public class DeployTemplatesActionItem extends BaseActionItem {
 
                             final String[] parts = nodePath.split("/");
                             String destinationPath = "/sites/" + site.getSiteKey();
-                            for (int i = 3; i < parts.length; i++) {
-                                String part = parts[i];
-                                destinationPath += "/" + part;
-                            }
-
+                            nodePath = "/" + parts[1] + "/" + parts[2];
                             Map<String, String> pathsToSyncronize = new LinkedHashMap<String, String>();
                             pathsToSyncronize.put(nodePath, destinationPath);
 

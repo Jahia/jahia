@@ -70,7 +70,8 @@ public class CacheFilterTest extends TestCase {
 
     private static class TestFilter extends AbstractFilter {
         @Override
-        public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
+        public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
+                throws Exception {
             return "TestFilter " + chain.doFilter(renderContext, resource);
         }
     }

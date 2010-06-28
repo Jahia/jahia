@@ -1,7 +1,7 @@
 package org.jahia.services.render.filter;
 
 import org.jahia.services.render.RenderContext;
-import org.jahia.services.render.RenderService;
+import org.jahia.services.render.RenderException;
 import org.jahia.services.render.Resource;
 
 import javax.servlet.http.HttpServletRequest;
@@ -86,37 +86,12 @@ public class RenderChain {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new RenderFilterException("No content");
+            throw new RenderFilterException(e);
         } finally {
             popAttributes(renderContext.getRequest());
         }
 
         return out;
-
-//        if (filters.size() >= index) {
-//            RenderFilter filter = filters.get(index++);
-//
-//            try {
-//                String out =
-//                return filter.doFilter(renderContext, resource, this);
-//            } finally {
-//                if (filter == filters.get(0)) {
-//                    popAttributes(renderContext.getRequest());
-//                }
-//            }
-//        } else {
-//            throw new RenderFilterException("No content");
-//        }
-    }
-
-    public String doFilter(RenderContext renderContext, Resource resource, RenderChain chain)
-            throws RenderFilterException {
-        return doFilter(renderContext, resource);
-    }
-
-    public void setRenderService(RenderService service) {
-        // do nothing
     }
 
     public void pushAttribute(HttpServletRequest request, String key, Object value) {

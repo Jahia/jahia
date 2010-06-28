@@ -34,8 +34,9 @@ public class WikiFilter extends AbstractFilter {
         this.outputSyntax = outputSyntax;
     }
 
-    public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
-        return WikiRenderer.renderWikiSyntaxAsXHTML(renderContext,chain.doFilter(renderContext, resource),syntaxFactory,inputSyntax,outputSyntax);
+    public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
+            throws Exception {
+        return WikiRenderer.renderWikiSyntaxAsXHTML(renderContext,previousOut,syntaxFactory,inputSyntax,outputSyntax);
     }
 
 }

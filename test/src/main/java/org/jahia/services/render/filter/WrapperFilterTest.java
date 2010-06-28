@@ -15,12 +15,9 @@ import org.jahia.bin.Jahia;
 import org.jahia.data.JahiaData;
 import org.jahia.test.TestHelper;
 
-import java.io.IOException;
 import java.util.regex.Pattern;
 
 import junit.framework.TestCase;
-
-import javax.jcr.RepositoryException;
 
 /**
  * Unit test for the {@link WrapperFilter} 
@@ -90,7 +87,8 @@ public class WrapperFilterTest extends TestCase {
         chain.addFilter(filter);
 
         chain.addFilter(new AbstractFilter() {
-            public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain) throws IOException, RepositoryException {
+            public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
+                    throws Exception {
                 return "test";
             }
         });

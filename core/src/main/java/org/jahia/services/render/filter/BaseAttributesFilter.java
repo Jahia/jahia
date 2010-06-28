@@ -15,8 +15,7 @@ import org.jahia.services.render.scripting.Script;
  * Time: 3:28:13 PM
  */
 public class BaseAttributesFilter extends AbstractFilter {
-    public String prepare(RenderContext context, Resource resource, RenderChain chain)
-            throws Exception {
+    public String prepare(RenderContext context, Resource resource, RenderChain chain) throws Exception {
         JCRNodeWrapper node = resource.getNode();
 
         final HttpServletRequest request = context.getRequest();

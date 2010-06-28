@@ -1,6 +1,7 @@
 package org.jahia.services.render.filter;
 
 import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.RenderException;
 import org.jahia.services.render.Resource;
 
 /**
@@ -37,7 +38,6 @@ public interface RenderFilter extends RenderServiceAware, Comparable<RenderFilte
     String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception;
 
-    String prepare(RenderContext renderContext, Resource resource, RenderChain chain)
-            throws Exception;
+    String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception;
 
 }

@@ -22,7 +22,8 @@ public class WrapperFilter extends AbstractFilter {
         this.wrapper = wrapper;
     }
 
-    public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
+    public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
+            throws Exception {
         if (renderContext.isAjaxRequest()) {
             return previousOut;
         }

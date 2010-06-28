@@ -36,7 +36,8 @@ public class PlutoProcessActionFilter extends AbstractFilter {
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(PlutoProcessActionFilter.class);
 
     @Override
-    public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
+    public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
+            throws Exception {
         try {
             final JahiaUserRequestWrapper request = new JahiaUserRequestWrapper(renderContext.getUser(), renderContext.getRequest());
             final HttpServletResponse response = renderContext.getResponse();

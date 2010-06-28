@@ -119,4 +119,9 @@
 
 [jnt:tree] > jnt:content, jmix:siteComponentContent
  - nodeType (string, choicelist[subnodetypes = 'jnt:page,jnt:contentList,jnt:folder',resourceBundle]) mandatory
- - templateForLink (string, choicelist[templates,resourceBundle]) mandatory   
+ - templateForLink (string, choicelist[templates,resourceBundle]) mandatory
+
+[jnt:pageFormCreation] > jnt:content, jmix:siteComponentContent, mix:title
+ - templateNode (weakreference) mandatory
+ - buttonLabel (string)
+

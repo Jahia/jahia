@@ -24,7 +24,8 @@ public class URLFilter extends AbstractFilter {
     
     private HtmlTagAttributeVisitor[] handlers;
 
-    public  String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
+    public  String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
+            throws Exception {
         if (handlers != null && handlers.length > 0) {
             previousOut = urlTraverser.traverse(previousOut, renderContext, resource, handlers);
         }

@@ -46,7 +46,8 @@ public class RegexpFilter extends AbstractFilter {
     }
 
 
-    public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
+    public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
+            throws Exception {
         if (regexp == null) {
             return previousOut;
         }

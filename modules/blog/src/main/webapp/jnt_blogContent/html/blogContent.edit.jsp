@@ -10,7 +10,6 @@
 <jcr:nodeProperty node="${currentNode}" name="jcr:createdBy" var="createdBy"/>
 <jcr:nodeProperty node="${currentNode}" name="jcr:created" var="created"/>
 <template:addResources type="css" resources="blog.css"/>
-<template:addWrapper name="hidden.blogWrapper"/>
 <template:addResources type="javascript"
                        resources="${url.context}/gwt/resources/${url.ckEditor}/ckeditor.js"/>
 <script type="text/javascript">

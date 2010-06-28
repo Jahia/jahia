@@ -1,11 +1,15 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
-[jnt:blogContent] > jnt:content, mix:title, jmix:tagged, jmix:comments
+[jmix:blogContent] > jmix:droppableContent
+
+[jnt:blogContent] > jnt:content, jmix:blogContent, mix:title, jmix:tagged, jmix:comments
  - text (string, richtext) i18n
 
-[jnt:topBlog] > jnt:content, jmix:list, jmix:pager
+[jnt:blogEntryFormCreation] > jnt:content, jmix:blogContent, mix:title
 
-[jnt:topBlogContent] > jnt:content, jmix:list, jmix:pager 
+[jnt:topBlog] > jnt:content, jmix:blogContent, jmix:list, jmix:pager
 
-[jnt:topBlogComment] > jnt:content, jmix:list, jmix:pager
+[jnt:topBlogContent] > jnt:content, jmix:blogContent, jmix:list, jmix:pager
+
+[jnt:topBlogComment] > jnt:content, jmix:blogContent, jmix:list, jmix:pager
 

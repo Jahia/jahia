@@ -4,8 +4,6 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import junit.framework.TestCase;
 
-import javax.jcr.RepositoryException;
-import java.io.IOException;
 import java.util.regex.Pattern;
 
 /**
@@ -33,7 +31,8 @@ public class EmailObfuscatorFilterTest extends TestCase {
         EmailObfuscatorFilter filter = new EmailObfuscatorFilter();
         chain.addFilter(filter);
         chain.addFilter(new AbstractFilter() {
-            public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain) throws IOException, RepositoryException {
+            public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
+                    throws Exception {
                 return s;
             }
         });

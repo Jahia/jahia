@@ -231,8 +231,12 @@
                                 </map>
                             </property>
                         </bean>
-                        <bean class="org.jahia.services.render.filter.BaseAttributesFilter" >
+                        <bean class="org.jahia.services.render.filter.TemplateNodeFilter" >
                             <property name="priority" value="5" />
+                            <property name="applyOnConfigurations" value="wrappedcontent,page,gwt"/>
+                        </bean>
+                        <bean class="org.jahia.services.render.filter.BaseAttributesFilter" >
+                            <property name="priority" value="8" />
                         </bean>
                         <bean class="org.jahia.services.render.filter.TemplatePermissionCheckFilter" >
                             <property name="priority" value="10" />
@@ -242,10 +246,6 @@
                             <property name="priority" value="15" />
                             <property name="loggingService" ref="loggingService"/>
                             <property name="skipOnConfiguration" value="include,wrapper,option"/>
-                        </bean>
-                        <bean class="org.jahia.services.render.filter.TemplateNodeFilter" >
-                            <property name="priority" value="17" />
-                            <property name="applyOnConfigurations" value="wrappedcontent,page,gwt"/>
                         </bean>
                         <bean class="org.jahia.services.render.filter.TemplateAttributesFilter" >
                             <property name="priority" value="30" />

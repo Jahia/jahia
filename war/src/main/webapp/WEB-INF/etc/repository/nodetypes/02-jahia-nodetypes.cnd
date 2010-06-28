@@ -318,6 +318,7 @@
 
 [jnt:template] > nt:base, jmix:nodenameInfo, jmix:basemetadata
  - j:applyOn (string, choicelist[subnodetypes = 'jnt:page,jnt:content,jnt:contentList,jnt:folder,jnt:file',resourceBundle]) multiple
+ - j:templateKey (string)
  + * (jnt:content)
  + * (jnt:template)
 
@@ -332,6 +333,8 @@
  - j:filter (string, choicelist[subnodetypes = 'jnt:page,jnt:content,jnt:contentList,jnt:folder,jnt:file',resourceBundle]) multiple
 
 [jnt:currentUserDisplay] > nt:base, jmix:renderableReference, jmix:siteComponentContent
+
+[jnt:authorDisplay] > nt:base, jmix:renderableReference, jmix:siteComponentContent
 
 [jmix:renderableList] mixin
  extends = jmix:list

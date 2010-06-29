@@ -88,7 +88,7 @@ public class LinkerTag extends TagSupport {
                 }
                 buffer.append("\" ");
 
-                buffer.append("/>");
+                buffer.append("></div>");
 
                 pageContext.getOut().print(buffer.toString());
             }

@@ -123,5 +123,6 @@
         <module>templates-intranet</module>
         <module>topstories</module>
         <module>wiki</module>
+        <module>userregistration</module>
     </modules>
 </project>

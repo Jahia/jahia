@@ -83,4 +83,8 @@
 [consequence][]Grant permission {task} from workflow {workflow} to role {role} for type {type} on the {node}=service.defineWorkflowRule({node},{workflow},{task},"r:" + {role},{type},drools);
 [consequence][]Flush {cacheName}=service.flushCache("{cacheName}",drools);
 [consequence][]Flush all caches=service.flushAllCaches(drools);
-[consequence][]Notify user with mail template "{template}"=notificationService.notifyUser(node,"{template}",drools);
+[consequence][]Notify new user with mail template "{template}"=notificationService.notifyNewUser(node,"{template}",drools);
+[consequence][]Notify current user with mail template "{template}" from "{fromMail}" copy to "{ccList}" blind copy to "{bccList}"=notificationService.notifyCurrentUser(user,"{template}","{fromMail}","{ccList}","{bccList}",drools);
+[consequence][]Notify current user with mail template "{template}" from "{fromMail}"=notificationService.notifyCurrentUser(user,"{template}","{fromMail}",drools);
+[consequence][]Notify {user} with mail template "{template}" from "{fromMail}" copy to "{ccList}" blind copy to "{bccList}"=notificationService.notifyUser({user},"{template}","{fromMail}","{ccList}","{bccList}",drools);
+[consequence][]Notify {user} user with mail template "{template}" from "{fromMail}"=notificationService.notifyUser({user},"{template}","{fromMail}",drools);

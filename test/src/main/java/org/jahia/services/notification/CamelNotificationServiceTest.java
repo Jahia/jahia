@@ -80,11 +80,11 @@ public class CamelNotificationServiceTest  extends TestCase {
 
         String body = "Hello.\nYes it does.\n\nRegards.";
 
-        camelNotificationService.sendMessagesWithBodyAndHeaders("seda:newUsers?multipleConsumers=true",body,map);
+        camelNotificationService.sendMessagesWithBodyAndHeaders("seda:users?multipleConsumers=true",body,map);
     }
 
     public void testComplexSendingOfMail() throws Exception {
-        camelNotificationService.sendMail("seda:newUsers?multipleConsumers=true","Camel Rocks",
+        camelNotificationService.sendMail("seda:users?multipleConsumers=true","Camel Rocks",
                                           "<html><body><h1>Camel Rocks</h1><p>Camel Complex Mail Test</p></body></html>",
                                           "Camel Complex Mail Test",
                                           SettingsBean.getInstance().getMail_from(),SettingsBean.getInstance().getMail_administrator(),null,null);

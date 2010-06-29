@@ -14,7 +14,7 @@
             <!--The seda: component provides asynchronous SEDA behavior,
             so that messages are exchanged on a BlockingQueue and
             consumers are invoked in a separate thread from the producer.-->
-            <from uri="seda:newUsers?multipleConsumers=true"/>
+            <from uri="seda:users?multipleConsumers=true"/>
             <!--The mail component provides access to Email via Spring's Mail support
             and the underlying JavaMail system.-->
             <to ref="mailOutput"/>

@@ -1,0 +1,48 @@
+Jahia - Notifications
+
+ For notifications Jahia now use {{{http://camel.apache.org} Apache Camel}}.
+
+ Camel use routes to define how your messages should be handled across your network. Jahia provides you two ways to
+ register your routes from Spring inside the <applicationcontext-camle.xml> file, or using the api through the CamelNotificationService.
+
+ By default we provide a source to notify users through mails named <seda:users?multipleConsumers=true>
+ you need to use the full URI to refer to it.
+
+ The CamelNotificationService allows you to call any route and send a message to this route.
+
+----------------------------------
+Map<String, Object> map = new HashMap<String, Object>();
+map.put("To", SettingsBean.getInstance().getMail_administrator());
+map.put("From", SettingsBean.getInstance().getMail_from());
+map.put("Subject", "Camel rocks");
+
+String body = "Hello.\nYes it does.\n\nRegards.";
+
+camelNotificationService.sendMessagesWithBodyAndHeaders("seda:users?multipleConsumers=true",body,map);
+----------------------------------
+
+ There is also a shortcut to send a mail directly :
+
+----------------------------------
+camelNotificationService.sendMail("seda:users?multipleConsumers=true","Camel Rocks",
+  "<html><body><h1>Camel Rocks</h1><p>Camel Complex Mail Test</p></body></html>",
+  "Camel Complex Mail Test", SettingsBean.getInstance().getMail_from(),
+  SettingsBean.getInstance().getMail_administrator(),null,null);
+----------------------------------
+
+  This way the notification system is more like a message system, now in you rmodules you can use this service to register
+  your own routes and call them in your action or just use the default ones to send mails to users when an action is performed.
+
+  We provide consequences for the rules system that allows to send mails.
+
+----------------------------------
+rule "notify user (create)"
+    when
+       A new node is created
+		- the node has the type jnt:user
+		- its name is not guest
+		- its name is not root
+    then
+        Notify new user with mail template "/notifications/templates/mail/newUser.vm"
+end
+----------------------------------

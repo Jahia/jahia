@@ -37,18 +37,17 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.notification.CamelNotificationService;
-import org.jahia.services.preferences.user.UserPreferencesHelper;
+import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
-import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.jcr.RepositoryException;
 import javax.script.*;
 import java.io.*;
 import java.util.Locale;
-import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
 /**
@@ -76,42 +75,110 @@ public class RulesNotificationService {
         this.notificationService = notificationService;
     }
 
-    public void notifyUser(AddedNodeFact node, final String template, KnowledgeHelper drools)
+    public void notifyNewUser(AddedNodeFact node, final String template, KnowledgeHelper drools)
             throws RepositoryException, ScriptException, IOException {
         JCRNodeWrapper userNode = node.getNode();
         if (userNode.hasProperty("j:email") && !userNode.getProperty("j:external").getBoolean()) {
-            String userMail = userNode.getProperty("j:email").getString();
-            // Resolve template :
-            ScriptEngineManager scriptManager = new ScriptEngineManager();
-            ScriptEngine scriptEngine = scriptManager.getEngineByExtension(StringUtils.substringAfterLast(template,
-                                                                                                          "."));
-            ScriptContext scriptContext = scriptEngine.getContext();
-            final Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
-            bindings.put("currentUser", userNode);
-            InputStream scriptInputStream = JahiaContextLoaderListener.getServletContext().getResourceAsStream(
-                    template);
-            if (scriptInputStream != null) {
-                String resourceBundleName = StringUtils.substringBeforeLast(StringUtils.substringAfter(template,"/").replaceAll("/","."),".");
-                ResourceBundle resourceBundle = ResourceBundle.getBundle(resourceBundleName,
-                                                                         LanguageCodeConverters.languageCodeToLocale(
-                                                                                 userNode.getProperty(
-                                                                                         "preferredLanguage").getString()));
-                bindings.put("bundle",resourceBundle);
-                Reader scriptContent = null;
-                try {
-                    scriptContent = new InputStreamReader(scriptInputStream);
-                    scriptContext.setWriter(new StringWriter());
-                    // The following binding is necessary for Javascript, which doesn't offer a console by default.
-                    bindings.put("out", new PrintWriter(scriptContext.getWriter()));
-                    Object result = scriptEngine.eval(scriptContent, bindings);
-                    StringWriter writer = (StringWriter) scriptContext.getWriter();
-                    String body = writer.toString();
-                    notificationService.sendMail("seda:newUsers?multipleConsumers=true", "Welcome", body, null,
-                                                 SettingsBean.getInstance().getMail_from(), userMail, null, null);
-                } finally {
-                    if (scriptContent != null) {
-                        IOUtils.closeQuietly(scriptContent);
-                    }
+            String toMail = userNode.getProperty("j:email").getString();
+            String fromMail = SettingsBean.getInstance().getMail_from();
+            String ccList = null;
+            String bcclist = null;
+            Locale locale;
+            try {
+                locale = LanguageCodeConverters.languageCodeToLocale(userNode.getProperty(
+                        "preferredLanguage").getString());
+            } catch (RepositoryException e) {
+                locale = LanguageCodeConverters.languageCodeToLocale(
+                        SettingsBean.getInstance().getDefaultLanguageCode());
+            }
+            sendMail(template, userNode, toMail, fromMail, ccList, bcclist, locale);
+
+        }
+    }
+
+    public void notifyCurrentUser(User user, final String template, final String fromMail, final String ccList,
+                                  final String bccList, KnowledgeHelper drools)
+            throws RepositoryException, ScriptException, IOException {
+        JahiaUser userNode = user.getJahiaUser();
+        if (userNode.getProperty("j:email") != null) {
+            String toMail = userNode.getProperty("j:email");
+            Locale locale = getLocale(userNode);
+
+            sendMail(template, userNode, toMail, fromMail, ccList, bccList, locale);
+        }
+    }
+
+    public void notifyCurrentUser(User user, final String template, final String fromMail, KnowledgeHelper drools)
+            throws RepositoryException, ScriptException, IOException {
+        JahiaUser userNode = user.getJahiaUser();
+        if (userNode.getProperty("j:email") != null) {
+            String toMail = userNode.getProperty("j:email");
+            Locale locale = getLocale(userNode);
+            sendMail(template, userNode, toMail, fromMail, null, null, locale);
+        }
+    }
+
+    private Locale getLocale(JahiaUser userNode) {
+        Locale locale;
+        String property = userNode.getProperty("preferredLanguage");
+        if (property != null) {
+            locale = LanguageCodeConverters.languageCodeToLocale(property);
+        } else {
+            locale = LanguageCodeConverters.languageCodeToLocale(
+                    SettingsBean.getInstance().getDefaultLanguageCode());
+        }
+        return locale;
+    }
+
+    public void notifyUser(String user, final String template, final String fromMail, KnowledgeHelper drools)
+            throws RepositoryException, ScriptException, IOException {
+        JahiaUser userNode = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(user);
+        if (userNode.getProperty("j:email") != null) {
+            String toMail = userNode.getProperty("j:email");
+            sendMail(template, userNode, toMail, fromMail, null, null, getLocale(userNode));
+        }
+    }
+
+    public void notifyUser(String user, final String template, final String fromMail, final String ccList,
+                           final String bccList, KnowledgeHelper drools)
+            throws RepositoryException, ScriptException, IOException {
+        JahiaUser userNode = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(user);
+        if (userNode.getProperty("j:email") != null) {
+            String toMail = userNode.getProperty("j:email");
+            sendMail(template, userNode, toMail, fromMail, ccList, bccList, getLocale(userNode));
+        }
+    }
+
+    private void sendMail(String template, Object user, String toMail, String fromMail, String ccList, String bcclist,
+                          Locale locale) throws RepositoryException, ScriptException {
+        // Resolve template :
+        ScriptEngineManager scriptManager = new ScriptEngineManager();
+        ScriptEngine scriptEngine = scriptManager.getEngineByExtension(StringUtils.substringAfterLast(template, "."));
+        ScriptContext scriptContext = scriptEngine.getContext();
+        final Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+        bindings.put("currentUser", user);
+        InputStream scriptInputStream = JahiaContextLoaderListener.getServletContext().getResourceAsStream(template);
+        if (scriptInputStream != null) {
+            String resourceBundleName = StringUtils.substringBeforeLast(StringUtils.substringAfter(template,
+                                                                                                   "/").replaceAll("/",
+                                                                                                                   "."),
+                                                                        ".");
+            ResourceBundle resourceBundle = ResourceBundle.getBundle(resourceBundleName, locale);
+            bindings.put("bundle", resourceBundle);
+            Reader scriptContent = null;
+            try {
+                scriptContent = new InputStreamReader(scriptInputStream);
+                scriptContext.setWriter(new StringWriter());
+                // The following binding is necessary for Javascript, which doesn't offer a console by default.
+                bindings.put("out", new PrintWriter(scriptContext.getWriter()));
+                Object result = scriptEngine.eval(scriptContent, bindings);
+                StringWriter writer = (StringWriter) scriptContext.getWriter();
+                String body = writer.toString();
+                notificationService.sendMail("seda:users?multipleConsumers=true", resourceBundle.getString("subject"),
+                                             body, null, fromMail, toMail, ccList, bcclist);
+            } finally {
+                if (scriptContent != null) {
+                    IOUtils.closeQuietly(scriptContent);
                 }
             }
         }

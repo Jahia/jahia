@@ -56,7 +56,7 @@ public class VanityUrlSetter implements HtmlTagAttributeVisitor {
 
     /**
      * Checks whether the URL in the HTML attribute represents a Jahia content node and if
-     * the node is maped (has the vanityUrlMapped mixin type set) get the mapping for the 
+     * the node is mapped (has the vanityUrlMapped mixin type set) get the mapping for the 
      * current workspace and locale and exchange the URL in the HTML with the mapped vanity URL.
      *  
      * @see org.jahia.services.render.filter.HtmlTagAttributeTraverser.HtmlTagAttributeVisitor#visit(java.lang.String, org.jahia.services.render.RenderContext, org.jahia.services.render.Resource)

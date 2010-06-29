@@ -36,12 +36,22 @@ public class GetActivitiesAction implements Action {
 
     private String name;
 
+    private SocialService socialService;
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public SocialService getSocialService() {
+        return socialService;
+    }
+
+    public void setSocialService(SocialService socialService) {
+        this.socialService = socialService;
     }
 
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
@@ -51,48 +61,7 @@ public class GetActivitiesAction implements Action {
 
         final JCRNodeWrapper node = resource.getNode();
 
-        QueryManager queryManager = jcrSessionWrapper.getWorkspace().getQueryManager();
-
-        Query myActivitiesQuery = queryManager.createQuery("select * from [jnt:userActivity] as uA where isdescendantnode(uA,['"+node.getPath()+"']) order by [jcr:created] desc", Query.JCR_SQL2);
-        myActivitiesQuery.setLimit(100);
-        QueryResult myActivitiesResult = myActivitiesQuery.execute();
-
-        NodeIterator myActivitiesNodeIterator = myActivitiesResult.getNodes();
-
-        SortedSet<JCRNodeWrapper> activitiesSet = new TreeSet(new Comparator<JCRNodeWrapper>() {
-
-            public int compare(JCRNodeWrapper activityNode1, JCRNodeWrapper activityNode2) {
-                try {
-                    // we invert the order to sort with most recent dates on top.
-                    return activityNode2.getProperty("jcr:created").getDate().compareTo(activityNode1.getProperty("jcr:created").getDate());
-                } catch (RepositoryException e) {
-                    logger.error("Error while comparing creation date on two activities, returning them as equal", e);
-                    return 0;
-                }
-            }
-            
-        });
-
-        while (myActivitiesNodeIterator.hasNext()) {
-            activitiesSet.add((JCRNodeWrapper) myActivitiesNodeIterator.nextNode());
-        }
-
-        Query myConnectionsQuery = queryManager.createQuery("select * from [jnt:userConnection] as uC where isdescendantnode(uC,['"+node.getPath()+"'])", Query.JCR_SQL2);
-        QueryResult myConnectionsResult = myConnectionsQuery.execute();
-
-        NodeIterator myConnectionsIterator = myConnectionsResult.getNodes();
-        while (myConnectionsIterator.hasNext()) {
-            JCRNodeWrapper myConnectionNode = (JCRNodeWrapper) myConnectionsIterator.nextNode();
-            JCRNodeWrapper connectedToNode = (JCRNodeWrapper) myConnectionNode.getProperty("j:connectedTo").getNode();
-            Query myConnectionActivitiesQuery = queryManager.createQuery("select * from [jnt:userActivity] as uA where isdescendantnode(uA,['"+connectedToNode.getPath()+"']) order by [jcr:created] desc", Query.JCR_SQL2);
-            myConnectionActivitiesQuery.setLimit(100);
-            QueryResult myConnectionActivitiesResult = myConnectionActivitiesQuery.execute();
-
-            NodeIterator myConnectionActivitiesIterator = myConnectionActivitiesResult.getNodes();
-            while (myConnectionActivitiesIterator.hasNext()) {
-                activitiesSet.add((JCRNodeWrapper) myConnectionActivitiesIterator.nextNode());
-            }
-        }
+        SortedSet<JCRNodeWrapper> activitiesSet = socialService.getActivities(jcrSessionWrapper, node);
 
         JSONArray resultArray = new JSONArray();
         for (JCRNodeWrapper jcrNodeWrapper : activitiesSet) {
@@ -105,6 +74,7 @@ public class GetActivitiesAction implements Action {
 
         return new ActionResult(HttpServletResponse.SC_OK, null, results);
     }
+
 
     private JSONObject serializeNode(Node currentNode, int depthLimit, boolean escapeColon, String propertyMatchRegexp, Map<String, String> alreadyIncludedPropertyValues) throws RepositoryException,
             JSONException {

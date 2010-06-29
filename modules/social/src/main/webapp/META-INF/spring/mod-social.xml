@@ -5,6 +5,7 @@
 
     <bean class="org.jahia.modules.social.GetActivitiesAction">
         <property name="name" value="getactivities"/>
+        <property name="socialService" ref="socialService" />
     </bean>
 
     <bean class="org.jahia.modules.social.RemoveFriendAction">
@@ -13,14 +14,15 @@
 
     <bean class="org.jahia.modules.social.SendMessageAction">
         <property name="name" value="sendmessage"/>
+        <property name="socialService" ref="socialService"/>
     </bean>
+
+    <bean id="socialService" class="org.jahia.modules.social.SocialService"/>
 
     <bean class="org.jahia.services.content.rules.ModuleGlobalObject">
         <property name="globalRulesObject">
             <map>
-                <entry key="socialService">
-                    <bean class="org.jahia.modules.social.SocialService" />
-                </entry>
+                <entry key="socialService" value-ref="socialService" />
             </map>
         </property>
     </bean>

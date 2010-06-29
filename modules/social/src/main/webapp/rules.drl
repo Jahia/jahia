@@ -1,0 +1,54 @@
+###############################################################################
+package org.jahia.modules.social.rules
+
+#list any import classes here.
+import org.jahia.services.content.rules.*
+import org.jahia.services.content.*
+import javax.jcr.observation.Event
+import org.apache.log4j.Logger
+import java.util.Date
+import org.jahia.services.content.*
+import org.jahia.modules.social.*
+
+expander rules.dsl
+
+#declare any global variables here
+global User user
+global Service service
+global ImageService imageService
+global ExtractionService extractionService
+global Logger logger
+global JCRStoreProvider provider
+global SocialService socialService
+###############################################################################
+
+rule "Create docspace activity"
+   when
+       A new node is created
+	   - the node has the type jnt:docspace
+   then
+       Add activity for user user.getName() with message "created a docspace"
+end
+
+rule "Create page activity"
+   when
+       A new node is created
+	   - the node has the type jnt:page
+   then
+       Add activity for user user.getName() with message "created a new page"
+end
+
+rule "Create file in docspace activity"
+   when
+      The type jnt:docspaceFile has been assigned to a node
+   then
+       Add activity for user user.getName() with message "created file in a docspace"
+end
+
+rule "Tagging activity"
+   when
+       A property j:newTag has been set on a node
+        - the node has the type jmix:tagged
+   then
+       Add activity for user user.getName() with message "tagged a node"
+end

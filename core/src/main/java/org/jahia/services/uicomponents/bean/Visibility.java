@@ -149,7 +149,7 @@ public class Visibility {
 
 
 
-                    if (logger.isDebugEnabled()) logger.debug("Permisions: true");
+                    if (logger.isDebugEnabled()) logger.debug("Permissions: true");
 
                     return true;
             } catch (final Exception e) {

@@ -1,7 +1,6 @@
 package org.jahia.services.render.filter;
 
 import org.jahia.services.render.RenderContext;
-import org.jahia.services.render.RenderException;
 import org.jahia.services.render.Resource;
 
 /**

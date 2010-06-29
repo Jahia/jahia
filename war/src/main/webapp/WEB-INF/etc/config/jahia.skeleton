@@ -77,7 +77,7 @@ permanentMoveForVanityURL                              = true
 # error reports. They are configured via the configuration
 # wizard upon initial installation of Jahia.
 mail_service_activated                                 =   false
-mail_server                                            =
+mail_server                                            = localhost
 mail_administrator                                     =
 mail_from                                              =
 mail_paranoia                                          =

@@ -379,8 +379,17 @@ br.clearFloat{
   list-style: none;
   float: right;
   text-align: right;
-  background: url(images/andromeda/bkg-tab.png) 0 -192px;
 }
+
+.dex-langbar-wrapper {
+  margin: 0;
+  padding: 0;
+  position: relative;
+  list-style: none;
+  float: right;
+  text-align: right;
+}
+
 
 .dex-license-wrapper li {
   margin: 0;

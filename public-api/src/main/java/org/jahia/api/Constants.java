@@ -201,7 +201,6 @@ public class Constants {
     public static final String TARGET = "j:target";
     public static final String LOCKTOKEN = "j:locktoken";
     public static final String LOCKTYPES = "j:lockTypes";    
-    public static final String BINDED_COMPONENT = "j:bindedComponent";    
     public static final String AREA_NAME = "j:areaName";
 
     public static final String APPLY_ACL = "j:applyAcl";

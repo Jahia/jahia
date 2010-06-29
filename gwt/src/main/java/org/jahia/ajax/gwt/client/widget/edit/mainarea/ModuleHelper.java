@@ -54,7 +54,6 @@ public class ModuleHelper {
             if ("module".equals(jahiatype)) {
                 String id = DOM.getElementAttribute(divElement, "id");
                 String type = DOM.getElementAttribute(divElement, "type");
-                String templateInfo = DOM.getElementAttribute(divElement, "templateInfo");
                 String path = DOM.getElementAttribute(divElement, "path");
                 String template = DOM.getElementAttribute(divElement, "template");
                 String nodetypes = DOM.getElementAttribute(divElement, "nodetypes");
@@ -63,18 +62,19 @@ public class ModuleHelper {
                 Module module = null;
                 if (type.equals("area")) {
                     module = new AreaModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes,
-                            referenceTypes, templateInfo, m);
+                            referenceTypes, m);
                 } else if (type.equals("list")) {
                     module = new ListModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes,
-                            referenceTypes, templateInfo, m);
+                            referenceTypes, m);
                 } else if (type.equals("existingNode")) {
                     module = new SimpleModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes,
-                            referenceTypes, templateInfo, m);
+                            referenceTypes, m);
                 } else if (type.equals("placeholder")) {
                     module = new PlaceholderModule(id, path, nodetypes, referenceTypes, m);
                 } else if (type.equals("linker")) {
-                    module = new LinkerModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes,
-                            referenceTypes, templateInfo, m);
+                    String property = DOM.getElementAttribute(divElement, "property");
+                    String mixinType = DOM.getElementAttribute(divElement, "mixinType");
+                    module = new LinkerModule(id, path, property, mixinType, m);
                 }
 //                allNodetypes.addAll(Arrays.asList(nodetypes.split(" ")));
                 if (module != null) {

@@ -45,7 +45,6 @@ import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.servlet.jsp.PageContext;
 import java.io.IOException;
-import java.util.Stack;
 
 /**
  * Handler for the &lt;template:module/&gt; tag, used to render content objects.
@@ -106,12 +105,12 @@ public class WrappedContentTag extends ModuleTag implements ParamParent {
         return  Resource.CONFIGURATION_WRAPPEDCONTENT;
     }
 
-    @Override protected boolean canEdit(RenderContext renderContext, boolean templateLocked, boolean templateMode) {
+    @Override protected boolean canEdit(RenderContext renderContext) {
         if (path != null) {
             boolean stillInWrapper = false;
-            return renderContext.isEditMode() && editable && (templateMode || !templateLocked) && !stillInWrapper;
+            return renderContext.isEditMode() && editable && !stillInWrapper;
         } else {
-            return super.canEdit(renderContext,templateLocked,templateMode);
+            return super.canEdit(renderContext);
         }
     }
 
@@ -147,9 +146,7 @@ public class WrappedContentTag extends ModuleTag implements ParamParent {
         }
     }
 
-    @Override protected void printModuleStart(String type, boolean templateLocked, boolean templateShared,
-                                              boolean templateDeployed, boolean parentLocked, String path,
-                                              String resolvedTemplate, String scriptInfo)
+    @Override protected void printModuleStart(String type, String path, String resolvedTemplate, String scriptInfo)
             throws RepositoryException, IOException {
 
         if (this.path.startsWith("/")) {
@@ -159,7 +156,7 @@ public class WrappedContentTag extends ModuleTag implements ParamParent {
                                 " node=\"" + node.getIdentifier() + "\" type=\"absolute\">");
         }
 
-        super.printModuleStart(type, templateLocked, templateShared, templateDeployed, parentLocked, path,
+        super.printModuleStart(type, path,
                 resolvedTemplate,
                 scriptInfo);    //To change body of overridden methods use File | Settings | File Templates.
     }

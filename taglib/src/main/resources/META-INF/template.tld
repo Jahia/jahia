@@ -702,14 +702,14 @@
         <tag-class>org.jahia.taglibs.template.include.LinkerTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
-            <description>Relative or absolute path to the node to include</description>
-            <name>path</name>
-            <required>true</required>
+            <description>Mixin type to enforced on target</description>
+            <name>mixinType</name>
+            <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>Mixin type to enforced on target</description>
-            <name>mixinType</name>
+            <description>The property where the reference is stored</description>
+            <name>property</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>

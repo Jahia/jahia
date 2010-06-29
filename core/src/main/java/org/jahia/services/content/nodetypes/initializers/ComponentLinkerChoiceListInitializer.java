@@ -71,8 +71,8 @@ public class ComponentLinkerChoiceListInitializer implements ChoiceListInitializ
             return Collections.emptyList();
         }
         try {
-            if (nodeWrapper.isNodeType("jmix:bindedComponent")) {
-                JCRNodeWrapper bindedNode = (JCRNodeWrapper) nodeWrapper.getProperty("j:bindedComponent").getNode();
+            if (nodeWrapper.hasProperty(param)) {
+                JCRNodeWrapper bindedNode = (JCRNodeWrapper) nodeWrapper.getProperty(param).getNode();
                 if (bindedNode.isNodeType("jnt:contentList")) {
                     if (bindedNode.isNodeType("jmix:listRestrictions")) {
                         final Value[] values1 = bindedNode.getProperty("j:allowedTypes").getValues();

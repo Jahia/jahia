@@ -13,8 +13,9 @@ import org.jahia.ajax.gwt.client.messages.Messages;
  */
 public class ListModule extends SimpleModule {
 
-    public ListModule(String id, String path, String s, String template, String scriptInfo, String nodeTypes, String referenceType, String templateInfo, MainModule mainModule) {
-        super(id, path, template, scriptInfo, nodeTypes, referenceType, templateInfo, mainModule);
+    public ListModule(String id, String path, String s, String template, String scriptInfo, String nodeTypes, String referenceType,
+                      MainModule mainModule) {
+        super(id, path, template, scriptInfo, nodeTypes, referenceType, mainModule);
         head = new Header();
         add(head);
 
@@ -27,9 +28,6 @@ public class ListModule extends SimpleModule {
 //        setBodyBorder(false);
         head.addStyleName("x-panel-header");
         head.addStyleName("x-panel-header-areamodule");
-        if (isLocked()) {
-            head.addStyleName("x-panel-header-lockedmodule");
-        }
         html = new HTML(s);
         add(html);
     }

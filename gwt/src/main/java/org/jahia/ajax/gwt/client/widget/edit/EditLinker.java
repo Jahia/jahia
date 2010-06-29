@@ -67,7 +67,7 @@ public class EditLinker implements Linker {
     private ActionToolbarLayoutContainer toolbar;
     private MainModule mainModule;
     private SidePanel sidePanel;
-
+    private ModuleSelectionListener selectionListener;
 
     private String locale;
 
@@ -134,12 +134,24 @@ public class EditLinker implements Linker {
         handleNewSidePanelSelection();
     }
 
-    public void onModuleSelection(Module selection) {
-        selectedModule = selection;
+    public ModuleSelectionListener getSelectionListener() {
+        return selectionListener;
+    }
 
-        handleNewModuleSelection();
-        if (selectedModule != null) {
-            selectedModule.setDraggable(true);
+    public void setSelectionListener(ModuleSelectionListener selectionListener) {
+        this.selectionListener = selectionListener;
+    }
+
+    public void onModuleSelection(Module selection) {
+        if (this.selectionListener == null) {
+            selectedModule = selection;
+
+            handleNewModuleSelection();
+            if (selectedModule != null) {
+                selectedModule.setDraggable(true);
+            }
+        } else {
+            selectionListener.onModuleSelection(selection);
         }
     }
 

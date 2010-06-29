@@ -51,16 +51,12 @@ public class Functions {
     private static final Logger logger = Logger.getLogger(Functions.class);
 
     /**
-     * Decode facet filter URL parameter
-     * 
-     * @param inputString
-     *            enocded facet filter URL query parameter
-     * @return decoded facet filter parameter
+     *
      */
-    public static JCRNodeWrapper getBindedComponent(JCRNodeWrapper currentNode, RenderContext renderContext) {
+    public static JCRNodeWrapper getBindedComponent(JCRNodeWrapper currentNode, RenderContext renderContext, String property) {
         Node bindedComponentNode = null;
         try {
-            Property bindedComponentProp = currentNode.getProperty(Constants.BINDED_COMPONENT);
+            Property bindedComponentProp = currentNode.getProperty(property);
             if (bindedComponentProp != null) {
                 bindedComponentNode = bindedComponentProp.getNode();
             }
@@ -68,12 +64,9 @@ public class Functions {
                 if (bindedComponentNode.isNodeType(Constants.JAHIANT_MAINRESOURCE_DISPLAY)) {
                     bindedComponentNode = renderContext.getMainResource().getNode();
                 } else if (bindedComponentNode.isNodeType(Constants.JAHIANT_MAINRESOURCE_AREA)) {
-                    Property areaNameProp = bindedComponentNode.getProperty(Constants.AREA_NAME);
+                    String areaName = bindedComponentNode.getName();
                     bindedComponentNode = renderContext.getMainResource().getNode();                    
-                    if (areaNameProp != null && !StringUtils.isEmpty(areaNameProp.getString())
-                            && bindedComponentNode != null) {
-                        bindedComponentNode = bindedComponentNode.getNode(areaNameProp.getString());
-                    }
+                    bindedComponentNode = bindedComponentNode.getNode(areaName);
                 }
             }
         } catch (RepositoryException e) {

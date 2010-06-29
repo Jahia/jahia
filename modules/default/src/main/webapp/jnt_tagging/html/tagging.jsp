@@ -4,6 +4,7 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
+<%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
 <%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
@@ -15,7 +16,7 @@
 <%--@elvariable id="acl" type="java.lang.String"--%>
 <template:addResources type="css" resources="pagetagging.css"/>
 <template:addResources type="css" resources="tagged.css"/>
-<c:set var="bindedComponent" value="${uiComponents:getBindedComponent(currentNode, renderContext)}"/>
+<c:set var="bindedComponent" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 <c:if test="${not empty bindedComponent}">
     <div class="tagthispage">
 
@@ -44,4 +45,4 @@
         </div>
     </div>
 </c:if>
-<template:linker path="*"/>
+<template:linker property="j:bindedComponent" />

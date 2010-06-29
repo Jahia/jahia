@@ -39,7 +39,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <c:if test="${jcr:hasPermission(currentNode, 'write')}">
-    <c:set var="aclNode" value="${uiComponents:getBindedComponent(currentNode, renderContext)}"/>
+    <c:set var="aclNode" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
     <c:if test="${not empty aclNode}">
         <template:addResources type="css" resources="jquery.autocomplete.css"/>
         <template:addResources type="css" resources="thickbox.css"/>
@@ -105,4 +105,4 @@
         <br class="clear"/>
     </c:if>
 </c:if>
-<template:linker path="*"/>
+<template:linker property="j:bindedComponent" />

@@ -6,6 +6,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib" %>
+<%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="propertyDefinition" type="org.jahia.services.content.nodetypes.ExtendedPropertyDefinition"--%>
 <%--@elvariable id="type" type="org.jahia.services.content.nodetypes.ExtendedNodeType"--%>
@@ -21,9 +22,9 @@
 <template:addResources type="javascript" resources="jquery.min.js"/>
 <template:addResources type="javascript" resources="fullcalendar.js"/>
 
-<jcr:nodeProperty node="${currentNode}" name="j:bindedComponent" var="linked"/>
+<c:set var="linked" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 
-<c:forEach items="${linked.node.nodes}" var="linkedChild" varStatus="status">
+<c:forEach items="${linked.nodes}" var="linkedChild" varStatus="status">
     <fmt:formatDate pattern="yyyy-MM-dd" value="${linkedChild.properties[currentNode.properties.startDateProperty.string].date.time}" var="startDate"/>
     <c:choose>
         <c:when test="${empty datas[startDate]}">
@@ -49,7 +50,7 @@
         {
         title : '${data.value}',
         start : '${data.key}',
-        url : '${url.base}${renderContext.mainResource.node.path}.html?filter={name:"${currentNode.properties.startDateProperty.string}",value:"${data.key}",op:"eq",uuid:"${linked.string}",format:"yyyy-MM-dd",type:"date"}&calStartDate=${data.key}'
+        url : '${url.base}${renderContext.mainResource.node.path}.html?filter={name:"${currentNode.properties.startDateProperty.string}",value:"${data.key}",op:"eq",uuid:"${linked.identifier}",format:"yyyy-MM-dd",type:"date"}&calStartDate=${data.key}'
         }
     </c:forEach>
     ]
@@ -57,4 +58,4 @@
     });
 </template:addResources>
 <div id="calendar${currentNode.identifier}"></div>
-<template:linker path="*"/>
+<template:linker property="j:bindedComponent" />

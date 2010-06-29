@@ -16,7 +16,6 @@
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
 	overflow: hidden;
-	cursor: url('../images/xtheme-jahia-andromeda/panel/link.cur'), pointer; 
 }
 .x-panel-linker p {
 	margin:0 !important;

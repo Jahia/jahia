@@ -29,19 +29,18 @@ public abstract class Module extends LayoutContainer {
     protected int depth;
     protected boolean selectable;
     protected Header head;
-    protected String templateInfo;
 
     public Module() {
     }
 
-    protected Module(String id, String path, String template, String scriptInfo, String nodeTypes, String referenceTypes, String templateInfo, MainModule mainModule) {
+    protected Module(String id, String path, String template, String scriptInfo, String nodeTypes, String referenceTypes,
+                     MainModule mainModule) {
         super();
         this.id = id;
         this.path = path;
         this.template = template;
         this.scriptInfo = scriptInfo;
         this.nodeTypes = nodeTypes;
-        this.templateInfo = templateInfo;
         this.referenceTypes = referenceTypes;
         this.mainModule = mainModule;
     }
@@ -109,22 +108,6 @@ public abstract class Module extends LayoutContainer {
         this.node = node;
     }
 
-    public boolean isLocked() {
-        return templateInfo != null && templateInfo.contains("-locked-");
-    }
-
-    public boolean isShared() {
-        return templateInfo != null && templateInfo.contains("-shared-");
-    }
-
-    public boolean isDeployed() {
-        return templateInfo != null && templateInfo.contains("-deployed-");
-    }
-
-    public boolean isParentLocked() {
-        return templateInfo != null && templateInfo.contains("-parentlocked-");
-    }
-
     public MainModule getMainModule() {
         return mainModule;
     }
@@ -154,19 +137,7 @@ public abstract class Module extends LayoutContainer {
     }
 
     protected void setHeaderText(String headerText) {
-        if (mainModule.getConfig().getName().equals("studiomode")) {
-            if (isShared() && isLocked()) {
-                head.setText(headerText + " (locked & shared)");
-            } else if (isShared()) {
-                head.setText(headerText + " (shared)");
-            } else if (isLocked()) {
-                head.setText(headerText + " (locked)");
-            } else {
-                head.setText(headerText);
-            }
-        } else {
-            head.setText(headerText);
-        }
+        head.setText(headerText);
     }
 
     public String getScriptInfo() {

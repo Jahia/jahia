@@ -210,8 +210,6 @@
                 <ref bean="Toolbar.Item.Separator"/>
                 <ref bean="Toolbar.Item.OpenInContentManager"/>
                 <ref bean="Toolbar.Item.Separator"/>
-                <ref bean="Toolbar.Item.SaveAsSharedComponent"/>
-                <ref bean="Toolbar.Item.SwitchLockComponentInTemplate"/>
             </list>
         </property>
         <property name="visibility" value="$site/toolbar/edit"/>
@@ -264,7 +262,6 @@
                 <ref bean="Toolbar.Item.Paste"/>
                 <ref bean="Toolbar.Item.PasteReference"/>
                 <ref bean="Toolbar.Item.Separator"/>
-                <ref bean="Toolbar.Item.SaveAsSharedComponent"/>
                 <ref bean="Toolbar.Item.SaveAsPortalComponent"/>
             </list>
         </property>
@@ -343,7 +340,6 @@
                 <ref bean="Toolbar.Item.Cut"/>
                 <ref bean="Toolbar.Item.Paste"/>
                 <ref bean="Toolbar.Item.PasteReference"/>
-                <ref bean="Toolbar.Item.SaveAsSharedComponent"/>
                 <ref bean="Toolbar.Item.SaveAsPortalComponent"/>
             </list>
         </property>
@@ -1199,23 +1195,6 @@
         </property>
         <property name="titleKey" value="label.pasteReference"/>
         <property name="icon" value="pasteReference"/>
-    </bean>
-
-    <bean id="Toolbar.Item.SaveAsSharedComponent" class="org.jahia.services.uicomponents.bean.toolbar.Item">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchSharedComponentInTemplateActionItem"/>
-        </property>
-        <property name="titleKey" value="label.saveAsSharedComponent"/>
-        <property name="icon" value="saveAsSharedComponent"/>
-    </bean>
-
-    <bean id="Toolbar.Item.SwitchLockComponentInTemplate"
-          class="org.jahia.services.uicomponents.bean.toolbar.Item">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchLockComponentInTemplateActionItem"/>
-        </property>
-        <property name="titleKey" value="label.switchLockComponentInTemplate"/>
-        <property name="icon" value="switchLockComponentInTemplate"/>
     </bean>
 
     <bean id="Toolbar.Item.SaveAsPortalComponent" class="org.jahia.services.uicomponents.bean.toolbar.Item">

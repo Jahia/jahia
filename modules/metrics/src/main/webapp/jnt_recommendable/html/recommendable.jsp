@@ -7,7 +7,7 @@
 <template:addResources type="css" resources="metrics.css"/>
 <jcr:nodeProperty node="${currentNode}" name="j:nodeTypeFilter" var="nodeTypeFilter"/>
 <jcr:nodeProperty node="${currentNode}" name="j:recommendationLimit" var="recommendationLimit"/>
-<c:set var="bindedComponent" value="${uiComponents:getBindedComponent(currentNode, renderContext)}"/>
+<c:set var="bindedComponent" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 <c:if test="${not empty bindedComponent}">
 
 <div class="metrics">
@@ -41,4 +41,4 @@
 </c:if>
 </div>
 </c:if>
-<template:linker path="*"/>
+<template:linker property="j:bindedComponent"/>

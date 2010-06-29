@@ -12,7 +12,8 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="acl" type="java.lang.String"--%>
-<c:set var="bindedComponent" value="${uiComponents:getBindedComponent(currentNode, renderContext)}"/>
+<c:set var="bindedComponent" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
+
 <c:if test="${not empty bindedComponent}">
 
 <jcr:nodeProperty node="${bindedComponent}" name="j:nbOfVotes" var="nbVotes"/>
@@ -118,4 +119,4 @@
 
 </div>
 </c:if>
-<template:linker path="*"/>
+<template:linker property="j:bindedComponent"/>

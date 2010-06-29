@@ -1,5 +1,5 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
 [jnt:calendar] > jnt:content, jmix:siteComponentContent, jmix:bindedComponent
- - startDateProperty (string,choicelist[linkerProps])
- - endDateProperty (string,choicelist[linkerProps])
+ - startDateProperty (string,choicelist[linkerProps=j:bindedComponent])
+ - endDateProperty (string,choicelist[linkerProps=j:bindedComponent])

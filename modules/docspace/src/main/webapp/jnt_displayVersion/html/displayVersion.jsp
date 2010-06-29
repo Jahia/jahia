@@ -23,7 +23,7 @@
 
 <template:addResources type="javascript" resources="jquery.cuteTime.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.ckeditor.js"/>
-<c:set var="bindedComponent" value="${uiComponents:getBindedComponent(currentNode, renderContext)}"/>
+<c:set var="bindedComponent" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 <c:if test="${not empty bindedComponent}">
     <c:set value="${jcr:hasPermission(bindedComponent, 'write')}" var="hasWriteAccess"/>
     <h4 class="boxdocspace-title"><fmt:message key="docspace.label.document.version.tile"/></h4>
@@ -74,4 +74,4 @@
         </form>
     </c:if>
 </c:if>
-<template:linker path="*"/>
+<template:linker property="j:bindedComponent"/>

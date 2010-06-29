@@ -259,20 +259,15 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 }
 
                 try {
-                    boolean parentLocked = currentResource.getNode().hasProperty("j:templateLocked") && currentResource.getNode().getProperty("j:templateLocked").getBoolean();
-                    boolean templateLocked = resource.getNode().hasProperty("j:templateLocked") && resource.getNode().getProperty("j:templateLocked").getBoolean();
-                    boolean templateShared = resource.getNode().hasProperty("j:templateShared") && resource.getNode().getProperty("j:templateShared").getBoolean();
-                    boolean templateDeployed = resource.getNode().hasProperty("j:templateDeployed") && resource.getNode().getProperty("j:templateDeployed").getBoolean();
-                    boolean isTemplateMode = Studio.STUDIO_MODE.equals(renderContext.getEditModeConfigName());
-                    if (canEdit(renderContext, templateLocked, isTemplateMode)) {
+                    if (canEdit(renderContext)) {
                         String type = getModuleType();
 
                         Script script = null;
                         try {
                             script = RenderService.getInstance().resolveScript(resource, renderContext);
-                            printModuleStart(type, templateLocked, templateShared, templateDeployed, parentLocked, node.getPath(), resource.getResolvedTemplate(), script.getTemplate().getInfo());
+                            printModuleStart(type, node.getPath(), resource.getResolvedTemplate(), script.getTemplate().getInfo());
                         } catch (TemplateNotFoundException e) {
-                            printModuleStart(type, templateLocked, templateShared, templateDeployed, parentLocked, node.getPath(), resource.getResolvedTemplate(), "Script not found");
+                            printModuleStart(type, node.getPath(), resource.getResolvedTemplate(), "Script not found");
                         }
 
                         render(renderContext, resource);
@@ -343,11 +338,11 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         return Resource.CONFIGURATION_MODULE;
     }
 
-    protected boolean canEdit(RenderContext renderContext, boolean templateLocked, boolean templateMode) {
-        return renderContext.isEditMode() && editable && (templateMode || !templateLocked) && !Boolean.TRUE.equals(renderContext.getRequest().getAttribute("inWrapper"));
+    protected boolean canEdit(RenderContext renderContext) {
+        return renderContext.isEditMode() && editable && !Boolean.TRUE.equals(renderContext.getRequest().getAttribute("inWrapper"));
     }
 
-    protected void printModuleStart(String type, boolean templateLocked, boolean templateShared, boolean templateDeployed, boolean parentLocked, String path, String resolvedTemplate, String scriptInfo) throws RepositoryException, IOException {
+    protected void printModuleStart(String type, String path, String resolvedTemplate, String scriptInfo) throws RepositoryException, IOException {
 
         buffer.append("<div class=\"jahia-template-gxt\" jahiatype=\"module\" ")
                 .append("id=\"module")
@@ -356,15 +351,6 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 .append(type)
                 .append("\" ");
 
-        if (templateLocked || templateShared || templateDeployed || parentLocked) {
-            buffer
-                    .append(" templateInfo=\"-")
-                    .append((templateLocked) ? "locked-" : "")
-                    .append((templateShared) ? "shared-" : "")
-                    .append((templateDeployed) ? "deployed-" : "")
-                    .append((parentLocked) ? "parentlocked-" : "")
-                    .append("\"");
-        }
         buffer
                 .append((scriptInfo != null) ? " scriptInfo=\"" + scriptInfo + "\"" : "")
                 .append(" path=\"").append(path)
@@ -465,10 +451,8 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             currentResource.getMissingResources().add(path);
         }
 
-        boolean templateLocked = currentResource.getNode().hasProperty("j:templateLocked") && currentResource.getNode().getProperty("j:templateLocked").getBoolean();
-        boolean isTemplateMode = Studio.STUDIO_MODE.equals(renderContext.getEditModeConfigName());
-        if (canEdit(renderContext, templateLocked, isTemplateMode)) {
-            printModuleStart("placeholder", false, false, false, false, path, null, null);
+        if (canEdit(renderContext)) {
+            printModuleStart("placeholder", path, null, null);
             printModuleEnd();
         }
     }

@@ -31,18 +31,14 @@
  */
 package org.jahia.taglibs.template.include;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.taglibs.standard.tag.common.core.ParamParent;
-import org.jahia.bin.Studio;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 
-import javax.jcr.RepositoryException;
-import javax.jcr.nodetype.ConstraintViolationException;
-import java.io.IOException;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
+import javax.servlet.jsp.tagext.TagSupport;
+import java.util.UUID;
 
 /**
  * Handler for the &lt;template:module/&gt; tag, used to render content objects.
@@ -50,34 +46,60 @@ import java.io.IOException;
  * Date: May 14, 2009
  * Time: 7:18:15 PM
  */
-public class LinkerTag extends ModuleTag implements ParamParent {
+public class LinkerTag extends TagSupport {
 
     private static Logger logger = Logger.getLogger(LinkerTag.class);
 
     private String mixinType;
 
-    @Override
-    protected String getModuleType() throws RepositoryException {
-        return "linker";
-    }
+    private String property = "j:bindedComponent";
 
     public void setMixinType(String mixinType) {
         this.mixinType = mixinType;
     }
 
-    @Override
-    protected void missingResource(RenderContext renderContext, Resource currentResource) throws RepositoryException, IOException {
-        String currentPath = currentResource.getNode().getPath();
-        if (path.startsWith(currentPath + "/") && path.substring(currentPath.length() + 1).indexOf('/') == -1) {
-            currentResource.getMissingResources().add(path.substring(currentPath.length() + 1));
-        } else if (!path.startsWith("/")) {
-            currentResource.getMissingResources().add(path);
-        }
-
-        if (renderContext.isEditMode()) {
-            printModuleStart("linker", false, false, false, false, currentPath, null, mixinType);
-            printModuleEnd();
-        }
+    public void setProperty(String propertyName) {
+        this.property = propertyName;
     }
+
+    public int doEndTag() throws JspException {
+        try {
+            RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
+            if (renderContext.isEditMode()) {
+                Resource currentResource = (Resource) pageContext.getAttribute("currentResource", PageContext.REQUEST_SCOPE);
+
+                String currentPath = currentResource.getNode().getPath();
+
+                StringBuffer buffer = new StringBuffer();
+
+                buffer.append("<div class=\"jahia-template-gxt\" jahiatype=\"module\" ")
+                        .append("id=\"module")
+                        .append(UUID.randomUUID().toString())
+                        .append("\" type=\"")
+                        .append("linker")
+                        .append("\" ");
+
+                buffer
+                        .append(" path=\"").append(currentPath)
+                        .append("\" property=\"").append(property);
+                if (mixinType != null) {
+                    buffer
+                            .append("\" mixinType=\"").append(mixinType);
+                }
+                buffer.append("\" ");
+
+                buffer.append("/>");
+
+                pageContext.getOut().print(buffer.toString());
+            }
+        } catch (Exception e) {
+            throw new JspException(e);
+        } finally {
+            property = null;
+            mixinType = null;
+        }
+        return EVAL_PAGE;
+    }
+
 
 }

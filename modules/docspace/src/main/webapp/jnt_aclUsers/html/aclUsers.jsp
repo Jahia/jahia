@@ -25,7 +25,7 @@
 <template:addResources type="javascript" resources="jquery.fancybox.pack.js"/>
 <template:addResources type="javascript" resources="ajaxreplace.js"/>
 <template:addResources type="css" resources="jquery.fancybox.css"/>
-<c:set var="aclNode" value="${uiComponents:getBindedComponent(currentNode, renderContext)}"/>
+<c:set var="aclNode" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 <c:if test="${not empty aclNode}">
     <ul class="docspacelist docspacelistusers">
         <c:forEach items="${aclNode.aclEntries}" var="acls">
@@ -47,4 +47,4 @@
         </c:forEach>
     </ul>
 </c:if>
-<template:linker path="*"/>
+<template:linker property="j:bindedComponent"/>

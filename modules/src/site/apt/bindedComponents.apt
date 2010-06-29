@@ -33,8 +33,8 @@ BindedComponents
 
 +----------------------------------------------
 [jnt:calendar] > jnt:content, jmix:editorialContent, jmix:bindedComponent
- - startDateProperty (string,choicelist[linkerProps])
- - endDateProperty (string,choicelist[linkerProps])
+ - startDateProperty (string,choicelist[linkerProps=j:bindedComponent])
+ - endDateProperty (string,choicelist[linkerProps=j:bindedComponent])
 +----------------------------------------------
 
     This definition extend the fact that the calendar component needs to be bound to another component and also add two
@@ -51,7 +51,7 @@ BindedComponents
   An example from the calendar module, that fill a map with the number of node per date.
   
 +------------------------------------------------
-<jcr:nodeProperty node="${currentNode}" name="j:bindedComponent" var="linked"/>
+<c:set var="bindedComponent" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 
 <c:forEach items="${linked.node.nodes}" var="linkedChild" varStatus="status">
     <fmt:formatDate pattern="yyyy-MM-dd" value="${linkedChild.properties[currentNode.properties.startDateProperty.string].date.time}" var="startDate"/>

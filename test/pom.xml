@@ -30,7 +30,7 @@
             <type>war</type>
         </dependency>
         <dependency>
-            <groupId>org.jahia.templates</groupId>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>remotepublish</artifactId>
             <version>${jahia.package.version}</version>
             <classifier>classes</classifier>

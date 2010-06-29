@@ -11,7 +11,6 @@ import org.apache.shindig.protocol.conversion.BeanJsonConverter;
 import org.apache.shindig.protocol.conversion.BeanXStreamConverter;
 import org.apache.shindig.protocol.conversion.xstream.XStreamConfiguration;
 import org.apache.shindig.social.core.config.SocialApiGuiceModule;
-import org.apache.shindig.social.core.oauth.AuthenticationHandlerProvider;
 import org.apache.shindig.social.core.util.BeanXStreamAtomConverter;
 import org.apache.shindig.social.core.util.xstream.XStream081Configuration;
 import org.apache.shindig.social.opensocial.oauth.OAuthDataStore;
@@ -19,11 +18,6 @@ import org.apache.shindig.social.opensocial.spi.ActivityService;
 import org.apache.shindig.social.opensocial.spi.AppDataService;
 import org.apache.shindig.social.opensocial.spi.PersonService;
 import org.apache.shindig.social.opensocial.spi.MessageService;
-import org.apache.shindig.social.sample.oauth.SampleOAuthDataStore;
-import org.apache.shindig.social.sample.oauth.SampleRealm;
-import org.apache.shindig.social.sample.service.SampleContainerHandler;
-import org.springframework.context.ApplicationContext;
-import org.jahia.hibernate.manager.SpringContextSingleton;
 
 import java.util.List;
 import java.util.Set;
@@ -39,7 +33,7 @@ import com.google.common.collect.ImmutableSet;
  */
 public class GuiceModule extends SocialApiGuiceModule {
 
-    private static final String JAHIA_SHINDIG_SERVICE_BEAN_NAME = "jahiaShindigService";
+    private JahiaShindigService jahiaShindigService;
 
     @Override
     protected void configure() {
@@ -65,17 +59,11 @@ public class GuiceModule extends SocialApiGuiceModule {
 
         bind(Long.class).annotatedWith(Names.named("org.apache.shindig.serviceExpirationDurationMinutes")).toInstance(60L);
 
-      // Get spring application context
-      ApplicationContext applicationContext = SpringContextSingleton.getInstance().getContext();
-      if (applicationContext == null) {
-          return;
-      }
-
       // Bind Mock Person Spi
-      this.bind(PersonService.class).toInstance((PersonService) applicationContext.getBean(JAHIA_SHINDIG_SERVICE_BEAN_NAME));
-      this.bind(ActivityService.class).toInstance((ActivityService) applicationContext.getBean(JAHIA_SHINDIG_SERVICE_BEAN_NAME));
-      this.bind(AppDataService.class).toInstance((AppDataService) applicationContext.getBean(JAHIA_SHINDIG_SERVICE_BEAN_NAME));
-      this.bind(MessageService.class).toInstance((MessageService) applicationContext.getBean(JAHIA_SHINDIG_SERVICE_BEAN_NAME));
+      this.bind(PersonService.class).toInstance(jahiaShindigService);
+      this.bind(ActivityService.class).toInstance(jahiaShindigService);
+      this.bind(AppDataService.class).toInstance(jahiaShindigService);
+      this.bind(MessageService.class).toInstance(jahiaShindigService);
 
       bind(OAuthDataStore.class).to(JahiaOAuthDataStore.class);
 
@@ -89,6 +77,13 @@ public class GuiceModule extends SocialApiGuiceModule {
       handlers.addAll(super.getHandlers());
       // handlers.add(SampleContainerHandler.class);
       return handlers.build();
+    }
+
+    /**
+     * @param jahiaShindigService the jahiaShindigService to set
+     */
+    public void setJahiaShindigService(JahiaShindigService jahiaShindigService) {
+        this.jahiaShindigService = jahiaShindigService;
     }
 
 }

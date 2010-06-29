@@ -3,5 +3,28 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
     
+    <bean name="ShindigAuthFilter" class="org.apache.shindig.auth.AuthenticationServletFilter"/>
 
+    <bean id="jahiaShindigService" class="org.jahia.services.shindig.JahiaShindigService">
+        <constructor-arg index="0" ref="JahiaUserManagerService" />
+        <constructor-arg index="1" ref="jcrTemplate" />
+    </bean>
+    
+    <bean name="guiceInitializer" class="org.jahia.services.shindig.GuiceInitializer">
+        <property name="modules">
+            <list>
+                <bean class="org.apache.shindig.common.PropertiesModule"/>
+                <bean class="org.apache.shindig.gadgets.DefaultGuiceModule"/>
+                <bean class="org.jahia.services.shindig.GuiceModule">
+                    <property name="jahiaShindigService" ref="jahiaShindigService"/>
+                </bean>
+                <!-- 
+                <bean class="org.apache.shindig.social.sample.SampleModule"/>
+                -->
+                <bean class="org.apache.shindig.gadgets.oauth.OAuthModule"/>
+                <bean class="org.apache.shindig.common.cache.ehcache.EhCacheModule"/>
+            </list>
+        </property>
+    </bean>
+    
 </beans>

@@ -61,9 +61,8 @@ jahiaTemplatesHttpPath                                 =
 jahiaEnginesHttpPath                                   =
 jahiaJavaScriptHttpPath                                =
 
-# Uncomment this entry and provide your custom URL for the WAR deployer,
-# if you use non-standard one  
-#jahiaWebAppsDeployerBaseURL                            = http://127.0.0.1:8080/manager/html/
+# Provide your custom URL for the WAR deployer, if you use non-standard one  
+jahiaWebAppsDeployerBaseURL                            = http://127.0.0.1:8080/manager/html/
 
 # This parameter will control, that if vanity URLs exists for a node and if
 # it has been accessed with a non-default vanity URL, we inform the client that

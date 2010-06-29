@@ -45,6 +45,9 @@
     <name>Jahia Apache Shindig Integration</name>
     <packaging>war</packaging>
     <description>Jahia  module that provides Apache Shindig container runtime for running OpenSocial applications.</description>
+    <properties>
+        <shindig.version>1.1-BETA5-incubating</shindig.version>
+    </properties>
     <repositories>
         <repository>
             <id>jahiaRepository</id>
@@ -117,21 +120,44 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- Shindig WAR overlay -->
+        <dependency>
+            <groupId>org.apache.shindig</groupId>
+            <artifactId>shindig-server</artifactId>
+            <version>${shindig.version}</version>
+            <type>war</type>
+        </dependency>
+
+        <!-- Shindig dependencies -->
+        <dependency>
+            <groupId>org.apache.shindig</groupId>
+            <artifactId>shindig-social-api</artifactId>
+            <version>${shindig.version}</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.code.guice</groupId>
+                    <artifactId>guice</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.google.collections</groupId>
+            <artifactId>google-collections</artifactId>
+            <version>1.0-rc2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>2.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- end of Shindig dependencies -->
+        
     </dependencies>
     <build>
         <plugins>
-			<plugin>
-		    	<groupId>org.apache.maven.plugins</groupId>
-		        <artifactId>maven-site-plugin</artifactId>
-                <executions>
-					<execution>
-                    	<phase>generate-resources</phase>
-                        <goals>
-                        	<goal>site</goal>
-						</goals>
-                    </execution>
-                </executions>
-		    </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
@@ -158,6 +184,38 @@
                             <root-folder>${artifactId}</root-folder>
 	                    </manifestEntries>
 	                </archive>
+                    <archiveClasses>true</archiveClasses>
+                    <overlays>
+                        <overlay>
+                            <groupId>org.apache.shindig</groupId>
+                            <artifactId>shindig-server</artifactId>
+                            <excludes>
+                                <exclude>META-INF/**</exclude>
+                                <exclude>WEB-INF/classes/META-INF/**</exclude>
+                                <exclude>WEB-INF/lib/*</exclude>
+                                <exclude>WEB-INF/web.xml</exclude>
+                                <exclude>WEB-INF/web.*.xml</exclude>
+                                <exclude>login.jsp</exclude>
+                            </excludes>
+                        </overlay>
+                        <overlay>
+                            <groupId>org.apache.shindig</groupId>
+                            <artifactId>shindig-server</artifactId>
+                            <includes>
+                                <exclude>WEB-INF/lib/aopalliance-*.jar</exclude>
+                                <exclude>WEB-INF/lib/caja-*.jar</exclude>
+                                <exclude>WEB-INF/lib/commons-betwixt-*.jar</exclude>
+                                <exclude>WEB-INF/lib/guice-*.jar</exclude>
+                                <exclude>WEB-INF/lib/htmlparser-*.jar</exclude>
+                                <exclude>WEB-INF/lib/jsecurity-*.jar</exclude>
+                                <exclude>WEB-INF/lib/json-simple-*.jar</exclude>
+                                <exclude>WEB-INF/lib/nekohtml-*.jar</exclude>
+                                <exclude>WEB-INF/lib/oauth-*.jar</exclude>
+                                <exclude>WEB-INF/lib/sanselan-*.jar</exclude>
+                                <exclude>WEB-INF/lib/shindig-*.jar</exclude>
+                            </includes>
+                        </overlay>
+                    </overlays>
                 </configuration>
             </plugin>
         </plugins>

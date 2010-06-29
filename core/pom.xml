@@ -43,6 +43,14 @@
             <name>Sourceforge Maven Repository</name>
             <url>http://oss.sonatype.org/content/repositories/sourceforge-releases</url>
         </repository>
+        <repository>
+            <id>javanet</id>
+            <name>java.net</name>
+            <url>http://download.java.net/maven/2/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
@@ -98,11 +106,6 @@
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
             <version>1.8.2</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-betwixt</groupId>
-            <artifactId>commons-betwixt</artifactId>
-            <version>1.0-beta-1</version>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
@@ -857,7 +860,7 @@
         <dependency>
             <groupId>rome</groupId>
             <artifactId>rome</artifactId>
-            <version>0.9</version>
+            <version>1.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>jdom</groupId>
@@ -868,7 +871,13 @@
         <dependency>
             <groupId>rome</groupId>
             <artifactId>rome-fetcher</artifactId>
-            <version>0.9</version>
+            <version>1.0</version>
+            <exclusions>
+            	<exclusion>
+                    <groupId>jdom</groupId>
+            		<artifactId>jdom</artifactId>
+            	</exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>rome</groupId>
@@ -883,34 +892,6 @@
             <version>1.1.4c</version>
         </dependency>-->
 
-        <!-- Shindig dependencies -->
-        <dependency>
-            <groupId>com.google.collections</groupId>
-            <artifactId>google-collections</artifactId>
-            <version>1.0-rc2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.inject</groupId>
-            <artifactId>guice</artifactId>
-            <version>2.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.inject.extensions</groupId>
-            <artifactId>guice-jmx</artifactId>
-            <version>2.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.shindig</groupId>
-            <artifactId>shindig-social-api</artifactId>
-            <version>1.1-BETA5-incubating</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>ehcache</artifactId>
-                    <groupId>net.sf.ehcache</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <!-- End of shindig dependencies -->
         <!-- JSON dependencies -->
         <dependency>
             <groupId>org.json</groupId>
@@ -1112,10 +1093,10 @@
 	      <version>2.1</version>
 	    </dependency>
         <dependency>
-	      <groupId>com.google.gdata</groupId>
-	      <artifactId>google-collect</artifactId>
-	      <version>1.0-rc1</version>
-	    </dependency>
+            <groupId>com.google.collections</groupId>
+            <artifactId>google-collections</artifactId>
+            <version>1.0-rc2</version>
+        </dependency>
         <dependency>
 	      <groupId>com.google.gdata</groupId>
 	      <artifactId>jsr305</artifactId>
@@ -1145,13 +1126,23 @@
             <version>1.0.0-incubating</version>
         </dependency>        
         <!-- end of Apache Shiro -->
-
+        
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>1.6</version>
+        </dependency>
+        <dependency>
+            <groupId>de.odysseus.juel</groupId>
+            <artifactId>juel-impl</artifactId>
+            <version>2.1.2</version>
+        </dependency>
         <dependency>
            <groupId>net.sf.opencsv</groupId>
            <artifactId>opencsv</artifactId>
            <version>2.1</version>
         </dependency>
-
+        
         <!-- Apache Camel dependencies -->
         <dependency>
             <groupId>org.apache.camel</groupId>

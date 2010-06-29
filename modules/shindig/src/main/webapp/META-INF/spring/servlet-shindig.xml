@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+    <bean name="xml-to-html" class="org.springframework.web.servlet.mvc.ServletWrappingController">
+        <property name="servletClass" value="org.apache.shindig.gadgets.servlet.GadgetRenderingServlet"/>
+    </bean>
+    <bean name="proxy" class="org.springframework.web.servlet.mvc.ServletWrappingController">
+        <property name="servletClass" value="org.apache.shindig.gadgets.servlet.ProxyServlet"/>
+    </bean>
+    <bean name="makeRequest" class="org.springframework.web.servlet.mvc.ServletWrappingController">
+        <property name="servletClass" value="org.apache.shindig.gadgets.servlet.MakeRequestServlet"/>
+    </bean>
+    <bean name="concat" class="org.springframework.web.servlet.mvc.ServletWrappingController">
+        <property name="servletClass" value="org.apache.shindig.gadgets.servlet.ConcatProxyServlet"/>
+    </bean>
+    <bean name="oauthCallback" class="org.springframework.web.servlet.mvc.ServletWrappingController">
+        <property name="servletClass" value="org.apache.shindig.gadgets.servlet.OAuthCallbackServlet"/>
+    </bean>
+    <bean name="metadata" class="org.springframework.web.servlet.mvc.ServletWrappingController">
+        <property name="servletClass" value="org.apache.shindig.gadgets.servlet.RpcServlet"/>
+    </bean>
+    <bean name="js" class="org.springframework.web.servlet.mvc.ServletWrappingController">
+        <property name="servletClass" value="org.apache.shindig.gadgets.servlet.JsServlet"/>
+    </bean>
+    <bean name="socialRestapiServlet" class="org.springframework.web.servlet.mvc.ServletWrappingController">
+        <property name="servletClass" value="org.apache.shindig.protocol.DataServiceServlet"/>
+        <property name="initParameters">
+            <props>
+                <prop key="handlers">org.apache.shindig.social.handlers</prop>
+            </props>
+        </property>
+    </bean>
+    <bean name="socialJsonRpcServlet" class="org.springframework.web.servlet.mvc.ServletWrappingController">
+        <property name="servletClass" value="org.apache.shindig.protocol.JsonRpcServlet"/>
+        <property name="initParameters">
+            <props>
+                <prop key="handlers">org.apache.shindig.social.handlers</prop>
+            </props>
+        </property>
+    </bean>
+    <bean name="gadgetsJsonRpcServlet" class="org.springframework.web.servlet.mvc.ServletWrappingController">
+        <property name="servletClass" value="org.apache.shindig.protocol.JsonRpcServlet"/>
+        <property name="initParameters">
+            <props>
+                <prop key="handlers">org.apache.shindig.gadgets.handlers</prop>
+            </props>
+        </property>
+    </bean>
+    <bean name="gadgetsRestapiServlet" class="org.springframework.web.servlet.mvc.ServletWrappingController">
+        <property name="servletClass" value="org.apache.shindig.protocol.DataServiceServlet"/>
+        <property name="initParameters">
+            <props>
+                <prop key="handlers">org.apache.shindig.gadgets.handlers</prop>
+            </props>
+        </property>
+    </bean>
+    <bean name="sampleOAuth" class="org.springframework.web.servlet.mvc.ServletWrappingController">
+        <property name="servletClass" value="org.apache.shindig.social.sample.oauth.SampleOAuthServlet"/>
+    </bean>
+
+    <bean name="shindigControllerMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="alwaysUseFullPath" value="true"/>
+        <property name="urlMap">
+            <map>
+                <entry key="/gadgets/js/**" value-ref="js"/>
+                <entry key="/gadgets/proxy/**" value-ref="proxy"/>
+                <entry key="/gadgets/makeRequest" value-ref="makeRequest"/>
+                <entry key="/gadgets/api/rpc/**" value-ref="gadgetsJsonRpcServlet"/>
+                <entry key="/gadgets/api/rest/**" value-ref="gadgetsRestapiServlet"/>
+                <entry key="/gadgets/concat" value-ref="concat"/>
+                <entry key="/gadgets/oauthcallback" value-ref="oauthCallback"/>
+                <entry key="/gadgets/ifr" value-ref="xml-to-html"/>
+                <entry key="/gadgets/metadata" value-ref="metadata"/>
+                
+                <entry key="/social/rest/**" value-ref="socialRestapiServlet"/>
+                <entry key="/social/rpc/**" value-ref="socialJsonRpcServlet"/>
+
+                <entry key="/oauth/**" value-ref="sampleOAuth"/>
+            </map>
+        </property>
+    </bean>
+
+</beans>

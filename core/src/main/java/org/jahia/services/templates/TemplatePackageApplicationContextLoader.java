@@ -39,6 +39,7 @@ import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.web.context.ServletContextAware;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 
 /**
@@ -72,6 +73,7 @@ public class TemplatePackageApplicationContextLoader implements ServletContextAw
         XmlWebApplicationContext ctx = new XmlWebApplicationContext();
         ctx.setParent(SpringContextSingleton.getInstance().getContext());
         ctx.setServletContext(servletContext);
+        servletContext.setAttribute(WebApplicationContext.class.getName() + ".jahiaTemplates", ctx);
         ctx.setConfigLocation(contextConfigLocation);
         ctx.refresh();
 
@@ -112,10 +114,12 @@ public class TemplatePackageApplicationContextLoader implements ServletContextAw
     }
 
     public void stop() {
-        try {
-            context.close();
-        } catch (Exception e) {
-            logger.error("Error shutting down Jahia modules Spring application context", e);
+        if (context != null) {
+            try {
+                context.close();
+            } catch (Exception e) {
+                logger.error("Error shutting down Jahia modules Spring application context", e);
+            }
         }
     }
 

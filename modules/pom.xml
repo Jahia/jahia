@@ -78,18 +78,22 @@
     </profiles>
 
     <modules>
-        <!--<module>core-templates</module>-->
-        <!--<module>6.0</module>-->
 		<module>article</module>
         <module>assets</module>
         <module>blog</module>
+        <module>bookmarks</module>
+        <module>calendar</module>
         <module>contact</module>
         <module>default</module>
+        <module>docConverter</module>
+        <module>docspace</module>
         <module>event</module>
+        <module>facets</module>
         <module>faq</module>
         <module>formbuilder</module>
         <module>forum</module>
         <module>job</module>
+        <module>latestPages</module>
         <module>location</module>
         <module>metrics</module>
         <module>news</module>
@@ -107,22 +111,17 @@
         <module>scriptlanguages</module>
         <module>search</module>
         <module>seo</module>
+        <module>shindig</module>
         <module>sitemap</module>
         <module>skins</module>
+        <module>social</module>
+        <module>staticHTML</module>
+        <module>tabularList</module>
         <module>tasks</module>
         <module>test</module>
         <module>templates-web</module>
         <module>templates-intranet</module>
         <module>topstories</module>
         <module>wiki</module>
-        <module>latestPages</module>
-        <module>docspace</module>
-        <module>docConverter</module>
-        <module>facets</module>
-        <module>calendar</module>
-        <module>staticHTML</module>
-        <module>bookmarks</module>
-        <module>tabularList</module>
-        <module>social</module>
     </modules>
 </project>

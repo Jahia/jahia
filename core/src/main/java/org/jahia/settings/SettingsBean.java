@@ -98,7 +98,6 @@ public class SettingsBean {
     private String jahiaEnginesHttpPath;
     private String jahiaWebAppsDeployerBaseURL;
     private String jahiaJavaScriptDiskPath;
-    private String jahiaNewWebAppsDiskPath;
     private String jahiaImportsDiskPath;
     private String jahiaSharedTemplatesDiskPath;
     private String jahiaDatabaseScriptsPath;
@@ -249,7 +248,6 @@ public class SettingsBean {
             } catch (Exception e) {
                 logger.error("Provided folder for tmpContentDiskPath is not valid. Cause: " + e.getMessage(), e);
             }
-            jahiaNewWebAppsDiskPath = JahiaTools.convertContexted (getString("jahiaNewWebAppsDiskPath"), pathResolver);
             jahiaImportsDiskPath = JahiaTools.convertContexted (getString("jahiaImportsDiskPath"), pathResolver);
             jahiaSharedTemplatesDiskPath = JahiaTools.convertContexted (getString("jahiaSharedTemplatesDiskPath"), pathResolver);
             jahiaCkEditorDiskPath = JahiaTools.convertContexted (getString("jahiaCkEditorDiskPath"), pathResolver);
@@ -824,9 +822,6 @@ public class SettingsBean {
     }
     public Map<String, Long> getMaxCachedGroupsValues() {
         return maxCachedGroupsValues;
-    }
-    public String getJahiaNewWebAppsDiskPath() {
-        return jahiaNewWebAppsDiskPath;
     }
     public String getJahiaImportsDiskPath() {
         return jahiaImportsDiskPath;

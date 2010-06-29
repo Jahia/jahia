@@ -29,20 +29,13 @@
         <repository>
             <id>gwt-maven-google</id>
             <url>http://gwt-maven.googlecode.com/svn/trunk/mavenrepo/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
     </repositories>
 
     <profiles>
-        <profile>
-            <id>websphere</id>
-            <dependencies>
-                <dependency>
-                    <groupId>de.odysseus.juel</groupId>
-                    <artifactId>juel-api</artifactId>
-                    <version>2.1.2</version>
-                </dependency>
-            </dependencies>
-        </profile>
         <profile>
             <id>eclipse-integration</id>
             <build>
@@ -97,14 +90,6 @@
                                 <module>org.jahia.ajax.gwt.module.contentpicker.ContentPicker</module>
                                 <module>org.jahia.ajax.gwt.module.edit.Edit</module>
                                 <module>org.jahia.ajax.gwt.module.resources.Resources</module>
-                                <!-- 
-                                <module>org.jahia.ajax.gwt.module.jobreport.JobReport</module>
-                                <module>org.jahia.ajax.gwt.module.pdisplay.ProcessDisplay</module>
-                                 -->
-                                <!-- 
-                                <module>org.jahia.ajax.gwt.module.linkchecker.LinkChecker</module>
-                                 -->
-
                             </modules>
                         </configuration>
                         <executions>
@@ -150,38 +135,6 @@
                             </execution>
                         </executions>
                     </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>configure-before-packaging</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.jahia.server</groupId>
-                        <artifactId>maven-jahia-plugin</artifactId>
-                        <configuration>
-                            <!-- do not change these three nor remove them -->
-                            <targetServerDirectory>${project.build.directory}</targetServerDirectory>
-                            <targetConfigurationDirectory>${project.build.directory}</targetConfigurationDirectory>
-                            <webAppDirName>/${project.build.finalName}</webAppDirName>
-                            <configureBeforePackaging>true</configureBeforePackaging>
-                            <!-- these following could be removed to configure them from settings.xml -->
-                            <cluster_activated>false</cluster_activated>
-                            <processingServer>true</processingServer>
-                            <overwritedb>true</overwritedb>
-                            <storeFilesInDB>true</storeFilesInDB>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <phase>process-classes</phase>
-                                <goals>
-                                    <goal>configure</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-
                 </plugins>
             </build>
         </profile>
@@ -567,6 +520,13 @@
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
+            <artifactId>shindig</artifactId>
+            <version>${jahia.package.version}</version>
+            <type>war</type>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.modules</groupId>
             <artifactId>sitemap</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
@@ -575,6 +535,13 @@
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>skins</artifactId>
+            <version>${jahia.package.version}</version>
+            <type>war</type>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.modules</groupId>
+            <artifactId>social</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>
@@ -649,6 +616,7 @@
             <type>zip</type>
             <scope>runtime</scope>
         </dependency>
+        
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
@@ -892,93 +860,6 @@
             <version>1.1.2</version>
         </dependency>
 
-        <!-- Shindig WAR overlay -->
-        <dependency>
-            <groupId>org.apache.shindig</groupId>
-            <artifactId>shindig-server</artifactId>
-            <version>1.1-BETA3-incubating-SNAPSHOT</version>
-            <type>war</type>
-            <!--
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-digester</groupId>
-                    <artifactId>commons-digester</artifactId>
-                </exclusion>
-            </exclusions>
-            -->
-        </dependency>
-
-        <!-- Other Shindig dependencies -->
-
-        <dependency>
-          <groupId>org.apache.shindig</groupId>
-          <artifactId>shindig-gadgets</artifactId>
-          <version>1.1-BETA3-incubating-SNAPSHOT</version>
-          <exclusions>
-              <exclusion>
-                  <groupId>de.odysseus.juel</groupId>
-                  <artifactId>juel-api</artifactId>
-              </exclusion>
-              <exclusion>
-                  <groupId>xerces</groupId>
-                  <artifactId>xercesImpl</artifactId>
-              </exclusion>
-              <exclusion>
-                  <groupId>xerces</groupId>
-                  <artifactId>xmlParserAPIs</artifactId>
-              </exclusion>
-              <exclusion>
-                  <groupId>xerces</groupId>
-                  <artifactId>xerces</artifactId>
-              </exclusion>
-              <exclusion>
-                  <groupId>org.json</groupId>
-                  <artifactId>json</artifactId>
-              </exclusion>
-              <exclusion>
-                  <groupId>commons-beanutils</groupId>
-                  <artifactId>commons-beanutils-core</artifactId>
-              </exclusion>
-              <exclusion>
-                  <groupId>commons-codec</groupId>
-                  <artifactId>commons-codec</artifactId>
-              </exclusion>              
-              <exclusion>
-                  <groupId>commons-collections</groupId>
-                  <artifactId>commons-collections</artifactId>
-              </exclusion>
-              <exclusion>
-                  <groupId>net.sf.ehcache</groupId>
-                  <artifactId>ehcache</artifactId>
-              </exclusion>
-              <exclusion>
-                  <groupId>jdom</groupId>
-                  <artifactId>jdom</artifactId>
-              </exclusion>
-          </exclusions>
-        </dependency>
-        <dependency>
-          <groupId>org.apache.shindig</groupId>
-          <artifactId>shindig-features</artifactId>
-          <version>1.1-BETA3-incubating-SNAPSHOT</version>
-        </dependency>
-
-        <!-- External Shindig dependencies -->
-        <!-- external dependencies -->
-        <dependency>
-          <groupId>org.jsecurity</groupId>
-          <artifactId>jsecurity</artifactId>
-          <exclusions>
-                <exclusion>
-                    <groupId>commons-beanutils</groupId>
-                    <artifactId>commons-beanutils</artifactId>
-                </exclusion>
-           </exclusions>
-          <version>0.9.0</version>
-        </dependency>
-
-        <!-- End of Shindig dependencies -->
-        
     </dependencies>
 
     <build>

@@ -324,11 +324,11 @@
 
 [jnt:mainResourceDisplay] > nt:base, jmix:renderableReference, jmix:siteComponentContent
 
-[jnt:mainResourceArea] > nt:base, jmix:renderableReference, jmix:siteComponentContent
+[jnt:mainResourceArea] > nt:base, jmix:renderableReference, jmix:renderableList, jmix:siteComponentContent
  - j:filter (string, choicelist[subnodetypes = 'jnt:page,jnt:content,jnt:contentList,jnt:folder,jnt:file',resourceBundle]) multiple
  + * (jmix:droppableContent) = jmix:droppableContent version
 
-[jnt:absoluteArea] > nt:base, jmix:renderableReference, jmix:siteComponentContent
+[jnt:absoluteArea] > nt:base, jmix:renderableReference, jmix:renderableList, jmix:siteComponentContent
  - j:basenode (weakreference)
  - j:filter (string, choicelist[subnodetypes = 'jnt:page,jnt:content,jnt:contentList,jnt:folder,jnt:file',resourceBundle]) multiple
 

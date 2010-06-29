@@ -44,11 +44,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="mainresource.css" />
-<c:set var="mainTemplate" value="${renderContext.mainResource.resolvedTemplate}"/>
-<c:if test="${(not empty currentNode.properties['j:referenceTemplate'].string) and
-(not (currentNode.properties['j:referenceTemplate'].string eq 'default') and (empty mainTemplate or mainTemplate eq 'default'))}">
-    <c:set var="mainTemplate" value="${currentNode.properties['j:referenceTemplate'].string}"/>
-</c:if>
+
 <c:choose>
      <c:when test="${not inWrapper}">
 
@@ -73,7 +69,11 @@
 
     </c:when>
     <c:otherwise>
-        <template:wrappedContent path="${currentNode.name}" />
+        <template:wrappedContent path="${currentNode.name}" >
+            <c:if test="${not empty currentNode.properties['j:subNodesTemplate'].string}">
+                <template:param name="forcedSubNodesTemplate" value="${currentNode.properties['j:subNodesTemplate'].string}" />
+            </c:if>
+        </template:wrappedContent>
     </c:otherwise>
 </c:choose>
 

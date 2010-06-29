@@ -238,50 +238,67 @@
             </row>
           </wrappercontent>
         </events>
-       <blog-home jcr:mixinTypes="jmix:hasTemplateNode" jcr:primaryType="jnt:template" j:templateNode="/templatesSet/templates-intranet/templates/sitewrapper" j:applyOn="jnt:page">
-          <wrappercontent jcr:primaryType="jnt:contentList">
-            <row column="2col115" jcr:primaryType="jnt:row">
-              <col1 j:skin="skins.box5style1" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
-                <new-blog templateNode="/templatesSet/templates-intranet/templates/blog" buttonLabel="create" jcr:primaryType="jnt:pageFormCreation">
-                  <j:translation_en jcr:language="en" jcr:title_en="New Blog" jcr:primaryType="jnt:translation" />
-                </new-blog>
-                <topBlog pageSize="10" jcr:primaryType="jnt:topBlog" />
-                <list jcr:mixinTypes="jmix:renderable" j:template="twoColumns" jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:language="en" jcr:title_en="list" jcr:primaryType="jnt:translation" />
-                  <topBlogContent pageSize="10" jcr:primaryType="jnt:topBlogContent" />
-                  <topBlogComment pageSize="10" jcr:primaryType="jnt:topBlogComment" />
-                </list>
-              </col1>
-              <col2 jcr:primaryType="jnt:contentList" />
-            </row>
-          </wrappercontent>
-        </blog-home>
-        <blog jcr:mixinTypes="jmix:hasTemplateNode" jcr:primaryType="jnt:template" j:templateNode="/templatesSet/templates-intranet/templates/sitewrapper" j:applyOn="jnt:page">
-          <wrappercontent jcr:primaryType="jnt:contentList">
-            <row column="2col115" jcr:primaryType="jnt:row">
-              <col1 jcr:primaryType="jnt:contentList">
-                <blog-content j:filter="" jcr:primaryType="jnt:mainResourceArea" />
-                <blogEntryFormCreation jcr:primaryType="jnt:blogEntryFormCreation" />
-              </col1>
-              <col2 jcr:primaryType="jnt:contentList">
-                <authorDisplay jcr:primaryType="jnt:authorDisplay" j:referenceTemplate="detail" />
-                <calendar jcr:primaryType="jnt:calendar" j:bindedComponent="/templatesSet/templates-intranet/templates/blog/wrappercontent/row/col1/blog-content" />
-              </col2>
-            </row>
-          </wrappercontent>
-          <blog-edit j:templateKey="blogEdit" jcr:primaryType="jnt:template" j:applyOn="jnt:page">
-            <wrappercontent jcr:primaryType="jnt:contentList">
-              <row column="2col115" jcr:primaryType="jnt:row">
-                <col1 j:skin="skins.box5style1" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
-                  <blogEntryFormCreation jcr:primaryType="jnt:blogEntryFormCreation" />
-                </col1>
-                <col2 jcr:primaryType="jnt:contentList">
-                  <authorDisplay jcr:primaryType="jnt:authorDisplay" j:referenceTemplate="detail" />
-                </col2>
-              </row>
-            </wrappercontent>
-          </blog-edit>
-        </blog>
+          <blog-home jcr:mixinTypes="jmix:hasTemplateNode" jcr:primaryType="jnt:template" j:templateNode="/templatesSet/templates-intranet/templates/sitewrapper" j:applyOn="jnt:page">
+                <wrappercontent jcr:primaryType="jnt:contentList">
+                  <row column="2col115" jcr:primaryType="jnt:row">
+                    <col1 j:skin="skins.box5style1" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
+                      <new-blog templateNode="/templatesSet/templates-intranet/templates/blog" buttonLabel="create" jcr:primaryType="jnt:pageFormCreation">
+                        <j:translation_en jcr:title_en="New Blog" jcr:language="en" jcr:primaryType="jnt:translation" />
+                      </new-blog>
+                      <topBlog pageSize="10" jcr:primaryType="jnt:topBlog" />
+                      <list jcr:mixinTypes="jmix:renderable" j:template="twoColumns" jcr:primaryType="jnt:contentList">
+                        <j:translation_en jcr:title_en="list" jcr:language="en" jcr:primaryType="jnt:translation" />
+                        <topBlogContent pageSize="10" jcr:primaryType="jnt:topBlogContent" />
+                        <topBlogComment pageSize="10" jcr:primaryType="jnt:topBlogComment" />
+                      </list>
+                    </col1>
+                    <col2 jcr:primaryType="jnt:contentList" />
+                  </row>
+                </wrappercontent>
+              </blog-home>
+              <blog jcr:mixinTypes="jmix:hasTemplateNode" jcr:primaryType="jnt:template" j:templateNode="/templatesSet/templates-intranet/templates/sitewrapper" j:applyOn="jnt:page">
+                <wrappercontent jcr:primaryType="jnt:contentList">
+                  <row column="2col115" jcr:primaryType="jnt:row">
+                    <col1 jcr:primaryType="jnt:contentList">
+                      <blog-content j:subNodesTemplate="short" j:filter="" jcr:primaryType="jnt:mainResourceArea" />
+                      <blogEntryFormCreation jcr:primaryType="jnt:blogEntryFormCreation" />
+                    </col1>
+                    <col2 jcr:primaryType="jnt:contentList">
+                      <authorDisplay jcr:primaryType="jnt:authorDisplay" j:referenceTemplate="detail" />
+                      <calendar jcr:primaryType="jnt:calendar" j:bindedComponent="/templatesSet/templates-intranet/templates/blog/wrappercontent/row/col1/blog-content" />
+                    </col2>
+                  </row>
+                </wrappercontent>
+                <blog-edit j:templateKey="blogEdit" jcr:primaryType="jnt:template" j:applyOn="jnt:page">
+                  <wrappercontent jcr:primaryType="jnt:contentList">
+                    <row column="2col115" jcr:primaryType="jnt:row">
+                      <col1 j:skin="skins.box5style1" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
+                        <blogEntryFormCreation jcr:primaryType="jnt:blogEntryFormCreation" />
+                      </col1>
+                      <col2 jcr:primaryType="jnt:contentList">
+                        <authorDisplay jcr:primaryType="jnt:authorDisplay" j:referenceTemplate="detail" />
+                      </col2>
+                    </row>
+                  </wrappercontent>
+                </blog-edit>
+                <blog-content jcr:primaryType="jnt:template" j:applyOn="jnt:blogContent">
+                  <wrappercontent jcr:primaryType="jnt:contentList">
+                    <row column="2col115" jcr:primaryType="jnt:row">
+                      <col1 jcr:primaryType="jnt:contentList">
+                        <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" />
+                        <document-history j:skin="skins.box2" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
+                          <j:translation_en jcr:title_en="Comments" jcr:language="en" jcr:primaryType="jnt:translation" />
+                          <commentable jcr:primaryType="jnt:commentable" j:bindedComponent="/templatesSet/templates-intranet/templates/blog/blog-content/wrappercontent/row/col1/mainResourceDisplay" />
+                          <commentable-1 jcr:mixinTypes="jmix:renderable" j:template="addcomment" jcr:primaryType="jnt:commentable" j:bindedComponent="/templatesSet/templates-intranet/templates/blog/blog-content/wrappercontent/row/col1/mainResourceDisplay" />
+                        </document-history>
+                      </col1>
+                      <col2 jcr:primaryType="jnt:contentList">
+                        <authorDisplay jcr:primaryType="jnt:authorDisplay" j:referenceTemplate="detail" />
+                      </col2>
+                    </row>
+                  </wrappercontent>
+                </blog-content>
+              </blog>
           <sitewrapper  j:template="intranet.bodywrapper" jcr:primaryType="jnt:template" jcr:mixinTypes="jmix:renderable" >
             <logo jcr:primaryType="jnt:contentList" >
                 <logo j:filter="" jcr:primaryType="jnt:absoluteArea" j:basenode="/templatesSet/templates-intranet/home"/>

@@ -60,6 +60,5 @@
         </div>
     </div>
     <!--stop boxblog -->
-    <template:option nodetype="jmix:comments" template="hidden.options.wrapper" node="${currentNode}"/>
 </div>
 

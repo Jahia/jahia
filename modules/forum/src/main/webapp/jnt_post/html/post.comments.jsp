@@ -7,8 +7,6 @@
 <jcr:nodeProperty node="${currentNode}" name="content" var="content"/>
 <jcr:node var="userNode" path="/users/${createdBy.string}"/>
 <li class="docspaceitemcomment">
-    <span class="public floatright"><input name="" type="checkbox" value=""/> <fmt:message key="docspace.label.public"/></span>
-
     <div class="image">
         <div class="itemImage itemImageLeft">
 

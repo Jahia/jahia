@@ -245,11 +245,11 @@
                       <new-blog templateNode="/templatesSet/templates-intranet/templates/blog" buttonLabel="create" jcr:primaryType="jnt:pageFormCreation">
                         <j:translation_en jcr:title_en="New Blog" jcr:language="en" jcr:primaryType="jnt:translation" />
                       </new-blog>
-                      <topBlog pageSize="10" jcr:primaryType="jnt:topBlog" />
+                      <topBlog j:subNodesTemplate="blog.short" pageSize="10" jcr:primaryType="jnt:topBlog" />
                       <list jcr:mixinTypes="jmix:renderable" j:template="twoColumns" jcr:primaryType="jnt:contentList">
                         <j:translation_en jcr:title_en="list" jcr:language="en" jcr:primaryType="jnt:translation" />
-                        <topBlogContent pageSize="10" jcr:primaryType="jnt:topBlogContent" />
-                        <topBlogComment pageSize="10" jcr:primaryType="jnt:topBlogComment" />
+                        <topBlogContent j:subNodesTemplate="list.short" pageSize="10" jcr:primaryType="jnt:topBlogContent" />
+                        <topBlogComment  j:subNodesTemplate="comments.short" pageSize="10" jcr:primaryType="jnt:topBlogComment" />
                       </list>
                     </col1>
                     <col2 jcr:primaryType="jnt:contentList" />

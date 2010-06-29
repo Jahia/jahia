@@ -16,13 +16,13 @@
     <fieldset>
         <legend>${currentNode.properties['jcr:title'].string}</legend>
 
-        <p><label for="title"><fmt:message key="docspace.label.title"/></label>
+        <p><label for="title"><fmt:message key="label.title"/></label>
             <input type="text" name="jcr:title" id="title" class="field" value=""
                    tabindex="20"/></p>
 
 
         <p><label for="description"><fmt:message
-                key="docspace.label.description"/></label>
+                key="label.description"/></label>
             <textarea name="jcr:description" id="description" cols="45" rows="3"
                       tabindex="21"></textarea></p>
 

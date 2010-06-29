@@ -73,7 +73,7 @@ div.cloud{
   height:100px;
   position:absolute;
   top:300px;
-  left:30%;
+  left:15%;
   z-index:0
 }
 div.cloud2{
@@ -82,7 +82,7 @@ div.cloud2{
   height:145px;
   position:absolute;
   top:200px;
-  right:25%;
+  right:15%;
   z-index:0
 }
 input[type="text"] {
@@ -146,7 +146,8 @@ h2.loginlogo{
 	position:absolute;
 	top:50px;
 	z-index:100;
-	left:40%
+	left:50%;
+	margin-left:-170px;
 }
 h2.loginlogo_enterprise{
 	width:340px;
@@ -156,7 +157,8 @@ h2.loginlogo_enterprise{
 	position:absolute;
 	top:70px;
 	z-index:101;
-	left:40%
+	left:50%;
+	margin-left:-170px;
 }
 
 h2.loginlogo_community{
@@ -167,7 +169,8 @@ h2.loginlogo_community{
 	position:absolute;
 	top:70px;
 	z-index:101;
-	left:40%
+	left:50%;
+	margin-left:-170px;
 }
 #adminLogin {
 	clear:both;
@@ -194,7 +197,8 @@ h2.loginlogo_community{
 	top:200px;
 	margin: 0 auto;
 	z-index:100;
-	left:40%
+	left:50%;
+	margin-left:-170px;
 }
 #adminLoginFooter {
     color: #333;
@@ -204,7 +208,9 @@ h2.loginlogo_community{
 	position:absolute;
 	bottom:5px;
 	z-index:99;
-	left:40%
+	width:500px;
+	left:50%;
+	margin-left:-250px;
 }
 #adminLoginFooter #copyright {
     color: #333;

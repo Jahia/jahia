@@ -5,6 +5,7 @@ import org.drools.spi.KnowledgeHelper;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
+import org.jahia.services.content.rules.AddedNodeFact;
 import org.jahia.services.usermanager.JahiaLDAPUser;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.jcr.JCRUser;
@@ -32,7 +33,7 @@ public class SocialService {
 
     /* Rules Consequence implementations */
 
-    public void addActivity(final String user, final String message, KnowledgeHelper drools) throws RepositoryException {
+    public void addActivity(final String user, final String message, final AddedNodeFact nodeFact, KnowledgeHelper drools) throws RepositoryException {
         final JCRUser fromJCRUser = getJCRUserFromUserKey(user);
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
@@ -52,6 +53,7 @@ public class SocialService {
                 JCRNodeWrapper activityNode = activitiesNode.addNode(nodeName, "jnt:userActivity");
                 activityNode.setProperty("j:from", userNode);
                 activityNode.setProperty("j:message", message);
+                activityNode.setProperty("j:targetNode", nodeFact.getNode());
 
                 session.save();
                 return true;
@@ -59,7 +61,7 @@ public class SocialService {
         });
     }
 
-    public void sendMessage(final String fromUser, final String toUser, final String subject, final String message, KnowledgeHelper drools) throws RepositoryException {
+    public void sendMessage(final String fromUser, final String toUser, final String subject, final String message, AddedNodeFact nodeFact, KnowledgeHelper drools) throws RepositoryException {
         JCRUser fromJCRUser = getJCRUserFromUserKey(fromUser);
         if (fromJCRUser == null) {
             logger.warn("Couldn't find from user "+fromUser+" , aborting message sending...");

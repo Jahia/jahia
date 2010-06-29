@@ -26,6 +26,7 @@
  - j:priority (double) = 0
  - j:link (string)
  - j:icon (weakreference) < jmix:image
+ - j:targetNode (weakreference)
  - j:attribution (string)
  - j:type (string)
  - j:likes (long)

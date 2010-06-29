@@ -153,7 +153,7 @@
                                     "</div>" +
                                     "<h5 class='author'>" + item['jcr:createdBy'] + "</h5>" +
                                     "<span class='timestamp'>" + activityDate.toUTCString() + "</span>" +
-                                    "<p class='message'>" + item['j:message'] + "</p> " +
+                                    "<p class='message'>" + item['j:message'] + " " + item['j:targetNode'] + "</p> " +
                                     "<div class='clear'></div>" +
                                     "</li>"
                             );

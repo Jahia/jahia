@@ -83,3 +83,4 @@
 [consequence][]Grant permission {task} from workflow {workflow} to role {role} for type {type} on the {node}=service.defineWorkflowRule({node},{workflow},{task},"r:" + {role},{type},drools);
 [consequence][]Flush {cacheName}=service.flushCache("{cacheName}",drools);
 [consequence][]Flush all caches=service.flushAllCaches(drools);
+[consequence][]Notify user with mail template "{template}"=notificationService.notifyUser(node,"{template}",drools);

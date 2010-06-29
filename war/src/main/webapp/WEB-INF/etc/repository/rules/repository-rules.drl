@@ -13,6 +13,7 @@ global User user
 global Service service
 global ImageService imageService
 global ExtractionService extractionService
+global RulesNotificationService notificationService
 global Logger logger
 global JCRStoreProvider provider
 
@@ -167,4 +168,14 @@ rule "Portlet definition deleted"
     then
         Flush ApplicationCache
         Flush ApplicationContextCache
+end
+
+rule "notify user (create)"
+    when
+       A new node is created
+		- the node has the type jnt:user
+		- its name is not guest
+		- its name is not root
+    then
+        Notify user with mail template "/notifications/templates/mail/newUser.vm"
 end

@@ -1,0 +1,10 @@
+#* @vtlvariable name="currentUser" type="org.jahia.services.content.JCRNodeWrapper" *#
+#* @vtlvariable name="bundle" type="java.util.ResourceBundle" *#
+<html>
+<body>
+<h1>
+    ${bundle.getString("welcome")} ${currentUser.getProperty("j:firstName").getString()} ${currentUser.getProperty("j:lastName").getString()}</h1>
+<p>${bundle.getString("new.account")}</p>
+<p>${bundle.getString("login")} ${currentUser.getName()}</p>
+</body>
+</html>

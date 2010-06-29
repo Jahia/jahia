@@ -34,8 +34,13 @@ package org.jahia.services.notification;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
+import org.apache.camel.RoutesBuilder;
+import org.apache.camel.model.RouteDefinition;
 import org.apache.log4j.Logger;
+import org.jahia.settings.SettingsBean;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -57,5 +62,38 @@ public class CamelNotificationService {
     public void sendMessagesWithBodyAndHeaders(String target,Object body, Map<String, Object> headers) {
         ProducerTemplate template = camelContext.createProducerTemplate();
         template.sendBodyAndHeaders(target,body, headers);
+    }
+
+    public void registerRoute(RoutesBuilder routesBuilder) throws Exception {
+        camelContext.addRoutes(routesBuilder);
+    }
+
+    public void sendMail(String camelURI, String subject, String htmlBody, String textBody, String from, String toList,
+                         String ccList, String bcclist) {
+        ProducerTemplate template = camelContext.createProducerTemplate();
+         Map<String, Object> headers = new HashMap<String, Object>();
+        headers.put("To", toList);
+        if("".equals(from)) {
+            headers.put("From", SettingsBean.getInstance().getMail_from());
+        } else {
+            headers.put("From", from);
+        }
+        if(!"".equals(ccList)) {
+            headers.put("Cc",ccList);
+        }
+        if(!"".equals(bcclist)) {
+            headers.put("Bcc",bcclist);
+        }
+        headers.put("Subject", subject);
+        String body;
+        if(!"".equals(htmlBody)) {
+            headers.put("contentType","text/html");
+            headers.put("alternativeBodyHeader",textBody);
+            body = htmlBody;
+        } else {
+            headers.put("contentType","text/plain");
+            body = textBody;
+        }
+        template.sendBodyAndHeaders(camelURI, body, headers);
     }
 }

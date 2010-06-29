@@ -96,6 +96,7 @@
                                     <entry key="service" value-ref="org.jahia.services.content.rules.Service"/>
                                     <entry key="imageService" value-ref="org.jahia.services.content.rules.ImageService"/>
                                     <entry key="extractionService" value-ref="org.jahia.services.content.rules.ExtractionService"/>
+                                    <entry key="notificationService" value-ref="org.jahia.services.content.rules.RulesNotificationService"/>
                                 </map>
                             </property>
                         </bean>
@@ -245,6 +246,14 @@
                 <property name="cacheService" ref="JahiaCacheService" />
                 <property name="schedulerService" ref="SchedulerService" />
                 <property name="sitesService" ref="JahiaSitesService" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.services.content.rules.RulesNotificationService" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.services.content.rules.RulesNotificationService" factory-method="getInstance">
+                <property name="notificationService" ref="camelNotificationService"/>
             </bean>
         </property>
     </bean>

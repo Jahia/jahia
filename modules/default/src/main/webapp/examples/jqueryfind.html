@@ -1,6 +1,7 @@
 <html>
 <head>
     <title>jQuery JCR query example</title>
+	<script src="/modules/assets/javascript/jquery.min.js" type="text/javascript"></script>
 </head>
 <body>
 
@@ -10,7 +11,7 @@
         <table>
             <tr><td><label for="username">User name :</label></td><td><input id="username" type="text" name="username" value="root" size="30" /></td></tr>
             <tr><td><label for="password">Password  :</label></td><td><input id="password" type="password" name="password" value="root1234" size="30" /></td></tr>
-            <tr><td><label for="query">Query : </label></td><td><input id="query" type="text" name="query" value="SELECT * FROM [jnt:article]" size="80" /></td></tr>
+            <tr><td><label for="query">Query : </label></td><td><input id="query" type="text" name="query" value="SELECT * FROM [jnt:mainContent]" size="80" /></td></tr>
             <tr><td><label for="queryLanguage">Query language :</label></td>
                 <td><select id="queryLanguage" name="language">
                     <option value="JCR-SQL2" selected="true">JCR-SQL2</option>
@@ -31,14 +32,14 @@
         </tbody>
     </table>
 
-<script src="../javascript/jquery.min.js" type="text/javascript"></script>
+
 <script type="text/javascript">
 
     function login() {
         $.ajax({
             url : "/cms/login",
             type : "POST",
-            data : { username : $("input#username").val(), password : $("input#password").val(), redirectActive : "false", loginFromTag: "1" },
+            data : { username : $("input#username").val(), password : $("input#password").val(), redirectActive : "false", doLogin: "1" },
             success : function(data) {
                 doQuery();
             }
@@ -51,7 +52,7 @@
             url : "/cms/find/default/en",
             type : "POST",
             dataType : "json",
-            data : { query : $("input#query").val(), language : $("input#language").val(), depthLimit : "1" },
+            data : { query : $("input#query").val() },
             success : function(data) {
                 $("#languageCounts tbody").html("");
 
@@ -75,7 +76,7 @@
 
     function logout() {
         $.ajax({
-            url : "http://localhost:8080/cms/logout",
+            url : "/cms/logout",
             type : "POST",
             data : { redirectActive : "false" }
         });

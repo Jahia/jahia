@@ -35,6 +35,7 @@ package org.jahia.services.notification;
 import junit.framework.TestCase;
 import org.apache.log4j.Logger;
 import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.settings.SettingsBean;
 import org.junit.After;
 import org.junit.Before;
 
@@ -73,11 +74,11 @@ public class CamelNotificationServiceTest  extends TestCase {
 
     public void testSimpleSendingOfMail() throws Exception {
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("To", "cedric.mailleux@gmail.com");
-        map.put("From", "cedric.mailleux@free.fr");
+        map.put("To", SettingsBean.getInstance().getMail_administrator());
+        map.put("From", SettingsBean.getInstance().getMail_from());
         map.put("Subject", "Camel rocks");
 
-        String body = "Hello Cedric.\nYes it does.\n\nRegards Cedric.";
+        String body = "Hello.\nYes it does.\n\nRegards.";
 
         camelNotificationService.sendMessagesWithBodyAndHeaders("seda:newUsers?multipleConsumers=true",body,map);
     }

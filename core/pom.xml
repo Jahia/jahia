@@ -99,7 +99,7 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>deployers</artifactId>
-            <version>1.4</version>
+            <version>${jahia.deployers.version}</version>
         </dependency>
         <!-- Commons dependencies-->
         <dependency>

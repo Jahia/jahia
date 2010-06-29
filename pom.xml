@@ -24,7 +24,12 @@
   <description>Jahia Full Package</description>
   <url>http://www.jahia.org</url>
   <properties>
-    <jahia.project.structure.version>2</jahia.project.structure.version>
+    <jahia.package.version>6.5-SNAPSHOT</jahia.package.version>
+    <jahia.archivers.version>2.0-SNAPSHOT</jahia.archivers.version>
+    <jahia.configurators.version>2.0-SNAPSHOT</jahia.configurators.version>
+    <jahia.deployers.version>2.0-SNAPSHOT</jahia.deployers.version>
+    <jahia.maven-plugin.version>2.0-SNAPSHOT</jahia.maven-plugin.version>
+    
     <pluto.version>2.0.2</pluto.version>
     <spring.version>2.5.6.SEC02</spring.version>
     <jackrabbit.version>2.0.0</jackrabbit.version>
@@ -33,7 +38,6 @@
     <jbpm.version>4.3</jbpm.version>
     <hibernate.version>3.3.2.GA</hibernate.version>
     <apache.tika.version>0.7</apache.tika.version>
-    <jahia.package.version>6.5-SNAPSHOT</jahia.package.version>
 
     <driver.derby.version>10.5.3.0_1</driver.derby.version>
     <driver.mssql.version>1.2-fixed</driver.mssql.version>
@@ -373,7 +377,7 @@
         <plugins>
             <plugin>
                 <artifactId>maven-jahia-plugin</artifactId>
-                <version>2.0-SNAPSHOT</version>
+                <version>${jahia.maven-plugin.version}</version>
             </plugin>
             <plugin>
                 <artifactId>maven-site-plugin</artifactId>

@@ -200,8 +200,8 @@
             <fileset dir="../artifacts/jahia" targetdir="${jahia.war.target.path}" />
             <fileset dir="../artifacts/jahia-jboss-config" targetdir="$INSTALL_PATH/jahia-jboss-config" condition="cnd.server.type.jboss"/>
             <singlefile override="update" src="install.properties" target="$INSTALL_PATH/install.properties"/>
-            <singlefile override="update" src="../dependency/configurators-${configurators.version}-standalone.jar" target="$INSTALL_PATH/configurators.jar"/>
-            <singlefile override="update" src="../dependency/archivers-${archivers.version}-standalone.jar" target="$INSTALL_PATH/archivers.jar" condition="!cnd.pack.tomcat"/>
+            <singlefile override="update" src="../dependency/configurators-${jahia.configurators.version}-standalone.jar" target="$INSTALL_PATH/configurators.jar"/>
+            <singlefile override="update" src="../dependency/archivers-${jahia.archivers.version}-standalone.jar" target="$INSTALL_PATH/archivers.jar" condition="!cnd.pack.tomcat"/>
             <singlefile override="update" src="../artifacts/shared-libraries-all.zip" target="$INSTALL_PATH/shared-libraries.zip" condition="!cnd.skip.shared.libs"/>
             <parsable targetfile="$INSTALL_PATH/install.properties" type="javaprop"/>
             <executable targetfile="$INSTALL_PATH/configurators.jar" stage="postinstall" type="jar" keep="false">

@@ -35,6 +35,10 @@ public class SocialService {
 
     public void addActivity(final String user, final String message, final AddedNodeFact nodeFact, KnowledgeHelper drools) throws RepositoryException {
         final JCRUser fromJCRUser = getJCRUserFromUserKey(user);
+        if (fromJCRUser == null) {
+            logger.warn("No user found, not adding activity !");
+            return;
+        }
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 JCRNodeWrapper userNode = fromJCRUser.getNode(session);

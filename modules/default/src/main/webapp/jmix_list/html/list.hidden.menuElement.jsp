@@ -21,12 +21,8 @@
            value="${jcr:hasChildrenOfType(subchild,'jnt:navMenu,jmix:navMenuItem') ? 'hasChildren' : 'noChildren'}${(menuStatus.first and firstInLevel) ? ' firstInLevel' : ''}${(menuStatus.last and lastInLevel) ? ' lastInLevel' : ''}"
            scope="request"/>
     <c:set var="statusNavMenu" value="${menuStatus}" scope="request"/>
-    <template:module node="${subchild}" forcedTemplate="${subNodesTemplate}" templateWrapper="${subNodesWrapper}"
-                     editable="${editable}">
-        <c:if test="${not empty renderOptionsOnChild}">
-            <template:param name="renderOptions" value="${renderOptionsOnChild}"/>
-        </c:if>
-    </template:module>
+    <template:module node="${subchild}" template="${subNodesTemplate}"
+                     editable="${editable}"/>
 </c:forEach>
 <c:if test="${not omitFormatting}">
     <div class="clear"></div>

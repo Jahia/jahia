@@ -66,7 +66,7 @@
         </div>
     </c:when>
     <c:otherwise>
-        <template:module path="/users/${renderContext.user.username}" forcedTemplate="${mainTemplate}"/>
+        <template:module path="/users/${renderContext.user.username}" template="${mainTemplate}"/>
     </c:otherwise>
 </c:choose>
 

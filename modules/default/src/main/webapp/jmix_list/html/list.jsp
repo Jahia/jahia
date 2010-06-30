@@ -16,11 +16,7 @@
 <template:include template="hidden.header"/>
 
 <c:forEach items="${currentList}" var="subchild" begin="${begin}" end="${end}">
-    <template:module node="${subchild}" forcedTemplate="${subNodesTemplate}" templateWrapper="${subNodesWrapper}" editable="${editable}">
-        <c:if test="${not empty renderOptionsOnChild}">
-            <template:param name="renderOptions" value="${renderOptionsOnChild}"/>
-        </c:if>
-    </template:module>
+    <template:module node="${subchild}" template="${subNodesTemplate}" editable="${editable}"/>
 </c:forEach>
 <c:if test="${not omitFormatting}"><div class="clear"></div></c:if>
 <c:if test="${editable and renderContext.editMode}">

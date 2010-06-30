@@ -55,7 +55,7 @@
     </br>
     <ul>
     <c:forEach var="child" items="${currentNode.nodes}">
-        <template:module node="${child}" forcedTemplate="debug.version"/>
+        <template:module node="${child}" template="debug.version"/>
     </c:forEach>
     </ul>
     </li>

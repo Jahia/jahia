@@ -172,7 +172,13 @@
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
         </attribute>
-    </tag>    
+        <attribute>
+            <description>the scope of the bean (see PageContext)</description>
+            <name>scope</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
     <tag>
         <description>
             Exposes into the template scope the result (as the javax.jcr.query.QueryResult instance) of the JCR query

@@ -87,8 +87,8 @@ public class OptionTag extends BodyTagSupport implements ParamParent {
                 if (pageContext.getAttribute("optionsAutoRendering", PageContext.REQUEST_SCOPE) == null) {
                     currentResource.removeOption(mixinNodeType);
                 }
-                Resource wrappedResource = new Resource(node, currentResource.getTemplateType(), null, template,
-                        Resource.CONFIGURATION_OPTION);
+                Resource wrappedResource = new Resource(node, currentResource.getTemplateType(), template,
+                        Resource.CONFIGURATION_INCLUDE);
                 wrappedResource.setResourceNodeType(mixinNodeType);
                 for (Map.Entry<String, String> param : parameters.entrySet()) {
                     wrappedResource.getModuleParams().put(URLDecoder.decode(param.getKey(), charset), URLDecoder.decode(

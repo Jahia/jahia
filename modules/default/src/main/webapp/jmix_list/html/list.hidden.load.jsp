@@ -3,7 +3,6 @@
 <%@ taglib prefix="query" uri="http://www.jahia.org/tags/queryLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-<c:set var="renderOptionsOnChild" value="true" scope="request"/>
 <c:set var="facetParamVarName" value="N-${currentNode.name}"/>
 <%-- list mode --%>
 <c:choose>

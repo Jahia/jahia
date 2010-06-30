@@ -5,7 +5,7 @@
     <bean class="org.jahia.modules.filter.SkinFilter">
         <property name="priority" value="45"/>
         <property name="applyOnNodeTypes" value="jmix:list"/>
-        <property name="skipOnConfiguration" value="include,wrapper,option"/>
+        <property name="skipOnConfiguration" value="include,wrapper"/>
     </bean>
     <!--<bean id="skinsInitializer" class="org.jahia.modules.render.SkinsChoiceListInitializerImpl">-->
     <!--<property name="key" value="skins"/>-->

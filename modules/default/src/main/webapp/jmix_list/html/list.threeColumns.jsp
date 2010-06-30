@@ -22,11 +22,7 @@
         </c:if>
         <div class="column-item">
             <div class="spacer">
-                <template:module node="${subchild}" forcedTemplate="${subNodesTemplate}" templateWrapper="${subNodesWrapper}" editable="${editable}">
-                    <c:if test="${not empty renderOptionsOnChild}">
-                        <template:param name="renderOptions" value="${renderOptionsOnChild}"/>
-                    </c:if>
-                </template:module>
+                <template:module node="${subchild}" template="${subNodesTemplate}" editable="${editable}"/>
             </div>
         </div>
     </c:forEach>

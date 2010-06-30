@@ -8,7 +8,6 @@
 
     <jcr:sql var="result"
              sql="select * from [jnt:page] as blog where isdescendantnode(blog, ['${renderContext.mainResource.node.path}'])  order by blog.[jcr:lastModified] desc"/>
-    <c:set var="renderOptionsOnChild" value="none" scope="request"/>
     <c:set var="currentList" value="${result.nodes}" scope="request"/>
     <c:set var="end" value="${functions:length(result.nodes)}" scope="request"/>
     <c:set var="listTotalSize" value="${end}" scope="request"/>

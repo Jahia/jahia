@@ -42,8 +42,7 @@ public class TemplateNodeFilter extends AbstractFilter {
                     renderContext.getRequest().setAttribute("wrappedResource", resource);
                     renderContext.getRequest().setAttribute("wrapperNode", wrapperNode);
                     Resource wrapperResource = new Resource(wrapperNode,
-                            resource.getTemplateType().equals("edit") ? "html" : resource.getTemplateType(), null,
-                            wrapper.template, Resource.CONFIGURATION_WRAPPER);
+                            resource.getTemplateType().equals("edit") ? "html" : resource.getTemplateType(), wrapper.template, Resource.CONFIGURATION_WRAPPER);
                     if (service.hasTemplate(wrapperNode.getPrimaryNodeType(), wrapper.template)) {
                         chain.pushAttribute(renderContext.getRequest(), "inWrapper", Boolean.TRUE);
                         String output = RenderService.getInstance().render(wrapperResource, renderContext);
@@ -76,7 +75,7 @@ public class TemplateNodeFilter extends AbstractFilter {
 
     public Wrapper pushBodyWrappers(Resource resource) {
         final JCRNodeWrapper node = resource.getNode();
-        String template = resource.getResolvedTemplate();
+        String template = resource.getTemplate();
         if ("default".equals(template)) {
             template = null;
         }

@@ -96,7 +96,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
                     pageContext.getOut().println(getGwtDictionaryInclude());
                     pageContext.getOut().println(GWTIncluder.generateGWTImport(pageContext, "org.jahia.ajax.gwt.module.edit.Edit"));
 
-                    pageContext.getOut().println("<div class=\"jahia-template-gxt editmode-gxt\" id=\"editmode\" jahiatype=\"editmode\" config=\""+renderContext.getEditModeConfigName() +"\" path=\"" + r.getNode().getPath() + "\" locale=\"" + r.getLocale() + "\" template=\"" + r.getResolvedTemplate() + "\">");
+                    pageContext.getOut().println("<div class=\"jahia-template-gxt editmode-gxt\" id=\"editmode\" jahiatype=\"editmode\" config=\""+renderContext.getEditModeConfigName() +"\" path=\"" + r.getNode().getPath() + "\" locale=\"" + r.getLocale() + "\" template=\"" + r.getTemplate() + "\">");
                     editDivOpen = true;
                 }
             }

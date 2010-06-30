@@ -496,7 +496,7 @@ public class URLResolver {
                             throw new AccessDeniedException(path);
                         }
 
-                        Resource r = new Resource(node, ext, null, tpl, Resource.CONFIGURATION_PAGE);
+                        Resource r = new Resource(node, ext, tpl, Resource.CONFIGURATION_PAGE);
                         if (logger.isDebugEnabled()) {
                             logger.debug("Resolved resource: " + r);
                         }

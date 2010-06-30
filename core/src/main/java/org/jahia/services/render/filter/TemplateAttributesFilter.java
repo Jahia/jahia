@@ -45,10 +45,10 @@ public class TemplateAttributesFilter extends AbstractFilter {
             }
         }
 
-        Set<ExtendedItemDefinition> items = NodeTypeRegistry.getInstance().getTypedItems().get("layout");
-        for (ExtendedItemDefinition prop : items) {
-            overrideProperties(node, params, moduleParams, prop.getName());
-        }
+//        Set<ExtendedItemDefinition> items = NodeTypeRegistry.getInstance().getTypedItems().get("layout");
+//        for (ExtendedItemDefinition prop : items) {
+//            overrideProperties(node, params, moduleParams, prop.getName());
+//        }
 
         ExtendedNodeType cache = NodeTypeRegistry.getInstance().getNodeType("jmix:cache");
         overrideProperties(node, params, moduleParams, cache);

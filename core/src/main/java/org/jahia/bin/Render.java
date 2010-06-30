@@ -216,8 +216,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     logger.error("Couldn't find end tag for element " + element.getName() + " debugInfo=" + element.getDebugInfo() + " in markup [" + out + "]");
                 } else {
                     final String staticsAsset = renderService.render(new Resource(resource.getNode(), "html",
-                                                                                                "html.statics.assets",
-                                                                                                "html.statics.assets",
+                            "html.statics.assets",
                                                                                                 Resource.CONFIGURATION_INCLUDE),
                                                                                    renderContext);
                     outputDocument.replace(tag.getBegin(), tag.getBegin() + 1, "\n" + AggregateCacheFilter.removeEsiTags(
@@ -228,8 +227,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 for (Element element : elementList) {
                     final EndTag tag = element.getEndTag();
                     final String staticsAsset = renderService.render(new Resource(resource.getNode(), "html",
-                                                                                                "html.statics.assets",
-                                                                                                "html.statics.assets",
+                            "html.statics.assets",
                                                                                                 Resource.CONFIGURATION_INCLUDE),
                                                                                    renderContext);
                     outputDocument.replace(tag.getBegin(), tag.getBegin() + 1, "\n" + AggregateCacheFilter.removeEsiTags(
@@ -369,13 +367,13 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             JCRSiteNode site = resource.getNode().resolveSite();
             renderContext.setSite(site);
 
-            action = templateService.getActions().get(resource.getResolvedTemplate());
+            action = templateService.getActions().get(resource.getTemplate());
         } else {
             action = defaultPostAction;
         }
         if (action == null) {
             if (urlResolver.getPath().endsWith(".do")) {
-                logger.error("Couldn't resolve action named [" + resource.getResolvedTemplate() + "]");
+                logger.error("Couldn't resolve action named [" + resource.getTemplate() + "]");
             }
             resp.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED);
         } else {

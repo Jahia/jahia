@@ -4,7 +4,7 @@
 <template:addResources type="css" resources="wiki.css"/>
 
 <div class="wiki">
-    <template:module node="${currentNode}" forcedTemplate="syntax"/>
+    <template:module node="${currentNode}" template="syntax"/>
     <div class="clear"></div>
 </div>
 

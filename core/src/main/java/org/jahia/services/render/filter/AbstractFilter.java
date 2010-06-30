@@ -279,7 +279,7 @@ public abstract class AbstractFilter implements RenderFilter {
         }
 
         public String getValue(RenderContext renderContext, Resource resource) {
-            return resource.getResolvedTemplate();
+            return resource.getTemplate();
         }
     }
 

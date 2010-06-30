@@ -44,7 +44,6 @@
 <%-- <p>Debug > Nb of result from query (Criteria : ${criteria.string} - Nb of result : ${nbOfResult.long} - Mode : ${mode.string}) : ${fn:length(result.nodes)}</p>  --%>
 
 <%-- Set variables to store the result --%>
-<c:set var="renderOptionsOnChild" value="none" scope="request"/>
 <c:set var="currentList" value="${result.nodes}" scope="request"/>
 <c:set var="end" value="${functions:length(result.nodes)}" scope="request"/>
 <c:set var="listTotalSize" value="${end}" scope="request"/>

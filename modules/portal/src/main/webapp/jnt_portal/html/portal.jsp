@@ -43,7 +43,7 @@ $(document).ready(function(){
 <div id="columns">
 <c:forEach var="column" begin="1" end="${currentNode.properties.columns.string}">
     <ul id="column${column}" class="column">
-            <template:area path="column${column}" template="portal" forcedTemplate="portal" />
+            <template:area path="column${column}" template="portal" />
     </ul>
 </c:forEach>
 </div>

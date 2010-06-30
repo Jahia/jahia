@@ -43,7 +43,8 @@ public class WrapperFilter extends AbstractFilter {
                         String wrapper) throws RepositoryException {
         try {
 //                renderContext.getRequest().setAttribute("wrappedResource", resource);
-            Resource wrapperResource = new Resource(node, resource.getTemplateType().equals("edit")?"html":resource.getTemplateType(), null, wrapper,
+            Resource wrapperResource = new Resource(node, resource.getTemplateType().equals("edit")?"html":resource.getTemplateType(),
+                    wrapper,
                     Resource.CONFIGURATION_WRAPPER);
             if (service.hasTemplate(node.getPrimaryNodeType(), wrapper)) {
                 Object wrappedContent = renderContext.getRequest().getAttribute("wrappedContent");

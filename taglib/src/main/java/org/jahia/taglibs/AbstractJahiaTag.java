@@ -36,7 +36,6 @@ import org.apache.taglibs.standard.tag.common.fmt.BundleSupport;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLGenerator;
@@ -264,7 +263,7 @@ public class AbstractJahiaTag extends BodyTagSupport {
         }
         RenderContext ctx = getRenderContext();
         if (ctx != null) {
-            Resource resource = new Resource(node, "html", null, null, Resource.CONFIGURATION_PAGE);
+            Resource resource = new Resource(node, "html", null, Resource.CONFIGURATION_PAGE);
             URLGenerator url = new URLGenerator(ctx, resource);
             return url.getLanguages().get(langCode);
         } else {

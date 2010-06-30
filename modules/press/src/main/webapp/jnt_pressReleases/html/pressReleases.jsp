@@ -70,7 +70,7 @@
     <ul class="pressRealeseList"><!--start pressRealeses List -->
         <c:forEach items="${results.nodes}" var="node">
             <li class="pressRealeseItem">
-                <template:module node="${node}" forcedTemplate="default"/>
+                <template:module node="${node}" template="default"/>
             </li>
         </c:forEach>
     </ul>

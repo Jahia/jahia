@@ -51,7 +51,7 @@
 	<c:if test="${empty selectableNodeTypes || jcr:isNodeType(currentNode, selectableNodeTypes)}">
 		<json:property name="classes" value="selectable"/>
 	</c:if>
-	<template:module node="${currentNode}" templateType="json" editable="false" forcedTemplate="tree">
+	<template:module node="${currentNode}" templateType="json" editable="false" template="tree">
 		<template:param name="arrayName" value="children" />
 	</template:module>
 </json:object>

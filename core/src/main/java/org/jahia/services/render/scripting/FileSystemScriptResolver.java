@@ -82,7 +82,8 @@ public class FileSystemScriptResolver implements ScriptResolver {
     }
 
     private Template resolveTemplate(Resource resource, RenderContext context, List<ExtendedNodeType> nodeTypeList, ArrayList<String> searchedLocations) {
-        for (String template : resource.getTemplates()) {
+//        for (String template : resource.getTemplates()) {
+        String template = resource.getTemplate();
             for (ExtendedNodeType st : nodeTypeList) {
                 SortedSet<JahiaTemplatesPackage> sortedPackages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getSortedAvailableTemplatePackagesForModule(
                         st.getAlias().replace(":", "_"), context);
@@ -91,7 +92,7 @@ public class FileSystemScriptResolver implements ScriptResolver {
                     return res;
                 }
             }
-        }
+//        }
         return null;
     }
 

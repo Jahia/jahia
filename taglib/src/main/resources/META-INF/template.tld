@@ -142,7 +142,7 @@
 
     <tag>
         <description>Includes a node as a module into the page. The node to display is determined either by nodeName, contentBeanName, path or node attribute. Only one these attributes must be specified.
-            templateType / template / forcedTemplate attributes determine the way the node is rendered.
+            templateType / template attributes determine the way the node is rendered.
         </description>
         <name>module</name>
         <tag-class>org.jahia.taglibs.template.include.ModuleTag</tag-class>
@@ -174,18 +174,6 @@
         <attribute>
             <description>The default template used for displaying the node. Can be overriden with template of the node itself.</description>
             <name>template</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>The template used for displaying the node. Overriden the template defined in the node itself.</description>
-            <name>forcedTemplate</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>The template wrapper</description>
-            <name>templateWrapper</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
@@ -608,12 +596,6 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>The template used for displaying the node. Overriden the template defined in the node itself.</description>
-            <name>forcedTemplate</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
             <description>Enable or disable edition of this module in edit mode. Mainly used for absolute or references.</description>
             <name>editable</name>
             <required>false</required>
@@ -660,12 +642,6 @@
         <attribute>
             <description>The default template used for displaying the node. Can be overriden with template of the node itself.</description>
             <name>template</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>The template used for displaying the node. Overriden the template defined in the node itself.</description>
-            <name>forcedTemplate</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>

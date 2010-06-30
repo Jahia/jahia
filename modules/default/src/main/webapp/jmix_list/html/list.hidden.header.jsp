@@ -20,6 +20,14 @@
     <c:remove var="listQuerySql" scope="request"/>
     <c:remove var="currentList" scope="request"/>
     <c:choose>
+        <c:when test="${jcr:isNodeType(currentNode, 'jmix:renderableList')}">
+            <c:set scope="request" var="subNodesTemplate" value="${currentNode.properties['j:subNodesTemplate'].string}"/>
+        </c:when>
+        <c:otherwise>
+            <c:remove var="subNodesTemplate" scope="request"/>
+        </c:otherwise>
+    </c:choose>
+    <c:choose>
         <c:when test="${jcr:isNodeType(currentNode, 'jmix:pager')}">
             <c:set scope="request" var="paginationActive" value="true"/>
         </c:when>
@@ -44,7 +52,6 @@
         <c:set target="${activeFacetsVars}" property="${activeFacetMapVarName}" value="${facet:getAppliedFacetFilters(activeFacetsVars[facetParamVarName])}"/>
     </c:if>
     <c:if test="${empty currentList and not empty listQuery}">
-        <c:set var="renderOptions" value="before" />
             <query:definition var="listQuery" qomBeanName="listQuery" scope="request" >
             <c:forEach items="${activeFacetsVars[activeFacetMapVarName]}" var="facet">
                 <c:forEach items="${facet.value}" var="facetValue">            

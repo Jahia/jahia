@@ -29,7 +29,7 @@ public class BaseAttributesFilter extends AbstractFilter {
         chain.pushAttribute(request, "workspace", node.getSession().getWorkspace().getName());
         chain.pushAttribute(request, "currentResource", resource);
 
-        if (resource.getModuleParams().get("isInclude") == null) {
+        if (!Resource.CONFIGURATION_INCLUDE.equals(resource.getContextConfiguration())) {
             chain.pushAttribute(request, "currentNode", node);
             chain.pushAttribute(request, "url",new URLGenerator(context, resource));
         }

@@ -10,7 +10,6 @@
          sql="select * from [jmix:rating] as rating inner join [${currentNode.properties['j:typeOfContent'].string}] as rated on issamenode(rating,rated)
              where rating.[j:nbOfVotes] > ${currentNode.properties['j:minNbOfVotes'].long}
              order by rating.[j:sumOfVotes] asc"/>
-<c:set var="renderOptionsOnChild" value="none" scope="request"/>
 <c:set var="currentList" value="${result.nodes}" scope="request"/>
 <c:set var="end" value="${fn:length(result.nodes)}" scope="request"/>
 <c:set var="listTotalSize" value="${end}" scope="request"/>

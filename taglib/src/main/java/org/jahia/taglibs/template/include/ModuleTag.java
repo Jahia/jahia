@@ -33,7 +33,6 @@ package org.jahia.taglibs.template.include;
 
 import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
-import org.jahia.bin.Studio;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -76,10 +75,6 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     protected String nodeTypes = "jmix:droppableContent";
 
-    protected String forcedTemplate = null;
-
-    protected String templateWrapper = null;
-
     protected String var = null;
 
     protected StringBuffer buffer = new StringBuffer();
@@ -108,14 +103,6 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     public boolean isEditable() {
         return editable;
-    }
-
-    public String getForcedTemplate() {
-        return forcedTemplate;
-    }
-
-    public String getTemplateWrapper() {
-        return templateWrapper;
     }
 
     public String getVar() {
@@ -148,14 +135,6 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     public void setEditable(boolean editable) {
         this.editable = editable;
-    }
-
-    public void setForcedTemplate(String forcedTemplate) {
-        this.forcedTemplate = forcedTemplate;
-    }
-
-    public void setTemplateWrapper(String templateWrapper) {
-        this.templateWrapper = templateWrapper;
     }
 
     public void setVar(String var) {
@@ -240,10 +219,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                     templateType = currentResource.getTemplateType();
                 }
 
-                Resource resource = new Resource(node, templateType, template, forcedTemplate, getConfiguration());
-                if (templateWrapper != null && templateWrapper.length() > 0) {
-                    resource.pushWrapper(templateWrapper);
-                }
+                Resource resource = new Resource(node, templateType, template, getConfiguration());
 
                 String charset = pageContext.getResponse().getCharacterEncoding();
                 for (Map.Entry<String, String> param : parameters.entrySet()) {
@@ -265,9 +241,9 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                         Script script = null;
                         try {
                             script = RenderService.getInstance().resolveScript(resource, renderContext);
-                            printModuleStart(type, node.getPath(), resource.getResolvedTemplate(), script.getTemplate().getInfo());
+                            printModuleStart(type, node.getPath(), resource.getTemplate(), script.getTemplate().getInfo());
                         } catch (TemplateNotFoundException e) {
-                            printModuleStart(type, node.getPath(), resource.getResolvedTemplate(), "Script not found");
+                            printModuleStart(type, node.getPath(), resource.getTemplate(), "Script not found");
                         }
 
                         render(renderContext, resource);
@@ -289,15 +265,13 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             path = null;
             node = null;
             template = null;
-            forcedTemplate = null;
-            templateWrapper = null;
             editable = true;
             templateType = null;
             nodeTypes = "jmix:droppableContent";
             var = null;
             buffer = null;
 
-            if (!"true".equals(parameters.get("isInclude"))) {
+            if (!(this instanceof IncludeTag)) {
                 Integer level = (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
                 pageContext.setAttribute("org.jahia.modules.level", level != null ? level - 1 : 1, PageContext.REQUEST_SCOPE);
             }

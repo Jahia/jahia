@@ -20,7 +20,7 @@
         <c:if test="${status.first}">
             <ul>
         </c:if>
-        <template:module node="${node}" forcedTemplate="hidden.tree"/>
+        <template:module node="${node}" template="hidden.tree"/>
         <c:if test="${status.last}">
             </ul>
         </c:if>

@@ -307,12 +307,12 @@
 //---------------------------------------------------------
 
 [jmix:renderable] mixin
- extends = jnt:content, jnt:page
+ extends = jmix:list
  itemtype = layout
  - j:template (string, choicelist[templates,resourceBundle,image]) nofulltext
 
 [jmix:hasTemplateNode] mixin
- extends = nt:base
+ extends = jnt:page
  itemtype = layout
  - j:templateNode (weakreference) < jnt:template
 
@@ -324,13 +324,11 @@
 
 [jnt:mainResourceDisplay] > nt:base, jmix:renderableReference, jmix:siteComponentContent
 
-[jnt:mainResourceArea] > nt:base, jmix:renderableReference, jmix:renderableList, jmix:siteComponentContent
- - j:filter (string, choicelist[subnodetypes = 'jnt:page,jnt:content,jnt:contentList,jnt:folder,jnt:file',resourceBundle]) multiple
+[jnt:mainResourceArea] > nt:base, jmix:renderableReference, jmix:renderableList, jmix:siteComponentContent, jmix:listRestrictions
  + * (jmix:droppableContent) = jmix:droppableContent version
 
-[jnt:absoluteArea] > nt:base, jmix:renderableReference, jmix:renderableList, jmix:siteComponentContent
+[jnt:absoluteArea] > nt:base, jmix:renderableReference, jmix:renderableList, jmix:siteComponentContent, jmix:listRestrictions
  - j:basenode (weakreference)
- - j:filter (string, choicelist[subnodetypes = 'jnt:page,jnt:content,jnt:contentList,jnt:folder,jnt:file',resourceBundle]) multiple
 
 [jnt:currentUserDisplay] > nt:base, jmix:renderableReference, jmix:siteComponentContent
 
@@ -473,7 +471,7 @@
  itemtype = options
  - j:displayInMenu (string,choicelist) = 'primary' autocreated multiple < 'primary','secondary'
 
-[jnt:page] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:renderable, jmix:basemetadata, mix:title, jmix:publication, jmix:tagged, jmix:navMenuItem
+[jnt:page] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata, mix:title, jmix:publication, jmix:tagged, jmix:navMenuItem
  orderable
  - jcr:title (string) i18n mandatory
  + * (nt:base) = nt:base version

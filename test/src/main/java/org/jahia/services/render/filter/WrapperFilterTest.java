@@ -72,7 +72,7 @@ public class WrapperFilterTest extends TestCase {
 
         RenderContext context = new RenderContext(paramBean.getRequest(), paramBean.getResponse(), admin);
         context.setSite(site);
-        Resource resource = new Resource(node, "html", null,null, Resource.CONFIGURATION_PAGE);
+        Resource resource = new Resource(node, "html", null, Resource.CONFIGURATION_PAGE);
         context.setMainResource(resource);
 
         resource.pushWrapper("wrapper.fullpage");

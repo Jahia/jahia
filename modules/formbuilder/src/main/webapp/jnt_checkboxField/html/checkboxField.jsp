@@ -38,7 +38,7 @@
     <p>List of validation element</p>
     <ol>
     <c:forEach items="${jcr:getNodes(currentNode,'jnt:formElementValidation')}" var="formElement" varStatus="status">
-        <li><template:module node="${formElement}" forcedTemplate="edit"/></li>
+        <li><template:module node="${formElement}" template="edit"/></li>
     </c:forEach>
     </ol>
     <div class="addvalidation">

@@ -27,9 +27,7 @@
             <div class="boxdocspace-inner-border">
                 <ul id="docspaceTree" class="filetree">
                     <c:forEach var="node" items="${jcr:getChildrenOfType(pageNode,'jnt:folder')}">
-                        <template:module node="${node}" forcedTemplate="hidden.docspace.tree">
-                            <template:param name="renderOptions" value="none"/>
-                        </template:module>
+                        <template:module node="${node}" template="hidden.docspace.tree"/>
                     </c:forEach>
                 </ul>
             </div>

@@ -219,7 +219,7 @@
                             <property name="priority" value="3" />
                             <property name="applyOnModes" value="contribution" />
                             <property name="applyOnNodeTypes" value="jmix:contributeMode"/>
-                            <property name="skipOnConfiguration" value="include,wrapper,option"/>
+                            <property name="skipOnConfiguration" value="include,wrapper"/>
                         </bean>
                         <bean class="org.jahia.services.render.filter.UserAgentFilter" >
                             <property name="priority" value="4" />
@@ -240,12 +240,12 @@
                         </bean>
                         <bean class="org.jahia.services.render.filter.TemplatePermissionCheckFilter" >
                             <property name="priority" value="10" />
-                            <property name="skipOnConfiguration" value="include,wrapper,option"/>
+                            <property name="skipOnConfiguration" value="include,wrapper"/>
                         </bean>
                         <bean class="org.jahia.services.render.filter.MetricsLoggingFilter" >
                             <property name="priority" value="15" />
                             <property name="loggingService" ref="loggingService"/>
-                            <property name="skipOnConfiguration" value="include,wrapper,option"/>
+                            <property name="skipOnConfiguration" value="include,wrapper"/>
                         </bean>
                         <bean class="org.jahia.services.render.filter.TemplateAttributesFilter" >
                             <property name="priority" value="30" />
@@ -266,11 +266,11 @@
                         </bean>
                         <bean class="org.jahia.services.render.filter.WrapperFilter" >
                             <property name="priority" value="40" />
-                            <property name="skipOnConfiguration" value="include,wrapper,option"/>
+                            <property name="skipOnConfiguration" value="include,wrapper"/>
                         </bean>
                         <bean class="org.jahia.services.render.filter.analytics.GoogleAnalyticsFilter">
                             <property name="applyOnNodeTypes" value="jmix:googleanalytics"/>
-                            <property name="skipOnConfiguration" value="include,wrapper,option"/>
+                            <property name="skipOnConfiguration" value="include,wrapper"/>
                             <property name="priority" value="98" />
                         </bean>
                         <bean class="org.jahia.services.render.filter.TemplateScriptFilter" >

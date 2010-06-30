@@ -29,7 +29,7 @@ public class TemplateScriptFilter extends AbstractFilter {
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         Profiler profiler = (Profiler) renderContext.getRequest().getAttribute("profiler");
         if (profiler != null) {
-            profiler.start("render template "+resource.getResolvedTemplate());
+            profiler.start("render template "+resource.getTemplate());
         }
 
         HttpServletRequest request = renderContext.getRequest();
@@ -76,7 +76,8 @@ public class TemplateScriptFilter extends AbstractFilter {
     }
 
     private static String getErrorMessage(RenderContext ctx, Resource resource) {
-        return JahiaResourceBundle.getString(null, "templates.modules.onError", resource.getLocale(), ctx.getSite().getTemplatePackageName());
+//        return JahiaResourceBundle.getString(null, "templates.modules.onError", resource.getLocale(), ctx.getSite().getTemplatePackageName());
+        return "Module error";
     }
     
     private static Object getExceptionDetails(Throwable ex) {

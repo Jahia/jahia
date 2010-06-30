@@ -33,6 +33,7 @@
 package org.jahia.taglibs.jcr.node;
 
 import org.apache.log4j.Logger;
+import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.taglibs.AbstractJahiaTag;
 
@@ -40,6 +41,7 @@ import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
 import java.io.IOException;
 
 /**
@@ -55,9 +57,14 @@ public class JCRPropertyTag extends AbstractJahiaTag {
     private String name;
     private String var;
     private boolean inherited = false;
+    private int scope = PageContext.PAGE_SCOPE;
 
     public void setNode(JCRNodeWrapper node) {
         this.node = node;
+    }
+
+    public void setScope(String scope) {
+        this.scope = Util.getScope(scope);
     }
 
     /**
@@ -83,9 +90,9 @@ public class JCRPropertyTag extends AbstractJahiaTag {
                     if (var != null) {
                         returnValue = EVAL_BODY_INCLUDE;
                         if (property.getDefinition().isMultiple()) {
-                            pageContext.setAttribute(var, property.getValues());
+                            pageContext.setAttribute(var, property.getValues(), scope);
                         } else {
-                            pageContext.setAttribute(var, property.getValue());
+                            pageContext.setAttribute(var, property.getValue(), scope);
                         }
                     } else {
                         if (!property.getDefinition().isMultiple()) {
@@ -183,6 +190,7 @@ public class JCRPropertyTag extends AbstractJahiaTag {
         name = null;
         inherited = false;
         var = null;
+        scope = PageContext.PAGE_SCOPE;
         super.resetState();
     }
 }

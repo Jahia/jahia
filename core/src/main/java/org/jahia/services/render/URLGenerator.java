@@ -205,7 +205,7 @@ public class URLGenerator {
     }
 
     public String getCurrent() {
-        return buildURL(resource.getNode(), resource.getResolvedTemplate(), resource.getTemplateType());
+        return buildURL(resource.getNode(), resource.getTemplate(), resource.getTemplateType());
     }
 
     @SuppressWarnings("unchecked")

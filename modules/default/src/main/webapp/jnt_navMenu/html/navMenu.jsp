@@ -69,7 +69,7 @@
                                    scope="request"/>
                             <li class="${listItemCssClass}">
                                 <c:set var="statusNavMenu" value="${menuStatus}" scope="request"/>
-                                <template:module node="${menuItem}" forcedTemplate="hidden.menuElement" editable="false"/>
+                                <template:module node="${menuItem}" template="hidden.menuElement" editable="false"/>
                                     <%--<a href="">${menuItem.name}</a>--%>
                                 <c:if test="${hasChildren}">
                                     <template:include template="default">

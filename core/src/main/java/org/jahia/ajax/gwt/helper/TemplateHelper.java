@@ -1,6 +1,5 @@
 package org.jahia.ajax.gwt.helper;
 
-import org.apache.poi.hssf.record.formula.functions.T;
 import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.bin.Edit;
@@ -54,7 +53,7 @@ public class TemplateHelper {
         GWTRenderResult result = null;
         try {
             JCRNodeWrapper node = currentUserSession.getNode(path);
-            Resource r = new Resource(node, "html", null, template, configuration);
+            Resource r = new Resource(node, "html", template, configuration);
             request.setAttribute("mode", "edit");
             RenderContext renderContext = new RenderContext(request, response, currentUserSession.getUser());
             renderContext.setEditMode(editMode);
@@ -152,7 +151,7 @@ public class TemplateHelper {
         try {
             final JCRSessionWrapper session = currentUserSession;
             final JCRNodeWrapper node = session.getNode(path);
-            final Resource resource = new Resource(node, "html", null, null, Resource.CONFIGURATION_PAGE);
+            final Resource resource = new Resource(node, "html", null, Resource.CONFIGURATION_PAGE);
             request.setAttribute("mode", "edit");
             final RenderContext renderContext = new RenderContext(request, response, currentUserSession.getUser());
 

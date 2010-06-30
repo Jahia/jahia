@@ -24,9 +24,7 @@
         <c:if test="${status.first}">
             <ul>
         </c:if>
-        <template:module node="${node}" forcedTemplate="hidden.docspace.tree">
-            <template:param name="renderOptions" value="none"/>
-        </template:module>
+        <template:module node="${node}" template="hidden.docspace.tree"/>
         <c:if test="${status.last}">
             </ul>
         </c:if>

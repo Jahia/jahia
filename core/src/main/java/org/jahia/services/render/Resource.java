@@ -31,6 +31,7 @@
  */
 package org.jahia.services.render;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -50,14 +51,12 @@ public class Resource {
     public static final String CONFIGURATION_MODULE = "module";
     public static final String CONFIGURATION_INCLUDE = "include";
     public static final String CONFIGURATION_WRAPPER = "wrapper";
-    public static final String CONFIGURATION_OPTION = "option";
     public static final String CONFIGURATION_WRAPPEDCONTENT = "wrappedcontent";
 
     private static Logger logger = Logger.getLogger(Resource.class);
     private JCRNodeWrapper node;
     private String templateType;
     private String template;
-    private String forcedTemplate;
     private String contextConfiguration;
     private Stack<String> wrappers;
 
@@ -73,16 +72,13 @@ public class Resource {
      *
      * @param node                 The node to display
      * @param templateType         template type
-     * @param template             the template name, null if default
-     * @param forcedTemplate       the template name, null if default
+     * @param template
      * @param contextConfiguration
      */
-    public Resource(JCRNodeWrapper node, String templateType, String template, String forcedTemplate,
-                    String contextConfiguration) {
+    public Resource(JCRNodeWrapper node, String templateType, String template, String contextConfiguration) {
         this.node = node;
         this.templateType = templateType;
         this.template = template;
-        this.forcedTemplate = forcedTemplate;
         this.contextConfiguration = contextConfiguration;
         dependencies = new LinkedHashSet<JCRNodeWrapper>();
         dependencies.add(node);
@@ -130,30 +126,38 @@ public class Resource {
     public String getContextConfiguration() {
         return contextConfiguration;
     }
+//
+//    public List<String> getTemplates() {
+//        List<String> l = new ArrayList<String>();
+//
+//        if (template != null && template.length() > 0) {
+//            l.add(template);
+//            return l;
+//        }
+//        try {
+//            if (node.isNodeType("jmix:renderable") && node.hasProperty("j:template")) {
+//                l.add(node.getProperty("j:template").getString());
+//            }
+//        } catch (RepositoryException e) {
+//            logger.error(e.getMessage(), e);
+//        }
+//        l.add("default");
+//        return l;
+//    }
 
-    public List<String> getTemplates() {
-        List<String> l = new ArrayList<String>();
-
-        if (forcedTemplate != null && forcedTemplate.length() > 0) {
-            l.add(forcedTemplate);
-            return l;
-        }
-        try {
-            if (node.isNodeType("jmix:renderable") && node.hasProperty("j:template")) {
-                l.add(node.getProperty("j:template").getString());
+    public String getTemplate() {
+        if (StringUtils.isEmpty(template)) {
+            try {
+                if (node.isNodeType("jmix:renderable") && node.hasProperty("j:template")) {
+                    template = node.getProperty("j:template").getString();
+                } else {
+                    template = "default";
+                }
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
             }
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
         }
-        if (template != null && template.length() > 0) {
-            l.add(template);
-        }
-        l.add("default");
-        return l;
-    }
-
-    public String getResolvedTemplate() {
-        return getTemplates().iterator().next();
+        return template;
     }
 
     public Set<JCRNodeWrapper> getDependencies() {
@@ -190,7 +194,7 @@ public class Resource {
             logger.error("Error while retrieving node primary node type name", e);
         }
         return "Resource{" + "node=" + node.getPath() + ", primaryNodeTypeName='" + primaryNodeTypeName + "', templateType='" + templateType + '\'' + ", template='" +
-                template + '\'' + ", forcedTemplate='" + forcedTemplate + '\'' + '}';
+                template + '\'' + '}';
     }
 
     public void addOption(String wrapper, ExtendedNodeType nodeType) {
@@ -237,10 +241,6 @@ public class Resource {
         if (template != null ? !template.equals(resource.template) : resource.template != null) {
             return false;
         }
-        if (forcedTemplate != null ? !forcedTemplate.equals(resource.forcedTemplate) :
-                resource.forcedTemplate != null) {
-            return false;
-        }
         if (wrappers != null ? !wrappers.equals(resource.wrappers) : resource.wrappers != null) {
             return false;
         }
@@ -263,7 +263,6 @@ public class Resource {
         int result = node != null ? node.hashCode() : 0;
         result = 31 * result + (templateType != null ? templateType.hashCode() : 0);
         result = 31 * result + (template != null ? template.hashCode() : 0);
-        result = 31 * result + (forcedTemplate != null ? forcedTemplate.hashCode() : 0);
         result = 31 * result + (wrappers != null ? wrappers.hashCode() : 0);
         result = 31 * result + (options != null ? options.hashCode() : 0);
         result = 31 * result + (resourceNodeType != null ? resourceNodeType.hashCode() : 0);

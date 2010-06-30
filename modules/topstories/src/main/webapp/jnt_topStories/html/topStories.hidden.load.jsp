@@ -10,7 +10,6 @@
              sql="select * from [jmix:topStory] as story where isdescendantnode(story, ['${renderContext.site.path}'])
          and story.[j:level]='${currentNode.properties['j:level']}' order by story.[jcr:lastModified] desc"/>
 
-    <c:set var="renderOptionsOnChild" value="none" scope="request"/>
     <c:set var="currentList" value="${result.nodes}" scope="request"/>
     <c:set var="end" value="${fn:length(result.nodes)}" scope="request"/>
     <c:set var="listTotalSize" value="${end}" scope="request"/>

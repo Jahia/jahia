@@ -70,7 +70,7 @@
             </div>
         </c:when>
         <c:otherwise>
-            <template:module node="${renderContext.mainResource.node}" forcedTemplate="system" />
+            <template:module node="${renderContext.mainResource.node}" template="system" />
         </c:otherwise>
     </c:choose>
     <div class="clear"></div></div>

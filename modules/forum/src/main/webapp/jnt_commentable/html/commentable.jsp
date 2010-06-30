@@ -22,7 +22,7 @@
         <div class="boxdocspacepadding10 boxdocspacemarginbottom16">
             <div class="boxdocspace-inner">
                 <div class="boxdocspace-inner-border">
-                    <template:module node="${comments}" forcedTemplate="comments"/>
+                    <template:module node="${comments}" template="comments"/>
                 </div>
             </div>
         </div>

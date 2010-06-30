@@ -6,7 +6,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.widget.definition.ClassificationEditor;
+import org.jahia.ajax.gwt.client.widget.definition.CategoriesEditor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,11 +18,11 @@ import java.util.List;
  * Time: 7:44:45 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ClassificationTabItem extends EditEngineTabItem {
-    private ClassificationEditor classificationEditor;
+public class CategoriesTabItem extends EditEngineTabItem {
+    private CategoriesEditor categoriesEditor;
 
-    public ClassificationTabItem(NodeHolder engine) {
-        super(Messages.get("label.engineTab.classification", "Classification"), engine);
+    public CategoriesTabItem(NodeHolder engine) {
+        super(Messages.get("label.engineTab.categories", "Categories"), engine);
         //setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabClassification());
     }
 
@@ -30,19 +30,19 @@ public class ClassificationTabItem extends EditEngineTabItem {
     public void create(GWTJahiaLanguage locale) {
         if (!engine.isExistingNode() || (engine.getNode() != null)) {
             setProcessed(true);
-            classificationEditor = new ClassificationEditor(engine.getNode());
-            add(classificationEditor);
+            categoriesEditor = new CategoriesEditor(engine.getNode());
+            add(categoriesEditor);
 
         }
         layout();
     }
 
-    public ClassificationEditor getClassificationEditor() {
-        return classificationEditor;
+    public CategoriesEditor getCategoriesEditor() {
+        return categoriesEditor;
     }
 
-    public void updatePropertiesListWithClassificationEditorData(ClassificationEditor classificationEditor, List<GWTJahiaNodeProperty> list, List<String> mixin) {
-        if (classificationEditor == null) {
+    public void updateProperties(CategoriesEditor categoriesEditor, List<GWTJahiaNodeProperty> list, List<String> mixin) {
+        if (categoriesEditor == null) {
             return;
         }
 
@@ -52,12 +52,10 @@ public class ClassificationTabItem extends EditEngineTabItem {
         for (GWTJahiaNodeProperty property : list) {
             if (property.getName().equals("j:defaultCategory")) {
                 category = property;
-            } else if (property.getName().equals("j:tags")) {
-                tags = property;
             }
         }
 
-        List<GWTJahiaNode> gwtJahiaNodes = classificationEditor.getCatStore().getAllItems();
+        List<GWTJahiaNode> gwtJahiaNodes = categoriesEditor.getCatStore().getAllItems();
         List<GWTJahiaNodePropertyValue> values = new ArrayList<GWTJahiaNodePropertyValue>(gwtJahiaNodes.size());
         for (GWTJahiaNode gwtJahiaNode : gwtJahiaNodes) {
             values.add(new GWTJahiaNodePropertyValue(gwtJahiaNode, GWTJahiaNodePropertyType.REFERENCE));
@@ -79,30 +77,5 @@ public class ClassificationTabItem extends EditEngineTabItem {
                 list.add(gwtJahiaNodeProperty);
             }
         }
-
-        gwtJahiaNodes = classificationEditor.getTagStore().getAllItems();
-        values = new ArrayList<GWTJahiaNodePropertyValue>(gwtJahiaNodes.size());
-        for (GWTJahiaNode gwtJahiaNode : gwtJahiaNodes) {
-            values.add(new GWTJahiaNodePropertyValue(gwtJahiaNode, GWTJahiaNodePropertyType.WEAKREFERENCE));
-        }
-        gwtJahiaNodeProperty = new GWTJahiaNodeProperty();
-        gwtJahiaNodeProperty.setMultiple(true);
-        gwtJahiaNodeProperty.setValues(values);
-        gwtJahiaNodeProperty.setName("j:tags");
-        if (tags != null) {
-            if (values.isEmpty()) {
-                mixin.remove("jmix:tagged");
-                list.remove(tags);
-            } else {
-                list.add(gwtJahiaNodeProperty);
-            }
-        } else {
-            if (!values.isEmpty()) {
-                mixin.add("jmix:tagged");
-                list.add(gwtJahiaNodeProperty);
-            }
-        }
     }
-
-
 }

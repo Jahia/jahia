@@ -170,8 +170,10 @@ public abstract class AbstractContentEngine extends Window implements NodeHolder
                 tabs.add(new LayoutTabItem(this));
             } else if (tab.equals("metadata")) {
                 tabs.add(new MetadataTabItem(this));
-            } else if (tab.equals("classification")) {
-                tabs.add(new ClassificationTabItem(this));
+            } else if (tab.equals("tags")) {
+                tabs.add(new TagsTabItem(this));
+            } else if (tab.equals("categories")) {
+                tabs.add(new CategoriesTabItem(this));
             } else if (tab.equals("options")) {
                 tabs.add(new OptionsTabItem(this));
             } else if (tab.equals("rights")) {

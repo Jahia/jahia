@@ -30,7 +30,8 @@
                             <value>template</value>
                             <value>layout</value>
                             <value>metadata</value>
-                            <value>classification</value>
+                            <value>tags</value>
+                            <value>categories</value>
                             <value>option</value>
                             <value>rights</value>
                             <value>usages</value>
@@ -48,7 +49,8 @@
                             <value>content</value>
                             <value>layout</value>
                             <value>metadata</value>
-                            <value>classification</value>
+                            <value>tags</value>
+                            <value>categories</value>
                             <value>option</value>
                             <value>rights</value>
                             <value>usages</value>
@@ -71,7 +73,8 @@
                         <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
                             <value>createPage</value>
                             <value>metadata</value>
-                            <value>classification</value>
+                            <value>tags</value>
+                            <value>categories</value>
                             <value>option</value>
                             <value>rights</value>
                         </list>
@@ -84,7 +87,8 @@
                             <value>content</value>
                             <value>layout</value>
                             <value>metadata</value>
-                            <value>classification</value>
+                            <value>tags</value>
+                            <value>categories</value>
                             <value>option</value>
                             <value>rights</value>
                         </list>
@@ -170,7 +174,8 @@
                 <value>info</value>
                 <value>rights</value>
                 <value>usages</value>
-                <value>classification</value>
+                <value>tags</value>
+                <value>categories</value>
                 <value>versioning</value>
             </list>
         </property>
@@ -747,7 +752,8 @@
                 <value>content</value>
                 <value>layout</value>
                 <value>metadata</value>
-                <value>classification</value>
+                <value>tags</value>
+                <value>categories</value>
                 <value>option</value>
                 <value>rights</value>
                 <value>usages</value>

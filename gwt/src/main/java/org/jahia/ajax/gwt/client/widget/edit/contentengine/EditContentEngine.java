@@ -298,9 +298,12 @@ public class EditContentEngine extends AbstractContentEngine {
                     }
                 }
                 // case of classification
-                else if (item instanceof ClassificationTabItem) {
-                    ((ClassificationTabItem) item).updatePropertiesListWithClassificationEditorData(
-                            ((ClassificationTabItem) item).getClassificationEditor(), properties, node.getNodeTypes());
+                else if (item instanceof CategoriesTabItem) {
+                    ((CategoriesTabItem) item).updateProperties(
+                            ((CategoriesTabItem) item).getCategoriesEditor(), properties, node.getNodeTypes());
+                } else if (item instanceof TagsTabItem) {
+                        ((TagsTabItem) item).updateProperties(
+                                ((TagsTabItem) item).getTagsEditor(), properties, node.getNodeTypes());
                 } else if (item instanceof SeoTabItem) {
                     ((SeoTabItem) item).doSave();
                 }

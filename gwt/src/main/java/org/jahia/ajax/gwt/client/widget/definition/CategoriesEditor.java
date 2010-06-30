@@ -75,36 +75,25 @@ import java.util.List;
  * @since : JAHIA 6.1
  *        Created : 20 oct. 2009
  */
-public class ClassificationEditor extends ContentPanel {
+public class CategoriesEditor extends ContentPanel {
     private TreeStore<GWTJahiaNode> catStore;
-    private TreeStore<GWTJahiaNode> tagStore;
-    private TreeStore<GWTJahiaNode> treeStore;
     private static final int TREE_COLUMN_SIZE = 200;
 
 
-    public ClassificationEditor(final GWTJahiaNode node) {
+    public CategoriesEditor(final GWTJahiaNode node) {
         setLayout(new RowLayout(Style.Orientation.HORIZONTAL));
         setWidth("100%");
         setHeight("100%");
         setBorders(false);
         setHeaderVisible(false);
-        initStores(node);
-
+        initCategoriesStoreA(node);
         final ContentPanel catPanel = new ContentPanel();
         catPanel.setHeaderVisible(false);
-        catPanel.setSize(400, 300);
         catPanel.setLayout(new RowLayout(Style.Orientation.VERTICAL));
         catPanel.add(createCategoriedPickerPanel(), new RowData(1, -1, new Margins(4)));
         catPanel.add(createSelectedCategoriesPanel(), new RowData(1, -1, new Margins(4)));
 
-        final ContentPanel tagPanel = new ContentPanel();
-        tagPanel.setHeaderVisible(false);
-        tagPanel.setSize(400, 300);
-        tagPanel.setLayout(new RowLayout(Style.Orientation.VERTICAL));
-        tagPanel.add(createTagsPanel(), new RowData(1, -1, new Margins(4)));
-
-        add(tagPanel, new RowData(1, 1, new Margins(4, 0, 4, 0)));
-        add(catPanel, new RowData(-1, 1, new Margins(4)));
+        add(catPanel, new RowData(1, 1, new Margins(4)));
         layout();
 
     }
@@ -117,13 +106,9 @@ public class ClassificationEditor extends ContentPanel {
     private TreeGrid<GWTJahiaNode> createCategoriedPickerPanel() {
         GWTJahiaNodeTreeFactory treeGridFactory = new GWTJahiaNodeTreeFactory(Arrays.asList("/categories"), GWTJahiaNode.DEFAULT_REFERENCE_FIELDS);
         treeGridFactory.setNodeTypes(JCRClientUtils.CATEGORY_NODETYPES);
-        treeStore = treeGridFactory.getStore();
-
-        ColumnConfig name = new ColumnConfig("name", "Name", TREE_COLUMN_SIZE);
+        ColumnConfig name = new ColumnConfig("name", "Name",500);
         name.setRenderer(new TreeGridCellRenderer<GWTJahiaNode>());
         name.setFixed(true);
-
-
         ColumnConfig action = new ColumnConfig("action", "Action", 100);
         action.setAlignment(Style.HorizontalAlignment.RIGHT);
         action.setRenderer(new GridCellRenderer() {
@@ -161,47 +146,6 @@ public class ClassificationEditor extends ContentPanel {
     }
 
     /**
-     * init all stores
-     *
-     * @param node
-     */
-    private void initStores(final GWTJahiaNode node) {
-        initCategoriesStoreA(node);
-        initTagsStore(node);
-    }
-
-    /**
-     * init tag store
-     *
-     * @param node
-     */
-    private void initTagsStore(final GWTJahiaNode node) {
-        TreeLoader<GWTJahiaNode> tagLoader = new BaseTreeLoader<GWTJahiaNode>(new RpcProxy<List<GWTJahiaNode>>() {
-            @Override
-            protected void load(Object o, final AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
-                if (node != null) {
-                    final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
-                    async.getProperties(node.getPath(), new BaseAsyncCallback<GWTJahiaGetPropertiesResult>() {
-                        public void onSuccess(GWTJahiaGetPropertiesResult result) {
-                            final GWTJahiaNodeProperty gwtJahiaNodeProperty = result.getProperties().get("j:tags");
-                            if (gwtJahiaNodeProperty != null) {
-                                final List<GWTJahiaNodePropertyValue> propertyValues = gwtJahiaNodeProperty.getValues();
-                                List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>(propertyValues.size());
-                                for (GWTJahiaNodePropertyValue propertyValue : propertyValues) {
-                                    nodes.add(propertyValue.getNode());
-                                }
-                                listAsyncCallback.onSuccess(nodes);
-                            }
-                        }
-                    });
-                }
-            }
-        });
-
-        tagStore = new TreeStore<GWTJahiaNode>(tagLoader);
-    }
-
-    /**
      * init categories store
      *
      * @param node
@@ -234,7 +178,7 @@ public class ClassificationEditor extends ContentPanel {
     }
 
     private Component createSelectedCategoriesPanel() {
-        ColumnConfig columnConfig = new ColumnConfig("name", "Name", TREE_COLUMN_SIZE);
+        ColumnConfig columnConfig = new ColumnConfig("name", "Name", 500);
         columnConfig.setFixed(true);
         columnConfig.setRenderer(new TreeGridCellRenderer<GWTJahiaNode>());
 
@@ -268,88 +212,8 @@ public class ClassificationEditor extends ContentPanel {
         return catGrid;
     }
 
-    private Component createTagsPanel() {
-        ColumnConfig columnConfig;
-        columnConfig = new ColumnConfig("name", "Name", TREE_COLUMN_SIZE);
-        columnConfig.setFixed(true);
-        columnConfig.setRenderer(new TreeGridCellRenderer<GWTJahiaNode>());
-
-
-        ColumnConfig action = new ColumnConfig("action", "Action", 100);
-        action.setAlignment(Style.HorizontalAlignment.RIGHT);
-        action.setRenderer(new GridCellRenderer() {
-            public Object render(ModelData modelData, String s, ColumnData columnData, int i, int i1,
-                                 ListStore listStore, Grid grid) {
-                Button button = new Button("Remove", new SelectionListener<ButtonEvent>() {
-                    @Override
-                    public void componentSelected(ButtonEvent buttonEvent) {
-                        final GWTJahiaNode node1 = (GWTJahiaNode) buttonEvent.getButton().getData("associatedNode");
-                        tagStore.remove(node1);
-                    }
-                });
-                button.setData("associatedNode", modelData);
-                button.setIcon(StandardIconsProvider.STANDARD_ICONS.minusRound());
-                return button;
-            }
-        });
-
-        ContentPanel panel = new ContentPanel();
-        panel.setBodyBorder(false);
-        panel.setBorders(false);
-        panel.setHeaderVisible(false);
-        // Add a new tag
-        final AutoCompleteComboBox autoCompleteComboBox = new AutoCompleteComboBox(JCRClientUtils.TAG_NODETYPES, 15);
-        autoCompleteComboBox.setMaxLength(120);
-        autoCompleteComboBox.setWidth(200);
-        autoCompleteComboBox.setName("tagName");
-
-        //panel.add(name, data);
-        Button addTag = new Button(Messages.get("label.add", "Add"), new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent buttonEvent) {
-                final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
-                async.getTagNode(autoCompleteComboBox.getRawValue(), true, new BaseAsyncCallback<GWTJahiaNode>() {
-                    /**
-                     * On success
-                     * @param result
-                     */
-                    public void onSuccess(GWTJahiaNode result) {
-                        if (tagStore.findModel(result) == null) {
-                            tagStore.add(result, false);
-                        }
-                    }
-
-
-                });
-
-            }
-        });
-
-        ButtonBar bar = new ButtonBar();
-        bar.add(new FillToolItem());
-        bar.add(new Text(Messages.get("label_add_tag", "Add Tag") + ":"));
-        bar.add(autoCompleteComboBox);
-        bar.add(addTag);
-        panel.setTopComponent(bar);
-        // Sub grid
-
-        TreeGrid<GWTJahiaNode> tagGrid = new TreeGrid<GWTJahiaNode>(tagStore, new ColumnModel(Arrays.asList(
-                columnConfig, action)));
-        tagGrid.setHeight(360);
-        tagGrid.setIconProvider(ContentModelIconProvider.getInstance());
-        tagGrid.setAutoExpandColumn("name");
-        tagGrid.getTreeView().setRowHeight(25);
-        tagGrid.getTreeView().setForceFit(true);
-        panel.add(tagGrid);
-
-        return panel;
-    }
-
     public TreeStore<GWTJahiaNode> getCatStore() {
         return catStore;
     }
 
-    public TreeStore<GWTJahiaNode> getTagStore() {
-        return tagStore;
-    }
 }

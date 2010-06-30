@@ -49,8 +49,6 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
-import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
-import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServiceAsync;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.*;
 import org.jahia.ajax.gwt.client.widget.tripanel.BottomRightComponent;
 
@@ -125,8 +123,10 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                 tabs.add(new LayoutTabItem(this));
             } else if (tab.equals("metadata")) {
                 tabs.add(new MetadataTabItem(this));
-            } else if (tab.equals("classification")) {
-                tabs.add(new ClassificationTabItem(this));
+            } else if (tab.equals("tags")) {
+                tabs.add(new TagsTabItem(this));
+            } else if (tab.equals("categories")) {
+                tabs.add(new CategoriesTabItem(this));
             } else if (tab.equals("option")) {
                 tabs.add(new OptionsTabItem(this));
             } else if (tab.equals("rights")) {

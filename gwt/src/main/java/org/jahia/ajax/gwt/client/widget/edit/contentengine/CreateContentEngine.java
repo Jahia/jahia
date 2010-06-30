@@ -230,8 +230,10 @@ public class CreateContentEngine extends AbstractContentEngine {
                 if (acl != null) {
                     newNodeACL = acl.getAcl();
                 }
-            } else if (item instanceof ClassificationTabItem) {
-                ((ClassificationTabItem) item).updatePropertiesListWithClassificationEditorData(((ClassificationTabItem) item).getClassificationEditor(), props, mixin);
+            } else if (item instanceof CategoriesTabItem) {
+                ((CategoriesTabItem) item).updateProperties(((CategoriesTabItem) item).getCategoriesEditor(), props, mixin);
+            } else if (item instanceof TagsTabItem) {
+                ((TagsTabItem) item).updateProperties(((TagsTabItem) item).getTagsEditor(), props, mixin);
             }
         }
 

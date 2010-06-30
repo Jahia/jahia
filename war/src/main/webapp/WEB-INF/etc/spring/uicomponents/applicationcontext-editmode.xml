@@ -222,7 +222,8 @@
                             <value>template,$site/edit-mode/template</value>
                             <value>layout,$site/edit-mode/layout</value>
                             <value>metadata,$site/edit-mode/metadata</value>
-                            <value>classification,$site/edit-mode/classification</value>
+                            <value>tags,$site/edit-mode/tags</value>
+                            <value>categories,$site/edit-mode/categories</value>
                             <value>options,$site/edit-mode/options</value>
                             <value>rights,$site/edit-mode/rights</value>
                             <value>usages,$site/edit-mode/usages</value>
@@ -240,7 +241,8 @@
                             <value>content,$site/edit-mode/content</value>
                             <value>layout,$site/edit-mode/layout</value>
                             <value>metadata,$site/edit-mode/metadata</value>
-                            <value>classification,$site/edit-mode/classification</value>
+                            <value>tags,$site/edit-mode/tags</value>
+                            <value>categories,$site/edit-mode/categories</value>
                             <value>options,$site/edit-mode/options</value>
                             <value>rights,$site/edit-mode/rights</value>
                             <value>usages,$site/edit-mode/usages</value>
@@ -263,7 +265,8 @@
                         <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
                             <value>createPage,$site/edit-mode/create-page</value>
                             <value>metadata,$site/edit-mode/metadata</value>
-                            <value>classification,$site/edit-mode/classification</value>
+                            <value>tags,$site/edit-mode/tags</value>
+                            <value>categories,$site/edit-mode/categories</value>
                             <value>options,$site/edit-mode/options</value>
                             <value>rights,$site/edit-mode/rights</value>
                         </list>
@@ -276,7 +279,8 @@
                             <value>content,$site/edit-mode/content</value>
                             <value>layout,$site/edit-mode/layout</value>
                             <value>metadata,$site/edit-mode/metadata</value>
-                            <value>classification,$site/edit-mode/classification</value>
+                            <value>tags,$site/edit-mode/tags</value>
+                            <value>categories,$site/edit-mode/categories</value>
                             <value>options,$site/edit-mode/options</value>
                             <value>rights,$site/edit-mode/rights</value>
                         </list>

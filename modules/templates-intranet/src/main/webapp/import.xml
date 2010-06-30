@@ -219,7 +219,7 @@
             </tabularList>
           </wrappercontent>
         </my-profile>
-        <events jcr:mixinTypes="jmix:hasTemplateNode" jcr:primaryType="jnt:template" j:templateNode="/templatesSet/templates-web/templates/sitewrapper" j:applyOn="jnt:page">
+        <events jcr:mixinTypes="jmix:hasTemplateNode" jcr:primaryType="jnt:template" j:templateNode="/templatesSet/templates-intranet/templates/sitewrapper" j:applyOn="jnt:page">
           <wrappercontent jcr:primaryType="jnt:contentList">
             <row1 column="2col115" jcr:primaryType="jnt:row">
               <col1 jcr:primaryType="jnt:contentList">

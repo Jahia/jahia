@@ -48,7 +48,6 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.pages.JahiaPageTemplateBaseService;
-import org.jahia.services.pages.JahiaPageTemplateService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.TemplatePackageApplicationContextLoader.ContextInitializedEvent;
@@ -71,16 +70,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     
     private JahiaSitesService siteService;
 
-    private JahiaPageTemplateService tplService;
-    
     public void setSiteService(JahiaSitesService siteService) {
         this.siteService = siteService;
     }
     
-    public void setTplService(JahiaPageTemplateService tplService) {
-        this.tplService = tplService;
-    }
-
     public JahiaTemplatesPackage associateTemplatePackageWithSite(
             String templatePackageName, JahiaSite site) throws JahiaException {
         JahiaTemplatesPackage templatePackage = getTemplatePackage(templatePackageName);

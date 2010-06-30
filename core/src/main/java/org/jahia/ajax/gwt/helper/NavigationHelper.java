@@ -567,7 +567,7 @@ public class NavigationHelper {
                 if (n.isNodeType(Constants.JAHIANT_TRANSLATION)) {
                     n = n.getParent();
                 }
-                if (!n.isNodeType(Constants.NT_FROZENNODE) && (CollectionUtils.isEmpty(nodeTypesToApply) || nodeTypesToApply.size() == 1 || matchesNodeType(n, nodeTypesToApply)) && n.isVisible()) {
+                if (!n.isNodeType(Constants.NT_FROZENNODE) && (CollectionUtils.isEmpty(nodeTypesToApply) || matchesNodeType(n, nodeTypesToApply)) && n.isVisible()) {
                     // use for pickers
                     boolean hasNodes = false;
                     try {

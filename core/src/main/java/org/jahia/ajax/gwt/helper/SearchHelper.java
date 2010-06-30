@@ -369,6 +369,7 @@ public class SearchHelper {
         // nodeType
         if (gwtQuery.getNodeTypes() != null && gwtQuery.getNodeTypes().size() == 1) {
             criteria.setNodeType(gwtQuery.getNodeTypes().get(0));
+            gwtQuery.getNodeTypes().clear();
         }        
         
         // language

@@ -596,4 +596,38 @@ public final class JCRContentUtils {
     public static File downloadFileContent(JCRNodeWrapper node) throws IOException {
         return downloadFileContent(node, File.createTempFile("data", null));
     }
+
+    /**
+     * Little utility method to retrieve or create a path, building it if necessary. For example let's say that we want
+     * to get or create the path from a parentNode : messages/inbox . We can simply pass the parent node, the session
+     * and the path to check, and it will either retrieve it if it exists, or create it if it doesn't.
+     *
+     * Please note that this method also checks out the parent nodes.
+     * @param session
+     * @param parentNode the parent node in from which we want to retrieve the relative path.
+     * @param path the path to retrieve or create. Note that this path MUST be relative
+     * @param pathNodeType the type to use for the intermediary nodes (and the last path too !) if they need to be
+     * created. Usually you'll want to use Constants.JAHIANT_CONTENTLIST here.
+     * @return the leaf that is equivalent to the lowest path value.
+     * @throws RepositoryException occurs if there is any problem accessing content or creating the nodes.
+     */
+    public static JCRNodeWrapper getOrAddPath(JCRSessionWrapper session, JCRNodeWrapper parentNode, String path, String pathNodeType) throws RepositoryException {
+        String[] subPaths = path.split("/");
+        String lastPath = subPaths[subPaths.length - 1];
+        JCRNodeWrapper node = parentNode;
+        for (String subPath : subPaths) {
+            if (StringUtils.isNotBlank(subPath) && !"*".equals(subPath) && !subPath.equals(lastPath)) {
+                try {
+                    node = node.getNode(subPath);
+                    session.checkout(node);
+                } catch (PathNotFoundException e) {
+                    if (node != null) {
+                        session.checkout(node);
+                        node = node.addNode(subPath, pathNodeType);
+                    }
+                }
+            }
+        }
+        return node;
+    }
 }

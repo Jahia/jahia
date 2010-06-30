@@ -353,6 +353,15 @@ public abstract class AbstractFilter implements RenderFilter {
         conditions.add(condition);
     }
 
+    /**
+     * Adds the specified condition for this filter at the specified position.
+     *
+     * @param condition the condition to be added for this filter
+     */
+    public void addCondition(int index, ExecutionCondition condition) {
+        conditions.add(index, condition);
+    }
+
     public boolean areConditionsMatched(RenderContext renderContext, Resource resource) {
         boolean matches = true;
         for (ExecutionCondition condition : conditions) {
@@ -458,9 +467,9 @@ public abstract class AbstractFilter implements RenderFilter {
             for (String mode : modes.split(",")) {
                 condition.add(new ModeCondition(mode.trim()));
             }
-            addCondition(condition);
+            addCondition(0, condition);
         } else {
-            addCondition(new ModeCondition(modes));
+            addCondition(0, new ModeCondition(modes));
         }
     }
 
@@ -477,9 +486,9 @@ public abstract class AbstractFilter implements RenderFilter {
             for (String conf : configurations.split(",")) {
                 condition.add(new ConfigurationCondition(conf.trim()));
             }
-            addCondition(condition);
+            addCondition(0, condition);
         } else {
-            addCondition(new ConfigurationCondition(configurations));
+            addCondition(0, new ConfigurationCondition(configurations));
         }
     }
 
@@ -585,7 +594,7 @@ public abstract class AbstractFilter implements RenderFilter {
         } else {
             condition = new ModeCondition(modes);
         }
-        addCondition(new NotCondition(condition));
+        addCondition(0, new NotCondition(condition));
     }
 
     /**
@@ -606,7 +615,7 @@ public abstract class AbstractFilter implements RenderFilter {
         } else {
             condition = new ConfigurationCondition(configurations);
         }
-        addCondition(new NotCondition(condition));
+        addCondition(0, new NotCondition(condition));
     }
 
     /**

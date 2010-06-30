@@ -56,17 +56,23 @@ public class Functions {
     public static JCRNodeWrapper getBindedComponent(JCRNodeWrapper currentNode, RenderContext renderContext, String property) {
         Node bindedComponentNode = null;
         try {
-            Property bindedComponentProp = currentNode.getProperty(property);
-            if (bindedComponentProp != null) {
-                bindedComponentNode = bindedComponentProp.getNode();
-            }
-            if (bindedComponentNode != null) {
-                if (bindedComponentNode.isNodeType(Constants.JAHIANT_MAINRESOURCE_DISPLAY)) {
-                    bindedComponentNode = renderContext.getMainResource().getNode();
-                } else if (bindedComponentNode.isNodeType(Constants.JAHIANT_MAINRESOURCE_AREA)) {
-                    String areaName = bindedComponentNode.getName();
-                    bindedComponentNode = renderContext.getMainResource().getNode();                    
-                    bindedComponentNode = bindedComponentNode.getNode(areaName);
+            if (currentNode.hasProperty(property)) {
+                Property bindedComponentProp = currentNode.getProperty(property);
+                if (bindedComponentProp != null) {
+                    bindedComponentNode = bindedComponentProp.getNode();
+                }
+                if (bindedComponentNode != null) {
+                    if (bindedComponentNode.isNodeType(Constants.JAHIANT_MAINRESOURCE_DISPLAY)) {
+                        bindedComponentNode = renderContext.getMainResource().getNode();
+                    } else if (bindedComponentNode.isNodeType(Constants.JAHIANT_MAINRESOURCE_AREA)) {
+                        String areaName = bindedComponentNode.getName();
+                        bindedComponentNode = renderContext.getMainResource().getNode();
+                        if (bindedComponentNode.hasNode(areaName)) {
+                            bindedComponentNode = bindedComponentNode.getNode(areaName);
+                        } else {
+                            bindedComponentNode = null;
+                        }
+                    }
                 }
             }
         } catch (RepositoryException e) {

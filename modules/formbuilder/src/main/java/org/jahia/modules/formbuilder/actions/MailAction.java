@@ -125,6 +125,10 @@ public class MailAction implements Action {
                 }
             }
             String toMail = UserPreferencesHelper.getEmailAddress(to);
+            /*
+            Define objects to be binded with the script engine to evaluate the scripts
+            Same bindings for body and subject
+            */        
             Map<String,Object> bindings = new HashMap<String,Object>();
             bindings.put("formDatas",formDatas);
             bindings.put("formNode",node.getParent());

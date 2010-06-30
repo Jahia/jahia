@@ -46,3 +46,34 @@ rule "notify user (create)"
         Notify new user with mail template "/notifications/templates/mail/newUser.vm"
 end
 ----------------------------------
+
+* Sending Mail with templates
+
+  You can use a template written with your preferred script language to design your mails, each mail will use two templates.
+  One for the body and one for the subject.
+
+  For example in the Jahia Form Builder modules we define a MailAction that will send the submitted form by mail.
+  We have defined a mail template in </action/mail/body.vm> for the body and jahia will assumed the subject
+  template to be named </action/mail/body.subject.vm> (same name, same extension).
+
+  Here how to send the mail from you action (extract from MailAction):
+
+---------------------------------------------
+//Define where to send the mail
+String toMail = UserPreferencesHelper.getEmailAddress(to);
+
+//Define objects to be binded with the script engine to evaluate the scripts
+//Same bindings for body and subject
+Map<String,Object> bindings = new HashMap<String,Object>();
+bindings.put("formDatas",formDatas);
+bindings.put("formNode",node.getParent());
+bindings.put("submitter",renderContext.getUser());
+bindings.put("date",new DateTool());
+bindings.put("submissionDate", Calendar.getInstance());
+bindings.put("locale", resource.getLocale());
+
+// Send the mail to the specified address from the account defined in the Jahia Settings
+camelNotificationService.sendMailWithTemplate(mailTemplatePath,bindings,toMail, SettingsBean.getInstance().getMail_from(),
+                                              null,null,resource.getLocale(), "Jahia Form Builder");
+---------------------------------------------
+

@@ -27,8 +27,8 @@
     <jahia.package.version>6.5-SNAPSHOT</jahia.package.version>
     <jahia.project.structure.version>2</jahia.project.structure.version>
     <jahia.archivers.version>2.0</jahia.archivers.version>
-    <jahia.configurators.version>2.0</jahia.configurators.version>
-    <jahia.deployers.version>2.0</jahia.deployers.version>
+    <jahia.configurators.version>2.1</jahia.configurators.version>
+    <jahia.deployers.version>2.1</jahia.deployers.version>
     
     <pluto.version>2.0.2</pluto.version>
     <spring.version>2.5.6.SEC02</spring.version>

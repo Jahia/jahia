@@ -25,10 +25,10 @@
   <url>http://www.jahia.org</url>
   <properties>
     <jahia.package.version>6.5-SNAPSHOT</jahia.package.version>
-    <jahia.archivers.version>2.0-SNAPSHOT</jahia.archivers.version>
-    <jahia.configurators.version>2.0-SNAPSHOT</jahia.configurators.version>
-    <jahia.deployers.version>2.0-SNAPSHOT</jahia.deployers.version>
-    <jahia.maven-plugin.version>2.0-SNAPSHOT</jahia.maven-plugin.version>
+    <jahia.project.structure.version>2</jahia.project.structure.version>
+    <jahia.archivers.version>2.0</jahia.archivers.version>
+    <jahia.configurators.version>2.0</jahia.configurators.version>
+    <jahia.deployers.version>2.0</jahia.deployers.version>
     
     <pluto.version>2.0.2</pluto.version>
     <spring.version>2.5.6.SEC02</spring.version>
@@ -375,10 +375,6 @@
   <build>
     <pluginManagement>
         <plugins>
-            <plugin>
-                <artifactId>maven-jahia-plugin</artifactId>
-                <version>${jahia.maven-plugin.version}</version>
-            </plugin>
             <plugin>
                 <artifactId>maven-site-plugin</artifactId>
                 <version>2.1.1</version>

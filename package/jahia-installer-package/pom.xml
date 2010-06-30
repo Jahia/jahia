@@ -24,14 +24,14 @@
             <version>${izpack.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.jahia.server</groupId>
+            <groupId>org.jahia.configuration</groupId>
             <artifactId>archivers</artifactId>
             <version>${jahia.archivers.version}</version>
             <classifier>standalone</classifier>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.server</groupId>
+            <groupId>org.jahia.configuration</groupId>
             <artifactId>configurators</artifactId>
             <version>${jahia.configurators.version}</version>
             <classifier>standalone</classifier>

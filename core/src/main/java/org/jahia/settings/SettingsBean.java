@@ -53,8 +53,8 @@ import org.apache.commons.collections.FastHashMap;
 import org.apache.log4j.Logger;
 import org.jahia.utils.JahiaTools;
 import org.jahia.utils.PathResolver;
-import org.jahia.utils.maven.plugin.deployers.ServerDeploymentFactory;
-import org.jahia.utils.maven.plugin.deployers.ServerDeploymentInterface;
+import org.jahia.configuration.deployers.ServerDeploymentFactory;
+import org.jahia.configuration.deployers.ServerDeploymentInterface;
 import org.jahia.utils.properties.PropertiesManager;
 import org.springframework.core.io.Resource;
 

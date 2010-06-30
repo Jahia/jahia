@@ -59,7 +59,7 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.files.FileUpload;
-import org.jahia.utils.maven.plugin.deployers.ServerDeploymentInterface;
+import org.jahia.configuration.deployers.ServerDeploymentInterface;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
 

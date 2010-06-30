@@ -97,7 +97,7 @@
             <version>${jahia.package.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.jahia.server</groupId>
+            <groupId>org.jahia.configuration</groupId>
             <artifactId>deployers</artifactId>
             <version>${jahia.deployers.version}</version>
         </dependency>

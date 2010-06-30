@@ -114,6 +114,10 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     public static final String NORMALIZE_NODE_NAME = "normalizeNodeName";
     public static final String VERSION = "version";
 
+    private static final List<String> REDIRECT_CODE_MOVED_PERMANENTLY = new ArrayList<String>(
+            Arrays.asList(new String[] { String.valueOf(HttpServletResponse.SC_MOVED_PERMANENTLY) }));
+    private static final List<String> LIST_WITH_EMPTY_STRING = new ArrayList<String>(Arrays.asList(new String[]{StringUtils.EMPTY}));
+
     private MetricsLoggingService loggingService;
     private JahiaTemplateManagerService templateService;
     private Action defaultPostAction;
@@ -123,6 +127,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     private JCRSessionFactory jcrSessionFactory;
 
     private Integer sessionExpiryTime = null;
+    
+    private Set<String> allowedMethods = new HashSet<String>();
 
     static {
         reservedParameters = new HashSet<String>();
@@ -216,7 +222,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     logger.error("Couldn't find end tag for element " + element.getName() + " debugInfo=" + element.getDebugInfo() + " in markup [" + out + "]");
                 } else {
                     final String staticsAsset = renderService.render(new Resource(resource.getNode(), "html",
-                            "html.statics.assets",
+                                                                                                "html.statics.assets",
                                                                                                 Resource.CONFIGURATION_INCLUDE),
                                                                                    renderContext);
                     outputDocument.replace(tag.getBegin(), tag.getBegin() + 1, "\n" + AggregateCacheFilter.removeEsiTags(
@@ -227,7 +233,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 for (Element element : elementList) {
                     final EndTag tag = element.getEndTag();
                     final String staticsAsset = renderService.render(new Resource(resource.getNode(), "html",
-                            "html.statics.assets",
+                                                                                                "html.statics.assets",
                                                                                                 Resource.CONFIGURATION_INCLUDE),
                                                                                    renderContext);
                     outputDocument.replace(tag.getBegin(), tag.getBegin() + 1, "\n" + AggregateCacheFilter.removeEsiTags(
@@ -611,6 +617,9 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         if (req.getParameter(METHOD_TO_CALL) != null) {
             method = req.getParameter(METHOD_TO_CALL).toUpperCase();
         }
+        if (!isMethodAllowed(method)) {
+            resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+        }
         long startTime = System.currentTimeMillis();
 
         try {
@@ -644,10 +653,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             if (method.equals(METHOD_GET)) {
                 if (!StringUtils.isEmpty(urlResolver.getRedirectUrl())) {
                     Map<String, List<String>> parameters = new HashMap<String, List<String>>();
-                    parameters
-                            .put(NEW_NODE_OUTPUT_FORMAT, new ArrayList(Arrays.asList(new String[]{StringUtils.EMPTY})));
-                    parameters.put(REDIRECT_HTTP_RESPONSE_CODE, new ArrayList(
-                            Arrays.asList(new String[]{String.valueOf(HttpServletResponse.SC_MOVED_PERMANENTLY)})));
+                    parameters.put(NEW_NODE_OUTPUT_FORMAT, LIST_WITH_EMPTY_STRING);
+                    parameters.put(REDIRECT_HTTP_RESPONSE_CODE, REDIRECT_CODE_MOVED_PERMANENTLY);
 
                     performRedirect(urlResolver.getRedirectUrl(), StringUtils.isEmpty(urlResolver.getVanityUrl()) ?
                             "/" + urlResolver.getLocale().toString() + urlResolver.getPath() :
@@ -738,6 +745,10 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         return null;
     }
 
+    protected boolean isMethodAllowed(String method) {
+        return allowedMethods.isEmpty() || allowedMethods.contains(method);
+    }
+
     protected boolean hasAccess(JahiaUser user, String site) {
         return true;
     }
@@ -800,5 +811,17 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
      */
     public void setJcrSessionFactory(JCRSessionFactory jcrSessionFactory) {
         this.jcrSessionFactory = jcrSessionFactory;
+    }
+
+    /**
+     * Specifies the set of allowed HTTP methods.
+     *  
+     * @param allowedMethods the set of allowed HTTP methods
+     */
+    public void setAllowedMethods(Set<String> allowedMethods) {
+        this.allowedMethods = new HashSet<String>(allowedMethods.size());
+        for (String method : allowedMethods) {
+            this.allowedMethods.add(method.toUpperCase());
+        }
     }
 }

@@ -2,6 +2,7 @@ package org.jahia.services.workflow.jbpm;
 
 import org.apache.log4j.Logger;
 import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.modules.social.SocialService;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.usermanager.JahiaLDAPUser;
@@ -67,7 +68,7 @@ public class ConnectUsers implements ExternalActivityBehaviour {
                     session.checkout(leftUser);
                     leftConnectionsNode = leftUser.addNode("connections", "jnt:contentList");
                 }
-                JCRNodeWrapper leftUserConnection = leftConnectionsNode.addNode(leftUser.getName() + "-" + rightUser.getName(), "jnt:userConnection");
+                JCRNodeWrapper leftUserConnection = leftConnectionsNode.addNode(leftUser.getName() + "-" + rightUser.getName(), SocialService.JNT_SOCIAL_CONNECTION);
                 leftUserConnection.setProperty("j:connectedFrom", leftUser);
                 leftUserConnection.setProperty("j:connectedTo", rightUser);
                 leftUserConnection.setProperty("j:type", "collegue");
@@ -81,7 +82,7 @@ public class ConnectUsers implements ExternalActivityBehaviour {
                     session.checkout(rightUser);
                     rightConnectionsNode = rightUser.addNode("connections", "jnt:contentList");
                 }
-                JCRNodeWrapper rightUserConnection = rightConnectionsNode.addNode(rightUser.getName() + "-" + leftUser.getName(), "jnt:userConnection");
+                JCRNodeWrapper rightUserConnection = rightConnectionsNode.addNode(rightUser.getName() + "-" + leftUser.getName(), SocialService.JNT_SOCIAL_CONNECTION);
                 rightUserConnection.setProperty("j:connectedFrom", rightUser);
                 rightUserConnection.setProperty("j:connectedTo", leftUser);
                 rightUserConnection.setProperty("j:type", "collegue");

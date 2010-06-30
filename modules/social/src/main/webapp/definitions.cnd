@@ -5,7 +5,7 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
-[jnt:userConnection] > jnt:content, jmix:sandboxContent
+[jnt:socialConnection] > jnt:content, jmix:sandboxContent
  - j:connectedFrom (weakreference) < jnt:user
  - j:connectedTo (weakreference) < jnt:user
  - j:type (string)
@@ -13,31 +13,41 @@
 [jnt:socialGroup] > jnt:content, jmix:sandboxContent
  - j:description (string) i18n
 
-[jnt:userActivityMediaItem] > jnt:content, jmix:sandboxContent
+[jnt:socialMediaItem] > jnt:content, jmix:sandboxContent
  - j:type (string)
  - j:mimeType (string)
  - j:taggedPeople (string) multiple
  - j:data (weakreference, file) < jnt:file
+
+[jnt:socialMediaItemCollection] > jnt:content, jmix:sandboxContent
+ + * (jnt:socialMediaItem)
+
+[jnt:socialActivityTemplateParams] > nt:base
+ - * (string)
  
-[jnt:userActivity] > jnt:content, jmix:sandboxContent
+[jnt:socialActivity] > jnt:content, jmix:sandboxContent
  - j:from (weakreference) < jnt:user
  - j:message (string)
+ - j:messageKey (string)
  - j:appID (string)
  - j:priority (double) = 0
  - j:link (string)
  - j:icon (weakreference) < jmix:image
  - j:targetNode (weakreference)
+ - j:targetNodeTypes (string) multiple
  - j:attribution (string)
  - j:type (string)
  - j:likes (long)
  - j:caption (string)
  - j:description (string)
  - j:picture (weakreference) < jmix:image
- + * (jnt:userActivityMediaItem)
+ + j:mediaItems (jnt:socialMediaItemCollection)
+ + j:templateParams (jnt:socialActivityTemplateParams)
 
-[jnt:userMessage] > jnt:content, jmix:sandboxContent
+[jnt:socialMessage] > jnt:content, jmix:sandboxContent
  - j:from (weakreference) < jnt:user
  - j:to (weakreference) < jnt:user
  - j:subject (string)
  - j:body (string)
  - j:read (boolean)=false
+ + mediaItems (jnt:socialMediaItemCollection)

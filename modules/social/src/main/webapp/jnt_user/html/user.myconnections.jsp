@@ -121,7 +121,7 @@
         $.ajax({
             url: '${url.base}${currentNode.path}/activities/*',
             type : 'post',
-            data : 'nodeType=jnt:userActivity&newNodeOutputFormat=html&j:message=' + updateText + "&j:from=${currentNode.identifier}",
+            data : 'nodeType=jnt:socialActivity&newNodeOutputFormat=html&j:message=' + updateText + "&j:from=${currentNode.identifier}",
             success : function (data) {
                 // alert("Status update submitted successfully");
                 loadActivities();
@@ -134,6 +134,7 @@
             url: '${url.base}${currentNode.path}.getactivities.do',
             type: 'post',
             dataType : "json",
+            data : 'treatAsResourceKey=j:messageKey',
             success : function (data) {
                 $(".activitiesList").html("");
                 // alert(data.resultCount + " activities loaded properly");
@@ -144,6 +145,10 @@
                     if (imageURL == null) {
                         imageURL = "${url.currentModule}/images/friendbig.png";
                     }
+                    var message = item['j:messageKey'];
+                    if (message == null) {
+                        message = item['j:message'];
+                    }
                     $(".activitiesList").append(
                             "<li>" +
                                     "<div class='image'>" +
@@ -153,7 +158,7 @@
                                     "</div>" +
                                     "<h5 class='author'>" + item['jcr:createdBy'] + "</h5>" +
                                     "<span class='timestamp'>" + activityDate.toUTCString() + "</span>" +
-                                    "<p class='message'>" + item['j:message'] + " " + item['j:targetNode'] + "</p> " +
+                                    "<p class='message'>" + message + " " + item['j:targetNode'] + "</p> " +
                                     "<div class='clear'></div>" +
                                     "</li>"
                             );
@@ -334,16 +339,16 @@
         </table>
     </div>
 
-    <jcr:sql var="userConnections"
-             sql="select * from [jnt:userConnection] as uC where isdescendantnode(uC,['${currentNode.path}'])"/>
+    <jcr:sql var="socialConnections"
+             sql="select * from [jnt:socialConnection] as uC where isdescendantnode(uC,['${currentNode.path}'])"/>
 
     <h3 class="social-title-icon titleIcon"><a href="#"><fmt:message key="friendsList"/></a><a href="#"><img title="" alt=""
                                                                                     src="${url.currentModule}/images/friends.png"/></a>
     </h3>
     <ul class="social-list">
-        <c:forEach items="${userConnections.nodes}" var="userConnection">
+        <c:forEach items="${socialConnections.nodes}" var="socialConnection">
             <li>
-                <c:set var="connectedToUser" value="${userConnection.properties['j:connectedTo'].node}"/>
+                <c:set var="connectedToUser" value="${socialConnection.properties['j:connectedTo'].node}"/>
                 <div class="thumbnail">
 
                     <a href="${url.base}${connectedToUser.path}.html"><img src="${url.currentModule}/images/friend.png"

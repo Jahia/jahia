@@ -150,7 +150,7 @@ public class JahiaShindigService implements PersonService, ActivityService, AppD
 
                         Node userNode = getUsersNode(session, id);
                         // now let's retrieve the activities for the user.
-                        Query myConnectionActivitiesQuery = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:userActivity] as uA where isdescendantnode(uA,['" + userNode.getPath() + "']) order by [jcr:created] desc", Query.JCR_SQL2);
+                        Query myConnectionActivitiesQuery = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:socialActivity] as uA where isdescendantnode(uA,['" + userNode.getPath() + "']) order by [jcr:created] desc", Query.JCR_SQL2);
                         myConnectionActivitiesQuery.setLimit(100);
                         QueryResult myConnectionActivitiesResult = myConnectionActivitiesQuery.execute();
 
@@ -185,7 +185,7 @@ public class JahiaShindigService implements PersonService, ActivityService, AppD
 
                     Node userNode = getUsersNode(session, userKey);
                     // now let's retrieve the activities for the user.
-                    Query myConnectionActivitiesQuery = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:userActivity] as uA where isdescendantnode(uA,['" + userNode.getPath() + "']) order by [jcr:created] desc", Query.JCR_SQL2);
+                    Query myConnectionActivitiesQuery = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:socialActivity] as uA where isdescendantnode(uA,['" + userNode.getPath() + "']) order by [jcr:created] desc", Query.JCR_SQL2);
                     myConnectionActivitiesQuery.setLimit(100);
                     QueryResult myConnectionActivitiesResult = myConnectionActivitiesQuery.execute();
 
@@ -334,7 +334,7 @@ public class JahiaShindigService implements PersonService, ActivityService, AppD
                         String userName = getUserNameFromKey(userId);
 
                         Node userNode = session.getNode("/users/" + userName);
-                        Query myConnectionsQuery = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:userConnection] as uC where isdescendantnode(uC,['" + userNode.getPath() + "'])", Query.JCR_SQL2);
+                        Query myConnectionsQuery = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:socialConnection] as uC where isdescendantnode(uC,['" + userNode.getPath() + "'])", Query.JCR_SQL2);
                         QueryResult myConnectionsResult = myConnectionsQuery.execute();
 
                         NodeIterator myConnectionsIterator = myConnectionsResult.getNodes();

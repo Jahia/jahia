@@ -10,6 +10,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,6 +34,9 @@ import java.util.*;
 public class GetActivitiesAction implements Action {
 
     private static Logger logger = Logger.getLogger(GetActivitiesAction.class);
+
+    public static final String TREATASRESOURCEKEY_PARAMNAME = "treatAsResourceKey";
+    public static final String MODULE_NAME = "Jahia Social Module";
 
     private String name;
 
@@ -60,12 +64,22 @@ public class GetActivitiesAction implements Action {
                 resource.getWorkspace(), resource.getLocale());
 
         final JCRNodeWrapper node = resource.getNode();
+        ResourceBundle jahiaResourceBundle = new JahiaResourceBundle(resource.getLocale(), MODULE_NAME);
 
         SortedSet<JCRNodeWrapper> activitiesSet = socialService.getActivities(jcrSessionWrapper, node);
 
+        String treatAsResourceKeyValue = req.getParameter(TREATASRESOURCEKEY_PARAMNAME);
+        Set<String> treatAsResourceKeyPropertyNames = new HashSet<String>();
+        if (treatAsResourceKeyValue != null) {
+            String[] resourceKeyPropNames = treatAsResourceKeyValue.split(",");
+            for (String curPropName : resourceKeyPropNames) {
+                treatAsResourceKeyPropertyNames.add(curPropName);
+            }
+        }
+
         JSONArray resultArray = new JSONArray();
         for (JCRNodeWrapper jcrNodeWrapper : activitiesSet) {
-            resultArray.put(serializeNode(jcrNodeWrapper, 1, false, null, new HashMap<String, String>()));
+            resultArray.put(serializeNode(jcrNodeWrapper, 1, false, null, new HashMap<String, String>(), treatAsResourceKeyPropertyNames, jahiaResourceBundle));
         }
 
         JSONObject results = new JSONObject();
@@ -76,7 +90,7 @@ public class GetActivitiesAction implements Action {
     }
 
 
-    private JSONObject serializeNode(Node currentNode, int depthLimit, boolean escapeColon, String propertyMatchRegexp, Map<String, String> alreadyIncludedPropertyValues) throws RepositoryException,
+    private JSONObject serializeNode(Node currentNode, int depthLimit, boolean escapeColon, String propertyMatchRegexp, Map<String, String> alreadyIncludedPropertyValues, Set<String> treatAsResourceKeyPropertyNames, ResourceBundle bundle) throws RepositoryException,
             JSONException {
         final PropertyIterator stringMap = currentNode.getProperties();
         JSONObject jsonObject = new JSONObject();
@@ -88,14 +102,21 @@ public class GetActivitiesAction implements Action {
             final String name = escapeColon ? propertyWrapper.getName().replace(":", "_") : propertyWrapper.getName();
             if (type == PropertyType.WEAKREFERENCE || type == PropertyType.REFERENCE) {
                 if (!propertyWrapper.isMultiple()) {
-                    jsonObject.put(name, ((JCRNodeWrapper) propertyWrapper.getNode()).getUrl());
+                    jsonObject.put(name, ((JCRNodeWrapper) propertyWrapper.getNode()).getPath());
                 }
             } else {
                 if (!propertyWrapper.isMultiple()) {
                     if (propertyWrapper.getType() == PropertyType.DATE) {
                         jsonObject.put(name, Long.toString(propertyWrapper.getValue().getDate().getTimeInMillis()));
                     } else {
-                        jsonObject.put(name, propertyWrapper.getValue().getString());
+                        String propValue = propertyWrapper.getValue().getString();
+                        if (treatAsResourceKeyPropertyNames.contains(name)) {
+                            String resourceValue = bundle.getString(propValue);
+                            if (resourceValue != null) {
+                                propValue = resourceValue;
+                            }
+                        }
+                        jsonObject.put(name, propValue);
                     }
                     // @todo this code is duplicated for multiple values, we need to clean this up.
                     if ((propertyMatchRegexp != null) && (propertyWrapper.getValue().getString().matches(propertyMatchRegexp))) {
@@ -120,7 +141,14 @@ public class GetActivitiesAction implements Action {
                         if (propValue.getType() == PropertyType.DATE) {
                             jsonArray.put(Long.toString(propValue.getDate().getTimeInMillis()));
                         } else {
-                            jsonArray.put(propValue.getString());
+                            String propValueString = propValue.getString();
+                            if (treatAsResourceKeyPropertyNames.contains(name)) {
+                                String resourceValue = bundle.getString(propValueString);
+                                if (resourceValue != null) {
+                                    propValueString = resourceValue;
+                                }
+                            }
+                            jsonArray.put(propValueString);
                         }
                         if ((propertyMatchRegexp != null) && (propValue.getString().matches(propertyMatchRegexp))) {
                             if (alreadyIncludedPropertyValues != null) {
@@ -158,7 +186,7 @@ public class GetActivitiesAction implements Action {
             JSONArray childMapList = new JSONArray();
             while (childNodeIterator.hasNext()) {
                 Node currentChildNode = childNodeIterator.nextNode();
-                JSONObject childSerializedMap = serializeNode(currentChildNode, depthLimit - 1, escapeColon, propertyMatchRegexp, alreadyIncludedPropertyValues);
+                JSONObject childSerializedMap = serializeNode(currentChildNode, depthLimit - 1, escapeColon, propertyMatchRegexp, alreadyIncludedPropertyValues, treatAsResourceKeyPropertyNames, bundle);
                 childMapList.put(childSerializedMap);
             }
             jsonObject.put("childNodes", childMapList);

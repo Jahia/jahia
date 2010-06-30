@@ -2,6 +2,7 @@ package org.jahia.modules.social;
 
 import org.apache.log4j.Logger;
 import org.drools.spi.KnowledgeHelper;
+import org.jahia.api.Constants;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
@@ -14,12 +15,11 @@ import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
-import java.util.Comparator;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Social service class for manipulating social activities from the
@@ -30,10 +30,13 @@ import java.util.TreeSet;
 public class SocialService {
 
     private static Logger logger = Logger.getLogger(SocialService.class);
+    public static final String JNT_SOCIAL_ACTIVITY = "jnt:socialActivity";
+    public static final String JNT_SOCIAL_MESSAGE = "jnt:userMessage";
+    public static final String JNT_SOCIAL_CONNECTION = "jnt:socialConnection";
 
     /* Rules Consequence implementations */
 
-    public void addActivity(final String user, final String message, final AddedNodeFact nodeFact, KnowledgeHelper drools) throws RepositoryException {
+    public void addActivity(final String activityType, final String user, final String messageKey, final AddedNodeFact nodeFact, final List<String> nodeTypeList, KnowledgeHelper drools) throws RepositoryException {
         final JCRUser fromJCRUser = getJCRUserFromUserKey(user);
         if (fromJCRUser == null) {
             logger.warn("No user found, not adding activity !");
@@ -46,19 +49,23 @@ public class SocialService {
                 JCRNodeWrapper activitiesNode = null;
                 try {
                     activitiesNode = userNode.getNode("activities");
+                    session.checkout(activitiesNode);
                 } catch (PathNotFoundException pnfe) {
+                    session.checkout(userNode);
                     activitiesNode = userNode.addNode("activities", "jnt:contentList");
                 }
-                String nodeType = "jnt:userActivity";
+                String nodeType = JNT_SOCIAL_ACTIVITY;
                 String nodeName = nodeType.substring(nodeType.lastIndexOf(":") + 1);
 
                 nodeName = JCRContentUtils.findAvailableNodeName(activitiesNode, nodeName);
 
-                JCRNodeWrapper activityNode = activitiesNode.addNode(nodeName, "jnt:userActivity");
+                JCRNodeWrapper activityNode = activitiesNode.addNode(nodeName, JNT_SOCIAL_ACTIVITY);
                 activityNode.setProperty("j:from", userNode);
-                activityNode.setProperty("j:message", message);
+                activityNode.setProperty("j:messageKey", messageKey);
                 activityNode.setProperty("j:targetNode", nodeFact.getNode());
-
+                String[] targetNodeTypes = nodeTypeList.toArray(new String[nodeTypeList.size()]);
+                activityNode.setProperty("j:targetNodeTypes", targetNodeTypes);
+                activityNode.setProperty("j:type", activityType);
                 session.save();
                 return true;
             }
@@ -104,32 +111,18 @@ public class SocialService {
                 // now let's connect this user's node to the target node.
 
                 // now let's do the connection in the other direction.
-                JCRNodeWrapper destinationInboxNode = null;
-                try {
-                    destinationInboxNode = toUser.getNode("inboundMessages");
-                    session.checkout(destinationInboxNode);
-                } catch (PathNotFoundException pnfe) {
-                    session.checkout(toUser);
-                    destinationInboxNode = toUser.addNode("inboundMessages", "jnt:contentList");
-                }
+                JCRNodeWrapper destinationInboxNode = JCRContentUtils.getOrAddPath(session, toUser, "messages/inbox", Constants.JAHIANT_CONTENTLIST);
                 String destinationInboxNodeName = JCRContentUtils.findAvailableNodeName(destinationInboxNode, fromUser.getName() + "_to_" + toUser.getName());
-                JCRNodeWrapper destinationMessageNode = destinationInboxNode.addNode(destinationInboxNodeName, "jnt:userMessage");
+                JCRNodeWrapper destinationMessageNode = destinationInboxNode.addNode(destinationInboxNodeName, JNT_SOCIAL_MESSAGE);
                 destinationMessageNode.setProperty("j:from", fromUser);
                 destinationMessageNode.setProperty("j:to", toUser);
                 destinationMessageNode.setProperty("j:subject", subject);
                 destinationMessageNode.setProperty("j:body", body);
                 destinationMessageNode.setProperty("j:read", false);
 
-                JCRNodeWrapper sentMessagesBoxNode = null;
-                try {
-                    sentMessagesBoxNode = fromUser.getNode("sentMessages");
-                    session.checkout(sentMessagesBoxNode);
-                } catch (PathNotFoundException pnfe) {
-                    session.checkout(fromUser);
-                    sentMessagesBoxNode = fromUser.addNode("sentMessages", "jnt:contentList");
-                }
+                JCRNodeWrapper sentMessagesBoxNode = JCRContentUtils.getOrAddPath(session, toUser, "messages/sent", Constants.JAHIANT_CONTENTLIST);
                 String sentMessagesBoxNodeName = JCRContentUtils.findAvailableNodeName(sentMessagesBoxNode, fromUser.getName() + "_to_" + toUser.getName());
-                JCRNodeWrapper sentMessageNode = sentMessagesBoxNode.addNode(sentMessagesBoxNodeName, "jnt:userMessage");
+                JCRNodeWrapper sentMessageNode = sentMessagesBoxNode.addNode(sentMessagesBoxNodeName, JNT_SOCIAL_MESSAGE);
                 sentMessageNode.setProperty("j:from", fromUser);
                 sentMessageNode.setProperty("j:to", toUser);
                 sentMessageNode.setProperty("j:subject", subject);
@@ -143,14 +136,26 @@ public class SocialService {
     }
 
     public SortedSet<JCRNodeWrapper> getActivities(JCRSessionWrapper jcrSessionWrapper, JCRNodeWrapper node) throws RepositoryException {
+
         QueryManager queryManager = jcrSessionWrapper.getWorkspace().getQueryManager();
 
-        Query myActivitiesQuery = queryManager.createQuery("select * from [jnt:userActivity] as uA where isdescendantnode(uA,['"+node.getPath()+"']) order by [jcr:created] desc", Query.JCR_SQL2);
-        myActivitiesQuery.setLimit(100);
-        QueryResult myActivitiesResult = myActivitiesQuery.execute();
+        Set<String> userPaths = new HashSet<String>();
 
-        NodeIterator myActivitiesNodeIterator = myActivitiesResult.getNodes();
+        userPaths.add(node.getPath());
 
+        Query myConnectionsQuery = queryManager.createQuery("select * from ["+JNT_SOCIAL_CONNECTION+"] as uC where isdescendantnode(uC,['"+node.getPath()+"'])", Query.JCR_SQL2);
+        QueryResult myConnectionsResult = myConnectionsQuery.execute();
+
+        NodeIterator myConnectionsIterator = myConnectionsResult.getNodes();
+        while (myConnectionsIterator.hasNext()) {
+            JCRNodeWrapper myConnectionNode = (JCRNodeWrapper) myConnectionsIterator.nextNode();
+            JCRNodeWrapper connectedToNode = (JCRNodeWrapper) myConnectionNode.getProperty("j:connectedTo").getNode();
+            userPaths.add(connectedToNode.getPath());
+        }
+        return getActivities(jcrSessionWrapper, userPaths);
+    }
+
+    public SortedSet<JCRNodeWrapper> getActivities(JCRSessionWrapper jcrSessionWrapper, Set<String> paths) throws RepositoryException {
         SortedSet<JCRNodeWrapper> activitiesSet = new TreeSet(new Comparator<JCRNodeWrapper>() {
 
             public int compare(JCRNodeWrapper activityNode1, JCRNodeWrapper activityNode2) {
@@ -165,24 +170,15 @@ public class SocialService {
 
         });
 
-        while (myActivitiesNodeIterator.hasNext()) {
-            activitiesSet.add((JCRNodeWrapper) myActivitiesNodeIterator.nextNode());
-        }
+        QueryManager queryManager = jcrSessionWrapper.getWorkspace().getQueryManager();
+        for (String currentPath : paths) {
+            Query activitiesQuery = queryManager.createQuery("select * from ["+JNT_SOCIAL_ACTIVITY+"] as uA where isdescendantnode(uA,['"+currentPath+"']) order by [jcr:created] desc", Query.JCR_SQL2);
+            activitiesQuery.setLimit(100);
+            QueryResult activitiesResult = activitiesQuery.execute();
 
-        Query myConnectionsQuery = queryManager.createQuery("select * from [jnt:userConnection] as uC where isdescendantnode(uC,['"+node.getPath()+"'])", Query.JCR_SQL2);
-        QueryResult myConnectionsResult = myConnectionsQuery.execute();
-
-        NodeIterator myConnectionsIterator = myConnectionsResult.getNodes();
-        while (myConnectionsIterator.hasNext()) {
-            JCRNodeWrapper myConnectionNode = (JCRNodeWrapper) myConnectionsIterator.nextNode();
-            JCRNodeWrapper connectedToNode = (JCRNodeWrapper) myConnectionNode.getProperty("j:connectedTo").getNode();
-            Query myConnectionActivitiesQuery = queryManager.createQuery("select * from [jnt:userActivity] as uA where isdescendantnode(uA,['"+connectedToNode.getPath()+"']) order by [jcr:created] desc", Query.JCR_SQL2);
-            myConnectionActivitiesQuery.setLimit(100);
-            QueryResult myConnectionActivitiesResult = myConnectionActivitiesQuery.execute();
-
-            NodeIterator myConnectionActivitiesIterator = myConnectionActivitiesResult.getNodes();
-            while (myConnectionActivitiesIterator.hasNext()) {
-                activitiesSet.add((JCRNodeWrapper) myConnectionActivitiesIterator.nextNode());
+            NodeIterator activitiesIterator = activitiesResult.getNodes();
+            while (activitiesIterator.hasNext()) {
+                activitiesSet.add((JCRNodeWrapper) activitiesIterator.nextNode());
             }
         }
         return activitiesSet;

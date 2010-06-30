@@ -27,7 +27,7 @@ rule "Create docspace activity"
        A new node is created
 	   - the node has the type jnt:docspace
    then
-       Add activity on node for user user.getName() with message "created a docspace"
+       Add activity "created" on node of types node.getTypes() for user user.getName() with messageKey "created.docspace"
 end
 
 rule "Create page activity"
@@ -35,14 +35,14 @@ rule "Create page activity"
        A new node is created
 	   - the node has the type jnt:page
    then
-       Add activity on node for user user.getName() with message "created a new page"
+       Add activity "created" on node of types node.getTypes() for user user.getName() with messageKey "created.newpage"
 end
 
 rule "Create file in docspace activity"
    when
       The type jnt:docspaceFile has been assigned to a node
    then
-       Add activity on node for user user.getName() with message "created file in a docspace"
+       Add activity "created" on node of types node.getTypes() for user user.getName() with messageKey "created.docspacefile"
 end
 
 rule "Tagging activity"
@@ -50,5 +50,5 @@ rule "Tagging activity"
        A property j:newTag has been set on a node
         - the node has the type jmix:tagged
    then
-       Add activity on node for user user.getName() with message "tagged the node"
+       Add activity "tagged" on node of types node.getTypes() for user user.getName() with messageKey "tagged.node"
 end

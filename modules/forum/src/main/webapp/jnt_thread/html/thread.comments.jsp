@@ -30,7 +30,7 @@
     <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.end">
         <template:param name="callback" value="initCuteTime();"/>
     </template:option>
-    <c:forEach items="${currentList}" var="subchild" varStatus="status" begin="${begin}" end="${end}">
+    <c:forEach items="${moduleMap.currentList}" var="subchild" varStatus="status" begin="${moduleMap.begin}" end="${moduleMap.end}">
         <template:module node="${subchild}" template="comments"/>
     </c:forEach>
     <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.end"/>

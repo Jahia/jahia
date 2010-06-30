@@ -34,9 +34,9 @@
             <c:set var="pageSize" value="${param.pagesize}"/>
         </c:otherwise>
     </c:choose>
-    <template:initPager totalSize="${listTotalSize}" pageSize="${pageSize}" id="${currentNode.identifier}"/>
+    <template:initPager totalSize="${moduleMap.listTotalSize}" pageSize="${pageSize}" id="${currentNode.identifier}"/>
     <ul class="userMyBookmarksList" id="${currentNode.UUID}">
-        <c:forEach items="${currentList}" var="bookmark" varStatus="status" begin="${begin}" end="${end}">
+        <c:forEach items="${moduleMap.currentList}" var="bookmark" varStatus="status" begin="${moduleMap.begin}" end="${moduleMap.end}">
 
             <li>
                 <jcr:nodeProperty node="${bookmark}" name="jcr:title" var="title"/>

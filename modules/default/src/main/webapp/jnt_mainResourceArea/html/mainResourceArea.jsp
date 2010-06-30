@@ -54,7 +54,7 @@
             <div class="mainResourceTemplate">
                 <span>List : ${currentNode.name}</span>
             </div>
-            <c:forEach items="${currentList}" var="subchild" begin="${begin}" end="${end}">
+            <c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}" end="${moduleMap.end}">
                 <template:module node="${subchild}"/>
             </c:forEach>
             <c:if test="${currentList.size == 0}">

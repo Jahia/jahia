@@ -17,7 +17,7 @@
 
 <template:include template="hidden.header"/>
 <p>
-    <c:forEach items="${currentList}" var="child" varStatus="status" begin="${begin}" end="${end}">
+    <c:forEach items="${moduleMap.currentList}" var="child" varStatus="status" begin="${moduleMap.begin}" end="${moduleMap.end}">
         <c:if test="${jcr:isNodeType(child, 'jmix:thumbnail')}">
             <%--<a class="zoom" rel="group" title="${child.properties['j:node'].node.name}" href="#item${status.count}">--%>
 
@@ -33,7 +33,7 @@
 </p>
 
 <div class="clear"></div>
-<c:if test="${editable and renderContext.editMode}">
+<c:if test="${moduleMap.editable and renderContext.editMode}">
     <template:module path="*"/>
 </c:if>
 <template:include template="hidden.footer"/>

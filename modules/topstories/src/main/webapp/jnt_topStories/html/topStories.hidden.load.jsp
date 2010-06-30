@@ -4,13 +4,13 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="query" uri="http://www.jahia.org/tags/queryLib" %>
 
 <c:if test="${currentNode.properties['j:limit'].long gt 0}">
-    <jcr:sql var="result"
-             sql="select * from [jmix:topStory] as story where isdescendantnode(story, ['${renderContext.site.path}'])
+    <query:definition var="listQuery"
+             statement="select * from [jmix:topStory] as story where isdescendantnode(story, ['${renderContext.site.path}'])
          and story.[j:level]='${currentNode.properties['j:level']}' order by story.[jcr:lastModified] desc"/>
 
-    <c:set var="currentList" value="${result.nodes}" scope="request"/>
-    <c:set var="end" value="${fn:length(result.nodes)}" scope="request"/>
-    <c:set var="listTotalSize" value="${end}" scope="request"/>
+    <c:set target="${moduleMap}" property="editable" value="false" />
+    <c:set target="${moduleMap}" property="listQuery" value="${listQuery}" />
 </c:if>

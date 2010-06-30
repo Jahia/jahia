@@ -16,6 +16,7 @@
     <c:set var="lastNewsStatement" value="select * from [jnt:news] as news where news.[j:defaultCategory]='${filter.string}' order by news.[date] desc"/>
 </c:otherwise>
 </c:choose>
-<query:definition var="listQuery" statement="${lastNewsStatement}"
-         limit="${maxNews.long}"  scope="request" />
-<c:set var="editable" value="false" scope="request" />
+<query:definition var="listQuery" statement="${lastNewsStatement}" limit="${maxNews.long}"  />
+
+<c:set target="${moduleMap}" property="editable" value="false" />
+<c:set target="${moduleMap}" property="listQuery" value="${listQuery}" />

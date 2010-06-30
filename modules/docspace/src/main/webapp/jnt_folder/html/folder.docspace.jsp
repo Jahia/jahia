@@ -83,7 +83,7 @@
                         </thead>
 
                         <tbody>
-                        <c:forEach items="${currentList}" var="subchild" begin="${begin}" end="${end}">
+                        <c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}" end="${moduleMap.end}">
 
                             <tr class="odd">
                                 <td class="center" headers="Type">
@@ -120,7 +120,7 @@
                             </tr>
                         </c:forEach>
                         <div class="clear"></div>
-                        <c:if test="${editable and renderContext.editMode}">
+                        <c:if test="${moduleMap.editable and renderContext.editMode}">
                             <template:module path="*"/>
                         </c:if>
 

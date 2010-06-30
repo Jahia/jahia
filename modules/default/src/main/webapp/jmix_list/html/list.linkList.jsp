@@ -16,7 +16,7 @@
 <template:include template="hidden.header"/>
 <c:if test="${not empty currentList}">
     <ul>
-        <c:forEach items="${currentList}" var="subchild" begin="${begin}" end="${end}">
+        <c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}" end="${moduleMap.end}">
             <li>
                 <jcr:nodeProperty node="${subchild}" name="jcr:title" var="title"/>
                 <c:choose>
@@ -34,7 +34,7 @@
     </ul>
 </c:if>
 <div class="clear"></div>
-<c:if test="${editable and renderContext.editMode}">
+<c:if test="${moduleMap.editable and renderContext.editMode}">
     <template:module path="*"/>
 </c:if>
 <template:include template="hidden.footer"/>

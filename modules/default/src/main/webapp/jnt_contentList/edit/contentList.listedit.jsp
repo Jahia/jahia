@@ -32,7 +32,7 @@
 <c:set var="animatedWFs" value=""/>
 
         <c:set var="inSite" value="true"/>
-        <c:forEach items="${currentList}" var="child" begin="${begin}" end="${end}" varStatus="status">
+        <c:forEach items="${moduleMap.currentList}" var="child" begin="${moduleMap.begin}" end="${moduleMap.end}" varStatus="status">
             <%@include file="edit.jspf" %>
             <%@include file="workflow.jspf" %>
             <div id="edit-${child.identifier}">
@@ -41,7 +41,7 @@
             <hr/>
         </c:forEach>
         <div class="clear"></div>
-        <c:if test="${editable and renderContext.editMode}">
+        <c:if test="${moduleMap.editable and renderContext.editMode}">
             <template:module path="*"/>
         </c:if>
         <template:include templateType="html" template="hidden.footer"/>

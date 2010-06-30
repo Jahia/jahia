@@ -46,7 +46,7 @@
         <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.end">
         	<template:param name="callback" value="initCuteTime();"/>
         </template:option>
-        <c:forEach items="${currentList}" var="subchild" varStatus="status" begin="${begin}" end="${end}">
+        <c:forEach items="${moduleMap.currentList}" var="subchild" varStatus="status" begin="${moduleMap.begin}" end="${moduleMap.end}">
             <div class="forum-box forum-box-style${(status.index mod 2)+1}">
                 <template:module node="${subchild}" template="default"/>
             </div>

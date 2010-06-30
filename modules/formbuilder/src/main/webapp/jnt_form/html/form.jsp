@@ -68,7 +68,7 @@
     <div class="addaction">
         <span>Add your action here</span>
         <c:set var="editable" value="${not empty actionNode.nodes}"/>
-        <template:area path="action" areaType="jnt:actionList" editable="${editable}"/>
+        <template:area path="action" areaType="jnt:actionList" editable="${moduleMap.editable}"/>
     </div>
 </c:if>
 <div class="Form FormBuilder">

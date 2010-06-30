@@ -15,11 +15,11 @@
 
 <template:include template="hidden.header"/>
 
-<c:forEach items="${currentList}" var="subchild" begin="${begin}" end="${end}">
-    <template:module node="${subchild}" template="${subNodesTemplate}" editable="${editable}"/>
+<c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}" end="${moduleMap.end}">
+    <template:module node="${subchild}" template="${moduleMap.subNodesTemplate}" editable="${moduleMap.editable}"/>
 </c:forEach>
 <c:if test="${not omitFormatting}"><div class="clear"></div></c:if>
-<c:if test="${editable and renderContext.editMode}">
+<c:if test="${moduleMap.editable and renderContext.editMode}">
     <template:module path="*"/>
 </c:if>
 <template:include template="hidden.footer"/>

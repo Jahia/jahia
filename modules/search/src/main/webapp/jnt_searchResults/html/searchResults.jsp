@@ -93,7 +93,7 @@
                     <template:param name="displaySearchParams" value="true"/>
                 </template:option>
         	<ol start="${begin+1}">
-				<s:resultIterator begin="${begin}" end="${end}" varStatus="status">
+				<s:resultIterator begin="${moduleMap.begin}" end="${moduleMap.end}" varStatus="status">
 					<li><%--<span>${status.index+1}.</span>--%><%@ include file="searchHit.jspf" %></li>
 				</s:resultIterator>
 	        </ol>

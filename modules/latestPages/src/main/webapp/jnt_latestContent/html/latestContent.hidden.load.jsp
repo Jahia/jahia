@@ -5,6 +5,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
+<%@ taglib prefix="query" uri="http://www.jahia.org/tags/queryLib" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
 <%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
@@ -26,14 +27,13 @@
 
 <%-- Execute the query, depending on the selected mode --%>
 <c:if test="${not empty startNode}">
-<jcr:sql var="result"
-         sql="SELECT * FROM [${type.string}] AS page WHERE ISDESCENDANTNODE(page,'${startNode.path}') ORDER BY [jcr:${criteria.string}] DESC"
+<query:definition var="listQuery"
+         statement="SELECT * FROM [${type.string}] AS page WHERE ISDESCENDANTNODE(page,'${startNode.path}') ORDER BY [jcr:${criteria.string}] DESC"
          limit="${nbOfResult.long}"/>
 </c:if>
 <%-- Debug message --%>
 <%-- <p>Debug > Nb of result from query (Criteria : ${criteria.string} - Nb of result : ${nbOfResult.long} - Mode : ${mode.string}) : ${fn:length(result.nodes)}</p>  --%>
 
 <%-- Set variables to store the result --%>
-<c:set var="currentList" value="${result.nodes}" scope="request"/>
-<c:set var="end" value="${functions:length(result.nodes)}" scope="request"/>
-<c:set var="listTotalSize" value="${end}" scope="request"/>
+<c:set target="${moduleMap}" property="editable" value="false" />
+<c:set target="${moduleMap}" property="listQuery" value="${listQuery}" />

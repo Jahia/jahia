@@ -12,16 +12,19 @@
 <c:choose>
 	<c:when test="${lang.string == 'JCR-SQL2'}">
 		<query:definition var="listQuery" statement="${query.string}" limit="${maxItems.long}" scope="request"/>
+        <c:set target="${moduleMap}" property="listQuery" value="${listQuery}" />
 	</c:when>
 	<c:when test="${lang.string == 'xpath'}">
 		<jcr:xpath var="result" xpath="${query.string}" limit="${maxItems.long}"/>
-		<c:set var="currentList" value="${result.nodes}" scope="request" />
-        <c:set var="end" value="${functions:length(result.nodes)}" scope="request"/>
+        <c:set target="${moduleMap}" property="currentList" value="${result.nodes}" />
+        <c:set target="${moduleMap}" property="end" value="${functions:length(result.nodes)}" />
+        <c:set target="${moduleMap}" property="listTotalSize" value="${moduleMap.end}" />
 	</c:when>
 	<c:otherwise>
 		<utility:logger level="error" value="Unsupported query language encountered: ${lang}"/>
 		<% request.setAttribute("currentList", java.util.Collections.EMPTY_LIST); %>
 	</c:otherwise>
 </c:choose>
+<c:set target="${moduleMap}" property="editable" value="false" />
+
 <c:set var="editable" value="false" scope="request"/>
-<c:set var="listTotalSize" value="${end}" scope="request"/>

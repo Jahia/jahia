@@ -12,7 +12,7 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<c:remove var="currentList" scope="request"/>
+
 <template:include template="hidden.load"/>
 
 <c:if test="${empty editable}">
@@ -40,10 +40,10 @@
     </c:forEach>
     </select>
 </form>
-<c:forEach items="${currentList}" var="subchild">
+<c:forEach items="${moduleMap.currentList}" var="subchild">
     <p>
         <c:if test="${empty param.categorykey}">
-            <template:module node="${subchild}" template="${subNodesTemplate}" editable="${editable}" />
+            <template:module node="${subchild}" template="${moduleMap.subNodesTemplate}" editable="${moduleMap.editable}" />
         </c:if>
 
         <c:if test="${not empty param.categorykey}">
@@ -56,7 +56,7 @@
                 </c:if>
             </c:forEach>
             <c:if test="${contains eq true}">
-                <template:module node="${subchild}" template="${subNodesTemplate}"  editable="${editable}" />
+                <template:module node="${subchild}" template="${moduleMap.subNodesTemplate}"  editable="${moduleMap.editable}" />
             </c:if>
         </c:if>
     </p>

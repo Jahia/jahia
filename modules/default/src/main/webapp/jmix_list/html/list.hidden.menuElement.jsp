@@ -16,18 +16,18 @@
 <template:include template="hidden.header"/>
 <c:set var="firstInLevel" value="${statusNavMenu.first}"/>
 <c:set var="lastInLevel" value="${statusNavMenu.last}"/>
-<c:forEach items="${currentList}" var="subchild" begin="${begin}" end="${end}" varStatus="menuStatus">
+<c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}" end="${moduleMap.end}" varStatus="menuStatus">
     <c:set var="listItemCssClass"
            value="${jcr:hasChildrenOfType(subchild,'jnt:navMenu,jmix:navMenuItem') ? 'hasChildren' : 'noChildren'}${(menuStatus.first and firstInLevel) ? ' firstInLevel' : ''}${(menuStatus.last and lastInLevel) ? ' lastInLevel' : ''}"
            scope="request"/>
     <c:set var="statusNavMenu" value="${menuStatus}" scope="request"/>
-    <template:module node="${subchild}" template="${subNodesTemplate}"
-                     editable="${editable}"/>
+    <template:module node="${subchild}" template="${moduleMap.subNodesTemplate}"
+                     editable="${moduleMap.editable}"/>
 </c:forEach>
 <c:if test="${not omitFormatting}">
     <div class="clear"></div>
 </c:if>
-<c:if test="${editable and renderContext.editMode}">
+<c:if test="${moduleMap.editable and renderContext.editMode}">
     <template:module path="*"/>
 </c:if>
 <template:include template="hidden.footer"/>

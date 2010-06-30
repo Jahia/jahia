@@ -9,7 +9,7 @@
     <link>http://localhost:8080${url.base}${currentNode.path}.detail.html</link>
     <description>
         <c:set var="currentList" value="${currentNode.nodes}" scope="request"/>
-    <c:forEach items="${currentList}" var="subchild" varStatus="status">
+    <c:forEach items="${moduleMap.currentList}" var="subchild" varStatus="status">
             <template:module node="${subchild}" template="default" templateType="rss"/>
     </c:forEach>
     </description>

@@ -38,7 +38,7 @@
     </tr>
     </thead>
     <tbody>
-    <c:forEach items="${currentList}" var="subchild" begin="${begin}" end="${end}" varStatus="">
+    <c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}" end="${moduleMap.end}" varStatus="">
             <c:choose>
                 <c:when test="${status.count % 2 == 0}">
                     <tr class="evenLine">
@@ -87,7 +87,7 @@
     <c:if test="${not omitFormatting}"><div class="clear"></div></c:if>
     </tbody>
 </table>
-<c:if test="${editable and renderContext.editMode}">
+<c:if test="${moduleMap.editable and renderContext.editMode}">
     <template:module path="*"/>
 </c:if>
 

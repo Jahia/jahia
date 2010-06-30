@@ -62,6 +62,8 @@ public class QueryDefinitionTag extends AbstractJCRTag {
 
     private String qomBeanName;
 
+    private Object qom;
+
     private QueryObjectModel queryObjectModel;
 
     private int scope = PageContext.PAGE_SCOPE;
@@ -122,6 +124,8 @@ public class QueryDefinitionTag extends AbstractJCRTag {
     protected QueryObjectModel getInitialQueryObjectModel() throws RepositoryException {
         if (qomBeanName != null) {
             return (QueryObjectModel) pageContext.getAttribute(qomBeanName, scope);
+        } else if (qom != null) {
+            return (QueryObjectModel) qom;
         } else if (statement != null) {
             QueryObjectModelFactory qf = getJCRSession().getWorkspace().getQueryManager().getQOMFactory();
             ValueFactory vf = getJCRSession().getValueFactory();
@@ -195,6 +199,10 @@ public class QueryDefinitionTag extends AbstractJCRTag {
 
     public void setQomBeanName(String qomBeanName) {
         this.qomBeanName = qomBeanName;
+    }
+
+    public void setQom(Object qom) {
+        this.qom = qom;
     }
 
     public void setStatement(String statement) {

@@ -10,7 +10,7 @@
 <div class="feed"><!--start feed -->
 
 <c:set var="currentList" value="${currentNode.nodes}" scope="request"/>
-<c:forEach items="${currentList}" var="subchild" varStatus="status">
+<c:forEach items="${moduleMap.currentList}" var="subchild" varStatus="status">
 
     <c:if test="${subchild.primaryNodeTypeName == 'jnt:contentList'}">
 

@@ -19,7 +19,7 @@
 
     <div class="article-text">
     <c:set var="currentList" value="${currentNode.nodes}" scope="request"/>
-    <c:forEach items="${currentList}" var="subchild" varStatus="status">
+    <c:forEach items="${moduleMap.currentList}" var="subchild" varStatus="status">
         <div class="newsMLItem newsMLItem-box-style${(status.index mod 2)+1}">
             <template:module node="${subchild}" template="default"/>
         </div>

@@ -7,15 +7,16 @@
 <%-- list mode --%>
 <c:choose>
     <c:when test="${not empty param[facetParamVarName]}">
-        <query:definition var="listQuery" scope="request">
+        <query:definition var="listQuery" >
             <query:selector nodeTypeName="nt:base"/>
             <query:childNode path="${currentNode.realNode.path}"/>
         </query:definition>
+        <c:set target="${moduleMap}" property="listQuery" value="${listQuery}"/>
     </c:when>
     <c:otherwise>
-        <c:set value="true" var="editable" scope="request"/>
-        <c:set value="${currentNode.nodes}" var="currentList" scope="request"/>
-        <c:set var="end" value="${fn:length(currentNode.nodes)}" scope="request"/>
-        <c:set var="listTotalSize" value="${end}" scope="request"/>
+        <c:set target="${moduleMap}" property="editable" value="true" />
+        <c:set target="${moduleMap}" property="currentList" value="${currentNode.nodes}" />
+        <c:set target="${moduleMap}" property="end" value="${fn:length(currentNode.nodes)}" />
+        <c:set target="${moduleMap}" property="listTotalSize" value="${moduleMap.end}" />
     </c:otherwise>
 </c:choose>

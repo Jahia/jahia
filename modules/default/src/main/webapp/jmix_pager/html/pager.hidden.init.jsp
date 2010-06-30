@@ -21,4 +21,4 @@
             <c:set var="pageSize" value="${param.pagesize}"/>
         </c:otherwise>
     </c:choose>
-<template:initPager totalSize="${listTotalSize}" pageSize="${pageSize}" id="${currentNode.identifier}"/>
+<template:initPager totalSize="${moduleMap.listTotalSize}" pageSize="${pageSize}" id="${currentNode.identifier}"/>

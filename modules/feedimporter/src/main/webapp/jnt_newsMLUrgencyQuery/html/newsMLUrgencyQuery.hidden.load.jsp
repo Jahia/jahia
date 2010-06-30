@@ -9,5 +9,6 @@
 <jcr:nodeProperty node="${currentNode}" name="maxItems" var="maxNews"/>
 <jcr:nodeProperty node="${currentNode}" name="minimumUrgencyValue" var="minimumUrgencyValue"/>
 <query:definition var="listQuery" statement="select * from [jnt:news] as news where news.[urgency] >= ${minimumUrgencyValue.long} order by news.[date] desc"
-         limit="${maxNews.long}"  scope="request" />
-<c:set var="editable" value="false" scope="request" />
+         limit="${maxNews.long}" />
+<c:set target="${moduleMap}" property="editable" value="false" />
+<c:set target="${moduleMap}" property="listQuery" value="${listQuery}" />

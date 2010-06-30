@@ -50,7 +50,7 @@
     </tr>
     </thead>
     <tbody>
-        <c:forEach items="${currentList}" var="child" begin="${begin}" end="${end}" varStatus="status">
+        <c:forEach items="${moduleMap.currentList}" var="child" begin="${moduleMap.begin}" end="${moduleMap.end}" varStatus="status">
             <tr class="evenLine">
                 <td align="center">
                     

@@ -211,6 +211,15 @@
         </attribute>
         <attribute>
             <description>
+                Existing QueryObjectModel bean in the request scope to be used for the query.
+            </description>
+            <name>qom</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.Object</type>
+        </attribute>
+        <attribute>
+            <description>
                 Name of an existing QueryObjectModel bean in the request scope to be used for the query.
             </description>
             <name>qomBeanName</name>

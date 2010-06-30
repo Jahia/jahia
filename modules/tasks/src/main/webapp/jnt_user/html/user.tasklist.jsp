@@ -99,7 +99,7 @@
                     id="${currentNode.identifier}"/>
 
 <c:forEach items="${tasks.nodes}" var="task"
-           begin="${begin}" end="${end}" varStatus="status">
+           begin="${moduleMap.begin}" end="${moduleMap.end}" varStatus="status">
     <c:choose>
         <c:when test="${status.count % 2 == 0}">
             <tr class="odd">

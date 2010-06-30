@@ -37,24 +37,18 @@ public class TemplateAttributesFilter extends AbstractFilter {
         Map<String, Object> moduleParams = resource.getModuleParams();
         for (Map.Entry<String, Object> entry : moduleParams.entrySet()) {
             String key = entry.getKey();
-            if (key.startsWith("forced")) {
-                key = StringUtils.uncapitalize(StringUtils.substringAfter(key, "forced"));
-                params.put(key, entry.getValue());
-            } else if (!moduleParams.containsKey("forced" + StringUtils.capitalize(key))) {
-                params.put(key, entry.getValue());
-            }
+            params.put(key, entry.getValue());
         }
-
-//        Set<ExtendedItemDefinition> items = NodeTypeRegistry.getInstance().getTypedItems().get("layout");
-//        for (ExtendedItemDefinition prop : items) {
-//            overrideProperties(node, params, moduleParams, prop.getName());
-//        }
 
         ExtendedNodeType cache = NodeTypeRegistry.getInstance().getNodeType("jmix:cache");
         overrideProperties(node, params, moduleParams, cache);
 
         for (Map.Entry<String, Object> entry : params.entrySet()) {
             chain.pushAttribute(request, entry.getKey(), entry.getValue());
+        }
+
+        if (!resource.getContextConfiguration().equals(Resource.CONFIGURATION_INCLUDE)) {
+            chain.pushAttribute(request, "moduleMap", new HashMap());
         }
 
         Script script = (Script) request.getAttribute("script");

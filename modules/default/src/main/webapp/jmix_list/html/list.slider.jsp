@@ -13,7 +13,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
-<c:remove var="currentList" scope="request"/>
+
 <template:include template="hidden.load"/>
 
 <template:addResources type="javascript" resources="jquery.min.js,jquery.bxSlider.js,jquery.bxSlider.load.js"/>
@@ -28,7 +28,7 @@
 
 <div id="example1">
 
-    <c:forEach items="${currentList}" var="child" varStatus="status">
+    <c:forEach items="${moduleMap.currentList}" var="child" varStatus="status">
         <c:if test="${jcr:isNodeType(child, 'jmix:thumbnail')}">
             <div class="item">
 

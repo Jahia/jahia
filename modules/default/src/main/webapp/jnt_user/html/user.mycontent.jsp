@@ -31,9 +31,9 @@
             <c:set var="pageSize" value="${param.pagesize}"/>
         </c:otherwise>
     </c:choose>
-    <template:initPager totalSize="${listTotalSize}" pageSize="${pageSize}" id="${currentNode.identifier}"/>
+    <template:initPager totalSize="${moduleMap.listTotalSize}" pageSize="${pageSize}" id="${currentNode.identifier}"/>
     <ul class="userMyContentList">
-        <c:forEach items="${currentList}" var="subchild" varStatus="status" begin="${begin}" end="${end}">
+        <c:forEach items="${moduleMap.currentList}" var="subchild" varStatus="status" begin="${moduleMap.begin}" end="${moduleMap.end}">
             <jcr:nodeProperty node="${subchild}" name="jcr:title" var="title"/>
             <li>
                 <a class="userMyContentListIcon" href="${url.base}${subchild.path}.html" target="_blank">

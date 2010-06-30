@@ -29,7 +29,7 @@
         <c:set var="pageSize" value="${param.pagesize}"/>
     </c:otherwise>
 </c:choose>
-<template:initPager totalSize="${listTotalSize}" pageSize="${pageSize}"
+<template:initPager totalSize="${moduleMap.listTotalSize}" pageSize="${pageSize}"
                     id="${currentNode.identifier}"/>
 <h4 class="boxconverter-title2"><fmt:message key="label.upload.file.for.conversion"/></h4>
 
@@ -154,7 +154,7 @@
     </tr>
     </thead>
     <tbody>
-    <c:forEach items="${currentList}" var="subchild" varStatus="status" begin="${begin}" end="${end}">
+    <c:forEach items="${moduleMap.currentList}" var="subchild" varStatus="status" begin="${moduleMap.begin}" end="${moduleMap.end}">
         <c:set var="conversionStatus">
             <c:choose>
                 <c:when test="${subchild.properties.conversionSucceeded.boolean}">

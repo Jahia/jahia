@@ -17,17 +17,17 @@
 <template:include template="hidden.header"/>
 
 <div class="columns2"><!--start 2columns -->
-    <c:forEach items="${currentList}" var="subchild" begin="${begin}" end="${end}" varStatus="status">
+    <c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}" end="${moduleMap.end}" varStatus="status">
         <c:if test="${status.index > 0 and (status.index mod 2 eq 0)}">
             <div class="clear"></div>
         </c:if>
         <div class="column-item">
             <div class="spacer">
-                <template:module node="${subchild}" template="${subNodesTemplate}" editable="${editable}"/>
+                <template:module node="${subchild}" template="${moduleMap.subNodesTemplate}" editable="${moduleMap.editable}"/>
             </div>
         </div>
     </c:forEach>
-    <c:if test="${editable and renderContext.editMode}">
+    <c:if test="${moduleMap.editable and renderContext.editMode}">
         <div class="column-item">
             <div class="spacer">
                 <template:module path="*"/>

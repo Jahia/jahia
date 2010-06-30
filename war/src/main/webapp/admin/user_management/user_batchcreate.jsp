@@ -80,10 +80,14 @@
 </div>
 <div class="content-item"><!-- Remove user -->
 <form name="mainForm" action='<%=JahiaAdministration.composeActionURL(request,response,"users","&sub=processBatchCreate")%>' method="post" enctype="multipart/form-data">
+    <p>
     <label for="csvFile"><fmt:message key="label.csvFile"/></label>
     <input type="file" name="csvFile" id="csvFile"/>
+    </p>
+    <p>
     <label for="csvSeparator"><fmt:message key="label.csvSeparator"/></label>
     <input type="text" name="csvSeparator" value="," id="csvSeparator"/>
+    </p>
 </form>
     <p>
         <fmt:message key="org.jahia.admin.users.ManageUsers.batchCreateUsersExplainFileFormat.label" />

@@ -20,6 +20,10 @@
         <c:when test="${jcr:isNodeType(currentNode, 'jmix:renderableList')}">
             <c:set target="${moduleMap}" property="subNodesTemplate" value="${currentNode.properties['j:subNodesTemplate'].string}"/>
         </c:when>
+        <c:when test="${not empty subNodesTemplate}">
+            <c:set target="${moduleMap}" property="subNodesTemplate" value="${subNodesTemplate}"/>
+            <c:remove var="subNodesTemplate" scope="request" />
+        </c:when>
     </c:choose>
     <c:choose>
         <c:when test="${jcr:isNodeType(currentNode, 'jmix:pager')}">

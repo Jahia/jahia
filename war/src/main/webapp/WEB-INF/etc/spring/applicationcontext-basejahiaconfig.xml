@@ -37,37 +37,7 @@
       </constructor-arg>
   </bean>
 
-	<bean id="settings" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-		<property name="properties">
-			<props>
-				<prop key="org.jahia.services.fileextractor.tmpdir">fileextraction</prop>
-
-        <!-- Time based publishing : -->
-				<!-- the max elapsed time above which a retention rule job must be started again,
-				     if the attached object is in an inconsistent state ( i.e not expired or not published given the rule settings ), default is 5min -->
-				<prop key="org.jahia.services.timebasedpublishing.maxElapsedTime">2h</prop><!--The format of this is ' *w *d *h *m *s ' 
-				                                                                               (representing weeks, days, hours and minutes - where * can be any number)
-                                                                                        Examples: 4d, 5h 30m, 60m and 3w. 
-                                                                                        Note: Your current conversion rates are 1w = 7d and 1d = 24h -->				     
-
-				                                                                                    
-				<!-- the periodical time at which the check for inconsistent state of content publication/expiration should run , default is 10min. -->
-				<prop key="org.jahia.services.timebasedpublishing.checkInterval">12h</prop><!--The format of this is ' *w *d *h *m *s ' -->
-
-        <!-- Versioning : -->
-        <!-- compare difference highlighting style -->
-				<prop key="org.jahia.services.versioning.style.compareAddedDifference">background-color:aqua !important;color:black !important;</prop>
-				<prop key="org.jahia.services.versioning.style.compareChangedDifference">background-color:lime !important;color:black !important;</prop>
-				<prop key="org.jahia.services.versioning.style.compareDeletedDifference">background-color:red !important; text-decoration:line-through !important; color:black !important;</prop>
-			</props>
-		</property>
-	</bean>
-
 	<bean id="org.jahia.params.ProcessingContextFactory" class="org.jahia.params.ProcessingContextFactoryImpl" />
-
-    <bean id="javaMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-        <property name="host" value="${mail_server}" />
-    </bean>
 
     <bean id="JCRContentUtils" class="org.jahia.services.content.JCRContentUtils">
         <constructor-arg index="0">

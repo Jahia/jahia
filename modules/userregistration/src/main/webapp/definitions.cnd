@@ -6,4 +6,4 @@
  - to (string) multiple
  - cc (string) multiple
  - bcc (string) multiple
- - userProfilePage (reference) mandatory
+ - userRedirectPage (reference) mandatory

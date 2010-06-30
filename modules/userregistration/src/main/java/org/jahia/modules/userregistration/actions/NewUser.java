@@ -50,6 +50,7 @@ import org.json.JSONObject;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -66,6 +67,8 @@ public class NewUser implements Action {
     private String name;
     private JahiaUserManagerService userManagerService;
     private CamelNotificationService camelNotificationService;
+    private String templatePath;
+
     public String getName() {
         return name;
     }
@@ -82,6 +85,10 @@ public class NewUser implements Action {
         this.camelNotificationService = camelNotificationService;
     }
 
+    public void setTemplatePath(String templatePath) {
+        this.templatePath = templatePath;
+    }
+
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
                                   Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         String name1 = parameters.get("desired_login").get(0);
@@ -91,8 +98,16 @@ public class NewUser implements Action {
         properties.put("j:firstName",parameters.get("desired_firstname").get(0));
         properties.put("j:lastName",parameters.get("desired_lastname").get(0));
         final JahiaUser user = userManagerService.createUser(name1, password, properties);
-        camelNotificationService.sendMail("seda:users?multipleConsumers=true","A new user has been registered",null,"User "+name1+" has registered on your platform",
-                                          SettingsBean.getInstance().getMail_from(),SettingsBean.getInstance().getMail_administrator(),null,null);
-        return new ActionResult(HttpServletResponse.SC_ACCEPTED,parameters.get("userprofilepage").get(0), new JSONObject());
+
+        // Prepare mail to be sent :
+        boolean toAdministratorMail = Boolean.valueOf(parameters.get("toAdministrator").get(0));
+        String to = toAdministratorMail?SettingsBean.getInstance().getMail_administrator():parameters.get("to").get(0);
+        String from = parameters.get("from")==null?SettingsBean.getInstance().getMail_from():parameters.get("from").get(0);
+        String cc = parameters.get("cc")==null?null:parameters.get("cc").get(0);
+        String bcc = parameters.get("from")==null?null:parameters.get("bcc").get(0);
+        Map<String,Object> bindings = new HashMap<String,Object>();
+        bindings.put("newUser",user);
+        camelNotificationService.sendMailWithTemplate(templatePath,bindings,to,from,cc,bcc,resource.getLocale(),"Jahia User Registration");
+        return new ActionResult(HttpServletResponse.SC_ACCEPTED,parameters.get("userredirectpage").get(0), new JSONObject());
     }
 }

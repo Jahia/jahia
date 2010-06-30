@@ -1,0 +1,9 @@
+#* @vtlvariable name="newUser" type="org.jahia.services.usermanager.JahiaUser" *#
+#* @vtlvariable name="bundle" type="java.util.ResourceBundle" *#
+<html>
+<body>
+<h1>
+    ${bundle.getString("user.has.registered")} ${newUser.getProperty("j:firstName")} ${newUser.getProperty("j:lastName")}</h1>
+<p>${bundle.getString("user.login")} ${newUser.getName()}</p>
+</body>
+</html>

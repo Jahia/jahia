@@ -35,11 +35,20 @@ package org.jahia.services.notification;
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.RoutesBuilder;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 
+import javax.jcr.RepositoryException;
+import javax.script.*;
+import java.io.*;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 /**
  * Created by IntelliJ IDEA.
@@ -97,5 +106,45 @@ public class CamelNotificationService {
             body = textBody;
         }
         template.sendBodyAndHeaders(camelURI, body, headers);
+    }
+
+    public void sendMailWithTemplate(String template, Map<String,Object> bindedObjects, String toMail, String fromMail, String ccList, String bcclist,
+                          Locale locale,String templatePackageName) throws RepositoryException, ScriptException {
+        // Resolve template :
+        ScriptEngineManager scriptManager = new ScriptEngineManager();
+        ScriptEngine scriptEngine = scriptManager.getEngineByExtension(StringUtils.substringAfterLast(template, "."));
+        ScriptContext scriptContext = scriptEngine.getContext();
+        final Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+        bindings.putAll(bindedObjects);
+        InputStream scriptInputStream = JahiaContextLoaderListener.getServletContext().getResourceAsStream(template);
+        if (scriptInputStream != null) {
+            ResourceBundle resourceBundle;
+            if(templatePackageName==null) {
+            String resourceBundleName = StringUtils.substringBeforeLast(StringUtils.substringAfter(template,
+                                                                                                   "/").replaceAll("/",
+                                                                                                                   "."),
+                                                                        ".");
+            resourceBundle = ResourceBundle.getBundle(resourceBundleName, locale);
+            } else {
+                resourceBundle = new JahiaResourceBundle(locale, templatePackageName);
+            }
+            bindings.put("bundle", resourceBundle);
+            Reader scriptContent = null;
+            try {
+                scriptContent = new InputStreamReader(scriptInputStream);
+                scriptContext.setWriter(new StringWriter());
+                // The following binding is necessary for Javascript, which doesn't offer a console by default.
+                bindings.put("out", new PrintWriter(scriptContext.getWriter()));
+                Object result = scriptEngine.eval(scriptContent, bindings);
+                StringWriter writer = (StringWriter) scriptContext.getWriter();
+                String body = writer.toString();
+                sendMail("seda:users?multipleConsumers=true", resourceBundle.getString("subject"),
+                                             body, null, fromMail, toMail, ccList, bcclist);
+            } finally {
+                if (scriptContent != null) {
+                    IOUtils.closeQuietly(scriptContent);
+                }
+            }
+        }
     }
 }

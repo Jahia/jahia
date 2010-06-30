@@ -51,7 +51,7 @@ public class LinkerModule extends Module {
         panel.addStyleName("x-panel-header");
         panel.addStyleName("x-panel-linker");
 //        html = new HTML("<img src=\""+JahiaGWTParameters.getContextPath() + "/modules/default/images/add.png"+"\" /> Add new content here");
-        html = new HTML("<p class=\"linkAction\">Drop this to be linked<br/></p>");
+        html = new HTML("<p class=\"linkAction\">Click this to link<br/></p>");
         panel.add(html);
         add(panel);
     }

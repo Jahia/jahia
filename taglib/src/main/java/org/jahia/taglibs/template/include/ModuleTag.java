@@ -31,6 +31,7 @@
  */
 package org.jahia.taglibs.template.include;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -73,7 +74,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     protected boolean editable = true;
 
-    protected String nodeTypes = "jmix:droppableContent";
+    protected String nodeTypes = null;
 
     protected String var = null;
 
@@ -163,18 +164,19 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             if (node != null) {
                 Integer currentLevel = (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
                 try {
-                    if (node.isNodeType("jmix:listRestrictions") && node.hasProperty("j:allowedTypes")) {
-                        Value[] values = node.getProperty("j:allowedTypes").getValues();
-                        this.nodeTypes = "";
-                        for (Value value : values) {
-                            nodeTypes += value.getString() + " ";
-                        }
-                        nodeTypes = nodeTypes.trim();
-                    } else if ("jmix:droppableContent".equals(nodeTypes)) {
+//                    if (node.isNodeType("jmix:listRestrictions") && node.hasProperty("j:allowedTypes")) {
+//                        Value[] values = node.getProperty("j:allowedTypes").getValues();
+//                        this.nodeTypes = "";
+//                        for (Value value : values) {
+//                            nodeTypes += value.getString() + " ";
+//                        }
+//                        nodeTypes = nodeTypes.trim();
+//                    } else
+                    if (StringUtils.isEmpty(nodeTypes)) {
                         Set<String> cons = node.getPrimaryNodeType().getUnstructuredChildNodeDefinitions().keySet();
                         for (String s : cons) {
                             if (!s.equals("nt:base") && !s.equals("jnt:content") && !s.equals("jnt:translation")) {
-                                nodeTypes = (nodeTypes.equals("jmix:droppableContent")) ? s : nodeTypes + " " + s;
+                                nodeTypes = (StringUtils.isEmpty(nodeTypes)) ? s : nodeTypes + " " + s;
                             }
                         }
                     }
@@ -267,7 +269,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             template = null;
             editable = true;
             templateType = null;
-            nodeTypes = "jmix:droppableContent";
+            nodeTypes = null;
             var = null;
             buffer = null;
 
@@ -331,10 +333,11 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 .append("\" ")
                 .append((nodeTypes != null) ? "nodetypes=\"" + nodeTypes + "\"" : "");
 
-        String referenceTypes = getReferenceTypes();
+        if (nodeTypes != null) {
+            String referenceTypes = getReferenceTypes();
 
-        buffer.append((referenceTypes != null) ? " referenceTypes=\"" + referenceTypes + "\"" : "");
-
+            buffer.append((referenceTypes != null) ? " referenceTypes=\"" + referenceTypes + "\"" : "");
+        }
         buffer
                 .append((resolvedTemplate != null) ? " template=\"" + resolvedTemplate + "\"" : "")
                 .append(">");
@@ -342,7 +345,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         if (var == null) {
             pageContext.getOut().print(buffer);
             buffer.delete(0, buffer.length());
-        }
+        }                                
 
     }
 

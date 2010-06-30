@@ -19,11 +19,11 @@
             <wrappercontent jcr:primaryType="jnt:contentList">
               <row1 column="2col106" jcr:primaryType="jnt:row">
                 <col1 jcr:primaryType="jnt:contentList" >
-                    <listA j:filter="" jcr:primaryType="jnt:mainResourceArea" />
+                    <listA  jcr:primaryType="jnt:mainResourceArea" />
                 </col1>
                 <col2 jcr:primaryType="jnt:contentList">
                   <login-to-jahia j:share="/templatesSet/templates-intranet/contents/site_components/login-to-jahia" />
-                    <listB j:filter="" jcr:primaryType="jnt:mainResourceArea" />
+                    <listB  jcr:primaryType="jnt:mainResourceArea" />
                 </col2>
               </row1>
             </wrappercontent>
@@ -32,10 +32,10 @@
           <wrappercontent jcr:primaryType="jnt:contentList">
             <row1 column="2col124" jcr:primaryType="jnt:row">
                 <col1 jcr:primaryType="jnt:contentList">
-                    <listA j:filter="" jcr:primaryType="jnt:mainResourceArea" />
+                    <listA  jcr:primaryType="jnt:mainResourceArea" />
                 </col1>
                 <col2 jcr:primaryType="jnt:contentList">
-                    <listB j:filter="" jcr:primaryType="jnt:mainResourceArea" />
+                    <listB  jcr:primaryType="jnt:mainResourceArea" />
                 </col2>
             </row1>
           </wrappercontent>
@@ -44,13 +44,13 @@
           <wrappercontent jcr:primaryType="jnt:contentList">
             <row1 column="3col664" jcr:primaryType="jnt:row">
                 <col1 jcr:primaryType="jnt:contentList">
-                    <listA j:filter="" jcr:primaryType="jnt:mainResourceArea" />
+                    <listA  jcr:primaryType="jnt:mainResourceArea" />
                 </col1>
                 <col2 jcr:primaryType="jnt:contentList">
-                    <listB j:filter="" jcr:primaryType="jnt:mainResourceArea" />
+                    <listB  jcr:primaryType="jnt:mainResourceArea" />
                 </col2>
                 <col3 jcr:primaryType="jnt:contentList">
-                    <listC j:filter="" jcr:primaryType="jnt:mainResourceArea" />
+                    <listC  jcr:primaryType="jnt:mainResourceArea" />
                 </col3>
             </row1>
           </wrappercontent>
@@ -161,7 +161,7 @@
           <wrappercontent jcr:primaryType="jnt:contentList">
             <row column="2col124" jcr:primaryType="jnt:row">
               <col1 jcr:primaryType="jnt:contentList">
-                <boardindex j:filter="" jcr:primaryType="jnt:mainResourceArea">
+                <boardindex  jcr:primaryType="jnt:mainResourceArea">
                   <boardIndex boardDescription="Board Description" jcr:primaryType="jnt:boardIndex" boardSubject="Board Subject" />
                 </boardindex>
               </col1>
@@ -219,23 +219,22 @@
             </tabularList>
           </wrappercontent>
         </my-profile>
-        <events jcr:primaryType="jnt:template"  j:applyOn="jnt:page" jcr:mixinTypes="jmix:hasTemplateNode" j:templateNode="/templatesSet/templates-intranet/templates/sitewrapper">
+        <events jcr:mixinTypes="jmix:hasTemplateNode" jcr:primaryType="jnt:template" j:templateNode="/templatesSet/templates-web/templates/sitewrapper" j:applyOn="jnt:page">
           <wrappercontent jcr:primaryType="jnt:contentList">
-            <row column="2col106" jcr:primaryType="jnt:row">
+            <row1 column="2col115" jcr:primaryType="jnt:row">
               <col1 jcr:primaryType="jnt:contentList">
-                <events jcr:mixinTypes="jmix:listRestrictions" jcr:primaryType="jnt:contentList" j:allowedTypes="jnt:event">
-                  <j:translation_en jcr:title_en="Events" jcr:language="en" jcr:primaryType="jnt:translation" />
-                </events>
+                <listA jcr:primaryType="jnt:mainResourceArea" />
+                <events j:allowedTypes="jnt:event" jcr:primaryType="jnt:mainResourceArea" /> 
               </col1>
               <col2 jcr:primaryType="jnt:contentList">
-                <calendar startDateProperty="startDate" jcr:mixinTypes="jmix:shareable" endDateProperty="endDate" jcr:primaryType="jnt:calendar" j:bindedComponent="/templatesSet/templates-intranet/templates/events-1/wrappercontent/row/col1/events" />
-                <facets jcr:mixinTypes="jmix:shareable" jcr:primaryType="jnt:facets" j:bindedComponent="/templatesSet/templates-intranet/templates/events/wrappercontent/row/col1/events">
-                  <facet field="jnt:event;eventsType" jcr:primaryType="jnt:fieldFacet" facet="type">
-                    <j:translation_en jcr:language="en" label_en="Event Type" jcr:primaryType="jnt:translation" />
-                  </facet>
+                <calendar startDateProperty="startDate" endDateProperty="endDate" jcr:primaryType="jnt:calendar" j:bindedComponent="/templatesSet/templates-intranet/templates/events/wrappercontent/row1/col1/events" />
+                <facets jcr:primaryType="jnt:facets" j:bindedComponent="/templatesSet/templates-intranet/templates/events/wrappercontent/row1/col1/events">
+                  <fieldFacet mincount="1" field="jnt:event;eventsType" jcr:primaryType="jnt:fieldFacet" missing="false" facet="type" offset="0" limit="100">
+                    <j:translation_en jcr:language="en" label_en="Type" jcr:primaryType="jnt:translation" />
+                  </fieldFacet>
                 </facets>
               </col2>
-            </row>
+            </row1>
           </wrappercontent>
         </events>
           <blog-home jcr:mixinTypes="jmix:hasTemplateNode" jcr:primaryType="jnt:template" j:templateNode="/templatesSet/templates-intranet/templates/sitewrapper" j:applyOn="jnt:page">
@@ -260,7 +259,7 @@
                 <wrappercontent jcr:primaryType="jnt:contentList">
                   <row column="2col115" jcr:primaryType="jnt:row">
                     <col1 jcr:primaryType="jnt:contentList">
-                      <blog-content j:subNodesTemplate="short" j:filter="" jcr:primaryType="jnt:mainResourceArea" />
+                      <blog-content j:subNodesTemplate="short"  jcr:primaryType="jnt:mainResourceArea" />
                       <blogEntryFormCreation jcr:primaryType="jnt:blogEntryFormCreation" />
                     </col1>
                     <col2 jcr:primaryType="jnt:contentList">
@@ -301,7 +300,7 @@
               </blog>
           <sitewrapper  j:template="intranet.bodywrapper" jcr:primaryType="jnt:template" jcr:mixinTypes="jmix:renderable" >
             <logo jcr:primaryType="jnt:contentList" >
-                <logo j:filter="" jcr:primaryType="jnt:absoluteArea" j:basenode="/templatesSet/templates-intranet/home"/>
+                <logo  jcr:primaryType="jnt:absoluteArea" j:basenode="/templatesSet/templates-intranet/home"/>
             </logo>
             <simpleSearch jcr:primaryType="jnt:contentList">
               <simpleSearchForm result="/templatesSet/templates-intranet/search-results" jcr:mixinTypes="jmix:shareable" jcr:primaryType="jnt:simpleSearchForm" />
@@ -311,7 +310,7 @@
               <shortcuts jcr:mixinTypes="jmix:shareable" jcr:primaryType="jnt:shortcuts" />
             </topMenu>
             <footer jcr:primaryType="jnt:contentList" >
-                <footer j:filter="" jcr:primaryType="jnt:absoluteArea" j:basenode="/templatesSet/templates-intranet/home"/>
+                <footer  jcr:primaryType="jnt:absoluteArea" j:basenode="/templatesSet/templates-intranet/home"/>
             </footer>
             <wrappercontent jcr:primaryType="jnt:contentList">
               <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" />

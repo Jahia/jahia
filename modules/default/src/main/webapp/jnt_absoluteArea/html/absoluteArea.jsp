@@ -54,9 +54,20 @@
         </div>
     </c:when>
     <c:otherwise>  
-        <template:wrappedContent path="${currentNode.properties['j:basenode'].node.path}/${currentNode.name}" >
+        <jcr:nodeProperty node="${currentNode}" name="j:allowedTypes" var="restrictions"/>
+        <c:if test="${not empty restrictions}">
+            <c:forEach items="${restrictions}" var="value" >
+                <c:if test="${not empty nodeTypes}">
+                    <c:set var="nodeTypes" value="${nodeTypes} ${value.string}"/>
+                </c:if>
+                <c:if test="${empty nodeTypes}">
+                    <c:set var="nodeTypes" value="${value.string}"/>
+                </c:if>
+            </c:forEach>
+        </c:if>
+        <template:wrappedContent template="${currentNode.properties['j:referenceTemplate'].string}" path="${currentNode.properties['j:basenode'].node.path}/${currentNode.name}" nodeTypes="${nodeTypes}" >
             <c:if test="${not empty currentNode.properties['j:subNodesTemplate'].string}">
-                <template:param name="forcedSubNodesTemplate" value="${currentNode.properties['j:subNodesTemplate'].string}" />
+                <template:param name="subNodesTemplate" value="${currentNode.properties['j:subNodesTemplate'].string}" />
             </c:if>
         </template:wrappedContent>
     </c:otherwise>

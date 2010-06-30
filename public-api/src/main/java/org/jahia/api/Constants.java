@@ -236,7 +236,5 @@ public class Constants {
     public static final String REVISION_NUMBER = "j:revisionNumber";
     public static final String CHECKIN_DATE = "j:checkinDate";
     
-    public static final String ALLOWED_TYPES = "j:allowedTypes";
-
     public static final List<String> forbiddenPropertiesToCopy = Arrays.asList(PROCESSID);
 }

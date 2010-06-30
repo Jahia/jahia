@@ -88,7 +88,6 @@
                     <property name="tabs">
                         <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
                             <value>listOrderingContent,$site/edit-mode/list-management</value>
-                            <value>template,$site/edit-mode/template</value>
                             <value>layout,$site/edit-mode/layout</value>
                             <value>options,$site/edit-mode/options</value>
                             <value>rights,$site/edit-mode/rights</value>
@@ -101,7 +100,6 @@
                     <property name="tabs">
                         <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
                             <value>content,$site/edit-mode/content</value>
-                            <value>template,$site/edit-mode/template</value>
                             <value>layout,$site/edit-mode/layout</value>
                             <value>options,$site/edit-mode/options</value>
                             <value>rights,$site/edit-mode/rights</value>
@@ -120,7 +118,6 @@
                     <property name="tabs">
                         <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
                             <value>createPage,$site/edit-mode/create-page</value>
-                            <value>template,$site/edit-mode/template</value>
                             <value>options,$site/edit-mode/options</value>
                             <value>rights,$site/edit-mode/rights</value>
                         </list>
@@ -131,7 +128,6 @@
                     <property name="tabs">
                         <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
                             <value>content,$site/edit-mode/content</value>
-                            <value>template,$site/edit-mode/template</value>
                             <value>layout,$site/edit-mode/layout</value>
                             <value>options,$site/edit-mode/options</value>
                         </list>
@@ -219,7 +215,6 @@
                     <property name="tabs">
                         <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
                             <value>listOrderingContent,$site/edit-mode/list-management</value>
-                            <value>template,$site/edit-mode/template</value>
                             <value>layout,$site/edit-mode/layout</value>
                             <value>metadata,$site/edit-mode/metadata</value>
                             <value>tags,$site/edit-mode/tags</value>

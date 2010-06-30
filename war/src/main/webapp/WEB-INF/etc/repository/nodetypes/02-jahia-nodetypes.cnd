@@ -440,7 +440,7 @@
  - j:node (weakreference) < jmix:image
  - j:alternateText (string)
 
-[jnt:contentReference] > jnt:content, jmix:nodeReference, jmix:editorialContent
+[jnt:contentReference] > jnt:content, jmix:nodeReference, jmix:editorialContent, jmix:renderableReference
  - j:node (weakreference) < jmix:droppableContent
 
 [jnt:nodeLink] > jnt:content, jmix:nodeReference, jmix:link
@@ -501,13 +501,11 @@
 
 [jmix:contributeMode] mixin
  extends = jnt:contentList, jnt:folder
- itemtype = template
  - j:editableInContribution (boolean)
  - j:canOrderInContribution (boolean)
  - j:canDeleteInContribution (boolean)
 
 [jmix:listRestrictions] mixin
- itemtype = template
  - j:allowedTypes (string, choicelist[subnodetypes = 'jmix:droppableContent']) multiple
 
 

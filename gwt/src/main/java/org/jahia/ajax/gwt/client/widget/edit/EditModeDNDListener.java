@@ -108,12 +108,12 @@ public class EditModeDNDListener extends DNDListener {
                         }
                     }
                 });
-            } else if (CONTENT_SOURCE_TYPE.equals(sourceType)) {
-                // Existing item from content list
-                List<GWTJahiaNode> nodes = e.getStatus().getData(SOURCE_NODES);
-
-                e.getStatus().setData(OPERATION_CALLED, "true");
-                async.pasteReferences(JCRClientUtils.getPathesList(nodes), parentPath, null, callback);
+//            } else if (CONTENT_SOURCE_TYPE.equals(sourceType)) {
+//                // Existing item from content list
+//                List<GWTJahiaNode> nodes = e.getStatus().getData(SOURCE_NODES);
+//
+//                e.getStatus().setData(OPERATION_CALLED, "true");
+//                async.pasteReferences(JCRClientUtils.getPathesList(nodes), parentPath, null, callback);
             } else if (SIMPLEMODULE_TYPE.equals(sourceType)) {
                 // Item move
                 List<GWTJahiaNode> nodes = e.getStatus().getData(SOURCE_NODES);
@@ -187,12 +187,12 @@ public class EditModeDNDListener extends DNDListener {
                         }
                     }
                 });
-            } else if (CONTENT_SOURCE_TYPE.equals(sourceType)) {
-                // Drop into an existing module
-                List<GWTJahiaNode> nodes = e.getStatus().getData(SOURCE_NODES);
-
-                e.getStatus().setData(OPERATION_CALLED, "true");
-                async.pasteReferencesOnTopOf(JCRClientUtils.getPathesList(nodes), targetPath, null, callback);
+//            } else if (CONTENT_SOURCE_TYPE.equals(sourceType)) {
+//                // Drop into an existing module
+//                List<GWTJahiaNode> nodes = e.getStatus().getData(SOURCE_NODES);
+//
+//                e.getStatus().setData(OPERATION_CALLED, "true");
+//                async.pasteReferencesOnTopOf(JCRClientUtils.getPathesList(nodes), targetPath, null, callback);
             } else if (SIMPLEMODULE_TYPE.equals(sourceType)) {
                 // Item move
                 List<GWTJahiaNode> nodes = e.getStatus().getData(SOURCE_NODES);

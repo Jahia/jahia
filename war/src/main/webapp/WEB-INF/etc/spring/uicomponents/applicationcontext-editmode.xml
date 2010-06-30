@@ -229,7 +229,7 @@
                             <value>publication,$site/edit-mode/publication</value>
                             <value>workflow,$site/edit-mode/workflow</value>
                             <value>seo,$site/edit-mode/seo</value>
-                            <value>analytics,$site/edit-mode/analytics</value>
+                            <ref bean="analyticsEngineTab"/>
                         </list>
                     </property>
                 </bean>
@@ -247,7 +247,7 @@
                             <value>publication,$site/edit-mode/publication</value>
                             <value>workflow,$site/edit-mode/workflow</value>
                             <value>seo,$site/edit-mode/seo</value>
-                            <value>analytics,$site/edit-mode/analytics</value>
+                            <ref bean="analyticsEngineTab"/>
                         </list>
                     </property>
                 </bean>
@@ -302,6 +302,15 @@
 
     </bean>
 
+    <bean name="analyticsEngineTab" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+        <property name="key" value="analytics"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.uicomponents.bean.contentmanager.AnalyticsVisibility">
+                <property name="siteActionPermission" value="edit-mode/analytics"/>
+            </bean>
+        </property>
+    </bean>
+    
     <!-- side tabs-->
     <bean id="sidePanelTab.templates" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
         <property name="key" value="templates"/>

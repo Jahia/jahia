@@ -1,0 +1,20 @@
+#* @vtlvariable name="formNode" type="org.jahia.services.content.JCRNodeWrapper" *#
+#* @vtlvariable name="formDatas" type="java.util.Map" *#
+#* @vtlvariable name="bundle" type="java.util.ResourceBundle" *#
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<title>${bundle.getString("mail.a.form")} #if($formNode.hasProperty("jcr:title")) ${formNode.getProperty("jcr:title").string}#{else}${formNode.getName()}#end ${bundle.getString("mail.submitted")}</title>
+</head>
+<body>
+<h2>${bundle.getString("mail.a.form.type")} #if($formNode.hasProperty("jcr:title")) ${formNode.getProperty("jcr:title").string} #else ${formNode.getName()} #end ${bundle.getString("mail.submitted.values")}</h2>
+<ol>
+#foreach( $it in $formDatas.keySet())
+    <li><label style="font:bold">${it}&nbsp;:</label>&nbsp;<span>${formDatas.get($it)}</span></li>
+#end
+    </ol>
+<p>${bundle.getString("mail.farewell")}<br/>"Form Team"</p>
+
+<hr/>
+</body>
+</html>

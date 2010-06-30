@@ -1,0 +1,8 @@
+#* @vtlvariable name="locale" type="java.util.Locale" *#
+#* @vtlvariable name="submissionDate" type="java.util.Calendar" *#
+#* @vtlvariable name="formNode" type="org.jahia.services.content.JCRNodeWrapper" *#
+#* @vtlvariable name="formDatas" type="java.util.Map" *#
+#* @vtlvariable name="bundle" type="java.util.ResourceBundle" *#
+#* @vtlvariable name="submitter" type="org.jahia.services.usermanager.JahiaUser" *#
+#* @vtlvariable name="date" type="org.apache.velocity.tools.generic.DateTool" *#
+${bundle.getString("mail.subject")} ${date.format("full","short",$submissionDate,$locale)} by ${submitter.getUsername()};

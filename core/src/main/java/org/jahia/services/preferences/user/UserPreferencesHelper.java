@@ -96,7 +96,7 @@ public final class UserPreferencesHelper {
      * @return user's e-mail address or <code>null</code> if it is not provided
      */
     public static String getEmailAddress(JahiaUser user) {
-        String email = user != null ? user.getProperty("email") : null;
+        String email = user != null ? user.getProperty("j:email") : null;
     
         return StringUtils.isNotBlank(email) ? email : null;
     }

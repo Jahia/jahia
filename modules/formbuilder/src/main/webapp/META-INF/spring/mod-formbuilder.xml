@@ -24,8 +24,9 @@
     </bean>
     <bean class="org.jahia.modules.formbuilder.actions.MailAction">
         <property name="name" value="mail"/>
-        <property name="mailService" ref="MailService"/>
+        <property name="camelNotificationService" ref="camelNotificationService"/>
         <property name="userManagerService" ref="JahiaUserManagerService"/>
+        <property name="mailTemplatePath" value="/action/mail/body.vm"/>
     </bean>
     <bean class="org.jahia.modules.formbuilder.actions.ChainAction">
         <property name="templateService" ref="JahiaTemplateManagerService"/>

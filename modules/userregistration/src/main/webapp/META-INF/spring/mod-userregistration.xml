@@ -7,6 +7,6 @@
         <property name="name" value="newUser"/>
         <property name="userManagerService" ref="JahiaUserManagerService"/>
         <property name="camelNotificationService" ref="camelNotificationService"/>
-        <property name="templatePath" value="/modules/userregistration/mails/templates/userhasregistered.vm"/>
+        <property name="templatePath" value="/mails/templates/userhasregistered.vm"/>
     </bean>
 </beans>

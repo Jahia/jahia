@@ -385,6 +385,8 @@ br.clearFloat{
   list-style: none;
   float: right;
   text-align: right;
+  background: url(images/andromeda/bkg-tab.png) 0 -192px;
+  height: 32px;
 }
 
 .dex-langbar-wrapper {
@@ -394,8 +396,9 @@ br.clearFloat{
   list-style: none;
   float: right;
   text-align: right;
+  background: url(images/andromeda/bkg-tab.png) 0 -192px;
+  height: 32px;
 }
-
 
 .dex-license-wrapper li {
   margin: 0;

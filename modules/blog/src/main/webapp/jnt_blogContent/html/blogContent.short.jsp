@@ -19,7 +19,7 @@
 </c:if>
 <div class="post">
     <fmt:formatDate value="${created.time}" type="date" pattern="dd" var="userCreatedDay"/>
-    <fmt:formatDate value="${created.time}" type="date" pattern="MM" var="userCreatedMonth"/>
+    <fmt:formatDate value="${created.time}" type="date" pattern="MMM" var="userCreatedMonth"/>
     <div class="post-date"><span>${userCreatedMonth}</span>${userCreatedDay}</div>
     <h2 class="post-title"><a href="${url.current}"><c:out value="${title.string}"/></a></h2>
 

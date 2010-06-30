@@ -69,7 +69,7 @@
 
     </c:when>
     <c:otherwise>
-        <template:wrappedContent path="${currentNode.name}" >
+        <template:wrappedContent template="${currentNode.properties['j:referenceTemplate'].string}" path="${currentNode.name}" >
             <c:if test="${not empty currentNode.properties['j:subNodesTemplate'].string}">
                 <template:param name="subNodesTemplate" value="${currentNode.properties['j:subNodesTemplate'].string}" />
             </c:if>

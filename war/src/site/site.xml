@@ -26,8 +26,9 @@ under the License.
         <menu ref="parent"/>
         <menu name="Overview">
             <item name="Introduction" href="./index.html"/>
-            <item name="Internationalized Web Site" ref="./multilang.html"/>
-            <item name="Apache HTTP Server in Front of Jahia" ref="./apachehttpserver.html"/>
+            <item name="Internationalized Web Site" href="./multilang.html"/>
+            <item name="Apache HTTP Server in Front of Jahia" href="./apachehttpserver.html"/>
+            <item name="Notifications" href="./notifications.html"/>
         </menu>
         <menu ref="modules"/>
         <menu ref="reports"/>

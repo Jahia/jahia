@@ -65,7 +65,7 @@ public class LinkerTag extends TagSupport {
     public int doEndTag() throws JspException {
         try {
             RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
-            if (renderContext.isEditMode()) {
+            if (renderContext.isEditMode() && /*editable &&*/ !Boolean.TRUE.equals(renderContext.getRequest().getAttribute("inWrapper"))) {
                 Resource currentResource = (Resource) pageContext.getAttribute("currentResource", PageContext.REQUEST_SCOPE);
 
                 String currentPath = currentResource.getNode().getPath();

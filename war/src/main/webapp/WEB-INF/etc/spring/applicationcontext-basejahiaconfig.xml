@@ -189,29 +189,6 @@
     </bean>
 
 
-    <bean id="sharedSessionAttributeNames" class="org.springframework.beans.factory.config.ListFactoryBean">
-        <property name="sourceList">
-            <list>
-                <value>org.jahia.usermanager.jahiauser</value>
-                <value>org.jahia.usermanager.aliaseduser</value>
-                <value>org.jahia.usermanager.aliasingrootuser</value>
-                <value>org.jahia.advpreview.settings</value>
-                <value>org.jahia.services.sites.jahiasite</value>
-                <value>org.jahia.services.sites.jahiadefaultsite</value>
-                <value>org.jahia.params.lastrequestedpageid</value>
-                <value>org.jahia.params.lastdisplayedpageid</value>
-                <value>org.jahia.engines.lastenginename</value>
-                <value>org.jahia.bin.jahiarunningmode</value>
-                <value>jahia_session_engineMap</value>
-                <value>org.jahia.services.multilang.currentlocale</value>
-                <value>org.jahia.session.backup</value>
-                <value>org.jahia.login.request_uri</value>
-                <value>org.apache.struts.action.LOCALE</value>
-                <value>javax.servlet.jsp.jstl.fmt.locale</value>
-            </list>
-        </property>
-    </bean>
-
     <bean id="org.jahia.bin.errors.handler" class="org.jahia.bin.errors.DefaultErrorHandler"/>
     
 </beans>

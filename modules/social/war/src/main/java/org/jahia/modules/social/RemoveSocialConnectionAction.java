@@ -9,14 +9,8 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
-import javax.jcr.NodeIterator;
-import javax.jcr.RepositoryException;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryManager;
-import javax.jcr.query.QueryResult;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
@@ -28,11 +22,21 @@ import java.util.*;
  *         Date: Jun 22, 2010
  *         Time: 9:24:09 AM
  */
-public class RemoveFriendAction implements Action {
+public class RemoveSocialConnectionAction implements Action {
 
-    private static Logger logger = Logger.getLogger(RemoveFriendAction.class);
+    private static Logger logger = Logger.getLogger(RemoveSocialConnectionAction.class);
 
     private String name;
+    private SocialService socialService;
+
+    public SocialService getSocialService() {
+        return socialService;
+    }
+
+    public void setSocialService(SocialService socialService) {
+        this.socialService = socialService;
+    }
+
 
     public String getName() {
         return name;
@@ -48,6 +52,12 @@ public class RemoveFriendAction implements Action {
                 resource.getWorkspace(), resource.getLocale());
 
         final JCRNodeWrapper node = resource.getNode();
+
+        final String fromUserId = req.getParameter("fromUserId");
+        final String toUserId = req.getParameter("toUserId");
+        final String connectionType = req.getParameter("connectionType");
+
+        socialService.removeSocialConnection(jcrSessionWrapper, fromUserId, toUserId, connectionType);
 
         /* TODO to be implemented */
         JSONObject results = new JSONObject();

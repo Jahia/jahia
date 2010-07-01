@@ -137,14 +137,20 @@ public class SocialService {
     }
 
     public SortedSet<JCRNodeWrapper> getActivities(JCRSessionWrapper jcrSessionWrapper, JCRNodeWrapper node) throws RepositoryException {
+        Set<String> userPaths = getUserConnections(jcrSessionWrapper, node, true);
+        return getActivities(jcrSessionWrapper, userPaths);
+    }
 
+    public Set<String> getUserConnections(JCRSessionWrapper jcrSessionWrapper, JCRNodeWrapper userNode, boolean includeSelf) throws RepositoryException {
         QueryManager queryManager = jcrSessionWrapper.getWorkspace().getQueryManager();
 
         Set<String> userPaths = new HashSet<String>();
 
-        userPaths.add(node.getPath());
+        if (includeSelf) {
+            userPaths.add(userNode.getPath());
+        }
 
-        Query myConnectionsQuery = queryManager.createQuery("select * from ["+JNT_SOCIAL_CONNECTION+"] as uC where isdescendantnode(uC,['"+node.getPath()+"'])", Query.JCR_SQL2);
+        Query myConnectionsQuery = queryManager.createQuery("select * from ["+JNT_SOCIAL_CONNECTION+"] as uC where isdescendantnode(uC,['"+ userNode.getPath()+"'])", Query.JCR_SQL2);
         QueryResult myConnectionsResult = myConnectionsQuery.execute();
 
         NodeIterator myConnectionsIterator = myConnectionsResult.getNodes();
@@ -153,7 +159,7 @@ public class SocialService {
             JCRNodeWrapper connectedToNode = (JCRNodeWrapper) myConnectionNode.getProperty("j:connectedTo").getNode();
             userPaths.add(connectedToNode.getPath());
         }
-        return getActivities(jcrSessionWrapper, userPaths);
+        return userPaths;
     }
 
     public SortedSet<JCRNodeWrapper> getActivities(JCRSessionWrapper jcrSessionWrapper, Set<String> paths) throws RepositoryException {

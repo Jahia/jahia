@@ -3,13 +3,8 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-    <bean class="org.jahia.modules.social.GetActivitiesAction">
-        <property name="name" value="getactivities"/>
-        <property name="socialService" ref="socialService" />
-    </bean>
-
-    <bean class="org.jahia.modules.social.RemoveFriendAction">
-        <property name="name" value="removefriend"/>
+    <bean class="org.jahia.modules.social.RemoveSocialConnectionAction">
+        <property name="name" value="removesocialconnection"/>
     </bean>
 
     <bean class="org.jahia.modules.social.SendMessageAction">
@@ -26,6 +21,5 @@
             </map>
         </property>
     </bean>
-
 
 </beans>

@@ -4,6 +4,7 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib prefix="social" uri="http://www.jahia.org/tags/socialLib" %>
 <jsp:useBean id="now" class="java.util.Date"/>
 <template:addResources type="css" resources="social.css"/>
 <template:addResources type="css" resources="jquery.fancybox.css"/>
@@ -23,6 +24,7 @@
 <template:addResources type="javascript" resources="jquery-ui.datepicker.min.js,jquery.jeditable.datepicker.js"/>
 <template:addResources type="javascript" resources="jquery.form.js"/>
 <template:addResources type="javascript" resources="jquery.cuteTime.js"/>
+<template:addResources type="javascript" resources="jahia.social.js"/>
 
 
 <c:set var="fields" value="${currentNode.propertiesAsString}"/>
@@ -58,118 +60,6 @@
 
 <script type="text/javascript">
 
-    /**
-     * As any property can match the query, we try to intelligently display properties that either matched or make
-     * sense to display.
-     * @param node
-     */
-    function getText(node) {
-        if (node.matchingProperties.length > 0) {
-            var firstMatchingProperty = node.matchingProperties[0];
-            return node[firstMatchingProperty];
-        }
-        if (node["jcr:title"] != null) {
-            return node["jcr:title"];
-        } else if (node["text"] != null) {
-            return node["text"];
-        } else if (node["j:nodename"] != null) {
-            return node["j:nodename"];
-        }
-    }
-
-    function format(result) {
-        return getText(result["node"]);
-    }
-
-
-    function searchUsers(term) {
-        $.ajax({
-            url: '${url.findPrincipal}',
-            type: 'post',
-            dataType : 'json',
-            data : "principalType=users&wildcardTerm=" + term + "*",
-            success: function(data) {
-                $("#searchUsersResult").html("");
-                $.each(data, function(i, item) {
-                    $("#searchUsersResult").append(
-                            $("<tr/>").append($("<td/>").append($("<img/>").attr("src", item.properties['j:picture'])))
-                                    .append($("<td/>").text(item.properties['j:firstName'] + " " + item.properties['j:lastName']))
-                                    .append($("<td/>").attr("align", "center").append($("<a/>").attr("href", "").attr("class", "social-add").click(function () {
-                                requestConnection('${currentNode.path}.startWorkflow.do', item['userKey']);
-                                return false;
-                            }).append($("<span/>").text("<fmt:message key='addAsFriend'/>"))))
-                            );
-                    if (i == 10) return false;
-                });
-            }
-        });
-    }
-
-    function requestConnection(actionURL, toUserKey) {
-        $.ajax({
-            url : '${url.base}' + actionURL,
-            type : 'post',
-            data : 'process=jBPM:user-connection&userkey=' + toUserKey,
-            success : function (data) {
-                alert("Request completed successfully!");
-            }
-        });
-    }
-
-
-    function submitStatusUpdate(updateText) {
-        $.ajax({
-            url: '${url.base}${currentNode.path}/activities/*',
-            type : 'post',
-            data : 'nodeType=jnt:socialActivity&newNodeOutputFormat=html&j:message=' + updateText + "&j:from=${currentNode.identifier}",
-            success : function (data) {
-                // alert("Status update submitted successfully");
-                loadActivities();
-            }
-        });
-    }
-
-    function loadActivities() {
-        $.ajax({
-            url: '${url.base}${currentNode.path}.getactivities.do',
-            type: 'post',
-            dataType : "json",
-            data : 'treatAsResourceKey=j:messageKey',
-            success : function (data) {
-                $(".activitiesList").html("");
-                // alert(data.resultCount + " activities loaded properly");
-                $.each(data['activities'], function(i, item) {
-                    var activityDate = new Date();
-                    activityDate.setTime(item['jcr:created']);
-                    var imageURL = item['j:picture'];
-                    if (imageURL == null) {
-                        imageURL = "${url.currentModule}/images/friendbig.png";
-                    }
-                    var message = item['j:messageKey'];
-                    if (message == null) {
-                        message = item['j:message'];
-                    }
-                    $(".activitiesList").append(
-                            "<li>" +
-                                    "<div class='image'>" +
-                                    "<div class='itemImage itemImageLeft'>" +
-                                    "<img src=" + imageURL + " />" +
-                                    "</div>" +
-                                    "</div>" +
-                                    "<h5 class='author'>" + item['jcr:createdBy'] + "</h5>" +
-                                    "<span class='timestamp'>" + activityDate.toUTCString() + "</span>" +
-                                    "<p class='message'>" + message + " " + item['j:targetNode'] + "</p> " +
-                                    "<div class='clear'></div>" +
-                                    "</li>"
-                            );
-
-                });
-                initCuteTime();
-            }
-
-        });
-        return false;
-    }
 
     function initCuteTime() {
         $('.timestamp').cuteTime({ refresh: 60000 });
@@ -245,18 +135,31 @@
         $("#searchUsersSubmit").click(function() {
             // validate and process form here
             var term = $("input#searchUsersTerm").val();
-            searchUsers(term);
+            searchUsers('${url.findPrincipal}', '${url.base}/${currentNode.path}', term);
             return false;
         });
         $("#statusUpdateSubmit").click(function() {
             // validate and process form here
             var updateText = $("textarea#statusUpdateText").val();
             // alert('Sending text ' + updateText);
-            submitStatusUpdate(updateText);
+            submitStatusUpdate('${url.base}/${currentNode.path}', '${currentNode.identifier}', updateText);
             return false;
         });
 
-        loadActivities();
+        $("a.removeFriendAction").click(function(e){
+            e.preventDefault();
+            var href = $(this).attr('href');
+            var fromUserId = $(selectedArray).attr('fromUserId');
+            var toUserId = $(selectedArray).attr('toUserId');
+            var connectionType = $(selectedArray).attr('connectionType');
+            custom_confirm('Are you sure you want to remove this friend ?',
+                function(){
+                    removeSocialConnection('${url.base}/${currentNode.path}', fromUserId, toUserId, connectionType);
+                }
+            );
+        });
+
+        loadActivities('${url.base}${currentNode.path}');
         
     }
 
@@ -354,7 +257,10 @@
                     <a href="${url.base}${connectedToUser.path}.html"><img src="${url.currentModule}/images/friend.png"
                                                                          alt="friend" border="0"/></a>
                 </div>
-                <a class="social-list-remove" title="<fmt:message key="removeFriend"/>" href="#"><span><fmt:message
+                <a class="social-list-remove removeFriendAction" title="<fmt:message key="removeFriend"/>" href="#"
+                   fromUserId="${socialConnection.properties['j:connectedFrom'].node.identifier}"
+                   toUserId="${socialConnection.properties['j:connectedTo'].node.identifier}"
+                   connectionType="${socialConnection.properties['j:type'].string}"><span><fmt:message
                         key="removeFriend"/></span></a>
                 <a class="social-list-sendmessage showSendMessage" title="<fmt:message key="sendMessage"/>" userKey="${connectedToUser.properties['j:nodename'].string}"
                    href="#divSendMessage"><span><fmt:message key="sendMessage"/></span></a>

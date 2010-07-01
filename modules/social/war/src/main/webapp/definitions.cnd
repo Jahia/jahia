@@ -51,3 +51,6 @@
  - j:body (string)
  - j:read (boolean)=false
  + mediaItems (jnt:socialMediaItemCollection)
+
+[jnt:socialActivitiesRetrieval] > jnt:content, jmix:bindedComponent, jmix:siteComponentContent
+ - j:activitiesLimit (long)

@@ -1,0 +1,35 @@
+/******************************************************************************
+*  page Form Creation
+******************************************************************************/
+#bodywrapper .pageFormCreation {
+	margin: 0;
+	padding:0;
+    clear:both;
+}
+#bodywrapper .pageFormCreation p{
+	margin:0;
+	padding:0;
+	padding-bottom:0.2em;
+}
+#bodywrapper .pageFormCreation legend{
+	display:none;
+}
+#bodywrapper .pageFormCreation p.field{
+	margin-bottom:0.5em;
+}
+#bodywrapper .pageFormCreation label{
+	display:block
+}
+#bodywrapper .pageFormCreation textarea,
+#bodywrapper .pageFormCreation input{
+	width:98%
+}
+#bodywrapper .pageFormCreation input.button{
+	width:auto
+}
+#bodywrapper .pageFormCreation fieldset{
+	border:none;
+	margin:0;
+	padding:0;
+}
+

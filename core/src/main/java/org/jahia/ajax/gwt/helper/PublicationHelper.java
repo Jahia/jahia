@@ -2,6 +2,8 @@ package org.jahia.ajax.gwt.helper;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.api.Constants;
@@ -139,7 +141,7 @@ public class PublicationHelper {
         return gwtInfo;
     }
 
-    private GWTJahiaPublicationInfo convert(PublicationInfo.PublicationNode node, JCRSessionWrapper currentUserSession) {
+    private GWTJahiaPublicationInfo convert(PublicationInfo.PublicationNode node, JCRSessionWrapper currentUserSession) {        
         GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(node.getPath(), node.getStatus(), node.isCanPublish());
             try {
                 JCRNodeWrapper n = currentUserSession.getNodeByUUID(node.getUuid());
@@ -191,7 +193,7 @@ public class PublicationHelper {
      * @param comments
      * @param workflow  @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      */
-    public void publish(List<String> uuids, Set<String> languages, boolean allSubTree, String comments, boolean workflow, boolean reverse, JCRSessionWrapper session) throws GWTJahiaServiceException {
+    public void publish(List<String> uuids, Set<String> languages, boolean allSubTree, String comments, boolean workflow, boolean reverse, JCRSessionWrapper session,List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException {
         try {
             // todo : if workflow started on untranslated node, translation will be created and not added into the publish tree calculated here 
 
@@ -209,6 +211,25 @@ public class PublicationHelper {
                 List<WorkflowVariable> values = new ArrayList<WorkflowVariable>();
                 values.add(new WorkflowVariable(comments, PropertyType.STRING));
                 map.put("jcr:title", infos.get(0).getRoot().getPath());
+                if (properties != null) {
+                    for (GWTJahiaNodeProperty property : properties) {
+                        List<GWTJahiaNodePropertyValue> propertyValues = property.getValues();
+                        values = new ArrayList<WorkflowVariable>(propertyValues.size());
+                        boolean toBeAdded = false;
+                        for (GWTJahiaNodePropertyValue value : propertyValues) {
+                            String s = value.getString();
+                            if (s != null && !"".equals(s)) {
+                                values.add(new WorkflowVariable(s, value.getType()));
+                                toBeAdded = true;
+                            }
+                        }
+                        if (toBeAdded) {
+                            map.put(property.getName(), values);
+                        } else {
+                            map.put(property.getName(), new ArrayList<WorkflowVariable>());
+                        }
+                    }
+                }
                 for (Map.Entry<WorkflowDefinition, List<PublicationInfo>> entry : m.entrySet()) {
                     List<String> ids = new ArrayList<String>();
                     map.put("publicationInfos", entry.getValue());

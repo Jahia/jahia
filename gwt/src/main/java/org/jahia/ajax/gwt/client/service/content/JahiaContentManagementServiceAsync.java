@@ -212,7 +212,7 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
      * @param uuids the list of node uuids to publish
      * @param async Local implementation of callback to react on return for asynchronous call to publish
      */
-    void publish(List<String> uuids, boolean allSubTree, String comments, boolean workflow, boolean reverse, AsyncCallback async);
+    void publish(List<String> uuids, boolean allSubTree, String comments, boolean workflow, boolean reverse,List<GWTJahiaNodeProperty> properties, AsyncCallback async);
 
     /**
      * Unpublish the specified path and its subnodes.

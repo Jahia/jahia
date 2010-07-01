@@ -1098,12 +1098,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @param uuids the list of node uuids to publish, will not auto publish the parents
      * @throws GWTJahiaServiceException
      */
-    public void publish(List<String> uuids, boolean allSubTree, String comments, boolean workflow, boolean reverse)
+    public void publish(List<String> uuids, boolean allSubTree, String comments, boolean workflow, boolean reverse,List<GWTJahiaNodeProperty> properties)
             throws GWTJahiaServiceException {
         JCRSessionWrapper session = retrieveCurrentSession();
         publication
                 .publish(uuids, Collections.singleton(session.getLocale().toString()), allSubTree, comments, workflow,
-                        reverse, session);
+                        reverse, session,properties);
     }
 
     /**

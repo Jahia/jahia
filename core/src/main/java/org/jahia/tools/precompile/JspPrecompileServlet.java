@@ -56,7 +56,7 @@ public class JspPrecompileServlet extends HttpServlet implements Servlet {
     private static final String JSP_NAME_PARAM = "jsp_name";
     private static final String COMPILE_TYPE_PARAM = "compile_type";
     private static final String SITE_KEY_PARAM = "site_key";
-    private static final String TEMPLATES_DIR = "templates";
+    private static final String TEMPLATES_DIR = "modules";
 
     private static final String MAGIC_TOMCAT_PARAM = "jsp_precompile=true";
 

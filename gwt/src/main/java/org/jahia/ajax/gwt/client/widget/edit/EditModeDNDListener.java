@@ -19,8 +19,6 @@ import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServic
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.CreateContentEngine;
-import org.jahia.ajax.gwt.client.widget.edit.contentengine.CreatePageContentEngine;
-import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEngine;
 import org.jahia.ajax.gwt.client.widget.edit.sidepanel.PagesTabItem;
 
 import java.util.*;
@@ -253,21 +251,6 @@ public class EditModeDNDListener extends DNDListener {
                         async.moveOnTopOf(source.getPath(), node.getPath(), callback);
                     }
                 }
-            } else if (TEMPLATETREE_TYPE.equals(sourceType)) {
-                final GWTJahiaNode node = (GWTJahiaNode) e.getStatus().getData(TARGET_NODE);
-                JahiaContentDefinitionService.App.getInstance().getNodeType("jnt:page", new BaseAsyncCallback<GWTJahiaNodeType>() {
-                    public void onApplicationFailure(Throwable throwable) {
-                        Log.error("", throwable);
-                        com.google.gwt.user.client.Window.alert("-create page->" + throwable.getMessage());
-                    }
-
-                    public void onSuccess(GWTJahiaNodeType gwtJahiaNodeType) {
-                        List<GWTJahiaNode> sources = e.getStatus().getData(EditModeDNDListener.SOURCE_NODES);
-                        new CreatePageContentEngine(editLinker, node, gwtJahiaNodeType, new HashMap<String, GWTJahiaNodeProperty>(), sources.get(0), null, false,
-                                true).show();
-                    }
-                });
-
             }
         } else if (BROWSETREE_TYPE.equals(targetType)) {
             String targetPath = e.getStatus().getData(TARGET_PATH);

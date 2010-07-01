@@ -25,7 +25,6 @@ import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServic
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.compare.CompareEngine;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.CreateContentEngine;
-import org.jahia.ajax.gwt.client.widget.edit.contentengine.CreatePageContentEngine;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEngine;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.TranslateContentEngine;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
@@ -41,30 +40,6 @@ import java.util.List;
  * Time: 4:14:11 PM
  */
 public class EditActions {
-
-    /**
-     * Create page
-     *
-     * @param linker
-     * @param type
-     */
-    public static void createPage(final Linker linker, final String type) {
-        if (linker.getMainNode() != null) {
-            JahiaContentDefinitionService.App.getInstance()
-                    .getNodeType(type, new BaseAsyncCallback<GWTJahiaNodeType>() {
-                        public void onApplicationFailure(Throwable throwable) {
-                            Log.error("", throwable);
-                            com.google.gwt.user.client.Window.alert("-create page->" + throwable.getMessage());
-                        }
-
-                        public void onSuccess(GWTJahiaNodeType gwtJahiaNodeType) {
-                            new CreatePageContentEngine(linker, linker.getMainNode(), gwtJahiaNodeType, null,
-                                    type.equals("jnt:page")).show();
-//                    new ContentTypeWindow(linker, linker.getMainNode(), gwtJahiaNodeType,true).show();
-                        }
-                    });
-        }
-    }
 
     /**
      * Create content
@@ -301,66 +276,4 @@ public class EditActions {
                     });
         }
     }
-
-
-    private static class PublishAllConfirmWindow extends Window {
-
-        private PublishAllConfirmWindow(final Linker linker, final GWTJahiaNode selectedNode) {
-            setScrollMode(Style.Scroll.AUTO);
-            setHeading(Messages.getResource("label.publish"));
-            setSize(800, 500);
-            setResizable(false);
-
-            setModal(true);
-
-            final FormPanel form = new FormPanel();
-            form.setFrame(false);
-            form.setHeaderVisible(false);
-            form.setBodyBorder(false);
-            form.setBorders(false);
-
-            final TextArea comments = new TextArea();
-            comments.setName("comments");
-            comments.setFieldLabel(Messages.getResource("label.comments"));
-            form.add(comments);
-
-            final Button cancel =
-                    new Button(Messages.getResource("label.cancel"), new SelectionListener<ButtonEvent>() {
-                        public void componentSelected(ButtonEvent event) {
-                            hide();
-                        }
-                    });
-            final Button ok = new Button(Messages.getResource("label.publish"));
-            SelectionListener<ButtonEvent> selectionListener = new SelectionListener<ButtonEvent>() {
-                public void componentSelected(ButtonEvent event) {
-                    ok.setEnabled(false);
-                    cancel.setEnabled(false);
-                    List<String> toPublish = new ArrayList<String>();
-                    toPublish.add(selectedNode.getUUID());
-                    toPublish.addAll(ModuleHelper.getLinkedContentInfo().get(selectedNode.getUUID()));
-
-//                    JahiaContentManagementService.App.getInstance().publish(toPublish, true, comments.getValue(), false,  false, new BaseAsyncCallback() {
-//                        public void onApplicationFailure(Throwable caught) {
-//                            Log.error("Cannot publish", caught);
-//                            com.google.gwt.user.client.Window.alert("Cannot publish " + caught.getMessage());
-//                            hide();
-//                        }
-//
-//                        public void onSuccess(Object result) {
-//                            Info.display(Messages.getResource("message.content.published"), Messages.getResource("message.content.published"));
-//                            linker.refresh(EditLinker.REFRESH_ALL);
-//                            hide();
-//                        }
-//                    });
-
-                }
-            };
-            ok.addSelectionListener(selectionListener);
-            setButtonAlign(Style.HorizontalAlignment.CENTER);
-            addButton(ok);
-            addButton(cancel);
-            add(form);
-        }
-    }
-
 }

@@ -577,62 +577,6 @@ public class ContentActions {
         }
     }
 
-    public static void remove(final Linker linker) {
-        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
-        if (selectedItems != null && selectedItems.size() > 0) {
-            boolean rem;
-            boolean containFolder = false;
-            if (selectedItems.size() == 1) {
-                GWTJahiaNode selection = selectedItems.get(0);
-                containFolder = !selection.isFile();
-                rem = Window.confirm(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.confirm.remove.label") + " " + selection.getName() + " ?");
-            } else {
-                rem = Window.confirm(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.confirm.multiRemove.label"));
-            }
-            final boolean refreshTree = containFolder;
-            if (rem) {
-                List<GWTJahiaNode> actualSelection = new ArrayList<GWTJahiaNode>();
-                final List<GWTJahiaNode> lockedFiles = new ArrayList<GWTJahiaNode>();
-                for (GWTJahiaNode node : selectedItems) {
-                    if (node.isLocked()) {
-                        lockedFiles.add(node);
-                    } else {
-                        actualSelection.add(node);
-                    }
-                }
-                if (!lockedFiles.isEmpty()) {
-                    StringBuilder s = new StringBuilder(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.warning.lock.label"));
-                    for (GWTJahiaNode node : lockedFiles) {
-                        s.append("\n").append(node.getName());
-                    }
-                    Window.alert(s.toString());
-                }
-                if (!actualSelection.isEmpty()) {
-                    linker.loading(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.removing.label"));
-                    List<String> selectedPaths = new ArrayList<String>(actualSelection.size());
-                    for (GWTJahiaNode node : actualSelection) {
-                        selectedPaths.add(node.getPath());
-                    }
-                    JahiaContentManagementService.App.getInstance().deletePaths(selectedPaths, new BaseAsyncCallback() {
-                        public void onApplicationFailure(Throwable throwable) {
-                            Window.alert(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.failure.delete.label") + "\n" + throwable.getLocalizedMessage());
-                            linker.loaded();
-                        }
-
-                        public void onSuccess(Object o) {
-                            linker.loaded();
-                            if (refreshTree) {
-                                linker.refresh(EditLinker.REFRESH_ALL);
-                            } else {
-                                linker.refresh(Linker.REFRESH_MAIN);
-                            }
-                        }
-                    });
-                }
-            }
-        }
-    }
-
     public static void rename(final Linker linker) {
         final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
         if (selectedItems != null && selectedItems.size() == 1) {
@@ -843,44 +787,6 @@ public class ContentActions {
         }
     }
 
-//    public static void saveAsReusableComponent(final Linker linker) {
-//        final GWTJahiaNode target = linker.getSelectedNode();
-//        if (target != null) {
-//            JahiaContentDefinitionService.App.getInstance().getNodeType("jnt:reusableComponent", new BaseAsyncCallback<GWTJahiaNodeType>() {
-//                public void onFailure(Throwable caught) {
-//                    MessageBox.alert("Alert",
-//                            "Unable to load node type definitions for type 'jnt:reusableComponent'. Cause: "
-//                                    + caught.getLocalizedMessage(),
-//                            null);
-//                }
-//
-//                public void onSuccess(final GWTJahiaNodeType nodeType) {
-//
-//                    JahiaContentManagementService.App.getInstance().getRoot(JCRClientUtils.REUSABLE_COMPONENTS_REPOSITORY, target.getNodeTypes().get(0), null, null, null, null, true, new BaseAsyncCallback<List<GWTJahiaNode>>() {
-//                        public void onFailure(Throwable caught) {
-//                            MessageBox.alert("Alert",
-//                                    "Unable to load reusable component node for current site. Cause: "
-//                                            + caught.getLocalizedMessage(),
-//                                    null);
-//                        }
-//
-//                        public void onSuccess(List<GWTJahiaNode> result) {
-//                            if (result.isEmpty()) {
-//                                MessageBox.alert("Alert",
-//                                        "Unable to load reusable components root node",
-//                                        null);
-//                            } else {
-//                                Map<String, GWTJahiaNodeProperty> props = new HashMap<String, GWTJahiaNodeProperty>(1);
-//                                props.put("j:targetReference", new GWTJahiaNodeProperty("j:targetReference", new GWTJahiaNodePropertyValue(target, GWTJahiaNodePropertyType.WEAKREFERENCE)));
-//                                new CreateReusableContentEngine(linker, result.get(0), nodeType, props, null, false).show();
-//                            }
-//                        }
-//                    });
-//                }
-//            });
-//        }
-//    }
-
     public static void saveAsPortalComponent(final Linker linker) {
         final GWTJahiaNode target = linker.getSelectedNode();
         if (target != null) {
@@ -949,24 +855,6 @@ public class ContentActions {
 
         }
     }
-
-    public static void makeShareableNode(final Linker linker) {
-        final GWTJahiaNode target = linker.getSelectedNode();
-        if (target != null) {
-            JahiaContentManagementService.App.getInstance().pasteReferences(Arrays.asList(target.getPath()), "/sites/" + JahiaGWTParameters.getSiteUUID() + "/contents", null, new BaseAsyncCallback() {
-                public void onApplicationFailure(Throwable caught) {
-                    Info.display("Shared component", "Error while sharing component");
-                }
-
-                public void onSuccess(Object result) {
-                    Info.display("Shared component", "Component shared.");
-                    linker.refresh(EditLinker.REFRESH_ALL);
-                }
-            });
-        }
-
-    }
-
 
     public static void exportTemplateContent(Linker linker) {
         final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();

@@ -162,8 +162,6 @@ public abstract class AbstractContentEngine extends Window implements NodeHolder
                 tabs.add(new ContentTabItem(this));
             } else if (tab.equals("listOrderingContent")) {
                 tabs.add(new ListOrderingContentTabItem(this));
-            } else if (tab.equals("createPage")) {
-                tabs.add(new CreatePageTabItem(this));
             } else if (tab.equals("template")) {
                 tabs.add(new TemplateOptionsTabItem(this));
             } else if (tab.equals("layout")) {

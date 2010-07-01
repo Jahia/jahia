@@ -32,11 +32,8 @@
 package org.jahia.ajax.gwt.client.core;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.widget.Info;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.jahia.ajax.gwt.client.data.GWTJahiaInlineEditingResultBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaPortletOutputBean;
 import org.jahia.ajax.gwt.client.service.JahiaService;
 

@@ -11,7 +11,6 @@
                 /**/contentDefinition.gwt=contentDefinitionServiceController
                 /**/contentManager.gwt=contentManagerServiceController
                 /**/sessionManager.gwt=sessionManagerServiceController
-                /**/subscription.gwt=subscriptionServiceController
                 /**/toolbar.gwt=toolbarServiceController
                 /**/userManager.gwt=userManagerServiceController
             </value>
@@ -60,10 +59,6 @@
         <property name="sessionPollingFrequency" value="300000"/>
     </bean>
 
-    <bean name="gwtProcessDisplayService" class="org.jahia.ajax.gwt.engines.pdisplay.server.ProcessDisplayServiceImpl" scope="prototype">
-        <property name="preferencesService" ref="JahiaPreferencesService"/>
-    </bean>
-    
     <bean name="toolbarServiceController" parent="abstractServiceController">
         <property name="remoteServiceName" value="gwtToolbarService"/>
     </bean>
@@ -74,13 +69,7 @@
     <bean name="sessionManagerServiceController" parent="abstractServiceController">
         <property name="remoteServiceName" value="gwtSessionManagerService"/>
     </bean>
-    <bean name="subscriptionServiceController" parent="abstractServiceController">
-        <property name="remoteServiceName" value="gwtSubscriptionService"/>
-    </bean>
-    <bean name="gwtSubscriptionService" class="org.jahia.ajax.gwt.templates.components.subscription.server.SubscriptionServiceImpl" scope="prototype">
-        <property name="subscriptionService" ref="SubscriptionService"/>
-    </bean>
-    
+
     <bean name="userManagerServiceController" parent="abstractServiceController">
         <property name="remoteServiceName" value="gwtUserManagerService"/>
     </bean>

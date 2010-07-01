@@ -7,26 +7,26 @@
 
 <c:set var="formid" value="form" />
 <c:set var="nodeType" value="jnt:page" />
-<form method="post" action="${renderContext.mainResource.node.name}/" name="${formid}">
+<form class="Form pageFormCreation" method="post" action="${renderContext.mainResource.node.name}/" name="${formid}">
     <input type="hidden" name="nodeType" value="jnt:page">
     <input type="hidden" name="normalizeNodeName" value="true"/>
     <input type="hidden" name="jcr:mixinTypes" value="jmix:hasTemplateNode"/>
     <input type="hidden" name="j:templateNode" value="${currentNode.properties['templateNode'].string}"/>
     <h3 class="boxdocspacetitleh3">${currentNode.properties['jcr:title'].string}</h3>
     <fieldset>
-        <legend>${currentNode.properties['jcr:title'].string}</legend>
+        <legend class="hidden" >${currentNode.properties['jcr:title'].string}</legend>
 
-        <p><label for="title"><fmt:message key="label.title"/></label>
+        <p><label class="left" for="title"><fmt:message key="label.title"/></label>
             <input type="text" name="jcr:title" id="title" class="field" value=""
                    tabindex="20"/></p>
 
 
-        <p><label for="description"><fmt:message
+        <p><label class="left" for="description"><fmt:message
                 key="label.description"/></label>
             <textarea name="jcr:description" id="description" cols="45" rows="3"
                       tabindex="21"></textarea></p>
 
-        <div>
+        <div class="formMarginLeft">
             <input type="submit" class="button"
                    value="${currentNode.properties['buttonLabel'].string}" tabindex="28"
                    onclick="if (document.${formid}.elements['jcr:title'].value == '') {

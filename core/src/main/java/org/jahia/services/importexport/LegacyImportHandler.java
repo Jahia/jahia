@@ -426,7 +426,6 @@ public class LegacyImportHandler extends DefaultHandler {
 //            } else {
             node = parent.addNode(nodeName, Constants.JAHIANT_PAGE);
             if (template != null) {
-                node.addMixin("jmix:hasTemplateNode");
                 node.setProperty("j:templateNode",template);
             }
 //            }

@@ -1389,7 +1389,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             try {
                 while (true) {
                     Query q = current.getSession().getWorkspace().getQueryManager().createQuery(
-                            "select * from [jnt:template] as w where ischildnode(w, [" + current.getPath() + "])",
+                            "select * from [jnt:derivedTemplate] as w where ischildnode(w, [" + current.getPath() + "])",
                             Query.JCR_SQL2);
                     QueryResult result = q.execute();
                     NodeIterator ni = result.getNodes();

@@ -930,7 +930,10 @@
     <!-- new edit mode buttons: create -->
     <bean id="Toolbar.Item.NewPage" class="org.jahia.services.uicomponents.bean.toolbar.Item">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewPageActionItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
+                <property name="nodeTypes" value="jnt:page"/>
+                <property name="parentTypes" value="jnt:page jnt:virtualsite"/>
+            </bean>
         </property>
         <property name="titleKey" value="label.newPage"/>
         <property name="icon" value="newPage"/>

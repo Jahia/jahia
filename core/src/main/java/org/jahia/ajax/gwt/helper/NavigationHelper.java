@@ -795,16 +795,16 @@ public class NavigationHelper {
         }
 
         if (fields.contains(GWTJahiaNode.WORKFLOW_INFO)) {
-            try {
-                n.setWorkflowInfo(workflow.getWorkflowInfo(n.getPath(), node.getSession()));
-            } catch (UnsupportedRepositoryOperationException e) {
-                // do nothing
-                logger.debug(e.getMessage());
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-            } catch (GWTJahiaServiceException e) {
-                logger.error(e.getMessage(), e);
-            }
+//            try {
+//                n.setWorkflowInfo(workflow.getWorkflowInfo(n.getPath(), node.getSession()));
+//            } catch (UnsupportedRepositoryOperationException e) {
+//                 do nothing
+//                logger.debug(e.getMessage());
+//            } catch (RepositoryException e) {
+//                logger.error(e.getMessage(), e);
+//            } catch (GWTJahiaServiceException e) {
+//                logger.error(e.getMessage(), e);
+//            }
         }
 
         if (fields.contains(GWTJahiaNode.AVAILABLE_WORKKFLOWS)) {

@@ -117,7 +117,7 @@
                     <property name="nodeType" value="jnt:page"/>
                     <property name="tabs">
                         <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                            <value>createPage,$site/edit-mode/create-page</value>
+                            <value>content,$site/edit-mode/content</value>
                             <value>options,$site/edit-mode/options</value>
                             <value>rights,$site/edit-mode/rights</value>
                         </list>
@@ -258,7 +258,7 @@
                     <property name="nodeType" value="jnt:page"/>
                     <property name="tabs">
                         <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                            <value>createPage,$site/edit-mode/create-page</value>
+                            <value>content,$site/edit-mode/content</value>
                             <value>metadata,$site/edit-mode/metadata</value>
                             <value>tags,$site/edit-mode/tags</value>
                             <value>categories,$site/edit-mode/categories</value>
@@ -339,12 +339,22 @@
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
                             <property name="actionItem">
                                 <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
-                                    <property name="nodeTypes" value="jnt:template"/>
-                                    <property name="parentTypes" value="jnt:templatesFolder jnt:template"/>
+                                    <property name="nodeTypes" value="jnt:masterTemplate"/>
+                                    <property name="parentTypes" value="jnt:templatesFolder jnt:masterTemplate"/>
                                 </bean>
                             </property>
                             <property name="titleKey" value="label.newTemplate"/>
                             <property name="icon" value="newTemplate"/>
+                        </bean>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                            <property name="actionItem">
+                                <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
+                                    <property name="nodeTypes" value="jnt:derivedTemplate"/>
+                                    <property name="parentTypes" value="jnt:masterTemplate"/>
+                                </bean>
+                            </property>
+                            <property name="titleKey" value="label.newDerivedTemplate"/>
+                            <property name="icon" value="newDerivedTemplate"/>
                         </bean>
                         <ref bean="Toolbar.Item.NewPage"/>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Item"

@@ -45,6 +45,7 @@ import org.jahia.services.render.Template;
 
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import java.util.*;
 
 /**
@@ -67,31 +68,38 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
         JCRNodeWrapper node = (JCRNodeWrapper) context.get("contextNode");
         ExtendedNodeType realNodeType = (ExtendedNodeType) context.get("contextType");
 
-        final List<String> nodeTypeList;
+        SortedSet<Template> templates = new TreeSet<Template>();
 
-        if (node == null && realNodeType == null) {
-            return new ArrayList<ChoiceListValue>();
-        } else if (node != null) {
-            try {
-                nodeTypeList = node.getNodeTypes();
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-                return new ArrayList<ChoiceListValue>();
+        try {
+            final List<String> nodeTypeList = new ArrayList<String>();
+            if ("subnodes".equals(param)) {
+                if (node != null && node.hasProperty("j:allowedTypes")) {
+                    Value[] types = node.getProperty("j:allowedTypes").getValues();
+                    for (Value type : types) {
+                        nodeTypeList.add(type.getString());
+                    }
+                }
+                param = "";
+            } else {
+                if (node != null) {
+                    nodeTypeList.addAll(node.getNodeTypes());
+                } else if (realNodeType != null) {
+                    nodeTypeList.add(realNodeType.getName());
+                }
             }
-        } else {
-            nodeTypeList = new ArrayList<String>();
-            nodeTypeList.add(realNodeType.getName());
-            final ExtendedNodeType[] subtypes = realNodeType.getMixinSubtypes();
-            for (ExtendedNodeType subtype : subtypes) {
-                nodeTypeList.add(subtype.getName());
+            templates = new TreeSet<Template>();
+            if (nodeTypeList.isEmpty()) {
+                templates.addAll(RenderService.getInstance().getAllTemplatesSet());
+            } else {
+                for (String s : nodeTypeList) {
+                    templates.addAll(RenderService.getInstance().getTemplatesSet(
+                            NodeTypeRegistry.getInstance().getNodeType(s)));
+                }
             }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
         }
 
-        SortedSet<Template> templates;
-        JCRSiteNode site = null;
-        try {
-            if ("subnodes".equals(param)) {
-                templates = new TreeSet<Template>();
 //                NodeIterator children = node.getNodes();
 //                while (children.hasNext()) {
 //                    JCRNodeWrapper child = (JCRNodeWrapper) children.nextNode();
@@ -103,22 +111,6 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
 //                    }
 //                }
 
-                templates = RenderService.getInstance().getAllTemplatesSet();
-
-                param = "";
-            } else {
-                templates = new TreeSet<Template>();
-                for (String s : nodeTypeList) {
-                    templates.addAll(RenderService.getInstance().getTemplatesSet(
-                            NodeTypeRegistry.getInstance().getNodeType(s)));
-                }
-            }
-
-            site = node != null ? node.resolveSite() : null;
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-            templates = RenderService.getInstance().getAllTemplatesSet();
-        }
 
         List<ChoiceListValue> vs = new ArrayList<ChoiceListValue>();
         for (Template template : templates) {

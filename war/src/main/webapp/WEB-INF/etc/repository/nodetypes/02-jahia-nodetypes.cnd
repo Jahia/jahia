@@ -312,15 +312,18 @@
  - j:template (string, choicelist[templates,resourceBundle,image]) nofulltext
 
 [jmix:hasTemplateNode] mixin
- extends = jnt:page
- itemtype = layout
- - j:templateNode (weakreference) < jnt:template
+ - j:templateNode (weakreference,choicelist[templatesNode]) < jnt:template
 
 [jnt:template] > nt:base, jmix:nodenameInfo, jmix:basemetadata
+ + * (jnt:content)
+
+[jnt:masterTemplate] > jnt:template
+ + * (jnt:template)
+ + * (jnt:derivedTemplate)
+
+[jnt:derivedTemplate] > jnt:template
  - j:applyOn (string, choicelist[subnodetypes = 'jnt:page,jnt:content,jnt:contentList,jnt:folder,jnt:file',resourceBundle]) multiple
  - j:templateKey (string)
- + * (jnt:content)
- + * (jnt:template)
 
 [jnt:mainResourceDisplay] > nt:base, jmix:renderableReference, jmix:siteComponentContent
 
@@ -474,7 +477,7 @@
  itemtype = options
  - j:displayInMenu (string,choicelist) = 'primary' autocreated multiple < 'primary','secondary'
 
-[jnt:page] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata, mix:title, jmix:publication, jmix:tagged, jmix:navMenuItem
+[jnt:page] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata, mix:title, jmix:publication, jmix:tagged, jmix:navMenuItem, jmix:hasTemplateNode
  orderable
  - jcr:title (string) i18n mandatory
  + * (nt:base) = nt:base version

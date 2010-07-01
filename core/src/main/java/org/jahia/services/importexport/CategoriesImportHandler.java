@@ -146,16 +146,6 @@ public class CategoriesImportHandler extends DefaultHandler {
         }
     }
 
-    @Override
-    public void endDocument() throws SAXException {
-        try {
-            ServicesRegistry.getInstance().getJCRPublicationService().publish("/categories", Constants.EDIT_WORKSPACE,  Constants.LIVE_WORKSPACE, null,
-                    true);
-        } catch (RepositoryException e) {
-            logger.error("Cannot publish categories ",e);
-        }
-    }
-
     public void setRootCategory(Category cat) {
         rootCategory = cat;
     }

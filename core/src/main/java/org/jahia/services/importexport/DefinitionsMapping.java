@@ -36,7 +36,7 @@ public class DefinitionsMapping {
 
     String WORD = "([\\w:#-]+)";
     String WORD_WITH_DOTS_AND_SLASHES = "([\\w:#-.//]+)";
-    String WORD_WITH_DOTS_SPACES_AND_BRACKETS = "([\\w:#-.\\(\\)\\s]+)";    
+    String WORD_WITH_DOTS_SPACES_AND_BRACKETS = "([\\w:#-.\\(\\)\\s//]+)";
     String WS = "\\s*";
     String WS_OR_COMMA = "[\\s,]*";
     String NODETYPE = "\\[" + WORD + "\\]";

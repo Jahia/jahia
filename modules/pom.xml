@@ -111,10 +111,10 @@
         <module>scriptlanguages</module>
         <module>search</module>
         <module>seo</module>
+        <module>social</module>
         <module>shindig</module>
         <module>sitemap</module>
         <module>skins</module>
-        <module>social</module>
         <module>staticHTML</module>
         <module>tabularList</module>
         <module>tasks</module>

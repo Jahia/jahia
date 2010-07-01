@@ -37,16 +37,16 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>jahia-modules</artifactId>
+    <artifactId>social-parent</artifactId>
     <groupId>org.jahia.modules</groupId>
     <version>6.5-SNAPSHOT</version>
   </parent>
   <groupId>org.jahia.modules</groupId>
-  <artifactId>social-parent</artifactId>
-  <name>Jahia Social Parent</name>
-  <packaging>pom</packaging>
+  <artifactId>social-service</artifactId>
+  <name>Jahia Social Service Library</name>
+  <packaging>jar</packaging>
 
-  <description>This is the parent project for the social module and the libraries it provides</description>
+  <description>This is a library that is used by the Social and Shindig modules.</description>
 
   <repositories>
     <repository>
@@ -114,13 +114,23 @@
         </profile>
   </profiles>
 
-  <modules>
-      <module>service</module>
-      <module>war</module>
-  </modules>
+  <dependencies>
+    <dependency>
+      <groupId>org.jahia.server</groupId>
+      <artifactId>jahia-impl</artifactId>
+      <version>${jahia.package.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jahia.server</groupId>
+      <artifactId>jahia-taglib</artifactId>
+      <version>${jahia.package.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
 
     <build>
-      <plugins>
+        <plugins>
             <plugin>
                 <groupId>org.jahia.server</groupId>
                 <artifactId>maven-jahia-plugin</artifactId>
@@ -139,5 +149,5 @@
             </plugin>
       </plugins>
     </build>
-    
+
 </project>

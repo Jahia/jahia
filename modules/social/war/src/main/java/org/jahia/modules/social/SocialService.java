@@ -12,6 +12,7 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 
+import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
@@ -182,6 +183,32 @@ public class SocialService {
             }
         }
         return activitiesSet;
+    }
+
+    public void removeSocialConnection(JCRSessionWrapper jcrSessionWrapper, String fromId, String toId, String connectionType) throws RepositoryException {
+        QueryManager queryManager = jcrSessionWrapper.getWorkspace().getQueryManager();
+
+        // first we look for the first connection.
+        Query connectionQuery = queryManager.createQuery("select * from ["+JNT_SOCIAL_CONNECTION+"] as uC where uC.connectedFrom='"+fromId+"' and uC.connectedTo='"+toId+"' and uC.type='"+connectionType+"'" , Query.JCR_SQL2);
+        QueryResult connectionResult = connectionQuery.execute();
+        NodeIterator connectionIterator = connectionResult.getNodes();
+        while (connectionIterator.hasNext()) {
+            Node connectionNode = connectionIterator.nextNode();
+            jcrSessionWrapper.checkout(connectionNode.getParent());
+            connectionNode.remove();
+        }
+
+        // now let's remove the reverse connection.
+        Query reverseConnectionQuery = queryManager.createQuery("select * from ["+JNT_SOCIAL_CONNECTION+"] as uC where uC.connectedFrom='"+toId+"' and uC.connectedTo='"+fromId+"' and uC.type='"+connectionType+"'" , Query.JCR_SQL2);
+        QueryResult reverseConnectionResult = reverseConnectionQuery.execute();
+        NodeIterator reverseConnectionIterator = reverseConnectionResult.getNodes();
+        while (reverseConnectionIterator.hasNext()) {
+            Node connectionNode = reverseConnectionIterator.nextNode();
+            jcrSessionWrapper.checkout(connectionNode.getParent());
+            connectionNode.remove();
+        }
+
+        jcrSessionWrapper.save();
     }
 
     private JCRUser getJCRUserFromUserKey(String userKey) {

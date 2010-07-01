@@ -37,16 +37,16 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>jahia-modules</artifactId>
+    <artifactId>social-parent</artifactId>
     <groupId>org.jahia.modules</groupId>
     <version>6.5-SNAPSHOT</version>
   </parent>
   <groupId>org.jahia.modules</groupId>
-  <artifactId>social-parent</artifactId>
-  <name>Jahia Social Parent</name>
-  <packaging>pom</packaging>
+  <artifactId>social</artifactId>
+  <name>Jahia Social Module</name>
+  <packaging>war</packaging>
 
-  <description>This is the parent project for the social module and the libraries it provides</description>
+  <description>This is a module for running on a Jahia server.</description>
 
   <repositories>
     <repository>
@@ -114,13 +114,52 @@
         </profile>
   </profiles>
 
-  <modules>
-      <module>service</module>
-      <module>war</module>
-  </modules>
+  <dependencies>
+    <dependency>
+      <groupId>org.jahia.server</groupId>
+      <artifactId>jahia-impl</artifactId>
+      <version>${jahia.package.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jahia.server</groupId>
+      <artifactId>jahia-taglib</artifactId>
+      <version>${jahia.package.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
 
     <build>
       <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-war-plugin</artifactId>
+            <configuration>
+                    <warSourceExcludes>resources/*.properties</warSourceExcludes>
+                    <webResources>
+                        <resource>
+                          <directory>${project.build.directory}/native2ascii</directory>
+                          <targetPath>resources</targetPath>
+                        </resource>
+                    </webResources>
+                <archive>
+                    <manifestEntries>
+	                	<Implementation-Title>${project.name}</Implementation-Title>
+	                    <Implementation-Version>${project.version}</Implementation-Version>
+	                    <Implementation-Vendor>${jahia.manifest.vendor.name}</Implementation-Vendor>
+	                    <Implementation-Vendor-Id>${jahia.manifest.vendor.id}</Implementation-Vendor-Id>
+	                    <Implementation-URL>${jahia.manifest.vendor.url}</Implementation-URL>
+	                    <Specification-Title>${project.name}</Specification-Title>
+	                    <Specification-Version>${project.version}</Specification-Version>
+	                    <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
+                        <package-name>${project.name}</package-name>
+                        <depends>Default Jahia Templates</depends>
+                        <root-folder>${artifactId}</root-folder>
+                    </manifestEntries>
+                </archive>
+                <archiveClasses>true</archiveClasses>
+            </configuration>
+        </plugin>
             <plugin>
                 <groupId>org.jahia.server</groupId>
                 <artifactId>maven-jahia-plugin</artifactId>
@@ -139,5 +178,5 @@
             </plugin>
       </plugins>
     </build>
-    
+
 </project>

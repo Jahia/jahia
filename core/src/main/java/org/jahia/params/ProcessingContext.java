@@ -206,10 +206,6 @@ public class ProcessingContext {
     protected Locale uiLocale = null;    
     // a list of Locale objects that contains the current user preferences
     protected List<Locale> localeList = null;
-    // private int jahiaID = -1; // FIXME_MULTISITE Hollis: jahiaID = siteID redondant info
-    // DaDa'S requested a Server key in the Datasourcing context
-    // So Sirdrake what is your opinion ? It's your baby so choose
-    // and let me know.
     protected String anchor = null;
     protected int siteID = -1;
     protected String siteKey = null;
@@ -254,9 +250,6 @@ public class ProcessingContext {
     private int serverPort = 80;
 
     private String remoteAddr;
-    private String remoteHost;
-
-    private String characterEncoding;
 
     private String contentType;
 
@@ -264,14 +257,11 @@ public class ProcessingContext {
 
     private Map<String, Object> attributeMap = new HashMap<String, Object>();
 
-    private ThreadLocal<Map<String, Integer>> filtersStatus = new ThreadLocal<Map<String, Integer>>();
-
     private boolean forceAppendSiteKey = false;
     private boolean siteResolvedByKeyOrPageId;
     private boolean siteResolvedByServername;
     private boolean contentPageLoadedWhileTryingToFindSiteByPageID;
-    private Boolean canEdit = null;
-
+    
     static {
         /**
          * todo we might want to put this in a configuration file so the administrator can change it.
@@ -1810,161 +1800,6 @@ public class ProcessingContext {
         return encodedURL;
     }
 
-    public String getSiteURL() {
-        if (getPage() != null) {
-            return getSiteURL(getPageID(), true, true);
-        }
-        return getSiteURL(-1, true, true);
-    }
-
-    public String getSiteURL(final int pageID, final boolean withSessionID,
-                             final boolean withOperationMode) {
-        // TODO: this does not fully support ESI like ParamBean since no headers are accessible
-        // let's test if the URL entered for the site is valid, and generate
-        // an URL
-        final JahiaSite theSite = getSite();
-        return theSite == null ? "" : getSiteURL(theSite, pageID,
-                withSessionID, withOperationMode, false);
-    }
-
-    /**
-     * Generates a complete URL for a site. Uses the site URL serverName to generate the URL *only* it is resolves in a DNS. Otherwise it
-     * simply uses the current serverName and generates a URL with a /site/ parameter
-     *
-     * @param pageID               A site page ID on which the URL should point to.
-     * @param withSessionID        a boolean that specifies whether we should call the encodeURL method on the generated URL. Most of the time we will
-     *                             just want to set this to true, but in the case of URLs sent by email we do not, otherwise we have a security problem
-     *                             since we are sending SESSION IDs to people that should not have them.
-     * @param withOperationMode    a boolean that specifies whether we should include the operation mode in the URL or not.
-     * @param forceServerNameInURL allow to ensure that the server name is present in the url (useful for mail)
-     * @param theSite              the site agaisnt we build the url
-     * @return String a full URL to the site using the currently set values in the ProcessingContext.
-     */
-    public String getSiteURL(final JahiaSite theSite, final int pageID,
-                             final boolean withSessionID, final boolean withOperationMode,
-                             boolean forceServerNameInURL) {
-
-        return getSiteURL(theSite, pageID, withSessionID, withOperationMode, null, forceServerNameInURL);
-    }
-
-    /**
-     * Generates a complete URL for a site. Uses the site URL serverName to generate the URL *only* it is resolves in a DNS. Otherwise it
-     * simply uses the current serverName and generates a URL with a /site/ parameter
-     *
-     * @param pageID               A site page ID on which the URL should point to.
-     * @param withSessionID        a boolean that specifies whether we should call the encodeURL method on the generated URL. Most of the time we will
-     *                             just want to set this to true, but in the case of URLs sent by email we do not, otherwise we have a security problem
-     *                             since we are sending SESSION IDs to people that should not have them.
-     * @param withOperationMode    a boolean that specifies whether we should include the operation mode in the URL or not.
-     * @param languageCode         force inclusion of the language code (if not null)
-     * @param forceServerNameInURL allow to ensure that the server name is present in the url (useful for mail)
-     * @param theSite              the site agaisnt we build the url
-     * @return String a full URL to the site using the currently set values in the ProcessingContext.
-     */
-    public String getSiteURL(final JahiaSite theSite, final int pageID,
-                             final boolean withSessionID, final boolean withOperationMode, String languageCode,
-                             boolean forceServerNameInURL) {
-
-        String operationMode = null;
-        if (withOperationMode) {
-            final SessionState session = this.getSessionState();
-        }
-
-        return getSiteURL(theSite, pageID, withSessionID, operationMode, languageCode, forceServerNameInURL);
-    }
-
-    /**
-     * Generates a complete URL for a site. Uses the site URL serverName to generate the URL *only* it is resolves in a DNS. Otherwise it
-     * simply uses the current serverName and generates a URL with a /site/ parameter
-     *
-     * @param theSite              the site agaisnt we build the url
-     * @param pageID               A site page ID on which the URL should point to.
-     * @param withSessionID        a boolean that specifies whether we should call the encodeURL method on the generated URL. Most of the time we will
-     *                             just want to set this to true, but in the case of URLs sent by email we do not, otherwise we have a security problem
-     *                             since we are sending SESSION IDs to people that should not have them.
-     * @param operationMode    operation mode to use
-     * @param languageCode         force inclusion of the language code (if not null)
-     * @param forceServerNameInURL allow to ensure that the server name is present in the url (useful for mail)
-     * @return String a full URL to the site using the currently set values in the ProcessingContext.
-     */
-    public String getSiteURL(final JahiaSite theSite, final int pageID,
-                             final boolean withSessionID, String operationMode, String languageCode,
-                             boolean forceServerNameInURL) {
-
-        final String siteServerName = theSite.getServerName();
-        String sessionIDStr = null;
-
-        final StringBuilder newSiteURL = new StringBuilder(64);
-        if (!settings().isUseRelativeSiteURLs() || forceServerNameInURL) {
-            newSiteURL.append(getScheme()).append("://");
-        }
-
-        if (!forceServerNameInURL) {
-            if (!settings().isUseRelativeSiteURLs()) {
-                // let's construct an URL by deconstruct our current URL and
-                // using the site name as a server name
-                newSiteURL.append(siteServerName);
-                if (!siteServerName.equals(getServerName())) {
-                    // serverName has changed, we must transfer cookie information
-                    // for sessionID if there is some.
-                    try {
-                        sessionIDStr = ";jsessionid=" + getSessionID();
-                    } catch (JahiaSessionExpirationException jsee) {
-                        logger.warn("Error retrieving session ID", jsee);
-                    }
-                }
-
-                int siteURLPortOverride = settings().getSiteURLPortOverride();
-                if (siteURLPortOverride > 0) {
-                    if (siteURLPortOverride != 80) {
-                        newSiteURL.append(":");
-                        newSiteURL.append(siteURLPortOverride);
-                    }
-                } else if (getServerPort() != 80) {
-                    newSiteURL.append(":");
-                    newSiteURL.append(getServerPort());
-                }
-            }
-            newSiteURL.append(getContextPath());
-            newSiteURL.append(Jahia.getServletPath());
-        } else {
-            // let's construct an URL by deconstruct our current URL and insering
-            // the site id key as a parameter
-            newSiteURL.append(getServerName());
-
-            int siteURLPortOverride = settings().getSiteURLPortOverride();
-            if (siteURLPortOverride > 0) {
-                if (siteURLPortOverride != 80) {
-                    newSiteURL.append(":");
-                    newSiteURL.append(siteURLPortOverride);
-                }
-            } else if (getServerPort() != 80) {
-                newSiteURL.append(":");
-                newSiteURL.append(getServerPort());
-            }
-            newSiteURL.append(getContextPath());
-            newSiteURL.append(Jahia.getServletPath());
-            newSiteURL.append("/site/");
-            newSiteURL.append(theSite.getSiteKey());
-        }
-
-        if (languageCode != null) {
-            newSiteURL.append(appendParam(LANGUAGE_CODE, languageCode));
-        }
-
-        if (withSessionID) {
-            String serverURL = encodeURL(newSiteURL.toString());
-            if (sessionIDStr != null) {
-                if (serverURL.indexOf("jsessionid") == -1) {
-                    serverURL += sessionIDStr;
-                }
-            }
-            return serverURL;
-        } else {
-            return newSiteURL.toString();
-        }
-    }
-
     /**
      * Sets the current page's cache expiration delay, starting from the current locale time.
      *
@@ -2326,27 +2161,11 @@ public class ProcessingContext {
         this.remoteAddr = aRemoteAddr;
     }
 
-    public void setRemoteHost(final String aRemoteHost) {
-        this.remoteHost = aRemoteHost;
-    }
-
-    public void setCharacterEncoding(final String aCharacterEncoding) {
-        this.characterEncoding = aCharacterEncoding;
-    }
-
     protected void setData(JahiaSite jSite, JahiaUser jUser) {
         site = jSite;
         siteID = jSite.getID();
         siteKey = jSite.getSiteKey();
         theUser = jUser;
-    }
-
-    private Boolean getCanEdit() {
-        return canEdit;
-    }
-
-    private void setCanEdit(Boolean canEditFlag) {
-        this.canEdit = canEditFlag;
     }
 
     protected boolean isContentPageLoadedWhileTryingToFindSiteByPageID() {
@@ -2369,12 +2188,6 @@ public class ProcessingContext {
 
     protected void setSiteResolvedByServername(boolean siteResolvedByServername) {
         this.siteResolvedByServername = siteResolvedByServername;
-    }
-
-    public String getSiteURLForCurrentPageAndCurrentSite(final boolean withSessionID, final boolean withOperationMode,
-                             boolean forceServerNameInURL) {
-
-        return getSiteURL(getSite(), getPageID(), withSessionID, withOperationMode, null, forceServerNameInURL);
     }
 
     /**

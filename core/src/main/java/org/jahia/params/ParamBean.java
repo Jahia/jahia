@@ -111,15 +111,32 @@
 
 package org.jahia.params;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URLDecoder;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.servlet.jsp.jstl.core.Config;
+
 import org.apache.commons.collections.iterators.EnumerationIterator;
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.log4j.Logger;
 import org.apache.struts.Globals;
 import org.jahia.bin.Jahia;
-import org.jahia.exceptions.*;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.exceptions.JahiaPageNotFoundException;
+import org.jahia.exceptions.JahiaSessionExpirationException;
+import org.jahia.exceptions.JahiaSiteNotFoundException;
 import org.jahia.services.applications.ServletIncludeRequestWrapper;
 import org.jahia.services.applications.ServletIncludeResponseWrapper;
 import org.jahia.services.sites.JahiaSite;
@@ -127,19 +144,6 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.files.FileUpload;
-import org.jahia.utils.JahiaTools;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.servlet.jsp.jstl.core.Config;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.util.*;
-import java.util.Map.Entry;
 
 /**
  * This object contains most of the request context, including object such as the request and response objects, sessions, engines, contexts,
@@ -157,8 +161,6 @@ public class ParamBean extends ProcessingContext {
 
     private static final transient Logger logger = Logger.getLogger(ParamBean.class);
 
-    private static HttpClient httpClient;
-
     private HttpServletRequest mRealRequest;
     private ServletIncludeRequestWrapper mRequest;
     private HttpServletResponse mRealResponse;
@@ -167,15 +169,6 @@ public class ParamBean extends ProcessingContext {
     private ServletContext context;
 
     private FileUpload fupload;
-
-    private static List<Object> sharedSessionAttributes;
-
-    static {
-        MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
-        httpClient = new HttpClient(connectionManager);
-        httpClient.setConnectionTimeout(SettingsBean.getInstance()
-                .getSiteServerNameTestConnectTimeout());
-    }
 
     /**
      * Constructor needed by SerializableParamBean
@@ -299,8 +292,7 @@ public class ParamBean extends ProcessingContext {
                      final int aHttpMethod,
                      final String extraParams)
             throws JahiaException {
-        try {
-
+        
             Jahia.setThreadParamBean(this);
 
             if (response != null) {
@@ -356,22 +348,6 @@ public class ParamBean extends ProcessingContext {
             setLastEngineName((String) getRequest().getSession(false).getAttribute(SESSION_LAST_ENGINE_NAME));
             setEngineHasChanged(getLastEngineName() == null || !getLastEngineName().equals(getEngine()));
 
-            // /////////////////////////////////////////////////////////////////////////////////////
-            // FIXME -Fulco-
-            //
-            // hmmmmm, this catch has no reason to be here! This exception should be catched
-            // where the numeric convertion takes place, and not here!!!
-            //
-            // /////////////////////////////////////////////////////////////////////////////////////
-
-        } catch (NumberFormatException nfe) {
-            String errorMsg = "Error in translating number : "
-                    + nfe.getMessage() + " -> BAILING OUT";
-            logger.warn(errorMsg, nfe);
-            throw new JahiaException("Error in request parameters", errorMsg,
-                    JahiaException.PAGE_ERROR, JahiaException.ERROR_SEVERITY,
-                    nfe);
-        }
     } // end constructor
 
     // -------------------------------------------------------------------------
@@ -596,6 +572,7 @@ public class ParamBean extends ProcessingContext {
      *
      * @return an List of Locale objects that contain the list of locale that are active for the current session, user and site.
      */
+    @SuppressWarnings("unchecked")
     public List<Locale> getLocales(final boolean allowMixLanguages)
             throws JahiaException {
 
@@ -706,159 +683,6 @@ public class ParamBean extends ProcessingContext {
         return getResponseWrapper().getContentType();
     }
 
-    /**
-     * Generates a complete URL for a site. Uses the site URL serverName to generate the URL *only* it is resolves in a DNS. Otherwise it
-     * simply uses the current serverName and generates a URL with a /site/ parameter
-     *
-     * @param pageID            A site page ID on which the URL should point to.
-     * @param withSessionID     a boolean that specifies whether we should call the encodeURL method on the generated URL. Most of the time we will
-     *                          just want to set this to true, but in the case of URLs sent by email we do not, otherwise we have a security problem
-     *                          since we are sending SESSION IDs to people that should not have them.
-     * @param withOperationMode a boolean that specifies whether we should include the operation mode in the URL or not.
-     * @return String a full URL to the site using the currently set values in the ParamBean.
-     */
-    public String getSiteURL(final int pageID, final boolean withSessionID,
-                             final boolean withOperationMode) {
-        // let's test if the URL entered for the site is valid, and generate
-        // an URL
-        final JahiaSite theSite = getSite();
-        if (theSite == null) {
-            return "";
-        }
-
-        final String siteServerName = theSite.getServerName();
-        boolean serverNameValid = false;
-        String sessionIDStr = null;
-        String esiHost = null; // Hostname of the relaying ESI server
-        String esiPort = null; // Port number of the relaying ESI server
-
-        // no need to do this if we are using relative URLs
-        if (!settings().isUseRelativeSiteURLs()) {
-            // let's check if we can resolve the site's server name address and if
-            // it points to a Jahia installation. For this we connect to an URL and
-            // try to retrieve a header specific to Jahia.
-            GetMethod method = null;
-            try {
-
-                final Map<String, Object> contextVars = new HashMap<String, Object>();
-                contextVars.put("request", getRequest());
-                contextVars.put("siteServerName", siteServerName);
-
-                // If ESI is active, replace '${request.serverPort}' string
-                // by the first port defined in the esiServerPorts property (see jahia.skeleton for details)
-                String expr = settings().getSiteServerNameTestURLExpr();               
-                final String testURL = JahiaTools.evaluateExpressions(expr,
-                        contextVars);
-                final URL targetURL = new URL(testURL);
-
-                // Create a method instance.
-                method = new GetMethod(targetURL.toString());
-
-                // Execute the method.
-                httpClient.executeMethod(method);
-
-                // Read the response body.
-                final Header javaVersionHeader = method
-                        .getResponseHeader("jahia-version");
-                if (javaVersionHeader != null) {
-                    serverNameValid = true;
-                }
-
-            } catch (Exception t) {
-                logger.error("Unable to check server name validity: "
-                        + siteServerName);
-                serverNameValid = false;
-            } finally {
-                if (method != null)
-                    method.releaseConnection();
-            }
-        }
-        final StringBuffer newSiteURL = new StringBuffer();
-
-        if (!settings().isUseRelativeSiteURLs())
-            newSiteURL.append(getRequest().getScheme()).append("://");
-
-        if (serverNameValid) {
-            // let's construct an URL by deconstruct our current URL and
-            // using the site name as a server name
-            if (esiHost != null) {
-                newSiteURL.append(esiHost);
-            } else {
-                newSiteURL.append(siteServerName);
-            }
-            if (!siteServerName.equals(getRequest().getServerName())) {
-                // serverName has changed, we must transfer cookie information
-                // for sessionID if there is some.
-                try {
-                    HttpSession session = getSession();
-                    sessionIDStr = ";jsessionid=" + session.getId();
-                } catch (JahiaSessionExpirationException jsee) {
-                    logger.error("JahiaSessionExpirationException", jsee);
-                }
-            }
-            int siteURLPortOverride = settings().getSiteURLPortOverride();
-            if (siteURLPortOverride > 0) {
-                if (siteURLPortOverride != 80) {
-                    newSiteURL.append(":");
-                    newSiteURL.append(siteURLPortOverride);
-                }
-            } else if (esiPort != null) {
-                if (!esiPort.equals("80")) {
-                    newSiteURL.append(":");
-                    newSiteURL.append(esiPort);
-                }
-            } else if (getRequest().getServerPort() != 80
-                    && siteServerName.indexOf(":") == -1) {
-                newSiteURL.append(":");
-                newSiteURL.append(getRequest().getServerPort());
-            }
-            newSiteURL.append(getRequest().getContextPath());
-            newSiteURL.append(Jahia.getServletPath());
-        } else {
-            if (!settings().isUseRelativeSiteURLs()) {
-
-                // let's construct an URL by deconstruct our current URL and insering
-                // the site id key as a parameter
-                if (esiHost != null) {
-                    newSiteURL.append(esiHost);
-                } else {
-                    newSiteURL.append(getRequest().getServerName());
-                }
-                int siteURLPortOverride = settings().getSiteURLPortOverride();
-                if (siteURLPortOverride > 0) {
-                    if (siteURLPortOverride != 80) {
-                        newSiteURL.append(":");
-                        newSiteURL.append(siteURLPortOverride);
-                    }
-                } else if (esiPort != null) {
-                    if (!esiPort.equals("80")) {
-                        newSiteURL.append(":");
-                        newSiteURL.append(esiPort);
-                    }
-                } else if (getRequest().getServerPort() != 80) {
-                    newSiteURL.append(":");
-                    newSiteURL.append(getRequest().getServerPort());
-                }
-            }
-            newSiteURL.append(getRequest().getContextPath());
-            newSiteURL.append(Jahia.getServletPath());
-            newSiteURL.append("/site/");
-            newSiteURL.append(theSite.getSiteKey());
-        }
-
-        if (withSessionID) {
-            String serverURL = encodeURL(newSiteURL.toString());
-            if (sessionIDStr != null) {
-                if (serverURL.indexOf("jsessionid") == -1) {
-                    serverURL += sessionIDStr;
-                }
-            }
-            return serverURL;
-        } else {
-            return newSiteURL.toString();
-        }
-    }
-
     private void resolveLocales(final HttpSession session)
             throws JahiaException {
         resolveLocales();
@@ -869,6 +693,7 @@ public class ParamBean extends ProcessingContext {
 
     }
 
+    @SuppressWarnings("unchecked")
     private void copyRequestData(final HttpServletRequest request) {
 
         if (request == null) {
@@ -914,9 +739,6 @@ public class ParamBean extends ProcessingContext {
         setServerPort(request.getServerPort());
 
         setRemoteAddr(request.getRemoteAddr());
-        setRemoteHost(request.getRemoteHost());
-
-        setCharacterEncoding(request.getCharacterEncoding());
 
         setSessionState(new HttpSessionState(request.getSession()));
     }
@@ -956,6 +778,7 @@ public class ParamBean extends ProcessingContext {
         getRequest().removeAttribute(attributeName);
     }
 
+    @SuppressWarnings("unchecked")
     public Iterator<String> getAttributeNames() {
         return new EnumerationIterator(getRequest().getAttributeNames());
     }

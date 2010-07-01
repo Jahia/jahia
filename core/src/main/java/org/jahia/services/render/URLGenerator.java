@@ -2,12 +2,12 @@ package org.jahia.services.render;
 
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.*;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.scripting.Script;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 
@@ -50,10 +50,6 @@ public class URLGenerator {
     private Map<String, String> templates;
 
     private String templatesPath;
-
-    // settings
-    private boolean useRelativeSiteURLs = false;
-    private int siteURLPortOverride = 0;
 
     private String baseLive;
     private String baseContribute;
@@ -211,7 +207,7 @@ public class URLGenerator {
     @SuppressWarnings("unchecked")
     public Map<String, String> getLanguages() {
         if (languages == null) {
-            languages = LazyMap.decorate(new HashMap(), new Transformer() {
+            languages = LazyMap.decorate(new HashMap<String, String>(), new Transformer() {
                 public Object transform(Object lang) {
                     return getContext() + context.getServletPath() + "/" + resource.getWorkspace() + "/" + lang + resource.getNode().getPath() + ".html";
                 }
@@ -224,7 +220,7 @@ public class URLGenerator {
     @SuppressWarnings("unchecked")
     public Map<String, String> getTemplates() {
         if (templates == null) {
-            templates = LazyMap.decorate(new HashMap(), new Transformer() {
+            templates = LazyMap.decorate(new HashMap<String, String>(), new Transformer() {
                 public Object transform(Object template) {
                     return buildURL(resource.getNode(), (String) template, resource.getTemplateType());
                 }
@@ -262,78 +258,6 @@ public class URLGenerator {
 
     public String buildURL(JCRNodeWrapper node, String template, String templateType) {
         return base + node.getPath() + (template != null && !"default".equals(template) ? "." + template : "") + "." + templateType;
-    }
-
-    /**
-     * Generates a complete URL for a site. Uses the site URL serverName to generate the URL *only* it is resolves in a DNS. Otherwise it
-     * simply uses the current serverName and generates a URL with a /site/ parameter
-     *
-     * @param theSite       the site against we build the url
-     * @param withSessionID a boolean that specifies whether we should call the encodeURL method on the generated URL. Most of the time we will
-     *                      just want to set this to true, but in the case of URLs sent by email we do not, otherwise we have a security problem
-     *                      since we are sending SESSION IDs to people that should not have them.
-     * @return String a full URL to the site using the currently set values in the ProcessingContext.
-     */
-    public String getSiteURL(final JahiaSite theSite, final boolean withSessionID) {
-
-        final String siteServerName = theSite.getServerName();
-        String sessionIDStr = null;
-
-        final StringBuilder newSiteURL = new StringBuilder(64);
-        if (!useRelativeSiteURLs) {
-            newSiteURL.append(context.getRequest().getScheme()).append("://");
-        }
-
-        if (!useRelativeSiteURLs) {
-            // let's construct an URL by deconstruct our current URL and
-            // using the site name as a server name
-            newSiteURL.append(siteServerName);
-            if (!siteServerName.equals(context.getRequest().getServerName())) {
-                // serverName has changed, we must transfer cookie information
-                // for sessionID if there is some.
-                sessionIDStr = ";jsessionid=" + context.getRequest().getSession(false).getId();
-            }
-
-            if (siteURLPortOverride > 0) {
-                if (siteURLPortOverride != 80) {
-                    newSiteURL.append(":");
-                    newSiteURL.append(siteURLPortOverride);
-                }
-            } else if (context.getRequest().getServerPort() != 80) {
-                newSiteURL.append(":");
-                newSiteURL.append(context.getRequest().getServerPort());
-            }
-        }
-
-        newSiteURL.append(base);
-
-        if (withSessionID) {
-            String serverURL = context.getResponse().encodeURL(newSiteURL.toString());
-            if (sessionIDStr != null) {
-                if (serverURL.indexOf("jsessionid") == -1) {
-                    serverURL += sessionIDStr;
-                }
-            }
-            return serverURL;
-        } else {
-            return newSiteURL.toString();
-        }
-    }
-
-    public boolean isUseRelativeSiteURLs() {
-        return useRelativeSiteURLs;
-    }
-
-    public void setUseRelativeSiteURLs(boolean useRelativeSiteURLs) {
-        this.useRelativeSiteURLs = useRelativeSiteURLs;
-    }
-
-    public int getSiteURLPortOverride() {
-        return siteURLPortOverride;
-    }
-
-    public void setSiteURLPortOverride(int siteURLPortOverride) {
-        this.siteURLPortOverride = siteURLPortOverride;
     }
 
     public String getInitializers() {
@@ -388,5 +312,44 @@ public class URLGenerator {
                 return Constants.LIVE_WORKSPACE.equals(resource.getWorkspace()) ? live : preview;
             }
         }
+    }
+    
+    /**
+     * Returns the server URL, including scheme, host and port, depending on the
+     * current site. The URL is in the form <code><scheme><host>:<port></code>,
+     * e.g. <code>http://www.jahia.org:8080</code>. The port is omitted in case
+     * of standard HTTP (80) and HTTPS (443) ports.
+     * 
+     * @return the server URL, including scheme, host and port, depending on the
+     *         current site
+     */
+    public String getServer() {
+        StringBuilder url = new StringBuilder();
+        String scheme = context.getRequest().getScheme();
+        String host = context.getSite().getServerName();
+        int port = 0;
+        if (host.contains(":")) {
+            // the server name of the site already has
+            host = StringUtils.substringBefore(host, ":");
+            port = Integer.valueOf(StringUtils.substringAfterLast(host, ":"));
+        }
+        if (port == 0) {
+            port = SettingsBean.getInstance().getSiteURLPortOverride();
+        }
+        if (port == 0) {
+            port = context.getRequest().getServerPort();
+        }
+        if (port == 443) {
+            // use HTTPS
+            scheme = "https";
+        }
+        
+        url.append(scheme).append("://").append(host);
+        
+        if (port != 80 && port != 443) {
+            url.append(":").append(port);
+        }
+        
+        return url.toString();
     }
 }

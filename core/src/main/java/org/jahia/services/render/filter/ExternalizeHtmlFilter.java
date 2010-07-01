@@ -32,10 +32,7 @@
 
 package org.jahia.services.render.filter;
 
-import net.htmlparser.jericho.OutputDocument;
-import net.htmlparser.jericho.Source;
-
-import org.apache.log4j.Logger;
+import org.jahia.services.notification.HtmlExternalizationService;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 
@@ -47,25 +44,23 @@ import org.jahia.services.render.Resource;
  */
 public class ExternalizeHtmlFilter extends AbstractFilter {
 
-    private static Logger logger = Logger.getLogger(ExternalizeHtmlFilter.class);
-    
-    private HtmlTagAttributeTraverser urlTraverser;
+    private HtmlExternalizationService htmlExternalizationService;
 
     @Override
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception {
 
-        Source source = new Source(previousOut);
-        OutputDocument outputDocument = new OutputDocument(source);
-        String out = outputDocument.toString();
+        if (renderContext.getRequest().getParameter("externalize") == null) {
+            return previousOut;
+        }
 
-        return out;
+        return htmlExternalizationService.externalize(previousOut, renderContext);
     }
 
     /**
-     * @param urlTraverser the urlTraverser to set
+     * @param htmlExternalizationService the htmlExternalizationService to set
      */
-    public void setUrlTraverser(HtmlTagAttributeTraverser urlTraverser) {
-        this.urlTraverser = urlTraverser;
+    public void setHtmlExternalizationService(HtmlExternalizationService htmlExternalizationService) {
+        this.htmlExternalizationService = htmlExternalizationService;
     }
 }

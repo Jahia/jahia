@@ -161,8 +161,4 @@ public class SiteBean {
         return jahiaSite.getTitle();
     }
 
-   public String getExternalUrl() {
-       return processingContext.getSiteURL(jahiaSite, -1, false, true, false);
-   }
-   
 }

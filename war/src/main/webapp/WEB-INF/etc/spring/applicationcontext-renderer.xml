@@ -40,14 +40,12 @@
                             <property name="applyOnTemplateTypes" value="html,edit"/>
                         </bean>
                          -->
-                        <!-- 
                         <bean class="org.jahia.services.render.filter.ExternalizeHtmlFilter">
                             <property name="priority" value="-1" />
                             <property name="applyOnModes" value="live,preview" />
                             <property name="applyOnConfigurations" value="page"/>
-                            <property name="urlTraverser" ref="org.jahia.services.render.filter.URLTraverser"/>
+                            <property name="htmlExternalizationService" ref="HtmlExternalizationService"/>
                         </bean>
-                         -->
                         <bean class="org.jahia.services.render.filter.StaticAssetsFilter" >
                             <property name="priority" value="0" />
                             <property name="applyOnConfigurations" value="page"/>

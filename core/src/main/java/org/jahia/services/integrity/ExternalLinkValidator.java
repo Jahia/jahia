@@ -98,9 +98,9 @@ public class ExternalLinkValidator extends BaseLinkValidator {
         }
         try {
             httpMethod.setFollowRedirects(false);
-            URL url = new URL(link);
-            httpClient.getHostConfiguration().setHost(url.getHost(),
-                    url.getPort(), url.getProtocol());
+//            URL url = new URL(link);
+//            httpClient.getHostConfiguration().setHost(url.getHost(),
+//                    url.getPort(), url.getProtocol());
             httpClient.executeMethod(httpMethod);
             StatusLine statusLine = httpMethod.getStatusLine();
 

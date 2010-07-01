@@ -149,8 +149,6 @@ public class SettingsBean {
     private long templatesObserverInterval;
     private boolean isProcessingServer;
 
-    private String siteServerNameTestURLExpr;
-    private int siteServerNameTestConnectTimeout;
     private int siteURLPortOverride = -1;
 
     private boolean isSiteErrorEnabled;
@@ -371,9 +369,6 @@ public class SettingsBean {
             }
 
             isProcessingServer = getBoolean("processingServer", true);
-
-            siteServerNameTestURLExpr = getString("siteServerNameTestURLExpr", "${request.scheme}://${siteServerName}:${request.serverPort}${request.contextPath}/isjahia.jsp");
-            siteServerNameTestConnectTimeout = getInt("siteServerNameTestConnectTimeout", 500);
 
             siteURLPortOverride = getInt("siteURLPortOverride", 0);
 
@@ -598,17 +593,6 @@ public class SettingsBean {
 
     public void setLicenseFilename(String licenseFilename) {
         this.licenseFilename = licenseFilename;
-    }
-
-    public void setSiteServerNameTestURLExpr (String siteServerNameTestURLExpr) {
-
-        this.siteServerNameTestURLExpr = siteServerNameTestURLExpr;
-    }
-
-    public void setSiteServerNameTestConnectTimeout (int
-        siteServerNameTestConnectTimeout) {
-        this.siteServerNameTestConnectTimeout =
-            siteServerNameTestConnectTimeout;
     }
 
     /**
@@ -860,15 +844,6 @@ public class SettingsBean {
 
     public boolean isProcessingServer() {
         return isProcessingServer;
-    }
-
-    public String getSiteServerNameTestURLExpr () {
-
-        return siteServerNameTestURLExpr;
-    }
-
-    public int getSiteServerNameTestConnectTimeout () {
-        return siteServerNameTestConnectTimeout;
     }
 
     public String getJetspeedDeploymentDirectory() {

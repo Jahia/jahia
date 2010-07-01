@@ -52,6 +52,7 @@ public class JahiaActivityImpl extends ActivityImpl {
     }
 
     private void populateValues() throws RepositoryException {
+        this.setId(activityNode.getIdentifier());
         this.setAppId(activityNode.getPropertyAsString("j:appID"));
         this.setBody(activityNode.getPropertyAsString("j:message"));
         this.setBodyId("");

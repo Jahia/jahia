@@ -154,6 +154,13 @@
             <scope>provided</scope>
         </dependency>
         <!-- end of Shindig dependencies -->
+
+        <dependency>
+            <groupId>org.jahia.modules</groupId>
+            <artifactId>social-service</artifactId>
+            <version>${jahia.package.version}</version>
+            <scope>provided</scope>
+        </dependency>
         
     </dependencies>
     <build>

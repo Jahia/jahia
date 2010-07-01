@@ -17,6 +17,7 @@ import org.apache.shindig.social.opensocial.model.MessageCollection;
 import org.apache.shindig.social.opensocial.model.Person;
 import org.apache.shindig.social.opensocial.spi.*;
 import org.jahia.api.Constants;
+import org.jahia.modules.social.SocialService;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -150,7 +151,7 @@ public class JahiaShindigService implements PersonService, ActivityService, AppD
 
                         Node userNode = getUsersNode(session, id);
                         // now let's retrieve the activities for the user.
-                        Query myConnectionActivitiesQuery = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:socialActivity] as uA where isdescendantnode(uA,['" + userNode.getPath() + "']) order by [jcr:created] desc", Query.JCR_SQL2);
+                        Query myConnectionActivitiesQuery = session.getWorkspace().getQueryManager().createQuery("select * from ["+ SocialService.JNT_SOCIAL_ACTIVITY+"] as uA where isdescendantnode(uA,['" + userNode.getPath() + "']) order by [jcr:created] desc", Query.JCR_SQL2);
                         myConnectionActivitiesQuery.setLimit(100);
                         QueryResult myConnectionActivitiesResult = myConnectionActivitiesQuery.execute();
 
@@ -185,7 +186,7 @@ public class JahiaShindigService implements PersonService, ActivityService, AppD
 
                     Node userNode = getUsersNode(session, userKey);
                     // now let's retrieve the activities for the user.
-                    Query myConnectionActivitiesQuery = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:socialActivity] as uA where isdescendantnode(uA,['" + userNode.getPath() + "']) order by [jcr:created] desc", Query.JCR_SQL2);
+                    Query myConnectionActivitiesQuery = session.getWorkspace().getQueryManager().createQuery("select * from ["+SocialService.JNT_SOCIAL_ACTIVITY+"] as uA where isdescendantnode(uA,['" + userNode.getPath() + "']) order by [jcr:created] desc", Query.JCR_SQL2);
                     myConnectionActivitiesQuery.setLimit(100);
                     QueryResult myConnectionActivitiesResult = myConnectionActivitiesQuery.execute();
 
@@ -209,8 +210,32 @@ public class JahiaShindigService implements PersonService, ActivityService, AppD
         }
     }
 
-    public Future<Activity> getActivity(UserId userId, GroupId groupId, String appId, Set<String> fields, String activityId, SecurityToken token) throws ProtocolException {
-        return null;
+    public Future<Activity> getActivity(UserId userId, GroupId groupId, final String appId, Set<String> fields, final String activityId, SecurityToken token) throws ProtocolException {
+        final List<Activity> result = Lists.newArrayList();
+        try {
+            final String userKey = userId.getUserId(token);
+
+            Activity activity = jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Activity>() {
+                public Activity doInJCR(JCRSessionWrapper session) throws RepositoryException {
+
+                    Node userNode = getUsersNode(session, userKey);
+                    // now let's retrieve the activities for the user.
+                    JCRNodeWrapper activityNode = session.getNodeByUUID(activityId);
+
+                    /* todo we might want to add validity checks for the users and groups here */
+
+                    if (activityNode != null) {
+                        return new JahiaActivityImpl(activityNode);
+                    } else {
+                        return null;
+                    }
+                }
+            });
+            return ImmediateFuture.newInstance(activity);
+        } catch (RepositoryException re) {
+            throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, re.getMessage(),
+                    re);
+        }
     }
 
     public Future<Void> deleteActivities(UserId userId, GroupId groupId, String appId, Set<String> activityIds, SecurityToken token) throws ProtocolException {

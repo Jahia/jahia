@@ -46,7 +46,7 @@
     </p>
 
     <p>
-        <input type="checkbox" id="rememberme"/>
+        <input type="checkbox" id="rememberme" name="useCookie"/>
         <label for="rememberme" class="rememberLabel"><fmt:message key="loginForm.rememberMe.label"/></label>
 
     </p>

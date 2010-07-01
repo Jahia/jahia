@@ -15,7 +15,7 @@
 	    	name of user property under which we store the cookie identifier key in Jahia,
 	     	for matching with the value coming from the cookie.
 	     -->
-	    <property name="userPropertyName" value="org.jahia.user.cookieauth.id"/>
+	    <property name="userPropertyName" value="cookieauth"/>
 	    <!--
 	    	cookie name. It is a good idea to keep this name a bit cryptic so that
 			even if someone steals the cookie he doesn't necessarily understand it

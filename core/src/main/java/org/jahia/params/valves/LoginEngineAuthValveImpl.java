@@ -159,6 +159,7 @@ public class LoginEngineAuthValveImpl implements Valve {
                 authCookie.setPath(StringUtils.isNotEmpty(httpServletRequest.getContextPath()) ?
                         httpServletRequest.getContextPath() : "/");
                 authCookie.setMaxAge(cookieAuthConfig.getMaxAgeInSeconds());
+                authContext.getResponse().addCookie(authCookie);
             }
 
             enforcePasswordPolicy(theUser);

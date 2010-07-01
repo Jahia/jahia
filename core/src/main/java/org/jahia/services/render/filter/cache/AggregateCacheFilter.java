@@ -67,11 +67,11 @@ public class AggregateCacheFilter extends AbstractFilter {
     private transient static Logger logger = Logger.getLogger(CacheFilter.class);
     private ModuleCacheProvider cacheProvider;
 
-    public static final Pattern ESI_INCLUDE_STARTTAG_REGEXP =
-            Pattern.compile("<!-- cache:include src=\\\"(.*)\\\" -->");
+    public static final Pattern ESI_INCLUDE_STARTTAG_REGEXP = Pattern.compile(
+            "<!-- cache:include src=\\\"(.*)\\\" -->");
     public static final Pattern ESI_INCLUDE_STOPTAG_REGEXP = Pattern.compile("<!-- /cache:include -->");
-    private static final Pattern CLEANUP_REGEXP =
-            Pattern.compile("<!-- cache:include src=\\\"(.*)\\\" -->\n|\n<!-- /cache:include -->");
+    private static final Pattern CLEANUP_REGEXP = Pattern.compile(
+            "<!-- cache:include src=\\\"(.*)\\\" -->\n|\n<!-- /cache:include -->");
 
     public static final Set<String> notCacheableFragment = new HashSet<String>(512);
     private static final String RESOURCES = "resources";
@@ -83,9 +83,10 @@ public class AggregateCacheFilter extends AbstractFilter {
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         final Script script = (Script) renderContext.getRequest().getAttribute("script");
-        chain.pushAttribute(renderContext.getRequest(), "cache.perUser",
-                Boolean.valueOf(script.getTemplate().getProperties().getProperty("cache.perUser", "false")));
-
+        chain.pushAttribute(renderContext.getRequest(), "cache.perUser", Boolean.valueOf(
+                script.getTemplate().getProperties().getProperty("cache.perUser", "false")));
+        chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.valueOf(
+                script.getTemplate().getProperties().getProperty("cache.mainResource", "false")));
         boolean debugEnabled = logger.isDebugEnabled();
         boolean displayCacheInfo = Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
         Set<String> servedFromCache = (Set<String>) renderContext.getRequest().getAttribute("servedFromCache");
@@ -95,9 +96,9 @@ public class AggregateCacheFilter extends AbstractFilter {
         }
 
         if (Boolean.valueOf(script.getTemplate().getProperties().getProperty("cache.additional.key.useMainResourcePath",
-                "false"))) {
-            resource.getModuleParams()
-                    .put("module.cache.additional.key", renderContext.getMainResource().getNode().getPath());
+                                                                             "false"))) {
+            resource.getModuleParams().put("module.cache.additional.key",
+                                           renderContext.getMainResource().getNode().getPath());
         }
 
         String key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
@@ -108,9 +109,12 @@ public class AggregateCacheFilter extends AbstractFilter {
         Element element = null;
         final BlockingCache cache = cacheProvider.getCache();
         final boolean cacheable = !notCacheableFragment.contains(key);
-        String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername());
+        String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername()).replaceAll("_mr_",renderContext.getMainResource().getNode().getPath());
         if (cacheable) {
             try {
+                if (debugEnabled) {
+                    logger.debug("Try to get content from cache for node with key: " + perUserKey);
+                }
                 element = cache.get(perUserKey);
             } catch (LockTimeoutException e) {
                 logger.warn(e.getMessage(), e);
@@ -118,7 +122,7 @@ public class AggregateCacheFilter extends AbstractFilter {
         }
         if (element != null && element.getValue() != null) {
             if (debugEnabled) {
-                logger.debug("Getting content from cache for node : " + key);
+                logger.debug("Content retrieved from cache for node with key: " + perUserKey);
             }
             String cachedContent = (String) ((CacheEntry) element.getValue()).getObject();
             cachedContent = aggregateContent(cache, cachedContent, renderContext);
@@ -133,9 +137,6 @@ public class AggregateCacheFilter extends AbstractFilter {
                 return cachedContent;
             }
         } else {
-            if (debugEnabled) {
-                logger.debug("Generating content for node : " + key);
-            }
             return null;
         }
     }
@@ -143,7 +144,10 @@ public class AggregateCacheFilter extends AbstractFilter {
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception {
         final Script script = (Script) renderContext.getRequest().getAttribute("script");
-
+        chain.pushAttribute(renderContext.getRequest(), "cache.perUser", Boolean.valueOf(
+                script.getTemplate().getProperties().getProperty("cache.perUser", "false")));
+        chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.valueOf(
+                script.getTemplate().getProperties().getProperty("cache.mainResource", "false")));
         resource.getDependencies().add(resource.getNode());
         String key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
         Set<String> servedFromCache = (Set<String>) renderContext.getRequest().getAttribute("servedFromCache");
@@ -155,12 +159,14 @@ public class AggregateCacheFilter extends AbstractFilter {
         final BlockingCache cache = cacheProvider.getCache();
         boolean debugEnabled = logger.isDebugEnabled();
         boolean displayCacheInfo = Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
-        String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername());
-
+        String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername()).replaceAll("_mr_",renderContext.getMainResource().getNode().getPath());
+        if (debugEnabled) {
+            logger.debug("Generating content for node : " + perUserKey);
+        }
         if (cacheable) {
             String cacheAttribute = (String) renderContext.getRequest().getAttribute("expiration");
-            Long expiration = cacheAttribute != null ? Long.valueOf(cacheAttribute) :
-                    Long.valueOf(script.getTemplate().getProperties().getProperty("cache.expiration", "-1"));
+            Long expiration = cacheAttribute != null ? Long.valueOf(cacheAttribute) : Long.valueOf(
+                    script.getTemplate().getProperties().getProperty("cache.expiration", "-1"));
             Set<JCRNodeWrapper> depNodeWrappers = resource.getDependencies();
             for (JCRNodeWrapper nodeWrapper : depNodeWrappers) {
                 String path = nodeWrapper.getPath();
@@ -171,13 +177,13 @@ public class AggregateCacheFilter extends AbstractFilter {
                 } else {
                     dependencies = new LinkedHashSet<String>();
                 }
-                dependencies.add(key);
+                dependencies.add(perUserKey);
                 cacheProvider.getDependenciesCache().put(new Element(path, dependencies));
             }
             // append cache:include tag
             String cachedRenderContent = ESI_INCLUDE_STOPTAG_REGEXP.matcher(previousOut).replaceAll("</esi:include>");
-            cachedRenderContent =
-                    ESI_INCLUDE_STARTTAG_REGEXP.matcher(cachedRenderContent).replaceAll("<esi:include src=\"$1\">");
+            cachedRenderContent = ESI_INCLUDE_STARTTAG_REGEXP.matcher(cachedRenderContent).replaceAll(
+                    "<esi:include src=\"$1\">");
             Source source = new Source(cachedRenderContent);
             // This will remove all blank line and drastically reduce data in memory
             source = new Source((new SourceFormatter(source)).toString());
@@ -216,21 +222,21 @@ public class AggregateCacheFilter extends AbstractFilter {
             if (expiration != 0) {
                 cache.put(cachedElement);
             } else {
-                cachedElement = new Element(key, null);
+                cachedElement = new Element(perUserKey, null);
                 cache.put(cachedElement);
                 notCacheableFragment.add(key);
             }
             if (debugEnabled) {
-                logger.debug("Caching content for node : " + key);
+                logger.debug("Store in cache content of node with key: " + perUserKey);
                 StringBuilder stringBuilder = new StringBuilder();
                 for (JCRNodeWrapper nodeWrapper : depNodeWrappers) {
                     stringBuilder.append(nodeWrapper.getPath()).append("\n");
                 }
-                logger.debug("Dependencies of " + key + " : \n" + stringBuilder.toString());
+                logger.debug("Dependencies of " + perUserKey + " : \n" + stringBuilder.toString());
             }
             if (displayCacheInfo && !previousOut.contains("<body") && previousOut.trim().length() > 0) {
                 return appendDebugInformation(renderContext, key, surroundWithCacheTag(key, previousOut),
-                        cachedElement);
+                                              cachedElement);
             }
         }
         if (displayCacheInfo && !previousOut.contains("<body") && previousOut.trim().length() > 0) {
@@ -251,22 +257,25 @@ public class AggregateCacheFilter extends AbstractFilter {
             OutputDocument outputDocument = new OutputDocument(htmlContent);
             for (Tag esiIncludeTag : esiIncludeTags) {
                 StartTag segment = (StartTag) esiIncludeTag;
-                String cacheKey = segment.getAttributeValue("src").replaceAll("_perUser_",renderContext.getUser().getUsername());
-                if (cache.isKeyInCache(cacheKey)) {
-                    final Element element = cache.get(cacheKey);
+                String cacheKey = segment.getAttributeValue("src").replaceAll("_perUser_",
+                                                                              renderContext.getUser().getUsername());
+                String mrCacheKey = cacheKey.replaceAll("_mr_",renderContext.getMainResource().getNode().getPath());
+                logger.debug("Check if " + cacheKey + " is in cache");
+                if (cache.isKeyInCache(mrCacheKey)) {
+                    final Element element = cache.get(mrCacheKey);
                     if (element != null && element.getValue() != null) {
                         final CacheEntry cacheEntry = (CacheEntry) element.getValue();
                         String content = (String) cacheEntry.getObject();
                         outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(),
                                                aggregateContent(cache, content, renderContext));
-                        renderContext.addStaticAsset((Map<String, Set<String>>)cacheEntry.getProperty(RESOURCES));
+                        renderContext.addStaticAsset((Map<String, Set<String>>) cacheEntry.getProperty(RESOURCES));
                     } else {
-                        cache.put(new Element(cacheKey, null));
+                        cache.put(new Element(mrCacheKey, null));
                         logger.debug("Missing content : " + cacheKey);
                         generateContent(renderContext, outputDocument, segment, cacheKey);
                     }
                 } else {
-                    logger.debug("Missing content : " + cacheKey);
+                    logger.debug("Missing content : " + mrCacheKey);
                     generateContent(renderContext, outputDocument, segment, cacheKey);
 
                 }
@@ -282,12 +291,14 @@ public class AggregateCacheFilter extends AbstractFilter {
         final CacheKeyGenerator cacheKeyGenerator = cacheProvider.getKeyGenerator();
         try {
             Map<String, String> keyAttrbs = cacheKeyGenerator.parse(cacheKey);
-            final JCRNodeWrapper node = JCRSessionFactory.getInstance()
-                    .getCurrentUserSession(keyAttrbs.get("workspace"),
-                            LanguageCodeConverters.languageCodeToLocale(keyAttrbs.get("language")),
-                            renderContext.getFallbackLocale()).getNode(keyAttrbs.get("path"));
-            String content = RenderService.getInstance()
-                    .render(new Resource(node, keyAttrbs.get("templateType"), keyAttrbs.get("template"), Resource.CONFIGURATION_MODULE), renderContext);
+            final JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession(keyAttrbs.get(
+                    "workspace"), LanguageCodeConverters.languageCodeToLocale(keyAttrbs.get("language")),
+                                                                                              renderContext.getFallbackLocale()).getNode(
+                    keyAttrbs.get("path"));
+            String content = RenderService.getInstance().render(new Resource(node, keyAttrbs.get("templateType"),
+                                                                             keyAttrbs.get("template"),
+                                                                             Resource.CONFIGURATION_MODULE),
+                                                                renderContext);
             outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(), content);
         } catch (ParseException e) {
             logger.error(e.getMessage(), e);
@@ -323,15 +334,15 @@ public class AggregateCacheFilter extends AbstractFilter {
         stringBuilder.append("</span><br/>");
         if (cachedElement != null && cachedElement.getValue() != null) {
             stringBuilder.append("<span class=\"cacheDebugInfoLabel\">Fragment has been created at: </span><span>");
-            stringBuilder
-                    .append(SimpleDateFormat.getDateTimeInstance().format(new Date(cachedElement.getCreationTime())));
+            stringBuilder.append(SimpleDateFormat.getDateTimeInstance().format(new Date(
+                    cachedElement.getCreationTime())));
             stringBuilder.append("</span><br/>");
             stringBuilder.append("<span class=\"cacheDebugInfoLabel\">Fragment will expire at: </span><span>");
-            stringBuilder
-                    .append(SimpleDateFormat.getDateTimeInstance().format(new Date(cachedElement.getExpirationTime())));
+            stringBuilder.append(SimpleDateFormat.getDateTimeInstance().format(new Date(
+                    cachedElement.getExpirationTime())));
             stringBuilder.append("</span>");
-            stringBuilder.append("<form action=\"").append(renderContext.getURLGenerator().getContext())
-                    .append("/flushKey.jsp\" method=\"post\"");
+            stringBuilder.append("<form action=\"").append(renderContext.getURLGenerator().getContext()).append(
+                    "/flushKey.jsp\" method=\"post\"");
             stringBuilder.append("<input type=\"hidden\" name=\"keyToFlush\" value=\"").append(key).append("\"");
             stringBuilder.append("<button type=\"submit\"title=\"Flush it\">Flush It</button>");
             stringBuilder.append("</form>");

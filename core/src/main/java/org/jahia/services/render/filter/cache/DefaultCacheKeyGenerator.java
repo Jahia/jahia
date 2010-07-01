@@ -102,7 +102,11 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
             } else if ("language".equals(field)) {
                 args.add(resource.getLocale().toString());
             } else if ("path".equals(field)) {
-                args.add(resource.getNode().getPath());
+                StringBuilder s = new StringBuilder(resource.getNode().getPath());
+                if ((Boolean) renderContext.getRequest().getAttribute("cache.mainResource")) {
+                    s.append("_mr_");
+                }
+                args.add(s.toString());
             } else if ("template".equals(field)) {
                 args.add(resource.getTemplate());
             } else if ("templateType".equals(field)) {
@@ -215,7 +219,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
     }
 
     public String getPath(String key) throws ParseException {
-        return parse(key).get("path");
+        return parse(key).get("path").replaceAll("_mr_","");
     }
 
     public Map<String, String> parse(String key) throws ParseException {
@@ -223,7 +227,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
         Map<String, String> result = new LinkedHashMap<String, String>(fields.size());
         for (int i = 0; i < values.length; i++) {
             String value = (String) values[i];
-            result.put(fields.get(i), value == null || value.equals("null") ? null : value);
+            result.put(fields.get(i), value == null || value.equals("null") ? null : value.replaceAll("_mr_",""));
         }
         return result;
     }

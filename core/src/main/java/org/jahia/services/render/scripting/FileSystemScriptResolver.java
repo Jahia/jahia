@@ -1,6 +1,5 @@
 package org.jahia.services.render.scripting;
 
-import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
@@ -36,6 +35,8 @@ public class FileSystemScriptResolver implements ScriptResolver {
     private static final String JSP_EXTENSION = "jsp";
     private static final String PHP_EXTENSION = "php";
     private List<String> scriptExtensionsOrdering;
+
+    private static Map<String, Boolean> resourcesCache = new HashMap<String, Boolean>();
 
     public List<String> getScriptExtensionsOrdering() {
         return scriptExtensionsOrdering;
@@ -122,8 +123,15 @@ public class FileSystemScriptResolver implements ScriptResolver {
             String modulePath = currentTemplatePath + "/" + nt.getAlias().replace(':', '_') + "/" + templateType + "/" + templatePath;
             try {
                 searchedLocations.add(modulePath);
-                if (JahiaContextLoaderListener.getServletContext().getResource(modulePath) != null) {
+                if (resourcesCache.containsKey(modulePath)) {
+                    if (resourcesCache.get(modulePath)) {
+                        return modulePath;
+                    }
+                } else if (JahiaContextLoaderListener.getServletContext().getResource(modulePath) != null) {
+                    resourcesCache.put(modulePath, Boolean.TRUE);
                     return modulePath;
+                } else {
+                    resourcesCache.put(modulePath, Boolean.FALSE);
                 }
             } catch (MalformedURLException e) {
             }
@@ -247,5 +255,8 @@ public class FileSystemScriptResolver implements ScriptResolver {
         }
     }
 
-
+    public static void clearCache() {
+        resourcesCache.clear();
+        FileSystemTemplate.clearPropertiesCache();
+    }
 }

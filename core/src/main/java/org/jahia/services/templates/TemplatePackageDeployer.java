@@ -42,6 +42,7 @@ import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.render.FileSystemTemplate;
 import org.jahia.services.render.filter.cache.AggregateCacheFilter;
+import org.jahia.services.render.scripting.FileSystemScriptResolver;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
 import org.jahia.utils.zip.ExclusionWildcardFilter;
@@ -140,7 +141,7 @@ class TemplatePackageDeployer implements ServletContextAware {
                 // flush resource bundle cache
                 JahiaTemplatesRBLoader.clearCache();
                 // flush template properties cache
-                FileSystemTemplate.clearPropertiesCache();
+                FileSystemScriptResolver.clearCache();
                 // flush not cacheable fragments cache
                 AggregateCacheFilter.clearNotCacheableFragmentCache();
                 // reload the Spring application context for modules

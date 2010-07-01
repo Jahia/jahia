@@ -102,7 +102,7 @@
 [jnt:teaser] > jnt:content, mix:title, jmix:editorialContent
  - abstract (string, text[multiline]) i18n
  - image (weakreference, file[mime='image/*'])
- page link (page[type="external,internal"])
+ - link (weakreference)
 
 [jnt:banner] > jnt:content, mix:title, jmix:editorialContent
  - background (weakreference, file[mime='image/*']) i18n

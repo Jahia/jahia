@@ -16,7 +16,7 @@
             <p> ${currentNode.properties.abstract.string}</p>
         </div>
         <div class="more">
-            <span><template:module template="link" path="link"/></span>
+            <span><a href="${url.base}${currentNode.properties.link.node.path}.html">Read more...</a></span>
         </div>
     </div>
 </div>

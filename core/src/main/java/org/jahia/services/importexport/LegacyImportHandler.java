@@ -644,6 +644,18 @@ public class LegacyImportHandler extends DefaultHandler {
         String title = attributes.getValue("jahia:title");
         String propertyName = currentCtx.peek().propertyNames.peek();
 
+        boolean isProperty = false;
+
+        for (String s : node.getNodeTypes()) {
+            ExtendedNodeType nt = NodeTypeRegistry.getInstance().getNodeType(s);
+            if (nt.getChildNodeDefinitionsAsMap().containsKey(propertyName)) {
+                break;
+            } else if (nt.getPropertyDefinitionsAsMap().containsKey(propertyName)) {
+                isProperty = true;
+                break;
+            }
+        }
+
         if (HTTP_WWW_JAHIA_ORG.equals(uri) && PAGE.equals(localName)) {
             createPage(attributes.getValue(Constants.JCR_NS, "primaryType"), title,
                     attributes.getValue("jahia:template"), attributes.getValue(HTTP_WWW_JAHIA_ORG, "pageKey"), uuid);
@@ -652,7 +664,7 @@ public class LegacyImportHandler extends DefaultHandler {
         } else if (HTTP_WWW_JAHIA_ORG.equals(uri) && LINK.equals(localName)) {
             // System.out.println("link Field-node : " + localName);
             String reference = attributes.getValue("jahia:reference");
-            if (!node.hasNode(propertyName)) {
+            if (!isProperty && !node.hasNode(propertyName)) {
                 JCRNodeWrapper sub = addOrCheckoutNode(node, propertyName, "jnt:nodeLink", null);
 
                 Node translation = sub.getOrCreateI18N(locale);
@@ -666,6 +678,11 @@ public class LegacyImportHandler extends DefaultHandler {
                     references.put(reference, new ArrayList<String>());
                 }
                 references.get(reference).add(sub.getIdentifier() + "/j:node");
+            } else if (isProperty && !node.hasProperty(propertyName)) {
+                if (!references.containsKey(reference)) {
+                    references.put(reference, new ArrayList<String>());
+                }
+                references.get(reference).add(node.getIdentifier() + "/"+propertyName);
             }
             currentCtx.peek().pushSkip();
         } else if (HTTP_WWW_JAHIA_ORG.equals(uri) && localName.equals("url")) {
@@ -681,6 +698,8 @@ public class LegacyImportHandler extends DefaultHandler {
                 }
 
                 sub.setProperty("j:url", value);
+            } else if (isProperty && !node.hasProperty(propertyName)) {
+
             }
             currentCtx.peek().pushSkip();
         } else {

@@ -168,7 +168,7 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void createDefaultUsersGroupACE(List<String> permissions, boolean grand, AsyncCallback<GWTJahiaNodeACE> async);
 
-    void getUsages(String path, AsyncCallback<List<GWTJahiaNodeUsage>> async);
+    void getUsages(List<String> paths, AsyncCallback<List<GWTJahiaNodeUsage>> async);
 
     void getNodesByCategory(GWTJahiaNode category,int offset, int limit,AsyncCallback<PagingLoadResult<GWTJahiaNode>> async);
 

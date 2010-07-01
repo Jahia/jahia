@@ -57,10 +57,12 @@ public class GWTJahiaNodeUsage extends BaseModelData implements Serializable {
         setUrl(url);
     }
 
-    public GWTJahiaNodeUsage(String identifier, String url, String pageUrl) {
+    public GWTJahiaNodeUsage(String identifier, String url, String pageUrl, String nodeName, String nodeTitle) {
         setUrl(url);
         setPageUrl(pageUrl);
         setIdentifier(identifier);
+        setNodeName(nodeName);
+        setNodeTitle(nodeTitle);
     }
 
     public void setIdentifier(String identifier) {
@@ -82,6 +84,22 @@ public class GWTJahiaNodeUsage extends BaseModelData implements Serializable {
 
     public void setId(int id) {
         set("id", Integer.valueOf(id));
+    }
+
+    public String getNodeName() {
+        return get("nodeName");
+    }
+
+    public String getNodeTitle() {
+        return get("nodeName");
+    }
+
+    public void setNodeName(String nodeName) {
+        set("nodeName", nodeName);
+    }
+
+    public void setNodeTitle(String nodeTitle) {
+        set("nodeTitle", nodeTitle);
     }
 
     public int getVersion() {

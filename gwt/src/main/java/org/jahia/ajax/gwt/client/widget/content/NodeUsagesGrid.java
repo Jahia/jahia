@@ -23,6 +23,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class NodeUsagesGrid {
@@ -33,8 +34,17 @@ public class NodeUsagesGrid {
 
         ColumnConfig col = new ColumnConfig("pageUrl", Messages.get("label.pageUrl", "Page URL"), 300);
         col.setRenderer(new GridCellRenderer<GWTJahiaNodeUsage>() {
-            public Object render(GWTJahiaNodeUsage gwtJahiaNodeUsage, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNodeUsage> gwtJahiaNodeUsageListStore, com.extjs.gxt.ui.client.widget.grid.Grid<GWTJahiaNodeUsage> gwtJahiaNodeUsageGrid) {
-                return "<a href=\"" + JahiaGWTParameters.getBaseUrl()+ gwtJahiaNodeUsage.getPageUrl() + "\" target=\"_blank\">" + JahiaGWTParameters.getBaseUrl()+ gwtJahiaNodeUsage.getPageUrl()+"<a>";
+            public Object render(
+                    GWTJahiaNodeUsage gwtJahiaNodeUsage,
+                    String s,
+                    ColumnData columnData,
+                    int i,
+                    int i1,
+                    ListStore<GWTJahiaNodeUsage> gwtJahiaNodeUsageListStore,
+                    com.extjs.gxt.ui.client.widget.grid.Grid<GWTJahiaNodeUsage> gwtJahiaNodeUsageGrid) {
+                return
+                        "<a href=\"" + JahiaGWTParameters.getBaseUrl()+ gwtJahiaNodeUsage.getPageUrl() + "\" target=\"_blank\">" 
+                                + JahiaGWTParameters.getBaseUrl()+ gwtJahiaNodeUsage.getPageUrl()+"<a>";
             }
         });
 
@@ -50,7 +60,7 @@ public class NodeUsagesGrid {
                         for (GWTJahiaNode selectedNode : nodes) {
                             String path = selectedNode.getPath();
 
-                            instance.getUsages(path, new BaseAsyncCallback<List<GWTJahiaNodeUsage>>() {
+                            instance.getUsages(Arrays.asList(path), new BaseAsyncCallback<List<GWTJahiaNodeUsage>>() {
                                 public void onApplicationFailure(Throwable throwable) {
                                     Log.debug("Cannot retrieve usages", throwable);
                                 }

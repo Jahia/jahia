@@ -826,8 +826,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return acl.createUsersGroupACE(permissions, grand, getSite());
     }
 
-    public List<GWTJahiaNodeUsage> getUsages(String path) throws GWTJahiaServiceException {
-        return navigation.getUsages(path, retrieveCurrentSession());
+    public List<GWTJahiaNodeUsage> getUsages(List<String> paths) throws GWTJahiaServiceException {
+        return navigation.getUsages(paths, retrieveCurrentSession());
     }
 
     public List<GWTJahiaNode> getNodesByCategory(GWTJahiaNode category) throws GWTJahiaServiceException {

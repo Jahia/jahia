@@ -177,7 +177,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     public GWTJahiaNodeACE createDefaultUsersGroupACE(List<String> permissions, boolean grand) throws GWTJahiaServiceException;
 
-    public List<GWTJahiaNodeUsage> getUsages(String path) throws GWTJahiaServiceException;
+    public List<GWTJahiaNodeUsage> getUsages(List<String> paths) throws GWTJahiaServiceException;
 
     public PagingLoadResult<GWTJahiaNode> getNodesByCategory(GWTJahiaNode category, int offset, int limit) throws GWTJahiaServiceException;
 

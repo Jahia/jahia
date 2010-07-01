@@ -428,54 +428,75 @@ public class NavigationHelper {
         return node.getAbsoluteWebdavUrl(request);
     }
 
-    public List<GWTJahiaNodeUsage> getUsages(String path, JCRSessionWrapper currentUserSession)
+    public List<GWTJahiaNodeUsage> getUsages(List<String> paths, JCRSessionWrapper currentUserSession)
             throws GWTJahiaServiceException {
         JCRNodeWrapper node;
-        try {
-            node = currentUserSession.getNode(path);
-        } catch (RepositoryException e) {
-            logger.error(e.toString(), e);
-            throw new GWTJahiaServiceException(
-                    new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
-        }
         List<GWTJahiaNodeUsage> result = new ArrayList<GWTJahiaNodeUsage>();
-        try {
-            NodeIterator usages = node.getSharedSet();
-            while (usages.hasNext()) {
-                JCRNodeWrapper usage = (JCRNodeWrapper) usages.next();
-                JCRNodeWrapper parent = lookUpParentPageNode(usage);
-
-                result.add(new GWTJahiaNodeUsage(usage.getIdentifier(), usage.getPath(),
-                        parent == null ? "" : parent.getPath() + ".html"));
-
+        for (String path : paths) {
+            try {
+                node = currentUserSession.getNode(path);
+            } catch (RepositoryException e) {
+                logger.error(e.toString(), e);
+                throw new GWTJahiaServiceException(
+                        new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
             }
-        } catch (RepositoryException e) {
-            logger.error(e.toString(), e);
-        }
+            try {
+                NodeIterator usages = node.getSharedSet();
+                while (usages.hasNext()) {
+                    JCRNodeWrapper usage = (JCRNodeWrapper) usages.next();
+                    JCRNodeWrapper parent = lookUpParentPageNode(usage);
+                    if (! usage.getPath().equals(node.getPath())) {
+                        result.add(new GWTJahiaNodeUsage(usage.getIdentifier(), usage.getPath(),
+                            parent == null || usage.isNodeType("jnt:page") ? usage.getPath() : parent.getPath() + ".html",node.getName(), node.getPropertyAsString("jcr:title")));
+                    }
+                }
+            } catch (RepositoryException e) {
+                logger.error(e.toString(), e);
+            }
 
-        try {
-            PropertyIterator references = node.getReferences();
-            while (references.hasNext()) {
-                JCRPropertyWrapper reference = (JCRPropertyWrapper) references.next();
-                if (reference.isMultiple()) {
-                    Value[] referenceValues = reference.getValues();
-                    for (Value currentValue : referenceValues) {
-                        JCRNodeWrapper refNode = currentUserSession.getNodeByUUID(currentValue.getString());
+            try {
+                PropertyIterator r = node.getReferences();
+                while (r.hasNext()) {
+                    JCRPropertyWrapper reference = (JCRPropertyWrapper) r.next();
+                    if (reference.isMultiple()) {
+                        Value[] referenceValues = reference.getValues();
+                        for (Value currentValue : referenceValues) {
+                            JCRNodeWrapper refNode = currentUserSession.getNodeByUUID(currentValue.getString());
+                            JCRNodeWrapper parent = lookUpParentPageNode(refNode);
+                            result.add(new GWTJahiaNodeUsage(refNode.getIdentifier(), refNode.getPath(),
+                                    parent == null || refNode.isNodeType("jnt:page") ? refNode.getPath() : parent.getPath() + ".html",refNode.getName(),  refNode.hasProperty("jcr:title")?refNode.getPropertyAsString("jcr:title"):""));
+                        }
+                    } else {
+                        JCRNodeWrapper refNode = (JCRNodeWrapper) reference.getNode();
                         JCRNodeWrapper parent = lookUpParentPageNode(refNode);
                         result.add(new GWTJahiaNodeUsage(refNode.getIdentifier(), refNode.getPath(),
-                                parent == null ? "" : parent.getPath() + ".html"));
+                                parent == null || refNode.isNodeType("jnt:page")  ? refNode.getPath() : parent.getPath() + ".html",refNode.getName(),  refNode.hasProperty("jcr:title")?refNode.getPropertyAsString("jcr:title"):""));
                     }
-                } else {
-                    JCRNodeWrapper refNode = (JCRNodeWrapper) reference.getNode();
-                    JCRNodeWrapper parent = lookUpParentPageNode(refNode);
-                    result.add(new GWTJahiaNodeUsage(refNode.getIdentifier(), refNode.getPath(),
-                            parent == null ? "" : parent.getPath() + ".html"));
                 }
+                PropertyIterator wr = node.getWeakReferences();
+                while (wr.hasNext()) {
+                    JCRPropertyWrapper reference = (JCRPropertyWrapper) wr.next();
+                    if (reference.isMultiple()) {
+                        Value[] referenceValues = reference.getValues();
+                        for (Value currentValue : referenceValues) {
+                            JCRNodeWrapper refNode = currentUserSession.getNodeByUUID(currentValue.getString());
+                            JCRNodeWrapper parent = lookUpParentPageNode(refNode);
+                            result.add(new GWTJahiaNodeUsage(refNode.getIdentifier(), refNode.getPath(),
+                                    parent == null || refNode.isNodeType("jnt:page") ? refNode.getPath() : parent.getPath() + ".html",refNode.getName(), refNode.hasProperty("jcr:title")?refNode.getPropertyAsString("jcr:title"):""));
+                        }
+                    } else {
+                        if (!reference.getPath().startsWith("/referencesKeeper")) { 
+                            JCRNodeWrapper refNode = reference.getParent();
+                            JCRNodeWrapper parent = lookUpParentPageNode(refNode);
+                            result.add(new GWTJahiaNodeUsage(reference.getNode().getIdentifier(), refNode.getPath(),
+                                parent == null || refNode.isNodeType("jnt:page") ? refNode.getPath() : parent.getPath() + ".html",reference.getNode().getName(), reference.getNode().hasProperty("jcr:title")?((JCRNodeWrapper) reference.getNode()).getPropertyAsString("jcr:title"):""));
+                        }
+                    }
+                }
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
             }
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
         }
-
         return result;
     }
 

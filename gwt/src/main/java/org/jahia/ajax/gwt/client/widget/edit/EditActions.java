@@ -17,6 +17,7 @@ import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -249,29 +250,55 @@ public class EditActions {
      * @param linker
      */
     public static void delete(final Linker linker) {
+        final int[] nbUsage = new int[1];
         if (linker.getSelectedNodes() != null && !linker.getSelectedNodes().isEmpty()) {
-            MessageBox.confirm("", Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.confirm.remove.label",
-                    "Do you really want to continue?"), new Listener<MessageBoxEvent>() {
-                public void handleEvent(MessageBoxEvent be) {
-                    if (be.getButtonClicked().getText().equalsIgnoreCase(Dialog.YES)) {
-                        List<String> paths = new ArrayList<String>();
-                        for (GWTJahiaNode node : linker.getSelectedNodes()) {
-                            paths.add(node.getPath());
-                        }
-                        JahiaContentManagementService.App.getInstance().deletePaths(paths, new BaseAsyncCallback() {
-                            public void onApplicationFailure(Throwable throwable) {
-                                Log.error(throwable.getMessage(), throwable);
-                                MessageBox.alert("", throwable.getMessage(), null);
+            // Usages
+            List<String> l = new ArrayList<String>();
+            for (GWTJahiaNode node :linker.getSelectedNodes()) {
+                l.add(node.getPath());
+            }
+            JahiaContentManagementService.App.getInstance()
+                    .getUsages(l , new BaseAsyncCallback<List<GWTJahiaNodeUsage>>() {
+                        public void onSuccess(List<GWTJahiaNodeUsage> result) {
+                            String message = Messages.get("label,remove.confirm",
+                                                                "Do you really want to continue?");
+                            String n = "";
+                            for (GWTJahiaNodeUsage nodeUsage : result) {
+                                if (!nodeUsage.getNodeName().equals(n)) {
+                                message += "<br><br>" + nodeUsage.getNodeName() + " " + Messages.get("label.remove.used",
+                                                                "is used in page <br>") + " " + nodeUsage.getPageUrl();
+                                } else {
+                                    message += "<br>" + nodeUsage.getPageUrl();
+                                }
+                                n = nodeUsage.getNodeName();
                             }
+                            MessageBox.confirm("", message, new Listener<MessageBoxEvent>() {
+                                public void handleEvent(MessageBoxEvent be) {
+                                    if (be.getButtonClicked().getText().equalsIgnoreCase(Dialog.YES)) {
+                                        List<String> paths = new ArrayList<String>();
+                                        for (GWTJahiaNode node : linker.getSelectedNodes()) {
+                                            paths.add(node.getPath());
+                                        }
+                                        JahiaContentManagementService.App.getInstance().deletePaths(paths, new BaseAsyncCallback() {
+                                            public void onApplicationFailure(Throwable throwable) {
+                                                Log.error(throwable.getMessage(), throwable);
+                                                MessageBox.alert("", throwable.getMessage(), null);
+                                            }
 
-                            public void onSuccess(Object o) {
-                                linker.refresh(EditLinker.REFRESH_ALL);
-                                linker.select(null);
-                            }
-                        });
-                    }
-                }
-            });
+                                            public void onSuccess(Object o) {
+                                                linker.refresh(EditLinker.REFRESH_ALL);
+                                                linker.select(null);
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                        }
+
+                        public void onApplicationFailure(Throwable caught) {
+                            com.google.gwt.user.client.Window.alert("Cannot get status: " + caught.getMessage());
+                        }
+                    });
         }
     }
 

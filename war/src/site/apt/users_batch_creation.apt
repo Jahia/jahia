@@ -1,0 +1,25 @@
+Jahia Crazy Jane -
+
+Jahia allows administrators to import users in batch to create local accounts (meaning you don't use an external repository of users like Active Directory or LDAP).
+
+* Prepare a csv file
+
+Your csv file must be structured as follow:
+The file must include a header line with at minimum the columns j:nodename (username) and j:password.
+You can include any other supported user properties as values, in the desired order.
+The each user to be created must be declared on a line, with associated values in the correct order.
+
+Example :
+j:nodename,j:password,j:firstName,j:lastName
+steven,Sseagal666,Steven,Seagal
+chucky,TexasRanger,Chuck,Norris
+
+* Import users into Jahia
+
+To import users, log yourself into the Jahia Administration Interface (default: http://localhost:8080/jahia/administration/)
+Click on 'Manage users'
+Click on the button "Batch create users"
+In the form newly displayed:
+Type the separator used in your CSV file  (default is ',')
+Select the CSV file  by clicking on 'browse'
+Click on the OK button at the bottom of the screen

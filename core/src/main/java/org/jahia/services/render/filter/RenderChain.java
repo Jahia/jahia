@@ -1,7 +1,6 @@
 package org.jahia.services.render.filter;
 
 import org.jahia.services.render.RenderContext;
-import org.jahia.services.render.RenderException;
 import org.jahia.services.render.Resource;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +16,6 @@ import java.util.*;
  */
 public class RenderChain {
     private List<RenderFilter> filters = new ArrayList<RenderFilter>();
-    private int index = 0;
 
     final Map<String, Object> oldPropertiesMap = new HashMap<String, Object>();
 
@@ -73,13 +71,13 @@ public class RenderChain {
         int index=0;
 
         try {
-            for (; index<filters.size() && out == null; index++) {
+            for (; index<filters.size() && out == null && renderContext.getRedirect() == null; index++) {
                 RenderFilter filter = filters.get(index);
                 if (filter.areConditionsMatched(renderContext, resource)) {
                     out = filter.prepare(renderContext, resource, this);
                 }
             }
-            for (; index>0; index--) {
+            for (; index>0 && renderContext.getRedirect() == null; index--) {
                 RenderFilter filter = filters.get(index-1);
                 if (filter.areConditionsMatched(renderContext, resource)) {
                     out = filter.execute(out, renderContext, resource, this);

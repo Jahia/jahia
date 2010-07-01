@@ -31,7 +31,6 @@
  */
 package org.jahia.bin;
 
-import net.htmlparser.jericho.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.lang.StringUtils;
@@ -51,7 +50,6 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.logging.MetricsLoggingService;
 import org.jahia.services.render.*;
-import org.jahia.services.render.filter.cache.AggregateCacheFilter;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -77,7 +75,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.URLEncoder;
 import java.util.*;
 
@@ -206,48 +203,16 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     protected void doGet(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext,
                          Resource resource) throws RepositoryException, RenderException, IOException {
         loggingService.startProfiler("MAIN");
-        resp.setCharacterEncoding("UTF-8");
+//        resp.setCharacterEncoding("UTF-8");
         String out = renderService.render(resource, renderContext);
         if (renderContext.getRedirect() != null && !resp.isCommitted()) {
             resp.sendRedirect(renderContext.getRedirect());
         } else {
             resp.setContentType(
                     renderContext.getContentType() != null ? renderContext.getContentType() : "text/html; charset=UTF-8");
-            Source source = new Source(out);
-            OutputDocument outputDocument = new OutputDocument(source);
-            if (renderContext.isAjaxRequest()) {
-                Element element = source.getFirstElement();
-                final EndTag tag = element.getEndTag();
-                if (tag == null ) {
-                    logger.error("Couldn't find end tag for element " + element.getName() + " debugInfo=" + element.getDebugInfo() + " in markup [" + out + "]");
-                } else {
-                    final String staticsAsset = renderService.render(new Resource(resource.getNode(), "html",
-                                                                                                "html.statics.assets",
-                                                                                                Resource.CONFIGURATION_INCLUDE),
-                                                                                   renderContext);
-                    outputDocument.replace(tag.getBegin(), tag.getBegin() + 1, "\n" + AggregateCacheFilter.removeEsiTags(
-                            staticsAsset) + "\n<");
-                }
-            } else {
-                final List<Element> elementList = source.getAllElements(HTMLElementName.HEAD);
-                for (Element element : elementList) {
-                    final EndTag tag = element.getEndTag();
-                    final String staticsAsset = renderService.render(new Resource(resource.getNode(), "html",
-                                                                                                "html.statics.assets",
-                                                                                                Resource.CONFIGURATION_INCLUDE),
-                                                                                   renderContext);
-                    outputDocument.replace(tag.getBegin(), tag.getBegin() + 1, "\n" + AggregateCacheFilter.removeEsiTags(
-                            staticsAsset) + "\n<");
-                }
-            }
-            PrintWriter writer = resp.getWriter();
-            out = outputDocument.toString();
-            final SourceFormatter sourceFormatter = new SourceFormatter(new Source(out));
-            sourceFormatter.setIndentString("  ");
-            out = sourceFormatter.toString();
-            resp.setContentLength(out.getBytes("UTF-8").length);
-            writer.print(out);
-            writer.close();
+//            resp.setContentLength(out.getBytes("UTF-8").length);
+            resp.getWriter().print(out);
+//            resp.getWriter().close();
         }
         String sessionID = "";
         HttpSession httpSession = req.getSession(false);
@@ -407,7 +372,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         Map<String, List<String>> parameters = new HashMap<String, List<String>>();
         for (Object key : req.getParameterMap().keySet()) {
             if (key != null) {
-                parameters.put((String) key, new ArrayList(Arrays.asList((String[]) req.getParameterMap().get(key))));
+                parameters.put((String) key, new ArrayList<String>(Arrays.asList((String[]) req.getParameterMap().get(key))));
             }
         }
         return parameters;

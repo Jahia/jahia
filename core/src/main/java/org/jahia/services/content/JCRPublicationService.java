@@ -771,7 +771,7 @@ public class JCRPublicationService extends JahiaService {
 //        info.setPath(stageNode.getPath());
         JCRNodeWrapper publishedNode = null;
         try {
-            publishedNode = destinationSession.getNode(node.getCorrespondingNodePath(destinationSession.getWorkspace().getName()));
+            publishedNode = destinationSession.getNodeByUUID(node.getIdentifier());
         } catch (ItemNotFoundException e) {
             if (logger.isDebugEnabled()) {
                 logger.debug("No live node for staging node " + node.getPath());
@@ -816,46 +816,48 @@ public class JCRPublicationService extends JahiaService {
                 lang = node.getProperty("jcr:language").getString();
             }
 
-            PropertyIterator pi = node.getProperties();
-            while (pi.hasNext()) {
-                Property p = pi.nextProperty();
-                PropertyDefinition definition = p.getDefinition();
-                if (lang != null && p.getName().endsWith("_" + lang)) {
-                    String name = p.getName().substring(0, p.getName().length() - lang.length() - 1);
-                    definition = ((JCRNodeWrapper) node.getParent()).getApplicablePropertyDefinition(name);
-                }
-                if (includesReferences && definition!=null &&
-                    (definition.getRequiredType() == PropertyType.REFERENCE || definition.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE)
-                    && !p.getName().startsWith("jcr:")) {
-                    if (definition.isMultiple()) {
-                        Value[] vs = p.getValues();
-                        for (Value v : vs) {
-                            try {
-                                JCRNodeWrapper ref = node.getSession().getNodeByUUID(v.getString());
+            if (includesReferences) {
+                PropertyIterator pi = node.getProperties();
+                while (pi.hasNext()) {
+                    Property p = pi.nextProperty();
+                    PropertyDefinition definition = p.getDefinition();
+                    if (lang != null && p.getName().endsWith("_" + lang)) {
+                        String name = p.getName().substring(0, p.getName().length() - lang.length() - 1);
+                        definition = ((JCRNodeWrapper) node.getParent()).getApplicablePropertyDefinition(name);
+                    }
+                    if (definition!=null &&
+                            (definition.getRequiredType() == PropertyType.REFERENCE || definition.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE)
+                            && !p.getName().startsWith("jcr:")) {
+                        if (definition.isMultiple()) {
+                            Value[] vs = p.getValues();
+                            for (Value v : vs) {
+                                try {
+                                    JCRNodeWrapper ref = node.getSession().getNodeByUUID(v.getString());
 //                            if (!referencedNode.contains(ref)) {
                                     if (!ref.isNodeType("jnt:page")) {
                                         getPublicationInfo(ref, info.addReference(ref.getUUID(), ref.getPath()).getRoot(), languages, includesReferences, includesSubnodes, false, sourceSession, destinationSession, uuids, infos);
                                     }
 //                            }
-                            } catch (ItemNotFoundException e) {
-                                if (definition.getRequiredType() == PropertyType.REFERENCE) {
-                                    logger.warn("Cannot get reference " + v.getString());
-                                } else {
-                                    logger.debug("Cannot get reference " + v.getString());
-                                }
+                                } catch (ItemNotFoundException e) {
+                                    if (definition.getRequiredType() == PropertyType.REFERENCE) {
+                                        logger.warn("Cannot get reference " + v.getString());
+                                    } else {
+                                        logger.debug("Cannot get reference " + v.getString());
+                                    }
 
+                                }
                             }
-                        }
-                    } else {
-                        try {
-                            JCRNodeWrapper ref = (JCRNodeWrapper) p.getNode();
+                        } else {
+                            try {
+                                JCRNodeWrapper ref = (JCRNodeWrapper) p.getNode();
 //                        if (!referencedNode.contains(ref)) {
                                 if (!ref.isNodeType("jnt:page")) {
                                     getPublicationInfo(ref, info.addReference(ref.getUUID(), ref.getPath()).getRoot(), languages, includesReferences, includesSubnodes, false, sourceSession, destinationSession, uuids, infos);
                                 }
 //                        }
-                        } catch (ItemNotFoundException e) {
-                            logger.warn("Cannot get reference " + p.getString());
+                            } catch (ItemNotFoundException e) {
+                                logger.warn("Cannot get reference " + p.getString());
+                            }
                         }
                     }
                 }

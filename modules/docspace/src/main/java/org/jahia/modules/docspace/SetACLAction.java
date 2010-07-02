@@ -50,10 +50,10 @@ public class SetACLAction implements org.jahia.bin.Action  {
         try {
             JCRNodeWrapperImpl.changePermissions(resource.getNode(), user, acl);
             jcrSessionWrapper.save();
-            return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject());
+            return ActionResult.OK;
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
-            return new ActionResult(HttpServletResponse.SC_BAD_REQUEST, null, new JSONObject());
+            return ActionResult.BAD_REQUEST;
         }
     }
 }

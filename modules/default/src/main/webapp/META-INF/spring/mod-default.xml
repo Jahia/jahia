@@ -28,4 +28,13 @@
         <property name="name" value="commentTask"/>
         <property name="workflowService" ref="workflowService"/>
     </bean>
+
+    <bean class="org.jahia.modules.defaultmodule.actions.ChainAction">
+        <property name="templateService" ref="JahiaTemplateManagerService"/>
+        <property name="defaultPostAction" >
+            <bean class="org.jahia.bin.DefaultPostAction">
+                <property name="loggingService" ref="loggingService"/>
+            </bean>
+        </property>
+    </bean>
 </beans>

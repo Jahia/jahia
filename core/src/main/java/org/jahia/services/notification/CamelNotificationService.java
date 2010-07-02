@@ -33,6 +33,7 @@
 package org.jahia.services.notification;
 
 import org.apache.camel.CamelContext;
+import org.apache.camel.CamelContextAware;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.RoutesBuilder;
 import org.apache.commons.io.IOUtils;
@@ -52,13 +53,13 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 /**
- * Created by IntelliJ IDEA.
+ * Notification service, based on the Apache Camel framework, for sending different kinds of notifications.
  *
- * @author : rincevent
- * @since : JAHIA 6.1
- *        Created : 28 juin 2010
+ * @author rincevent
+ * @since JAHIA 6.5
+ * Created : 28 juin 2010
  */
-public class CamelNotificationService {
+public class CamelNotificationService implements CamelContextAware {
     private transient static Logger logger = Logger.getLogger(CamelNotificationService.class);
 
     private CamelContext camelContext;
@@ -116,8 +117,6 @@ public class CamelNotificationService {
         ScriptEngineManager scriptManager = new ScriptEngineManager();
         ScriptEngine scriptEngine = scriptManager.getEngineByExtension(StringUtils.substringAfterLast(template, "."));
         ScriptContext scriptContext = scriptEngine.getContext();
-        final Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
-        bindings.putAll(bindedObjects);
         String templateRealPath = TemplateUtils.lookupTemplate(templatePackageName, template);
         InputStream scriptInputStream = JahiaContextLoaderListener.getServletContext().getResourceAsStream(
                 templateRealPath);
@@ -131,7 +130,9 @@ public class CamelNotificationService {
             } else {
                 resourceBundle = new JahiaResourceBundle(locale, templatePackageName);
             }
+            final Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
             bindings.put("bundle", resourceBundle);
+            bindings.putAll(bindedObjects);
             Reader scriptContent = null;
             // Subject
             String subject;
@@ -153,7 +154,7 @@ public class CamelNotificationService {
                 scriptContext.setWriter(new StringWriter());
                 // The following binding is necessary for Javascript, which doesn't offer a console by default.
                 bindings.put("out", new PrintWriter(scriptContext.getWriter()));
-                Object result = scriptEngine.eval(scriptContent, bindings);
+                scriptEngine.eval(scriptContent, bindings);
                 StringWriter writer = (StringWriter) scriptContext.getWriter();
                 String body = writer.toString();
 
@@ -164,5 +165,9 @@ public class CamelNotificationService {
                 }
             }
         }
+    }
+
+    public CamelContext getCamelContext() {
+        return camelContext;
     }
 }

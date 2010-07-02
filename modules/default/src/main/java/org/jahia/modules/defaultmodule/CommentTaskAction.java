@@ -49,6 +49,6 @@ public class CommentTaskAction implements Action {
 
         workflowService.addCommentToTask(taskId, providerKey, comment);
 
-        return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject());
+        return ActionResult.OK;
     }
 }

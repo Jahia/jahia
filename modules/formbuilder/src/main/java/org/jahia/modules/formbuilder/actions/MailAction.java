@@ -32,23 +32,13 @@
  */
 package org.jahia.modules.formbuilder.actions;
 
-import groovy.lang.Binding;
-
-import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.log4j.Logger;
 import org.apache.velocity.tools.generic.DateTool;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
-import org.jahia.bin.Jahia;
 import org.jahia.bin.Render;
-import org.jahia.params.ParamBean;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.mail.MailService;
 import org.jahia.services.notification.CamelNotificationService;
-import org.jahia.services.notification.templates.Attachment;
-import org.jahia.services.notification.templates.Link;
-import org.jahia.services.notification.templates.MessageBuilder;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
@@ -56,21 +46,18 @@ import org.jahia.services.render.URLResolver;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
-import org.jahia.tools.files.FileUpload;
 import org.json.JSONObject;
 
 import javax.jcr.NodeIterator;
-import javax.jcr.RepositoryException;
-import javax.mail.util.ByteArrayDataSource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * Action handler that sends e-mail message.
  *
- * @author : rincevent
- * @since : JAHIA 6.1
+ * @author rincevent
+ * @since JAHIA 6.5
  *        Created : 9 mars 2010
  */
 public class MailAction implements Action {
@@ -103,7 +90,6 @@ public class MailAction implements Action {
     public ActionResult doExecute(HttpServletRequest req, final RenderContext renderContext,
                                   final Resource resource, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         JCRNodeWrapper node = renderContext.getMainResource().getNode();
-        final String path = node.getParent().getPath();
         JCRNodeWrapper actionNode = null;
         NodeIterator nodes = node.getParent().getNode("action").getNodes();
         while (nodes.hasNext()) {
@@ -140,6 +126,6 @@ public class MailAction implements Action {
                                                           null,null,resource.getLocale(), "Jahia Form Builder");
             logger.info("Form data is sent by e-mail");
         }
-        return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject());
+        return ActionResult.OK;
     }
 }

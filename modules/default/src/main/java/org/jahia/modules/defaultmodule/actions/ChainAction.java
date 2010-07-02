@@ -1,7 +1,7 @@
 /**
  *
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * Copyright (C) 2002-2010 Jahia Limited. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -30,9 +30,8 @@
  * between you and Jahia Limited. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.modules.formbuilder.actions;
+package org.jahia.modules.defaultmodule.actions;
 
-import org.apache.log4j.Logger;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
 import org.jahia.bin.DefaultPostAction;
@@ -50,14 +49,14 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
+ * Action handler that is capable of executing a chain of specified action.
  *
- * @author : rincevent
- * @since : JAHIA 6.1
- *        Created : 11 mars 2010
+ * @author rincevent
+ * @since JAHIA 6.5
+ * Created : 11 mars 2010
  */
 public class ChainAction implements Action, InitializingBean {
-    private transient static Logger logger = Logger.getLogger(ChainAction.class);
+
     private JahiaTemplateManagerService templateService;
     private DefaultPostAction defaultPostAction;
     public static final String ACTION_NAME = "chain";
@@ -96,7 +95,7 @@ public class ChainAction implements Action, InitializingBean {
             }
             return result;
         }
-        return new ActionResult(HttpServletResponse.SC_BAD_REQUEST, null, new JSONObject());
+        return ActionResult.BAD_REQUEST;
     }
 
     /**

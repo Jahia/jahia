@@ -117,7 +117,7 @@ public class DefaultPostAction implements Action {
             }
             if (StringUtils.isBlank(nodeType)) {
 //                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing nodeType Property");
-                return new ActionResult(HttpServletResponse.SC_BAD_REQUEST,null,null);
+                return ActionResult.BAD_REQUEST;
             }
             String nodeName = null;
             if (parameters.containsKey(Render.NODE_NAME)) {

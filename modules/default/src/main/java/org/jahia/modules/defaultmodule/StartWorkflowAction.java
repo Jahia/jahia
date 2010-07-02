@@ -48,7 +48,7 @@ public class StartWorkflowAction implements Action {
 
         Map<String, Object> map = getVariablesMap(parameters);
         workflowService.startProcess(resource.getNode(), workflowDefinitionKey, providerKey, map);
-        return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject());
+        return ActionResult.OK;
     }
 
     private HashMap<String, Object> getVariablesMap(Map<String, List<String>> properties) {

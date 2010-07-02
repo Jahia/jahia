@@ -32,50 +32,38 @@
  */
 package org.jahia.modules.userregistration.actions;
 
-import org.apache.log4j.Logger;
-import org.jahia.bin.Action;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.ActionResult;
-import org.jahia.bin.Render;
-import org.jahia.services.content.*;
+import org.jahia.bin.BaseAction;
 import org.jahia.services.notification.CamelNotificationService;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.settings.SettingsBean;
 import org.json.JSONObject;
 
-import javax.jcr.RepositoryException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
 /**
- * Created by IntelliJ IDEA.
+ * Action handler for creating new user and sending an e-mail notification.
  *
  * @author : rincevent
  * @since : JAHIA 6.1
  *        Created : 29 juin 2010
  */
-public class NewUser implements Action {
-    private transient static Logger logger = Logger.getLogger(NewUser.class);
-    private String name;
+public class NewUser extends BaseAction {
+
     private JahiaUserManagerService userManagerService;
     private CamelNotificationService camelNotificationService;
     private String templatePath;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public void setUserManagerService(JahiaUserManagerService userManagerService) {
         this.userManagerService = userManagerService;
@@ -91,23 +79,37 @@ public class NewUser implements Action {
 
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
                                   Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
-        String name1 = parameters.get("desired_login").get(0);
-        String password = parameters.get("desired_password").get(0);
+
+        String username = getParameter(parameters, "username");
+        String password = getParameter(parameters, "password");
+        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
+            return ActionResult.BAD_REQUEST;
+        }
+
         Properties properties = new Properties();
-        properties.put("j:email",parameters.get("desired_email").get(0));
-        properties.put("j:firstName",parameters.get("desired_firstname").get(0));
-        properties.put("j:lastName",parameters.get("desired_lastname").get(0));
-        final JahiaUser user = userManagerService.createUser(name1, password, properties);
+        for (Map.Entry<String, List<String>> param : parameters.entrySet()) {
+            if (param.getKey().startsWith("j:")) {
+                String value = getParameter(parameters, param.getKey());
+                if (value != null) {
+                    properties.put(param.getKey(), value);
+                }
+            }
+        }
+
+        final JahiaUser user = userManagerService.createUser(username, password, properties);
 
         // Prepare mail to be sent :
-        boolean toAdministratorMail = Boolean.valueOf(parameters.get("toAdministrator").get(0));
-        String to = toAdministratorMail?SettingsBean.getInstance().getMail_administrator():parameters.get("to").get(0);
-        String from = parameters.get("from")==null?SettingsBean.getInstance().getMail_from():parameters.get("from").get(0);
-        String cc = parameters.get("cc")==null?null:parameters.get("cc").get(0);
-        String bcc = parameters.get("from")==null?null:parameters.get("bcc").get(0);
+        boolean toAdministratorMail = Boolean.valueOf(getParameter(parameters, "toAdministrator", "false"));
+        String to = toAdministratorMail ? SettingsBean.getInstance().getMail_administrator():getParameter(parameters, "to");
+        String from = parameters.get("from")==null?SettingsBean.getInstance().getMail_from():getParameter(parameters, "from");
+        String cc = parameters.get("cc")==null?null:getParameter(parameters, "cc");
+        String bcc = parameters.get("bcc")==null?null:getParameter(parameters, "bcc");
+        
         Map<String,Object> bindings = new HashMap<String,Object>();
         bindings.put("newUser",user);
+        
         camelNotificationService.sendMailWithTemplate(templatePath,bindings,to,from,cc,bcc,resource.getLocale(),"Jahia User Registration");
+
         return new ActionResult(HttpServletResponse.SC_ACCEPTED,parameters.get("userredirectpage").get(0), new JSONObject());
     }
 }

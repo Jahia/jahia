@@ -51,7 +51,7 @@ public class ExecuteTaskAction implements Action {
         workflowService.assignTask(actionId, providerKey, renderContext.getUser());
         workflowService.completeTask(actionId, providerKey, outcome, getVariablesMap(parameters),renderContext.getUser());
 
-        return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject());
+        return ActionResult.OK;
     }
 
     private HashMap<String, Object> getVariablesMap(Map<String, List<String>> properties) {

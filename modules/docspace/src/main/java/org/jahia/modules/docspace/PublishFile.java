@@ -52,10 +52,10 @@ public class PublishFile implements org.jahia.bin.Action {
             service.publish(resource.getNode().getPath(), resource.getWorkspace(), Constants.LIVE_WORKSPACE, languages,
                     publishChildren);
             jcrSessionWrapper.save();
-            return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject());
+            return ActionResult.OK;
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
-            return new ActionResult(HttpServletResponse.SC_BAD_REQUEST, null, new JSONObject());
+            return ActionResult.BAD_REQUEST;
         }
     }
 }

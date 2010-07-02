@@ -50,6 +50,6 @@ public class MoveAction implements org.jahia.bin.Action {
         else if ("moveAfter".equals(action)) {
             contentManager.moveAtEnd(sourcePath,targetPath, jcrSessionWrapper);
         }
-        return new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject());
+        return ActionResult.OK;
     }
 }

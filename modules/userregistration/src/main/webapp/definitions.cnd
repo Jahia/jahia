@@ -1,9 +1,9 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
 [jnt:userRegistration] > jnt:content, jmix:formContent
- - ToAdministrator (boolean)=false autocreated
+ - toAdministrator (boolean)=false autocreated
  - from (string)
- - to (string) multiple
- - cc (string) multiple
- - bcc (string) multiple
+ - to (string)
+ - cc (string)
+ - bcc (string)
  - userRedirectPage (reference) mandatory

@@ -13,7 +13,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="javascript" resources="jquery.min.js,jquery.validate.js"/>
-<c:if test="${not renderContext.loggedIn}">
+<c:if test="${not renderContext.liveMode || not renderContext.loggedIn}">
     <script type="text/javascript">
         $(document).ready(function() {
             $("#newUser").validate({
@@ -26,11 +26,11 @@
                     },
                     desired_password: {
                         required: true,
-                        minlength: 5
+                        minlength: 6
                     },
                     confirm_password: {
                         required: true,
-                        minlength: 5,
+                        minlength: 6,
                         equalTo: "#desired_password"
                     },
                     desired_email: {
@@ -59,7 +59,7 @@
             });
         });
     </script>
-    <form method="post" action="${url.base}${currentNode.path}.newUser.do" name="newUser" id="newUser">
+    <form method="post" action="<c:url value='${currentNode.path}.newUser.do' context='${url.base}'/>" name="newUser" id="newUser">
         <input type="hidden" name="userredirectpage" value="${currentNode.properties['userRedirectPage'].node.path}"/>
         <c:if test="${not empty currentNode.properties['from']}">
             <input type="hidden" name="from" value="${currentNode.properties['from'].string}"/>
@@ -73,18 +73,18 @@
         <c:if test="${not empty currentNode.properties['bcc']}">
             <input type="hidden" name="bcc" value="${currentNode.properties['bcc'].string}"/>
         </c:if>
-        <input type="hidden" name="toAdministrator" value="${currentNode.properties['ToAdministrator'].string}"/>
+        <input type="hidden" name="toAdministrator" value="${currentNode.properties['toAdministrator'].string}"/>
 
         <h3 class="boxdocspacetitleh3"><fmt:message key="userregistration.label.form.name"/></h3>
         <fieldset>
             <legend><fmt:message key="userregistration.label.form.name"/></legend>
 
             <p><label for="desired_login"><fmt:message key="userregistration.label.form.login"/></label>
-                <input type="text" name="desired_login" id="desired_login" value="" tabindex="20"/></p>
+                <input type="text" name="username" id="desired_login" value="" tabindex="20"/></p>
 
 
             <p><label for="desired_password"><fmt:message
-                    key="userregistration.label.form.password"/></label><input type="password" name="desired_password"
+                    key="userregistration.label.form.password"/></label><input type="password" name="password"
                                                                                id="desired_password"/></p>
 
             <p><label for="confirm_password"><fmt:message
@@ -92,20 +92,20 @@
                                                                                id="confirm_password"/></p>
 
             <p><label for="desired_email"><fmt:message
-                    key="userregistration.label.form.email"/></label><input type="text" name="desired_email"
+                    key="userregistration.label.form.email"/></label><input type="text" name="j:email"
                                                                             id="desired_email"/></p>
 
             <p><label for="desired_firstname"><fmt:message
-                    key="userregistration.label.form.firstname"/></label><input type="text" name="desired_firstname"
+                    key="userregistration.label.form.firstname"/></label><input type="text" name="j:firstName"
                                                                                 id="desired_firstname"/></p>
 
             <p><label for="desired_lastname"><fmt:message
-                    key="userregistration.label.form.lastname"/></label><input type="text" name="desired_lastname"
+                    key="userregistration.label.form.lastname"/></label><input type="text" name="j:lastName"
                                                                                id="desired_lastname"/></p>
 
             <div>
                 <input type="submit" class="button"
-                       value="<fmt:message key="userregistration.label.form.create"/>"/>
+                       value="<fmt:message key='userregistration.label.form.create'/>"/>
             </div>
         </fieldset>
     </form>

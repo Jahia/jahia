@@ -5,7 +5,7 @@
        xsi:schemaLocation="
           http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
           http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
-    <!-- START SNIPPET: example -->
+
     <camelContext id="camel" xmlns="http://camel.apache.org/schema/spring" depends-on="jahiaProperties">
     	<endpoint id="mailOutput" uri="smtp://${mail_server}"/>
         <route>
@@ -20,8 +20,6 @@
             <to ref="mailOutput"/>
         </route>
     </camelContext>
-    <!-- END SNIPPET: example -->
-    <bean id="camelNotificationService" class="org.jahia.services.notification.CamelNotificationService">
-        <property name="camelContext" ref="camel"/>
-    </bean>
+
+    <bean id="camelNotificationService" class="org.jahia.services.notification.CamelNotificationService"/>
 </beans>

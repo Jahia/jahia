@@ -192,29 +192,24 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                     StringTokenizer st = new StringTokenizer(constrainedNodeTypes, " ");
                     boolean found = false;
                     Node displayedNode = node;
-//                    try {
-//                        if (node.isNodeType("jmix:nodeReference") && node.hasProperty("j:node")) {
-//                            displayedNode = node.getProperty("j:node").getNode();
-//                        }
-                    while (st.hasMoreTokens()) {
-                        String tok = st.nextToken();
-                        try {
+                    try {
+                        if (node.isNodeType("jnt:contentReference") && node.hasProperty("j:node")) {
+                            displayedNode = node.getProperty("j:node").getNode();
+                        }
+                        while (st.hasMoreTokens()) {
+                            String tok = st.nextToken();
                             if (displayedNode.isNodeType(tok)) {
                                 found = true;
                                 break;
                             }
-                        } catch (RepositoryException e) {
-                            logger.error("Cannot test on " + tok, e);
                         }
+                    } catch (RepositoryException e) {
+                        logger.error(e, e);
                     }
-//                    } catch (RepositoryException e) {
-//                        logger.error(e, e);
-//                    }
                     // Remove test until we find a better solution to avoid displaying unecessary nodes
-                    // todo : find a way to filter nodes
-                    //if (!found) {
-                    //    return EVAL_PAGE;
-                    //}
+                    if (!found) {
+                        return EVAL_PAGE;
+                    }
                 }
 
                 if (templateType == null) {
@@ -387,15 +382,18 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
     protected void render(RenderContext renderContext, Resource resource) throws IOException {
         try {
             final Integer level = (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
-            if (nodeTypes != null) {
+
+            boolean setRestrictions = pageContext.getAttribute("areaNodeTypesRestriction" + level, PageContext.REQUEST_SCOPE) == null && !StringUtils.isEmpty(nodeTypes);
+            if (setRestrictions) {
                 pageContext.setAttribute("areaNodeTypesRestriction" + level, nodeTypes, PageContext.REQUEST_SCOPE);
             }
+
             buffer.append(RenderService.getInstance().render(resource, renderContext));
             if (var == null) {
                 pageContext.getOut().print(buffer);
                 buffer.delete(0, buffer.length());
             }
-            if (nodeTypes != null) {
+            if (setRestrictions) {
                 pageContext.removeAttribute("areaNodeTypesRestriction" + level, PageContext.REQUEST_SCOPE);
             }
         } catch (TemplateNotFoundException io) {

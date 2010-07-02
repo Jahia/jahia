@@ -318,14 +318,22 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         buffer
                 .append((scriptInfo != null) ? " scriptInfo=\"" + scriptInfo + "\"" : "")
                 .append(" path=\"").append(path)
-                .append("\" ")
-                .append((nodeTypes != null) ? "nodetypes=\"" + nodeTypes + "\"" : "");
+                .append("\" ");
 
-        if (nodeTypes != null) {
+        if (node != null) {
+            System.out.println("---" +node.getName() + " " +constraints);
+        }
+        if (!StringUtils.isEmpty(nodeTypes)) {
+            buffer.append("nodetypes=\"" + nodeTypes + "\"");
+        } else if (!StringUtils.isEmpty(constraints)) {
+            buffer.append("nodetypes=\"" + constraints + "\"");
+        }
+
+        if (constraints != null) {
             String referenceTypes = getReferenceTypes();
-
             buffer.append((referenceTypes != null) ? " referenceTypes=\"" + referenceTypes + "\"" : "");
         }
+
         buffer
                 .append((resolvedTemplate != null) ? " template=\"" + resolvedTemplate + "\"" : "")
                 .append(">");

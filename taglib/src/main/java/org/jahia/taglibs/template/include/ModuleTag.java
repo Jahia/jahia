@@ -76,6 +76,8 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     protected String nodeTypes = null;
 
+    protected String constraints = null;
+
     protected String var = null;
 
     protected StringBuffer buffer = new StringBuffer();
@@ -164,20 +166,10 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             if (node != null) {
                 Integer currentLevel = (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
                 try {
-//                    if (node.isNodeType("jmix:listRestrictions") && node.hasProperty("j:allowedTypes")) {
-//                        Value[] values = node.getProperty("j:allowedTypes").getValues();
-//                        this.nodeTypes = "";
-//                        for (Value value : values) {
-//                            nodeTypes += value.getString() + " ";
-//                        }
-//                        nodeTypes = nodeTypes.trim();
-//                    } else
-                    if (StringUtils.isEmpty(nodeTypes)) {
-                        Set<String> cons = node.getPrimaryNodeType().getUnstructuredChildNodeDefinitions().keySet();
-                        for (String s : cons) {
-                            if (!s.equals("nt:base") && !s.equals("jnt:content") && !s.equals("jnt:translation")) {
-                                nodeTypes = (StringUtils.isEmpty(nodeTypes)) ? s : nodeTypes + " " + s;
-                            }
+                    Set<String> cons = node.getPrimaryNodeType().getUnstructuredChildNodeDefinitions().keySet();
+                    for (String s : cons) {
+                        if (!s.equals("jnt:translation")) {
+                            constraints = (StringUtils.isEmpty(constraints)) ? s : constraints + " " + s;
                         }
                     }
                 } catch (RepositoryException e) {
@@ -265,6 +257,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             editable = true;
             templateType = null;
             nodeTypes = null;
+            constraints = null;
             var = null;
             buffer = null;
 
@@ -340,7 +333,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         if (var == null) {
             pageContext.getOut().print(buffer);
             buffer.delete(0, buffer.length());
-        }                                
+        }
 
     }
 
@@ -349,7 +342,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         List<ExtendedNodeType> refs = NodeTypeRegistry.getInstance().getNodeType("jmix:nodeReference").getSubtypesAsList();
         for (ExtendedNodeType ref : refs) {
             if (ref.getPropertyDefinitionsAsMap().get("j:node") != null) {
-                for (String s : nodeTypes.split(" ")) {
+                for (String s : constraints.split(" ")) {
                     if (ref.isNodeType(s)) {
                         buffer.append(ref.getName());
                         buffer.append("[");

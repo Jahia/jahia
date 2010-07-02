@@ -17,3 +17,7 @@ Jahia Apache Shindig Integration
  - {{http://localhost:8080/modules/shindig/gadgets/files/container/sample6.html}}
 
  - {{http://localhost:8080/modules/shindig/gadgets/files/container/sample7.html}}
+
+ Important : some of these examples are no longer working, so don't worry if they won't work all of them. At the time
+ of this writing, sample2 is missing a gadget, sample4 doesn't work because it cannot load a script dependency
+ (ig/testing/test.js)

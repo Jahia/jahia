@@ -51,7 +51,7 @@
          <c:set value="${currentNode.nodes}" var="currentList" scope="request"/>
 
         <div class="mainResourceArea">
-            <div class="mainResourceTemplate">
+            <div class="mainResourceAreaTemplate">
                 <span>List : ${currentNode.name}</span>
             </div>
             <c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}" end="${moduleMap.end}">

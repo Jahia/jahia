@@ -51,9 +51,9 @@
 </c:if>
 <c:choose>
      <c:when test="${not inWrapper}">
-        <div class="mainResourceArea">
+        <div class="mainResourceDisplay">
             <c:if test="${not empty currentNode.properties['j:referenceTemplate'].string}">
-            <div class="mainResourceTemplate">
+            <div class="mainResourceDisplayTemplate">
                 <span>${currentNode.properties['j:referenceTemplate'].string}</span>
             </div>
             </c:if>

@@ -57,5 +57,5 @@
     })
     });
 </template:addResources>
-<div id="calendar${currentNode.identifier}"></div>
+<div class="calendar" id="calendar${currentNode.identifier}"></div>
 <template:linker property="j:bindedComponent" />

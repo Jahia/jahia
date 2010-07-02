@@ -32,8 +32,8 @@
 package org.jahia.registries;
 
 import org.jahia.exceptions.JahiaException;
-import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.services.JahiaService;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.analytics.GoogleAnalyticsService;
 import org.jahia.services.applications.ApplicationsManagerService;
 import org.jahia.services.applications.DispatchingService;

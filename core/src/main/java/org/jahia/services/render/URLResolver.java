@@ -46,7 +46,7 @@ import org.apache.log4j.Logger;
 import org.jahia.bin.Contribute;
 import org.jahia.bin.Edit;
 import org.jahia.bin.Render;
-import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;

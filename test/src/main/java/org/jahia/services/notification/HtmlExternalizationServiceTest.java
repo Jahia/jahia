@@ -46,7 +46,7 @@ import net.htmlparser.jericho.StartTag;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.services.SpringContextSingleton;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

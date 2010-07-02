@@ -62,7 +62,7 @@ import org.apache.solr.schema.DateField;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.Parser;
 import org.jahia.api.Constants;
-import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;

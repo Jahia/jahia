@@ -44,8 +44,8 @@ import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.log4j.Logger;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.services.JahiaService;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.integrity.Link.Type;
 import org.jahia.services.version.RevisionEntry;
 

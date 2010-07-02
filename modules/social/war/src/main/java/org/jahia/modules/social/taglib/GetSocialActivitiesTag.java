@@ -1,14 +1,11 @@
 package org.jahia.modules.social.taglib;
 
-import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.Util;
-import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.modules.social.SocialService;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.taglibs.jcr.AbstractJCRTag;
-import org.springframework.context.ApplicationContext;
-import org.springframework.web.context.WebApplicationContext;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
@@ -25,7 +22,8 @@ import java.util.SortedSet;
  */
 public class GetSocialActivitiesTag extends AbstractJCRTag {
 
-    private static final Logger logger = Logger.getLogger(GetSocialActivitiesTag.class);
+    private static final long serialVersionUID = 815042079517998908L;
+    
     private int scope = PageContext.PAGE_SCOPE;
     private String var;
     private long limit = 100;
@@ -80,7 +78,7 @@ public class GetSocialActivitiesTag extends AbstractJCRTag {
 
     private SocialService getSocialService() {
         if (socialService == null) {
-            socialService = (SocialService) ((ApplicationContext)pageContext.getServletContext().getAttribute(WebApplicationContext.class.getName() + ".jahiaTemplates")).getBean("socialService");
+            socialService = (SocialService) SpringContextSingleton.getModuleBean("socialService");
         }
         return socialService;
     }

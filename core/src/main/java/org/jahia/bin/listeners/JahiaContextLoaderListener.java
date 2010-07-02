@@ -34,7 +34,6 @@ package org.jahia.bin.listeners;
 import org.apache.log4j.Logger;
 import org.apache.pluto.driver.PortalStartupListener;
 import org.jahia.bin.Jahia;
-import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.services.applications.ApplicationsManagerServiceImpl;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.templates.TemplatePackageApplicationContextLoader;
@@ -71,7 +70,6 @@ public class JahiaContextLoaderListener extends PortalStartupListener {
             boolean configExists = event.getServletContext().getResource(SettingsBean.JAHIA_PROPERTIES_FILE_PATH) != null;
             if (configExists) {
                 super.contextInitialized(event);
-                SpringContextSingleton.getInstance().setContext(ContextLoader.getCurrentWebApplicationContext());
                 try {
                     ((TemplatePackageApplicationContextLoader)ContextLoader.getCurrentWebApplicationContext().getBean("TemplatePackageApplicationContextLoader")).start();
                 } catch (Exception e) {

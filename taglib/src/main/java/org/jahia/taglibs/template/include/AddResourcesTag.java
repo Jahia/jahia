@@ -34,7 +34,7 @@ package org.jahia.taglibs.template.include;
 
 import org.apache.log4j.Logger;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.render.RenderContext;
 
 import javax.servlet.jsp.JspException;

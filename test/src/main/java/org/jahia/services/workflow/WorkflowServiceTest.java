@@ -35,8 +35,8 @@ package org.jahia.services.workflow;
 import static org.junit.Assert.*;
 
 import org.apache.log4j.Logger;
-import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;

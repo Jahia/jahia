@@ -3,6 +3,8 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
+    <bean class="org.jahia.services.SpringContextSingleton" factory-method="getInstance"/>
+    
     <bean id="proxyTemplate" abstract="true"
           class="org.springframework.aop.framework.ProxyFactoryBean">
         <property name="interceptorNames">

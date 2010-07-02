@@ -36,7 +36,7 @@
 package org.jahia.services.pages;
 
 import org.jahia.exceptions.JahiaException;
-import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.version.EntryStateable;
 
 import java.io.Serializable;

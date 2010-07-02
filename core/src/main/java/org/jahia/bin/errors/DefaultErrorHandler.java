@@ -59,7 +59,7 @@ import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.exceptions.JahiaServerOverloadedException;
 import org.jahia.exceptions.JahiaSessionExpirationException;
 import org.jahia.exceptions.JahiaUnauthorizedException;
-import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.render.RenderException;
 import org.jahia.services.render.TemplateNotFoundException;
 

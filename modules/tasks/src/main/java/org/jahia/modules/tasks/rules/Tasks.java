@@ -35,7 +35,6 @@ package org.jahia.modules.tasks.rules;
 import org.apache.log4j.Logger;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.bin.Jahia;
-import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.services.tasks.Task;
 import org.jahia.services.tasks.TaskService;
 

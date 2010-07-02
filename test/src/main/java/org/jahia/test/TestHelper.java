@@ -33,9 +33,9 @@ package org.jahia.test;
 
 import org.jahia.admin.database.DatabaseScripts;
 import org.jahia.bin.Jahia;
-import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaAdminUser;

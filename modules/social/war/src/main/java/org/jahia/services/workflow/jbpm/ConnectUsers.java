@@ -1,9 +1,9 @@
 package org.jahia.services.workflow.jbpm;
 
 import org.apache.log4j.Logger;
-import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.modules.social.SocialService;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
 import org.jahia.services.usermanager.JahiaLDAPUser;
 import org.jahia.services.usermanager.JahiaUser;

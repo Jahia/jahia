@@ -35,7 +35,7 @@ package org.jahia.services.templates;
 import javax.servlet.ServletContext;
 
 import org.apache.log4j.Logger;
-import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.services.SpringContextSingleton;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.web.context.ServletContextAware;

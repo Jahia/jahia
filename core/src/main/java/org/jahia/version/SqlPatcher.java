@@ -39,7 +39,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.jahia.admin.database.DatabaseScripts;
 import org.jahia.hibernate.manager.JahiaVersionManager;
-import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.services.SpringContextSingleton;
 
 /**
  * Created by IntelliJ IDEA.

@@ -17,7 +17,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.impl.SessionFactoryImpl;
 import org.jahia.api.Constants;
 import org.jahia.bin.ActionResult;
-import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedPropertyType;
@@ -38,11 +38,9 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: Apr 22, 2010
  * Time: 5:57:23 PM
- * To change this template use File | Settings | File Templates.
  */
 public class RemotePublicationService implements InitializingBean {
     private transient static Logger logger = Logger.getLogger(RemotePublicationService.class);
@@ -355,7 +353,7 @@ public class RemotePublicationService implements InitializingBean {
         final String targetWorkspace = t.getSession().getWorkspace().getName();
         logger.info("replayLog - start in node " + t.getIdentifier() + " " + t.getPath());
         final JCRTemplate tpl = JCRTemplate.getInstance();
-        tpl.doExecuteWithUserSession(sessionFactory.getCurrentUser().getName(), targetWorkspace, new JCRCallback() {
+        tpl.doExecuteWithUserSession(sessionFactory.getCurrentUser().getName(), targetWorkspace, new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 try {
                     JCRNodeWrapper target = session.getNodeByUUID(t.getIdentifier());

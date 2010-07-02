@@ -40,7 +40,7 @@
 <%@page import = "org.jahia.services.cache.CacheFactory" %>
 <%@ page import="org.jahia.settings.SettingsBean"%>
 <%@ page import="org.jahia.params.ProcessingContext"%>
-<%@ page import="org.jahia.hibernate.manager.SpringContextSingleton" %>
+<%@ page import="org.jahia.services.SpringContextSingleton" %>
 <%@ page import="org.hibernate.stat.Statistics" %>
 <%@ page import="org.hibernate.stat.SecondLevelCacheStatistics" %>
 <%@ page import="org.hibernate.stat.EntityStatistics" %>

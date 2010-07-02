@@ -42,6 +42,7 @@ import javax.validation.ConstraintViolationException;
 
 import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.render.URLResolver;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlService;
@@ -52,7 +53,6 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.data.JahiaData;
-import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.test.TestHelper;
 import org.junit.After;
 import org.junit.AfterClass;

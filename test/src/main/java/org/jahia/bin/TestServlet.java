@@ -35,7 +35,7 @@ import org.jahia.params.ProcessingContextFactory;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.BasicSessionState;
 import org.jahia.params.ParamBean;
-import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaAdminUser;

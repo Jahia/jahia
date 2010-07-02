@@ -44,7 +44,7 @@ import javax.jcr.query.Query;
 import junit.framework.TestCase;
 
 import org.jahia.bin.Jahia;
-import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;

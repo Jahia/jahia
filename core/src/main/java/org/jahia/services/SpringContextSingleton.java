@@ -32,51 +32,90 @@
 /*
  * Copyright (c) 2004 Your Corporation. All Rights Reserved.
  */
-package org.jahia.hibernate.manager;
+package org.jahia.services;
 
+import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
-import org.springframework.web.context.WebApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
-public class SpringContextSingleton {
+/**
+ * Spring application context holder.
+ * 
+ * @author Sergiy Shyrkov
+ */
+public class SpringContextSingleton implements ApplicationContextAware {
 
     private static SpringContextSingleton ourInstance;
-    
+
+    /**
+     * Returns an instance of the requested bean.
+     * 
+     * @param beanId the requested bean ID
+     * @return an instance of the requested bean
+     */
+    public static Object getBean(String beanId) {
+        return getInstance().getContext().getBean(beanId);
+    }
+
     public static SpringContextSingleton getInstance() {
         if (ourInstance == null) {
             ourInstance = new SpringContextSingleton();
         }
         return ourInstance;
     }
-    
+
     /**
-     * Returns an instance of the request bean.
+     * Returns an instance of the requested bean, located in the modules
+     * application context.
      * 
-     * @param beanId
-     *            the request bean ID
-     * @return an instance of the request bean
+     * @param beanId the requested bean ID
+     * @return an instance of the requested bean, located in the modules
+     *         application context
      */
-    public static Object getBean(String beanId) {
-        return getInstance().getContext().getBean(beanId);
+    public static Object getModuleBean(String beanId) {
+        return getInstance().getModuleContext().getBean(beanId);
     }
-    
+
+    private ApplicationContext context;
+
     private boolean initialized;
 
-    private WebApplicationContext springContext;
+    private ApplicationContext moduleContext;
 
     private SpringContextSingleton() {
+        super();
     }
 
+    /**
+     * Returns the Spring application context instance.
+     * 
+     * @return the Spring application context instance
+     */
     public ApplicationContext getContext() {
-        return springContext;
+        return context;
+    }
+
+    /**
+     * Returns the Spring application context instance that corresponds to
+     * modules.
+     * 
+     * @return the Spring application context instance that corresponds to
+     *         modules
+     */
+    public ApplicationContext getModuleContext() {
+        return moduleContext;
     }
 
     public boolean isInitialized() {
         return initialized;
     }
 
-    public void setContext(WebApplicationContext springContext) {
-        this.springContext = springContext;
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.context = applicationContext;
         initialized = true;
     }
 
+    public void setModulesApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.moduleContext = applicationContext;
+    }
 }

@@ -34,7 +34,7 @@ package org.jahia.services.notification;
 
 import junit.framework.TestCase;
 import org.apache.log4j.Logger;
-import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.settings.SettingsBean;
 import org.junit.After;
 import org.junit.Before;

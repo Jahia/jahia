@@ -2,16 +2,10 @@ package org.jahia.modules.remotepublish;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.hibernate.classic.Session;
-import org.hibernate.impl.SessionFactoryImpl;
 import org.jahia.api.Constants;
-import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.services.content.DefaultEventListener;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.context.ApplicationContext;
-import org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
@@ -23,11 +17,9 @@ import java.util.*;
 import java.util.zip.GZIPOutputStream;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: Apr 28, 2010
  * Time: 7:02:08 PM
- * To change this template use File | Settings | File Templates.
  */
 public class JournalListener extends DefaultEventListener {
     private static Logger logger = Logger.getLogger(JournalListener.class);

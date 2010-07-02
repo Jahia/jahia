@@ -23,7 +23,8 @@
     <h5 class='author'> ${currentNode.properties["jcr:createdBy"].string} </h5>
     <span class='timestamp'>  activityDate.toUTCString()  </span>
 
-    <p class='message'>${message} ${currentNode.properties['j:targetNode'].node.path} </p>
+    <c:set var="targetNode" value="${currentNode.properties['j:targetNode'].node}" />
+    <p class='message'>${message} ${targetNode.properties['jcr:title'].string} </p>
 
     <div class='clear'></div>
 </li>

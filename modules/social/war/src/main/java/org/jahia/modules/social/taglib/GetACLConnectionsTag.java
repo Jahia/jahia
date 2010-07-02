@@ -1,8 +1,6 @@
 package org.jahia.modules.social.taglib;
 
 import org.apache.log4j.Logger;
-import org.apache.taglibs.standard.tag.common.core.Util;
-import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.modules.social.SocialService;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -14,31 +12,23 @@ import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import java.util.Set;
-import java.util.SortedSet;
 
 /**
- * TODO Comment me
- *
- * @author loom
- *         Date: Jul 1, 2010
- *         Time: 1:56:41 PM
+ * A tag to retrieve all the user's in an ACL.
  */
-public class GetSocialActivitiesTag extends AbstractJCRTag {
+public class GetACLConnectionsTag extends AbstractJCRTag {
 
     private static final Logger logger = Logger.getLogger(GetSocialActivitiesTag.class);
     private int scope = PageContext.PAGE_SCOPE;
     private String var;
-    private long limit = 100;
-    private long offset = 0;
-    private String pathFilter = null;
-    private Set<String> sourcePaths;
+    private String path;
     private SocialService socialService;
 
     public int doEndTag() throws JspException {
         try {
-            pageContext.setAttribute(var, getActivities(), scope);
+            pageContext.setAttribute(var, getConnections(), scope);
         } catch (RepositoryException e) {
-            throw new JspException("Error while retrieving the activities!", e);
+            throw new JspException("Error while retrieving the "+path+" connections!", e);
         }
         resetState();
         return EVAL_PAGE;
@@ -48,34 +38,20 @@ public class GetSocialActivitiesTag extends AbstractJCRTag {
     protected void resetState() {
         scope = PageContext.PAGE_SCOPE;
         var = null;
-        limit = 100;
-        offset = 0;
-        pathFilter = null;
+        path = null;
         super.resetState();
     }
 
-    public void setScope(String scope) {
-        this.scope = Util.getScope(scope);
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public void setScope(int scope) {
+        this.scope = scope;
     }
 
     public void setVar(String var) {
         this.var = var;
-    }
-
-    public void setLimit(long limit) {
-        this.limit = limit;
-    }
-
-    public void setOffset(long offset) {
-        this.offset = offset;
-    }
-
-    public void setSourcePaths(Set<String> sourcePaths) {
-        this.sourcePaths = sourcePaths;
-    }
-
-    public void setPathFilter(String pathFilter) {
-        this.pathFilter = pathFilter;
     }
 
     private SocialService getSocialService() {
@@ -85,9 +61,11 @@ public class GetSocialActivitiesTag extends AbstractJCRTag {
         return socialService;
     }
 
-    private SortedSet<JCRNodeWrapper> getActivities() throws RepositoryException {
+    private Set<String> getConnections() throws RepositoryException {
         JCRSessionWrapper session = getJCRSession();
-        return getSocialService().getActivities(session, sourcePaths, limit, offset, pathFilter);
+        JCRNodeWrapper targetNode = session.getNode(path);
+        Set<String> aclConnections = getSocialService().getACLConnections(session, targetNode);
+        return aclConnections;
     }
 
 }

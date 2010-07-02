@@ -42,6 +42,31 @@
     </tag>
 
     <tag>
+        <description>Retrieve the social connections by extracting the list of users from a node's ACL. This tag will fully expand each group to retrieve a full list of users.</description>
+        <name>get-acl-connections</name>
+        <tag-class>org.jahia.modules.social.taglib.GetACLConnectionsTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>the name of the exposed bean will received a Set&lt;String&gt; of paths that point to the ACL connections</description>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>the scope of the bean (see PageContext)</description>
+            <name>scope</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>the path to the JCR node on which to consult the ACL</description>
+            <name>path</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
         <description>Retrieves the list of activities in the specified source paths and aggregate them by date.</description>
         <name>get-activities</name>
         <tag-class>org.jahia.modules.social.taglib.GetSocialActivitiesTag</tag-class>
@@ -61,6 +86,24 @@
         <attribute>
             <description>a Set&lt;String&gt; that contains the paths on which to retrieve and aggregate by date all the activities</description>
             <name>sourcePaths</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>allows to specify a path to filter the activities. This path will be used to check activities, and all activities that have a target node that STARTS with the specified path will be included.</description>
+            <name>pathFilter</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>allows to specify the maximum number of activities to retrieve</description>
+            <name>limit</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>allows to specify the offset in the list of activities (NOT IMPLEMENTED YET)</description>
+            <name>limit</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>

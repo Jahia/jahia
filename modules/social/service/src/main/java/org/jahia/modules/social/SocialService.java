@@ -7,6 +7,8 @@ import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.rules.AddedNodeFact;
+import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaLDAPUser;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.jcr.JCRUser;
@@ -20,6 +22,7 @@ import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
+import java.security.Principal;
 import java.util.*;
 
 /**
@@ -136,9 +139,34 @@ public class SocialService {
         });
     }
 
-    public SortedSet<JCRNodeWrapper> getActivities(JCRSessionWrapper jcrSessionWrapper, JCRNodeWrapper node) throws RepositoryException {
+    public SortedSet<JCRNodeWrapper> getActivities(JCRSessionWrapper jcrSessionWrapper, JCRNodeWrapper node, long limit, long offset, String pathFilter) throws RepositoryException {
         Set<String> userPaths = getUserConnections(jcrSessionWrapper, node, true);
-        return getActivities(jcrSessionWrapper, userPaths);
+        return getActivities(jcrSessionWrapper, userPaths, limit, offset, pathFilter);
+    }
+
+    public Set<String> getACLConnections(JCRSessionWrapper jcrSessionWrapper, JCRNodeWrapper targetNode) throws RepositoryException {
+        Set<String> userPaths = new HashSet<String>();
+
+        Map<String, List<String[]>> aclEntries = targetNode.getAclEntries();
+        for (Map.Entry<String, List<String[]>> curEntry : aclEntries.entrySet()) {
+            String curPrincipal = curEntry.getKey();
+            logger.debug("Resolving principal " + curPrincipal);
+            String[] principalParts = curPrincipal.split(":");
+            if ("u".equals(principalParts[0])) {
+                JCRUser jcrUser = getJCRUserFromUserKey(principalParts[1]);
+                userPaths.add(jcrUser.getNode(jcrSessionWrapper).getPath());
+            } else if ("g".equals(principalParts[0])) {
+                JahiaGroupManagerService groupManager = (JahiaGroupManagerService) SpringContextSingleton.getInstance().getContext().getBean("JahiaGroupManagerService");
+                JahiaGroup group = groupManager.lookupGroup(principalParts[1]);
+                Set<Principal> recursiveGroupMembers = group.getRecursiveUserMembers();
+                for (Principal groupMember : recursiveGroupMembers) {
+                    JCRUser jcrUser = getJCRUserFromUserKey(groupMember.getName());
+                    userPaths.add(jcrUser.getNode(jcrSessionWrapper).getPath());                    
+                }
+            }
+        }
+
+        return userPaths;
     }
 
     public Set<String> getUserConnections(JCRSessionWrapper jcrSessionWrapper, JCRNodeWrapper userNode, boolean includeSelf) throws RepositoryException {
@@ -162,7 +190,8 @@ public class SocialService {
         return userPaths;
     }
 
-    public SortedSet<JCRNodeWrapper> getActivities(JCRSessionWrapper jcrSessionWrapper, Set<String> paths) throws RepositoryException {
+
+    public SortedSet<JCRNodeWrapper> getActivities(JCRSessionWrapper jcrSessionWrapper, Set<String> paths, long limit, long offset, String pathFilter) throws RepositoryException {
         SortedSet<JCRNodeWrapper> activitiesSet = new TreeSet(new Comparator<JCRNodeWrapper>() {
 
             public int compare(JCRNodeWrapper activityNode1, JCRNodeWrapper activityNode2) {
@@ -177,15 +206,34 @@ public class SocialService {
 
         });
 
+        /* todo here it would be better to do a query on all the paths, but it might be very slow. This would also solve the limit and offset problem */
         QueryManager queryManager = jcrSessionWrapper.getWorkspace().getQueryManager();
         for (String currentPath : paths) {
             Query activitiesQuery = queryManager.createQuery("select * from ["+JNT_SOCIAL_ACTIVITY+"] as uA where isdescendantnode(uA,['"+currentPath+"']) order by [jcr:created] desc", Query.JCR_SQL2);
-            activitiesQuery.setLimit(100);
+            /* todo this usage of offset and limit is not really correct, we should perform this on the final aggregated list */
+            activitiesQuery.setLimit(limit);
+            activitiesQuery.setOffset(offset);
             QueryResult activitiesResult = activitiesQuery.execute();
 
             NodeIterator activitiesIterator = activitiesResult.getNodes();
             while (activitiesIterator.hasNext()) {
-                activitiesSet.add((JCRNodeWrapper) activitiesIterator.nextNode());
+                JCRNodeWrapper activitiesNode = (JCRNodeWrapper) activitiesIterator.nextNode();
+                if (pathFilter != null) {
+                    /* todo maybe we could filter this using the JCR-SQL2 request directly ? */
+                    try {
+                        JCRPropertyWrapper targetNodeProperty = activitiesNode.getProperty("j:targetNode");
+                        if (targetNodeProperty != null) {
+                            String targetNodePath = targetNodeProperty.getNode().getPath();
+                            if (targetNodePath.startsWith(pathFilter)) {
+                                activitiesSet.add(activitiesNode);
+                            }
+                        }
+                    } catch (PathNotFoundException pnfe) {
+                        // we couldn't find the property, that's an acceptable situation.
+                    }
+                } else {
+                    activitiesSet.add(activitiesNode);
+                }
             }
         }
         return activitiesSet;

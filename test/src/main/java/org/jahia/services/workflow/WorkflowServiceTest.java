@@ -115,7 +115,7 @@ public class WorkflowServiceTest {
 
     @Test
     public void testGetPossibleWorkflow() throws Exception {
-        final List<WorkflowDefinition> workflowList =  WorkflowService.getInstance().getPossibleWorkflows(stageNode, JahiaAdminUser.getAdminUser(0));
+        final List<WorkflowDefinition> workflowList =  WorkflowService.getInstance().getPossibleWorkflows(stageNode, JahiaAdminUser.getAdminUser(0),Locale.ENGLISH);
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
     }
 
@@ -125,7 +125,7 @@ public class WorkflowServiceTest {
         List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(1);
         map.put("startDate",values);
         map.put("endDate",values);
-        final List<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, JahiaAdminUser.getAdminUser(0));
+        final List<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, JahiaAdminUser.getAdminUser(0),Locale.ENGLISH);
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         final WorkflowDefinition workflow = workflowList.get(0);
         assertNotNull("Worflow should not be null", workflow);
@@ -143,7 +143,7 @@ public class WorkflowServiceTest {
         List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(1);
         map.put("startDate",values);
         map.put("endDate",values);
-        final List<WorkflowDefinition> workflowList = service.getWorkflowsForAction("publish", locale);
+        final List<WorkflowDefinition> workflowList = service.getWorkflowsForAction("publish", Locale.ENGLISH);
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         WorkflowDefinition workflow = null;
         for (WorkflowDefinition workflowDefinition : workflowList) {
@@ -190,7 +190,7 @@ public class WorkflowServiceTest {
         List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(1);
         map.put("startDate",values);
         map.put("endDate",values);
-        final List<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, JahiaAdminUser.getAdminUser(0));
+        final List<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, JahiaAdminUser.getAdminUser(0),Locale.ENGLISH);
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         final WorkflowDefinition workflow = workflowList.get(0);
         assertNotNull("Workflow should not be null", workflow);
@@ -222,7 +222,7 @@ public class WorkflowServiceTest {
         List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(1);
         map.put("startDate",values);
         map.put("endDate",values);
-        final List<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, JahiaAdminUser.getAdminUser(0));
+        final List<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, JahiaAdminUser.getAdminUser(0),Locale.ENGLISH);
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         final WorkflowDefinition workflow = workflowList.get(0);
         assertNotNull("Workflow should not be null", workflow);
@@ -253,7 +253,7 @@ public class WorkflowServiceTest {
         List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(1);
         map.put("startDate",values);
         map.put("endDate",values);
-        final List<WorkflowDefinition> workflowList = service.getWorkflowsForAction("publish", locale);
+        final List<WorkflowDefinition> workflowList = service.getWorkflowsForAction("publish", Locale.ENGLISH);
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         WorkflowDefinition workflow = null;
         for (WorkflowDefinition workflowDefinition : workflowList) {
@@ -354,7 +354,7 @@ public class WorkflowServiceTest {
         List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(1);
         map.put("startDate",values);
         map.put("endDate",values);
-        final List<WorkflowDefinition> workflowList = service.getWorkflowsForAction("publish", locale);
+        final List<WorkflowDefinition> workflowList = service.getWorkflowsForAction("publish", Locale.ENGLISH);
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         WorkflowDefinition workflow = null;
         for (WorkflowDefinition workflowDefinition : workflowList) {
@@ -402,7 +402,7 @@ public class WorkflowServiceTest {
         List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(1);
         map.put("startDate",values);
         map.put("endDate",values);
-        final List<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, JahiaAdminUser.getAdminUser(0));
+        final List<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, JahiaAdminUser.getAdminUser(0),Locale.ENGLISH);
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         WorkflowDefinition workflow = null;
         for (WorkflowDefinition workflowDefinition : workflowList) {
@@ -436,7 +436,7 @@ public class WorkflowServiceTest {
         List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(1);
         map.put("startDate",values);
         map.put("endDate",values);
-        final List<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, JahiaAdminUser.getAdminUser(0));
+        final List<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, JahiaAdminUser.getAdminUser(0),Locale.ENGLISH);
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         WorkflowDefinition workflow = null;
         for (WorkflowDefinition workflowDefinition : workflowList) {
@@ -491,7 +491,7 @@ public class WorkflowServiceTest {
         long scheduleTime = System.currentTimeMillis() + 1000 * 60 * 5;
         values.add(new WorkflowVariable(String.valueOf(scheduleTime), PropertyType.STRING));
         map.put("startDate",values);
-        final List<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, JahiaAdminUser.getAdminUser(0));
+        final List<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, JahiaAdminUser.getAdminUser(0),Locale.ENGLISH);
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         final WorkflowDefinition workflow = workflowList.get(0);
         assertNotNull("Workflow should not be null", workflow);

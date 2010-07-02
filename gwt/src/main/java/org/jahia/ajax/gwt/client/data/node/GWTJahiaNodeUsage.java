@@ -47,16 +47,6 @@ public class GWTJahiaNodeUsage extends BaseModelData implements Serializable {
     public GWTJahiaNodeUsage() {
     }
 
-    public GWTJahiaNodeUsage(int id, int version, int workflow, String extendedWorkflow, String lang, String pageTitle, String url) {
-        setId(id);
-        setVersion(version);
-        setWorkflow(workflow);
-        setExtendedWorkflow(extendedWorkflow);
-        setLang(lang);
-        setPageTitle(pageTitle);
-        setUrl(url);
-    }
-
     public GWTJahiaNodeUsage(String identifier, String url, String pageUrl, String nodeName, String nodeTitle) {
         setUrl(url);
         setPageUrl(pageUrl);
@@ -113,27 +103,6 @@ public class GWTJahiaNodeUsage extends BaseModelData implements Serializable {
 
     public void setVersion(int version) {
         set("version", Integer.valueOf(version));
-    }
-
-    public int getWorkflow() {
-        Integer idInt = get("workflow");
-        if (idInt != null) {
-            return idInt.intValue();
-        } else {
-            return -1;
-        }
-    }
-
-    public void setWorkflow(int workflow) {
-        set("workflow", Integer.valueOf(workflow));
-    }
-
-    public String getExtendedWorkflow() {
-        return get("extendedWorkflow");
-    }
-
-    public void setExtendedWorkflow(String extendedWorkflow) {
-        set("extendedWorkflow", extendedWorkflow);
     }
 
     public String getLang() {

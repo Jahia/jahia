@@ -121,6 +121,7 @@
         <module>test</module>
         <module>templates-web</module>
         <module>templates-intranet</module>
+        <module>templates-apps</module>
         <module>topstories</module>
         <module>wiki</module>
         <module>userregistration</module>

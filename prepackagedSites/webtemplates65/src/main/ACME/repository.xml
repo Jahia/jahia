@@ -314,7 +314,7 @@
             </Google_x0020_Gadgets>
           </mashups>
           <themes jcr:created="2010-07-02T17:22:16.965+02:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-07-02T17:22:19.348+02:00" />
-          <home jcr:mixinTypes="jmix:sitemap" jcr:created="2010-07-02T17:22:16.965+02:00" j:displayInMenu="primary" jcr:primaryType="jnt:page" changefreq="monthly" jcr:lastModifiedBy="root" j:templateNode="/sites/ACME/templates/base/home" jcr:createdBy=" system " jcr:lastModified="2010-07-02T17:22:52.497+02:00" priority="0.5">
+          <home jcr:mixinTypes="jmix:sitemap jmix:hasDefaultTemplateNode" j:defaultTemplateNode="/sites/ACME/templates/base" jcr:created="2010-07-02T17:22:16.965+02:00" j:displayInMenu="primary" jcr:primaryType="jnt:page" changefreq="monthly" jcr:lastModifiedBy="root" j:templateNode="/sites/ACME/templates/base/home" jcr:createdBy=" system " jcr:lastModified="2010-07-02T17:22:52.497+02:00" priority="0.5">
             <j:translation_en jcr:lastModifiedBy="root" jcr:title_en="ACME Home" jcr:language="en" jcr:lastModified="2010-07-02T17:22:52.497+02:00" jcr:primaryType="jnt:translation" />
             <logo jcr:created="2010-07-02T17:22:16.968+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy="root" jcr:createdBy=" system " jcr:lastModified="2009-05-19T17:18:28.000+02:00">
               <imageReference_5 j:node="/sites/ACME/files/Pictures/Logo/logoACME.jpg" jcr:created="2010-07-02T17:22:40.029+02:00" jcr:primaryType="jnt:imageReference" jcr:lastModifiedBy="root" jcr:createdBy="root" jcr:lastModified="2010-07-02T17:22:52.497+02:00" />
@@ -721,7 +721,7 @@
             <j:translation_fr jcr:lastModifiedBy="root" jcr:language="fr" jcr:lastModified="2010-07-02T17:22:52.497+02:00" jcr:primaryType="jnt:translation" jcr:title_fr="Accueil" />
           </home>
           <templates jcr:created="2010-07-02T17:22:16.972+02:00" jcr:primaryType="jnt:templatesFolder" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-07-02T17:22:19.348+02:00">
-            <base jcr:mixinTypes="jmix:renderable" j:template="web.bodywrapper" jcr:created="2010-07-02T17:22:16.973+02:00" jcr:primaryType="jnt:masterTemplate" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-07-02T17:22:19.348+02:00">
+            <base jcr:mixinTypes="jmix:renderable" j:template="web" jcr:created="2010-07-02T17:22:16.973+02:00" jcr:primaryType="jnt:masterTemplate" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-07-02T17:22:19.348+02:00">
               <header jcr:created="2010-07-02T17:22:16.974+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-07-02T17:22:19.348+02:00">
                 <shortcuts jcr:mixinTypes="jmix:renderable" j:template="inline" jcr:created="2010-07-02T17:22:16.975+02:00" jcr:primaryType="jnt:shortcuts" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-07-02T17:22:19.348+02:00" />
               </header>

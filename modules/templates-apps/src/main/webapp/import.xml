@@ -12,7 +12,7 @@
       <mashups jcr:primaryType="jnt:portletList" />
       <themes jcr:primaryType="jnt:folder" />
       <templates jcr:primaryType="jnt:templatesFolder">
-        <base jcr:mixinTypes="jmix:renderable" j:template="apps.bodywrapper" jcr:primaryType="jnt:masterTemplate">
+        <base jcr:mixinTypes="jmix:renderable" j:template="apps" jcr:primaryType="jnt:masterTemplate">
         </base>
       </templates>
       <j:acl jcr:primaryType="jnt:acl">

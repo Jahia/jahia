@@ -307,9 +307,14 @@
 //---------------------------------------------------------
 
 [jmix:renderable] mixin
- extends = jmix:list
+ extends = jmix:list, jnt:template
  itemtype = layout
  - j:template (string, choicelist[templates,resourceBundle,image]) nofulltext
+
+[jmix:hasDefaultTemplateNode] mixin
+ extends = jnt:page
+ itemtype = layout
+ - j:defaultTemplateNode (weakreference,choicelist[templatesNode]) < jnt:template
 
 [jmix:hasTemplateNode] mixin
  - j:templateNode (weakreference,choicelist[templatesNode]) < jnt:template
@@ -509,7 +514,7 @@
  - j:canDeleteInContribution (boolean)
 
 [jmix:listRestrictions] mixin
- - j:allowedTypes (string, choicelist[subnodetypes = 'jmix:droppableContent']) multiple
+ - j:allowedTypes (string, choicelist[subnodetypes = 'jmix:droppableContent,jnt:file,jnt:folder']) multiple
 
 
 //---------------------------------------------------------

@@ -11,7 +11,7 @@
       <files jcr:primaryType="jnt:folder" />
       <mashups jcr:primaryType="jnt:portletList" />
       <themes jcr:primaryType="jnt:folder" />
-      <home jcr:mixinTypes="jmix:hasTemplateNode jmix:sitemap" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" j:templateNode="/templatesSet/templates-intranet/templates/base/home" priority="0.5">
+      <home jcr:mixinTypes="jmix:sitemap jmix:hasDefaultTemplateNode" j:defaultTemplateNode="/templatesSet/templates-intranet/templates/base" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" j:templateNode="/templatesSet/templates-intranet/templates/base/home" priority="0.5">
         <j:translation_en jcr:language="en" jcr:title_en="Home" jcr:primaryType="jnt:translation" />
         <logo jcr:primaryType="jnt:contentList" />
         <listA jcr:primaryType="jnt:contentList" />
@@ -19,7 +19,7 @@
         <footer jcr:primaryType="jnt:contentList" />
       </home>
       <templates jcr:primaryType="jnt:templatesFolder">
-        <base jcr:mixinTypes="jmix:renderable" j:template="intranet.bodywrapper" jcr:primaryType="jnt:masterTemplate">
+        <base jcr:mixinTypes="jmix:renderable" j:template="intranet" jcr:primaryType="jnt:masterTemplate">
           <logo jcr:primaryType="jnt:contentList">
             <logo j:basenode="/templatesSet/templates-intranet/home" jcr:primaryType="jnt:absoluteArea" />
           </logo>

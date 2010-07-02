@@ -24,11 +24,11 @@ public class TemplateNodeFilter extends AbstractFilter {
         if (renderContext.getRequest().getAttribute("skipWrapper") == null) {
             Template template = null;
             Template previousTemplate = null;
-            if (renderContext.getRequest().getAttribute("wrapperSet") == null) {
+            if (renderContext.getRequest().getAttribute("templateSet") == null) {
                 template = pushBodyWrappers(resource);
-                renderContext.getRequest().setAttribute("wrapperSet", Boolean.TRUE);
+                renderContext.getRequest().setAttribute("templateSet", Boolean.TRUE);
             } else {
-                previousTemplate = (Template) renderContext.getRequest().getAttribute("previouswrapper");
+                previousTemplate = (Template) renderContext.getRequest().getAttribute("previousTemplate");
                 if (previousTemplate != null) {
                     template = previousTemplate.next;
                 }
@@ -36,25 +36,23 @@ public class TemplateNodeFilter extends AbstractFilter {
 
             if (template != null && !renderContext.isAjaxRequest()) {
                 try {
-                    JCRNodeWrapper wrapperNode = template.node;
-                    renderContext.getRequest().setAttribute("previouswrapper", template);
-//                chain.set(renderContext.getRequest(), "previouswrapper", wrapper);
+                    JCRNodeWrapper templateNode = template.node;
+                    renderContext.getRequest().setAttribute("previousTemplate", template);
                     renderContext.getRequest().setAttribute("wrappedResource", resource);
-                    renderContext.getRequest().setAttribute("wrapperNode", wrapperNode);
-                    Resource wrapperResource = new Resource(wrapperNode,
+                    Resource wrapperResource = new Resource(templateNode,
                             resource.getTemplateType().equals("edit") ? "html" : resource.getTemplateType(), template.templateName, Resource.CONFIGURATION_WRAPPER);
-                    if (service.hasTemplate(wrapperNode.getPrimaryNodeType(), template.templateName)) {
+                    if (service.hasTemplate(templateNode.getPrimaryNodeType(), template.templateName)) {
                         chain.pushAttribute(renderContext.getRequest(), "inWrapper", Boolean.TRUE);
                         String output = RenderService.getInstance().render(wrapperResource, renderContext);
                         if (renderContext.isEditMode()) {
                             output = "<div jahiatype=\"linkedContentInfo\" linkedNode=\"" +
                                     resource.getNode().getIdentifier() + "\"" +
 
-                                    " node=\"" + wrapperNode.getIdentifier() + "\" type=\"template\">" + output +
+                                    " node=\"" + templateNode.getIdentifier() + "\" type=\"template\">" + output +
                                     "</div>";
                         }
 
-                        renderContext.getRequest().setAttribute("previouswrapper", previousTemplate);
+                        renderContext.getRequest().setAttribute("previousTemplate", previousTemplate);
 
                         return output;
                     } else {
@@ -87,12 +85,15 @@ public class TemplateNodeFilter extends AbstractFilter {
                 current = current.getParent();
             }
 
+            String propertyName = "j:templateNode";
             boolean mainTemplateFound = false;
             while (current != null) {
-                if (current.hasProperty("j:templateNode")) {
-                    current = (JCRNodeWrapper) current.getProperty("j:templateNode").getNode();
+                if (propertyName != null && current.hasProperty(propertyName)) {
+                    current = (JCRNodeWrapper) current.getProperty(propertyName).getNode();
+                    propertyName = null;
                 } else {
                     current = current.getParent();
+                    propertyName = "j:defaultTemplateNode";
                     if (current.isNodeType("jnt:templatesFolder")) {
                         break;
                     }
@@ -106,8 +107,8 @@ public class TemplateNodeFilter extends AbstractFilter {
                         QueryResult result = q.execute();
                         NodeIterator ni = result.getNodes();
                         while (ni.hasNext()) {
-                            final JCRNodeWrapper wrapperNode = (JCRNodeWrapper) ni.nextNode();
-                            template = addTemplate(node, templateName, template, wrapperNode);
+                            final JCRNodeWrapper templateNode = (JCRNodeWrapper) ni.nextNode();
+                            template = addTemplate(node, templateName, template, templateNode);
                         }
                         templateName = null;
                         if (template == null) {
@@ -121,19 +122,24 @@ public class TemplateNodeFilter extends AbstractFilter {
             }
         } catch (ItemNotFoundException e) {
             // default
-            template = new Template("bodywrapper", node, null);
+
+            try {
+                template = new Template("system", node.getSession().getNode("/systemTemplate"), null);
+            } catch (RepositoryException e1) {
+                logger.error("Cannot find default template", e);
+            }
         } catch (RepositoryException e) {
-            logger.error("Cannot find wrapper", e);
+            logger.error("Cannot find template", e);
         }
         return template;
     }
 
-    private Template addTemplate(JCRNodeWrapper node, String templateName, Template template, JCRNodeWrapper wrapperNode)
+    private Template addTemplate(JCRNodeWrapper node, String templateName, Template template, JCRNodeWrapper templateNode)
             throws RepositoryException {
         boolean ok = true;
-        if (wrapperNode.hasProperty("j:applyOn")) {
+        if (templateNode.hasProperty("j:applyOn")) {
             ok = false;
-            Value[] values = wrapperNode.getProperty("j:applyOn").getValues();
+            Value[] values = templateNode.getProperty("j:applyOn").getValues();
             for (Value value : values) {
                 if (node.isNodeType(value.getString())) {
                     ok = true;
@@ -145,14 +151,14 @@ public class TemplateNodeFilter extends AbstractFilter {
             }
         }
         if (templateName == null) {
-            ok &= !wrapperNode.hasProperty("j:templateKey");
+            ok &= !templateNode.hasProperty("j:templateKey");
         } else {
-            ok &= wrapperNode.hasProperty("j:templateKey") && templateName.equals(wrapperNode.getProperty("j:templateKey").getString());
+            ok &= templateNode.hasProperty("j:templateKey") && templateName.equals(templateNode.getProperty("j:templateKey").getString());
         }
         if (ok) {
             template = new Template(
-                    wrapperNode.hasProperty("j:template") ? wrapperNode.getProperty("j:template").getString() :
-                            "default", wrapperNode, template);
+                    templateNode.hasProperty("j:template") ? templateNode.getProperty("j:template").getString() :
+                            "default", templateNode, template);
         }
         return template;
     }

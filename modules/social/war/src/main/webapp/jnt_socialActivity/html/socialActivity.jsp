@@ -21,10 +21,12 @@
         </div>
     </div>
     <h5 class='author'> ${currentNode.properties["jcr:createdBy"].string} </h5>
-    <span class='timestamp'>  activityDate.toUTCString()  </span>
 
     <c:set var="targetNode" value="${currentNode.properties['j:targetNode'].node}" />
-    <p class='message'>${message} ${targetNode.properties['jcr:title'].string} </p>
+    <p class='message'>${message} <a href="${url.base}${targetNode.path}">${targetNode.properties['jcr:title'].string}</a> </p>
+
+    <jcr:nodeProperty node="${currentNode}" name="jcr:lastModified" var="lastModified"/>
+    <span class="timestamp"><fmt:formatDate value="${lastModified.time}" pattern="yyyy/MM/dd HH:mm:ss"/></span>
 
     <div class='clear'></div>
 </li>

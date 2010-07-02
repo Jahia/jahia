@@ -26,7 +26,6 @@ under the License.
         <menu ref="parent"/>
         <menu name="Overview">
             <item name="Introduction" href="./index.html"/>
-            <item name="Retrieving activities" href="./getactivities.html"/>
         </menu>
         <menu ref="modules"/>
         <menu ref="reports"/>

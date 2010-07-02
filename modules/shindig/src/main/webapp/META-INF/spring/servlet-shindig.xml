@@ -65,14 +65,14 @@
         <property name="alwaysUseFullPath" value="true"/>
         <property name="urlMap">
             <map>
-                <entry key="/gadgets/js/**" value-ref="js"/>
+                <entry key="/modules/shindig/gadgets/js/**" value-ref="js"/>
                 <entry key="/gadgets/proxy/**" value-ref="proxy"/>
                 <entry key="/gadgets/makeRequest" value-ref="makeRequest"/>
                 <entry key="/gadgets/api/rpc/**" value-ref="gadgetsJsonRpcServlet"/>
                 <entry key="/gadgets/api/rest/**" value-ref="gadgetsRestapiServlet"/>
                 <entry key="/gadgets/concat" value-ref="concat"/>
                 <entry key="/gadgets/oauthcallback" value-ref="oauthCallback"/>
-                <entry key="/gadgets/ifr" value-ref="xml-to-html"/>
+                <entry key="/modules/shindig/gadgets/ifr" value-ref="xml-to-html"/>
                 <entry key="/gadgets/metadata" value-ref="metadata"/>
                 
                 <entry key="/social/rest/**" value-ref="socialRestapiServlet"/>

@@ -771,7 +771,7 @@
 <!-- Shindig servlet mappings -->
     <servlet-mapping>
         <servlet-name>ShindigDispatcherServlet</servlet-name>
-        <url-pattern>/gadgets/js/*</url-pattern>
+        <url-pattern>/modules/shindig/gadgets/js/*</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
@@ -806,7 +806,7 @@
 
     <servlet-mapping>
         <servlet-name>ShindigDispatcherServlet</servlet-name>
-        <url-pattern>/gadgets/ifr</url-pattern>
+        <url-pattern>/modules/shindig/gadgets/ifr</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>

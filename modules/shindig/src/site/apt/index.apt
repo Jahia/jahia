@@ -2,6 +2,18 @@ Jahia Apache Shindig Integration
 
 * Testing
 
- You should be able to fully interact with the gadgets using the following URL :
+ You should be able to fully interact with the gadgets using the following URLs :
 
- http://localhost:8080/modules/shindig/gadgets/files/container/sample1.html
+ - {{http://localhost:8080/modules/shindig/gadgets/files/container/sample1.html}}
+
+ - {{http://localhost:8080/modules/shindig/gadgets/files/container/sample2.html}}
+
+ - {{http://localhost:8080/modules/shindig/gadgets/files/container/sample3.html}}
+
+ - {{http://localhost:8080/modules/shindig/gadgets/files/container/sample4.html}}
+
+ - {{http://localhost:8080/modules/shindig/gadgets/files/container/sample5.html}}
+
+ - {{http://localhost:8080/modules/shindig/gadgets/files/container/sample6.html}}
+
+ - {{http://localhost:8080/modules/shindig/gadgets/files/container/sample7.html}}

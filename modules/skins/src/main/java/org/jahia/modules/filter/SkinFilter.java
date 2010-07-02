@@ -16,7 +16,7 @@ import org.jahia.services.render.filter.RenderChain;
  */
 public class SkinFilter extends AbstractFilter {
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
-        String skin = (String) renderContext.getRequest().getAttribute("skin");
+        String skin = resource.getNode().hasProperty("j:skin")?resource.getNode().getPropertyAsString("j:skin"):"";
         if (!StringUtils.isEmpty(skin) && !skin.equals("none")) {
             resource.pushWrapper(skin);
         }

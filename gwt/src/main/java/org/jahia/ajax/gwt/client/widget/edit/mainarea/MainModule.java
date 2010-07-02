@@ -130,14 +130,14 @@ public class MainModule extends Module {
                 .getRenderedContent(path, null, editLinker.getLocale(), template, "gwt", moduleParams, true,
                         config.getName(), new BaseAsyncCallback<GWTRenderResult>() {
                             public void onSuccess(GWTRenderResult result) {
-                                int i = getVScrollPosition();
+                                int i = scrollContainer.getVScrollPosition();
                                 head.setText("Page : " + path);
 
                                 Selection.getInstance().hide();
                                 Hover.getInstance().removeAll();
                                 display(result.getResult());
 
-                                setVScrollPosition(i);
+                                scrollContainer.setVScrollPosition(i);
                                 List<String> list = new ArrayList<String>(1);
                                 list.add(path);
                                 editLinker.getMainModule().unmask();

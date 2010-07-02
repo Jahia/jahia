@@ -14,6 +14,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.widget.Linker;
@@ -91,7 +92,7 @@ public class WorkflowActionItem extends BaseActionItem {
                     }
                 }
                 if (bypassWorkflow) {
-                    MenuItem item = new MenuItem("Bypass workflow");
+                    MenuItem item = new MenuItem(Messages.get("label.bypassWorkflow", "Bypass workflow"));
                     item.setIconStyle("gwt-toolbar-icon-workflow-bypass");
                     isEnabled = true;
                     item.addSelectionListener(new SelectionListener<MenuEvent>() {

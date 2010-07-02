@@ -5,9 +5,7 @@
 	padding:5px;
 	color:#ccc;
 	position:relative;
-    border-width: 5px;
-    border-color:yellow;
-    border-style:ridge;
+	border: 1px dashed #333;
 }
 #bodywrapper .mainResourceTemplate{
 	background-color: #333;

@@ -34,16 +34,20 @@
  */
 package org.jahia.services;
 
+import org.jahia.services.templates.TemplatePackageApplicationContextLoader;
+import org.jahia.services.templates.TemplatePackageApplicationContextLoader.ContextInitializedEvent;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
 
 /**
  * Spring application context holder.
  * 
  * @author Sergiy Shyrkov
  */
-public class SpringContextSingleton implements ApplicationContextAware {
+public class SpringContextSingleton implements ApplicationContextAware, ApplicationListener {
 
     private static SpringContextSingleton ourInstance;
 
@@ -110,12 +114,14 @@ public class SpringContextSingleton implements ApplicationContextAware {
         return initialized;
     }
 
+    public void onApplicationEvent(ApplicationEvent event) {
+        if (event instanceof ContextInitializedEvent) {
+            this.moduleContext = ((TemplatePackageApplicationContextLoader) event.getSource()).getContext();
+        }
+    }
+
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.context = applicationContext;
         initialized = true;
-    }
-
-    public void setModulesApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.moduleContext = applicationContext;
     }
 }

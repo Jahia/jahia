@@ -320,9 +320,6 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 .append(" path=\"").append(path)
                 .append("\" ");
 
-        if (node != null) {
-            System.out.println("---" +node.getName() + " " +constraints);
-        }
         if (!StringUtils.isEmpty(nodeTypes)) {
             buffer.append("nodetypes=\"" + nodeTypes + "\"");
         } else if (!StringUtils.isEmpty(constraints)) {

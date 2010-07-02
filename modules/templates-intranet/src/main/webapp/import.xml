@@ -3,7 +3,7 @@
     <templates-intranet xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" jcr:mixinTypes="jmix:hasTemplateNode jmix:sitemap jmix:accessControlled" jcr:primaryType="jnt:virtualsite" changefreq="monthly" j:installedModules="templates-intranet" j:templateNode="/templatesSet/templates-intranet/templates/base" priority="0.5">
       <contents jcr:primaryType="jnt:contentList">
         <site_components jcr:primaryType="jnt:contentList">
-          <login-to-jahia jcr:mixinTypes="jmix:shareable" jcr:primaryType="jnt:loginForm">
+          <login-to-jahia jcr:primaryType="jnt:loginForm">
             <j:translation_en jcr:language="en" jcr:title_en="Login to Jahia" jcr:primaryType="jnt:translation" />
           </login-to-jahia>
         </site_components>
@@ -24,11 +24,11 @@
             <logo j:basenode="/templatesSet/templates-intranet/home" jcr:primaryType="jnt:absoluteArea" />
           </logo>
           <simpleSearch jcr:primaryType="jnt:contentList">
-            <simpleSearchForm result="/templatesSet/templates-intranet/search-results" jcr:mixinTypes="jmix:shareable" jcr:primaryType="jnt:simpleSearchForm" />
+            <simpleSearchForm result="/templatesSet/templates-intranet/search-results" jcr:primaryType="jnt:simpleSearchForm" />
           </simpleSearch>
           <topMenu jcr:primaryType="jnt:contentList">
-            <top-menu j:menuType="primary" jcr:mixinTypes="jmix:shareable" j:maxDepth="2" jcr:primaryType="jnt:navMenu" j:baselineNode="/templatesSet/templates-intranet/home" j:styleName="navigation" />
-            <shortcuts jcr:mixinTypes="jmix:shareable" jcr:primaryType="jnt:shortcuts" />
+            <top-menu j:menuType="primary" j:maxDepth="2" jcr:primaryType="jnt:navMenu" j:baselineNode="/templatesSet/templates-intranet/home" j:styleName="navigation" />
+            <shortcuts jcr:primaryType="jnt:shortcuts" />
           </topMenu>
           <footer jcr:primaryType="jnt:contentList">
             <footer j:basenode="/templatesSet/templates-intranet/home" jcr:primaryType="jnt:absoluteArea" />
@@ -45,7 +45,7 @@
                   <listA jcr:primaryType="jnt:mainResourceArea" />
                 </col1>
                 <col2 jcr:primaryType="jnt:contentList">
-                  <login-to-jahia j:share="/templatesSet/templates-intranet/contents/site_components/login-to-jahia" />
+                  <login-to-jahia j:node="/templatesSet/templates-intranet/contents/site_components/login-to-jahia" jcr:primaryType="jnt:contentReference" />
                   <listB jcr:primaryType="jnt:mainResourceArea" />
                 </col2>
               </row1>

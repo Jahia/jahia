@@ -3,128 +3,134 @@
   <templatesSet>
     <templates-web xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" jcr:mixinTypes="jmix:sitemap jmix:accessControlled" jcr:primaryType="jnt:virtualsite" changefreq="monthly" j:installedModules="templates-web" priority="0.5">
       <contents jcr:primaryType="jnt:contentList">
-        <site_components  jcr:primaryType="jnt:contentList">
-          <simple-search result="/templatesSet/templates-web/search-results" jcr:mixinTypes="jmix:shareable" jcr:primaryType="jnt:simpleSearchForm" >
-            <j:translation_en  jcr:primaryType="jnt:translation" jcr:title_en="Simple search" jcr:language="en" />
+        <site_components jcr:primaryType="jnt:contentList">
+          <simple-search result="/templatesSet/templates-web/search-results"  jcr:primaryType="jnt:simpleSearchForm">
+            <j:translation_en jcr:title_en="Simple search" jcr:language="en" jcr:primaryType="jnt:translation" />
           </simple-search>
-          <side-menu j:menuType="primary" jcr:mixinTypes="jmix:shareable" j:maxDepth="3" jcr:primaryType="jnt:navMenu" j:baselineNode="/templatesSet/templates-web/home" j:startLevel="1" j:styleName="navigationN2" />
+          <side-menu j:menuType="primary" j:maxDepth="3" jcr:primaryType="jnt:navMenu" j:baselineNode="/templatesSet/templates-web/home" j:startLevel="1" j:styleName="navigationN2" />
         </site_components>
       </contents>
       <files jcr:primaryType="jnt:folder" />
       <mashups jcr:primaryType="jnt:portletList" />
       <themes jcr:primaryType="jnt:folder" />
-      <home jcr:mixinTypes="jmix:hasTemplateNode jmix:sitemap" j:template="default" j:templateNode="/templatesSet/templates-web/templates/base/home" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" priority="0.5">
+      <home jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" j:templateNode="/templatesSet/templates-web/templates/base/home" priority="0.5">
         <j:translation_en jcr:language="en" jcr:title_en="Home" jcr:primaryType="jnt:translation" />
+        <logo jcr:primaryType="jnt:contentList" />
+        <listA jcr:primaryType="jnt:contentList" />
+        <listB jcr:primaryType="jnt:contentList" />
+        <logoFooter jcr:primaryType="jnt:contentList" />
+        <footer jcr:primaryType="jnt:contentList" />
       </home>
       <templates jcr:primaryType="jnt:templatesFolder">
-        <base jcr:mixinTypes="jmix:renderable" j:template="web.bodywrapper" jcr:primaryType="jnt:masterTemplate" >
+        <base jcr:mixinTypes="jmix:renderable" j:template="web.bodywrapper" jcr:primaryType="jnt:masterTemplate">
           <header jcr:primaryType="jnt:contentList">
-            <shortcuts jcr:mixinTypes="jmix:renderable jmix:shareable" j:template="inline" jcr:primaryType="jnt:shortcuts" />
+            <shortcuts jcr:mixinTypes="jmix:renderable" j:template="inline" jcr:primaryType="jnt:shortcuts" />
           </header>
           <logo jcr:primaryType="jnt:contentList">
-            <logo  jcr:primaryType="jnt:absoluteArea" j:basenode="/templatesSet/templates-web/home"/>
+            <logo j:basenode="/templatesSet/templates-web/home" jcr:primaryType="jnt:absoluteArea" />
           </logo>
           <topMenu jcr:primaryType="jnt:contentList">
-            <top-menu j:menuType="primary" jcr:mixinTypes="jmix:shareable" j:maxDepth="1" jcr:primaryType="jnt:navMenu" j:baselineNode="/templatesSet/templates-web/home" j:styleName="navigationN1" />
+            <top-menu j:menuType="primary" j:maxDepth="1" jcr:primaryType="jnt:navMenu" j:baselineNode="/templatesSet/templates-web/home" j:styleName="navigationN1" />
           </topMenu>
           <logoFooter jcr:primaryType="jnt:contentList">
-            <logoFooter  jcr:primaryType="jnt:absoluteArea" j:basenode="/templatesSet/templates-web/home"/>
+            <logoFooter j:basenode="/templatesSet/templates-web/home" jcr:primaryType="jnt:absoluteArea" />
           </logoFooter>
           <footer jcr:primaryType="jnt:contentList">
-            <footer  jcr:primaryType="jnt:absoluteArea" j:basenode="/templatesSet/templates-web/home"/>
+            <footer j:basenode="/templatesSet/templates-web/home" jcr:primaryType="jnt:absoluteArea" />
           </footer>
           <wrappercontent jcr:primaryType="jnt:contentList">
             <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" />
           </wrappercontent>
-            <home jcr:primaryType="jnt:masterTemplate"  jcr:mixinTypes="jmix:hasTemplateNode" >
-              <wrappercontent jcr:primaryType="jnt:contentList">
-                <row column="2col115" jcr:primaryType="jnt:row">
-                  <col1 jcr:primaryType="jnt:contentList">
-                    <listA  jcr:primaryType="jnt:mainResourceArea" />
-                  </col1>
-                  <col2 jcr:primaryType="jnt:contentList">
-                    <simple-search j:share="/templatesSet/templates-web/contents/site_components/simple-search" />
-                    <listB  jcr:primaryType="jnt:mainResourceArea" />
-                  </col2>
-                </row>
-              </wrappercontent>
-            </home>
-            <my-portal jcr:primaryType="jnt:masterTemplate" jcr:mixinTypes="jmix:hasTemplateNode" >
-              <wrappercontent jcr:primaryType="jnt:contentList">
-                <my-portal jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:title_en="My Portal" jcr:language="en" jcr:primaryType="jnt:translation" />
-                  <currentUserDisplay jcr:primaryType="jnt:currentUserDisplay" j:referenceTemplate="portal" />
-                </my-portal>
-              </wrappercontent>
-            </my-portal>
-            <events jcr:mixinTypes="jmix:hasTemplateNode" jcr:primaryType="jnt:masterTemplate"  >
-              <wrappercontent jcr:primaryType="jnt:contentList">
-                <row1 column="2col115" jcr:primaryType="jnt:row">
-                  <col1 jcr:primaryType="jnt:contentList">
-                    <listA jcr:primaryType="jnt:mainResourceArea" />
-                    <events j:allowedTypes="jnt:event" jcr:primaryType="jnt:mainResourceArea" />
-                  </col1>
-                  <col2 jcr:primaryType="jnt:contentList">
-                    <simple-search j:share="/templatesSet/templates-web/contents/site_components/simple-search" />
-                    <side-menu j:share="/templatesSet/templates-web/contents/site_components/side-menu" />
-                    <calendar startDateProperty="startDate" endDateProperty="endDate" jcr:primaryType="jnt:calendar" j:bindedComponent="/templatesSet/templates-web/templates/base/events/wrappercontent/row1/col1/events" />
-                    <facets jcr:primaryType="jnt:facets" j:bindedComponent="/templatesSet/templates-web/templates/base/events/wrappercontent/row1/col1/events">
-                      <fieldFacet mincount="1" field="jnt:event;eventsType" jcr:primaryType="jnt:fieldFacet" missing="false" facet="type" offset="0" limit="100">
-                        <j:translation_en jcr:language="en" label_en="Type" jcr:primaryType="jnt:translation" />
-                      </fieldFacet>
-                    </facets>
-                  </col2>
-                </row1>
-              </wrappercontent>
-            </events>
-            <simple jcr:primaryType="jnt:masterTemplate" jcr:mixinTypes="jmix:hasTemplateNode">
-              <wrappercontent jcr:primaryType="jnt:contentList">
-                <row column="2col115" jcr:primaryType="jnt:row">
-                  <col1 jcr:primaryType="jnt:contentList">
-                    <listA  jcr:primaryType="jnt:mainResourceArea" />
-                  </col1>
-                  <col2 jcr:primaryType="jnt:contentList">
-                    <simple-search j:share="/templatesSet/templates-web/contents/site_components/simple-search" />
-                    <side-menu j:share="/templatesSet/templates-web/contents/site_components/side-menu" />
-                    <listB  jcr:primaryType="jnt:mainResourceArea" />
-                  </col2>
-                </row>
-              </wrappercontent>
-            </simple>
+          <home jcr:mixinTypes="jmix:hasTemplateNode" jcr:primaryType="jnt:masterTemplate">
+            <wrappercontent jcr:primaryType="jnt:contentList">
+              <row column="2col115" jcr:primaryType="jnt:row">
+                <col1 jcr:primaryType="jnt:contentList">
+                  <listA jcr:primaryType="jnt:mainResourceArea" />
+                </col1>
+                <col2 jcr:primaryType="jnt:contentList">
+                  <simple-search j:node="/templatesSet/templates-web/contents/site_components/simple-search" jcr:primaryType="jnt:contentReference" />
+                  <listB jcr:primaryType="jnt:mainResourceArea" />
+                </col2>
+              </row>
+            </wrappercontent>
+          </home>
+          <my-portal jcr:mixinTypes="jmix:hasTemplateNode" jcr:primaryType="jnt:masterTemplate">
+            <wrappercontent jcr:primaryType="jnt:contentList">
+              <my-portal jcr:primaryType="jnt:contentList">
+                <j:translation_en jcr:language="en" jcr:title_en="My Portal" jcr:primaryType="jnt:translation" />
+                <currentUserDisplay jcr:primaryType="jnt:currentUserDisplay" j:referenceTemplate="portal" />
+              </my-portal>
+            </wrappercontent>
+          </my-portal>
+          <events jcr:mixinTypes="jmix:hasTemplateNode" jcr:primaryType="jnt:masterTemplate">
+            <wrappercontent jcr:primaryType="jnt:contentList">
+              <row1 column="2col115" jcr:primaryType="jnt:row">
+                <col1 jcr:primaryType="jnt:contentList">
+                  <listA jcr:primaryType="jnt:mainResourceArea" />
+                  <events j:allowedTypes="jnt:event" jcr:primaryType="jnt:mainResourceArea" />
+                </col1>
+                <col2 jcr:primaryType="jnt:contentList">
+                  <simple-search j:node="/templatesSet/templates-web/contents/site_components/simple-search" jcr:primaryType="jnt:contentReference" />
+                  <side-menu j:node="/templatesSet/templates-web/contents/site_components/side-menu" jcr:primaryType="jnt:contentReference" />
+                  <calendar startDateProperty="startDate" endDateProperty="endDate" jcr:primaryType="jnt:calendar" j:bindedComponent="/templatesSet/templates-web/templates/base/events/wrappercontent/row1/col1/events" />
+                  <facets jcr:primaryType="jnt:facets" j:bindedComponent="/templatesSet/templates-web/templates/base/events/wrappercontent/row1/col1/events">
+                    <fieldFacet mincount="1" field="jnt:event;eventsType" jcr:primaryType="jnt:fieldFacet" missing="false" facet="type" offset="0" limit="100">
+                      <j:translation_en jcr:language="en" label_en="Type" jcr:primaryType="jnt:translation" />
+                    </fieldFacet>
+                  </facets>
+                </col2>
+              </row1>
+            </wrappercontent>
+          </events>
+          <simple jcr:mixinTypes="jmix:hasTemplateNode" jcr:primaryType="jnt:masterTemplate">
+            <wrappercontent jcr:primaryType="jnt:contentList">
+              <row column="2col115" jcr:primaryType="jnt:row">
+                <col1 jcr:primaryType="jnt:contentList">
+                  <listA jcr:primaryType="jnt:mainResourceArea" />
+                </col1>
+                <col2 jcr:primaryType="jnt:contentList">
+                  <simple-search j:node="/templatesSet/templates-web/contents/site_components/simple-search" jcr:primaryType="jnt:contentReference" />
+                  <side-menu j:node="/templatesSet/templates-web/contents/site_components/side-menu" jcr:primaryType="jnt:contentReference" />
+                  <listB jcr:primaryType="jnt:mainResourceArea" />
+                </col2>
+              </row>
+            </wrappercontent>
+          </simple>
         </base>
       </templates>
-      <search-results jcr:mixinTypes="jmix:hasTemplateNode jmix:sitemap" j:template="default" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" j:templateNode="/templatesSet/templates-web/templates/base/simple" priority="0.5">
-        <j:translation_en jcr:primaryType="jnt:translation" jcr:language="en" jcr:title_en="Search results" />
-          <listA jcr:primaryType="jnt:contentList">
-               <simple-search j:share="/templatesSet/templates-web/contents/site_components/simple-search" />
-               <results autoSuggest="true" pageSize="10" jcr:primaryType="jnt:searchResults" autoSuggestHitCount="2" autoSuggestMinimumHitCount="2">
-                 <j:translation_en jcr:primaryType="jnt:translation" jcr:title_en="Results" jcr:language="en"  />
-               </results>
-          </listA>
+      <search-results jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" j:templateNode="/templatesSet/templates-web/templates/base" priority="0.5">
+        <j:translation_en jcr:title_en="Search results" jcr:language="en" jcr:primaryType="jnt:translation" />
+        <pagecontent jcr:primaryType="jnt:contentList">
+          <simple-search j:node="/templatesSet/templates-web/contents/site_components/simple-search" jcr:primaryType="jnt:contentReference" />
+          <results autoSuggest="true" pageSize="10" jcr:primaryType="jnt:searchResults" autoSuggestHitCount="2" autoSuggestMinimumHitCount="2">
+            <j:translation_en jcr:language="en" jcr:title_en="Results" jcr:primaryType="jnt:translation" />
+          </results>
+        </pagecontent>
       </search-results>
       <j:acl jcr:primaryType="jnt:acl">
-        <GRANT_r_editor j:privileges="jcr:read jcr:read_live jcr:write" j:protected="false" j:principal="r:editor" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-        <DENY_r_editor j:privileges="jcr:write_live jcr:modifyAccessControl" j:protected="false" j:principal="r:editor" j:aceType="DENY" jcr:primaryType="jnt:ace" />
-        <GRANT_r_editor-in-chief j:privileges="jcr:read jcr:write_live jcr:modifyAccessControl jcr:read_live jcr:write" j:protected="false" j:principal="r:editor-in-chief" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-        <DENY_r_editor-in-chief j:privileges="" j:protected="false" j:principal="r:editor-in-chief" j:aceType="DENY" jcr:primaryType="jnt:ace" />
-        <GRANT_r_publisher j:privileges="jcr:read jcr:write_live jcr:read_live jcr:write" j:protected="false" j:principal="r:publisher" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-        <DENY_r_publisher j:privileges="jcr:modifyAccessControl" j:protected="false" j:principal="r:publisher" j:aceType="DENY" jcr:primaryType="jnt:ace" />
-        <GRANT_r_seo-manager j:privileges="jcr:read jcr:read_live jcr:write" j:protected="false" j:principal="r:seo-manager" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-        <DENY_r_seo-manager j:privileges="jcr:write_live jcr:modifyAccessControl" j:protected="false" j:principal="r:seo-manager" j:aceType="DENY" jcr:primaryType="jnt:ace" />
-        <GRANT_r_site-administrator j:privileges="jcr:read jcr:write_live jcr:modifyAccessControl jcr:read_live jcr:write" j:protected="false" j:principal="r:site-administrator" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-        <DENY_r_site-administrator j:privileges="" j:protected="false" j:principal="r:site-administrator" j:aceType="DENY" jcr:primaryType="jnt:ace" />
-        <GRANT_r_translator j:privileges="jcr:read jcr:read_live jcr:write" j:protected="false" j:principal="r:translator" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-        <DENY_r_translator j:privileges="jcr:write_live jcr:modifyAccessControl" j:protected="false" j:principal="r:translator" j:aceType="DENY" jcr:primaryType="jnt:ace" />
-        <GRANT_r_web-designer j:privileges="jcr:read jcr:read_live jcr:write" j:protected="false" j:principal="r:web-designer" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-        <DENY_r_web-designer j:privileges="jcr:write_live jcr:modifyAccessControl" j:protected="false" j:principal="r:web-designer" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+        <GRANT_r_editor j:privileges="jcr:read jcr:read_live jcr:write" j:principal="r:editor" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+        <DENY_r_editor j:privileges="jcr:write_live jcr:modifyAccessControl" j:principal="r:editor" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+        <GRANT_r_editor-in-chief j:privileges="jcr:read jcr:write_live jcr:modifyAccessControl jcr:read_live jcr:write" j:principal="r:editor-in-chief" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+        <DENY_r_editor-in-chief j:privileges="" j:principal="r:editor-in-chief" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+        <GRANT_r_publisher j:privileges="jcr:read jcr:write_live jcr:read_live jcr:write" j:principal="r:publisher" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+        <DENY_r_publisher j:privileges="jcr:modifyAccessControl" j:principal="r:publisher" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+        <GRANT_r_seo-manager j:privileges="jcr:read jcr:read_live jcr:write" j:principal="r:seo-manager" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+        <DENY_r_seo-manager j:privileges="jcr:write_live jcr:modifyAccessControl" j:principal="r:seo-manager" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+        <GRANT_r_site-administrator j:privileges="jcr:read jcr:write_live jcr:modifyAccessControl jcr:read_live jcr:write" j:principal="r:site-administrator" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+        <DENY_r_site-administrator j:privileges="" j:principal="r:site-administrator" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+        <GRANT_r_translator j:privileges="jcr:read jcr:read_live jcr:write" j:principal="r:translator" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+        <DENY_r_translator j:privileges="jcr:write_live jcr:modifyAccessControl" j:principal="r:translator" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+        <GRANT_r_web-designer j:privileges="jcr:read jcr:read_live jcr:write" j:principal="r:web-designer" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+        <DENY_r_web-designer j:privileges="jcr:write_live jcr:modifyAccessControl" j:principal="r:web-designer" j:protected="false" j:aceType="DENY" jcr:primaryType="jnt:ace" />
       </j:acl>
       <workflowrules jcr:primaryType="jnt:workflowRules">
         <nt_base_jBPM_1-step-publication j:nodeType="nt:base" j:workflow="jBPM:1-step-publication" jcr:primaryType="jnt:workflowRule">
-          <GRANT_r_editor-in-chief j:privileges="review start" j:protected="false" j:principal="r:editor-in-chief" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-          <GRANT_r_editor j:privileges="start" j:protected="false" j:principal="r:editor" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-          <GRANT_r_publisher j:privileges="review" j:protected="false" j:principal="r:publisher" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+          <GRANT_r_editor-in-chief j:privileges="review start" j:principal="r:editor-in-chief" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+          <GRANT_r_editor j:privileges="start" j:principal="r:editor" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+          <GRANT_r_publisher j:privileges="review" j:principal="r:publisher" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
         </nt_base_jBPM_1-step-publication>
       </workflowrules>
     </templates-web>
   </templatesSet>
 </content>
+ 

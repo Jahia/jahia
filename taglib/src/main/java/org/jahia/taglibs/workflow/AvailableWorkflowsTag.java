@@ -35,9 +35,9 @@ public class AvailableWorkflowsTag extends AbstractJahiaTag {
         List<WorkflowDefinition> defs = null;
         try {
             if (workflowAction != null) {
-                defs = WorkflowService.getInstance().getPossibleWorkflows(node, getUser(),workflowAction);
+                defs = WorkflowService.getInstance().getPossibleWorkflows(node, getUser(),workflowAction,getUILocale());
             } else {
-                defs = WorkflowService.getInstance().getPossibleWorkflows(node, getUser());
+                defs = WorkflowService.getInstance().getPossibleWorkflows(node, getUser(),getUILocale());
             }
         } catch (RepositoryException e) {
             logger.error("Could not retrieve workflows", e);

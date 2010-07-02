@@ -796,7 +796,7 @@ public class NavigationHelper {
 
         if (fields.contains(GWTJahiaNode.WORKFLOW_INFO)) {
             try {
-                n.setWorkflowInfo(workflow.getWorkflowInfo(n.getPath(), node.getSession()));
+                n.setWorkflowInfo(workflow.getWorkflowInfo(n.getPath(), node.getSession(), node.getSession().getLocale()));
             } catch (UnsupportedRepositoryOperationException e) {
 //                 do nothing
                 logger.debug(e.getMessage());

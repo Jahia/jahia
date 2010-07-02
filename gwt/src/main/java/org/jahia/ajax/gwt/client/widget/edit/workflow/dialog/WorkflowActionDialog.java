@@ -356,7 +356,7 @@ public class WorkflowActionDialog extends Window {
                                        final String comments) {
         HorizontalPanel horizontalPanel = new HorizontalPanel();
 
-        Button button = new Button("Start Workflow : " + wf.getName());
+        Button button = new Button(Messages.get("workflow.start.label","Start Workflow:") + wf.getDisplayName());
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {

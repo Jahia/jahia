@@ -3,15 +3,11 @@ package org.jahia.taglibs.workflow;
 import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.*;
 import org.jahia.taglibs.AbstractJahiaTag;
 
-import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,7 +25,7 @@ public class ActiveWorkflowTag extends AbstractJahiaTag {
     private int scope = PageContext.PAGE_SCOPE;
 
     public int doEndTag() throws JspException {
-        List<Workflow> wfs = WorkflowService.getInstance().getActiveWorkflows(node);
+        List<Workflow> wfs = WorkflowService.getInstance().getActiveWorkflows(node, getUILocale());
         pageContext.setAttribute(var, wfs, scope);
         node = null;
         var = null;

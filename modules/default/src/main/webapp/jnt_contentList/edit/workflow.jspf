@@ -8,11 +8,11 @@
                         animatedcollapse.addDiv('workflow${child.identifier}-${wf.key}', 'fade=1,speed=700,group=workflow');
                         <c:set var="animatedWFs" value="${animatedWFs}animatedcollapse.addDiv(\'workflow${child.identifier}-${wf.key}\', \'fade=1,speed=700,group=workflow\');"/>
                     </script>
-                    <input class="workflow" type="button" value="${wf.name}"
+                    <input class="workflow" type="button" value="${wf.displayName}"
                            onclick="animatedcollapse.toggle('workflow${child.identifier}-${wf.key}');"/>
                 </c:when>
                 <c:otherwise>
-                    <input class="workflow" type="button" value="${wf.name}"
+                    <input class="workflow" type="button" value="${wf.displayName}"
                            onclick="var callback = '${animatedWFs}${animatedTasks}'+'animatedcollapse.reinit();';startWorkflow('${child.path}', '${wf.provider}:${wf.key}', '${url.base}', '${currentNode.UUID}', '${url.current}',callback)"/></c:otherwise>
             </c:choose>
         </c:forEach>
@@ -26,12 +26,12 @@
                     animatedcollapse.addDiv('task${child.identifier}-${task.id}', 'fade=1,speed=700,group=tasks');
                     <c:set var="animatedTasks" value="${animatedTasks}animatedcollapse.addDiv(\'task${child.identifier}-${task.id}\', \'fade=1,speed=700,group=tasks\');"/>
                 </script>
-                <input class="workflowaction" type="button" value="${task.name}"
+                <input class="workflowaction" type="button" value="${task.displayName}"
                        onclick="animatedcollapse.toggle('task${child.identifier}-${task.id}');"/>
             </c:when>
             <c:otherwise>
-                <c:forEach items="${task.outcomes}" var="outcome">
-                    <input class="workflowaction" type="button" value="${outcome}"
+                <c:forEach items="${task.outcomes}" var="outcome" varStatus="status">
+                    <input class="workflowaction" type="button" value="${task.displayOutcomes[status.index]}"
                            onclick="var callback = '${animatedWFs}${animatedTasks}'+'animatedcollapse.reinit();';executeTask('${child.path}', '${task.provider}:${task.id}', '${outcome}', '${url.base}', '${currentNode.UUID}', '${url.current}',callback)"/>
                 </c:forEach>
             </c:otherwise>
@@ -45,7 +45,7 @@
                         <template:module node="${child}" templateType="edit" template="add">
                             <template:param name="resourceNodeType" value="${wf.formResourceName}"/>
                             <template:param name="workflowStartForm" value="${wf.provider}:${wf.key}"/>
-                            <template:param name="workflowStartFormWFName" value="${wf.name}"/>
+                            <template:param name="workflowStartFormWFName" value="${wf.displayName}"/>
                             <template:param name="workflowStartFormWFCallbackId" value="${currentNode.UUID}"/>
                             <template:param name="workflowStartFormWFCallbackURL" value="${url.current}"/>
                             <template:param name="workflowStartFormWFCallbackJS"
@@ -64,7 +64,7 @@
                     <template:module node="${child}" templateType="edit" template="add">
                         <template:param name="resourceNodeType" value="${task.formResourceName}"/>
                         <template:param name="workflowTaskForm" value="${task.provider}:${task.id}"/>
-                        <template:param name="workflowTaskFormTaskName" value="${task.name}"/>
+                        <template:param name="workflowTaskFormTaskName" value="${task.displayName}"/>
                         <template:param name="workflowTaskFormCallbackId" value="${currentNode.UUID}"/>
                         <template:param name="workflowTaskFormCallbackURL" value="${url.current}"/>
                         <template:param name="workflowTaskFormCallbackJS"

@@ -379,7 +379,7 @@ public class NewsMLImporter {
             newsMLItemNode = session.getNodeByIdentifier(newsMLItemNodeIdentifier);
             final JCRSessionWrapper jcrSessionWrapper = newsMLItemNode.getSession();
 
-            List<Workflow> activeWorkflows = WorkflowService.getInstance().getActiveWorkflows(newsMLItemNode);
+            List<Workflow> activeWorkflows = WorkflowService.getInstance().getActiveWorkflows(newsMLItemNode, null);
             if (activeWorkflows.size() == 0) {
                 logger.info("Update detected on news item " + newsMLItemNode.getPath() + " starting workflow on updated item...");
                 WorkflowService.getInstance().startProcess(newsMLItemNode, "2-step-publication", "jBPM", new HashMap<String, Object>());

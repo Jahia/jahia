@@ -58,6 +58,7 @@ public class WorkflowTask extends WorkflowAction {
     private List<WorkflowTaskComment> taskComments;
     private Map<String, Object> variables;
     private String processId;
+    private List<String> displayOutcomes;
 
     public WorkflowTask(String name, String provider) {
         super(name, provider);
@@ -149,5 +150,13 @@ public class WorkflowTask extends WorkflowAction {
 
     public String getProcessId() {
         return processId;
+    }
+
+    public void setDisplayOutcomes(List<String> displayOutcomes) {
+        this.displayOutcomes = displayOutcomes;
+    }
+
+    public List<String> getDisplayOutcomes() {
+        return displayOutcomes;
     }
 }

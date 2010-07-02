@@ -1075,7 +1075,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public List<GWTJahiaNode> getTasksForUser() throws GWTJahiaServiceException {
         JCRSessionWrapper session = retrieveCurrentSession();
-        List<WorkflowTask> tasks = workflow.getAvailableTasksForUser(session.getUser());
+        List<WorkflowTask> tasks = workflow.getAvailableTasksForUser(session.getUser(), null);
         List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>(tasks.size());
         for (WorkflowTask task : tasks) {
             try {
@@ -1144,7 +1144,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException
      */
     public GWTJahiaWorkflowInfo getWorkflowInfo(String path) throws GWTJahiaServiceException {
-        return workflow.getWorkflowInfo(path, retrieveCurrentSession());
+        return workflow.getWorkflowInfo(path, retrieveCurrentSession(),getLocale());
     }
 
     /**

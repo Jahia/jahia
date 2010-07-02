@@ -132,10 +132,10 @@
                         </button>
                     </c:when>
                     <c:when test="${not empty currentResource.moduleParams.workflowTaskForm}">
-                        <c:forEach items="${workflowTaskFormTask.outcomes}" var="outcome">
+                        <c:forEach items="${workflowTaskFormTask.outcomes}" var="outcome" varStatus="status">
                             <button type="button"
                                     onclick="$('#outcome').val('${outcome}');$('#${jsNodeName}${scriptTypeName}').submit();"><span
-                                    class="icon-contribute icon-accept"></span>&nbsp;${outcome}
+                                    class="icon-contribute icon-accept"></span>&nbsp;${workflowTaskFormTask.displayOutcomes[status.index]}
                             </button>
                         </c:forEach>
                     </c:when>

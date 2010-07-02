@@ -3,7 +3,6 @@ package org.jahia.modules.defaultmodule;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
-import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
@@ -49,7 +48,8 @@ public class ExecuteTaskAction implements Action {
         String outcome = parameters.get("outcome").get(0);
 
         workflowService.assignTask(actionId, providerKey, renderContext.getUser());
-        workflowService.completeTask(actionId, providerKey, outcome, getVariablesMap(parameters),renderContext.getUser());
+        workflowService.completeTask(actionId, providerKey, outcome, getVariablesMap(parameters),
+                                     renderContext.getUser());
 
         return ActionResult.OK;
     }
@@ -60,10 +60,18 @@ public class ExecuteTaskAction implements Action {
             if (!"action".equals(property.getKey()) && !"outcome".equals(property.getKey())) {
                 List<String> propertyValues = property.getValue();
                 List<WorkflowVariable> values = new ArrayList<WorkflowVariable>(propertyValues.size());
+                boolean toBeAdded = false;
                 for (String value : propertyValues) {
-                    values.add(new WorkflowVariable(value, 1));
+                    if (!"".equals(value.trim())) {
+                        values.add(new WorkflowVariable(value, 1));
+                        toBeAdded = true;
+                    }
                 }
-                map.put(property.getKey(), values);
+                if (toBeAdded) {
+                    map.put(property.getKey(), values);
+                } else {
+                    map.put(property.getKey(), new ArrayList<WorkflowVariable>());
+                }
             }
         }
         return map;

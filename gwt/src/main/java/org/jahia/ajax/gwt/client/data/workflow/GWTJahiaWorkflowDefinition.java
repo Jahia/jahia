@@ -56,4 +56,12 @@ public class GWTJahiaWorkflowDefinition extends BaseModelData implements Seriali
     public boolean equals(Object o) {
         return o!=null &&  (super.equals(o) || ((GWTJahiaWorkflowDefinition)o).getName().equals(getName()));  
     }
+
+    public void setDisplayName(String displayName) {
+        set("displayName",displayName);
+    }
+
+    public String getDisplayName(){
+        return get("displayName");
+    }
 }

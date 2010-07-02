@@ -110,4 +110,12 @@ public class GWTJahiaWorkflowAction extends BaseModelData implements Serializabl
     public String getProcessId() {
         return get("processId");
     }
+
+    public void setDisplayName(String displayName) {
+        set("displayName",displayName);
+    }
+
+    public String getDisplayName(){
+        return get("displayName");
+    }
 }

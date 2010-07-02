@@ -23,7 +23,7 @@ public class WorkflowChoiceListInitializer implements ChoiceListInitializer {
                                                      Map<String, Object> context) {
         List<ChoiceListValue> choiceListValues = new ArrayList<ChoiceListValue>();
         try {
-            List<WorkflowDefinition> defs = workflowService.getWorkflows();
+            List<WorkflowDefinition> defs = workflowService.getWorkflows(locale);
 
             for (WorkflowDefinition def : defs) {
                 choiceListValues.add(new ChoiceListValue(def.getName(), new HashMap<String, Object>(),

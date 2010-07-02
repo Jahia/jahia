@@ -69,7 +69,7 @@
 
     </c:when>
     <c:otherwise>
-        <jcr:nodeProperty node="${currentNode}" name="j:allowedTypes" var="restrictions"/>
+        <jcr:nodeProperty node="${currentNode}" name="j:allowedTypes" var="restrictions" scope="request"/>
         <c:if test="${not empty restrictions}">
             <c:forEach items="${restrictions}" var="value" >
                 <c:if test="${not empty nodeTypes}">

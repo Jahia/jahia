@@ -32,7 +32,7 @@ public class AvailableTasksTag extends AbstractJahiaTag {
     public int doEndTag() throws JspException {
         List<WorkflowTask> tasks = new ArrayList<WorkflowTask>();
         if (node != null) {
-            List<Workflow> actives = WorkflowService.getInstance().getActiveWorkflows(node);
+            List<Workflow> actives = WorkflowService.getInstance().getActiveWorkflows(node, getUILocale());
             for (Workflow workflow : actives) {
                 for (WorkflowAction workflowAction : workflow.getAvailableActions()) {
                     if (workflowAction instanceof WorkflowTask) {
@@ -51,7 +51,7 @@ public class AvailableTasksTag extends AbstractJahiaTag {
                 }
             }
         } else if (user != null) {
-            tasks = WorkflowService.getInstance().getTasksForUser(user);
+            tasks = WorkflowService.getInstance().getTasksForUser(user, null);
         }
 
         pageContext.setAttribute(var, tasks, scope);

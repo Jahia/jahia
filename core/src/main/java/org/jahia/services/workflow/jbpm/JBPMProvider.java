@@ -275,9 +275,9 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
             final ProcessInstance instance = executionService.findProcessInstanceById(processId);
             if (instance != null) {
                 final Workflow workflow = new Workflow(instance.getName(), instance.getId(), key);
-                workflow.setAvailableActions(getAvailableActions(instance.getId()));
                 final WorkflowDefinition definition = getWorkflowDefinitionById(instance.getProcessDefinitionId());
                 workflow.setDefinition(definition);
+                workflow.setAvailableActions(getAvailableActions(instance.getId()));
                 Job job = managementService.createJobQuery().timers().processInstanceId(processId).uniqueResult();
                 if(job!=null) {
                     workflow.setDuedate(job.getDuedate());
@@ -381,6 +381,11 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         // Get Tasks variables
         Set<String> variableNames = taskService.getVariableNames(task.getId());
         action.setVariables(taskService.getVariables(task.getId(),variableNames));
+        final ProcessInstance instance = executionService.findProcessInstanceById(task.getExecutionId());
+            if (instance != null) {
+        final WorkflowDefinition definition = getWorkflowDefinitionById(instance.getProcessDefinitionId());
+                action.setDefinition(definition);
+            }
         return action;
     }
 

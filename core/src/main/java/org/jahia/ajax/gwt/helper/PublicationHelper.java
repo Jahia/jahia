@@ -256,7 +256,7 @@ public class PublicationHelper {
         boolean split = false;
 
         if (currentDef == null || n.hasNode("j:workflow")) {
-            List<WorkflowDefinition> def = workflowService.getPossibleWorkflows(n, session.getUser(), "publish");
+            List<WorkflowDefinition> def = workflowService.getPossibleWorkflows(n, session.getUser(), "publish",null);
             if (def.isEmpty()) {
                 return false;
             } else {

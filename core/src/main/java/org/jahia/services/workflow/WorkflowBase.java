@@ -50,6 +50,9 @@ class WorkflowBase implements Serializable {
     private final String provider;
 
     private WorkflowDefinition definition;
+
+    protected String displayName;
+
     /**
      * Initializes an instance of this class.
      * 
@@ -86,6 +89,14 @@ class WorkflowBase implements Serializable {
 
     public void setDefinition(WorkflowDefinition definition) {
         this.definition = definition;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getDisplayName() {
+        return displayName;
     }
 
     @Override

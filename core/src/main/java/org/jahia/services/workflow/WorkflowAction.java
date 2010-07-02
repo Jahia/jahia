@@ -39,7 +39,7 @@ package org.jahia.services.workflow;
  * @since : JAHIA 6.1
  *        Created : 2 févr. 2010
  */
-public class WorkflowAction extends WorkflowBase {
+public class WorkflowAction extends WorkflowBase {    
 
     public WorkflowAction(String name, String provider) {
         super(name, provider);

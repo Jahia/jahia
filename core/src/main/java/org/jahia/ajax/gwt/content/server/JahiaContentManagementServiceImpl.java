@@ -419,61 +419,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         contentManager.copy(pathsToCopy, destinationPath, newName, false, cut, false, false, retrieveCurrentSession());
     }
 
-    public void createPage(String templatePath, String destinationPath, List<String> mixin,
-                                      GWTJahiaNodeACL acl, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties,
-                                      boolean templateToPage, List<GWTJahiaNodeProperty> newsProps) throws GWTJahiaServiceException {
-        try {
-            String newName = null;
-            List<GWTJahiaNodeProperty> l = langCodeProperties.get(getSite().getDefaultLanguage());
-            if (l == null && langCodeProperties.size() > 0) {
-                l = langCodeProperties.values().iterator().next();
-            }
-            if (l != null) {
-                newName = contentManager.generateNameFromTitle(l);
-            }
-            mixin.add("jmix:hasTemplateNode");
-
-            newsProps.add(new GWTJahiaNodeProperty("j:templateNode",new GWTJahiaNodePropertyValue(navigation.getNode(templatePath, retrieveCurrentSession()), GWTJahiaNodePropertyType.WEAKREFERENCE)));
-
-            GWTJahiaNode node = contentManager.createNode(destinationPath, newName, "jnt:page", mixin, newsProps, retrieveCurrentSession());
-
-//            for (GWTJahiaNode node : nodes) {
-//                node.getNodeTypes().addAll(mixin);
-//            }
-//            saveProperties(nodes, newsProps);
-
-            // save shared properties
-            if (langCodeProperties != null && !langCodeProperties.isEmpty()) {
-                Iterator<String> langCode = langCodeProperties.keySet().iterator();
-                // save properties per lang
-                while (langCode.hasNext()) {
-                    String currentLangCode = langCode.next();
-                    List<GWTJahiaNodeProperty> properties = langCodeProperties.get(currentLangCode);
-                    saveProperties(Arrays.asList(node), properties, currentLangCode);
-                }
-            }
-
-            if (acl != null) {
-                setACL(node.getPath(), acl);
-            }
-        } catch (Throwable e) {
-            logger.error(e, e);
-        }
-    }
-
     public void pasteReferences(List<String> pathsToCopy, String destinationPath, String newName)
             throws GWTJahiaServiceException {
         contentManager.copy(pathsToCopy, destinationPath, newName, false, false, true, false, retrieveCurrentSession());
-    }
-
-    public void pasteOnTopOf(List<String> nodes, String path, String newName, boolean cut)
-            throws GWTJahiaServiceException {
-        contentManager.copy(nodes, path, newName, true, cut, false, false, retrieveCurrentSession());
-    }
-
-    public void pasteReferencesOnTopOf(List<String> pathsToCopy, String destinationPath, String newName)
-            throws GWTJahiaServiceException {
-        contentManager.copy(pathsToCopy, destinationPath, newName, true, false, true, false, retrieveCurrentSession());
     }
 
     public GWTJahiaGetPropertiesResult getProperties(String path, String langCode) throws GWTJahiaServiceException {

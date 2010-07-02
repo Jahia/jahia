@@ -486,9 +486,9 @@ public class ContentManagerHelper {
                     member.setProperty("j:member", node.getUUID());
                 }
             } else {
-                targetNode.clone(node, name);
+                Node ref = targetNode.addNode(name, "jnt:contentReference");
+                ref.setProperty("j:node", node.getUUID());
             }
-
         } else {
             node.copy(targetNode, name, true);
         }

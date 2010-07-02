@@ -340,22 +340,45 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
     private String getReferenceTypes() throws NoSuchNodeTypeException {
         StringBuffer buffer = new StringBuffer();
         List<ExtendedNodeType> refs = NodeTypeRegistry.getInstance().getNodeType("jmix:nodeReference").getSubtypesAsList();
+
+        String[] nodeTypesArray;
+        if (StringUtils.isEmpty(nodeTypes)) {
+            nodeTypesArray = new String[] {"nt:base"};
+        } else {
+            nodeTypesArray = nodeTypes.split(" ");
+        }
+        final String[] constraintsArray = constraints.split(" ");
         for (ExtendedNodeType ref : refs) {
             if (ref.getPropertyDefinitionsAsMap().get("j:node") != null) {
-                for (String s : constraints.split(" ")) {
+                for (String s : constraintsArray) {
                     if (ref.isNodeType(s)) {
-                        buffer.append(ref.getName());
-                        buffer.append("[");
-                        final String[] constraints = ref.getPropertyDefinitionsAsMap().get("j:node").getValueConstraints();
-                        if (constraints.length > 0) {
-                            for (int i = 0; i < constraints.length; i++) {
-                                buffer.append(constraints[i]);
-                                if (i+1 < constraints.length) buffer.append(",");
-                            }
-                        } else {
-                            buffer.append("jmix:droppableContent");
+                        String[] refConstraints = ref.getPropertyDefinitionsAsMap().get("j:node").getValueConstraints();
+                        if (refConstraints.length == 0) {
+                            refConstraints = new String[] {"jmix:droppableContent"};
                         }
-                        buffer.append("] ");
+                        List<String> finalConstraints = new ArrayList<String>();
+                        for (String refConstraint : refConstraints) {
+                            for (String nt : nodeTypesArray) {
+                                if (NodeTypeRegistry.getInstance().getNodeType(nt).isNodeType(refConstraint)) {
+                                    finalConstraints.add(nt);
+                                } else if (NodeTypeRegistry.getInstance().getNodeType(refConstraint).isNodeType(nt)) {
+                                    finalConstraints.add(refConstraint);
+                                }
+                            }
+                        }
+                        
+                        refConstraints = finalConstraints.toArray(new String[finalConstraints.size()]);
+                        if (refConstraints.length > 0) {
+                            buffer.append(ref.getName());
+                            buffer.append("[");
+                            if (refConstraints.length > 0) {
+                                for (int i = 0; i < refConstraints.length; i++) {
+                                    buffer.append(refConstraints[i]);
+                                    if (i+1 < refConstraints.length) buffer.append(",");
+                                }
+                            }
+                            buffer.append("] ");
+                        }
                         break;
                     }
                 }

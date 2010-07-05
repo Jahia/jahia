@@ -34,6 +34,7 @@ package org.jahia.ajax.gwt.client.widget;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.util.KeyNav;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.Window;
@@ -43,6 +44,7 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel.Method;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Element;
 import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -129,6 +131,12 @@ public class LoginBox extends Window {
                     }
                     hide();
                 }
+            }
+        });
+        form.addListener(Events.KeyPress, new KeyNav<KeyEvent>() {
+            public void onEnter(KeyEvent ke) {
+                lbWrongCredentials.setVisible(false);
+                form.submit();
             }
         });
 

@@ -56,36 +56,16 @@
 </c:if>
 <jcr:node var="rootPage" path="/sites/${renderContext.site.siteKey}/home"/>
 
-<div id="bodywrapper"><!--start bodywrapper-->
-    <div id="topheader"><!--start topheader-->
+<div id="bodywrapper">
+    <div id="header">
         <div class="container container_16">
             <div class="grid_16">
-                <div class="logotop"><a href="#"><template:area path="logo"/></a></div>
+				<template:area path="header" nodeTypes="jnt:row" />
             </div>
         </div>
         <div class="clear"></div>
     </div>
-    <!--stop topheader-->
-    <div id="bottomheader"><!--start bottomheader-->
-        <div class="container container_16">
-            <div class="grid_10">
-                <div id="banner"><!--start banner-->
-                    <template:area path="pagetitle"/>
-                </div>
-			<div class="clear"></div></div>
-            <div class="grid_6">
-                <div id="search-bar">
-                    <template:area path="simpleSearch"/>
-                </div>
-			<div class="clear"></div></div>
-            <div class="grid_16">
-                <template:area path="topMenu"/>
-            </div>
-        </div>
-        <div class="clear"></div>
-    </div>
-    <!--stop bottomheader-->
-    <div id="content"><!--start content-->
+    <div id="content">
         <div class="container container_16">
             <div class="grid_16">
                 <template:area path="wrappercontent"/>
@@ -93,27 +73,13 @@
         </div>
         <div class="clear"></div>
     </div>
-    <!--stop content-->
-
-
-    <div id="topfooter"><!--start topfooter-->
-        <div class="container container_16"> <!--start container_16-->
-			<div class="grid_16">
-            	<template:area path="topfooter" nodeTypes="jnt:row" />
-			<div class="clear"></div></div>
-        <div class="clear"></div></div> <!--stop container_16-->
-    <div class="clear"></div></div><!--stop topfooter-->
-
-    <div id="bottomfooter"><!--start bottomfooter-->
-        <div class="container container_16"> <!--start container_16-->
+    <div id="footer">
+        <div class="container container_16">
 			<div class="grid_16">
                  <template:area path="footer" nodeTypes="jnt:row" />
 			<div class="clear"></div></div>       
-        <div class="clear"></div></div> <!--stop container_16-->
+        <div class="clear"></div></div>
     </div>
-    <!--stop bottomfooter-->
-
-
     <div class="clear"></div>
+
 </div>
-<!--stop bodywrapper-->

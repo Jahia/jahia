@@ -330,12 +330,12 @@
  - j:applyOn (string, choicelist[subnodetypes = 'jnt:page,jnt:content,jnt:contentList,jnt:folder,jnt:file',resourceBundle]) multiple
  - j:templateKey (string)
 
-[jnt:mainResourceDisplay] > nt:base, jmix:renderableReference, jmix:siteComponentContent
+[jnt:mainResourceDisplay] > jnt:content, jmix:renderableReference, jmix:siteComponentContent
 
-[jnt:mainResourceArea] > nt:base, jmix:renderableReference, jmix:renderableList, jmix:siteComponentContent, jmix:listRestrictions
+[jnt:mainResourceArea] > jnt:content, jmix:renderableReference, jmix:renderableList, jmix:siteComponentContent, jmix:listRestrictions
  + * (jmix:droppableContent) = jmix:droppableContent version
 
-[jnt:absoluteArea] > nt:base, jmix:renderableReference, jmix:renderableList, jmix:siteComponentContent, jmix:listRestrictions
+[jnt:absoluteArea] > jnt:content, jmix:renderableReference, jmix:renderableList, jmix:siteComponentContent, jmix:listRestrictions
  - j:basenode (weakreference)
 
 [jnt:currentUserDisplay] > nt:base, jmix:renderableReference, jmix:siteComponentContent

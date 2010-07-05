@@ -380,7 +380,7 @@ public class ConflictResolver {
         }
 
         public boolean apply() throws RepositoryException {
-            if (!uuidsToPublish.contains(uuid)) {
+            if (!uuidsToPublish.contains(uuid) || targetNode.hasNode(newName)) {
                 return true;
             }
             targetNode.getSession().save();

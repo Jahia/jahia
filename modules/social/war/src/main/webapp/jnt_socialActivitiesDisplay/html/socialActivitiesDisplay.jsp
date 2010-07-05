@@ -45,5 +45,3 @@
         </c:if>
 </c:if>
 <template:linker property="j:bindedComponent"/>
-
-

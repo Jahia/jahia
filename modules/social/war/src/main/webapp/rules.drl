@@ -19,13 +19,13 @@ global ImageService imageService
 global ExtractionService extractionService
 global Logger logger
 global JCRStoreProvider provider
-global SocialService socialService
+global SocialRuleService socialService
 ###############################################################################
 
 rule "Create docspace activity"
    when
        A new node is created
-	   - the node has the type jnt:docspace
+	   - the node has the type jmix:docspace
    then
        Add activity "created" on node of types node.getTypes() for user user.getName() with messageKey "created.docspace"
 end
@@ -40,7 +40,7 @@ end
 
 rule "Create file in docspace activity"
    when
-      The type jnt:docspaceFile has been assigned to a node
+      The type jmix:docspaceFile has been assigned to a node
    then
        Add activity "created" on node of types node.getTypes() for user user.getName() with messageKey "created.docspacefile"
 end

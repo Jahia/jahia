@@ -51,7 +51,7 @@ public class SendMessageAction implements Action {
         final String subject = req.getParameter("j:subject");
         final String body = req.getParameter("j:body");
 
-        if (!socialService.sendMessage(node, toUserKey, subject, body)) {
+        if (!socialService.sendMessage(node.getName(), toUserKey, subject, body)) {
             return new ActionResult(HttpServletResponse.SC_BAD_REQUEST, null, new JSONObject());
         }
 

@@ -22,7 +22,11 @@
     <bean class="org.jahia.services.content.rules.ModuleGlobalObject">
         <property name="globalRulesObject">
             <map>
-                <entry key="socialService" value-ref="socialService" />
+                <entry key="socialService">
+                    <bean class="org.jahia.modules.social.SocialRuleService">
+                        <property name="socialService" ref="socialService"/>
+                    </bean>
+                </entry>
             </map>
         </property>
     </bean>

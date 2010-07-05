@@ -214,14 +214,7 @@ public class AddedNodeFact implements Updateable {
     }
 
     public AddedNodeFact getNode(String relPath) throws RepositoryException {
-        NodeIterator it = node.getNodes();
-        while (it.hasNext()) {
-            JCRNodeWrapper n = (JCRNodeWrapper) it.nextNode();
-            if (n.getName().equals(relPath)) {
-                return new AddedNodeFact(n);
-            }
-        }
-        throw new PathNotFoundException(relPath);
+        return new AddedNodeFact(node.getNode(relPath));
     }
 
     public String toString() {

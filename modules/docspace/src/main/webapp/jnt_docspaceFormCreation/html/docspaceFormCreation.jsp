@@ -25,6 +25,7 @@
                         <form method="post" action="${pageNode.name}/" name="newDocspace">
                             <input type="hidden" name="autoCheckin" value="true">
                             <input type="hidden" name="nodeType" value="jnt:folder">
+                            <input type="hidden" name="jcr:mixinTypes" value="jmix:docspace"/>
                             <input type="hidden" name="jcr:mixinTypes" value="jmix:tagged"/>
                             <input type="hidden" name="jcr:mixinTypes" value="mix:title"/>
                             <input type="hidden" name="jcr:mixinTypes" value="jmix:pager"/>

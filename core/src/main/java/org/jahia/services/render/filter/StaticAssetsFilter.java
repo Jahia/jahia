@@ -40,6 +40,7 @@ import net.htmlparser.jericho.HTMLElementName;
 import net.htmlparser.jericho.OutputDocument;
 import net.htmlparser.jericho.Source;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
@@ -58,20 +59,22 @@ public class StaticAssetsFilter extends AbstractFilter {
     @Override
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception {
-
+        String out = previousOut;
         Source source = new Source(previousOut);
         OutputDocument outputDocument = new OutputDocument(source);
         if (renderContext.isAjaxRequest()) {
             Element element = source.getFirstElement();
-            final EndTag tag = element.getEndTag();
-            if (tag == null) {
-                logger.error("Couldn't find end tag for element " + element.getName() + " debugInfo="
-                        + element.getDebugInfo() + " in markup [" + previousOut + "]");
-            } else {
-                final String staticsAsset = service.render(new Resource(resource.getNode(), "html",
-                        "html.statics.assets", Resource.CONFIGURATION_INCLUDE), renderContext);
-                outputDocument.replace(tag.getBegin(), tag.getBegin() + 1,
-                        "\n" + AggregateCacheFilter.removeEsiTags(staticsAsset) + "\n<");
+            final EndTag tag = element != null ? element.getEndTag() : null;
+            final String staticsAsset = AggregateCacheFilter.removeEsiTags(service.render(
+                    new Resource(resource.getNode(), "html", "html.statics.assets", Resource.CONFIGURATION_INCLUDE),
+                    renderContext));
+            if (StringUtils.isNotBlank(staticsAsset)) {
+                if (tag != null) {
+                    outputDocument.replace(tag.getBegin(), tag.getBegin() + 1, "\n" + staticsAsset + "\n<");
+                    out = outputDocument.toString();
+                } else {
+                    out = previousOut + "\n" + staticsAsset;
+                }
             }
         } else {
             final List<Element> elementList = source.getAllElements(HTMLElementName.HEAD);
@@ -82,9 +85,8 @@ public class StaticAssetsFilter extends AbstractFilter {
                 outputDocument.replace(tag.getBegin(), tag.getBegin() + 1,
                         "\n" + AggregateCacheFilter.removeEsiTags(staticsAsset) + "\n<");
             }
-        }
-
-        String out = outputDocument.toString();
+            out = outputDocument.toString();
+         }
 
         return out;
     }

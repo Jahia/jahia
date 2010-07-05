@@ -269,7 +269,7 @@ public class SocialService {
 
         JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(userKey);
         if (jahiaUser == null) {
-            logger.error ("Couldn't lookup user with userKey" + userKey);
+            logger.error ("Couldn't lookup user with userKey " + userKey);
             return null;
         }
         if (jahiaUser instanceof JahiaLDAPUser) {

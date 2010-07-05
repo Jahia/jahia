@@ -5,7 +5,9 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <template:addResources type="css" resources="social.css"/>
+<template:addResources type="css" resources="jquery.fancybox.css"/>
 <template:addResources type="javascript" resources="jquery.min.js,jquery.cuteTime.js"/>
+<template:addResources type="javascript" resources="jquery.fancybox.pack.js"/>
 <template:addResources type="javascript" resources="jahia.social.js"/>
 
 <script type="text/javascript">
@@ -13,21 +15,47 @@
     function tabCallback() {
         $(".messageDetailLink").click(function() {
             $.ajax({
-                url: $(this).attr('urlToMessage'),
+                url: $(this).attr('rel'),
                 type : 'get',
                 success : function (data) {
                     $(".social-message-detail").html(data);
-                    initActionDeleteLinks($("div.social-message-detail a.messageActionDelete"), true);
                     $('.timestamp').cuteTime({ refresh: 60000 });
+                    initActionDeleteLinks($("div.social-message-detail a.messageActionDelete"));
+                    initShowSendMessage($("div.social-message-detail a.messageActionReply"));
                 }
             });
         });
 
         $('.timestamp').cuteTime({ refresh: 60000 });
         
+        $("#sendMessage").submit(function() {
+            if ($("#messagesubject").val().length < 1) {
+                $("#login_error").show();
+                $.fancybox.resize();
+                return false;
+            }
+
+            $.fancybox.showActivity();
+            $.ajax({
+                type        : "POST",
+                cache       : false,
+                url         : '${url.base}${currentNode.path}.sendmessage.do',
+                data        : $(this).serializeArray(),
+                success     : function(data) {
+                    alert("<fmt:message key='message.messageSent'/>");
+                    $.fancybox.resize();
+                    $.fancybox.center();
+                    $.fancybox.close();
+                }
+            });
+
+            return false;
+        });
+        
         initActionDeleteLinks($("a.messageActionDelete"));
+        initShowSendMessage($("a.messageActionReply"));
     }
-    function initActionDeleteLinks(links, removeDetails) {
+    function initActionDeleteLinks(links) {
         links.click(function(e){
             e.preventDefault();
             var msgId = $(this).attr('rel');
@@ -35,10 +63,35 @@
                 removeSocialMessage('${url.base}/${currentNode.path}', msgId,
                     function() {
                         $("#social-message-" + msgId).remove();
-                        if (removeDetails) {
-                        	$(".social-message-detail").empty();
-                        } 
+                        if ($("div.social-message-detail div#social-message-detail-" + msgId).length > 0) {
+                     	  $(".social-message-detail").empty();
+                        }
                     });
+            }
+        });
+    }
+    function initShowSendMessage(links) {
+        links.fancybox({
+            'scrolling'          : 'no',
+            'titleShow'          : false,
+            'hideOnContentClick' : false,
+            'showCloseButton'    : true,
+            'overlayOpacity'     : 0.6,
+            'transitionIn'       : 'none',
+            'transitionOut'      : 'none',
+            'centerOnScroll'     : true,
+            'onStart'            : function(selectedArray, selectedIndex, selectedOpts) {
+                var info = $(selectedArray).attr('rel');
+                if (info.indexOf('details-') == 0) {
+                    info = info.substring('details-'.length);
+                }
+                var userKey = info.split('|')[0];
+                $('#destinationUserKey').val(userKey);
+                $('#messagesubject').val("<fmt:message key='label.replySubject'/>" + " " + info.substring(userKey.length + 1));
+                $('#messagebody').val('');
+            }, 
+            'onClosed'           : function() {
+                $("#login_error").hide();
             }
         });
     }
@@ -98,10 +151,10 @@
         <h3 class="boxmessage-title"><fmt:message key="message.new"/></h3>
 
         <form class="formMessage" id="sendMessage" method="post" action="">
-            <input type="hidden" name="j:to" value="{jcr}sjobs" />
+            <input type="hidden" name="j:to" id="destinationUserKey" value="" />
             <fieldset>
                 <legend><fmt:message key="message.label.creation"/></legend>
-                <p id="login_error" style="display:none;">Please, enter data</p>
+                <p id="login_error" style="display:none;"><fmt:message key="message.enterData"/></p>
 
                 <p><label for="messagesubject" class="left"><fmt:message key="message.label.subject"/></label>
                     <input type="text" name="j:subject" id="messagesubject" class="field" value=""

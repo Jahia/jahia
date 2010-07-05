@@ -6,15 +6,14 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 
 <c:set var="fromUser" value="${currentNode.properties['j:from'].node}"/>
-<div class="boxsocial userMessagesDetail"><!--start boxsocial -->
+<div class="boxsocial userMessagesDetail" id="social-message-detail-${currentNode.identifier}"><!--start boxsocial -->
     <div class="boxsocialpadding16 boxsocialmarginbottom16">
         <div class="boxsocial-inner">
             <div class="boxsocial-inner-border">
                 <ul class="messageActionList">
                    <li><a class="messageActionDelete" title="<fmt:message key='deleteMessage'/>" href="#delete" rel="${currentNode.identifier}"><span><fmt:message
                         key="deleteMessage"/></span></a></li>
-                    <li><a class="messageActionReply" title="<fmt:message key="replyToMessage"/>" id="showSendMessage"
-                   href="#divSendMessage"><span><fmt:message key="replyToMessage"/></span></a></li>
+                    <li><a class="messageActionReply" title="<fmt:message key='replyToMessage'/>" href="#divSendMessage" rel="details-${fromUser.name}|${fn:escapeXml(currentNode.propertiesAsString['j:subject'])}"><span><fmt:message key="replyToMessage"/></span></a></li>
                 </ul>
                 <div class='image'>
                     <div class='itemImage itemImageLeft'>
@@ -26,8 +25,8 @@
                     <a href="${usl.base}${fromUser.path}.html"><c:out value="${jcr:userFullName(fromUser)}"/></a>
                 </h5><jcr:nodeProperty node="${currentNode}" name="jcr:lastModified" var="lastModified"/><span class="timestamp"><fmt:formatDate
 value="${lastModified.time}" pattern="yyyy/MM/dd HH:mm"/></span>
-                <h5>${currentNode.properties['j:subject'].string}</h5>
-                <p>${currentNode.properties['j:body'].string}</p>
+                <h5>${fn:escapeXml(currentNode.propertiesAsString['j:subject'])}</h5>
+                <p>${fn:escapeXml(currentNode.propertiesAsString['j:body'])}</p>
 
             <div class='clear'></div>
 			</div>

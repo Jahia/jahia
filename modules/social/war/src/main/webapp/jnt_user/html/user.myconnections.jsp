@@ -101,8 +101,10 @@
             'transitionOut'      : 'none',
             'centerOnScroll'     : true,
             'onStart'            : function(selectedArray, selectedIndex, selectedOpts) {
-                var userKey = $(selectedArray).attr('userKey');
+                var userKey = $(selectedArray).attr('rel');
                 $('#destinationUserKey').val(userKey);
+                $('#messagesubject').val('');
+                $('#messagebody').val('');
             }, 
             'onClosed'           : function() {
                 $("#login_error").hide();
@@ -262,7 +264,7 @@
                    toUserId="${socialConnection.properties['j:connectedTo'].node.identifier}"
                    connectionType="${socialConnection.properties['j:type'].string}"><span><fmt:message
                         key="removeFriend"/></span></a>
-                <a class="social-list-sendmessage showSendMessage" title="<fmt:message key="sendMessage"/>" userKey="${connectedToUser.properties['j:nodename'].string}"
+                <a class="social-list-sendmessage showSendMessage" title="<fmt:message key="sendMessage"/>" rel="${connectedToUser.name}"
                    href="#divSendMessage"><span><fmt:message key="sendMessage"/></span></a>
                 <h4>
                     <a href="${usl.base}${connectedToUser.path}.html"><c:out value="${jcr:userFullName(connectedToUser)}"/></a>
@@ -287,10 +289,10 @@
         <h3 class="boxmessage-title"><fmt:message key="message.new"/></h3>
 
         <form class="formMessage" id="sendMessage" method="post" action="">
-            <input type="hidden" name="j:to" id="destinationUserKey" value="{jcr}sjobs" />
+            <input type="hidden" name="j:to" id="destinationUserKey" value="" />
             <fieldset>
                 <legend><fmt:message key="message.label.creation"/></legend>
-                <p id="login_error" style="display:none;">Please, enter data</p>
+                <p id="login_error" style="display:none;"><fmt:message key="message.enterData"/></p>
 
                 <p><label for="messagesubject" class="left"><fmt:message key="message.label.subject"/></label>
                     <input type="text" name="j:subject" id="messagesubject" class="field" value=""

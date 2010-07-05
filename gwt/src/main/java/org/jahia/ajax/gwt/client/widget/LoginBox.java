@@ -34,7 +34,6 @@ package org.jahia.ajax.gwt.client.widget;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.util.KeyNav;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.Window;
@@ -44,7 +43,6 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel.Method;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
-import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Element;
 import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -75,7 +73,7 @@ public class LoginBox extends Window {
         form.setAction(JahiaGWTParameters.getContextPath() + "/cms/login?doLogin=true&restMode=true");
         form.setMethod(Method.POST);
         form.setLabelWidth(125);
-        
+
         VerticalPanel vpLabels = new VerticalPanel();
         vpLabels.add(new Label(Messages.get("message.sessionExpired",
                 "You have been performed no actions for some time. Due to security concerns we have ended your session. Please log in again.")));
@@ -131,12 +129,6 @@ public class LoginBox extends Window {
                     }
                     hide();
                 }
-            }
-        });
-        form.addListener(Events.KeyPress, new KeyNav<KeyEvent>() {
-            public void onEnter(KeyEvent ke) {
-                lbWrongCredentials.setVisible(false);
-                form.submit();
             }
         });
 

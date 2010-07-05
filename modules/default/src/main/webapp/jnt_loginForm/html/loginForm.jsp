@@ -13,6 +13,11 @@
 
 <template:addResources type="css" resources="loginForm.css"/>
 
+<c:if test="${renderContext.editMode}">
+    <legend> Login form : ${currentNode.properties['jcr:title'].string}</legend>
+</c:if>
+<c:if test="${!renderContext.loggedIn}">
+
 <script type="text/javascript">
     document.onkeydown = keyDown;
 
@@ -24,10 +29,6 @@
         }
     }
 </script>
-<c:if test="${renderContext.editMode}">
-    <legend> Login form : ${currentNode.properties['jcr:title'].string}</legend>
-</c:if>
-<c:if test="${!renderContext.loggedIn}">
 <ui:loginArea class="Form loginForm" action="${pageContext.request.contextPath}/cms/login">
     <h3 class="loginIcon">${currentNode.properties['jcr:title'].string}</h3>
     <ui:isLoginError>

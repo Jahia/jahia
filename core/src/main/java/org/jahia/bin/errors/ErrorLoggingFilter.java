@@ -413,7 +413,7 @@ public class ErrorLoggingFilter implements Filter {
                 if (SC_UNAUTHORIZED == code) {
                     logger.info(message);
                 } else {
-                    logger.warn(message);
+                    logger.warn(message != null && message.length() > 0 ? message : "Error code: " + code);
                 }
             }
         }

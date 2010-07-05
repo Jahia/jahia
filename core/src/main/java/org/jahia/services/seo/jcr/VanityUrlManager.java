@@ -519,7 +519,7 @@ public class VanityUrlManager {
             }
         }
 
-        // Check if the added vanity URLs are really unique for the site
+        // Check if the added vanity URLs are really unique for the repository
         for (VanityUrl vanityUrl : toAdd) {
             checkUniqueConstraint(contentNode, vanityUrl, toDelete, session);
         }
@@ -571,7 +571,7 @@ public class VanityUrlManager {
             VanityUrl vanityUrl, List<Map.Entry<String, VanityUrl>> toDelete,
             JCRSessionWrapper session) throws RepositoryException {
         List<VanityUrl> existingUrls = findExistingVanityUrls(vanityUrl
-                .getUrl(), vanityUrl.getSite(), session);
+                .getUrl(), null, session);
         if (existingUrls != null && !existingUrls.isEmpty()) {
             for (VanityUrl existingUrl : existingUrls) {
                 if (!vanityUrl.equals(existingUrl)) {

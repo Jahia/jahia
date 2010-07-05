@@ -18,8 +18,6 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class JCRSiteNode extends JCRNodeDecorator {
-    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(JCRSiteNode.class);
-
     public JCRSiteNode(JCRNodeWrapper node) {
         super(node);
     }

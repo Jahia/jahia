@@ -1095,14 +1095,14 @@ public class JahiaAdministration extends HttpServlet {
 
         while (sitesList.hasNext()) {
             JahiaSite jahiaSite = sitesList.next();
-            logger.debug("check granted site " + jahiaSite.getServerName());
+            logger.debug("check granted site " + jahiaSite.getSiteKey());
 
             if ((JahiaSiteTools.getAdminGroup(jahiaSite) != null) &&
                     JahiaSiteTools.getAdminGroup(jahiaSite).isMember(user)) {
-                logger.debug("granted site for " + jahiaSite.getServerName());
+                logger.debug("granted site for " + jahiaSite.getSiteKey());
                 grantedSites.add(jahiaSite);
             } else if (user.isPermitted(new PermissionIdentity("jahia-administration", "admin", jahiaSite.getSiteKey()))) {
-                logger.debug("granted site for " + jahiaSite.getServerName());
+                logger.debug("granted site for " + jahiaSite.getSiteKey());
                 grantedSites.add(jahiaSite);
             }
         }

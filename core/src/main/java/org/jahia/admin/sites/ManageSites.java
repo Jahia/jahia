@@ -442,9 +442,6 @@ public class ManageSites extends AbstractAdministrationModule {
                 } else if (siteServerName.equals("localhost")) {
                     warningMsg = 
                             getMessage("org.jahia.admin.warningMsg.chooseAnotherServerName.label");
-                } else if (sMgr.getSite(siteServerName) != null) {
-                    warningMsg = 
-                            getMessage("org.jahia.admin.warningMsg.chooseAnotherServerName.label");
                 } else if (sMgr.getSiteByKey(siteKey) != null) {
                     warningMsg = 
                             getMessage("org.jahia.admin.warningMsg.chooseAnotherSiteKey.label");
@@ -1251,8 +1248,6 @@ public class ManageSites extends AbstractAdministrationModule {
 
             String selectedTmplSet = (String) request.getAttribute("selectedTmplSet");
             // get tmplPackage list...
-            JahiaTemplateManagerService templateMgr = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
-
             final JCRNodeWrapper tmplPack = JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession()
                     .getNode("/templatesSet/" + selectedTmplSet);
 
@@ -1388,12 +1383,6 @@ public class ManageSites extends AbstractAdministrationModule {
                     warningMsg = 
                             getMessage("org.jahia.admin.warningMsg.invalidServerName.label");
                     processError = true;
-                } else if (!site.getServerName().equals(siteServerName)) {
-                    if (sMgr.getSite(siteServerName) != null) {
-                        warningMsg = 
-                                getMessage("org.jahia.admin.warningMsg.chooseAnotherServerName.label");
-                        processError = true;
-                    }
                 }
             } else {
                 warningMsg = 
@@ -1874,17 +1863,12 @@ public class ManageSites extends AbstractAdministrationModule {
                     importInfos.put("mixLanguage", "false");
                     importInfos.put("templates", "");
                     importInfos.put("siteKeyExists", Boolean.TRUE);
-                    importInfos.put("siteServerNameExists", Boolean.TRUE);
                 } else {
                     try {
                         importInfos.put("siteKeyExists", Boolean.valueOf(
                                 ServicesRegistry.getInstance().getJahiaSitesService()
                                         .getSiteByKey((String) importInfos.get("sitekey")) != null ||
                                         "".equals(importInfos.get("sitekey"))));
-                        importInfos.put("siteServerNameExists", Boolean.valueOf(
-                                ServicesRegistry.getInstance().getJahiaSitesService()
-                                        .getSite((String) importInfos.get("siteservername")) != null ||
-                                        "".equals(importInfos.get("siteservername"))));
                     } catch (JahiaException e) {
                         logger.error("Error while preparing site import", e);
                     }
@@ -1899,6 +1883,7 @@ public class ManageSites extends AbstractAdministrationModule {
 
     private void processFileImport(HttpServletRequest request, HttpServletResponse response, HttpSession session)
             throws IOException, ServletException {
+        @SuppressWarnings("unchecked")
         List<Map<Object, Object>> importsInfos = (List<Map<Object, Object>>) session.getAttribute("importsInfos");
         Map<Object, Object> siteKeyMapping = new HashMap<Object, Object>();
         boolean stillBad = false;
@@ -1928,19 +1913,13 @@ public class ManageSites extends AbstractAdministrationModule {
                         infos.put("siteKeyExists", Boolean.valueOf(ServicesRegistry.getInstance().getJahiaSitesService()
                                 .getSiteByKey((String) infos.get("sitekey")) != null ||
                                 "".equals(infos.get("sitekey"))));
-                        infos.put("siteServerNameExists", Boolean.valueOf(
-                                ServicesRegistry.getInstance().getJahiaSitesService()
-                                        .getSite((String) infos.get("siteservername")) != null ||
-                                        "".equals(infos.get("siteservername"))));
 
-                        if ("".equals(infos.get("sitekey")) || "".equals(infos.get("siteservername")) ||
-                                "".equals(infos.get("sitetitle"))) {
+                        if ("".equals(infos.get("sitekey")) || "".equals(infos.get("sitetitle"))) {
                             // todo display an error message
                             stillBad = true;
                         }
 
-                        if (Boolean.TRUE.equals(infos.get("siteKeyExists")) ||
-                                Boolean.TRUE.equals(infos.get("siteServerNameExists"))) {
+                        if (Boolean.TRUE.equals(infos.get("siteKeyExists"))) {
                             stillBad = true;
                         }
                     }
@@ -1949,8 +1928,6 @@ public class ManageSites extends AbstractAdministrationModule {
                 }
             } else {
                 infos.put("siteKeyExists", Boolean.FALSE);
-                infos.put("siteServerNameExists", Boolean.FALSE);
-
             }
         }
         if (stillBad) {

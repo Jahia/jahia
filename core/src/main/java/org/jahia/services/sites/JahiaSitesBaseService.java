@@ -63,7 +63,6 @@ import javax.jcr.RepositoryException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -81,7 +80,6 @@ public class JahiaSitesBaseService extends JahiaSitesService {
     public static final String SITE_CACHE_BYKEY = "JahiaSiteByKeyCache";
     /** The cache in memory */
     private Cache<Comparable<?>, JahiaSite> siteCacheByID = null;
-    private Cache<String, Serializable> siteCacheByName = null;
     private Cache<String, JahiaSite> siteCacheByKey = null;
 
     protected JCRSitesProvider siteProvider = null;
@@ -148,9 +146,6 @@ public class JahiaSitesBaseService extends JahiaSitesService {
             throws JahiaInitializationException {
 
         siteCacheByID = cacheService.createCacheInstance(SITE_CACHE_BYID);
-//        siteCacheByID.registerListener(this);
-        siteCacheByName = cacheService.createCacheInstance(SITE_CACHE_BYNAME);
-//        siteCacheByName.registerListener(this);
         siteCacheByKey = cacheService.createCacheInstance(SITE_CACHE_BYKEY);
     }
 
@@ -182,9 +177,6 @@ public class JahiaSitesBaseService extends JahiaSitesService {
 
     private synchronized void addToCache(JahiaSite site) {
         siteCacheByID.put(site.getID(), site);
-        if (site.getServerName() != null) {
-            siteCacheByName.put(site.getServerName(), site);
-        }
         siteCacheByKey.put(site.getSiteKey(), site);
     }
     
@@ -212,44 +204,6 @@ public class JahiaSitesBaseService extends JahiaSitesService {
         return site;
     }
 
-    /**
-	 * Find a site by it's server name value
-	 * 
-	 * @param serverName
-	 *            the server name to look for
-	 * 
-	 * @return if found, returns the site with the corresponding serverName, or
-	 *         the first one if there are multiple, or null if there are none.
-	 * 
-	 * @throws JahiaException
-	 *             thrown if there was a problem communicating with the
-	 *             database.
-	 */
-    public JahiaSite getSiteByServerName(String serverName)
-            throws JahiaException {
-        if (serverName == null) {
-            return null;
-        }
-        Object cachedObj = siteCacheByName.get(serverName);
-
-        if (cachedObj != null) {
-            return cachedObj.equals("") ? null : (JahiaSite)cachedObj;
-        }
-
-        // the site was not found in the cache, try to load it from the
-        // database.
-        JahiaSite site = siteProvider.getSiteByName(serverName);
-        // if the site could be loaded from the database, add it into the cache.
-        if (site != null) {
-            addToCache(site);
-        } else {
-            siteCacheByName.put(serverName, "");
-        }
-
-        return site;
-    }
-
-
     // --------------------------------------------------------------------------
     // FH 10 May 2001 Cache storing improvments for performance issues.
     /**
@@ -260,7 +214,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
      * @return JahiaSite the JahiaSite bean or null
      */
     public JahiaSite getSite(String name) throws JahiaException {
-        return getSiteByServerName(name);
+        return getSiteByKey(name);
     }
 
 
@@ -423,7 +377,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                     try {
                         ServicesRegistry.getInstance().getImportExportService().importSiteZip(initialZip, new ArrayList<ImportAction>(), new ExtendedImportResult(), jParams.getSite(), Collections.emptyMap());
                     } catch (RepositoryException e) {
-                        e.printStackTrace();
+                        logger.warn("Error importing site ZIP", e);
                     }
                 }
             } else {
@@ -437,7 +391,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                         session.save();
                     }
                 } catch (RepositoryException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    logger.warn("Error adding home node", e);
                 }
             }
 
@@ -465,7 +419,6 @@ public class JahiaSitesBaseService extends JahiaSitesService {
         siteProvider.deleteSite(site.getSiteKey());
 
         siteCacheByID.remove (new Integer (site.getID ()));
-        siteCacheByName.remove(site.getServerName());
         siteCacheByKey.remove(site.getSiteKey());
 
     }
@@ -482,7 +435,6 @@ public class JahiaSitesBaseService extends JahiaSitesService {
         //todo update jahia site name/description
 //        siteManager.updateJahiaSite(site);
         siteProvider.updateSite(site);
-        siteCacheByName.flush();
         siteCacheByID.flush();
         siteCacheByKey.flush();
     }

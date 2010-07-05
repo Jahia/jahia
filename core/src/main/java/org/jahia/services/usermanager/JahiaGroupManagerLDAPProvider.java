@@ -65,7 +65,6 @@ import javax.naming.directory.SearchResult;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.sites.JahiaSite;
@@ -370,10 +369,10 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
 
             while (sitesList.hasNext ()) {
                 JahiaSite jahiaSite = sitesList.next ();
-                logger.debug ("check granted site " + jahiaSite.getServerName ());
+                logger.debug ("check granted site " + jahiaSite.getSiteKey());
 
                 if (JahiaSiteTools.getAdminGroup (jahiaSite).isMember (user)) {
-                    logger.debug ("granted site for " + jahiaSite.getServerName ());
+                    logger.debug ("granted site for " + jahiaSite.getSiteKey());
                     grantedSites.add (jahiaSite);
                 }
             }
@@ -1265,23 +1264,6 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
         //todo implement it with jcr properties ..
 
         return groupKeys;
-    }
-
-    /**
-     * Transforms a search with "*" characters into a valid LIKE statement
-     * with "%" characters. Also escapes the string to remove all "'" and
-     * other chars that might disturb the request construct.
-     *
-     * @param input the original String
-     *
-     * @return String a resulting string that has
-     */
-    private String makeLIKEString (String input) {
-        String result = JahiaTools.replacePattern(input, "*", "%");
-        result = JahiaTools.replacePattern(result, "'", "\\'");
-        result = JahiaTools.replacePattern(result, "\"", "\\\"");
-        result = JahiaTools.replacePattern(result, "_", "\\_");
-        return result;
     }
 
     /**

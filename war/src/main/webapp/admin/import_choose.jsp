@@ -173,10 +173,7 @@ function sendForm(){
                             </tr>
                             <tr>
                                 <td>
-                                    <fmt:message key="org.jahia.admin.site.ManageSites.siteServerName.label"/>*&nbsp;<% if (Boolean.TRUE.equals(infos.get("siteServerNameExists")))  { %>
-                                    <div class="error">
-                                        <fmt:message key="org.jahia.admin.warningMsg.chooseAnotherServerName.label"/>
-                                    </div><% } %>
+                                    <fmt:message key="org.jahia.admin.site.ManageSites.siteServerName.label"/>*&nbsp;                                
                                 </td>
                                 <td>
                                     <input class="input" type="text" name="<%=siteKey+"siteServerName"%>" value="<%= infos.get("siteservername") %>" size="<%=inputSize%>" maxlength="200">
@@ -233,10 +230,7 @@ function sendForm(){
                                 </tr>
                                 <tr>
                                     <td>
-                                        <fmt:message key="org.jahia.admin.site.ManageSites.siteServerName.label"/>*&nbsp;<% if (Boolean.TRUE.equals(infos.get("siteServerNameExists")))  { %>
-                                        <div class="error">
-                                            <fmt:message key="org.jahia.admin.warningMsg.chooseAnotherServerName.label"/>
-                                        </div><% } %>
+                                        <fmt:message key="org.jahia.admin.site.ManageSites.siteServerName.label"/>*&nbsp;
                                     </td>
                                     <td>
                                         <input class="input" type="text" name="<%=siteKey+"siteServerName"%>" value="<%= infos.get("siteservername") %>" size="<%=inputSize%>" maxlength="200">

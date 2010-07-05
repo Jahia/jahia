@@ -91,7 +91,7 @@ public class ManageGroups extends AbstractAdministrationModule {
     private JahiaSite jahiaSite;
     private String groupMessage = "";
     private boolean isError = true;
-    private static Set groupMembers; // Contain the group members of the selected group list
+    private static Set<Principal> groupMembers; // Contain the group members of the selected group list
 
     ProcessingContext jParams;
 
@@ -254,7 +254,7 @@ public class ManageGroups extends AbstractAdministrationModule {
         // get list of groups...
          request.setAttribute("providerList", gMgr.getProviderList());
         request.setAttribute("resultList", PrincipalViewHelper.getGroupSearchResult(request, jahiaSite.getID()));
-        request.setAttribute("currentSite", jahiaSite.getServerName());
+        request.setAttribute("currentSite", jahiaSite.getSiteKey());
         request.setAttribute("jspSource", JSP_PATH + "group_management/group_management.jsp");
         request.setAttribute("directMenu", JSP_PATH + "direct_menu.jsp");
         request.setAttribute("groupSearch", JSP_PATH + "group_management/group_search.jsp");
@@ -403,26 +403,23 @@ public class ManageGroups extends AbstractAdministrationModule {
             String[] newMembersList = (String[]) request.getParameterValues("selectMember");
             // convert to HashSet
             if (newMembersList != null) {
-                Set updatedGroupSet = new HashSet();
+                Set<JahiaUser> updatedGroupSet = new HashSet<JahiaUser>();
                 for (int i = 0; i < newMembersList.length; i++) {
                     // remove identifier type ("u " or "g " and provider) for future use.
-                    JahiaUser usr = (JahiaUser) uMgr.lookupUserByKey(newMembersList[
+                    JahiaUser usr = uMgr.lookupUserByKey(newMembersList[
                                                                 i].substring(1));
                     updatedGroupSet.add(usr);
                 }
                 // display the edit form with initial values
                 request.setAttribute("groupMembers", updatedGroupSet); //usersViewHelper.getUserListForDisplay(groupMembers));
             } else {
-                request.setAttribute("groupMembers", new HashSet()); //usersViewHelper.getUserListForDisplay(groupMembers));
+                request.setAttribute("groupMembers", new HashSet<JahiaUser>()); //usersViewHelper.getUserListForDisplay(groupMembers));
             }
         } else {
-        groupMembers = (Set)getGroupMembers(groupToEdit, jahiaSite.getID());
+        groupMembers = getGroupMembers(groupToEdit, jahiaSite.getID());
         // display the edit form with initial values
         request.setAttribute("groupMembers", groupMembers); //usersViewHelper.getUserListForDisplay(groupMembers));
         }
-
-        // Get the home page
-        int homePageID = theGroup.getHomepageID();
 
         request.setAttribute("jspSource", JSP_PATH + "group_management/group_edit.jsp");
         request.setAttribute("directMenu", JSP_PATH + "direct_menu.jsp");
@@ -489,11 +486,11 @@ public class ManageGroups extends AbstractAdministrationModule {
         // let's recuperate the members of the group from the selection box
         String[] newMembersList = (String[])request.getParameterValues("selectMember");
         // convert to HashSet
-        Set candidateMembers = new HashSet();
+        Set<Principal> candidateMembers = new HashSet<Principal>();
         if (newMembersList != null) {
             for (int i = 0; i < newMembersList.length; i++) {
                 // remove identifier type ("u " or "g " and provider) for future use.
-                JahiaUser usr = (JahiaUser)uMgr.lookupUserByKey(newMembersList[i].substring(1));
+                JahiaUser usr = uMgr.lookupUserByKey(newMembersList[i].substring(1));
                 candidateMembers.add(usr);
             }
         }
@@ -511,9 +508,8 @@ public class ManageGroups extends AbstractAdministrationModule {
             }
         } else {
             // No member in the select box, all members have to be removed
-            Iterator it = groupMembers.iterator();
-            while (it.hasNext()) {
-                JahiaUser jahiaUser = (JahiaUser) it.next();
+            for (Iterator<Principal> it = groupMembers.iterator(); it.hasNext();) {
+                Principal jahiaUser = it.next();
                 grp.removeMember(jahiaUser);
             }
         }
@@ -546,7 +542,7 @@ public class ManageGroups extends AbstractAdministrationModule {
         }
         else {
             request.setAttribute("groupName", selectedGroup);
-            List groupMembership = getGroupMembership(selectedGroup, jahiaSite.getID());
+            List<String> groupMembership = getGroupMembership(selectedGroup, jahiaSite.getID());
             request.setAttribute("groupMembership", groupMembership);
 
             request.setAttribute("jspSource", JSP_PATH + "group_management/group_view.jsp");
@@ -642,10 +638,8 @@ public class ManageGroups extends AbstractAdministrationModule {
             groupMessage += " [" + groupName + "] ";
             groupMessage += getMessage("message.successfully.created");
             isError = false;
-            Set sourceGroupMembers = getGroupMembers(sourceGroupName, jahiaSite.getID());
-            Iterator it = sourceGroupMembers.iterator();
-            while (it.hasNext()) {
-                theNewGroup.addMember((JahiaUser)it.next());
+            for (Principal member : getGroupMembers(sourceGroupName, jahiaSite.getID())) {
+                theNewGroup.addMember(member);
             }
             // Home page copy
             JahiaGroup sourceGroup = gMgr.lookupGroup(jahiaSite.getID(), sourceGroupName);
@@ -730,10 +724,8 @@ public class ManageGroups extends AbstractAdministrationModule {
 
         if (groupMessage.equals("")) {
 
-        Set groupMembers = getGroupMembers(groupName, jahiaSite.getID());
-        Iterator it = groupMembers.iterator();
-        while (it.hasNext()) {
-            theGroup.removeMember((JahiaUser)it.next());
+        for (Principal member : getGroupMembers(groupName, jahiaSite.getID())) {
+            theGroup.removeMember(member);
         }
 
             // delete group...
@@ -778,21 +770,21 @@ public class ManageGroups extends AbstractAdministrationModule {
       * @param jahiaSite
       * @return  the member Set of a given site and a given group.
       */
-    private Set getGroupMembers(String groupName, int jahiaSite) {
+    private Set<Principal> getGroupMembers(String groupName, int jahiaSite) {
 
-        JahiaGroup theGroup = (JahiaGroup)gMgr.lookupGroup(jahiaSite, groupName);
-        Set groupMembers = new HashSet();
+        JahiaGroup theGroup = (JahiaGroup) gMgr.lookupGroup(jahiaSite, groupName);
+        Set<Principal> groupMembers = new HashSet<Principal>();
         if (theGroup != null) {
-             Enumeration groupMembersEnum = theGroup.members();
-  
+            Enumeration<Principal> groupMembersEnum = theGroup.members();
+
             while (groupMembersEnum.hasMoreElements()) {
-                Object member = (Object)groupMembersEnum.nextElement();
+                Object member = (Object) groupMembersEnum.nextElement();
                 // keep only members from this jahiaSite...
                 if (member instanceof JahiaUser) {
-                    groupMembers.add((JahiaUser)member);
+                    groupMembers.add((JahiaUser) member);
                 } else {
-                    if (((JahiaGroup)member).getSiteID() == jahiaSite) {
-                        groupMembers.add((JahiaGroup)member);
+                    if (((JahiaGroup) member).getSiteID() == jahiaSite) {
+                        groupMembers.add((JahiaGroup) member);
                     }
                 }
             }
@@ -809,14 +801,14 @@ public class ManageGroups extends AbstractAdministrationModule {
       * @param jahiaSite a jahia site ID
       * @return the group member ship
       */
-    private List getGroupMembership(String groupName, int jahiaSite)
+    private List<String> getGroupMembership(String groupName, int jahiaSite)
     {
         JahiaGroup theGroup = (JahiaGroup)gMgr.lookupGroup(jahiaSite, groupName);
-        List groupMembership = new ArrayList();
+        List<String> groupMembership = new ArrayList<String>();
         if (theGroup != null) {
-            Enumeration groupMembersEnum = theGroup.members();
+            Enumeration<Principal> groupMembersEnum = theGroup.members();
             while (groupMembersEnum.hasMoreElements()) {
-                Object obj = (Object)groupMembersEnum.nextElement();
+                Principal obj = groupMembersEnum.nextElement();
                 // keep only out member of this jahiaSite...
                 if (obj instanceof JahiaUser) {
                     JahiaUser grpMembers = (JahiaUser)obj;
@@ -839,18 +831,14 @@ public class ManageGroups extends AbstractAdministrationModule {
      * @param grp the object defining the previous method
      * @param jParams
      */
-    private void addRemoveGroupMembers(Set left,
-                                       Set right,
+    private void addRemoveGroupMembers(Set<Principal> left,
+                                       Set<Principal> right,
                                        Method addRem,
                                        JahiaGroup grp,
                                        ProcessingContext jParams) {
-        Iterator itRight = right.iterator();
-        while (itRight.hasNext()) {
-            JahiaUser elementRight = (JahiaUser) itRight.next();
-            Iterator itLeft = left.iterator();
-            while (itLeft.hasNext()) {
-                JahiaUser elementLeft = (JahiaUser) itLeft.next();
-                if (elementLeft.getUsername().equals(elementRight.getUsername())) {
+        for (Principal elementRight : right) {
+            for (Principal elementLeft : left) {
+                if (elementLeft.getName().equals(elementRight.getName())) {
                     elementRight = null;
                     break;
                 }

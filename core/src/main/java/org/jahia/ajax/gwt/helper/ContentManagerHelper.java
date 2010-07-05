@@ -284,7 +284,7 @@ public class ContentManagerHelper {
                 comparingGWTJahiaNode.setPath(currentChildNode.getPath());
 
                 // node has been deleted
-                if (!newChildrenList.contains(comparingGWTJahiaNode)) {
+                if (!newChildrenList.contains(comparingGWTJahiaNode) && currentChildNode.isNodeType("jnt:content")) {
                     currentChildNode.remove();
                 }
 

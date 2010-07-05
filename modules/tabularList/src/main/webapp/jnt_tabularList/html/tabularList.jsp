@@ -24,14 +24,11 @@
                 <c:if test="${status.first || displayTab eq subList.identifier}">
                     <c:set var="displayList" value="${subList}"/>
                 </c:if>
-                <c:choose>
-                    <c:when test="${(empty displayTab and status.first) or (displayTab eq subList.identifier)}">
-                        <li><a class="selected"><span>${fn:escapeXml(subList.propertiesAsString['jcr:title'])}</span></a></li>
-                    </c:when>
-                    <c:otherwise>
-                            <li><a href="${url.mainResource}?displayTab=${subList.identifier}"><span>${fn:escapeXml(subList.propertiesAsString['jcr:title'])}</span></a></li>
-                    </c:otherwise>
-                </c:choose>
+                <c:set var="tabCssClass" value=''/>
+                <c:if test="${(empty displayTab and status.first) or (displayTab eq subList.identifier)}">
+                    <c:set var="tabCssClass" value=' class="selected"'/>
+                </c:if>
+                <li><a href="${url.mainResource}?displayTab=${subList.identifier}"${tabCssClass}><span>${fn:escapeXml(subList.propertiesAsString['jcr:title'])}</span></a></li>
             </c:forEach>
         </ul>
     </div>

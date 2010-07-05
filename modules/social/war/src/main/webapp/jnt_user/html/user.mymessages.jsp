@@ -110,7 +110,7 @@
 <div class='grid_8 alpha'><!--start grid_8-->
 
     <jcr:sql var="receivedMessages"
-             sql="select * from [jnt:socialMessage] as uC where isdescendantnode(uC,['${currentNode.path}/messages/inbox'])"/>
+             sql="select * from [jnt:socialMessage] where isdescendantnode(['${currentNode.path}/messages/inbox']) order by [jcr:lastModified] desc"/>
 
     <h3 class="social-title-icon titleIcon"><fmt:message key="receivedMessages"/><img title="" alt=""
                                                                                     src="${url.currentModule}/images/mailbox.png"/>

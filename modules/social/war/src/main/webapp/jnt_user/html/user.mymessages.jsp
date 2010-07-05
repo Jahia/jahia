@@ -6,17 +6,18 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <template:addResources type="css" resources="social.css"/>
 <template:addResources type="javascript" resources="jquery.min.js,jquery.cuteTime.js"/>
+<template:addResources type="javascript" resources="jahia.social.js"/>
 
 <script type="text/javascript">
 
     function tabCallback() {
-
         $(".messageDetailLink").click(function() {
             $.ajax({
                 url: $(this).attr('urlToMessage'),
                 type : 'get',
                 success : function (data) {
                     $(".social-message-detail").html(data);
+                    initActionDeleteLinks($("div.social-message-detail a.messageActionDelete"), true);
                     $('.timestamp').cuteTime({ refresh: 60000 });
                 }
             });
@@ -24,6 +25,22 @@
 
         $('.timestamp').cuteTime({ refresh: 60000 });
         
+        initActionDeleteLinks($("a.messageActionDelete"));
+    }
+    function initActionDeleteLinks(links, removeDetails) {
+        links.click(function(e){
+            e.preventDefault();
+            var msgId = $(this).attr('rel');
+            if (confirm("<fmt:message key='message.removeSocialMessage.confirm'/>")) {
+                removeSocialMessage('${url.base}/${currentNode.path}', msgId,
+                    function() {
+                        $("#social-message-" + msgId).remove();
+                        if (removeDetails) {
+                        	$(".social-message-detail").empty();
+                        } 
+                    });
+            }
+        });
     }
     <c:if test="${not renderContext.ajaxRequest}">
     $(document).ready(function() {
@@ -51,7 +68,7 @@
             <div class="boxsocial-inner-border">
                 <ul class="userMessagesList">
                     <c:forEach items="${receivedMessages.nodes}" var="userMessage">
-                        <li>
+                        <li id="social-message-${userMessage.identifier}">
                             <template:module path="${userMessage.path}" />
                         </li>
                     </c:forEach>

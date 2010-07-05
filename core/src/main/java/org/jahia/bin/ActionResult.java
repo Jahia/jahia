@@ -13,6 +13,7 @@ import org.json.JSONObject;
 public class ActionResult {
     
     public static final ActionResult OK = new ActionResult(HttpServletResponse.SC_OK);
+    public static final ActionResult OK_JSON = new ActionResult(HttpServletResponse.SC_OK, null, new JSONObject());
     public static final ActionResult BAD_REQUEST = new ActionResult(HttpServletResponse.SC_BAD_REQUEST);
 
 

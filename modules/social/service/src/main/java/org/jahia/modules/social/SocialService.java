@@ -18,7 +18,6 @@ import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
-import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
@@ -35,7 +34,7 @@ public class SocialService {
 
     private static Logger logger = Logger.getLogger(SocialService.class);
     public static final String JNT_SOCIAL_ACTIVITY = "jnt:socialActivity";
-    public static final String JNT_SOCIAL_MESSAGE = "jnt:userMessage";
+    public static final String JNT_SOCIAL_MESSAGE = "jnt:socialMessage";
     public static final String JNT_SOCIAL_CONNECTION = "jnt:socialConnection";
 
     /* Rules Consequence implementations */
@@ -192,7 +191,7 @@ public class SocialService {
 
 
     public SortedSet<JCRNodeWrapper> getActivities(JCRSessionWrapper jcrSessionWrapper, Set<String> paths, long limit, long offset, String pathFilter) throws RepositoryException {
-        SortedSet<JCRNodeWrapper> activitiesSet = new TreeSet(new Comparator<JCRNodeWrapper>() {
+        SortedSet<JCRNodeWrapper> activitiesSet = new TreeSet<JCRNodeWrapper>(new Comparator<JCRNodeWrapper>() {
 
             public int compare(JCRNodeWrapper activityNode1, JCRNodeWrapper activityNode2) {
                 try {
@@ -243,7 +242,7 @@ public class SocialService {
         QueryManager queryManager = jcrSessionWrapper.getWorkspace().getQueryManager();
 
         // first we look for the first connection.
-        Query connectionQuery = queryManager.createQuery("select * from ["+JNT_SOCIAL_CONNECTION+"] as uC where uC.connectedFrom='"+fromId+"' and uC.connectedTo='"+toId+"' and uC.type='"+connectionType+"'" , Query.JCR_SQL2);
+        Query connectionQuery = queryManager.createQuery("select * from ["+JNT_SOCIAL_CONNECTION+"] where [j:connectedFrom]='"+fromId+"' and [j:connectedTo]='"+toId+"' and [j:type]='"+connectionType+"'" , Query.JCR_SQL2);
         QueryResult connectionResult = connectionQuery.execute();
         NodeIterator connectionIterator = connectionResult.getNodes();
         while (connectionIterator.hasNext()) {
@@ -253,7 +252,7 @@ public class SocialService {
         }
 
         // now let's remove the reverse connection.
-        Query reverseConnectionQuery = queryManager.createQuery("select * from ["+JNT_SOCIAL_CONNECTION+"] as uC where uC.connectedFrom='"+toId+"' and uC.connectedTo='"+fromId+"' and uC.type='"+connectionType+"'" , Query.JCR_SQL2);
+        Query reverseConnectionQuery = queryManager.createQuery("select * from ["+JNT_SOCIAL_CONNECTION+"] where [j:connectedFrom]='"+toId+"' and [j:connectedTo]='"+fromId+"' and [j:type]='"+connectionType+"'" , Query.JCR_SQL2);
         QueryResult reverseConnectionResult = reverseConnectionQuery.execute();
         NodeIterator reverseConnectionIterator = reverseConnectionResult.getNodes();
         while (reverseConnectionIterator.hasNext()) {

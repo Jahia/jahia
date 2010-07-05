@@ -622,4 +622,14 @@
             ${jcr:escapeIllegalJcrChars(facet.key)}        
         </example>
     </function>      
+    <function>
+        <description>Escapes illegal JCR chars</description>
+        <name>userFullName</name>
+        <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
+        <function-signature>String userFullName(org.jahia.services.content.JCRNodeWrapper)
+        </function-signature>
+        <example>
+            &lt;c:out value="${jcr:userFullName(currentUserNode)}"/&gt;        
+        </example>
+    </function>      
 </taglib>

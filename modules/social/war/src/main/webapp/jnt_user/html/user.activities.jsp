@@ -8,7 +8,7 @@
 <social:get-connections var="userConnections" path="${currentNode.path}" />
 <social:get-activities var="activities" sourcePaths="${userConnections}" />
 <c:if test="${empty activities}">
-    No activities found.
+    <fmt:message key="message.noActivitiesFound"/>
 </c:if>
 <c:if test="${not empty activities}">
 <c:forEach items="${activities}" var="activity">

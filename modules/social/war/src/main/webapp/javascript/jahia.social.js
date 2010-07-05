@@ -34,7 +34,7 @@ function searchUsers(findPrincipalURL, userURL, term) {
             $.each(data, function(i, item) {
                 $("#searchUsersResult").append(
                         $("<tr/>").append($("<td/>").append($("<img/>").attr("src", item.properties['j:picture'])))
-                                .append($("<td/>").text(item.properties['j:firstName'] + " " + item.properties['j:lastName']))
+                                .append($("<td/>").text(getUserDisplayName(item.properties)))
                                 .append($("<td/>").attr("align", "center").append($("<a/>").attr("href", "").attr("class", "social-add").click(function () {
                             requestConnection(userURL + '.startWorkflow.do', item['userKey']);
                             return false;
@@ -44,6 +44,15 @@ function searchUsers(findPrincipalURL, userURL, term) {
             });
         }
     });
+}
+
+function getUserDisplayName(props) {
+	var value =  props['j:firstName'] || '';
+	if (value.length != 0) {
+		value += ' ';
+	}
+	value += props['j:lastName'] || '';
+	return value.length > 0 ? value : props['j:nodename'];	
 }
 
 function requestConnection(userURL, toUserKey) {
@@ -102,10 +111,28 @@ function removeSocialConnection(userURL, fromUserId, toUserId, connectionType, c
         url: userURL + '.removesocialconnection.do',
         type: 'post',
         dataType : "json",
+        data: {
+    		"fromUserId": fromUserId,
+    		"toUserId": toUserId,
+    		"connectionType": connectionType
+    	},
         success : function (data) {
-            connectionRemovedCallBack(data, fromUserId, toUserId, connectionType);
+    		connectionRemovedCallback(data, fromUserId, toUserId, connectionType);
         }
-
     });
 
+}
+
+function removeSocialMessage(userURL, msgId, callback) {
+    $.ajax({
+        url: userURL + '.removesocialmessage.do',
+        type: 'post',
+        dataType : "json",
+        data: {
+    		"messageId": msgId
+    	},
+        success : function (data) {
+    		callback(data, msgId);
+        }
+    });
 }

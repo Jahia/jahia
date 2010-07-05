@@ -81,7 +81,7 @@
                 url         : '${url.base}${currentNode.path}.sendmessage.do',
                 data        : $(this).serializeArray(),
                 success     : function(data) {
-                    alert("Message sent.");
+                    alert("<fmt:message key='message.messageSent'/>");
                     $.fancybox.resize();
                     $.fancybox.center();
                     $.fancybox.close();
@@ -148,15 +148,15 @@
 
         $("a.removeFriendAction").click(function(e){
             e.preventDefault();
-            var href = $(this).attr('href');
-            var fromUserId = $(selectedArray).attr('fromUserId');
-            var toUserId = $(selectedArray).attr('toUserId');
-            var connectionType = $(selectedArray).attr('connectionType');
-            custom_confirm('Are you sure you want to remove this friend ?',
-                function(){
-                    removeSocialConnection('${url.base}/${currentNode.path}', fromUserId, toUserId, connectionType);
-                }
-            );
+            var fromUserId = $(this).attr('fromUserId');
+            var toUserId = $(this).attr('toUserId');
+            var connectionType = $(this).attr('connectionType');
+            if (confirm("<fmt:message key='message.removeFriend.confirm'/>")) {
+                removeSocialConnection('${url.base}/${currentNode.path}', fromUserId, toUserId, connectionType,
+                    function() {
+                	    $("#connection-to-" + toUserId).remove(); 
+                    });
+            }
         });
 
         loadActivities('${url.base}${currentNode.path}');
@@ -250,8 +250,8 @@
     </h3>
     <ul class="social-list">
         <c:forEach items="${socialConnections.nodes}" var="socialConnection">
-            <li>
-                <c:set var="connectedToUser" value="${socialConnection.properties['j:connectedTo'].node}"/>
+            <c:set var="connectedToUser" value="${socialConnection.properties['j:connectedTo'].node}"/>
+            <li id="connection-to-${connectedToUser.identifier}">
                 <div class="thumbnail">
 
                     <a href="${url.base}${connectedToUser.path}.html"><img src="${url.currentModule}/images/friend.png"
@@ -265,7 +265,7 @@
                 <a class="social-list-sendmessage showSendMessage" title="<fmt:message key="sendMessage"/>" userKey="${connectedToUser.properties['j:nodename'].string}"
                    href="#divSendMessage"><span><fmt:message key="sendMessage"/></span></a>
                 <h4>
-                    <a href="${usl.base}${connectedToUser.path}.html">${connectedToUser.properties['j:firstName'].string} ${connectedToUser.properties['j:lastName'].string}</a>
+                    <a href="${usl.base}${connectedToUser.path}.html"><c:out value="${jcr:userFullName(connectedToUser)}"/></a>
                 </h4>
 
                 <div class='clear'></div>
@@ -308,4 +308,3 @@
         </form>
     </div>
 </div>
-

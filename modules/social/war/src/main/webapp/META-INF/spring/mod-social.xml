@@ -5,11 +5,16 @@
 
     <bean class="org.jahia.modules.social.RemoveSocialConnectionAction">
         <property name="name" value="removesocialconnection"/>
+        <property name="socialService" ref="socialService"/>
     </bean>
 
     <bean class="org.jahia.modules.social.SendMessageAction">
         <property name="name" value="sendmessage"/>
         <property name="socialService" ref="socialService"/>
+    </bean>
+
+    <bean class="org.jahia.modules.social.RemoveSocialMessageAction">
+        <property name="name" value="removesocialmessage"/>
     </bean>
 
     <bean id="socialService" class="org.jahia.modules.social.SocialService"/>

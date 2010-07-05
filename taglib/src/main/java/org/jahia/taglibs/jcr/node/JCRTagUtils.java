@@ -32,9 +32,9 @@
 package org.jahia.taglibs.jcr.node;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.Text;
 import org.apache.log4j.Logger;
-import org.drools.util.StringUtils;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -343,5 +343,34 @@ public class JCRTagUtils {
      */    
     public static String escapeIllegalJcrChars(String inputString) {
         return Text.escapeIllegalJcrChars(inputString);
-    }     
+    }
+    
+    /**
+     * Returns the full user name, including first and last name. If those are
+     * not available, returns the username.
+     * 
+     * @param userNode the user JCR node
+     * @return the full user name, including first and last name. If those are
+     *         not available, returns the username
+     */
+    public static String userFullName(JCRNodeWrapper userNode) {
+        StringBuilder name = new StringBuilder();
+        String value = userNode.getPropertyAsString("j:firstName");
+        if (StringUtils.isNotEmpty(value)) {
+            name.append(value);
+        }
+        value = userNode.getPropertyAsString("j:lastName");
+        if (StringUtils.isNotEmpty(value)) {
+            if (name.length() > 0) {
+                name.append(" ");
+            }
+            name.append(value);
+        }
+
+        if (name.length() == 0) {
+            name.append(userNode.getName());
+        }
+
+        return name.toString();
+    }
 }

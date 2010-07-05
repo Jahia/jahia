@@ -7,7 +7,7 @@
 
 <c:set var="fromUser" value="${currentNode.properties['j:from'].node}"/>
 <ul class="messageActionList">
-   <li><a class="messageActionDelete" title="<fmt:message key="deleteMessage"/>" href="#"><span><fmt:message
+   <li><a class="messageActionDelete" title="<fmt:message key='deleteMessage'/>" href="#delete" rel="${currentNode.identifier}"><span><fmt:message
         key="deleteMessage"/></span></a></li>
   <li><a class="messageActionReply" title="<fmt:message key="replyToMessage"/>" id="showSendMessage"
    href="#divSendMessage"><span><fmt:message key="replyToMessage"/></span></a></li>
@@ -20,7 +20,7 @@
 	</div>
 </div>
 <h5 class="messageSenderName">
-    <a href="${url.base}${fromUser.path}.html">${fromUser.properties['j:firstName'].string} ${fromUser.properties['j:lastName'].string}</a>
+    <a href="${url.base}${fromUser.path}.html"><c:out value="${jcr:userFullName(fromUser)}"/></a>
 </h5><jcr:nodeProperty node="${currentNode}" name="jcr:lastModified" var="lastModified"/><span class="timestamp"><fmt:formatDate
 value="${lastModified.time}" pattern="yyyy/MM/dd HH:mm"/></span>
 <h5><a class="messageDetailLink" href="#socialMessageDetail" urlToMessage="${url.base}${currentNode.path}.detail.html">${currentNode.properties['j:subject'].string}</a></h5>

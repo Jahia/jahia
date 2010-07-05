@@ -613,10 +613,9 @@ public final class JCRContentUtils {
      */
     public static JCRNodeWrapper getOrAddPath(JCRSessionWrapper session, JCRNodeWrapper parentNode, String path, String pathNodeType) throws RepositoryException {
         String[] subPaths = path.split("/");
-        String lastPath = subPaths[subPaths.length - 1];
         JCRNodeWrapper node = parentNode;
         for (String subPath : subPaths) {
-            if (StringUtils.isNotBlank(subPath) && !"*".equals(subPath) && !subPath.equals(lastPath)) {
+            if (StringUtils.isNotBlank(subPath) && !"*".equals(subPath)) {
                 try {
                     node = node.getNode(subPath);
                     session.checkout(node);

@@ -85,40 +85,29 @@ public class TemplateNodeFilter extends AbstractFilter {
                 current = current.getParent();
             }
 
-            String propertyName = "j:templateNode";
-            boolean mainTemplateFound = false;
-            while (current != null) {
-                if (propertyName != null && current.hasProperty(propertyName)) {
-                    current = (JCRNodeWrapper) current.getProperty(propertyName).getNode();
-                    propertyName = null;
-                } else {
-                    current = current.getParent();
-                    propertyName = "j:defaultTemplateNode";
-                    if (current.isNodeType("jnt:templatesFolder")) {
-                        break;
-                    }
-                }
-                if (current.isNodeType("jnt:masterTemplate")) {
-                    if (!mainTemplateFound) {
-                        mainTemplateFound = true;
-                        Query q = current.getSession().getWorkspace().getQueryManager().createQuery(
-                                "select * from [jnt:derivedTemplate] as w where ischildnode(w, ['" + current.getPath() + "'])",
-                                Query.JCR_SQL2);
-                        QueryResult result = q.execute();
-                        NodeIterator ni = result.getNodes();
-                        while (ni.hasNext()) {
-                            final JCRNodeWrapper templateNode = (JCRNodeWrapper) ni.nextNode();
-                            template = addTemplate(node, templateName, template, templateNode);
-                        }
-                        templateName = null;
-                        if (template == null) {
-                            template = addTemplate(node, templateName, template, current);                            
-                        }
-                    } else {
-                        template = addTemplate(node, templateName, template, current);
-                    }
-                }
+            JCRNodeWrapper templateNode = null;
 
+            while (template == null) {
+                if (current.hasProperty("j:templateNode")) {
+                    templateNode = (JCRNodeWrapper) current.getProperty("j:templateNode").getNode();
+                    template = addDerivedTemplates(node, templateName, template, templateNode);
+                    if (current == node) {
+                        template = addTemplate(node, templateName, template, templateNode);
+                    }
+                } else if (current.hasProperty("j:defaultTemplateNode")) {
+                    templateNode = (JCRNodeWrapper) current.getProperty("j:defaultTemplateNode").getNode();
+                    template = addDerivedTemplates(node, templateName, template, templateNode);
+                    template = addTemplate(node, templateName, template, templateNode);
+                } else if (current.isNodeType("jnt:template")) {
+                    templateNode = current;
+                    break;
+                }
+                current = current.getParent();
+            }
+            templateNode = templateNode.getParent();
+            while (!(templateNode.isNodeType("jnt:templatesFolder"))) {
+                template = addTemplate(node, templateName, template, templateNode);
+                templateNode = templateNode.getParent();                
             }
         } catch (ItemNotFoundException e) {
             // default
@@ -130,6 +119,20 @@ public class TemplateNodeFilter extends AbstractFilter {
             }
         } catch (RepositoryException e) {
             logger.error("Cannot find template", e);
+        }
+        return template;
+    }
+
+    private Template addDerivedTemplates(JCRNodeWrapper node, String templateName, Template template,
+                                         JCRNodeWrapper templateNode) throws RepositoryException {
+        Query q = templateNode.getSession().getWorkspace().getQueryManager().createQuery(
+                "select * from [jnt:derivedTemplate] as w where ischildnode(w, ['" + templateNode.getPath() + "'])",
+                Query.JCR_SQL2);
+        QueryResult result = q.execute();
+        NodeIterator ni = result.getNodes();
+        while (ni.hasNext()) {
+            final JCRNodeWrapper derivedTemplateNode = (JCRNodeWrapper) ni.nextNode();
+            template = addTemplate(node, templateName, template, derivedTemplateNode);
         }
         return template;
     }

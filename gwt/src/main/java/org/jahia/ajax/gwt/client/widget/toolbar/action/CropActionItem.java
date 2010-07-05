@@ -1,5 +1,7 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.RunAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
@@ -16,7 +18,14 @@ import java.util.List;
  */
 public class CropActionItem extends BaseActionItem {
     public void onComponentSelection() {
-        cropImage(linker);
+        GWT.runAsync(new RunAsyncCallback()  {
+            public void onFailure(Throwable reason) {
+            }
+
+            public void onSuccess() {
+                cropImage(linker);
+            }
+        });
     }
 
     public void handleNewLinkerSelection() {

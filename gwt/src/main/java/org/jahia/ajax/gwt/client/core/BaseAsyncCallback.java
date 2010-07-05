@@ -1,7 +1,8 @@
 package org.jahia.ajax.gwt.client.core;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.widget.LoginBox;
 
@@ -25,7 +26,14 @@ public abstract class BaseAsyncCallback<T> implements AsyncCallback<T> {
     }
 
     public void onSessionExpired() {
-        new LoginBox().show();
+        GWT.runAsync(new RunAsyncCallback() {
+            public void onFailure(Throwable reason) {
+            }
+
+            public void onSuccess() {
+                new LoginBox().show();
+            }
+        });        
     }
 
 }

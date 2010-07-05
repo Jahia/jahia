@@ -69,7 +69,7 @@ public class RightsTabItem extends EditEngineTabItem {
 
 
                 setLayout(new FitLayout());
-                add(rightsEditor.renderNewAclPanel());
+                rightsEditor.addNewAclPanel(RightsTabItem.this);
                 layout();
             }
 

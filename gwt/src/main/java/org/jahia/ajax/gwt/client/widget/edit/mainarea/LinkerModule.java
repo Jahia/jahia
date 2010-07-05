@@ -18,7 +18,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.widget.edit.ModuleSelectionListener;
-import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEngine;
+import org.jahia.ajax.gwt.client.widget.edit.contentengine.EngineLoader;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -92,7 +92,7 @@ public class LinkerModule extends Module {
                             JahiaContentManagementService.App.getInstance()
                                     .saveProperties(Arrays.asList(node), properties, new BaseAsyncCallback() {
                                         public void onSuccess(Object o) {
-                                            new EditContentEngine(node, mainModule.getEditLinker()).show();
+                                            EngineLoader.showEditEngine(mainModule.getEditLinker(), node);
                                         }
 
                                         public void onApplicationFailure(Throwable throwable) {

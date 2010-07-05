@@ -77,8 +77,6 @@ public interface ToolbarService extends RemoteService {
 
     public GWTJahiaToolbarSet getGWTToolbars(String toolbarGroup) throws GWTJahiaServiceException;
 
-    public GWTJahiaAjaxActionResult execute(Map<String, GWTJahiaProperty> gwtPropertiesMap)throws GWTJahiaServiceException;
-
     public GWTJahiaStateInfo updateGWTJahiaStateInfo(GWTJahiaStateInfo gwtJahiaStateInfo)throws GWTJahiaServiceException;
 
 

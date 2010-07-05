@@ -1,6 +1,5 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -14,8 +13,7 @@ import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.widget.edit.ContentTypeWindow;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
-import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
-import org.jahia.ajax.gwt.client.widget.edit.contentengine.CreateContentEngine;
+import org.jahia.ajax.gwt.client.widget.edit.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 
 import java.util.ArrayList;
@@ -47,7 +45,7 @@ public class PasteReferenceActionItem extends BaseActionItem  {
                 props.put("jcr:title", new GWTJahiaNodeProperty("jcr:title", new GWTJahiaNodePropertyValue(linker.getSelectedNode().getDisplayName(), GWTJahiaNodePropertyType.STRING)));
                 props.put("j:node", new GWTJahiaNodeProperty("j:node", new GWTJahiaNodePropertyValue(copiedNode, GWTJahiaNodePropertyType.WEAKREFERENCE)));
                 if (result.size() == 1) {
-                    new CreateContentEngine(linker, linker.getSelectedNode(), result.get(0), props, copiedNode.getName(), false).show();
+                    EngineLoader.showCreateEngine(linker, linker.getSelectedNode(), result.get(0), props, copiedNode.getName(), false);
                 } else {
                     Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> m = new HashMap<GWTJahiaNodeType, List<GWTJahiaNodeType>>();
                     m.put(null, result);

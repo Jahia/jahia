@@ -44,6 +44,8 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.Style;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Widget;
@@ -96,12 +98,6 @@ public class AclEditor {
         reinitAcl();
     }
 
-
-    public AclEditor(GWTJahiaNodeACL acl, String aclContext, boolean displayInheritanceColumn) {
-        this(acl, aclContext);
-        this.displayInheritanceColumn = displayInheritanceColumn;
-    }
-
     public void setCanBreakInheritance(boolean canBreakInheritance) {
         this.canBreakInheritance = canBreakInheritance;
     }
@@ -145,6 +141,18 @@ public class AclEditor {
 
     public void setAddRolesLabel(String addRolesLabel) {
         this.addRolesLabel = addRolesLabel;
+    }
+
+    public void addNewAclPanel(final LayoutContainer c) {
+        GWT.runAsync(new RunAsyncCallback() {
+            public void onFailure(Throwable reason) {
+            }
+
+            public void onSuccess() {
+                c.add(renderNewAclPanel());
+                c.layout();
+            }
+        });
     }
 
     public ContentPanel renderNewAclPanel() {

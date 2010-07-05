@@ -1,6 +1,9 @@
 package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.RunAsyncCallback;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
@@ -35,18 +38,26 @@ public class AnalyticsTabItem extends EditEngineTabItem {
     }
 
     @Override
-    public void create(GWTJahiaLanguage locale) {
-        if (engine.getNode() == null) {
-            return;
-        } else {
-            lastQuery = new GWTJahiaAnalyticsQuery();
-            lastQuery.setDimensions("ga:pageTitle,ga:pagePath,ga:date");
-            lastQuery.setMetrics("ga:pageviews");
-            lastQuery.setSort("-ga:pageviews");
-            //lastQuery.setFilters("ga:pagePath==" + engine.getNode());
-            display(locale);
-        }
-        layout();
+    public void create(final GWTJahiaLanguage locale) {
+        GWT.runAsync(new RunAsyncCallback() {
+            public void onFailure(Throwable reason) {
+                Window.alert("Code download failed");
+            }
+
+            public void onSuccess() {
+                if (engine.getNode() == null) {
+                    return;
+                } else {
+                    lastQuery = new GWTJahiaAnalyticsQuery();
+                    lastQuery.setDimensions("ga:pageTitle,ga:pagePath,ga:date");
+                    lastQuery.setMetrics("ga:pageviews");
+                    lastQuery.setSort("-ga:pageviews");
+                    //lastQuery.setFilters("ga:pagePath==" + engine.getNode());
+                    display(locale);
+                }
+                layout();
+            }
+        });
     }
 
     /**

@@ -1,4 +1,6 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.RunAsyncCallback;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 
@@ -11,7 +13,15 @@ import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 */
 public class DeployPortletDefinitionActionItem extends BaseActionItem {
     public void onComponentSelection() {
-        ContentActions.showDeployPortletForm(linker);
+        GWT.runAsync(new RunAsyncCallback() {
+            public void onFailure(Throwable reason) {
+            }
+
+            public void onSuccess() {
+                ContentActions.showDeployPortletForm(linker);
+            }
+        });
+
     }
 
     public void handleNewLinkerSelection() {

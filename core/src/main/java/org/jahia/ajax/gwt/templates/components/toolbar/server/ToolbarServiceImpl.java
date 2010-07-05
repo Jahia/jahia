@@ -66,19 +66,6 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
         return uiConfigHelper.getGWTToolbarSet(getSite(), getRemoteJahiaUser(), getLocale(),getUILocale(), getRequest(), toolbarGroup);
     }
 
-
-    /**
-     * Execute ItemAjaxAction
-     *
-     * @param gwtPropertiesMap
-     * @return
-     */
-    public GWTJahiaAjaxActionResult execute(Map<String, GWTJahiaProperty> gwtPropertiesMap) throws GWTJahiaServiceException {
-        // ToDO : remove JahiaData
-        return uiConfigHelper.execute(gwtPropertiesMap);
-    }
-
-
     /**
      * Update GWT Jahia State Info
      *

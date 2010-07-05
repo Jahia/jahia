@@ -35,7 +35,6 @@ package org.jahia.ajax.gwt.client.widget.edit;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
@@ -48,8 +47,8 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.edit.contentengine.CreateContentEngine;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEngine;
+import org.jahia.ajax.gwt.client.widget.edit.contentengine.EngineLoader;
 
 import java.util.HashMap;
 import java.util.List;
@@ -92,7 +91,7 @@ public class ContentTypeWindow extends Window {
             public void handleEvent(BaseEvent baseEvent) {
                 GWTJahiaNodeType gwtJahiaNodeType = (GWTJahiaNodeType) (((TreeGridEvent) baseEvent).getModel());
                 if (gwtJahiaNodeType != null && linker != null && !gwtJahiaNodeType.isMixin()) {
-                    new CreateContentEngine(linker, parentNode, gwtJahiaNodeType, props, nodeName, createInParentAndMoveBefore).show();
+                    EngineLoader.showCreateEngine(linker, parentNode, gwtJahiaNodeType, props, nodeName, createInParentAndMoveBefore);
                     hide();
                 }
             }
@@ -119,7 +118,7 @@ public class ContentTypeWindow extends Window {
                 if (contentTypeModelData != null) {
                     final GWTJahiaNodeType gwtJahiaNodeType = contentTypeModelData;
                     if (gwtJahiaNodeType != null) {
-                        new CreateContentEngine(ContentTypeWindow.this.linker, parentNode, gwtJahiaNodeType, props, nodeName, createInParentAndMoveBefore).show();
+                        EngineLoader.showCreateEngine(ContentTypeWindow.this.linker, parentNode, gwtJahiaNodeType, props, nodeName, createInParentAndMoveBefore);
                         window.hide();
                     }
                 }

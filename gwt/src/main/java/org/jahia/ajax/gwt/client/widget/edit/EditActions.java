@@ -1,33 +1,22 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.TextArea;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.compare.CompareEngine;
-import org.jahia.ajax.gwt.client.widget.edit.contentengine.CreateContentEngine;
-import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEngine;
+import org.jahia.ajax.gwt.client.widget.edit.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.TranslateContentEngine;
-import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 import org.jahia.ajax.gwt.client.widget.workflow.WorkflowDashboardEngine;
 
 import java.util.ArrayList;
@@ -40,27 +29,6 @@ import java.util.List;
  * Time: 4:14:11 PM
  */
 public class EditActions {
-
-    /**
-     * Create content
-     *
-     * @param linker
-     */
-    public static void createContent(final Linker linker, final String type) {
-        if (linker.getMainNode() != null) {
-            JahiaContentDefinitionService.App.getInstance()
-                    .getNodeType(type, new BaseAsyncCallback<GWTJahiaNodeType>() {
-                        public void onApplicationFailure(Throwable throwable) {
-                            Log.error("", throwable);
-                            com.google.gwt.user.client.Window.alert("-create page->" + throwable.getMessage());
-                        }
-
-                        public void onSuccess(GWTJahiaNodeType gwtJahiaNodeType) {
-                            new CreateContentEngine(linker, linker.getMainNode(), gwtJahiaNodeType, null).show();
-                        }
-                    });
-        }
-    }
 
     /**
      * Switch mode
@@ -103,7 +71,7 @@ public class EditActions {
      */
     public static void edit(Linker linker) {
         if (linker.getMainNode() != null) {
-            new EditContentEngine(linker.getSelectedNode(), linker).show();
+            EngineLoader.showEditEngine(linker, linker.getSelectedNode());
         }
     }
 
@@ -229,19 +197,19 @@ public class EditActions {
         if (linker.getSelectedNodes() != null && !linker.getSelectedNodes().isEmpty()) {
             // Usages
             List<String> l = new ArrayList<String>();
-            for (GWTJahiaNode node :linker.getSelectedNodes()) {
+            for (GWTJahiaNode node : linker.getSelectedNodes()) {
                 l.add(node.getPath());
             }
             JahiaContentManagementService.App.getInstance()
-                    .getUsages(l , new BaseAsyncCallback<List<GWTJahiaNodeUsage>>() {
+                    .getUsages(l, new BaseAsyncCallback<List<GWTJahiaNodeUsage>>() {
                         public void onSuccess(List<GWTJahiaNodeUsage> result) {
-                            String message = Messages.get("label,remove.confirm",
-                                                                "Do you really want to continue?");
+                            String message = Messages.get("label,remove.confirm", "Do you really want to continue?");
                             String n = "";
                             for (GWTJahiaNodeUsage nodeUsage : result) {
                                 if (!nodeUsage.getNodeName().equals(n)) {
-                                message += "<br><br>" + nodeUsage.getNodeName() + " " + Messages.get("label.remove.used",
-                                                                "is used in page <br>") + " " + nodeUsage.getPageUrl();
+                                    message += "<br><br>" + nodeUsage.getNodeName() + " " +
+                                            Messages.get("label.remove.used", "is used in page <br>") + " " +
+                                            nodeUsage.getPageUrl();
                                 } else {
                                     message += "<br>" + nodeUsage.getPageUrl();
                                 }
@@ -254,17 +222,18 @@ public class EditActions {
                                         for (GWTJahiaNode node : linker.getSelectedNodes()) {
                                             paths.add(node.getPath());
                                         }
-                                        JahiaContentManagementService.App.getInstance().deletePaths(paths, new BaseAsyncCallback() {
-                                            public void onApplicationFailure(Throwable throwable) {
-                                                Log.error(throwable.getMessage(), throwable);
-                                                MessageBox.alert("", throwable.getMessage(), null);
-                                            }
+                                        JahiaContentManagementService.App.getInstance()
+                                                .deletePaths(paths, new BaseAsyncCallback() {
+                                                    public void onApplicationFailure(Throwable throwable) {
+                                                        Log.error(throwable.getMessage(), throwable);
+                                                        MessageBox.alert("", throwable.getMessage(), null);
+                                                    }
 
-                                            public void onSuccess(Object o) {
-                                                linker.refresh(EditLinker.REFRESH_ALL);
-                                                linker.select(null);
-                                            }
-                                        });
+                                                    public void onSuccess(Object o) {
+                                                        linker.refresh(EditLinker.REFRESH_ALL);
+                                                        linker.select(null);
+                                                    }
+                                                });
                                     }
                                 }
                             });

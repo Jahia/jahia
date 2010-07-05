@@ -81,7 +81,7 @@ public class PortletRoleCard extends MashupWizardCard {
                     aces.add(gwtJahiaNodeACE);
                     acl.setAce(aces);
                     initAclEditor(acl);
-                    add(aclEditor.renderNewAclPanel());
+                    aclEditor.addNewAclPanel(PortletRoleCard.this);
                     getPortletWizardWindow().updateWizard();
                 }
 
@@ -89,7 +89,7 @@ public class PortletRoleCard extends MashupWizardCard {
                     Log.error("Unable to Add group ACE");
                     removeAll();
                     initAclEditor(acl);
-                    add(aclEditor.renderNewAclPanel());
+                    aclEditor.addNewAclPanel(PortletRoleCard.this);
                 }
             });
         } else {

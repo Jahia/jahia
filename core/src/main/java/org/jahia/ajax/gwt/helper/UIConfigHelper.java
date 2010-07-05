@@ -31,7 +31,6 @@
  */
 package org.jahia.ajax.gwt.helper;
 
-import org.jahia.ajax.gwt.client.data.GWTJahiaAjaxActionResult;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.data.toolbar.*;
 import org.jahia.ajax.gwt.client.data.toolbar.monitor.GWTJahiaStateInfo;
@@ -39,20 +38,21 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.util.Constants;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.LanguageSwitcherActionItem;
-import org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.AjaxAction;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.uicomponents.bean.Visibility;
-import org.jahia.services.uicomponents.bean.contentmanager.Column;
-import org.jahia.services.uicomponents.bean.contentmanager.Repository;
-import org.jahia.services.uicomponents.bean.editmode.*;
 import org.jahia.services.preferences.JahiaPreferencesService;
 import org.jahia.services.scheduler.SchedulerService;
-import org.jahia.services.uicomponents.bean.editmode.Engine;
+import org.jahia.services.uicomponents.bean.Visibility;
+import org.jahia.services.uicomponents.bean.contentmanager.Column;
 import org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration;
+import org.jahia.services.uicomponents.bean.contentmanager.Repository;
+import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
+import org.jahia.services.uicomponents.bean.editmode.Engine;
+import org.jahia.services.uicomponents.bean.editmode.EngineTab;
+import org.jahia.services.uicomponents.bean.editmode.SidePanelTab;
 import org.jahia.services.uicomponents.bean.toolbar.*;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.i18n.JahiaResourceBundle;
@@ -138,56 +138,6 @@ public class UIConfigHelper {
         }
         return gwtJahiaToolbarSet;
 
-    }
-
-    /**
-     * Execute action
-     * ToDo:  remove JahiaData
-     *
-     * @param gwtPropertiesMap
-     * @return
-     * @throws GWTJahiaServiceException
-     */
-    public GWTJahiaAjaxActionResult execute(Map<String, GWTJahiaProperty> gwtPropertiesMap) throws GWTJahiaServiceException {
-        final GWTJahiaProperty classActionProperty = gwtPropertiesMap.get(Constants.CLASS_ACTION);
-        final GWTJahiaProperty actionProperty = gwtPropertiesMap.get(Constants.ACTION);
-
-        GWTJahiaAjaxActionResult actionResult = new GWTJahiaAjaxActionResult("");
-
-        // execute actionProperty depending on classAction and the actionProperty
-        if (classActionProperty != null) {
-            String classActionValue = classActionProperty.getValue();
-            if (classActionValue != null && classActionValue.length() > 0) {
-                String actionValue = null;
-                if (actionProperty != null) {
-                    actionValue = actionProperty.getValue();
-                }
-
-                // execute action
-                try {
-                    // remove useless properties
-                    gwtPropertiesMap.remove(Constants.CLASS_ACTION);
-                    gwtPropertiesMap.remove(Constants.ACTION);
-
-                    // execute actionProperty
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Execute [" + classActionValue + "," + actionValue + "]");
-                    }
-                    AjaxAction ajaxAction = (AjaxAction) getClassInstance(classActionValue);
-                    return ajaxAction.execute(actionValue, gwtPropertiesMap);
-                } catch (Exception e) {
-                    logger.error(e, e);
-                }
-
-
-            } else {
-                logger.info("Class Action property found but EMPTY");
-            }
-
-        } else {
-            logger.info("Class Action property not found");
-        }
-        return actionResult;
     }
 
     /**

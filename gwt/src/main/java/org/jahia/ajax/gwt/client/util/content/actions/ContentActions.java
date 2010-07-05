@@ -43,8 +43,6 @@ import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -58,7 +56,7 @@ import org.jahia.ajax.gwt.client.widget.content.*;
 import org.jahia.ajax.gwt.client.widget.content.portlet.PortletWizardWindow;
 import org.jahia.ajax.gwt.client.widget.edit.ContentTypeWindow;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
-import org.jahia.ajax.gwt.client.widget.edit.contentengine.CreateContentEngine;
+import org.jahia.ajax.gwt.client.widget.edit.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.form.FormDeployPortletDefinition;
 
 import java.util.*;
@@ -520,7 +518,10 @@ public class ContentActions {
                         public void onSuccess(
                                 Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> result) {
                             if (result.size() == 1 && result.values().iterator().next().size() == 1) {
-                                new CreateContentEngine(linker, parent, result.values().iterator().next().iterator().next(), null, false).show();
+                                EngineLoader.showCreateEngine(linker, parent,
+                                        result.values().iterator().next().iterator().next(), new HashMap<String, GWTJahiaNodeProperty>(),
+                                        null, false);
+                                        ;
                             } else {
                                 new ContentTypeWindow(linker, parent, result, false).show();
                             }
@@ -799,60 +800,6 @@ public class ContentActions {
                     Info.display("Portal Components", "Your components is now available for users in their portal page.");
                 }
             });
-        }
-    }
-
-    public static void switchTemplateLocked(final Linker linker, final boolean locked) {
-        final GWTJahiaNode target = linker.getSelectedNode();
-        if (target != null) {
-            final ArrayList<GWTJahiaNodeProperty> properties = new ArrayList<GWTJahiaNodeProperty>();
-            if (!target.getNodeTypes().contains("jmix:templateInformation")) {
-                target.getNodeTypes().add("jmix:templateInformation");
-            }
-            if (locked) {
-                properties.add(new GWTJahiaNodeProperty("j:templateLocked", new GWTJahiaNodePropertyValue("true", GWTJahiaNodePropertyType.BOOLEAN)));
-            } else {
-                properties.add(new GWTJahiaNodeProperty("j:templateLocked", new GWTJahiaNodePropertyValue("false", GWTJahiaNodePropertyType.BOOLEAN)));
-            }
-
-            JahiaContentManagementService.App.getInstance().saveProperties(Arrays.asList(target), properties, new BaseAsyncCallback() {
-                public void onSuccess(Object result) {
-                    if (locked) {
-                        Info.display("Component locked", "Component locked.");
-                    } else {
-                        Info.display("Component unlocked", "Component unlocked.");
-                    }
-                    linker.refresh(Linker.REFRESH_MAIN);
-                }
-            });
-
-        }
-    }
-
-    public static void switchTemplateShared(final Linker linker, final boolean shared) {
-        final GWTJahiaNode target = linker.getSelectedNode();
-        if (target != null) {
-            final ArrayList<GWTJahiaNodeProperty> properties = new ArrayList<GWTJahiaNodeProperty>();
-            if (!target.getNodeTypes().contains("jmix:templateInformation")) {
-                target.getNodeTypes().add("jmix:templateInformation");
-            }
-            if (shared) {
-                properties.add(new GWTJahiaNodeProperty("j:templateShared", new GWTJahiaNodePropertyValue("true", GWTJahiaNodePropertyType.BOOLEAN)));
-            } else {
-                properties.add(new GWTJahiaNodeProperty("j:templateShared", new GWTJahiaNodePropertyValue("false", GWTJahiaNodePropertyType.BOOLEAN)));
-            }
-
-            JahiaContentManagementService.App.getInstance().saveProperties(Arrays.asList(target), properties, new BaseAsyncCallback() {
-                public void onSuccess(Object result) {
-                    if (shared) {
-                        Info.display("Component shared", "Component shared.");
-                    } else {
-                        Info.display("Component unshared", "Component unshared.");
-                    }
-                    linker.refresh(Linker.REFRESH_MAIN);
-                }
-            });
-
         }
     }
 

@@ -1,16 +1,12 @@
 package org.jahia.ajax.gwt.client.core;
 
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.google.gwt.xhr.client.XMLHttpRequest;
-import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
-
 import com.extjs.gxt.ui.client.widget.Layout;
 import com.extjs.gxt.ui.client.widget.layout.AnchorLayout;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.Timer;
-import org.jahia.ajax.gwt.client.widget.LoginBox;
+import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 
 
 /**

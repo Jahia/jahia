@@ -48,8 +48,6 @@ public interface ToolbarServiceAsync {
 
     public void getGWTToolbars(String toolbarGroup, AsyncCallback<GWTJahiaToolbarSet> async);
 
-    public void execute(Map<String, GWTJahiaProperty> gwtPropertiesMap, AsyncCallback<GWTJahiaAjaxActionResult> async);
-
     public void updateGWTJahiaStateInfo(GWTJahiaStateInfo gwtJahiaStateInfo, AsyncCallback<GWTJahiaStateInfo> async);
 
 

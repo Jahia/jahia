@@ -45,32 +45,6 @@ public class CreateContentEngine extends AbstractContentEngine {
     /**
      * Open Edit content engine for a new node creation
      *
-     * @param linker
-     * @param parent
-     * @param type
-     * @param targetName
-     */
-    public CreateContentEngine(Linker linker, GWTJahiaNode parent, GWTJahiaNodeType type, String targetName) {
-        this(linker, parent, type, targetName, false);
-
-    }
-
-    /**
-     * Open Edit content engine for a new node creation
-     *
-     * @param linker                      The linker
-     * @param parent                      The parent node where to create the new node - if createInParentAndMoveBefore, the node is sibling
-     * @param type                        The selected node type of the new node
-     * @param targetName                  The name of the new node, or null if automatically defined
-     * @param createInParentAndMoveBefore
-     */
-    public CreateContentEngine(Linker linker, GWTJahiaNode parent, GWTJahiaNodeType type, String targetName, boolean createInParentAndMoveBefore) {
-        this(linker, parent, type, new HashMap<String, GWTJahiaNodeProperty>(), targetName, createInParentAndMoveBefore);
-    }
-
-    /**
-     * Open Edit content engine for a new node creation
-     *
      * @param linker                      The linker
      * @param parent                      The parent node where to create the new node - if createInParentAndMoveBefore, the node is sibling
      * @param type                        The selected node type of the new node

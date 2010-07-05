@@ -81,7 +81,7 @@ public class PortletModesCard extends MashupWizardCard {
                     aces.add(gwtJahiaNodeACE);
                     acl.setAce(aces);
                     initModeMappingEditor(acl);
-                    add(modeMappingEditor.renderNewAclPanel());
+                    modeMappingEditor.addNewAclPanel(PortletModesCard.this);
                     getPortletWizardWindow().updateWizard();
                 }
 
@@ -89,7 +89,7 @@ public class PortletModesCard extends MashupWizardCard {
                     Log.error("Unable to Add group ACE");
                     removeAll();
                     initModeMappingEditor(acl);
-                    add(modeMappingEditor.renderNewAclPanel());
+                    modeMappingEditor.addNewAclPanel(PortletModesCard.this);
                 }
             });
         } else {

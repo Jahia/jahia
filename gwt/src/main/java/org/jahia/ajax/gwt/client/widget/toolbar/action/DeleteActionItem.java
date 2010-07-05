@@ -1,5 +1,7 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.RunAsyncCallback;
 import org.jahia.ajax.gwt.client.widget.edit.EditActions;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -15,7 +17,14 @@ public class DeleteActionItem extends BaseActionItem {
     }
 
     public void onComponentSelection() {
-        EditActions.delete(linker);
+        GWT.runAsync(new RunAsyncCallback() {
+            public void onFailure(Throwable reason) {                
+            }
+
+            public void onSuccess() {
+                EditActions.delete(linker);
+            }
+        });
     }
 
     public void handleNewLinkerSelection() {

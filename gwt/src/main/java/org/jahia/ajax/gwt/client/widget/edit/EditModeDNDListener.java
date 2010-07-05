@@ -18,7 +18,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAs
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.edit.contentengine.CreateContentEngine;
+import org.jahia.ajax.gwt.client.widget.edit.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.sidepanel.PagesTabItem;
 
 import java.util.*;
@@ -98,7 +98,7 @@ public class EditModeDNDListener extends DNDListener {
                         props.put("jcr:title", new GWTJahiaNodeProperty("jcr:title", new GWTJahiaNodePropertyValue(selectedNode.getDisplayName(), GWTJahiaNodePropertyType.STRING)));
                         props.put("j:node", new GWTJahiaNodeProperty("j:node", new GWTJahiaNodePropertyValue(selectedNode, GWTJahiaNodePropertyType.WEAKREFERENCE)));
                         if (result.size() == 1) {
-                            new CreateContentEngine(editLinker, parent, result.get(0), props, selectedNode.getName(), false).show();
+                            EngineLoader.showCreateEngine(editLinker, parent, result.get(0), props, selectedNode.getName(), false);
                         } else {
                             Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> m = new HashMap<GWTJahiaNodeType, List<GWTJahiaNodeType>>();
                             m.put(null, result);
@@ -143,8 +143,9 @@ public class EditModeDNDListener extends DNDListener {
                                 }
                             });
                 } else {
-                    new CreateContentEngine(editLinker, parent, type, targetPath.substring(targetPath.lastIndexOf(
-                            "/") + 1)).show();
+                    EngineLoader.showCreateEngine(editLinker, parent, type, new HashMap<String, GWTJahiaNodeProperty>(),
+                            targetPath.substring(targetPath.lastIndexOf(
+                                                                    "/") + 1), false);
                 }
             } else if (QUERY_SOURCE_TYPE.equals(sourceType)) {
                 // Item creation
@@ -177,7 +178,7 @@ public class EditModeDNDListener extends DNDListener {
                         props.put("jcr:title", new GWTJahiaNodeProperty("jcr:title", new GWTJahiaNodePropertyValue(selectedNode.getDisplayName(), GWTJahiaNodePropertyType.STRING)));
                         props.put("j:node", new GWTJahiaNodeProperty("j:node", new GWTJahiaNodePropertyValue(selectedNode, GWTJahiaNodePropertyType.WEAKREFERENCE)));
                         if (result.size() == 1) {
-                            new CreateContentEngine(editLinker, parent, result.get(0), props, selectedNode.getName(), true).show();
+                            EngineLoader.showCreateEngine(editLinker, parent, result.get(0), props, selectedNode.getName(), true);
                         } else {
                             Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> m = new HashMap<GWTJahiaNodeType, List<GWTJahiaNodeType>>();
                             m.put(null, result);
@@ -219,7 +220,8 @@ public class EditModeDNDListener extends DNDListener {
                                 }
                             });
                 } else {
-                    new CreateContentEngine(editLinker, parent, type, "*", true).show();
+                    EngineLoader.showCreateEngine(editLinker, parent, type, new HashMap<String, GWTJahiaNodeProperty>(), "*",
+                            true);
                 }
             } else if (QUERY_SOURCE_TYPE.equals(sourceType)) {
                 // Item creation

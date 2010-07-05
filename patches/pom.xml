@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
-  <parent>
-    <groupId>org.jahia.server</groupId>
-    <artifactId>jahia-root</artifactId>
-    <version>6.5-SNAPSHOT</version>
-  </parent>
-  <modelVersion>4.0.0</modelVersion>
-  <artifactId>patches</artifactId>
-  <name>Third party libs patches</name>
-  <packaging>pom</packaging>
+    <parent>
+        <groupId>org.jahia.server</groupId>
+        <artifactId>jahia-root</artifactId>
+        <version>6.5-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>patches</artifactId>
+    <name>Third party libs patches</name>
+    <packaging>pom</packaging>
 
-  <modules>
-    <module>concurrent</module>
-    <module>jodconverter</module>
-  </modules>
+    <modules>
+        <module>concurrent</module>
+        <module>jodconverter</module>
+        <module>jbpm</module>
+    </modules>
 
 </project>
 

@@ -53,9 +53,5 @@
                     />
         </p>
     </div>
-    <p class="post-info-links">
-        <a class="comment_count" href="#"><fmt:message key="jnt_blog.noComment"/></a>
-        <a class="ping_count" href="#"><fmt:message key="jnt_blog.noTrackback"/></a>
-    </p>
 </form>
 

@@ -4,6 +4,17 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
+<%--@elvariable id="propertyDefinition" type="org.jahia.services.content.nodetypes.ExtendedPropertyDefinition"--%>
+<%--@elvariable id="type" type="org.jahia.services.content.nodetypes.ExtendedNodeType"--%>
+<%--@elvariable id="out" type="java.io.PrintWriter"--%>
+<%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
+<%--@elvariable id="scriptInfo" type="java.lang.String"--%>
+<%--@elvariable id="workspace" type="java.lang.String"--%>
+<%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
+<%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
+<%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
+
 <template:addResources type="css" resources="forum.css"/>
 <template:addResources type="css" resources="blog.css"/>
 
@@ -26,7 +37,7 @@
                 <div class="boxblog-inner-border"><!--start boxblog -->
 <div class="post">
     <div class="post-date"><span>${userCreatedMonth}</span>${userCreatedDay}</div>
-    <h2 class="post-title"><a href="#"><c:out value="${title.string}"/></a></h2>
+    <h2 class="post-title"><a href="${url.base}${currentNode.path}.html"><c:out value="${title.string}"/></a></h2>
 
     <jcr:node path="/users/${createdBy.string}" var="contentUser"/>
     <c:set var="fields" value="${contentUser.propertiesAsString}"/>
@@ -44,14 +55,13 @@
              sql="select [jcr:uuid] from [jnt:post] as p  where isdescendantnode(p,['${currentNode.path}'])"/>
     <c:set var="numberOfPosts" value="${numberOfPostsQuery.rows.size}"/>
     <p class="post-info-links">
-        <a href="${url.base}${currentResource.node.path}.edit.html"><fmt:message key="edit"/></a>
+        <a href="${url.base}${currentResource.node.path}.blogEdit.html"><fmt:message key="edit"/></a>
         <c:if test="${numberOfPosts == 0}">
             <a class="comment_count" href="${url.current}#comments">0&nbsp;<fmt:message key="comments"/></a>
         </c:if>
         <c:if test="${numberOfPosts > 0}">
             <a class="comment_count" href="${url.current}#comments">${numberOfPosts}&nbsp;<fmt:message key="comments"/></a>
         </c:if>
-        <a class="ping_count" href="#"><fmt:message key="jnt_blog.noTrackback"/></a>
     </p>
                     <div class="clear"></div>
                 </div>

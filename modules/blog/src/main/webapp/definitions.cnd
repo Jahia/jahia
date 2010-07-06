@@ -7,6 +7,8 @@
 
 [jnt:blogEntryFormCreation] > jnt:content, jmix:blogContent, mix:title
 
+[jnt:blogEntryFormEdition] > jnt:content, jmix:blogContent, mix:title
+
 [jnt:topBlog] > jnt:content, jmix:blogContent, jmix:list, jmix:pager
 
 [jnt:topBlogContent] > jnt:content, jmix:blogContent, jmix:list, jmix:pager

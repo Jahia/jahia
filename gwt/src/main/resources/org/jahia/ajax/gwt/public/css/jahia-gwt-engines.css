@@ -467,6 +467,9 @@ fm-globalMashupRepository {
 .um-group {
     background: url(../images/user/users2.png) no-repeat 0 0 !important;
 }
+.um-role {
+    background: url(../images/user/role.png) no-repeat 0 0 !important;
+}
 
 .um-adduser {
     background: url(../images/user/user1.png) no-repeat 0 0 !important;
@@ -474,6 +477,9 @@ fm-globalMashupRepository {
 
 .um-addgroup {
     background: url(../images/user/users2.png) no-repeat 0 0 !important;
+}
+.um-addrole {
+    background: url(../images/user/role.png) no-repeat 0 0 !important;
 }
 
 #images-view div {

@@ -29,6 +29,7 @@ under the License.
             <item name="Internationalized Web Site" href="./multilang.html"/>
             <item name="Apache HTTP Server in Front of Jahia" href="./apachehttpserver.html"/>
             <item name="Notifications" href="./notifications.html"/>
+            <item name="Users batch creation" href="./users_batch_creation.html"/>
         </menu>
         <menu ref="modules"/>
         <menu ref="reports"/>

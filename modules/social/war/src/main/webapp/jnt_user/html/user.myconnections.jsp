@@ -118,8 +118,8 @@
                 return $.map(data, function(row) {
                     return {
                         data: row,
-                        value: getText(row["node"]),
-                        result: getText(row["node"])
+                        value: getText(row),
+                        result: getText(row)
                     }
                 });
             },
@@ -128,23 +128,25 @@
             },
             extraParams: {
                 principalType : "users",
-                wildcardTerm : "{$q}*",
                 propertyMatchRegexp : "{$q}.*",
-                includeCriteriaNames : "*",
+                includeCriteriaNames : "j:nodename,j:firstName,j:lastName",
+                "j:nodename": "{$q}*",
+                "j:firstName": "{$q}*",
+                "j:lastName": "{$q}*",
                 removeDuplicatePropValues : "true"                
             }
         });
         $("#searchUsersSubmit").click(function() {
             // validate and process form here
             var term = $("input#searchUsersTerm").val();
-            searchUsers('${url.findPrincipal}', '${url.base}/${currentNode.path}', term);
+            searchUsers('${url.findPrincipal}', '${url.base}${currentNode.path}', term);
             return false;
         });
         $("#statusUpdateSubmit").click(function() {
             // validate and process form here
             var updateText = $("textarea#statusUpdateText").val();
             // alert('Sending text ' + updateText);
-            submitStatusUpdate('${url.base}/${currentNode.path}', '${currentNode.identifier}', updateText);
+            submitStatusUpdate('${url.base}${currentNode.path}', '${currentNode.identifier}', updateText);
             return false;
         });
 
@@ -154,7 +156,7 @@
             var toUserId = $(this).attr('toUserId');
             var connectionType = $(this).attr('connectionType');
             if (confirm("<fmt:message key='message.removeFriend.confirm'/>")) {
-                removeSocialConnection('${url.base}/${currentNode.path}', fromUserId, toUserId, connectionType,
+                removeSocialConnection('${url.base}${currentNode.path}', fromUserId, toUserId, connectionType,
                     function() {
                 	    $("#connection-to-" + toUserId).remove(); 
                     });

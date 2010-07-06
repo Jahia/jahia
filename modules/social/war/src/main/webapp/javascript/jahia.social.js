@@ -5,21 +5,36 @@
  * @param node
  */
 function getText(node) {
-    if (node.matchingProperties.length > 0) {
+	var props = node.properties;
+	if (props['jcr:primaryType'] == 'jnt:user') {
+		var result = "";
+		if (props['j:firstName'] && props['j:firstName'].length > 0) {
+			result += props['j:firstName'];
+		}
+		if (props['j:lastName'] && props['j:lastName'].length > 0) {
+			if (result.length > 0) {
+				result += " ";
+			}
+			result += props['j:lastName'];
+		}
+		return result.length > 0 ? result + " (" + props['j:nodename'] + ")" : props['j:nodename']; 
+	}
+	
+    if (node.matchingProperties && node.matchingProperties.length > 0) {
         var firstMatchingProperty = node.matchingProperties[0];
-        return node[firstMatchingProperty];
+        return props[firstMatchingProperty];
     }
-    if (node["jcr:title"] != null) {
-        return node["jcr:title"];
-    } else if (node["text"] != null) {
-        return node["text"];
-    } else if (node["j:nodename"] != null) {
-        return node["j:nodename"];
+    if (props["jcr:title"] != null) {
+        return props["jcr:title"];
+    } else if (props["text"] != null) {
+        return props["text"];
+    } else if (props["j:nodename"] != null) {
+        return props["j:nodename"];
     }
 }
 
 function format(result) {
-    return getText(result["node"]);
+    return getText(result);
 }
 
 
@@ -34,7 +49,7 @@ function searchUsers(findPrincipalURL, userURL, term) {
             $.each(data, function(i, item) {
                 $("#searchUsersResult").append(
                         $("<tr/>").append($("<td/>").append($("<img/>").attr("src", item.properties['j:picture'])))
-                                .append($("<td/>").text(getUserDisplayName(item.properties)))
+                                .append($("<td/>").attr("title", item.properties['j:nodename']).text(getUserDisplayName(item.properties)))
                                 .append($("<td/>").attr("align", "center").append($("<a/>").attr("href", "").attr("class", "social-add").click(function () {
                             requestConnection(userURL + '.startWorkflow.do', item['userKey']);
                             return false;

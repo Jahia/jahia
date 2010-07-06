@@ -4,6 +4,7 @@ import static javax.servlet.http.HttpServletResponse.SC_METHOD_NOT_ALLOWED;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.regex.Pattern;
 
 import javax.jcr.*;
 import javax.jcr.query.InvalidQueryException;
@@ -36,7 +37,7 @@ import org.springframework.web.servlet.mvc.Controller;
 
 /**
  * A small servlet to allow us to perform queries on the JCR.
- * User: loom
+ * @author loom
  * Date: Jan 26, 2010
  * Time: 5:55:17 PM
  */
@@ -184,7 +185,7 @@ public class Find extends HttpServlet implements Controller {
         return null;
     }
 
-    private JSONObject serializeNode(Node currentNode, int depthLimit, boolean escapeColon, String propertyMatchRegexp, Map<String, String> alreadyIncludedPropertyValues) throws RepositoryException,
+    private JSONObject serializeNode(Node currentNode, int depthLimit, boolean escapeColon, Pattern propertyMatchRegexp, Map<String, String> alreadyIncludedPropertyValues) throws RepositoryException,
             JSONException {
         final PropertyIterator stringMap = currentNode.getProperties();
         JSONObject jsonObject = new JSONObject();
@@ -202,7 +203,7 @@ public class Find extends HttpServlet implements Controller {
                 if (!propertyWrapper.isMultiple()) {
                     jsonObject.put(name, propertyWrapper.getValue().getString());
                     // @todo this code is duplicated for multiple values, we need to clean this up.
-                    if ((propertyMatchRegexp != null) && (propertyWrapper.getValue().getString().matches(propertyMatchRegexp))) {
+                    if (propertyMatchRegexp != null && propertyMatchRegexp.matcher(propertyWrapper.getValue().getString()).matches()) {
                         if (alreadyIncludedPropertyValues != null) {
                             String nodeIdentifier = alreadyIncludedPropertyValues.get(propertyWrapper.getValue().getString());
                             if (nodeIdentifier != null) {
@@ -222,7 +223,7 @@ public class Find extends HttpServlet implements Controller {
                     Value[] propValues = propertyWrapper.getValues();
                     for (Value propValue : propValues) {
                         jsonArray.put(propValue.getString());
-                        if ((propertyMatchRegexp != null) && (propValue.getString().matches(propertyMatchRegexp))) {
+                        if (propertyMatchRegexp != null && propertyMatchRegexp.matcher(propValue.getString()).matches()) {
                             if (alreadyIncludedPropertyValues != null) {
                                 String nodeIdentifier = alreadyIncludedPropertyValues.get(propValue.getString());
                                 if (nodeIdentifier != null) {
@@ -266,7 +267,7 @@ public class Find extends HttpServlet implements Controller {
         return jsonObject;
     }
 
-    private JSONObject serializeRow(Row row, String[] columns, int depthLimit, boolean escapeColon, Set<String> alreadyIncludedIdentifiers, String propertyMatchRegexp, Map<String, String> alreadyIncludedPropertyValues) throws RepositoryException,
+    private JSONObject serializeRow(Row row, String[] columns, int depthLimit, boolean escapeColon, Set<String> alreadyIncludedIdentifiers, Pattern propertyMatchRegexp, Map<String, String> alreadyIncludedPropertyValues) throws RepositoryException,
             JSONException {
 
         JSONObject jsonObject = new JSONObject();
@@ -357,9 +358,10 @@ public class Find extends HttpServlet implements Controller {
         boolean removeDuplicatePropertyValues = Boolean.valueOf(StringUtils.defaultIfEmpty(request.getParameter("removeDuplicatePropValues"), String
                 .valueOf(defaultRemoveDuplicatePropertyValues)));
 
-        String propertyMatchRegexp = request.getParameter("propertyMatchRegexp");
-        if (propertyMatchRegexp != null) {
-            propertyMatchRegexp = expandRequestMarkers(request, propertyMatchRegexp, false, queryLanguage);
+        Pattern propertyMatchRegexp = null;
+        String propertyMatchRegexpString = request.getParameter("propertyMatchRegexp");
+        if (propertyMatchRegexpString != null) {
+            propertyMatchRegexp = Pattern.compile(expandRequestMarkers(request, propertyMatchRegexpString, false, queryLanguage), Pattern.CASE_INSENSITIVE);
         }
 
         JSONArray results = new JSONArray();

@@ -11,7 +11,6 @@ import org.jahia.services.render.URLResolver;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,11 +18,10 @@ import java.io.IOException;
 import java.net.URLEncoder;
 
 /**
- * Created by IntelliJ IDEA.
+ * Wiki page creation handler.
  * User: toto
  * Date: Dec 2, 2009
  * Time: 4:11:46 PM
- * To change this template use File | Settings | File Templates.
  */
 public class NewWikiPageHandler implements ErrorHandler {
     private static final Logger logger = Logger.getLogger(NewWikiPageHandler.class);
@@ -44,6 +42,9 @@ public class NewWikiPageHandler implements ErrorHandler {
             try {
                 JCRNodeWrapper parent = session.getNode(parentPath);
                 JCRNodeWrapper parentOfType = JCRContentUtils.getParentOfType(parent, "jnt:page");
+                if (parentOfType == null) {
+                    return false;
+                }
                 NodeIterator nodeIterator = JCRContentUtils.getChildrenOfType(parentOfType, "jnt:template");
                 NodeIterator iterator = JCRContentUtils.getDescendantNodes(parentOfType, "jnt:wikiPageFormCreation");
                 boolean searchForExistingPages = false;

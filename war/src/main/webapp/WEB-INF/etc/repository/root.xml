@@ -110,6 +110,6 @@
 
     <templateSets jcr:primaryType="jnt:templateSets"/>
 
-    <systemTemplate jcr:primaryType="jnt:masterTemplate"  j:template="system" />
+    <systemTemplate jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:masterTemplate"  j:template="system" />
 
 </content>

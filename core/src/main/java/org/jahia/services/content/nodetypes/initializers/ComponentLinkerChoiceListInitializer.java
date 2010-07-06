@@ -74,7 +74,7 @@ public class ComponentLinkerChoiceListInitializer implements ChoiceListInitializ
             if (nodeWrapper.hasProperty(param)) {
                 JCRNodeWrapper bindedNode = (JCRNodeWrapper) nodeWrapper.getProperty(param).getNode();
                 if (bindedNode.isNodeType("jnt:contentList")  || bindedNode.isNodeType("jnt:absoluteArea") || bindedNode.isNodeType("jnt:mainResourceArea")) {
-                    if (bindedNode.isNodeType("jmix:listRestrictions")) {
+                    if (bindedNode.hasProperty("jmix:listRestrictions") && bindedNode.isNodeType("jmix:listRestrictions")) {
                         final Value[] values1 = bindedNode.getProperty("j:allowedTypes").getValues();
                         propertyDefs = getCommonChildNodeDefinitions(values1, true, true,
                                                                      new LinkedHashSet<String>());

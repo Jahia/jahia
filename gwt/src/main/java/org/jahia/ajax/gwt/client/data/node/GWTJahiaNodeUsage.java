@@ -47,12 +47,9 @@ public class GWTJahiaNodeUsage extends BaseModelData implements Serializable {
     public GWTJahiaNodeUsage() {
     }
 
-    public GWTJahiaNodeUsage(String identifier, String url, String pageUrl, String nodeName, String nodeTitle) {
-        setUrl(url);
-        setPageUrl(pageUrl);
+    public GWTJahiaNodeUsage(String identifier, String url) {
+        setPath(url);
         setIdentifier(identifier);
-        setNodeName(nodeName);
-        setNodeTitle(nodeTitle);
     }
 
     public void setIdentifier(String identifier) {
@@ -105,11 +102,11 @@ public class GWTJahiaNodeUsage extends BaseModelData implements Serializable {
         set("version", Integer.valueOf(version));
     }
 
-    public String getLang() {
+    public String getLanguage() {
         return get("lang");
     }
 
-    public void setLang(String lang) {
+    public void setLanguage(String lang) {
         set("lang", lang);
     }
 
@@ -121,20 +118,20 @@ public class GWTJahiaNodeUsage extends BaseModelData implements Serializable {
         set("pageTitle", pageTitle);
     }
 
-    public String getUrl() {
-        return get("url");
+    public String getPath() {
+        return get("path");
     }
 
-    public void setUrl(String url) {
-        set("url", url);
+    public void setPath(String url) {
+        set("path", url);
     }
 
-    public String getPageUrl() {
-        return get("pageUrl");
+    public String getPagePath() {
+        return get("pagePath");
     }
 
-    public void setPageUrl(String url) {
-        set("pageUrl", url);
+    public void setPagePath(String url) {
+        set("pagePath", url);
     }
 
     public String getVersionName() {

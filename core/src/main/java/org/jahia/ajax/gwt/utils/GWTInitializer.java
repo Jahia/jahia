@@ -33,6 +33,7 @@ package org.jahia.ajax.gwt.utils;
 
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.bin.Render;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaSessionExpirationException;
 import org.jahia.params.ParamBean;
@@ -171,7 +172,7 @@ public class GWTInitializer {
             params.put(JahiaGWTParameters.USER_URL, url.getUserProfile());
             addLanguageSwitcherLinks(renderContext, params, url);
         } else {
-            params.put(JahiaGWTParameters.BASE_URL, request.getContextPath() + "/render/" + params.get("workspace")  + "/" + locale.toString());
+            params.put(JahiaGWTParameters.BASE_URL, request.getContextPath().equals("/") ? "" : request.getContextPath() + Render.getRenderServletPath() + "/" + params.get("workspace")  + "/" + locale.toString());
         }
 
         // add jahia parameter dictionary

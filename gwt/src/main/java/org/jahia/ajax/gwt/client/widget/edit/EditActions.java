@@ -209,9 +209,9 @@ public class EditActions {
                                 if (!nodeUsage.getNodeName().equals(n)) {
                                     message += "<br><br>" + nodeUsage.getNodeName() + " " +
                                             Messages.get("label.remove.used", "is used in page <br>") + " " +
-                                            nodeUsage.getPageUrl();
+                                            nodeUsage.getPagePath();
                                 } else {
-                                    message += "<br>" + nodeUsage.getPageUrl();
+                                    message += "<br>" + nodeUsage.getPagePath();
                                 }
                                 n = nodeUsage.getNodeName();
                             }

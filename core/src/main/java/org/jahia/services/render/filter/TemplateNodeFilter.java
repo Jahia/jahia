@@ -91,14 +91,20 @@ public class TemplateNodeFilter extends AbstractFilter {
                 if (current.hasProperty("j:templateNode")) {
                     templateNode = (JCRNodeWrapper) current.getProperty("j:templateNode").getNode();
                     template = addDerivedTemplates(node, templateName, template, templateNode);
-                    if (current == node) {
-                        template = addTemplate(node, templateName, template, templateNode);
+                    if (template == null && current == node) {
+                        template = new Template(templateNode.hasProperty("j:template") ? templateNode.getProperty("j:template").getString() :
+                            "default", templateNode, template);
                     }
-                } else if (current.hasProperty("j:defaultTemplateNode")) {
+                }
+                if (template == null && current.hasProperty("j:defaultTemplateNode")) {
                     templateNode = (JCRNodeWrapper) current.getProperty("j:defaultTemplateNode").getNode();
                     template = addDerivedTemplates(node, templateName, template, templateNode);
-                    template = addTemplate(node, templateName, template, templateNode);
-                } else if (current.isNodeType("jnt:template")) {
+                    if (template == null) {
+                        template = new Template(templateNode.hasProperty("j:template") ? templateNode.getProperty("j:template").getString() :
+                            "default", templateNode, template);
+                    }
+                }
+                if (template == null && current.isNodeType("jnt:template")) {
                     templateNode = current;
                     break;
                 }

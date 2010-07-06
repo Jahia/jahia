@@ -112,8 +112,9 @@ public class TemplateNodeFilter extends AbstractFilter {
             }
             templateNode = templateNode.getParent();
             while (!(templateNode.isNodeType("jnt:templatesFolder"))) {
-                template = addTemplate(node, templateName, template, templateNode);
-                templateNode = templateNode.getParent();                
+                template = new Template(templateNode.hasProperty("j:template") ? templateNode.getProperty("j:template").getString() :
+                            "default", templateNode, template); 
+                templateNode = templateNode.getParent();
             }
         } catch (ItemNotFoundException e) {
             // default

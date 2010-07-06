@@ -209,6 +209,7 @@
                                         <sshexec host="${distant.hosts.ip}" username="${distant.hosts.username}" password="${distant.hosts.password}"
                                                  command="export JAVA_HOME=/usr/java/latest;/home/jahia/install/jahia/bin/catalina.sh stop -force"
                                                  trust="true" failonerror="false"/>
+                                        <sleep seconds="5"/>
                                         <sshexec host="${distant.hosts.ip}" username="${distant.hosts.username}" password="${distant.hosts.password}"
                                                  command="rm -Rf /home/jahia/install/jahia" trust="true"
                                                  failonerror="false"/>

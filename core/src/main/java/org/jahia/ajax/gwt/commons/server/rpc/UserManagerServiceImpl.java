@@ -138,7 +138,7 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
                         if (group.getSiteID() > 0) {
                             JahiaSite jahiaSite = sitesService.getSite(group.getSiteID());
                             if (jahiaSite != null) {
-                                data.setSiteName(jahiaSite.getServerName());
+                                data.setSiteName(jahiaSite.getTitle());
                             }
                         }
                         data.setSiteId(siteId);

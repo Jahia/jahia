@@ -164,6 +164,9 @@ public class JCRPublicationService extends JahiaService {
      */
     public void publish(final String uuid, final String sourceWorkspace, final String destinationWorkspace, final Set<String> languages,
                         final boolean allSubTree) throws RepositoryException {
+        if (sessionFactory.getCurrentUser() == null) {
+            return;
+        }
         List<PublicationInfo> tree = getPublicationInfo(uuid, languages, true, true, allSubTree, sourceWorkspace, destinationWorkspace);
         publish(tree, sourceWorkspace, destinationWorkspace);
     }
@@ -722,8 +725,8 @@ public class JCRPublicationService extends JahiaService {
      */
     public List<PublicationInfo> getPublicationInfo(String uuid, Set<String> languages, boolean includesReferences, boolean includesSubnodes, boolean allsubtree,
                                               final String sourceWorkspace, final String destinationWorkspace) throws RepositoryException {
-        final JCRSessionWrapper sourceSession = JCRSessionFactory.getInstance().getCurrentUserSession(sourceWorkspace);
-        final JCRSessionWrapper destinationSession = JCRSessionFactory.getInstance().getCurrentUserSession(destinationWorkspace);
+        final JCRSessionWrapper sourceSession = sessionFactory.getCurrentUserSession(sourceWorkspace);
+        final JCRSessionWrapper destinationSession = sessionFactory.getCurrentUserSession(destinationWorkspace);
 
         JCRNodeWrapper stageNode = sourceSession.getNodeByUUID(uuid);
         List<PublicationInfo> infos = new ArrayList<PublicationInfo>();

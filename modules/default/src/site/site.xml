@@ -25,6 +25,7 @@
                 <item name="Dashboard" href="userDashboard.html"/>
             </item>
             <item name="User Agent" href="userAgent.html"/>
+            <item name="Auto-splitting nodes" href="./autoSplitting.html"/>
         </menu>
         <menu ref="modules"/>
         <menu ref="reports"/>

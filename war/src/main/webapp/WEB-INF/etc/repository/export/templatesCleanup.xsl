@@ -37,11 +37,11 @@
     </xsl:template>
     <xsl:template match="/">
         <content>
-            <templatesSet>
+            <templateSets>
                 <xsl:copy>
                     <xsl:apply-templates select="child::node()|@*"/>
                 </xsl:copy>
-            </templatesSet>
+            </templateSets>
         </content>
     </xsl:template>
 </xsl:stylesheet>

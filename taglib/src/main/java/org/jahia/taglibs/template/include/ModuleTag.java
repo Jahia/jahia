@@ -41,7 +41,10 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.*;
 import org.jahia.services.render.scripting.Script;
 
-import javax.jcr.*;
+import javax.jcr.AccessDeniedException;
+import javax.jcr.Node;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
@@ -154,17 +157,20 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
     @Override
     public int doEndTag() throws JspException {
         try {
-            RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
+            RenderContext renderContext =
+                    (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
 //            if (true)
 //            throw new RuntimeException();
             buffer = new StringBuffer();
 
-            Resource currentResource = (Resource) pageContext.getAttribute("currentResource", PageContext.REQUEST_SCOPE);
+            Resource currentResource =
+                    (Resource) pageContext.getAttribute("currentResource", PageContext.REQUEST_SCOPE);
 
             findNode(renderContext, currentResource);
 
             if (node != null) {
-                Integer currentLevel = (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
+                Integer currentLevel =
+                        (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
                 try {
                     Set<String> cons = node.getPrimaryNodeType().getUnstructuredChildNodeDefinitions().keySet();
                     for (String s : cons) {
@@ -177,14 +183,18 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 }
                 String constrainedNodeTypes = null;
                 if (currentLevel != null) {
-                    constrainedNodeTypes = (String) pageContext.getAttribute("areaNodeTypesRestriction" + (currentLevel - 1), PageContext.REQUEST_SCOPE);
+                    constrainedNodeTypes = (String) pageContext
+                            .getAttribute("areaNodeTypesRestriction" + (currentLevel - 1), PageContext.REQUEST_SCOPE);
                 }
+                try {
+                    if (node.isNodeType("jnt:acl") || node.isNodeType("jnt:workflowRules")) {
+                        return EVAL_PAGE;
+                    }
 
-                if (constrainedNodeTypes != null && !"".equals(constrainedNodeTypes.trim())) {
-                    StringTokenizer st = new StringTokenizer(constrainedNodeTypes, " ");
-                    boolean found = false;
-                    Node displayedNode = node;
-                    try {
+                    if (constrainedNodeTypes != null && !"".equals(constrainedNodeTypes.trim())) {
+                        StringTokenizer st = new StringTokenizer(constrainedNodeTypes, " ");
+                        boolean found = false;
+                        Node displayedNode = node;
                         if (node.isNodeType("jnt:contentReference") && node.hasProperty("j:node")) {
                             displayedNode = node.getProperty("j:node").getNode();
                         }
@@ -195,13 +205,13 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                                 break;
                             }
                         }
-                    } catch (RepositoryException e) {
-                        logger.error(e, e);
+                        // Remove test until we find a better solution to avoid displaying unecessary nodes
+                        if (!found) {
+                            return EVAL_PAGE;
+                        }
                     }
-                    // Remove test until we find a better solution to avoid displaying unecessary nodes
-                    if (!found) {
-                        return EVAL_PAGE;
-                    }
+                } catch (RepositoryException e) {
+                    logger.error(e, e);
                 }
 
                 if (templateType == null) {
@@ -212,12 +222,14 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
                 String charset = pageContext.getResponse().getCharacterEncoding();
                 for (Map.Entry<String, String> param : parameters.entrySet()) {
-                    resource.getModuleParams().put(URLDecoder.decode(param.getKey(), charset), URLDecoder.decode(param.getValue(), charset));
+                    resource.getModuleParams().put(URLDecoder.decode(param.getKey(), charset),
+                            URLDecoder.decode(param.getValue(), charset));
                 }
 
                 if (parameters.containsKey("resourceNodeType")) {
                     try {
-                        resource.setResourceNodeType(NodeTypeRegistry.getInstance().getNodeType(URLDecoder.decode(parameters.get("resourceNodeType"), "UTF-8")));
+                        resource.setResourceNodeType(NodeTypeRegistry.getInstance().getNodeType(
+                                URLDecoder.decode(parameters.get("resourceNodeType"), "UTF-8")));
                     } catch (NoSuchNodeTypeException e) {
                         throw new JspException(e);
                     }
@@ -230,7 +242,8 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                         Script script = null;
                         try {
                             script = RenderService.getInstance().resolveScript(resource, renderContext);
-                            printModuleStart(type, node.getPath(), resource.getTemplate(), script.getTemplate().getInfo());
+                            printModuleStart(type, node.getPath(), resource.getTemplate(),
+                                    script.getTemplate().getInfo());
                         } catch (TemplateNotFoundException e) {
                             printModuleStart(type, node.getPath(), resource.getTemplate(), "Script not found");
                         }
@@ -262,8 +275,10 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             buffer = null;
 
             if (!(this instanceof IncludeTag)) {
-                Integer level = (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
-                pageContext.setAttribute("org.jahia.modules.level", level != null ? level - 1 : 1, PageContext.REQUEST_SCOPE);
+                Integer level =
+                        (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
+                pageContext.setAttribute("org.jahia.modules.level", level != null ? level - 1 : 1,
+                        PageContext.REQUEST_SCOPE);
             }
 
             parameters.clear();
@@ -303,21 +318,17 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
     }
 
     protected boolean canEdit(RenderContext renderContext) {
-        return renderContext.isEditMode() && editable && !Boolean.TRUE.equals(renderContext.getRequest().getAttribute("inWrapper"));
+        return renderContext.isEditMode() && editable &&
+                !Boolean.TRUE.equals(renderContext.getRequest().getAttribute("inWrapper"));
     }
 
-    protected void printModuleStart(String type, String path, String resolvedTemplate, String scriptInfo) throws RepositoryException, IOException {
+    protected void printModuleStart(String type, String path, String resolvedTemplate, String scriptInfo)
+            throws RepositoryException, IOException {
 
-        buffer.append("<div class=\"jahia-template-gxt\" jahiatype=\"module\" ")
-                .append("id=\"module")
-                .append(UUID.randomUUID().toString())
-                .append("\" type=\"")
-                .append(type)
-                .append("\" ");
+        buffer.append("<div class=\"jahia-template-gxt\" jahiatype=\"module\" ").append("id=\"module")
+                .append(UUID.randomUUID().toString()).append("\" type=\"").append(type).append("\" ");
 
-        buffer
-                .append((scriptInfo != null) ? " scriptInfo=\"" + scriptInfo + "\"" : "")
-                .append(" path=\"").append(path)
+        buffer.append((scriptInfo != null) ? " scriptInfo=\"" + scriptInfo + "\"" : "").append(" path=\"").append(path)
                 .append("\" ");
 
         if (!StringUtils.isEmpty(nodeTypes)) {
@@ -331,9 +342,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             buffer.append((referenceTypes != null) ? " referenceTypes=\"" + referenceTypes + "\"" : "");
         }
 
-        buffer
-                .append((resolvedTemplate != null) ? " template=\"" + resolvedTemplate + "\"" : "")
-                .append(">");
+        buffer.append((resolvedTemplate != null) ? " template=\"" + resolvedTemplate + "\"" : "").append(">");
 
         if (var == null) {
             pageContext.getOut().print(buffer);
@@ -344,11 +353,12 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     private String getReferenceTypes() throws NoSuchNodeTypeException {
         StringBuffer buffer = new StringBuffer();
-        List<ExtendedNodeType> refs = NodeTypeRegistry.getInstance().getNodeType("jmix:nodeReference").getSubtypesAsList();
+        List<ExtendedNodeType> refs =
+                NodeTypeRegistry.getInstance().getNodeType("jmix:nodeReference").getSubtypesAsList();
 
         String[] nodeTypesArray;
         if (StringUtils.isEmpty(nodeTypes)) {
-            nodeTypesArray = new String[] {"nt:base"};
+            nodeTypesArray = new String[]{"nt:base"};
         } else {
             nodeTypesArray = nodeTypes.split(" ");
         }
@@ -359,7 +369,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                     if (ref.isNodeType(s)) {
                         String[] refConstraints = ref.getPropertyDefinitionsAsMap().get("j:node").getValueConstraints();
                         if (refConstraints.length == 0) {
-                            refConstraints = new String[] {"jmix:droppableContent"};
+                            refConstraints = new String[]{"jmix:droppableContent"};
                         }
                         List<String> finalConstraints = new ArrayList<String>();
                         for (String refConstraint : refConstraints) {
@@ -371,7 +381,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                                 }
                             }
                         }
-                        
+
                         refConstraints = finalConstraints.toArray(new String[finalConstraints.size()]);
                         if (refConstraints.length > 0) {
                             buffer.append(ref.getName());
@@ -379,7 +389,9 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                             if (refConstraints.length > 0) {
                                 for (int i = 0; i < refConstraints.length; i++) {
                                     buffer.append(refConstraints[i]);
-                                    if (i+1 < refConstraints.length) buffer.append(",");
+                                    if (i + 1 < refConstraints.length) {
+                                        buffer.append(",");
+                                    }
                                 }
                             }
                             buffer.append("] ");
@@ -402,9 +414,12 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     protected void render(RenderContext renderContext, Resource resource) throws IOException {
         try {
-            final Integer level = (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
+            final Integer level =
+                    (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
 
-            boolean setRestrictions = pageContext.getAttribute("areaNodeTypesRestriction" + level, PageContext.REQUEST_SCOPE) == null && !StringUtils.isEmpty(nodeTypes);
+            boolean setRestrictions =
+                    pageContext.getAttribute("areaNodeTypesRestriction" + level, PageContext.REQUEST_SCOPE) == null &&
+                            !StringUtils.isEmpty(nodeTypes);
             if (setRestrictions) {
                 pageContext.setAttribute("areaNodeTypesRestriction" + level, nodeTypes, PageContext.REQUEST_SCOPE);
             }
@@ -439,7 +454,8 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         return type;
     }
 
-    protected void missingResource(RenderContext renderContext, Resource currentResource) throws RepositoryException, IOException {
+    protected void missingResource(RenderContext renderContext, Resource currentResource)
+            throws RepositoryException, IOException {
         String currentPath = currentResource.getNode().getPath();
         if (path.startsWith(currentPath + "/") && path.substring(currentPath.length() + 1).indexOf('/') == -1) {
             currentResource.getMissingResources().add(path.substring(currentPath.length() + 1));

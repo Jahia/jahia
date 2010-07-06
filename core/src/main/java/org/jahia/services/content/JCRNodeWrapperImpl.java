@@ -1182,6 +1182,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public JCRPropertyWrapper setProperty(String name, Value value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         final Locale locale = getSession().getLocale();
         ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
+        if (value.getType() != epd.getRequiredType()) {
+            value = getSession().getValueFactory().createValue(value.getString(), epd.getRequiredType());
+        }
         value = JCRStoreService.getInstance().getInterceptorChain().beforeSetValue(this, name, epd, value);
         if (locale != null) {
             if (epd != null && epd.isInternationalized()) {
@@ -1214,6 +1217,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public JCRPropertyWrapper setProperty(String name, Value[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         final Locale locale = getSession().getLocale();
         ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
+        for (int i = 0; i < values.length; i++) {
+            if (values[i].getType() != epd.getRequiredType()) {
+                values[i] = getSession().getValueFactory().createValue(values[i].getString(), epd.getRequiredType());
+            }
+        }
 
         values = JCRStoreService.getInstance().getInterceptorChain().beforeSetValues(this, name, epd, values);
 

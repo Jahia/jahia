@@ -128,7 +128,7 @@ public class ReferencesHelper {
             n.setProperty(pName, newValues);
         } else {
             n.checkout();
-            n.setProperty(pName, value);
+            n.setProperty(pName, session.getValueFactory().createValue(value, propertyDefinition.getRequiredType()));
         }
     }
 

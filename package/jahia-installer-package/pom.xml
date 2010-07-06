@@ -12,7 +12,7 @@
     <properties>
         <product.name>Jahia Community Edition</product.name>
         <installer.filename>Jahia_CE_v${jahia.package.version}_r${buildNumber}</installer.filename>
-        <izpack.version>4.3.2</izpack.version>
+        <izpack.version>4.3.3</izpack.version>
         <staging.dir>${project.build.directory}/izpack</staging.dir>
         <launch4j.jahia.version>6.5.0.0</launch4j.jahia.version>
     </properties>
@@ -321,7 +321,7 @@
                                 <minVersion>1.5.0_07</minVersion>
                             </jre>
                             <splash>
-                                <file>${project.build.directory}/images/jahia-community.bmp</file>
+                                <file>${project.build.directory}/images/splash.bmp</file>
                                 <waitForWindow>true</waitForWindow>
                                 <timeout>60</timeout>
                                 <timeoutErr>true</timeoutErr>

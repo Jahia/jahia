@@ -3,11 +3,22 @@
     <job name="Start Apache Tomcat">
         <executeForPack name="Apache Tomcat"/>
         <os family="windows" />
-        <executefile name="$INSTALL_PATH/tomcat/startup.bat" />
+        <executefile name="$INSTALL_PATH/tomcat/bin/startup.bat">
+            <env>CATALINA_HOME=$INSTALL_PATH\tomcat</env>
+        </executefile>
     </job>
-    <job name="Launch Jahia">
+    <job name="Start Apache Tomcat">
         <executeForPack name="Apache Tomcat"/>
-        <os family="windows" />
-        <executefile name="$INSTALL_PATH/bin/StartJahia.URL" />
+        <os family="unix" />
+        <executefile name="$INSTALL_PATH/tomcat/bin/startup.sh">
+            <env>CATALINA_HOME=$INSTALL_PATH/tomcat</env>
+        </executefile>
+    </job>
+    <job name="Start Apache Tomcat">
+        <executeForPack name="Apache Tomcat"/>
+        <os family="mac" />
+        <executefile name="$INSTALL_PATH/tomcat/bin/startup.sh">
+            <env>CATALINA_HOME=$INSTALL_PATH/tomcat</env>
+        </executefile>
     </job>
 </processing>

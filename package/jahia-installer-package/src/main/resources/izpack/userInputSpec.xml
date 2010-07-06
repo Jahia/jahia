@@ -40,19 +40,19 @@
     <panel order="3">
         <field type="title" txt="Database connection settings" id="dbSettings.dbms.title"/>
         <field type="text" align="left" variable="dbSettings.connection.driver">
-            <spec txt="Database driver (*)" id="dbSettings.connection.driver" size="25" set="${var.db.driver}"/>
+            <spec txt="Database driver (*)" id="dbSettings.connection.driver" size="15" set="${var.db.driver}"/>
             <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Database driver is a mandatory field" id="dbSettings.connection.driver.mandatory"/>
         </field>
         <field type="text" align="left" variable="dbSettings.connection.url">
-            <spec txt="Database URL (*)" id="dbSettings.connection.url" size="25" set="${var.db.url}"/>
+            <spec txt="Database URL (*)" id="dbSettings.connection.url" size="15" set="${var.db.url}"/>
             <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Database URL is a mandatory field" id="dbSettings.connection.url.mandatory"/>
         </field>
         <field type="text" align="left" variable="dbSettings.connection.username">
-            <spec txt="Database username" id="dbSettings.connection.username" size="25" set="jahia"/>
+            <spec txt="Database username" id="dbSettings.connection.username" size="15" set="jahia"/>
         </field>
         <field type="password" align="left" variable="dbSettings.connection.password">
             <spec>
-                <pwd set="jahia" size="25" txt="Database password" id="dbSettings.connection.password"/>
+                <pwd set="jahia" size="15" txt="Database password" id="dbSettings.connection.password"/>
             </spec>
         </field>
         <field type="space"/>
@@ -63,26 +63,26 @@
     <panel order="4">
         <field type="title" txt="SuperUser (administrator) settings" id="superUser.title"/>
         <field type="text" align="left" variable="superUser.username">
-            <spec txt="Administrator username" id="superUser.username" size="25" set="root"/>
+            <spec txt="Administrator username" id="superUser.username" size="15" set="root"/>
             <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Administrator username is a mandatory field" id="superUser.username.mandatory"/>
         </field>
         <field type="password" align="left" variable="superUser.password">
             <spec>
-                <pwd set="" size="25" txt="Administrator password" id="superUser.password"/>
-                <pwd set="" size="25" txt="Confirm administrator password" id="superUser.passwordConfirm"/>
+                <pwd set="" size="15" txt="Administrator password" id="superUser.password"/>
+                <pwd set="" size="15" txt="Confirm administrator password" id="superUser.passwordConfirm"/>
             </spec>
             <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Administrator password is a mandatory field" id="superUser.password.mandatory"/>
             <validator
                 class="com.izforge.izpack.util.PasswordEqualityValidator" txt="Both passwords must match" id="superUser.password.match"/>
         </field>
         <field type="text" align="left" variable="superUser.firstname">
-            <spec txt="First name" id="superUser.firstname" size="25" set="Jahia"/>
+            <spec txt="First name" id="superUser.firstname" size="15" set="Jahia"/>
         </field>
         <field type="text" align="left" variable="superUser.lastname">
-            <spec txt="Last name" id="superUser.lastname" size="25" set="Super Administrator"/>
+            <spec txt="Last name" id="superUser.lastname" size="15" set="Super Administrator"/>
         </field>
         <field type="text" align="left" variable="superUser.email">
-            <spec txt="E-mail address" id="superUser.email" size="25" set=""/>
+            <spec txt="E-mail address" id="superUser.email" size="15" set=""/>
         </field>
         <field type="space"/>
         <field type="space"/>
@@ -94,13 +94,13 @@
         <field type="title" txt="Mail settings (optional)" id="mailSettings.title"/>
         <field type="staticText" txt="The settings below are optional. Leave them empty to disable E-Mail notification. Specifying them will enable the E-Mail notification feature." id="mailSettings.description"/>
         <field type="text" align="left" variable="mailSettings.server">
-            <spec txt="Mail server" id="mailSettings.server" size="25"/>
+            <spec txt="Mail server" id="mailSettings.server" size="20"/>
         </field>
         <field type="text" align="left" variable="mailSettings.administrator">
-            <spec txt="Mail administrator - recipient" id="mailSettings.administrator" size="25"/>
+            <spec txt="Mail administrator - recipient" id="mailSettings.administrator" size="20"/>
         </field>
         <field type="text" align="left" variable="mailSettings.from">
-            <spec txt="Mail from - sender" id="mailSettings.from" size="25"/>
+            <spec txt="Mail from - sender" id="mailSettings.from" size="20"/>
         </field>
     </panel>
 </userInput>

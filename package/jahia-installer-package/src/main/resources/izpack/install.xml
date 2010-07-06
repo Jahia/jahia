@@ -21,9 +21,6 @@
         <variable name="jahia.war.contextPath" value=""/>
         <variable name="jahia.war.target.path" value="$INSTALL_PATH/tomcat/webapps/ROOT" condition="cnd.pack.tomcat"/>
         <variable name="jahia.war.target.path" value="$INSTALL_PATH/build" condition="!cnd.pack.tomcat"/>
-
-        <variable name="jahia.war.excludes" value="" condition="!cnd.server.type.jboss"/>
-        <variable name="jahia.war.excludes" value="**/WEB-INF/lib/jboss-j2ee-*.jar,**/WEB-INF/lib/jstl-*.jar,**/WEB-INF/lib/standard-*.jar,**/WEB-INF/lib/ojdbc5-*.jar,**/WEB-INF/lib/orai18n-*.jar,**/WEB-INF/lib/sqljdbc-*.jar,**/WEB-INF/lib/mysql-connector-java-*.jar,**/WEB-INF/lib/derby-*.jar,**/WEB-INF/lib/derbyclient-*.jar,**/WEB-INF/lib/postgresql-*.jar" condition="cnd.server.type.jboss"/>
         
         <variable name="server.type" value="tomcat" condition="cnd.pack.tomcat"/>
 
@@ -107,11 +104,6 @@
     <guiprefs height="480" resizable="yes" width="640">
         <modifier key="useFlags" value="yes"/>
         <modifier key="langDisplayType" value="native"/>
-        <modifier key="useHeadingPanel" value="yes"/>
-        <modifier key="headingImageOnLeft" value="yes"/>
-        <modifier key="headingFontSize" value="2"/>
-        <modifier key="headingBackgroundColor" value="-65794"/>
-        <modifier key="headingForegroundColor" value="-1"/>
         <modifier key="headingPanelCounter" value="progressbar"/>
         <modifier key="headingPanelCounterPos" value="inNavigationPanel"/>
     </guiprefs>
@@ -126,8 +118,8 @@
     <resources>
         <res id="TargetPanel.dir.unix" src="unix-path.txt" />
         <res id="TargetPanel.dir.windows" src="windows-path.txt" />
-        <res id="installer.langsel.img" src="../images/jahia-community.png"/>
-        <res id="Heading.image" src="../images/top-logo.png"/>
+        <res id="installer.langsel.img" src="../images/language-selection.png"/>
+        <res id="Installer.image" src="../images/left-side.png"/>
         <res id="LicencePanel.licence" parse="no" src="../licenses/license.txt"/>
 
         <res id="ProcessPanel.Spec.xml" src="ProcessPanel.Spec.xml"/>
@@ -172,9 +164,7 @@
         <panel classname="ShortcutPanel" id="shortcutPanel"/>
         <panel classname="SummaryPanel"/>
         <panel classname="InstallPanel"/>
-        <!-- 
-        <panel classname="ProcessPanel"/>
-        -->
+        <panel classname="ProcessPanel" condition="cnd.pack.tomcat" />
         <panel classname="SimpleFinishPanel"/>
     </panels>
     
@@ -197,13 +187,21 @@
             <description/>
             <fileset dir="../licenses" targetdir="$INSTALL_PATH/licenses" />
             <fileset dir="../links" targetdir="$INSTALL_PATH/bin" />
-            <fileset dir="../artifacts/jahia" targetdir="${jahia.war.target.path}" />
+            <fileset dir="../artifacts/jahia" targetdir="$INSTALL_PATH/build" />
             <fileset dir="../artifacts/jahia-jboss-config" targetdir="$INSTALL_PATH/jahia-jboss-config" condition="cnd.server.type.jboss"/>
             <singlefile override="update" src="install.properties" target="$INSTALL_PATH/install.properties"/>
             <singlefile override="update" src="../dependency/configurators-${jahia.configurators.version}-standalone.jar" target="$INSTALL_PATH/configurators.jar"/>
-            <singlefile override="update" src="../dependency/archivers-${jahia.archivers.version}-standalone.jar" target="$INSTALL_PATH/archivers.jar" condition="!cnd.pack.tomcat"/>
+            <singlefile override="update" src="../dependency/archivers-${jahia.archivers.version}-standalone.jar" target="$INSTALL_PATH/archivers.jar"/>
             <singlefile override="update" src="../artifacts/shared-libraries-all.zip" target="$INSTALL_PATH/shared-libraries.zip" condition="!cnd.skip.shared.libs"/>
             <parsable targetfile="$INSTALL_PATH/install.properties" type="javaprop"/>
+            <executable targetfile="$INSTALL_PATH/archivers.jar" stage="postinstall" type="jar" keep="false" condition="cnd.pack.tomcat">
+                <args>
+                    <arg value="-m"/><!-- copy and delete the build folder after archiving -->
+                    <arg value="$INSTALL_PATH/build"/>
+                    <arg value="${jahia.war.target.path}"/>
+                    <arg value="${server.type}"/>
+                </args>
+            </executable>
             <executable targetfile="$INSTALL_PATH/configurators.jar" stage="postinstall" type="jar" keep="false">
                 <args>
                     <arg value="$INSTALL_PATH/install.properties"/>
@@ -211,17 +209,17 @@
             </executable>
             <executable targetfile="$INSTALL_PATH/archivers.jar" stage="postinstall" type="jar" keep="true" condition="cnd.server.type.jboss">
                 <args>
-                    <arg value="-m"/><!-- delete the build folder after archiving -->
-                    <arg value="$INSTALL_PATH/jahia-jboss-config.sar"/>
+                    <arg value="-cm"/><!-- zip and delete the build folder after archiving -->
                     <arg value="$INSTALL_PATH/jahia-jboss-config"/>
+                    <arg value="$INSTALL_PATH/jahia-jboss-config.sar"/>
                 </args>
             </executable>
             <executable targetfile="$INSTALL_PATH/archivers.jar" stage="postinstall" type="jar" keep="false" condition="!cnd.pack.tomcat">
                 <args>
-                    <arg value="-m"/><!-- delete the build folder after archiving -->
-                    <arg value="$INSTALL_PATH/ROOT.war"/>
+                    <arg value="-cm"/><!-- zip and delete the build folder after archiving -->
                     <arg value="$INSTALL_PATH/build"/>
-                    <arg value="${jahia.war.excludes}"/>
+                    <arg value="$INSTALL_PATH/ROOT.war"/>
+                    <arg value="${server.type}"/>
                 </args>
             </executable>
         </pack>

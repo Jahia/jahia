@@ -198,7 +198,7 @@ public class JCRSitesProvider {
                                 } catch (PathNotFoundException e) {
 //                                    session.getWorkspace().getVersionManager().checkout(f.getPath());
 
-                                    JCRNodeWrapper defaultSite = session.getNode("/templatesSet/" + templatePackage);
+                                    JCRNodeWrapper defaultSite = session.getNode("/templateSets/" + templatePackage);
                                     defaultSite.copy(session.getNode("/sites"), siteKey, false);
 
                                     if (sitesFolder.hasProperty("j:virtualsitesFolderSkeleton")) {

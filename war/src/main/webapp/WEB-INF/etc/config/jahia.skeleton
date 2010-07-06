@@ -141,7 +141,7 @@ cacheMaxGroups = 20000
 ### Template set #####################################################
 ######################################################################
 # Default value for template set
-default_templates_set		                        =   Jahia Intranet Templates
+default_templates_set		                        =   templates-intranet
 # Default setting for the error handling in modules (page fragments).
 # How should we handle an exception within the fragment?
 #    'hide' - the whole module content will not be written out into

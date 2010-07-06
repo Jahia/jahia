@@ -108,7 +108,7 @@
         </j:acl>
     </categories>
 
-    <templatesSet jcr:primaryType="jnt:templatesSets"/>
+    <templateSets jcr:primaryType="jnt:templateSets"/>
 
     <systemTemplate jcr:primaryType="jnt:masterTemplate"  j:template="system" />
 

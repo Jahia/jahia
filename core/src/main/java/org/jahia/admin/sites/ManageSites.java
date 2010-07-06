@@ -77,6 +77,7 @@ import org.jahia.services.sites.JahiaSiteTools;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.*;
+import org.jahia.settings.SettingsBean;
 import org.jahia.tools.files.FileUpload;
 import org.jahia.utils.JahiaTools;
 import org.jahia.utils.LanguageCodeConverters;
@@ -842,7 +843,7 @@ public class ManageSites extends AbstractAdministrationModule {
 
             // try to select the default set if not selected
             if (selectedTmplSet == null) {
-                selectedTmplSet = orderedTemplateSets.firstKey();
+                selectedTmplSet = SettingsBean.getInstance().getPropertiesFile().getProperty("default_templates_set", orderedTemplateSets.firstKey());
             }
 
             JCRNodeWrapper selectedPackage = selectedTmplSet != null ? orderedTemplateSets.get(selectedTmplSet) : null;
@@ -1249,7 +1250,7 @@ public class ManageSites extends AbstractAdministrationModule {
             String selectedTmplSet = (String) request.getAttribute("selectedTmplSet");
             // get tmplPackage list...
             final JCRNodeWrapper tmplPack = JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession()
-                    .getNode("/templatesSet/" + selectedTmplSet);
+                    .getNode("/templateSets/" + selectedTmplSet);
 
 
             String enforcePasswordPolicy = "true";
@@ -2044,7 +2045,7 @@ public class ManageSites extends AbstractAdministrationModule {
     private TreeMap<String, JCRNodeWrapper> getTemplatesSets() throws RepositoryException {
         TreeMap<String, JCRNodeWrapper> orderedTemplateSets = new TreeMap<String, JCRNodeWrapper>();
         final JCRNodeWrapper templatesSet =
-                JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession().getNode("/templatesSet");
+                JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession().getNode("/templateSets");
         NodeIterator templates = templatesSet.getNodes();
         while (templates.hasNext()) {
             JCRNodeWrapper node = (JCRNodeWrapper) templates.next();

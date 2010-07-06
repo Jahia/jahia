@@ -83,7 +83,7 @@ public class URLGenerator {
         preview = basePreview + resourcePath;
         baseContribute = getContext() + Contribute.getContributeServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
         contribute = baseContribute + resourcePath;
-        studio = getContext() + Studio.getStudioServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + "/templatesSet";
+        studio = getContext() + Studio.getStudioServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + "/templateSets";
         ckeditor = SettingsBean.getInstance().getJahiaCkEditorDiskPath();
         if (context.getSite() != null && context.isEditMode()) {
             try {

@@ -1,6 +1,6 @@
 <content xmlns:jcr="http://www.jcp.org/jcr/1.0">
-  <templatesSet>
-    <templates-intranet xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" jcr:mixinTypes="jmix:hasTemplateNode jmix:sitemap jmix:accessControlled" jcr:primaryType="jnt:virtualsite" changefreq="monthly" j:installedModules="templates-intranet" j:templateNode="/templatesSet/templates-intranet/templates/base" priority="0.5">
+  <templateSets>
+    <templates-intranet xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" jcr:mixinTypes="jmix:hasTemplateNode jmix:sitemap jmix:accessControlled" jcr:primaryType="jnt:virtualsite" changefreq="monthly" j:installedModules="templates-intranet" j:templateNode="/templateSets/templates-intranet/templates/base" priority="0.5">
       <contents jcr:primaryType="jnt:contentList">
         <site_components jcr:primaryType="jnt:contentList">
           <login-to-jahia jcr:primaryType="jnt:loginForm">
@@ -11,7 +11,7 @@
       <files jcr:primaryType="jnt:folder" />
       <mashups jcr:primaryType="jnt:portletList" />
       <themes jcr:primaryType="jnt:folder" />
-      <home jcr:mixinTypes="jmix:sitemap jmix:hasDefaultTemplateNode" j:defaultTemplateNode="/templatesSet/templates-intranet/templates/base" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" j:templateNode="/templatesSet/templates-intranet/templates/base/home" priority="0.5">
+      <home jcr:mixinTypes="jmix:sitemap jmix:hasDefaultTemplateNode" j:defaultTemplateNode="/templateSets/templates-intranet/templates/base" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" j:templateNode="/templateSets/templates-intranet/templates/base/home" priority="0.5">
         <j:translation_en jcr:language="en" jcr:title_en="Home" jcr:primaryType="jnt:translation" />
         <logo jcr:primaryType="jnt:contentList" />
         <listA jcr:primaryType="jnt:contentList" />
@@ -21,17 +21,17 @@
       <templates jcr:primaryType="jnt:templatesFolder">
         <base jcr:mixinTypes="jmix:renderable" j:template="intranet" jcr:primaryType="jnt:masterTemplate">
           <logo jcr:primaryType="jnt:contentList">
-            <logo j:basenode="/templatesSet/templates-intranet/home" jcr:primaryType="jnt:absoluteArea" />
+            <logo j:basenode="/templateSets/templates-intranet/home" jcr:primaryType="jnt:absoluteArea" />
           </logo>
           <simpleSearch jcr:primaryType="jnt:contentList">
-            <simpleSearchForm result="/templatesSet/templates-intranet/search-results" jcr:primaryType="jnt:simpleSearchForm" />
+            <simpleSearchForm result="/templateSets/templates-intranet/search-results" jcr:primaryType="jnt:simpleSearchForm" />
           </simpleSearch>
           <topMenu jcr:primaryType="jnt:contentList">
-            <top-menu j:menuType="primary" j:maxDepth="2" jcr:primaryType="jnt:navMenu" j:baselineNode="/templatesSet/templates-intranet/home" j:styleName="navigation" />
+            <top-menu j:menuType="primary" j:maxDepth="2" jcr:primaryType="jnt:navMenu" j:baselineNode="/templateSets/templates-intranet/home" j:styleName="navigation" />
             <shortcuts jcr:primaryType="jnt:shortcuts" />
           </topMenu>
           <footer jcr:primaryType="jnt:contentList">
-            <footer j:basenode="/templatesSet/templates-intranet/home" jcr:primaryType="jnt:absoluteArea" />
+            <footer j:basenode="/templateSets/templates-intranet/home" jcr:primaryType="jnt:absoluteArea" />
           </footer>
           <wrappercontent jcr:primaryType="jnt:contentList">
             <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" />
@@ -45,7 +45,7 @@
                   <listA jcr:primaryType="jnt:mainResourceArea" />
                 </col1>
                 <col2 jcr:primaryType="jnt:contentList">
-                  <login-to-jahia j:node="/templatesSet/templates-intranet/contents/site_components/login-to-jahia" jcr:primaryType="jnt:contentReference" />
+                  <login-to-jahia j:node="/templateSets/templates-intranet/contents/site_components/login-to-jahia" jcr:primaryType="jnt:contentReference" />
                   <listB jcr:primaryType="jnt:mainResourceArea" />
                 </col2>
               </row1>
@@ -101,19 +101,19 @@
                     <mainResourceDisplay-1 jcr:primaryType="jnt:mainResourceDisplay" j:referenceTemplate="updateFile" />
                     <document-history j:skin="skins.box2" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
                       <j:translation_en j:skin="skins.box2" jcr:title_en="Document History" jcr:language="en" jcr:primaryType="jnt:translation" />
-                      <commentable jcr:primaryType="jnt:commentable" j:bindedComponent="/templatesSet/templates-intranet/templates/sitewrapper/docspace/file/wrappercontent/row/col1/mainResourceDisplay-1" />
-                      <commentable-1 jcr:mixinTypes="jmix:renderable" j:template="addcomment" jcr:primaryType="jnt:commentable" j:bindedComponent="/templatesSet/templates-intranet/templates/sitewrapper/docspace/file/wrappercontent/row/col1/mainResourceDisplay-1" />
+                      <commentable jcr:primaryType="jnt:commentable" j:bindedComponent="/templateSets/templates-intranet/templates/sitewrapper/docspace/file/wrappercontent/row/col1/mainResourceDisplay-1" />
+                      <commentable-1 jcr:mixinTypes="jmix:renderable" j:template="addcomment" jcr:primaryType="jnt:commentable" j:bindedComponent="/templateSets/templates-intranet/templates/sitewrapper/docspace/file/wrappercontent/row/col1/mainResourceDisplay-1" />
                     </document-history>
                   </col1>
                   <col2 jcr:primaryType="jnt:contentList">
-                    <displayVersion jcr:primaryType="jnt:displayVersion" j:bindedComponent="/templatesSet/templates-intranet/templates/sitewrapper/docspace/file/wrappercontent/row/col1/mainResourceDisplay" />
+                    <displayVersion jcr:primaryType="jnt:displayVersion" j:bindedComponent="/templateSets/templates-intranet/templates/sitewrapper/docspace/file/wrappercontent/row/col1/mainResourceDisplay" />
                     <extras j:skin="skins.box5style2" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
                       <j:translation_en j:skin="skins.box5style2" jcr:title_en="Extras" jcr:language="en" jcr:primaryType="jnt:translation" />
-                      <rateable jcr:primaryType="jnt:rateable" j:bindedComponent="/templatesSet/templates-intranet/templates/sitewrapper/docspace/file/wrappercontent/row/col1/mainResourceDisplay-1" />
-                      <tag-this-document jcr:primaryType="jnt:tagging" j:bindedComponent="/templatesSet/templates-intranet/templates/sitewrapper/docspace/file/wrappercontent/row/col1/mainResourceDisplay-1">
+                      <rateable jcr:primaryType="jnt:rateable" j:bindedComponent="/templateSets/templates-intranet/templates/sitewrapper/docspace/file/wrappercontent/row/col1/mainResourceDisplay-1" />
+                      <tag-this-document jcr:primaryType="jnt:tagging" j:bindedComponent="/templateSets/templates-intranet/templates/sitewrapper/docspace/file/wrappercontent/row/col1/mainResourceDisplay-1">
                         <j:translation_en jcr:title_en="Tag This Document" jcr:language="en" jcr:primaryType="jnt:translation" />
                       </tag-this-document>
-                      <tag-this-document-1 jcr:mixinTypes="jmix:renderable" j:template="addtag" jcr:primaryType="jnt:tagging" j:bindedComponent="/templatesSet/templates-intranet/templates/sitewrapper/docspace/file/wrappercontent/row/col1/mainResourceDisplay-1">
+                      <tag-this-document-1 jcr:mixinTypes="jmix:renderable" j:template="addtag" jcr:primaryType="jnt:tagging" j:bindedComponent="/templateSets/templates-intranet/templates/sitewrapper/docspace/file/wrappercontent/row/col1/mainResourceDisplay-1">
                         <j:translation_en jcr:title_en="Tag this document" jcr:language="en" jcr:primaryType="jnt:translation" />
                       </tag-this-document-1>
                     </extras>
@@ -128,8 +128,8 @@
                     <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:referenceTemplate="docspace.detail" />
                   </col1>
                   <col2 jcr:primaryType="jnt:contentList">
-                    <aclUsers jcr:primaryType="jnt:aclUsers" j:bindedComponent="/templatesSet/templates-intranet/templates/sitewrapper/docspace/folder/wrappercontent/row/col1/mainResourceDisplay" />
-                    <aclUsers-1 jcr:mixinTypes="jmix:renderable" j:template="add" jcr:primaryType="jnt:aclUsers" j:bindedComponent="/templatesSet/templates-intranet/templates/sitewrapper/docspace/folder/wrappercontent/row/col1/mainResourceDisplay" />
+                    <aclUsers jcr:primaryType="jnt:aclUsers" j:bindedComponent="/templateSets/templates-intranet/templates/sitewrapper/docspace/folder/wrappercontent/row/col1/mainResourceDisplay" />
+                    <aclUsers-1 jcr:mixinTypes="jmix:renderable" j:template="add" jcr:primaryType="jnt:aclUsers" j:bindedComponent="/templateSets/templates-intranet/templates/sitewrapper/docspace/folder/wrappercontent/row/col1/mainResourceDisplay" />
                     <lastDocspace jcr:primaryType="jnt:lastDocspace" />
                   </col2>
                 </row>
@@ -250,8 +250,8 @@
                   <events j:allowedTypes="jnt:event" jcr:primaryType="jnt:mainResourceArea" />
                 </col1>
                 <col2 jcr:primaryType="jnt:contentList">
-                  <calendar startDateProperty="startDate" endDateProperty="endDate" jcr:primaryType="jnt:calendar" j:bindedComponent="/templatesSet/templates-intranet/templates/sitewrapper/events/wrappercontent/row1/col1/events" />
-                  <facets jcr:primaryType="jnt:facets" j:bindedComponent="/templatesSet/templates-intranet/templates/sitewrapper/events/wrappercontent/row1/col1/events">
+                  <calendar startDateProperty="startDate" endDateProperty="endDate" jcr:primaryType="jnt:calendar" j:bindedComponent="/templateSets/templates-intranet/templates/sitewrapper/events/wrappercontent/row1/col1/events" />
+                  <facets jcr:primaryType="jnt:facets" j:bindedComponent="/templateSets/templates-intranet/templates/sitewrapper/events/wrappercontent/row1/col1/events">
                     <fieldFacet mincount="1" field="jnt:event;eventsType" jcr:primaryType="jnt:fieldFacet" missing="false" facet="type" offset="0" limit="100">
                       <j:translation_en jcr:language="en" label_en="Type" jcr:primaryType="jnt:translation" />
                     </fieldFacet>
@@ -264,7 +264,7 @@
             <wrappercontent jcr:primaryType="jnt:contentList">
               <row column="2col115" jcr:primaryType="jnt:row">
                 <col1 j:skin="skins.box5style1" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
-                  <new-blog templateNode="/templatesSet/templates-intranet/templates/base/blog" buttonLabel="create" jcr:primaryType="jnt:pageFormCreation">
+                  <new-blog templateNode="/templateSets/templates-intranet/templates/base/blog" buttonLabel="create" jcr:primaryType="jnt:pageFormCreation">
                     <j:translation_en jcr:language="en" jcr:title_en="New Blog" jcr:primaryType="jnt:translation" />
                   </new-blog>
                   <topBlog pageSize="10" jcr:primaryType="jnt:topBlog" />
@@ -287,7 +287,7 @@
                 </col1>
                 <col2 jcr:primaryType="jnt:contentList">
                   <authorDisplay jcr:primaryType="jnt:authorDisplay" j:referenceTemplate="detail" />
-                  <calendar jcr:primaryType="jnt:calendar" j:bindedComponent="/templatesSet/templates-intranet/templates/sitewrapper/blog/wrappercontent/row/col1/blog-content" />
+                  <calendar jcr:primaryType="jnt:calendar" j:bindedComponent="/templateSets/templates-intranet/templates/sitewrapper/blog/wrappercontent/row/col1/blog-content" />
                 </col2>
               </row>
             </wrappercontent>
@@ -310,8 +310,8 @@
                     <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" />
                     <document-history j:skin="skins.box2" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
                       <j:translation_en jcr:language="en" jcr:title_en="Comments" jcr:primaryType="jnt:translation" />
-                      <commentable jcr:primaryType="jnt:commentable" j:bindedComponent="/templatesSet/templates-intranet/templates/sitewrapper/blog/blog-content/wrappercontent/row/col1/mainResourceDisplay" />
-                      <commentable-1 jcr:mixinTypes="jmix:renderable" j:template="addcomment" jcr:primaryType="jnt:commentable" j:bindedComponent="/templatesSet/templates-intranet/templates/sitewrapper/blog/blog-content/wrappercontent/row/col1/mainResourceDisplay" />
+                      <commentable jcr:primaryType="jnt:commentable" j:bindedComponent="/templateSets/templates-intranet/templates/sitewrapper/blog/blog-content/wrappercontent/row/col1/mainResourceDisplay" />
+                      <commentable-1 jcr:mixinTypes="jmix:renderable" j:template="addcomment" jcr:primaryType="jnt:commentable" j:bindedComponent="/templateSets/templates-intranet/templates/sitewrapper/blog/blog-content/wrappercontent/row/col1/mainResourceDisplay" />
                     </document-history>
                   </col1>
                   <col2 jcr:primaryType="jnt:contentList">
@@ -323,7 +323,7 @@
           </blog>
         </base>
       </templates>
-      <search-results jcr:mixinTypes="jmix:hasTemplateNode jmix:sitemap" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" j:templateNode="/templatesSet/templates-intranet/templates/sitewrapper/simple" priority="0.5">
+      <search-results jcr:mixinTypes="jmix:hasTemplateNode jmix:sitemap" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" j:templateNode="/templateSets/templates-intranet/templates/sitewrapper/simple" priority="0.5">
         <j:translation_en jcr:title_en="Search results" jcr:language="en" jcr:primaryType="jnt:translation" />
         <pagecontent jcr:primaryType="jnt:contentList">
           <row1 column="1col16" jcr:primaryType="jnt:row">
@@ -360,6 +360,6 @@
         </nt_base_jBPM_1-step-publication>
       </workflowrules>
     </templates-intranet>
-  </templatesSet>
+  </templateSets>
 </content>
  

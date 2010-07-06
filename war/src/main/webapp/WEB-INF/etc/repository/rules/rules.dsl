@@ -78,6 +78,7 @@
 [consequence][]Execute the action {actionName} at {property} on the {node}=service.executeActionLater(node, "{property}",{actionName}, drools);
 [consequence][]Publish the {node}=service.publishNode(node, drools);
 [consequence][]Start the workflow {processKey} from {provider} on the {node}=service.startWorkflowOnNode(node,{processKey},{provider}, drools);
+[consequence][]Enable auto-splitting for subnodes of the {node} into folders of type {folderNodeType} using configuration "{config}"=service.enableAutoSplitting(node, "{config}", "{folderNodeType}",drools);
 [consequence][]Move to split folder {node}=service.moveToSplitFolder(node, drools);
 [consequence][]Move subnodes of {node} to split folder=service.moveSubnodesToSplitFolder(node, drools);
 [consequence][]Grant permission {task} from workflow {workflow} to role {role} for type {type} on the {node}=service.defineWorkflowRule({node},{workflow},{task},"r:" + {role},{type},drools);

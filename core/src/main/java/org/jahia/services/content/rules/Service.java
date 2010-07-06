@@ -66,15 +66,13 @@ import javax.jcr.*;
 import javax.servlet.ServletException;
 import java.io.*;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.Calendar;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 /**
  * Helper class for accessing Jahia services in rules.
- * User: toto
+ * @author toto
  * Date: 8 janv. 2008
  * Time: 12:04:29
  */
@@ -436,7 +434,7 @@ public class Service extends JahiaService {
                 try {
                     ImportExportBaseService.getInstance().importSiteZip(file, new ArrayList<ImportAction>(), null, ctx.getSite(), infos);
                 } catch (RepositoryException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    logger.error(e.getMessage(), e);
                 }
             } else if (infos.get("type").equals("xml") && (infos.get("importFileName").equals(
                     "serverPermissions.xml") || infos.get("importFileName").equals("users.xml"))) {
@@ -568,89 +566,20 @@ public class Service extends JahiaService {
     }
 
     public void moveSubnodesToSplitFolder(AddedNodeFact n, KnowledgeHelper drools) throws RepositoryException {
-        NodeIterator ni = n.getNode().getNodes();
-        while (ni.hasNext()) {
-            Node node = (Node) ni.next();
-            moveToSplitFolder((JCRNodeWrapper) node);
-        }
+        JCRAutoSplitUtils.applyAutoSplitRulesOnSubnodes(n.getNode());
     }
 
     public void moveToSplitFolder(AddedNodeFact n, KnowledgeHelper drools) throws RepositoryException  {
-        JCRNodeWrapper newNode = moveToSplitFolder((JCRNodeWrapper) n.getNode());
+        JCRNodeWrapper newNode = JCRAutoSplitUtils.applyAutoSplitRules(n.getNode());
         if (newNode != null) {
             drools.retract(n);
             drools.insert(new AddedNodeFact(newNode));
         }
     }
 
-    private JCRNodeWrapper moveToSplitFolder(JCRNodeWrapper node) throws RepositoryException  {
-        try {
-            Node parent = node.getParent();
-            String splitConfig = parent.getProperty(Constants.SPLIT_CONFIG).getString();
-            String splitType= parent.getProperty(Constants.SPLIT_NODETYPE).getString();
-            String[] config = splitConfig.split(";");
-            for (String s : config) {
-                String[] folderConfig = s.split(",");
-
-                String type = folderConfig[0];
-                String propertyName = folderConfig[1];
-
-                String key = null;
-
-                try {
-                    if (type.equals("firstChars")) {
-                        if (propertyName.equals("j:nodename")) {
-                            key = node.getName();
-                            key = StringUtils.substringAfter(key,":");
-                        } else if (node.hasProperty(propertyName)) {
-                            key = node.getProperty(propertyName).getString();
-                        }
-                        final int index = Integer.parseInt(folderConfig[2]);
-                        if (key != null && key.length() > index) {
-                            key = key.substring(0, index);
-                        }
-                    } else if (type.equals("substring")) {
-                        if (propertyName.equals("j:nodename")) {
-                            key = node.getName();
-                            key = StringUtils.substringAfter(key,":");
-                        } else if (node.hasProperty(propertyName)) {
-                            key = node.getProperty(propertyName).getString();
-                        }
-                        String[] indexes = folderConfig[2].split("-");
-                        final int startIndex = Integer.parseInt(indexes[0]);
-                        final int endIndex = Integer.parseInt(indexes[1]);
-                        if (key != null && key.length() > endIndex) {
-                            key = key.substring(startIndex, endIndex);
-                        }
-                    } else if (type.equals("date")) {
-                        if (node.hasProperty(propertyName)) {
-                            Calendar calendar = node.getProperty(propertyName).getDate();
-                            SimpleDateFormat sdf = new SimpleDateFormat(folderConfig[2]);
-                            key = sdf.format(calendar.getTime());
-                        }
-                    }
-                } catch (Exception e) {
-                    logger.error("Cannot split folder",e);
-                    key = null;
-                }
-
-                if (key != null) {
-                    if (!parent.hasNode(key)) {
-                        parent = parent.addNode(key, splitType);
-                    } else {
-                        parent = parent.getNode(key);
-                    }
-                }
-            }
-            if (!parent.getPath().equals(node.getParent().getPath())) {
-                node.getSession().move(node.getPath(), parent.getPath() + "/"+ node.getName());
-                return node.getSession().getNode(parent.getPath() + "/"+ node.getName());
-            }
-            return null;
-        } catch (RepositoryException e) {
-            e.printStackTrace();
-            return null;
-        }
+    public void enableAutoSplitting(AddedNodeFact n, String splitConfig, String splitFolderNodeType, KnowledgeHelper drools) throws RepositoryException  {
+        JCRAutoSplitUtils.enableAutoSplitting(n.getNode(), splitConfig, splitFolderNodeType);
+        JCRAutoSplitUtils.applyAutoSplitRulesOnSubnodes(n.getNode());
     }
 
     public void publishNode(AddedNodeFact node,KnowledgeHelper drools) throws RepositoryException {

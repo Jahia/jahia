@@ -17,7 +17,10 @@
         <property name="name" value="removesocialmessage"/>
     </bean>
 
-    <bean id="socialService" class="org.jahia.modules.social.SocialService"/>
+    <bean id="socialService" class="org.jahia.modules.social.SocialService">
+        <!-- enable auto-splittng of user activities by year-month-day -->
+        <property name="autoSplitSettings" value="date,jcr:created,yyyy;date,jcr:created,MM"></property>
+    </bean>
 
     <bean class="org.jahia.services.content.rules.ModuleGlobalObject">
         <property name="globalRulesObject">

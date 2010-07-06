@@ -34,6 +34,8 @@ public class SocialService {
     public static final String JNT_SOCIAL_ACTIVITY = "jnt:socialActivity";
     public static final String JNT_SOCIAL_MESSAGE = "jnt:socialMessage";
     public static final String JNT_SOCIAL_CONNECTION = "jnt:socialConnection";
+    
+    private String autoSplitSettings;
 
     public void addActivity(final String activityType, final String user, final String messageKey, final AddedNodeFact nodeFact, final List<String> nodeTypeList, JCRSessionWrapper session) throws RepositoryException {
         final JCRUser fromJCRUser = getJCRUserFromUserKey(user);
@@ -50,6 +52,12 @@ public class SocialService {
         } catch (PathNotFoundException pnfe) {
             session.checkout(userNode);
             activitiesNode = userNode.addNode("activities", "jnt:contentList");
+            if (autoSplitSettings != null) {
+                activitiesNode.addMixin(Constants.JAHIAMIX_AUTOSPLITFOLDERS);
+                activitiesNode.setProperty(Constants.SPLIT_CONFIG, autoSplitSettings);
+                activitiesNode.setProperty(Constants.SPLIT_NODETYPE, "jnt:contentList");
+            }
+            
         }
         String nodeType = JNT_SOCIAL_ACTIVITY;
         String nodeName = nodeType.substring(nodeType.lastIndexOf(":") + 1);
@@ -272,6 +280,13 @@ public class SocialService {
         }
 
         return jcrUser;
+    }
+
+    /**
+     * @param autoSplitSettings the autoSplitSettings to set
+     */
+    public void setAutoSplitSettings(String autoSplitSettings) {
+        this.autoSplitSettings = autoSplitSettings;
     }
 
 }

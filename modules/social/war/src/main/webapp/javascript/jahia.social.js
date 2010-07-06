@@ -86,9 +86,13 @@ function submitStatusUpdate(userURL, userId, updateText) {
     $.ajax({
         url: userURL + '/activities/*',
         type : 'post',
-        data : 'nodeType=jnt:socialActivity&newNodeOutputFormat=html&j:message=' + updateText + "&j:from=" + userId,
+        dataType : 'json',
+        data : {
+	    	nodeType: 'jnt:socialActivity',
+	    	'j:message': updateText,
+	    	'j:from': userId
+    	},
         success : function (data) {
-            // alert("Status update submitted successfully");
             loadActivities(userURL);
         }
     });

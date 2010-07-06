@@ -629,4 +629,5 @@ public final class JCRContentUtils {
         }
         return node;
     }
+
 }

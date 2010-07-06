@@ -52,3 +52,14 @@ rule "Tagging activity"
    then
        Add activity "tagged" on node of types node.getTypes() for user user.getName() with messageKey "tagged.node"
 end
+
+rule "Auto-split user activities node on creation"
+	salience 101
+	when
+		A new node "activities" is created
+		The node has a parent
+			- the parent has the type jnt:user
+   then
+		Enable auto-splitting for subnodes of the node into folders of type jnt:contentList using configuration "date,jcr:created,yyyy;date,jcr:created,MM"
+end
+

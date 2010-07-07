@@ -295,6 +295,7 @@ public class WorkflowHelper {
                         aces.put(principal, ace);
                     }
                     acl.setAce(new LinkedList<GWTJahiaNodeACE>(aces.values()));
+                    acl.setPermissionsDependencies(new HashMap<String, List<String>>());
                     defAclMap.put(workflowDefinition, acl);
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
@@ -369,6 +370,8 @@ public class WorkflowHelper {
         JCRNodeWrapper node = null;
         try {
             node = session.getNode(path);
+            updateWorkflowRules(path, Arrays.asList(workflowDefinition), new LinkedList<GWTJahiaWorkflowDefinition>(),
+                                session, locale);
             // If existing remove all unchecked nodes
             if (node.hasNode(WorkflowService.WORKFLOWRULES_NODE_NAME)) {
                 node = node.getNode(WorkflowService.WORKFLOWRULES_NODE_NAME);
@@ -377,31 +380,43 @@ public class WorkflowHelper {
                     node = node.getNode(defKey);
                     // So we have our jnt:worklfowRule object let's manage the ACE now.
                     List<GWTJahiaNodeACE> aces = nodeACL.getAce();
+                    boolean asLocalAce = false;
                     for (GWTJahiaNodeACE ace : aces) {
                         String principal = ace.getPrincipal();
-                        Map<String, String> permissions = ace.getPermissions();
-                        List<String> granted = new LinkedList<String>();
-                        List<String> denied = new LinkedList<String>();
-                        String nodeName = "GRANT_" + ace.getPrincipalType() + "_" + principal;
-                        JCRNodeWrapper aceNode;
-                        if (node.hasNode(nodeName)) {
-                            aceNode = node.getNode(nodeName);
+                        if (!ace.isInherited()) {
+                            asLocalAce = true;
+                            Map<String, String> permissions = ace.getPermissions();
+                            List<String> granted = new LinkedList<String>();
+                            List<String> denied = new LinkedList<String>();
+                            for (Map.Entry<String, String> entry : permissions.entrySet()) {
+                                if ("GRANT".equals(entry.getValue())) {
+                                    granted.add(entry.getKey());
+                                } else {
+                                    denied.add(entry.getKey());
+                                }
+                            }
+                            if (granted.size() > 0) {
+                                saveAce(node, ace, principal, granted, "GRANT");
+                            }
+                            if (denied.size() > 0) {
+                                saveAce(node, ace, principal, denied, "DENY");
+                            }
                         } else {
-                            aceNode = node.addNode(nodeName, "jnt:ace");
-                        }
-                        aceNode.setProperty("j:principal", ace.getPrincipalType() +":"+principal);
-                        aceNode.setProperty("j:protected", false);
-                        aceNode.setProperty("j:aceType", "GRANT");
-                        for (Map.Entry<String, String> entry : permissions.entrySet()) {
-                            if ("GRANT".equals(entry.getValue())) {
-                                granted.add(entry.getKey());
-                            } else {
-                                denied.add(entry.getKey());
+                            String nodeName = "GRANT_" + ace.getPrincipalType() + "_" + principal;
+                            JCRNodeWrapper aceNode;
+                            if (node.hasNode(nodeName)) {
+                                aceNode = node.getNode(nodeName);
+                                aceNode.remove();
+                            }
+                            nodeName = "DENY_" + ace.getPrincipalType() + "_" + principal;
+                            if (node.hasNode(nodeName)) {
+                                aceNode = node.getNode(nodeName);
+                                aceNode.remove();
                             }
                         }
-                        String[] grs = new String[granted.size()];
-                        granted.toArray(grs);
-                        aceNode.setProperty("j:privileges", grs);
+                    }
+                    if (!asLocalAce) {
+                        node.remove();
                     }
                 }
                 session.save();
@@ -410,5 +425,22 @@ public class WorkflowHelper {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
         }
+    }
+
+    private void saveAce(JCRNodeWrapper node, GWTJahiaNodeACE ace, String principal, List<String> permissions, String typeOfPermission)
+            throws RepositoryException {
+        String nodeName = typeOfPermission+"_" + ace.getPrincipalType() + "_" + principal;
+        JCRNodeWrapper aceNode;
+        if (node.hasNode(nodeName)) {
+            aceNode = node.getNode(nodeName);
+        } else {
+            aceNode = node.addNode(nodeName, "jnt:ace");
+        }
+        aceNode.setProperty("j:principal", ace.getPrincipalType() + ":" + principal);
+        aceNode.setProperty("j:protected", false);
+        aceNode.setProperty("j:aceType", typeOfPermission);
+        String[] grs = new String[permissions.size()];
+        permissions.toArray(grs);
+        aceNode.setProperty("j:privileges", grs);
     }
 }

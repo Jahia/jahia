@@ -97,7 +97,10 @@ public class WorkflowTabItem extends EditEngineTabItem {
         if (engine.getNode() == null) {
             return;
         }
-
+        if(container!= null) {
+            container.removeFromParent();
+            container.removeAll();
+        }
         if (container == null) {
             container = new LayoutContainer(new RowLayout());
         }
@@ -127,7 +130,7 @@ public class WorkflowTabItem extends EditEngineTabItem {
 
                                          final ComboBox<GWTJahiaWorkflowDefinition> combo = new ComboBox<GWTJahiaWorkflowDefinition>();
                                          combo.setDisplayField("displayName");
-                                         combo.setWidth(300);
+                                         combo.setWidth(400);
                                          combo.setStore(states);
                                          combo.setTypeAhead(true);
                                          combo.setTriggerAction(ComboBox.TriggerAction.ALL);
@@ -145,7 +148,8 @@ public class WorkflowTabItem extends EditEngineTabItem {
                                          combo.setValue(result.keySet().iterator().next());
                                          TableData tableData = new TableData(Style.HorizontalAlignment.LEFT,
                                                                              Style.VerticalAlignment.TOP);
-                                         tableData.setWidth("50%");
+                                         tableData.setWidth("80%");
+                                         tableData.setPadding(2);
                                          horizontalPanel.add(combo, tableData);
                                          final Button button = new Button("Manage Workflows");
                                          button.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -166,9 +170,10 @@ public class WorkflowTabItem extends EditEngineTabItem {
                                          });
                                          tableData = new TableData(Style.HorizontalAlignment.RIGHT,
                                                                    Style.VerticalAlignment.TOP);
-                                         tableData.setWidth("50%");
+                                         tableData.setWidth("20%");
+                                         tableData.setPadding(2);
                                          horizontalPanel.add(button, tableData);
-                                         WorkflowTabItem.this.container.add(horizontalPanel, new RowData(1, 0.1));
+                                         WorkflowTabItem.this.container.add(horizontalPanel, new RowData(1, 0.07));
                                          final GWTJahiaNodeACL gwtJahiaNodeACL = result.values().iterator().next();
                                          displayACLEditor(gwtJahiaNodeACL, engine.getNode(),combo.getSelection());
                                          layout();
@@ -181,16 +186,12 @@ public class WorkflowTabItem extends EditEngineTabItem {
     private void displayACLEditor(final GWTJahiaNodeACL gwtJahiaNodeACL, final GWTJahiaNode node,
                                   final List<GWTJahiaWorkflowDefinition> selection) {
         final AclEditor rightsEditor = new AclEditor(gwtJahiaNodeACL, node.getAclContext());
+        rightsEditor.setAclGroup("tasks");
         if (aclPanel != null) {
             aclPanel.removeAll();
         }
         rightsEditor.setCanBreakInheritance(false);
-        if ((gwtJahiaNodeACL.getAce() != null && !gwtJahiaNodeACL.getAce().isEmpty()) && gwtJahiaNodeACL.getAce().get(
-                0).isInherited()) {
-            rightsEditor.setReadOnly(true);
-        } else {
-            rightsEditor.setReadOnly(false);
-        }
+        rightsEditor.setReadOnly(false);
         Button saveButton = rightsEditor.getSaveButton();
         saveButton.setVisible(true);
         saveButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -209,7 +210,7 @@ public class WorkflowTabItem extends EditEngineTabItem {
             aclPanel = new ContentPanel(new FitLayout());
         }
         aclPanel.add(rightsEditor.renderNewAclPanel());
-        WorkflowTabItem.this.container.add(aclPanel, new RowData(1, 0.4));
+        WorkflowTabItem.this.container.add(aclPanel, new RowData(1, 0.43));
     }
 
     private WorkflowHistoryPanel getPanel(String locale) {

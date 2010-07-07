@@ -256,12 +256,12 @@ public class PublicationHelper {
         boolean split = false;
 
         if (currentDef == null || n.hasNode("j:workflow")) {
-            List<WorkflowDefinition> def = workflowService.getPossibleWorkflows(n, session.getUser(), "publish",null);
-            if (def.isEmpty()) {
+            WorkflowDefinition def = workflowService.getPossibleWorkflowForAction(n, session.getUser(), "publish",null);
+            if (def == null) {
                 return false;
             } else {
-                if (!def.get(0).equals(currentDef)) {
-                    currentDef = def.get(0);
+                if (!def.equals(currentDef)) {
+                    currentDef = def;
                     if (!m.containsKey(currentDef)) {
                         m.put(currentDef, new ArrayList<PublicationInfo>());
                     }

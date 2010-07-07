@@ -32,6 +32,7 @@
  */
 package org.jahia.services.workflow;
 
+import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
@@ -169,13 +170,28 @@ public class WorkflowService {
     }
 
     /**
+     * This method return the workflow associated to an action, for the specified node.
+     *
+     * @param node
+     * @param user
+     * @return A list of available workflows per provider.
+     */
+    public WorkflowDefinition getPossibleWorkflowForAction(final JCRNodeWrapper node, final JahiaUser user, final String action,final Locale locale) throws RepositoryException {
+        final List<WorkflowDefinition> workflowDefinitionList = getPossibleWorkflows(node, user, action, locale);
+        if (workflowDefinitionList.isEmpty()) {
+            return  null;
+        }
+        return workflowDefinitionList.get(0);
+    }
+
+    /**
      * This method list all possible workflows for the specified node.
      *
      * @param node
      * @param user
      * @return A list of available workflows per provider.
      */
-    public List<WorkflowDefinition> getPossibleWorkflows(final JCRNodeWrapper node, final JahiaUser user, final String action,final Locale locale) throws RepositoryException {
+    private List<WorkflowDefinition> getPossibleWorkflows(final JCRNodeWrapper node, final JahiaUser user, final String action,final Locale locale) throws RepositoryException {
         return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<WorkflowDefinition>>() {
             public List<WorkflowDefinition> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 List<WorkflowDefinition> workflowsForAction = null;
@@ -183,16 +199,16 @@ public class WorkflowService {
                     workflowsForAction = getWorkflowsForAction(action,locale);
                 }
                 final Set<WorkflowDefinition> workflows = new LinkedHashSet<WorkflowDefinition>();
-                List<JCRNodeWrapper> rules = getApplicableWorkflowRules(node, session);
-                if (!rules.isEmpty()) {
-                    JCRSiteNode site = node.resolveSite();
-                    for (JCRNodeWrapper rule : rules) {
-                        String wfName = rule.getProperty("j:workflow").getString();
-                        String workflowDefinitionKey = StringUtils.substringAfter(wfName, ":");
-                        String providerKey = StringUtils.substringBefore(wfName, ":");
-                        WorkflowDefinition definition = lookupProvider(providerKey).getWorkflowDefinitionByKey(
-                                workflowDefinitionKey);
-                        if(locale!=null) {
+
+                JCRSiteNode site = node.resolveSite();
+
+                Map<String,List<String[]>> rules = getWorkflowRules(node, null);
+                for (String wfName : rules.keySet()) {
+                    String workflowDefinitionKey = StringUtils.substringAfter(wfName, ":");
+                    String providerKey = StringUtils.substringBefore(wfName, ":");
+                    WorkflowDefinition definition = lookupProvider(providerKey).getWorkflowDefinitionByKey(
+                            workflowDefinitionKey);
+                    if(locale!=null) {
                         try {
                             ResourceBundle resourceBundle = getResourceBundle(definition, locale);
                             definition.setDisplayName(resourceBundle.getString("name"));
@@ -200,29 +216,25 @@ public class WorkflowService {
                             definition.setDisplayName(definition.getName());
                         }
                     }
-                        if (null == workflowsForAction || workflowsForAction.contains(definition)) {
-                            NodeIterator nodeIterator = rule.getNodes();
-                            while (nodeIterator.hasNext()) {
-                                JCRNodeWrapper ace = (JCRNodeWrapper) nodeIterator.next();
-                                String principal = ace.getProperty("j:principal").getString();
-                                String type = ace.getProperty("j:aceType").getString();
-                                Value[] privileges = ace.getProperty("j:privileges").getValues();
-                                for (Value privilege : privileges) {
-                                    if ("GRANT".equals(type) && START_ROLE.equals(privilege.getString())) {
-                                        final String principalName = principal.substring(2);
-                                        if (principal.charAt(0) == 'u') {
-                                            if (principalName.equals(user.getName())) {
-                                                workflows.add(definition);
-                                            }
-                                        } else if (principal.charAt(0) == 'g') {
-                                            if (user.isMemberOfGroup(site.getID(), principalName)) {
-                                                workflows.add(definition);
-                                            }
-                                        } else if (principal.charAt(0) == 'r') {
-                                            if (user.hasRole(new RoleIdentity(principalName, site.getSiteKey()))) {
-                                                workflows.add(definition);
-                                            }
-                                        }
+                    if (null == workflowsForAction || workflowsForAction.contains(definition)) {
+                        List<String[]> l = rules.get(wfName);
+                        for (String[] rule : l) {
+                            String principal = rule[3];
+                            String type = rule[1];
+                            String privilege = rule[2];
+                            if ("GRANT".equals(type) && START_ROLE.equals(privilege)) {
+                                final String principalName = principal.substring(2);
+                                if (principal.charAt(0) == 'u') {
+                                    if (principalName.equals(user.getName())) {
+                                        workflows.add(definition);
+                                    }
+                                } else if (principal.charAt(0) == 'g') {
+                                    if (user.isMemberOfGroup(site.getID(), principalName)) {
+                                        workflows.add(definition);
+                                    }
+                                } else if (principal.charAt(0) == 'r') {
+                                    if (user.hasRole(new RoleIdentity(principalName, site.getSiteKey()))) {
+                                        workflows.add(definition);
                                     }
                                 }
                             }
@@ -714,8 +726,8 @@ public class WorkflowService {
 
     public Map<String, List<String[]>> getWorkflowRules(JCRNodeWrapper objectNode, Locale locale) {
         try {
-            Map<String, List<String[]>> permissions = new HashMap<String, List<String[]>>();
-            Map<String, List<String[]>> inheritedPerms = new HashMap<String, List<String[]>>();
+            Map<String, List<String[]>> permissions = new ListOrderedMap();
+            Map<String, List<String[]>> inheritedPerms = new ListOrderedMap();
 
             recurseonRules(permissions, inheritedPerms, objectNode);
             for (Map.Entry<String,List<String[]>> s : inheritedPerms.entrySet()) {
@@ -737,6 +749,7 @@ public class WorkflowService {
     private void recurseonRules(Map<String, List<String[]>> results, Map<String, List<String[]>> inherited, Node n) throws RepositoryException {
         try {
             Map<String, List<String[]>> current = results;
+            List<String> foundTypes = new ArrayList<String>();
             while (true) {
                 if (n.hasNode(WORKFLOWRULES_NODE_NAME)) {
                     Node wfRules = n.getNode(WORKFLOWRULES_NODE_NAME);
@@ -744,6 +757,18 @@ public class WorkflowService {
                     while (rules.hasNext()) {
                         Node rule = rules.nextNode();
                         final String wfName = rule.getProperty("j:workflow").getString();
+                        String name = StringUtils.substringAfter(wfName, ":");
+                        String wftype = null;
+                        for (Map.Entry<String, List<String>> entry : workflowTypes.entrySet()) {
+                            if (entry.getValue().contains(name)) {
+                                wftype = entry.getKey();
+                            }
+                        }
+                        if (foundTypes.contains(wftype)) {
+                            continue;
+                        } else {
+                            foundTypes.add(wftype);
+                        }
                         Map<String, List<String[]>> localResults = new HashMap<String, List<String[]>>();
                         if(!rule.hasNodes()) {
                             localResults.put(wfName,new LinkedList<String[]>());

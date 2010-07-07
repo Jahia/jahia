@@ -343,13 +343,12 @@ public class WorkflowHelper {
             // Add or let untouch existing node
             if(!node.isNodeType("jmix:worklfowRulesable")) {
                 node.addMixin("jmix:worklfowRulesable");
-                try {
-                    node = node.getNode(WorkflowService.WORKFLOWRULES_NODE_NAME);
-                } catch (RepositoryException e) {
-                    node = node.addNode(WorkflowService.WORKFLOWRULES_NODE_NAME,"jnt:workflowRules");
-                }
             }
-
+            try {
+                node = node.getNode(WorkflowService.WORKFLOWRULES_NODE_NAME);
+            } catch (RepositoryException e) {
+                node = node.addNode(WorkflowService.WORKFLOWRULES_NODE_NAME, "jnt:workflowRules");
+            }
             for (GWTJahiaWorkflowDefinition definition : actives) {
                 final String defKey = definition.getProvider() + "_" + definition.getId();
                 if(!node.hasNode(defKey)) {

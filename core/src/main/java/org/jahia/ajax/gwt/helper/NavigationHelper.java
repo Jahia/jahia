@@ -511,7 +511,17 @@ public class NavigationHelper {
         usage.setNodeName(refNode.getName());
         usage.setPagePath(parent != null ? parent.getPath() : refNode.getPath());
         usage.setNodeTitle(refNode.hasProperty("jcr:title") ? refNode.getPropertyAsString("jcr:title") : "");
-        usage.setPageTitle(parent != null ? parent.hasProperty("jcr:title") ? parent.getPropertyAsString("jcr:title") : parent.getName() : refNode.hasProperty("jcr:title") ? refNode.getPropertyAsString("jcr:title") : refNode.getName());
+        if (parent != null) {
+            usage.setPageTitle(parent.getPropertyAsString("jcr:title"));
+        } else {
+            String title = refNode.getPropertyAsString("jcr:title");
+            if (title == null) {
+                title = refNode.getName();
+            }
+            title += " (" + refNode.getPrimaryNodeType().getName() +")";
+            usage.setPageTitle(title);
+        }
+
         usage.setLanguage(language);
         result.add(usage);
     }

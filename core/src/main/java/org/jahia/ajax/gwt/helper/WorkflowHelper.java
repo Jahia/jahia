@@ -332,10 +332,11 @@ public class WorkflowHelper {
             JCRNodeWrapper node = session.getNode(path);
             // If existing remove all unchecked nodes
             if(node.hasNode(WorkflowService.WORKFLOWRULES_NODE_NAME)) {
-            for (GWTJahiaWorkflowDefinition definition : deleted) {
+                JCRNodeWrapper wfRulesNode = node.getNode(WorkflowService.WORKFLOWRULES_NODE_NAME);
+                for (GWTJahiaWorkflowDefinition definition : deleted) {
                 final String defKey = definition.getProvider() + "_" + definition.getId();
-                if(node.hasNode(defKey)) {
-                    node.getNode(defKey).remove();
+                if(wfRulesNode.hasNode(defKey)) {
+                    wfRulesNode.getNode(defKey).remove();
                 }
             }
             }

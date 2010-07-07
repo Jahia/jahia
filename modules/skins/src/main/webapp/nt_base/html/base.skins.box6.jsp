@@ -38,9 +38,9 @@
 
 <jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>
 
-<div class="box6 box6shadow">
+<div class="box6 box6shadow"><!--box6-style1/2/3..10-->
                 <c:if test="${not empty title}">
-                    <h3>${title.string}</h3>
+                    <h3.box6-title>${title.string}</h3>
                 </c:if>
                 ${wrappedContent}
                 <div class="clear"></div>

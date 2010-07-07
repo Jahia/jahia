@@ -250,30 +250,32 @@ public class WorkflowService {
                                                 final String role) throws RepositoryException {
         return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<JahiaPrincipal>>() {
             public List<JahiaPrincipal> doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                List<JCRNodeWrapper> rules = getApplicableWorkflowRules(node, session);
+
                 List<JahiaPrincipal> principals = new ArrayList<JahiaPrincipal>();
                 JahiaUserManagerService userService = ServicesRegistry.getInstance().getJahiaUserManagerService();
                 JahiaGroupManagerService groupService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
-                for (JCRNodeWrapper rule : rules) {
-                    JCRSiteNode site = node.resolveSite();
-                    NodeIterator nodeIterator = rule.getNodes();
-                    while (nodeIterator.hasNext()) {
-                        JCRNodeWrapper ace = (JCRNodeWrapper) nodeIterator.next();
-                        String principal = ace.getProperty("j:principal").getString();
-                        String type = ace.getProperty("j:aceType").getString();
-                        Value[] privileges = ace.getProperty("j:privileges").getValues();
-                        for (Value privilege : privileges) {
-                            if ("GRANT".equals(type) && role.equals(privilege.getString())) {
-                                final String principalName = principal.substring(2);
-                                if (principal.charAt(0) == 'u') {
-                                    JahiaUser jahiaUser = userService.lookupUser(principalName);
-                                    principals.add(jahiaUser);
-                                } else if (principal.charAt(0) == 'g') {
-                                    JahiaGroup group = groupService.lookupGroup(site.getID(), principalName);
-                                    principals.add(group);
-                                } else if (principal.charAt(0) == 'r') {
-                                    principals.add(new RoleIdentity(principalName, site.getSiteKey()));
-                                }
+
+                JCRSiteNode site = node.resolveSite();
+
+                Map<String,List<String[]>> rules = getWorkflowRules(node, null);
+
+                List<String[]> l = rules.get(definition.getProvider() + ":" + definition.getKey());
+                if (l != null) {
+                    for (String[] rule : l) {
+                        String principal = rule[3];
+                        String type = rule[1];
+                        String privilege = rule[2];
+
+                        if ("GRANT".equals(type) && role.equals(privilege)) {
+                            final String principalName = principal.substring(2);
+                            if (principal.charAt(0) == 'u') {
+                                JahiaUser jahiaUser = userService.lookupUser(principalName);
+                                principals.add(jahiaUser);
+                            } else if (principal.charAt(0) == 'g') {
+                                JahiaGroup group = groupService.lookupGroup(site.getID(), principalName);
+                                principals.add(group);
+                            } else if (principal.charAt(0) == 'r') {
+                                principals.add(new RoleIdentity(principalName, site.getSiteKey()));
                             }
                         }
                     }

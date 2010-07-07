@@ -511,7 +511,7 @@ public class NavigationHelper {
         usage.setNodeName(refNode.getName());
         usage.setPagePath(parent != null ? parent.getPath() : refNode.getPath());
         usage.setNodeTitle(refNode.hasProperty("jcr:title") ? refNode.getPropertyAsString("jcr:title") : "");
-        usage.setPageTitle(parent != null ? parent.getPropertyAsString("jcr:title") : refNode.getPropertyAsString("jcr:title"));
+        usage.setPageTitle(parent != null ? parent.hasProperty("jcr:title") ? parent.getPropertyAsString("jcr:title") : parent.getName() : refNode.hasProperty("jcr:title") ? refNode.getPropertyAsString("jcr:title") : refNode.getName());
         usage.setLanguage(language);
         result.add(usage);
     }

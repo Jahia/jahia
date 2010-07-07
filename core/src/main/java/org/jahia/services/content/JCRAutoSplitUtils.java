@@ -98,7 +98,9 @@ public final class JCRAutoSplitUtils {
                 String key = null;
 
                 try {
-                    if (type.equals("property")) {
+                    if (type.equals("constant")) {
+                        key = propertyName;
+                    } else if (type.equals("property")) {
                         if (propertyName.equals("j:nodename")) {
                             key = node.getName();
                             key = StringUtils.substringAfter(key, ":");

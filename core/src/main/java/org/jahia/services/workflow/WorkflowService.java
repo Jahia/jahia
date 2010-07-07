@@ -490,9 +490,17 @@ public class WorkflowService {
             Set<String> outcomes = workflowTask.getOutcomes();
             List<String> displayOutcomes = new LinkedList<String>();
             for (String outcome : outcomes) {
-                String s = resourceBundle.getString(workflowAction.getName().replaceAll(" ",
-                                                                                        ".").trim().toLowerCase() + "." + outcome.replaceAll(
-                        " ", ".").trim().toLowerCase());
+                String key = workflowAction.getName().replaceAll(" ",
+                                                                     ".").trim().toLowerCase() + "." + outcome.replaceAll(
+                            " ", ".").trim().toLowerCase();
+                String s;
+                try {
+
+                    s = resourceBundle.getString(key);
+                } catch (Exception e) {
+                    logger.info("Missing ressource : "+key+" in "+resourceBundle);
+                    s = workflowAction.getName();
+                }
                 displayOutcomes.add(s);
             }
             workflowTask.setDisplayOutcomes(displayOutcomes);

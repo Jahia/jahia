@@ -18,7 +18,7 @@
         <dependency>
             <groupId>org.jbpm.jbpm4</groupId>
             <artifactId>jbpm-jpdl</artifactId>
-            <version>${jbpm.version}</version>
+            <version>4.3</version>
         </dependency>
     </dependencies>
 
@@ -37,11 +37,9 @@
                         <configuration>
                             <artifactItems>
                                 <artifactItem>
-                                    <dependency>
-                                        <groupId>org.jbpm.jbpm4</groupId>
-                                        <artifactId>jbpm-jpdl</artifactId>
-                                        <version>${jbpm.version}</version>
-                                    </dependency>
+                                    <groupId>org.jbpm.jbpm4</groupId>
+                                    <artifactId>jbpm-jpdl</artifactId>
+                                    <version>${jbpm.version}</version>
                                     <type>jar</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}</outputDirectory>

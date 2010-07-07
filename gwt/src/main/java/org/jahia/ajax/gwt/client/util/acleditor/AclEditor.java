@@ -167,21 +167,26 @@ public class AclEditor {
                 Html html = new Html("&nbsp;");
                 if (ace.getPrincipalType() == 'u') {
                     html.setStyleName("um-user");
-                } else {
+                } else if (ace.getPrincipalType() == 'g') {
                     html.setStyleName("um-group");
+                } else {
+                    html.setStyleName("um-role");
                 }
                 return html;
             }
         });
         columns.add(col);
 
+        final Map<String, List<String>> map = acl.getAvailablePermissions();
         if (aclGroup == null) {
             available = new ArrayList<String>();
-            for (List<String> l : acl.getAvailablePermissions().values()) {
-                available.addAll(l);
+            if(map != null && !map.isEmpty()) {
+                for (List<String> l : map.values()) {
+                    available.addAll(l);
+                }
             }
         } else {
-            available = acl.getAvailablePermissions().get(aclGroup);
+            available = map.get(aclGroup);
         }
 
         // name of the princial

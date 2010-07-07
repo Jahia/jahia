@@ -1008,6 +1008,7 @@
             <groupId>org.jbpm.jbpm4</groupId>
             <artifactId>jbpm-jpdl</artifactId>
             <version>${jbpm.version}</version>
+            <classifier>jahia</classifier>
         </dependency>        
         
         <dependency>

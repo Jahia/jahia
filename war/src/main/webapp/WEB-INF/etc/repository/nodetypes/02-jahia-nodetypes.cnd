@@ -141,10 +141,12 @@
  + * (jnt:workflowRule)
 
 [jnt:workflowRule] > nt:base
- - j:nodeType (string,choicelist[nodetypes=nt:base,resourceBundle]) nofulltext
  - j:workflow (string,choicelist[workflow]) nofulltext
  + * (jnt:ace) = jnt:ace
 
+
+[jmix:worklfowRulesable] mixin
++ workflowrules (jnt:workflowRules) autocreated
 //---------------------------------------------------------
 // Query
 //---------------------------------------------------------

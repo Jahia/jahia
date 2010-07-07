@@ -32,6 +32,8 @@
  */
 package org.jahia.services.workflow;
 
+import java.util.Set;
+
 /**
  * Workflow process definition.
  *
@@ -45,6 +47,7 @@ public class WorkflowDefinition extends WorkflowBase {
     
     private final String key;
     private String formResourceName;
+    private Set<String> tasks;
 
     public WorkflowDefinition(String name, String key, String provider) {
         super(name, provider);
@@ -103,5 +106,13 @@ public class WorkflowDefinition extends WorkflowBase {
     @Override
     public String getProvider() {
         return super.getProvider();
+    }
+
+    public void setTasks(Set<String> tasks) {
+        this.tasks = tasks;
+    }
+
+    public Set<String> getTasks() {
+        return tasks;
     }
 }

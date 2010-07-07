@@ -289,6 +289,15 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     public PagingLoadResult<GWTJahiaRole> searchRolesInContext(String search, int offset, int limit, String context) throws GWTJahiaServiceException;
 
+    public Map<GWTJahiaWorkflowDefinition,GWTJahiaNodeACL> getWorkflowRules(String path) throws GWTJahiaServiceException;
+
+    public List<GWTJahiaWorkflowDefinition> getWorkflows() throws GWTJahiaServiceException;
+
+    public void updateWorkflowRules(String path, List<GWTJahiaWorkflowDefinition> actives, List<GWTJahiaWorkflowDefinition> deleted) throws GWTJahiaServiceException;
+
+    void updateWorkflowRulesACL(String path, GWTJahiaWorkflowDefinition gwtJahiaWorkflowDefinition, GWTJahiaNodeACL gwtJahiaNodeACL)
+            throws GWTJahiaServiceException;
+
 // -------------------------- INNER CLASSES --------------------------
 
     public static class App {

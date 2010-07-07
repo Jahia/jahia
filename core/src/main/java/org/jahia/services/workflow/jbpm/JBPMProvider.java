@@ -51,6 +51,7 @@ import org.jbpm.jpdl.internal.activity.TaskActivity;
 import org.jbpm.jpdl.internal.model.JpdlProcessDefinition;
 import org.jbpm.pvm.internal.model.Activity;
 import org.jbpm.pvm.internal.model.ActivityImpl;
+import org.jbpm.pvm.internal.task.TaskDefinitionImpl;
 import org.jbpm.pvm.internal.wire.usercode.UserCodeActivityBehaviour;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
@@ -223,6 +224,14 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         ProcessDefinition value = getProcessDefinitionByKey(key);
         WorkflowDefinition wf = new WorkflowDefinition(value.getName(), value.getKey(), this.key);
         wf.setFormResourceName(repositoryService.getStartFormResourceName(value.getId(),repositoryService.getStartActivityNames(value.getId()).get(0)));
+        if(value instanceof JpdlProcessDefinition) {
+            JpdlProcessDefinition definition = (JpdlProcessDefinition) value;
+            final Map<String, TaskDefinitionImpl> taskDefinitions = definition.getTaskDefinitions();
+            final Set<String> tasks = new LinkedHashSet<String>();
+            tasks.add(WorkflowService.START_ROLE);
+            tasks.addAll(taskDefinitions.keySet());
+            wf.setTasks(tasks);
+        }
         return wf;
     }
 

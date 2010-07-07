@@ -5,27 +5,27 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
-[jnt:socialConnection] > jnt:content, jmix:sandboxContent
+[jnt:socialConnection] > jnt:content
  - j:connectedFrom (weakreference) < jnt:user
  - j:connectedTo (weakreference) < jnt:user
  - j:type (string)
 
-[jnt:socialGroup] > jnt:content, jmix:sandboxContent
+[jnt:socialGroup] > jnt:content
  - j:description (string) i18n
 
-[jnt:socialMediaItem] > jnt:content, jmix:sandboxContent
+[jnt:socialMediaItem] > jnt:content
  - j:type (string)
  - j:mimeType (string)
  - j:taggedPeople (string) multiple
  - j:data (weakreference, file) < jnt:file
 
-[jnt:socialMediaItemCollection] > jnt:content, jmix:sandboxContent
+[jnt:socialMediaItemCollection] > jnt:content
  + * (jnt:socialMediaItem)
 
 [jnt:socialActivityTemplateParams] > nt:base
  - * (string)
  
-[jnt:socialActivity] > jnt:content, jmix:sandboxContent
+[jnt:socialActivity] > jnt:content
  - j:from (weakreference) < jnt:user
  - j:message (string)
  - j:messageKey (string)
@@ -44,7 +44,7 @@
  + j:mediaItems (jnt:socialMediaItemCollection)
  + j:templateParams (jnt:socialActivityTemplateParams)
 
-[jnt:socialMessage] > jnt:content, jmix:sandboxContent
+[jnt:socialMessage] > jnt:content
  - j:from (weakreference) < jnt:user
  - j:to (weakreference) < jnt:user
  - j:subject (string)

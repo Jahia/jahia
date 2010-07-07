@@ -390,7 +390,7 @@ public class WorkflowHelper {
                         } else {
                             aceNode = node.addNode(nodeName, "jnt:ace");
                         }
-                        aceNode.setProperty("j:principal", principal);
+                        aceNode.setProperty("j:principal", ace.getPrincipalType() +":"+principal);
                         aceNode.setProperty("j:protected", false);
                         aceNode.setProperty("j:aceType", "GRANT");
                         for (Map.Entry<String, String> entry : permissions.entrySet()) {

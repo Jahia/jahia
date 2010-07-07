@@ -97,7 +97,7 @@ public class WorkflowTabItem extends EditEngineTabItem {
         if (engine.getNode() == null) {
             return;
         }
-        if(container!= null) {
+        if (container != null) {
             container.removeFromParent();
             container.removeAll();
         }
@@ -141,7 +141,8 @@ public class WorkflowTabItem extends EditEngineTabItem {
                                                              SelectionChangedEvent<GWTJahiaWorkflowDefinition> gwtJahiaWorkflowDefinitionSelectionChangedEvent) {
                                                          final GWTJahiaNodeACL gwtJahiaNodeACL = result.get(
                                                                  gwtJahiaWorkflowDefinitionSelectionChangedEvent.getSelectedItem());
-                                                         displayACLEditor(gwtJahiaNodeACL, engine.getNode(),combo.getSelection());
+                                                         displayACLEditor(gwtJahiaNodeACL, engine.getNode(),
+                                                                          combo.getSelection());
                                                          layout();
                                                      }
                                                  });
@@ -175,7 +176,7 @@ public class WorkflowTabItem extends EditEngineTabItem {
                                          horizontalPanel.add(button, tableData);
                                          WorkflowTabItem.this.container.add(horizontalPanel, new RowData(1, 0.07));
                                          final GWTJahiaNodeACL gwtJahiaNodeACL = result.values().iterator().next();
-                                         displayACLEditor(gwtJahiaNodeACL, engine.getNode(),combo.getSelection());
+                                         displayACLEditor(gwtJahiaNodeACL, engine.getNode(), combo.getSelection());
                                          layout();
                                      }
                                  });
@@ -198,11 +199,12 @@ public class WorkflowTabItem extends EditEngineTabItem {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
                 GWTJahiaNodeACL nodeACL = rightsEditor.getAcl();
-                service.updateWorkflowRulesACL(node.getPath(),selection.get(0),nodeACL,new BaseAsyncCallback<Void>() {
-                    public void onSuccess(Void result) {
-                        //To change body of implemented methods use File | Settings | File Templates.
-                    }
-                });
+                service.updateWorkflowRulesACL(node.getPath(), selection.get(0), nodeACL,
+                                               new BaseAsyncCallback<Void>() {
+                                                   public void onSuccess(Void result) {
+                                                       create(locale);
+                                                   }
+                                               });
             }
         });
 
@@ -238,7 +240,13 @@ public class WorkflowTabItem extends EditEngineTabItem {
                         for (GWTJahiaWorkflowDefinition workflowDefinition : set) {
                             final List<GWTJahiaNodeACE> jahiaNodeACEList = currentWorkflows.get(
                                     workflowDefinition).getAce();
-                            if (workflowDefinition.getName().equals(definition.getName()) && (jahiaNodeACEList==null || jahiaNodeACEList.isEmpty() || !jahiaNodeACEList.get(0).isInherited())) {
+                            boolean asLocalAce = false;
+                            for (GWTJahiaNodeACE ace : jahiaNodeACEList) {
+                                if (!ace.isInherited()) {
+                                    asLocalAce = true;
+                                }
+                            }
+                            if (workflowDefinition.getName().equals(definition.getName()) && asLocalAce) {
                                 definition.set("active", true);
                                 break;
                             } else {

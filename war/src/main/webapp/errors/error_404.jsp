@@ -44,7 +44,7 @@
 <head>
     <meta name="robots" content="noindex, nofollow"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/andromeda.css" type="text/css"/>
-    <title><fmt:message key="label.login"/></title>
+    <title><fmt:message key="org.jahia.bin.JahiaErrorDisplay.pageNotFound.label"/>-</title>
 
 </head>
 <body class="login">

@@ -48,6 +48,7 @@ import javax.jcr.RepositoryException;
 import javax.script.*;
 import java.io.*;
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
@@ -163,8 +164,14 @@ public class RulesNotificationService {
                                                                                                    "/").replaceAll("/",
                                                                                                                    "."),
                                                                         ".");
-            ResourceBundle resourceBundle = ResourceBundle.getBundle(resourceBundleName, locale);
-            bindings.put("bundle", resourceBundle);
+            String subject = "";
+            try {
+                ResourceBundle resourceBundle = ResourceBundle.getBundle(resourceBundleName, locale);
+                bindings.put("bundle", resourceBundle);
+                subject = resourceBundle.getString("subject");
+            } catch (MissingResourceException e) {
+                // No RB
+            }
             Reader scriptContent = null;
             try {
                 scriptContent = new InputStreamReader(scriptInputStream);
@@ -174,7 +181,7 @@ public class RulesNotificationService {
                 Object result = scriptEngine.eval(scriptContent, bindings);
                 StringWriter writer = (StringWriter) scriptContext.getWriter();
                 String body = writer.toString();
-                notificationService.sendMail("seda:users?multipleConsumers=true", resourceBundle.getString("subject"),
+                notificationService.sendMail("seda:users?multipleConsumers=true", subject,
                                              body, null, fromMail, toMail, ccList, bcclist);
             } finally {
                 if (scriptContent != null) {

@@ -22,7 +22,7 @@ public class SocialRuleService {
 
     public void addActivity(final String activityType, final String user, final String messageKey, final AddedNodeFact nodeFact, final List<String> nodeTypeList, KnowledgeHelper drools) throws RepositoryException {
         JCRSessionWrapper session = nodeFact.getNode().getSession();
-        socialService.addActivity(activityType, user, messageKey, nodeFact, nodeTypeList, session);
+        socialService.addActivity(activityType, user, messageKey, nodeFact.getNode(), nodeTypeList, session);
     }
 
     public void sendMessage(final String fromUser, final String toUser, final String subject, final String message, AddedNodeFact nodeFact, KnowledgeHelper drools) throws RepositoryException {

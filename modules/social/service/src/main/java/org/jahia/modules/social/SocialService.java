@@ -1,17 +1,13 @@
 package org.jahia.modules.social;
 
-import org.apache.log4j.Logger;
-import org.jahia.api.Constants;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.content.*;
-import org.jahia.services.content.rules.AddedNodeFact;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaLDAPUser;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.jcr.JCRUser;
-import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
+import java.security.Principal;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -20,8 +16,23 @@ import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
-import java.security.Principal;
-import java.util.*;
+
+import org.apache.log4j.Logger;
+import org.jahia.api.Constants;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRContentUtils;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRPropertyWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
+import org.jahia.services.usermanager.JahiaLDAPUser;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.jcr.JCRUser;
+import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 
 /**
  * Social service class for manipulating social activities data.
@@ -37,7 +48,7 @@ public class SocialService {
     
     private String autoSplitSettings;
 
-    public void addActivity(final String activityType, final String user, final String messageKey, final AddedNodeFact nodeFact, final List<String> nodeTypeList, JCRSessionWrapper session) throws RepositoryException {
+    public void addActivity(final String activityType, final String user, final String messageKey, final JCRNodeWrapper targetNode, final List<String> nodeTypeList, JCRSessionWrapper session) throws RepositoryException {
         final JCRUser fromJCRUser = getJCRUserFromUserKey(user);
         if (fromJCRUser == null) {
             logger.warn("No user found, not adding activity !");
@@ -67,7 +78,7 @@ public class SocialService {
         JCRNodeWrapper activityNode = activitiesNode.addNode(nodeName, JNT_SOCIAL_ACTIVITY);
         activityNode.setProperty("j:from", userNode);
         activityNode.setProperty("j:messageKey", messageKey);
-        activityNode.setProperty("j:targetNode", nodeFact.getNode());
+        activityNode.setProperty("j:targetNode", targetNode);
         String[] targetNodeTypes = nodeTypeList.toArray(new String[nodeTypeList.size()]);
         activityNode.setProperty("j:targetNodeTypes", targetNodeTypes);
         activityNode.setProperty("j:type", activityType);

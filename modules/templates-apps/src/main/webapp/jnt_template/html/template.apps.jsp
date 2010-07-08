@@ -57,7 +57,7 @@
 <jcr:node var="rootPage" path="/sites/${renderContext.site.siteKey}/home"/>
 
 <div id="bodywrapper">
-    <div id="header">
+    <div id="header" class="colorRessource1 imgRessource1">
         <div class="container container_16">
             <div class="grid_16">
 				<template:area path="header" nodeTypes="jnt:row" />
@@ -73,7 +73,7 @@
         </div>
         <div class="clear"></div>
     </div>
-    <div id="footer">
+    <div id="footer" class="colorRessource2 imgRessource2">
         <div class="container container_16">
 			<div class="grid_16">
                  <template:area path="footer" nodeTypes="jnt:row" />

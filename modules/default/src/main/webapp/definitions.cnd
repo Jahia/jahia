@@ -125,3 +125,4 @@
  - templateNode (weakreference) mandatory
  - buttonLabel (string)
 
+[jnt:backToParentPage] > jnt:content, jmix:siteComponentContent, mix:title

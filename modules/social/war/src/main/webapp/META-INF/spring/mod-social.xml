@@ -18,7 +18,7 @@
     </bean>
 
     <bean id="socialService" class="org.jahia.modules.social.SocialService">
-        <!-- enable auto-splittng of user activities by year-month-day -->
+        <!-- enable auto-splitting of user activities by year and month -->
         <property name="autoSplitSettings" value="date,jcr:created,yyyy;date,jcr:created,MM"></property>
     </bean>
 

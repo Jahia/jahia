@@ -187,9 +187,9 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                             .getAttribute("areaNodeTypesRestriction" + (currentLevel - 1), PageContext.REQUEST_SCOPE);
                 }
                 try {
-                    if (node.isNodeType("jnt:acl") || node.isNodeType("jnt:workflowRules")) {
-                        return EVAL_PAGE;
-                    }
+//                    if (node.isNodeType("jnt:acl") || node.isNodeType("jnt:workflowRules")) {
+//                        return EVAL_PAGE;
+//                    }
 
                     if (constrainedNodeTypes != null && !"".equals(constrainedNodeTypes.trim())) {
                         StringTokenizer st = new StringTokenizer(constrainedNodeTypes, " ");
@@ -417,11 +417,18 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             final Integer level =
                     (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
 
+            String restriction = null;
+            if (!StringUtils.isEmpty(nodeTypes)) {
+                restriction = nodeTypes;
+            } else if (!StringUtils.isEmpty(constraints)) {
+                restriction = constraints;
+            }
+
             boolean setRestrictions =
                     pageContext.getAttribute("areaNodeTypesRestriction" + level, PageContext.REQUEST_SCOPE) == null &&
-                            !StringUtils.isEmpty(nodeTypes);
+                            !StringUtils.isEmpty(restriction);
             if (setRestrictions) {
-                pageContext.setAttribute("areaNodeTypesRestriction" + level, nodeTypes, PageContext.REQUEST_SCOPE);
+                pageContext.setAttribute("areaNodeTypesRestriction" + level, restriction, PageContext.REQUEST_SCOPE);
             }
 
             buffer.append(RenderService.getInstance().render(resource, renderContext));

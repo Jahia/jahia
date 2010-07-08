@@ -39,7 +39,7 @@
             <footer j:basenode="/templateSets/templates-web/home" jcr:primaryType="jnt:absoluteArea" />
           </footer>
           <wrappercontent jcr:primaryType="jnt:contentList">
-            <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" />
+            <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:referenceTemplate="fullpage"/>
           </wrappercontent>
           <home jcr:mixinTypes="jmix:hasTemplateNode" jcr:primaryType="jnt:masterTemplate">
             <wrappercontent jcr:primaryType="jnt:contentList">

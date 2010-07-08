@@ -90,7 +90,7 @@ public class TemplateNodeFilter extends AbstractFilter {
             while (template == null) {
                 if (current.hasProperty("j:templateNode")) {
                     templateNode = (JCRNodeWrapper) current.getProperty("j:templateNode").getNode();
-                    template = addDerivedTemplates(node, templateName, template, templateNode);
+                    template = addDerivedTemplates(resource, template, templateNode);
                     if (template == null && current == node) {
                         template = new Template(templateNode.hasProperty("j:template") ? templateNode.getProperty("j:template").getString() :
                             "default", templateNode, template);
@@ -98,7 +98,7 @@ public class TemplateNodeFilter extends AbstractFilter {
                 }
                 if (template == null && current.hasProperty("j:defaultTemplateNode")) {
                     templateNode = (JCRNodeWrapper) current.getProperty("j:defaultTemplateNode").getNode();
-                    template = addDerivedTemplates(node, templateName, template, templateNode);
+                    template = addDerivedTemplates(resource, template, templateNode);
                     if (template == null) {
                         template = new Template(templateNode.hasProperty("j:template") ? templateNode.getProperty("j:template").getString() :
                             "default", templateNode, template);
@@ -130,7 +130,7 @@ public class TemplateNodeFilter extends AbstractFilter {
         return template;
     }
 
-    private Template addDerivedTemplates(JCRNodeWrapper node, String templateName, Template template,
+    private Template addDerivedTemplates(Resource resource, Template template,
                                          JCRNodeWrapper templateNode) throws RepositoryException {
         Query q = templateNode.getSession().getWorkspace().getQueryManager().createQuery(
                 "select * from [jnt:derivedTemplate] as w where ischildnode(w, ['" + templateNode.getPath() + "'])",
@@ -139,19 +139,19 @@ public class TemplateNodeFilter extends AbstractFilter {
         NodeIterator ni = result.getNodes();
         while (ni.hasNext()) {
             final JCRNodeWrapper derivedTemplateNode = (JCRNodeWrapper) ni.nextNode();
-            template = addTemplate(node, templateName, template, derivedTemplateNode);
+            template = addTemplate(resource, template, derivedTemplateNode);
         }
         return template;
     }
 
-    private Template addTemplate(JCRNodeWrapper node, String templateName, Template template, JCRNodeWrapper templateNode)
+    private Template addTemplate(Resource resource, Template template, JCRNodeWrapper templateNode)
             throws RepositoryException {
         boolean ok = true;
         if (templateNode.hasProperty("j:applyOn")) {
             ok = false;
             Value[] values = templateNode.getProperty("j:applyOn").getValues();
             for (Value value : values) {
-                if (node.isNodeType(value.getString())) {
+                if (resource.getNode().isNodeType(value.getString())) {
                     ok = true;
                     break;
                 }
@@ -160,10 +160,15 @@ public class TemplateNodeFilter extends AbstractFilter {
                 ok = true;
             }
         }
-        if (templateName == null) {
-            ok &= !templateNode.hasProperty("j:templateKey");
-        } else {
-            ok &= templateNode.hasProperty("j:templateKey") && templateName.equals(templateNode.getProperty("j:templateKey").getString());
+        if (ok) {
+            if (resource.getTemplate() == null || resource.getTemplate().equals("default")) {
+                ok = !templateNode.hasProperty("j:templateKey");
+            } else {
+                ok = templateNode.hasProperty("j:templateKey") && resource.getTemplate().equals(templateNode.getProperty("j:templateKey").getString());
+                if (ok) {
+                    resource.setTemplate(null);
+                }
+            }
         }
         if (ok) {
             template = new Template(

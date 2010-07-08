@@ -37,8 +37,7 @@
             <footer j:basenode="/templateSets/templates-intranet/home" jcr:primaryType="jnt:absoluteArea" />
           </footer>
           <wrappercontent jcr:primaryType="jnt:contentList">
-
-            <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" />
+            <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:referenceTemplate="fullpage" />
           </wrappercontent>
           <pagetitle jcr:primaryType="jnt:contentList" />
           <topfooter jcr:primaryType="jnt:contentList" />

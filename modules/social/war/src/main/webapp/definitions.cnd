@@ -5,27 +5,27 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
-[jnt:socialConnection] > jnt:content
+[jnt:socialConnection] > jnt:content, jmix:droppableContent
  - j:connectedFrom (weakreference) < jnt:user
  - j:connectedTo (weakreference) < jnt:user
  - j:type (string)
 
-[jnt:socialGroup] > jnt:content
+[jnt:socialGroup] > jnt:content, jmix:droppableContent
  - j:description (string) i18n
 
-[jnt:socialMediaItem] > jnt:content
+[jnt:socialMediaItem] > jnt:content, jmix:droppableContent
  - j:type (string)
  - j:mimeType (string)
  - j:taggedPeople (string) multiple
  - j:data (weakreference, file) < jnt:file
 
-[jnt:socialMediaItemCollection] > jnt:content
+[jnt:socialMediaItemCollection] > jnt:content, jmix:droppableContent
  + * (jnt:socialMediaItem)
 
 [jnt:socialActivityTemplateParams] > nt:base
  - * (string)
  
-[jnt:socialActivity] > jnt:content
+[jnt:socialActivity] > jnt:content, jmix:droppableContent
  - j:from (weakreference) < jnt:user
  - j:message (string)
  - j:messageKey (string)
@@ -44,7 +44,7 @@
  + j:mediaItems (jnt:socialMediaItemCollection)
  + j:templateParams (jnt:socialActivityTemplateParams)
 
-[jnt:socialMessage] > jnt:content
+[jnt:socialMessage] > jnt:content, jmix:droppableContent
  - j:from (weakreference) < jnt:user
  - j:to (weakreference) < jnt:user
  - j:subject (string)

@@ -363,7 +363,7 @@ public class RulesListener extends DefaultEventListener {
                                         }
                                     }
                                 } catch (PathNotFoundException pnfe) {
-                                    logger.error("Error when executing event. Unable to find node for path: " + event.getPath(), pnfe);
+                                    logger.error("Error when executing event. Unable to find node or property for path: " + event.getPath(), pnfe);
                                 } catch (Exception e) {
                                     logger.error("Error when executing event", e);
                                 }

@@ -41,10 +41,7 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.*;
 import org.jahia.services.render.scripting.Script;
 
-import javax.jcr.AccessDeniedException;
-import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
+import javax.jcr.*;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
@@ -196,7 +193,11 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                         boolean found = false;
                         Node displayedNode = node;
                         if (node.isNodeType("jnt:contentReference") && node.hasProperty("j:node")) {
-                            displayedNode = node.getProperty("j:node").getNode();
+                            try {
+                                displayedNode = node.getProperty("j:node").getNode();
+                            } catch (ItemNotFoundException e) {
+                                return EVAL_PAGE;
+                            }
                         }
                         while (st.hasMoreTokens()) {
                             String tok = st.nextToken();

@@ -40,6 +40,7 @@ import java.util.Locale;
 import javax.jcr.AccessDeniedException;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -94,7 +95,13 @@ public class URLResolver {
     private boolean mappable = false;
     
     private String redirectUrl;
-    private String vanityUrl;    
+    private String vanityUrl;
+
+    public void setRenderContext(RenderContext renderContext) {
+        this.renderContext = renderContext;
+    }
+
+    private RenderContext renderContext;
 
     /**
      * Initializes an instance of this class. This constructor is mainly used when
@@ -139,6 +146,7 @@ public class URLResolver {
      * @param request  The current request in order to obtain the context path
      */
     public URLResolver(String url, RenderContext context) {
+        renderContext = context;
         String contextPath = context.getRequest().getContextPath();
 
         this.urlPathInfo = StringUtils.substringAfter(url, contextPath + context.getServletPath());
@@ -164,7 +172,7 @@ public class URLResolver {
         String lastPart = StringUtils.substringAfterLast(path, "/");
         int indexOfHTMLSuffix = lastPart.indexOf(".html");
         if (isServletAllowingUrlMapping() && indexOfHTMLSuffix > 0
-                && lastPart.indexOf(".") == indexOfHTMLSuffix) {
+                && lastPart.indexOf(".") == indexOfHTMLSuffix && lastPart.endsWith(".html")) {
             mappable = true;
         }
     }
@@ -419,7 +427,7 @@ public class URLResolver {
             logger.debug("Resolving resource for workspace '" + workspace
                     + "' locale '" + locale + "' and path '" + path + "'");
         }
-
+        final URLResolver urlResolver = this;
         return JCRTemplate.getInstance().doExecuteWithSystemSession(null,
                 workspace, new JCRCallback<Resource>() {
                     public Resource doInJCR(JCRSessionWrapper session)
@@ -433,6 +441,18 @@ public class URLResolver {
                             if (i > nodePath.lastIndexOf('/')) {
                                 if (ext == null) {
                                     ext = nodePath.substring(i + 1);
+                                    if ("ajax".equals(ext)) {
+                                        ext = null;
+                                        if (renderContext != null) {
+                                            renderContext.setAjaxRequest(true);
+                                            HttpServletRequest req = renderContext.getRequest();
+                                            if (req.getParameter("mainResource") != null) {
+                                                Resource resource = urlResolver.getResource(req.getParameter(
+                                                        "mainResource"));
+                                                renderContext.setAjaxResource(resource);
+                                            }
+                                        }
+                                    }
                                 } else if (tpl == null) {
                                     tpl = nodePath.substring(i + 1);
                                 } else {

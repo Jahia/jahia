@@ -55,11 +55,13 @@
                             <property name="priority" value="1" />
                             <property name="wrapper" value="wrapper.fullpage" />
                             <property name="applyOnConfigurations" value="page"/>
+                            <property name="skipOnAJaxRequest" value="true"/>
                         </bean>
                         <bean class="org.jahia.services.render.filter.WrapperFilter" >
                             <property name="priority" value="2" />
                             <property name="wrapper" value="wrapper.previewwrapper" />
                             <property name="applyOnConfigurations" value="preview"/>
+                            <property name="skipOnAJaxRequest" value="true"/>
                         </bean>
 
                         <bean class="org.jahia.services.render.filter.ContributionFilter" >
@@ -81,6 +83,8 @@
                         <bean class="org.jahia.services.render.filter.TemplateNodeFilter" >
                             <property name="priority" value="5" />
                             <property name="applyOnConfigurations" value="wrappedcontent,page,gwt"/>
+                            <property name="applyOnTemplateTypes" value="html,edit"/>
+                            <property name="skipOnAJaxRequest" value="true"/>
                         </bean>
                         <bean class="org.jahia.services.render.filter.BaseAttributesFilter" >
                             <property name="priority" value="8" />
@@ -114,6 +118,7 @@
                         <bean class="org.jahia.services.render.filter.WrapperFilter" >
                             <property name="priority" value="40" />
                             <property name="skipOnConfiguration" value="include,wrapper"/>
+                            <property name="skipOnAJaxRequest" value="true"/>
                         </bean>
                         <bean class="org.jahia.services.render.filter.analytics.GoogleAnalyticsFilter">
                             <property name="applyOnNodeTypes" value="jmix:googleanalytics"/>

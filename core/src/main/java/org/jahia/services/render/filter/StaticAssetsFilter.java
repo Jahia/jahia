@@ -88,6 +88,6 @@ public class StaticAssetsFilter extends AbstractFilter {
             out = outputDocument.toString();
          }
 
-        return out;
+        return out.trim();
     }
 }

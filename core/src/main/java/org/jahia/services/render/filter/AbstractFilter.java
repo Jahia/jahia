@@ -304,6 +304,22 @@ public abstract class AbstractFilter implements RenderFilter {
         }
     }
 
+    public static class AjaxRequestCondition implements ExecutionCondition {
+
+        /**
+         * Returns <code>true</code> if the condition matches the specified
+         * resource.
+         *
+         * @param renderContext Current RenderContext
+         * @param resource      Resource being displayed
+         * @return <code>true</code> if the condition matches the specified
+         *         resource
+         */
+        public boolean matches(RenderContext renderContext, Resource resource) {
+            return renderContext.isAjaxRequest();
+        }
+    }
+
     private static final Logger logger = Logger.getLogger(AbstractFilter.class);
 
     private List<ExecutionCondition> conditions = new LinkedList<ExecutionCondition>();
@@ -678,6 +694,14 @@ public abstract class AbstractFilter implements RenderFilter {
             condition = new TemplateTypeCondition(templateTypes);
         }
         addCondition(new NotCondition(condition));
+    }
+
+    public void setSkipOnAJaxRequest(Boolean skip) {
+        ExecutionCondition condition = null;
+        if(skip) {
+            condition = new AjaxRequestCondition();
+            addCondition(new NotCondition(condition));
+        }
     }
 
     public int compareTo(RenderFilter o) {

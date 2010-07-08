@@ -204,7 +204,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                          Resource resource) throws RepositoryException, RenderException, IOException {
         loggingService.startProfiler("MAIN");
 //        resp.setCharacterEncoding("UTF-8");
-        String out = renderService.render(resource, renderContext);
+        String out = renderService.render(resource, renderContext).trim();
         if (renderContext.getRedirect() != null && !resp.isCommitted()) {
             resp.sendRedirect(renderContext.getRedirect());
         } else {
@@ -611,7 +611,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     createRenderContext(req, resp, jcrSessionFactory.getCurrentUser());
             renderContext.setLiveMode(Constants.LIVE_WORKSPACE.equals(urlResolver.getWorkspace()));
             renderContext.setPreviewMode(!renderContext.isEditMode() && !renderContext.isContributionMode() && !renderContext.isLiveMode());
-
+            urlResolver.setRenderContext(renderContext);
             req.getSession().setAttribute(ParamBean.SESSION_LOCALE, urlResolver.getLocale());
             jcrSessionFactory.setCurrentLocale(urlResolver.getLocale());
 
@@ -625,15 +625,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                             "/" + urlResolver.getLocale().toString() + urlResolver.getPath() :
                             urlResolver.getVanityUrl(), req, resp, parameters);
                 } else {
-                    final String requestWith = req.getHeader("x-requested-with");
-                    boolean isAjaxRequest = requestWith != null &&
-                                            requestWith.equals("XMLHttpRequest");
-                    renderContext.setAjaxRequest(isAjaxRequest);
                     Resource resource;
-                    if(isAjaxRequest && req.getParameter("mainResource")!=null) {
-                        resource = urlResolver.getResource(req.getParameter("mainResource"));
-                        renderContext.setAjaxResource(resource);
-                    }
+
                     resource = urlResolver.getResource(getVersionDate(req));
                     renderContext.setMainResource(resource);
                     JCRSiteNode site = resource.getNode().resolveSite();

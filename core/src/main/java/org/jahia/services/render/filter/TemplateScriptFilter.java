@@ -44,7 +44,7 @@ public class TemplateScriptFilter extends AbstractFilter {
             renderContext.getResourcesStack().pop();
         }
 
-        return output;
+        return output.trim();
     }
 
     

@@ -111,7 +111,9 @@ public class SeoTabItem extends EditEngineTabItem {
         for (UrlMappingEditor editor : editorsByLanguage.values()) {
             mappings.addAll(editor.getMappings());
         }
-        
+        if (!engine.getNode().getNodeTypes().contains("jmix:vanityUrlMapped")) {
+            engine.getNode().getNodeTypes().add("jmix:vanityUrlMapped");
+        }        
         JahiaContentManagementService.App.getInstance().saveUrlMappings(engine.getNode(), langs, mappings, new BaseAsyncCallback<Object>() {
             public void onApplicationFailure(Throwable throwable) {
                 com.google.gwt.user.client.Window.alert(Messages.get("saved_prop_failed", "URL mapping save failed\n\n") + throwable.getLocalizedMessage());

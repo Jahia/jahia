@@ -87,6 +87,9 @@ public class NewUser extends BaseAction {
         }
 
         Properties properties = new Properties();
+        properties.put("j:email",parameters.get("desired_email").get(0));
+        properties.put("j:firstName",parameters.get("desired_firstname").get(0));
+        properties.put("j:lastName",parameters.get("desired_lastname").get(0));
         for (Map.Entry<String, List<String>> param : parameters.entrySet()) {
             if (param.getKey().startsWith("j:")) {
                 String value = getParameter(parameters, param.getKey());

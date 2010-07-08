@@ -18,13 +18,13 @@
         $(document).ready(function() {
             $("#newUser").validate({
                 rules: {
-                    desired_firstname: "required",
+                    desired_firstname : "required",
                     desired_lastname: "required",
-                    desired_login: {
+                    username: {
                         required: true,
                         minlength: 2
                     },
-                    desired_password: {
+                    password: {
                         required: true,
                         minlength: 6
                     },
@@ -39,22 +39,22 @@
                     }
                 },
                 messages: {
-                    desired_firstname: "Please enter your firstname",
-                    desired_lastname: "Please enter your lastname",
-                    desired_login: {
-                        required: "Please enter a username",
-                        minlength: "Your username must consist of at least 2 characters"
+                    desired_firstname: "<fmt:message key='userregistration.label.askFirstname'/>",
+                    desired_lastname: "<fmt:message key='userregistration.label.askLastname'/>",
+                    username: {
+                        required: "<fmt:message key='userregistration.label.askUsername'/>",
+                        minlength: "<fmt:message key='userregistration.label.usernameSizeWarning'/>"
                     },
-                    desired_password: {
-                        required: "Please provide a password",
-                        minlength: "Your password must be at least 5 characters long"
+                    password: {
+                        required: "<fmt:message key='userregistration.label.askPassword'/>",
+                        minlength: "<fmt:message key='userregistration.label.passwordSizeWarning'/>"
                     },
                     confirm_password: {
-                        required: "Please provide a password",
-                        minlength: "Your password must be at least 5 characters long",
-                        equalTo: "Please enter the same password as above"
+                        required: "<fmt:message key='userregistration.label.askPassword'/>",
+                        minlength: "<fmt:message key='userregistration.label.passwordSizeWarning'/>",
+                        equalTo: "<fmt:message key='userregistration.label.validatePassword'/>"
                     },
-                    desired_email: "Please enter a valid email address"
+                    desired_email: "<fmt:message key='userregistration.label.validateEmail'/>"
                 }
             });
         });
@@ -88,19 +88,19 @@
                                                                                id="desired_password"/></p>
 
             <p><label for="confirm_password"><fmt:message
-                    key="userregistration.label.form.password"/></label><input type="password" name="confirm_password"
+                    key="userregistration.label.form.confirmPassword"/></label><input type="password" name="confirm_password"
                                                                                id="confirm_password"/></p>
 
             <p><label for="desired_email"><fmt:message
-                    key="userregistration.label.form.email"/></label><input type="text" name="j:email"
+                    key="userregistration.label.form.email"/></label><input type="text" name="desired_email"
                                                                             id="desired_email"/></p>
 
             <p><label for="desired_firstname"><fmt:message
-                    key="userregistration.label.form.firstname"/></label><input type="text" name="j:firstName"
+                    key="userregistration.label.form.firstname"/></label><input type="text" name="desired_firstname"
                                                                                 id="desired_firstname"/></p>
 
             <p><label for="desired_lastname"><fmt:message
-                    key="userregistration.label.form.lastname"/></label><input type="text" name="j:lastName"
+                    key="userregistration.label.form.lastname"/></label><input type="text" name="desired_lastname"
                                                                                id="desired_lastname"/></p>
 
             <div>

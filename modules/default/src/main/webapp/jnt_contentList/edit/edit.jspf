@@ -2,7 +2,7 @@
     <c:if test="${inSite eq 'true'}">
         <c:if test="${child.locked ne 'true'}">
             <button
-                    onclick="jreplace('edit-${child.identifier}', '${url.base}${child.path}.edit.edit',null, 'initEditFields(\'${child.identifier}\')')">
+                    onclick="jreplace('edit-${child.identifier}', '${url.base}${child.path}.edit.edit.ajax',null, 'initEditFields(\'${child.identifier}\')')">
                 <span class="icon-contribute icon-edit"></span><fmt:message key="label.edit"/></button>
         </c:if>
         <c:if test="${child.locked eq 'true'}">
@@ -11,7 +11,7 @@
             </button>
         </c:if>
         <button
-                onclick="jreplace('edit-${child.identifier}', '${url.base}${child.path}.html',null, '')">
+                onclick="jreplace('edit-${child.identifier}', '${url.base}${child.path}.html.ajax',null, '')">
             <span class="icon-contribute icon-preview"></span><fmt:message key="label.preview"/></button>
     </c:if>
     <c:if test="${currentNode.properties['j:canOrderInContribution'].boolean and jcr:hasOrderableChildNodes(currentNode)}">

@@ -30,9 +30,8 @@
         <fmt:formatDate value="${created.time}" type="date" pattern="mm" var="userCreatedMonth"/>
         <div class="post-date"><span>${userCreatedMonth}</span>${userCreatedDay}</div>
         <h2 class="post-title"><input type="text" value="<c:out value='${title.string}'/>" name="jcr:title"/></h2>
-        <p class="post-info"><fmt:message key="by"/> <a href="${url.base}/users/${createdBy.string}.html">${createdBy.string}</a>
+        <p class="post-info"><fmt:message key="blog.label.by"/> <a href="${url.base}/users/${createdBy.string}.html">${createdBy.string}</a>
             - <fmt:formatDate value="${created.time}" type="date" dateStyle="medium"/>
-            <a href="#"><fmt:message key="category"/></a>
         </p>
         <ul class="post-tags">
             <c:set var="tags" value=""/>
@@ -48,13 +47,13 @@
                 </textarea>	<br/>
             <p>
 
-                <fmt:message key="tag.this.article"/>:&nbsp;
+                <fmt:message key="blog.label.tag"/>:&nbsp;
                 <input type="text" name="j:newTag" value="${tags}"/>
                 <input
                         class="button"
                         type="button"
                         tabindex="16"
-                        value="<fmt:message key='save'/>"
+                        value="<fmt:message key='blog.label.save'/>"
                         onclick="document.blogPost.submit();"
                         />
             </p>

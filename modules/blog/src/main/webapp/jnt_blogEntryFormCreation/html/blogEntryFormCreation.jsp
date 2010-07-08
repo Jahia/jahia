@@ -19,9 +19,8 @@
     <div class="post-date"><span>${userCreatedMonth}</span>${userCreatedDay}</div>
     <h2 class="post-title"><input type="text" value="" name="jcr:title"/></h2>
 
-    <p class="post-info"><fmt:message key="by"/> <a href="#"></a>
+    <p class="post-info"><fmt:message key="blog.label.by"/> <a href="#"></a>
         - <fmt:formatDate value="${userCreated.time}" type="date" dateStyle="medium"/>
-        <a href="#"><fmt:message key="category"/></a>
     </p>
     <ul class="post-tags">
         <jcr:nodeProperty node="${currentNode}" name="j:tags" var="assignedTags"/>
@@ -41,7 +40,7 @@
                     class="button"
                     type="button"
                     tabindex="16"
-                    value="<fmt:message key='save'/>"
+                    value="<fmt:message key='blog.label.save'/>"
                     onclick="
                         if (document.blogPost.elements['jcr:title'].value == '') {
                             alert('${noTitle}');

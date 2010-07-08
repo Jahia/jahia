@@ -45,7 +45,7 @@
         <h5>${person}</h5>
 
         <p class="aboutMeAge"><span class="label"><fmt:message
-                                    key="jnt_user.profile.age"/> : </span> ${currentYear - birthYear}</p>
+                                    key="blog.profile.age"/> : </span> ${currentYear - birthYear}</p>
 
         <div class="clear"></div>
 

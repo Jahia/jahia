@@ -41,7 +41,7 @@
 
     <jcr:node path="/users/${createdBy.string}" var="contentUser"/>
     <c:set var="fields" value="${contentUser.propertiesAsString}"/>
-    <p class="post-info"><fmt:message key="by"/>&nbsp;<a href="${url.base}/users/${createdBy.string}.html">${createdBy.string}</a>&nbsp;-&nbsp;<fmt:formatDate value="${created.time}" type="date" dateStyle="medium"/></p>
+    <p class="post-info"><fmt:message key="blog.label.by"/>&nbsp;<a href="${url.base}/users/${createdBy.string}.html">${createdBy.string}</a>&nbsp;-&nbsp;<fmt:formatDate value="${created.time}" type="date" dateStyle="medium"/></p>
     <ul class="post-tags">
         <jcr:nodeProperty node="${currentNode}" name="j:tags" var="assignedTags"/>
         <c:forEach items="${assignedTags}" var="tag" varStatus="status">
@@ -55,12 +55,12 @@
              sql="select [jcr:uuid] from [jnt:post] as p  where isdescendantnode(p,['${currentNode.path}'])"/>
     <c:set var="numberOfPosts" value="${numberOfPostsQuery.rows.size}"/>
     <p class="post-info-links">
-        <a href="${url.base}${currentResource.node.path}.blogEdit.html"><fmt:message key="edit"/></a>
+        <a href="${url.base}${currentResource.node.path}.blogEdit.html"><fmt:message key="blog.label.edit"/></a>
         <c:if test="${numberOfPosts == 0}">
-            <a class="comment_count" href="${url.current}#comments">0&nbsp;<fmt:message key="comments"/></a>
+            <a class="comment_count" href="${url.current}#comments">0&nbsp;<fmt:message key="blog.label.comments"/></a>
         </c:if>
         <c:if test="${numberOfPosts > 0}">
-            <a class="comment_count" href="${url.current}#comments">${numberOfPosts}&nbsp;<fmt:message key="comments"/></a>
+            <a class="comment_count" href="${url.current}#comments">${numberOfPosts}&nbsp;<fmt:message key="blog.label.comments"/></a>
         </c:if>
     </p>
                     <div class="clear"></div>

@@ -1,23 +1,23 @@
 Jahia Apache Shindig Integration
 
-* Testing
+* Overview
 
- You should be able to fully interact with the gadgets using the following URLs :
+ This module enables deployment of OpenSocial
+ ({{{http://code.google.com/apis/opensocial/}API & docs}}, {{{http://www.opensocial.org/}community}})
+ applications using embedded {{{http://shindig.apache.org/}Apache Shindig}} OpenSocial container.  
 
- - {{http://localhost:8080/modules/shindig/gadgets/files/container/sample1.html}}
+* UI {components}
 
- - {{http://localhost:8080/modules/shindig/gadgets/files/container/sample2.html}}
+ For using OpenSocial gadgets in a template page, Jahia provides the <OpenSocial Gadget>
+ component that is available in the <Site components> group of the selector panel:
 
- - {{http://localhost:8080/modules/shindig/gadgets/files/container/sample3.html}}
+[./images/opesocial-gadget-component.png] OpenSocial gadget component
 
- - {{http://localhost:8080/modules/shindig/gadgets/files/container/sample4.html}}
+ An OpenSocial gadget/application descriptor URL should be provided for the UI component.
+ 
+ Rendering of sample currency converter and TODO list components is shown below:
 
- - {{http://localhost:8080/modules/shindig/gadgets/files/container/sample5.html}}
+[./images/opesocial-gadgets-example.png] OpenSocial gadgets rendering
 
- - {{http://localhost:8080/modules/shindig/gadgets/files/container/sample6.html}}
-
- - {{http://localhost:8080/modules/shindig/gadgets/files/container/sample7.html}}
-
- Important : some of these examples are no longer working, so don't worry if they won't work all of them. At the time
- of this writing, sample2 is missing a gadget, sample4 doesn't work because it cannot load a script dependency
- (ig/testing/test.js)
+  A list of freely available gadgets can be found in the {{{http://directory.opensocial.org/gadgets/directory?synd=cad}directory}}
+  of the OpenSocial community Web site.

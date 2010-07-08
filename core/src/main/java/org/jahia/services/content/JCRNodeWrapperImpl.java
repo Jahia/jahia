@@ -2634,7 +2634,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         } catch (RepositoryException e) {
             return false;
         }
-        return true;
+        return checkLanguageValidity();
     }
 
     public boolean checkLanguageValidity() {

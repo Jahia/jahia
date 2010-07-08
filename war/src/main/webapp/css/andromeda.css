@@ -67,6 +67,16 @@ div.hive{
   right:20%;
   z-index:5
 }
+div.bear{
+  background: transparent url(images/andromeda/bear.png) no-repeat top left;
+  width:200px;
+  height:307px;
+  position:absolute;
+  bottom:20px;
+  right:20%;
+  z-index:6;
+  margin-right:-150px
+}
 div.cloud{
   background: transparent url(images/andromeda/cloud.png) no-repeat top left;
   width:215px;

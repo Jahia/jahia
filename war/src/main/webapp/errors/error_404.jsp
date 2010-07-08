@@ -31,38 +31,36 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-<%@page language="java" contentType="text/html; charset=UTF-8" 
-%><%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" 
-%>
+<%@page language="java" contentType="text/html; charset=UTF-8"
+%><%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal"%>
+<%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <utility:setBundle basename="JahiaInternalResources"/>
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta name="robots" content="noindex, nofollow"/>
-    <title><fmt:message key="org.jahia.bin.JahiaErrorDisplay.httpNotFound.label"/></title>
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/error.css" type="text/css"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/andromeda.css" type="text/css"/>
+    <title><fmt:message key="label.login"/></title>
+
 </head>
+<body class="login">
+<div class="grass"></div>
+<div class="grass2"></div>
+<div class="bear"></div>
+<div class="cloud"></div>
+<div class="cloud2"></div>
+<h2 class="loginlogo_community"></h2>
 
-<body>
-
-<br/><br/><br/>
-
-<table class="errorbox" align="center" width="530" height="63" border="0" cellspacing="0" cellpadding="0">
-<tr>
-    <td class="boxtitle"><fmt:message key="org.jahia.bin.JahiaErrorDisplay.errorPage.label"/></td>
-</tr>
-<tr>
-    <td class="boxcontent">
-        <p class="bold"><fmt:message key="org.jahia.bin.JahiaErrorDisplay.pageNotFound.label"/></p>
+    <div id="adminLogin">
+            <br class="clearFloat" />
+            <h3 class="loginIcon"><fmt:message key="org.jahia.bin.JahiaErrorDisplay.pageNotFound.label"/></h3>
         <p><fmt:message key="org.jahia.bin.JahiaErrorDisplay.fileNotFound.label"/></p>
-        <p><fmt:message key="org.jahia.bin.JahiaErrorDisplay.clickHere1stPart.label"/>&nbsp;<a href="javascript:history.back()"><fmt:message key="org.jahia.bin.JahiaErrorDisplay.clickHere2ndPartLink.label"/></a>&nbsp;<fmt:message key="org.jahia.bin.JahiaErrorDisplay.clickHere3rdPart.label"/></p>
-    </td>
-</tr>
-</table>
-
+            <br class="clearFloat" />
+    </div>
 </body>
 </html>
+

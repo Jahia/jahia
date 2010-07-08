@@ -429,7 +429,7 @@ public class URLResolver {
         }
         final URLResolver urlResolver = this;
         return JCRTemplate.getInstance().doExecuteWithSystemSession(null,
-                workspace, new JCRCallback<Resource>() {
+                workspace, locale, new JCRCallback<Resource>() {
                     public Resource doInJCR(JCRSessionWrapper session)
                             throws RepositoryException {
                         String ext = null;

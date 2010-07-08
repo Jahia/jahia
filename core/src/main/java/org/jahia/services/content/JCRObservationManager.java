@@ -164,7 +164,7 @@ public class JCRObservationManager implements ObservationManager {
 
     private static void consume(JCRSessionWrapper session, int operationType) {
         Map<JCRSessionWrapper,List<Event>> map = events.get();
-        if (inEvents.get() == null) {
+//        if (inEvents.get() == null) {
             events.set(null);
             currentSession.set(null);            
             inEvents.set(Boolean.TRUE);
@@ -186,7 +186,7 @@ public class JCRObservationManager implements ObservationManager {
             } finally {
                 inEvents.set(null);
             }            
-        }
+//        }
     }
 
     public static <X> X doWorkspaceWriteCall(JCRSessionWrapper session, int operationType, JCRCallback<X> callback) throws RepositoryException {

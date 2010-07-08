@@ -15,3 +15,4 @@
 
 [jnt:topBlogComment] > jnt:content, jmix:blogContent, jmix:list, jmix:pager
 
+[jnt:addBlogLink] > jnt:content,jmix:blogContent

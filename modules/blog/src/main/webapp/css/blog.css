@@ -331,10 +331,6 @@
 /******************************************************************************
 * Footer list
 ******************************************************************************/
-#bodywrapper .mapshortcuts  {
-	width:49%;
-	float:left;
-}
 #bodywrapper .footer-recent-comments .small,
 #bodywrapper .footer-recent-posts .small{
 	display: block;
@@ -343,18 +339,22 @@
 	list-style: none;
 	margin:10px 0px;
 	padding: 0px;
-	font-size:0.85em;
+	font-size:0.85em
+
 }
 #bodywrapper ul.footer-recent-comments  li {
 	background: url(img/blog/comment.png) no-repeat;
 	padding: 0px 0px 10px 20px;
 }
 
+#bodywrapper .footer-recent-posts  {
+
+}
 #bodywrapper ul.footer-recent-posts  {
 	list-style: none;
 	margin:10px 0px;
 	padding: 0px;
-	font-size:0.85em;
+	font-size:0.85em
 }
 #bodywrapper ul.footer-recent-posts  li {
 	background: url(img/blog/post.png) no-repeat;
@@ -363,18 +363,6 @@
 
 #bodywrapper .credits {
 	margin:1em 0;
-}
-/******************************************************************************
-* Home blog recent list
-******************************************************************************/
-#bodywrapper ul.recent-blogs {
-	list-style: none;
-	margin:10px 0px;
-	padding: 0px;
-}
-#bodywrapper ul.recent-blogs li {
-	background: url(img/blog/arrow.png) no-repeat 0 5px;
-	padding: 0px 0px 10px 15px;
 }
 /******************************************************************************
 *  Preferences
@@ -704,63 +692,4 @@ div.addArticle{
 #bodywrapper .formPreferences  .fp_button {
 	margin-left: 31%
 }
-/******************************************************************************
-*  boxblog
-******************************************************************************/
-#bodywrapper div.boxblog {
-	position:relative;
-	clear:both;
-}
 
-#bodywrapper div.boxblog h3.boxblogtitleh3 {
-	margin:0;
-	padding:0;
-	display:inline
-}
-#bodywrapper div.boxblog-inner {
-	background-color:#fff;
-	border:1px solid #cecece;
-	height:1%;
-
-}
-#bodywrapper div.boxblog-inner p {
-	padding:0px 0px 10px 0px;
-}
-#bodywrapper .boxblog-inner .boxblog-inner-border {
-	border:1px solid #fff;
-	height:1%;
-	background-color:#fff;
-}
-/*boxblogshadow*/
-#bodywrapper div.boxblogshadow {
-	border:1px solid #cecece;
-}
-
-#bodywrapper div.boxblogshadow div.boxblog-inner {
-	background-color:#fff;
-	border:1px solid #cecece;
-	margin:-2px 0 0 -2px;
-}
-/*boxblog color*/
-#bodywrapper .boxbloggrey .boxblog-inner .boxblog-inner-border {
-	background-color:#e1e1e1
-}
-#bodywrapper .boxblogyellow .boxblog-inner .boxblog-inner-border {
-	background-color:#FCF0BA
-}
-#bodywrapper .boxblogwhite .boxblog-inner {
-	background-color:#fff
-}
-#bodywrapper .boxblogwhite .boxblog-inner .boxblog-inner-border {
-	background-color:#fff
-}
-
-/*boxblog padding*/
-#bodywrapper .boxblogpadding16 .boxblog-inner .boxblog-inner-border {
-	padding:16px;
-}
-
-/*boxblog margin*/
-#bodywrapper .boxblogmarginbottom16{
-	margin-bottom:16px;
-}

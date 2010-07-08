@@ -184,10 +184,6 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                             .getAttribute("areaNodeTypesRestriction" + (currentLevel - 1), PageContext.REQUEST_SCOPE);
                 }
                 try {
-//                    if (node.isNodeType("jnt:acl") || node.isNodeType("jnt:workflowRules")) {
-//                        return EVAL_PAGE;
-//                    }
-
                     if (constrainedNodeTypes != null && !"".equals(constrainedNodeTypes.trim())) {
                         StringTokenizer st = new StringTokenizer(constrainedNodeTypes, " ");
                         boolean found = false;

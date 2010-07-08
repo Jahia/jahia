@@ -43,6 +43,13 @@ public class TemplateNodeFilter extends AbstractFilter {
                             resource.getTemplateType().equals("edit") ? "html" : resource.getTemplateType(), template.templateName, Resource.CONFIGURATION_WRAPPER);
                     if (service.hasTemplate(templateNode.getPrimaryNodeType(), template.templateName)) {
                         chain.pushAttribute(renderContext.getRequest(), "inWrapper", Boolean.TRUE);
+
+                        Integer currentLevel =
+                                (Integer) renderContext.getRequest().getAttribute("org.jahia.modules.level");
+                        if (currentLevel != null) {
+                            renderContext.getRequest().removeAttribute("areaNodeTypesRestriction" + (currentLevel));
+                        }
+
                         String output = RenderService.getInstance().render(wrapperResource, renderContext);
                         if (renderContext.isEditMode()) {
                             output = "<div jahiatype=\"linkedContentInfo\" linkedNode=\"" +

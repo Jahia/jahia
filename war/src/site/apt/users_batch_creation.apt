@@ -7,7 +7,7 @@ Jahia - Users batch creation
  Your csv file must be structured as follow:
  The file must include a header line with at minimum the columns j:nodename (username) and j:password.
  You can include any other supported user properties as values, in the desired order.
- The each user to be created must be declared on a line, with associated values in the correct order.
+ Then, each user to be created must be declared on a line, with associated values in the correct order.
 
  Example:
  

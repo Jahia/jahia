@@ -59,7 +59,7 @@ public class StartWorkflowAction implements Action {
                                                                                      "live");
         map.put("publicationInfos", infoList);
         workflowService.startProcess(resource.getNode(), workflowDefinitionKey, providerKey, map);
-        return ActionResult.OK;
+        return ActionResult.OK_JSON;
     }
 
     private HashMap<String, Object> getVariablesMap(Map<String, List<String>> properties) {

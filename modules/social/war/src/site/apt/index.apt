@@ -1,5 +1,37 @@
-Jahia Social Module documentation
+Jahia Social Module
 
 * Overview
 
-  You can find here the documentation related to Jahia's social module. 
+  You can find here the documentation related to Jahia's social module.
+  
+  The new features were added into the user's profile page and can be found in the
+  <My connections> and <My messages> tabs, allowing users to make friendship connections,
+  interact with each other directly via personal messages or by general status update
+  posts (activities).
+
+* My connections
+
+  This tab is a place for inter-user communication and connections.
+  Status updates can be posted on this page and the list of activities of "friends"
+  can be seen here. 
+
+[./images/my-connections.png] My connections tab in user profile
+
+  One can search for users to be able to add them as friends:
+  
+[./images/user-search.png] Search users
+
+  And also send direct messages to users in the friends list:
+  
+[./images/send-message.png] Sending a message
+
+* My messages
+
+  Personal messages appear in user's <My messages> tab, where the can be read completely
+  and replied:
+
+[./images/my-messages.png] My messages
+   
+  
+
+  

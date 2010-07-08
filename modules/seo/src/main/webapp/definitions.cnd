@@ -5,5 +5,8 @@
  - j:default (boolean) mandatory nofulltext
  - j:active (boolean) nofulltext
 
-[jmix:vanityUrlMapped] mixin
+[jnt:vanityUrls] > nt:base orderable
  + * (jnt:vanityUrl)
+
+[jmix:vanityUrlMapped] mixin
+ + vanityUrlMapping (jnt:vanityUrls) = jnt:vanityUrls autocreated

@@ -4,4 +4,4 @@
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-<c:set var="props" value="${currentNode.properties}"/><c:forTokens items="firstname,lastname,title,age,birthdate,gender,profession,maritalStatus,hobbies,contact,address,city,state,zip,country,remarks" delims="," var="propName" varStatus="status">${fn:escapeXml(jcr:label(props[propName].definition,currentResource.locale))}${not status.last ? ';' : ''}</c:forTokens>
+<c:set var="props" value="${currentNode.properties}"/><c:forTokens items="firstname,lastname,title,age,birthdate,gender,profession,maritalStatus,hobbies,contactType,address,city,state,zip,country,remarks" delims="," var="propName" varStatus="status">${fn:escapeXml(jcr:label(props[propName].definition,currentResource.locale))}${not status.last ? ';' : ''}</c:forTokens>

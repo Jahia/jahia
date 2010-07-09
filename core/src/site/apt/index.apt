@@ -12,3 +12,5 @@ Core Module
  * {{{./ckeditor/index.html}CKEditor Integration}}
 
  * {{{./logging.html}Logging service customization}}
+ 
+ * {{{./htmlexternalizer/description.html}HTML externalization}}

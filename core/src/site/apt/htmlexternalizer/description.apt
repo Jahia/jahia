@@ -1,0 +1,51 @@
+Core Module - HTML externalization
+
+  The HTML externalization service is used to convert and assemble the HTML and depending resources of a given Jahia URL as such, that it can then be for instance sent via mail (e.g. as newsletter) or to generate static pages, get a flat capture etc. 
+  
+  For that relative links in HTML and CSS files are rewritten to absolute URLs, all external or inlined Javascripts are removed and referenced external CSS styles are inlined into the HTML. It can be configured which of this features need to be applied to the generated HTML document.  
+
+  * URL rewriting
+
+  The service simply traverses the HTML attributes of an HTML document created with Jahia and checks all attributes holding URLs to see whether they start with a single forward slash ("/"). Jahia generally uses such context relative URLs, so we simply prepend such URLs with the servername to make them absolute. 
+  Notice that other relative addressing, like links beginning without forward slash, with periods (.) for current directory or two periods (..) for parent directory will NOT be converted. 
+
+  * Inlining CSS
+
+  Jahia will find all <link> HTML tags having the rel="stylesheet" attribute and will load the content of the CSS file and inline it with <style> tags into the generated HTML.
+  Furthermore we check whether there are relative URLs in the CSS attributes, which are converted to absolute URLs in a similar way to what is done with links in HTML tags.   
+
+  * Remove JavaScript
+
+  The HTML externalization sever can also search for <script> tags and either remove all the scripts inlined in the HTML or also the ones linking to scripts in external files.
+  
+* Configuration
+
+  The service is configured in WEB-INF/etc/spring/applicationcontext-notification.xml
+     
+-------------------------------------
+    <bean id="HtmlExternalizationService" class="org.jahia.services.notification.HtmlExternalizationService">
+        <property name="urlTraverser"
+            ref="org.jahia.services.render.filter.URLTraverser" />
+        <property name="httpClientService" ref="HttpClientService" />
+        <property name="useServletContextResources" value="true" />
+        <property name="rewriteUrls" value="true"/>
+        <property name="inlineCss" value="true"/>
+        <property name="rewriteUrlsInCss" value="true"/>
+        <property name="rewriteUrlsInCss" value="true"/>
+        <property name="removeInlinedScripts" value="true"/>
+    </bean>
+-------------------------------------
+  
+  httpClientService simply refers to the HttpClientService configured elsewhere in Jahia's XML spring configuration files.
+  
+  With useServletContextResources set to true you can specify that the referred CSS files are only loaded by HTTP connection, if they are linked with an absolute URL, otherwise they will be considered as current context resource and loaded with ServletContext.getResource(String). If the value is set to false we will not load the resources via servlet context, but always via dispatching the URL.
+  
+  With the other options (rewriteUrls, inlineCss, rewriteUrlsInCss, rewriteUrlsInCss, removeInlinedScripts) you can simply specify which actions need to be applied to Jahia's HTML output, when HTML externalized output is requested. With true the distinct action is enabled, with false disabled.
+  
+* Usage
+  
+  For now you can simply switch on the HTML externalization by appending the request query parameter externalize=true in an URL, e.g.
+  
+-------------------------------------
+    http://localhost:8080/cms/render/default/en/sites/mySite/home.html?externalize=true
+-------------------------------------  

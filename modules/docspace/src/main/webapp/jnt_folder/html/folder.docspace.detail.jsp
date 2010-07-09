@@ -145,7 +145,7 @@
                                                                   src="${url.currentModule}/css/img/docspacebig.png"/>
                         </div>
                     </div>
-                    <h3><fmt:message key="docspace.label.docspace"/> <jcr:nodeProperty node="${currentNode}"
+                    <h3><fmt:message key="docspace.label.docspace"/>&nbsp;<jcr:nodeProperty node="${currentNode}"
                                                                                        name="jcr:title"/></h3>
 
                     <p class="clearMaringPadding docspacedate"><fmt:message key="docspace.label.creation"/>
@@ -155,7 +155,7 @@
 
                     <p class="clearMaringPadding docspaceauthor"><a
                             href="#"><fmt:message
-                            key="docspace.label.document.createdBy"/> ${currentNode.properties['jcr:createdBy'].string}</a>
+                            key="docspace.label.document.createdBy"/>&nbsp;${currentNode.properties['jcr:createdBy'].string}</a>
                     </p>
 
                     <div class="clear"></div>

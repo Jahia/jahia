@@ -38,14 +38,14 @@
     <div class="aboutMePhoto">
         <jcr:nodeProperty var="picture" node="${currentNode}" name="j:picture"/>
         <c:if test="${not empty picture}">
-            <img src="${picture.node.thumbnailUrls['avatar_120']}" alt="${fn:escapeXml(person)}"/>
+            <img src="${picture.node.thumbnailUrls['avatar_60']}" alt="${fn:escapeXml(person)}"/>
         </c:if>
     </div>
     <div class="aboutMeBody"><!--start aboutMeBody -->
         <h5>${person}</h5>
 
-        <p class="aboutMeAge"><span class="label"><fmt:message
-                                    key="blog.profile.age"/> : </span> ${currentYear - birthYear}</p>
+        <p class="aboutMeAge"><fmt:message
+                                    key="blog.profile.age"/>: <utility:dateDiff startDate="${birthDate.date.time}" endDate="${now}" format="years"/> <fmt:message key="blog.profile.years"/></p>
 
         <div class="clear"></div>
 

@@ -225,7 +225,7 @@
         </pack>
         <pack name="Apache Tomcat" id="tomcat" preselected="yes" required="no">
             <description/>
-            <fileset dir="../artifacts/apache-tomcat-6.0.24" targetdir="$INSTALL_PATH/tomcat" />
+            <fileset dir="../artifacts/apache-tomcat-${jahia.tomcat.version}" targetdir="$INSTALL_PATH/tomcat" />
             <file override="update" src="../artifacts/shared-libraries-all.zip" targetdir="$INSTALL_PATH/tomcat/lib" unpack="true"/>
             <fileset dir="../tomcat" targetdir="$INSTALL_PATH/tomcat" override="update" />
             <fileset dir="../scripts" targetdir="$INSTALL_PATH" override="update" condition="izpack.windowsinstall">

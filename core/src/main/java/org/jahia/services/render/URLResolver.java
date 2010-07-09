@@ -81,10 +81,8 @@ public class URLResolver {
     private static Logger logger = Logger.getLogger(URLResolver.class);
     
     private static String[] servletsAllowingUrlMapping = new String[] {
-            StringUtils.substringAfterLast(Render.getRenderServletPath(), "/"),
-            StringUtils.substringAfterLast(Edit.getEditServletPath(), "/"),
-            StringUtils.substringAfterLast(Contribute
-                    .getContributeServletPath(), "/") };
+            StringUtils.substringAfterLast(Render.getRenderServletPath(), "/")
+    };
 
     private String urlPathInfo = null;
     private String servletPart;    
@@ -150,6 +148,7 @@ public class URLResolver {
         String contextPath = context.getRequest().getContextPath();
 
         this.urlPathInfo = StringUtils.substringAfter(url, contextPath + context.getServletPath());
+        this.servletPart = StringUtils.substringAfterLast(context.getServletPath(), "/");
 
         if (!StringUtils.isEmpty(urlPathInfo)) {
             path = getUrlPathInfo().substring(1);
@@ -368,7 +367,7 @@ public class URLResolver {
                             if (i > nodePath.lastIndexOf('/')) {
                                 nodePath = nodePath.substring(0, i);
                             } else {
-                                throw new PathNotFoundException("not found");
+                                throw new PathNotFoundException("'" + nodePath + "'not found");
                             }
                             try {
                                 node = session.getNode(nodePath);
@@ -548,7 +547,7 @@ public class URLResolver {
                     mapped = false;
                 }
             } catch (RepositoryException e) {
-                logger.warn("Cannot check if node has the jmix:vanityUrlMapped mixin", e);
+                logger.debug("Cannot check if node has the jmix:vanityUrlMapped mixin", e);
             }
         }
         return mapped;

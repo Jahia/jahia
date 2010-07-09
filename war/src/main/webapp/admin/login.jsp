@@ -46,7 +46,10 @@ if(userAgent != null) {
 if(userAgent.indexOf("MSIE") != -1) {
 inputSize = 22;
 }
-} %>
+}
+
+pageContext.setAttribute("displayMsg", request.getAttribute(JahiaAdministration.CLASS_NAME+"jahiaDisplayMessage"));
+%>
 <script language="javascript" type="text/javascript">
   function setFocus(){
       document.jahiaAdmin.login_username.focus();
@@ -65,6 +68,9 @@ inputSize = 22;
 <div class="grass"></div>
 <div class="grass2"></div>
 <div class="hive"></div>
+<c:if test="${not empty displayMsg}">
+<div class="bear"></div>
+</c:if>
 <div class="cloud"></div>
 <div class="cloud2"></div>
 <h2 class="loginlogo_community"></h2>
@@ -92,14 +98,11 @@ inputSize = 22;
   </table>
   <br/>
 </form>
-<%
-String message = (String) request.getAttribute(JahiaAdministration.CLASS_NAME+"jahiaDisplayMessage");
-if(message!=null) { %>
+<c:if test="${not empty displayMsg}">
 <div class="errorbold">
-  <%=message %>&nbsp;&nbsp;&nbsp;
+  ${displayMsg}&nbsp;&nbsp;&nbsp;
 </div>
-<%
-} %>
+</c:if>
 <div class="text2">
   <%=jahiaDisplayMessage %>&nbsp;&nbsp;&nbsp;
 </div>

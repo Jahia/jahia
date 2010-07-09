@@ -62,10 +62,13 @@ function keyDown(e) {
 </script>
 
 </head>
-<body onLoad="autoFocus()" class="login">
+<body onload="autoFocus()" class="login">
 <div class="grass"></div>
 <div class="grass2"></div>
 <div class="hive"></div>
+<ui:isLoginError>
+<div class="bear"></div>
+</ui:isLoginError>
 <div class="cloud"></div>
 <div class="cloud2"></div>
 <h2 class="loginlogo_community"></h2>

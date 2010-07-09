@@ -1881,7 +1881,7 @@ public class ManageSites extends AbstractAdministrationModule {
                         importInfos.put("siteServerNameExists", Boolean.valueOf(
                                 (ServicesRegistry.getInstance().getJahiaSitesService()
                                         .getSite(serverName) != null  && !"localhost".equals(serverName)) ||
-                                        StringUtils.isEmpty(serverName)));
+                                        "".equals(serverName)));
                     } catch (JahiaException e) {
                         logger.error("Error while preparing site import", e);
                     }
@@ -1930,7 +1930,7 @@ public class ManageSites extends AbstractAdministrationModule {
                         infos.put("siteServerNameExists", Boolean.valueOf(
                                 (ServicesRegistry.getInstance().getJahiaSitesService()
                                         .getSite(serverName) != null  && !"localhost".equals(serverName)) ||
-                                        StringUtils.isEmpty(serverName)));
+                                        "".equals(serverName)));
 
                         if ("".equals(infos.get("sitekey")) || "".equals(infos.get("siteservername")) ||
                                 "".equals(infos.get("sitetitle"))) {

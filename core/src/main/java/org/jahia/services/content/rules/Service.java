@@ -188,7 +188,7 @@ public class Service extends JahiaService {
                         boolean siteKeyEx = sitesService.getSiteByKey((String) infos.get("sitekey")) != null || "".equals(
                                 infos.get("sitekey"));
                         String serverName = (String) infos.get("siteservername");
-                        boolean serverNameEx = (sitesService.getSite(serverName) != null && !"localhost".equals(serverName)) || StringUtils.isEmpty(serverName);
+                        boolean serverNameEx = (sitesService.getSite(serverName) != null && !"localhost".equals(serverName)) || "".equals(serverName);
                         if (!user.getJahiaUser().isAdminMember(0)) {
                             return;
                         }

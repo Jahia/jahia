@@ -22,10 +22,10 @@
                 <entry key="search.countlimit" value="100"/>
                 <entry key="search.objectclass" value="person"/>
                 <entry key="search.wildcards.attributes" value="ou, cn, o, c, mail, uid, uniqueIdentifier, givenName, sn, dn"/>
-                <entry key="firstname.attribute.map" value="cn"/>
-                <entry key="lastname.attribute.map" value="sn"/>
-                <entry key="email.attribute.map" value=""/>
-                <entry key="organization.attribute.map" value=""/>
+                <entry key="j:firstName.attribute.map" value="givenName"/>
+                <entry key="j:lastName.attribute.map" value="sn"/>
+                <entry key="j:email.attribute.map" value="mail"/>
+                <entry key="j:organization.attribute.map" value="ou"/>
                 <entry key="ldap.connect.pool" value="true"/>
             </map>
         </property>

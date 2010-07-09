@@ -112,6 +112,3 @@
     </form>
     </div>
 </c:if>
-<c:if test="${renderContext.editMode}">
-     <c:if test="${currentResource.username}"
-</c:if>

@@ -38,6 +38,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.Resource;
 import org.jahia.taglibs.jcr.AbstractJCRTag;
 
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
@@ -92,6 +93,8 @@ public class JCRNodeTag extends AbstractJCRTag {
             }
             pageContext.setAttribute(var, node, scope);
         } catch (PathNotFoundException e) {
+            logger.debug("Item not found '" + path + "'", e);
+        } catch (ItemNotFoundException e) {
             logger.debug("Item not found '" + path + "'", e);
         } catch (RepositoryException e) {
             logger.error("Could not retrieve JCR node using path '" + path + "'", e);

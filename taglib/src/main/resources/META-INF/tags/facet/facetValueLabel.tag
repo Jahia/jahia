@@ -62,11 +62,11 @@
         <c:set var="currentFacetName" value="${currentActiveFacet != null ? currentActiveFacet.key : ''}"/>
         <c:set var="facetValueName" value="${currentActiveFacetValue.key}"/>    
     </c:otherwise>
-</c:choose>    
+</c:choose>
+<jcr:node var="refNode" uuid="${facetValueName}"/>
 <c:choose>    
-    <c:when test="${currentFacetName == 'j:defaultCategory'}">
-        <jcr:node var="category" uuid="${facetValueName}"/>
-        <c:set var="mappedLabel" value="${category.name}"/>
+    <c:when test="${not empty refNode}">        
+        <c:set var="mappedLabel" value="${refNode.name}"/>
     </c:when>
     <c:when test="${not empty facetValueLabels}">
         <c:forEach items="${facetValueLabels}" var="currentFacetValueLabel">

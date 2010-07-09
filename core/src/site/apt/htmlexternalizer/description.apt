@@ -16,7 +16,7 @@ Core Module - HTML externalization
 
   * Remove JavaScript
 
-  The HTML externalization sever can also search for <script> tags and either remove all the scripts inlined in the HTML or also the ones linking to scripts in external files.
+  The HTML externalization filter can also search for <script> tags and either remove all the scripts inlined in the HTML or also the ones linking to scripts in external files.
   
 * Configuration
 

@@ -9,7 +9,7 @@
     <h3>Summary</h3>
     <ol>
         <c:forEach items="${currentNode.nodes}" var="subchild">
-            <li><template:module node="${subchild}" template="summary" /></li>
+            <template:module node="${subchild}" template="summary" />
         </c:forEach>
     </ol>
     <c:if test="${renderContext.editMode}">

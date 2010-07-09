@@ -139,6 +139,9 @@ public class HtmlExternalizationService {
             String styleSheetContent = null;
             try {
                 if (useServletContextResources || request == null || response == null) {
+                    if (request != null && StringUtils.startsWith(href, request.getContextPath())) {
+                        href = StringUtils.substringAfter(href, request.getContextPath());
+                    }                    
                     styleSheetContent = httpClientService.getResourceAsString(href);
                 } else {
                     styleSheetContent = httpClientService.getResourceAsString(href, request, response);

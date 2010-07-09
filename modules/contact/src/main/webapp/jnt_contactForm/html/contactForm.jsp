@@ -81,12 +81,12 @@
                     <label class="left" for="hobbies">${fn:escapeXml(jcr:label(props.hobbies.definition,currentResource.locale))}</label><input type="text" id="hobbies" name="hobbies"/>
                 </p>
             </c:if>
-            <c:if test="${props.contactType.boolean}">
+            <c:if test="${props.contact.boolean}">
                 <p>
-                    <label class="left" for="contactType">${fn:escapeXml(jcr:label(props.contactType.definition,currentResource.locale))}</label>
-                    <select name="contactType" id="contactType">
-                    	<c:forEach items="${propDefs.contactType.valueConstraints}" var="valueOption">
-                    		<option value="${valueOption}"><fmt:message key="jnt_contactType.contactType.${valueOption}"/></option>
+                    <label class="left" for="contact">${fn:escapeXml(jcr:label(props.contact.definition,currentResource.locale))}</label>
+                    <select name="contact" id="contact">
+                    	<c:forEach items="${propDefs.contact.valueConstraints}" var="valueOption">
+                    		<option value="${valueOption}"><fmt:message key="jnt_contact.contact.${valueOption}"/></option>
                     	</c:forEach>
                     </select>
                 </p>

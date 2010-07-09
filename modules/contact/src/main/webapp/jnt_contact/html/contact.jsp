@@ -8,7 +8,7 @@
     <div class="peopleBody">
     <c:set var="props" value="${currentNode.properties}"/>
     <c:forTokens items="firstname,lastname,title,age,birthdate,gender,profession,maritalStatus,hobbies,contact,address,city,state,zip,country,remarks" delims="," var="propName">
-    	<p><span class="peopleLabel">${fn:escapeXml(jcr:label(props[propName].definition,currentResource.locale))}:</span>&nbsp;<c:if test="${fn:contains('title,gender,maritalStatus,contactType', propName)}" var="selector"><fmt:message key="jnt_contact.${props[propName].definition.name}.${props[propName].string}"/></c:if><c:if test="${not selector}">${fn:escapeXml(props[propName].string)}</c:if></p>
+    	<p><span class="peopleLabel">${fn:escapeXml(jcr:label(props[propName].definition,currentResource.locale))}:</span>&nbsp;<c:if test="${fn:contains('title,gender,maritalStatus,contact', propName)}" var="selector"><fmt:message key="jnt_contact.${props[propName].definition.name}.${props[propName].string}"/></c:if><c:if test="${not selector}">${fn:escapeXml(props[propName].string)}</c:if></p>
     </c:forTokens>
     </div>
 </div>    

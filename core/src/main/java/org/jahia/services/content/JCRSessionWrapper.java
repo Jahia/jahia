@@ -233,7 +233,12 @@ public class JCRSessionWrapper implements Session {
     }
 
     public JCRNodeWrapper getNode(String path) throws PathNotFoundException, RepositoryException {
-        return (JCRNodeWrapper) getItem(path);
+        JCRItemWrapper item = getItem(path);
+        if (item.isNode()) {
+            return (JCRNodeWrapper) item;
+        } else {
+            throw new PathNotFoundException();
+        }
     }
 
     public boolean itemExists(String path) throws RepositoryException {

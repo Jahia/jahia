@@ -440,7 +440,7 @@ public class WorkflowService {
         args.put("workspace", session.getWorkspace().getName());
         args.put("locale", session.getLocale());
         args.put("workflow", lookupProvider(provider).getWorkflowDefinitionByKey(processKey));
-        args.put("user", session.getUser().getUsername());
+        args.put("user", session.getUser() != null ? session.getUser().getUsername() : null);
         final String processId = lookupProvider(provider).startProcess(processKey, args);
         if(logger.isDebugEnabled()) {
             logger.debug("A workflow "+processKey+" from "+provider+" has been started on nodes: "+nodeIds+

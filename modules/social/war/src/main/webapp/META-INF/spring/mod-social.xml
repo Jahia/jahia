@@ -3,23 +3,33 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-    <bean class="org.jahia.modules.social.RemoveSocialConnectionAction">
-        <property name="name" value="removesocialconnection"/>
+    <bean name="socialAction" abstract="true">
         <property name="socialService" ref="socialService"/>
     </bean>
 
-    <bean class="org.jahia.modules.social.SendMessageAction">
+    <bean class="org.jahia.modules.social.RequestSocialConnectionAction" parent="socialAction">
+        <property name="name" value="requestsocialconnection"/>
+    </bean>
+
+    <bean class="org.jahia.modules.social.RemoveSocialConnectionAction" parent="socialAction">
+        <property name="name" value="removesocialconnection"/>
+    </bean>
+
+    <bean class="org.jahia.modules.social.SendMessageAction" parent="socialAction">
         <property name="name" value="sendmessage"/>
-        <property name="socialService" ref="socialService"/>
     </bean>
 
     <bean class="org.jahia.modules.social.RemoveSocialMessageAction">
         <property name="name" value="removesocialmessage"/>
     </bean>
-
+    
     <bean id="socialService" class="org.jahia.modules.social.SocialService">
         <!-- enable auto-splitting of user activities by year and month -->
         <property name="autoSplitSettings" value="date,jcr:created,yyyy;date,jcr:created,MM"></property>
+        <property name="jcrUserManager" ref="JCRUserManagerProvider"/>
+        <property name="groupManagerService" ref="JahiaGroupManagerService"/>
+        <property name="userManagerService" ref="JahiaUserManagerService"/>
+        <property name="workflowService" ref="workflowService"/>
     </bean>
 
     <bean class="org.jahia.services.content.rules.ModuleGlobalObject">

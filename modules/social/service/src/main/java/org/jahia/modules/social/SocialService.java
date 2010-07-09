@@ -1,7 +1,9 @@
 package org.jahia.modules.social;
 
 import java.security.Principal;
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -17,10 +19,9 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -31,8 +32,10 @@ import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaLDAPUser;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
+import org.jahia.services.workflow.WorkflowService;
 
 /**
  * Social service class for manipulating social activities data.
@@ -45,10 +48,31 @@ public class SocialService {
     public static final String JNT_SOCIAL_ACTIVITY = "jnt:socialActivity";
     public static final String JNT_SOCIAL_MESSAGE = "jnt:socialMessage";
     public static final String JNT_SOCIAL_CONNECTION = "jnt:socialConnection";
+    private static final Comparator<? super JCRNodeWrapper> ACTIVITIES_COMPARATOR = new Comparator<JCRNodeWrapper>() {
+
+            public int compare(JCRNodeWrapper activityNode1, JCRNodeWrapper activityNode2) {
+                try {
+                    // we invert the order to sort with most recent dates on top.
+                    return activityNode2.getProperty("jcr:created").getDate().compareTo(activityNode1.getProperty("jcr:created").getDate());
+                } catch (RepositoryException e) {
+                    logger.error("Error while comparing creation date on two activities, returning them as equal", e);
+                    return 0;
+                }
+            }
+
+        };
     
     private String autoSplitSettings;
+    private JCRUserManagerProvider jcrUserManager;
+    private JahiaGroupManagerService groupManagerService;
+    private JahiaUserManagerService userManagerService;
+    private WorkflowService workflowService;
 
-    public void addActivity(final String activityType, final String user, final String messageKey, final JCRNodeWrapper targetNode, final List<String> nodeTypeList, JCRSessionWrapper session) throws RepositoryException {
+    public void addActivity(final String user, final String message, JCRSessionWrapper session) throws RepositoryException {
+        addActivity(null, user, message, null, null, null, session);
+    }
+
+    public void addActivity(final String activityType, final String user, final String message, final String messageKey, final JCRNodeWrapper targetNode, final List<String> nodeTypeList, JCRSessionWrapper session) throws RepositoryException {
         final JCRUser fromJCRUser = getJCRUserFromUserKey(user);
         if (fromJCRUser == null) {
             logger.warn("No user found, not adding activity !");
@@ -77,16 +101,27 @@ public class SocialService {
 
         JCRNodeWrapper activityNode = activitiesNode.addNode(nodeName, JNT_SOCIAL_ACTIVITY);
         activityNode.setProperty("j:from", userNode);
-        activityNode.setProperty("j:messageKey", messageKey);
-        activityNode.setProperty("j:targetNode", targetNode);
-        String[] targetNodeTypes = nodeTypeList.toArray(new String[nodeTypeList.size()]);
-        activityNode.setProperty("j:targetNodeTypes", targetNodeTypes);
-        activityNode.setProperty("j:type", activityType);
+        if (message != null) {
+            activityNode.setProperty("j:message", message);
+        }
+        if (messageKey != null) {
+            activityNode.setProperty("j:messageKey", messageKey);
+        }
+        if (targetNode != null) {
+            activityNode.setProperty("j:targetNode", targetNode);
+        }
+        if (nodeTypeList != null && !nodeTypeList.isEmpty()) {
+            String[] targetNodeTypes = nodeTypeList.toArray(new String[nodeTypeList.size()]);
+            activityNode.setProperty("j:targetNodeTypes", targetNodeTypes);
+        }
+        if (activityType != null) {
+            activityNode.setProperty("j:type", activityType);
+        }
         session.save();
     }
 
     public boolean sendMessage(final String fromUserKey, final String toUserKey, final String subject, final String body) throws RepositoryException {
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+        return execute(new JCRCallback<Boolean>() {
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 return sendMessage(fromUserKey, toUserKey, subject, body, session);
             }
@@ -147,7 +182,7 @@ public class SocialService {
     }
 
     public SortedSet<JCRNodeWrapper> getActivities(JCRSessionWrapper jcrSessionWrapper, JCRNodeWrapper node, long limit, long offset, String pathFilter) throws RepositoryException {
-        Set<String> userPaths = getUserConnections(jcrSessionWrapper, node, true);
+        Set<String> userPaths = getUserConnections(node.getPath(), true);
         return getActivities(jcrSessionWrapper, userPaths, limit, offset, pathFilter);
     }
 
@@ -157,14 +192,15 @@ public class SocialService {
         Map<String, List<String[]>> aclEntries = targetNode.getAclEntries();
         for (Map.Entry<String, List<String[]>> curEntry : aclEntries.entrySet()) {
             String curPrincipal = curEntry.getKey();
-            logger.debug("Resolving principal " + curPrincipal);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Resolving principal " + curPrincipal);
+            }
             String[] principalParts = curPrincipal.split(":");
             if ("u".equals(principalParts[0])) {
                 JCRUser jcrUser = getJCRUserFromUserKey(principalParts[1]);
                 userPaths.add(jcrUser.getNode(jcrSessionWrapper).getPath());
             } else if ("g".equals(principalParts[0])) {
-                JahiaGroupManagerService groupManager = (JahiaGroupManagerService) SpringContextSingleton.getInstance().getContext().getBean("JahiaGroupManagerService");
-                JahiaGroup group = groupManager.lookupGroup(principalParts[1]);
+                JahiaGroup group = groupManagerService.lookupGroup(principalParts[1]);
                 Set<Principal> recursiveGroupMembers = group.getRecursiveUserMembers();
                 for (Principal groupMember : recursiveGroupMembers) {
                     JCRUser jcrUser = getJCRUserFromUserKey(groupMember.getName());
@@ -176,42 +212,38 @@ public class SocialService {
         return userPaths;
     }
 
-    public Set<String> getUserConnections(JCRSessionWrapper jcrSessionWrapper, JCRNodeWrapper userNode, boolean includeSelf) throws RepositoryException {
-        QueryManager queryManager = jcrSessionWrapper.getWorkspace().getQueryManager();
+    public Set<String> getUserConnections(final String userNodePath, final boolean includeSelf)
+            throws RepositoryException {
+        final Set<String> userPaths = new HashSet<String>();
 
-        Set<String> userPaths = new HashSet<String>();
+        execute(new JCRCallback<Boolean>() {
+            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                QueryManager queryManager = session.getWorkspace().getQueryManager();
 
-        if (includeSelf) {
-            userPaths.add(userNode.getPath());
-        }
+                if (includeSelf) {
+                    userPaths.add(userNodePath);
+                }
 
-        Query myConnectionsQuery = queryManager.createQuery("select * from ["+JNT_SOCIAL_CONNECTION+"] as uC where isdescendantnode(uC,['"+ userNode.getPath()+"'])", Query.JCR_SQL2);
-        QueryResult myConnectionsResult = myConnectionsQuery.execute();
+                Query myConnectionsQuery = queryManager.createQuery("select * from [" + JNT_SOCIAL_CONNECTION
+                        + "] as uC where isdescendantnode(uC,['" + userNodePath + "'])", Query.JCR_SQL2);
+                QueryResult myConnectionsResult = myConnectionsQuery.execute();
 
-        NodeIterator myConnectionsIterator = myConnectionsResult.getNodes();
-        while (myConnectionsIterator.hasNext()) {
-            JCRNodeWrapper myConnectionNode = (JCRNodeWrapper) myConnectionsIterator.nextNode();
-            JCRNodeWrapper connectedToNode = (JCRNodeWrapper) myConnectionNode.getProperty("j:connectedTo").getNode();
-            userPaths.add(connectedToNode.getPath());
-        }
+                NodeIterator myConnectionsIterator = myConnectionsResult.getNodes();
+                while (myConnectionsIterator.hasNext()) {
+                    JCRNodeWrapper myConnectionNode = (JCRNodeWrapper) myConnectionsIterator.nextNode();
+                    JCRNodeWrapper connectedToNode = (JCRNodeWrapper) myConnectionNode.getProperty("j:connectedTo")
+                            .getNode();
+                    userPaths.add(connectedToNode.getPath());
+                }
+                return true;
+            }
+        });
+
         return userPaths;
     }
 
-
     public SortedSet<JCRNodeWrapper> getActivities(JCRSessionWrapper jcrSessionWrapper, Set<String> paths, long limit, long offset, String pathFilter) throws RepositoryException {
-        SortedSet<JCRNodeWrapper> activitiesSet = new TreeSet<JCRNodeWrapper>(new Comparator<JCRNodeWrapper>() {
-
-            public int compare(JCRNodeWrapper activityNode1, JCRNodeWrapper activityNode2) {
-                try {
-                    // we invert the order to sort with most recent dates on top.
-                    return activityNode2.getProperty("jcr:created").getDate().compareTo(activityNode1.getProperty("jcr:created").getDate());
-                } catch (RepositoryException e) {
-                    logger.error("Error while comparing creation date on two activities, returning them as equal", e);
-                    return 0;
-                }
-            }
-
-        });
+        SortedSet<JCRNodeWrapper> activitiesSet = new TreeSet<JCRNodeWrapper>(ACTIVITIES_COMPARATOR);
 
         /* todo here it would be better to do a query on all the paths, but it might be very slow. This would also solve the limit and offset problem */
         QueryManager queryManager = jcrSessionWrapper.getWorkspace().getQueryManager();
@@ -246,43 +278,157 @@ public class SocialService {
         return activitiesSet;
     }
 
-    public void removeSocialConnection(JCRSessionWrapper jcrSessionWrapper, String fromId, String toId, String connectionType) throws RepositoryException {
-        QueryManager queryManager = jcrSessionWrapper.getWorkspace().getQueryManager();
+    public void removeSocialConnection(final String fromUuid, final String toUuid, final String connectionType)
+            throws RepositoryException {
 
-        // first we look for the first connection.
-        Query connectionQuery = queryManager.createQuery("select * from ["+JNT_SOCIAL_CONNECTION+"] where [j:connectedFrom]='"+fromId+"' and [j:connectedTo]='"+toId+"' and [j:type]='"+connectionType+"'" , Query.JCR_SQL2);
-        QueryResult connectionResult = connectionQuery.execute();
-        NodeIterator connectionIterator = connectionResult.getNodes();
-        while (connectionIterator.hasNext()) {
-            Node connectionNode = connectionIterator.nextNode();
-            jcrSessionWrapper.checkout(connectionNode.getParent());
-            connectionNode.remove();
+        execute(new JCRCallback<Boolean>() {
+            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+
+                QueryManager queryManager = session.getWorkspace().getQueryManager();
+
+                // first we look for the first connection.
+                StringBuilder q = new StringBuilder(64);
+                q.append("select * from [" + JNT_SOCIAL_CONNECTION + "] where [j:connectedFrom]='").append(fromUuid)
+                        .append("' and [j:connectedTo]='").append(toUuid).append("'");
+                if (StringUtils.isNotEmpty(connectionType)) {
+                    q.append(" and [j:type]='").append(connectionType).append("'");
+                }
+                Query connectionQuery = queryManager.createQuery(q.toString(), Query.JCR_SQL2);
+                QueryResult connectionResult = connectionQuery.execute();
+                NodeIterator connectionIterator = connectionResult.getNodes();
+                while (connectionIterator.hasNext()) {
+                    Node connectionNode = connectionIterator.nextNode();
+                    session.checkout(connectionNode.getParent());
+                    connectionNode.remove();
+                }
+
+                // now let's remove the reverse connection.
+                q.delete(0, q.length());
+                q.append("select * from [" + JNT_SOCIAL_CONNECTION + "] where [j:connectedFrom]='").append(toUuid)
+                        .append("' and [j:connectedTo]='").append(fromUuid).append("'");
+                if (StringUtils.isNotEmpty(connectionType)) {
+                    q.append(" and [j:type]='").append(connectionType).append("'");
+                }
+                Query reverseConnectionQuery = queryManager.createQuery(q.toString(), Query.JCR_SQL2);
+                QueryResult reverseConnectionResult = reverseConnectionQuery.execute();
+                NodeIterator reverseConnectionIterator = reverseConnectionResult.getNodes();
+                while (reverseConnectionIterator.hasNext()) {
+                    Node connectionNode = reverseConnectionIterator.nextNode();
+                    session.checkout(connectionNode.getParent());
+                    connectionNode.remove();
+                }
+
+                session.save();
+                return true;
+            }
+        });
+    }
+
+    /**
+     * Creates the social connection between two users. 
+     * @param fromUserKey the source user key
+     * @param toUserKey the target user key
+     * @param connectionType the connection type
+     * @throws RepositoryException in case of an error
+     */
+    public void createSocialConnection(String fromUserKey, String toUserKey, final String connectionType)
+            throws RepositoryException {
+        
+        JCRUser from = getJCRUserFromUserKey(fromUserKey);
+        if (from == null) {
+            throw new IllegalArgumentException("Cannot find user with key " + fromUserKey);
         }
 
-        // now let's remove the reverse connection.
-        Query reverseConnectionQuery = queryManager.createQuery("select * from ["+JNT_SOCIAL_CONNECTION+"] where [j:connectedFrom]='"+toId+"' and [j:connectedTo]='"+fromId+"' and [j:type]='"+connectionType+"'" , Query.JCR_SQL2);
-        QueryResult reverseConnectionResult = reverseConnectionQuery.execute();
-        NodeIterator reverseConnectionIterator = reverseConnectionResult.getNodes();
-        while (reverseConnectionIterator.hasNext()) {
-            Node connectionNode = reverseConnectionIterator.nextNode();
-            jcrSessionWrapper.checkout(connectionNode.getParent());
-            connectionNode.remove();
+        JCRUser to = getJCRUserFromUserKey(toUserKey);
+        if (to == null) {
+            throw new IllegalArgumentException("Cannot find user with key " + toUserKey);
+        }
+        
+        final String leftUserIdentifier = from.getIdentifier();
+        final String rightUserIdentifier = to.getIdentifier();
+
+        execute(new JCRCallback<Boolean>() {
+            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+
+                JCRNodeWrapper leftUser = session.getNodeByUUID(leftUserIdentifier);
+                JCRNodeWrapper rightUser = session.getNodeByUUID(rightUserIdentifier);
+                // now let's connect this user's node to the target node.
+
+                JCRNodeWrapper leftConnectionsNode = null;
+                try {
+                    leftConnectionsNode = leftUser.getNode("connections");
+                    session.checkout(leftConnectionsNode);
+                } catch (PathNotFoundException pnfe) {
+                    session.checkout(leftUser);
+                    leftConnectionsNode = leftUser.addNode("connections", "jnt:contentList");
+                }
+                JCRNodeWrapper leftUserConnection = leftConnectionsNode.addNode(leftUser.getName() + "-" + rightUser.getName(), SocialService.JNT_SOCIAL_CONNECTION);
+                leftUserConnection.setProperty("j:connectedFrom", leftUser);
+                leftUserConnection.setProperty("j:connectedTo", rightUser);
+                if (connectionType != null) {
+                    leftUserConnection.setProperty("j:type", connectionType);
+                }
+
+                // now let's do the connection in the other direction.
+                JCRNodeWrapper rightConnectionsNode = null;
+                try {
+                    rightConnectionsNode = rightUser.getNode("connections");
+                    session.checkout(rightConnectionsNode);
+                } catch (PathNotFoundException pnfe) {
+                    session.checkout(rightUser);
+                    rightConnectionsNode = rightUser.addNode("connections", "jnt:contentList");
+                }
+                JCRNodeWrapper rightUserConnection = rightConnectionsNode.addNode(rightUser.getName() + "-" + leftUser.getName(), SocialService.JNT_SOCIAL_CONNECTION);
+                rightUserConnection.setProperty("j:connectedFrom", rightUser);
+                rightUserConnection.setProperty("j:connectedTo", leftUser);
+                if (connectionType != null) {
+                    rightUserConnection.setProperty("j:type", connectionType);
+                }
+
+                session.save();
+                return true;
+            }
+        });
+    }
+
+    /**
+     * Starts the workflow process for accepting the social connection between two users. 
+     * @param fromUserKey the source user key
+     * @param toUserKey the target user key
+     * @param connectionType the connection type
+     * @throws RepositoryException in case of an error
+     */
+    public void requestSocialConnection(String fromUserKey, String toUserKey, String connectionType)
+            throws RepositoryException {
+        
+        final JCRUser from = getJCRUserFromUserKey(fromUserKey);
+        if (from == null) {
+            throw new IllegalArgumentException("Cannot find user with key " + fromUserKey);
         }
 
-        jcrSessionWrapper.save();
+        final Map<String, Object> args = new HashMap<String, Object>();
+        args.put("from", fromUserKey);
+        args.put("to", toUserKey);
+        args.put("connectionType", connectionType);
+
+        execute(new JCRCallback<Boolean>() {
+            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                workflowService.startProcess(Arrays.asList(from.getIdentifier()), session, "user-connection", "jBPM", args);
+                return true;
+            }
+        });
     }
 
     private JCRUser getJCRUserFromUserKey(String userKey) {
         JCRUser jcrUser = null;
 
-        JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(userKey);
+        JahiaUser jahiaUser = userManagerService.lookupUserByKey(userKey);
         if (jahiaUser == null) {
             logger.error ("Couldn't lookup user with userKey " + userKey);
             return null;
         }
         if (jahiaUser instanceof JahiaLDAPUser) {
-            JCRUserManagerProvider userManager = (JCRUserManagerProvider) SpringContextSingleton.getBean("JCRUserManagerProvider");
-            jcrUser = (JCRUser) userManager.lookupExternalUser(jahiaUser.getName());
+            jcrUser = jcrUserManager.lookupExternalUser(jahiaUser.getName());
         } else if (jahiaUser instanceof JCRUser) {
             jcrUser = (JCRUser) jahiaUser;
         } else {
@@ -300,4 +446,36 @@ public class SocialService {
         this.autoSplitSettings = autoSplitSettings;
     }
 
+    /**
+     * @param userManagerService the userManagerService to set
+     */
+    public void setUserManagerService(JahiaUserManagerService userManagerService) {
+        this.userManagerService = userManagerService;
+    }
+
+    /**
+     * @param jcrUserManager the jcrUserManager to set
+     */
+    public void setJcrUserManager(JCRUserManagerProvider jcrUserManager) {
+        this.jcrUserManager = jcrUserManager;
+    }
+
+    /**
+     * @param groupManagerService the groupManagerService to set
+     */
+    public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {
+        this.groupManagerService = groupManagerService;
+    }
+
+    /**
+     * @param workflowService the workflowService to set
+     */
+    public void setWorkflowService(WorkflowService workflowService) {
+        this.workflowService = workflowService;
+    }
+
+
+    private boolean execute(JCRCallback<Boolean> jcrCallback) throws RepositoryException {
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(jcrCallback);
+    }
 }

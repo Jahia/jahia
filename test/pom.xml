@@ -37,6 +37,12 @@
             <type>jar</type>
         </dependency>
         <dependency>
+            <groupId>org.jahia.modules</groupId>
+            <artifactId>social-service</artifactId>
+            <version>${jahia.package.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
             <groupId>javax.portlet</groupId>
             <artifactId>portlet-api</artifactId>
             <version>2.0</version>

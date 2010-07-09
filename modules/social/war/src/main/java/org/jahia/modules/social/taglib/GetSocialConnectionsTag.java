@@ -3,8 +3,6 @@ package org.jahia.modules.social.taglib;
 import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.modules.social.SocialService;
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.taglibs.jcr.AbstractJCRTag;
 
 import javax.jcr.RepositoryException;
@@ -84,9 +82,6 @@ public class GetSocialConnectionsTag extends AbstractJCRTag {
     }
 
     private Set<String> getConnections() throws RepositoryException {
-        JCRSessionWrapper session = getJCRSession();
-        JCRNodeWrapper userNode = session.getNode(path);
-        Set<String> userConnections = getSocialService().getUserConnections(session, userNode, includeSelf);
-        return userConnections;
+        return getSocialService().getUserConnections(path, includeSelf);
     }
 }

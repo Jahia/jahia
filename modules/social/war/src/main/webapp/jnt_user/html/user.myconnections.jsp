@@ -152,9 +152,11 @@
 
         $("a.removeFriendAction").click(function(e){
             e.preventDefault();
-            var fromUserId = $(this).attr('fromUserId');
-            var toUserId = $(this).attr('toUserId');
-            var connectionType = $(this).attr('connectionType');
+            var rel = $(this).attr('rel');
+            var fromUserId = rel.substring(0, rel.indexOf(':'));
+            rel = rel.substring(rel.indexOf(':') + 1);
+            var toUserId = rel.substring(0, rel.indexOf(':'));
+            var connectionType = rel.substring(rel.indexOf(':') + 1);
             if (confirm("<fmt:message key='message.removeFriend.confirm'/>")) {
                 removeSocialConnection('${url.base}${currentNode.path}', fromUserId, toUserId, connectionType,
                     function() {
@@ -262,9 +264,7 @@
                                                                          alt="friend" border="0"/></a>
                 </div>
                 <a class="social-list-remove removeFriendAction" title="<fmt:message key="removeFriend"/>" href="#"
-                   fromUserId="${socialConnection.properties['j:connectedFrom'].node.identifier}"
-                   toUserId="${socialConnection.properties['j:connectedTo'].node.identifier}"
-                   connectionType="${socialConnection.properties['j:type'].string}"><span><fmt:message
+                   rel="${socialConnection.properties['j:connectedFrom'].node.identifier}:${socialConnection.properties['j:connectedTo'].node.identifier}:${socialConnection.properties['j:type'].string}"><span><fmt:message
                         key="removeFriend"/></span></a>
                 <a class="social-list-sendmessage showSendMessage" title="<fmt:message key="sendMessage"/>" rel="${connectedToUser.name}"
                    href="#divSendMessage"><span><fmt:message key="sendMessage"/></span></a>

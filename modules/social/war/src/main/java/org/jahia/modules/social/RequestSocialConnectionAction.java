@@ -29,46 +29,42 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.services.workflow.jbpm;
+package org.jahia.modules.social;
 
+import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
-import org.jahia.modules.social.SocialService;
-import org.jahia.services.SpringContextSingleton;
-import org.jbpm.api.activity.ActivityExecution;
-import org.jbpm.api.activity.ExternalActivityBehaviour;
+import javax.servlet.http.HttpServletRequest;
+
+import org.jahia.bin.ActionResult;
+import org.jahia.bin.BaseAction;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.Resource;
+import org.jahia.services.render.URLResolver;
 
 /**
- * Action handler for creating a social connection between two users.
+ * Action to request the social connection between users.
  * 
- * @author Serge Huber
+ * @author Sergiy Shyrkov
  */
-public class ConnectUsers implements ExternalActivityBehaviour {
+public class RequestSocialConnectionAction extends BaseAction {
 
-    private static final long serialVersionUID = 483037196668735262L;
+    private SocialService socialService;
 
-    public void execute(ActivityExecution execution) throws Exception {
-        String from = (String) execution.getVariable("from");
-        if (StringUtils.isEmpty(from)) {
-            throw new IllegalArgumentException("Expected non-empty parameter value for 'from'. Got: " + from);
-        }
-        String to = (String) execution.getVariable("to");
-        if (StringUtils.isEmpty(to)) {
-            throw new IllegalArgumentException("Expected non-empty parameter value for 'to'. Got: " + to);
-        }
+    public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
+            Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
 
-        String connectionType = (String) execution.getVariable("connectionType");
+        final String toUser = req.getParameter("to");
+        final String connectionType = req.getParameter("connectionType");
 
-        SocialService socialService = (SocialService) SpringContextSingleton.getModuleBean("socialService");
-        if (socialService != null) {
-            socialService.createSocialConnection(from, to, connectionType);
-        }
-        execution.takeDefaultTransition();
+        socialService.requestSocialConnection(renderContext.getUser().getUserKey(), toUser, connectionType);
+
+        return ActionResult.OK_JSON;
     }
 
-    public void signal(ActivityExecution execution, String signalName, Map<String, ?> parameters) throws Exception {
-        // do nothing
+    public void setSocialService(SocialService socialService) {
+        this.socialService = socialService;
     }
-
 }

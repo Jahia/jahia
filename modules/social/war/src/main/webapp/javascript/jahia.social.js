@@ -51,7 +51,7 @@ function searchUsers(findPrincipalURL, userURL, term) {
                         $("<tr/>").append($("<td/>").append($("<img/>").attr("src", item.properties['j:picture'])))
                                 .append($("<td/>").attr("title", item.properties['j:nodename']).text(getUserDisplayName(item.properties)))
                                 .append($("<td/>").attr("align", "center").append($("<a/>").attr("href", "").attr("class", "social-add").click(function () {
-                            requestConnection(userURL + '.startWorkflow.do', item['userKey']);
+                            requestConnection(userURL + '.requestsocialconnection.do', item['userKey']);
                             return false;
                         }).append($("<span/>").text("<fmt:message key='addAsFriend'/>"))))
                         );
@@ -74,7 +74,10 @@ function requestConnection(userURL, toUserKey) {
     $.ajax({
         url : userURL,
         type : 'post',
-        data : 'process=jBPM:user-connection&userkey=' + toUserKey,
+        data : {
+    		'connectionType': 'colleague',
+    		'to': toUserKey
+    	}, 
         success : function (data) {
             alert("Request completed successfully!");
         }

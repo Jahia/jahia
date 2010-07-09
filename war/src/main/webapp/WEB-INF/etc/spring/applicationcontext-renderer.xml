@@ -80,30 +80,14 @@
                                 </map>
                             </property>
                         </bean>
-                        <bean class="org.jahia.services.render.filter.TemplateNodeFilter" >
-                            <property name="priority" value="5" />
-                            <property name="applyOnConfigurations" value="wrappedcontent,page,gwt"/>
-                            <property name="applyOnTemplateTypes" value="html,edit"/>
-                            <property name="skipOnAJaxRequest" value="true"/>
-                        </bean>
-                        <bean class="org.jahia.services.render.filter.BaseAttributesFilter" >
-                            <property name="priority" value="8" />
-                        </bean>
-                        <bean class="org.jahia.services.render.filter.TemplatePermissionCheckFilter" >
-                            <property name="priority" value="10" />
-                            <property name="skipOnConfiguration" value="include,wrapper"/>
-                        </bean>
                         <bean class="org.jahia.services.render.filter.MetricsLoggingFilter" >
-                            <property name="priority" value="15" />
+                            <property name="priority" value="27" />
                             <property name="loggingService" ref="loggingService"/>
                             <property name="skipOnConfiguration" value="include,wrapper"/>
                         </bean>
-                        <bean class="org.jahia.services.render.filter.TemplateAttributesFilter" >
-                            <property name="priority" value="30" />
-                        </bean>
                         <bean class="org.jahia.services.render.filter.URLFilter" >
                         	<constructor-arg ref="org.jahia.services.render.filter.URLTraverser"/>
-                            <property name="priority" value="35" />
+                            <property name="priority" value="22" />
                             <property name="applyOnConfigurations" value="page,gwt"/>
                             <!--<property name="applyOnMainResource" value="true"/>                            -->
                             <property name="handlers">
@@ -114,6 +98,22 @@
                             		</bean>
                             	</list>
                             </property>
+                        </bean>
+                        <bean class="org.jahia.services.render.filter.TemplateNodeFilter" >
+                            <property name="priority" value="24" />
+                            <property name="applyOnConfigurations" value="wrappedcontent,page,gwt"/>
+                            <property name="applyOnTemplateTypes" value="html,edit"/>
+                            <property name="skipOnAJaxRequest" value="true"/>                            
+                        </bean>
+                        <bean class="org.jahia.services.render.filter.BaseAttributesFilter" >
+                            <property name="priority" value="26" />
+                        </bean>
+                        <bean class="org.jahia.services.render.filter.TemplatePermissionCheckFilter" >
+                            <property name="priority" value="28" />
+                            <property name="skipOnConfiguration" value="include,wrapper"/>
+                        </bean>
+                        <bean class="org.jahia.services.render.filter.TemplateAttributesFilter" >
+                            <property name="priority" value="30" />
                         </bean>
                         <bean class="org.jahia.services.render.filter.WrapperFilter" >
                             <property name="priority" value="40" />

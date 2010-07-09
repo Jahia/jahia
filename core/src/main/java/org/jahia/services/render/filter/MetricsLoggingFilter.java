@@ -39,14 +39,12 @@ public class MetricsLoggingFilter extends AbstractFilter {
 
         String profilerName = "render module " + node.getPath();
 
-        Script script = (Script) context.getRequest().getAttribute("script");
-
         String sessionID ="";
         HttpSession session = context.getRequest().getSession(false);
         if (session != null) {
             sessionID = session.getId();
         }
-        loggingService.logContentEvent(context.getUser().getName(),context.getRequest().getRemoteAddr(),sessionID, node.getPath(),node.getNodeTypes().get(0),"moduleViewed", script.getTemplate().getDisplayName());
+        loggingService.logContentEvent(context.getUser().getName(),context.getRequest().getRemoteAddr(),sessionID, node.getPath(),node.getNodeTypes().get(0),"moduleViewed", resource.getTemplate());
 
         loggingService.stopNestedProfiler("MAIN", profilerName);
 

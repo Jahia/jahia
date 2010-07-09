@@ -59,6 +59,7 @@
             });
         });
     </script>
+    <div class="Form">
     <form method="post" action="<c:url value='${currentNode.path}.newUser.do' context='${url.base}'/>" name="newUser" id="newUser">
         <input type="hidden" name="userredirectpage" value="${currentNode.properties['userRedirectPage'].node.path}"/>
         <c:if test="${not empty currentNode.properties['from']}">
@@ -79,34 +80,38 @@
         <fieldset>
             <legend><fmt:message key="userregistration.label.form.name"/></legend>
 
-            <p><label for="desired_login"><fmt:message key="userregistration.label.form.login"/></label>
+            <p><label class="left" for="desired_login"><fmt:message key="userregistration.label.form.login"/></label>
                 <input type="text" name="username" id="desired_login" value="" tabindex="20"/></p>
 
 
-            <p><label for="desired_password"><fmt:message
+            <p><label class="left" for="desired_password"><fmt:message
                     key="userregistration.label.form.password"/></label><input type="password" name="password"
                                                                                id="desired_password"/></p>
 
-            <p><label for="confirm_password"><fmt:message
+            <p><label class="left" for="confirm_password"><fmt:message
                     key="userregistration.label.form.confirmPassword"/></label><input type="password" name="confirm_password"
                                                                                id="confirm_password"/></p>
 
-            <p><label for="desired_email"><fmt:message
+            <p><label class="left" for="desired_email"><fmt:message
                     key="userregistration.label.form.email"/></label><input type="text" name="desired_email"
                                                                             id="desired_email"/></p>
 
-            <p><label for="desired_firstname"><fmt:message
+            <p><label class="left" for="desired_firstname"><fmt:message
                     key="userregistration.label.form.firstname"/></label><input type="text" name="desired_firstname"
                                                                                 id="desired_firstname"/></p>
 
-            <p><label for="desired_lastname"><fmt:message
+            <p><label class="left" for="desired_lastname"><fmt:message
                     key="userregistration.label.form.lastname"/></label><input type="text" name="desired_lastname"
                                                                                id="desired_lastname"/></p>
 
-            <div>
+            <div class="divButton">
                 <input type="submit" class="button"
                        value="<fmt:message key='userregistration.label.form.create'/>"/>
             </div>
         </fieldset>
     </form>
+    </div>
+</c:if>
+<c:if test="${renderContext.editMode}">
+     <c:if test="${currentResource.username}"
 </c:if>

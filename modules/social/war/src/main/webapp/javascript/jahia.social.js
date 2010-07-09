@@ -6,31 +6,35 @@
  */
 function getText(node) {
 	var props = node.properties;
-	if (props['jcr:primaryType'] == 'jnt:user') {
+	if (props) {
 		var result = "";
-		if (props['j:firstName'] && props['j:firstName'].length > 0) {
-			result += props['j:firstName'];
-		}
-		if (props['j:lastName'] && props['j:lastName'].length > 0) {
-			if (result.length > 0) {
-				result += " ";
+		if (props['jcr:primaryType'] == 'jnt:user') {
+			if (props['j:firstName'] && props['j:firstName'].length > 0) {
+				result += props['j:firstName'];
 			}
-			result += props['j:lastName'];
+			if (props['j:lastName'] && props['j:lastName'].length > 0) {
+				if (result.length > 0) {
+					result += " ";
+				}
+				result += props['j:lastName'];
+			}
+			return result.length > 0 ? result + " (" + props['j:nodename'] + ")" : props['j:nodename']; 
 		}
-		return result.length > 0 ? result + " (" + props['j:nodename'] + ")" : props['j:nodename']; 
+		
+	    if (node.matchingProperties && node.matchingProperties.length > 0) {
+	        var firstMatchingProperty = node.matchingProperties[0];
+	        return props[firstMatchingProperty];
+	    }
+	    if (props["jcr:title"] != null) {
+	        return props["jcr:title"];
+	    } else if (props["text"] != null) {
+	        return props["text"];
+	    } else if (props["j:nodename"] != null) {
+	        return props["j:nodename"];
+	    }
+	} else {
+		return node['username'];
 	}
-	
-    if (node.matchingProperties && node.matchingProperties.length > 0) {
-        var firstMatchingProperty = node.matchingProperties[0];
-        return props[firstMatchingProperty];
-    }
-    if (props["jcr:title"] != null) {
-        return props["jcr:title"];
-    } else if (props["text"] != null) {
-        return props["text"];
-    } else if (props["j:nodename"] != null) {
-        return props["j:nodename"];
-    }
 }
 
 function format(result) {
@@ -39,17 +43,27 @@ function format(result) {
 
 
 function searchUsers(findPrincipalURL, userURL, term) {
-    $.ajax({
+	$.ajax({
         url: findPrincipalURL,
         type: 'post',
         dataType : 'json',
-        data : "principalType=users&wildcardTerm=" + term + "*",
+        data : {
+			q: term,
+	        principalType: "users",
+	        propertyMatchRegexp: "{$q}.*",
+	        includeCriteriaNames: "username,j:nodename,j:firstName,j:lastName",
+	        username: "{$q}*",
+	        "j:nodename": "{$q}*",
+	        "j:firstName": "{$q}*",
+	        "j:lastName": "{$q}*",
+	        removeDuplicatePropValues: "true"                
+		},
         success: function(data) {
             $("#searchUsersResult").html("");
             $.each(data, function(i, item) {
                 $("#searchUsersResult").append(
                         $("<tr/>").append($("<td/>").append($("<img/>").attr("src", item.properties['j:picture'])))
-                                .append($("<td/>").attr("title", item.properties['j:nodename']).text(getUserDisplayName(item.properties)))
+                                .append($("<td/>").attr("title", item['username']).text(getUserDisplayName(item)))
                                 .append($("<td/>").attr("align", "center").append($("<a/>").attr("href", "").attr("class", "social-add").click(function () {
                             requestConnection(userURL + '.requestsocialconnection.do', item['userKey']);
                             return false;
@@ -61,13 +75,18 @@ function searchUsers(findPrincipalURL, userURL, term) {
     });
 }
 
-function getUserDisplayName(props) {
-	var value =  props['j:firstName'] || '';
-	if (value.length != 0) {
-		value += ' ';
+function getUserDisplayName(node) {
+	var props = node.properties;
+	if (props) {
+		var value =  props['j:firstName'] || '';
+		if (value.length != 0) {
+			value += ' ';
+		}
+		value += props['j:lastName'] || '';
+		return value.length > 0 ? value : props['j:nodename'];
+	} else {
+		return node['username'];
 	}
-	value += props['j:lastName'] || '';
-	return value.length > 0 ? value : props['j:nodename'];	
 }
 
 function requestConnection(userURL, toUserKey) {
@@ -103,7 +122,7 @@ function submitStatusUpdate(userURL, userId, updateText) {
 
 function loadActivities(userURL) {
     $.ajax({
-        url: userURL + '.activities.html',
+        url: userURL + '.activities.html.ajax',
         type: 'get',
         dataType : "html",
         success : function (data) {

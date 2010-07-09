@@ -129,7 +129,8 @@
             extraParams: {
                 principalType : "users",
                 propertyMatchRegexp : "{$q}.*",
-                includeCriteriaNames : "j:nodename,j:firstName,j:lastName",
+                includeCriteriaNames : "username,j:nodename,j:firstName,j:lastName",
+                "username": "{$q}*",
                 "j:nodename": "{$q}*",
                 "j:firstName": "{$q}*",
                 "j:lastName": "{$q}*",

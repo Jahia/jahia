@@ -22,7 +22,7 @@
     <a href="${url.base}${fromUser.path}.html"><c:out value="${jcr:userFullName(fromUser)}"/></a>
 </h5><jcr:nodeProperty node="${currentNode}" name="jcr:lastModified" var="lastModified"/><span class="timestamp"><fmt:formatDate
 value="${lastModified.time}" pattern="yyyy/MM/dd HH:mm"/></span>
-<h5><a class="messageDetailLink" href="#socialMessageDetail" rel="${url.base}${currentNode.path}.detail.html">${fn:escapeXml(currentNode.propertiesAsString['j:subject'])}</a></h5>
+<h5><a class="messageDetailLink" href="#socialMessageDetail" rel="${url.base}${currentNode.path}.detail.html.ajax">${fn:escapeXml(currentNode.propertiesAsString['j:subject'])}</a></h5>
 <p>${fn:escapeXml(fn:substring(currentNode.propertiesAsString['j:body'], 0, 100))}...</p>
 
 <div class='clear'></div>

@@ -112,9 +112,9 @@
                                            src="${url.currentModule}/images/flag_16.png"/>
     </td>
     <td headers="Title"><a
-            href="${url.base}${task.path}.html">${task.properties['jcr:title'].string}</a></td>
+            href="${url.base}${task.path}.html">${fn:escapeXml(task.propertiesAsString['jcr:title'])}</a></td>
     <td class="center" headers="Priority">
-            ${currentNode.properties.priority.string}
+            ${task.propertiesAsString.priority}
     </td>
     <td class="center" headers="State">
         <c:choose>
@@ -146,7 +146,7 @@
             </c:when>
         </c:choose>
     </td>
-    <td headers="Date"><fmt:formatDate value="${currentNode.properties['dueDate'].date.time}"
+    <td headers="Date"><fmt:formatDate value="${task.properties['dueDate'].date.time}"
                                        dateStyle="short" type="date"/></td>
     </tr>
 </c:forEach>

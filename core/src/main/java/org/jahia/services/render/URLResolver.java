@@ -77,6 +77,8 @@ public class URLResolver {
     private static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
 
     private static final String DEFAULT_WORKSPACE = LIVE_WORKSPACE;
+    
+    private static final String VANITY_URL_NODE_PATH_SEGMENT = "/" + VanityUrlManager.VANITYURLMAPPINGS_NODE + "/";    
 
     private static Logger logger = Logger.getLogger(URLResolver.class);
     
@@ -224,8 +226,8 @@ public class URLResolver {
                             : LanguageCodeConverters
                                     .languageCodeToLocale(resolvedVanityUrl
                                             .getLanguage());
-                    path = StringUtils.substringBeforeLast(resolvedVanityUrl
-                            .getPath(), "/")
+                    path = StringUtils.substringBefore(resolvedVanityUrl
+                            .getPath(), VANITY_URL_NODE_PATH_SEGMENT)
                             + ".html";
                     setVanityUrl(resolvedVanityUrl.getUrl());
                     if (SettingsBean.getInstance()

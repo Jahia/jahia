@@ -33,6 +33,7 @@
 package org.jahia.services.usermanager.jcr;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
@@ -42,7 +43,6 @@ import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.*;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerProvider;
-import org.jahia.utils.Base64;
 
 import javax.jcr.*;
 import javax.jcr.query.Query;
@@ -52,8 +52,6 @@ import javax.jcr.query.RowIterator;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 /**
@@ -67,14 +65,13 @@ import java.util.*;
 public class JCRUserManagerProvider extends JahiaUserManagerProvider {
     private transient static Logger logger = Logger.getLogger(JCRUserManagerProvider.class);
     private transient JCRTemplate jcrTemplate;
-    private transient JCRPublicationService publicationService;
     private static JCRUserManagerProvider mUserManagerService;
     private transient CacheService cacheService;
     private transient Cache<String, JCRUser> cache;
     private static transient Map<String, String> mappingOfProperties;
 
     static {
-        mappingOfProperties = new HashMap<String, String>();
+        mappingOfProperties = new HashMap<String, String>(3);
         mappingOfProperties.put("lastname", "j:lastName");
         mappingOfProperties.put("firstname", "j:firstName");
         mappingOfProperties.put("organization", "j:organization");
@@ -97,10 +94,6 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
         this.jcrTemplate = jcrTemplate;
     }
 
-    public void setPublicationService(JCRPublicationService publicationService) {
-        this.publicationService = publicationService;
-    }
-
     public void setCacheService(CacheService cacheService) {
         this.cacheService = cacheService;
     }
@@ -117,7 +110,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
                 public JCRUser doInJCR(JCRSessionWrapper jcrSessionWrapper) throws RepositoryException {
                     JCRNodeWrapper parentNodeWrapper = jcrSessionWrapper.getNode( "/users");
 
-                    parentNodeWrapper.checkout();
+                    jcrSessionWrapper.checkout(parentNodeWrapper);
                     Node userNode = parentNodeWrapper.addNode(name, Constants.JAHIANT_USER);
                     if (parentNodeWrapper.hasProperty("j:usersFolderSkeleton")) {
                         InputStream is = null;
@@ -292,41 +285,14 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
      * Load all the user data and attributes. On success a reference on the user
      * is returned, otherwise NULL is returned.
      *
-     * @return Return a reference on a new created jahiaUser object.
+     * @return a reference on a new created jahiaUser object.
      */
     public JCRUser lookupUserByKey(String userKey) {
-        try {
-            if (!userKey.startsWith("{")) {
-                logger.warn("Expected userKey with provider prefix {jcr}, defaulting to looking up by name instead... ");
-                return lookupUser(userKey);
-            }
-            final String name = userKey.split("}")[1];
-            if (cache == null) {
-                start();
-            }
-            if (cache.containsKey(name)) {
-                JCRUser user = cache.get(name);
-                return user != null && user.isExternal() ? null : user;
-            }
-            return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JCRUser>() {
-                public JCRUser doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    Node usersFolderNode = session.getNode( "/users/" + name);
-                    if (!usersFolderNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
-                        JCRUser user = new JCRUser(usersFolderNode.getIdentifier(), jcrTemplate);
-                        cache.put(name, user);
-                        return user;
-                    }
-                    return null;
-                }
-            });
-        } catch (PathNotFoundException pnfe) {
-            // This is expected in the case the user doesn't exist in the repository. We will simply return null.
-        } catch (JahiaInitializationException e) {
-            logger.error("Error while looking up user by key " + userKey, e);
-        } catch (RepositoryException e) {
-            logger.error("Error while looking up user by key " + userKey, e);
+        if (!userKey.startsWith("{")) {
+            logger.warn("Expected userKey with provider prefix {jcr}, defaulting to looking up by name instead... ");
+            return lookupUser(userKey);
         }
-        return null;
+        return lookupUser(StringUtils.substringAfter(userKey, "}"));
     }
 
     /**
@@ -337,18 +303,15 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
      */
     public JCRUser lookupUser(final String name) {
         try {
-            if (cache == null) {
-                start();
-            }
             if (cache.containsKey(name)) {
                 JCRUser user = cache.get(name);
                 return user != null && user.isExternal() ? null : user;
             }
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JCRUser>() {
                 public JCRUser doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    Node usersFolderNode = session.getNode("/users/" + name.trim());
-                    if (!usersFolderNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
-                        JCRUser user = new JCRUser(usersFolderNode.getIdentifier(), jcrTemplate);
+                    Node userNode = session.getNode("/users/" + name.trim());
+                    if (!userNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
+                        JCRUser user = new JCRUser(userNode.getIdentifier(), jcrTemplate);
                         cache.put(name, user);
                         return user;
                     }
@@ -357,8 +320,6 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
             });
         } catch (PathNotFoundException pnfe) {
             // This is expected in the case the user doesn't exist in the repository. We will simply return null.
-        } catch (JahiaInitializationException e) {
-            logger.error("Error while looking up user by name " + name, e);
         } catch (RepositoryException e) {
             logger.error("Error while looking up user by name " + name, e);
         }
@@ -367,17 +328,14 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
 
     public JCRUser lookupExternalUser(final String name) {
         try {
-            if (cache == null) {
-                start();
-            }
             if (cache.containsKey(name)) {
                 return cache.get(name);
             }
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JCRUser>() {
                 public JCRUser doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    Node usersFolderNode = session.getNode( "/users/" + name.trim());
-                    if (usersFolderNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
-                        JCRUser user = new JCRUser(usersFolderNode.getIdentifier(), jcrTemplate, true);
+                    Node userNode = session.getNode( "/users/" + name.trim());
+                    if (userNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
+                        JCRUser user = new JCRUser(userNode.getIdentifier(), jcrTemplate, true);
                         cache.put(name, user);
                         return user;
                     }
@@ -386,19 +344,12 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
             });
         } catch (PathNotFoundException pnfe) {
             // This is expected in the case the user doesn't exist in the repository. We will simply return null.
-        } catch (JahiaInitializationException e) {
-            logger.error("Error while looking up external user by name " + name, e);
         } catch (RepositoryException e) {
             logger.error("Error while looking up external user by name " + name, e);
         }
         return null;
     }
 
-
-    public JCRUser lookupUserByKey(String name, String searchAttributeName) {
-        // TODO this should be removed, implemented or throw an unsupported exception
-        return null;
-    }
 
     /**
      * Find users according to a table of name=value properties. If the left
@@ -534,31 +485,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
     }
 
     public void stop() throws JahiaException {
+        // do nothing
     }
 
-    public static String encryptPassword(String password) {
-        if (password == null) {
-            return null;
-        }
-
-        if (password.length() == 0) {
-            return null;
-        }
-
-        String result = null;
-
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-1");
-            if (md != null) {
-                md.reset();
-                md.update(password.getBytes());
-                result = new String(Base64.encode(md.digest()));
-            }
-            md = null;
-        } catch (NoSuchAlgorithmException ex) {
-            result = null;
-        }
-
-        return result;
-    }
 }

@@ -402,7 +402,7 @@ public class JCRUser extends JahiaBasePrincipal implements JahiaUser, JCRPrincip
      *         encapsulated password in this user, and return false on any error.
      */
     public boolean verifyPassword(String password) {
-        return getProperty(J_PASSWORD).equals(JCRUserManagerProvider.encryptPassword(password));
+        return getProperty(J_PASSWORD).equals(JahiaUserManagerProvider.encryptPassword(password));
     }
 
     /**

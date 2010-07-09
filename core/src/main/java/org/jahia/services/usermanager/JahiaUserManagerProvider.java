@@ -101,7 +101,7 @@ public abstract class JahiaUserManagerProvider extends JahiaService implements I
             }
             md = null;
         } catch (NoSuchAlgorithmException ex) {
-            result = null;
+            throw new UnsupportedOperationException(ex);
         }
 
         return result;
@@ -264,9 +264,6 @@ public abstract class JahiaUserManagerProvider extends JahiaService implements I
      * @return Return a reference on a new created jahiaUser object.
      */
     public abstract JahiaUser lookupUser(String name);
-
-    public abstract JahiaUser lookupUserByKey(String name, String searchAttributeName);
-
 
     /**
      * Find users according to a table of name=value properties. If the left

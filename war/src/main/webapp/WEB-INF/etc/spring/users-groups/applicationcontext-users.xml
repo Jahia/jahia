@@ -14,7 +14,6 @@
     <bean id="JCRUserManagerProvider" class="org.jahia.services.usermanager.jcr.JCRUserManagerProvider" parent="jahiaServiceTemplate" factory-method="getInstance">
         <property name="key" value="jcr"/>
         <property name="jcrTemplate" ref="jcrTemplate"/>
-        <property name="publicationService" ref="jcrPublicationService"/>
         <property name="cacheService" ref="JahiaCacheService"/>
         <property name="defaultProvider" value="true"/>
         <property name="readOnly" value="false"/>

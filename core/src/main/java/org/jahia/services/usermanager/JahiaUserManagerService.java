@@ -95,7 +95,7 @@ public abstract class JahiaUserManagerService extends JahiaService {
             }
             md = null;
         } catch (NoSuchAlgorithmException ex) {
-            result = null;
+            throw new UnsupportedOperationException(ex);
         }
 
         return result;

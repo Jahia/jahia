@@ -259,6 +259,7 @@ public class ProcessingContext {
 
     private boolean forceAppendSiteKey = false;
     private boolean siteResolvedByKeyOrPageId;
+    private boolean siteResolvedByServername;
     private boolean contentPageLoadedWhileTryingToFindSiteByPageID;
     
     static {
@@ -1156,6 +1157,11 @@ public class ProcessingContext {
      */
     protected boolean findSiteFromWhatWeHave() throws JahiaException {
         if (findSiteByItsKey()) {
+            if (getSite().equals(getSiteByHostName())) {
+                setSiteResolvedByServername(true);
+            }
+            return true;
+        } if (findSiteByHostName()) {
             return true;
         } else if (findSiteByRequestParam()) {
             return true;
@@ -1180,6 +1186,47 @@ public class ProcessingContext {
         logger.debug("No site found in URL, serverName or via page ID, trying default site...");
         site = getDefaultSite();
         return site != null;
+    }
+
+    /**
+     * Returns site by the host name.
+     *
+     * @return site by the host name
+     * @throws JahiaException in case of an error
+     */
+    protected JahiaSite getSiteByHostName() throws JahiaException {
+        JahiaSite resolvedSite = null;
+
+        if (getServerName() != null && isValidServerName(getServerName().toLowerCase())) {
+            resolvedSite = REGISTRY.getJahiaSitesService().getSite(
+                    getServerName());
+        }
+
+        return resolvedSite;
+    }
+
+    /**
+     * Find site by the host name. this.site will be set if its found.
+     *
+     * @return true if site was found from host name.
+     * @throws JahiaException
+     */
+    private boolean findSiteByHostName() throws JahiaException {
+        setSite(getSiteByHostName());
+        setSiteResolvedByServername(getSite() != null);
+        return (getSite() != null);
+    }
+
+    /**
+     * @param aServerName
+     * @return true if servername supplied is valid.
+     */
+    private boolean isValidServerName(final String aServerName) {
+        if (aServerName == null)
+            return false;
+        if (aServerName.equals("localhost"))
+            return false;
+        return !aServerName.equals("127.0.0.1");
     }
 
     /**
@@ -2137,6 +2184,10 @@ public class ProcessingContext {
     protected void setSiteResolvedByKeyOrPageId(
             boolean siteResolvedByKeyOrPageIdFlag) {
         this.siteResolvedByKeyOrPageId = siteResolvedByKeyOrPageIdFlag;
+    }
+
+    protected void setSiteResolvedByServername(boolean siteResolvedByServername) {
+        this.siteResolvedByServername = siteResolvedByServername;
     }
 
     /**

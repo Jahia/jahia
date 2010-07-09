@@ -440,7 +440,7 @@ public class ManageSites extends AbstractAdministrationModule {
                 } else if (siteServerName.equals("default")) {
                     warningMsg = 
                             getMessage("org.jahia.admin.warningMsg.chooseAnotherServerName.label");
-                } else if (siteServerName.equals("localhost")) {
+                } else if (!"localhost".equals(siteServerName) && sMgr.getSite(siteServerName) != null) {
                     warningMsg = 
                             getMessage("org.jahia.admin.warningMsg.chooseAnotherServerName.label");
                 } else if (sMgr.getSiteByKey(siteKey) != null) {
@@ -1384,6 +1384,12 @@ public class ManageSites extends AbstractAdministrationModule {
                     warningMsg = 
                             getMessage("org.jahia.admin.warningMsg.invalidServerName.label");
                     processError = true;
+                } else if (!site.getServerName().equals(siteServerName)) {
+                    if (!"localhost".equals(siteServerName) && sMgr.getSite(siteServerName) != null) {
+                        warningMsg = 
+                                getMessage("org.jahia.admin.warningMsg.chooseAnotherServerName.label");
+                        processError = true;
+                    }
                 }
             } else {
                 warningMsg = 
@@ -1864,12 +1870,18 @@ public class ManageSites extends AbstractAdministrationModule {
                     importInfos.put("mixLanguage", "false");
                     importInfos.put("templates", "");
                     importInfos.put("siteKeyExists", Boolean.TRUE);
+                    importInfos.put("siteServerNameExists", Boolean.TRUE);
                 } else {
                     try {
                         importInfos.put("siteKeyExists", Boolean.valueOf(
                                 ServicesRegistry.getInstance().getJahiaSitesService()
                                         .getSiteByKey((String) importInfos.get("sitekey")) != null ||
                                         "".equals(importInfos.get("sitekey"))));
+                        String serverName = (String) importInfos.get("siteservername");
+                        importInfos.put("siteServerNameExists", Boolean.valueOf(
+                                (ServicesRegistry.getInstance().getJahiaSitesService()
+                                        .getSite(serverName) != null  && !"localhost".equals(serverName)) ||
+                                        StringUtils.isEmpty(serverName)));
                     } catch (JahiaException e) {
                         logger.error("Error while preparing site import", e);
                     }
@@ -1914,13 +1926,20 @@ public class ManageSites extends AbstractAdministrationModule {
                         infos.put("siteKeyExists", Boolean.valueOf(ServicesRegistry.getInstance().getJahiaSitesService()
                                 .getSiteByKey((String) infos.get("sitekey")) != null ||
                                 "".equals(infos.get("sitekey"))));
+                        String serverName = (String) infos.get("siteservername");                        
+                        infos.put("siteServerNameExists", Boolean.valueOf(
+                                (ServicesRegistry.getInstance().getJahiaSitesService()
+                                        .getSite(serverName) != null  && !"localhost".equals(serverName)) ||
+                                        StringUtils.isEmpty(serverName)));
 
-                        if ("".equals(infos.get("sitekey")) || "".equals(infos.get("sitetitle"))) {
+                        if ("".equals(infos.get("sitekey")) || "".equals(infos.get("siteservername")) ||
+                                "".equals(infos.get("sitetitle"))) {
                             // todo display an error message
                             stillBad = true;
                         }
 
-                        if (Boolean.TRUE.equals(infos.get("siteKeyExists"))) {
+                        if (Boolean.TRUE.equals(infos.get("siteKeyExists")) ||
+                                Boolean.TRUE.equals(infos.get("siteServerNameExists"))) {
                             stillBad = true;
                         }
                     }
@@ -1929,6 +1948,8 @@ public class ManageSites extends AbstractAdministrationModule {
                 }
             } else {
                 infos.put("siteKeyExists", Boolean.FALSE);
+                infos.put("siteServerNameExists", Boolean.FALSE);
+
             }
         }
         if (stillBad) {

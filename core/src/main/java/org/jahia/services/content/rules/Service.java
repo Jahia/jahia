@@ -187,10 +187,12 @@ public class Service extends JahiaService {
 
                         boolean siteKeyEx = sitesService.getSiteByKey((String) infos.get("sitekey")) != null || "".equals(
                                 infos.get("sitekey"));
+                        String serverName = (String) infos.get("siteservername");
+                        boolean serverNameEx = (sitesService.getSite(serverName) != null && !"localhost".equals(serverName)) || StringUtils.isEmpty(serverName);
                         if (!user.getJahiaUser().isAdminMember(0)) {
                             return;
                         }
-                        if (!siteKeyEx) {
+                        if (!siteKeyEx && !serverNameEx) {
                             if (!LicenseActionChecker.isAuthorizedByLicense(
                                     "org.jahia.actions.server.admin.sites.ManageSites", 0)) {
                                 if (sitesService.getNbSites() > 0) {
@@ -385,12 +387,16 @@ public class Service extends JahiaService {
                     importInfos.put("mixLanguage", "false");
                     importInfos.put("templates", "");
                     importInfos.put("siteKeyExists", Boolean.TRUE);
+                    importInfos.put("siteServerNameExists", Boolean.TRUE);
                 } else {
                     try {
                         importInfos.put("siteKeyExists", Boolean.valueOf(
                                 sitesService.getSiteByKey(
                                         (String) importInfos.get("sitekey")) != null || "".equals(importInfos.get(
                                         "sitekey"))));
+                        importInfos.put("siteServerNameExists", Boolean.valueOf(
+                                sitesService.getSite((String) importInfos.get(
+                                        "siteservername")) != null || "".equals(importInfos.get("siteservername"))));
                     } catch (JahiaException e) {
                         logger.error(e.getMessage(), e);
                     }

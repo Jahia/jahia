@@ -43,6 +43,8 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.services.sites.JahiaSite;
 
 import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
 import java.util.Locale;
 import java.io.File;
 import java.io.IOException;
@@ -81,6 +83,20 @@ public abstract class JahiaSitesService extends JahiaService {
      * @return JahiaSite the JahiaSite bean or null
      */
     public abstract JahiaSite getSiteByKey (String siteKey)
+            throws JahiaException;
+
+    /**
+     * Find a site by it's server name value
+     *
+     * @param serverName the server name to look for
+     *
+     * @return if found, returns the site with the corresponding serverName,
+     *         or the first one if there are multiple, or null if there are none.
+     *
+     * @throws JahiaException thrown if there was a problem communicating with
+     *                        the database.
+     */
+    public abstract JahiaSite getSiteByServerName (String serverName)
             throws JahiaException;
 
     /**

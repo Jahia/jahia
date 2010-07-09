@@ -77,7 +77,7 @@ public class VanityUrlSetter implements HtmlTagAttributeVisitor {
                                 + urlResolver.getPath(), vanityUrl.getUrl());
                     }
                 } catch (RepositoryException e) {
-                    logger.warn("Error when trying to obtain vanity url", e);
+                    logger.debug("Error when trying to obtain vanity url", e);
                 }
             }
         }

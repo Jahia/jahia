@@ -295,6 +295,9 @@ public class AggregateCacheFilter extends AbstractFilter {
                     "workspace"), LanguageCodeConverters.languageCodeToLocale(keyAttrbs.get("language")),
                                                                                               renderContext.getFallbackLocale()).getNode(
                     keyAttrbs.get("path"));
+
+            renderContext.getRequest().removeAttribute("areaNodeTypesRestriction" + renderContext.getRequest().getAttribute("org.jahia.modules.level"));
+
             String content = RenderService.getInstance().render(new Resource(node, keyAttrbs.get("templateType"),
                                                                              keyAttrbs.get("template"),
                                                                              Resource.CONFIGURATION_MODULE),

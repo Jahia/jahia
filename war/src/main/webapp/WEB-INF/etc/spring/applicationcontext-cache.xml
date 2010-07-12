@@ -106,7 +106,6 @@ when we flush this entry we will flush the whole cache-->
         <property name="priority" value="20" />
     	<property name="cacheProvider" ref="ModuleCacheProvider"/>
     	<property name="skipOnTemplateTypes" value="json"/>
-        <property name="skipOnNodeTypes" value="jnt:navMenu"/>
         <property name="skipOnConfiguration" value="include,wrapper,option"/>
         <property name="applyOnModes" value="live"/>
     </bean>

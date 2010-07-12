@@ -72,6 +72,7 @@ public class WrappedContentTag extends ModuleTag implements ParamParent {
     }
 
     protected void missingResource(RenderContext renderContext, Resource mainResource, Resource resource) throws RepositoryException, IOException {
+        node = null;
         try {
             if (renderContext.isEditMode()) {
                 JCRSessionWrapper session = resource.getNode().getSession();

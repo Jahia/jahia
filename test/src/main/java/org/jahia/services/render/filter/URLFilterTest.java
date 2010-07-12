@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import javax.jcr.AccessDeniedException;
 import javax.jcr.PathNotFoundException;
 import javax.validation.ConstraintViolationException;
 
@@ -86,17 +87,23 @@ public class URLFilterTest {
         JCRNodeWrapper siteNode = session.getNode(SITECONTENT_ROOT_NODE);
 
         if (!siteNode.isCheckedOut()) {
-            siteNode.checkout();
+            session.getWorkspace().getVersionManager().checkout(siteNode.getPath());
         }
 
         if (siteNode.hasNode("testPage")) {
             siteNode.getNode("testPage").remove();
         }
-        JCRNodeWrapper pageNode = siteNode.addNode("testPage",
-                Constants.JAHIANT_PAGE);
+        JCRNodeWrapper pageNode = siteNode.addNode("testPage", Constants.JAHIANT_PAGE);
+        pageNode.setProperty("jcr:title", "English test page");
         pageNode.addNode("testContent", "jnt:mainContent");
 
         session.save();
+        
+        JCRSessionWrapper frenchSession = JCRSessionFactory.getInstance().getCurrentUserSession(
+                null, Locale.FRENCH);
+        pageNode = frenchSession.getNode(SITECONTENT_ROOT_NODE + "/testPage");
+        pageNode.setProperty("jcr:title", "French test page");
+        frenchSession.save();
     }
 
     @AfterClass
@@ -391,38 +398,13 @@ public class URLFilterTest {
                 .getVanityUrlForWorkspaceAndLocale(pageNode,
                         Constants.EDIT_WORKSPACE, Locale.FRENCH).getUrl()
                 .equals("/testpage/french2"));
-
         URLResolver urlResolver = new URLResolver("/edit/default/testpage");
-        JCRNodeWrapper resolvedNode = urlResolver.getNode();
-        assertTrue("Wrong node or language returned", pageNode
-                .equals(resolvedNode)
-                && "en".equals(resolvedNode.getLanguage()));
-
-        urlResolver = new URLResolver("/edit/default/testpage/french2");
-        resolvedNode = urlResolver.getNode();
-        assertTrue("Wrong node or language returned", pageNode
-                .equals(resolvedNode)
-                && "fr".equals(resolvedNode.getLanguage()));
-
-        urlResolver = new URLResolver("/edit/default/testpage/french");
-        resolvedNode = urlResolver.getNode();
-        assertTrue("Wrong node or language returned", pageNode
-                .equals(resolvedNode)
-                && "fr".equals(resolvedNode.getLanguage()));
-
-        urlResolver = new URLResolver("/edit/default/testpage2");
+        JCRNodeWrapper resolvedNode = null;
         try {
             resolvedNode = urlResolver.getNode();
-            assertNull("Node should not be returned as mapping is not active",
-                    resolvedNode);
+            assertNull("Node should not be returned as edit servlet does not resolve vanity URLs", resolvedNode);
         } catch (PathNotFoundException e) {
         }
-
-        urlResolver = new URLResolver("/edit/default/testpage/page3");
-        resolvedNode = urlResolver.getNode();
-        assertTrue("Wrong node or language returned", pageNode
-                .equals(resolvedNode)
-                && "en".equals(resolvedNode.getLanguage()));
 
         urlResolver = new URLResolver("/render/live/testpage");
         try {
@@ -436,7 +418,7 @@ public class URLFilterTest {
         languages.clear();
         languages.add("en");
         ServicesRegistry.getInstance().getJCRPublicationService().publish(
-                SITECONTENT_ROOT_NODE, Constants.EDIT_WORKSPACE,
+                pageNode.getIdentifier(), Constants.EDIT_WORKSPACE,
                 Constants.LIVE_WORKSPACE, languages, true);
         
         urlResolver = new URLResolver("/render/live/testpage");
@@ -444,7 +426,22 @@ public class URLFilterTest {
         assertTrue("Wrong node or language returned", pageNode
                 .equals(resolvedNode)
                 && "en".equals(resolvedNode.getLanguage()));
+        
+        urlResolver = new URLResolver("/render/live/testpage2");
+        try {
+            resolvedNode = urlResolver.getNode();
+            assertNull("Node should not be returned as mapping is not active",
+                    resolvedNode);
+        } catch (PathNotFoundException e) {
+        }        
 
+        urlResolver = new URLResolver("/render/live/testpage/page3");
+        resolvedNode = urlResolver.getNode();
+        assertTrue("Wrong node or language returned", pageNode
+                .equals(resolvedNode)
+                && "en".equals(resolvedNode.getLanguage()));
+        
+        
         urlResolver = new URLResolver("/render/live/testpage/french2");
         try {
             resolvedNode = urlResolver.getNode();
@@ -452,7 +449,25 @@ public class URLFilterTest {
                     "Node should not be returned as it is not published yet",
                     resolvedNode);
         } catch (PathNotFoundException e) {
+        } catch (AccessDeniedException e) {            
         }
+        languages.clear();
+        languages.add("fr");
+        ServicesRegistry.getInstance().getJCRPublicationService().publish(
+                pageNode.getIdentifier(), Constants.EDIT_WORKSPACE,
+                Constants.LIVE_WORKSPACE, languages, true);
+        
+        urlResolver = new URLResolver("/render/live/testpage/french2");      
+        resolvedNode = urlResolver.getNode();
+        assertTrue("Wrong node or language returned", pageNode
+                .equals(resolvedNode)
+                && "fr".equals(resolvedNode.getLanguage()));        
+        
+        urlResolver = new URLResolver("/render/live/testpage/french");      
+        resolvedNode = urlResolver.getNode();
+        assertTrue("Wrong node or language returned", pageNode
+                .equals(resolvedNode)
+                && "fr".equals(resolvedNode.getLanguage()));        
     }
 
     private VanityUrlService getVanityUrlService() {

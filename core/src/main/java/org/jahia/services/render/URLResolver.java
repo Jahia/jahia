@@ -198,26 +198,23 @@ public class URLResolver {
                         .substringBefore(getPath(), "/"), DEFAULT_WORKSPACE);
                 tempPath = StringUtils.substringAfter(getPath(), "/");
                 if (getSiteKey() == null) {
-                    setSiteKey(StringUtils.substringBetween(getPath(),
-                            "/sites/", "/"));
+                    String siteKeyInPath = StringUtils.substringBetween(getPath(),
+                            "/sites/", "/");
+                    if (!StringUtils.isEmpty(siteKeyInPath)) {
+                        setSiteKey(siteKeyInPath);
+                    }
                 }
                 List<VanityUrl> vanityUrls = getVanityUrlService()
                         .findExistingVanityUrls("/" + tempPath,
                                 StringUtils.EMPTY, tempWorkspace);
                 VanityUrl resolvedVanityUrl = null;
-                if (!vanityUrls.isEmpty() && !StringUtils.isEmpty(getSiteKey())) {
-                    for (VanityUrl vanityUrl : vanityUrls) {
-                        if (vanityUrl.isActive()
-                                && getSiteKey().equals(vanityUrl.getSite())) {
-                            resolvedVanityUrl = vanityUrl;
-                            break;
-                        }
+                for (VanityUrl vanityUrl : vanityUrls) {
+                    if (vanityUrl.isActive()
+                            && (StringUtils.isEmpty(getSiteKey()) || getSiteKey().equals(
+                                    vanityUrl.getSite()))) {
+                        resolvedVanityUrl = vanityUrl;
+                        break;
                     }
-                }
-                if (resolvedVanityUrl == null
-                        && StringUtils.isEmpty(getSiteKey())
-                        && !vanityUrls.isEmpty()) {
-                    resolvedVanityUrl = vanityUrls.get(0);
                 }
                 if (resolvedVanityUrl != null) {
                     workspace = tempWorkspace;

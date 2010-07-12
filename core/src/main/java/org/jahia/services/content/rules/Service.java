@@ -585,7 +585,13 @@ public class Service extends JahiaService {
 
     public void enableAutoSplitting(AddedNodeFact n, String splitConfig, String splitFolderNodeType, KnowledgeHelper drools) throws RepositoryException  {
         JCRAutoSplitUtils.enableAutoSplitting(n.getNode(), splitConfig, splitFolderNodeType);
-        JCRAutoSplitUtils.applyAutoSplitRulesOnSubnodes(n.getNode());
+        Map<JCRNodeWrapper, JCRNodeWrapper> modifiedNodes = JCRAutoSplitUtils.applyAutoSplitRulesOnSubnodes(n.getNode());
+        /*
+        for (Map.Entry<JCRNodeWrapper, JCRNodeWrapper> modifiedNodeEntry : modifiedNodes.entrySet()) {
+            drools.retract(modifiedNodeEntry.getKey());
+            drools.insert(new AddedNodeFact(modifiedNodeEntry.getValue()));
+        }
+        */
     }
 
     public void publishNode(AddedNodeFact node,KnowledgeHelper drools) throws RepositoryException {

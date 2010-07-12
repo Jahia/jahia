@@ -34,10 +34,11 @@ package org.jahia.services.content;
 import static org.jahia.services.content.JCRContentUtils.findAvailableNodeName;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.*;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
@@ -89,8 +90,18 @@ public final class JCRAutoSplitUtils {
             String splitConfig = parent.getProperty(Constants.SPLIT_CONFIG).getString();
             String splitType = parent.getProperty(Constants.SPLIT_NODETYPE).getString();
             if (node.isNodeType(splitType)) {
-                logger.debug("Aborting auto-splitting since it is applied on the split type.");
-                return node;
+                logger.debug("Aborting auto-splitting on node (UUID="+node.getIdentifier()+", path=" + node.getPath() + ") since it is applied on the split type.");
+                return null;
+            }
+            if (logger.isDebugEnabled()) {
+                logger.debug("Auto-splitting node (UUID="+node.getIdentifier()+", path=" + node.getPath() + ") with split config " + splitConfig + " and split node type " + splitType);
+            }
+            // quick sanity check, to make sure the node hasn't been moved already in the same session !
+            try {
+                node.getSession().getNode(node.getPath());
+            } catch (PathNotFoundException pnfe) {
+                logger.warn("Node has already been moved in this session, will not move again !");
+                return null;
             }
             String[] config = splitConfig.split(";");
             for (String s : config) {
@@ -173,14 +184,21 @@ public final class JCRAutoSplitUtils {
      * rules on them.
      * 
      * @param node the node, which children should be moved to split folders
+     * @return a map of nodes that were moved, useful to update any code that was using the sub nodes. The key is the
+     * previous node bean, and the value is the new node bean.
      * @throws RepositoryException in case of an error
      */
-    public static void applyAutoSplitRulesOnSubnodes(JCRNodeWrapper node) throws RepositoryException {
+    public static Map<JCRNodeWrapper, JCRNodeWrapper> applyAutoSplitRulesOnSubnodes(JCRNodeWrapper node) throws RepositoryException {
         NodeIterator ni = node.getNodes();
+        Map<JCRNodeWrapper, JCRNodeWrapper> modifiedNodes = new HashMap<JCRNodeWrapper, JCRNodeWrapper>();
         while (ni.hasNext()) {
-            applyAutoSplitRules((JCRNodeWrapper) ni.nextNode());
+            JCRNodeWrapper existingNode = (JCRNodeWrapper) ni.nextNode();
+            JCRNodeWrapper newNode = applyAutoSplitRules(existingNode);
+            if (newNode != null) {
+                modifiedNodes.put(existingNode, newNode);
+            }
         }
-
+        return modifiedNodes;
     }
 
     /**

@@ -180,7 +180,7 @@ public class TemplateNodeFilter extends AbstractFilter {
         if (ok) {
             template = new Template(
                     templateNode.hasProperty("j:template") ? templateNode.getProperty("j:template").getString() :
-                            "default", templateNode, template);
+                            "fullpage", templateNode, template);
         }
         return template;
     }

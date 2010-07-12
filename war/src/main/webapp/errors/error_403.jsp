@@ -80,7 +80,7 @@
 <c:if test="${isInvalidModeError}">
 <table class="errorbox" align="center" width="530" height="63" border="0" cellspacing="0" cellpadding="0">
     <tr>
-        <td class="boxtitle"><fmt:message key="org.jahia.bin.JahiaErrorDisplay.errorPage.label"/></td>
+        <td class="boxtitle"><fmt:message key="label.errorPage"/></td>
     </tr>
     <tr>
         <td class="boxcontent">
@@ -99,7 +99,7 @@
 <c:if test="${not isInvalidModeError}">
 <table class="errorbox" align="center" width="530" height="63" border="0" cellspacing="0" cellpadding="0">
     <tr>
-        <td colspan="2" class="boxtitle"><fmt:message key="org.jahia.bin.JahiaErrorDisplay.errorPage.label"/></td>
+        <td colspan="2" class="boxtitle"><fmt:message key="label.errorPage"/></td>
     </tr>
     <tr>
         <td colspan="2" class="boxcontent">

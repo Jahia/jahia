@@ -84,7 +84,7 @@
         <br/><br/><br/>
         <table class="errorbox" align="center" width="530" height="63" border="0" cellspacing="0" cellpadding="0">
         <tr>
-            <td class="boxtitle"><fmt:message key="org.jahia.bin.JahiaErrorDisplay.errorPage.label"/></td>
+            <td class="boxtitle"><fmt:message key="label.errorPage"/></td>
         </tr>
         <tr>
             <td class="boxcontent">

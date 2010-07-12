@@ -41,7 +41,7 @@
 
     <driver.derby.version>10.5.3.0_1</driver.derby.version>
     <driver.mssql.version>1.2-fixed</driver.mssql.version>
-    <driver.mysql.version>5.1.12</driver.mysql.version>
+    <driver.mysql.version>5.1.13</driver.mysql.version>
     <driver.oracle.version>11.2.0.1.0</driver.oracle.version>
     <driver.postgresql.version>8.4-701.jdbc3</driver.postgresql.version>
 

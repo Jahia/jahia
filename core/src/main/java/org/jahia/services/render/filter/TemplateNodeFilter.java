@@ -100,7 +100,7 @@ public class TemplateNodeFilter extends AbstractFilter {
                     template = addDerivedTemplates(resource, template, templateNode);
                     if (template == null && current == node) {
                         template = new Template(templateNode.hasProperty("j:template") ? templateNode.getProperty("j:template").getString() :
-                            "default", templateNode, template);
+                            "fullpage", templateNode, template);
                     }
                 }
                 if (template == null && current.hasProperty("j:defaultTemplateNode")) {
@@ -108,7 +108,7 @@ public class TemplateNodeFilter extends AbstractFilter {
                     template = addDerivedTemplates(resource, template, templateNode);
                     if (template == null) {
                         template = new Template(templateNode.hasProperty("j:template") ? templateNode.getProperty("j:template").getString() :
-                            "default", templateNode, template);
+                            "fullpage", templateNode, template);
                     }
                 }
                 if (template == null && current.isNodeType("jnt:template")) {
@@ -120,7 +120,7 @@ public class TemplateNodeFilter extends AbstractFilter {
             templateNode = templateNode.getParent();
             while (!(templateNode.isNodeType("jnt:templatesFolder"))) {
                 template = new Template(templateNode.hasProperty("j:template") ? templateNode.getProperty("j:template").getString() :
-                            "default", templateNode, template); 
+                            "fullpage", templateNode, template);
                 templateNode = templateNode.getParent();
             }
         } catch (ItemNotFoundException e) {

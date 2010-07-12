@@ -1,6 +1,6 @@
 /**
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
+ * Copyright (C) 2002-2010 Jahia Solutions Group SA. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -31,19 +31,23 @@
  */
  package org.jahia.services.mail;
 
+import java.util.Locale;
+import java.util.Map;
+
 import org.jahia.services.JahiaService;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 
-import javax.mail.Message;
+import javax.jcr.RepositoryException;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
+import javax.script.ScriptException;
 
 /**
- * The base class for the Jahia mail service implementation.
- * User: Serge Huber
+ * Jahia mail service implementation.
+ * 
+ * @author Serge Huber
  * Date: Jul 25, 2005
  * Time: 12:22:20 PM
- * Copyright (C) Jahia Inc.
  */
 public abstract class MailService extends JahiaService {
     /**
@@ -90,6 +94,23 @@ public abstract class MailService extends JahiaService {
                                String subject, String message);
 
     /**
+     * Send message to the desired destination with cc and bcc option. The
+     * subject can also be mentioned.
+     *
+     * @param from The message sender
+     * @param to The message destination.
+     * @param cc The message copy destination.
+     * @param bcc The message copy blind destination.
+     * @param subject The message subject.
+     * @param textBody The text message to send
+     * @param htmlBody The HTML message to send
+     * @return True if message is sent successfully, false otherwise
+     */
+    public abstract void sendMessage(String from, String to, String cc, String bcc,
+            String subject, String textBody,
+            String htmlBody);
+    
+    /**
      * Send message in the HTML format to the desired destination with cc and bcc option. The
      * subject can also be mentioned.
      *
@@ -104,40 +125,9 @@ public abstract class MailService extends JahiaService {
     public abstract boolean sendHtmlMessage(String from, String to, String cc, String bcc,
                                String subject, String message);
 
-    /**
-     * Send message to the desired destination with cc and bcc option. The
-     * subject can also be mentioned. Also the
-     *
-     * @param from The message sender
-     * @param to The message destination.
-     * @param cc The message copy destination.
-     * @param bcc The message copy blind destination.
-     * @param subject The message subject.
-     * @param mailhost A self defined mail host.
-     * @param message The message to send.
-     * @return True if message is sent successfully, false otherwise
-     */
-    public abstract boolean sendMessage(String from, String to, String cc, String bcc,
-                               String subject, String mailhost, String message);
-
-    /**
-     * Send a Message type previously initialized and formated.
-     *
-     * @param msg The Message to send.
-     * @return True if message is sent successfully, false otherwise
-     */
-    public abstract boolean sendMessage(Message message);
-
     public abstract String defaultRecipient();
 
     public abstract String defaultSender();
-
-    /**
-     * Advanced message sending method, that can use message preparator to generate the message
-     * @param mimeMessagePreparator
-     * @return true if the mail was sent, false otherwise
-     */
-    public abstract boolean sendTemplateMessage(MimeMessagePreparator mimeMessagePreparator);
 
     /**
      * Returns <code>true</code> if the mail service is enabled and settings
@@ -188,4 +178,12 @@ public abstract class MailService extends JahiaService {
         }
         return addr != null;
     }
+
+    public void sendMessage(MimeMessagePreparator mimeMessagePreparator) {
+        throw new UnsupportedOperationException("Method not implemented");
+    }
+
+    public abstract void sendMessageWithTemplate(String template, Map<String, Object> bindedObjects, String toMail,
+            String fromMail, String ccList, String bcclist, Locale locale, String templatePackageName)
+            throws RepositoryException, ScriptException;
 }

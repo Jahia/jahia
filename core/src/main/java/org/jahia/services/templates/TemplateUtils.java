@@ -34,7 +34,6 @@ package org.jahia.services.templates;
 import java.net.MalformedURLException;
 
 import org.apache.log4j.Logger;
-import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;

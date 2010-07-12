@@ -43,7 +43,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.ActionResult;
 import org.jahia.bin.BaseAction;
-import org.jahia.services.notification.CamelNotificationService;
+import org.jahia.services.mail.MailService;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
@@ -62,15 +62,11 @@ import org.json.JSONObject;
 public class NewUser extends BaseAction {
 
     private JahiaUserManagerService userManagerService;
-    private CamelNotificationService camelNotificationService;
+    private MailService mailService;
     private String templatePath;
 
     public void setUserManagerService(JahiaUserManagerService userManagerService) {
         this.userManagerService = userManagerService;
-    }
-
-    public void setCamelNotificationService(CamelNotificationService camelNotificationService) {
-        this.camelNotificationService = camelNotificationService;
     }
 
     public void setTemplatePath(String templatePath) {
@@ -111,8 +107,12 @@ public class NewUser extends BaseAction {
         Map<String,Object> bindings = new HashMap<String,Object>();
         bindings.put("newUser",user);
         
-        camelNotificationService.sendMailWithTemplate(templatePath,bindings,to,from,cc,bcc,resource.getLocale(),"Jahia User Registration");
+        mailService.sendMessageWithTemplate(templatePath,bindings,to,from,cc,bcc,resource.getLocale(),"Jahia User Registration");
 
         return new ActionResult(HttpServletResponse.SC_ACCEPTED,parameters.get("userredirectpage").get(0), new JSONObject());
+    }
+
+    public void setMailService(MailService mailService) {
+        this.mailService = mailService;
     }
 }

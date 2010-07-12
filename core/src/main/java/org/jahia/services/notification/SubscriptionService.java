@@ -326,7 +326,7 @@ public class SubscriptionService extends JahiaService {
                 generateConfirmationKey(subscription);
 
                 mailService
-                        .sendTemplateMessage(subscriptionRequest ? new SubscriptionConfirmationMessageBuilder(
+                        .sendMessage(subscriptionRequest ? new SubscriptionConfirmationMessageBuilder(
                                 user, emailAddress, subscription)
                                 : new UnsubscribeConfirmationMessageBuilder(
                                         user, emailAddress, subscription));

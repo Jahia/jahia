@@ -6,7 +6,7 @@
     <bean class="org.jahia.modules.userregistration.actions.NewUser">
         <property name="name" value="newUser"/>
         <property name="userManagerService" ref="JahiaUserManagerService"/>
-        <property name="camelNotificationService" ref="camelNotificationService"/>
+        <property name="mailService" ref="MailService"/>
         <property name="templatePath" value="/mails/templates/userhasregistered.vm"/>
     </bean>
 </beans>

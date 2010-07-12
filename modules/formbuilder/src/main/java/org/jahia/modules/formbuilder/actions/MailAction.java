@@ -38,7 +38,7 @@ import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
 import org.jahia.bin.Render;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.notification.CamelNotificationService;
+import org.jahia.services.mail.MailService;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
@@ -46,11 +46,9 @@ import org.jahia.services.render.URLResolver;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
-import org.json.JSONObject;
 
 import javax.jcr.NodeIterator;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 /**
@@ -63,7 +61,7 @@ import java.util.*;
 public class MailAction implements Action {
     private transient static Logger logger = Logger.getLogger(MailAction.class);
     private String name;
-    private CamelNotificationService camelNotificationService;
+    private MailService mailService;
     private JahiaUserManagerService userManagerService;
     private String mailTemplatePath;
 
@@ -75,8 +73,8 @@ public class MailAction implements Action {
         return name;
     }
 
-    public void setCamelNotificationService(CamelNotificationService camelNotificationService) {
-        this.camelNotificationService = camelNotificationService;
+    public void setMailService(MailService mailService) {
+        this.mailService = mailService;
     }
 
     public void setUserManagerService(JahiaUserManagerService userManagerService) {
@@ -122,7 +120,7 @@ public class MailAction implements Action {
             bindings.put("date",new DateTool());
             bindings.put("submissionDate", Calendar.getInstance());
             bindings.put("locale", resource.getLocale());
-            camelNotificationService.sendMailWithTemplate(mailTemplatePath,bindings,toMail, SettingsBean.getInstance().getMail_from(),
+            mailService.sendMessageWithTemplate(mailTemplatePath,bindings,toMail, SettingsBean.getInstance().getMail_from(),
                                                           null,null,resource.getLocale(), "Jahia Form Builder");
             logger.info("Form data is sent by e-mail");
         }

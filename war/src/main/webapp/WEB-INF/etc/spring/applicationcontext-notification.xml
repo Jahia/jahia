@@ -2,12 +2,14 @@
 
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+       xsi:schemaLocation="
+          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+          http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
     <bean id="MailService" parent="proxyTemplate">
         <property name="target">
             <bean class="org.jahia.services.mail.MailServiceImpl" parent="jahiaServiceTemplate">
-                <property name="backgroundTaskPeriod" value="10000"/>
-                <property name="mailQueueMaxLength" value="1000"/>
+                <property name="mailEndpointUri" value="direct:mailUsers"/>
             </bean>
         </property>
     </bean>
@@ -67,4 +69,54 @@
         <property name="removeExternalScripts" value="true"/>
         <property name="removeInlinedScripts" value="true"/>
     </bean>
+    
+    <camelContext id="jahiaNotificationContext" xmlns="http://camel.apache.org/schema/spring" depends-on="jahiaProperties">
+        <endpoint id="mailMy" uri="smtp://smtp.gmail.com:587?username=my.public.mailing@gmail.com&amp;password=taurus&amp;mail.smtp.auth=true&amp;mail.smtp.starttls.enable=true"/>
+        <route>
+            <!-- route for sending mails synchronously -->
+            <from uri="direct:mailUsers"/>
+            <choice>
+                <when>
+                    <!-- check if main mail service is activated -->
+                    <method bean="MailService" method="isEnabled"/>
+                    <to uri="log:org.jahia.services.notification.mail?level=DEBUG"/>
+                    <!-- send messages using main mail sender -->
+                    <to uri="MailService"/>
+                </when>
+                <otherwise>
+                    <!-- mail service is not activated: log message and stop processing -->
+                    <to uri="log:org.jahia.services.notification.mail?level=INFO"/>
+                    <stop/>
+                </otherwise>
+            </choice>
+        </route>
+        <route>
+            <!-- route for sending mails asynchronously -->
+            <from uri="seda:mailUsers?multipleConsumers=true"/>
+            <choice>
+                <when>
+                    <method bean="MailService" method="isEnabled"/>
+                    <to uri="log:org.jahia.services.notification.mail?level=DEBUG"/>
+                    <!-- send messages using main mail sender -->
+                    <to uri="MailService"/>
+                </when>
+                <otherwise>
+                    <!-- mail service is not activated: log message and stop processing -->
+                    <to uri="log:org.jahia.services.notification.mail?level=INFO"/>
+                    <stop/>
+                </otherwise>
+            </choice>
+        </route>
+    </camelContext>
+
+    <bean id="camelNotificationService" class="org.jahia.services.notification.CamelNotificationService"/>
+
+    <bean id="org.jahia.services.content.rules.RulesNotificationService" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.services.content.rules.RulesNotificationService" factory-method="getInstance">
+                <property name="notificationService" ref="MailService"/>
+            </bean>
+        </property>
+    </bean>
+
 </beans>

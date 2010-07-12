@@ -33,8 +33,8 @@
 package org.jahia.services.notification;
 
 import junit.framework.TestCase;
-import org.apache.log4j.Logger;
 import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.mail.MailService;
 import org.jahia.settings.SettingsBean;
 import org.junit.After;
 import org.junit.Before;
@@ -50,8 +50,8 @@ import java.util.Map;
  *        Created : 28 juin 2010
  */
 public class CamelNotificationServiceTest  extends TestCase {
-    private transient static Logger logger = Logger.getLogger(CamelNotificationServiceTest.class);
     private CamelNotificationService camelNotificationService;
+    private MailService mailService;
 
     /**
      * Sets up the fixture, for example, open a network connection.
@@ -60,7 +60,8 @@ public class CamelNotificationServiceTest  extends TestCase {
     @Before
     protected void setUp() throws Exception {
         super.setUp();
-        camelNotificationService = (CamelNotificationService) SpringContextSingleton.getInstance().getContext().getBean("camelNotificationService");
+        camelNotificationService = (CamelNotificationService) SpringContextSingleton.getBean("camelNotificationService");
+        mailService = (MailService) SpringContextSingleton.getBean("MailService");
     }
 
     /**
@@ -80,13 +81,12 @@ public class CamelNotificationServiceTest  extends TestCase {
 
         String body = "Hello.\nYes it does.\n\nRegards.";
 
-        camelNotificationService.sendMessagesWithBodyAndHeaders("seda:users?multipleConsumers=true",body,map);
+        camelNotificationService.sendMessagesWithBodyAndHeaders("seda:mailUsers?multipleConsumers=true", body,map);
     }
 
     public void testComplexSendingOfMail() throws Exception {
-        camelNotificationService.sendMail("seda:users?multipleConsumers=true","Camel Rocks",
-                                          "<html><body><h1>Camel Rocks</h1><p>Camel Complex Mail Test</p></body></html>",
-                                          "Camel Complex Mail Test",
-                                          SettingsBean.getInstance().getMail_from(),SettingsBean.getInstance().getMail_administrator(),null,null);
+        mailService.sendMessage(SettingsBean.getInstance().getMail_from(), SettingsBean.getInstance()
+                        .getMail_administrator(), null, null, "Camel Rocks", "Camel Complex Mail Test",
+                        "<html><body><h1>Camel Rocks</h1><p>Camel Complex Mail Test</p></body></html>");
     }
 }

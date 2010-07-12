@@ -59,7 +59,6 @@ import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.content.ContentObject;
 import org.jahia.content.ContentObjectKey;
-import org.jahia.engines.mysettings.MySettingsEngine;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
@@ -267,10 +266,10 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
 
     protected Link getSubscriptionManagementLink() {
         Link lnk = null;
-        String url = getSiteUrl() + "/"
-                + ProcessingContext.ENGINE_NAME_PARAMETER + "/"
-                + MySettingsEngine.ENGINE_NAME;
-        lnk = new Link("subscriptionManagement", url, getServerUrl() + url);
+//        String url = getSiteUrl() + "/"
+//                + ProcessingContext.ENGINE_NAME_PARAMETER + "/"
+//                + MySettingsEngine.ENGINE_NAME;
+//        lnk = new Link("subscriptionManagement", url, getServerUrl() + url);
 
         return lnk;
     }

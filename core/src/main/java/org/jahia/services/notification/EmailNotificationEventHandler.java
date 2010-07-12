@@ -129,7 +129,7 @@ public class EmailNotificationEventHandler extends BaseNotificationEventHandler 
                     matches = checkUser((JahiaUser) subscriber);
                 } else {
                     logger
-                            .warn("Subscriber is not an instace of the JahiaUser. Do not know, how to deal with the type: "
+                            .warn("Subscriber is not an instance of the JahiaUser. Do not know, how to deal with the type: "
                                     + subscriber
                                     + ". Skip sending notification.");
                 }
@@ -167,7 +167,7 @@ public class EmailNotificationEventHandler extends BaseNotificationEventHandler 
                     + subscriber.getName());
         }
 
-        getMailService().sendTemplateMessage(
+        getMailService().sendMessage(
                 new SubscriberNotificationMessageBuilder(
                         (JahiaUser) subscriber, events));
     }
@@ -187,7 +187,7 @@ public class EmailNotificationEventHandler extends BaseNotificationEventHandler 
         }
 
         JahiaUser user = TemplateUtils.getSubscriber(subscription);
-        getMailService().sendTemplateMessage(
+        getMailService().sendMessage(
                 new SubscriptionNotificationMessageBuilder(events,
                         subscription, user, UserPreferencesHelper.getEmailAddress(user)));
     }

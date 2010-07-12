@@ -32,7 +32,6 @@
 package org.jahia.services.preferences.user;
 
 import java.io.UnsupportedEncodingException;
-import java.security.Principal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -41,12 +40,7 @@ import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jahia.bin.Jahia;
-import org.jahia.exceptions.JahiaException;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.preferences.JahiaPreferencesService;
-import org.jahia.services.preferences.generic.GenericJahiaPreference;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
@@ -61,10 +55,6 @@ public final class UserPreferencesHelper {
 
     private static Logger logger = Logger.getLogger(UserPreferencesHelper.class);
     
-    private static JahiaPreferencesService getPrefsService() {
-        return ServicesRegistry.getInstance().getJahiaPreferencesService();
-    }
-
     /**
      * Initializes an instance of this class.
      */
@@ -296,22 +286,5 @@ public final class UserPreferencesHelper {
             }
         }
         return locale;
-    }
-    
-    private static String getPreference(String prefName, JahiaUser user) {
-        String prefValue = null;
-        if (user != null) {
-            GenericJahiaPreference preferenceNode = ((GenericJahiaPreference) getPrefsService()
-                    .getGenericPreferenceNode(prefName, user));
-            if (preferenceNode != null) {
-                try {
-                    prefValue = preferenceNode.getPrefValue();
-                } catch (Exception e) {
-                    logger.debug(
-                            "Preference \"" + prefName + "\"not retrieved", e);
-                }
-            }
-        }
-        return prefValue;
     }
 }

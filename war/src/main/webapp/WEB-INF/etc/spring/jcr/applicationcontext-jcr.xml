@@ -252,12 +252,4 @@
         </property>
     </bean>
 
-    <bean id="org.jahia.services.content.rules.RulesNotificationService" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.content.rules.RulesNotificationService" factory-method="getInstance">
-                <property name="notificationService" ref="camelNotificationService"/>
-            </bean>
-        </property>
-    </bean>
-
 </beans>

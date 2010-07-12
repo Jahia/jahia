@@ -152,7 +152,7 @@ function testSettingsFailure(text, code, statusText) {
                                                        maxlength="250"
                                                        value="<c:out value='${jahiaMailSettings.host}'/>"/>
                                                 &nbsp;
-                                                <a href="http://jira.jahia.org/browse/JKB-17" target="_blank"><img src="${pageContext.request.contextPath}/engines/images/about.gif" alt="info"/></a>
+                                                <a href="http://jira.jahia.org/browse/JKB-20" target="_blank"><img src="${pageContext.request.contextPath}/engines/images/about.gif" alt="info"/></a>
                                             </td>
                                         </tr>
                                         <tr>

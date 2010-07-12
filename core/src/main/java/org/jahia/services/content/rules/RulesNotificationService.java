@@ -34,12 +34,11 @@ package org.jahia.services.content.rules;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.notification.CamelNotificationService;
+import org.jahia.services.mail.MailService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
@@ -52,14 +51,14 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
- * Created by IntelliJ IDEA.
- *
- * @author : rincevent
- * @since : JAHIA 6.1
- *        Created : 29 juin 2010
+ * Notification service that is used in the right-hand-side (consequences) of
+ * the business rules.
+ * 
+ * @author rincevent
+ * @since JAHIA 6.5
+ * Created : 29 juin 2010
  */
 public class RulesNotificationService {
-    private transient static Logger logger = Logger.getLogger(RulesNotificationService.class);
 
     private static RulesNotificationService instance;
 
@@ -70,9 +69,9 @@ public class RulesNotificationService {
         return instance;
     }
 
-    private CamelNotificationService notificationService;
+    private MailService notificationService;
 
-    public void setNotificationService(CamelNotificationService notificationService) {
+    public void setNotificationService(MailService notificationService) {
         this.notificationService = notificationService;
     }
 
@@ -178,11 +177,10 @@ public class RulesNotificationService {
                 scriptContext.setWriter(new StringWriter());
                 // The following binding is necessary for Javascript, which doesn't offer a console by default.
                 bindings.put("out", new PrintWriter(scriptContext.getWriter()));
-                Object result = scriptEngine.eval(scriptContent, bindings);
+                scriptEngine.eval(scriptContent, bindings);
                 StringWriter writer = (StringWriter) scriptContext.getWriter();
                 String body = writer.toString();
-                notificationService.sendMail("seda:users?multipleConsumers=true", subject,
-                                             body, null, fromMail, toMail, ccList, bcclist);
+                notificationService.sendMessage(fromMail, toMail, ccList, bcclist, subject, null, body);
             } finally {
                 if (scriptContent != null) {
                     IOUtils.closeQuietly(scriptContent);

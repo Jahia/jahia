@@ -216,19 +216,18 @@
         <dependency>
             <groupId>javax.activation</groupId>
             <artifactId>activation</artifactId>
-            <version>1.1</version>
+            <version>1.1.1</version>
         </dependency>
         <dependency>
             <groupId>javax.mail</groupId>
             <artifactId>mail</artifactId>
-            <version>1.4</version>
+            <version>1.4.3</version>
         </dependency>
         <dependency>
             <groupId>javax.jms</groupId>
             <artifactId>jms</artifactId>
             <version>1.1</version>
         </dependency>
-        <!-- todo: migrate to 2.5 and jsp 2.1 when moving to tomcat 6 -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
@@ -626,8 +625,37 @@
         </dependency>
         <dependency>
             <groupId>org.apache.bsf</groupId>
-            <artifactId>bsf-all</artifactId>
-            <version>3.0-beta3</version>
+            <artifactId>bsf-api</artifactId>
+            <version>3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.bsf</groupId>
+            <artifactId>bsf-utils</artifactId>
+            <version>3.1</version>
+            <exclusions>
+            	<exclusion>
+            		<groupId>org.apache.bsf</groupId>
+                    <artifactId>bsf-engines</artifactId>
+            	</exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.script.freemarker</groupId>
+            <artifactId>jsr223-freemarker-engine</artifactId>
+            <version>1.0</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.script.js</groupId>
+            <artifactId>jsr223-js-engine</artifactId>
+            <version>1.0</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.script.velocity</groupId>
+            <artifactId>jsr223-velocity-engine</artifactId>
+            <version>1.0</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>rhino</groupId>
@@ -1158,6 +1186,12 @@
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-rss</artifactId>
             <version>2.3.0</version>
+            <exclusions>
+            	<exclusion>
+                    <groupId>org.apache.geronimo.specs</groupId>
+            		<artifactId>geronimo-activation_1.0.2_spec</artifactId>
+            	</exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>

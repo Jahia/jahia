@@ -358,7 +358,12 @@ public class JahiaShindigService implements PersonService, ActivityService, AppD
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         String userName = getUserNameFromKey(userId);
 
-                        Node userNode = session.getNode("/users/" + userName);
+                        Node userNode = null;
+                        try {
+                            userNode = session.getNode("/users/" + userName);
+                        } catch (PathNotFoundException pnfe) {
+                            return returnVal;
+                        }
                         Query myConnectionsQuery = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:socialConnection] as uC where isdescendantnode(uC,['" + userNode.getPath() + "'])", Query.JCR_SQL2);
                         QueryResult myConnectionsResult = myConnectionsQuery.execute();
 
@@ -371,7 +376,7 @@ public class JahiaShindigService implements PersonService, ActivityService, AppD
                                 returnVal.add(jahiaUser.getUserKey());
                             }
                         }
-                        return null;
+                        return returnVal;
                     }
                 });
                 break;

@@ -88,6 +88,10 @@ public final class JCRAutoSplitUtils {
             Node parent = node.getParent();
             String splitConfig = parent.getProperty(Constants.SPLIT_CONFIG).getString();
             String splitType = parent.getProperty(Constants.SPLIT_NODETYPE).getString();
+            if (node.isNodeType(splitType)) {
+                logger.debug("Aborting auto-splitting since it is applied on the split type.");
+                return node;
+            }
             String[] config = splitConfig.split(";");
             for (String s : config) {
                 String[] folderConfig = s.split(",");
@@ -159,7 +163,7 @@ public final class JCRAutoSplitUtils {
             }
             return null;
         } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
+            logger.error("Error while trying to move node " + node.getPath() , e);
             return null;
         }
     }

@@ -5,7 +5,7 @@
  - j:default (boolean) mandatory nofulltext
  - j:active (boolean) nofulltext
 
-[jnt:vanityUrls] > nt:base orderable
+[jnt:vanityUrls] > nt:base, mix:lastModified, jmix:lastPublished, mix:versionable orderable 
  + * (jnt:vanityUrl)
 
 [jmix:vanityUrlMapped] mixin

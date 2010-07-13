@@ -29,10 +29,9 @@
         </th>
         <th width="5%"><fmt:message key="label.type"/></th>
         <th width="35%"><fmt:message key="label.title"/></th>
-        <th width="10%" style="white-space: nowrap;"><fmt:message key="jmix_contentmetadata.j_creationDate"/></th>
-        <th width="10%" style="white-space: nowrap;"><fmt:message
-                key="jmix_contentmetadata.j_lastModificationDate"/></th>
-        <th width="10%"><fmt:message key="jmix_contentmetadata.j_lastPublishingDate"/></th>
+        <th width="10%" style="white-space: nowrap;"><fmt:message key="mix_created.jcr_created"/></th>
+        <th width="10%" style="white-space: nowrap;"><fmt:message key="mix_lastModified.jcr_lastModified"/></th>
+        <th width="10%"><fmt:message key="jmix_lastPublished.j_lastPublished"/></th>
         <th width="10%" style="white-space: nowrap;"><fmt:message key="label.workflow"/></th>
         <th width="5%" class="lastCol"><fmt:message key="label.lock"/></th>
     </tr>

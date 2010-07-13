@@ -26,7 +26,6 @@ public class ContributionFilter extends AbstractFilter {
                     && !resource.getTemplateType().equals("edit")
                     && !context.isAjaxRequest()) {
                 resource.setTemplateType("edit");
-                resource.setTemplate("listedit");
             }
         } catch (RepositoryException e) {
             logger.error(e,e);

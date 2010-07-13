@@ -63,7 +63,7 @@ public class VanityUrlSetter implements HtmlTagAttributeVisitor {
      */
     public String visit(final String attrValue, RenderContext context, Resource resource) {
         String value = attrValue;
-        if (StringUtils.isNotEmpty(attrValue)) {
+        if (StringUtils.isNotEmpty(attrValue) && !"localhost".equals(context.getRequest().getServerName())) {
             URLResolver urlResolver = new URLResolver(attrValue, context);
             if (urlResolver.isMapped()) {
                 try {

@@ -82,6 +82,9 @@ import java.util.*;
  * Rendering controller. Resolves the node and the template, and renders it by executing the appropriate script.
  */
 public class Render extends HttpServlet implements Controller, ServletConfigAware {
+    /** The serialVersionUID. */
+    private static final long serialVersionUID = 5377039107890340659L;
+    
     protected static final String METHOD_DELETE = "DELETE";
     protected static final String METHOD_HEAD = "HEAD";
     protected static final String METHOD_GET = "GET";
@@ -230,7 +233,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         JCRSessionWrapper session = jcrSessionFactory.getCurrentUserSession(urlResolver.getWorkspace(), urlResolver.getLocale());
         JCRNodeWrapper node = session.getNode(urlResolver.getPath());
         session.checkout(node);
-        Map parameters = req.getParameterMap();
+        @SuppressWarnings("unchecked")
+        Map<String, String[]> parameters = req.getParameterMap();
         if (parameters.containsKey(Constants.JCR_MIXINTYPES)) {
             String[] mixinTypes = (String[]) parameters.get(Constants.JCR_MIXINTYPES);
             for (String mixinType : mixinTypes) {
@@ -257,7 +261,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         }
         session.save();
         if (req.getParameter(AUTO_CHECKIN) != null && req.getParameter(AUTO_CHECKIN).length() > 0) {
-            node.checkin();
+            session.getWorkspace().getVersionManager().checkin(node.getPath());
         }
         final String requestWith = req.getHeader("x-requested-with");
         if (req.getHeader("accept").contains("application/json") && requestWith != null &&
@@ -590,7 +594,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         try {
             final HttpSession session = req.getSession();
 
-            URLResolver urlResolver = new URLResolver(req.getPathInfo());
+            URLResolver urlResolver = new URLResolver(req.getPathInfo(), req.getServerName());
 
             // check permission
             if (!hasAccess(jcrSessionFactory.getCurrentUser(), urlResolver.getSiteKey())) {

@@ -32,7 +32,7 @@ public class NewWikiPageHandler implements ErrorHandler {
             if (!(e instanceof PathNotFoundException)) {
                 return false;
             }
-            URLResolver urlResolver = new URLResolver(request.getPathInfo());
+            URLResolver urlResolver = new URLResolver(request.getPathInfo(), request.getServerName());
 
             String parentPath = StringUtils.substringBeforeLast(urlResolver.getPath(), "/");
             String newName = StringUtils.substringAfterLast(urlResolver.getPath(), "/");

@@ -44,9 +44,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jahia.bin.Contribute;
-import org.jahia.bin.Edit;
 import org.jahia.bin.Render;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -57,6 +57,7 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlManager;
 import org.jahia.services.seo.jcr.VanityUrlService;
+import org.jahia.services.sites.JahiaSite;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 
@@ -109,14 +110,14 @@ public class URLResolver {
      *
      * @param urlPathInfo  the path info (usually obtained with @link javax.servlet.http.HttpServletRequest.getPathInfo())
      */
-    public URLResolver(String urlPathInfo) {
+    public URLResolver(String urlPathInfo, String serverName) {
         super();
         this.urlPathInfo = urlPathInfo;
         servletPart = StringUtils.substring(getUrlPathInfo(), 1,
                 StringUtils.indexOf(getUrlPathInfo(), "/", 1));
         path = StringUtils.substring(getUrlPathInfo(),
                 servletPart.length() + 2, getUrlPathInfo().length());
-        if (!resolveUrlMapping()) {
+        if (!resolveUrlMapping(serverName)) {
             init();
             if (isMappable()
                     && SettingsBean.getInstance().isPermanentMoveForVanityURL()) {
@@ -189,9 +190,9 @@ public class URLResolver {
         return isServletAllowingUrlMapping;
     }
     
-    private boolean resolveUrlMapping() {
+    protected boolean resolveUrlMapping(String serverName) {
         boolean mappingResolved = false;
-        if (isServletAllowingUrlMapping()) {
+        if (isServletAllowingUrlMapping() && !"localhost".equals(serverName)) {
             String tempPath = null;
             try {
                 String tempWorkspace = StringUtils.defaultIfEmpty(StringUtils
@@ -202,6 +203,15 @@ public class URLResolver {
                             "/sites/", "/");
                     if (!StringUtils.isEmpty(siteKeyInPath)) {
                         setSiteKey(siteKeyInPath);
+                    } else {
+                        try {
+                            JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByServerName(serverName);
+                            if (site != null) {
+                                setSiteKey(site.getSiteKey());                                
+                            }
+                        } catch (JahiaException e) {
+                            logger.warn("Error finding site via servername: " + serverName, e);
+                        }
                     }
                 }
                 List<VanityUrl> vanityUrls = getVanityUrlService()

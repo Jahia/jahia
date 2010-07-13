@@ -4,7 +4,7 @@
       <contents jcr:primaryType="jnt:contentList">
         <site_components jcr:primaryType="jnt:contentList">
           <login-to-jahia jcr:primaryType="jnt:loginForm">
-            <j:translation_en jcr:title_en="Login to Jahia" jcr:language="en" jcr:primaryType="jnt:translation" />
+            <j:translation_en jcr:language="en" jcr:title_en="Login to Jahia" jcr:primaryType="jnt:translation" />
           </login-to-jahia>
         </site_components>
 
@@ -38,7 +38,7 @@
           </footer>
           <wrappercontent jcr:primaryType="jnt:contentList">
 
-            <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:referenceTemplate="default" />
+            <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:referenceTemplate="fullpage" />
           </wrappercontent>
           <pagetitle jcr:primaryType="jnt:contentList" />
           <topfooter jcr:primaryType="jnt:contentList" />
@@ -111,7 +111,7 @@
                     <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:referenceTemplate="docspace" />
                     <mainResourceDisplay-1 jcr:primaryType="jnt:mainResourceDisplay" j:referenceTemplate="updateFile" />
                     <document-history j:skin="skins.box2" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
-                      <j:translation_en j:skin="skins.box2" jcr:title_en="Document History" jcr:language="en" jcr:primaryType="jnt:translation" />
+                      <j:translation_en j:skin="skins.box2" jcr:language="en" jcr:title_en="Document History" jcr:primaryType="jnt:translation" />
                       <commentable jcr:primaryType="jnt:commentable" j:bindedComponent="/templateSets/templates-intranet/templates/base/docspace/file/wrappercontent/row/col1/mainResourceDisplay" />
                       <commentable-1 jcr:mixinTypes="jmix:renderable" j:template="addcomment" jcr:primaryType="jnt:commentable" j:bindedComponent="/templateSets/templates-intranet/templates/base/docspace/file/wrappercontent/row/col1/mainResourceDisplay" />
                     </document-history>
@@ -161,11 +161,11 @@
             <wrappercontent jcr:primaryType="jnt:contentList">
               <tabs jcr:primaryType="jnt:tabularList">
                 <last-pages jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:language="en" jcr:title_en="Latest Wiki Pages" jcr:primaryType="jnt:translation" />
+                  <j:translation_en jcr:title_en="Latest Wiki Pages" jcr:language="en" jcr:primaryType="jnt:translation" />
                   <latestContent j:criteria="lastModified" jcr:mixinTypes="jmix:renderable" j:template="linkList" j:type="jnt:wikiPage" j:nbOfResult="20" jcr:primaryType="jnt:latestContent" />
                 </last-pages>
                 <create-new-page jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:title_en="Create new page" jcr:language="en" jcr:primaryType="jnt:translation" />
+                  <j:translation_en jcr:language="en" jcr:title_en="Create new page" jcr:primaryType="jnt:translation" />
                   <create-a-wiki-page jcr:primaryType="jnt:wikiPageFormCreation">
 
                     <j:translation_en jcr:language="en" jcr:title_en="Create a wiki page" jcr:primaryType="jnt:translation" />
@@ -180,11 +180,11 @@
 
                     <tabularList jcr:primaryType="jnt:tabularList">
                       <content jcr:primaryType="jnt:contentList">
-                        <j:translation_en jcr:title_en="Content" jcr:language="en" jcr:primaryType="jnt:translation" />
+                        <j:translation_en jcr:language="en" jcr:title_en="Content" jcr:primaryType="jnt:translation" />
                         <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:referenceTemplate="default" />
                       </content>
                       <contribute jcr:primaryType="jnt:contentList">
-                        <j:translation_en jcr:title_en="Contribute" jcr:language="en" jcr:primaryType="jnt:translation" />
+                        <j:translation_en jcr:language="en" jcr:title_en="Contribute" jcr:primaryType="jnt:translation" />
                         <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:referenceTemplate="contribute" />
                       </contribute>
 
@@ -231,11 +231,11 @@
             <wrappercontent jcr:primaryType="jnt:contentList">
               <tabularList jcr:primaryType="jnt:tabularList">
                 <my-profile jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:title_en="My Profile" jcr:language="en" jcr:primaryType="jnt:translation" />
+                  <j:translation_en jcr:language="en" jcr:title_en="My Profile" jcr:primaryType="jnt:translation" />
                   <user-profile jcr:primaryType="jnt:currentUserDisplay" j:referenceTemplate="myprofile" />
                 </my-profile>
                 <my-content jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:language="en" jcr:title_en="My Content" jcr:primaryType="jnt:translation" />
+                  <j:translation_en jcr:title_en="My Content" jcr:language="en" jcr:primaryType="jnt:translation" />
                   <currentUserDisplay jcr:primaryType="jnt:currentUserDisplay" j:referenceTemplate="mycontent" />
 
                 </my-content>
@@ -258,7 +258,7 @@
                 </my-portal>
                 <my-connections jcr:primaryType="jnt:contentList">
 
-                  <j:translation_en jcr:language="en" jcr:title_en="My Connections" jcr:primaryType="jnt:translation" />
+                  <j:translation_en jcr:title_en="My Connections" jcr:language="en" jcr:primaryType="jnt:translation" />
                   <currentUserDisplay jcr:primaryType="jnt:currentUserDisplay" j:referenceTemplate="myconnections" />
                 </my-connections>
                 <my-messages jcr:primaryType="jnt:contentList">
@@ -299,7 +299,7 @@
                   <topBlog j:subNodesTemplate="blogList" pageSize="10" jcr:mixinTypes="jmix:renderableList" jcr:primaryType="jnt:topBlog" />
 
                   <list jcr:mixinTypes="jmix:renderable" j:template="twoColumns" jcr:primaryType="jnt:contentList">
-                    <j:translation_en jcr:language="en" jcr:title_en="list" jcr:primaryType="jnt:translation" />
+                    <j:translation_en jcr:title_en="list" jcr:language="en" jcr:primaryType="jnt:translation" />
                     <topBlogContent j:subNodesTemplate="blogList" pageSize="10" jcr:mixinTypes="jmix:renderableList" jcr:primaryType="jnt:topBlogContent" />
                     <topBlogComment j:subNodesTemplate="blogList" pageSize="10" jcr:mixinTypes="jmix:renderableList" jcr:primaryType="jnt:topBlogComment" />
                   </list>
@@ -390,7 +390,7 @@
 
             <col1 jcr:primaryType="jnt:contentList">
               <results autoSuggest="true" pageSize="10" jcr:primaryType="jnt:searchResults" autoSuggestHitCount="2" autoSuggestMinimumHitCount="2">
-                <j:translation_en jcr:language="en" jcr:title_en="Results" jcr:primaryType="jnt:translation" />
+                <j:translation_en jcr:title_en="Results" jcr:language="en" jcr:primaryType="jnt:translation" />
               </results>
             </col1>
             <col2 jcr:primaryType="jnt:contentList" />

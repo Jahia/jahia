@@ -34,6 +34,7 @@ package org.jahia.services.content.rules;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.drools.FactException;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.api.Constants;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
@@ -586,12 +587,14 @@ public class Service extends JahiaService {
     public void enableAutoSplitting(AddedNodeFact n, String splitConfig, String splitFolderNodeType, KnowledgeHelper drools) throws RepositoryException  {
         JCRAutoSplitUtils.enableAutoSplitting(n.getNode(), splitConfig, splitFolderNodeType);
         Map<JCRNodeWrapper, JCRNodeWrapper> modifiedNodes = JCRAutoSplitUtils.applyAutoSplitRulesOnSubnodes(n.getNode());
-        /*
         for (Map.Entry<JCRNodeWrapper, JCRNodeWrapper> modifiedNodeEntry : modifiedNodes.entrySet()) {
-            drools.retract(modifiedNodeEntry.getKey());
-            drools.insert(new AddedNodeFact(modifiedNodeEntry.getValue()));
+            try {
+                drools.retract(new AddedNodeFact(modifiedNodeEntry.getKey()));
+                drools.insert(new AddedNodeFact(modifiedNodeEntry.getValue()));
+            } catch (FactException fe) {
+                logger.debug("Seems node " + modifiedNodeEntry.getKey() + " was not in working memory, will not insert replacement.");
+            }
         }
-        */
     }
 
     public void publishNode(AddedNodeFact node,KnowledgeHelper drools) throws RepositoryException {

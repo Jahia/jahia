@@ -1,5 +1,6 @@
 package org.jahia.services.render.filter;
 
+import org.apache.log4j.Logger;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 
@@ -15,6 +16,8 @@ import java.util.*;
  * Time: 12:33:52 PM
  */
 public class RenderChain {
+    private static Logger logger = Logger.getLogger(RenderChain.class);
+
     private List<RenderFilter> filters = new ArrayList<RenderFilter>();
 
     final Map<String, Object> oldPropertiesMap = new HashMap<String, Object>();
@@ -70,16 +73,25 @@ public class RenderChain {
         String out = null;
         int index=0;
 
+        if (logger.isTraceEnabled()) {
+            logger.trace("Configured filters:");
+            for (RenderFilter filter : filters) {
+                logger.trace("  " + filter.getClass().getName());
+            }
+        }
+
         try {
             for (; index<filters.size() && out == null && renderContext.getRedirect() == null; index++) {
                 RenderFilter filter = filters.get(index);
                 if (filter.areConditionsMatched(renderContext, resource)) {
+                    if (logger.isDebugEnabled()) { logger.debug(resource.getNode().getPath() + " : preparing filter " + filter.getClass().getName()); }
                     out = filter.prepare(renderContext, resource, this);
                 }
             }
             for (; index>0 && renderContext.getRedirect() == null; index--) {
                 RenderFilter filter = filters.get(index-1);
                 if (filter.areConditionsMatched(renderContext, resource)) {
+                    if (logger.isDebugEnabled()) { logger.debug(resource.getNode().getPath() + " : executing filter " + filter.getClass().getName()); }
                     out = filter.execute(out, renderContext, resource, this);
                 }
             }

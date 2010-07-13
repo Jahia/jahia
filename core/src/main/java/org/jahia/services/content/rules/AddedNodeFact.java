@@ -220,5 +220,33 @@ public class AddedNodeFact implements Updateable {
     public String toString() {
         return node.getPath();
     }
-    
+
+    @Override
+    public boolean equals(Object o) {
+        if (logger.isDebugEnabled()) { logger.debug("Checking if " + this.toString() + " is equal to " + o.toString()); }
+        if (this == o) return true;
+        if (!(o instanceof AddedNodeFact)) return false;
+
+        AddedNodeFact that = (AddedNodeFact) o;
+
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        if (node != null ? !node.equals(that.node) : that.node != null) return false;
+        if (parentNode != null ? !parentNode.equals(that.parentNode) : that.parentNode != null) return false;
+        if (parentNodePath != null ? !parentNodePath.equals(that.parentNodePath) : that.parentNodePath != null)
+            return false;
+        if (type != null ? !type.equals(that.type) : that.type != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        if (logger.isDebugEnabled()) { logger.debug("Requesting hashcode for AddedNodeFact " + this.toString() ); }
+        int result = parentNode != null ? parentNode.hashCode() : 0;
+        result = 31 * result + (parentNodePath != null ? parentNodePath.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (node != null ? node.hashCode() : 0);
+        return result;
+    }
 }

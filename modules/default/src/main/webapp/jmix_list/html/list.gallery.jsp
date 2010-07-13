@@ -17,11 +17,12 @@
 
 <template:include template="hidden.header"/>
 <p>
-    <c:forEach items="${moduleMap.currentList}" var="child" varStatus="status" begin="${moduleMap.begin}" end="${moduleMap.end}">
+    <c:forEach items="${moduleMap.currentList}" var="child" varStatus="status">
+        <jcr:node var="child" uuid="${child.properties['j:node'].string}"/>
         <c:if test="${jcr:isNodeType(child, 'jmix:thumbnail')}">
             <%--<a class="zoom" rel="group" title="${child.properties['j:node'].node.name}" href="#item${status.count}">--%>
 
-            <a class="zoom" rel="group" title="${child.name}" href="${url.files}${child.path}">
+            <a class="zoom" rel="group" title="${child.name}" href="${child.url}">
                 <img src="${url.context}/repository/default${child.path}/thumbnail" alt="">
             </a>
 

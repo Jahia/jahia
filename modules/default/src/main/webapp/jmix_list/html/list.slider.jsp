@@ -29,6 +29,7 @@
 <div id="example1">
 
     <c:forEach items="${moduleMap.currentList}" var="child" varStatus="status">
+        <jcr:node var="child" uuid="${child.properties['j:node'].string}"/>
         <c:if test="${jcr:isNodeType(child, 'jmix:thumbnail')}">
             <div class="item">
 

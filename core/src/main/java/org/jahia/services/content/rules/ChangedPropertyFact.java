@@ -79,11 +79,11 @@ public class ChangedPropertyFact implements Updateable {
         path = property.getPath();
     }
 
-    public ChangedPropertyFact(AddedNodeFact nodeWrapper, final String name, final Object o, KnowledgeHelper drools, final boolean copyToStaging) throws RepositoryException {
-        this(nodeWrapper, name, o, drools, copyToStaging,true);
+    public ChangedPropertyFact(AddedNodeFact nodeWrapper, final String name, final Object o, KnowledgeHelper drools) throws RepositoryException {
+        this(nodeWrapper, name, o, drools, true);
     }
     public ChangedPropertyFact(AddedNodeFact nodeWrapper, final String name, final Object o, KnowledgeHelper drools,
-                           final boolean copyToStaging, final boolean overrideIfExisting) throws RepositoryException {
+                               final boolean overrideIfExisting) throws RepositoryException {
         if (nodeWrapper == null) {
             return;
         }
@@ -102,42 +102,8 @@ public class ChangedPropertyFact implements Updateable {
         } else {
             setProperty(node, name, o,overrideIfExisting);
         }
-        if (copyToStaging) {
-            copyToStaging(node, drools);
-        }
     }
-    private void copyToStaging(JCRNodeWrapper node, KnowledgeHelper drools) {
-        return;
-//        try {
-//            JCRStoreProvider provider = (JCRStoreProvider)drools.getWorkingMemory().getGlobal("provider");
-//            String username = ((User)drools.getWorkingMemory().getGlobal("user")).getName();
-//            Session s = provider.getSystemSession(username, "default");
-//            try {
-//                Node stagingNode = s.getNodeByUUID(node.getUUID());
-//                ExtendedPropertyDefinition propDef = getPropertyDefinition(node, name);
-//                if (propDef == null) {
-//                    logger.error("Property " + name + " does not exist in "
-//                            + node.getPath() + " !");
-//                    return;
-//                }
-//                if (propDef.isMultiple()) {
-//                    stagingNode.setProperty(property.getName(), property
-//                            .getValues());
-//                } else {
-//                    stagingNode.setProperty(property.getName(), property
-//                            .getValue());
-//                }
-//                s.save();
-//            } catch (RepositoryException e) {
-//                logger.error("Cannot set property", e);
-//            } finally {
-//                s.logout();
-//            }
-//        } catch (RepositoryException e) {
-//            logger.error("Cannot get session", e);
-//        }
-    }
-    
+
     public void doUpdate(JCRSessionWrapper s, List<Updateable> delayedUpdates) throws RepositoryException {
         try {
             JCRNodeWrapper node = s.getNode(nodePath);

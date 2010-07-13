@@ -145,8 +145,8 @@ public class ImageService {
             if (contentDate.after(thumbDate)) {
                 AddedNodeFact thumbNode = new AddedNodeFact(node);
                 File f = getThumbFile(imageNode, size,square, drools);
-                drools.insert(new ChangedPropertyFact(thumbNode, Constants.JCR_DATA, f, drools, false));
-                drools.insert(new ChangedPropertyFact(thumbNode, Constants.JCR_LASTMODIFIED, new GregorianCalendar(), drools, false));
+                drools.insert(new ChangedPropertyFact(thumbNode, Constants.JCR_DATA, f, drools));
+                drools.insert(new ChangedPropertyFact(thumbNode, Constants.JCR_LASTMODIFIED, new GregorianCalendar(), drools));
             }
         } else {
             File f = getThumbFile(imageNode, size,square, drools);
@@ -154,9 +154,9 @@ public class ImageService {
             AddedNodeFact thumbNode = new AddedNodeFact(imageNode, name, "jnt:resource", drools);
             if (thumbNode.getNode() != null) {
                 drools.insert(thumbNode);
-                drools.insert(new ChangedPropertyFact(thumbNode, Constants.JCR_DATA, f, drools, false));
-                drools.insert(new ChangedPropertyFact(thumbNode, Constants.JCR_MIMETYPE, imageNode.getMimeType(), drools, false));
-                drools.insert(new ChangedPropertyFact(thumbNode, Constants.JCR_LASTMODIFIED, new GregorianCalendar(), drools, false));
+                drools.insert(new ChangedPropertyFact(thumbNode, Constants.JCR_DATA, f, drools));
+                drools.insert(new ChangedPropertyFact(thumbNode, Constants.JCR_MIMETYPE, imageNode.getMimeType(), drools));
+                drools.insert(new ChangedPropertyFact(thumbNode, Constants.JCR_LASTMODIFIED, new GregorianCalendar(), drools));
             }
         }
     }
@@ -195,7 +195,7 @@ public class ImageService {
             if (ip == null) {
                 return;
             }
-            drools.insert(new ChangedPropertyFact(imageNode, propertyName, ip.getHeight(), drools, false));
+            drools.insert(new ChangedPropertyFact(imageNode, propertyName, ip.getHeight(), drools));
         }
     }
 
@@ -206,7 +206,7 @@ public class ImageService {
             if (ip == null) {
                 return;
             }
-            drools.insert(new ChangedPropertyFact(imageNode, propertyName, ip.getWidth(), drools, false));
+            drools.insert(new ChangedPropertyFact(imageNode, propertyName, ip.getWidth(), drools));
         }
     }
 

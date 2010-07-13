@@ -74,7 +74,7 @@ public class RulesListener extends DefaultEventListener {
     private static final int UPDATE_DELAY_FOR_LOCKED_NODE = 2000;
     private Set<String> ruleFiles;
     private String serverId;
-    
+
     private ThreadLocal<Boolean> inRules = new ThreadLocal<Boolean>();
     private PackageBuilder builder;
 
@@ -95,7 +95,8 @@ public class RulesListener extends DefaultEventListener {
     }
 
     public int getEventTypes() {
-        return Event.NODE_ADDED + Event.NODE_REMOVED + Event.PROPERTY_ADDED + Event.PROPERTY_CHANGED + Event.PROPERTY_REMOVED;
+        return Event.NODE_ADDED + Event.NODE_REMOVED + Event.PROPERTY_ADDED + Event.PROPERTY_CHANGED +
+                Event.PROPERTY_REMOVED;
     }
 
     public int getOperationTypes() {
@@ -164,8 +165,10 @@ public class RulesListener extends DefaultEventListener {
 
             builder = new PackageBuilder(cfg);
             for (String s : ruleFiles) {
-                InputStreamReader drl = new InputStreamReader(new FileInputStream(SettingsBean.getInstance().getJahiaEtcDiskPath() + s));
-                dslFiles.add(new File(SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/rules/rules.dsl"));
+                InputStreamReader drl = new InputStreamReader(
+                        new FileInputStream(SettingsBean.getInstance().getJahiaEtcDiskPath() + s));
+                dslFiles.add(
+                        new File(SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/rules/rules.dsl"));
                 builder.addPackageFromDrl(drl, new StringReader(getDslFiles()));
             }
 
@@ -210,7 +213,7 @@ public class RulesListener extends DefaultEventListener {
 
             drl = new InputStreamReader(new FileInputStream(dsrlFile));
 
-            packageBuilder.addPackageFromDrl(drl,new StringReader(getDslFiles()));
+            packageBuilder.addPackageFromDrl(drl, new StringReader(getDslFiles()));
 
             PackageBuilderErrors errors = packageBuilder.getErrors();
 
@@ -245,12 +248,12 @@ public class RulesListener extends DefaultEventListener {
 
 
     public void onEvent(EventIterator eventIterator) {
-        if (((JCREventIterator)eventIterator).getOperationType() != JCRObservationManager.SESSION_SAVE) {
+        if (((JCREventIterator) eventIterator).getOperationType() != JCRObservationManager.SESSION_SAVE) {
             return;
         }
 
         final JCRSessionWrapper session = ((JCREventIterator) eventIterator).getSession();
-        final String userId = session.getUser() != null ? session.getUser().getName():"";
+        final String userId = session.getUser() != null ? session.getUser().getName() : "";
         final Locale locale = session.getLocale();
 
         final Map<String, AddedNodeFact> eventsMap = new HashMap<String, AddedNodeFact>();
@@ -275,136 +278,145 @@ public class RulesListener extends DefaultEventListener {
                 Event event = eventIterator.nextEvent();
                 events.add(event);
             }
-            JCRTemplate.getInstance().doExecuteWithSystemSession(
-                    userId, workspace, locale, new JCRCallback<Object>() {
-                        public Object doInJCR(JCRSessionWrapper s) throws RepositoryException {
-                            Iterator<Event> it = events.iterator();
+            JCRTemplate.getInstance().doExecuteWithSystemSession(userId, workspace, locale, new JCRCallback<Object>() {
+                public Object doInJCR(JCRSessionWrapper s) throws RepositoryException {
+                    Iterator<Event> it = events.iterator();
 
-                            while (it.hasNext()) {
-                                Event event = it.next();
-                                if (isExternal(event)) {
-                                    continue;
-                                }
-                                try {
-                                    if (!event.getPath().startsWith("/jcr:system/")) {
-                                        if (event.getType() == Event.NODE_ADDED) {
-                                            JCRNodeWrapper n = s.getNode(event.getPath());
-                                            if (n.isNodeType("jmix:observable")) {
-                                                final String identifier = n.getIdentifier();
-                                                AddedNodeFact rn = eventsMap.get(identifier);
-                                                if (rn == null) {
-                                                    rn = new AddedNodeFact(n);
-                                                    eventsMap.put(identifier, rn);
-                                                }
-                                                list.add(rn);
-                                            }
-                                        } else if (event.getType() == Event.PROPERTY_ADDED || event.getType() == Event.PROPERTY_CHANGED) {
-                                            String path = event.getPath();
-                                            String propertyName = path.substring(path.lastIndexOf('/') + 1);
-                                            if (!propertiesToIgnore.contains(propertyName)) {
-                                                JCRPropertyWrapper p = (JCRPropertyWrapper) s.getItem(path);
+                    while (it.hasNext()) {
+                        Event event = it.next();
+                        if (isExternal(event)) {
+                            continue;
+                        }
+                        try {
+                            if (!event.getPath().startsWith("/jcr:system/")) {
+                                if (event.getType() == Event.NODE_ADDED) {
+                                    JCRNodeWrapper n = s.getNode(event.getPath());
+                                    if (n.isNodeType("jmix:observable")) {
+                                        final String identifier = n.getIdentifier();
+                                        AddedNodeFact rn = eventsMap.get(identifier);
+                                        if (rn == null) {
+                                            rn = new AddedNodeFact(n);
+                                            eventsMap.put(identifier, rn);
+                                        }
+                                        list.add(rn);
+                                    }
+                                } else if (event.getType() == Event.PROPERTY_ADDED ||
+                                        event.getType() == Event.PROPERTY_CHANGED) {
+                                    String path = event.getPath();
+                                    String propertyName = path.substring(path.lastIndexOf('/') + 1);
+                                    if (!propertiesToIgnore.contains(propertyName)) {
+                                        JCRPropertyWrapper p = (JCRPropertyWrapper) s.getItem(path);
 
-                                                JCRNodeWrapper parent = p.getParent();
+                                        JCRNodeWrapper parent = p.getParent();
 //                                    if (parent.isNodeType("jnt:translation")) {
 //                                        parent = parent.getParent();
 //                                    }
-                                                if (parent.isNodeType(Constants.NT_RESOURCE) || parent.isNodeType("jmix:observable")) {
-                                                    AddedNodeFact rn;
-                                                    if (parent.isNodeType(Constants.MIX_REFERENCEABLE)) {
-                                                        final String identifier = parent.getIdentifier();
-                                                        rn = eventsMap.get(identifier);
-                                                        if (rn == null) {
-                                                            rn = new AddedNodeFact(parent);
-                                                            eventsMap.put(identifier, rn);
-                                                        }
-                                                    } else {
-                                                        rn = new AddedNodeFact(parent);
-                                                    }
-                                                    list.add(new ChangedPropertyFact(rn, p));
-                                                }
-                                            }
-                                        } else if (event.getType() == Event.NODE_REMOVED) {
-                                            String parentPath = null;
-                                            try {
-                                                parentPath = StringUtils.substringBeforeLast(event.getPath(), "/");
-                                                JCRNodeWrapper parent = s.getNode(parentPath);
+                                        if (parent.isNodeType(Constants.NT_RESOURCE) ||
+                                                parent.isNodeType("jmix:observable")) {
+                                            AddedNodeFact rn;
+                                            if (parent.isNodeType(Constants.MIX_REFERENCEABLE)) {
                                                 final String identifier = parent.getIdentifier();
-                                                AddedNodeFact w = eventsMap.get(identifier);
-                                                if (w == null) {
-                                                    w = new AddedNodeFact(parent);
-                                                    eventsMap.put(identifier, w);
+                                                rn = eventsMap.get(identifier);
+                                                if (rn == null) {
+                                                    rn = new AddedNodeFact(parent);
+                                                    eventsMap.put(identifier, rn);
                                                 }
-
-                                                final DeletedNodeFact e = new DeletedNodeFact(w, event.getPath());
-                                                e.setIdentifier(event.getIdentifier());
-                                                e.setSession(s);
-                                                list.add(e);
-                                            } catch (PathNotFoundException e) {
+                                            } else {
+                                                rn = new AddedNodeFact(parent);
                                             }
-                                        } else if (event.getType() == Event.PROPERTY_REMOVED) {
-                                            String path = event.getPath();
-                                            int index = path.lastIndexOf('/');
-                                            String nodePath = path.substring(0, index);
-                                            String propertyName = path.substring(index + 1);
-                                            if (!propertiesToIgnore.contains(propertyName)) {
-                                                try {
-                                                    JCRNodeWrapper n = s.getNode(nodePath);
-                                                    String key = n.isNodeType(Constants.MIX_REFERENCEABLE) ? n.getIdentifier() : n.getPath();
-                                                    AddedNodeFact rn = eventsMap.get(key);
-                                                    if (rn == null) {
-                                                        rn = new AddedNodeFact(n);
-                                                        eventsMap.put(key, rn);
-                                                    }
-                                                    list.add(new DeletedPropertyFact(rn, propertyName));
-                                                } catch (PathNotFoundException e) {
-                                                    // ignore if parent has also been deleted ?
-                                                }
-                                            }
+                                            list.add(new ChangedPropertyFact(rn, p));
                                         }
                                     }
-                                } catch (PathNotFoundException pnfe) {
-                                    logger.error("Error when executing event. Unable to find node or property for path: " + event.getPath(), pnfe);
-                                } catch (Exception e) {
-                                    logger.error("Error when executing event", e);
+                                } else if (event.getType() == Event.NODE_REMOVED) {
+                                    String parentPath = null;
+                                    try {
+                                        parentPath = StringUtils.substringBeforeLast(event.getPath(), "/");
+                                        JCRNodeWrapper parent = s.getNode(parentPath);
+                                        final String identifier = parent.getIdentifier();
+                                        AddedNodeFact w = eventsMap.get(identifier);
+                                        if (w == null) {
+                                            w = new AddedNodeFact(parent);
+                                            eventsMap.put(identifier, w);
+                                        }
+
+                                        final DeletedNodeFact e = new DeletedNodeFact(w, event.getPath());
+                                        e.setIdentifier(event.getIdentifier());
+                                        e.setSession(s);
+                                        list.add(e);
+                                    } catch (PathNotFoundException e) {
+                                    }
+                                } else if (event.getType() == Event.PROPERTY_REMOVED) {
+                                    String path = event.getPath();
+                                    int index = path.lastIndexOf('/');
+                                    String nodePath = path.substring(0, index);
+                                    String propertyName = path.substring(index + 1);
+                                    if (!propertiesToIgnore.contains(propertyName)) {
+                                        try {
+                                            JCRNodeWrapper n = s.getNode(nodePath);
+                                            String key = n.isNodeType(Constants.MIX_REFERENCEABLE) ? n.getIdentifier() :
+                                                    n.getPath();
+                                            AddedNodeFact rn = eventsMap.get(key);
+                                            if (rn == null) {
+                                                rn = new AddedNodeFact(n);
+                                                eventsMap.put(key, rn);
+                                            }
+                                            list.add(new DeletedPropertyFact(rn, propertyName));
+                                        } catch (PathNotFoundException e) {
+                                            // ignore if parent has also been deleted ?
+                                        }
+                                    }
                                 }
                             }
-                            if (!list.isEmpty()) {
-                                long time = System.currentTimeMillis();
-                                if (logger.isDebugEnabled()) {
-                                    if (list.size() > 3) {
-                                        logger.debug("Executing rules for " + list.subList(0, 3) + " ... and " + (list.size() - 3) + " other nodes");
-                                    } else {
-                                        logger.debug("Executing rules for " + list);
-                                    }
-                                }
-                                final List<Updateable> delayedUpdates = new ArrayList<Updateable>();
+                        } catch (PathNotFoundException pnfe) {
+                            logger.error("Error when executing event. Unable to find node or property for path: " +
+                                    event.getPath(), pnfe);
+                        } catch (Exception e) {
+                            logger.error("Error when executing event", e);
+                        }
+                    }
+                    if (!list.isEmpty()) {
+                        long time = System.currentTimeMillis();
+                        if (logger.isDebugEnabled()) {
+                            if (list.size() > 3) {
+                                logger.debug(
+                                        "Executing rules for " + list.subList(0, 3) + " ... and " + (list.size() - 3) +
+                                                " other nodes");
+                            } else {
+                                logger.debug("Executing rules for " + list);
+                            }
+                        }
+                        final List<Updateable> delayedUpdates = new ArrayList<Updateable>();
 
 
-                                Map<String, Object> globals = getGlobals(userId, delayedUpdates);
+                        Map<String, Object> globals = getGlobals(userId, delayedUpdates);
 
-                                executeRules(list, globals);
+                        inRules.set(Boolean.TRUE);
 
-                                if (list.size() > 3) {
-                                    logger.info("Rules executed for " + workspace + " " + list.subList(0, 3) + " ... and " + (list.size() - 3) + " other nodes in " + (System.currentTimeMillis() - time) + "ms");
-                                } else {
-                                    logger.info("Rules executed for " + workspace + " " + list + " in " + (System.currentTimeMillis() - time) + "ms");
-                                }
+                        executeRules(list, globals);
 
-                                if (s.hasPendingChanges()) {
-                                    inRules.set(Boolean.TRUE);
-                                    try {
-                                        s.save();
-                                    } finally {
-                                        inRules.set(null);
-                                    }
-                                }
+                        if (list.size() > 3) {
+                            logger.info("Rules executed for " + workspace + " " + list.subList(0, 3) + " ... and " +
+                                    (list.size() - 3) + " other nodes in " + (System.currentTimeMillis() - time) +
+                                    "ms");
+                        } else {
+                            logger.info("Rules executed for " + workspace + " " + list + " in " +
+                                    (System.currentTimeMillis() - time) + "ms");
+                        }
 
-                                if (!delayedUpdates.isEmpty()) {
-                                    TimerTask t = new DelayedUpdatesTimerTask(userId, delayedUpdates);
-                                    rulesTimer.schedule(t, UPDATE_DELAY_FOR_LOCKED_NODE);
-                                }
+                        try {
+                            if (s.hasPendingChanges()) {
+                                s.save();
+                            }
+                        } finally {
+                            inRules.set(null);
+                        }
 
-                                
+                        if (!delayedUpdates.isEmpty()) {
+                            TimerTask t = new DelayedUpdatesTimerTask(userId, delayedUpdates);
+                            rulesTimer.schedule(t, UPDATE_DELAY_FOR_LOCKED_NODE);
+                        }
+
+
 //                                Set<Object> objects = new HashSet<Object>();
 //                                for (Iterator<Object> iterator = list.iterator(); iterator.hasNext();) {
 //                                    Object o = iterator.next();
@@ -422,10 +434,10 @@ public class RulesListener extends DefaultEventListener {
 ////                            n.checkout();
 ////                        }
 //                                }
-                            }
-                            return null;
-                        }
-                    });
+                    }
+                    return null;
+                }
+            });
         } catch (Exception e) {
             logger.error("Error when executing event", e);
         }
@@ -439,7 +451,7 @@ public class RulesListener extends DefaultEventListener {
         globals.put("workspace", workspace);
         globals.put("delayedUpdates", delayedUpdates);
         for (Map.Entry<String, Object> entry : globalObjects.entrySet()) {
-            globals.put(entry.getKey(),entry.getValue());
+            globals.put(entry.getKey(), entry.getValue());
         }
         return globals;
     }
@@ -453,7 +465,7 @@ public class RulesListener extends DefaultEventListener {
     }
 
     public void addGlobalObject(String key, Object value) {
-        globalObjects.put(key,value);
+        globalObjects.put(key, value);
     }
 
     class DelayedUpdatesTimerTask extends TimerTask {
@@ -476,19 +488,25 @@ public class RulesListener extends DefaultEventListener {
             try {
                 JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper s) throws RepositoryException {
-                        List<Updateable> newDelayed = new ArrayList<Updateable>();
+                        inRules.set(Boolean.TRUE);
+                        try {
+                            List<Updateable> newDelayed = new ArrayList<Updateable>();
 
-                        for (Updateable p : updates) {
-                            p.doUpdate(s, newDelayed);
-                        }
-                        s.save();
-                        if (!newDelayed.isEmpty()) {
-                            updates = newDelayed;
-                            if (count < 3) {
-                                rulesTimer.schedule(new DelayedUpdatesTimerTask(username, newDelayed, count + 1), UPDATE_DELAY_FOR_LOCKED_NODE * count);
-                            } else {
-                                logger.error("Node still locked, max count reached, forget pending changes");
+                            for (Updateable p : updates) {
+                                p.doUpdate(s, newDelayed);
                             }
+                            s.save();
+                            if (!newDelayed.isEmpty()) {
+                                updates = newDelayed;
+                                if (count < 3) {
+                                    rulesTimer.schedule(new DelayedUpdatesTimerTask(username, newDelayed, count + 1),
+                                            UPDATE_DELAY_FOR_LOCKED_NODE * count);
+                                } else {
+                                    logger.error("Node still locked, max count reached, forget pending changes");
+                                }
+                            }
+                        } finally {
+                            inRules.set(null);
                         }
                         return null;
                     }

@@ -39,21 +39,17 @@ rule "Mark node as docspace file"
 	then
         Log "Tag file as docspace file (jmix:docspaceFile) for node " + node.getPath()
         Add the type jmix:docspaceFile
-end
-
-rule "Create file in docspace"
-   when
-      The type jmix:docspaceFile has been assigned to a node
-   then
-       Add the type jmix:comments
-       Create a new node post of type jnt:post under the node.getNode("comments")
-       Set the property content of the post with the value "file uploaded"
+        Add the type jmix:comments
+        Create a new node post of type jnt:post under the node.getNode("comments")
+        Set the property content of the post with the value "file uploaded"
 end
 
 rule "Update file in docspace"
    when
       A file content has been modified
 	   - it has the extension type jmix:docspaceFile
+        The node has a parent
+             - it has the extension type jmix:docspace
    then
        Create a new node post of type jnt:post under the node.getNode("comments")
        Set the property content of the post with the value "file updated"

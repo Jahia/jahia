@@ -1,7 +1,6 @@
 package org.jahia.services.content;
 
 import javax.jcr.Property;
-import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.*;
 import javax.jcr.observation.EventListener;
@@ -9,9 +8,8 @@ import java.util.*;
 
 /**
  * Observation manager implementation
- *
+ * <p/>
  * Execute listener synchronously after session.save()
- *
  */
 public class JCRObservationManager implements ObservationManager {
     public static final int SESSION_SAVE = 1;
@@ -27,8 +25,8 @@ public class JCRObservationManager implements ObservationManager {
     public static final int NODE_MERGE = 1 << 12;
 
     private static ThreadLocal<JCRSessionWrapper> currentSession = new ThreadLocal<JCRSessionWrapper>();
-    private static ThreadLocal<Boolean> inEvents = new ThreadLocal<Boolean>();
-    private static ThreadLocal<Map<JCRSessionWrapper,List<Event>>> events = new ThreadLocal<Map<JCRSessionWrapper,List<Event>>>();
+    private static ThreadLocal<Map<JCRSessionWrapper, List<Event>>> events =
+            new ThreadLocal<Map<JCRSessionWrapper, List<Event>>>();
     private static List<EventConsumer> listeners = new ArrayList<EventConsumer>();
 
     private JCRWorkspaceWrapper ws;
@@ -82,8 +80,9 @@ public class JCRObservationManager implements ObservationManager {
      * @param noLocal      a <code>boolean</code>.
      * @throws javax.jcr.RepositoryException If an error occurs.
      */
-    public void addEventListener(EventListener listener, int eventTypes, String absPath, boolean isDeep, String[] uuid, String[] nodeTypeName, boolean noLocal) throws RepositoryException {
-        listeners.add(new EventConsumer(ws.getSession(), listener,  eventTypes));
+    public void addEventListener(EventListener listener, int eventTypes, String absPath, boolean isDeep, String[] uuid,
+                                 String[] nodeTypeName, boolean noLocal) throws RepositoryException {
+        listeners.add(new EventConsumer(ws.getSession(), listener, eventTypes));
     }
 
     /**
@@ -131,7 +130,8 @@ public class JCRObservationManager implements ObservationManager {
         return null;
     }
 
-    public EventJournal getEventJournal(int i, String s, boolean b, String[] strings, String[] strings1) throws RepositoryException {
+    public EventJournal getEventJournal(int i, String s, boolean b, String[] strings, String[] strings1)
+            throws RepositoryException {
         return null;
     }
 
@@ -163,44 +163,38 @@ public class JCRObservationManager implements ObservationManager {
     }
 
     private static void consume(JCRSessionWrapper session, int operationType) {
-        Map<JCRSessionWrapper,List<Event>> map = events.get();
-//        if (inEvents.get() == null) {
-            events.set(null);
-            currentSession.set(null);            
-            inEvents.set(Boolean.TRUE);
-            try {
-                if (map != null && map.containsKey(session)) {
-                    List<Event> list = map.get(session);
-                    for (EventConsumer consumer : listeners) {
-                        if (consumer.session.getWorkspace().getName().equals(session.getWorkspace().getName())) {
-                            List<Event> filteredEvents = new ArrayList<Event>();
-                            for (Event event : list) {
-                                if ((consumer.eventTypes & event.getType()) != 0) {
-                                    filteredEvents.add(event);
-                                }
-                            }
-                            consumer.listener.onEvent(new JCREventIterator(session,operationType, filteredEvents.iterator(), filteredEvents.size()));
+        Map<JCRSessionWrapper, List<Event>> map = events.get();
+        events.set(null);
+        currentSession.set(null);
+        if (map != null && map.containsKey(session)) {
+            List<Event> list = map.get(session);
+            for (EventConsumer consumer : listeners) {
+                if (consumer.session.getWorkspace().getName().equals(session.getWorkspace().getName())) {
+                    List<Event> filteredEvents = new ArrayList<Event>();
+                    for (Event event : list) {
+                        if ((consumer.eventTypes & event.getType()) != 0) {
+                            filteredEvents.add(event);
                         }
                     }
+                    consumer.listener.onEvent(new JCREventIterator(session, operationType, filteredEvents.iterator(),
+                            filteredEvents.size()));
                 }
-            } finally {
-                inEvents.set(null);
-            }            
-//        }
+            }
+        }
     }
 
-    public static <X> X doWorkspaceWriteCall(JCRSessionWrapper session, int operationType, JCRCallback<X> callback) throws RepositoryException {
+    public static <X> X doWorkspaceWriteCall(JCRSessionWrapper session, int operationType, JCRCallback<X> callback)
+            throws RepositoryException {
         setCurrentSession(session);
         X res;
         try {
             res = callback.doInJCR(session);
         } finally {
-            consume(session,operationType);
+            consume(session, operationType);
             setCurrentSession(null);
         }
         return res;
     }
-
 
 
     class EventConsumer {

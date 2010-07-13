@@ -186,6 +186,7 @@ public class AddedNodeFact implements Updateable {
         node.checkout();
         node.addMixin(type);
         drools.insert(new ChangedPropertyFact(this, node.getProperty(Constants.JCR_MIXINTYPES)));
+        node.getSession().save();
         //        drools.update(this);
     }
 
@@ -193,6 +194,7 @@ public class AddedNodeFact implements Updateable {
         node.checkout();
         node.removeMixin(type);
         drools.insert(new ChangedPropertyFact(this, node.getProperty(Constants.JCR_MIXINTYPES)));
+        node.getSession().save();
         //        drools.update(this);
     }
 

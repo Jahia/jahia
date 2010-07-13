@@ -397,6 +397,9 @@
           </row1>
         </pagecontent>
       </search-results>
+      <my-profile jcr:primaryType="jnt:page" j:templateNode="/templateSets/templates-intranet/templates/base/my-profile">
+        <j:translation_en jcr:title_en="My Profile" jcr:language="en" jcr:primaryType="jnt:translation" />
+      </my-profile>
 
       <j:acl jcr:primaryType="jnt:acl">
         <GRANT_r_editor j:privileges="jcr:read jcr:read_live jcr:write" j:protected="false" j:principal="r:editor" j:aceType="GRANT" jcr:primaryType="jnt:ace" />

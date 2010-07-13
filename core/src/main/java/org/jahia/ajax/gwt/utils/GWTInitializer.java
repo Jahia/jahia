@@ -169,7 +169,6 @@ public class GWTInitializer {
             URLGenerator url = (URLGenerator) request.getAttribute("url");
             params.put(JahiaGWTParameters.BASE_URL, url.getBase());
             params.put(JahiaGWTParameters.STUDIO_URL, url.getStudio());
-            params.put(JahiaGWTParameters.USER_URL, url.getUserProfile());
             addLanguageSwitcherLinks(renderContext, params, url);
         } else {
             params.put(JahiaGWTParameters.BASE_URL, request.getContextPath().equals("/") ? "" : request.getContextPath() + Render.getRenderServletPath() + "/" + params.get("workspace")  + "/" + locale.toString());

@@ -28,7 +28,7 @@
                 <span class="currentUser"><utility:userProperty/></span>
             </li>
             <li class="topshortcuts-mysettings">
-                <a href="${url.userProfile}"><fmt:message key="userProfile.link"/></a>
+                <a href="${url.base}${renderContext.site.path}/my-profile.html"><fmt:message key="userProfile.link"/></a>
             </li>
             <li>
                 <a href="${url.edit}"><fmt:message key="edit"/></a>

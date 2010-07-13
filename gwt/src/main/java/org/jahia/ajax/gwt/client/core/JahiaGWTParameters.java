@@ -59,7 +59,6 @@ public class JahiaGWTParameters {
     public static final String QUERY_STRING = "queryString";
     public static final String STUDIO_URL = "studioUrl";
     public static final String BASE_URL = "baseUrl";
-    public static final String USER_URL = "userUrl";
 
     public static final String SYSTEM_USER = " system "; // org.jahia.jaas.JahiaLoginModule.SYSTEM
 

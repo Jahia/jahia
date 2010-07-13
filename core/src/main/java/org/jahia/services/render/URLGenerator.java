@@ -40,8 +40,6 @@ public class URLGenerator {
     private String initializers;
     private String captcha;
 
-    private String userProfile;
-
     private Resource resource;
     private RenderContext context;
 
@@ -180,19 +178,6 @@ public class URLGenerator {
 
     public String getLogout() {
         return logout;
-    }
-
-    public String getUserProfile() {
-        if (userProfile == null) {
-            if (!JahiaUserManagerService.isGuest(context.getUser())) {
-                if (context.getSite() != null) {
-                    userProfile = base + context.getSite().getPath() + "/users/" + context.getUser().getUsername() + "." + resource.getTemplateType();
-                } else {
-                    userProfile = base + "/users/" + context.getUser().getUserKey() + "." + resource.getTemplateType();
-                }
-            }
-        }
-        return userProfile;
     }
 
     public String getCurrentModule() {

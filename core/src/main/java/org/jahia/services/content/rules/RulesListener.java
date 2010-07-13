@@ -250,7 +250,7 @@ public class RulesListener extends DefaultEventListener {
         }
 
         final JCRSessionWrapper session = ((JCREventIterator) eventIterator).getSession();
-        final String userId = session.getUserID();
+        final String userId = session.getUser() != null ? session.getUser().getName():"";
         final Locale locale = session.getLocale();
 
         final Map<String, AddedNodeFact> eventsMap = new HashMap<String, AddedNodeFact>();

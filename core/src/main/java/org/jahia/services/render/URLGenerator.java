@@ -305,6 +305,9 @@ public class URLGenerator {
      * e.g. <code>http://www.jahia.org:8080</code>. The port is omitted in case
      * of standard HTTP (80) and HTTPS (443) ports.
      * 
+     * If the site's server name is configured to be "localhost", then take the
+     * servername from the request.
+     * 
      * @return the server URL, including scheme, host and port, depending on the
      *         current site
      */
@@ -317,6 +320,9 @@ public class URLGenerator {
             // the server name of the site already has
             host = StringUtils.substringBefore(host, ":");
             port = Integer.valueOf(StringUtils.substringAfterLast(host, ":"));
+        }
+        if ("localhost".equals(host)) {
+            host = context.getRequest().getServerName();
         }
         if (port == 0) {
             port = SettingsBean.getInstance().getSiteURLPortOverride();

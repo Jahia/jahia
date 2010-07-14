@@ -110,9 +110,11 @@ public class ResultIteratorTag extends LoopTagSupport {
     }
 
     public void setEnd(int end) throws JspTagException {
-        this.endSpecified = true;
-        this.end = end;
-        validateEnd();
+        if (end > 0) {
+            this.endSpecified = true;
+            this.end = end;
+            validateEnd();
+        }
     }
 
     public void setStep(int step) throws JspTagException {

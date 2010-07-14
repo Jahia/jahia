@@ -35,7 +35,7 @@
         <property name="titleKey" value="label.user"/>
         <property name="items">
             <list>
-                <ref bean="Toolbar.Item.MySettings"/>
+                <!--ref bean="Toolbar.Item.MySettings"/-->
                 <!-- ToDo : <ref bean="Toolbar.Item.myDashBoard"/-->
                 <ref bean="Toolbar.Item.Logout"/>
             </list>
@@ -488,6 +488,7 @@
     </bean>
 
     <!-- My settings-->
+    <!--
     <bean id="Toolbar.Item.MySettings" class="org.jahia.services.uicomponents.bean.toolbar.Item">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RedirectWindowActionItem"/>
@@ -508,7 +509,8 @@
             </list>
         </property>
     </bean>
-
+    -->
+    
     <!-- Administration -->
     <bean id="Toolbar.Item.Admin" class="org.jahia.services.uicomponents.bean.toolbar.Item">
         <property name="actionItem">

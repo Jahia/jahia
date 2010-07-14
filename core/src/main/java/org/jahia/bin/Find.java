@@ -117,7 +117,7 @@ public class Find extends HttpServlet implements Controller {
                 if (refValue != null) {
                      // now it's very important that we escape it properly to avoid injection security holes
                     if (escapeValue) {
-                        refValue = QueryParser.escape(refValue);
+                        // refValue = QueryParser.escape(refValue);
                         if (Query.XPATH.equals(queryLanguage)) {
                             // found this here : http://markmail.org/thread/pd7myawyv2dadmdh
                             refValue = StringUtils.replace(refValue,"'", "\\'");

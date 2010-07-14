@@ -443,7 +443,7 @@ public class PublicationTest extends TestCase {
 //
 //        // Case 1 : let's check the existence of the node property value in the live workspace.
 //
-//        testPropertyInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/contentList1/contentList1_text1", "text", INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE + "1", "Property value for text node 1 was not found or invalid in english live workspace");
+//        testPropertyInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/contentList1/contentList1_text1", "body", INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE + "1", "Property value for text node 1 was not found or invalid in english live workspace");
 //        JCRNodeWrapper liveNode = englishLiveSiteRootNode.getNode("home");
 //        JCRNodeWrapper liveContentList1Node = liveNode.getNode("contentList1");
 //
@@ -456,12 +456,12 @@ public class PublicationTest extends TestCase {
 //
 //        englishEditSession.checkout(editTextNode1);
 //
-//        editTextNode1.setProperty("text", INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE + " update 1");
+//        editTextNode1.setProperty("body", INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE + " update 1");
 //        englishEditSession.save();
 //
 //        jcrService.publish(englishEditSiteHomeNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, true);
 //
-//        testPropertyInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/contentList1/contentList1_text1", "text", INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE + " update 1", "Property value for text node 1 was not found or invalid in english live workspace");
+//        testPropertyInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/contentList1/contentList1_text1", "body", INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE + " update 1", "Property value for text node 1 was not found or invalid in english live workspace");
 //
 //        // Case 3 : not let's unpublish the node and test it's presence in the live workspace.
 //
@@ -534,7 +534,7 @@ public class PublicationTest extends TestCase {
 //        englishEditSession.save();
 //        editTextNode1 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList3/contentList1_text1");
 //        englishEditSession.checkout(editTextNode1);
-//        editTextNode1.setProperty("text", "English text update 2");
+//        editTextNode1.setProperty("body", "English text update 2");
 //        englishEditSession.save();
 //        editContentList3.orderBefore("contentList1_text1", "contentList3_text0");
 //        englishEditSession.save();
@@ -615,8 +615,8 @@ public class PublicationTest extends TestCase {
         // now let's create a shared node and share it in two lists.
         JCRNodeWrapper editContentList0 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList0");
         englishEditSession.checkout(editContentList0);
-        JCRNodeWrapper editSharedNode0 = editContentList0.addNode("shared_node_list0", "jnt:text");
-        editSharedNode0.setProperty("text", INITIAL_ENGLISH_SHARED_TEXT_NODE_PROPERTY_VALUE);
+        JCRNodeWrapper editSharedNode0 = editContentList0.addNode("shared_node_list0", "jnt:mainContent");
+        editSharedNode0.setProperty("body", INITIAL_ENGLISH_SHARED_TEXT_NODE_PROPERTY_VALUE);
         JCRNodeWrapper editContentList1 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList1");
         englishEditSession.checkout(editContentList1);
         JCRNodeWrapper editSharedNode1 = editContentList1.clone(editSharedNode0, "shared_node_list1");
@@ -628,7 +628,7 @@ public class PublicationTest extends TestCase {
 
         JCRNodeWrapper liveContentList0Node = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList0");
 
-        testPropertyInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/contentList0/shared_node_list0", "text", INITIAL_ENGLISH_SHARED_TEXT_NODE_PROPERTY_VALUE, "Shared text node 0 property invalid or missing in live workspace !");
+        testPropertyInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/contentList0/shared_node_list0", "body", INITIAL_ENGLISH_SHARED_TEXT_NODE_PROPERTY_VALUE, "Shared text node 0 property invalid or missing in live workspace !");
 
         testChildOrdering(liveContentList0Node, "contentList0_text0", "contentList0_text1", "contentList0_text2" );
         testNodeNotInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/contentList1/shared_node_list1", "Shared text node 1 was not published should not be available in the live workspace !");
@@ -645,16 +645,16 @@ public class PublicationTest extends TestCase {
         //englishEditSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, englishLocale, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
         editSharedNode1 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList1/shared_node_list1");
         englishEditSession.checkout(editSharedNode1);
-        editSharedNode1.setProperty("text", INITIAL_ENGLISH_SHARED_TEXT_NODE_PROPERTY_VALUE + " update 1");
+        editSharedNode1.setProperty("body", INITIAL_ENGLISH_SHARED_TEXT_NODE_PROPERTY_VALUE + " update 1");
         englishEditSession.save();
 
         jcrService.publish(englishEditSiteHomeNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages,
                 true);
 
-        testPropertyInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/contentList0/shared_node_list0", "text", INITIAL_ENGLISH_SHARED_TEXT_NODE_PROPERTY_VALUE + " update 1", "Shared Text node 0 value is not correct !");
+        testPropertyInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/contentList0/shared_node_list0", "body", INITIAL_ENGLISH_SHARED_TEXT_NODE_PROPERTY_VALUE + " update 1", "Shared Text node 0 value is not correct !");
 
         // now let's check the second location has the same value.
-        testPropertyInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/contentList1/shared_node_list1", "text", INITIAL_ENGLISH_SHARED_TEXT_NODE_PROPERTY_VALUE + " update 1", "Shared Text node 1 value is not correct !");
+        testPropertyInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/contentList1/shared_node_list1", "body", INITIAL_ENGLISH_SHARED_TEXT_NODE_PROPERTY_VALUE + " update 1", "Shared Text node 1 value is not correct !");
 
         // Case 3 : now let's unpublish the node and test it's presence in the live workspace.
 
@@ -738,7 +738,7 @@ public class PublicationTest extends TestCase {
         englishEditSession.save();
         editSharedNode1 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/contentList3/shared_node_list3");
         englishEditSession.checkout(editSharedNode1);
-        editSharedNode1.setProperty("text", "English text update 2");
+        editSharedNode1.setProperty("body", "English text update 2");
         englishEditSession.save();
         editContentList3.orderBefore("shared_node_list3", "contentList3_text0");
         englishEditSession.save();

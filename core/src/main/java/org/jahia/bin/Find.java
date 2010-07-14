@@ -89,6 +89,7 @@ public class Find extends HttpServlet implements Controller {
         // the actual value.
 
         query = expandRequestMarkers(request, query, true, StringUtils.defaultIfEmpty(request.getParameter("language"), Query.JCR_SQL2), false);
+        logger.debug("Using expanded query=[" + query + "]");
 
         Query q = qm.createQuery(query, StringUtils.defaultIfEmpty(request.getParameter("language"), Query.JCR_SQL2));
 
@@ -380,21 +381,29 @@ public class Find extends HttpServlet implements Controller {
                 alreadyIncludedPropertyValues = new HashMap<String, String>();
             }
             if (serializeRows) {
+                logger.debug("Serializing rows into JSON result structure...");
                 RowIterator rows = result.getRows();
+                int resultCount = 0;
                 while (rows.hasNext()) {
                     JSONObject serializedRow = serializeRow(rows.nextRow(), columns, depth, escape, alreadyIncludedIdentifiers, propertyMatchRegexp, alreadyIncludedPropertyValues);
                     if (serializedRow != null) {
                         results.put(serializedRow);
+                        resultCount++;
                     }
                 }
+                logger.debug("Found " + resultCount + " results.");
             } else {
+                logger.debug("Serializing nodes into JSON result structure...");
                 NodeIterator nodes = result.getNodes();
+                int resultCount = 0;
                 while (nodes.hasNext()) {
                     JSONObject serializedNode = serializeNode(nodes.nextNode(), depth, escape, propertyMatchRegexp, alreadyIncludedPropertyValues);
                     if (serializedNode != null) {
                         results.put(serializedNode);
+                        resultCount++;
                     }
                 }
+                logger.debug("Found " + resultCount + " results.");
             }
             results.write(response.getWriter());
         } catch (JSONException e) {

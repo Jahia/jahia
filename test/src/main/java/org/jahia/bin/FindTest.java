@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.Set;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 /**
  * Test case for find servlet.
@@ -34,7 +34,7 @@ import static org.junit.Assert.assertNotNull;
  */
 public class FindTest {
 
-    private static Logger logger = Logger.getLogger(FindPrincipalTest.class);
+    private static Logger logger = Logger.getLogger(FindTest.class);
     
     private HttpClient client;
     private final static String TESTSITE_NAME = "findTestSite";
@@ -42,6 +42,7 @@ public class FindTest {
 
     private static JahiaSite site;
     private final static String INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE = "English text";
+    private static final String COMPLEX_QUERY_VALUE = "a:+-*\"&()[]{}$/\\%\'";
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
@@ -73,11 +74,14 @@ public class FindTest {
             JCRNodeWrapper englishLiveSiteRootNode = englishLiveSession.getNode(SITECONTENT_ROOT_NODE);
             JCRNodeWrapper englishEditSiteHomeNode = (JCRNodeWrapper) englishEditSiteRootNode.getNode("home");
 
-            TestHelper.createList(englishEditSiteHomeNode, "contentList0", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
-            TestHelper.createList(englishEditSiteHomeNode, "contentList1", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
-            TestHelper.createList(englishEditSiteHomeNode, "contentList2", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
-            TestHelper.createList(englishEditSiteHomeNode, "contentList3", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
-            TestHelper.createList(englishEditSiteHomeNode, "contentList4", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
+            JCRNodeWrapper contentList0 = TestHelper.createList(englishEditSiteHomeNode, "contentList0", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
+            JCRNodeWrapper complexValueNode = contentList0.addNode("complex-value", "jnt:mainContent");
+            complexValueNode.setProperty("jcr:title", COMPLEX_QUERY_VALUE);
+            complexValueNode.setProperty("body", COMPLEX_QUERY_VALUE);
+            JCRNodeWrapper contentList1 = TestHelper.createList(englishEditSiteHomeNode, "contentList1", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
+            JCRNodeWrapper contentList2 = TestHelper.createList(englishEditSiteHomeNode, "contentList2", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
+            JCRNodeWrapper contentList3 = TestHelper.createList(englishEditSiteHomeNode, "contentList3", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
+            JCRNodeWrapper contentList4 = TestHelper.createList(englishEditSiteHomeNode, "contentList4", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
 
             englishEditSession.save();
 
@@ -141,7 +145,7 @@ public class FindTest {
 
         PostMethod method = new PostMethod("http://localhost:8080/cms/find/default/en");
         method.addParameter("query", "/jcr:root"+SITECONTENT_ROOT_NODE+"//element(*, nt:base)[jcr:contains(.,'{$q}*')]");
-        method.addParameter("q", "a:+-*\"&()[]{}$/\\%\'"); // to test if the reserved characters work correctly.
+        method.addParameter("q", COMPLEX_QUERY_VALUE); // to test if the reserved characters work correctly.
         method.addParameter("language", javax.jcr.query.Query.XPATH);
         method.addParameter("propertyMatchRegexp", "{$q}.*");
         method.addParameter("removeDuplicatePropValues", "true");
@@ -155,15 +159,19 @@ public class FindTest {
         int statusCode = client.executeMethod(method);
 
         if (statusCode != HttpStatus.SC_OK) {
-            System.err.println("Method failed: " + method.getStatusLine());
+            logger.error("Method failed: " + method.getStatusLine());
         }
 
         // Read the response body.
         String responseBody = method.getResponseBodyAsString();
 
+        logger.debug("Status code=" + statusCode +" JSON response=[" + responseBody + "]");
+
         JSONArray jsonResults = new JSONArray(responseBody);
 
         assertNotNull("A proper JSONObject instance was expected, got null instead", jsonResults);
+
+        assertTrue("Result should not be empty !", (jsonResults.length() > 0));
 
         // @todo we need to add more tests to validate results.
 
@@ -188,15 +196,19 @@ public class FindTest {
         int statusCode = client.executeMethod(method);
 
         if (statusCode != HttpStatus.SC_OK) {
-            System.err.println("Method failed: " + method.getStatusLine());
+            logger.error("Method failed: " + method.getStatusLine());
         }
 
         // Read the response body.
         String responseBody = method.getResponseBodyAsString();
 
+        logger.debug("Status code=" + statusCode +" JSON response=[" + responseBody + "]");
+
         JSONArray jsonResults = new JSONArray(responseBody);
 
         assertNotNull("A proper JSONObject instance was expected, got null instead", jsonResults);
+
+        assertTrue("Result should not be empty !", (jsonResults.length() > 0));
 
         // @todo we need to add more tests to validate results.
 
@@ -207,7 +219,7 @@ public class FindTest {
 
         PostMethod method = new PostMethod("http://localhost:8080/cms/find/default/en");
         method.addParameter("query", "select * from [nt:base] as base where isdescendantnode([/jcr:root"+SITECONTENT_ROOT_NODE+"/]) and contains(base.*,'{$q}*')");
-        method.addParameter("q", "a:+-*\"&()[]{}$/\\%\'"); // to test if the reserved characters work correctly.
+        method.addParameter("q", COMPLEX_QUERY_VALUE); // to test if the reserved characters work correctly.
         method.addParameter("language", javax.jcr.query.Query.JCR_SQL2);
         method.addParameter("propertyMatchRegexp", "{$q}.*");
         method.addParameter("removeDuplicatePropValues", "true");
@@ -221,15 +233,19 @@ public class FindTest {
         int statusCode = client.executeMethod(method);
 
         if (statusCode != HttpStatus.SC_OK) {
-            System.err.println("Method failed: " + method.getStatusLine());
+            logger.error("Method failed: " + method.getStatusLine());
         }
 
         // Read the response body.
         String responseBody = method.getResponseBodyAsString();
 
+        logger.debug("Status code=" + statusCode + " JSON response=[" + responseBody + "]");
+        
         JSONArray jsonResults = new JSONArray(responseBody);
 
         assertNotNull("A proper JSONObject instance was expected, got null instead", jsonResults);
+
+        assertTrue("Result should not be empty !", (jsonResults.length() > 0));
 
         // @todo we need to add more tests to validate results.
 

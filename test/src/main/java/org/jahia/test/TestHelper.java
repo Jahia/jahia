@@ -369,9 +369,9 @@ public class TestHelper {
         JCRNodeWrapper contentList = parentNode.addNode(listName, "jnt:contentList");
 
         for (int i=0; i < elementCount; i++) {
-            JCRNodeWrapper textNode = contentList.addNode(listName + "_text" + Integer.toString(i), "jnt:text");
+            JCRNodeWrapper textNode = contentList.addNode(listName + "_text" + Integer.toString(i), "jnt:mainContent");
             textNode.setProperty("jcr:title", textPrefix + Integer.toString(i));
-            textNode.setProperty("text", textPrefix + Integer.toString(i));
+            textNode.setProperty("body", textPrefix + Integer.toString(i));
         }
         return contentList;
     }

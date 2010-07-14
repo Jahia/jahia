@@ -17,7 +17,7 @@ function toggleSearchMode(field) {
 </template:addResources>
 
 <div>
-    <s:form name="advancedSearchForm" class="Form advancedSearchForm" method="get">
+    <s:form name="advancedSearchForm" class="Form advancedSearchForm" method="get" action="${url.base}${renderContext.mainResource.node.path}.html">
         <fieldset>
             <legend><fmt:message key="search.advancedSearch.criteria.text.title"/></legend>
             <p><label class="left" for="searchTerm"><fmt:message key="search"/></label>&nbsp;<s:termMatch selectionOptions="all_words,exact_phrase,any_word,as_is"/>&nbsp;<s:term id="searchTerm"/></p>

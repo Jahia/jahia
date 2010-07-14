@@ -868,7 +868,9 @@
           <search-results jcr:mixinTypes="jmix:sitemap" jcr:created="2010-07-09T17:50:31.984+02:00" j:displayInMenu="primary" jcr:primaryType="jnt:page" changefreq="monthly" jcr:lastModifiedBy=" system  system " j:templateNode="/sites/ACME/templates/base" jcr:createdBy=" system " jcr:lastModified="2010-07-09T17:50:34.216+02:00" priority="0.5">
             <j:translation_en jcr:lastModifiedBy=" system  system " jcr:title_en="Search results" jcr:language="en" jcr:lastModified="2010-07-09T17:50:34.216+02:00" jcr:primaryType="jnt:translation" />
             <pagecontent jcr:created="2010-07-09T17:50:31.986+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system  system " jcr:createdBy=" system " jcr:lastModified="2010-07-09T17:50:34.216+02:00">
-              <simple-search j:node="/sites/ACME/contents/site_components/simple-search" jcr:created="2010-07-09T17:50:31.987+02:00" jcr:primaryType="jnt:contentReference" jcr:lastModifiedBy=" system  system " jcr:createdBy=" system " jcr:lastModified="2010-07-09T17:50:34.216+02:00" />
+              <advanced-search jcr:primaryType="jnt:advancedSearchForm" jcr:created="2010-07-09T17:50:31.987+02:00" jcr:lastModifiedBy=" system  system " jcr:createdBy=" system " jcr:lastModified="2010-07-09T17:50:34.216+02:00" >
+                <j:translation_en jcr:title_en="Advanced search" jcr:language="en" jcr:primaryType="jnt:translation" jcr:lastModifiedBy=" system  system " jcr:lastModified="2010-07-09T17:50:34.216+02:00" />
+              </advanced-search>                        
               <results autoSuggest="true" pageSize="10" jcr:created="2010-07-09T17:50:31.988+02:00" jcr:primaryType="jnt:searchResults" jcr:lastModifiedBy=" system  system " autoSuggestHitCount="2" jcr:createdBy=" system " jcr:lastModified="2010-07-09T17:50:34.216+02:00" autoSuggestMinimumHitCount="2">
                 <j:translation_en jcr:lastModifiedBy=" system  system " jcr:title_en="Results" jcr:language="en" jcr:lastModified="2010-07-09T17:50:34.216+02:00" jcr:primaryType="jnt:translation" />
               </results>

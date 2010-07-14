@@ -594,11 +594,11 @@ public class PublicationTest extends TestCase {
         JCRNodeWrapper englishLiveSiteRootNode = englishLiveSession.getNode(SITECONTENT_ROOT_NODE);
         JCRNodeWrapper englishEditSiteHomeNode = (JCRNodeWrapper) englishEditSiteRootNode.getNode("home");
 
-        createList(englishEditSiteHomeNode, "contentList0", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
-        createList(englishEditSiteHomeNode, "contentList1", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
-        createList(englishEditSiteHomeNode, "contentList2", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
-        createList(englishEditSiteHomeNode, "contentList3", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
-        createList(englishEditSiteHomeNode, "contentList4", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
+        TestHelper.createList(englishEditSiteHomeNode, "contentList0", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
+        TestHelper.createList(englishEditSiteHomeNode, "contentList1", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
+        TestHelper.createList(englishEditSiteHomeNode, "contentList2", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
+        TestHelper.createList(englishEditSiteHomeNode, "contentList3", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
+        TestHelper.createList(englishEditSiteHomeNode, "contentList4", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
 
         englishEditSession.save();
 
@@ -805,21 +805,21 @@ public class PublicationTest extends TestCase {
         // now let's setup the pages we will use.
 
         JCRNodeWrapper englishEditPage1Node = englishEditSiteHomeNode.addNode("page1", "jnt:page");
-        createList(englishEditPage1Node, "contentList0", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
-        createList(englishEditPage1Node, "contentList1", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
+        TestHelper.createList(englishEditPage1Node, "contentList0", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
+        TestHelper.createList(englishEditPage1Node, "contentList1", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
         JCRNodeWrapper englishEditPage2Node = englishEditSiteHomeNode.addNode("page2", "jnt:page");
-        createList(englishEditPage2Node, "contentList0", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
-        createList(englishEditPage2Node, "contentList1", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
+        TestHelper.createList(englishEditPage2Node, "contentList0", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
+        TestHelper.createList(englishEditPage2Node, "contentList1", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
         JCRNodeWrapper englishEditPage3Node = englishEditSiteHomeNode.addNode("page3", "jnt:page");
-        createList(englishEditPage3Node, "contentList0", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
-        createList(englishEditPage3Node, "contentList1", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
+        TestHelper.createList(englishEditPage3Node, "contentList0", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
+        TestHelper.createList(englishEditPage3Node, "contentList1", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
 
         JCRNodeWrapper englishEditSubPage1Node = englishEditPage1Node.addNode("page1_subpage1", "jnt:page");
-        createList(englishEditSubPage1Node, "contentList0", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
-        createList(englishEditSubPage1Node, "contentList1", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
+        TestHelper.createList(englishEditSubPage1Node, "contentList0", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
+        TestHelper.createList(englishEditSubPage1Node, "contentList1", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
         JCRNodeWrapper englishEditSubPage2Node = englishEditPage1Node.addNode("page1_subpage2", "jnt:page");
-        createList(englishEditSubPage2Node, "contentList0", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
-        createList(englishEditSubPage2Node, "contentList1", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
+        TestHelper.createList(englishEditSubPage2Node, "contentList0", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
+        TestHelper.createList(englishEditSubPage2Node, "contentList1", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
 
         englishEditSession.save();
 
@@ -1023,7 +1023,7 @@ public class PublicationTest extends TestCase {
         String treeString = "";
         if (nodeWasFoundInLive == false) {
             // if it was not found when it should, let's dump the tree.
-            StringBuilder stringBuilder = dumpTree(new StringBuilder(), sessionWrapper.getNode(SITECONTENT_ROOT_NODE + "/home"), 0, true);
+            StringBuilder stringBuilder = TestHelper.dumpTree(new StringBuilder(), sessionWrapper.getNode(SITECONTENT_ROOT_NODE + "/home"), 0, true);
             treeString = "\nTree dump:\n" + stringBuilder.toString();
         }
 
@@ -1043,7 +1043,7 @@ public class PublicationTest extends TestCase {
         String treeString = "";
         if (nodeWasFoundInLive == true) {
             // if it was found when it shouldn't, let's dump the tree.
-            StringBuilder stringBuilder = dumpTree(new StringBuilder(), sessionWrapper.getNode(SITECONTENT_ROOT_NODE + "/home"), 0, true);
+            StringBuilder stringBuilder = TestHelper.dumpTree(new StringBuilder(), sessionWrapper.getNode(SITECONTENT_ROOT_NODE + "/home"), 0, true);
             treeString = "\nTree dump:\n" + stringBuilder.toString();
         }
 
@@ -1143,35 +1143,6 @@ public class PublicationTest extends TestCase {
         assertTrue("Move inside the same list has not been properly propagated to live mode ! Expected value=" + expectedValue + " but found value=" + foundValue, orderIsValid);
     }
 
-    private void createList(JCRNodeWrapper parentNode, String listName, int elementCount, String textPrefix) throws RepositoryException, LockException, ConstraintViolationException, NoSuchNodeTypeException, ItemExistsException, VersionException {
-        JCRNodeWrapper contentList1 = parentNode.addNode(listName, "jnt:contentList");
-
-        for (int i=0; i < elementCount; i++) {
-            JCRNodeWrapper textNode1 = contentList1.addNode(listName + "_text" + Integer.toString(i), "jnt:text");
-            textNode1.setProperty("text", textPrefix + Integer.toString(i));
-        }        
-    }
-
-    private StringBuilder dumpTree(StringBuilder stringBuilder, Node startNode, int depth, boolean logAsError) throws RepositoryException {
-        for (int i=0; i < depth; i++) {
-            if (i == 0) {
-                stringBuilder.append("+-");
-            } else {
-                stringBuilder.append("--");
-            }
-        }
-        stringBuilder.append(startNode.getName());
-        stringBuilder.append(" = ");
-        stringBuilder.append(startNode.getIdentifier());
-        stringBuilder.append("\n");
-        NodeIterator childNodeIter = startNode.getNodes();
-        while (childNodeIter.hasNext()) {
-            Node currentChild = childNodeIter.nextNode();
-            stringBuilder = dumpTree(stringBuilder, currentChild, depth + 1, logAsError);
-        }
-        return stringBuilder;
-    }
-        
     @Override
     protected void tearDown() throws Exception {
         try {

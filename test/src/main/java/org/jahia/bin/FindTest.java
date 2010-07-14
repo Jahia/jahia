@@ -6,20 +6,22 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.log4j.Logger;
+import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.valves.LoginEngineAuthValveImpl;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.*;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
+import org.jahia.utils.LanguageCodeConverters;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.junit.*;
 
 import javax.jcr.RepositoryException;
 import java.io.IOException;
+import java.util.Locale;
+import java.util.Set;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -38,7 +40,8 @@ public class FindTest {
     private final static String TESTSITE_NAME = "findTestSite";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
 
-    private JahiaSite site;
+    private static JahiaSite site;
+    private final static String INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE = "English text";
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
@@ -46,15 +49,37 @@ public class FindTest {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
-                        TestHelper.createSite(TESTSITE_NAME, "localhost", TestHelper.ACME_TEMPLATES,
-                                null);
+                        site = TestHelper.createSite(TESTSITE_NAME);
                     } catch (Exception e) {
                         logger.error("Cannot create or publish site", e);
                     }
+
                     session.save();
                     return null;
                 }
             });
+
+            JCRPublicationService jcrService = ServicesRegistry.getInstance()
+                    .getJCRPublicationService();
+
+            String defaultLanguage = site.getDefaultLanguage();
+
+            Locale englishLocale = LanguageCodeConverters.languageCodeToLocale("en");
+            Locale frenchLocale = LanguageCodeConverters.languageCodeToLocale("fr");
+
+            JCRSessionWrapper englishEditSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, englishLocale, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
+            JCRSessionWrapper englishLiveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE, englishLocale, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
+            JCRNodeWrapper englishEditSiteRootNode = englishEditSession.getNode(SITECONTENT_ROOT_NODE);
+            JCRNodeWrapper englishLiveSiteRootNode = englishLiveSession.getNode(SITECONTENT_ROOT_NODE);
+            JCRNodeWrapper englishEditSiteHomeNode = (JCRNodeWrapper) englishEditSiteRootNode.getNode("home");
+
+            TestHelper.createList(englishEditSiteHomeNode, "contentList0", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
+            TestHelper.createList(englishEditSiteHomeNode, "contentList1", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
+            TestHelper.createList(englishEditSiteHomeNode, "contentList2", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
+            TestHelper.createList(englishEditSiteHomeNode, "contentList3", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
+            TestHelper.createList(englishEditSiteHomeNode, "contentList4", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
+
+            englishEditSession.save();
 
         } catch (Exception ex) {
             logger.warn("Exception during test setUp", ex);
@@ -149,7 +174,7 @@ public class FindTest {
 
         PostMethod method = new PostMethod("http://localhost:8080/cms/find/default/en");
         method.addParameter("query", "select * from [nt:base] as base where isdescendantnode([/jcr:root"+SITECONTENT_ROOT_NODE+"/]) and contains(base.*,'{$q}*')");
-        method.addParameter("q", "a"); 
+        method.addParameter("q", INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
         method.addParameter("language", javax.jcr.query.Query.JCR_SQL2);
         method.addParameter("propertyMatchRegexp", "{$q}.*");
         method.addParameter("removeDuplicatePropValues", "true");

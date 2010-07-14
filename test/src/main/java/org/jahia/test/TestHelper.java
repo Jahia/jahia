@@ -36,6 +36,7 @@ import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaAdminUser;
@@ -47,6 +48,7 @@ import org.apache.commons.codec.binary.Base64;
 
 import javax.jcr.ItemExistsException;
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
@@ -84,7 +86,7 @@ public class TestHelper {
     public static final String INTRANET_TEMPLATES = "templates-intranet";
 
     public static JahiaSite createSite(String name) throws Exception {
-        return createSite(name, "localhost"+System.currentTimeMillis(), "templates-web", null);
+        return createSite(name, "localhost"+System.currentTimeMillis(), ACME_TEMPLATES, null);
     }
 
     public static JahiaSite createSite(String name, String serverName, String templateSet, File importFile)
@@ -350,6 +352,58 @@ public class TestHelper {
         }
     }
 
+    /**
+     * Little utility method to easily create lists of content.
+     * @param parentNode
+     * @param listName
+     * @param elementCount
+     * @param textPrefix
+     * @throws RepositoryException
+     * @throws LockException
+     * @throws ConstraintViolationException
+     * @throws NoSuchNodeTypeException
+     * @throws ItemExistsException
+     * @throws VersionException
+     */
+    public static JCRNodeWrapper createList(JCRNodeWrapper parentNode, String listName, int elementCount, String textPrefix) throws RepositoryException, LockException, ConstraintViolationException, NoSuchNodeTypeException, ItemExistsException, VersionException {
+        JCRNodeWrapper contentList = parentNode.addNode(listName, "jnt:contentList");
+
+        for (int i=0; i < elementCount; i++) {
+            JCRNodeWrapper textNode = contentList.addNode(listName + "_text" + Integer.toString(i), "jnt:text");
+            textNode.setProperty("jcr:title", textPrefix + Integer.toString(i));
+            textNode.setProperty("text", textPrefix + Integer.toString(i));
+        }
+        return contentList;
+    }
+
+    /**
+     * Utility method to dump a part of a content tree into a String.
+     * @param stringBuilder
+     * @param startNode
+     * @param depth usually 0 when called initially, it is incremented to mark the current depth in the tree.
+     * @param logAsError
+     * @return
+     * @throws RepositoryException
+     */
+    public static StringBuilder dumpTree(StringBuilder stringBuilder, Node startNode, int depth, boolean logAsError) throws RepositoryException {
+        for (int i=0; i < depth; i++) {
+            if (i == 0) {
+                stringBuilder.append("+-");
+            } else {
+                stringBuilder.append("--");
+            }
+        }
+        stringBuilder.append(startNode.getName());
+        stringBuilder.append(" = ");
+        stringBuilder.append(startNode.getIdentifier());
+        stringBuilder.append("\n");
+        NodeIterator childNodeIter = startNode.getNodes();
+        while (childNodeIter.hasNext()) {
+            Node currentChild = childNodeIter.nextNode();
+            stringBuilder = dumpTree(stringBuilder, currentChild, depth + 1, logAsError);
+        }
+        return stringBuilder;
+    }
 
 
 }

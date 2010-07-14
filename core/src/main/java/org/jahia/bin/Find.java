@@ -88,7 +88,7 @@ public class Find extends HttpServlet implements Controller {
         // now let's parse the query to see if it references any other request parameters, and replace the reference with
         // the actual value.
 
-        query = expandRequestMarkers(request, query, true, StringUtils.defaultIfEmpty(request.getParameter("language"), Query.JCR_SQL2));
+        query = expandRequestMarkers(request, query, true, StringUtils.defaultIfEmpty(request.getParameter("language"), Query.JCR_SQL2), false);
 
         Query q = qm.createQuery(query, StringUtils.defaultIfEmpty(request.getParameter("language"), Query.JCR_SQL2));
 
@@ -105,7 +105,7 @@ public class Find extends HttpServlet implements Controller {
         return q;
     }
 
-    protected String expandRequestMarkers(HttpServletRequest request, String sourceString, boolean escapeValue, String queryLanguage) {
+    protected String expandRequestMarkers(HttpServletRequest request, String sourceString, boolean escapeValue, String queryLanguage, boolean escapeForRegexp) {
         String result = new String(sourceString);
         int refMarkerPos = result.indexOf("{$");
         while (refMarkerPos >= 0) {
@@ -123,6 +123,9 @@ public class Find extends HttpServlet implements Controller {
                         } else {
                         }
                         refValue = StringUtils.replace(refValue, "'", "''");
+                    }
+                    if (escapeForRegexp) {
+                        refValue = Pattern.quote(refValue);
                     }
                      result = StringUtils.replace(result, "{$" + refName + "}", refValue);
                 } else {
@@ -361,7 +364,8 @@ public class Find extends HttpServlet implements Controller {
         Pattern propertyMatchRegexp = null;
         String propertyMatchRegexpString = request.getParameter("propertyMatchRegexp");
         if (propertyMatchRegexpString != null) {
-            propertyMatchRegexp = Pattern.compile(expandRequestMarkers(request, propertyMatchRegexpString, false, queryLanguage), Pattern.CASE_INSENSITIVE);
+            String expandedPattern = expandRequestMarkers(request, propertyMatchRegexpString, false, queryLanguage, true);
+            propertyMatchRegexp = Pattern.compile(expandedPattern, Pattern.CASE_INSENSITIVE);
         }
 
         JSONArray results = new JSONArray();

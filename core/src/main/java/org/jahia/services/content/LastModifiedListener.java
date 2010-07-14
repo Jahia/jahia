@@ -41,15 +41,11 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryResult;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Set;
-
-import static org.jahia.api.Constants.*;
 
 /**
  * Listener implementation used to update last modification date.
@@ -75,7 +71,7 @@ public class LastModifiedListener extends DefaultEventListener {
     public void onEvent(final EventIterator eventIterator) {
         try {
             final String userId = ((JCREventIterator)eventIterator).getSession().getUserID();
-            JCRTemplate.getInstance().doExecuteWithSystemSession(userId, workspace, new JCRCallback() {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(userId, workspace, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     Set<String> nodes = new HashSet<String>();
                     Set<String> addedNodes = new HashSet<String>();
@@ -115,7 +111,7 @@ public class LastModifiedListener extends DefaultEventListener {
                                 if (n.isNodeType(Constants.MIX_LAST_MODIFIED) && n.isCheckedOut()) {
                                     n.setProperty("jcr:lastModified",c);
                                     n.setProperty("jcr:lastModifiedBy",userId);
-                                    updateTranslationNodes(n, c, userId);                                    
+                                    handleTranslationNodes(n, c, userId);                                    
                                 }
                             } catch (PathNotFoundException e) {
                                 // node has been removed
@@ -129,7 +125,7 @@ public class LastModifiedListener extends DefaultEventListener {
                                     if (n.isNodeType(Constants.MIX_LAST_MODIFIED)) {
                                         n.setProperty("jcr:lastModified",c);
                                         n.setProperty("jcr:lastModifiedBy",userId);
-                                        updateTranslationNodes(n, c, userId);
+                                        handleTranslationNodes(n, c, userId);
                                     }
                                 }
                             } catch (PathNotFoundException e) {
@@ -147,17 +143,27 @@ public class LastModifiedListener extends DefaultEventListener {
 
     }
 
-    private void updateTranslationNodes(final JCRNodeWrapper node, final Calendar c, final String userId) throws RepositoryException {
-        NodeIterator ni = node.getNodes("j:translation*");
-
-        while (ni.hasNext()) {
-            Node translation = ni.nextNode();
-            if (!translation.isCheckedOut()) {
-                translation.checkout();
+    private void handleTranslationNodes(final JCRNodeWrapper node, final Calendar c,
+            final String userId) throws RepositoryException {
+        if (node.isNodeType(Constants.JAHIANT_TRANSLATION)) {
+            Node parent = node.getParent();
+            if (!parent.isCheckedOut()) {
+                parent.getSession().getWorkspace().getVersionManager().checkout(parent.getPath());
             }
-            translation.setProperty(Constants.JCR_LASTMODIFIED, c);
-            translation.setProperty("jcr:lastModifiedBy",userId);            
-        }
+            parent.setProperty(Constants.JCR_LASTMODIFIED, c);
+            parent.setProperty(Constants.JCR_LASTMODIFIEDBY, userId);
+        } else {
+            NodeIterator ni = node.getNodes("j:translation*");
 
+            while (ni.hasNext()) {
+                Node translation = ni.nextNode();
+                if (!translation.isCheckedOut()) {
+                    translation.getSession().getWorkspace().getVersionManager()
+                            .checkout(translation.getPath());
+                }
+                translation.setProperty(Constants.JCR_LASTMODIFIED, c);
+                translation.setProperty(Constants.JCR_LASTMODIFIEDBY, userId);
+            }
+        }
     }
 }

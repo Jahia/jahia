@@ -1,18 +1,19 @@
+<jsp:useBean id="now" class="java.util.Date"/>
 <div class="listEditToolbar">
     <c:if test="${inSite eq 'true'}">
         <c:if test="${child.locked ne 'true'}">
-            <button
-                    onclick="jreplace('edit-${child.identifier}', '${url.base}${child.path}.edit.edit.ajax',null, 'initEditFields(\'${child.identifier}\')')">
-                <span class="icon-contribute icon-edit"></span><fmt:message key="label.edit"/></button>
+            <button id="editbtn-${child.identifier}"
+                    onclick="$('#editbtn-${child.identifier}').hide();$('#quitbtn-${child.identifier}').show();jreplace('edit-${child.identifier}', '${url.base}${child.path}.edit.edit.ajax',null, 'initEditFields(\'${child.identifier}\')')">
+                <span class="icon-contribute icon-edit"></span><fmt:message key="label.edit"/>&nbsp;</button>
         </c:if>
         <c:if test="${child.locked eq 'true'}">
             <button>
                 <span class="icon-contribute icon-locked"></span>Locked
             </button>
         </c:if>
-        <button
-                onclick="jreplace('edit-${child.identifier}', '${url.base}${child.path}.html.ajax',null, '')">
-            <span class="icon-contribute icon-preview"></span><fmt:message key="label.quit"/></button>
+        <button style="display:none;" id="quitbtn-${child.identifier}"
+                onclick="$('#quitbtn-${child.identifier}').hide();$('#editbtn-${child.identifier}').show();jreplace('edit-${child.identifier}', '${url.base}${child.path}.html.ajax',null, '')">
+            <span class="icon-contribute icon-preview"></span><fmt:message key="label.quit"/>&nbsp;</button>
     </c:if>
     <c:if test="${currentNode.properties['j:canOrderInContribution'].boolean and jcr:hasOrderableChildNodes(currentNode)}">
         <c:if test="${not status.first}">

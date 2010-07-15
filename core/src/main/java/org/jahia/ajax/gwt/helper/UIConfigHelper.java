@@ -43,7 +43,6 @@ import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.preferences.JahiaPreferencesService;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.uicomponents.bean.Visibility;
 import org.jahia.services.uicomponents.bean.contentmanager.Column;
@@ -72,11 +71,6 @@ public class UIConfigHelper {
     private static Map<String, Class<?>> CLASS_CACHE = new HashMap<String, Class<?>>();
     private static transient SchedulerService SCHEDULER_SERVICE;
     private LanguageHelper languages;
-    private JahiaPreferencesService preferencesService;
-
-    public void setPreferencesService(JahiaPreferencesService preferencesService) {
-        this.preferencesService = preferencesService;
-    }
 
     public void setLanguages(LanguageHelper languages) {
         this.languages = languages;

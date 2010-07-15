@@ -89,7 +89,6 @@
     </bean>
 
     <bean name="UiConfigHelper" class="org.jahia.ajax.gwt.helper.UIConfigHelper">
-        <property name="preferencesService" ref="JahiaPreferencesService"/>
         <property name="languages" ref="LanguagesHelper"/>
     </bean>
 

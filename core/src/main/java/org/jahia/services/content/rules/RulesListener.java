@@ -259,7 +259,6 @@ public class RulesListener extends DefaultEventListener {
         final Map<String, AddedNodeFact> eventsMap = new HashMap<String, AddedNodeFact>();
 
         if (Boolean.TRUE.equals(inRules.get())) {
-            System.out.println(" inrules event, skip");
             return;
         }
 

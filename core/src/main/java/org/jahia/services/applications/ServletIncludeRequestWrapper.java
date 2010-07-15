@@ -60,10 +60,8 @@ public class ServletIncludeRequestWrapper extends HttpServletRequestWrapper {
      * This is a version of the wrapper for dispatcher's that don't need to emulate URLs but need Jahia Params
      * 
      * @param httpServletRequest
-     *                Jahia's original request object
      */
-    public ServletIncludeRequestWrapper(HttpServletRequest httpServletRequest,
-            ParamBean jParams) {
+    public ServletIncludeRequestWrapper(HttpServletRequest httpServletRequest) {
         super(httpServletRequest);
         emulatedContextPath = super.getContextPath();
     }

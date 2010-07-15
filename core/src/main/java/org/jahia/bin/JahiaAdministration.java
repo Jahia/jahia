@@ -75,6 +75,8 @@ import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.ServletURLGeneratorImpl;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.applications.ServletIncludeRequestWrapper;
+import org.jahia.services.applications.ServletIncludeResponseWrapper;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.security.license.LicenseManager;
@@ -97,6 +99,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.jsp.jstl.core.Config;
+import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -308,12 +312,12 @@ public class JahiaAdministration extends HttpServlet {
     }
 
 
-    private boolean hasServerPermission(String permissionName, ProcessingContext jParams) {
-        return jParams.getUser().isPermitted(new PermissionIdentity(permissionName));
+    private boolean hasServerPermission(String permissionName, final JahiaUser user) {
+        return user.isPermitted(new PermissionIdentity(permissionName));
     }
 
-    private boolean hasSitePermission(String permissionName, ProcessingContext jParams) {
-        return jParams.getUser().isPermitted(new PermissionIdentity(permissionName, jParams.getSiteKey()));
+    private boolean hasSitePermission(String permissionName, final JahiaUser user, final String siteKey) {
+        return user.isPermitted(new PermissionIdentity(permissionName, siteKey));
     }
 
     //-------------------------------------------------------------------------
@@ -334,6 +338,8 @@ public class JahiaAdministration extends HttpServlet {
         final String operation = op;
 
         ParamBean jParams = initAdminJahiaData(request, response, session);
+        final JahiaUser user = jParams.getUser();
+        final JahiaSite site = jParams.getSite();
 
         try {
             if (operation.equals("processlogin")) {                     // operation : process login...
@@ -345,20 +351,23 @@ public class JahiaAdministration extends HttpServlet {
                 }
 
                 if (accessGranted) {
+                    Locale uiLocale = (Locale) request.getSession().getAttribute(ProcessingContext.SESSION_UI_LOCALE);
                     if(request.getParameter("switchUiLocale") != null) {
-                        Locale uiLocale = LanguageCodeConverters.languageCodeToLocale(request.getParameter("switchUiLocale"));
-                        jParams.setUILocale(uiLocale);
-                        jParams.getSessionState().setAttribute(ProcessingContext.SESSION_UI_LOCALE, uiLocale);        
-                        jParams.getUser().setProperty("preferredLanguage", uiLocale.toString());
+                        uiLocale = LanguageCodeConverters.languageCodeToLocale(request.getParameter("switchUiLocale"));
+                        request.getSession().setAttribute(ProcessingContext.SESSION_UI_LOCALE, uiLocale);
+                        user.setProperty("preferredLanguage", uiLocale.toString());
                     }
+
+                    Config.set(request, Config.FMT_LOCALIZATION_CONTEXT,
+                            new LocalizationContext(new JahiaResourceBundle(uiLocale, site.getTemplatePackageName()), uiLocale));
 
                     AdministrationModulesRegistry modulesRegistry = (AdministrationModulesRegistry) SpringContextSingleton.getInstance().getContext().getBean("administrationModulesRegistry");
                     AdministrationModule currentModule = modulesRegistry.getServerAdministrationModule(operation);
                     if (currentModule != null) {
-                        if (hasServerPermission(currentModule.getPermissionName(), jParams)) {
+                        if (hasServerPermission(currentModule.getPermissionName(), user)) {
                             session.setAttribute(CLASS_NAME + "configJahia", Boolean.TRUE);
                             /** todo clean up this hardcoded mess. Is it even used anymore ? */
-                            if ("sharecomponents".equals(operation) && jParams.getUser().isRoot()) {
+                            if ("sharecomponents".equals(operation) && user.isRoot()) {
                                 request.setAttribute("showAllComponents", Boolean.TRUE);
                             }
 
@@ -370,12 +379,12 @@ public class JahiaAdministration extends HttpServlet {
                     } else {
                         currentModule = modulesRegistry.getSiteAdministrationModule(operation);
                         if (currentModule != null) {
-                            if (hasSitePermission(currentModule.getPermissionName(), jParams)) {
+                            if (hasSitePermission(currentModule.getPermissionName(), user, site.getSiteKey())) {
                                 session.setAttribute(CLASS_NAME + "configJahia", Boolean.FALSE);
                                 if ("search".equals(operation)) {
                                     // Use response response wrapper to ensure correct handling of Application fields output to the response
                                     // @todo is this still necessary with Pluto wrapper in effect ?
-                                    currentModule.service(jParams.getRequest(), jParams.getResponse());
+                                    currentModule.service(new ServletIncludeRequestWrapper(request), new ServletIncludeResponseWrapper(response, true, SettingsBean.getInstance().getCharacterEncoding()));
                                 } else {
                                     currentModule.service(request, response);
                                 }
@@ -798,13 +807,6 @@ public class JahiaAdministration extends HttpServlet {
         if (theSite != null) {
             session.setAttribute(CLASS_NAME + "manageSiteID", theSite.getID());
             session.setAttribute(ProcessingContext.SESSION_SITE, theSite);
-        }
-
-        try {
-            initAdminJahiaData(request, response, session);
-        } catch (JahiaException je) {
-            DefaultErrorHandler.getInstance().handle(je, request, response);
-            return;
         }
 
         long expirationTime = LicenseManager.getInstance().getJahiaExpirationDate();

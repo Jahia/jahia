@@ -120,7 +120,7 @@ public class JahiaFetcherBaseService extends JahiaFetcherService {
                 return "";
             }
 
-            ServletIncludeRequestWrapper requestWrapper = new ServletIncludeRequestWrapper(jParams.getRealRequest(), jParams);
+            ServletIncludeRequestWrapper requestWrapper = new ServletIncludeRequestWrapper(jParams.getRealRequest());
 
             // Let's now call the servlet and retrieve the result of it's processing
             sessionDispatcher.include(requestWrapper, responseWrapper);

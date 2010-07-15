@@ -402,7 +402,7 @@ public class ParamBean extends ProcessingContext {
         if (mRequest == null) {
             HttpServletRequest request = getRealRequest();
             if (request != null)
-                mRequest = new ServletIncludeRequestWrapper(request, this);
+                mRequest = new ServletIncludeRequestWrapper(request);
         }
         return mRequest;
     }

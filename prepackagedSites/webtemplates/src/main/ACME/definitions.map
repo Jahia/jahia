@@ -20,7 +20,7 @@
 [jnt:fileContainer] = jnt:fileReference
  - file = j:node
  - fileDisplayDetails = jmix:renderableReference|j:referenceTemplate
-   true = details
+   true = detail
    false = link
 
 ## Extension types
@@ -43,7 +43,7 @@
 [web_templates:fileContainer] = jnt:fileReference
  - file = j:node 
  - fileDisplayDetails = jmix:renderableReference|j:referenceTemplate
-   true = details
+   true = detail
    false = link
 
 ## News module
@@ -56,7 +56,7 @@
  - newsDate = date
 
 [web_templates:lastNewsContainer] = jnt:lastNews
- - display = jmix:renderableList|j:subNodesTemplate
+ - display = j:subNodesTemplate
    large = default
    medium = medium
 

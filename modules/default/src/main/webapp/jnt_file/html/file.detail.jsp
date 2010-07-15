@@ -6,8 +6,9 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <template:addResources type="css" resources="files.css"/>
-
+<jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>
+<jcr:nodeProperty node="${currentNode}" name="jcr:description" var="description"/>
 <jcr:nodeProperty node="${currentNode}" name="jcr:created" var="created"/>
 <fmt:formatDate value="${created.time}" dateStyle="full" var="displayDate"/>
-<a class="<%=FileUtils.getFileIcon( ((JCRNodeWrapper)pageContext.findAttribute("currentNode")).getName()) %>" href="${currentNode.url}"
-   title="${displayDate}">${currentNode.name}</a> - ${displayDate} - ${currentNode.fileContent.contentType} ${currentNode.fileContent.contentLength} bytes
+<span class="icon <%=FileUtils.getFileIcon( ((JCRNodeWrapper)pageContext.findAttribute("currentNode")).getName()) %>"></span>
+<a href="${url}"${linkTitle}>${fn:escapeXml(not empty title.string ? title.string : currentNode.name)}</a> - ${displayDate} - ${currentNode.fileContent.contentType} ${currentNode.fileContent.contentLength} bytes

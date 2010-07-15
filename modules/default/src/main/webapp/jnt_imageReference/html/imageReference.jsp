@@ -5,7 +5,6 @@
 <jcr:nodeProperty node="${currentNode}" name="j:alternateText" var="title"/>
 <c:set var="node" value="${reference.node}"/>
 <c:if test="${not empty node}">
-<c:url var="url" value="${node.path}.html" context="${url.base}"/>
-<c:url var="url" value="${jcr:isNodeType(node, 'nt:file') ? node.url : url}" context="/"/>
+<c:url var="url" value="${node.url}" context="/"/>
 </c:if>
 <img src="${url}" alt="${fn:escapeXml(not empty title.string ? title.string : currentNode.name)}" />

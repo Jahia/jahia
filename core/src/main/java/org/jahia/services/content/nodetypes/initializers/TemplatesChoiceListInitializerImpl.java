@@ -43,6 +43,7 @@ import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Template;
 
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
@@ -80,6 +81,41 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
                     }
                 }
                 param = "";
+            } else if ("reference".equals(param)) {
+                if (node != null && node.hasProperty("j:node")) {
+                    try {
+                        JCRNodeWrapper refnode = (JCRNodeWrapper) node.getProperty("j:node").getNode();
+                        nodeTypeList.addAll(refnode.getNodeTypes());
+                    } catch (ItemNotFoundException e) {
+                    }
+                }
+                param = "";
+            } else if ("mainresource".equals(param)) {
+                JCRNodeWrapper matchingParent = null;
+                JCRNodeWrapper parent = node.getParent();
+                try {
+                    while (true) {
+                        if (parent.isNodeType("jnt:template")) {
+                            matchingParent = parent;
+                            break;
+                        }
+                        parent = parent.getParent();
+                    }
+                    if (matchingParent.hasProperty("j:applyOn")) {
+                        Value[] vs = matchingParent.getProperty("j:applyOn").getValues();
+                        for (Value v : vs) {
+                            nodeTypeList.add(v.getString());
+                        }
+                    }
+                } catch (ItemNotFoundException e) {
+                }
+                if (nodeTypeList.isEmpty()) {
+                    nodeTypeList.add("jnt:page");
+                }
+                param = "";
+            } else if (param != null && param.indexOf(":") > 0) {
+                nodeTypeList.add(param);
+                param = "";
             } else {
                 if (node != null) {
                     nodeTypeList.addAll(node.getNodeTypes());
@@ -87,30 +123,21 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
                     nodeTypeList.add(realNodeType.getName());
                 }
             }
-            templates = new TreeSet<Template>();
+
             if (nodeTypeList.isEmpty()) {
-                templates.addAll(RenderService.getInstance().getAllTemplatesSet());
-            } else {
-                for (String s : nodeTypeList) {
-                    templates.addAll(RenderService.getInstance().getTemplatesSet(
-                            NodeTypeRegistry.getInstance().getNodeType(s)));
-                }
+                nodeTypeList.add("nt:base");
             }
+
+            templates = new TreeSet<Template>();
+
+            for (String s : nodeTypeList) {
+                templates.addAll(RenderService.getInstance().getTemplatesSet(
+                        NodeTypeRegistry.getInstance().getNodeType(s)));
+            }
+
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
-
-//                NodeIterator children = node.getNodes();
-//                while (children.hasNext()) {
-//                    JCRNodeWrapper child = (JCRNodeWrapper) children.nextNode();
-//                    final List<String> nodeTypesList = child.getNodeTypes();
-//                    for (String s : nodeTypesList) {
-//                        final SortedSet<Template> templateSortedSet = RenderService.getInstance()
-//                                .getTemplatesSet(NodeTypeRegistry.getInstance().getNodeType(s));
-//                        templates.addAll(templateSortedSet);
-//                    }
-//                }
-
 
         List<ChoiceListValue> vs = new ArrayList<ChoiceListValue>();
         for (Template template : templates) {

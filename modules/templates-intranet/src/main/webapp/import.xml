@@ -38,7 +38,7 @@
           </footer>
           <wrappercontent jcr:primaryType="jnt:contentList">
 
-            <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:referenceTemplate="fullpage" />
+            <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:mainResourceTemplate="fullpage" />
           </wrappercontent>
           <pagetitle jcr:primaryType="jnt:contentList" />
           <topfooter jcr:primaryType="jnt:contentList" />

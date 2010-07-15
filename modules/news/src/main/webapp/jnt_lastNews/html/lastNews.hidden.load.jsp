@@ -20,3 +20,4 @@
 
 <c:set target="${moduleMap}" property="editable" value="false" />
 <c:set target="${moduleMap}" property="listQuery" value="${listQuery}" />
+<c:set target="${moduleMap}" property="subNodesTemplate" value="${currentNode.properties['j:subNodesTemplate'].string}" />

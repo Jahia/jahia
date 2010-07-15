@@ -3,4 +3,4 @@
 [jmix:skinnable] mixin
  extends = jmix:list
  itemtype = layout
- - j:skin (string, choicelist[templates=skin,resourceBundle,moduleImage='png']) indexed=no
+ - j:skin (string, choicelist[templates=jmix:skinnable,resourceBundle,moduleImage='png']) indexed=no

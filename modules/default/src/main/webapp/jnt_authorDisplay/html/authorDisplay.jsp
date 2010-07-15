@@ -46,13 +46,13 @@
 <template:addResources type="css" resources="mainresource.css"/>
 
 <c:set var="user" value="${renderContext.mainResource.node.properties['jcr:createdBy'].string}"/>
-<c:set var="mainTemplate" value="${currentNode.properties['j:referenceTemplate'].string}"/>
+<c:set var="mainTemplate" value="${currentNode.properties['j:userTemplate'].string}"/>
 <c:choose>
     <c:when test="${renderContext.editMode}">
         <div class="mainResourceArea">
-            <c:if test="${not empty currentNode.properties['j:referenceTemplate'].string}">
+            <c:if test="${not empty currentNode.properties['j:userTemplate'].string}">
                 <div class="mainResourceTemplate">
-                    <span>${currentNode.properties['j:referenceTemplate'].string}</span>
+                    <span>${currentNode.properties['j:userTemplate'].string}</span>
                 </div>
             </c:if>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed dignissim tellus in metus viverra pharetra.

@@ -232,8 +232,14 @@ public class ExtendedNodeType implements NodeType {
     void validate() throws NoSuchNodeTypeException {
         this.declaredSupertypes = new ExtendedNodeType[declaredSupertypeNames.length];
         for (int i = 0; i < declaredSupertypes.length; i++) {
-            this.declaredSupertypes[i] = registry.getNodeType(declaredSupertypeNames[i]);
-            this.declaredSupertypes[i].addSubType(this);
+            final ExtendedNodeType nodeType = registry.getNodeType(declaredSupertypeNames[i]);
+            if (!nodeType.isMixin && i>0) {
+                System.arraycopy(this.declaredSupertypes, 0, this.declaredSupertypes, 1, i);
+                this.declaredSupertypes[0] = nodeType;
+            } else {
+                this.declaredSupertypes[i] = nodeType;
+            }
+            nodeType.addSubType(this);
         }
         for (String s : mixinExtendNames) {
             final ExtendedNodeType type = registry.getNodeType(s);

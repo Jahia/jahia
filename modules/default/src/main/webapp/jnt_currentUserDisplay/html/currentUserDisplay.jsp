@@ -44,13 +44,13 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="mainresource.css"/>
-<c:set var="mainTemplate" value="${currentNode.properties['j:referenceTemplate'].string}"/>
+<c:set var="mainTemplate" value="${currentNode.properties['j:userTemplate'].string}"/>
 <c:choose>
     <c:when test="${not empty inWrapper and inWrapper eq false}">
         <div class="mainResourceArea">
-            <c:if test="${not empty currentNode.properties['j:referenceTemplate'].string}">
+            <c:if test="${not empty currentNode.properties['j:userTemplate'].string}">
                 <div class="mainResourceTemplate">
-                    <span>${currentNode.properties['j:referenceTemplate'].string}</span>
+                    <span>${currentNode.properties['j:userTemplate'].string}</span>
                 </div>
             </c:if>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed dignissim tellus in metus viverra pharetra.

@@ -15,7 +15,8 @@
              alt="${fn:escapeXml(currentNode.name)}"/>
     </c:when>
     <c:otherwise>
-        <a class="<%=FileUtils.getFileIcon( ((JCRNodeWrapper)pageContext.findAttribute("currentNode")).getName()) %>" href="${pageContext.request.contextPath}/files${currentNode.path}"
+        <span class="icon <%=FileUtils.getFileIcon( ((JCRNodeWrapper)pageContext.findAttribute("currentNode")).getName()) %>"></span>
+        <a href="${pageContext.request.contextPath}/files${currentNode.path}"
              title="${displayDate}">${currentNode.name}</a>
     </c:otherwise>
 </c:choose>

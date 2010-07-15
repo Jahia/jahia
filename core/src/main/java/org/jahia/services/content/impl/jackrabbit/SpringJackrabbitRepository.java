@@ -314,7 +314,7 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
             }
             roles.put(roleName, Boolean.valueOf(hasRole));
             
-            logger.info("Checking role " + roleName + " for " + principal.getName() + " in site " + site + " took " + (System.currentTimeMillis() - timer) + " ms");
+            logger.debug("Checking role " + roleName + " for " + principal.getName() + " in site " + site + " took " + (System.currentTimeMillis() - timer) + " ms");
             return hasRole;
         }
     }

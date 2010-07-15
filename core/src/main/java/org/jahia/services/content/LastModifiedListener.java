@@ -145,25 +145,16 @@ public class LastModifiedListener extends DefaultEventListener {
 
     private void handleTranslationNodes(final JCRNodeWrapper node, final Calendar c,
             final String userId) throws RepositoryException {
-        if (node.isNodeType(Constants.JAHIANT_TRANSLATION)) {
-            Node parent = node.getParent();
-            if (!parent.isCheckedOut()) {
-                parent.getSession().getWorkspace().getVersionManager().checkout(parent.getPath());
-            }
-            parent.setProperty(Constants.JCR_LASTMODIFIED, c);
-            parent.setProperty(Constants.JCR_LASTMODIFIEDBY, userId);
-        } else {
-            NodeIterator ni = node.getNodes("j:translation*");
+        NodeIterator ni = node.getNodes("j:translation*");
 
-            while (ni.hasNext()) {
-                Node translation = ni.nextNode();
-                if (!translation.isCheckedOut()) {
-                    translation.getSession().getWorkspace().getVersionManager()
-                            .checkout(translation.getPath());
-                }
-                translation.setProperty(Constants.JCR_LASTMODIFIED, c);
-                translation.setProperty(Constants.JCR_LASTMODIFIEDBY, userId);
+        while (ni.hasNext()) {
+            Node translation = ni.nextNode();
+            if (!translation.isCheckedOut()) {
+                translation.getSession().getWorkspace().getVersionManager()
+                        .checkout(translation.getPath());
             }
+            translation.setProperty(Constants.JCR_LASTMODIFIED, c);
+            translation.setProperty(Constants.JCR_LASTMODIFIEDBY, userId);
         }
     }
 }

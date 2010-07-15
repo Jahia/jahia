@@ -34,8 +34,6 @@ package org.jahia.services.render.filter.cache;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
-import net.sf.ehcache.constructs.blocking.BlockingCache;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.services.content.*;
@@ -45,8 +43,6 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
-
-import java.text.ParseException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -137,9 +133,13 @@ public class HtmlCacheEventListener extends DefaultEventListener {
                 try {
                     JCRNodeWrapper node = session.getNode(finalPath);
                     NodeIterator nodeIterator = node.getSharedSet();
+                    String path = "";
                     while (nodeIterator.hasNext()) {
                         JCRNodeWrapper wrapper = (JCRNodeWrapper) nodeIterator.next();
-                        flushDependenciesOfPath(depCache, flushed, wrapper.getPath());
+                        if (!path.equals(wrapper.getPath())) {
+                            path = wrapper.getPath();
+                            flushDependenciesOfPath(depCache, flushed, path);
+                        }
                     }
                 } catch (PathNotFoundException e) {
                     logger.trace(e.getMessage(), e);
@@ -152,11 +152,11 @@ public class HtmlCacheEventListener extends DefaultEventListener {
     }
 
     private void flushDependenciesOfPath(Cache depCache, Set<String> flushed, String path) {
-        if(logger.isDebugEnabled()) {
-            logger.debug("Flushing caches for path : "+path);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Flushing caches for path : " + path);
         }
         Element element = !flushed.contains(path) ? depCache.get(path) : null;
-        if(element!=null) {
+        if (element != null) {
             flushed.add(path);
             cacheProvider.invalidate(path);
             depCache.remove(element.getKey());

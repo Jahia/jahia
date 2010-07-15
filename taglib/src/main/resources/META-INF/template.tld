@@ -690,7 +690,22 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
-    
+
+    <tag>
+        <description>Add a dependency.
+        </description>
+        <name>addDependency</name>
+        <tag-class>org.jahia.taglibs.template.include.AddDependencyTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>Node to be addes as a dependency</description>
+            <name>node</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>org.jahia.services.content.JCRNodeWrapper</type>
+        </attribute>
+    </tag>
+
     <tag-file>
     	<description>
     		Includes external resources (CSS, JavaScript, inline CSS styles, inline JavaScript), which are required for current page

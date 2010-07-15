@@ -39,7 +39,7 @@
         <span><c:out value="${fn:escapeXml(title.string)}"/></span>
     </c:if>
 </c:if>
-
+<template:addDependency node="${current}"/>
 <c:set var="items" value="${jcr:getChildrenOfType(current,'jmix:navMenuItem')}"/>
         <c:if test="${navMenuLevel eq 1}">
             <div id="navbar">

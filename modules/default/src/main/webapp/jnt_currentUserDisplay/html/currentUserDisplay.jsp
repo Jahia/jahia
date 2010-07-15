@@ -46,7 +46,7 @@
 <template:addResources type="css" resources="mainresource.css"/>
 <c:set var="mainTemplate" value="${currentNode.properties['j:referenceTemplate'].string}"/>
 <c:choose>
-    <c:when test="${renderContext.editMode}">
+    <c:when test="${not empty inWrapper and inWrapper eq false}">
         <div class="mainResourceArea">
             <c:if test="${not empty currentNode.properties['j:referenceTemplate'].string}">
                 <div class="mainResourceTemplate">

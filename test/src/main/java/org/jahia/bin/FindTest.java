@@ -16,6 +16,7 @@ import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.*;
 
 import javax.jcr.RepositoryException;
@@ -110,8 +111,6 @@ public class FindTest {
         // Create an instance of HttpClient.
         client = new HttpClient();
 
-        // todo we should really insert content to test the find.
-
         PostMethod loginMethod = new PostMethod(getLoginServletURL());
         loginMethod.addParameter("username", "root");
         loginMethod.addParameter("password", "root1234");
@@ -121,7 +120,7 @@ public class FindTest {
 
         int statusCode = client.executeMethod(loginMethod);
         if (statusCode != HttpStatus.SC_OK) {
-            System.err.println("Method failed: " + loginMethod.getStatusLine());
+            logger.error("Method failed: " + loginMethod.getStatusLine());
         }
     }
 
@@ -133,7 +132,7 @@ public class FindTest {
 
         int statusCode = client.executeMethod(logoutMethod);
         if (statusCode != HttpStatus.SC_OK) {
-            System.err.println("Method failed: " + logoutMethod.getStatusLine());
+            logger.error("Method failed: " + logoutMethod.getStatusLine());
         }
 
         logoutMethod.releaseConnection();
@@ -172,7 +171,7 @@ public class FindTest {
 
         assertTrue("Result should not be empty !", (jsonResults.length() > 0));
 
-        // @todo we need to add more tests to validate results.
+        validateFindJSONResults(jsonResults);
 
     }
 
@@ -209,7 +208,7 @@ public class FindTest {
 
         assertTrue("Result should not be empty !", (jsonResults.length() > 0));
 
-        // @todo we need to add more tests to validate results.
+        validateFindJSONResults(jsonResults);
 
     }
 
@@ -246,7 +245,7 @@ public class FindTest {
 
         assertTrue("Result should not be empty !", (jsonResults.length() > 0));
 
-        // @todo we need to add more tests to validate results.
+        validateFindJSONResults(jsonResults);
 
     }
 
@@ -267,4 +266,18 @@ public class FindTest {
         return getBaseServerURL() + Jahia.getContextPath() + Find.getFindServletPath();
     }
 
+    private void validateFindJSONResults(JSONArray jsonResults) throws JSONException {
+        for (int i=0; i < jsonResults.length(); i++) {
+            JSONObject jsonObject = (JSONObject) jsonResults.get(i);
+            JSONArray matchingPropertiesJSONArray = jsonObject.getJSONArray("matchingProperties");
+            assertEquals("Expected two matching properties : jcr:title and body", 2, matchingPropertiesJSONArray.length());
+            for (int j=0; j < matchingPropertiesJSONArray.length(); j++) {
+                String matchingPropertyName = (String) matchingPropertiesJSONArray.get(j);
+                String propertyValue = jsonObject.getString(matchingPropertyName);
+                assertNotNull("Property " + matchingPropertyName + " not found or null !", propertyValue);
+                assertTrue("Expected matching property " + matchingPropertyName + " to start with value " + INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE, propertyValue.startsWith(INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE));
+            }
+        }
+    }
+    
 }

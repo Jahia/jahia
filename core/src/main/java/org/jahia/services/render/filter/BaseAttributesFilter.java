@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
+import org.jahia.services.render.TemplateNotFoundException;
 import org.jahia.services.render.URLGenerator;
 import org.jahia.services.render.scripting.Script;
 
@@ -21,11 +22,13 @@ public class BaseAttributesFilter extends AbstractFilter {
         final HttpServletRequest request = context.getRequest();
 
         request.setAttribute("renderContext", context);
-
-        final Script script = service.resolveScript(resource, context);
-
-        chain.pushAttribute(request, "script", script);
-        chain.pushAttribute(request, "scriptInfo", script.getTemplate().getInfo());
+        try {
+            final Script script = service.resolveScript(resource, context);
+            chain.pushAttribute(request, "script", script);
+            chain.pushAttribute(request, "scriptInfo", script.getTemplate().getInfo());
+        } catch (TemplateNotFoundException tne) {
+            // no template found        
+        }
         chain.pushAttribute(request, "workspace", node.getSession().getWorkspace().getName());
         chain.pushAttribute(request, "currentResource", resource);
 

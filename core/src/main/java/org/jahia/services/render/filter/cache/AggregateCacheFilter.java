@@ -269,7 +269,8 @@ public class AggregateCacheFilter extends AbstractFilter {
                         String content = (String) cacheEntry.getObject();
                         outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(),
                                                aggregateContent(cache, content, renderContext));
-                        renderContext.addStaticAsset((Map<String, Set<String>>) cacheEntry.getProperty(RESOURCES));
+                        if (cacheEntry.getProperty(RESOURCES) != null) { renderContext.addStaticAsset((Map<String, Set<String>>) cacheEntry.getProperty(RESOURCES)); }
+                        else {logger.warn("resource not found"); }
                     } else {
                         cache.put(new Element(mrCacheKey, null));
                         logger.debug("Missing content : " + cacheKey);

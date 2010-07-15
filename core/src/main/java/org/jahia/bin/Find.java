@@ -43,6 +43,9 @@ import org.springframework.web.servlet.mvc.Controller;
  */
 public class Find extends HttpServlet implements Controller {
 
+    /** The serialVersionUID. */
+    private static final long serialVersionUID = -3537001082179204764L;
+
     private static Logger logger = Logger.getLogger(Find.class);
 
     private int defaultDepthLimit = 1;
@@ -117,7 +120,7 @@ public class Find extends HttpServlet implements Controller {
                 if (refValue != null) {
                      // now it's very important that we escape it properly to avoid injection security holes
                     if (escapeValue) {
-                        // refValue = QueryParser.escape(refValue);
+                        refValue = QueryParser.escape(refValue);
                         if (Query.XPATH.equals(queryLanguage)) {
                             // found this here : http://markmail.org/thread/pd7myawyv2dadmdh
                             refValue = StringUtils.replace(refValue,"'", "\\'");

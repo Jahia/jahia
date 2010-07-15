@@ -1,0 +1,144 @@
+package org.jahia.services.content;
+
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.log4j.Logger;
+import org.jahia.api.Constants;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.sites.JahiaSite;
+import org.jahia.test.TestHelper;
+import org.jahia.utils.LanguageCodeConverters;
+import org.junit.*;
+import static org.junit.Assert.*;
+
+import javax.jcr.RepositoryException;
+import java.util.Date;
+import java.util.Locale;
+
+/**
+ * A unit test to validate the proper behavior of the auto-splitting algorithm when creating nodes through the API
+ *
+ * @todo can we expand this to also test auto-splitting using rules ?
+ * 
+ * @author loom
+ *         Date: Jul 15, 2010
+ *         Time: 12:30:11 PM
+ */
+public class AutoSplittingTest {
+
+    private static Logger logger = Logger.getLogger(AutoSplittingTest.class);
+
+    private HttpClient client;
+    private final static String TESTSITE_NAME = "findTestSite";
+    private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
+    private final static int TEST_NODE_COUNT = 1000;
+
+    private static JahiaSite site;
+    private static final String AUTO_SPLIT_CONFIG = "constant,testNodes;date,date,yyyy;date,date,MM;date,date,ss";
+    private static final String AUTO_SPLIT_NODETYPE = "jnt:contentList";
+
+    @BeforeClass
+    public static void oneTimeSetUp() throws Exception {
+        try {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    try {
+                        site = TestHelper.createSite(TESTSITE_NAME);
+                    } catch (Exception e) {
+                        logger.error("Cannot create or publish site", e);
+                    }
+
+                    session.save();
+                    return null;
+                }
+            });
+
+            JCRPublicationService jcrService = ServicesRegistry.getInstance()
+                    .getJCRPublicationService();
+
+            String defaultLanguage = site.getDefaultLanguage();
+
+            Locale englishLocale = LanguageCodeConverters.languageCodeToLocale("en");
+            Locale frenchLocale = LanguageCodeConverters.languageCodeToLocale("fr");
+
+            JCRSessionWrapper englishEditSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, englishLocale, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
+            JCRSessionWrapper englishLiveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE, englishLocale, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
+            JCRNodeWrapper englishEditSiteRootNode = englishEditSession.getNode(SITECONTENT_ROOT_NODE);
+            JCRNodeWrapper englishLiveSiteRootNode = englishLiveSession.getNode(SITECONTENT_ROOT_NODE);
+            JCRNodeWrapper englishEditSiteHomeNode = (JCRNodeWrapper) englishEditSiteRootNode.getNode("home");
+
+            englishEditSession.save();
+
+        } catch (Exception ex) {
+            logger.warn("Exception during test setUp", ex);
+        }
+    }
+
+    @AfterClass
+    public static void oneTimeTearDown() throws Exception {
+        try {
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+            if (session.nodeExists(SITECONTENT_ROOT_NODE)) {
+                TestHelper.deleteSite(TESTSITE_NAME);
+            }
+            session.save();
+
+            session.logout();
+        } catch (Exception ex) {
+            logger.warn("Exception during test tearDown", ex);
+        }
+    }
+
+
+    @Before
+    public void setUp() throws Exception {
+    }
+
+    @After
+    public void tearDown() throws Exception {
+    }
+
+    public final class ValueBean {
+        private Date date;
+        private String name;
+        private String title;
+        private String description;
+
+        public ValueBean(Date date, String name, String title, String description) {
+            this.date = date;
+            this.name = name;
+            this.title = title;
+            this.description = description;
+        }
+
+        public Date getDate() {
+            return date;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+    }
+
+    @Test
+    public void testAddNodeWithAutoSplitting() throws RepositoryException {
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+        JCRNodeWrapper homeNode = session.getNode(SITECONTENT_ROOT_NODE + "/home");
+
+        for (int i=0; i < TEST_NODE_COUNT; i++) {
+            ValueBean valueBean = new ValueBean(new Date(), "name" + i, "title" + i, "description" + i);
+            JCRNodeWrapper newNode = JCRAutoSplitUtils.addNodeWithAutoSplitting(homeNode, "testNodeName" + i, "jnt:mainContent", AUTO_SPLIT_CONFIG, AUTO_SPLIT_NODETYPE, valueBean);
+            assertNotNull("Node was not created correctly", newNode);
+        }
+        session.save();
+
+    }
+
+}

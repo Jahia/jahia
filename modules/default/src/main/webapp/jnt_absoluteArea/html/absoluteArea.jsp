@@ -45,7 +45,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="mainresource.css" />
 <c:choose>
-     <c:when test="${not inWrapper}">
+     <c:when test="${not empty inWrapper and inWrapper eq false}">
         <div class="mainResourceAbsoluteArea">
             <div class="mainResourceAbsoluteAreaTemplate">
                 <span>Absolute list : ${currentNode.name}</span>

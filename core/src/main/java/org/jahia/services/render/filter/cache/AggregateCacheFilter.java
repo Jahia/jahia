@@ -64,7 +64,7 @@ import java.util.regex.Pattern;
  *        Created : 8 janv. 2010
  */
 public class AggregateCacheFilter extends AbstractFilter {
-    private transient static Logger logger = Logger.getLogger(CacheFilter.class);
+    private transient static Logger logger = Logger.getLogger(AggregateCacheFilter.class);
     private ModuleCacheProvider cacheProvider;
 
     public static final Pattern ESI_INCLUDE_STARTTAG_REGEXP = Pattern.compile(
@@ -264,6 +264,7 @@ public class AggregateCacheFilter extends AbstractFilter {
                 if (cache.isKeyInCache(mrCacheKey)) {
                     final Element element = cache.get(mrCacheKey);
                     if (element != null && element.getValue() != null) {
+                        logger.debug(cacheKey + " has been found in cache");
                         final CacheEntry cacheEntry = (CacheEntry) element.getValue();
                         String content = (String) cacheEntry.getObject();
                         outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(),

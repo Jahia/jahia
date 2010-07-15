@@ -50,7 +50,7 @@
     <c:set var="mainTemplate" value="${currentNode.properties['j:referenceTemplate'].string}"/>
 </c:if>
 <c:choose>
-     <c:when test="${not inWrapper}">
+     <c:when test="${not empty inWrapper and inWrapper eq false}">
         <div class="mainResourceDisplay">
             <c:if test="${not empty currentNode.properties['j:referenceTemplate'].string}">
             <div class="mainResourceDisplayTemplate">

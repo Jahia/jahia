@@ -1,4 +1,3 @@
-<jsp:useBean id="now" class="java.util.Date"/>
 <div class="listEditToolbar">
     <c:if test="${inSite eq 'true'}">
         <c:if test="${child.locked ne 'true'}">

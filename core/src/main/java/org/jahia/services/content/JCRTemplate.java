@@ -14,7 +14,7 @@ import java.util.Locale;
  * <p/>
  * Requires a {@link JCRSessionFactory} to provide access to a JCR repository.
  *
- * @author Cédric Mailleux
+ * @author Cï¿½dric Mailleux
  */
 public class JCRTemplate {
     private JCRSessionFactory sessionFactory;
@@ -111,6 +111,11 @@ public class JCRTemplate {
     public <X> X doExecuteWithSystemSession(String username, String workspace, Locale locale, JCRCallback<X> callback) throws RepositoryException {
         JCRSessionWrapper session = null;
         try {
+            if (" system ".equals(username)) {
+                username = null;
+            } else if (username != null && username.startsWith(" system ")) {
+                username = username.substring(" system ".length());
+            }
             session = sessionFactory.getSystemSession(username, workspace, locale);
             return callback.doInJCR(session);
         } finally {

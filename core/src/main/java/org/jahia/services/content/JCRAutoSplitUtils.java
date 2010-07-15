@@ -244,7 +244,7 @@ public final class JCRAutoSplitUtils {
      * <code>property,creator;date,creationDate,yyyy;date,creationDate,MM</code>
      * and the following bean :
      * <pre>
-     * class MyBean {
+     * public class MyBean {
      *   public String getCreator();
      *   public Date getCreationDate();
      * }

@@ -142,7 +142,7 @@ public class FindTest {
     public void testFindEscapingWithXPath() throws IOException, JSONException, JahiaException {
 
         PostMethod method = new PostMethod(getFindServletURL()+ "/"+Constants.EDIT_WORKSPACE+"/en");
-        method.addParameter("query", "/jcr:root"+SITECONTENT_ROOT_NODE+"//element(*, nt:base)[jcr:contains(.,'{$q}*')]");
+        method.addParameter("query", "/jcr:root"+SITECONTENT_ROOT_NODE+"//element(*, nt:base)[jcr:contains(.,'{$q}')]");
         method.addParameter("q", COMPLEX_QUERY_VALUE); // to test if the reserved characters work correctly.
         method.addParameter("language", javax.jcr.query.Query.XPATH);
         method.addParameter("propertyMatchRegexp", "{$q}.*");
@@ -216,7 +216,7 @@ public class FindTest {
     public void testFindEscapingWithSQL2() throws IOException, JSONException {
 
         PostMethod method = new PostMethod(getFindServletURL()+ "/"+Constants.EDIT_WORKSPACE+"/en");
-        method.addParameter("query", "select * from [nt:base] as base where isdescendantnode(["+SITECONTENT_ROOT_NODE+"/]) and contains(base.*,'{$q}*')");
+        method.addParameter("query", "select * from [nt:base] as base where isdescendantnode(["+SITECONTENT_ROOT_NODE+"/]) and contains(base.*,'{$q}')");
         method.addParameter("q", COMPLEX_QUERY_VALUE); // to test if the reserved characters work correctly.
         method.addParameter("language", javax.jcr.query.Query.JCR_SQL2);
         method.addParameter("propertyMatchRegexp", "{$q}.*");

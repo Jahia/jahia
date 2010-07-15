@@ -21,7 +21,6 @@ import org.junit.*;
 import javax.jcr.RepositoryException;
 import java.io.IOException;
 import java.util.Locale;
-import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -113,7 +112,7 @@ public class FindTest {
 
         // todo we should really insert content to test the find.
 
-        PostMethod loginMethod = new PostMethod("http://localhost:8080"+ Jahia.getContextPath() +"/cms/login");
+        PostMethod loginMethod = new PostMethod(getLoginServletURL());
         loginMethod.addParameter("username", "root");
         loginMethod.addParameter("password", "root1234");
         loginMethod.addParameter("redirectActive", "false");
@@ -129,7 +128,7 @@ public class FindTest {
     @After
     public void tearDown() throws Exception {
 
-        PostMethod logoutMethod = new PostMethod("http://localhost:8080"+ Jahia.getContextPath() +"/cms/logout");
+        PostMethod logoutMethod = new PostMethod(getLogoutServletURL());
         logoutMethod.addParameter("redirectActive", "false");
 
         int statusCode = client.executeMethod(logoutMethod);
@@ -143,7 +142,7 @@ public class FindTest {
     @Test
     public void testFindEscapingWithXPath() throws IOException, JSONException, JahiaException {
 
-        PostMethod method = new PostMethod("http://localhost:8080"+ Jahia.getContextPath() +"/cms/find/default/en");
+        PostMethod method = new PostMethod(getFindServletURL()+ "/"+Constants.EDIT_WORKSPACE+"/en");
         method.addParameter("query", "/jcr:root"+SITECONTENT_ROOT_NODE+"//element(*, nt:base)[jcr:contains(.,'{$q}*')]");
         method.addParameter("q", COMPLEX_QUERY_VALUE); // to test if the reserved characters work correctly.
         method.addParameter("language", javax.jcr.query.Query.XPATH);
@@ -180,7 +179,7 @@ public class FindTest {
     @Test
     public void testSimpleFindWithSQL2() throws IOException, JSONException {
 
-        PostMethod method = new PostMethod("http://localhost:8080"+ Jahia.getContextPath() +"/cms/find/default/en");
+        PostMethod method = new PostMethod(getFindServletURL()+ "/"+Constants.EDIT_WORKSPACE+"/en");
         method.addParameter("query", "select * from [nt:base] as base where isdescendantnode(["+SITECONTENT_ROOT_NODE+"/]) and contains(base.*,'{$q}*')");
         method.addParameter("q", INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
         method.addParameter("language", javax.jcr.query.Query.JCR_SQL2);
@@ -217,7 +216,7 @@ public class FindTest {
     @Test
     public void testFindEscapingWithSQL2() throws IOException, JSONException {
 
-        PostMethod method = new PostMethod("http://localhost:8080"+ Jahia.getContextPath() +"/cms/find/default/en");
+        PostMethod method = new PostMethod(getFindServletURL()+ "/"+Constants.EDIT_WORKSPACE+"/en");
         method.addParameter("query", "select * from [nt:base] as base where isdescendantnode(["+SITECONTENT_ROOT_NODE+"/]) and contains(base.*,'{$q}*')");
         method.addParameter("q", COMPLEX_QUERY_VALUE); // to test if the reserved characters work correctly.
         method.addParameter("language", javax.jcr.query.Query.JCR_SQL2);
@@ -249,6 +248,23 @@ public class FindTest {
 
         // @todo we need to add more tests to validate results.
 
+    }
+
+    private String getBaseServerURL() {
+        return "http://localhost:8080";
+    }
+
+
+    private String getLoginServletURL() {
+        return getBaseServerURL()+ Jahia.getContextPath() + "/cms/login";
+    }
+
+    private String getLogoutServletURL() {
+        return getBaseServerURL()+ Jahia.getContextPath() + "/cms/logout";
+    }
+
+    private String getFindServletURL() {
+        return getBaseServerURL() + Jahia.getContextPath() + Find.getFindServletPath();
     }
 
 }

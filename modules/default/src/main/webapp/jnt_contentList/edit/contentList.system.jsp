@@ -41,9 +41,9 @@
         </th>
         <th width="5%"><fmt:message key="label.type"/> </th>
         <th width="35%"><fmt:message key="label.title"/> </th>
-        <th width="5%" style="white-space: nowrap;"><fmt:message key="jmix_contentmetadata.j_creationDate"/> </th>
-        <th width="5%" style="white-space: nowrap;"><fmt:message key="jmix_contentmetadata.j_lastModificationDate"/></th>
-        <th width="5%" style="white-space: nowrap;"><fmt:message key="jmix_contentmetadata.j_lastPublishingDate"/></th>
+        <th width="5%" style="white-space: nowrap;"><fmt:message key="mix_created.jcr_created"/> </th>
+        <th width="5%" style="white-space: nowrap;"><fmt:message key="mix_lastModified.jcr_lastModified"/></th>
+        <th width="5%" style="white-space: nowrap;"><fmt:message key="jmix_lastPublished.j_lastPublished"/></th>
         <th width="20%" style="white-space: nowrap;"><fmt:message key="label.workflow"/></th>
         <th width="5%"><fmt:message key="label.lock"/></th>
         <th width="20%" class="lastCol"><fmt:message key="label.action"/> </th>
@@ -53,14 +53,14 @@
         <c:forEach items="${moduleMap.currentList}" var="child" begin="${moduleMap.begin}" end="${moduleMap.end}" varStatus="status">
             <tr class="evenLine">
                 <td align="center">
-                    
                 </td>
                 <td >
                     <c:if test="${jcr:isNodeType(child, 'jnt:contentList')}">
                         <img  height="24" width="24" border="0" style="cursor: pointer;" src="${url.currentModule}/images/icons/folder-contenu.png"/>
                     </c:if>
                     <c:if test="${!jcr:isNodeType(child, 'jnt:contentList')}">
-                        ${fn:escapeXml(child.primaryNodeType.name)}
+                        <img src="${url.currentModule}/icons/${fn:replace(":","_",fn:escapeXml(child.primaryNodeType.name))}.png"/>
+
                     </c:if>
                 </td>
                 <td>

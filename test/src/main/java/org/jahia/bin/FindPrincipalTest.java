@@ -1,6 +1,5 @@
 package org.jahia.bin;
 
-import junit.framework.TestCase;
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
@@ -8,7 +7,6 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.log4j.Logger;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.params.ProcessingContext;
 import org.jahia.params.valves.LoginEngineAuthValveImpl;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionFactory;
@@ -18,15 +16,12 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.After;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.*;
 
 import javax.jcr.RepositoryException;
 import java.io.IOException;
+
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Test of the find principal servlet.
@@ -89,7 +84,7 @@ public class FindPrincipalTest {
 
         // todo we should really insert content to test the find.
 
-        PostMethod loginMethod = new PostMethod("http://localhost:8080/cms/login");
+        PostMethod loginMethod = new PostMethod(getLoginServletURL());
         loginMethod.addParameter("username", "root");
         loginMethod.addParameter("password", "root1234");
         loginMethod.addParameter("redirectActive", "false");
@@ -105,7 +100,7 @@ public class FindPrincipalTest {
     @After
     public void tearDown() throws Exception {
 
-        PostMethod logoutMethod = new PostMethod("http://localhost:8080/cms/logout");
+        PostMethod logoutMethod = new PostMethod(getLogoutServletURL());
         logoutMethod.addParameter("redirectActive", "false");
 
         int statusCode = client.executeMethod(logoutMethod);
@@ -120,7 +115,7 @@ public class FindPrincipalTest {
     @Test
     public void testFindUsers() throws IOException, JSONException, JahiaException {
 
-        PostMethod method = new PostMethod("http://localhost:8080/cms/findPrincipal");
+        PostMethod method = new PostMethod(getFindPrincipalServletURL());
         method.addParameter("principalType", "users");
         method.addParameter("wildcardTerm", "*root*");
 
@@ -149,7 +144,7 @@ public class FindPrincipalTest {
     @Test
     public void testFindGroups() throws IOException, JSONException {
 
-        PostMethod method = new PostMethod("http://localhost:8080/cms/findPrincipal");
+        PostMethod method = new PostMethod(getFindPrincipalServletURL());
         method.addParameter("principalType", "groups");
         method.addParameter("siteKey", TESTSITE_NAME);
         method.addParameter("wildcardTerm", "*administrators*");
@@ -174,6 +169,23 @@ public class FindPrincipalTest {
 
         // @todo we need to add more tests to validate results.
 
+    }
+
+    private String getBaseServerURL() {
+        return "http://localhost:8080";
+    }
+
+
+    private String getLoginServletURL() {
+        return getBaseServerURL()+ Jahia.getContextPath() + "/cms/login";
+    }
+
+    private String getLogoutServletURL() {
+        return getBaseServerURL()+ Jahia.getContextPath() + "/cms/logout";
+    }
+
+    private String getFindPrincipalServletURL() {
+        return getBaseServerURL() + Jahia.getContextPath() + FindPrincipal.getFindPrincipalServletPath();
     }
 
 }

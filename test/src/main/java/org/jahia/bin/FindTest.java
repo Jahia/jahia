@@ -171,7 +171,7 @@ public class FindTest {
 
         assertTrue("Result should not be empty !", (jsonResults.length() > 0));
 
-        validateFindJSONResults(jsonResults);
+        validateFindJSONResults(jsonResults, COMPLEX_QUERY_VALUE);
 
     }
 
@@ -208,7 +208,7 @@ public class FindTest {
 
         assertTrue("Result should not be empty !", (jsonResults.length() > 0));
 
-        validateFindJSONResults(jsonResults);
+        validateFindJSONResults(jsonResults, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
 
     }
 
@@ -245,7 +245,7 @@ public class FindTest {
 
         assertTrue("Result should not be empty !", (jsonResults.length() > 0));
 
-        validateFindJSONResults(jsonResults);
+        validateFindJSONResults(jsonResults, COMPLEX_QUERY_VALUE);
 
     }
 
@@ -266,16 +266,20 @@ public class FindTest {
         return getBaseServerURL() + Jahia.getContextPath() + Find.getFindServletPath();
     }
 
-    private void validateFindJSONResults(JSONArray jsonResults) throws JSONException {
+    private void validateFindJSONResults(JSONArray jsonResults, String textToValidate) throws JSONException {
         for (int i=0; i < jsonResults.length(); i++) {
             JSONObject jsonObject = (JSONObject) jsonResults.get(i);
+            if (jsonObject.has("jcr:score")) {
+                // we are handling a row, let's extract the node from it.
+                jsonObject = jsonObject.getJSONObject("node");
+            }
             JSONArray matchingPropertiesJSONArray = jsonObject.getJSONArray("matchingProperties");
             assertEquals("Expected two matching properties : jcr:title and body", 2, matchingPropertiesJSONArray.length());
             for (int j=0; j < matchingPropertiesJSONArray.length(); j++) {
                 String matchingPropertyName = (String) matchingPropertiesJSONArray.get(j);
                 String propertyValue = jsonObject.getString(matchingPropertyName);
                 assertNotNull("Property " + matchingPropertyName + " not found or null !", propertyValue);
-                assertTrue("Expected matching property " + matchingPropertyName + " to start with value " + INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE, propertyValue.startsWith(INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE));
+                assertTrue("Expected matching property " + matchingPropertyName + " to start with value " + textToValidate, propertyValue.startsWith(textToValidate));
             }
         }
     }

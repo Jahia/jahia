@@ -105,7 +105,9 @@ public class RenderChain {
     }
 
     public void pushAttribute(HttpServletRequest request, String key, Object value) {
-        oldPropertiesMap.put(key, request.getAttribute(key));
+        if (!oldPropertiesMap.containsKey(key)) {
+            oldPropertiesMap.put(key, request.getAttribute(key));
+        }
         request.setAttribute(key, value);
     }
 

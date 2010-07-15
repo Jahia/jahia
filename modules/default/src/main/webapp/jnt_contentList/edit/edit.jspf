@@ -12,7 +12,7 @@
         </c:if>
         <button
                 onclick="jreplace('edit-${child.identifier}', '${url.base}${child.path}.html.ajax',null, '')">
-            <span class="icon-contribute icon-preview"></span><fmt:message key="label.preview"/></button>
+            <span class="icon-contribute icon-preview"></span><fmt:message key="label.quit"/></button>
     </c:if>
     <c:if test="${currentNode.properties['j:canOrderInContribution'].boolean and jcr:hasOrderableChildNodes(currentNode)}">
         <c:if test="${not status.first}">

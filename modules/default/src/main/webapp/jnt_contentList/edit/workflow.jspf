@@ -8,11 +8,11 @@
                         animatedcollapse.addDiv('workflow${child.identifier}-${wf.key}', 'fade=1,speed=700,group=workflow');
                         <c:set var="animatedWFs" value="${animatedWFs}animatedcollapse.addDiv(\'workflow${child.identifier}-${wf.key}\', \'fade=1,speed=700,group=workflow\');"/>
                     </script>
-                    <input class="workflow" type="button" value="${wf.displayName}"
+                    <input class="workflow" type="button" value="<fmt:message key="label.publish"/>"
                            onclick="animatedcollapse.toggle('workflow${child.identifier}-${wf.key}');"/>
                 </c:when>
                 <c:otherwise>
-                    <input class="workflow" type="button" value="${wf.displayName}"
+                    <input class="workflow" type="button" value="<fmt:message key="label.publish"/>"
                            onclick="var callback = '${animatedWFs}${animatedTasks}'+'animatedcollapse.reinit();';startWorkflow('${child.path}', '${wf.provider}:${wf.key}', '${url.base}', '${currentNode.UUID}', '${url.current}.ajax',callback)"/></c:otherwise>
             </c:choose>
         </c:forEach>

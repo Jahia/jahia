@@ -97,6 +97,9 @@ public class HtmlCacheEventListener extends DefaultEventListener {
                     }
                     final int type = event.getType();
                     if (type == Event.PROPERTY_ADDED || type == Event.PROPERTY_CHANGED || type == Event.PROPERTY_REMOVED) {
+                        if (path.endsWith("/j:published")) {
+                            flushParent = true;
+                        }
                         path = path.substring(0, path.lastIndexOf("/"));
                     } else if (type == Event.NODE_ADDED || type == Event.NODE_MOVED || type == Event.NODE_REMOVED) {
                         flushParent = true;

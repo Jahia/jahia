@@ -11,4 +11,4 @@
 <jcr:nodeProperty node="${currentNode}" name="jcr:created" var="created"/>
 <fmt:formatDate value="${created.time}" dateStyle="full" var="displayDate"/>
 <span class="icon <%=FileUtils.getFileIcon( ((JCRNodeWrapper)pageContext.findAttribute("currentNode")).getName()) %>"></span>
-<a href="${url}"${linkTitle}>${fn:escapeXml(not empty title.string ? title.string : currentNode.name)}</a> - ${displayDate} - ${currentNode.fileContent.contentType} ${currentNode.fileContent.contentLength} bytes
+<a href="${currentNode.url}"${linkTitle}>${fn:escapeXml(not empty title.string ? title.string : currentNode.name)}</a> - ${displayDate} - ${currentNode.fileContent.contentType} ${currentNode.fileContent.contentLength} bytes

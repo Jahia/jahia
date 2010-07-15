@@ -93,7 +93,7 @@ public class FindPrincipalTest {
 
         int statusCode = client.executeMethod(loginMethod);
         if (statusCode != HttpStatus.SC_OK) {
-            System.err.println("Method failed: " + loginMethod.getStatusLine());
+            logger.error("Method failed: " + loginMethod.getStatusLine());
         }
     }
 
@@ -105,7 +105,7 @@ public class FindPrincipalTest {
 
         int statusCode = client.executeMethod(logoutMethod);
         if (statusCode != HttpStatus.SC_OK) {
-            System.err.println("Method failed: " + logoutMethod.getStatusLine());
+            logger.error("Method failed: " + logoutMethod.getStatusLine());
         }
 
         logoutMethod.releaseConnection();
@@ -127,7 +127,7 @@ public class FindPrincipalTest {
         int statusCode = client.executeMethod(method);
 
         if (statusCode != HttpStatus.SC_OK) {
-            System.err.println("Method failed: " + method.getStatusLine());
+            logger.error("Method failed: " + method.getStatusLine());
         }
 
         // Read the response body.
@@ -157,7 +157,7 @@ public class FindPrincipalTest {
         int statusCode = client.executeMethod(method);
 
         if (statusCode != HttpStatus.SC_OK) {
-            System.err.println("Method failed: " + method.getStatusLine());
+            logger.error("Method failed: " + method.getStatusLine());
         }
 
         // Read the response body.

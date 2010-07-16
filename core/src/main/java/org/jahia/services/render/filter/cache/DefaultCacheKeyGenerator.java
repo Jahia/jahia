@@ -292,6 +292,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
 
     public void flushUsersGroupsKey() {
         this.aclGroups = null;
+        this.aclRoles = null;
         cache.removeAll();
         cache.flush();
     }

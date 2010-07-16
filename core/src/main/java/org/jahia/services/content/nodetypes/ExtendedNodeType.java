@@ -333,7 +333,7 @@ public class ExtendedNodeType implements NodeType {
         return Collections.unmodifiableList(items);
     }
 
-    public Map<String, ExtendedPropertyDefinition> getPropertyDefinitionsAsMap() {
+    public synchronized Map<String, ExtendedPropertyDefinition> getPropertyDefinitionsAsMap() {
         if (allProperties == null) {
             allProperties = new ListOrderedMap();
 

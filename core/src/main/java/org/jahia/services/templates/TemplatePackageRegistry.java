@@ -49,7 +49,6 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 import javax.jcr.Workspace;
 import javax.jcr.observation.ObservationManager;
 import java.io.File;
@@ -63,6 +62,8 @@ import java.util.*;
 class TemplatePackageRegistry {
 
     private static Logger logger = Logger.getLogger(TemplatePackageRegistry.class);
+    
+    private final static String MODULES_ROOT_PATH = "modules.";
 
     static class ModuleRegistry implements BeanPostProcessor {
 
@@ -167,7 +168,7 @@ class TemplatePackageRegistry {
         /**
          * @param staticAssetMapping the staticAssetMapping to set
          */
-        public void setStaticAssetMapping(Map staticAssetMapping) {
+        public void setStaticAssetMapping(Map<String, String> staticAssetMapping) {
             this.staticAssetMapping = staticAssetMapping;
         }
     }
@@ -353,12 +354,12 @@ class TemplatePackageRegistry {
         // handle resource bundles
         for (JahiaTemplatesPackage sourcePack : registry.values()) {
         	sourcePack.getResourceBundleHierarchy().clear();
-            sourcePack.getResourceBundleHierarchy().add("modules." + sourcePack.getRootFolder() + "." + sourcePack.getResourceBundleName());
+            sourcePack.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + sourcePack.getRootFolder() + "." + sourcePack.getResourceBundleName());
             for (String s : sourcePack.getDepends()) {
-                sourcePack.getResourceBundleHierarchy().add("modules." + lookup(s).getRootFolder() + "." + sourcePack.getResourceBundleName());
+                sourcePack.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + lookup(s).getRootFolder() + "." + sourcePack.getResourceBundleName());
             }
             if (!sourcePack.isDefault()) {
-            	sourcePack.getResourceBundleHierarchy().add("templates.default.resources.DefaultJahiaTemplates");
+            	sourcePack.getResourceBundleHierarchy().add(MODULES_ROOT_PATH + "default.resources.DefaultJahiaTemplates");
             	sourcePack.getResourceBundleHierarchy().add("JahiaTypesResources");
                 sourcePack.getResourceBundleHierarchy().add("JahiaInternalResources");
             } else {

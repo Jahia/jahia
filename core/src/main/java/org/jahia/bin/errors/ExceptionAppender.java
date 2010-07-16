@@ -3,6 +3,7 @@ package org.jahia.bin.errors;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.spi.LoggingEvent;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -22,7 +23,10 @@ public class ExceptionAppender extends AppenderSkeleton {
         //To change body of implemented methods use File | Settings | File Templates.
         if (event.getThrowableInformation() != null) {
             try {
-                ErrorFileDumper.dumpToFile(event.getThrowableInformation().getThrowable(), null);
+                File errorFile = ErrorFileDumper.dumpToFile(event.getThrowableInformation().getThrowable(), null);
+                if (errorFile != null) {
+                    System.err.println("Error dumped to file " + errorFile.getAbsolutePath());
+                }
             } catch (IOException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }

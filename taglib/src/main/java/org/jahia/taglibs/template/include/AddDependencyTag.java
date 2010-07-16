@@ -64,7 +64,9 @@ public class AddDependencyTag extends TagSupport {
     @Override
     public int doEndTag() throws JspException {
         Resource resource = (Resource) pageContext.getRequest().getAttribute("currentResource");
-        resource.getDependencies().add(node);
+        if (node != null) {
+            resource.getDependencies().add(node);
+        }
         node = null;
         return super.doEndTag();    //To change body of overridden methods use File | Settings | File Templates.
     }

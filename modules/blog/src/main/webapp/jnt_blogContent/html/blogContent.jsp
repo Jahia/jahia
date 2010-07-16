@@ -45,7 +45,7 @@
     <ul class="post-tags">
         <jcr:nodeProperty node="${currentNode}" name="j:tags" var="assignedTags"/>
         <c:forEach items="${assignedTags}" var="tag" varStatus="status">
-            <li><a href="${blogHome}?addTag=${tag.node.name}">${tag.node.name}</a></li>
+            <li>${tag.node.name}</li>
         </c:forEach>
     </ul>
     <div class="post-content">

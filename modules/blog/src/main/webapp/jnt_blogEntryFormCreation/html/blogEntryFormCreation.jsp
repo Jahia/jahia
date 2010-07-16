@@ -29,7 +29,7 @@
         </c:forEach>
     </ul>
     <div class="post-content">
-                   <textarea name="text" rows="10" cols="80" id="editContent"></textarea><br/>
+        <p>           <textarea name="text" rows="10" cols="70" id="editContent"></textarea> </p>
         <p>
 
             <fmt:message key="jnt_blog.tagThisBlogPost"/>:&nbsp;
@@ -53,4 +53,3 @@
         </p>
     </div>
 </form>
-

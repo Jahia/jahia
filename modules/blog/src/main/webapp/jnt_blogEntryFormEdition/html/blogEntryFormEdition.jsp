@@ -42,9 +42,9 @@
             </c:forEach>
         </ul>
         <div class="post-content">
-                <textarea name="text" rows="10" cols="80" id="editContent">
+                <p><textarea name="text" rows="10" cols="70" id="editContent">
                     ${fn:escapeXml(text.string)}
-                </textarea>	<br/>
+                </textarea>	</p>
             <p>
 
                 <fmt:message key="blog.label.tag"/>:&nbsp;

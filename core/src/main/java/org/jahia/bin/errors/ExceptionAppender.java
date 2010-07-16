@@ -3,6 +3,8 @@ package org.jahia.bin.errors;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.spi.LoggingEvent;
 
+import java.io.IOException;
+
 /**
  * Created by IntelliJ IDEA.
  * User: loom
@@ -19,7 +21,11 @@ public class ExceptionAppender extends AppenderSkeleton {
     protected void append(LoggingEvent event) {
         //To change body of implemented methods use File | Settings | File Templates.
         if (event.getThrowableInformation() != null) {
-            ErrorLoggingFilter.dumpToFile(event.getThrowableInformation().getThrowable(), 500, null);
+            try {
+                ErrorFileDumper.dumpToFile(event.getThrowableInformation().getThrowable(), null);
+            } catch (IOException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
         }
     }
 

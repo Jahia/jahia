@@ -75,10 +75,6 @@ public class ErrorLoggingFilter implements Filter {
     private static Throwable lastMailedException = null;
     private static int lastMailedExceptionOccurences = 0;
 
-    private static Throwable lastFileDumpedException = null;
-    private static int lastFileDumpedExceptionOccurences = 0;
-    private static long exceptionCount = 0L;
-    
     /*
      * (non-Javadoc)
      * @see javax.servlet.Filter#destroy()
@@ -104,8 +100,14 @@ public class ErrorLoggingFilter implements Filter {
         filterChain.doFilter(request, response);
     }
 
-    public static void dumpToFile(Throwable t, int code, HttpServletRequest request) {
+
+    protected void dumpToFile(HttpServletRequest request) {
         try {
+        Throwable t = getException(request);
+
+        int code = (Integer) request
+                .getAttribute("javax.servlet.error.status_code");
+
         code = code != 0 ? code : SC_INTERNAL_SERVER_ERROR;
 
         if (code < 500) {
@@ -113,49 +115,14 @@ public class ErrorLoggingFilter implements Filter {
             return;
         }
 
-        if (lastFileDumpedException != null && t != null
-                && t.toString().equals(lastFileDumpedException.toString())) {
-            lastFileDumpedExceptionOccurences++;
-            if (lastFileDumpedExceptionOccurences < SettingsBean.getInstance().getFileDumpMaxRegroupingOfPreviousException()) {
-                logger.debug("Same exception, not logging since below fileDumpMaxRegroupingOfPreviousException");
-                return;
+        File errorFile = ErrorFileDumper.dumpToFile(t, request);
+            if (errorFile != null) {
+            logger.error("Error details were dumped to file " + errorFile.getAbsolutePath());
             }
+        } catch (Throwable throwable) {
+            logger.warn("Error creating error file", throwable);
         }
 
-        final File sysTempDir = new File(System.getProperty("java.io.tmpdir"));
-
-        File errorDir = new File(sysTempDir, "jahia-errors");
-        if (!errorDir.exists()) {
-            errorDir.mkdir();
-        }
-        Date now = new Date();
-        SimpleDateFormat directoryDateFormat = new SimpleDateFormat("yyyy_MM_dd");
-        File todaysDirectory = new File(errorDir, directoryDateFormat.format(now));
-        if (!todaysDirectory.exists()) {
-            todaysDirectory.mkdir();
-        }
-        SimpleDateFormat fileDateFormat = new SimpleDateFormat("yyyy_MM_dd-HH_mm_ss_SSS");
-        File errorFile = new File(todaysDirectory, "error-" + fileDateFormat.format(now) + "-" + Long.toString(exceptionCount) + ".txt");
-        StringWriter errorWriter = generateErrorReport(request, t);
-        FileWriter fileWriter = new FileWriter(errorFile);
-        fileWriter.write(errorWriter.toString());
-        fileWriter.close();
-        logger.error("Error logged to file " + errorFile.getAbsolutePath());
-        lastFileDumpedException = t;
-        lastFileDumpedExceptionOccurences = 1;
-
-    } catch (Throwable throwable) {
-        logger.warn("Error creating error file", throwable);
-    }
-
-    }
-
-    protected void dumpToFile(HttpServletRequest request) {
-        Throwable t = getException(request);
-
-        int code = (Integer) request
-                .getAttribute("javax.servlet.error.status_code");
-        dumpToFile(t, code, request);
     }
 
     protected void emailAlert(HttpServletRequest request,
@@ -171,7 +138,7 @@ public class ErrorLoggingFilter implements Filter {
                 }
             }
 
-            StringWriter msgBodyWriter = generateErrorReport(request, t);
+            StringWriter msgBodyWriter = ErrorFileDumper.generateErrorReport(request, t, lastMailedExceptionOccurences, lastMailedException);
 
             ServicesRegistry.getInstance().getMailService().sendMessage(null, null, null, null,
                     "Server Error: " + t.getMessage(), msgBodyWriter
@@ -187,151 +154,6 @@ public class ErrorLoggingFilter implements Filter {
         }
     }
 
-    private static StringWriter generateErrorReport(HttpServletRequest request, Throwable t) {
-        StringWriter msgBodyWriter = new StringWriter();
-        PrintWriter strOut = new PrintWriter(msgBodyWriter);
-        if (lastMailedExceptionOccurences > 1) {
-            strOut.println("");
-            strOut.println("The previous error: " + lastMailedException.getMessage() + " occured " + Integer.toString(lastMailedExceptionOccurences) + " times.");
-            strOut.println("");
-        }
-        strOut.println("");
-        strOut.println("Your Server has generated an error. Please review the details below for additional information: ");
-        strOut.println("");
-        if (t instanceof JahiaException) {
-            JahiaException nje = (JahiaException) t;
-            String severityMsg = "Undefined";
-            switch (nje.getSeverity()) {
-                case JahiaException.WARNING_SEVERITY :
-                    severityMsg = "WARNING";
-                    break;
-                case JahiaException.ERROR_SEVERITY :
-                    severityMsg = "ERROR";
-                    break;
-                case JahiaException.CRITICAL_SEVERITY :
-                    severityMsg = "CRITICAL";
-                    break;
-                case JahiaException.FATAL_SEVERITY :
-                    severityMsg = "FATAL";
-                    break;
-            }
-            strOut.println("Severity: " + severityMsg);
-        }
-        strOut.println("");
-        strOut.println("Error: " + t.getMessage());
-        strOut.println("");
-        if (request != null) {
-            strOut.println("URL: " + request.getRequestURL());
-            if (request.getQueryString() != null) {
-                strOut.println("?" + request.getQueryString());
-            }
-            strOut.println("   Method: " + request.getMethod());
-            strOut.println("");
-            strOut.println("Remote host: " + request.getRemoteHost() + "     Remote Address: " + request.getRemoteAddr());
-            strOut.println("");
-            strOut.println("Request headers:");
-            strOut.println("-----------------");
-            Iterator headerNames = new EnumerationIterator(request.getHeaderNames());
-            while (headerNames.hasNext()) {
-                String headerName = (String) headerNames.next();
-                String headerValue = request.getHeader(headerName);
-                strOut.println("   " + headerName + " : " + headerValue);
-            }
-        }
-
-        strOut.println("");
-        strOut.println("Stack trace:");
-        strOut.println("-------------");
-        String stackTraceStr = stackTraceToString(t);
-        strOut.println(stackTraceStr);
-
-        // now let's output the system properties.
-        strOut.println();
-        strOut.println("System properties:");
-        strOut.println("-------------------");
-        Map orderedProperties = new TreeMap(System.getProperties());
-        Iterator entrySetIter = orderedProperties.entrySet().iterator();
-        while (entrySetIter.hasNext()) {
-            Map.Entry curEntry = (Map.Entry) entrySetIter.next();
-            String curPropertyName = (String) curEntry.getKey();
-            String curPropertyValue = (String) curEntry.getValue();
-            strOut.println("   " + curPropertyName + " : " + curPropertyValue);
-        }
-        strOut.println("");
-
-        if (SettingsBean.getInstance() != null) {
-            strOut.println("Server configuration:");
-            strOut.println("---------------------");
-            SettingsBean settings = SettingsBean.getInstance();
-            Map jahiaOrderedProperties = new TreeMap(settings.getPropertiesFile());
-            Iterator jahiaEntrySetIter = jahiaOrderedProperties.entrySet().iterator();
-            while (jahiaEntrySetIter.hasNext()) {
-                Map.Entry curEntry = (Map.Entry) jahiaEntrySetIter.next();
-                String curPropertyName = (String) curEntry.getKey();
-                String curPropertyValue = null;
-                if (curEntry.getValue() == null) {
-                    curPropertyValue = null;
-                } else if (curEntry.getValue() instanceof String) {
-                    curPropertyValue = (String) curEntry.getValue();
-                } else {
-                    curPropertyValue = curEntry.getValue().toString();
-                }
-                if (curPropertyName.toLowerCase().indexOf("password") == -1) {
-                    strOut.println("   " + curPropertyName + " = " + curPropertyValue);
-                }
-            }
-        }
-
-        strOut.println("");
-        strOut.println("Memory status:");
-        strOut.println("---------------");
-        strOut.println("Max memory   : " + Runtime.getRuntime().maxMemory() + " bytes");
-        strOut.println("Free memory  : " + Runtime.getRuntime().freeMemory() + " bytes");
-        strOut.println("Total memory : " + Runtime.getRuntime().totalMemory() + " bytes");
-
-        strOut.println("");
-        strOut.println("Cache status:");
-        strOut.println("--------------");
-
-        SortedSet sortedCacheNames = new TreeSet(ServicesRegistry.getInstance().getCacheService().getNames());
-        Iterator cacheNameIte = sortedCacheNames.iterator();
-        DecimalFormat percentFormat = new DecimalFormat("###.##");
-        while (cacheNameIte.hasNext()) {
-            String curCacheName = (String) cacheNameIte.next();
-            Object objectCache = ServicesRegistry.getInstance().getCacheService().getCache(curCacheName);
-            if (objectCache instanceof Cache) {
-                Cache curCache = (Cache) objectCache;
-                long cacheLimit = curCache.getCacheLimit();
-                String efficiencyStr = "0";
-                if (!Double.isNaN(curCache.getCacheEfficiency())) {
-                    efficiencyStr = percentFormat.format(curCache.getCacheEfficiency());
-                }
-                strOut.println("name=" + curCacheName +
-                        " size=" + curCache.size() +
-                        " limit=" + cacheLimit / (1024 * 1024) + "MB" +
-                        " successful hits=" + curCache.getSuccessHits() +
-                        " total hits=" + curCache.getTotalHits() +
-                        " efficiency=" + efficiencyStr + "%");
-            }
-        }
-
-        strOut.println("");
-        strOut.println("Thread status:");
-        strOut.println("--------------");
-        ThreadMonitor threadMonitor = new ThreadMonitor();
-        threadMonitor.generateThreadInfo(strOut);
-        strOut.println("");
-        strOut.println("Deadlock status :");
-        threadMonitor.findDeadlock(strOut);
-
-        strOut.println("");
-        strOut.println("Depending on the severity of this error, server may still be operational or not. Please check your");
-        strOut.println("installation as soon as possible.");
-        strOut.println("");
-        strOut.println("Yours Faithfully, ");
-        strOut.println("    Server Notification Service");
-        return msgBodyWriter;
-    }
 
     protected Throwable getException(HttpServletRequest request) {
         Throwable ex = (Throwable) request
@@ -400,8 +222,6 @@ public class ErrorLoggingFilter implements Filter {
 
     protected void handle(HttpServletRequest request,
             HttpServletResponse response) {
-
-        exceptionCount++;
 
         // add request information
         request.setAttribute("org.jahia.exception.requestInfo",
@@ -568,53 +388,5 @@ public class ErrorLoggingFilter implements Filter {
         return info;
     }
 
-    /**
-     * Converts an exception stack trace to a string, going doing into all
-     * the embedded exceptions too to detail as much as possible the real
-     * causes of the error.
-     *
-     * @param t the exception (eventually that contains other exceptions) for
-     *          which we want to convert the stack trace into a string.
-     * @return a string containing all the stack traces of all the exceptions
-     *         contained inside this exception, or an empty string if passed an
-     *         empty string.
-     */
-    protected static String stackTraceToString(Throwable t) {
-        int nestingDepth = getNestedExceptionDepth(t, 0);
-        return recursiveStackTraceToString(t, nestingDepth);
-    }
-
-    protected static String recursiveStackTraceToString(Throwable t, int curDepth) {
-        if (t == null) {
-            return "";
-        }
-        StringWriter msgBodyWriter = new StringWriter();
-        PrintWriter strOut = new PrintWriter(msgBodyWriter);
-        Throwable innerThrowable = t.getCause();
-        if (innerThrowable != null) {
-            String innerExceptionTrace = recursiveStackTraceToString(innerThrowable, curDepth - 1);
-            msgBodyWriter.write(innerExceptionTrace);
-        }
-        if (curDepth == 0) {
-            strOut.println("Cause level : " + curDepth + " (level 0 is the most precise exception)");
-
-        } else {
-            strOut.println("Cause level : " + curDepth);
-        }
-        t.printStackTrace(strOut);
-        return msgBodyWriter.toString();
-    }
-
-    protected static int getNestedExceptionDepth(Throwable t, int curDepth) {
-        if (t == null) {
-            return curDepth;
-        }
-        int newDepth = curDepth;
-        Throwable innerThrowable = t.getCause();
-        if (innerThrowable != null) {
-            newDepth = getNestedExceptionDepth(innerThrowable, curDepth + 1);
-        }
-        return newDepth;
-    }
 
 }

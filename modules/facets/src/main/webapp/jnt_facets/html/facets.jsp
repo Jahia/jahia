@@ -124,9 +124,9 @@
     </query:definition>
     <jcr:jqom var="result" qomBeanName="listQuery" scope="request"/>
 
-    <%@include file="activeFacets.jspf"%>
-    <div class="archives">
+    <div class="facets">
         <h3><fmt:message key="facets.facets"/></h3>
+        <%@include file="activeFacets.jspf"%>        
         <c:forEach items="${result.facetFields}" var="currentFacet">
             <%@include file="facetDisplay.jspf"%>
         </c:forEach>

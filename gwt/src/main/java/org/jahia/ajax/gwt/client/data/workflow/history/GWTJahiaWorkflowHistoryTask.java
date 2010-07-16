@@ -53,19 +53,20 @@ public class GWTJahiaWorkflowHistoryTask extends GWTJahiaWorkflowHistoryItem {
     /**
      * Initializes an instance of this class.
      * 
+     * @param name
      * @param displayName the display name for this item
      * @param processId the ID of the workflow process instance
      * @param provider the workflow provider key
      * @param finished is the workflow completed?
      * @param startDate the start data of the process
      * @param endDate the end date of the process; is <code>null</code> in case
-     *            the process is still running
+*            the process is still running
      * @param duration the process duration
      * @param outcome the task outcome
-     * @param asignee the key of the user, which executed the task
      */
-    public GWTJahiaWorkflowHistoryTask(String displayName, String processId, String provider, boolean finished, Date startDate, Date endDate, Long duration, String outcome, String assignee) {
-        super(displayName, processId, provider, finished, startDate, endDate, duration);
+    public GWTJahiaWorkflowHistoryTask(String name, String displayName, String processId, String provider, boolean finished, Date startDate, Date endDate, Long duration, String outcome,
+                                       String assignee) {
+        super(name, displayName, processId, provider, finished, startDate, endDate, duration);
         setOutcome(outcome);
         setAssignee(assignee);
     }

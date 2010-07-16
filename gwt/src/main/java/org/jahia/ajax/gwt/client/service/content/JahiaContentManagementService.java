@@ -52,6 +52,7 @@ import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.workflow.*;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryItem;
+import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryTask;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
@@ -214,7 +215,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
      *
      * @param uuids the list of node uuids to publish, will not auto publish the parents
      */
-    public void publish(List<String> uuids, boolean allSubTree, String comments, boolean workflow, boolean reverse,List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException;
+    public void publish(List<String> uuids, boolean allSubTree, boolean workflow, boolean reverse,List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException;
 
     /**
      * Unpublish the specified path and its subnodes.
@@ -275,7 +276,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryItems(String nodeId, GWTJahiaWorkflowHistoryItem historyItem, String locale) throws GWTJahiaServiceException;
 
-    List<GWTJahiaNode> getTasksForUser() throws GWTJahiaServiceException;
+    List<GWTJahiaWorkflowHistoryTask>  getTasksForUser() throws GWTJahiaServiceException;
 
     public Integer isValidSession()  throws GWTJahiaServiceException;
 

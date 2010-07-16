@@ -190,10 +190,10 @@ public class PublicationHelper {
      *
      * @param uuids     list of uuids of the nodes to publish
      * @param languages Set of languages to publish if null publish all languages
-     * @param comments
      * @param workflow  @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      */
-    public void publish(List<String> uuids, Set<String> languages, boolean allSubTree, String comments, boolean workflow, boolean reverse, JCRSessionWrapper session,List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException {
+    public void publish(List<String> uuids, Set<String> languages, boolean allSubTree, boolean workflow, boolean reverse, JCRSessionWrapper session,
+                        List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException {
         try {
             // todo : if workflow started on untranslated node, translation will be created and not added into the publish tree calculated here 
 
@@ -209,7 +209,6 @@ public class PublicationHelper {
 
                 HashMap<String, Object> map = new HashMap<String, Object>();
                 List<WorkflowVariable> values = new ArrayList<WorkflowVariable>();
-                values.add(new WorkflowVariable(comments, PropertyType.STRING));
                 map.put("jcr:title", infos.get(0).getRoot().getPath());
                 if (properties != null) {
                     for (GWTJahiaNodeProperty property : properties) {

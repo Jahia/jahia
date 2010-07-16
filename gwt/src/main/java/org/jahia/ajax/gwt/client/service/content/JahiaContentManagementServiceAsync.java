@@ -47,6 +47,7 @@ import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.workflow.*;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryItem;
+import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryTask;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 
@@ -206,7 +207,7 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
      * @param uuids the list of node uuids to publish
      * @param async Local implementation of callback to react on return for asynchronous call to publish
      */
-    void publish(List<String> uuids, boolean allSubTree, String comments, boolean workflow, boolean reverse,List<GWTJahiaNodeProperty> properties, AsyncCallback async);
+    void publish(List<String> uuids, boolean allSubTree, boolean workflow, boolean reverse, List<GWTJahiaNodeProperty> properties, AsyncCallback async);
 
     /**
      * Unpublish the specified path and its subnodes.
@@ -274,7 +275,7 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
     void getWorkflowHistoryItems(String nodeId, GWTJahiaWorkflowHistoryItem historyItem, String locale,
             AsyncCallback<List<GWTJahiaWorkflowHistoryItem>> callback);
 
-    void getTasksForUser(AsyncCallback<List<GWTJahiaNode>> async);
+    void getTasksForUser(AsyncCallback<List<GWTJahiaWorkflowHistoryTask>> async);
 
     void isValidSession(AsyncCallback<Integer> async)  throws GWTJahiaServiceException;
 

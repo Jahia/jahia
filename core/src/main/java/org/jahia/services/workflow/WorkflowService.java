@@ -635,6 +635,10 @@ public class WorkflowService {
         return workflowTask;
     }
 
+    public HistoryWorkflow getHistoryWorkflow(String id, String provider) {
+        return providers.get(provider).getHistoryWorkflows(Collections.singletonList(id)).get(0);
+    }
+
     /**
      * Returns a list of process instance history records for the specified
      * node. This method also returns "active" (i.e. not completed) workflow

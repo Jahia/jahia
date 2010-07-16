@@ -43,6 +43,7 @@ import java.util.Set;
  */
 public class Workflow extends WorkflowBase {
     private final String id;
+    private String startUser;
     private Set<WorkflowAction> availableActions;
     private Date duedate = null;
 
@@ -53,6 +54,14 @@ public class Workflow extends WorkflowBase {
 
     public String getId() {
         return id;
+    }
+
+    public String getStartUser() {
+        return startUser;
+    }
+
+    public void setStartUser(String startUser) {
+        this.startUser = startUser;
     }
 
     public void setAvailableActions(Set<WorkflowAction> availableActions) {

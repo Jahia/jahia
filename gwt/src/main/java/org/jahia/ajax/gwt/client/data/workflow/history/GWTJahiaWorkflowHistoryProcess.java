@@ -53,18 +53,29 @@ public class GWTJahiaWorkflowHistoryProcess extends GWTJahiaWorkflowHistoryItem 
     /**
      * Initializes an instance of this class.
      * 
+     * @param name
      * @param displayName the display name for this item
      * @param processId the ID of the workflow process instance
      * @param provider the workflow provider key
      * @param finished is the workflow completed?
      * @param startDate the start data of the process
      * @param endDate the end date of the process; is <code>null</code> in case
-     *            the process is still running
+*            the process is still running
      * @param duration the process duration
+     * @param workflowStartUser
      */
-    public GWTJahiaWorkflowHistoryProcess(String displayName, String processId, String provider, boolean finished, Date startDate,
-            Date endDate, Long duration) {
-        super(displayName, processId, provider, finished, startDate, endDate, duration);
+    public GWTJahiaWorkflowHistoryProcess(String name, String displayName, String processId, String provider, boolean finished, Date startDate, Date endDate, Long duration,
+                                          String workflowStartUser) {
+        super(name, displayName, processId, provider, finished, startDate, endDate, duration);
+        setWorkflowStartUser(workflowStartUser);
+    }
+
+    public String getWorkflowStartUser() {
+        return get("workflowStartUser");
+    }
+
+    public void setWorkflowStartUser(String workflowStartUser) {
+        set("workflowStartUser", workflowStartUser);
     }
 
 }

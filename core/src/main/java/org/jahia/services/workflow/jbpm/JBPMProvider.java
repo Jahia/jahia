@@ -294,6 +294,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
                     workflow.setDuedate(job.getDuedate());
                 }
                 workflows.add(workflow);
+                workflow.setStartUser(executionService.getVariable(instance.getId(), "user").toString());
             }
         }
         return workflows;

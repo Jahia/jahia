@@ -34,6 +34,7 @@ package org.jahia.services.render;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaService;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.render.filter.RenderChain;
@@ -171,6 +172,21 @@ public class RenderService extends JahiaService {
     }
 
 
+    public boolean hasTemplate(JCRNodeWrapper node, String key) {
+        try {
+            if (hasTemplate(node.getPrimaryNodeType(), key)) {
+                return true;
+            }
+            for (ExtendedNodeType type : node.getMixinNodeTypes()) {
+                if (hasTemplate(type, key)) {
+                    return true;
+                }
+            }
+        } catch (RepositoryException e) {
+
+        }
+        return false;
+    }
     public boolean hasTemplate(ExtendedNodeType nt, String key) {
         for (ScriptResolver scriptResolver : scriptResolvers) {
             if (scriptResolver.hasTemplate(nt, key)) {

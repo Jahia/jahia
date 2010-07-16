@@ -73,6 +73,11 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
 
         try {
             final List<String> nodeTypeList = new ArrayList<String>();
+            String nextParam = "";
+            if (param.contains(",")) {
+                nextParam = StringUtils.substringAfter(param, ",");
+                param =  StringUtils.substringBefore(param, ",");
+            }
             if ("subnodes".equals(param)) {
                 if (node != null && node.hasProperty("j:allowedTypes")) {
                     Value[] types = node.getProperty("j:allowedTypes").getValues();
@@ -80,7 +85,7 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
                         nodeTypeList.add(type.getString());
                     }
                 }
-                param = "";
+                param = nextParam;
             } else if ("reference".equals(param)) {
                 if (node != null && node.hasProperty("j:node")) {
                     try {
@@ -89,7 +94,7 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
                     } catch (ItemNotFoundException e) {
                     }
                 }
-                param = "";
+                param = nextParam;
             } else if ("mainresource".equals(param)) {
                 JCRNodeWrapper matchingParent = null;
                 JCRNodeWrapper parent = node.getParent();
@@ -112,10 +117,10 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
                 if (nodeTypeList.isEmpty()) {
                     nodeTypeList.add("jnt:page");
                 }
-                param = "";
+                param = nextParam;
             } else if (param != null && param.indexOf(":") > 0) {
                 nodeTypeList.add(param);
-                param = "";
+                param = nextParam;
             } else {
                 if (node != null) {
                     nodeTypeList.addAll(node.getNodeTypes());

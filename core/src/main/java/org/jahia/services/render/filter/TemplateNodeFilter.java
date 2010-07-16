@@ -41,7 +41,7 @@ public class TemplateNodeFilter extends AbstractFilter {
                     renderContext.getRequest().setAttribute("wrappedResource", resource);
                     Resource wrapperResource = new Resource(templateNode,
                             resource.getTemplateType().equals("edit") ? "html" : resource.getTemplateType(), template.templateName, Resource.CONFIGURATION_WRAPPER);
-                    if (service.hasTemplate(templateNode.getPrimaryNodeType(), template.templateName)) {
+                    if (service.hasTemplate(templateNode, template.templateName)) {
                         chain.pushAttribute(renderContext.getRequest(), "inWrapper", Boolean.TRUE);
 
                         Integer currentLevel =

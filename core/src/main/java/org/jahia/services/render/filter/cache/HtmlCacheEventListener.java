@@ -88,6 +88,7 @@ public class HtmlCacheEventListener extends DefaultEventListener {
                 String path = event.getPath();
                 if (!path.startsWith("/jcr:system")) {
                     boolean flushParent = false;
+                    boolean flushRoles = false;
                     if (path.contains("j:template")) {
                         flushParent = true;
                     }
@@ -96,11 +97,14 @@ public class HtmlCacheEventListener extends DefaultEventListener {
                         if (path.endsWith("/j:published")) {
                             flushParent = true;
                         }
+                        if(path.endsWith("j:roles")) {
+                            flushRoles = true;
+                        }
                         path = path.substring(0, path.lastIndexOf("/"));
                     } else if (type == Event.NODE_ADDED || type == Event.NODE_MOVED || type == Event.NODE_REMOVED) {
                         flushParent = true;
                     }
-                    if (path.contains("j:acl") || path.contains("jnt:group") || type == Event.NODE_MOVED) {
+                    if (path.contains("j:acl") || path.contains("jnt:group") || flushRoles || type == Event.NODE_MOVED) {
                         // Flushing cache of acl key for users as a group or an acl has been updated
                         CacheKeyGenerator cacheKeyGenerator = cacheProvider.getKeyGenerator();
                         if (cacheKeyGenerator instanceof DefaultCacheKeyGenerator) {

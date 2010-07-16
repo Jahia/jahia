@@ -154,7 +154,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                 }
                 Set<Role> aclRoles = getAllAclsRoles();
                 for (Role role : aclRoles) {
-                    if(role!=null && principal.hasRole(role)) {
+                    if(role!=null && principal.hasRole(role) && role.getSite().equals(renderContext.getSite().getSiteKey())) {
                         if (b.length() > 0) {
                             b.append("|");
                         }

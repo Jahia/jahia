@@ -77,16 +77,24 @@ public class ThreadMonitor {
      * Prints the thread dump information to System.out.
      */
     public void dumpThreadInfo() {
-       System.out.println("Full Java thread dump");
-       long[] tids = tmbean.getAllThreadIds();
-       ThreadInfo[] tinfos = tmbean.getThreadInfo(tids, Integer.MAX_VALUE);
-       for (ThreadInfo ti : tinfos) {
-           printThreadInfo(ti);
-       }
+        generateThreadInfo(new PrintWriter(System.out));
+    }
+
+    /**
+     * Generates a string with the full thread dump information.
+     * @return
+     */
+    public void generateThreadInfo(PrintWriter writer) {
+        writer.println("Full Java thread dump\n");
+        long[] tids = tmbean.getAllThreadIds();
+        ThreadInfo[] tinfos = tmbean.getThreadInfo(tids, Integer.MAX_VALUE);
+        for (ThreadInfo ti : tinfos) {
+            writer.print(generateThreadInfo(ti));
+        }
     }
 
     private static String INDENT = "    ";
-    private void printThreadInfo(ThreadInfo ti) {
+    private String generateThreadInfo(ThreadInfo ti) {
        StringBuilder sb = new StringBuilder("\"" + ti.getThreadName() + "\"" +
                                             " Id=" + ti.getThreadId() +
                                             " in " + ti.getThreadState());
@@ -99,30 +107,30 @@ public class ThreadMonitor {
        if (ti.isInNative()) {
            sb.append(" (running in native)");
        }
-       System.out.println(sb.toString());
+       sb.append("\n");
        if (ti.getLockOwnerName() != null) {
-            System.out.println(INDENT + " owned by " + ti.getLockOwnerName() +
-                               " Id=" + ti.getLockOwnerId());
+            sb.append(INDENT + " owned by " + ti.getLockOwnerName() +
+                               " Id=" + ti.getLockOwnerId() + "\n");
        }
        for (StackTraceElement ste : ti.getStackTrace()) {
-           System.out.println(INDENT + "at " + ste.toString());
+           sb.append(INDENT + "at " + ste.toString() + "\n");
        }
-       System.out.println();
+       return sb.toString();
     }
 
     /**
      * Checks if any threads are deadlocked. If any, print
      * the thread dump information.
      */
-    public boolean findDeadlock() {
+    public boolean findDeadlock(PrintWriter writer) {
        long[] tids = tmbean.findMonitorDeadlockedThreads();
        if (tids == null) { 
            return false;
        } else {
-           System.out.println("Deadlock found :-");
+           writer.println("Deadlock found :-");
            ThreadInfo[] tinfos = tmbean.getThreadInfo(tids, Integer.MAX_VALUE);
            for (ThreadInfo ti : tinfos) {
-               printThreadInfo(ti);
+               writer.print(generateThreadInfo(ti));
            }
            return true;
        }

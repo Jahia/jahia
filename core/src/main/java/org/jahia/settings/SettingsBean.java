@@ -173,7 +173,10 @@ public class SettingsBean {
     private String ehCacheJahiaFile;
 
     private boolean permanentMoveForVanityURL = true;
-    
+
+    private boolean dumpErrorsToFiles = true;
+    private int fileDumpMaxRegroupingOfPreviousException = 500;
+
     private ServerDeploymentInterface serverDeployer = null;
 
     /**
@@ -394,6 +397,9 @@ public class SettingsBean {
             wrapperBufferFlushingActivated = getBoolean("wrapperBufferFlushingActivated", true);
 
             permanentMoveForVanityURL = getBoolean("permanentMoveForVanityURL", true);
+
+            dumpErrorsToFiles = getBoolean("dumpErrorsToFiles", true);
+            fileDumpMaxRegroupingOfPreviousException = getInt("fileDumpMaxRegroupingOfPreviousException", 500);
 
             settings.put("userManagementUserNamePattern", getString(
                     "userManagementUserNamePattern", "[\\w\\{\\}\\-]+"));
@@ -998,6 +1004,14 @@ public class SettingsBean {
 
     public boolean isPermanentMoveForVanityURL() {
         return permanentMoveForVanityURL;
+    }
+
+    public boolean isDumpErrorsToFiles() {
+        return dumpErrorsToFiles;
+    }
+
+    public int getFileDumpMaxRegroupingOfPreviousException() {
+        return fileDumpMaxRegroupingOfPreviousException;
     }
 
     public String getJahiaCkEditorDiskPath() {

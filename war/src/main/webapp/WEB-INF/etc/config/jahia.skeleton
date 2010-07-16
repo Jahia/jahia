@@ -433,3 +433,22 @@ userManagementGroupNamePattern                          = [0-9a-z_A-Z\\-\\{\\}]+
 # if this control is not necessary, but we introduced it in order to
 # control this behavior at deployment time.
 wrapperBufferFlushingActivated = true
+
+######################################################################
+### File Error dumping ###############################################
+######################################################################
+# By default Jahia dumps are errors in files created in temp directory
+# These files have the format
+# error-DATE-TIME-EXCEPTION_COUNT_SINCE_STARTUP.txt
+# The generated files contain a lot of information, very useful to
+# fully understand the context of an error. When submitting an error
+# to Jahia support, please always activate this logging and submit
+# the files into the support tracking system.
+#
+# The following setting activates / deactivates this behavior.
+dumpErrorsToFiles = true
+# This parameter allows to control file regrouping of a repeating exception
+# If a repeating exception occurs more than this maximum, a file will be
+# dumped anyway, just so that we are still informed in case this is the only
+# error sent.
+fileDumpMaxRegroupingOfPreviousException = 500

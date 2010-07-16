@@ -66,6 +66,9 @@
 
     </appender>
 
+    <appender name="exceptionLogging" class="org.jahia.bin.errors.ExceptionAppender">
+    </appender>
+
     <logger name="REQUEST">
         <appender-ref ref="ROLL"/>
     </logger>
@@ -174,6 +177,7 @@
         <level value="info"/>
         <appender-ref ref="ROLL"/>
         <appender-ref ref="Console"/>
+        <appender-ref ref="exceptionLogging"/>
     </root>
 
 </log4j:configuration>

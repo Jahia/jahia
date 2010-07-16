@@ -104,53 +104,58 @@ public class ErrorLoggingFilter implements Filter {
         filterChain.doFilter(request, response);
     }
 
-    protected void dumpToFile(HttpServletRequest request) {
+    public static void dumpToFile(Throwable t, int code, HttpServletRequest request) {
         try {
-            Throwable t = getException(request);
+        code = code != 0 ? code : SC_INTERNAL_SERVER_ERROR;
 
-            int code = (Integer) request
-                    .getAttribute("javax.servlet.error.status_code");
-            code = code != 0 ? code : SC_INTERNAL_SERVER_ERROR;
+        if (code < 500) {
+            logger.debug("Status code below 500, will not dump error to file");
+            return;
+        }
 
-            if (code < 500) {
-                logger.debug("Status code below 500, will not dump error to file");
+        if (lastFileDumpedException != null && t != null
+                && t.toString().equals(lastFileDumpedException.toString())) {
+            lastFileDumpedExceptionOccurences++;
+            if (lastFileDumpedExceptionOccurences < SettingsBean.getInstance().getFileDumpMaxRegroupingOfPreviousException()) {
+                logger.debug("Same exception, not logging since below fileDumpMaxRegroupingOfPreviousException");
                 return;
             }
-
-            if (lastFileDumpedException != null && t != null
-                    && t.toString().equals(lastFileDumpedException.toString())) {
-                lastFileDumpedExceptionOccurences++;
-                if (lastFileDumpedExceptionOccurences < SettingsBean.getInstance().getFileDumpMaxRegroupingOfPreviousException()) {
-                    logger.debug("Same exception, not logging since below fileDumpMaxRegroupingOfPreviousException");
-                    return;
-                }
-            }
-
-            final File sysTempDir = new File(System.getProperty("java.io.tmpdir"));
-
-            File errorDir = new File(sysTempDir, "jahia-errors");
-            if (!errorDir.exists()) {
-                errorDir.mkdir();
-            }
-            Date now = new Date();
-            SimpleDateFormat directoryDateFormat = new SimpleDateFormat("yyyy_MM_dd");
-            File todaysDirectory = new File(errorDir, directoryDateFormat.format(now));
-            if (!todaysDirectory.exists()) {
-                todaysDirectory.mkdir();
-            }
-            SimpleDateFormat fileDateFormat = new SimpleDateFormat("yyyy_MM_dd-HH_mm_ss_SSS");
-            File errorFile = new File(todaysDirectory, "error-" + fileDateFormat.format(now) + "-" + Long.toString(exceptionCount) + ".txt");
-            StringWriter errorWriter = generateErrorReport(request, t);
-            FileWriter fileWriter = new FileWriter(errorFile);
-            fileWriter.write(errorWriter.toString());
-            fileWriter.close();
-            logger.error("Error logged to file " + errorFile.getAbsolutePath());
-            lastFileDumpedException = t;
-            lastFileDumpedExceptionOccurences = 1;
-
-        } catch (Throwable t) {
-            logger.warn("Error creating error file", t);
         }
+
+        final File sysTempDir = new File(System.getProperty("java.io.tmpdir"));
+
+        File errorDir = new File(sysTempDir, "jahia-errors");
+        if (!errorDir.exists()) {
+            errorDir.mkdir();
+        }
+        Date now = new Date();
+        SimpleDateFormat directoryDateFormat = new SimpleDateFormat("yyyy_MM_dd");
+        File todaysDirectory = new File(errorDir, directoryDateFormat.format(now));
+        if (!todaysDirectory.exists()) {
+            todaysDirectory.mkdir();
+        }
+        SimpleDateFormat fileDateFormat = new SimpleDateFormat("yyyy_MM_dd-HH_mm_ss_SSS");
+        File errorFile = new File(todaysDirectory, "error-" + fileDateFormat.format(now) + "-" + Long.toString(exceptionCount) + ".txt");
+        StringWriter errorWriter = generateErrorReport(request, t);
+        FileWriter fileWriter = new FileWriter(errorFile);
+        fileWriter.write(errorWriter.toString());
+        fileWriter.close();
+        logger.error("Error logged to file " + errorFile.getAbsolutePath());
+        lastFileDumpedException = t;
+        lastFileDumpedExceptionOccurences = 1;
+
+    } catch (Throwable throwable) {
+        logger.warn("Error creating error file", throwable);
+    }
+
+    }
+
+    protected void dumpToFile(HttpServletRequest request) {
+        Throwable t = getException(request);
+
+        int code = (Integer) request
+                .getAttribute("javax.servlet.error.status_code");
+        dumpToFile(t, code, request);
     }
 
     protected void emailAlert(HttpServletRequest request,
@@ -182,7 +187,7 @@ public class ErrorLoggingFilter implements Filter {
         }
     }
 
-    private StringWriter generateErrorReport(HttpServletRequest request, Throwable t) {
+    private static StringWriter generateErrorReport(HttpServletRequest request, Throwable t) {
         StringWriter msgBodyWriter = new StringWriter();
         PrintWriter strOut = new PrintWriter(msgBodyWriter);
         if (lastMailedExceptionOccurences > 1) {
@@ -215,21 +220,23 @@ public class ErrorLoggingFilter implements Filter {
         strOut.println("");
         strOut.println("Error: " + t.getMessage());
         strOut.println("");
-        strOut.println("URL: " + request.getRequestURL());
-        if (request.getQueryString() != null) {
-            strOut.println("?" + request.getQueryString());
-        }
-        strOut.println("   Method: " + request.getMethod());
-        strOut.println("");
-        strOut.println("Remote host: " + request.getRemoteHost() + "     Remote Address: " + request.getRemoteAddr());
-        strOut.println("");
-        strOut.println("Request headers:");
-        strOut.println("-----------------");
-        Iterator headerNames = new EnumerationIterator(request.getHeaderNames());
-        while (headerNames.hasNext()) {
-            String headerName = (String) headerNames.next();
-            String headerValue = request.getHeader(headerName);
-            strOut.println("   " + headerName + " : " + headerValue);
+        if (request != null) {
+            strOut.println("URL: " + request.getRequestURL());
+            if (request.getQueryString() != null) {
+                strOut.println("?" + request.getQueryString());
+            }
+            strOut.println("   Method: " + request.getMethod());
+            strOut.println("");
+            strOut.println("Remote host: " + request.getRemoteHost() + "     Remote Address: " + request.getRemoteAddr());
+            strOut.println("");
+            strOut.println("Request headers:");
+            strOut.println("-----------------");
+            Iterator headerNames = new EnumerationIterator(request.getHeaderNames());
+            while (headerNames.hasNext()) {
+                String headerName = (String) headerNames.next();
+                String headerValue = request.getHeader(headerName);
+                strOut.println("   " + headerName + " : " + headerValue);
+            }
         }
 
         strOut.println("");

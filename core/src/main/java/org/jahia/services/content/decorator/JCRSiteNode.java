@@ -96,9 +96,13 @@ public class JCRSiteNode extends JCRNodeDecorator {
     }
 
     public String[] getActiveLanguageCodes() {
-        return getLanguages().toArray(new String[getLanguages().size()]);
+        Set<String> languages = getLanguages();
+        if (languages != null) {
+            return languages.toArray(new String[getLanguages().size()]);
+        } else {
+            return null;
+        }
     }
-
 
     /**
      * Returns an List of site language  ( as Locale ).

@@ -877,10 +877,12 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
                     } else {
                         logger.error("Invalid license signatures !");
                         coreLicense = null;
+                        return false;
                     }
                 } else {
                     logger.error("Error while loading public key store file [" + publicKeyStoreResourceName + "] from classpath");
                     coreLicense = null;
+                    return false;
                 }
 
             } catch (IOException ioe) {

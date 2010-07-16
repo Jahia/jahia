@@ -66,11 +66,14 @@ public class JCRUserNode extends JCRNodeDecorator {
     private transient static Logger logger = Logger.getLogger(JCRUserNode.class);
     private JahiaUser user;
     private Map<String, ExtendedPropertyDefinition> propertyDefinitionMap;
+    private Map<Integer, ExtendedPropertyDefinition> unstructuredPropertyDefinitions;
+
     public JCRUserNode(JCRNodeWrapper node) {
         super(node);
         try {
             ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType("jnt:user");
             propertyDefinitionMap = type.getPropertyDefinitionsAsMap();
+            unstructuredPropertyDefinitions = type.getUnstructuredPropertyDefinitions();
         } catch (NoSuchNodeTypeException e) {
             logger.error(e.getMessage(), e);
         }
@@ -101,7 +104,7 @@ public class JCRUserNode extends JCRNodeDecorator {
             String property = user.getProperty(s);
             if(null == property) return super.getProperty(s);
             return new JCRPropertyWrapperImpl(node,new JCRUserProperty(s,property), node.getSession(), node.getJCRProvider(),
-                                              propertyDefinitionMap.get(s));
+                                              propertyDefinitionMap.get(s)!=null?propertyDefinitionMap.get(s):unstructuredPropertyDefinitions.get(PropertyType.STRING));
         }
     }
 
@@ -153,7 +156,7 @@ public class JCRUserNode extends JCRNodeDecorator {
             Object value = properties.get(key);
             try {
                 return new JCRPropertyWrapperImpl(node,new JCRUserProperty(key,value), node.getSession(), node.getJCRProvider(),
-                                                  propertyDefinitionMap.get(key));
+                                                  propertyDefinitionMap.get(key)!=null?propertyDefinitionMap.get(key):unstructuredPropertyDefinitions.get(PropertyType.STRING));
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
             }

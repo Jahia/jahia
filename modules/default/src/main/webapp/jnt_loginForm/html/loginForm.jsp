@@ -55,8 +55,7 @@
     <div class="divButton">
         <input type="submit" onclick="document.forms.loginForm.submit(); return false;" name="search" class="button"
                value="<fmt:message key="loginForm.loginbutton.label"/>"/>
-    </div>
-
+    </div>    
 </ui:loginArea>
 </c:if>
 <c:if test="${renderContext.loggedIn}">

@@ -22,6 +22,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAs
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 import java.util.ArrayList;
@@ -111,17 +112,28 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
     @Override
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
-        JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
+        fillStore();
+    }
+
+    private void fillStore() {
         contentContainer.mask("Loading", "x-mask-loading");
+        contentStore.removeAll();
+        JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
         async.searchSQL(config.getParams().get("search"), Integer.valueOf(config.getParams().get("limit")),
                         JCRClientUtils.CONTENT_NODETYPES, null, null, Arrays.asList(GWTJahiaNode.ICON,"jcr:lastModified"), new BaseAsyncCallback<List<GWTJahiaNode>>() {
                     public void onSuccess(List<GWTJahiaNode> gwtJahiaNodes) {
-                        for (GWTJahiaNode node : gwtJahiaNodes) {
-                            contentStore.add(node);
-                        }
+                        contentStore.add(gwtJahiaNodes);
                         contentContainer.layout(true);
                         contentContainer.unmask();
                     }
                 });
+    }
+
+    @Override
+    public void refresh(int flag) {
+        if ((flag & Linker.REFRESH_PAGES) != 0) {
+            fillStore();
+        }
+
     }
 }

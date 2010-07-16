@@ -480,7 +480,7 @@ public class JahiaAdministration extends HttpServlet {
         if (jData != null) {
             final ParamBean jParams = (ParamBean) jData.getProcessingContext();
             
-            initMenu(request);
+            initMenu(request,(JahiaUser) session.getAttribute("org.jahia.usermanager.jahiauser"));
 
             try {
                 String htmlContent = ServicesRegistry.getInstance().
@@ -535,7 +535,7 @@ public class JahiaAdministration extends HttpServlet {
     } // end doRedirect
 
 
-    public static void initMenu(HttpServletRequest request) {
+    public static void initMenu(HttpServletRequest request, JahiaUser user) {
         JahiaData jData = (JahiaData) request
                 .getAttribute("org.jahia.data.JahiaData");
         if (jData != null) {
@@ -545,14 +545,14 @@ public class JahiaAdministration extends HttpServlet {
                     .getInstance().getContext().getBean(
                             "administrationModulesRegistry");
             ctx.setAttribute("administrationServerModules", getMenuItems(
-                    administrationModulesRegistry.getServerModules(), ctx));
+                    administrationModulesRegistry.getServerModules(), ctx, user));
             ctx.setAttribute("administrationSiteModules", getMenuItems(
-                    administrationModulesRegistry.getSiteModules(), ctx));
+                    administrationModulesRegistry.getSiteModules(), ctx, user));
         }
     }
 
     private static List<MenuItem> getMenuItems(
-            List<AdministrationModule> modules, ParamBean ctx) {
+            List<AdministrationModule> modules, ParamBean ctx, JahiaUser user) {
         List<MenuItem> menuItems = new LinkedList<MenuItem>();
         for (AdministrationModule module : modules) {
             String actionUrl = null;
@@ -564,7 +564,7 @@ public class JahiaAdministration extends HttpServlet {
                                 + module.getName() + "'", e);
             }
             menuItems.add(new MenuItem(module.getName(), actionUrl != null
-                    && module.isEnabled(ctx.getUser(), ctx.getSiteKey()), module
+                    && module.isEnabled(user, ctx.getSiteKey()), module
                     .getLabel(), actionUrl, module.getIcon(), module.getIconSmall(), module
                     .getTooltip(), module.isSelected(ctx)));
         }

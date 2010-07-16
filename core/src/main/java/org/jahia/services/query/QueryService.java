@@ -31,8 +31,6 @@
  */
 package org.jahia.services.query;
 
-import java.util.Locale;
-
 import javax.jcr.RepositoryException;
 import javax.jcr.ValueFactory;
 import javax.jcr.query.qom.Column;
@@ -43,6 +41,7 @@ import javax.jcr.query.qom.QueryObjectModelFactory;
 import javax.jcr.query.qom.Source;
 
 import org.jahia.services.JahiaService;
+import org.jahia.services.content.JCRSessionWrapper;
 
 /**
  * Jahia's query service is based on the JCR QueryObjectModelFactory and thus supports all kinds of
@@ -62,14 +61,6 @@ import org.jahia.services.JahiaService;
  */
 public abstract class QueryService extends JahiaService {
     /**
-     * Entry point to request a QueryObjectModelFactory
-     * 
-     * @return QueryObjectModelFactory
-     * @throws RepositoryException
-     */    
-    public abstract QueryObjectModelFactory getQueryObjectModelFactory() throws RepositoryException;
-    
-    /**
      * Entry point to request a ValueFactory instance
      * 
      * @return ValueFactory
@@ -81,12 +72,12 @@ public abstract class QueryService extends JahiaService {
      * Furthermore Jahia may make modifications because of performance optimization reasons.
      * 
      * @param qom the source query object model
-     * @param locale current locale to be used if language is not specified in query
      * @param qomFactory query object model factory to use
+     * @param session the current JCR session used for the query 
      * @return the modified and optimized query object model
      * @throws RepositoryException if the operation fails
      */
-    public abstract QueryObjectModel modifyAndOptimizeQuery(QueryObjectModel qom, Locale locale, QueryObjectModelFactory qomFactory) throws RepositoryException;
+    public abstract QueryObjectModel modifyAndOptimizeQuery(QueryObjectModel qom, QueryObjectModelFactory qomFactory, JCRSessionWrapper session) throws RepositoryException;
 
     /**
      * Modifies the query to adapt to Jahia's internal datamodel implementation, which creates jnt:translation subnodes per locale (language).
@@ -96,12 +87,12 @@ public abstract class QueryService extends JahiaService {
      * @param constraint the QOM root constraint object to use
      * @param orderings the QOM ordering objects to use
      * @param columns the QOM column objects to use
-     * @param locale current locale to be used if language is not specified in query
      * @param qomFactory query object model factory to use
+     * @param session the current JCR session used for the query 
      * @return the created modified and optimized query object model
      * @throws RepositoryException if the operation fails
      */
     public abstract QueryObjectModel modifyAndOptimizeQuery(Source source, Constraint constraint, Ordering[] orderings,
-            Column[] columns, Locale locale, QueryObjectModelFactory qomFactory) throws RepositoryException;
+            Column[] columns, QueryObjectModelFactory qomFactory, JCRSessionWrapper session) throws RepositoryException;
     
 }

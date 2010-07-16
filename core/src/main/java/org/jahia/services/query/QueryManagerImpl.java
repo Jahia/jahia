@@ -84,7 +84,7 @@ public class QueryManagerImpl implements QueryManager {
             if ("createQuery".equals(method.getName())) {
                 final QueryObjectModel qom = ServicesRegistry.getInstance().getQueryService().modifyAndOptimizeQuery(
                         (Source) args[0], (Constraint) args[1], (Ordering[]) args[2], (Column[]) args[3],
-                        session.getLocale(), underlying);
+                        underlying, session);
                 return Proxy.newProxyInstance(qom.getClass().getClassLoader(), new Class[] { QueryObjectModel.class },
                         new QOMInvocationHandler(qom, provider));
             } else {

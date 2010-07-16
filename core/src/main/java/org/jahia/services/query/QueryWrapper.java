@@ -107,7 +107,7 @@ class QueryWrapper implements Query {
                 Query query = qm.createQuery(statement,language);
                 if (Query.JCR_SQL2.equals(language)) {
                     query = QueryServiceImpl.getInstance().modifyAndOptimizeQuery(
-                            (QueryObjectModel) query, session.getLocale(), qm.getQOMFactory());
+                            (QueryObjectModel) query, qm.getQOMFactory(), session);
                 }
                 queries.put(jcrStoreProvider, query);
             }

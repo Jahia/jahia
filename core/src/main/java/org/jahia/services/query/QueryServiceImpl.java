@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -102,7 +101,7 @@ import org.apache.jackrabbit.value.ValueFactoryImpl;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -148,8 +147,6 @@ public class QueryServiceImpl extends QueryService {
 
     private ValueFactory valueFactory = ValueFactoryImpl.getInstance();
 
-    private transient JCRSessionFactory sessionFactory;
-
     protected QueryServiceImpl() {
     }
 
@@ -181,38 +178,22 @@ public class QueryServiceImpl extends QueryService {
         // do nothing
     }
 
-    /**
-     * Sets the JCR session factory
-     * @param sessionFactory JCR session factory
-     */
-    public void setSessionFactory(JCRSessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
-
     /* (non-Javadoc)
-     * @see org.jahia.services.query.QueryService#getQueryObjectModelFactory()
+     * @see org.jahia.services.query.QueryService#modifyAndOptimizeQuery(javax.jcr.query.qom.QueryObjectModel, javax.jcr.query.qom.QueryObjectModelFactory, org.jahia.services.content.JCRSessionWrapper)
      */
-    @Override
-    public QueryObjectModelFactory getQueryObjectModelFactory() throws RepositoryException {
-        return sessionFactory.getCurrentUserSession().getWorkspace().getQueryManager().getQOMFactory();
-    }
-
-    /* (non-Javadoc)
-     * @see org.jahia.services.query.QueryService#modifyAndOptimizeQuery(javax.jcr.query.qom.QueryObjectModel, java.util.Locale, javax.jcr.query.qom.QueryObjectModelFactory)
-     */
-    public QueryObjectModel modifyAndOptimizeQuery(QueryObjectModel qom, Locale locale,
-            QueryObjectModelFactory qomFactory) throws RepositoryException {
+    public QueryObjectModel modifyAndOptimizeQuery(QueryObjectModel qom, 
+            QueryObjectModelFactory qomFactory, JCRSessionWrapper session) throws RepositoryException {
         ModificationInfo info = getModificationInfo(qom.getSource(), qom.getConstraint(), qom.getOrderings(), qom
-                .getColumns(), locale, qomFactory);
+                .getColumns(), qomFactory, session);
         return info.getNewQueryObjectModel() != null ? info.getNewQueryObjectModel() : qom;
     }
 
     /* (non-Javadoc)
-     * @see org.jahia.services.query.QueryService#modifyAndOptimizeQuery(javax.jcr.query.qom.Source, javax.jcr.query.qom.Constraint, javax.jcr.query.qom.Ordering[], javax.jcr.query.qom.Column[], java.util.Locale, javax.jcr.query.qom.QueryObjectModelFactory)
+     * @see org.jahia.services.query.QueryService#modifyAndOptimizeQuery(javax.jcr.query.qom.Source, javax.jcr.query.qom.Constraint, javax.jcr.query.qom.Ordering[], javax.jcr.query.qom.Column[], javax.jcr.query.qom.QueryObjectModelFactory, org.jahia.services.content.JCRSessionWrapper)
      */
     public QueryObjectModel modifyAndOptimizeQuery(Source source, Constraint constraint, Ordering[] orderings,
-            Column[] columns, Locale locale, QueryObjectModelFactory qomFactory) throws RepositoryException {
-        ModificationInfo info = getModificationInfo(source, constraint, orderings, columns, locale, qomFactory);
+            Column[] columns, QueryObjectModelFactory qomFactory, JCRSessionWrapper session) throws RepositoryException {
+        ModificationInfo info = getModificationInfo(source, constraint, orderings, columns, qomFactory, session);
         return info.getNewQueryObjectModel() != null ? info.getNewQueryObjectModel() : qomFactory.createQuery(source,
                 constraint, orderings, columns);
     }
@@ -228,10 +209,10 @@ public class QueryServiceImpl extends QueryService {
      * CHECK_FOR_MODIFICATION_MODE and at last MODIFY_MODE, which is only called if modification is necessary.  
      */
     protected ModificationInfo getModificationInfo(Source source, Constraint constraint, Ordering[] orderings,
-            Column[] columns, Locale locale, QueryObjectModelFactory qomFactory) throws RepositoryException {
+            Column[] columns, QueryObjectModelFactory qomFactory, JCRSessionWrapper session) throws RepositoryException {
         ModificationInfo info = new ModificationInfo(qomFactory);
 
-        QOMTreeVisitor visitor = new QueryModifierAndOptimizerVisitor(info, source, locale);
+        QOMTreeVisitor visitor = new QueryModifierAndOptimizerVisitor(info, source, session);
 
         try {
             info.setMode(INITIALIZE_MODE);
@@ -274,14 +255,14 @@ public class QueryServiceImpl extends QueryService {
             throw new RepositoryException(e);
         }
         if (info.isModificationNecessary()) {
-            makeModifications(source, constraint, orderings, columns, info, visitor, locale, qomFactory);
+            makeModifications(source, constraint, orderings, columns, info, visitor, qomFactory);
         }
 
         return info;
     }
 
     protected void makeModifications(Source source, Constraint constraint, Ordering[] orderings, Column[] columns,
-            ModificationInfo info, QOMTreeVisitor visitor, Locale locale, QueryObjectModelFactory qomFactory)
+            ModificationInfo info, QOMTreeVisitor visitor, QueryObjectModelFactory qomFactory)
             throws RepositoryException {
         info.setMode(MODIFY_MODE);
 
@@ -370,20 +351,20 @@ public class QueryServiceImpl extends QueryService {
 
         private Map<String, Set<String>> nodeTypesPerSelector = new HashMap<String, Set<String>>();
 
-        private Locale currentLocale;
+        private JCRSessionWrapper session = null;        
 
         /**
          * Constructor for the QueryModifierAndOptimizerVisitor 
          * @param modificationInfo object gathering all modification infos
          * @param originalSource Source object of original query
-         * @param currentLocale current locale to be used if query itself has no language constraint
+         * @param session the current JCR session used for the query 
          */
         public QueryModifierAndOptimizerVisitor(ModificationInfo modificationInfo, Source originalSource,
-                Locale currentLocale) {
+                JCRSessionWrapper session) {
             super();
             this.modificationInfo = modificationInfo;
             this.originalSource = originalSource;
-            this.currentLocale = currentLocale;
+            this.session = session;            
         }
 
         /**
@@ -875,9 +856,9 @@ public class QueryServiceImpl extends QueryService {
 
             try {
                 List<String> languageCodes = getLanguagesPerSelector().get(selector.getSelectorName());
-                if ((languageCodes == null || languageCodes.isEmpty()) && currentLocale != null) {
+                if ((languageCodes == null || languageCodes.isEmpty()) && session != null && session.getLocale() != null) {
                     languageCodes = new ArrayList<String>();
-                    languageCodes.add(currentLocale.toString());
+                    languageCodes.add(session.getLocale().toString());
                 }
                 boolean isFilter = false;
                 if (node instanceof FullTextSearch && StringUtils.startsWith(propertyName, "rep:filter(")) {
@@ -1040,7 +1021,7 @@ public class QueryServiceImpl extends QueryService {
         private String getCommonChildNodeTypes(String parentPath, Set<String> commonNodeTypes)
                 throws RepositoryException {
             String commonPrimaryType = null;
-            JCRNodeWrapper node = sessionFactory.getCurrentUserSession().getNode(parentPath);
+            JCRNodeWrapper node = session.getNode(parentPath);
             Set<String> checkedPrimaryTypes = new HashSet<String>();
             if (node.hasNodes()) {
                 NodeIterator children = node.getNodes();
@@ -1116,7 +1097,7 @@ public class QueryServiceImpl extends QueryService {
         private Join newJoin = null;
 
         private QueryObjectModelFactory queryObjectModelFactory = null;
-
+        
         private QueryObjectModel newQueryObjectModel = null;
 
         private List<Constraint> newConstraints = new ArrayList<Constraint>();

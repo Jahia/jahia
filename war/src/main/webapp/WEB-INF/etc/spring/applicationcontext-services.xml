@@ -63,7 +63,6 @@
     <bean id="QueryService" parent="proxyTemplate">
         <property name="target">
             <bean class="org.jahia.services.query.QueryServiceImpl" parent="jahiaServiceTemplate" factory-method="getInstance">
-                <property name="sessionFactory" ref="jcrSessionFactory" />
             </bean>
         </property>
     </bean>    

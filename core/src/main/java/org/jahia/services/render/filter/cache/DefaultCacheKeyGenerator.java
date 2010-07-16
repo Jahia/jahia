@@ -41,8 +41,11 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.rbac.Role;
+import org.jahia.services.rbac.RoleIdentity;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -81,6 +84,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
 
     private JahiaGroupManagerService groupManagerService;
     private Set<JahiaGroup> aclGroups = null;
+    private Set<Role> aclRoles = null;
     private EhCacheProvider cacheProvider;
     private Cache cache;
     private JCRTemplate template;
@@ -146,6 +150,15 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                             b.append("|");
                         }
                         b.append(g.getGroupname());
+                    }
+                }
+                Set<Role> aclRoles = getAllAclsRoles();
+                for (Role role : aclRoles) {
+                    if(role!=null && principal.hasRole(role)) {
+                        if (b.length() > 0) {
+                            b.append("|");
+                        }
+                        b.append(role.getName()).append(":").append(role.getSite());
                     }
                 }
                 if (b.toString().equals(JahiaGroupManagerService.GUEST_GROUPNAME) && !userName.equals(
@@ -216,6 +229,31 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
             });
         }
         return aclGroups;
+    }
+
+    private Set<Role> getAllAclsRoles() throws RepositoryException {
+        if (aclRoles == null) {
+            aclRoles = new LinkedHashSet<Role>();
+            template.doExecuteWithSystemSession(new JCRCallback<Object>() {
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    Query groupQuery = session.getWorkspace().getQueryManager().createQuery(
+                            "select u from [jnt:ace] as u where u.[j:principal] like 'r%'", Query.JCR_SQL2);
+                    QueryResult groupQueryResult = groupQuery.execute();
+                    final NodeIterator nodeIterator = groupQueryResult.getNodes();
+                    while (nodeIterator.hasNext()) {
+                        JCRNodeWrapper row = (JCRNodeWrapper) nodeIterator.next();
+                        final String roleName = StringUtils.substringAfter(row.getProperty("j:principal").getString(),
+                                                                           ":");
+                        RoleIdentity roleIdentity = new RoleIdentity(roleName, row.resolveSite().getSiteKey());
+                        if (!aclRoles.contains(roleIdentity)) {
+                            aclRoles.add(roleIdentity);
+                        }
+                    }
+                    return null;
+                }
+            });
+        }
+        return aclRoles;
     }
 
     public String getPath(String key) throws ParseException {

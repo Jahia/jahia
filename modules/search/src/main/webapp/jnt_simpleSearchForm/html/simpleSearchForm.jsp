@@ -97,6 +97,7 @@
         });
     });
 </script>
+<template:addDependency node="${currentNode.properties.result.node.parent}"/>
 <s:form method="get" class="simplesearchform" action="${url.base}${currentNode.properties.result.node.path}.html">
 
 		<jcr:nodeProperty name="jcr:title" node="${currentNode}" var="title"/>

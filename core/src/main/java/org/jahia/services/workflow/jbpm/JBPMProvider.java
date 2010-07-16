@@ -32,8 +32,10 @@
  */
 package org.jahia.services.workflow.jbpm;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.rbac.RoleIdentity;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -369,6 +371,12 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
                 if (participation.getGroupId() != null && !participation.getGroupId().startsWith("{role}")) {
                     participations.add(new WorkflowParticipation(participationRolesInverted.get(participation.getType()),
                             groupManager.lookupGroup(participation.getGroupId())));
+                } else if (participation.getGroupId() != null && participation.getGroupId().startsWith("{role}")) {
+                    String id = StringUtils.substringAfter(participation.getGroupId(),"{role}");
+                    String roleName = StringUtils.substringBefore(id,":");
+                    String siteName = StringUtils.substringAfter(id,":");
+                    participations.add(new WorkflowParticipation(participationRolesInverted.get(participation.getType()),
+                            new RoleIdentity(roleName,siteName)));
                 } else {
                     if (participation.getUserId() != null) {
                         participations.add(new WorkflowParticipation(participationRolesInverted.get(participation.getType()),

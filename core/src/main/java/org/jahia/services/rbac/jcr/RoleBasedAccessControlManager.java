@@ -279,22 +279,26 @@ public class RoleBasedAccessControlManager {
 
             List<Value> newValues = new LinkedList<Value>();
             if (principalNode.hasProperty(PROPERTY_ROLES)) {
-                Value[] oldValues = principalNode.getProperty(PROPERTY_ROLES).getValues();
-                for (Value oldOne : oldValues) {
-                    try {
-                        if (session.getNodeByIdentifier(oldOne.getString()) != null) {
-                            newValues.add(oldOne);
+                try {
+                    Value[] oldValues = principalNode.getProperty(PROPERTY_ROLES).getValues();
+                    for (Value oldOne : oldValues) {
+                        try {
+                            if (session.getNodeByIdentifier(oldOne.getString()) != null) {
+                                newValues.add(oldOne);
+                            }
+                        } catch (ItemNotFoundException e) {
+                            logger.debug("Removing 'dead' reference to " + oldOne.getString());
                         }
-                    } catch (ItemNotFoundException e) {
-                        logger.debug("Removing 'dead' reference to " + oldOne.getString());
+                        toBeGranted.remove(oldOne.getString());
                     }
-                    toBeGranted.remove(oldOne.getString());
+                } catch (PathNotFoundException e) {
+                    logger.trace("Roles not set yet");
                 }
             }
             for (String granted : toBeGranted) {
                 newValues.add(new ValueImpl(granted, PropertyType.WEAKREFERENCE));
             }
-            principalNode.setProperty(PROPERTY_ROLES, newValues.toArray(new Value[] {}));
+            principalNode.setProperty(PROPERTY_ROLES, newValues.toArray(new Value[newValues.size()]));
             session.save();
 
             invalidateCache(principal);

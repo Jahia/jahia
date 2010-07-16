@@ -99,7 +99,7 @@ public class JCRUserNode extends JCRNodeDecorator {
             return super.getProperty(s);
         else {
             String property = user.getProperty(s);
-            if(null == property) throw new PathNotFoundException(s+" does not exist for user "+user);
+            if(null == property) return super.getProperty(s);
             return new JCRPropertyWrapperImpl(node,new JCRUserProperty(s,property), node.getSession(), node.getJCRProvider(),
                                               propertyDefinitionMap.get(s));
         }

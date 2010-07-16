@@ -3,7 +3,9 @@ package org.jahia.taglibs.workflow;
 import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.rbac.Role;
 import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.usermanager.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.*;
 import org.jahia.taglibs.AbstractJahiaTag;
@@ -40,9 +42,10 @@ public class AvailableTasksTag extends AbstractJahiaTag {
                         List<WorkflowParticipation> participations = workflowTask.getParticipations();
                         if (participations != null) {
                             for (WorkflowParticipation participation : participations) {
-                                if ((participation.getJahiaPrincipal() instanceof JahiaGroup && ((JahiaGroup) participation.getJahiaPrincipal()).isMember(
-                                        getUser())) || (participation.getJahiaPrincipal() instanceof JahiaUser && ((JahiaUser) participation.getJahiaPrincipal()).getUserKey().equals(
-                                        getUser().getUserKey()))) {
+                                JahiaPrincipal principal = participation.getJahiaPrincipal();
+                                if ((principal instanceof JahiaGroup && ((JahiaGroup) principal).isMember(getUser())) ||
+                                    (principal instanceof JahiaUser && ((JahiaUser) principal).getUserKey().equals(getUser().getUserKey())) ||
+                                    (principal instanceof Role && (getUser().hasRole((Role) principal)))) {
                                     tasks.add(workflowTask);
                                 }
                             }

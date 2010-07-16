@@ -220,7 +220,7 @@ public class JCRUser extends JahiaBasePrincipal implements JahiaUser, JCRPrincip
                                                                                                     property.getString(),
                                                                                                     true));
                             }
-                            else if (!property.getDefinition().isMultiple()) {
+                            else if (property.getDefinition()!=null && !property.getDefinition().isMultiple()) {
                                 userProperties.setUserProperty(property.getName(), new UserProperty(property.getName(),
                                                                                                     property.getString(),
                                                                                                     false));

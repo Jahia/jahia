@@ -192,28 +192,29 @@ public class URLResolver {
     
     protected boolean resolveUrlMapping(String serverName) {
         boolean mappingResolved = false;
+        if (getSiteKey() == null) {
+            String siteKeyInPath = StringUtils.substringBetween(getPath(), "/sites/", "/");
+            if (!StringUtils.isEmpty(siteKeyInPath)) {
+                setSiteKey(siteKeyInPath);
+            } else if (!"localhost".equals(serverName)) {
+                try {
+                    JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByServerName(
+                            serverName);
+                    if (site != null) {
+                        setSiteKey(site.getSiteKey());
+                    }
+                } catch (JahiaException e) {
+                    logger.warn("Error finding site via servername: " + serverName, e);
+                }
+            }
+        }
+
         if (isServletAllowingUrlMapping() && !"localhost".equals(serverName)) {
             String tempPath = null;
             try {
                 String tempWorkspace = StringUtils.defaultIfEmpty(StringUtils
                         .substringBefore(getPath(), "/"), DEFAULT_WORKSPACE);
                 tempPath = StringUtils.substringAfter(getPath(), "/");
-                if (getSiteKey() == null) {
-                    String siteKeyInPath = StringUtils.substringBetween(getPath(),
-                            "/sites/", "/");
-                    if (!StringUtils.isEmpty(siteKeyInPath)) {
-                        setSiteKey(siteKeyInPath);
-                    } else {
-                        try {
-                            JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByServerName(serverName);
-                            if (site != null) {
-                                setSiteKey(site.getSiteKey());                                
-                            }
-                        } catch (JahiaException e) {
-                            logger.warn("Error finding site via servername: " + serverName, e);
-                        }
-                    }
-                }
                 List<VanityUrl> vanityUrls = getVanityUrlService()
                         .findExistingVanityUrls("/" + tempPath,
                                 StringUtils.EMPTY, tempWorkspace);

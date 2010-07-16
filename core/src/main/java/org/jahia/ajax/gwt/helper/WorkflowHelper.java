@@ -6,7 +6,6 @@ import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.workflow.*;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryItem;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryProcess;
@@ -15,17 +14,13 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.rbac.Role;
 import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.usermanager.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.workflow.*;
-import org.jahia.utils.i18n.JahiaResourceBundle;
 
-import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
-import javax.jcr.Value;
 import java.util.*;
 
 /**
@@ -102,9 +97,10 @@ public class WorkflowHelper {
                                 action.setVariables(properties);
                                 action.setLocale(map.get("locale").toString());
                                 action.setWorkspace(map.get("workspace").toString());
-                                if ((participation.getJahiaPrincipal() instanceof JahiaGroup && ((JahiaGroup) participation.getJahiaPrincipal()).isMember(
-                                        session.getUser())) || (participation.getJahiaPrincipal() instanceof JahiaUser && ((JahiaUser) participation.getJahiaPrincipal()).getUserKey().equals(
-                                        session.getUser().getUserKey()))) {
+                                JahiaPrincipal principal = participation.getJahiaPrincipal();
+                                if ((principal instanceof JahiaGroup && ((JahiaGroup) principal).isMember(session.getUser())) ||
+                                    (principal instanceof JahiaUser && ((JahiaUser) principal).getUserKey().equals(session.getUser().getUserKey())) ||
+                                    (principal instanceof Role && (session.getUser().hasRole((Role) principal)))) {
                                     Set<String> outcomes = workflowTask.getOutcomes();
                                     List<String> display = workflowTask.getDisplayOutcomes();
                                     int i=0;

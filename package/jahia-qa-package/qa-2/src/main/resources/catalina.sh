@@ -46,6 +46,12 @@
 #   JAVA_OPTS       (Optional) Java runtime options used when the "start",
 #                   "stop", or "run" command is executed.
 #
+#   JAVA_ENDORSED_DIRS (Optional) Lists of of colon separated directories
+#                   containing some jars in order to allow replacement of APIs 
+#                   created outside of the JCP (i.e. DOM and SAX from W3C). 
+#                   It can also be used to update the XML parser implementation.
+#                   Defaults to $CATALINA_HOME/endorsed.
+#
 #   JPDA_TRANSPORT  (Optional) JPDA transport used when the "jpda start"
 #                   command is executed. The default is "dt_socket".
 #
@@ -73,9 +79,9 @@
 #
 #   LOGGING_MANAGER (Optional) Override Tomcat's logging manager 
 #                   Example (all one line)
-#                   LOGGING_CONFIG="-Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager"
+#                   LOGGING_MANAGER="-Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager"
 #
-# $Id: catalina.sh 885002 2009-11-27 20:51:03Z markt $
+# $Id: catalina.sh 947714 2010-05-24 16:57:18Z markt $
 # -----------------------------------------------------------------------------
 #export LD_LIBRARY_PATH=/home/jahia/yourkit/yjp-8.0/bin/linux-x86-64:$LD_LIBRARY_PATH
 #export JAVA_TOOL_OPTIONS=-agentlib:yjpagent=sessionname=QA_242  $JAVA_TOOL_OPTIONS
@@ -357,7 +363,7 @@ elif [ "$1" = "stop" ] ; then
   SLEEP=5
   if [ ! -z "$1" ]; then
     echo $1 | grep "[^0-9]" > /dev/null 2>&1
-    if [ $? -eq 1 ]; then
+    if [ $? -gt 0 ]; then
       SLEEP=$1
       shift
     fi
@@ -372,7 +378,7 @@ elif [ "$1" = "stop" ] ; then
   if [ ! -z "$CATALINA_PID" ]; then
     if [ -f "$CATALINA_PID" ]; then
       kill -0 `cat $CATALINA_PID` >/dev/null 2>&1
-      if [ $? -eq 1 ]; then
+      if [ $? -gt 0 ]; then
         echo "PID file ($CATALINA_PID) found but no matching process was found. Stop aborted."
         exit 1
       fi
@@ -393,7 +399,7 @@ elif [ "$1" = "stop" ] ; then
     if [ -f "$CATALINA_PID" ]; then
       while [ $SLEEP -ge 0 ]; do 
         kill -0 `cat $CATALINA_PID` >/dev/null 2>&1
-        if [ $? -eq 1 ]; then
+        if [ $? -gt 0 ]; then
           rm $CATALINA_PID
           break
         fi

@@ -42,6 +42,12 @@ rem
 rem   JAVA_OPTS       (Optional) Java runtime options used when the "start",
 rem                   "stop", or "run" command is executed.
 rem
+rem   JAVA_ENDORSED_DIRS (Optional) Lists of of semi-colon separated directories
+rem                   containing some jars in order to allow replacement of APIs 
+rem                   created outside of the JCP (i.e. DOM and SAX from W3C). 
+rem                   It can also be used to update the XML parser implementation.
+rem                   Defaults to $CATALINA_HOME/endorsed.
+rem
 rem   JPDA_TRANSPORT  (Optional) JPDA transport used when the "jpda start"
 rem                   command is executed. The default is "dt_socket".
 rem
@@ -66,7 +72,7 @@ rem                   set LOGGING_CONFIG="-Djava.util.logging.config.file=%CATAL
 rem
 rem   LOGGING_MANAGER (Optional) Override Tomcat's logging manager 
 rem                   Example (all one line)
-rem                   set LOGGING_CONFIG="-Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager"
+rem                   set LOGGING_MANAGER="-Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager"
 rem
 rem   TITLE           (Optional) Specify the title of Tomcat window. The default
 rem                   TITLE is Tomcat if it's not specified.
@@ -75,7 +81,7 @@ rem                   set TITLE=Tomcat.Cluster#1.Server#1 [%DATE% %TIME%]
 rem
 rem
 rem
-rem $Id: catalina.bat 915073 2010-02-22 21:22:13Z markt $
+rem $Id: catalina.bat 947714 2010-05-24 16:57:18Z markt $
 rem ---------------------------------------------------------------------------
 set CATALINA_OPTS=%CATALINA_OPTS% -Dsun.io.useCanonCaches=false -Xms1024m -Xmx1024m -XX:MaxPermSize=256m -server -Dhibernate.jdbc.use_streams_for_binary=true -verbose:gc
 

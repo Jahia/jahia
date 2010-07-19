@@ -130,7 +130,7 @@ public class JspPrecompileServlet extends HttpServlet implements Servlet {
                     + "=templates&timestamp=" + now + "&" + MAGIC_TOMCAT_PARAM);
 
             out.print(url);
-            out.print("\">precompile templates</a><br/>\r\n");
+            out.print("\">precompile modules</a><br/>\r\n");
 
             listSites(out, aRequest, aResponse, now);
 

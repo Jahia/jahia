@@ -44,6 +44,7 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.URLGenerator;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.settings.SettingsBean;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
@@ -96,7 +97,7 @@ public class GWTInitializer {
 
         String context = request.getContextPath();
         buf.append("<meta name=\"gwt:property\" content=\"locale=").append(uilocale.toString()).append("\"/>");
-        buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/ckeditor-3.2.1/contents.css\" rel=\"stylesheet\"/>\n");
+        buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/").append(SettingsBean.getInstance().getJahiaCkEditorDiskPath()).append("/contents.css\" rel=\"stylesheet\"/>\n");
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/jahia-ext-all.css\" rel=\"stylesheet\"/>\n");
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/xtheme-jahia.css\" rel=\"stylesheet\"/>\n");
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/edit.css\" rel=\"stylesheet\"/>\n");

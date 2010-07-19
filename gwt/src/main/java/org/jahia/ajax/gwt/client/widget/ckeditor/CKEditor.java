@@ -53,7 +53,7 @@ public class CKEditor extends Component {
         if (config == null) {
             config = new CKEditorConfig();
             String site = JahiaGWTParameters.getSiteKey();
-            if (PermissionsUtils.isPermitted("wysiwyg-editor-toolbar/full", site)) {
+            if (PermissionsUtils.isPermitted("wysiwyg-editor-toolbar/full", site) || PermissionsUtils.isPermitted("global/studio-mode")) {
                 config.setToolbarSet("Full");
             } else if (PermissionsUtils.isPermitted("wysiwyg-editor-toolbar/basic", site)) {
                 config.setToolbarSet("Basic");

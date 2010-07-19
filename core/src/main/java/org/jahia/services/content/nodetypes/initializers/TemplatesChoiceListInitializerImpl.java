@@ -96,9 +96,14 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
                 }
                 param = nextParam;
             } else if ("mainresource".equals(param)) {
-                JCRNodeWrapper matchingParent = null;
-                JCRNodeWrapper parent = node.getParent();
-                try {
+                JCRNodeWrapper matchingParent;
+                JCRNodeWrapper parent;
+                if (node == null) {
+                    parent = (JCRNodeWrapper) context.get("contextParent");
+                } else {
+                    parent = node.getParent();
+                }
+                    try {
                     while (true) {
                         if (parent.isNodeType("jnt:template")) {
                             matchingParent = parent;

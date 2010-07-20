@@ -84,6 +84,7 @@
         <module>bookmarks</module>
         <module>calendar</module>
         <module>contact</module>
+        <module>cssPage</module>
         <module>default</module>
         <module>docConverter</module>
         <module>docspace</module>
@@ -123,6 +124,7 @@
         <module>templates-intranet</module>
         <module>templates-apps</module>
         <module>topstories</module>
+        <module>twitter</module>
         <module>wiki</module>
         <module>userregistration</module>
     </modules>

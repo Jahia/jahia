@@ -1,0 +1,9 @@
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+<jmix = 'http://www.jahia.org/jahia/mix/1.0'>
+
+[jnt:twitter] > jmix:sandboxContent
+-userName (string)
+-lookingFor (string)
+-numberOfTweets (string, choicelist) = '15' indexed=no < '5', '10', '15', '20', '25', '30'
+-timeUpdate (long) = 15
+-lang (string, choicelist) indexed=no < 'en', 'fr'

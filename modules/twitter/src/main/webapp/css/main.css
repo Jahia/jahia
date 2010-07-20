@@ -1,0 +1,45 @@
+/*JUITTER PLUGIN CSS*/
+
+#myContainer{}
+
+#myContainer .twittList{margin:0;padding:0;}
+
+
+#myContainer .twittLI{list-style:none;background:#EEFDEA;margin:0;padding:5px 0 0 0;border-bottom:dashed 1px #CAF8C9;padding:3px;clear:both;height:55px;}
+#myContainer .twittList SPAN.time{color:#777;font-size:0.9em}
+#myContainer .twittList A{color:#006600;}
+
+
+#myContainer .juitterAvatar{float:left;border:solid 1px #D3EECA;background:#FFF;margin-right:5px;padding:2px;width:48px;;height:48px;}
+
+#myContainer .jRM{float:right;clear:both}
+
+#myContainer .extLink{}
+
+#myContainer .hashLink{}
+
+
+
+#myContent{
+    width: 600px;
+	margin:0;
+	padding:0;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:12px;
+
+}
+#myContent #search{clear:both;padding:7px 0 5px 0;}
+#myContent #search P{font-size:1.2em;color:#2CAF1D}
+#myContent #search INPUT{padding:4px;border:solid 1px #666;width:250px;color:#666}
+#myContent H2{color:#2CAF1D;font-size:1.4em;margin:0 0 5px 0;padding:0;}
+
+#myContent UL.nav {margin:0;padding:0;}
+
+#myContent UL.nav LI{ list-style:none; float:left;margin:0;padding:0 5px 0;color:#A4D630;}
+
+#myContent UL.nav LI A{color:#A4D630;font-size:1.2em;display:block; font-weight:bold;}
+
+#myContent UL.nav LI A:hover{color:#2CAF1D;}
+
+#myContent UL.nav LI A.on{color:#2CAF1D;font-size:1.2em;}
+

@@ -93,7 +93,7 @@ public class ErrorFileDumper {
             strOut.println("Severity: " + severityMsg);
         }
         strOut.println("");
-        strOut.println("Error: " + t.getMessage());
+        if (t!=null) { strOut.println("Error: " + t.getMessage()); }
         strOut.println("");
         if (request != null) {
             strOut.println("URL: " + request.getRequestURL());

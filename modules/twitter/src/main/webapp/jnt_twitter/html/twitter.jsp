@@ -60,7 +60,7 @@
 
         $("#search").submit(function() {
             $.Juitter.start({
-                <c:if test="${not empty lang}">lang:"${currentNode.propertes.lang.string}",</c:if>
+                <c:if test="${not empty lang}">lang:"${currentNode.properties.lang.string}",</c:if>
                 searchType:"searchWord",
                 placeHolder:"myContainer",
                 searchObject:$(".search").val(),

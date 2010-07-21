@@ -14,6 +14,7 @@
             <env>CATALINA_HOME=$INSTALL_PATH/tomcat</env>
         </executefile>
     </job>
+<!--     
     <job name="Start Apache Tomcat">
         <executeForPack name="Apache Tomcat"/>
         <os family="mac" />
@@ -21,4 +22,5 @@
             <env>CATALINA_HOME=$INSTALL_PATH/tomcat</env>
         </executefile>
     </job>
+ -->
 </processing>

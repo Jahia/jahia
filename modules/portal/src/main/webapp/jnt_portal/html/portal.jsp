@@ -10,18 +10,37 @@
        var baseUrl = '${url.base}';
 </template:addResources>
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,inettuts.js"/>
-
+<template:addResources type="inlinejavascript">
+function addWidget(source, newName) {
+    var data = {};
+    data["source"] = source;
+    data["target"] = "${currentNode.path}/column1";
+    data["newName"] = newName;
+    $.post("${url.base}${currentNode.path}/column1.clone.do", data, function(data) {
+        alert("widget has been added to your portal page");
+    });
+}
+function addRSSWidget() {
+    var data = {};
+    data["nodeType"] = "jnt:rss";
+    data["url"] = $("#feedUrl").val();
+    data["nbEntries"] = $("#nbFeeds").val();
+    $.post("${url.base}${currentNode.path}/column1/*", data, function(data) {
+        alert("rss widget has been added to your portal page");
+    });
+}
+</template:addResources>
 <script type="text/javascript">
 $(document).ready(function(){
 	$(".btn-slide").click(function(){
 		$(document).ready(function() {
-            $.get('${url.base}${currentNode.path}.select.html',null,function(data) {
+            $.get('${url.base}${currentNode.path}.select.html.ajax',null,function(data) {
                 $("#selectWidgetsArea").html(data);
             });
         });
 		$("#panel").slideToggle("slow");
-		$(this).toggleClass("active"); return false; 
-		
+		$(this).toggleClass("active"); return false;
+
 	});
 });
 </script><!--refresh needed on class="btn-slide active" window.location='${url.base}${currentNode.path}.html';-->
@@ -31,7 +50,7 @@ $(document).ready(function(){
 <div id="panel">
 	<div id="selectWidgetsArea"></div>
 </div>
-            
+
 
 <p class="slide"><a href="#" class="btn-slide">Add Widget</a></p>
 
@@ -51,5 +70,4 @@ $(document).ready(function(){
     iNettuts.addWidgetControls();
     iNettuts.makeSortable();
 </script>
-
 

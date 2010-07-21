@@ -4,26 +4,6 @@
 <template:addResources type="css" resources="portal.css"/>
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.core.min.js,inettuts.js"/>
 <jcr:node path="/shared/portalComponents" var="widgets"/>
-<script type="text/javascript">
-function addWidget(source, newName) {
-    var data = {};
-    data["source"] = source;
-    data["target"] = "${currentNode.path}/column1";
-    data["newName"] = newName;
-    $.post("${url.base}${currentNode.path}/column1.clone.do", data, function(data) {
-        alert("widget has been added to your portal page");
-    });
-}
-function addRSSWidget() {
-    var data = {};
-    data["nodeType"] = "jnt:rss";
-    data["url"] = $("#feedUrl").val();
-    data["nbEntries"] = $("#nbFeeds").val();
-    $.post("${url.base}${currentNode.path}/column1/*", data, function(data) {
-        alert("rss widget has been added to your portal page");
-    });
-}
-</script>
 <div class="content clearfix">
 <div class="left">
 <h3>Corporate Portal</h3>

@@ -28,7 +28,7 @@
             // The values below will overwrite the ones on the Juitter default configuration.
             // They are optional here.
             // I'm changing here as a example only
-            <c:if test="${not empty lang}">lang:"${currentNode.propertes.lang.string}",</c:if> // restricts the search by the given language
+            <c:if test="${not empty lang}">lang:"${currentNode.properties.lang.string}",</c:if> // restricts the search by the given language
             live:"live-${currentNode.properties.timeUpdate.long}", // the number after "live-" indicates the time in seconds to wait before request the Twitter API for updates.
             placeHolder:"myContainer", // Set a place holder DIV which will receive the list of tweets example <div id="juitterContainer"></div>
             loadMSG: "Loading messages...", // Loading message, if you want to show an image, fill it with "image/gif" and go to the next variable to set which image you want to use on

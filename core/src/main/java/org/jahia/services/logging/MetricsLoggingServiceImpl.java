@@ -77,7 +77,7 @@ public class MetricsLoggingServiceImpl implements MetricsLoggingService {
      * @param path        the node path on which the operation has been achieved
      * @param nodeType    the type of the node
      * @param logTemplate the name of the template log you want to use.
-     * @param args        varaibale list of arguments depending of the template you choose
+     * @param args        variable list of arguments depending of the template you choose
      */
     public void logContentEvent(String user, String ipAddress, String sessionID, String path, String nodeType, 
                                 String logTemplate, String... args) {

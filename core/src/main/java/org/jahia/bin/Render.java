@@ -204,7 +204,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     }
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext,
-                         Resource resource) throws RepositoryException, RenderException, IOException {
+                         Resource resource, long startTime) throws RepositoryException, RenderException, IOException {
         loggingService.startProfiler("MAIN");
 //        resp.setCharacterEncoding("UTF-8");
         String out = renderService.render(resource, renderContext).trim();
@@ -225,7 +225,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         loggingService.stopProfiler("MAIN");
         loggingService.logContentEvent(renderContext.getUser().getName(), req.getRemoteAddr(), sessionID,
                 resource.getNode().getPath(), resource.getNode().getPrimaryNodeType().getName(), "pageViewed",
-                req.getHeader("User-Agent"), req.getHeader("Referer"));
+                req.getHeader("User-Agent"), req.getHeader("Referer"),Long.toString(System.currentTimeMillis() - startTime));
     }
 
     protected void doPut(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext,
@@ -644,7 +644,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     if (lastModified == -1) {
                         // servlet doesn't support if-modified-since, no reason
                         // to go through further expensive logic
-                        doGet(req, resp, renderContext, resource);
+                        doGet(req, resp, renderContext, resource,startTime);
                     } else {
                         long ifModifiedSince = req.getDateHeader(HEADER_IFMODSINCE);
                         if (ifModifiedSince < (lastModified / 1000 * 1000)) {
@@ -652,7 +652,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                             // Round down to the nearest second for a proper compare
                             // A ifModifiedSince of -1 will always be less
                             maybeSetLastModified(resp, lastModified);
-                            doGet(req, resp, renderContext, resource);
+                            doGet(req, resp, renderContext, resource,startTime);
                         } else {
                             resp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
                         }

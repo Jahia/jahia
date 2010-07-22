@@ -52,13 +52,13 @@
                             <property name="applyOnTemplateTypes" value="html,edit"/>
                         </bean>
                         <bean class="org.jahia.services.render.filter.WrapperFilter" >
-                            <property name="priority" value="1" />
+                            <property name="priority" value="17" />
                             <property name="wrapper" value="wrapper.fullpage" />
                             <property name="applyOnConfigurations" value="page"/>
                             <property name="skipOnAJaxRequest" value="true"/>
                         </bean>
                         <bean class="org.jahia.services.render.filter.WrapperFilter" >
-                            <property name="priority" value="2" />
+                            <property name="priority" value="18" />
                             <property name="wrapper" value="wrapper.previewwrapper" />
                             <property name="applyOnConfigurations" value="preview"/>
                             <property name="skipOnAJaxRequest" value="true"/>

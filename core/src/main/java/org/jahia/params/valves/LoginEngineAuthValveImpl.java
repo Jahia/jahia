@@ -46,7 +46,6 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
-import org.jahia.utils.JahiaString;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -143,7 +142,7 @@ public class LoginEngineAuthValveImpl implements Valve {
                 String cookieUserKey = null;
                 // now let's look for a free random cookie value key.
                 while (cookieUserKey == null) {
-                    cookieUserKey = JahiaString.generateRandomString(cookieAuthConfig.getIdLength());
+                    cookieUserKey = CookieAuthValveImpl.generateRandomString(cookieAuthConfig.getIdLength());
                     Properties searchCriterias = new Properties();
                     searchCriterias.setProperty(cookieAuthConfig.getUserPropertyName(), cookieUserKey);
                     Set<Principal> foundUsers =

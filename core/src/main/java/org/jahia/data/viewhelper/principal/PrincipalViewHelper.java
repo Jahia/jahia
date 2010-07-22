@@ -43,7 +43,6 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.*;
 import org.jahia.settings.SettingsBean;
-import org.jahia.utils.JahiaString;
 import org.jahia.utils.JahiaTools;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
@@ -57,16 +56,16 @@ import java.util.*;
 /**
  * <p>Title: Principal output formating view helper</p>
  * <p>Description:
- * The role of this class is to prepare and format user and group datas for
+ * The role of this class is to prepare and format user and group data for
  * display according to the JSP files needs in administration and engines.</p>
  * <p/>
  * The output can be formated to the following string sequence :<br>
  * {"Principal", "Permissions", "Provider, 6", "Name, 10", "Properties, 20"]<br><br>
  * The digit after identifiers are the number character for the output string.
  * Where :
- * <li>Principal, indicate if the pricipal is a user(u) or a group(g)<br>
+ * <li>Principal, indicate if the principal is a user(u) or a group(g)<br>
  * <li>Permissions, is the permissions sequence : Admin, write, rights accesses<br>
- * <li>Pprovider, is the source where the user and the group are coming from<br>
+ * <li>Provider, is the source where the user and the group are coming from<br>
  * <li>Name, is the username or the groupname<br>
  * <li>Properties, is the user firstname following by the user lastname or
  * the user e-mail. Is the group member name for the group.<br><br>
@@ -211,9 +210,9 @@ public class PrincipalViewHelper implements Serializable {
      */
     public static String getName(Principal p, Integer size) {
         if (p instanceof JahiaUser) {
-            return JahiaString.adjustStringSize(((JahiaUser) p).getUsername(), size.intValue());
+            return adjustStringSize(((JahiaUser) p).getUsername(), size.intValue());
         } else {
-            return JahiaString.adjustStringSize(((JahiaGroup) p).getGroupname(), size.intValue());
+            return adjustStringSize(((JahiaGroup) p).getGroupname(), size.intValue());
         }
     }
 
@@ -226,9 +225,9 @@ public class PrincipalViewHelper implements Serializable {
      */
     public static String getProvider(Principal p, Integer size) {
         if (p instanceof JahiaUser) {
-            return JahiaString.adjustStringSize(((JahiaUser) p).getProviderName(), size.intValue());
+            return adjustStringSize(((JahiaUser) p).getProviderName(), size.intValue());
         } else {
-            return JahiaString.adjustStringSize(((JahiaGroup) p).getProviderName(), size.intValue());
+            return adjustStringSize(((JahiaGroup) p).getProviderName(), size.intValue());
         }
     }
 
@@ -243,7 +242,7 @@ public class PrincipalViewHelper implements Serializable {
         if (p instanceof JahiaUser) {
             return StringUtils.repeat(" ", size);
         } else {
-            return JahiaString.adjustStringSize(Integer.toString(((JahiaGroup) p).getSiteID()), size.intValue());
+            return adjustStringSize(Integer.toString(((JahiaGroup) p).getSiteID()), size.intValue());
         }
     }
 
@@ -262,17 +261,17 @@ public class PrincipalViewHelper implements Serializable {
             siteID = ((JahiaGroup) p).getSiteID();
         }
         if (siteID == 0) {
-            return JahiaString.adjustStringSize("server", size.intValue());
+            return adjustStringSize("server", size.intValue());
         }
         if (siteID > 0) {
             try {
                 JahiaSite jahiaSite = ServicesRegistry.getInstance().getJahiaSitesService().getSite(siteID);
-                return JahiaString.adjustStringSize(jahiaSite.getSiteKey(), size.intValue());
+                return adjustStringSize(jahiaSite.getSiteKey(), size.intValue());
             } catch (JahiaException je) {
                 logger.error("Error while retrieving site id=" + siteID, je);
             }
         }
-        return JahiaString.adjustStringSize("unknown", size.intValue());
+        return adjustStringSize("unknown", size.intValue());
     }
 
     /**
@@ -290,17 +289,17 @@ public class PrincipalViewHelper implements Serializable {
             siteID = ((JahiaGroup) p).getSiteID();
         }
         if (siteID == 0) {
-            return JahiaString.adjustStringSize("server", size.intValue());
+            return adjustStringSize("server", size.intValue());
         }
         if (siteID > 0) {
             try {
                 JahiaSite jahiaSite = ServicesRegistry.getInstance().getJahiaSitesService().getSite(siteID);
-                return JahiaString.adjustStringSize(jahiaSite.getTitle(), size.intValue());
+                return adjustStringSize(jahiaSite.getTitle(), size.intValue());
             } catch (JahiaException je) {
                 logger.error("Error while retrieving site id=" + siteID, je);
             }
         }
-        return JahiaString.adjustStringSize("unknown", size.intValue());
+        return adjustStringSize("unknown", size.intValue());
     }
 
     /**
@@ -334,7 +333,7 @@ public class PrincipalViewHelper implements Serializable {
             // Find a displayable user property
             if (user.getUsername().equals(JahiaUserManagerService.GUEST_USERNAME)) {
                 properties.append(getI18n("org.jahia.engines.users.guest.label", "guest"));
-                return JahiaString.adjustStringSize(properties.toString(), size);
+                return adjustStringSize(properties.toString(), size);
             } else {
                 final String firstname = user.getProperty("j:firstName");
                 final String lastname = user.getProperty("j:lastName");
@@ -353,14 +352,14 @@ public class PrincipalViewHelper implements Serializable {
                         properties.append(email);
                     }
                 }
-                return JahiaString.adjustStringSize(properties.toString(), size);
+                return adjustStringSize(properties.toString(), size);
             }
         } else if (p instanceof UsersGroup) {
             properties.append(getI18n("org.jahia.engines.groups.users.label", "users"));
-            return JahiaString.adjustStringSize(properties.toString(), size);
+            return adjustStringSize(properties.toString(), size);
         } else if (p instanceof GuestGroup) {
             properties.append(getI18n("org.jahia.engines.groups.guest.label", "guest"));
-            return JahiaString.adjustStringSize(properties.toString(), size);
+            return adjustStringSize(properties.toString(), size);
         } else {
             final JahiaGroup group = (JahiaGroup) p;
             // Find some group members for properties
@@ -387,7 +386,7 @@ public class PrincipalViewHelper implements Serializable {
                 members.append("...");
             }
             members.append(")");
-            return JahiaString.adjustStringSize(members.toString(), size.intValue());
+            return adjustStringSize(members.toString(), size.intValue());
         }
     }
 
@@ -679,4 +678,19 @@ public class PrincipalViewHelper implements Serializable {
 
         return JahiaResourceBundle.getJahiaInternalResource(key, locale, defaultValue);
     }
+
+    private static String adjustStringSize(String str, int size) {
+        if (str == null) // FIXNE : Don't like this null return.
+            return null;
+        if (str.length() > size) {
+            return str.substring(0, size - 2) + "..";
+        } else {
+            StringBuffer emtpyStr = new StringBuffer();
+            for (int i = 0; i < size - str.length(); i++) {
+                emtpyStr.append(" ");
+            }
+            return str + emtpyStr;
+        }
+    }
+
 }

@@ -46,12 +46,12 @@ import org.jahia.services.pwdpolicy.PolicyEnforcementResult;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
-import org.jahia.utils.JahiaString;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
+import java.security.SecureRandom;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Properties;
@@ -114,7 +114,7 @@ public class CookieAuthValveImpl implements Valve {
                     String cookieUserKey = null;
                     // now let's look for a free random cookie value key.
                     while (cookieUserKey == null) {
-                        cookieUserKey = JahiaString.generateRandomString(cookieAuthConfig.getIdLength());
+                        cookieUserKey = CookieAuthValveImpl.generateRandomString(cookieAuthConfig.getIdLength());
                         searchCriterias = new Properties();
                         searchCriterias.setProperty(userPropertyName, cookieUserKey);
                         Set<Principal> usersWithKey = ServicesRegistry.getInstance().
@@ -185,5 +185,24 @@ public class CookieAuthValveImpl implements Valve {
 
     public void setCookieAuthConfig(CookieAuthConfig config) {
         this.cookieAuthConfig = config;
+    }
+
+    public static String generateRandomString(int length) {
+        SecureRandom randomGen = new SecureRandom();
+        StringBuffer result = new StringBuffer();
+        int count = 0;
+        while (count < length) {
+            int randomSel = randomGen.nextInt(3);
+            int randomInt = randomGen.nextInt(26);
+            char randomChar = '0';
+            switch (randomSel) {
+                case 0: randomChar = (char) (((int)'A') + randomInt); break;
+                case 1: randomChar = (char) (((int)'a') + randomInt); break;
+                case 2: randomChar = (char) (((int)'0') + (randomInt % 10)); break;
+            }
+            result.append(randomChar);
+            count++;
+        }
+        return result.toString();
     }
 }

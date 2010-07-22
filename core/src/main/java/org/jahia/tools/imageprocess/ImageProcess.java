@@ -57,8 +57,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-import org.jahia.utils.FileUtils;
 
 public class ImageProcess {
     
@@ -78,7 +78,12 @@ public class ImageProcess {
         // Load the input image.
 
         File tmp = File.createTempFile("image", null);
-        FileUtils.copyStream(istream, new FileOutputStream(tmp));
+        FileOutputStream out = new FileOutputStream(tmp);
+        try {
+            IOUtils.copy(istream, out);
+        } finally {
+            IOUtils.closeQuietly(out);
+        }
         Opener op = new Opener();
         ImagePlus ip = op.openImage(tmp.getPath());
         if (ip == null ) {

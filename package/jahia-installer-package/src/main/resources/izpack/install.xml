@@ -164,7 +164,9 @@
         <panel classname="ShortcutPanel" id="shortcutPanel"/>
         <panel classname="SummaryPanel"/>
         <panel classname="InstallPanel"/>
+        <!-- 
         <panel classname="ProcessPanel" condition="cnd.pack.tomcat" />
+         -->
         <panel classname="SimpleFinishPanel"/>
     </panels>
     

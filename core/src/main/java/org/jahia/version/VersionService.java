@@ -85,6 +85,9 @@ public class VersionService extends JahiaService {
 
     private void addPatches(File dir) {
         File[] files = dir.listFiles();
+        if (files == null) {
+            return;
+        }
 
         for (int i = 0; i < files.length; i++) {
             File file = files[i];

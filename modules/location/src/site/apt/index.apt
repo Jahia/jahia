@@ -1,1 +1,23 @@
-Jahia Crazy Jane
+Jahia Location
+
+* Overview
+
+  This module contains components and functionality for defining locations
+  and displaying them on a map using {{{http://code.google.com/apis/maps/index.html} Google Maps API}}.
+  
+  Following sections describe module features in more details:
+
+    * {{{./components.html} UI Components}} - overview of the location related
+      components, geotagging and map rendering
+    
+    * {{{./usage.html} Usage}} - how to include a map into templates
+
+    []
+
+  This module provides easy ways to enable location-aware content information and
+  automatic rendering of this info on a map. Here is a screenshot of an event item,
+  which is "geotagged" (the latitude/longitude pair of coordinates is provided):
+  
+[./images/event-geotagging-map.png] Geotagged event item
+
+   

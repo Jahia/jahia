@@ -5,10 +5,41 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
+[jmix:geotagged] mixin
+ extends = jnt:content
+ itemtype = options
+ - j:latitude (string)
+ - j:longitude (string)
+
+[jmix:locationAware] mixin
+ extends = jnt:content
+ itemtype = options
+ - j:street (string)
+ - j:zipCode (string) analyzer='keyword'
+ - j:town (string) facetable
+ - j:country (string,choicelist[country,flag]) facetable
+
 [jnt:location] > jnt:content, mix:title, jmix:editorialContent
- - street (string)
- - zipCode (string) analyzer='keyword'
- - town (string) i18n facetable
- - country (string,choicelist[country,flag]) i18n facetable
- - latitude (string) i18n facetable
- - longitude (string) i18n facetable
+ - j:street (string)
+ - j:zipCode (string) analyzer='keyword'
+ - j:town (string) facetable
+ - j:country (string,choicelist[country,flag]) facetable
+ - j:latitude (string)
+ - j:longitude (string)
+
+[jnt:staticMap] > jnt:content, mix:title, jmix:bindedComponent, jmix:editorialContent
+ - j:maptype (string,choicelist[resourceBundle]) = 'roadmap' indexed=no < 'roadmap','satellite','terrain','hybrid'
+ - j:zoom (string,choicelist) = 'auto' indexed=no < 'auto','0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21'
+ - j:imagetype (string,choicelist[resourceBundle]) = 'png8' indexed=no < 'png8','png32','gif','jpg','jpg-baseline'
+ - j:height (long) = 300 indexed=no < '[1,640]'
+ - j:width (long) = 500 indexed=no < '[1,640]'
+ - j:markerSize (string,choicelist) = 'normal' indexed=no < 'normal','mid','small','tiny' 
+ - j:markerColor (string,choicelist[resourceBundle]) = 'normal' indexed=no < 'normal','black','brown','green','purple','yellow','blue','gray','orange','red','white'
+
+[jnt:map] > jnt:content, mix:title, jmix:bindedComponent, jmix:editorialContent
+ - j:maptype (string,choicelist[resourceBundle]) = 'roadmap' indexed=no < 'roadmap','satellite','terrain','hybrid'
+ - j:zoom (long) mandatory indexed=no
+ - j:height (long) = 300 indexed=no
+ - j:width (long) = 500 indexed=no
+ - j:markerImage (weakreference, file[mime='image/*'])
+ 

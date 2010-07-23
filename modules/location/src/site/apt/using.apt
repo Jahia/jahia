@@ -1,0 +1,71 @@
+Usage
+
+  Jahia uses the
+  {{{http://code.google.com/apis/maps/documentation/javascript/}Google Maps JavaScript API V3}}
+  for geocodding and interactive map rendering and the Google
+  {{{http://code.google.com/apis/maps/documentation/staticmaps/}Static Maps API V2}} for 
+  static map rendering.
+  
+  We have provided a jQuery-based plugin (<<<jquery.jahia-googlemaps.js>>>) for easy integration
+  of map objects into templates.
+
+  Here is an example of rendering a map object for a location, defined by (latitude, longitude)
+  pair:
+  
++------------------------------------------------
+...
+  <template:addResources type="javascript" resources="http://maps.google.com/maps/api/js?sensor=false&amp;language=${currentResource.locale.language}"/>
+  <template:addResources type="javascript" resources="jquery.min.js"/>
+  <template:addResources type="javascript" resources="jquery.jahia-googlemaps.js"/>
+
+    <template:addResources type="inlinejavascript">
+        $(document).ready(function() {
+            $("#map-placeholder").googleMaps({
+                markers:[{
+                    latitude: '46.1893',
+                    longitude: '6.12831',
+                }]
+            });
+        });
+    </template:addResources>
+    
+    <div id="map-map-placeholder" style="width:500px; height:300px"></div>
+...
++------------------------------------------------
+   
+  In a similar way a postal address can be used to define a location point.
+  This will lead to a geocoding first, i.e. a request is made using Google's API
+  to retrieve the geo coordinates for the specified address. 
+
++------------------------------------------------
+...
+	$("#map-placeholder").googleMaps({
+    	markers:[{
+        	address: '9, rte des Jeunes, 1227, Acacias, Switzerland'
+        }]
+    });
+...
++------------------------------------------------
+
+  Additionally a title, and info content and a custom icon can be specified:
+
++------------------------------------------------
+...
+	$("#map-placeholder").googleMaps({
+    	markers:[{
+        	address: '9, rte des Jeunes, 1227, Acacias, Switzerland',
+        	icon: 'icons/home.png',
+        	title: 'Jahia Corporate Headquarter',
+        	info: '<strong>Jahia Corporate Headquarter</strong><br/>'
+        		+ '9, rte des Jeunes'
+        		+ '1227 Acacias'
+        		+ 'Switzerland'
+        }]
+    });
+...
++------------------------------------------------
+
+  This will be rendered as shown below:
+
+[./images/customization.png] Marker customization
+

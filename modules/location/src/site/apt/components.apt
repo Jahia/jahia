@@ -1,0 +1,65 @@
+Geotagging and map components
+
+  Several pre-built components are provided for quick start in using geotagging
+  and map rendering:
+
+  * <Location> - provides an generic component for defining a geographical location
+    either via latitude/longitude or using postal address. Corresponding node type is
+    <<<jnt:location>>>.
+
+  * <Map> - a binded component that renders the interactive map of the target
+    location or geotagged content. Corresponds to a node type <<<jnt:map>>>.
+
+  * <Map (static)> - component that renders the static map (static image)
+    of the bound target location or geotagged content.
+    Is represented by the node type <<<jnt:staticMap>>>.
+
+  []
+  
+  These components are available in the <Editorial content> group of components in the
+  selector panel:
+    
+[./images/map-components.png] Location and map components
+
+  
+* Defining locations
+
+  A location can be defined by using a dedicated <Location> component from the
+  selector panel or by using <Geotagging> or <Location> options in the Edit Content Engine.
+  The later allow to provide location information for any type of content object:
+  
+[./images/event-geotagging.png] Geotagging content via options
+
+  Location information can be provided either by supplying (latitude, longitude) pair
+  of coordinates for an object or by using a postal address.
+  
+  There are several online services allowing you to determine geographical
+  coordinates for a location, including Google's
+  {{{http://gmaps-samples.googlecode.com/svn/trunk/geocoder/singlegeocode.html}Geocoding Utility}},
+  {{{http://itouchmap.com/latlong.html}iTouchMap.com}},
+  {{{http://www.findlatitudeandlongitude.com/}www.findlatitudeandlongitude.com}} and others.
+  
+  The second option is to specify the postal address of a point. In such case the geocodding
+  will be done using {{{http://code.google.com/apis/maps/documentation/javascript/}Google Maps JavaScript API V3}}
+  to retrieve latitude and longitude of a point when displaying the map (client side during map rendering).
+
+* Rendering maps
+
+  Any location-aware content object can be displayed on a map using either an interactive <Map>
+  or its static counterpart - <Map (static)>.
+  Under location-aware object we understand either an instance of <<<jnt:location>>> node type
+  or an object having <<<jmix:geottaged>>> or <<<jmix:locationAware>>> mixin types. The later
+  two mixins are automatically assigned to an object when activating <Geotagging> and
+  <Location> options in the Edit Content Engine respectively.
+  
+  Both map components are implemented as so called binded components. That means that
+  they will render a map of an object which this map is linked (bound) to.
+  
+  After dragging and dropping a map component into a page it can be linked to a location
+  aware object:
+  
+[./images/map-binding.png] Map binding
+
+  and it will render a map with the corresponding location point as a marker: 
+
+[./images/map-binding-2.png] Bound map

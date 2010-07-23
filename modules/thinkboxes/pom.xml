@@ -33,6 +33,7 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 -->
+
 <project>
     <modelVersion>4.0.0</modelVersion>
     <parent>
@@ -42,9 +43,10 @@
     </parent>
     <groupId>org.jahia.modules</groupId>
     <artifactId>thinkboxes</artifactId>
-    <name>Jahia Think Box</name>
+    <name>Jahia Think Boxes</name>
     <packaging>war</packaging>
     <description>This is a custom module for running on a Jahia server.</description>
+
     <repositories>
         <repository>
             <id>jahiaRepository</id>
@@ -59,6 +61,7 @@
             <url>http://maven.jahia.org/maven2</url>
         </pluginRepository>
     </pluginRepositories>
+
     <profiles>
         <profile>
             <id>eclipse-integration</id>
@@ -109,6 +112,7 @@
             </build>
         </profile>
     </profiles>
+
     <dependencies>
         <dependency>
             <groupId>org.jahia.server</groupId>

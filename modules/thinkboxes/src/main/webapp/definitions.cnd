@@ -1,0 +1,12 @@
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+<jmix = 'http://www.jahia.org/jahia/mix/1.0'>
+
+[jnt:thinkBoxCreation] > jnt:content, jmix:editorialContent, mix:title
+
+[jnt:thinkBoxItem] > jnt:content, jmix:editorialContent, mix:title
+ - url (string)
+ - description (string, text[multiline]) i18n
+ - note (string, text[multiline]) i18n 
+ 
+[jnt:thinkBoxItemList] > jnt:content, jmix:editorialContent 
+

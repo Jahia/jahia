@@ -127,5 +127,6 @@
         <module>twitter</module>
         <module>wiki</module>
         <module>userregistration</module>
+        <module>thinkboxes</module>
     </modules>
 </project>

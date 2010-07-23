@@ -12,7 +12,7 @@ function JahiaClip() {
 	this.selection = window.getSelection(); // test IE
 
 	this.serverUrl = CJN_SERVER;
-	this.serverFormPage = "cms/render/default/en/sites/testnote/page.html";
+	this.serverFormPage = CJN_NOTE_FORM;
 	this.dataTransport = null;
 	this.dataContainer = null;
 	
@@ -23,7 +23,7 @@ function JahiaClip() {
  *
  */
 JahiaClip.prototype.prepareTransport = function() {
-	this.dataTransport.action = this.serverUrl + '/' + this.serverFormPage;
+	this.dataTransport.action = this.serverUrl + this.serverFormPage;
 	this.dataTransport.method = 'GET';
 	this.dataTransport.target = 'cj_frame' || '_top';
 	this.dataTransport.enctype = "application/x-www-form-urlencoded";
@@ -103,7 +103,7 @@ JahiaClip.prototype.prepareForm = function() {
 	displayedForm.style.margin = "10px";
 	
 	displayedForm.innerHTML = '<iframe id="cj_frame" '
-			+ 'name="cj_frame" src="'+clip.serverUrl+'/'+this.serverFormPage+'?ajaxcall=true" '
+			+ 'name="cj_frame" src="'+this.serverUrl+this.serverFormPage+'" '
 			+ 'frameborder="0" style="width:650px; height:500px; '
 			+ 'border:1px; padding:0px; margin:0px"></iframe>';
 	
@@ -112,7 +112,7 @@ JahiaClip.prototype.prepareForm = function() {
 	displayedClose.style.right = "0px";
 	displayedClose.style.zIndex = 111111;
 	displayedClose.style.margin = "10px";
-	displayedClose.innerHTML = '<img src="'+CJN_SERVER+'/javascript/note-close-off.gif" onclick="removeElement(\'cj_frame\');removeElement(\'cjwc_close\');" onmouseover="this.src=\''+CJN_SERVER+'/javascript/note-close-on.gif\'" onmouseout="this.src=\''+CJN_SERVER+'/javascript/note-close-off.gif\'"/>';
+	displayedClose.innerHTML = '<img alt="[=close-]" src="'+CJN_SERVER+'/javascript/note-close-off.gif" onclick="removeElement(\'cj_frame\');removeElement(\'cjwc_close\');" onmouseover="this.src=\''+CJN_SERVER+'/javascript/note-close-on.gif\'" onmouseout="this.src=\''+CJN_SERVER+'/javascript/note-close-off.gif\'"/>';
 	
 	elBody.appendChild(displayedForm);
 	elBody.appendChild(displayedClose);

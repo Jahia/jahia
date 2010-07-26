@@ -3,10 +3,12 @@
 
 [jnt:thinkBoxCreation] > jnt:content, jmix:editorialContent, mix:title
 
-[jnt:thinkBoxItem] > jnt:content, jmix:editorialContent, mix:title
+[jnt:thinkBoxItem] > jnt:content, jmix:editorialContent, jmix:tagged
+ - title (string)
  - url (string)
- - description (string, text[multiline]) i18n
- - note (string, text[multiline]) i18n 
+ - description (string, text[multiline])
+ - note (string, text[multiline])
+ - tag (string)
  
 [jnt:thinkBoxItemList] > jnt:content, jmix:editorialContent 
 

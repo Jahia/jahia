@@ -3,7 +3,10 @@
 
 [jnt:twitterFeed] > jmix:sandboxContent
 -userName (string)
--lookingFor (string)
+-numberOfTweets (string, choicelist) = '15' indexed=no < '5', '10', '15', '20', '25', '30'
+-timeUpdate (long) = 15
+
+[jnt:twitterSearch] > jmix:sandboxContent
 -numberOfTweets (string, choicelist) = '15' indexed=no < '5', '10', '15', '20', '25', '30'
 -timeUpdate (long) = 15
 -lang (string, choicelist) indexed=no < 'en', 'fr'

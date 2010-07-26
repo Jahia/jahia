@@ -8,14 +8,40 @@ function JahiaClip() {
 
   this.title = window.document.title;
 	this.url = window.document.location;
-	this._window = window;
-	this.selection = window.getSelection(); // test IE
-
+	this._window = window; 
+	this.selectionTXT = getText(window.document) + "";
+	this.selectionHTML = (this.selectionTXT=="")?"":getHTML(window.document);
 	this.serverUrl = CJN_SERVER;
 	this.serverFormPage = CJN_NOTE_FORM;
 	this.dataTransport = null;
 	this.dataContainer = null;
 	
+}
+
+function getText(d) {
+	if (window.ActiveXObject) {
+		var c = d.selection.createRange();
+		return c.text;
+	}
+	
+	return window.getSelection();	
+}
+
+function getHTML(d) {
+
+	if (window.ActiveXObject) {
+		var c = d.selection.createRange();
+		return c.htmlText;
+	}
+	
+	var range = window.getSelection().getRangeAt(0);
+	var startContainer = range.startContainer;
+	var spanNode = startContainer.ownerDocument.createElement("cjtb");
+	
+	var docfrag = range.extractContents();
+	spanNode.appendChild(docfrag);
+	range.insertNode(spanNode);
+	return spanNode.innerHTML;
 }
 
 /**
@@ -24,10 +50,10 @@ function JahiaClip() {
  */
 JahiaClip.prototype.prepareTransport = function() {
 	this.dataTransport.action = this.serverUrl + this.serverFormPage;
-	this.dataTransport.method = 'GET';
+	this.dataTransport.method = 'GET'; // change it to POST - see with Ced ?
 	this.dataTransport.target = 'cj_frame' || '_top';
 	this.dataTransport.enctype = "application/x-www-form-urlencoded";
-	this.dataTransport.acceptCharset = "UTF-8";
+	this.dataTransport.acceptCharset = "ISO-8859-1";
 	this.dataTransport.name = "cj_data_transport";
 }
 
@@ -48,20 +74,36 @@ JahiaClip.prototype.prepareData = function() {
 	// AJAXCALL PARAMETER
 	this.createHiddenElement("ajaxcall", this.dataTransport, "true");
 
-  // FIELD TITLE
+  	// FIELD TITLE
 	this.createHiddenElement("title", this.dataTransport, this.title);
 
 	// FIELD URL
 	this.createHiddenElement("url", this.dataTransport, this.url);
 	
-	// FIELD NOTE
-	this.createHiddenElement("note", this.dataTransport, this.selection);
+	// FIELD NOTE TXT
+	this.createHiddenElement("noteTXT", this.dataTransport, this.selectionTXT);
+	
+	// FIELD NOTE HTML	
+	var strUrl = this.url.toString();
+	
+	lastSlashIndex = strUrl.indexOf("/", (strUrl.indexOf("//")+2));
+	if (lastSlashIndex == -1) {
+		serverName = strUrl;
+	} else {
+		serverName = strUrl.substring("0", lastSlashIndex);
+	}
+	// replace absolute url with the server name and schema and add the replaced html content
+	this.createHiddenElement("noteHTML", this.dataTransport, this.selectionHTML.replace(/\"\//g, '"'+serverName+'/'));
+
 	
 	// FIELD TYPE
 	this.createHiddenElement("type", this.dataTransport, "note");
 	
 	// FIELD SHARE
 	this.createHiddenElement("share", this.dataTransport, "true");
+	
+	// FIELD NOTE TXT
+	this.createHiddenElement("submitedAjax", this.dataTransport, "true");
 
 	this.dataContainer = dataContainer;
 	
@@ -112,7 +154,7 @@ JahiaClip.prototype.prepareForm = function() {
 	displayedClose.style.right = "0px";
 	displayedClose.style.zIndex = 111111;
 	displayedClose.style.margin = "10px";
-	displayedClose.innerHTML = '<img alt="[=close-]" src="'+CJN_SERVER+'/javascript/note-close-off.gif" onclick="removeElement(\'cj_frame\');removeElement(\'cjwc_close\');" onmouseover="this.src=\''+CJN_SERVER+'/javascript/note-close-on.gif\'" onmouseout="this.src=\''+CJN_SERVER+'/javascript/note-close-off.gif\'"/>';
+	displayedClose.innerHTML = '<img alt="[-close-]" src="'+CJN_SERVER+'/icons/delete.png" onclick="closeFrame();" />';
 	
 	elBody.appendChild(displayedForm);
 	elBody.appendChild(displayedClose);
@@ -175,7 +217,12 @@ JahiaClip.prototype.send = function() {
 
 // ==================================================
 function removeElement(id) {
-document.getElementById(id).parentNode.removeChild(document.getElementById(id));
+	document.getElementById(id).parentNode.removeChild(document.getElementById(id));
+}
+
+function closeFrame() {
+	removeElement('cj_frame');
+	removeElement('cjwc_close');
 }
 
 function doClip() {

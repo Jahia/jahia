@@ -21,7 +21,7 @@ Pas de notes
 <c:if test="${listTotalSize > 0}">
     <c:forEach items="${result.nodes}" var="itemNode">
     	
-    <a href="${url.base}${itemNode.path}.html">${itemNode.properties['jcr:title'].string}</a> - Modifi�e le <fmt:formatDate value="${itemNode.properties['jcr:lastModified'].date.time}" dateStyle="short" type="both"/>.
+    <a href="${url.base}${itemNode.path}.html">${itemNode.properties['title'].string}</a> - updated on <fmt:formatDate value="${itemNode.properties['jcr:lastModified'].date.time}" dateStyle="short" type="both"/>.
     <br />
     	
     </c:forEach>

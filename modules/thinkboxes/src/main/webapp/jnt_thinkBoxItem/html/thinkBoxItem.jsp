@@ -5,7 +5,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-Titre: ${currentNode.properties['jcr:title'].string}
+Title: ${currentNode.properties['title'].string}
 <br /><br />
 url: ${currentNode.properties['url'].string}
 <br /><br />

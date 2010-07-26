@@ -10,7 +10,7 @@
     <name>Jahia Install</name>
     <packaging>pom</packaging>
     <properties>
-        <jahia.tomcat.version>6.0.28</jahia.tomcat.version>
+        <jahia.tomcat.version>6.0.29</jahia.tomcat.version>
         <jahia.jboss.version>4.2.3.GA</jahia.jboss.version>
         <jahia.websphere.version>6.1.0.25</jahia.websphere.version>
     </properties>

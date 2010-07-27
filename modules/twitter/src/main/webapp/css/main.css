@@ -1,45 +1,203 @@
 /*JUITTER PLUGIN CSS*/
 
-#myContainer{}
+#myContainerSearch {
+}
 
-#myContainer .twittList{margin:0;padding:0;}
+#myContainerSearch .twittList {
+    margin: 0;
+    padding: 0;
+}
 
+#myContainerSearch .twittLI {
+    list-style: none;
+    background: #EEFDEA;
+    margin: 0;
+    padding: 5px 0 0 0;
+    border-bottom: dashed 1px #CAF8C9;
+    padding: 3px;
+    clear: both;
+    height: 55px;
+}
 
-#myContainer .twittLI{list-style:none;background:#EEFDEA;margin:0;padding:5px 0 0 0;border-bottom:dashed 1px #CAF8C9;padding:3px;clear:both;height:55px;}
-#myContainer .twittList SPAN.time{color:#777;font-size:0.9em}
-#myContainer .twittList A{color:#006600;}
+#myContainerSearch .twittList SPAN.time {
+    color: #777;
+    font-size: 0.9em
+}
 
+#myContainerSearch .twittList A {
+    color: #006600;
+}
 
-#myContainer .juitterAvatar{float:left;border:solid 1px #D3EECA;background:#FFF;margin-right:5px;padding:2px;width:48px;;height:48px;}
+#myContainerSearch .juitterAvatar {
+    float: left;
+    border: solid 1px #D3EECA;
+    background: #FFF;
+    margin-right: 5px;
+    padding: 2px;
+    width: 48px;;
+    height: 48px;
+}
 
-#myContainer .jRM{float:right;clear:both}
+#myContainerSearch .jRM {
+    float: right;
+    clear: both
+}
 
-#myContainer .extLink{}
+#myContainerSearch .extLink {
+}
 
-#myContainer .hashLink{}
+#myContainerSearch .hashLink {
+}
 
+#myContainerFeed {
+}
 
+#myContainerFeed .twittLI {
+    list-style: none;
+    background: #EEFDEA;
+    margin: 0;
+    padding: 5px 0 0 0;
+    border-bottom: dashed 1px #CAF8C9;
+    padding: 3px;
+    clear: both;
+    height: 55px;
+}
 
-#myContent{
+#myContainerFeed .twittList SPAN.time {
+    color: #777;
+    font-size: 0.9em
+}
+
+#myContainerFeed .twittList A {
+    color: #006600;
+}
+
+#myContainerFeed .juitterAvatar {
+    float: left;
+    border: solid 1px #D3EECA;
+    background: #FFF;
+    margin-right: 5px;
+    padding: 2px;
+    width: 48px;;
+    height: 48px;
+}
+
+#myContainerFeed .jRM {
+    float: right;
+    clear: both
+}
+
+#myContainerFeed .extLink {
+}
+
+#myContainerFeed .hashLink {
+}
+
+#myContentSearch {
     width: 600px;
-	margin:0;
-	padding:0;
-	font-family:Arial, Helvetica, sans-serif;
-	font-size:12px;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
 
 }
-#myContent #search{clear:both;padding:7px 0 5px 0;}
-#myContent #search P{font-size:1.2em;color:#2CAF1D}
-#myContent #search INPUT{padding:4px;border:solid 1px #666;width:250px;color:#666}
-#myContent H2{color:#2CAF1D;font-size:1.4em;margin:0 0 5px 0;padding:0;}
 
-#myContent UL.nav {margin:0;padding:0;}
+#myContentSearch #mySearch {
+    clear: both;
+    padding: 7px 0 5px 0;
+}
 
-#myContent UL.nav LI{ list-style:none; float:left;margin:0;padding:0 5px 0;color:#A4D630;}
+#myContentSearch #mySearch P {
+    font-size: 1.2em;
+    color: #2CAF1D
+}
 
-#myContent UL.nav LI A{color:#A4D630;font-size:1.2em;display:block; font-weight:bold;}
+#myContentSearch #mySearch INPUT {
+    padding: 4px;
+    border: solid 1px #666;
+    width: 250px;
+    color: #666
+}
 
-#myContent UL.nav LI A:hover{color:#2CAF1D;}
+#myContentSearch H2 {
+    color: #2CAF1D;
+    font-size: 1.4em;
+    margin: 0 0 5px 0;
+    padding: 0;
+}
 
-#myContent UL.nav LI A.on{color:#2CAF1D;font-size:1.2em;}
+#myContentSearch UL.nav {
+    margin: 0;
+    padding: 0;
+}
+
+#myContentSearch UL.nav LI {
+    list-style: none;
+    float: left;
+    margin: 0;
+    padding: 0 5px 0;
+    color: #A4D630;
+}
+
+#myContentSearch UL.nav LI A {
+    color: #A4D630;
+    font-size: 1.2em;
+    display: block;
+    font-weight: bold;
+}
+
+#myContentSearch UL.nav LI A:hover {
+    color: #2CAF1D;
+}
+
+#myContentSearch UL.nav LI A.on {
+    color: #2CAF1D;
+    font-size: 1.2em;
+}
+
+#myContentFeed {
+    width: 600px;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+
+}
+
+#myContentFeed H2 {
+    color: #2CAF1D;
+    font-size: 1.4em;
+    margin: 0 0 5px 0;
+    padding: 0;
+}
+
+#myContentFeed UL.nav {
+    margin: 0;
+    padding: 0;
+}
+
+#myContentFeed UL.nav LI {
+    list-style: none;
+    float: left;
+    margin: 0;
+    padding: 0 5px 0;
+    color: #A4D630;
+}
+
+#myContentFeed UL.nav LI A {
+    color: #A4D630;
+    font-size: 1.2em;
+    display: block;
+    font-weight: bold;
+}
+
+#myContentFeed UL.nav LI A:hover {
+    color: #2CAF1D;
+}
+
+#myContentFeed UL.nav LI A.on {
+    color: #2CAF1D;
+    font-size: 1.2em;
+}
+
 

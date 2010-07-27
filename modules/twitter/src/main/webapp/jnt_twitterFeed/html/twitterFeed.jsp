@@ -15,16 +15,13 @@
 <template:addResources type="javascript" resources="jquery.min.js"/>
 <template:addResources type="javascript" resources="jquery.juitter.js"/>
 <template:addResources type="css" resources="main.css"/>
-<jcr:nodeProperty node="${currentNode}" name="userName" var="username"/>
-<jcr:nodeProperty node="${currentNode}" name="lookingFor" var="lookingfor"/>
-<jcr:nodeProperty node="${currentNode}" name="lang" var="lang"/>
 
 <script type="text/javascript">
     $(function() {
         $.Juitter.start({
-            searchType:"toUser",
-            placeHolder:"myContainer",
-            searchObject:"${currentNode.properties.userName.string}",
+            searchType:"fromUser",
+            placeHolder:"myContainerFeed",
+            searchObject:"${fn:replace(currentNode.properties.userName.string, ' ', ',')}",
             live:"live-${currentNode.properties.timeUpdate.long}",
             loadMSG: "Loading messages...",
             total: ${currentNode.properties.numberOfTweets.string},
@@ -34,10 +31,10 @@
     });
 </script>
 
-<div id="myContent">
-    <div id="juitter">
+<div id="myContentFeed">
+    <div id="juitterFeed">
         <p>Twitter Feed: ${currentNode.properties.userName.string}</p>
-        <div id="myContainer">
+        <div id="myContainerFeed">
         </div>
     </div>
 </div>

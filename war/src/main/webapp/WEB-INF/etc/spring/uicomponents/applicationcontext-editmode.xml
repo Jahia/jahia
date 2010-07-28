@@ -400,7 +400,6 @@
         <property name="treeColumns">
             <list>
                 <value>displayName,*,label.title</value>
-                <value>author,100,versioning.author</value>
             </list>
         </property>
         <property name="treeContextMenu">

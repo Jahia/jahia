@@ -50,9 +50,6 @@ public class PagesTabItem extends SidePanelTabItem {
     }
 
     private void initTree() {
-        ColumnConfig columnConfig = new ColumnConfig("displayName","Name",80);
-        columnConfig.setRenderer(new TreeGridCellRenderer<GWTJahiaNode>());
-
         GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(config.getPaths());
         factory.setNodeTypes(config.getFolderTypes());
         this.factory = factory;

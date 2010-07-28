@@ -309,18 +309,6 @@
 // Rendering
 //---------------------------------------------------------
 
-[jmix:layout] mixin
-itemtype = layout
-- j:columnsWidth (long)
-- j:columnsCount (long)
-- j:marginWidth (long)
-- j:pageWidth (long)
-+ * (jnt:layoutItem)
-
-[jnt:layoutItem] > nt:base
-- j:columns (long)
-- j:rows (long)
-- j:type (string)
 
 [jmix:renderable] mixin
  extends = jnt:content, jnt:template

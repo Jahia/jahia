@@ -128,5 +128,6 @@
         <module>wiki</module>
         <module>userregistration</module>
         <module>thinkboxes</module>
+        <module>teasers</module>
     </modules>
 </project>

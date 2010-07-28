@@ -89,7 +89,7 @@
 
 ## People
 
-[web_templates:peopleContainer] = jnt:people
+[web_templates:peopleContainer] = jnt:person
  - peopleFirstname = firstname
  - peopleLastname = lastname
  - peopleFunction = function

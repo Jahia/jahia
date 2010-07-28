@@ -4,7 +4,7 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<template:addResources type="css" resources="people.css"/>
+<template:addResources type="css" resources="person.css"/>
 <script type="text/javascript">
     function ShowHideLayer(boxID) {
 	/* Obtain reference for the selected boxID layer and its button */

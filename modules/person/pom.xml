@@ -41,8 +41,8 @@
         <version>6.5-SNAPSHOT</version>
     </parent>
     <groupId>org.jahia.modules</groupId>
-    <artifactId>people</artifactId>
-    <name>Jahia People</name>
+    <artifactId>person</artifactId>
+    <name>Jahia Person</name>
     <packaging>war</packaging>
     <description>This is a custom module for running on a Jahia server.</description>
     <repositories>

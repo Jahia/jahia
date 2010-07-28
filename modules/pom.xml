@@ -100,7 +100,7 @@
         <module>news</module>
         <module>feedimporter</module>
         <module>grid</module>
-        <module>people</module>
+        <module>person</module>
         <module>poll</module>
         <module>portal</module>
         <module>press</module>

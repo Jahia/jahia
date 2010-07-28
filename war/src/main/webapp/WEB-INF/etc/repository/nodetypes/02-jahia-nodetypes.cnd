@@ -216,6 +216,7 @@
 //---------------------------------------------------------
 
 [jnt:usersFolder] > jnt:systemNode, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:list
+
  - j:usersFolderConfig (string) nofulltext
  - j:usersFolderSkeleton (string) nofulltext
  + * (jnt:user)
@@ -307,6 +308,19 @@
 //---------------------------------------------------------
 // Rendering
 //---------------------------------------------------------
+
+[jmix:layout] mixin
+itemtype = layout
+- j:columnsWidth (long)
+- j:columnsCount (long)
+- j:marginWidth (long)
+- j:pageWidth (long)
++ * (jnt:layoutItem)
+
+[jnt:layoutItem] > nt:base
+- j:columns (long)
+- j:rows (long)
+- j:type (string)
 
 [jmix:renderable] mixin
  extends = jnt:content, jnt:template

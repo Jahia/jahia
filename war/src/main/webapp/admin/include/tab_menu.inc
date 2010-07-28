@@ -38,7 +38,8 @@
                     org.jahia.services.sites.JahiaSitesService,
                     org.jahia.registries.ServicesRegistry,
                     org.jahia.utils.LanguageCodeConverters,
-                    org.jahia.services.preferences.user.UserPreferencesHelper" 
+                    org.jahia.services.preferences.user.UserPreferencesHelper,
+                    org.jahia.bin.Logout" 
 %><%
     JahiaSitesService siteService = ServicesRegistry.getInstance().getJahiaSitesService();
     JahiaSite theSite = (JahiaSite) session.getAttribute(ProcessingContext.SESSION_SITE);

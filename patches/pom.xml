@@ -14,6 +14,7 @@
         <module>concurrent</module>
         <module>jodconverter</module>
         <module>jbpm</module>
+        <module>camel-stream</module>
     </modules>
 
 </project>

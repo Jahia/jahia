@@ -6,7 +6,7 @@
 #bodywrapper .boxteaser {
 	position: relative;
 	height:1%;
-	background:#fff url(img/boxteaser-bg.png) no-repeat top right;
+	background:#fff url(../../../../default/src/main/webapp/css/img/boxteaser-bg.png) no-repeat top right;
 	padding-top:5px;
 	margin-bottom:5px;
 }

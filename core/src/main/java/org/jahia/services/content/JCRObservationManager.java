@@ -4,6 +4,9 @@ import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.*;
 import javax.jcr.observation.EventListener;
+
+import org.apache.log4j.Logger;
+
 import java.util.*;
 
 /**
@@ -23,6 +26,8 @@ public class JCRObservationManager implements ObservationManager {
     public static final int NODE_RESTORE = 1 << 10;
     public static final int NODE_UPDATE = 1 << 11;
     public static final int NODE_MERGE = 1 << 12;
+    
+    private static Logger logger = Logger.getLogger(JCRObservationManager.class);
 
     private static ThreadLocal<JCRSessionWrapper> currentSession = new ThreadLocal<JCRSessionWrapper>();
     private static ThreadLocal<Map<JCRSessionWrapper, List<Event>>> events =
@@ -176,8 +181,12 @@ public class JCRObservationManager implements ObservationManager {
                             filteredEvents.add(event);
                         }
                     }
+                    try {
                     consumer.listener.onEvent(new JCREventIterator(session, operationType, filteredEvents.iterator(),
                             filteredEvents.size()));
+                    } catch (Exception e) {
+                        logger.warn("Error processing event by listener. Cause: " + e.getMessage(), e);
+                    }
                 }
             }
         }

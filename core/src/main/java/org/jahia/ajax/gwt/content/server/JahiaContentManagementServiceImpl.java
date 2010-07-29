@@ -269,7 +269,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
         return navigation
                 .retrieveRoot(paths, nodeTypes, mimeTypes, filters, fields, selectedNodes, openPaths, getSite(),
-                        retrieveCurrentSession());
+                        retrieveCurrentSession(), getLocale());
     }
 
     public List<GWTJahiaNode> getNodes(List<String> paths, List<String> fields) {

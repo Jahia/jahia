@@ -50,6 +50,7 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.utils.FileUtils;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.springframework.util.CollectionUtils;
 
 import javax.jcr.*;
@@ -246,7 +247,7 @@ public class NavigationHelper {
     public List<GWTJahiaNode> retrieveRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes,
                                            List<String> filters, List<String> fields, List<String> selectedNodes,
                                            List<String> openPaths, JCRSiteNode site,
-                                           JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+                                           JCRSessionWrapper currentUserSession, Locale uiLocale) throws GWTJahiaServiceException {
         List<GWTJahiaNode> userNodes = new ArrayList<GWTJahiaNode>();
         //todo replace useless reporitorykey by list of pathes
         logger.debug("open paths for getRoot : " + openPaths);
@@ -260,7 +261,7 @@ public class NavigationHelper {
             }
             if (path.contains("$user")) {
                 path = path.replace("$user", "/users/" + currentUserSession.getUserID());
-                displayName = currentUserSession.getUser().getName();
+                displayName =  JahiaResourceBundle.getJahiaInternalResource("label.personalFolder", uiLocale, "label.personalFolder");
             }
             if (path.startsWith("/shared/")) {
                 displayName = "shared";

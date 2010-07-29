@@ -31,7 +31,6 @@
  */
 package org.jahia.services.render;
 
-import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.map.CaseInsensitiveMap;
 import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.lang.StringUtils;
@@ -71,11 +70,7 @@ public class RenderContext {
     private String redirect;
     
     @SuppressWarnings("unchecked")
-    private Map<String, Set<String>> staticAssets = LazyMap.decorate(new CaseInsensitiveMap(), new Factory() {
-        public Object create() {
-            return new LinkedHashSet<String>();
-        }
-    });
+    private Map<String, Set<String>> staticAssets = LazyMap.decorate(new CaseInsensitiveMap(), new SetFactory());
 
     private String contentType;
 
@@ -303,4 +298,5 @@ public class RenderContext {
     public void setRedirect(String redirect) {
         this.redirect = redirect;
     }
+
 }

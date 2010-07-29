@@ -84,7 +84,7 @@ import java.util.*;
 public class Render extends HttpServlet implements Controller, ServletConfigAware {
     /** The serialVersionUID. */
     private static final long serialVersionUID = 5377039107890340659L;
-    
+
     protected static final String METHOD_DELETE = "DELETE";
     protected static final String METHOD_HEAD = "HEAD";
     protected static final String METHOD_GET = "GET";
@@ -121,13 +121,13 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     private MetricsLoggingService loggingService;
     private JahiaTemplateManagerService templateService;
     private Action defaultPostAction;
-    
+
     private SettingsBean settingsBean;
     private RenderService renderService;
     private JCRSessionFactory jcrSessionFactory;
 
     private Integer sessionExpiryTime = null;
-    
+
     private Set<String> allowedMethods = new HashSet<String>();
 
     static {
@@ -777,7 +777,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
     /**
      * Specifies the set of allowed HTTP methods.
-     *  
+     *
      * @param allowedMethods the set of allowed HTTP methods
      */
     public void setAllowedMethods(Set<String> allowedMethods) {

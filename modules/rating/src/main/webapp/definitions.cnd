@@ -12,4 +12,6 @@
  - j:minNbOfVotes (long) = 10 autocreated
  - j:dateOfLastVote (string,choicelist[resourceBundle]) = 'one week' < 'one day','one week','one month','three month','six months'   
 
-[jnt:rateable] > jnt:content, jmix:bindedComponent, jmix:siteComponentContent 
+[jnt:rateable] > jnt:content, jmix:bindedComponent, jmix:siteComponentContent
+
+[jnt:recommended] > jnt:content, jmix:bindedComponent, jmix:siteComponentContent

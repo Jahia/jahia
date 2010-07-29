@@ -20,6 +20,11 @@
             <artifactId>camel-stream</artifactId>
             <version>2.4.0</version>
         </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.16</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -61,8 +66,8 @@
                         </goals>
                         <phase>package</phase>
                         <configuration>
-                            <from>${project.build.directory}/camel-stream-${jbpm.version}.jar</from>
-                            <to>${project.build.directory}/camel-stream-${jbpm.version}-jahia.jar</to>
+                            <from>${project.build.directory}/camel-stream-${camel.version}.jar</from>
+                            <to>${project.build.directory}/camel-stream-${camel.version}-jahia.jar</to>
                         </configuration>
                     </execution>
                     <execution>
@@ -75,7 +80,7 @@
                             <fileset>
                                 <directory>${project.build.directory}/classes</directory>
                                 <outputDirectory>
-                                    ${project.build.directory}/camel-stream-${jbpm.version}-jahia.jar
+                                    ${project.build.directory}/camel-stream-${camel.version}-jahia.jar
                                 </outputDirectory>
                             </fileset>
                         </configuration>

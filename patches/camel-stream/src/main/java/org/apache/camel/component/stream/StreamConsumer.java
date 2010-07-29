@@ -16,17 +16,14 @@
  */
 package org.apache.camel.component.stream;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 import org.apache.camel.Exchange;
@@ -37,6 +34,8 @@ import org.apache.camel.impl.DefaultMessage;
 import org.apache.camel.util.ObjectHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.FileAppender;
+import org.apache.log4j.Logger;
 
 /**
  * Consumer that can read from streams
@@ -53,6 +52,10 @@ public class StreamConsumer extends DefaultConsumer implements Runnable {
     private String uri;
     private boolean initialPromptDone;
     private BufferedReader br;
+    private Map<String,Long> rolledFilesDate = new HashMap<String, Long>();
+    private String nameOfFile;
+    private File parentFile;
+    private String basename;
 
     public StreamConsumer(StreamEndpoint endpoint, Processor processor, String uri) throws Exception {
         super(endpoint, processor);
@@ -117,7 +120,21 @@ public class StreamConsumer extends DefaultConsumer implements Runnable {
                     processLine(line);
                 } else if (eos && isRunAllowed()) {
                     //try and re-open stream
-                    br = initializeStream();
+                    if (inputStream instanceof FileInputStream) {
+                        final File[] files = parentFile.listFiles(new FilenameFilter() {
+                            public boolean accept(File dir, String name) {
+                                return !name.equals(nameOfFile) && name.startsWith(basename);
+                            }
+                        });
+                        for (File file1 : files) {
+                            if(rolledFilesDate.isEmpty() ||
+                               (rolledFilesDate.containsKey(file1.getName()) && file1.lastModified() > rolledFilesDate.get(file1.getName()))) {
+                                br = initializeStream();
+                                break;
+                            }
+                        }
+
+                    }
                 }
                 try {
                     Thread.sleep(endpoint.getScanStreamDelay());
@@ -202,15 +219,32 @@ public class StreamConsumer extends DefaultConsumer implements Runnable {
         ObjectHelper.notEmpty(fileName, "fileName");
 
         FileInputStream fileStream;
-
+        if(fileName.startsWith("log4j")) {
+            String[] strings = fileName.split("_");
+            if(strings.length==3) {
+                Logger logger = Logger.getLogger(strings[1]);
+                fileName = Thread.currentThread().getContextClassLoader().getResource (((FileAppender) logger.getAppender(strings[2])).getFile()).getFile();
+            }
+        }
         File file = new File(fileName);
 
         if (LOG.isDebugEnabled()) {
             LOG.debug("File to be scanned : " + file.getName() + ", path : " + file.getAbsolutePath());
         }
-
+        
         if (file.canRead()) {
             fileStream = new FileInputStream(file);
+            nameOfFile = file.getName();
+            basename = nameOfFile.substring(0,nameOfFile.lastIndexOf("."));
+            parentFile = file.getParentFile();
+            final File[] files = parentFile.listFiles(new FilenameFilter() {
+                public boolean accept(File dir, String name) {
+                    return !name.equals(nameOfFile) && name.startsWith(basename);
+                }
+            });
+            for (File file1 : files) {
+                rolledFilesDate.put(file1.getName(),file1.lastModified());
+            }
         } else {
             throw new IllegalArgumentException(INVALID_URI);
         }

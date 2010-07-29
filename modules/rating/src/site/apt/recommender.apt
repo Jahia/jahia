@@ -1,0 +1,135 @@
+Jahia - Recommender
+
+  For recommending similar items Jahia use the {{{http://mahout.apache.org}mahout}} library.
+
+  We will explain how to fill the datas directly from Jahia, define the recommender etc.
+
+* Getting rating datas for recommendations
+
+  First step is to get datas to feed the recommender, we willuse the rating informations entered by hhe users.
+  Here we need to enter data in database everytime a user click on a rating form.
+  This could really slow the interaction with the user if we do that at the same time as we update the JCR,
+  here we choose instead to analyze the logs and wait for a rating event.
+
+  To achieve that we use {{{http://camel.apache.org} Camel}} to monitor the {{{http://log4j.apache.org}Log4j}} file jahia_access.
+
++-----------------------------------
+<route>
+  <!-- route for parsing jahia log files -->
+  <from uri="stream:file?fileName=log4j_accessLogger_hitAccess&amp;scanStream=true&amp;scanStreamDelay=100"/>
+  <to uri="seda:logMsgs?size=10000&amp;concurrentConsumers=5"/>
+</route>
++-----------------------------------
+
+  This route is defined in the Jahia system so your modules can refer to it to analyze log. This will transform each line of log
+  as a message.
+
+* Define a route to listen to the log events
+
+  Now we must define that we want to react on messages send to <seda:logMsgs?size=10000&amp;concurrentConsumers=5>.
+
+  In the spring file of the module we define a bean that will recieve this endpoint as parameter
+
++------------------------------------
+<bean id="recommender" class="org.jahia.modules.rating.mahout.Recommender">
+  <property name="dataSource" ref="dataSource"/>
+  <property name="from" value="seda:logMsgs?size=10000&amp;concurrentConsumers=5"/>
+  <!-- Define when we need to refresh recommendations (here every 25 submissions of rating data) -->
+  <property name="refreshRecommendationsEvery" value="25"/>
+</bean>
++------------------------------------
+
+  The class Recommender implement Processor and CamelContextAware from Camel. The camel context will be injected by
+  Jahia when we have finished deployment of all modules.
+
+  The Recommender class wil register its own route to camel on context injection
+
++------------------------------------
+public void setCamelContext(final CamelContext camelContext) {
+  this.camelContext = camelContext;
+  final Recommender recommender = this;
+  try {
+    camelContext.addRoutes(new RouteBuilder() {
+    @Override
+    public void configure() throws Exception {
+      from(from).filter("groovy", "request.body.contains(\"node updated\")").to(new ProcessorEndpoint(
+                        "recommender", camelContext, recommender));
+      }
+    });
+  } catch (Exception e) {
+    logger.error(e.getMessage(), e);
+  }
+}
++------------------------------------
+
+ Due to some difference between the camel context and the module spring context, you have define explicitly the endpoint
+ <<<new ProcessorEndpoint("recommender", camelContext, recommender)>>> instead of <<<to("recommender")>>>
+
+* Register rating events
+
+  The process method of the Processor interface will enter the data in the database when a node updated event is detected.
+
++------------------------------------
+public void process(Exchange exchange) throws Exception {
+        final String message = (String) exchange.getIn().getBody();
+        final Matcher matcher = pattern.matcher(message);
+        if (matcher.matches()) {
+            String user = matcher.group(2);
+            Date date = dateFormat.parse(matcher.group(1));
+            String path = matcher.group(5);
+            String data = matcher.group(7);
+            JSONObject jsonObject = new JSONObject(data);
+            if (jsonObject.getJSONArray("jcr:mixinTypes").getString(0).equals("jmix:rating")) {
+                logger.info(
+                        "Insert into database updated node " + path + " by user " + user + " at " + SimpleDateFormat.getDateTimeInstance().format(
+                                date) + " with rating " + jsonObject.getJSONArray("j:lastVote").getLong(0));
+                try {
+                    Connection connection = dataSource.getConnection();
+                    PreparedStatement statement;
+                    /*
+                      store users and paths in db and maintain relations between string and identifier
+                    */
+                    // Insert rating in the database
+                    statement = connection.prepareStatement(
+                            "insert into taste_preferences (user_id,item_id,preference) values (?,?,?)");
+                    statement.setLong(1, users.get(user));
+                    statement.setLong(2, paths.get(path));
+                    statement.setFloat(3, jsonObject.getJSONArray("j:lastVote").getLong(0));
+                    statement.executeUpdate();
+                    statement.close();
+                    connection.close();
+                } catch (SQLException e) {
+                    logger.debug(e.getMessage(), e);
+                } catch (JSONException e) {
+                    logger.error(e.getMessage(), e);
+                } finally {
+                    count++;
+                    // if the number of ratings has been reach then refresh mahout recommender
+                    if (count % refreshRecommendationsEvery == 0) {
+                        initMahoutRecommender();
+                    }
+                }
+            }
+        }
+}
++------------------------------------
+
+* Define mahout algorithm for recommendations
+
+  Actually the algorithm used are not configurable so if you want to chnage how those recommenders behave you have to
+  override the class.
+
++--------------------------------------
+private void initMahoutRecommender() {
+    try {
+        MySQLJDBCDataModel model = new MySQLJDBCDataModel(dataSource);
+        UserSimilarity similarity = new CachingUserSimilarity(new EuclideanDistanceSimilarity(model), model);
+        UserNeighborhood neighborhood = new NearestNUserNeighborhood(2, 0.2, similarity, model, 0.2);
+        userBasedRecommender = new GenericUserBasedRecommender(model, neighborhood, similarity);
+        ItemSimilarity itemSimilarity = new CachingItemSimilarity(new LogLikelihoodSimilarity(model), model);
+        itemBasedRecommender = new GenericItemBasedRecommender(model, itemSimilarity);
+    } catch (Exception e) {
+        logger.debug(e.getMessage(), e);
+    }
+}
++--------------------------------------

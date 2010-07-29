@@ -28,6 +28,7 @@ under the License.
             <item name="Introduction" href="./index.html"/>
             <item name="Usage" href="./usage.html"/>
             <item name="JSON JQuery Template" href="./json_jquery.html"/>
+            <item name="Recommender" href="./recommender.html"/>
         </menu>
         <menu ref="modules"/>
         <menu ref="reports"/>

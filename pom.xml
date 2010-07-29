@@ -38,8 +38,9 @@
     <jbpm.version>4.3</jbpm.version>
     <hibernate.version>3.3.2.GA</hibernate.version>
     <apache.tika.version>0.7</apache.tika.version>
+    <camel.version>2.4.0</camel.version>
     <gwt.version>2.0.4</gwt.version>
-
+      
     <driver.derby.version>10.5.3.0_1</driver.derby.version>
     <driver.mssql.version>1.2-fixed</driver.mssql.version>
     <driver.mysql.version>5.1.13</driver.mysql.version>
@@ -345,6 +346,12 @@
             <id>testJahia</id>
             <modules>
                 <module>test</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>patches</id>
+            <modules>
+                <module>patches</module>
             </modules>
         </profile>
     </profiles>

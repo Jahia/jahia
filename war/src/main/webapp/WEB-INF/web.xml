@@ -253,6 +253,14 @@
         <filter-name>ResponseCacheControlFilter</filter-name>
         <url-pattern>/Jahia/*</url-pattern>
     </filter-mapping>
+    <filter-mapping>
+        <filter-name>ResponseCacheControlFilter</filter-name>
+        <url-pattern>/cms/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>ResponseCacheControlFilter</filter-name>
+        <url-pattern>/files/*</url-pattern>
+    </filter-mapping>
 
     <filter-mapping>
         <filter-name>JcrSessionFilter</filter-name>

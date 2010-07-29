@@ -70,7 +70,7 @@ when we flush this entry we will flush the whole cache-->
             This condition takes precedence over the 'foreverCachedResources' and 'cachedResources' properties.
 		-->
 		<property name="noCacheResources">
-			<value>(.*/Jahia(/.*)?|.*/cms/.*|.*\.jsp(\?.*)?|.*/gwt/.*\.nocache\..*)</value>
+			<value>(.*/Jahia(/.*)?|.*/cms/.*|.*/files/.*|.*\.jsp(\?.*)?|.*/gwt/.*\.nocache\..*)</value>
 		</property>
 	</bean>
 

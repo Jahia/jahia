@@ -87,8 +87,3 @@
 
     </c:if>
 </c:if>
-
-<c:if test="${jcr:getParentOfType(currentNode, 'jnt:page') eq null && !jcr:isNodeType(currentNode,'jnt:page')}">
-</div>
-
-</c:if>

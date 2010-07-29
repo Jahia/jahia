@@ -81,7 +81,7 @@ public class LoginBox extends Window {
         final Label lbWrongCredentials =
                 new Label(Messages.get("message_invalidUsernamePassword", "Invalid username/password"));
         lbWrongCredentials.setVisible(false);
-        lbWrongCredentials.setStyleName(".x-form-invalid-msg");
+        lbWrongCredentials.setStyleAttribute("color", "red");
         vpLabels.add(lbWrongCredentials);
 
         form.add(vpLabels);

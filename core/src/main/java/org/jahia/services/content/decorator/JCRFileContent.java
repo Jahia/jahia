@@ -91,7 +91,9 @@ public class JCRFileContent {
                 contentType = "application/binary";
             }
             content.setProperty(Constants.JCR_MIMETYPE, contentType);
-            content.setProperty(Constants.JCR_LASTMODIFIED, Calendar.getInstance());
+            Calendar lastModified = Calendar.getInstance();
+            content.setProperty(Constants.JCR_LASTMODIFIED, lastModified);
+            objectNode.setProperty(Constants.JCR_LASTMODIFIED, lastModified);
             contentNode = content;
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

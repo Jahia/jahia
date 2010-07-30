@@ -183,8 +183,14 @@ public class URL {
         if (value.contains("$lang")) {
             value = value.replace("$lang", JahiaGWTParameters.getLanguage());
         }
+        if (linker.getSelectedNode() != null && value.contains("$nodepathnoescape")) {
+            value = value.replace("$nodepathnoescape", linker.getSelectedNode().getPath());
+        }
         if (linker.getSelectedNode() != null && value.contains("$nodepath")) {
             value = value.replace("$nodepath", com.google.gwt.http.client.URL.encodeComponent(linker.getSelectedNode().getPath()));
+        }
+        if (value.contains("$workspace")) {
+            value = value.replace("$workspace", JahiaGWTParameters.getWorkspace());
         }
         return value;
     }

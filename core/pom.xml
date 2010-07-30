@@ -853,13 +853,13 @@
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-servlet</artifactId>
-            <version>2.0.3</version>
+            <version>${gwt.version}</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
-            <version>2.0.3</version>
+            <version>${gwt.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -1094,22 +1094,35 @@
 	    </dependency>
         <!-- end of JODConverter dependencies -->
         
+        <!-- Google Data API -->
+		<dependency>
+			<groupId>com.google.gdata</groupId>
+			<artifactId>gdata-client</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.gdata</groupId>
+			<artifactId>gdata-client-meta</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.gdata</groupId>
+			<artifactId>gdata-core</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.gdata</groupId>
+			<artifactId>gdata-media</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.collections</groupId>
+			<artifactId>google-collections</artifactId>
+			<version>1.0-rc5</version>
+		</dependency>
+        <!-- end of Google Data API -->
+        
         <!-- Google analytics -->
-        <dependency>
-	      <groupId>com.google.gdata</groupId>
-	      <artifactId>gdata-core</artifactId>
-	      <version>1.0</version>
-	    </dependency>
-        <dependency>
-	      <groupId>com.google.gdata</groupId>
-	      <artifactId>gdata-client-meta</artifactId>
-	      <version>1.0</version>
-	    </dependency>
-        <dependency>
-	      <groupId>com.google.gdata</groupId>
-	      <artifactId>gdata-client</artifactId>
-	      <version>1.0</version>
-	    </dependency>
         <dependency>
 	      <groupId>com.google.gdata</groupId>
 	      <artifactId>gdata-analytics-meta</artifactId>
@@ -1121,15 +1134,24 @@
 	      <version>2.1</version>
 	    </dependency>
         <dependency>
-            <groupId>com.google.collections</groupId>
-            <artifactId>google-collections</artifactId>
-            <version>1.0-rc2</version>
-        </dependency>
-        <dependency>
 	      <groupId>com.google.gdata</groupId>
 	      <artifactId>jsr305</artifactId>
 	      <version>1.0</version>
 	    </dependency>
+        <!-- end of Google analytics -->
+        
+        <!-- Google Data API -->
+		<dependency>
+			<groupId>com.google.gdata</groupId>
+			<artifactId>gdata-docs</artifactId>
+			<version>3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.gdata</groupId>
+			<artifactId>gdata-docs-meta</artifactId>
+			<version>3.0</version>
+		</dependency>
+        <!-- end of Google Data API -->
         
         <!-- Apache Shiro -->
         <dependency>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+       
+    <bean id="GoogleDocsServiceFactory" class="org.jahia.services.googledocs.GoogleDocsServiceFactory">
+        <!--
+        <property name="defaultTargetFolderName" value="jahia-xcm"/>
+        -->
+    </bean>
+
+    <bean name="GoogleDocsController" class="org.jahia.bin.googledocs.GoogleDocsController" abstract="true">
+        <property name="docsServiceFactory" ref="GoogleDocsServiceFactory" />
+    </bean>
+    
+    <bean name="GoogleDocsViewer" class="org.jahia.bin.googledocs.GoogleDocsViewer" parent="GoogleDocsController"/>
+    
+    <bean name="GoogleDocsEditor" class="org.jahia.bin.googledocs.GoogleDocsEditor" parent="GoogleDocsController"/>
+    
+    <bean name="GoogleDocsConverter" class="org.jahia.bin.googledocs.GoogleDocsConverter" parent="GoogleDocsController"/>
+    
+    <bean name="googleDocsConverterMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="urlMap">
+            <map>
+                <entry key="/gview/**" value-ref="GoogleDocsViewer"/>
+
+                <entry key="/gedit/**" value-ref="GoogleDocsEditor"/>
+
+                <entry key="/gconvert" value-ref="GoogleDocsConverter"/>
+                <entry key="/gconvert/**" value-ref="GoogleDocsConverter"/>
+            </map>
+        </property>
+    </bean>
+    
+    <bean id="GoogleDocsExportFormats" class="org.jahia.services.googledocs.GoogleDocsService$GoogleDocsExportFormats">
+        <constructor-arg index="0">
+            <map>
+                <entry key="undefined">
+                    <list>
+                        <value>pdf</value>
+                    </list>
+                </entry>
+                <entry key="document">
+                    <list>
+                        <value>pdf</value>
+                        <value>doc</value>
+                        <value>odt</value>
+                        <value>rtf</value>
+                        <value>txt</value>
+                        <value>png</value>
+                        <value>html</value>
+                        <value>zip</value>
+                    </list>
+                </entry>
+                <entry key="presentation">
+                    <list>
+                        <value>pdf</value>
+                        <value>ppt</value>
+                        <value>swf</value>
+                        <value>png</value>
+                    </list>
+                </entry>
+                <entry key="spreadsheet">
+                    <list>
+                        <value>pdf</value>
+                        <value>xls</value>
+                        <value>ods</value>
+                        <value>csv</value>
+                        <value>tsv</value>
+                        <value>html</value>
+                    </list>
+                </entry>
+            </map>
+        </constructor-arg>
+        <constructor-arg index="1">
+            <map>
+                <!-- Microsoft Office Word Document -->
+                <entry key="application/msword" value="document"/>
+                <entry key="application/vnd.openxmlformats-officedocument.wordprocessingml.document" value="document"/>
+                <!-- Open Document Text -->
+                <entry key="application/vnd.oasis.opendocument.text" value="document"/>
+                <!-- Rich Text -->
+                <entry key="text/rtf" value="document"/>
+                <entry key="application/rtf" value="document"/>
+                
+                <!-- Microsoft Office PowerPoint Presentation -->
+                <entry key="application/vnd.ms-powerpoint" value="presentation"/>
+                <entry key="application/mspowerpoint" value="presentation"/>
+                <entry key="application/vnd.openxmlformats-officedocument.presentationml.presentation" value="presentation"/>
+                <!-- Open Document Presentation -->
+                <entry key="application/vnd.oasis.opendocument.presentation" value="presentation"/>
+                
+                <!-- Microsoft Office Excel Spreadsheet -->
+                <entry key="application/vnd.ms-excel" value="spreadsheet"/>
+                <entry key="application/ms-excel" value="spreadsheet"/>
+                <entry key="application/msexcel" value="spreadsheet"/>
+                <entry key="application/x-msexcel" value="spreadsheet"/>
+                <entry key="application/x-excel" value="spreadsheet"/>
+                <entry key="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" value="spreadsheet"/>
+                <!-- Open Document Spreadsheet -->
+                <entry key="application/vnd.oasis.opendocument.spreadsheet" value="spreadsheet"/>
+            </map>                
+        </constructor-arg>        
+    </bean>
+
+</beans>

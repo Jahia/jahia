@@ -57,11 +57,9 @@ public class GWTJahiaToolbarItem implements Serializable {
     private int layout = -1;
     private List<String> processes;
     private Map<String, GWTJahiaProperty> properties = new HashMap<String, GWTJahiaProperty>();
+    private boolean contextMenu;
 
     private ActionItem actionItem;
-
-    public GWTJahiaToolbarItem() {
-    }
 
     public GWTJahiaToolbarItemsGroup getParentItemsGroup() {
         return parentItemsGroup;
@@ -171,5 +169,13 @@ public class GWTJahiaToolbarItem implements Serializable {
 
     public void setProcesses(List<String> processes) {
         this.processes = processes;
+    }
+
+    public boolean isContextMenu() {
+        return contextMenu;
+    }
+
+    public void setContextMenu(boolean contextMenu) {
+        this.contextMenu = contextMenu;
     }
 }

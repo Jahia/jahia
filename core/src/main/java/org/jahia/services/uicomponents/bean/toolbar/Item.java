@@ -57,6 +57,7 @@ public class Item implements Serializable, BeanNameAware {
     private String workflowAction;
     private List<Property> properties = new ArrayList();
     private ActionItem actionItem;
+    private boolean contextMenu = true;
 
     public String getId() {
         return id;
@@ -160,5 +161,19 @@ public class Item implements Serializable, BeanNameAware {
 
     public void setWorkflowAction(String workflowAction) {
         this.workflowAction = workflowAction;
+    }
+
+    /**
+     * @return the contextMenu
+     */
+    public boolean isContextMenu() {
+        return contextMenu;
+    }
+
+    /**
+     * @param contextMenu the contextMenu to set
+     */
+    public void setContextMenu(boolean contextMenu) {
+        this.contextMenu = contextMenu;
     }
 }

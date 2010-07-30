@@ -4,6 +4,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
+import com.extjs.gxt.ui.client.widget.menu.Item;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
 import com.google.gwt.user.client.Element;
@@ -122,21 +123,42 @@ public class ActionMenu extends Menu {
      * @param gwtJahiaToolbar
      */
     private void createMenu(GWTJahiaToolbar gwtJahiaToolbar) {
+        List<Item> allItems = new ArrayList<Item>();
         for (int i = 0; i < gwtJahiaToolbar.getGwtToolbarItemsGroups().size(); i++) {
+            List<Item> groupItems = new ArrayList<Item>();
             GWTJahiaToolbarItemsGroup itemsGroup = gwtJahiaToolbar.getGwtToolbarItemsGroups().get(i);
-            if (i > 0 && i <= gwtJahiaToolbar.getGwtToolbarItemsGroups().size() &&
-                    itemsGroup.getGwtToolbarItems().isEmpty()) {
-                add(new SeparatorMenuItem());
+            if (!itemsGroup.isContextMenu()) {
+                continue;
             }
             for (GWTJahiaToolbarItem gwtJahiaToolbarItem : itemsGroup.getGwtToolbarItems()) {
+                if (!gwtJahiaToolbarItem.isContextMenu()) {
+                    continue;
+                }
                 ActionItem actionItem = gwtJahiaToolbarItem.getActionItem();
                 if (actionItem != null) {
                     actionItem.init(gwtJahiaToolbarItem, linker);
                     actionItems.add(actionItem);
-                    Log.debug("add action-menu : " + gwtJahiaToolbarItem.getTitle());
-                    add(actionItem.getContextMenuItem());
+                    if (Log.isDebugEnabled()) {
+                        Log.debug("add action-menu : " + gwtJahiaToolbarItem.getTitle());
+                    }
+                    groupItems.add(actionItem.getContextMenuItem());
                 }
             }
+            if (!groupItems.isEmpty()) {
+                if (allItems.size() > 0 && !(allItems.get(allItems.size() - 1) instanceof SeparatorMenuItem) && !(groupItems.get(0) instanceof SeparatorMenuItem)) {
+                    allItems.add(new SeparatorMenuItem());
+                }
+                allItems.addAll(groupItems);
+            }
+        }
+        if (allItems.size() > 0 && (allItems.get(0) instanceof SeparatorMenuItem)) {
+            allItems.remove(0);
+        }
+        if (allItems.size() > 0 && (allItems.get(allItems.size() - 1) instanceof SeparatorMenuItem)) {
+            allItems.remove(allItems.size() - 1);
+        }
+        for (Item item : allItems) {
+            add(item);
         }
     }
 

@@ -37,6 +37,7 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.util.Constants;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.util.URL;
+import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -47,7 +48,14 @@ import java.util.Map;
  * Time: 10:44:01
  */
 public class OpenWindowActionItem extends BaseActionItem {
-
+    
+    public static class OpenWindowForSingleFileActionItem extends OpenWindowActionItem {
+        @Override
+        public void handleNewLinkerSelection() {
+            LinkerSelectionContext lh = linker.getSelectionContext();
+            setEnabled(lh.isTableSelection() && lh.isSingleFile());
+        }
+    } 
 
     @Override
     public void onComponentSelection() {
@@ -84,13 +92,13 @@ public class OpenWindowActionItem extends BaseActionItem {
             wOptions = "directories=no,scrollbars=yes,resizable=yes,status=no,location=no" + wWidth + wHeight;
         }
 
+        String name = getPropertyValue(getGwtToolbarItem(), "target");
+        name = name != null ? name : getGwtToolbarItem().getTitle().replaceAll(" ", "_");
         final String jsUrl = getPropertyValue(getGwtToolbarItem(), "js.url");
         if (jsUrl != null) {
-            String name = getGwtToolbarItem().getTitle().replaceAll(" ", "_");
             Window.open(JahiaGWTParameters.getParam(jsUrl), name, wOptions);
         } else if (windowUrl != null && windowUrl.getValue() != null) {
             String value = URL.replacePlaceholders(linker, windowUrl.getValue());
-            String name = getGwtToolbarItem().getTitle().replaceAll(" ", "_");
             Window.open(value, name, wOptions);
         }
     }

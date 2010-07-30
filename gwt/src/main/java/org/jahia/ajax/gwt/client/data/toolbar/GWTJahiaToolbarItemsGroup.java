@@ -47,6 +47,7 @@ public class GWTJahiaToolbarItemsGroup implements Serializable {
     private boolean needSeparator;
     private int layout;
     private List<GWTJahiaToolbarItem> gwtToolbarItems;
+    private boolean contextMenu;
 
     public String getId() {
         return id;
@@ -108,5 +109,13 @@ public class GWTJahiaToolbarItemsGroup implements Serializable {
                 gwtJahiaToolbarItem.setParentItemsGroup(this);
             }
         }
+    }
+
+    public boolean isContextMenu() {
+        return contextMenu;
+    }
+
+    public void setContextMenu(boolean contextMenu) {
+        this.contextMenu = contextMenu;
     }
 }

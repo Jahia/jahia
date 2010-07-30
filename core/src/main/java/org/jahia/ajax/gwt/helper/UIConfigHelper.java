@@ -423,6 +423,7 @@ public class UIConfigHelper {
 
         // creat items-group
         GWTJahiaToolbarItemsGroup gwtToolbarItemsGroup = new GWTJahiaToolbarItemsGroup();
+        gwtToolbarItemsGroup.setContextMenu(itemsGroup.isContextMenu());
         gwtToolbarItemsGroup.setId(toolbarName + "_" + index);
         gwtToolbarItemsGroup.setType(itemsGroup.getId());
         gwtToolbarItemsGroup.setLayout(getLayoutAsInt(itemsGroup.getLayout()));
@@ -505,6 +506,7 @@ public class UIConfigHelper {
     private GWTJahiaToolbarItem createGWTItem(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, Item item) {
         // GWTJahiaToolbarItem
         GWTJahiaToolbarItem gwtToolbarItem = new GWTJahiaToolbarItem();
+        gwtToolbarItem.setContextMenu(item.isContextMenu());
         gwtToolbarItem.setId(item.getId());
         if (item.getTitleKey() != null) {
             gwtToolbarItem.setTitle(getResources(item.getTitleKey(), uiLocale != null ? uiLocale : locale, site));

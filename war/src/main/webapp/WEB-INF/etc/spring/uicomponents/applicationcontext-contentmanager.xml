@@ -143,6 +143,7 @@
                                     <ref bean="Toolbar.ItemsGroup.Menu.Edit"/>
                                     <ref bean="Toolbar.ItemsGroup.Menu.Remote"/>
                                     <ref bean="Toolbar.ItemsGroup.Menu.Image"/>
+                                    <ref bean="Toolbar.ItemsGroup.Menu.GoogleDocs"/>
                                     <ref bean="Toolbar.ItemsGroup.Menu.View"/>
                                 </list>
                             </property>

@@ -35,7 +35,9 @@ import org.apache.camel.util.ObjectHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.FileAppender;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.apache.log4j.spi.LoggerRepository;
 
 /**
  * Consumer that can read from streams
@@ -222,8 +224,22 @@ public class StreamConsumer extends DefaultConsumer implements Runnable {
         if(fileName.startsWith("log4j")) {
             String[] strings = fileName.split("_");
             if(strings.length==3) {
-                Logger logger = Logger.getLogger(strings[1]);
-                fileName = Thread.currentThread().getContextClassLoader().getResource (((FileAppender) logger.getAppender(strings[2])).getFile()).getFile();
+                LoggerRepository loggerRepository = LogManager.getLoggerRepository();
+                org.apache.log4j.Logger logger4j = loggerRepository.getLogger(strings[1]);
+                if(logger4j != null) {
+                    LOG.debug(logger4j.getName());
+                    LOG.debug(logger4j.getAppender(strings[2]));
+                    URL resource = Thread.currentThread().getContextClassLoader().getResource(
+                            ((FileAppender) logger4j.getAppender(strings[2])).getFile());
+                    if(resource!=null) {
+                        fileName = resource.getFile();
+                    } else {
+                        LOG.debug("Could not find resource for "+logger4j.getAppender(strings[2])+" file object = "+new File(((FileAppender) logger4j.getAppender(strings[2])).getFile()).getAbsolutePath());
+                        fileName=new File(((FileAppender) logger4j.getAppender(strings[2])).getFile()).getAbsolutePath();
+                    }
+                } else {
+                    LOG.fatal("log4j logger not found for "+strings[1]);
+                }
             }
         }
         File file = new File(fileName);

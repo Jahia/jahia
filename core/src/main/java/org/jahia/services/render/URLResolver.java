@@ -119,7 +119,7 @@ public class URLResolver {
                 servletPart.length() + 2, getUrlPathInfo().length());
         if (!resolveUrlMapping(serverName)) {
             init();
-            if (isMappable()
+            if (!"localhost".equals(serverName) && isMappable()
                     && SettingsBean.getInstance().isPermanentMoveForVanityURL()) {
                 try {
                     VanityUrl defaultVanityUrl = getVanityUrlService()

@@ -12,7 +12,7 @@
         <div class="widget-content" id="widget${subchild.UUID}">
             <script type="text/javascript">
                 $(document).ready(function() {
-                    $.get('${url.base}${subchild.path}.html',null,function(data) {
+                    $.get('${url.base}${subchild.path}.html.ajax',null,function(data) {
                         $("#widget${subchild.UUID}").html(data);
                     });
                 });

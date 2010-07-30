@@ -33,7 +33,7 @@
     <jsp:useBean id="facetValueFormats" class="java.util.HashMap" scope="request"/>    
     
     <query:definition var="listQuery" scope="request">
-        <query:selector nodeTypeName="nt:base"/>
+        <query:selector nodeTypeName="jnt:content"/>
         <query:childNode path="${bindedComponent.path}"/>
 
         <c:forEach items="${jcr:getNodes(currentNode, 'jnt:facet')}" var="facet">

@@ -1,11 +1,11 @@
 /******************************************************************************
-*  People generic
+*  Person generic
 ******************************************************************************/
-#bodywrapper div.peopleListItem{
+#bodywrapper div.personListItem{
 	border-bottom: 1px solid #ccc;
 	padding:5px;
 }
-#bodywrapper div.peoplePhoto{
+#bodywrapper div.personPhoto{
 	float:left;
 	width:100px;
 	height:100px;
@@ -13,37 +13,37 @@
 	border: 1px solid #ccc;
 	overflow:hidden;
 }
-#bodywrapper p.peopleFonction, #bodywrapper p.peopleEmail, #bodywrapper p.peopleBusinessUnit{
+#bodywrapper p.personFonction, #bodywrapper p.personEmail, #bodywrapper p.personBusinessUnit{
 	margin:0;
 	padding:0;
 }
-#bodywrapper .peopleBody{
+#bodywrapper .personBody{
 	margin:0 0 0 120px
 }
-#bodywrapper .peopleBody p{
+#bodywrapper .personBody p{
 	margin:0;
 	padding:0;
 }
-#bodywrapper .peopleAction{
+#bodywrapper .personAction{
 }
-#bodywrapper .peopleAction a,
-#bodywrapper .peopleAction a:link,
-#bodywrapper .peopleAction a:visited {
+#bodywrapper .personAction a,
+#bodywrapper .personAction a:link,
+#bodywrapper .personAction a:visited {
 	margin-right:0.5em
 }
-#bodywrapper .peopleAction a:hover,
-#bodywrapper .peopleAction a:active {
+#bodywrapper .personAction a:hover,
+#bodywrapper .personAction a:active {
 	text-decoration:underline;
 }
-#bodywrapper a.peopleEnlarge{
-	background:transparent url(img/peopleenlarge.png) no-repeat 0% 50%;
+#bodywrapper a.personEnlarge{
+	background:transparent url(img/personenlarge.png) no-repeat 0% 50%;
 	padding-left:16px;
 }
-#bodywrapper a.peopleDownload{
-	background:transparent url(img/peopledownload.png) no-repeat 0% 50%;
+#bodywrapper a.personDownload{
+	background:transparent url(img/persondownload.png) no-repeat 0% 50%;
 	padding-left:16px;
 }
-#bodywrapper a.peopleBiographiy{
-	background:transparent url(img/peoplebiographiy.png) no-repeat 0% 50%;
+#bodywrapper a.personBiographiy{
+	background:transparent url(img/personbiographiy.png) no-repeat 0% 50%;
 	padding-left:16px;
 }

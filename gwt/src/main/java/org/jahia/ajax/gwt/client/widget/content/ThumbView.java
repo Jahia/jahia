@@ -34,6 +34,7 @@ package org.jahia.ajax.gwt.client.widget.content;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.GXT;
+import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
@@ -71,6 +72,7 @@ public class ThumbView extends TopRightComponent {
     private ThumbsListView view;
     private SimpleComboBox<String> sort;
     private ToggleButton sortOrder ;
+    private ListLoader<ListLoadResult<GWTJahiaNode>> loader;
 
     private GWTManagerConfiguration configuration;
 
@@ -90,8 +92,45 @@ public class ThumbView extends TopRightComponent {
         ToolBar bar = new ToolBar();
         bar.add(new LabelToolItem(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.thumbFilter.label")));
 
-        store = new ListStore<GWTJahiaNode>();
+        configuration = config;
 
+        // data proxy
+        RpcProxy<ListLoadResult<GWTJahiaNode>> privateProxy = new RpcProxy<ListLoadResult<GWTJahiaNode>>() {
+            @Override
+            protected void load(Object gwtJahiaFolder, AsyncCallback<ListLoadResult<GWTJahiaNode>> listAsyncCallback) {
+                Log.debug("retrieving children with type " + configuration.getNodeTypes() + " of " +
+                        ((GWTJahiaNode) gwtJahiaFolder).getPath());
+                JahiaContentManagementService.App.getInstance().lsLoad((GWTJahiaNode) gwtJahiaFolder,
+                        configuration.getAllNodeTypes(),
+                        configuration.getMimeTypes(), configuration.getFilters(), configuration.getTableColumnKeys(),
+                        listAsyncCallback);
+            }
+        };
+
+        loader = new BaseListLoader<ListLoadResult<GWTJahiaNode>>(privateProxy) {
+            @Override
+            protected void onLoadSuccess(Object gwtJahiaNode, ListLoadResult<GWTJahiaNode> gwtJahiaNodeListLoadResult) {
+                super.onLoadSuccess(gwtJahiaNode, gwtJahiaNodeListLoadResult);
+                if (getLinker() != null) {
+                    getLinker().loaded();
+                }
+            }
+        };
+        store = new ListStore<GWTJahiaNode>(loader) {
+            protected void onBeforeLoad(LoadEvent e) {
+                if (getLinker() != null) {
+                    getLinker().loading("listing directory content...");
+                }
+                super.onBeforeLoad(e);
+            }
+
+            @Override
+            protected void onLoadException(LoadEvent loadEvent) {
+                super.onLoadException(loadEvent);
+                Log.error("Error listing directory content ", loadEvent.exception);
+            }
+        };
+//
         StoreFilterField<GWTJahiaNode> field = new StoreFilterField<GWTJahiaNode>() {
             @Override
             protected boolean doSelect(Store<GWTJahiaNode> store, GWTJahiaNode parent, GWTJahiaNode record, String property, String filter) {
@@ -207,32 +246,7 @@ public class ThumbView extends TopRightComponent {
     public void setContent(Object root) {
         clearTable();
         if (root != null) {
-            final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
-            if (getLinker() != null) {
-                getLinker().loading("listing directory content...");
-            }
-            service.ls((GWTJahiaNode) root, configuration.getAllNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(),
-                    GWTJahiaNode.DEFAULT_FIELDS, new BaseAsyncCallback<List<GWTJahiaNode>>() {
-                public void onApplicationFailure(Throwable throwable) {
-                    Window.alert("Element list retrieval failed :\n" + throwable.getLocalizedMessage());
-                    if (getLinker() != null) {
-                        getLinker().loaded();
-                    }
-                }
-
-                public void onSuccess(List<GWTJahiaNode> gwtJahiaNodes) {
-                    if (gwtJahiaNodes != null) {
-                        store.add(gwtJahiaNodes);
-                        sort();
-                    } else {
-                        Window.alert("null list");
-                    }
-                    if (getLinker() != null) {
-                        getLinker().loaded();
-                    }
-                    getLinker().onTableItemSelected();
-                }
-            });
+            loader.load(root);
         }
     }
 
@@ -251,7 +265,12 @@ public class ThumbView extends TopRightComponent {
     }
 
     public Object getSelection() {
-        return view.getSelectionModel().getSelectedItems();
+        List<GWTJahiaNode> elts = view.getSelectionModel().getSelectedItems();
+        if (elts != null && elts.size() > 0) {
+            return elts;
+        } else {
+            return null;
+        }
     }
 
     public void refresh() {

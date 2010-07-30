@@ -1210,13 +1210,24 @@
             <version>${camel.version}</version>
         </dependency>
         <!-- End Apache Camel dependencies -->
-        <!-- dependency for mahout -->
-        <dependency>
-            <groupId>org.apache.mahout</groupId>
-            <artifactId>mahout-core</artifactId>
-            <version>0.3</version>
-        </dependency>
+        
     </dependencies>
+    <profiles>
+        <profile>
+            <id>mahout-deployment</id>
+            <activation>
+                <jdk>[1.6,)</jdk>
+            </activation>
+            <dependencies>
+                <!-- dependency for mahout -->
+                <dependency>
+                    <groupId>org.apache.mahout</groupId>
+                    <artifactId>mahout-core</artifactId>
+                    <version>0.3</version>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
     <build>
 
         <plugins>

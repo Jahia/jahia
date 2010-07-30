@@ -108,6 +108,86 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>excludeBeforeJDK16</id>
+            <activation>
+                <jdk>1.5</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/*Recommender*.java</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>mahout-deployment</id>
+            <activation>
+                <jdk>[1.6,)</jdk>
+            </activation>
+            <dependencies>
+                <!-- Apache Camel dependencies -->
+                <dependency>
+                    <groupId>org.apache.camel</groupId>
+                    <artifactId>camel-core</artifactId>
+                    <version>${camel.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.camel</groupId>
+                    <artifactId>camel-spring</artifactId>
+                    <version>${camel.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.camel</groupId>
+                    <artifactId>camel-rss</artifactId>
+                    <version>${camel.version}</version>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.apache.geronimo.specs</groupId>
+                            <artifactId>geronimo-activation_1.0.2_spec</artifactId>
+                        </exclusion>
+                    </exclusions>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.camel</groupId>
+                    <artifactId>camel-mail</artifactId>
+                    <version>${camel.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.camel</groupId>
+                    <artifactId>camel-stream</artifactId>
+                    <version>${camel.version}</version>
+                    <classifier>jahia</classifier>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.camel</groupId>
+                    <artifactId>camel-script</artifactId>
+                    <version>${camel.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <!-- End Apache Camel dependencies -->
+
+                <!-- dependency for mahout -->
+                <dependency>
+                    <groupId>org.apache.mahout</groupId>
+                    <artifactId>mahout-core</artifactId>
+                    <version>0.3</version>
+                    <scope>provided</scope>
+                </dependency>
+            </dependencies>
+        </profile>
     </profiles>
     <dependencies>
         <dependency>
@@ -122,60 +202,8 @@
             <version>${jahia.package.version}</version>
             <scope>provided</scope>
         </dependency>
-        <!-- Apache Camel dependencies -->
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-core</artifactId>
-            <version>${camel.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-spring</artifactId>
-            <version>${camel.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-rss</artifactId>
-            <version>${camel.version}</version>
-            <exclusions>
-            	<exclusion>
-                    <groupId>org.apache.geronimo.specs</groupId>
-            		<artifactId>geronimo-activation_1.0.2_spec</artifactId>
-            	</exclusion>
-            </exclusions>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-mail</artifactId>
-            <version>${camel.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-stream</artifactId>
-            <version>${camel.version}</version>
-            <classifier>jahia</classifier>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-script</artifactId>
-            <version>${camel.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <!-- End Apache Camel dependencies -->
-
-        <!-- dependency for mahout -->
-        <dependency>
-            <groupId>org.apache.mahout</groupId>
-            <artifactId>mahout-core</artifactId>
-            <version>0.3</version>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -185,8 +213,8 @@
                     <warSourceExcludes>resources/*.properties</warSourceExcludes>
                     <webResources>
                         <resource>
-                          <directory>${project.build.directory}/native2ascii</directory>
-                          <targetPath>resources</targetPath>
+                            <directory>${project.build.directory}/native2ascii</directory>
+                            <targetPath>resources</targetPath>
                         </resource>
                         <resource>
                             <directory>${project.build.directory}</directory>
@@ -195,21 +223,21 @@
                             </includes>
                         </resource>
                     </webResources>
-	                <archive>
-	                    <manifestEntries>
-	                    	<Implementation-Title>${project.name}</Implementation-Title>
-	                    	<Implementation-Version>${project.version}</Implementation-Version>
-	                    	<Implementation-Vendor>${jahia.manifest.vendor.name}</Implementation-Vendor>
-	                    	<Implementation-Vendor-Id>${jahia.manifest.vendor.id}</Implementation-Vendor-Id>
-	                    	<Implementation-URL>${jahia.manifest.vendor.url}</Implementation-URL>
-	                    	<Specification-Title>${project.name}</Specification-Title>
-	                    	<Specification-Version>${project.version}</Specification-Version>
-	                    	<Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
-	                        <package-name>${project.name}</package-name>
+                    <archive>
+                        <manifestEntries>
+                            <Implementation-Title>${project.name}</Implementation-Title>
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                            <Implementation-Vendor>${jahia.manifest.vendor.name}</Implementation-Vendor>
+                            <Implementation-Vendor-Id>${jahia.manifest.vendor.id}</Implementation-Vendor-Id>
+                            <Implementation-URL>${jahia.manifest.vendor.url}</Implementation-URL>
+                            <Specification-Title>${project.name}</Specification-Title>
+                            <Specification-Version>${project.version}</Specification-Version>
+                            <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
+                            <package-name>${project.name}</package-name>
                             <depends>Jahia Static Assets</depends>
                             <root-folder>${artifactId}</root-folder>
-	                    </manifestEntries>
-	                </archive>
+                        </manifestEntries>
+                    </archive>
                     <archiveClasses>true</archiveClasses>
                 </configuration>
             </plugin>

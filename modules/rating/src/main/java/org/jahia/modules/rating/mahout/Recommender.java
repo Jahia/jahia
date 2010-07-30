@@ -131,7 +131,7 @@ public class Recommender implements Processor, InitializingBean, CamelContextAwa
                         resultSet.next();
                         long value = resultSet.getLong(1);
                         paths.put(path, value);
-                        invertedPaths.put((long) value, path);
+                        invertedPaths.put(value, path);
                         resultSet.close();
                         statement.close();
                     }

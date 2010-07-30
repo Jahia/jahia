@@ -249,6 +249,7 @@ public class UIConfigHelper {
                 itemsGroup.addItem(item);
                 itemsGroup.setLayout("button-label");
                 itemsGroup.setVisibility(item.getVisibility());
+                itemsGroup.setAutoInsertSeparator(false);
             }
 
             // add only itemsgroup that the user can view
@@ -427,6 +428,7 @@ public class UIConfigHelper {
         gwtToolbarItemsGroup.setId(toolbarName + "_" + index);
         gwtToolbarItemsGroup.setType(itemsGroup.getId());
         gwtToolbarItemsGroup.setLayout(getLayoutAsInt(itemsGroup.getLayout()));
+        gwtToolbarItemsGroup.setAutoInsertSeparator(itemsGroup.isAutoInsertSeparator());
 
         gwtToolbarItemsGroup.setNeedSeparator(itemsGroup.isSeparator());
         gwtToolbarItemsGroup.setIcon(itemsGroup.getIcon());

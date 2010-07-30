@@ -48,6 +48,7 @@ public class GWTJahiaToolbarItemsGroup implements Serializable {
     private int layout;
     private List<GWTJahiaToolbarItem> gwtToolbarItems;
     private boolean contextMenu;
+    private boolean autoInsertSeparator = true;
 
     public String getId() {
         return id;
@@ -117,5 +118,19 @@ public class GWTJahiaToolbarItemsGroup implements Serializable {
 
     public void setContextMenu(boolean contextMenu) {
         this.contextMenu = contextMenu;
+    }
+
+    /**
+     * @return the autoInsertSeparator
+     */
+    public boolean isAutoInsertSeparator() {
+        return autoInsertSeparator;
+    }
+
+    /**
+     * @param autoInsertSeparator the autoInsertSeparator to set
+     */
+    public void setAutoInsertSeparator(boolean autoInsertSeparator) {
+        this.autoInsertSeparator = autoInsertSeparator;
     }
 }

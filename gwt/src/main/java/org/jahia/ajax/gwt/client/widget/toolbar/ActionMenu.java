@@ -145,7 +145,7 @@ public class ActionMenu extends Menu {
                 }
             }
             if (!groupItems.isEmpty()) {
-                if (allItems.size() > 0 && !(allItems.get(allItems.size() - 1) instanceof SeparatorMenuItem) && !(groupItems.get(0) instanceof SeparatorMenuItem)) {
+                if (itemsGroup.isAutoInsertSeparator() && allItems.size() > 0 && !(allItems.get(allItems.size() - 1) instanceof SeparatorMenuItem) && !(groupItems.get(0) instanceof SeparatorMenuItem)) {
                     allItems.add(new SeparatorMenuItem());
                 }
                 allItems.addAll(groupItems);

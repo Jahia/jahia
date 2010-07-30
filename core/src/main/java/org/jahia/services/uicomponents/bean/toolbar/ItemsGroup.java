@@ -51,6 +51,7 @@ public class ItemsGroup extends Item implements Serializable, BeanNameAware {
     private boolean separator;
     private List<Item> items = new ArrayList<Item>();
     private ItemsResolver itemsResolver;
+    private boolean autoInsertSeparator = true;
 
     public String getLayout() {
         return layout;
@@ -96,5 +97,19 @@ public class ItemsGroup extends Item implements Serializable, BeanNameAware {
             return itemsResolver.getItems(site, user, locale);
         }
         return items;
+    }
+
+    /**
+     * @return the autoInsertSeparator
+     */
+    public boolean isAutoInsertSeparator() {
+        return autoInsertSeparator;
+    }
+
+    /**
+     * @param autoInsertSeparator the autoInsertSeparator to set
+     */
+    public void setAutoInsertSeparator(boolean autoInsertSeparator) {
+        this.autoInsertSeparator = autoInsertSeparator;
     }
 }

@@ -107,11 +107,11 @@
                 </otherwise>
             </choice>
         </route>
-        <route>
-            <!-- route for parsing jahia log files -->
+        <!-- route for parsing jahia log files filename can refer to a log4j appender or to a file on disk-->
+        <!--<route>
             <from uri="stream:file?fileName=log4j_accessLogger_hitAccess&amp;scanStream=true&amp;scanStreamDelay=100"/>
             <to uri="seda:logMsgs?size=10000&amp;concurrentConsumers=5"/>
-        </route>
+        </route>-->
     </camelContext>
 
     <bean id="camelNotificationService" class="org.jahia.services.notification.CamelNotificationService"/>

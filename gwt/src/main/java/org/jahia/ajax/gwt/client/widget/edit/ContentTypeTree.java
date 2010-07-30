@@ -72,7 +72,7 @@ public class ContentTypeTree extends LayoutContainer {
     public ContentTypeTree(Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> types, final int width, final int height, final int rowHeight) {
         store = new TreeStore<GWTJahiaNodeType>();
         filldataStore(types);
-        ColumnConfig name = new ColumnConfig("label", "Label", width - 40);
+        ColumnConfig name = new ColumnConfig("label", "Label", width);
         name.setRenderer(new WidgetTreeGridCellRenderer() {
             @Override
             public Widget getWidget(ModelData modelData, String s, ColumnData columnData, int i, int i1,
@@ -99,8 +99,7 @@ public class ContentTypeTree extends LayoutContainer {
                 return panel;
             }
         });
-        ColumnConfig author = new ColumnConfig("author", "Author", 40);
-        treeGrid = new TreeGrid<GWTJahiaNodeType>(store, new ColumnModel(Arrays.asList(name, author)));
+        treeGrid = new TreeGrid<GWTJahiaNodeType>(store, new ColumnModel(Arrays.asList(name)));
         treeGrid.setBorders(true);
         if (height > 0) {
             treeGrid.setHeight(height);

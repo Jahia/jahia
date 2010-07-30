@@ -249,7 +249,7 @@ public class ManageSites extends AbstractAdministrationModule {
                     // it's the first time this screen is displayed, so create an empty one
 
                     newJahiaSite = new JahiaSite(-1, "My Site",        // site title
-                            "servername",        // site server name
+                            "localhost",        // site server name
                             "mySite",     // site key
                             // is active
                             // default page (homepage id)
@@ -303,8 +303,8 @@ public class ManageSites extends AbstractAdministrationModule {
 
             // it's the first time this screen is displayed, so create an empty one
 
-            newJahiaSite = new JahiaSite(-1, "mySite",        // site title
-                    "servername",        // site server name
+            newJahiaSite = new JahiaSite(-1, "My Site",        // site title
+                    "localhost",        // site server name
                     "mySite",     // site key
                     // is active
                     // default page (homepage id)

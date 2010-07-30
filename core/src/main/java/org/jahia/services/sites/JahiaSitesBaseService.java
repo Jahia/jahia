@@ -198,13 +198,15 @@ public class JahiaSitesBaseService extends JahiaSitesService {
         if (siteKey == null) {
             return null;
         }
-        JahiaSite site = siteCacheByKey.get(siteKey);
-        if (site != null)
-            return site;
-        site = siteProvider.getSiteByKey(siteKey);
+
+        if (siteCacheByKey.containsKey(siteKey))
+            return siteCacheByKey.get(siteKey);
+        JahiaSite site = siteProvider.getSiteByKey(siteKey);
         // if the site could be loaded from the database, add it into the cache.
         if (site != null) {
             addToCache(site);
+        } else {
+            siteCacheByKey.put(siteKey,null);
         }
 
         return site;

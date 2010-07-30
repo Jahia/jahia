@@ -99,11 +99,6 @@
 
 [jnt:shortcuts] > jnt:content, jmix:siteComponentContent
 
-[jnt:teaser] > jnt:content, mix:title, jmix:editorialContent
- - abstract (string, text[multiline]) i18n
- - image (weakreference, file[mime='image/*'])
- - link (weakreference)
-
 [jnt:banner] > jnt:content, mix:title, jmix:editorialContent
  - background (weakreference, file[mime='image/*']) i18n
  - cast (string, richtext) i18n

@@ -52,7 +52,7 @@ public class CreateContentEngine extends AbstractContentEngine {
      * @param targetName                  The name of the new node, or null if automatically defined
      * @param createInParentAndMoveBefore
      */
-    public CreateContentEngine(Linker linker, GWTJahiaNode parent, GWTJahiaNodeType type, Map<String, GWTJahiaNodeProperty> props, String targetName, boolean createInParentAndMoveBefore) {
+    public CreateContentEngine(Linker linker, GWTJahiaNode parent, GWTJahiaNodeType type, Map<String, GWTJahiaNodeProperty> props, String targetName, boolean createInParentAndMoveBefore, EngineContainer engineContainer) {
         super(getCreateConfig(type, linker.getConfig()), linker);
         this.existingNode = false;
         this.parentNode = parent;
@@ -68,7 +68,7 @@ public class CreateContentEngine extends AbstractContentEngine {
         heading = "Create " + type.getLabel();
         loadEngine();
 
-        init();
+        init(engineContainer);
     }
 
     public static GWTEngine getCreateConfig(GWTJahiaNodeType type, GWTConfiguration config) {
@@ -106,7 +106,7 @@ public class CreateContentEngine extends AbstractContentEngine {
         cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                CreateContentEngine.this.hide();
+                CreateContentEngine.this.container.closeEngine();
             }
         });
         buttonBar.add(cancel);
@@ -224,7 +224,7 @@ public class CreateContentEngine extends AbstractContentEngine {
             public void onSuccess(GWTJahiaNode node) {
                 if (closeAfterSave) {
                     Info.display("", "Node " + node.getName() + " created");
-                    CreateContentEngine.this.hide();
+                    CreateContentEngine.this.container.closeEngine();
                 } else {
                     CreateContentEngine.this.tabs.removeAll();
                     CreateContentEngine.this.initTabs();

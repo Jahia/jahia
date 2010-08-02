@@ -33,7 +33,7 @@ import java.util.Map;
  * Time: 1:57:03 PM
  * To change this template use File | Settings | File Templates.
  */
-public abstract class AbstractContentEngine extends Window implements NodeHolder {
+public abstract class AbstractContentEngine extends LayoutContainer implements NodeHolder {
     public static final int BUTTON_HEIGHT = 24;
 
     protected static JahiaContentManagementServiceAsync contentService = JahiaContentManagementService.App.getInstance();
@@ -52,22 +52,18 @@ public abstract class AbstractContentEngine extends Window implements NodeHolder
     protected ComboBox<GWTJahiaLanguage> languageSwitcher;
     protected ButtonBar buttonBar;
     protected String heading;
+    protected EngineContainer container;
 
     protected AbstractContentEngine(GWTEngine config, Linker linker) {
         this.config = config;
         this.linker = linker;
     }
 
-    protected void init() {
+    protected void init(EngineContainer container) {
+        this.container = container;
         setLayout(new FillLayout());
-        setBodyBorder(false);
-        setSize(750, 480);
-        setClosable(true);
-        setResizable(true);
-        setModal(true);
-        setMaximizable(true);
-        setIcon(StandardIconsProvider.STANDARD_ICONS.engineLogoJahia());
-        setHeading(heading);
+        container.setEngine(this);
+        container.getPanel().setHeading(heading);
 
         // init language switcher
         initLanguageSwitcher();
@@ -96,9 +92,9 @@ public abstract class AbstractContentEngine extends Window implements NodeHolder
         initFooter();
 
         buttonsPanel.add(buttonBar);
-        setBottomComponent(buttonsPanel);
+        container.getPanel().setBottomComponent(buttonsPanel);
 
-        setFooter(true);
+        container.getPanel().setFooter(true);
     }
 
     /**
@@ -119,7 +115,7 @@ public abstract class AbstractContentEngine extends Window implements NodeHolder
         languageSwitcher.setTypeAhead(true);
         languageSwitcher.setTriggerAction(ComboBox.TriggerAction.ALL);
         languageSwitcher.setForceSelection(true);
-        getHeader().addTool(languageSwitcher);
+        container.getPanel().getHeader().addTool(languageSwitcher);
     }
 
     /**

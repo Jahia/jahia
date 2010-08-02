@@ -78,13 +78,13 @@ public class EditContentEngine extends AbstractContentEngine {
      * @param node   the content object to be edited
      * @param linker the edit linker for refresh purpose
      */
-    public EditContentEngine(GWTJahiaNode node, Linker linker) {
+    public EditContentEngine(GWTJahiaNode node, Linker linker, EngineContainer engineContainer) {
         super(getEditConfig(node, (GWTEditConfiguration) linker.getConfig()), linker);
         contentPath = node.getPath();
         nodeName = node.getName();
         heading = "Edit " + nodeName + " (" + node.getCurrentVersion() + ")";
         loadEngine();
-        init();
+        init(engineContainer);
 
         //setTopComponent(toolBar);
     }
@@ -130,7 +130,7 @@ public class EditContentEngine extends AbstractContentEngine {
         cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                EditContentEngine.this.hide();
+                EditContentEngine.this.container.closeEngine();
             }
         });
         buttonBar.add(cancel);
@@ -311,7 +311,7 @@ public class EditContentEngine extends AbstractContentEngine {
 
                                 public void onSuccess(Object o) {
                                     Info.display("", Messages.get("saved_prop", "Properties saved\n\n"));
-                                    EditContentEngine.this.hide();
+                                    EditContentEngine.this.container.closeEngine();
                                     linker.refresh(Linker.REFRESH_MAIN);
                                 }
                             });

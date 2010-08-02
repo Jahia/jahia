@@ -34,6 +34,10 @@ package org.jahia.ajax.gwt.client.widget.edit;
 
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.google.gwt.user.client.ui.Widget;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -68,7 +72,7 @@ public class EditLinker implements Linker {
     private MainModule mainModule;
     private SidePanel sidePanel;
     private ModuleSelectionListener selectionListener;
-
+    private Widget mainAreaComponent;
     private String locale;
 
     public EditLinker(MainModule mainModule, SidePanel sidePanel, ActionToolbarLayoutContainer toolbar,
@@ -249,5 +253,27 @@ public class EditLinker implements Linker {
         selectionContext.setMainNode(getMainNode());
         selectionContext.setSelectedNodes(getSelectedNodes());
         selectionContext.refresh();
+    }
+
+    public void replaceMainAreaComponent(Widget w) {
+        ContentPanel m;
+        if (mainAreaComponent == null) {
+            m = (ContentPanel) mainModule.getParent();
+            m.remove(mainModule);
+        } else {
+            m = (ContentPanel) mainAreaComponent.getParent();
+            m.remove(mainAreaComponent);
+        }
+        mainAreaComponent = w;
+        m.add(mainAreaComponent, new BorderLayoutData(Style.LayoutRegion.CENTER));
+        m.layout();
+    }
+
+    public void restoreMainArea() {
+        ContentPanel m = (ContentPanel) mainAreaComponent.getParent();
+        m.remove(mainAreaComponent);
+        mainAreaComponent = null;
+        m.add(mainModule, new BorderLayoutData(Style.LayoutRegion.CENTER));
+        m.layout();
     }
 }

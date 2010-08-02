@@ -6,6 +6,9 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.Hover;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.Selection;
 
 import java.util.Map;
 
@@ -36,11 +39,23 @@ public class EngineLoader {
             }
 
             public void onSuccess() {
-                if (t == CREATE) {
-                    new CreateContentEngine(linker, node, type, props, targetName, createInParentAndMoveBefore).show();
-                } else if (t == EDIT) {
-                    new EditContentEngine(node, linker).show();
+                AbstractContentEngine engine = null;
+
+                EngineContainer container;
+
+                if (linker instanceof EditLinker) {
+                    container = new EnginePanel();
+                } else {
+                    container = new EngineWindow();
                 }
+
+                if (t == CREATE) {
+                    engine = new CreateContentEngine(linker, node, type, props, targetName, createInParentAndMoveBefore, container);
+                } else if (t == EDIT) {
+                    engine = new EditContentEngine(node, linker, container);
+                }
+                container.showEngine();
+                Hover.getInstance().removeAll();
             }
         });
 

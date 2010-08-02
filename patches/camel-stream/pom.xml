@@ -11,14 +11,16 @@
     <packaging>jar</packaging>
 
     <properties>
-        <camel.version>2.4.0</camel.version>
+        <jahia.patch.groupId>org.apache.camel</jahia.patch.groupId>
+        <jahia.patch.artifactId>camel-stream</jahia.patch.artifactId>
+        <jahia.patch.version>2.4.0</jahia.patch.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-stream</artifactId>
-            <version>2.4.0</version>
+        	<groupId>${jahia.patch.groupId}</groupId>
+        	<artifactId>${jahia.patch.artifactId}</artifactId>
+        	<version>${jahia.patch.version}</version>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
@@ -26,7 +28,7 @@
             <version>1.2.16</version>
         </dependency>
     </dependencies>
-
+    
     <build>
         <plugins>
             <plugin>
@@ -42,9 +44,9 @@
                         <configuration>
                             <artifactItems>
                                 <artifactItem>
-                                    <groupId>org.apache.camel</groupId>
-                                    <artifactId>camel-stream</artifactId>
-                                    <version>${camel.version}</version>
+                                    <groupId>${jahia.patch.groupId}</groupId>
+                                    <artifactId>${jahia.patch.artifactId}</artifactId>
+                                    <version>${jahia.patch.version}</version>
                                     <type>jar</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}</outputDirectory>
@@ -62,32 +64,54 @@
                     <execution>
                         <id>copy</id>
                         <goals>
-                            <goal>cp</goal>
+                          <goal>cp</goal>
                         </goals>
                         <phase>package</phase>
                         <configuration>
-                            <from>${project.build.directory}/camel-stream-${camel.version}.jar</from>
-                            <to>${project.build.directory}/camel-stream-${camel.version}-jahia.jar</to>
+                            <from>${project.build.directory}/${jahia.patch.artifactId}-${jahia.patch.version}.jar</from>
+                            <to>${project.build.directory}/${jahia.patch.artifactId}-${jahia.patch.version}-jahia.jar</to>
                         </configuration>
                     </execution>
                     <execution>
                         <id>patch</id>
                         <goals>
-                            <goal>copy</goal>
+                          <goal>copy</goal>
                         </goals>
                         <phase>package</phase>
                         <configuration>
-                            <fileset>
-                                <directory>${project.build.directory}/classes</directory>
-                                <outputDirectory>
-                                    ${project.build.directory}/camel-stream-${camel.version}-jahia.jar
-                                </outputDirectory>
-                            </fileset>
+                          <fileset>
+                            <directory>${project.build.directory}/classes</directory>
+                            <outputDirectory>${project.build.directory}/${jahia.patch.artifactId}-${jahia.patch.version}-jahia.jar</outputDirectory>
+                          </fileset>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>attach-artifact-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-artifacts</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>attach-artifact</goal>
+                        </goals>
+                        <configuration>
+                            <artifacts>
+                                <artifact>
+                                    <file>${project.build.directory}/${jahia.patch.artifactId}-${jahia.patch.version}-jahia.jar</file>
+                                    <groupId>${jahia.patch.groupId}</groupId>
+                                    <artifactId>${jahia.patch.artifactId}</artifactId>
+                                    <version>${jahia.patch.version}</version>
+                                    <classifier>jahia</classifier>
+                                </artifact>
+                            </artifacts>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
     </build>
-
+    
 </project>

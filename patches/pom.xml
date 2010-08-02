@@ -11,10 +11,10 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>concurrent</module>
-        <module>jodconverter</module>
-        <module>jbpm</module>
         <module>camel-stream</module>
+        <module>concurrent</module>
+        <module>jbpm</module>
+        <module>jodconverter</module>
     </modules>
 
 </project>

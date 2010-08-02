@@ -11,14 +11,16 @@
     <packaging>jar</packaging>
 
     <properties>
-        <jodconverter.version>3.0-beta-3</jodconverter.version>
+        <jahia.patch.groupId>org.artofsolving.jodconverter</jahia.patch.groupId>
+        <jahia.patch.artifactId>jodconverter-core</jahia.patch.artifactId>
+        <jahia.patch.version>3.0-beta-3</jahia.patch.version>
     </properties>
 
     <dependencies>
         <dependency>
-        	<groupId>org.artofsolving.jodconverter</groupId>
-        	<artifactId>jodconverter-core</artifactId>
-        	<version>${jodconverter.version}</version>
+        	<groupId>${jahia.patch.groupId}</groupId>
+        	<artifactId>${jahia.patch.artifactId}</artifactId>
+        	<version>${jahia.patch.version}</version>
         </dependency>
     </dependencies>
     
@@ -37,9 +39,9 @@
                         <configuration>
                             <artifactItems>
                                 <artifactItem>
-                                    <groupId>org.artofsolving.jodconverter</groupId>
-                                    <artifactId>jodconverter-core</artifactId>
-                                    <version>${jodconverter.version}</version>
+                                    <groupId>${jahia.patch.groupId}</groupId>
+                                    <artifactId>${jahia.patch.artifactId}</artifactId>
+                                    <version>${jahia.patch.version}</version>
                                     <type>jar</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}</outputDirectory>
@@ -61,8 +63,8 @@
                         </goals>
                         <phase>package</phase>
                         <configuration>
-                            <from>${project.build.directory}/jodconverter-core-${jodconverter.version}.jar</from>
-                            <to>${project.build.directory}/jodconverter-core-${jodconverter.version}-jahia.jar</to>
+                            <from>${project.build.directory}/${jahia.patch.artifactId}-${jahia.patch.version}.jar</from>
+                            <to>${project.build.directory}/${jahia.patch.artifactId}-${jahia.patch.version}-jahia.jar</to>
                         </configuration>
                     </execution>
                     <execution>
@@ -74,8 +76,32 @@
                         <configuration>
                           <fileset>
                             <directory>${project.build.directory}/classes</directory>
-                            <outputDirectory>${project.build.directory}/jodconverter-core-${jodconverter.version}-jahia.jar</outputDirectory>
+                            <outputDirectory>${project.build.directory}/${jahia.patch.artifactId}-${jahia.patch.version}-jahia.jar</outputDirectory>
                           </fileset>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>attach-artifact-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-artifacts</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>attach-artifact</goal>
+                        </goals>
+                        <configuration>
+                            <artifacts>
+                                <artifact>
+                                    <file>${project.build.directory}/${jahia.patch.artifactId}-${jahia.patch.version}-jahia.jar</file>
+                                    <groupId>${jahia.patch.groupId}</groupId>
+                                    <artifactId>${jahia.patch.artifactId}</artifactId>
+                                    <version>${jahia.patch.version}</version>
+                                    <classifier>jahia</classifier>
+                                </artifact>
+                            </artifacts>
                         </configuration>
                     </execution>
                 </executions>

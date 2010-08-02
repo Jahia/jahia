@@ -12,15 +12,16 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<template:addResources type="javascript" resources="jquery-1.3.1.min.js"/>
+<template:addResources type="javascript" resources="jquery.min.js"/>
 <template:addResources type="javascript" resources="jquery.juitter.js"/>
 <template:addResources type="css" resources="main.css"/>
 <jcr:nodeProperty node="${currentNode}" name="lang" var="lang"/>
 <script type="text/javascript">
     $(function() {
+        var search = "${currentNode.properties.search.string}";
         $.Juitter.start({
             searchType:"searchWord", // needed, you can use "searchWord", "fromUser", "toUser"
-            searchObject:"${fn:replace(currentNode.properties.search.string,' ', ',')}", // needed, you can insert a username here or a word to be searched for, if you wish multiple search, separate the words by comma.
+            searchObject: search.replace(" ", ","), // needed, you can insert a username here or a word to be searched for, if you wish multiple search, separate the words by comma.
             <c:if test="${not empty lang}">lang:"${currentNode.properties.lang.string}",</c:if> // restricts the search by the given language
             live:"live-${currentNode.properties.timeUpdate.long}", // the number after "live-" indicates the time in seconds to wait before request the Twitter API for updates.
             placeHolder:"myContainerSearch", // Set a place holder DIV which will receive the list of tweets example <div id="juitterContainer"></div>
@@ -33,11 +34,12 @@
             filter:"sex->*BAD word*,porn->*BAD word*,fuck->*BAD word*,shit->*BAD word*"  // insert the words you want to hide from the tweets followed by what you want to show instead example: "sex->censured" or "porn->BLOCKED WORD" you can define as many as you want, if you don't want to replace the word, simply remove it, just add the words you want separated like this "porn,sex,fuck"... Be aware that the tweets will still be showed, only the bad words will be removed
         });
          $("#mySearch").submit(function() {
+             var mySearch = $(".mySearch").val();
             $.Juitter.start({
                 <c:if test="${not empty lang}">lang:"${currentNode.properties.lang.string}",</c:if>
                 searchType:"searchWord",
-                placeHolder:"myContainer",
-                searchObject:${fn:replace($(".search").val(), ' ', ',')},
+                placeHolder:"myContainerSearch",
+                searchObject:mySearch.replace(" ", ","),
                 live:"live-${currentNode.properties.timeUpdate.long}",
                 filter:"sex->*BAD word*,porn->*BAD word*,fuck->*BAD word*,shit->*BAD word*"
             });

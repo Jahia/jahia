@@ -54,7 +54,7 @@ public class JahiaQueryObjectModelImpl extends QueryObjectModelImpl {
                 index.getSynonymProvider(), index.getIndexFormatVersion());
 
         MultiColumnQuery query = factory.create(qomTree);
-        System.out.println("query->"+((MutableMultiColumnQueryAdapter) query).getQuery());
+
         if (qomTree.getConstraint() != null) {
             Constraint c = ConstraintBuilder.create(qomTree.getConstraint(),
                     getBindVariableValues(), qomTree.getSource().getSelectors(),

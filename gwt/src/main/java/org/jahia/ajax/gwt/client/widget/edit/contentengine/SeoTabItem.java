@@ -113,17 +113,7 @@ public class SeoTabItem extends EditEngineTabItem {
         }
         if (!engine.getNode().getNodeTypes().contains("jmix:vanityUrlMapped")) {
             engine.getNode().getNodeTypes().add("jmix:vanityUrlMapped");
-        }        
-        JahiaContentManagementService.App.getInstance().saveUrlMappings(engine.getNode(), langs, mappings, new BaseAsyncCallback<Object>() {
-            public void onApplicationFailure(Throwable throwable) {
-                com.google.gwt.user.client.Window.alert(Messages.get("saved_prop_failed", "URL mapping save failed\n\n") + throwable.getLocalizedMessage());
-                Log.error("failed", throwable);
-            }
-
-            public void onSuccess(Object ok) {
-                // do nothing
-            }
-        });
-        
+        }
+        engine.getNode().set("vanityMappings", mappings);
     }
 }

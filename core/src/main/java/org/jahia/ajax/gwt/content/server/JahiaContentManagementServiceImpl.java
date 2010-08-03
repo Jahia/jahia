@@ -579,6 +579,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         if (acl != null) {
             setACL(node.getPath(), acl);
         }
+
+        saveUrlMappings(node, langCodeProperties.keySet(), (List<GWTJahiaUrlMapping>)node.get("vanityMappings"));
     }
 
     /**

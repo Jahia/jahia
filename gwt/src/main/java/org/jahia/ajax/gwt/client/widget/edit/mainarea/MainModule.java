@@ -150,39 +150,49 @@ public class MainModule extends Module {
 
     }
 
+    private int maxLink = -1;
+    private int maxScript = -1;
+
     private void switchStaticAssets(Map<String, Set<String>> assets) {
-        removeAllAssets();
-        int i = 1;
-        for (Map.Entry<String, Set<String>> entry : assets.entrySet()) {
-            for (String s : entry.getValue()) {
-                addAsset(entry.getKey().toLowerCase(), s, i++);
-            }
+        Set<String> values = assets.get("css");
+        int m = removeAllAssets("link", "href", values);
+        if (maxLink == -1) maxLink = m;
+        for (String s : values) {
+            addAsset("css", s, ++maxLink);
+        }
+
+        values = assets.get("javascript");
+        m = removeAllAssets("script", "src", values);
+        if (maxScript == -1) maxScript = m;
+        for (String s : values) {
+            addAsset("javascript", s, ++maxScript);
         }
     }
 
-    private native void removeAllAssets() /*-{
-        var links = $doc.getElementsByTagName("link");
-        for (var i=links.length; i>=0; i--){ //search backwards within nodelist for matching elements to remove
-            if (links[i] && links[i].getAttribute("id")!=null && links[i].getAttribute("id").indexOf("staticAsset")==0)
+    private native int removeAllAssets(String tagname, String attrname, Set values) /*-{
+        var links = $doc.getElementsByTagName(tagname);
+        for (var i=links.length-1; i>=0; i--){ //search backwards within nodelist for matching elements to remove
+            if (links[i] && links[i].getAttribute("id")!=null && links[i].getAttribute("id").indexOf("staticAsset")==0
+                && !values.@java.util.Set::contains(Ljava/lang/Object;)(links[i].getAttribute(attrname))) {
+
                 links[i].parentNode.removeChild(links[i]) //remove element by calling parentNode.removeChild()
+            } else if (links[i]) {
+                values.@java.util.Set::remove(Ljava/lang/Object;)(links[i].getAttribute(attrname))
+            }
         }
-        var scripts = $doc.getElementsByTagName("script");
-        for (var i=scripts.length; i>=0; i--){ //search backwards within nodelist for matching elements to remove
-            if (scripts[i] && scripts[i].getAttribute("id")!=null && scripts[i].getAttribute("id").indexOf("staticAsset")==0)
-                scripts[i].parentNode.removeChild(scripts[i]) //remove element by calling parentNode.removeChild()
-        }
+        return links.length;
     }-*/;
 
     private native void addAsset(String filetype, String filename, int i) /*-{
         if (filetype=="javascript"){ //if filename is a external JavaScript file
             var fileref=$doc.createElement('script')
-            fileref.setAttribute("id","staticAsset"+i)
+            fileref.setAttribute("id","staticAsset"+filetype+i)
             fileref.setAttribute("type","text/javascript")
             fileref.setAttribute("src", filename)
             $doc.getElementsByTagName("head")[0].appendChild(fileref)
         } else if (filetype=="css"){ //if filename is an external CSS file
             var fileref=$doc.createElement("link")
-            fileref.setAttribute("id","staticAsset"+i)
+            fileref.setAttribute("id","staticAsset"+filetype+i)
             fileref.setAttribute("rel", "stylesheet")
             fileref.setAttribute("type", "text/css")
             fileref.setAttribute("href", filename)

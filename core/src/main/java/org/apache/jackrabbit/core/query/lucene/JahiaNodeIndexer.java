@@ -86,6 +86,8 @@ public class JahiaNodeIndexer extends NodeIndexer {
      */
     public static final String FACET_PREFIX = "FACET:";
     
+    public static final String ANCESTOR = "_:ANCESTOR".intern();
+
     /**
      * The persistent node type registry
      */
@@ -123,8 +125,6 @@ public class JahiaNodeIndexer extends NodeIndexer {
      *            internal namespace mappings.
      * @param executor
      * @param parser
-     * @param nodeTypeRegistry
-     *            Jahia's node type registry
      * @param context
      *            the query handler context (for getting other services and registries)
      */
@@ -473,8 +473,6 @@ public class JahiaNodeIndexer extends NodeIndexer {
      *            the string value.
      * @param store
      *            if the value of the field should be stored.
-     * @param withOffsets
-     *            if a term vector with offsets should be stored.
      * @return a lucene field.
      */
     protected Field createFulltextField(String fieldName, String value, boolean store) {
@@ -606,4 +604,35 @@ public class JahiaNodeIndexer extends NodeIndexer {
         }
         return doc;
     }
+
+    protected void addParentChildRelation(Document doc,
+                                          NodeId parentId)
+            throws ItemStateException, RepositoryException {
+        super.addParentChildRelation(doc, parentId);
+        addAncestorRelation(doc, parentId);
+    }
+    
+    protected void addAncestorRelation(Document doc,
+                                          NodeId parentId)
+            throws ItemStateException, RepositoryException {
+        NodeState parent = (NodeState) stateProvider.getItemState(parentId);
+
+        doc.add(new Field(
+                ANCESTOR, parentId.toString(),
+                Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS, Field.TermVector.NO));
+
+        // parent UUID
+        if (parent.getParentId() == null) {
+            // root node
+        } else if (parent.getSharedSet().isEmpty()) {
+            addAncestorRelation(doc, parent.getParentId());
+        } else {
+            // shareable node
+            for (NodeId id : parent.getSharedSet()) {
+                addAncestorRelation(doc, id);
+            }
+        }
+
+    }
+
 }

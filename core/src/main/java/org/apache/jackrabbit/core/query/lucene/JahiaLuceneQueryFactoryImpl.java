@@ -52,7 +52,11 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactoryImpl {
     }
 
     public Query create(ChildNodeImpl cn) throws RepositoryException {
-        return new JackrabbitTermQuery(new Term("_:PARENT", session.getNode(cn.getParentPath()).getIdentifier()));
+        return new JackrabbitTermQuery(new Term(FieldNames.PARENT, session.getNode(cn.getParentPath()).getIdentifier()));
+    }
+
+    public Query create(DescendantNodeImpl dn) throws RepositoryException {
+        return new JackrabbitTermQuery(new Term(JahiaNodeIndexer.ANCESTOR, session.getNode(dn.getAncestorPath()).getIdentifier()));
     }
 
     /**
@@ -82,24 +86,71 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactoryImpl {
 
         try {
             if (tree.getConstraint() != null) {
-                tree.getConstraint().accept(new DefaultQOMTreeVisitor() {
+                Query q = (Query) tree.getConstraint().accept(new DefaultQOMTreeVisitor() {
                     public Object visit(AndImpl node, Object data) throws Exception {
-                        Object d1 = ((ConstraintImpl) node.getConstraint1()).accept(this, data);
-                        Object d2 = ((ConstraintImpl) node.getConstraint2()).accept(this, data);
-                        return null;
+                        Query q1 = (Query) ((ConstraintImpl) node.getConstraint1()).accept(this, data);
+                        Query q2 = (Query) ((ConstraintImpl) node.getConstraint2()).accept(this, data);
+
+                        if (q1 != null && q2 != null) {
+                            BooleanQuery and = new BooleanQuery();
+                            and.add(q1, BooleanClause.Occur.MUST);
+                            and.add(q2, BooleanClause.Occur.MUST);
+                            return and;
+                        } else if (q1 != null) {
+                            return q1;
+                        } else {
+                            return q2;
+                        }
+                    }
+
+                    public Object visit(OrImpl node, Object data) throws Exception {
+                        Query q1 = (Query) ((ConstraintImpl) node.getConstraint1()).accept(this, data);
+                        Query q2 = (Query) ((ConstraintImpl) node.getConstraint2()).accept(this, data);
+
+                        if (q1 != null && q2 != null) {
+                            BooleanQuery or = new BooleanQuery();
+                            or.add(q1, BooleanClause.Occur.SHOULD);
+                            or.add(q2, BooleanClause.Occur.SHOULD);
+                            return or;
+                        } else {
+                            return null;
+                        }
+                    }
+
+                    public Object visit(NotImpl node, Object data) throws Exception {
+                        Query q = (Query) ((ConstraintImpl) node.getConstraint()).accept(this, data);
+                        if (q != null) {
+                            BooleanQuery not = new BooleanQuery();
+                            not.add(q, BooleanClause.Occur.MUST_NOT);
+                            return not;
+                        } else {
+                            return null;
+                        }
+                    }
+
+
+                    public Object visit(FullTextSearchImpl node, Object data) throws Exception {
+                        return create(node);
                     }
 
                     public Object visit(ChildNodeImpl node, Object data) throws Exception {
-                        BooleanQuery and = new BooleanQuery();
-                        and.add(create(node), BooleanClause.Occur.MUST);
-                        and.add(adapter.getQuery(), BooleanClause.Occur.MUST);
-                        adapter.setQuery(and);
+                        return create(node);
+                    }
 
-                        // todo : remove matched constraint from the tree to avoid double check
-
+                    public Object visit(DescendantNodeImpl node, Object data) throws Exception {
+//                        return create(node);
                         return null;
                     }
+
+
                 }, null);
+
+                if (q != null) {
+                    BooleanQuery and = new BooleanQuery();
+                    and.add(adapter.getQuery(), BooleanClause.Occur.MUST);
+                    and.add(q, BooleanClause.Occur.MUST);
+                    adapter.setQuery(and);
+                }
             }
         } catch (RepositoryException e) {
             throw e;

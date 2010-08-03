@@ -39,6 +39,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
@@ -860,6 +861,32 @@ public class NavigationHelper {
             try {
                 n.setWorkflowInfo(
                         workflow.getWorkflowInfo(n.getPath(), node.getSession(), node.getSession().getLocale()));
+            } catch (UnsupportedRepositoryOperationException e) {
+//                 do nothing
+                logger.debug(e.getMessage());
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+            } catch (GWTJahiaServiceException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+
+        if (fields.contains(GWTJahiaNode.WORKFLOW_INFOS)) {
+            try {
+                JCRSiteNode node1 = node.resolveSite();
+                if (node1 != null) {
+                    String[] codes = node1.getActiveLanguageCodes();
+                    Map<String, GWTJahiaWorkflowInfo> infoMap = new HashMap<String, GWTJahiaWorkflowInfo>();
+                    JCRSessionWrapper session = node.getSession();
+                    for (String code : codes) {
+                        Locale locale = LanguageCodeConverters.languageCodeToLocale(code);
+                        JCRSessionWrapper localeSession = sessionFactory.getCurrentUserSession(
+                                session.getWorkspace().getName(), locale);
+                        GWTJahiaWorkflowInfo info = workflow.getWorkflowInfo(n.getPath(), localeSession, locale);
+                        infoMap.put(code,info);
+                    }
+                    n.setWorkflowInfos(infoMap);
+                }
             } catch (UnsupportedRepositoryOperationException e) {
 //                 do nothing
                 logger.debug(e.getMessage());

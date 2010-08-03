@@ -76,6 +76,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     public static final String PUBLICATION_INFOS = "publicationInfos";
     public static final String AVAILABLE_WORKKFLOWS = "j:availableWorkflows";
     public static final String WORKFLOW_INFO = "workflowInfo";
+    public static final String WORKFLOW_INFOS = "workflowInfos";
 
     public static final List<String> DEFAULT_FIELDS =
             Arrays.asList(ICON, TAGS, CHILDREN_INFO, "j:template", "j:width", "j:height");
@@ -109,6 +110,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     // in case of a folder, it allows to know if the node is selectable or not
     private boolean matchFilters = false;
     private Map<String, GWTJahiaPublicationInfo> publicationInfos;
+    private Map<String, GWTJahiaWorkflowInfo> workflowInfos;
 
     public GWTJahiaNode() {
     }
@@ -523,5 +525,13 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     public Map<String, GWTJahiaPublicationInfo> getPublicationInfos() {
         return publicationInfos;
+    }
+
+    public void setWorkflowInfos(Map<String, GWTJahiaWorkflowInfo> workflowInfos) {
+        this.workflowInfos = workflowInfos;
+    }
+
+    public Map<String, GWTJahiaWorkflowInfo> getWorkflowInfos() {
+        return workflowInfos;
     }
 }

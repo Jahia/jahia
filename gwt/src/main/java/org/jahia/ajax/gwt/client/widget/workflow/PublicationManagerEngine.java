@@ -21,6 +21,7 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
@@ -69,7 +70,7 @@ public class PublicationManagerEngine extends Window {
         GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(Arrays.asList("/sites"));
         factory.setNodeTypes(Arrays.asList("jnt:virtualsitesFolder", "jnt:virtualsite", "jnt:page"));
         factory.setFields(Arrays.asList(GWTJahiaNode.NAME, GWTJahiaNode.DISPLAY_NAME, GWTJahiaNode.PUBLICATION_INFOS,
-                                        GWTJahiaNode.WORKFLOW_INFO));
+                                        GWTJahiaNode.WORKFLOW_INFOS));
         factory.setSelectedPath(linker.getMainNode().getPath());
         factory.setSaveOpenPath(true);
         loader = factory.getLoader();
@@ -98,9 +99,17 @@ public class PublicationManagerEngine extends Window {
                     GWTJahiaNode node = (GWTJahiaNode) model;
                     int state = node.getPublicationInfos() != null ? node.getPublicationInfos().get(
                             config.name).getStatus() : 0;
+                    boolean wfStatus = state == GWTJahiaPublicationInfo.MODIFIED || state == GWTJahiaPublicationInfo.NOT_PUBLISHED;
+                    if(wfStatus) {
+                        // is there a workflow started
+                        GWTJahiaWorkflowInfo info = node.getWorkflowInfos().get(getDataIndex());
+                        if(info.getAvailableActions().size()>0) {
+                            state = GWTJahiaPublicationInfo.LOCKED;
+                        }
+                    }
                     //String title = Messages.get("fm_column_publication_info_" + state, String.valueOf(state));
                     StringBuilder builder = new StringBuilder().append("<div class='x-grid3-check-col").append(
-                            " x-grid3-check-col").append(getCheckState(model, state)).append(" x-grid3-cc-").append(
+                            " x-grid3-check-col").append(getCheckState(node, state)).append(" x-grid3-cc-").append(
                             getId() + "-" + config.name).append("'>").append("<img src=\"").append(
                             JahiaGWTParameters.getContextPath()).append("/gwt/resources/images/workflow/").append(
                             STATE_IMAGES[state]).append(".png\" height=\"12\" width=\"12\" title=\"").append(
@@ -108,7 +117,7 @@ public class PublicationManagerEngine extends Window {
                     return builder.toString();
                 }
 
-                private String getCheckState(ModelData model, int state) {
+                private String getCheckState(GWTJahiaNode model, int state) {
                     Record record = grid.getStore().getRecord(model);
                     boolean checked = false;
                     if (record != null) {
@@ -117,7 +126,8 @@ public class PublicationManagerEngine extends Window {
                             checked = (Boolean) o;
                         }
                     }
-                    return state == GWTJahiaPublicationInfo.MODIFIED || state == GWTJahiaPublicationInfo.NOT_PUBLISHED ? (checked ? "-on" : "") : "-disabled";
+                    boolean wfStatus = state == GWTJahiaPublicationInfo.MODIFIED || state == GWTJahiaPublicationInfo.NOT_PUBLISHED;
+                    return wfStatus ? (checked ? "-on" : "") : "-disabled";
                 }
 
                 /**
@@ -188,7 +198,7 @@ public class PublicationManagerEngine extends Window {
                                 if (checked) {
                                     Info.display("Worlfow",
                                                  "Starting worflow for node " + node.getPath() + " in language " + language.getDisplayName());
-                                    final GWTJahiaWorkflowDefinition definition = node.getWorkflowInfo().getPossibleWorkflows().get(
+                                    final GWTJahiaWorkflowDefinition definition = node.getWorkflowInfos().get(language.getLanguage()).getPossibleWorkflows().get(
                                             0);
                                     Map<String, List<String>> map = workflowDefinitionMapMap.get(definition.getName());
                                     if (map == null) {

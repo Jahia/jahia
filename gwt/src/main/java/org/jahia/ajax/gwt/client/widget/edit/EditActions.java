@@ -8,6 +8,7 @@ import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
@@ -17,6 +18,7 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.compare.CompareEngine;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.TranslateContentEngine;
+import org.jahia.ajax.gwt.client.widget.workflow.PublicationManagerEngine;
 import org.jahia.ajax.gwt.client.widget.workflow.WorkflowDashboardEngine;
 
 import java.util.ArrayList;
@@ -243,6 +245,16 @@ public class EditActions {
                             com.google.gwt.user.client.Window.alert("Cannot get status: " + caught.getMessage());
                         }
                     });
+        }
+    }
+
+    public static void showPublicationManager(final Linker linker) {
+        if (linker.getMainNode() != null) {
+            JahiaContentManagementService.App.getInstance().getSiteLanguages(new BaseAsyncCallback<List<GWTJahiaLanguage>>() {
+                public void onSuccess(List<GWTJahiaLanguage> result) {
+                    new PublicationManagerEngine(linker,result).show();
+                }
+            });
         }
     }
 }

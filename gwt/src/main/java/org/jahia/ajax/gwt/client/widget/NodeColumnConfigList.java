@@ -16,6 +16,7 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
+import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTColumn;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.Formatter;
@@ -38,7 +39,7 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
     private List<GWTColumn> columnList;
     private String autoExpand;
 
-    private static String[] STATE_IMAGES = new String[]{"000", "111", "121", "000", "000", "000"};
+    private static String[] STATE_IMAGES = new String[]{"000", "111", "130", "121", "121", "511", "000", "000", "000"};
 
     private transient final GridCellRenderer<GWTJahiaNode> ICON_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
         public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1,

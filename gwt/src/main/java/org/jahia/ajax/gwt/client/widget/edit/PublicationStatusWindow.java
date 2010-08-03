@@ -173,7 +173,7 @@ class PublicationStatusWindow extends Window {
             cancel.setEnabled(false);
             if (gwtJahiaWorkflowDefinition == null) {
                 JahiaContentManagementService.App.getInstance()
-                        .publish(uuids, allSubTree, false, false, null,
+                        .publish(uuids, allSubTree, false, false, null,null,
                                 new BaseAsyncCallback() {
                                     public void onApplicationFailure(Throwable caught) {
                                         Log.error("Cannot publish", caught);
@@ -191,7 +191,7 @@ class PublicationStatusWindow extends Window {
                                 });
             } else {
                 hide();
-                new WorkflowActionDialog(selectedNode, gwtJahiaWorkflowDefinition, uuids, allSubTree, linker).show();
+                new WorkflowActionDialog(selectedNode, gwtJahiaWorkflowDefinition, uuids, allSubTree, linker,null).show();
             }
         }
     }

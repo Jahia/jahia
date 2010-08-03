@@ -226,7 +226,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
      *
      * @param uuids the list of node uuids to publish, will not auto publish the parents
      */
-    public void publish(List<String> uuids, boolean allSubTree, boolean workflow, boolean reverse,List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException;
+    public void publish(List<String> uuids, boolean allSubTree, boolean workflow, boolean reverse,List<GWTJahiaNodeProperty> properties,String language) throws GWTJahiaServiceException;
 
     /**
      * Unpublish the specified path and its subnodes.

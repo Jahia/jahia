@@ -173,7 +173,7 @@ public class WorkflowActionDialog extends Window {
     }
 
     public WorkflowActionDialog(final GWTJahiaNode node, final GWTJahiaWorkflowDefinition wf, final List<String> uuids,
-                                final boolean allSubTree, final Linker linker) {
+                                final boolean allSubTree, final Linker linker,final String language) {
 
         contentManagement = JahiaContentManagementService.App.getInstance();
         contentDefinition = JahiaContentDefinitionService.App.getInstance();
@@ -194,12 +194,12 @@ public class WorkflowActionDialog extends Window {
                     propertiesEditor.setViewInheritedItems(true);
                     propertiesEditor.renderNewFormPanel();
                     panel.add(propertiesEditor);
-                    generatePublishButton(propertiesEditor, wf, dialog, panel, uuids, allSubTree, linker);
+                    generatePublishButton(propertiesEditor, wf, dialog, panel, uuids, allSubTree, linker,language);
                     dialog.layout();
                 }
             });
         } else {
-            generatePublishButton(null, wf, dialog, panel, uuids, allSubTree, linker);
+            generatePublishButton(null, wf, dialog, panel, uuids, allSubTree, linker,language);
         }
 
 
@@ -351,7 +351,8 @@ public class WorkflowActionDialog extends Window {
     }
 
     private void generatePublishButton(final PropertiesEditor propertiesEditor, final GWTJahiaWorkflowDefinition wf,
-                                       final Window dialog, LayoutContainer panel, final List<String> uuids, final boolean allSubTree, final Linker linker) {
+                                       final Window dialog, LayoutContainer panel, final List<String> uuids,
+                                       final boolean allSubTree, final Linker linker, final String language) {
         HorizontalPanel horizontalPanel = new HorizontalPanel();
 
         final Button button = new Button(Messages.get("workflow.start.label","Start Workflow:") + wf.getDisplayName());
@@ -363,7 +364,7 @@ public class WorkflowActionDialog extends Window {
                 if (propertiesEditor != null) {
                     nodeProperties = propertiesEditor.getProperties();
                 }
-                JahiaContentManagementService.App.getInstance().publish(uuids, allSubTree, true, false,nodeProperties,
+                JahiaContentManagementService.App.getInstance().publish(uuids, allSubTree, true, false,nodeProperties,language,
                                                                         new BaseAsyncCallback() {
                                                                             public void onApplicationFailure(
                                                                                     Throwable caught) {

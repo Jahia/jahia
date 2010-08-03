@@ -210,6 +210,7 @@
                 <ref bean="Toolbar.Item.Unpublish"/>
                 <ref bean="Toolbar.Item.ReversePublish"/>
                 <ref bean="Toolbar.Item.ViewPublishStatus"/>
+                <ref bean="Toolbar.Item.PublicationManager"/>
             </list>
         </property>
         <property name="visibility" value="$site/toolbar/publication"/>
@@ -1322,6 +1323,14 @@
         <property name="layout" value="button"/>
         <property name="titleKey" value="label.deployNewPortlet"/>
         <property name="icon" value="add-application"/>
+    </bean>
+
+    <bean id="Toolbar.Item.PublicationManager" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublicationManagerActionItem"/>
+        </property>
+        <property name="titleKey" value="label.publicationmanager"/>
+        <property name="icon" value="publicationManager"/>
     </bean>
     
 </beans>

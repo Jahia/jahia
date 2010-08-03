@@ -1077,9 +1077,14 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException
      */
     public void publish(List<String> uuids, boolean allSubTree, boolean workflow, boolean reverse,
-                        List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException {
+                        List<GWTJahiaNodeProperty> properties,String language) throws GWTJahiaServiceException {
         JCRSessionWrapper session = retrieveCurrentSession();
-        publication.publish(uuids, Collections.singleton(session.getLocale().toString()), allSubTree, workflow, reverse,
+        String locale = session.getLocale().toString();
+        if(language!=null) {
+            session = retrieveCurrentSession(LanguageCodeConverters.languageCodeToLocale(language));
+            locale = language;
+        }
+        publication.publish(uuids, Collections.singleton(locale), allSubTree, workflow, reverse,
                 session, properties);
     }
 

@@ -31,38 +31,101 @@
  */
 package org.apache.jackrabbit.core.query.lucene;
 
-import java.io.IOException;
-
-import javax.jcr.RepositoryException;
-import javax.jcr.query.InvalidQueryException;
-
 import org.apache.jackrabbit.core.ItemManager;
 import org.apache.jackrabbit.core.SessionImpl;
+import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.query.ExecutableQuery;
 import org.apache.jackrabbit.core.query.QueryHandler;
-import org.apache.jackrabbit.core.query.lucene.AbstractQueryImpl;
-import org.apache.jackrabbit.core.query.lucene.IndexFormatVersion;
-import org.apache.jackrabbit.core.query.lucene.JackrabbitIndexSearcher;
-import org.apache.jackrabbit.core.query.lucene.MultiColumnQueryHits;
-import org.apache.jackrabbit.core.query.lucene.NamespaceMappings;
-import org.apache.jackrabbit.core.query.lucene.PerQueryCache;
-import org.apache.jackrabbit.core.query.lucene.QueryImpl;
-import org.apache.jackrabbit.core.query.lucene.SearchIndex;
-import org.apache.jackrabbit.core.query.lucene.Util;
 import org.apache.jackrabbit.core.state.NodeState;
 import org.apache.jackrabbit.spi.Path;
 import org.apache.jackrabbit.spi.commons.query.qom.QueryObjectModelTree;
+import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.Sort;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.search.*;
+
+import javax.jcr.RepositoryException;
+import javax.jcr.query.InvalidQueryException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Implements a {@link org.apache.jackrabbit.core.query.QueryHandler} using Lucene and handling Jahia specific definitions.
  */
 public class JahiaSearchIndex extends SearchIndex {
+    private static final Logger log = Logger.getLogger(JahiaSearchIndex.class);
+
+    /**
+     * This implementation forwards the call to
+     * {@link MultiIndex#update(java.util.Collection , java.util.Collection)} and
+     * transforms the two iterators to the required types.
+     *
+     * @param remove ids of nodes to remove.
+     * @param add    NodeStates to add. Calls to <code>next()</code> on this
+     *               iterator may return <code>null</code>, to indicate that a
+     *               node could not be indexed successfully.
+     * @throws RepositoryException if an error occurs while indexing a node.
+     * @throws IOException         if an error occurs while updating the index.
+     */
+    public void updateNodes(Iterator<NodeId> remove, Iterator<NodeState> add)
+            throws RepositoryException, IOException {
+
+        final List<NodeState> addList = new ArrayList<NodeState>();
+        final List<NodeId> removeList = new ArrayList<NodeId>();
+        while (add.hasNext()) {
+            final NodeState state = add.next();
+            addList.add(state);
+        }
+        while (remove.hasNext()) {
+            removeList.add(remove.next());
+        }
+
+        final IndexReader reader = getIndexReader();
+        final Searcher searcher = new IndexSearcher(reader);
+
+        for (final NodeState node : new ArrayList<NodeState>(addList)) {
+            try {
+                searcher.search(new TermQuery(new Term(FieldNames.UUID, node.getNodeId().toString())),new HitCollector() {
+                    public void collect(int thisdoc, float score) {
+                        try {
+                            String oldUuid = reader.document(thisdoc).get("_:PARENT");
+                            String uuid = node.getParentId().toString();
+                            if (!oldUuid.equals(uuid)) {
+                                searcher.search(new TermQuery(new Term(JahiaNodeIndexer.ANCESTOR, node.getId().toString())),new HitCollector() {
+                                    public void collect(int doc, float score) {
+                                        try {
+                                            String uuid = reader.document(doc).get("_:UUID");
+
+                                            final NodeId id = new NodeId(uuid);
+                                            addList.add((NodeState) getContext().getItemStateManager().getItemState(id));
+                                            removeList.add(id);
+                                        } catch (Exception e) {
+                                            log.error("Cannot search moved nodes",e);
+                                        }
+                                    }
+                                });
+                            }
+
+
+                        } catch (Exception e) {
+                            log.error("Cannot search moved nodes",e);
+                        }
+                    }
+                });
+
+            } catch (Exception e) {
+                log.error("Cannot search moved nodes",e);
+            }
+        }
+
+        super.updateNodes(removeList.iterator(), addList.iterator());
+    }
+
     @Override
-    protected Document createDocument(NodeState node, NamespaceMappings nsMappings,
+    protected Document createDocument(final NodeState node, NamespaceMappings nsMappings,
             IndexFormatVersion indexFormatVersion) throws RepositoryException {
         JahiaNodeIndexer indexer = new JahiaNodeIndexer(node, getContext().getItemStateManager(),
                 nsMappings, getContext().getExecutor(), getParser(),

@@ -1,5 +1,6 @@
 package org.jahia.ajax.gwt.helper;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.bin.Jahia;
@@ -106,7 +107,7 @@ public class LanguageHelper {
         }
         langCode = langCode.replace("-", "_");
         Locale currentLocale = LanguageCodeConverters.getLocaleFromCode(langCode);
-        return currentLocale.getDisplayName(currentLocale);
+        return StringUtils.capitalize(currentLocale.getDisplayName(currentLocale));
 
     }
 }

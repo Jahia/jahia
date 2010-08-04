@@ -87,37 +87,38 @@ public class JahiaSearchIndex extends SearchIndex {
         final Searcher searcher = new IndexSearcher(reader);
 
         for (final NodeState node : new ArrayList<NodeState>(addList)) {
-            try {
-                searcher.search(new TermQuery(new Term(FieldNames.UUID, node.getNodeId().toString())),new HitCollector() {
-                    public void collect(int thisdoc, float score) {
-                        try {
-                            String oldUuid = reader.document(thisdoc).get("_:PARENT");
-                            String uuid = node.getParentId().toString();
-                            if (!oldUuid.equals(uuid)) {
-                                searcher.search(new TermQuery(new Term(JahiaNodeIndexer.ANCESTOR, node.getId().toString())),new HitCollector() {
-                                    public void collect(int doc, float score) {
-                                        try {
-                                            String uuid = reader.document(doc).get("_:UUID");
+            if (node.getParentId() != null) {
+                try {
+                    searcher.search(new TermQuery(new Term(FieldNames.UUID, node.getNodeId().toString())),new HitCollector() {
+                        public void collect(int thisdoc, float score) {
+                            try {
+                                String oldUuid = reader.document(thisdoc).get("_:PARENT");
+                                String uuid = node.getParentId().toString();
+                                if (!oldUuid.equals(uuid)) {
+                                    searcher.search(new TermQuery(new Term(JahiaNodeIndexer.ANCESTOR, node.getId().toString())),new HitCollector() {
+                                        public void collect(int doc, float score) {
+                                            try {
+                                                String uuid = reader.document(doc).get("_:UUID");
 
-                                            final NodeId id = new NodeId(uuid);
-                                            addList.add((NodeState) getContext().getItemStateManager().getItemState(id));
-                                            removeList.add(id);
-                                        } catch (Exception e) {
-                                            log.error("Cannot search moved nodes",e);
+                                                final NodeId id = new NodeId(uuid);
+                                                addList.add((NodeState) getContext().getItemStateManager().getItemState(id));
+                                                removeList.add(id);
+                                            } catch (Exception e) {
+                                                log.error("Cannot search moved nodes",e);
+                                            }
                                         }
-                                    }
-                                });
+                                    });
+                                }
+
+                            } catch (Exception e) {
+                                log.error("Cannot search moved nodes",e);
                             }
-
-
-                        } catch (Exception e) {
-                            log.error("Cannot search moved nodes",e);
                         }
-                    }
-                });
+                    });
 
-            } catch (Exception e) {
-                log.error("Cannot search moved nodes",e);
+                } catch (Exception e) {
+                    log.error("Cannot search moved nodes",e);
+                }
             }
         }
 

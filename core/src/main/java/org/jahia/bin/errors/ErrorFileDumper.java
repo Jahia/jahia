@@ -28,10 +28,10 @@ public class ErrorFileDumper {
 
     public static File dumpToFile(Throwable t, HttpServletRequest request) throws IOException {
 
-        if (lastFileDumpedException != null && t != null
-                && t.toString().equals(lastFileDumpedException.toString())) {
+        if (lastFileDumpedException != null && t != null && t.toString().equals(lastFileDumpedException.toString())) {
             lastFileDumpedExceptionOccurences++;
-            if (lastFileDumpedExceptionOccurences < SettingsBean.getInstance().getFileDumpMaxRegroupingOfPreviousException()) {
+            if (lastFileDumpedExceptionOccurences <
+                    SettingsBean.getInstance().getFileDumpMaxRegroupingOfPreviousException()) {
                 return null;
             }
         }
@@ -51,8 +51,10 @@ public class ErrorFileDumper {
             todaysDirectory.mkdir();
         }
         SimpleDateFormat fileDateFormat = new SimpleDateFormat("yyyy_MM_dd-HH_mm_ss_SSS");
-        File errorFile = new File(todaysDirectory, "error-" + fileDateFormat.format(now) + "-" + Long.toString(exceptionCount) + ".txt");
-        StringWriter errorWriter = generateErrorReport(request, t, lastFileDumpedExceptionOccurences, lastFileDumpedException);
+        File errorFile = new File(todaysDirectory,
+                "error-" + fileDateFormat.format(now) + "-" + Long.toString(exceptionCount) + ".txt");
+        StringWriter errorWriter =
+                generateErrorReport(request, t, lastFileDumpedExceptionOccurences, lastFileDumpedException);
         FileWriter fileWriter = new FileWriter(errorFile);
         fileWriter.write(errorWriter.toString());
         fileWriter.close();
@@ -62,38 +64,43 @@ public class ErrorFileDumper {
 
     }
 
-    public static StringWriter generateErrorReport(HttpServletRequest request, Throwable t, int lastExceptionOccurences, Throwable lastException) {
+    public static StringWriter generateErrorReport(HttpServletRequest request, Throwable t, int lastExceptionOccurences,
+                                                   Throwable lastException) {
         StringWriter msgBodyWriter = new StringWriter();
         PrintWriter strOut = new PrintWriter(msgBodyWriter);
         if (lastExceptionOccurences > 1) {
             strOut.println("");
-            strOut.println("The previous error: " + lastException.getMessage() + " occured " + Integer.toString(lastExceptionOccurences) + " times.");
+            strOut.println("The previous error: " + lastException.getMessage() + " occured " +
+                    Integer.toString(lastExceptionOccurences) + " times.");
             strOut.println("");
         }
         strOut.println("");
-        strOut.println("Your Server has generated an error. Please review the details below for additional information: ");
+        strOut.println(
+                "Your Server has generated an error. Please review the details below for additional information: ");
         strOut.println("");
         if (t instanceof JahiaException) {
             JahiaException nje = (JahiaException) t;
             String severityMsg = "Undefined";
             switch (nje.getSeverity()) {
-                case JahiaException.WARNING_SEVERITY :
+                case JahiaException.WARNING_SEVERITY:
                     severityMsg = "WARNING";
                     break;
-                case JahiaException.ERROR_SEVERITY :
+                case JahiaException.ERROR_SEVERITY:
                     severityMsg = "ERROR";
                     break;
-                case JahiaException.CRITICAL_SEVERITY :
+                case JahiaException.CRITICAL_SEVERITY:
                     severityMsg = "CRITICAL";
                     break;
-                case JahiaException.FATAL_SEVERITY :
+                case JahiaException.FATAL_SEVERITY:
                     severityMsg = "FATAL";
                     break;
             }
             strOut.println("Severity: " + severityMsg);
         }
         strOut.println("");
-        if (t!=null) { strOut.println("Error: " + t.getMessage()); }
+        if (t != null) {
+            strOut.println("Error: " + t.getMessage());
+        }
         strOut.println("");
         if (request != null) {
             strOut.println("URL: " + request.getRequestURL());
@@ -102,7 +109,8 @@ public class ErrorFileDumper {
             }
             strOut.println("   Method: " + request.getMethod());
             strOut.println("");
-            strOut.println("Remote host: " + request.getRemoteHost() + "     Remote Address: " + request.getRemoteAddr());
+            strOut.println(
+                    "Remote host: " + request.getRemoteHost() + "     Remote Address: " + request.getRemoteAddr());
             strOut.println("");
             strOut.println("Request headers:");
             strOut.println("-----------------");
@@ -165,32 +173,31 @@ public class ErrorFileDumper {
         strOut.println("Total memory : " + Runtime.getRuntime().totalMemory() + " bytes");
 
         strOut.println("");
-        strOut.println("Cache status:");
-        strOut.println("--------------");
+        if (ServicesRegistry.getInstance().getCacheService() != null) {
+            strOut.println("Cache status:");
+            strOut.println("--------------");
 
-        SortedSet sortedCacheNames = new TreeSet(ServicesRegistry.getInstance().getCacheService().getNames());
-        Iterator cacheNameIte = sortedCacheNames.iterator();
-        DecimalFormat percentFormat = new DecimalFormat("###.##");
-        while (cacheNameIte.hasNext()) {
-            String curCacheName = (String) cacheNameIte.next();
-            Object objectCache = ServicesRegistry.getInstance().getCacheService().getCache(curCacheName);
-            if (objectCache instanceof Cache) {
-                Cache curCache = (Cache) objectCache;
-                long cacheLimit = curCache.getCacheLimit();
-                String efficiencyStr = "0";
-                if (!Double.isNaN(curCache.getCacheEfficiency())) {
-                    efficiencyStr = percentFormat.format(curCache.getCacheEfficiency());
+            SortedSet sortedCacheNames = new TreeSet(ServicesRegistry.getInstance().getCacheService().getNames());
+            Iterator cacheNameIte = sortedCacheNames.iterator();
+            DecimalFormat percentFormat = new DecimalFormat("###.##");
+            while (cacheNameIte.hasNext()) {
+                String curCacheName = (String) cacheNameIte.next();
+                Object objectCache = ServicesRegistry.getInstance().getCacheService().getCache(curCacheName);
+                if (objectCache instanceof Cache) {
+                    Cache curCache = (Cache) objectCache;
+                    long cacheLimit = curCache.getCacheLimit();
+                    String efficiencyStr = "0";
+                    if (!Double.isNaN(curCache.getCacheEfficiency())) {
+                        efficiencyStr = percentFormat.format(curCache.getCacheEfficiency());
+                    }
+                    strOut.println("name=" + curCacheName + " size=" + curCache.size() + " limit=" +
+                            cacheLimit / (1024 * 1024) + "MB" + " successful hits=" + curCache.getSuccessHits() +
+                            " total hits=" + curCache.getTotalHits() + " efficiency=" + efficiencyStr + "%");
                 }
-                strOut.println("name=" + curCacheName +
-                        " size=" + curCache.size() +
-                        " limit=" + cacheLimit / (1024 * 1024) + "MB" +
-                        " successful hits=" + curCache.getSuccessHits() +
-                        " total hits=" + curCache.getTotalHits() +
-                        " efficiency=" + efficiencyStr + "%");
             }
-        }
 
-        strOut.println("");
+            strOut.println("");
+        }
         strOut.println("Thread status:");
         strOut.println("--------------");
         ThreadMonitor threadMonitor = new ThreadMonitor();
@@ -200,7 +207,8 @@ public class ErrorFileDumper {
         threadMonitor.findDeadlock(strOut);
 
         strOut.println("");
-        strOut.println("Depending on the severity of this error, server may still be operational or not. Please check your");
+        strOut.println(
+                "Depending on the severity of this error, server may still be operational or not. Please check your");
         strOut.println("installation as soon as possible.");
         strOut.println("");
         strOut.println("Yours Faithfully, ");

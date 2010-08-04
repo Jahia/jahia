@@ -100,8 +100,13 @@ public class LastModifiedListener extends DefaultEventListener {
                         }
                         if (event.getType() == Event.NODE_ADDED) {
                             addedNodes.add(path);
+                            if(!path.contains("j:translation")) {
+                                nodes.add(StringUtils.substringBeforeLast(path,"/"));
+                            }
                         }
-                        nodes.add(StringUtils.substringBeforeLast(path,"/"));
+                        else {
+                            nodes.add(StringUtils.substringBeforeLast(path,"/"));
+                        }
                     }
                     nodes.removeAll(addedNodes);
                     if (!nodes.isEmpty() || !addedNodes.isEmpty()) {
@@ -111,7 +116,7 @@ public class LastModifiedListener extends DefaultEventListener {
                                 if (n.isNodeType(Constants.MIX_LAST_MODIFIED) && n.isCheckedOut()) {
                                     n.setProperty("jcr:lastModified",c);
                                     n.setProperty("jcr:lastModifiedBy",userId);
-                                    handleTranslationNodes(n, c, userId);                                    
+                                    //handleTranslationNodes(n, c, userId);
                                 }
                             } catch (PathNotFoundException e) {
                                 // node has been removed
@@ -125,7 +130,7 @@ public class LastModifiedListener extends DefaultEventListener {
                                     if (n.isNodeType(Constants.MIX_LAST_MODIFIED)) {
                                         n.setProperty("jcr:lastModified",c);
                                         n.setProperty("jcr:lastModifiedBy",userId);
-                                        handleTranslationNodes(n, c, userId);
+                                        //handleTranslationNodes(n, c, userId);
                                     }
                                 }
                             } catch (PathNotFoundException e) {

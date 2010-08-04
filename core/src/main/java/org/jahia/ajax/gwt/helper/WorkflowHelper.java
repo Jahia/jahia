@@ -339,29 +339,45 @@ public class WorkflowHelper {
         try {
             JCRNodeWrapper node = session.getNode(path);
             // If existing remove all unchecked nodes
-            if(node.hasNode(WorkflowService.WORKFLOWRULES_NODE_NAME)) {
+            if (node.hasNode(WorkflowService.WORKFLOWRULES_NODE_NAME)) {
                 JCRNodeWrapper wfRulesNode = node.getNode(WorkflowService.WORKFLOWRULES_NODE_NAME);
                 for (GWTJahiaWorkflowDefinition definition : deleted) {
-                final String defKey = definition.getProvider() + "_" + definition.getId();
-                if(wfRulesNode.hasNode(defKey)) {
-                    wfRulesNode.getNode(defKey).remove();
+                    final String defKey = definition.getProvider() + "_" + definition.getId();
+                    if (wfRulesNode.hasNode(defKey)) {
+                        wfRulesNode.getNode(defKey).remove();
+                    }
+                }
+                if (actives == null || actives.isEmpty()) {
+                    // No more active definitions for this nodes
+                    wfRulesNode.remove();
+                    // Remove also associated workflows
+                    if (node.isNodeType("jmix:worklfowRulesable")) {
+                        node.removeMixin("jmix:worklfowRulesable");
+                    }
+                    if (node.isNodeType("jmix:publication")) {
+                        node.removeMixin("jmix:publication");
+                    }
                 }
             }
-            }
-            // Add or let untouch existing node
-            if(!node.isNodeType("jmix:worklfowRulesable")) {
-                node.addMixin("jmix:worklfowRulesable");
-            }
-            try {
-                node = node.getNode(WorkflowService.WORKFLOWRULES_NODE_NAME);
-            } catch (RepositoryException e) {
-                node = node.addNode(WorkflowService.WORKFLOWRULES_NODE_NAME, "jnt:workflowRules");
-            }
-            for (GWTJahiaWorkflowDefinition definition : actives) {
-                final String defKey = definition.getProvider() + "_" + definition.getId();
-                if(!node.hasNode(defKey)) {
-                    final JCRNodeWrapper wfRuleNode = node.addNode(defKey, "jnt:workflowRule");
-                    wfRuleNode.setProperty("j:workflow", definition.getProvider() + ":" + definition.getId());
+            if (actives != null && !actives.isEmpty()) {
+                // Add or let untouch existing node
+                if (!node.isNodeType("jmix:worklfowRulesable")) {
+                    node.addMixin("jmix:worklfowRulesable");
+                }
+                if (!node.isNodeType("jmix:publication")) {
+                    node.addMixin("jmix:publication");
+                }
+                try {
+                    node = node.getNode(WorkflowService.WORKFLOWRULES_NODE_NAME);
+                } catch (RepositoryException e) {
+                    node = node.addNode(WorkflowService.WORKFLOWRULES_NODE_NAME, "jnt:workflowRules");
+                }
+                for (GWTJahiaWorkflowDefinition definition : actives) {
+                    final String defKey = definition.getProvider() + "_" + definition.getId();
+                    if (!node.hasNode(defKey)) {
+                        final JCRNodeWrapper wfRuleNode = node.addNode(defKey, "jnt:workflowRule");
+                        wfRuleNode.setProperty("j:workflow", definition.getProvider() + ":" + definition.getId());
+                    }
                 }
             }
             session.save();
@@ -402,12 +418,8 @@ public class WorkflowHelper {
                                     denied.add(entry.getKey());
                                 }
                             }
-                            if (granted.size() > 0) {
-                                saveAce(node, ace, principal, granted, "GRANT");
-                            }
-                            if (denied.size() > 0) {
-                                saveAce(node, ace, principal, denied, "DENY");
-                            }
+                            saveAce(node, ace, principal, granted, "GRANT");
+                            saveAce(node, ace, principal, denied, "DENY");
                         } else {
                             String nodeName = "GRANT_" + ace.getPrincipalType() + "_" + principal;
                             JCRNodeWrapper aceNode;

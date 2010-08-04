@@ -838,7 +838,7 @@ public class JCRPublicationService extends JahiaService {
                                     JCRNodeWrapper ref = node.getSession().getNodeByUUID(v.getString());
 //                            if (!referencedNode.contains(ref)) {
                                     if (!ref.isNodeType("jnt:page")) {
-                                        getPublicationInfo(ref, info.addReference(ref.getUUID(), ref.getPath()).getRoot(), languages, includesReferences, includesSubnodes, false, sourceSession, destinationSession, uuids, infos);
+                                        getPublicationInfo(ref, info.addReference(ref.getIdentifier(), ref.getPath()).getRoot(), languages, includesReferences, includesSubnodes, false, sourceSession, destinationSession, uuids, infos);
                                     }
 //                            }
                                 } catch (ItemNotFoundException e) {
@@ -855,7 +855,7 @@ public class JCRPublicationService extends JahiaService {
                                 JCRNodeWrapper ref = (JCRNodeWrapper) p.getNode();
 //                        if (!referencedNode.contains(ref)) {
                                 if (!ref.isNodeType("jnt:page")) {
-                                    getPublicationInfo(ref, info.addReference(ref.getUUID(), ref.getPath()).getRoot(), languages, includesReferences, includesSubnodes, false, sourceSession, destinationSession, uuids, infos);
+                                    getPublicationInfo(ref, info.addReference(ref.getIdentifier(), ref.getPath()).getRoot(), languages, includesReferences, includesSubnodes, false, sourceSession, destinationSession, uuids, infos);
                                 }
 //                        }
                             } catch (ItemNotFoundException e) {
@@ -869,19 +869,20 @@ public class JCRPublicationService extends JahiaService {
             while (ni.hasNext()) {
                 JCRNodeWrapper n = (JCRNodeWrapper) ni.nextNode();
                 PublicationInfo.PublicationNode subinfo = info;
-                if (allsubtree && hasIndependantPublication(n)) {
-                    PublicationInfo newinfo = new PublicationInfo(n.getUUID(), n.getPath());
+                boolean hasIndependantPublication = hasIndependantPublication(n);
+                if (allsubtree && hasIndependantPublication) {
+                    PublicationInfo newinfo = new PublicationInfo(n.getIdentifier(), n.getPath());
                     infos.add(newinfo);
                     subinfo = newinfo.getRoot();
                 }
-                if (allsubtree || !hasIndependantPublication(n)) {
+                if (allsubtree || !hasIndependantPublication) {
                     if (languages != null && n.isNodeType("mix:language")) {
                         String translationLanguage = n.getProperty("jcr:language").getString();
                         if (languages.contains(translationLanguage)) {
-                            getPublicationInfo(n, subinfo.addChild(n.getUUID(), n.getPath()), languages, includesReferences, includesSubnodes, allsubtree, sourceSession, destinationSession, uuids, infos);
+                            getPublicationInfo(n, subinfo.addChild(n.getIdentifier(), n.getPath()), languages, includesReferences, includesSubnodes, allsubtree, sourceSession, destinationSession, uuids, infos);
                         }
                     } else if (n.isNodeType("jmix:lastPublished")) {
-                        getPublicationInfo(n, subinfo.addChild(n.getUUID(), n.getPath()), languages, includesReferences, includesSubnodes, allsubtree, sourceSession, destinationSession, uuids, infos);
+                        getPublicationInfo(n, subinfo.addChild(n.getIdentifier(), n.getPath()), languages, includesReferences, includesSubnodes, allsubtree, sourceSession, destinationSession, uuids, infos);
                     }
                 }
             }

@@ -269,7 +269,11 @@ public class PublicationManagerEngine extends Window {
                 if (r.get(getDataIndex()) == null) {
                     r.set(getDataIndex(), Boolean.TRUE);
                 } else {
-                    r.set(getDataIndex(), !((Boolean) r.get(getDataIndex())));
+                    boolean value = !((Boolean) r.get(getDataIndex()));
+                    r.set(getDataIndex(), value);
+                    if(!value && checkboxMap.get(getDataIndex()).getValue()) {
+                        checkboxMap.get(getDataIndex()).setValue(Boolean.FALSE);
+                    }
                 }
             }
         }
@@ -302,7 +306,7 @@ public class PublicationManagerEngine extends Window {
                         if (record.get(getDataIndex()) == null) {
                             record.set(getDataIndex(), Boolean.TRUE);
                         } else {
-                            record.set(getDataIndex(), !((Boolean) record.get(getDataIndex())));
+                            record.set(getDataIndex(), checkboxMap.get(getDataIndex()).getValue());
                         }
                     }
                 }

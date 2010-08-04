@@ -468,18 +468,18 @@ public class WorkflowServiceTest {
     public void testHistory() throws Exception {
         test1StepPublicationAccept();
         test1StepPublicationReject();
-        List<HistoryWorkflow> history = service.getHistoryWorkflows(stageNode);
+        List<HistoryWorkflow> history = service.getHistoryWorkflows(stageNode, null);
         assertEquals("Node should have two history records", 2, history.size());
     }
 
     @Test
     public void testHistoryTasks() throws Exception {
         test2StepPublicationAccept();
-        List<HistoryWorkflow> history = service.getHistoryWorkflows(stageNode);
+        List<HistoryWorkflow> history = service.getHistoryWorkflows(stageNode, null);
         assertEquals("Node should have one history record", 1, history.size());
         HistoryWorkflow historyItem = history.get(0);
         List<HistoryWorkflowTask> tasks = service.getHistoryWorkflowTasks(historyItem.getProcessId(), historyItem
-                .getProvider());
+                .getProvider(), null);
         assertEquals("The workflow process should have two history task records", 2, tasks.size());
     }
 

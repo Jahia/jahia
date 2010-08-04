@@ -153,8 +153,8 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
                 long lastModified = 0;
                 URL processResourceUrl = process.getURL();
                 if (ResourceUtils.isJarURL(processResourceUrl)) {
-                    lastModified = ResourceUtils.getFile(ResourceUtils.extractJarFileURL(processResourceUrl))
-                            .lastModified();
+                    lastModified =
+                            ResourceUtils.getFile(ResourceUtils.extractJarFileURL(processResourceUrl)).lastModified();
                 } else {
                     lastModified = process.getFile().lastModified();
                 }
@@ -198,7 +198,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
     public List<WorkflowDefinition> getAvailableWorkflows() {
         if (logger.isDebugEnabled()) {
             logger.debug(MessageFormat.format("List of all available process ({0}) : ",
-                                              repositoryService.createProcessDefinitionQuery().count()));
+                    repositoryService.createProcessDefinitionQuery().count()));
         }
         final List<ProcessDefinition> definitionList = repositoryService.createProcessDefinitionQuery().list();
 
@@ -212,7 +212,8 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
                 }
             }
             WorkflowDefinition wf = new WorkflowDefinition(definition.getName(), definition.getKey(), key);
-            wf.setFormResourceName(repositoryService.getStartFormResourceName(definition.getId(),repositoryService.getStartActivityNames(definition.getId()).get(0)));
+            wf.setFormResourceName(repositoryService.getStartFormResourceName(definition.getId(),
+                    repositoryService.getStartActivityNames(definition.getId()).get(0)));
             workflows.put(definition.getName(), wf);
             versions.put(definition.getName(), definition.getVersion());
             if (logger.isDebugEnabled()) {
@@ -225,8 +226,9 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
     public WorkflowDefinition getWorkflowDefinitionByKey(String key) {
         ProcessDefinition value = getProcessDefinitionByKey(key);
         WorkflowDefinition wf = new WorkflowDefinition(value.getName(), value.getKey(), this.key);
-        wf.setFormResourceName(repositoryService.getStartFormResourceName(value.getId(),repositoryService.getStartActivityNames(value.getId()).get(0)));
-        if(value instanceof JpdlProcessDefinition) {
+        wf.setFormResourceName(repositoryService.getStartFormResourceName(value.getId(),
+                repositoryService.getStartActivityNames(value.getId()).get(0)));
+        if (value instanceof JpdlProcessDefinition) {
             JpdlProcessDefinition definition = (JpdlProcessDefinition) value;
             final Map<String, TaskDefinitionImpl> taskDefinitions = definition.getTaskDefinitions();
             final Set<String> tasks = new LinkedHashSet<String>();
@@ -240,16 +242,18 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
     public WorkflowDefinition getWorkflowDefinitionById(String id) {
         ProcessDefinition value = getProcessDefinitionById(id);
         WorkflowDefinition wf = new WorkflowDefinition(value.getName(), value.getKey(), this.key);
-        wf.setFormResourceName(repositoryService.getStartFormResourceName(value.getId(),repositoryService.getStartActivityNames(value.getId()).get(0)));
+        wf.setFormResourceName(repositoryService.getStartFormResourceName(value.getId(),
+                repositoryService.getStartActivityNames(value.getId()).get(0)));
         return wf;
     }
 
     private ProcessDefinition getProcessDefinitionByKey(String key) {
         if (logger.isDebugEnabled()) {
             logger.debug(MessageFormat.format("List of all available process ({0}) : ",
-                                              repositoryService.createProcessDefinitionQuery().count()));
+                    repositoryService.createProcessDefinitionQuery().count()));
         }
-        final List<ProcessDefinition> definitionList = repositoryService.createProcessDefinitionQuery().processDefinitionKey(key).list();
+        final List<ProcessDefinition> definitionList =
+                repositoryService.createProcessDefinitionQuery().processDefinitionKey(key).list();
 
         ProcessDefinition value = null;
 
@@ -265,9 +269,10 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
     private ProcessDefinition getProcessDefinitionById(String id) {
         if (logger.isDebugEnabled()) {
             logger.debug(MessageFormat.format("List of all available process ({0}) : ",
-                                              repositoryService.createProcessDefinitionQuery().count()));
+                    repositoryService.createProcessDefinitionQuery().count()));
         }
-        final List<ProcessDefinition> definitionList = repositoryService.createProcessDefinitionQuery().processDefinitionId(id).list();
+        final List<ProcessDefinition> definitionList =
+                repositoryService.createProcessDefinitionQuery().processDefinitionId(id).list();
 
         ProcessDefinition value = null;
 
@@ -290,7 +295,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
                 workflow.setDefinition(definition);
                 workflow.setAvailableActions(getAvailableActions(instance.getId()));
                 Job job = managementService.createJobQuery().timers().processInstanceId(processId).uniqueResult();
-                if(job!=null) {
+                if (job != null) {
                     workflow.setDuedate(job.getDuedate());
                 }
                 workflows.add(workflow);
@@ -321,8 +326,8 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         for (String action : actions) {
             WorkflowAction workflowAction = null;
             if (taskService.createTaskQuery().processInstanceId(processId).activityName(action).count() > 0) {
-                List<Task> taskList = taskService.createTaskQuery().processInstanceId(processId).activityName(
-                        action).list();
+                List<Task> taskList =
+                        taskService.createTaskQuery().processInstanceId(processId).activityName(action).list();
                 for (Task task : taskList) {
                     if (task.getActivityName().equals(action)) {
                         workflowAction = convertToWorkflowTask(task);
@@ -360,8 +365,8 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         action.setCreateTime(task.getCreateTime());
         action.setProcessId(task.getExecutionId());
         if (task.getAssignee() != null) {
-            action.setAssignee(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(
-                    task.getAssignee()));
+            action.setAssignee(
+                    ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(task.getAssignee()));
         }
         action.setId(task.getId());
         action.setOutcome(taskService.getOutcomes(task.getId()));
@@ -370,18 +375,21 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
             List<WorkflowParticipation> participations = new ArrayList<WorkflowParticipation>();
             for (Participation participation : participationList) {
                 if (participation.getGroupId() != null && !participation.getGroupId().startsWith("{role}")) {
-                    participations.add(new WorkflowParticipation(participationRolesInverted.get(participation.getType()),
-                            groupManager.lookupGroup(participation.getGroupId())));
+                    participations
+                            .add(new WorkflowParticipation(participationRolesInverted.get(participation.getType()),
+                                    groupManager.lookupGroup(participation.getGroupId())));
                 } else if (participation.getGroupId() != null && participation.getGroupId().startsWith("{role}")) {
-                    String id = StringUtils.substringAfter(participation.getGroupId(),"{role}");
-                    String roleName = StringUtils.substringBefore(id,":");
-                    String siteName = StringUtils.substringAfter(id,":");
-                    participations.add(new WorkflowParticipation(participationRolesInverted.get(participation.getType()),
-                            new RoleIdentity(roleName,siteName)));
+                    String id = StringUtils.substringAfter(participation.getGroupId(), "{role}");
+                    String roleName = StringUtils.substringBefore(id, ":");
+                    String siteName = StringUtils.substringAfter(id, ":");
+                    participations
+                            .add(new WorkflowParticipation(participationRolesInverted.get(participation.getType()),
+                                    new RoleIdentity(roleName, siteName)));
                 } else {
                     if (participation.getUserId() != null) {
-                        participations.add(new WorkflowParticipation(participationRolesInverted.get(participation.getType()),
-                                userManager.lookupUserByKey(participation.getUserId())));
+                        participations
+                                .add(new WorkflowParticipation(participationRolesInverted.get(participation.getType()),
+                                        userManager.lookupUserByKey(participation.getUserId())));
                     }
                 }
             }
@@ -393,30 +401,31 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         List<HistoryComment> taskComments = taskService.getTaskComments(task.getId());
         List<WorkflowTaskComment> comments = new ArrayList<WorkflowTaskComment>(taskComments.size());
         for (HistoryComment taskComment : taskComments) {
-            comments.add(new WorkflowTaskComment(taskComment.getMessage(),taskComment.getTime(), taskComment.getUserId()));
+            comments.add(
+                    new WorkflowTaskComment(taskComment.getMessage(), taskComment.getTime(), taskComment.getUserId()));
         }
         action.setTaskComments(comments);
         // Get Tasks variables
         Set<String> variableNames = taskService.getVariableNames(task.getId());
-        action.setVariables(taskService.getVariables(task.getId(),variableNames));
+        action.setVariables(taskService.getVariables(task.getId(), variableNames));
         final ProcessInstance instance = executionService.findProcessInstanceById(task.getExecutionId());
-            if (instance != null) {
-        final WorkflowDefinition definition = getWorkflowDefinitionById(instance.getProcessDefinitionId());
-                action.setDefinition(definition);
-            }
+        if (instance != null) {
+            final WorkflowDefinition definition = getWorkflowDefinitionById(instance.getProcessDefinitionId());
+            action.setDefinition(definition);
+        }
         return action;
     }
 
     public void assignTask(String taskId, JahiaUser user) {
         Task task = taskService.getTask(taskId);
-        if(user==null) {
-            taskService.assignTask(task.getId(),null);
+        if (user == null) {
+            taskService.assignTask(task.getId(), null);
         } else {
-        if (user.getUserKey().equals(task.getAssignee())) {
-            return;
+            if (user.getUserKey().equals(task.getAssignee())) {
+                return;
+            }
+            taskService.takeTask(task.getId(), user.getUserKey());
         }
-        taskService.takeTask(task.getId(), user.getUserKey());
-    }
     }
 
     public void completeTask(String taskId, String outcome, Map<String, Object> args) {
@@ -442,13 +451,13 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         ProcessDefinition definition = getProcessDefinitionByKey(processKey);
 
         if (definition instanceof JpdlProcessDefinition) {
-            List<? extends Activity> list = ((JpdlProcessDefinition)definition).getActivities();
+            List<? extends Activity> list = ((JpdlProcessDefinition) definition).getActivities();
             for (Activity activity : list) {
                 if (activity instanceof ActivityImpl) {
-                    ActivityBehaviour activityBehaviour = ((ActivityImpl)activity).getActivityBehaviour();
+                    ActivityBehaviour activityBehaviour = ((ActivityImpl) activity).getActivityBehaviour();
                     if (activityBehaviour instanceof TaskActivity) {
                         // check the assignment handler .. ?
-                        ((TaskActivity)activityBehaviour).getTaskDefinition().getAssignmentHandlerReference();
+                        ((TaskActivity) activityBehaviour).getTaskDefinition().getAssignmentHandlerReference();
                         results.add(activity.getName());
                     }
                 }
@@ -473,8 +482,8 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
 
         for (ProcessDefinition definition : definitionList) {
             if (definition instanceof JpdlProcessDefinition) {
-                ((JpdlProcessDefinition)definition).createEvent("start").createEventListenerReference(listener);
-                ((JpdlProcessDefinition)definition).createEvent("end").createEventListenerReference(listener);
+                ((JpdlProcessDefinition) definition).createEvent("start").createEventListenerReference(listener);
+                ((JpdlProcessDefinition) definition).createEvent("end").createEventListenerReference(listener);
             }
 
         }
@@ -484,15 +493,15 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         ArrayList<String> results = new ArrayList<String>();
 
         if (definition instanceof JpdlProcessDefinition) {
-            List<? extends Activity> list = ((JpdlProcessDefinition)definition).getActivities();
+            List<? extends Activity> list = ((JpdlProcessDefinition) definition).getActivities();
 
             for (Activity activity : list) {
                 if (activity instanceof ActivityImpl) {
-                    ActivityBehaviour activityBehaviour = ((ActivityImpl)activity).getActivityBehaviour();
+                    ActivityBehaviour activityBehaviour = ((ActivityImpl) activity).getActivityBehaviour();
                     if (activityBehaviour instanceof UserCodeActivityBehaviour) {
 
                         // check the assignment handler .. ?
-                        ((TaskActivity)activityBehaviour).getTaskDefinition().getAssignmentHandlerReference();
+                        ((TaskActivity) activityBehaviour).getTaskDefinition().getAssignmentHandlerReference();
                         results.add(activity.getName());
                     }
                 }
@@ -507,7 +516,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
      * process IDs. This method also returns "active" (i.e. not completed)
      * workflow process instance. Instances are sorted by start time descending,
      * i.e. newly started instances first.
-     * 
+     *
      * @param processIds list of process IDs to retrieve history records for
      * @return a list of process instance history records for the specified
      *         process IDs
@@ -518,8 +527,8 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         for (String processId : processIds) {
             HistoryProcessInstance jbpmHistoryItem = null;
             try {
-                jbpmHistoryItem = historyService.createHistoryProcessInstanceQuery().processInstanceId(processId)
-                        .uniqueResult();
+                jbpmHistoryItem =
+                        historyService.createHistoryProcessInstanceQuery().processInstanceId(processId).uniqueResult();
             } catch (JbpmException e) {
                 logger.error(e.getMessage(), e);
             }
@@ -529,19 +538,23 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
             }
 
             String processDefKey = processDefIdToKeyMapping.get(jbpmHistoryItem.getProcessDefinitionId());
+
+            ProcessDefinition def = null;
             if (processDefKey == null) {
-                ProcessDefinition def = repositoryService.createProcessDefinitionQuery().processDefinitionId(
-                        jbpmHistoryItem.getProcessDefinitionId()).uniqueResult();
+                def = repositoryService.createProcessDefinitionQuery()
+                        .processDefinitionId(jbpmHistoryItem.getProcessDefinitionId()).uniqueResult();
                 if (def != null) {
                     processDefKey = def.getKey();
-                    processDefIdToKeyMapping.put(jbpmHistoryItem.getProcessDefinitionId(),processDefKey);
+                    processDefIdToKeyMapping.put(jbpmHistoryItem.getProcessDefinitionId(), processDefKey);
                 } else {
                     logger.warn("Cannot find process definition by ID " + jbpmHistoryItem.getProcessDefinitionId());
                 }
             }
-            historyItems.add(new HistoryWorkflow(jbpmHistoryItem.getProcessInstanceId(), processDefKey,
+            historyItems.add(new HistoryWorkflow(jbpmHistoryItem.getProcessInstanceId(),
+                    processDefKey != null ? new WorkflowDefinition(def.getName(), def.getKey(), this.key) : null,
                     jbpmHistoryItem.getKey(), getKey(), jbpmHistoryItem.getStartTime(), jbpmHistoryItem.getEndTime(),
                     jbpmHistoryItem.getEndActivityName()));
+
         }
 
         return historyItems;
@@ -550,7 +563,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
     /**
      * Returns a list of history records for workflow tasks. This method also
      * returns not completed tasks.
-     * 
+     *
      * @param processId the process instance ID
      * @return a list of history records for workflow tasks
      */
@@ -560,8 +573,9 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         try {
             jbpmTasks = historyService.createHistoryTaskQuery().executionId(processId).list();
         } catch (JbpmException e) {
-            logger.error("History task records for process instance with ID '" + processId
-                    + "' cannot be found. Cause: " + e.getMessage(), e);
+            logger.error(
+                    "History task records for process instance with ID '" + processId + "' cannot be found. Cause: " +
+                            e.getMessage(), e);
         }
         if (jbpmTasks == null) {
             return Collections.emptyList();
@@ -569,9 +583,10 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
 
         for (HistoryTask jbpmHistoryTask : jbpmTasks) {
             final Task task = taskService.getTask(jbpmHistoryTask.getId());
-            historyItems.add(new HistoryWorkflowTask(jbpmHistoryTask.getExecutionId(), (task != null ? task.getName() : ""), getKey(), jbpmHistoryTask
-                    .getCreateTime(), jbpmHistoryTask.getEndTime(), jbpmHistoryTask.getOutcome(), jbpmHistoryTask
-                    .getAssignee()));
+            historyItems
+                    .add(new HistoryWorkflowTask(jbpmHistoryTask.getExecutionId(), (task != null ? task.getName() : ""),
+                            getKey(), jbpmHistoryTask.getCreateTime(), jbpmHistoryTask.getEndTime(),
+                            jbpmHistoryTask.getOutcome(), jbpmHistoryTask.getAssignee()));
         }
 
         return historyItems;

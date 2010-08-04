@@ -64,8 +64,8 @@ public class GWTJahiaWorkflowHistoryTask extends GWTJahiaWorkflowHistoryItem {
      * @param duration the process duration
      * @param outcome the task outcome
      */
-    public GWTJahiaWorkflowHistoryTask(String name, String displayName, String processId, String provider, boolean finished, Date startDate, Date endDate, Long duration, String outcome,
-                                       String assignee) {
+    public GWTJahiaWorkflowHistoryTask(String name, String displayName, String processId, String provider, boolean finished, Date startDate, Date endDate,
+                                       Long duration, String outcome, String assignee) {
         super(name, displayName, processId, provider, finished, startDate, endDate, duration);
         setOutcome(outcome);
         setAssignee(assignee);

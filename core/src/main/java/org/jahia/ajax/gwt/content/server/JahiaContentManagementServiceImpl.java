@@ -35,7 +35,6 @@ import com.extjs.gxt.ui.client.data.BaseListLoadResult;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
-import com.google.gdata.util.AuthenticationException;
 
 import ij.ImagePlus;
 import ij.io.Opener;
@@ -66,7 +65,6 @@ import org.jahia.ajax.gwt.helper.*;
 import org.jahia.bin.Export;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.googledocs.GoogleDocsEditor;
-import org.jahia.exceptions.JahiaUnauthorizedException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.analytics.GoogleAnalyticsProfile;
 import org.jahia.services.content.JCRContentUtils;
@@ -96,7 +94,6 @@ import javax.validation.ConstraintViolationException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 /**
@@ -1363,7 +1360,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                                                                      GWTJahiaWorkflowHistoryItem historyItem,
                                                                      String locale) throws GWTJahiaServiceException {
         return workflow.getWorkflowHistoryItems(nodeId, historyItem,
-                retrieveCurrentSession(LanguageCodeConverters.languageCodeToLocale(locale)));
+                retrieveCurrentSession(LanguageCodeConverters.languageCodeToLocale(locale)), getUILocale());
     }
 
     public ListLoadResult<GWTJahiaNode> getAllWrappers(String path, List<String> fields)

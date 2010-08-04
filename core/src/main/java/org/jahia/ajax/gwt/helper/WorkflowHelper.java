@@ -201,21 +201,14 @@ public class WorkflowHelper {
         return taskComments;
     }
 
-    public List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryItems(String nodeId,
-            GWTJahiaWorkflowHistoryItem historyItem, JCRSessionWrapper session) throws GWTJahiaServiceException {
+    public List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryItems(String nodeId, GWTJahiaWorkflowHistoryItem historyItem,
+                                                                     JCRSessionWrapper session, Locale locale) throws GWTJahiaServiceException {
         List<GWTJahiaWorkflowHistoryItem> history = new ArrayList<GWTJahiaWorkflowHistoryItem>();
         try {
             if (historyItem != null) {
                 // read tasks of the process
-                Workflow workflow = service.getProviders().get(historyItem.getProvider()).getActiveWorkflowsInformations(
-                        Collections.singletonList(historyItem.getProcessId())).get(0);
-                HistoryWorkflow wf = service.getHistoryWorkflow(historyItem.getProcessId(), historyItem.getProvider());
-                history.add(new GWTJahiaWorkflowHistoryProcess(wf.getName(), wf.getDefinitionKey(), wf.getProcessId(), wf
-                        .getProvider(), wf.isFinished(), wf.getStartTime(), wf.getEndTime(), wf.getDuration(),
-                        workflow.getStartUser()));
-
                 List<HistoryWorkflowTask> tasks = service.getHistoryWorkflowTasks(historyItem.getProcessId(),
-                        historyItem.getProvider());
+                        historyItem.getProvider(), locale);
 
                 for (HistoryWorkflowTask wfTask : tasks) {
                     final String userKey = wfTask.getAssignee();
@@ -224,17 +217,18 @@ public class WorkflowHelper {
                         userName = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(userKey).getName();
                     }
                     history.add(new GWTJahiaWorkflowHistoryTask(wfTask.getName(),
-                            wfTask.getName() + (wfTask.getOutcome() != null ? " : " + wfTask.getOutcome():""),
+                            wfTask.getDisplayName() + (wfTask.getDisplayOutcome() != null ? " : " + wfTask.getDisplayOutcome():""),
                             wfTask.getProcessId(), wfTask
                             .getProvider(), wfTask.isCompleted(), wfTask.getStartTime(), wfTask.getEndTime(), wfTask
                             .getDuration(), wfTask.getOutcome(), userName));
                 }
             } else {
                 // read all processes
-                List<HistoryWorkflow> workflows = service.getHistoryWorkflows(session.getNodeByIdentifier(nodeId));
+                List<HistoryWorkflow> workflows = service.getHistoryWorkflows(session.getNodeByIdentifier(nodeId),
+                        locale);
                 for (HistoryWorkflow wf : workflows) {
-                    history.add(new GWTJahiaWorkflowHistoryProcess(wf.getName(), wf.getDefinitionKey(), wf.getProcessId(), wf
-                            .getProvider(), wf.isFinished(), wf.getStartTime(), wf.getEndTime(), wf.getDuration(),
+                    history.add(new GWTJahiaWorkflowHistoryProcess(wf.getName(), wf.getDisplayName(), wf.getProcessId(), wf
+                            .getProvider(), wf.getDefinition().getKey(), wf.isFinished(), wf.getStartTime(), wf.getEndTime(), wf.getDuration(),
                             null));
                 }
             }

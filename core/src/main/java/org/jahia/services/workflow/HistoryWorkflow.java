@@ -41,8 +41,6 @@ import java.util.Date;
  */
 public class HistoryWorkflow extends HistoryWorkflowBase {
 
-    private String definitionKey;
-
     private String endActivityName;
 
     private boolean finished;
@@ -62,7 +60,7 @@ public class HistoryWorkflow extends HistoryWorkflowBase {
      * Initializes an instance of this class.
      * 
      * @param id workflow process instance ID
-     * @param workflow process definition key
+     * @param definition process definition key
      * @param name the name of the item
      * @param provider the provider key
      * @param startTime the start point of the process instance
@@ -70,17 +68,10 @@ public class HistoryWorkflow extends HistoryWorkflowBase {
      *            if it is not completed yet
      * @param endActivityName the name of the last activity
      */
-    public HistoryWorkflow(String id, String definitionKey, String name, String provider, Date startTime, Date endTime, String endActivityName) {
+    public HistoryWorkflow(String id, WorkflowDefinition definition, String name, String provider, Date startTime, Date endTime, String endActivityName) {
         super(id, name, provider, startTime, endTime);
-        this.definitionKey = definitionKey;
+        setDefinition(definition);
         this.endActivityName = endActivityName;
-    }
-
-    /**
-     * @return the definitionId
-     */
-    public String getDefinitionKey() {
-        return definitionKey;
     }
 
     /**

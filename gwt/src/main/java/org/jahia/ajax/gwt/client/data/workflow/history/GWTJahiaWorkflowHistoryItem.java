@@ -165,7 +165,6 @@ public class GWTJahiaWorkflowHistoryItem extends BaseTreeModel {
     public void setProvider(String provider) {
         set("provider", provider);
     }
-
     /**
      * @param startDate the startDate to set
      */

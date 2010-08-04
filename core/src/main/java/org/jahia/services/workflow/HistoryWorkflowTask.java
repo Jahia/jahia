@@ -48,6 +48,8 @@ public class HistoryWorkflowTask extends HistoryWorkflowAction {
 
     private String outcome;
 
+    private String displayOutcome;
+
     /**
      * Initializes an instance of this class.
      * 
@@ -79,6 +81,10 @@ public class HistoryWorkflowTask extends HistoryWorkflowAction {
      */
     public String getOutcome() {
         return outcome;
+    }
+
+    public String getDisplayOutcome() {
+        return displayOutcome;
     }
 
     /**
@@ -115,5 +121,9 @@ public class HistoryWorkflowTask extends HistoryWorkflowAction {
      */
     public void setOutcome(String outcome) {
         this.outcome = outcome;
+    }
+
+    public void setDisplayOutcome(String displayOutcome) {
+        this.displayOutcome = displayOutcome;
     }
 }

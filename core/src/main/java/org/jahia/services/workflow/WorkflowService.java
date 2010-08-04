@@ -70,7 +70,7 @@ public class WorkflowService {
     public static final String START_ROLE = "start";
     private RoleService roleService;
     private RoleBasedAccessControlService rbacService;
-    private Map<String,List<String>> workflowTypes;
+    private Map<String, List<String>> workflowTypes;
     public static final String WORKFLOWRULES_NODE_NAME = "workflowrules";
 
     public static WorkflowService getInstance() {
@@ -111,18 +111,18 @@ public class WorkflowService {
     /**
      * This method list all workflows deployed in the system
      *
-     * @return A list of available workflows per provider.
      * @param locale
+     * @return A list of available workflows per provider.
      */
     public List<WorkflowDefinition> getWorkflows(Locale locale) throws RepositoryException {
         List<WorkflowDefinition> workflowsByProvider = new ArrayList<WorkflowDefinition>();
         for (Map.Entry<String, WorkflowProvider> providerEntry : providers.entrySet()) {
             workflowsByProvider.addAll(providerEntry.getValue().getAvailableWorkflows());
         }
-        if(locale!=null) {
+        if (locale != null) {
             for (WorkflowDefinition definition : workflowsByProvider) {
                 try {
-                    ResourceBundle resourceBundle = getResourceBundle(definition,locale);
+                    ResourceBundle resourceBundle = getResourceBundle(definition, locale);
                     definition.setDisplayName(resourceBundle.getString("name"));
                 } catch (Exception e) {
                     definition.setDisplayName(definition.getName());
@@ -132,8 +132,10 @@ public class WorkflowService {
         return workflowsByProvider;
     }
 
-    private ResourceBundle getResourceBundle(WorkflowDefinition definition,Locale locale) {
-        return ResourceBundle.getBundle(this.getClass().getPackage().getName()+"."+definition.getKey().replaceAll(" ",""), locale);
+    private ResourceBundle getResourceBundle(WorkflowDefinition definition, Locale locale) {
+        return ResourceBundle
+                .getBundle(this.getClass().getPackage().getName() + "." + definition.getKey().replaceAll(" ", ""),
+                        locale);
     }
 
     public List<WorkflowDefinition> getWorkflowsForAction(String actionName, Locale locale) throws RepositoryException {
@@ -143,7 +145,7 @@ public class WorkflowService {
             List<WorkflowDefinition> defs = providerEntry.getValue().getAvailableWorkflows();
             for (WorkflowDefinition def : defs) {
                 if (l.contains(def.getKey())) {
-                    if(locale!=null) {
+                    if (locale != null) {
                         try {
                             ResourceBundle resourceBundle = getResourceBundle(def, locale);
                             def.setDisplayName(resourceBundle.getString("name"));
@@ -165,7 +167,8 @@ public class WorkflowService {
      * @param user
      * @return A list of available workflows per provider.
      */
-    public List<WorkflowDefinition> getPossibleWorkflows(final JCRNodeWrapper node, final JahiaUser user,Locale locale) throws RepositoryException {
+    public List<WorkflowDefinition> getPossibleWorkflows(final JCRNodeWrapper node, final JahiaUser user, Locale locale)
+            throws RepositoryException {
         return getPossibleWorkflows(node, user, null, locale);
     }
 
@@ -176,10 +179,12 @@ public class WorkflowService {
      * @param user
      * @return A list of available workflows per provider.
      */
-    public WorkflowDefinition getPossibleWorkflowForAction(final JCRNodeWrapper node, final JahiaUser user, final String action,final Locale locale) throws RepositoryException {
+    public WorkflowDefinition getPossibleWorkflowForAction(final JCRNodeWrapper node, final JahiaUser user,
+                                                           final String action, final Locale locale)
+            throws RepositoryException {
         final List<WorkflowDefinition> workflowDefinitionList = getPossibleWorkflows(node, user, action, locale);
         if (workflowDefinitionList.isEmpty()) {
-            return  null;
+            return null;
         }
         return workflowDefinitionList.get(0);
     }
@@ -191,24 +196,26 @@ public class WorkflowService {
      * @param user
      * @return A list of available workflows per provider.
      */
-    private List<WorkflowDefinition> getPossibleWorkflows(final JCRNodeWrapper node, final JahiaUser user, final String action,final Locale locale) throws RepositoryException {
+    private List<WorkflowDefinition> getPossibleWorkflows(final JCRNodeWrapper node, final JahiaUser user,
+                                                          final String action, final Locale locale)
+            throws RepositoryException {
         return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<WorkflowDefinition>>() {
             public List<WorkflowDefinition> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 List<WorkflowDefinition> workflowsForAction = null;
                 if (action != null) {
-                    workflowsForAction = getWorkflowsForAction(action,locale);
+                    workflowsForAction = getWorkflowsForAction(action, locale);
                 }
                 final Set<WorkflowDefinition> workflows = new LinkedHashSet<WorkflowDefinition>();
 
                 JCRSiteNode site = node.resolveSite();
 
-                Map<String,List<String[]>> rules = getWorkflowRules(node, null);
+                Map<String, List<String[]>> rules = getWorkflowRules(node, null);
                 for (String wfName : rules.keySet()) {
                     String workflowDefinitionKey = StringUtils.substringAfter(wfName, ":");
                     String providerKey = StringUtils.substringBefore(wfName, ":");
-                    WorkflowDefinition definition = lookupProvider(providerKey).getWorkflowDefinitionByKey(
-                            workflowDefinitionKey);
-                    if(locale!=null) {
+                    WorkflowDefinition definition =
+                            lookupProvider(providerKey).getWorkflowDefinitionByKey(workflowDefinitionKey);
+                    if (locale != null) {
                         try {
                             ResourceBundle resourceBundle = getResourceBundle(definition, locale);
                             definition.setDisplayName(resourceBundle.getString("name"));
@@ -257,7 +264,7 @@ public class WorkflowService {
 
                 JCRSiteNode site = node.resolveSite();
 
-                Map<String,List<String[]>> rules = getWorkflowRules(node, null);
+                Map<String, List<String[]>> rules = getWorkflowRules(node, null);
 
                 List<String[]> l = rules.get(definition.getProvider() + ":" + definition.getKey());
                 if (l != null) {
@@ -285,10 +292,11 @@ public class WorkflowService {
         });
     }
 
-    private List<JCRNodeWrapper> getApplicableWorkflowRules(final JCRNodeWrapper node, final JCRSessionWrapper session) throws RepositoryException {
+    private List<JCRNodeWrapper> getApplicableWorkflowRules(final JCRNodeWrapper node, final JCRSessionWrapper session)
+            throws RepositoryException {
         JCRNodeWrapper rules = null;
         JCRNodeWrapper nodeWrapper = node;
-        while (rules==null) {
+        while (rules == null) {
             try {
                 rules = nodeWrapper.getNode(WORKFLOWRULES_NODE_NAME);
             } catch (RepositoryException e) {
@@ -300,7 +308,7 @@ public class WorkflowService {
         while (ni.hasNext()) {
             JCRNodeWrapper rule = (JCRNodeWrapper) ni.next();
 //            if (!rule.hasProperty("j:nodeType") || node.isNodeType(rule.getProperty("j:nodeType").getString())) {
-                rulesList.add(rule);
+            rulesList.add(rule);
 //            }
         }
         return rulesList;
@@ -317,7 +325,7 @@ public class WorkflowService {
         List<Workflow> workflows = new ArrayList<Workflow>();
         try {
             if (node.isNodeType("jmix:workflow") && node.hasProperty(Constants.PROCESSID)) {
-                addActiveWorkflows(workflows, node.getProperty(Constants.PROCESSID),locale);
+                addActiveWorkflows(workflows, node.getProperty(Constants.PROCESSID), locale);
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -331,18 +339,18 @@ public class WorkflowService {
      * @param node
      * @return A list of active workflows per provider
      */
-    public Map<Locale,List<Workflow>> getActiveWorkflowsForAllLocales(JCRNodeWrapper node) {
-        Map<Locale,List<Workflow>> workflowsByLocale = new HashMap<Locale,List<Workflow>>();
+    public Map<Locale, List<Workflow>> getActiveWorkflowsForAllLocales(JCRNodeWrapper node) {
+        Map<Locale, List<Workflow>> workflowsByLocale = new HashMap<Locale, List<Workflow>>();
         try {
             if (node.isNodeType("jmix:workflow")) {
                 NodeIterator ni = node.getNodes("j:translation*");
                 while (ni.hasNext()) {
                     Node n = ((JCRNodeWrapper) ni.next()).getRealNode();
                     final String lang = n.getProperty("jcr:language").getString();
-                    if (n.hasProperty(Constants.PROCESSID + "_"+lang)) {
+                    if (n.hasProperty(Constants.PROCESSID + "_" + lang)) {
                         List<Workflow> l = new ArrayList<Workflow>();
-                        workflowsByLocale.put(LanguageCodeConverters.getLocaleFromCode(lang),l);
-                        addActiveWorkflows(l, n.getProperty(Constants.PROCESSID + "_"+lang), null);
+                        workflowsByLocale.put(LanguageCodeConverters.getLocaleFromCode(lang), l);
+                        addActiveWorkflows(l, n.getProperty(Constants.PROCESSID + "_" + lang), null);
                     }
                 }
             }
@@ -367,14 +375,14 @@ public class WorkflowService {
             if (!processIds.isEmpty()) {
                 List<Workflow> workflowsInformations = entry.getValue().getActiveWorkflowsInformations(processIds);
                 for (Workflow workflowsInformation : workflowsInformations) {
-                    if(locale!=null) {
+                    if (locale != null) {
                         final WorkflowDefinition definition = workflowsInformation.getDefinition();
                         try {
                             ResourceBundle resourceBundle = getResourceBundle(definition, locale);
                             definition.setDisplayName(resourceBundle.getString("name"));
                             final Set<WorkflowAction> actionSet = workflowsInformation.getAvailableActions();
                             for (WorkflowAction action : actionSet) {
-                                i18nOfWorkflowAction(locale, action,definition);
+                                i18nOfWorkflowAction(locale, action, definition);
                             }
                         } catch (Exception e) {
                             definition.setDisplayName(definition.getName());
@@ -400,10 +408,10 @@ public class WorkflowService {
     /**
      * This method will call the underlying provider to signal the identified process.
      *
-     * @param processId the process we want to advance
-     * @param provider  The provider executing the process
+     * @param processId      the process we want to advance
+     * @param provider       The provider executing the process
      * @param transitionName
-     * @param args      List of args for the process
+     * @param args           List of args for the process
      */
     public void signalProcess(String processId, String transitionName, String provider, Map<String, Object> args) {
         lookupProvider(provider).signalProcess(processId, transitionName, args);
@@ -412,12 +420,13 @@ public class WorkflowService {
     /**
      * This method will call the underlying provider to signal the identified process.
      *
-     * @param processId the process we want to advance
-     * @param provider  The provider executing the process
+     * @param processId      the process we want to advance
+     * @param provider       The provider executing the process
      * @param transitionName
-     * @param args      List of args for the process
+     * @param args           List of args for the process
      */
-    public void signalProcess(String processId, String transitionName, String signalName, String provider, Map<String, Object> args) {
+    public void signalProcess(String processId, String transitionName, String signalName, String provider,
+                              Map<String, Object> args) {
         lookupProvider(provider).signalProcess(processId, transitionName, signalName, args);
     }
 
@@ -429,12 +438,13 @@ public class WorkflowService {
      * @param args      Map of args for the process
      */
     public String startProcess(JCRNodeWrapper stageNode, String processKey, String provider, Map<String, Object> args)
-        throws RepositoryException {
-        return startProcess(Arrays.asList(stageNode.getIdentifier()), stageNode.getSession(), processKey, provider,args);
+            throws RepositoryException {
+        return startProcess(Arrays.asList(stageNode.getIdentifier()), stageNode.getSession(), processKey, provider,
+                args);
     }
 
-    public String startProcess(List<String> nodeIds, JCRSessionWrapper session, String processKey, String provider, Map<String, Object> args)
-            throws RepositoryException {
+    public String startProcess(List<String> nodeIds, JCRSessionWrapper session, String processKey, String provider,
+                               Map<String, Object> args) throws RepositoryException {
         args.put("nodeId", nodeIds.iterator().next());
         args.put("nodeIds", nodeIds);
         args.put("workspace", session.getWorkspace().getName());
@@ -442,14 +452,16 @@ public class WorkflowService {
         args.put("workflow", lookupProvider(provider).getWorkflowDefinitionByKey(processKey));
         args.put("user", session.getUser() != null ? session.getUser().getUsername() : null);
         final String processId = lookupProvider(provider).startProcess(processKey, args);
-        if(logger.isDebugEnabled()) {
-            logger.debug("A workflow "+processKey+" from "+provider+" has been started on nodes: "+nodeIds+
-                         " from workspace "+args.get("workspace")+" in locale "+args.get("locale")+ " with id "+processId);
+        if (logger.isDebugEnabled()) {
+            logger.debug("A workflow " + processKey + " from " + provider + " has been started on nodes: " + nodeIds +
+                    " from workspace " + args.get("workspace") + " in locale " + args.get("locale") + " with id " +
+                    processId);
         }
         return processId;
     }
 
-    public synchronized void addProcessId(JCRNodeWrapper stageNode, String provider, String processId) throws RepositoryException {
+    public synchronized void addProcessId(JCRNodeWrapper stageNode, String provider, String processId)
+            throws RepositoryException {
         stageNode.checkout();
         if (!stageNode.isNodeType("jmix:workflow")) {
             stageNode.addMixin("jmix:workflow");
@@ -465,10 +477,12 @@ public class WorkflowService {
         stageNode.getSession().save();
     }
 
-    public synchronized void removeProcessId(JCRNodeWrapper stageNode, String provider, String processId) throws RepositoryException {
+    public synchronized void removeProcessId(JCRNodeWrapper stageNode, String provider, String processId)
+            throws RepositoryException {
         stageNode.checkout();
-        List<Value> values = new ArrayList<Value>(Arrays.asList(stageNode.getProperty(Constants.PROCESSID).getValues()));
-        Value[] newValues = new Value[values.size()-1];
+        List<Value> values =
+                new ArrayList<Value>(Arrays.asList(stageNode.getProperty(Constants.PROCESSID).getValues()));
+        Value[] newValues = new Value[values.size() - 1];
         int i = 0;
         for (Value value : values) {
             if (!value.getString().equals(provider + ":" + processId)) {
@@ -485,7 +499,7 @@ public class WorkflowService {
             workflowActions.addAll(providerEntry.getValue().getTasksForUser(user));
         }
         Locale displayLocale = locale;
-        if(displayLocale==null) {
+        if (displayLocale == null) {
             displayLocale = UserPreferencesHelper.getPreferredLocale(user);
         }
         for (WorkflowTask workflowAction : workflowActions) {
@@ -497,22 +511,21 @@ public class WorkflowService {
     private void i18nOfWorkflowAction(Locale displayLocale, WorkflowAction workflowAction,
                                       WorkflowDefinition definition) {
         ResourceBundle resourceBundle = getResourceBundle(definition, displayLocale);
-        workflowAction.setDisplayName(resourceBundle.getString(workflowAction.getName().replaceAll(" ",
-                                                                                                   ".").trim().toLowerCase()));
+        workflowAction.setDisplayName(
+                resourceBundle.getString(workflowAction.getName().replaceAll(" ", ".").trim().toLowerCase()));
         if (workflowAction instanceof WorkflowTask) {
             WorkflowTask workflowTask = (WorkflowTask) workflowAction;
             Set<String> outcomes = workflowTask.getOutcomes();
             List<String> displayOutcomes = new LinkedList<String>();
             for (String outcome : outcomes) {
-                String key = workflowAction.getName().replaceAll(" ",
-                                                                     ".").trim().toLowerCase() + "." + outcome.replaceAll(
-                            " ", ".").trim().toLowerCase();
+                String key = workflowAction.getName().replaceAll(" ", ".").trim().toLowerCase() + "." +
+                        outcome.replaceAll(" ", ".").trim().toLowerCase();
                 String s;
                 try {
 
                     s = resourceBundle.getString(key);
                 } catch (Exception e) {
-                    logger.info("Missing ressource : "+key+" in "+resourceBundle);
+                    logger.info("Missing ressource : " + key + " in " + resourceBundle);
                     s = workflowAction.getName();
                 }
                 displayOutcomes.add(s);
@@ -541,8 +554,8 @@ public class WorkflowService {
         lookupProvider(provider).deleteTask(taskId, reason);
     }
 
-    public void addWorkflowRule(final JCRNodeWrapper node, final WorkflowDefinition workflow,
-                                final String task, final String principal) throws RepositoryException {
+    public void addWorkflowRule(final JCRNodeWrapper node, final WorkflowDefinition workflow, final String task,
+                                final String principal) throws RepositoryException {
         // store the rule
         JCRNodeWrapper rules = null;
         try {
@@ -592,9 +605,9 @@ public class WorkflowService {
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<String>() {
             public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 if (session.itemExists("/workflowrules/" + key)) {
-                JCRNodeWrapper rule = session.getNode("/workflowrules/"+key);
-                rule.remove();
-                session.save();
+                    JCRNodeWrapper rule = session.getNode("/workflowrules/" + key);
+                    rule.remove();
+                    session.save();
                 }
                 return null;
             }
@@ -615,7 +628,7 @@ public class WorkflowService {
     }
 
     public void addCommentToTask(String taskId, String provider, String comment) {
-        lookupProvider(provider).addComment(taskId,comment);
+        lookupProvider(provider).addComment(taskId, comment);
     }
 
     public WorkflowTask getWorkflowTask(String taskId, String provider, Locale locale) {
@@ -625,9 +638,9 @@ public class WorkflowService {
             Set<String> outcomes = workflowTask.getOutcomes();
             List<String> displayOutcomes = new LinkedList<String>();
             for (String outcome : outcomes) {
-                String s = resourceBundle.getString(workflowTask.getName().replaceAll(" ",
-                                                                                      ".").trim().toLowerCase() + "." + outcome.replaceAll(
-                        " ", ".").trim().toLowerCase());
+                String s = resourceBundle.getString(
+                        workflowTask.getName().replaceAll(" ", ".").trim().toLowerCase() + "." +
+                                outcome.replaceAll(" ", ".").trim().toLowerCase());
                 displayOutcomes.add(s);
             }
             workflowTask.setDisplayOutcomes(displayOutcomes);
@@ -644,10 +657,11 @@ public class WorkflowService {
      * node. This method also returns "active" (i.e. not completed) workflow
      * process instance.
      *
-     * @param node the JCR node to retrieve history records for
+     * @param node   the JCR node to retrieve history records for
+     * @param locale
      * @return a list of process instance history records for the specified node
      */
-    public List<HistoryWorkflow> getHistoryWorkflows(JCRNodeWrapper node) {
+    public List<HistoryWorkflow> getHistoryWorkflows(JCRNodeWrapper node, Locale locale) {
         List<HistoryWorkflow> history = new LinkedList<HistoryWorkflow>();
         try {
             Value[] values = null;
@@ -674,6 +688,17 @@ public class WorkflowService {
             logger.error(e.getMessage(), e);
         }
 
+        if (locale != null) {
+            for (HistoryWorkflow definition : history) {
+                try {
+                    ResourceBundle resourceBundle = getResourceBundle(definition.getDefinition(), locale);
+                    definition.setDisplayName(resourceBundle.getString("name"));
+                } catch (Exception e) {
+                    definition.setDisplayName(definition.getName());
+                }
+            }
+        }
+
         return history;
     }
 
@@ -682,11 +707,41 @@ public class WorkflowService {
      * This method also returns not completed tasks.
      *
      * @param workflowProcessId the process instance ID
-     * @param providerKey the workflow provider key
+     * @param providerKey       the workflow provider key
+     * @param locale
      * @return a list of history records for workflow tasks
      */
-    public List<HistoryWorkflowTask> getHistoryWorkflowTasks(String workflowProcessId, String providerKey) {
-        return lookupProvider(providerKey).getHistoryWorkflowTasks(workflowProcessId);
+    public List<HistoryWorkflowTask> getHistoryWorkflowTasks(String workflowProcessId, String providerKey,
+                                                             Locale locale) {
+        WorkflowDefinition def = getHistoryWorkflow(workflowProcessId, providerKey).getDefinition();
+        List<HistoryWorkflowTask> list = lookupProvider(providerKey).getHistoryWorkflowTasks(workflowProcessId);
+        if (locale != null) {
+            for (HistoryWorkflowTask task : list) {
+
+                ResourceBundle resourceBundle = getResourceBundle(def, locale);
+                try {
+                    task.setDisplayName(
+                            resourceBundle.getString(task.getName().replaceAll(" ", ".").trim().toLowerCase()));
+                } catch (Exception e) {
+                    task.setDisplayName(task.getName());
+                }
+
+                String outcome = task.getOutcome();
+
+                String key = task.getName().replaceAll(" ", ".").trim().toLowerCase() + "." +
+                        outcome.replaceAll(" ", ".").trim().toLowerCase();
+                String displayOutcome;
+                try {
+                    displayOutcome = resourceBundle.getString(key);
+                } catch (Exception e) {
+                    logger.info("Missing ressource : " + key + " in " + resourceBundle);
+                    displayOutcome = outcome;
+                }
+
+                task.setDisplayOutcome(displayOutcome);
+            }
+        }
+        return list;
     }
 
     protected WorkflowProvider lookupProvider(String key) {
@@ -712,7 +767,7 @@ public class WorkflowService {
                 addActiveWorkflows(workflows, node.getProperty(Constants.PROCESSID), null);
             }
             for (Workflow workflow : workflows) {
-                if(forAction.contains(workflow.getDefinition())) {
+                if (forAction.contains(workflow.getDefinition())) {
                     return true;
                 }
             }
@@ -724,10 +779,10 @@ public class WorkflowService {
 
     public void addWorkflowRule(JCRNodeWrapper node, String wfName, String task, String principal)
             throws RepositoryException {
-        String provider = StringUtils.substringBefore(wfName,":");
-        String wfKey = StringUtils.substringAfter(wfName,":");
+        String provider = StringUtils.substringBefore(wfName, ":");
+        String wfKey = StringUtils.substringAfter(wfName, ":");
         WorkflowDefinition definition = providers.get(provider).getWorkflowDefinitionByKey(wfKey);
-        addWorkflowRule(node,definition,task,principal);
+        addWorkflowRule(node, definition, task, principal);
     }
 
     public Map<String, List<String[]>> getWorkflowRules(JCRNodeWrapper objectNode, Locale locale) {
@@ -736,7 +791,7 @@ public class WorkflowService {
             Map<String, List<String[]>> inheritedPerms = new ListOrderedMap();
 
             recurseonRules(permissions, inheritedPerms, objectNode);
-            for (Map.Entry<String,List<String[]>> s : inheritedPerms.entrySet()) {
+            for (Map.Entry<String, List<String[]>> s : inheritedPerms.entrySet()) {
                 if (permissions.containsKey(s.getKey())) {
                     List<String[]> l = permissions.get(s.getKey());
                     l.addAll(s.getValue());
@@ -752,7 +807,8 @@ public class WorkflowService {
     }
 
 
-    private void recurseonRules(Map<String, List<String[]>> results, Map<String, List<String[]>> inherited, Node n) throws RepositoryException {
+    private void recurseonRules(Map<String, List<String[]>> results, Map<String, List<String[]>> inherited, Node n)
+            throws RepositoryException {
         try {
             Map<String, List<String[]>> current = results;
             List<String> foundTypes = new ArrayList<String>();
@@ -776,8 +832,8 @@ public class WorkflowService {
                             foundTypes.add(wftype);
                         }
                         Map<String, List<String[]>> localResults = new HashMap<String, List<String[]>>();
-                        if(!rule.hasNodes()) {
-                            localResults.put(wfName,new LinkedList<String[]>());
+                        if (!rule.hasNodes()) {
+                            localResults.put(wfName, new LinkedList<String[]>());
                         }
                         NodeIterator aces = rule.getNodes();
                         while (aces.hasNext()) {

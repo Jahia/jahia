@@ -14,7 +14,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="javascript" resources="jquery.min.js"/>
 <template:addResources type="javascript" resources="jquery.juitter.js"/>
-<template:addResources type="css" resources="main.css"/>
+<template:addResources type="css" resources="twitter.css"/>
 
 <script type="text/javascript">
     $(function() {

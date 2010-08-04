@@ -94,12 +94,15 @@
 }
 
 #myContentSearch {
-    width: 600px;
     margin: 0;
     padding: 0;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 12px;
 
+}
+#bodywrapper #myContentSearch ul {
+    margin: 1em 0;
+    padding: 0;
 }
 
 #myContentSearch #mySearch {
@@ -156,12 +159,15 @@
 }
 
 #myContentFeed {
-    width: 600px;
     margin: 0;
     padding: 0;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 12px;
 
+}
+#bodywrapper #myContentFeed ul{
+    margin: 0;
+    padding: 0;
 }
 
 #myContentFeed H2 {
@@ -172,7 +178,7 @@
 }
 
 #myContentFeed UL.nav {
-    margin: 0;
+    margin: 1em 0;
     padding: 0;
 }
 

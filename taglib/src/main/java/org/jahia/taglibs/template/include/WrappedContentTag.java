@@ -65,28 +65,35 @@ public class WrappedContentTag extends ModuleTag implements ParamParent {
     @Override
     protected String getModuleType() throws RepositoryException {
 //        if (!path.startsWith("/")) {
-            return "area";
+        return "area";
 //        } else {
 //            return "absolutearea";
 //        }
     }
 
-    protected void missingResource(RenderContext renderContext, Resource mainResource, Resource resource) throws RepositoryException, IOException {
+    protected void missingResource(RenderContext renderContext, Resource mainResource, Resource resource)
+            throws RepositoryException, IOException {
         node = null;
         try {
             if (renderContext.isEditMode()) {
                 JCRSessionWrapper session = resource.getNode().getSession();
                 if (!path.startsWith("/")) {
                     JCRNodeWrapper nodeWrapper = resource.getNode();
-                    if(!nodeWrapper.isCheckedOut())
-                        nodeWrapper.checkout();
-                    node = nodeWrapper.addNode(path, areaType);
+                    if (!nodeWrapper.isLocked()) {
+                        if (!nodeWrapper.isCheckedOut()) {
+                            nodeWrapper.checkout();
+                        }
+                        node = nodeWrapper.addNode(path, areaType);
+                    }
                 } else {
                     // Absolute area
                     JCRNodeWrapper parent = session.getNode(StringUtils.substringBeforeLast(path, "/"));
-                    if(!parent.isCheckedOut())
-                        parent.checkout();
-                    node = parent.addNode(StringUtils.substringAfterLast(path, "/"), areaType);
+                    if (!parent.isLocked()) {
+                        if (!parent.isCheckedOut()) {
+                            parent.checkout();
+                        }
+                        node = parent.addNode(StringUtils.substringAfterLast(path, "/"), areaType);
+                    }
                 }
                 NodeIterator ni = mainResource.getNode().getNodes();
                 while (ni.hasNext()) {
@@ -98,12 +105,12 @@ public class WrappedContentTag extends ModuleTag implements ParamParent {
         } catch (ConstraintViolationException e) {
             super.missingResource(renderContext, resource);
         } catch (RepositoryException e) {
-            logger.error("Cannot create area",e);
+            logger.error("Cannot create area", e);
         }
     }
 
     protected String getConfiguration() {
-        return  Resource.CONFIGURATION_WRAPPEDCONTENT;
+        return Resource.CONFIGURATION_WRAPPEDCONTENT;
     }
 
     @Override protected boolean canEdit(RenderContext renderContext) {
@@ -151,14 +158,14 @@ public class WrappedContentTag extends ModuleTag implements ParamParent {
             throws RepositoryException, IOException {
 
         if (this.path.startsWith("/")) {
-            RenderContext context = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
+            RenderContext context =
+                    (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
             pageContext.getOut().print("<div jahiatype=\"linkedContentInfo\" linkedNode=\"" +
-                                context.getMainResource().getNode().getIdentifier() + "\"" +
-                                " node=\"" + node.getIdentifier() + "\" type=\"absolute\">");
+                    context.getMainResource().getNode().getIdentifier() + "\"" + " node=\"" + node.getIdentifier() +
+                    "\" type=\"absolute\">");
         }
 
-        super.printModuleStart(type, path,
-                resolvedTemplate,
+        super.printModuleStart(type, path, resolvedTemplate,
                 scriptInfo);    //To change body of overridden methods use File | Settings | File Templates.
     }
 

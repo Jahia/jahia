@@ -205,7 +205,8 @@ public class SettingsBean {
     					Properties props,
     					Resource licenseFile) throws IOException {
         this.pathResolver = pathResolver;
-        this.properties = props;
+        this.properties = new Properties();
+        properties.putAll(props);
         this.licenseFilename = licenseFile.getFile().toString();
         instance = this;
     }

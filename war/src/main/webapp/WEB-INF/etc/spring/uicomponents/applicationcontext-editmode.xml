@@ -571,7 +571,6 @@
                         <ref bean="Toolbar.Item.Paste"/>
                         <ref bean="Toolbar.Item.PasteReference"/>
                         <ref bean="Toolbar.Item.Separator"/>
-                        <ref bean="Toolbar.ItemsGroup.Menu.Image"/>
                     </list>
                 </property>
                 <property name="contextMenu" value="true"/>

@@ -258,6 +258,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return navigation.ls(parentNode, nodeTypes, mimeTypes, filters, fields, retrieveCurrentSession());
     }
 
+    public List<GWTJahiaNode> ls(GWTJahiaNode parentNode, List<String> nodeTypes, List<String> mimeTypes,
+                                 List<String> filters, List<String> fields,boolean checkSubChild) throws GWTJahiaServiceException {
+        return navigation.ls(parentNode, nodeTypes, mimeTypes, filters, fields, retrieveCurrentSession(),checkSubChild);
+    }
+
     public ListLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode parentNode, List<String> nodeTypes, List<String> mimeTypes,
                                                List<String> filters, List<String> fields)
             throws GWTJahiaServiceException {
@@ -284,6 +289,22 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return navigation
                 .retrieveRoot(paths, nodeTypes, mimeTypes, filters, fields, selectedNodes, openPaths, getSite(),
                         retrieveCurrentSession(), getLocale());
+    }
+
+    public List<GWTJahiaNode> getRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes,
+                                      List<String> filters, List<String> fields, List<String> selectedNodes,
+                                      List<String> openPaths,boolean checkSubChild) throws GWTJahiaServiceException {
+        if (openPaths == null || openPaths.size() == 0) {
+            openPaths = getOpenPathsForRepository(paths.toString());
+        }
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("retrieving open paths for " + paths + " :\n" + openPaths);
+        }
+
+        return navigation
+                .retrieveRoot(paths, nodeTypes, mimeTypes, filters, fields, selectedNodes, openPaths, getSite(),
+                        retrieveCurrentSession(), getLocale(),checkSubChild);
     }
 
     public List<GWTJahiaNode> getNodes(List<String> paths, List<String> fields) {

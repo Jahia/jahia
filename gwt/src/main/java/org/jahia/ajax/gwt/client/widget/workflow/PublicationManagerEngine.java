@@ -43,7 +43,7 @@ public class PublicationManagerEngine extends Window {
     private TreeLoader<GWTJahiaNode> loader;
     private TreeStore<GWTJahiaNode> store;
     private TreeGrid<GWTJahiaNode> m_tree;
-    private static String[] STATE_IMAGES = new String[]{"000", "111", "130", "121", "121", "511", "000", "000", "000"};
+    private static String[] STATE_IMAGES = new String[]{"000", "111", "130", "121", "121", "511", "000", "000", "000","521"};
     private List<GWTJahiaLanguage> languages;
     private Map<String, CheckBox> checkboxMap;
     public PublicationManagerEngine(Linker linker, List<GWTJahiaLanguage> result) {
@@ -67,8 +67,8 @@ public class PublicationManagerEngine extends Window {
         getHeader().setIcon(ToolbarIconProvider.getInstance().getIcon("siteRepository"));
 
         // tree component
-        GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(Arrays.asList("/sites"));
-        factory.setNodeTypes(Arrays.asList("jnt:virtualsitesFolder", "jnt:virtualsite", "jnt:page"));
+        GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(Arrays.asList("/sites"),true);
+        factory.setNodeTypes(Arrays.asList("jnt:virtualsitesFolder", "jnt:virtualsite", "jmix:publication","jmix:worklfowRulesable"));
         factory.setFields(Arrays.asList(GWTJahiaNode.NAME, GWTJahiaNode.DISPLAY_NAME, GWTJahiaNode.PUBLICATION_INFOS,
                                         GWTJahiaNode.WORKFLOW_INFOS));
         factory.setSelectedPath(linker.getMainNode().getPath());

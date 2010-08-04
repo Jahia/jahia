@@ -114,6 +114,12 @@ public class NavigationHelper {
     public List<GWTJahiaNode> ls(GWTJahiaNode gwtParentNode, List<String> nodeTypes, List<String> mimeTypes,
                                  List<String> nameFilters, List<String> fields, JCRSessionWrapper currentUserSession)
             throws GWTJahiaServiceException {
+        return ls(gwtParentNode, nodeTypes, mimeTypes, nameFilters, fields, currentUserSession,false);
+    }
+
+    public List<GWTJahiaNode> ls(GWTJahiaNode gwtParentNode, List<String> nodeTypes, List<String> mimeTypes,
+                                 List<String> nameFilters, List<String> fields, JCRSessionWrapper currentUserSession, boolean checkSubChild)
+            throws GWTJahiaServiceException {
         JCRNodeWrapper node = null;
         try {
             node = currentUserSession.getNode(gwtParentNode != null ? gwtParentNode.getPath() : "/");
@@ -132,59 +138,67 @@ public class NavigationHelper {
                     new StringBuilder("User ").append(currentUserSession.getUser().getUsername())
                             .append(" has no read access to ").append(node.getName()).toString());
         }
+        final List<GWTJahiaNode> gwtNodeChildren = new ArrayList<GWTJahiaNode>();
         try {
-            final NodeIterator nodesIterator = node.getNodes();
-
-            boolean hasOrderableChildren = node.getPrimaryNodeType().hasOrderableChildNodes();
-
-            if (nodesIterator == null) {
-                throw new GWTJahiaServiceException("Children list is null");
-            }
-
-            final List<GWTJahiaNode> gwtNodeChildren = new ArrayList<GWTJahiaNode>();
-
-            int i = 1;
-            while (nodesIterator.hasNext()) {
-                JCRNodeWrapper childNode = (JCRNodeWrapper) nodesIterator.nextNode();
-                if (logger.isDebugEnabled()) {
-                    logger.debug(new StringBuilder("processing ").append(childNode.getPath()).toString());
-                }
-
-                // in case of a folder, it allows to know if the node is selectable
-                boolean matchVisibilityFilter = childNode.isVisible();
-                boolean matchNodeType = matchesNodeType(childNode, nodeTypes);
-                if (logger.isDebugEnabled()) {
-                    logger.debug("----------");
-                    for (String s : nodeTypes) {
-                        logger.debug(
-                                "Node " + childNode.getPath() + " match with " + s + "? " + childNode.isNodeType(s) +
-                                        "[" + matchNodeType + "]");
-                    }
-                    logger.debug("----------");
-                }
-                boolean mimeTypeFilter = matchesMimeTypeFilters(childNode, mimeTypes);
-                boolean nameFilter = matchesFilters(childNode.getName(), nameFilters);
-                boolean hasNodes = false;
-                try {
-                    hasNodes = childNode.getNodes().hasNext();
-                } catch (RepositoryException e) {
-                    logger.error(e, e);
-                }
-                // collection condition is available only if the parent node is not a nt:query. Else, the node has to match the node type condition
-                if (matchVisibilityFilter && matchNodeType && (mimeTypeFilter || hasNodes) && nameFilter) {
-                    GWTJahiaNode gwtChildNode = getGWTJahiaNode(childNode, fields);
-                    gwtChildNode.setMatchFilters(matchNodeType && mimeTypeFilter);
-                    if (hasOrderableChildren) {
-                        gwtChildNode.set("index", new Integer(i++));
-                    }
-                    gwtNodeChildren.add(gwtChildNode);
-                }
-            }
+            getMatchingChilds(nodeTypes, mimeTypes, nameFilters, fields, node, gwtNodeChildren,checkSubChild);
 
             return gwtNodeChildren;
         } catch (RepositoryException e) {
             logger.error(e, e);
             throw new GWTJahiaServiceException(e.getMessage());
+        }
+    }
+
+    private void getMatchingChilds(List<String> nodeTypes, List<String> mimeTypes, List<String> nameFilters,
+                                   List<String> fields, JCRNodeWrapper node, List<GWTJahiaNode> gwtNodeChildren,
+                                   boolean checkSubChild)
+            throws RepositoryException, GWTJahiaServiceException {
+        final NodeIterator nodesIterator = node.getNodes();
+
+        boolean hasOrderableChildren = node.getPrimaryNodeType().hasOrderableChildNodes();
+
+        if (nodesIterator == null) {
+            throw new GWTJahiaServiceException("Children list is null");
+        }
+
+        int i = 1;
+        while (nodesIterator.hasNext()) {
+            JCRNodeWrapper childNode = (JCRNodeWrapper) nodesIterator.nextNode();
+            if (logger.isDebugEnabled()) {
+                logger.debug(new StringBuilder("processing ").append(childNode.getPath()).toString());
+            }
+
+            // in case of a folder, it allows to know if the node is selectable
+            boolean matchVisibilityFilter = childNode.isVisible();
+            boolean matchNodeType = matchesNodeType(childNode, nodeTypes);
+            if (logger.isDebugEnabled()) {
+                logger.debug("----------");
+                for (String s : nodeTypes) {
+                    logger.debug(
+                            "Node " + childNode.getPath() + " match with " + s + "? " + childNode.isNodeType(s) +
+                                    "[" + matchNodeType + "]");
+                }
+                logger.debug("----------");
+            }
+            boolean mimeTypeFilter = matchesMimeTypeFilters(childNode, mimeTypes);
+            boolean nameFilter = matchesFilters(childNode.getName(), nameFilters);
+            boolean hasNodes = false;
+            try {
+                hasNodes = childNode.getNodes().hasNext();
+            } catch (RepositoryException e) {
+                logger.error(e, e);
+            }
+            // collection condition is available only if the parent node is not a nt:query. Else, the node has to match the node type condition
+            if (matchVisibilityFilter && matchNodeType && (mimeTypeFilter || hasNodes) && nameFilter) {
+                GWTJahiaNode gwtChildNode = getGWTJahiaNode(childNode, fields);
+                gwtChildNode.setMatchFilters(matchNodeType && mimeTypeFilter);
+                if (hasOrderableChildren) {
+                    gwtChildNode.set("index", new Integer(i++));
+                }
+                gwtNodeChildren.add(gwtChildNode);
+            } else if(checkSubChild && childNode.hasNodes()) {
+                getMatchingChilds(nodeTypes, mimeTypes, nameFilters, fields, childNode, gwtNodeChildren, checkSubChild);
+            }
         }
     }
 
@@ -251,6 +265,12 @@ public class NavigationHelper {
                                            List<String> filters, List<String> fields, List<String> selectedNodes,
                                            List<String> openPaths, JCRSiteNode site,
                                            JCRSessionWrapper currentUserSession, Locale uiLocale) throws GWTJahiaServiceException {
+        return retrieveRoot(paths, nodeTypes, mimeTypes, filters, fields, selectedNodes, openPaths, site, currentUserSession, uiLocale, false);
+    }
+    public List<GWTJahiaNode> retrieveRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes,
+                                           List<String> filters, List<String> fields, List<String> selectedNodes,
+                                           List<String> openPaths, JCRSiteNode site,
+                                           JCRSessionWrapper currentUserSession, Locale uiLocale,boolean checkSubChild) throws GWTJahiaServiceException {
         List<GWTJahiaNode> userNodes = new ArrayList<GWTJahiaNode>();
         //todo replace useless reporitorykey by list of pathes
         logger.debug("open paths for getRoot : " + openPaths);
@@ -311,7 +331,7 @@ public class NavigationHelper {
                         if (openPath.startsWith(node.getPath()) && !node.isExpandOnLoad() && !node.isFile()) {
                             node.setExpandOnLoad(true);
                             List<GWTJahiaNode> list =
-                                    ls(node, nodeTypes, mimeTypes, filters, fields, currentUserSession);
+                                    ls(node, nodeTypes, mimeTypes, filters, fields, currentUserSession,checkSubChild);
                             for (int j = 0; j < list.size(); j++) {
                                 node.insert(list.get(j), j);
                                 allNodes.add(list.get(j));

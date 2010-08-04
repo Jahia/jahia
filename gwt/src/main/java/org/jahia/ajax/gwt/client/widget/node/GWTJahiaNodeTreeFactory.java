@@ -42,6 +42,7 @@ public class GWTJahiaNodeTreeFactory {
     protected boolean saveOpenPath = false;
     protected GWTJahiaNodeTreeLoader loader;
     protected TreeStore<GWTJahiaNode> store;
+    private boolean checkSubchilds = false;
 
     public GWTJahiaNodeTreeFactory(final List<String> paths) {
         this(paths, GWTJahiaNode.DEFAULT_FIELDS);
@@ -51,6 +52,11 @@ public class GWTJahiaNodeTreeFactory {
         this.paths = paths;
         this.fields = fields;
         this.repository = paths.toString();
+    }
+
+    public GWTJahiaNodeTreeFactory(final List<String> paths, boolean checkSubchilds) {
+        this(paths);
+        this.checkSubchilds = checkSubchilds;
     }
 
     public GWTJahiaNodeTreeLoader getLoader() {
@@ -244,7 +250,7 @@ public class GWTJahiaNodeTreeFactory {
         protected void load(Object currentPage, final AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
             if (currentPage == null) {
                 JahiaContentManagementService.App.getInstance()
-                        .getRoot(paths, nodeTypes, mimeTypes, filters, fields, selectedPath, openPath,
+                        .getRoot(paths, nodeTypes, mimeTypes, filters, fields, selectedPath, openPath,checkSubchilds,
                                 listAsyncCallback);
             } else {
                 GWTJahiaNode gwtJahiaNode = (GWTJahiaNode) currentPage;
@@ -256,7 +262,7 @@ public class GWTJahiaNodeTreeFactory {
                     listAsyncCallback.onSuccess(list);
                 } else {
                     JahiaContentManagementService.App.getInstance()
-                            .ls(gwtJahiaNode, nodeTypes, mimeTypes, filters, fields,
+                            .ls(gwtJahiaNode, nodeTypes, mimeTypes, filters, fields, checkSubchilds,
                                     new BaseAsyncCallback<List<GWTJahiaNode>>() {
                                         public void onSuccess(List<GWTJahiaNode> result) {
                                             listAsyncCallback.onSuccess(result);

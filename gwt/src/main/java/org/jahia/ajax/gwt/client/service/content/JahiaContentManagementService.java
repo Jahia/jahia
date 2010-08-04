@@ -313,7 +313,13 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
     List<String> getGoogleDocsExportFormats(String nodeIdentifier) throws GWTJahiaServiceException;
     
     void synchronizeWithGoogleDocs(String nodeIdentifier) throws GWTJahiaServiceException;
-    
+
+    List<GWTJahiaNode> ls(GWTJahiaNode folder, List<String> nodeTypes, List<String> mimeTypes, List<String> filters,
+                          List<String> fields, boolean checkSubChild) throws GWTJahiaServiceException;
+
+    List<GWTJahiaNode> getRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes, List<String> filters,
+                               List<String> fields, List<String> selectedNodes, List<String> openPaths, boolean checkSubChild) throws GWTJahiaServiceException;
+
 // -------------------------- INNER CLASSES --------------------------
 
     public static class App {

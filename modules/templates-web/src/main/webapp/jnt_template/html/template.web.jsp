@@ -1,6 +1,6 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<template:addResources type="css" resources="960.css,01web.css,02mod.css,navigationN1-1.css,navigationN1-2.css,navigationN1-3.css,navigationN2-1.css,navigationN2-2.css"/>
+<template:addResources type="css" resources="960.css,01web.css,02mod.css,navigationN1-1.css,navigationN1-2.css,navigationN1-3.css,navigationN1-4.css,navigationN2-1.css,navigationN2-2.css"/>
 <c:if test="${renderContext.editMode}">
     <template:addResources type="css" resources="edit.css"/>
 </c:if>

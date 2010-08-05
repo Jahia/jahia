@@ -1,0 +1,40 @@
+#bodywrapper #navigationN1-4 ul {
+	clear:right;
+	list-style: none;
+	display:block;
+	text-align: center;
+	float: right;
+	margin:0;	
+	padding:0;
+	font-family:"Calibri","Lucida Unicode",Arial,Verdana,sans-serif;
+	font-size:1em;
+}
+#bodywrapper #navigationN1-4 li {
+	margin: 0 0 0 5px;
+	height: 30px;
+	float: left;
+	text-transform: uppercase;
+	font-weight: bold;
+	padding:0px;
+}
+#bodywrapper #navigationN1-4 li a,
+#bodywrapper #navigationN1-4 li a:link,
+#bodywrapper #navigationN1-4 li a:visited
+{
+	line-height: 30px;
+	padding:0 20px;
+	display: block;
+	color: #999;
+	background:#212121;
+}
+#bodywrapper #navigationN1-4 li a:hover,
+#bodywrapper #navigationN1-4 li a:active {
+	color:#fff;
+	background:#333;
+	text-decoration:none;
+}
+#bodywrapper #navigationN1-4 li.selected a{
+	color:#fff;
+	background:#333;
+}
+

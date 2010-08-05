@@ -1,0 +1,42 @@
+/*shortcuts*/
+
+#bodywrapper div.shortcuts-simple {
+	list-style: none;
+	display:block;
+	text-align: center;
+	float: right;
+	margin:0;
+	font-family:"Calibri","Lucida Unicode",Arial,Verdana,sans-serif;
+	font-size:1em;
+	clear:both
+}
+
+#bodywrapper div.shortcuts-simple a,
+#bodywrapper div.shortcuts-simple a:link,
+#bodywrapper div.shortcuts-simple a:visited {
+	display: block;
+	text-align:center;
+	color: #999;
+	background:#eaeaea;
+	padding:2px 10px;
+}
+
+#bodywrapper div.shortcuts-simple a:hover,
+#bodywrapper div.shortcuts-simple a:active {
+	color:#333;
+	background:#fff;
+}
+
+#bodywrapper .shortcuts-simple ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+#bodywrapper .shortcuts-simple li {
+	margin: 0 0 0 5px;
+	height: 10px;
+	float: left;
+	font-weight: bold;
+	padding:0px;
+}

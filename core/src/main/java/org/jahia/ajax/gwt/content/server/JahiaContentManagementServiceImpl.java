@@ -1074,7 +1074,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 final Locale locale = (Locale) task.getVariables().get("locale");
                 JCRSessionWrapper session = retrieveCurrentSession(locale);
                 JCRNodeWrapper node = session.getNodeByUUID((String) task.getVariables().get("nodeId"));
-                GWTJahiaNode gwtJahiaNode = navigation.getGWTJahiaNode(node, Arrays.asList(GWTJahiaNode.WORKFLOW_INFO));
+                GWTJahiaNode gwtJahiaNode = navigation.getGWTJahiaNode(node, Arrays.asList(GWTJahiaNode.WORKFLOW_INFOS));
                 final GWTJahiaWorkflowHistoryTask t =
                         new GWTJahiaWorkflowHistoryTask(task.getName(), task.getDisplayName(), task.getProcessId(), task.getProvider(),
                                 false, task.getCreateTime(), null, null, null, null);

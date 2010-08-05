@@ -29,7 +29,7 @@ public class EditManager extends ContentPanel {
         borderLayout =  new BorderLayout();
         setLayout(borderLayout);
         setHeaderVisible(false);
-        BorderLayoutData data = new BorderLayoutData(Style.LayoutRegion.WEST, 340);
+        BorderLayoutData data = new BorderLayoutData(Style.LayoutRegion.WEST, 300);
         data.setCollapsible(true);
         data.setSplit(true);
         data.setFloatable(true);

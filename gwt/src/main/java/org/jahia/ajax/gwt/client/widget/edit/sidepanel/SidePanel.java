@@ -54,8 +54,6 @@ public class SidePanel extends ContentPanel {
                 tabItem = new MashupBrowseTabItem(tab);
             } else if (tab.getName().equals("search")) {
                 tabItem = new SearchTabItem(tab);
-            } else if (tab.getName().equals("workflow")) {
-                tabItem = new WorkflowTabItem(tab);
             } else if (tab.getName().equals("categories")) {
                 tabItem = new CategoryBrowseTabItem(tab);
             } else if (tab.getName().equals("lastContent")) {

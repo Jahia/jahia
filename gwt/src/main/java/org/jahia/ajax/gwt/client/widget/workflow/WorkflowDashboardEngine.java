@@ -252,7 +252,7 @@ public class WorkflowDashboardEngine extends Window {
 
                 final GWTJahiaNode node = (GWTJahiaNode) task.get("node");
 
-                for (GWTJahiaWorkflowAction action : node.getWorkflowInfo().getAvailableActions()) {
+                for (GWTJahiaWorkflowAction action : node.getWorkflowInfos().get(task.get("language")).getAvailableActions()) {
                     if (action.getName().equals(task.getName())) {
                         WorkflowActionDialog dialog = new WorkflowActionDialog(node, action);
                         dialog.setWorkflowDashboard(WorkflowDashboardEngine.this);

@@ -39,6 +39,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowAction;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.api.Constants;
@@ -903,6 +904,13 @@ public class NavigationHelper {
                         JCRSessionWrapper localeSession = sessionFactory.getCurrentUserSession(
                                 session.getWorkspace().getName(), locale);
                         GWTJahiaWorkflowInfo info = workflow.getWorkflowInfo(n.getPath(), localeSession, locale);
+
+                        for (GWTJahiaWorkflowAction action : info.getAvailableActions()) {
+                            if (action.getOriginalVariables().containsKey("publicationInfos")) {
+                                action.set("publicationInfos", publication.convert((List<PublicationInfo>) action.getOriginalVariables().get("publicationInfos"), session));
+                            }
+                        }
+
                         infoMap.put(code,info);
                     }
                     n.setWorkflowInfos(infoMap);

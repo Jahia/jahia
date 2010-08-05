@@ -61,67 +61,10 @@ class PublicationStatusWindow extends Window {
         TableData d = new TableData(Style.HorizontalAlignment.CENTER, Style.VerticalAlignment.MIDDLE);
         d.setMargin(5);
 
-        List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
-
-        ColumnConfig column = new ColumnConfig("title", Messages.getResource("label.path"), 450);
-        configs.add(column);
-        column = new ColumnConfig("nodetype", Messages.getResource("label.nodetype"), 150);
-        configs.add(column);
-
-        column = new ColumnConfig("status", Messages.getResource("org.jahia.jcr.publication.currentStatus"), 150);
-        column.setRenderer(new TreeGridCellRenderer<GWTJahiaPublicationInfo>() {
-            @Override
-            public Object render(GWTJahiaPublicationInfo model, String property, ColumnData config, int rowIndex,
-                                 int colIndex, ListStore listStore, Grid grid) {
-                switch (model.getStatus()) {
-                    case GWTJahiaPublicationInfo.NOT_PUBLISHED:
-                        return Messages.getResource("org.jahia.jcr.publication.status_notyetpublished");
-                    case GWTJahiaPublicationInfo.LOCKED:
-                        return Messages.getResource("label.locked");
-                    case GWTJahiaPublicationInfo.PUBLISHED:
-                        return Messages.getResource("label.published");
-                    case GWTJahiaPublicationInfo.MODIFIED:
-                        return Messages.getResource("label.modified");
-                    case GWTJahiaPublicationInfo.UNPUBLISHED:
-                        return "Unpublished";
-                    case GWTJahiaPublicationInfo.CONFLICT:
-                        return "Conflict - cannot publish";
-                }
-                return "";
-            }
-        });
-        configs.add(column);
-
-        column = new ColumnConfig("mainTitle", Messages.get("label.parentObject", "Parent object"), 150);
-        column.setHidden(true);
-        configs.add(column);
         GroupingStore<GWTJahiaPublicationInfo> store = new GroupingStore<GWTJahiaPublicationInfo>();
-
         store.add(infos);
-        store.groupBy("mainTitle");
-        final ColumnModel cm = new ColumnModel(configs);
 
-        final Grid<GWTJahiaPublicationInfo> grid = new Grid<GWTJahiaPublicationInfo>(store, cm);
-        grid.setStripeRows(true);
-        grid.setBorders(true);
-
-        GroupingView view = new GroupingView();
-        view.setShowGroupedColumn(false);
-        view.setForceFit(true);
-        view.setGroupRenderer(new GridGroupRenderer() {
-            public String render(GroupColumnData data) {
-                final ColumnConfig config = cm.getColumnById(data.field);
-                String f = config.getHeader();
-                String l = data.models.size() == 1 ? Messages.get("label.item", "Item") :
-                        Messages.get("label.items", "Items");
-                String v = config.getRenderer() != null ?
-                        config.getRenderer().render(data.models.get(0), null, null, 0, 0, null, null).toString() :
-                        data.group;
-                return v + " (" + data.models.size() + " " + l + ")";
-            }
-        });
-        grid.setView(view);
-
+        final Grid<GWTJahiaPublicationInfo> grid = new PublicationStatusGrid(store);
         add(grid);
 
         cancel = new Button(Messages.getResource("label.cancel"), new SelectionListener<ButtonEvent>() {

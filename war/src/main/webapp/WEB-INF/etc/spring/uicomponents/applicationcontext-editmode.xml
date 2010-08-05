@@ -146,7 +146,6 @@
                 <ref bean="sidePanelTab.categories"/>
                 <ref bean="sidePanelTab.mashups"/>
                 <ref bean="sidePanelTab.search"/>
-                <ref bean="sidePanelTab.workflow"/>
             </list>
         </property>
 
@@ -294,7 +293,6 @@
                 <ref bean="sidePanelTab.categories"/>
                 <ref bean="sidePanelTab.mashups"/>
                 <ref bean="sidePanelTab.search"/>
-                <ref bean="sidePanelTab.workflow"/>
                 <ref bean="sidePanelTab.lastContent"/>
             </list>
         </property>
@@ -643,12 +641,6 @@
             </map>
         </property>
         <property name="visibility" value="$site/selector/search"/>
-    </bean>
-
-    <bean id="sidePanelTab.workflow" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
-        <property name="key" value="workflow"/>
-        <property name="icon" value="tab-workflow"/>
-        <property name="visibility" value="$site/selector/workflow"/>
     </bean>
 
     <bean id="sidePanelTab.lastContent" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">

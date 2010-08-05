@@ -14,6 +14,7 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.PublicationInfo;
 import org.jahia.services.rbac.Role;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaPrincipal;
@@ -95,6 +96,7 @@ public class WorkflowHelper {
                                     }
                                 }
                                 action.setVariables(properties);
+                                action.setOriginalVariables(map);
                                 action.setLocale(map.get("locale").toString());
                                 action.setWorkspace(map.get("workspace").toString());
                                 JahiaPrincipal principal = participation.getJahiaPrincipal();

@@ -36,6 +36,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -49,6 +50,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowAction;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowOutcome;
@@ -60,6 +62,7 @@ import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServic
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServiceAsync;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
+import org.jahia.ajax.gwt.client.widget.edit.PublicationStatusGrid;
 import org.jahia.ajax.gwt.client.widget.workflow.WorkflowDashboardEngine;
 
 import java.util.ArrayList;
@@ -104,6 +107,22 @@ public class WorkflowActionDialog extends Window {
         displayComments(action, dialog, commentsContainer);
 
         commentPanel.add(commentsContainer);
+
+        if ( action.get("publicationInfos") != null) {
+            final ContentPanel publicationStatusPanel = new ContentPanel(new FitLayout());
+            commentPanel.setHeading(Messages.get("label.comments", "Comments"));
+            commentPanel.setBorders(false);
+            commentPanel.setCollapsible(false);
+            commentPanel.setTitleCollapse(false);
+            commentPanel.setScrollMode(Style.Scroll.NONE);
+            GroupingStore<GWTJahiaPublicationInfo> store = new GroupingStore<GWTJahiaPublicationInfo>();
+            store.add((List<GWTJahiaPublicationInfo>) action.get("publicationInfos"));
+            PublicationStatusGrid g = new PublicationStatusGrid(store);
+            publicationStatusPanel.add(g);
+            publicationStatusPanel.setHeight(150);
+            add(publicationStatusPanel);
+        }
+
         // Display add a comment
         FormPanel formPanel = new FormPanel();
         formPanel.setHeaderVisible(false);

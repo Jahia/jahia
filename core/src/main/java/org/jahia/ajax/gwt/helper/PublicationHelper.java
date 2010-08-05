@@ -89,7 +89,7 @@ public class PublicationHelper {
         }
     }
 
-    private List<GWTJahiaPublicationInfo> convert(List<PublicationInfo> pubInfos, JCRSessionWrapper currentUserSession) {
+    public List<GWTJahiaPublicationInfo> convert(List<PublicationInfo> pubInfos, JCRSessionWrapper currentUserSession) {
         List<GWTJahiaPublicationInfo> gwtInfos = new ArrayList<GWTJahiaPublicationInfo>();
         for (PublicationInfo pubInfo : pubInfos) {
             PublicationInfo.PublicationNode node = pubInfo.getRoot();

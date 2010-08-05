@@ -51,6 +51,7 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.importexport.ReferencesHelper;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.*;
 import javax.jcr.lock.Lock;
@@ -2630,39 +2631,74 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                         return false;
                     }
                 }
+                return checkLanguageValidity(null);
             }
         } catch (RepositoryException e) {
             return false;
         }
-        return checkLanguageValidity();
+        return true;
     }
 
-    public boolean checkLanguageValidity() {
+    public boolean checkLanguageValidity(Set<String> languages) {
         final JCRSessionWrapper jcrSessionWrapper = getSession();
         try {
-            if (Constants.LIVE_WORKSPACE.equals(jcrSessionWrapper.getWorkspace().getName())) {
-                if (jcrSessionWrapper.getLocale() != null) {
-                    final boolean translated = objectNode.getNodes("j:translation_*").hasNext();
-                    Node i18n = null;
-                    try {
-                        i18n = getI18N(jcrSessionWrapper.getLocale(), false);
-                    } catch (ItemNotFoundException e) {
-                        if (translated) {
+            Locale locale = jcrSessionWrapper.getLocale();
+            if (locale != null) {
+                final boolean translated = objectNode.getNodes("j:translation_*").hasNext();
+                JCRSiteNode siteNode = resolveSite();
+                if(siteNode==null) {
+                    return checkI18nAndMandatoryPropertiesForLocale(locale, translated);
+                } else {
+                    Set<String> mandatoryLanguages = siteNode.getMandatoryLanguages();
+                    for (String mandatoryLanguage : mandatoryLanguages) {
+                        locale = LanguageCodeConverters.getLocaleFromCode(mandatoryLanguage);
+                        if(!checkI18nAndMandatoryPropertiesForLocale(locale, translated)){
                             return false;
                         }
                     }
-                    for (ExtendedPropertyDefinition def : getPrimaryNodeType().getPropertyDefinitionsAsMap().values()) {
-                        if (def.isInternationalized() && def.isMandatory()) {
-                            if (i18n == null || !i18n.hasProperty(def.getName()+"_"+jcrSessionWrapper.getLocale())) {
-                                return false;
+                }
+            } else if(languages!=null) {
+                final boolean translated = objectNode.getNodes("j:translation_*").hasNext();
+                for (String language : languages) {
+                    locale = LanguageCodeConverters.getLocaleFromCode(language);
+                    if(checkI18nAndMandatoryPropertiesForLocale(locale, translated)) {
+                        JCRSiteNode siteNode = resolveSite();
+                        if(siteNode!=null) {
+                            Set<String> mandatoryLanguages = siteNode.getMandatoryLanguages();
+                            for (String mandatoryLanguage : mandatoryLanguages) {
+                                locale = LanguageCodeConverters.getLocaleFromCode(mandatoryLanguage);
+                                if(!checkI18nAndMandatoryPropertiesForLocale(locale,translated)) {
+                                    return false;
+                                }
                             }
                         }
+                    } else {
+                        return false;
                     }
-
                 }
             }
         } catch (RepositoryException e) {
             return false;
+        }
+        return true;
+    }
+
+    private boolean checkI18nAndMandatoryPropertiesForLocale(Locale locale, boolean translated)
+            throws RepositoryException {
+        Node i18n = null;
+        try {
+            i18n = getI18N(locale, false);
+        } catch (ItemNotFoundException e) {
+            if (translated) {
+                return false;
+            }
+        }
+        for (ExtendedPropertyDefinition def : getPrimaryNodeType().getPropertyDefinitionsAsMap().values()) {
+            if (def.isInternationalized() && def.isMandatory()) {
+                if (i18n == null || !i18n.hasProperty(def.getName() + "_" + locale)) {
+                    return false;
+                }
+            }
         }
         return true;
     }
@@ -2672,7 +2708,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         JCRNodeWrapper current = this;
         try {
             while (true) {
-                if (current.isNodeType("jnt:virtualsite")) {
+                if (current.isNodeType("jnt:virtualsite") && current instanceof JCRSiteNode) {
                     return (JCRSiteNode) current;
                 }
                 current = current.getParent();

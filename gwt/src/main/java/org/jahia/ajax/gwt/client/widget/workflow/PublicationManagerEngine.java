@@ -1,14 +1,16 @@
 package org.jahia.ajax.gwt.client.widget.workflow;
 
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.core.El;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.TreeLoader;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.store.TreeStore;
-import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.ComponentPlugin;
+import com.extjs.gxt.ui.client.widget.Info;
+import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
@@ -43,9 +45,10 @@ public class PublicationManagerEngine extends Window {
     private TreeLoader<GWTJahiaNode> loader;
     private TreeStore<GWTJahiaNode> store;
     private TreeGrid<GWTJahiaNode> m_tree;
-    private static String[] STATE_IMAGES = new String[]{"000", "111", "130", "121", "121", "511", "000", "000", "000","521"};
+    private static String[] STATE_IMAGES = new String[]{"000", "111", "130", "121", "121", "511", "000", "000", "000", "521"};
     private List<GWTJahiaLanguage> languages;
     private Map<String, CheckBox> checkboxMap;
+
     public PublicationManagerEngine(Linker linker, List<GWTJahiaLanguage> result) {
         super();
         this.linker = linker;
@@ -67,8 +70,9 @@ public class PublicationManagerEngine extends Window {
         getHeader().setIcon(ToolbarIconProvider.getInstance().getIcon("siteRepository"));
 
         // tree component
-        GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(Arrays.asList("/sites"),true);
-        factory.setNodeTypes(Arrays.asList("jnt:virtualsitesFolder", "jnt:virtualsite", "jmix:publication","jmix:worklfowRulesable"));
+        GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(Arrays.asList("/sites"), true);
+        factory.setNodeTypes(Arrays.asList("jnt:virtualsitesFolder", "jnt:virtualsite", "jmix:publication",
+                                           "jmix:worklfowRulesable"));
         factory.setFields(Arrays.asList(GWTJahiaNode.NAME, GWTJahiaNode.DISPLAY_NAME, GWTJahiaNode.PUBLICATION_INFOS,
                                         GWTJahiaNode.WORKFLOW_INFOS));
         factory.setSelectedPath(linker.getMainNode().getPath());
@@ -87,7 +91,7 @@ public class PublicationManagerEngine extends Window {
             config.setSortable(false);
             CheckBox checkBox = new CheckBox();
             checkBox.setBoxLabel(language.getDisplayName());
-            checkboxMap.put(language.getLanguage(),checkBox);
+            checkboxMap.put(language.getLanguage(), checkBox);
             config.setWidget(checkBox, language.getLanguage());
             columns.add(config);
         }
@@ -132,7 +136,7 @@ public class PublicationManagerEngine extends Window {
             final ListStore<GWTJahiaNode> store = m_tree.getStore();
             List<GWTJahiaNode> nodes = store.getModels();
             Map<String, GWTJahiaWorkflowDefinition> workflowDefinitionMap = new HashMap<String, GWTJahiaWorkflowDefinition>();
-            Map<String, Map<String, List<String>>> workflowDefinitionMapMap = new HashMap<String, Map<String, List<String>>>();
+            Map<String, Map<String, List<GWTJahiaNode>>> workflowDefinitionMapMap = new HashMap<String, Map<String, List<GWTJahiaNode>>>();
             for (GWTJahiaNode node : nodes) {
                 Record record = store.getRecord(node);
                 for (GWTJahiaLanguage language : languages) {
@@ -145,30 +149,38 @@ public class PublicationManagerEngine extends Window {
                                              "Starting worflow for node " + node.getPath() + " in language " + language.getDisplayName());
                                 final GWTJahiaWorkflowDefinition definition = node.getWorkflowInfos().get(
                                         language.getLanguage()).getPossibleWorkflows().get(0);
-                                Map<String, List<String>> map = workflowDefinitionMapMap.get(definition.getName());
+                                Map<String, List<GWTJahiaNode>> map = workflowDefinitionMapMap.get(
+                                        definition.getName());
                                 if (map == null) {
-                                    map = new HashMap<String, List<String>>();
+                                    map = new HashMap<String, List<GWTJahiaNode>>();
                                     workflowDefinitionMapMap.put(definition.getName(), map);
                                     workflowDefinitionMap.put(definition.getName(), definition);
                                 }
-                                List<String> nodeList = map.get(language.getLanguage());
+                                List<GWTJahiaNode> nodeList = map.get(language.getLanguage());
                                 if (nodeList == null) {
-                                    nodeList = new LinkedList<String>();
+                                    nodeList = new LinkedList<GWTJahiaNode>();
                                     map.put(language.getLanguage(), nodeList);
                                 }
-                                nodeList.add(node.getUUID());
+                                nodeList.add(node);
                             }
                         }
                     }
                 }
             }
             for (String definition : workflowDefinitionMapMap.keySet()) {
-                Map<String, List<String>> map = workflowDefinitionMapMap.get(definition);
+                Map<String, List<GWTJahiaNode>> map = workflowDefinitionMapMap.get(definition);
                 for (String language : map.keySet()) {
-                    WorkflowActionDialog workflowActionDialog = new WorkflowActionDialog(linker.getMainNode(),
+                    List<GWTJahiaNode> gwtJahiaNodes = map.get(language);
+                    List<String> identifiers = new LinkedList<String>();
+                    GWTJahiaNode node = gwtJahiaNodes.get(0);
+                    for (GWTJahiaNode jahiaNode : gwtJahiaNodes) {
+                        identifiers.add(jahiaNode.getUUID());
+                    }
+                    WorkflowActionDialog workflowActionDialog = new WorkflowActionDialog(node,
                                                                                          workflowDefinitionMap.get(
-                                                                                                 definition), map.get(
-                                    language), false, linker, language);
+                                                                                                 definition),
+                                                                                         identifiers, false, linker,
+                                                                                         language);
                     workflowActionDialog.addWindowListener(new WindowListener() {
                         @Override
                         public void windowHide(WindowEvent we) {
@@ -271,7 +283,7 @@ public class PublicationManagerEngine extends Window {
                 } else {
                     boolean value = !((Boolean) r.get(getDataIndex()));
                     r.set(getDataIndex(), value);
-                    if(!value && checkboxMap.get(getDataIndex()).getValue()) {
+                    if (!value && checkboxMap.get(getDataIndex()).getValue()) {
                         checkboxMap.get(getDataIndex()).setValue(Boolean.FALSE);
                     }
                 }

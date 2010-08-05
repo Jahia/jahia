@@ -334,9 +334,15 @@ public class WorkflowHelper {
                                     Locale locale) throws GWTJahiaServiceException {
         try {
             JCRNodeWrapper node = session.getNode(path);
+            if(!node.isCheckedOut()) {
+                session.checkout(node);
+            }
             // If existing remove all unchecked nodes
             if (node.hasNode(WorkflowService.WORKFLOWRULES_NODE_NAME)) {
                 JCRNodeWrapper wfRulesNode = node.getNode(WorkflowService.WORKFLOWRULES_NODE_NAME);
+                if(!wfRulesNode.isCheckedOut()) {
+                    session.checkout(wfRulesNode);
+                }
                 for (GWTJahiaWorkflowDefinition definition : deleted) {
                     final String defKey = definition.getProvider() + "_" + definition.getId();
                     if (wfRulesNode.hasNode(defKey)) {
@@ -365,6 +371,9 @@ public class WorkflowHelper {
                 }
                 try {
                     node = node.getNode(WorkflowService.WORKFLOWRULES_NODE_NAME);
+                    if(!node.isCheckedOut()) {
+                        session.checkout(node);
+                    }
                 } catch (RepositoryException e) {
                     node = node.addNode(WorkflowService.WORKFLOWRULES_NODE_NAME, "jnt:workflowRules");
                 }
@@ -397,6 +406,9 @@ public class WorkflowHelper {
                 final String defKey = workflowDefinition.getProvider() + "_" + workflowDefinition.getId();
                 if (node.hasNode(defKey)) {
                     node = node.getNode(defKey);
+                    if(!node.isCheckedOut()) {
+                        session.checkout(node);
+                    }
                     // So we have our jnt:worklfowRule object let's manage the ACE now.
                     List<GWTJahiaNodeACE> aces = nodeACL.getAce();
                     boolean asLocalAce = false;
@@ -448,6 +460,9 @@ public class WorkflowHelper {
         JCRNodeWrapper aceNode;
         if (node.hasNode(nodeName)) {
             aceNode = node.getNode(nodeName);
+            if(!aceNode.isCheckedOut()) {
+                node.getSession().checkout(aceNode);
+            }
         } else {
             aceNode = node.addNode(nodeName, "jnt:ace");
         }

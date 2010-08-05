@@ -780,8 +780,10 @@ public class JCRPublicationService extends JahiaService {
                 logger.debug("No live node for staging node " + node.getPath());
             }
         }
-
-        if (node.hasProperty("j:published") && !node.getProperty("j:published").getBoolean()) {
+        if(!node.checkLanguageValidity(languages)){
+            info.setStatus(PublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE);
+        }
+        else if (node.hasProperty("j:published") && !node.getProperty("j:published").getBoolean()) {
             info.setStatus(PublicationInfo.UNPUBLISHED);
         } else if (publishedNode == null) {
                 info.setStatus(PublicationInfo.NOT_PUBLISHED);

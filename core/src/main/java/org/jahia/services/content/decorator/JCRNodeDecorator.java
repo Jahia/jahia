@@ -688,8 +688,8 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.checkValidity();
     }
 
-    public boolean checkLanguageValidity() {
-        return node.checkLanguageValidity();
+    public boolean checkLanguageValidity(Set<String> languages) {
+        return node.checkLanguageValidity(null);
     }
 
 

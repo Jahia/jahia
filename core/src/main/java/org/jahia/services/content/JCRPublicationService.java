@@ -817,7 +817,7 @@ public class JCRPublicationService extends JahiaService {
 
         if (includesReferences || includesSubnodes) {
             String lang = null;
-            if (node.isNodeType("jnt:translation")) {
+            if (node.isNodeType(Constants.JAHIANT_TRANSLATION)) {
                 lang = node.getProperty("jcr:language").getString();
             }
 
@@ -826,10 +826,6 @@ public class JCRPublicationService extends JahiaService {
                 while (pi.hasNext()) {
                     Property p = pi.nextProperty();
                     PropertyDefinition definition = p.getDefinition();
-                    if (lang != null && p.getName().endsWith("_" + lang)) {
-                        String name = p.getName().substring(0, p.getName().length() - lang.length() - 1);
-                        definition = ((JCRNodeWrapper) node.getParent()).getApplicablePropertyDefinition(name);
-                    }
                     if (definition!=null &&
                             (definition.getRequiredType() == PropertyType.REFERENCE || definition.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE)
                             && !p.getName().startsWith("jcr:")) {

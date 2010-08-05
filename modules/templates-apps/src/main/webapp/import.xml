@@ -40,7 +40,7 @@
               <row column="2col115" jcr:primaryType="jnt:row">
                 <col2 jcr:primaryType="jnt:contentList">
                   <login jcr:primaryType="jnt:loginForm" j:displayRememberMeButton="false" j:displayLoginButton="false">
-                    <j:translation_en jcr:title_en="Login" jcr:language="en" jcr:primaryType="jnt:translation"/>
+                    <j:translation_en jcr:title="Login" jcr:language="en" jcr:primaryType="jnt:translation"/>
                   </login>
                   <List_x0020_B j:allowedTypes="" jcr:primaryType="jnt:mainResourceArea"/>
                 </col2>
@@ -77,7 +77,7 @@
         </nt_base_jBPM_1-step-publication>
       </workflowrules>
       <home j:displayInMenu="primary" jcr:primaryType="jnt:page" j:templateNode="/templateSets/templates-apps/templates/base/home">
-        <j:translation_en jcr:title_en="Home" jcr:language="en" jcr:primaryType="jnt:translation"/>
+        <j:translation_en jcr:title="Home" jcr:language="en" jcr:primaryType="jnt:translation"/>
         <List_x0020_A jcr:primaryType="jnt:contentList"/>
         <List_x0020_B jcr:primaryType="jnt:contentList"/>
       </home>

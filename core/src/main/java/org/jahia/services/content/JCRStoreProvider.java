@@ -35,7 +35,6 @@ import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.apache.jackrabbit.rmi.server.ServerAdapterFactory;
 import org.apache.jackrabbit.util.ISO9075;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaInitializationException;
@@ -613,11 +612,11 @@ public class JCRStoreProvider {
 
         JCRNodeWrapper jcrNode;
 
-        if (def.getDeclaringNodeType().getName().equals("jnt:translation")) {
+        if (def.getDeclaringNodeType().isNodeType(Constants.JAHIANT_TRANSLATION)) {
             Node parent = prop.getParent();
             String lang = parent.getProperty("jcr:language").getString();
             jcrNode = getNodeWrapper(parent.getParent(), session);
-            String name = StringUtils.substringBefore(prop.getName(), "_" + lang);
+            String name = prop.getName();
             ExtendedPropertyDefinition epd = jcrNode.getApplicablePropertyDefinition(name);
             return new JCRPropertyWrapperImpl(new JCRNodeWrapperImpl(prop.getParent(), null, session, this), prop, session, this, epd, name);
         } else {

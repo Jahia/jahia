@@ -2,6 +2,7 @@ package org.jahia.services.content.interceptor;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -232,7 +233,7 @@ public class URLInterceptor implements PropertyInterceptor, InitializingBean {
         final Map<Long, String> refs = new HashMap<Long, String>();
 
         JCRNodeWrapper parent = property.getParent();
-        if (parent.isNodeType("jnt:translation")) {
+        if (parent.isNodeType(Constants.JAHIANT_TRANSLATION)) {
             parent = parent.getParent();
         }
         if (parent.isNodeType("jmix:referencesInField")) {

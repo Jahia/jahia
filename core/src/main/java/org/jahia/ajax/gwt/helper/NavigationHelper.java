@@ -528,7 +528,7 @@ public class NavigationHelper {
         JCRNodeWrapper parent =
                 refNode.isNodeType("jnt:page") ? refNode : lookUpParentPageNode(refNode);
         String language = null;
-        if (refNode.isNodeType("jnt:translation")) {
+        if (refNode.isNodeType(Constants.JAHIANT_TRANSLATION)) {
             language = refNode.getProperty("jcr:language").getString();
             refNode = refNode.getParent();
         }

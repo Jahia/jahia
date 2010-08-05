@@ -141,6 +141,7 @@
         </property>
         <property name="interceptors">
             <list>
+                <bean class="org.jahia.services.content.interceptor.LastModifiedInterceptor"/>
                 <bean class="org.jahia.services.content.interceptor.URLInterceptor">
 					<constructor-arg ref="org.jahia.services.render.filter.URLTraverser"/>
                 </bean>

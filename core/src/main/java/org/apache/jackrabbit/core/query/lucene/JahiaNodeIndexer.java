@@ -113,6 +113,8 @@ public class JahiaNodeIndexer extends NodeIndexer {
     private static Name siteFolderTypeName = null;
 
     private static final DateField dateType = new DateField();
+    private static final Name MIXIN_TYPES = NameFactoryImpl.getInstance().create(Constants.JCR_NS, "mixinTypes");
+    private static final Name PRIMARY_TYPE = NameFactoryImpl.getInstance().create(Constants.JCR_NS, "primaryType");
 
     /**
      * Creates a new node indexer.
@@ -230,7 +232,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
         return false;
     }
 
-    protected String resolveLanguage(String fieldName) {
+    protected String resolveLanguage() {
         String language = null;
         if (nodeType != null && Constants.JAHIANT_TRANSLATION.equals(nodeType.getName())) {
             try {
@@ -294,7 +296,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
         ExtendedPropertyDefinition propDef = null;
         if (nodeType != null) {
             try {
-                String language = resolveLanguage(fieldName);
+                String language = resolveLanguage();
                 if (language != null) {
                     propDef = findDefinitionForPropertyInNode(nodeType,
                             (NodeState) stateProvider.getItemState(node.getParentId()),
@@ -403,7 +405,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
 
             if (includeInNodeIndex && supportSpellchecking) {
                 String site = resolveSite();
-                String language = resolveLanguage(fieldName);
+                String language = resolveLanguage();
                 StringBuilder fulltextNameBuilder = new StringBuilder(FieldNames.FULLTEXT);
                 if (site != null) {
                     fulltextNameBuilder.append("-").append(site);
@@ -559,14 +561,29 @@ public class JahiaNodeIndexer extends NodeIndexer {
     public Document createDoc() throws RepositoryException {
         Document doc = super.createDoc();
         if (nodeType != null && Constants.JAHIANT_TRANSLATION.equals(nodeType.getName())) {
-            // copy properties from parent into translation node
             doNotUseInExcerpt.clear();
             try {
                 NodeState parentNode = (NodeState) stateProvider.getItemState(node.getParentId());
-                
+
+//                /// Move translation node on its parent place
+//                doc.removeField(FieldNames.UUID);
+//                doc.add(new Field(
+//                    FieldNames.UUID, parentNode.getNodeId().toString(),
+//                    Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
+//
+//                // add direct parent for translation
+//                doc.removeField(FieldNames.PARENT);
+//                doc.add(new Field(
+//                        FieldNames.PARENT, parentNode.getParentId().toString(),
+//                        Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS, Field.TermVector.NO));
+
+                // copy properties from parent into translation node, including node types
                 Set<Name> parentNodePropertyNames = new HashSet<Name>(parentNode.getPropertyNames());
-                parentNodePropertyNames.removeAll(node.getPropertyNames());
-                parentNodePropertyNames.removeAll(((JahiaIndexingConfigurationImpl)indexingConfig).getExcludesFromI18NCopy());                
+                final Set<Name> localNames = new HashSet<Name>(node.getPropertyNames());
+                localNames.remove(PRIMARY_TYPE);
+                localNames.remove(MIXIN_TYPES);
+                parentNodePropertyNames.removeAll(localNames);
+                parentNodePropertyNames.removeAll(((JahiaIndexingConfigurationImpl)indexingConfig).getExcludesFromI18NCopy());
                 
                 for (Name propName : parentNodePropertyNames) {
                     try {

@@ -4,7 +4,7 @@
       <contents jcr:primaryType="jnt:contentList">
         <site_components jcr:primaryType="jnt:contentList">
           <login-to-jahia jcr:primaryType="jnt:loginForm">
-            <j:translation_en jcr:language="en" jcr:title_en="Login to Jahia" jcr:primaryType="jnt:translation" />
+            <j:translation_en jcr:language="en" jcr:title="Login to Jahia" jcr:primaryType="jnt:translation" />
           </login-to-jahia>
         </site_components>
 
@@ -13,7 +13,7 @@
       <mashups jcr:primaryType="jnt:portletList" />
       <themes jcr:primaryType="jnt:folder" />
       <home jcr:mixinTypes="jmix:sitemap jmix:hasDefaultTemplateNode" j:defaultTemplateNode="/templateSets/templates-intranet/templates/base" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" j:templateNode="/templateSets/templates-intranet/templates/base/home" priority="0.5">
-        <j:translation_en jcr:title_en="Home" jcr:language="en" jcr:primaryType="jnt:translation" />
+        <j:translation_en jcr:title="Home" jcr:language="en" jcr:primaryType="jnt:translation" />
         <logo jcr:primaryType="jnt:contentList" />
         <listA jcr:primaryType="jnt:contentList" />
         <listB jcr:primaryType="jnt:contentList" />
@@ -111,7 +111,7 @@
                     <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:mainResourceTemplate="docspace" />
                     <mainResourceDisplay-1 jcr:primaryType="jnt:mainResourceDisplay" j:mainResourceTemplate="updateFile" />
                     <document-history j:skin="skins.box2" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
-                      <j:translation_en j:skin="skins.box2" jcr:language="en" jcr:title_en="Document History" jcr:primaryType="jnt:translation" />
+                      <j:translation_en j:skin="skins.box2" jcr:language="en" jcr:title="Document History" jcr:primaryType="jnt:translation" />
                       <commentable jcr:primaryType="jnt:commentable" j:bindedComponent="/templateSets/templates-intranet/templates/base/docspace/file/wrappercontent/row/col1/mainResourceDisplay" />
                       <commentable-1 jcr:mixinTypes="jmix:renderable" j:template="addcomment" jcr:primaryType="jnt:commentable" j:bindedComponent="/templateSets/templates-intranet/templates/base/docspace/file/wrappercontent/row/col1/mainResourceDisplay" />
                     </document-history>
@@ -120,13 +120,13 @@
 
                     <displayVersion jcr:primaryType="jnt:displayVersion" j:bindedComponent="/templateSets/templates-intranet/templates/base/docspace/file/wrappercontent/row/col1/mainResourceDisplay" />
                     <extras j:skin="skins.box5style2" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
-                      <j:translation_en j:skin="skins.box5style2" jcr:language="en" jcr:title_en="Extras" jcr:primaryType="jnt:translation" />
+                      <j:translation_en j:skin="skins.box5style2" jcr:language="en" jcr:title="Extras" jcr:primaryType="jnt:translation" />
                       <rateable jcr:primaryType="jnt:rateable" j:bindedComponent="/templateSets/templates-intranet/templates/base/docspace/file/wrappercontent/row/col1/mainResourceDisplay" />
                       <tag-this-document jcr:primaryType="jnt:tagging" j:bindedComponent="/templateSets/templates-intranet/templates/base/docspace/file/wrappercontent/row/col1/mainResourceDisplay">
-                        <j:translation_en jcr:title_en="Tag This Document" jcr:language="en" jcr:primaryType="jnt:translation" />
+                        <j:translation_en jcr:title="Tag This Document" jcr:language="en" jcr:primaryType="jnt:translation" />
                       </tag-this-document>
                       <tag-this-document-1 jcr:mixinTypes="jmix:renderable" j:template="addtag" jcr:primaryType="jnt:tagging" j:bindedComponent="/templateSets/templates-intranet/templates/base/docspace/file/wrappercontent/row/col1/mainResourceDisplay">
-                        <j:translation_en jcr:language="en" jcr:title_en="Tag this document" jcr:primaryType="jnt:translation" />
+                        <j:translation_en jcr:language="en" jcr:title="Tag this document" jcr:primaryType="jnt:translation" />
 
                       </tag-this-document-1>
                     </extras>
@@ -161,14 +161,14 @@
             <wrappercontent jcr:primaryType="jnt:contentList">
               <tabs jcr:primaryType="jnt:tabularList">
                 <last-pages jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:title_en="Latest Wiki Pages" jcr:language="en" jcr:primaryType="jnt:translation" />
+                  <j:translation_en jcr:title="Latest Wiki Pages" jcr:language="en" jcr:primaryType="jnt:translation" />
                   <latestContent j:criteria="lastModified" jcr:mixinTypes="jmix:renderable" j:template="linkList" j:type="jnt:wikiPage" j:nbOfResult="20" jcr:primaryType="jnt:latestContent" />
                 </last-pages>
                 <create-new-page jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:language="en" jcr:title_en="Create new page" jcr:primaryType="jnt:translation" />
+                  <j:translation_en jcr:language="en" jcr:title="Create new page" jcr:primaryType="jnt:translation" />
                   <create-a-wiki-page jcr:primaryType="jnt:wikiPageFormCreation">
 
-                    <j:translation_en jcr:language="en" jcr:title_en="Create a wiki page" jcr:primaryType="jnt:translation" />
+                    <j:translation_en jcr:language="en" jcr:title="Create a wiki page" jcr:primaryType="jnt:translation" />
                   </create-a-wiki-page>
                 </create-new-page>
               </tabs>
@@ -180,16 +180,16 @@
 
                     <tabularList jcr:primaryType="jnt:tabularList">
                       <content jcr:primaryType="jnt:contentList">
-                        <j:translation_en jcr:language="en" jcr:title_en="Content" jcr:primaryType="jnt:translation" />
+                        <j:translation_en jcr:language="en" jcr:title="Content" jcr:primaryType="jnt:translation" />
                         <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:mainResourceTemplate="default" />
                       </content>
                       <contribute jcr:primaryType="jnt:contentList">
-                        <j:translation_en jcr:language="en" jcr:title_en="Contribute" jcr:primaryType="jnt:translation" />
+                        <j:translation_en jcr:language="en" jcr:title="Contribute" jcr:primaryType="jnt:translation" />
                         <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:mainResourceTemplate="contribute" />
                       </contribute>
 
                       <history jcr:primaryType="jnt:contentList">
-                        <j:translation_en jcr:title_en="History" jcr:language="en" jcr:primaryType="jnt:translation" />
+                        <j:translation_en jcr:title="History" jcr:language="en" jcr:primaryType="jnt:translation" />
                         <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:mainResourceTemplate="history" />
                       </history>
                     </tabularList>
@@ -220,7 +220,6 @@
 
                   </col1>
                   <col2 jcr:primaryType="jnt:contentList">
-                    <j:translation_en jcr:language="en" jcr:primaryType="jnt:translation" />
                   </col2>
                 </row>
               </wrappercontent>
@@ -231,38 +230,38 @@
             <wrappercontent jcr:primaryType="jnt:contentList">
               <tabularList jcr:primaryType="jnt:tabularList">
                 <my-profile jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:language="en" jcr:title_en="My Profile" jcr:primaryType="jnt:translation" />
+                  <j:translation_en jcr:language="en" jcr:title="My Profile" jcr:primaryType="jnt:translation" />
                   <user-profile jcr:primaryType="jnt:currentUserDisplay" j:userTemplate="myprofile" />
                 </my-profile>
                 <my-content jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:title_en="My Content" jcr:language="en" jcr:primaryType="jnt:translation" />
+                  <j:translation_en jcr:title="My Content" jcr:language="en" jcr:primaryType="jnt:translation" />
                   <currentUserDisplay jcr:primaryType="jnt:currentUserDisplay" j:userTemplate="mycontent" />
 
                 </my-content>
                 <my-docspaces jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:language="en" jcr:title_en="My Docspaces" jcr:primaryType="jnt:translation" />
+                  <j:translation_en jcr:language="en" jcr:title="My Docspaces" jcr:primaryType="jnt:translation" />
                   <currentUserDisplay jcr:primaryType="jnt:currentUserDisplay" j:userTemplate="mydocspaces" />
                 </my-docspaces>
                 <my-tasks jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:title_en="My Tasks" jcr:language="en" jcr:primaryType="jnt:translation" />
+                  <j:translation_en jcr:title="My Tasks" jcr:language="en" jcr:primaryType="jnt:translation" />
                   <currentUserDisplay jcr:primaryType="jnt:currentUserDisplay" j:userTemplate="tasklist" />
                 </my-tasks>
 
                 <my-bookmarks jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:title_en="My Bookmarks" jcr:language="en" jcr:primaryType="jnt:translation" />
+                  <j:translation_en jcr:title="My Bookmarks" jcr:language="en" jcr:primaryType="jnt:translation" />
                   <currentUserDisplay jcr:primaryType="jnt:currentUserDisplay" j:userTemplate="bookmarks" />
                 </my-bookmarks>
                 <my-portal jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:language="en" jcr:title_en="My Portal" jcr:primaryType="jnt:translation" />
+                  <j:translation_en jcr:language="en" jcr:title="My Portal" jcr:primaryType="jnt:translation" />
                   <currentUserDisplay jcr:primaryType="jnt:currentUserDisplay" j:userTemplate="portal" />
                 </my-portal>
                 <my-connections jcr:primaryType="jnt:contentList">
 
-                  <j:translation_en jcr:title_en="My Connections" jcr:language="en" jcr:primaryType="jnt:translation" />
+                  <j:translation_en jcr:title="My Connections" jcr:language="en" jcr:primaryType="jnt:translation" />
                   <currentUserDisplay jcr:primaryType="jnt:currentUserDisplay" j:userTemplate="myconnections" />
                 </my-connections>
                 <my-messages jcr:primaryType="jnt:contentList">
-                  <j:translation_en jcr:title_en="My Messages" jcr:language="en" jcr:primaryType="jnt:translation" />
+                  <j:translation_en jcr:title="My Messages" jcr:language="en" jcr:primaryType="jnt:translation" />
                   <currentUserDisplay jcr:primaryType="jnt:currentUserDisplay" j:userTemplate="mymessages" />
                 </my-messages>
               </tabularList>
@@ -281,7 +280,7 @@
                   <calendar startDateProperty="startDate" endDateProperty="endDate" jcr:primaryType="jnt:calendar" j:bindedComponent="/templateSets/templates-intranet/templates/base/events/wrappercontent/row1/col1/events" />
                   <facets jcr:primaryType="jnt:facets" j:bindedComponent="/templateSets/templates-intranet/templates/base/events/wrappercontent/row1/col1/events">
                     <fieldFacet mincount="1" field="jnt:event;eventsType" jcr:primaryType="jnt:fieldFacet" missing="false" facet="type" offset="0" limit="100">
-                      <j:translation_en jcr:language="en" label_en="Type" jcr:primaryType="jnt:translation" />
+                      <j:translation_en jcr:language="en" label="Type" jcr:primaryType="jnt:translation" />
                     </fieldFacet>
                   </facets>
                 </col2>
@@ -294,12 +293,12 @@
               <row column="2col115" jcr:primaryType="jnt:row">
                 <col1 j:skin="skins.box5style1" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
                   <new-blog templateNode="/templateSets/templates-intranet/templates/base/blog" buttonLabel="create" jcr:primaryType="jnt:pageFormCreation">
-                    <j:translation_en jcr:language="en" jcr:title_en="New Blog" jcr:primaryType="jnt:translation" />
+                    <j:translation_en jcr:language="en" jcr:title="New Blog" jcr:primaryType="jnt:translation" />
                   </new-blog>
                   <topBlog j:subNodesTemplate="blogList" pageSize="10" jcr:mixinTypes="jmix:renderableList" jcr:primaryType="jnt:topBlog" />
 
                   <list jcr:mixinTypes="jmix:renderable" j:template="twoColumns" jcr:primaryType="jnt:contentList">
-                    <j:translation_en jcr:title_en="list" jcr:language="en" jcr:primaryType="jnt:translation" />
+                    <j:translation_en jcr:title="list" jcr:language="en" jcr:primaryType="jnt:translation" />
                     <topBlogContent j:subNodesTemplate="blogList" pageSize="10" jcr:mixinTypes="jmix:renderableList" jcr:primaryType="jnt:topBlogContent" />
                     <topBlogComment j:subNodesTemplate="blogList" pageSize="10" jcr:mixinTypes="jmix:renderableList" jcr:primaryType="jnt:topBlogComment" />
                   </list>
@@ -322,7 +321,7 @@
                   <calendar startDateProperty="jcr:created" endDateProperty="jcr:created" jcr:primaryType="jnt:calendar" j:bindedComponent="/templateSets/templates-intranet/templates/base/blog/wrappercontent/row/col1/blog-content" />
                   <facets jcr:primaryType="jnt:facets" j:bindedComponent="/templateSets/templates-intranet/templates/base/blog/wrappercontent/row/col1/blog-content">
                     <fieldFacet mincount="1" field="jmix:tagged;j:tags" jcr:primaryType="jnt:fieldFacet" missing="false" facet="tags" offset="0" sort="true" limit="100">
-                      <j:translation_en jcr:language="en" label_en="Tags" jcr:primaryType="jnt:translation" />
+                      <j:translation_en jcr:language="en" label="Tags" jcr:primaryType="jnt:translation" />
                     </fieldFacet>
                   </facets>
                 </col2>
@@ -334,7 +333,7 @@
                 <row column="2col115" jcr:primaryType="jnt:row">
                   <col1 j:skin="skins.box5style1" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
                     <edit jcr:primaryType="jnt:blogEntryFormEdition">
-                      <j:translation_en jcr:title_en="Edit" jcr:language="en" jcr:primaryType="jnt:translation" />
+                      <j:translation_en jcr:title="Edit" jcr:language="en" jcr:primaryType="jnt:translation" />
                     </edit>
                   </col1>
 
@@ -351,7 +350,7 @@
                   <col1 j:skin="skins.box6" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
                     <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" />
                     <document-history j:skin="skins.box2" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
-                      <j:translation_en jcr:title_en="Comments" jcr:language="en" jcr:primaryType="jnt:translation" />
+                      <j:translation_en jcr:title="Comments" jcr:language="en" jcr:primaryType="jnt:translation" />
                       <commentable jcr:primaryType="jnt:commentable" j:bindedComponent="/templateSets/templates-intranet/templates/base/blog/blog-content/wrappercontent/row/col1/mainResourceDisplay" />
                       <commentable-1 jcr:mixinTypes="jmix:renderable" j:template="addcomment" jcr:primaryType="jnt:commentable" j:bindedComponent="/templateSets/templates-intranet/templates/base/blog/blog-content/wrappercontent/row/col1/mainResourceDisplay" />
                     </document-history>
@@ -359,7 +358,7 @@
                   <col2 jcr:primaryType="jnt:contentList">
 
                     <back-to-parent-page jcr:primaryType="jnt:backToParentPage">
-                      <j:translation_en jcr:language="en" jcr:title_en="Back to parent page" jcr:primaryType="jnt:translation" />
+                      <j:translation_en jcr:language="en" jcr:title="Back to parent page" jcr:primaryType="jnt:translation" />
                     </back-to-parent-page>
                     <authorDisplay jcr:primaryType="jnt:authorDisplay" j:userTemplate="blog" />
                   </col2>
@@ -384,13 +383,13 @@
         </base>
       </templates>
       <search-results jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" j:templateNode="/templateSets/templates-intranet/templates/base" priority="0.5">
-        <j:translation_en jcr:language="en" jcr:title_en="Search results" jcr:primaryType="jnt:translation" />
+        <j:translation_en jcr:language="en" jcr:title="Search results" jcr:primaryType="jnt:translation" />
         <pagecontent jcr:primaryType="jnt:contentList">
           <row1 column="1col16" jcr:primaryType="jnt:row">
 
             <col1 jcr:primaryType="jnt:contentList">
               <results autoSuggest="true" pageSize="10" jcr:primaryType="jnt:searchResults" autoSuggestHitCount="2" autoSuggestMinimumHitCount="2">
-                <j:translation_en jcr:title_en="Results" jcr:language="en" jcr:primaryType="jnt:translation" />
+                <j:translation_en jcr:title="Results" jcr:language="en" jcr:primaryType="jnt:translation" />
               </results>
             </col1>
             <col2 jcr:primaryType="jnt:contentList" />
@@ -398,7 +397,7 @@
         </pagecontent>
       </search-results>
       <my-profile jcr:primaryType="jnt:page" j:templateNode="/templateSets/templates-intranet/templates/base/my-profile">
-        <j:translation_en jcr:title_en="My Profile" jcr:language="en" jcr:primaryType="jnt:translation" />
+        <j:translation_en jcr:title="My Profile" jcr:language="en" jcr:primaryType="jnt:translation" />
       </my-profile>
 
       <j:acl jcr:primaryType="jnt:acl">

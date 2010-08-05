@@ -18,8 +18,6 @@ The following example creates an index aggregate on nt:file that includes the co
     <i18ncopy>
         <exclude-property>j:tags</exclude-property>    
         <exclude-property>j:locktoken</exclude-property>
-        <exclude-property>j:templateShared</exclude-property>    
-        <exclude-property>j:templateLocked</exclude-property>        
         <exclude-property>jcr:language</exclude-property>        
         <exclude-property>jcr:lastModified</exclude-property>
         <exclude-property>jcr:lastModifiedBy</exclude-property>

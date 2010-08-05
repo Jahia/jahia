@@ -88,12 +88,6 @@ public class LastModifiedListener extends DefaultEventListener {
                             if (propertiesToIgnore.contains(StringUtils.substringAfterLast(path, "/"))) {
                                 continue;
                             }
-                            String p = StringUtils.substringAfterLast(StringUtils.substringBeforeLast("/sites/mySite2/sitewrapper/j:translation_en/j:processId_en","/"),"/");
-                            if (p.startsWith("j:translation_")) {
-                                if (propertiesToIgnore.contains(StringUtils.substringBeforeLast(StringUtils.substringAfterLast(path, "/"),"_"))) {
-                                    continue;
-                                }
-                            }
                         }
                         if (path.startsWith("/jcr:system/")) {
                             continue;

@@ -38,7 +38,6 @@ import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedPropertyType;
 import org.jahia.utils.zip.ZipEntry;
@@ -285,7 +284,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
 
     private void setAttributes(JCRNodeWrapper child, Attributes atts) throws RepositoryException {
         String lang = null;
-        if (child.getPrimaryNodeTypeName().equals("jnt:translation")) {
+        if (child.getPrimaryNodeTypeName().equals(Constants.JAHIANT_TRANSLATION)) {
             lang = atts.getValue(Constants.JCR_LANGUAGE);
             child.setProperty(Constants.JCR_LANGUAGE, lang);
         }

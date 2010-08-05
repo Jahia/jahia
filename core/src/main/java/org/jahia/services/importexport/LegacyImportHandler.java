@@ -358,7 +358,7 @@ public class LegacyImportHandler extends DefaultHandler {
         Node translation = subPage.getOrCreateI18N(locale);
 
         if (title != null && title.length() > 0) {
-            translation.setProperty("jcr:title_" + locale.toString(), title);
+            translation.setProperty("jcr:title", title);
         }
     }
 
@@ -376,7 +376,7 @@ public class LegacyImportHandler extends DefaultHandler {
 
         Node translation = sub.getOrCreateI18N(locale);
         if (title != null && title.length() > 0) {
-            translation.setProperty("jcr:title_" + locale.toString(), title);
+            translation.setProperty("jcr:title", title);
         }
     }
 
@@ -399,7 +399,7 @@ public class LegacyImportHandler extends DefaultHandler {
 
         Node translation = sub.getOrCreateI18N(locale);
         if (title != null && title.length() > 0) {
-            translation.setProperty("jcr:title_" + locale.toString(), title);
+            translation.setProperty("jcr:title", title);
         }
 
         sub.setProperty("jcr:title", title);
@@ -668,7 +668,7 @@ public class LegacyImportHandler extends DefaultHandler {
 
                 Node translation = sub.getOrCreateI18N(locale);
                 if (title != null && title.length() > 0) {
-                    translation.setProperty("jcr:title_" + locale.toString(), title);
+                    translation.setProperty("jcr:title", title);
                 }
 
                 sub.setProperty("jcr:title", title);
@@ -693,7 +693,7 @@ public class LegacyImportHandler extends DefaultHandler {
 
                 Node translation = sub.getOrCreateI18N(locale);
                 if (title != null && title.length() > 0) {
-                    translation.setProperty("jcr:title_" + locale.toString(), title);
+                    translation.setProperty("jcr:title", title);
                 }
 
                 sub.setProperty("j:url", value);
@@ -747,7 +747,7 @@ public class LegacyImportHandler extends DefaultHandler {
         Node n = parent;
         if (propertyDefinition.isInternationalized()) {
             n = parent.getOrCreateI18N(locale);
-            propertyName = propertyName + "_" + locale.toString();
+//            propertyName = propertyName + "_" + locale.toString();
         }
         // System.out.println("setting " + propertyName);
 

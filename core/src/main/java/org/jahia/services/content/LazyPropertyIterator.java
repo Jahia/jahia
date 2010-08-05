@@ -97,10 +97,12 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
                 do {
                     Property property = getI18NPropertyIterator().nextProperty();
                     final String name = property.getName();
-                    if (name.endsWith("_" + fallbackLocale)) {
-                        final String name1 = property.getName();
-                        final String s = name1.substring(0, name1.length() - fallbackLocale.length() - 1);
-                        return new JCRPropertyWrapperImpl(node, property, node.getSession(), node.getProvider(), node.getApplicablePropertyDefinition(s), s);
+                    try {
+                        final ExtendedPropertyDefinition def = node.getApplicablePropertyDefinition(name);
+                        if (def.isInternationalized()) {
+                            return new JCRPropertyWrapperImpl(node, property, node.getSession(), node.getProvider(), def, name);
+                        }
+                    } catch (ConstraintViolationException e) {
                     }
                 } while (true);
             }
@@ -141,11 +143,13 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
                 do {
                     Property property = getI18NPropertyIterator().nextProperty();
                     final String name = property.getName();
-                    if (name.endsWith("_" + fallbackLocale)) {
-                        final String name1 = property.getName();
-                        final String s = name1.substring(0, name1.length() - fallbackLocale.length() - 1);
-                        tempNext = new JCRPropertyWrapperImpl(node, property, node.getSession(), node.getProvider(), node.getApplicablePropertyDefinition(s), s);
-                        return true;
+                    try {
+                        final ExtendedPropertyDefinition def = node.getApplicablePropertyDefinition(name);
+                        if (def.isInternationalized()) {
+                            tempNext = new JCRPropertyWrapperImpl(node, property, node.getSession(), node.getProvider(), def, name);
+                            return true;
+                        }
+                    } catch (ConstraintViolationException e) {
                     }
                 } while (true);
             }

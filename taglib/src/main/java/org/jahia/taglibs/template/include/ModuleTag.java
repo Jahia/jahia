@@ -34,6 +34,7 @@ package org.jahia.taglibs.template.include;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
+import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -171,7 +172,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 try {
                     Set<String> cons = node.getPrimaryNodeType().getUnstructuredChildNodeDefinitions().keySet();
                     for (String s : cons) {
-                        if (!s.equals("jnt:translation")) {
+                        if (!s.equals(Constants.JAHIANT_TRANSLATION)) {
                             constraints = (StringUtils.isEmpty(constraints)) ? s : constraints + " " + s;
                         }
                     }

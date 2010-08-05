@@ -328,14 +328,14 @@ public class JCRCategoryProvider {
             Node categoryNode = session.getNodeByUUID(category
                     .getJahiaCategory().getId());
             for (NodeIterator it = categoryNode
-                    .getNodes("j:translation"); it.hasNext();) {
+                    .getNodes("j:translation*"); it.hasNext();) {
                 Node subNode = (Node) it.next();
                 String languageCode = subNode.getProperty(
                         Constants.JCR_LANGUAGE).getString();
                 String title = null;
                 try {
                     title = subNode.getProperty(
-                            Constants.JCR_TITLE + "_" + languageCode)
+                            Constants.JCR_TITLE)
                             .getString();
                 } catch (PathNotFoundException ex) {
                     logger.debug(ex.getMessage(), ex);

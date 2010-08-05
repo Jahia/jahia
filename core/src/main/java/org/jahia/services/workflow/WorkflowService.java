@@ -347,10 +347,10 @@ public class WorkflowService {
                 while (ni.hasNext()) {
                     Node n = ((JCRNodeWrapper) ni.next()).getRealNode();
                     final String lang = n.getProperty("jcr:language").getString();
-                    if (n.hasProperty(Constants.PROCESSID + "_" + lang)) {
+                    if (n.hasProperty(Constants.PROCESSID)) {
                         List<Workflow> l = new ArrayList<Workflow>();
                         workflowsByLocale.put(LanguageCodeConverters.getLocaleFromCode(lang), l);
-                        addActiveWorkflows(l, n.getProperty(Constants.PROCESSID + "_" + lang), null);
+                        addActiveWorkflows(l, n.getProperty(Constants.PROCESSID), null);
                     }
                 }
             }

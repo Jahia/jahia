@@ -406,9 +406,7 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
             fieldName = fieldName.substring(0, idx + 1)
                     + (epd != null && epd.isFacetable() ? JahiaNodeIndexer.FACET_PREFIX
                             : FieldNames.FULLTEXT_PREFIX)
-                    + fieldName.substring(idx + 1)
-                    + (epd.isInternationalized() && !StringUtils.isEmpty(langCode) ? "_" + langCode
-                            : "");
+                    + fieldName.substring(idx + 1);
         } catch (RepositoryException e) {
             // will never happen
         }

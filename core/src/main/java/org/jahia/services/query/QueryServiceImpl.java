@@ -110,7 +110,7 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
  * The default implementation of Jahia's QueryService.
  * 
  * Jahia's query service is based on the JCR QueryObjectModelFactory and thus supports all kinds of
- * complex queries specified in JSR-283 (Content Repository for Java™ Technology API 2.0)
+ * complex queries specified in JSR-283 (Content Repository for Javaï¿½ Technology API 2.0)
  * 
  * Queries can be created with the API by using the QueryObjectModel.
  * Jahia will also provide a query builder user interface.
@@ -916,7 +916,6 @@ public class QueryServiceImpl extends QueryService {
                         if (translationSelector != null) {
                             String translationSelectorName = translationSelector.getSelectorName();
                             if (propDef != null && propDef.isInternationalized()) {
-                                propertyName = propertyName + "_" + languageCodes.get(0);
                                 if (node instanceof Column) {
                                     String columnName = ((Column) node).getColumnName();
                                     if (StringUtils.startsWith(columnName, "rep:facet(")

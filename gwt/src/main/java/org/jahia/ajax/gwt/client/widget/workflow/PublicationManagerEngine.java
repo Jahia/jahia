@@ -1,6 +1,7 @@
 package org.jahia.ajax.gwt.client.widget.workflow;
 
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.core.El;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.TreeLoader;
 import com.extjs.gxt.ui.client.event.*;
@@ -18,6 +19,7 @@ import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
+import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -45,7 +47,18 @@ public class PublicationManagerEngine extends Window {
     private TreeLoader<GWTJahiaNode> loader;
     private TreeStore<GWTJahiaNode> store;
     private TreeGrid<GWTJahiaNode> m_tree;
-    private static String[] STATE_IMAGES = new String[]{"000", "111", "130", "121", "121", "511", "000", "000", "000", "521"};
+    public static Map<Integer,String> statusToLabel = new HashMap<Integer, String>();
+    static {
+        statusToLabel.put(GWTJahiaPublicationInfo.PUBLISHED,"published");
+        statusToLabel.put(GWTJahiaPublicationInfo.LOCKED,"locked");
+        statusToLabel.put(GWTJahiaPublicationInfo.MODIFIED,"modified");
+        statusToLabel.put(GWTJahiaPublicationInfo.NOT_PUBLISHED,"notpublished");
+        statusToLabel.put(GWTJahiaPublicationInfo.UNPUBLISHED,"unpublished");
+        statusToLabel.put(GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE,"mandatorylanguageunpublishable");
+        statusToLabel.put(GWTJahiaPublicationInfo.LIVE_MODIFIED,"livemodified");
+        statusToLabel.put(GWTJahiaPublicationInfo.LIVE_ONLY,"liveonly");
+        statusToLabel.put(GWTJahiaPublicationInfo.CONFLICT,"conflict");
+    }
     private List<GWTJahiaLanguage> languages;
     private Map<String, CheckBox> checkboxMap;
 
@@ -227,12 +240,13 @@ public class PublicationManagerEngine extends Window {
                                   ListStore<ModelData> store) {
             GWTJahiaNode node = (GWTJahiaNode) model;
             int state = getState(node);
+            if(state==0) return "";
             //String title = Messages.get("fm_column_publication_info_" + state, String.valueOf(state));
             StringBuilder builder = new StringBuilder().append("<div class='x-grid3-check-col").append(
                     " x-grid3-check-col").append(getCheckState(node, state)).append(" x-grid3-cc-").append(
                     getId() + "-" + config.name).append("'>").append("<img src=\"").append(
                     JahiaGWTParameters.getContextPath()).append("/gwt/resources/images/workflow/").append(
-                    STATE_IMAGES[state]).append(".png\" height=\"12\" width=\"12\" title=\"").append(
+                    statusToLabel.get(state)).append(".png\" height=\"12\" width=\"12\" title=\"").append(
                     "\" alt=\"").append("\"/>").append("</div>");
             return builder.toString();
         }

@@ -20,6 +20,7 @@ public class GWTJahiaPublicationInfo extends BaseModel implements Serializable {
     public static final int MODIFIED = 3;
     public static final int NOT_PUBLISHED = 4;
     public static final int UNPUBLISHED = 5;
+    public static final int MANDATORY_LANGUAGE_UNPUBLISHABLE = 6;
     public static final int LIVE_MODIFIED = 7;
     public static final int LIVE_ONLY = 8;
     public static final int CONFLICT = 9;

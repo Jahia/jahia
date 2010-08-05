@@ -23,6 +23,7 @@ import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.form.CalendarField;
+import org.jahia.ajax.gwt.client.widget.workflow.PublicationManagerEngine;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,8 +39,6 @@ import java.util.List;
 public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
     private List<GWTColumn> columnList;
     private String autoExpand;
-
-    private static String[] STATE_IMAGES = new String[]{"000", "111", "130", "121", "121", "511", "000", "000", "000","521"};
 
     private transient final GridCellRenderer<GWTJahiaNode> ICON_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
         public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1,
@@ -90,7 +89,7 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
                                      ListStore<GWTJahiaNode> store, Grid<GWTJahiaNode> grid) {
                     int state = node.getPublicationInfo() != null ? node.getPublicationInfo().getStatus() : 0;
                     String title = Messages.get("fm_column_publication_info_" + state, String.valueOf(state));
-                    return "<img src=\"../gwt/resources/images/workflow/" + STATE_IMAGES[state] +
+                    return "<img src=\"../gwt/resources/images/workflow/" + PublicationManagerEngine.statusToLabel.get(state) +
                             ".png\" height=\"12\" width=\"12\" title=\"" + title + "\" alt=\"" + title + "\"/>";
                 }
             };

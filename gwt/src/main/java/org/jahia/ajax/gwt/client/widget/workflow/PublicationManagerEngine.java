@@ -8,10 +8,7 @@ import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.store.TreeStore;
-import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.ComponentPlugin;
-import com.extjs.gxt.ui.client.widget.Info;
-import com.extjs.gxt.ui.client.widget.Window;
+import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
@@ -19,7 +16,9 @@ import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
+import com.extjs.gxt.ui.client.widget.treegrid.WidgetTreeGridCellRenderer;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Widget;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -123,7 +122,7 @@ public class PublicationManagerEngine extends Window {
         m_tree.setIconProvider(ContentModelIconProvider.getInstance());
         m_tree.setAutoExpand(false);
         m_tree.setAutoExpandColumn("displayName");
-        m_tree.setBorders(false);
+        m_tree.setBorders(true);
 
         setScrollMode(Style.Scroll.AUTO);
         add(m_tree);
@@ -222,6 +221,12 @@ public class PublicationManagerEngine extends Window {
          */
         public PublicationCheckColumnConfig(String id, String name, int width) {
             super(id, name, width);
+            setRenderer(new GridCellRenderer<ModelData>() {
+                public Object render(ModelData model, String property, ColumnData config, int rowIndex, int colIndex,
+                                     ListStore<ModelData> listStore, Grid<ModelData> grid) {
+                    return renderHTML(model,property, config, rowIndex, colIndex, listStore);
+                }
+            });
         }
 
         /**
@@ -235,20 +240,23 @@ public class PublicationManagerEngine extends Window {
          * @param store    the list store
          * @return the rendered HTML
          */
-        @Override
-        protected String onRender(ModelData model, String property, ColumnData config, int rowIndex, int colIndex,
+        protected Object renderHTML(ModelData model, String property, ColumnData config, int rowIndex, int colIndex,
                                   ListStore<ModelData> store) {
             GWTJahiaNode node = (GWTJahiaNode) model;
             int state = getState(node);
             if(state==0) return "";
             //String title = Messages.get("fm_column_publication_info_" + state, String.valueOf(state));
+            final String label = statusToLabel.get(state);
+            final String title = Messages.getNotEmptyResource("label.publication." + label, label);
             StringBuilder builder = new StringBuilder().append("<div class='x-grid3-check-col").append(
                     " x-grid3-check-col").append(getCheckState(node, state)).append(" x-grid3-cc-").append(
                     getId() + "-" + config.name).append("'>").append("<img src=\"").append(
                     JahiaGWTParameters.getContextPath()).append("/gwt/resources/images/workflow/").append(
-                    statusToLabel.get(state)).append(".png\" height=\"12\" width=\"12\" title=\"").append(
+                    label).append(".png\" height=\"12\" width=\"12\" title=\"").append(
                     "\" alt=\"").append("\"/>").append("</div>");
-            return builder.toString();
+            Html html = new Html(builder.toString());
+            html.setToolTip(title);
+            return html;
         }
 
         private int getState(GWTJahiaNode node) {

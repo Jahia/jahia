@@ -1,5 +1,8 @@
+#bodywrapper #navigationN1-4 {
+	clear:both;
+}
 #bodywrapper #navigationN1-4 ul {
-	clear:right;
+	clear:both;
 	list-style: none;
 	display:block;
 	text-align: center;
@@ -25,16 +28,16 @@
 	padding:0 20px;
 	display: block;
 	color: #999;
-	background:#212121;
+	background:#eaeaea;
 }
 #bodywrapper #navigationN1-4 li a:hover,
 #bodywrapper #navigationN1-4 li a:active {
-	color:#fff;
-	background:#333;
+	color:#333;
+	background:#fff;
 	text-decoration:none;
 }
 #bodywrapper #navigationN1-4 li.selected a{
-	color:#fff;
-	background:#333;
+	color:#333;
+	background:#fff;
 }
 

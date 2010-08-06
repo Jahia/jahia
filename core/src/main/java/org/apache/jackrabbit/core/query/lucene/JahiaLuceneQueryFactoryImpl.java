@@ -52,8 +52,14 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactoryImpl {
     }
 
     public Query create(ChildNodeImpl cn) throws RepositoryException {
-        return new JackrabbitTermQuery(
+        Query q1 = new JackrabbitTermQuery(
                 new Term(FieldNames.PARENT, session.getNode(cn.getParentPath()).getIdentifier()));
+        Query q2 = new JackrabbitTermQuery(
+                new Term(JahiaNodeIndexer.TRANSLATED_NODE_PARENT, session.getNode(cn.getParentPath()).getIdentifier()));
+        BooleanQuery or = new BooleanQuery();
+        or.add(q1, BooleanClause.Occur.SHOULD);
+        or.add(q2, BooleanClause.Occur.SHOULD);
+        return or;
     }
 
     public Query create(DescendantNodeImpl dn) throws RepositoryException {

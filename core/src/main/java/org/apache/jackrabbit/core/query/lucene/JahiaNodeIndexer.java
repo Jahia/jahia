@@ -87,6 +87,8 @@ public class JahiaNodeIndexer extends NodeIndexer {
     public static final String FACET_PREFIX = "FACET:";
     
     public static final String ANCESTOR = "_:ANCESTOR".intern();
+    public static final String TRANSLATED_NODE_PARENT = "_:TRANSLATED_PARENT".intern();
+    public static final String TRANSLATION_LANGUAGE = "_:TRANSLATION_LANGUAGE".intern();
 
     /**
      * The persistent node type registry
@@ -570,12 +572,16 @@ public class JahiaNodeIndexer extends NodeIndexer {
 //                doc.add(new Field(
 //                    FieldNames.UUID, parentNode.getNodeId().toString(),
 //                    Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-//
-//                // add direct parent for translation
+
+                /// add direct parent for translation
 //                doc.removeField(FieldNames.PARENT);
-//                doc.add(new Field(
-//                        FieldNames.PARENT, parentNode.getParentId().toString(),
-//                        Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS, Field.TermVector.NO));
+                doc.add(new Field(
+                        TRANSLATED_NODE_PARENT, parentNode.getParentId().toString(),
+                        Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS, Field.TermVector.NO));
+
+                doc.add(new Field(
+                        TRANSLATION_LANGUAGE, resolveLanguage(),
+                        Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS, Field.TermVector.NO));
 
                 // copy properties from parent into translation node, including node types
                 Set<Name> parentNodePropertyNames = new HashSet<Name>(parentNode.getPropertyNames());

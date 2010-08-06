@@ -56,7 +56,7 @@ public class JahiaQueryObjectModelImpl extends QueryObjectModelImpl {
         MultiColumnQuery query = factory.create(qomTree);
 
         if (qomTree.getConstraint() != null) {
-            Constraint c = ConstraintBuilder.create(qomTree.getConstraint(),
+            Constraint c = JahiaConstraintBuilder.create(qomTree.getConstraint(),
                     getBindVariableValues(), qomTree.getSource().getSelectors(),
                     factory, session.getValueFactory());
             query = new FilterMultiColumnQuery(query, c);

@@ -10,6 +10,7 @@ import org.jahia.services.JahiaService;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyType;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
@@ -782,6 +783,13 @@ public class JCRPublicationService extends JahiaService {
         }
         if(!node.checkLanguageValidity(languages)){
             info.setStatus(PublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE);
+            final boolean translated = node.getNodes("j:translation_*").hasNext();
+                for (String language : languages) {
+                    Locale locale = LanguageCodeConverters.getLocaleFromCode(language);
+                    if(node.checkI18nAndMandatoryPropertiesForLocale(locale, translated)) {
+                        info.setStatus(PublicationInfo.MANDATORY_LANGUAGE_VALID);
+                    }
+                }
         }
         else if (node.hasProperty("j:published") && !node.getProperty("j:published").getBoolean()) {
             info.setStatus(PublicationInfo.UNPUBLISHED);

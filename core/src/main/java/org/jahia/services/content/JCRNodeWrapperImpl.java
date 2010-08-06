@@ -2684,7 +2684,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return true;
     }
 
-    private boolean checkI18nAndMandatoryPropertiesForLocale(Locale locale, boolean translated)
+    public boolean checkI18nAndMandatoryPropertiesForLocale(Locale locale, boolean translated)
             throws RepositoryException {
         Node i18n = null;
         try {

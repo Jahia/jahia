@@ -57,6 +57,7 @@ public class PublicationManagerEngine extends Window {
         statusToLabel.put(GWTJahiaPublicationInfo.LIVE_MODIFIED,"livemodified");
         statusToLabel.put(GWTJahiaPublicationInfo.LIVE_ONLY,"liveonly");
         statusToLabel.put(GWTJahiaPublicationInfo.CONFLICT,"conflict");
+        statusToLabel.put(GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_VALID,"mandatorylanguagevalid");
     }
     private List<GWTJahiaLanguage> languages;
     private Map<String, CheckBox> checkboxMap;

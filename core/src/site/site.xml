@@ -36,6 +36,8 @@ under the License.
             <item name="CKEditor integration" href="ckeditor/index.html"/>
             <item name="Logging service" href="logging.html"/>
             <item name="Managers and Edit mode" href="uicomponents/uicomponents.html"/>
+            <item name="Workflow" href="workflow/workflow.html"/>
+            <item name="Publication" href="publication/publication.html"/>
         </menu>
         <menu ref="modules"/>
         <menu ref="reports"/>

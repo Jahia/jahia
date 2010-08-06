@@ -754,4 +754,6 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
 
     JCRSiteNode resolveSite() throws RepositoryException;
 
+    boolean checkI18nAndMandatoryPropertiesForLocale(Locale locale, boolean translated) throws RepositoryException;
+
 }

@@ -1,0 +1,78 @@
+Jahia Crazy Jane - Core Module - Publication
+
+ The publication service allows you to transfer content from staging modes (edit/contribute) to live repository where
+ this content will be available for end users ot see it.
+
+ By default the publication service offer several options :
+
+ * {{{current}Publish currently selected node}}
+
+ * {{{all}Publish all under currently selected node}}
+
+ * {{{Unpublish}Unpublish currently selected node}}
+
+ * {{{Sync}Sync currently selected node with live}}
+
+ * {{{Status}Status}}
+
+ * {{{manager}Publication manager}}
+
+* Publish {current}ly selected node
+
+  This option will publish the selected node and its subnode stopping when encountering a node marked has having a different
+  publication process (by default pages have different publication processes), you can add a publication process to a node
+  by assigning it a workflow rule with a publication workflow.
+
+* Publish {all} under currently selected node
+
+  This option will publish the selected node and its subnode and will not stop on any node so it will publish the whole subtree.
+
+* {Unpublish} currently selected node
+
+  Mark the selected node has not published anymore (marking it as not valid in live repository).
+
+* {Sync} currently selected node with live
+
+  Behavior not yet defined.
+
+* {Status}
+
+  This display the status of selected node and any subnode having a different status
+
+* Publication {manager}
+
+  This popup a window displaying the tree of nodes having different publication process (by default only pages).
+  For each node you will see its status (including status of subnodes as an aggregate of the node status).
+  If you can start a publication process on the node the checkbox will be active and then can be checked to be part
+  of process of publication including several nodes.
+
+* Different status for publication ?
+
+  A node (and its subnodes part of the same process) will be defined as publishable if it can be published directly or
+  if at least one of its subnode need publication and its valid.
+
+  * A node can be <<<published>>>, means that the node <<and>> its subnodes participating in the same
+  publication process <<are the same>> in staging and live repository
+
+  * A node can be <<<locked>>>, means that the node <<and>> its subnodes participating in the same publication process are
+  currently participating in a publication process
+
+  * A node can be <<<modified>>>, means that the node <<or at least one>> of its subnodes participating in the same
+  publication process <<are not the same>> in staging and live repository
+
+  * A node can be <<<not published>>>, means that the node <<or at least one>> of its subnodes participating in the same
+  publication process <<has never been published>> and does not exist in live repository
+
+  * A node can be <<<unpublished>>>, means that the node <<or at least one>> of its subnodes participating in the same
+  publication process <<has been unpublished>> from live repository and so this node is not visible anymore for end users.
+
+  Those three previous status will allow you to start a publication process.
+
+  * A node can be <<<mandatory language unpublishable>>>, means that the node <<or at least one>> of its subnodes participating in the same
+  publication process <<are not valid>> in staging in this mandatory language, so you need to translate the problematic node(s).
+
+  * A node can be <<<mandatory language valid>>>, means that the node <<and>> its subnodes participating in the same
+  publication process <<are valid>> in staging in this mandatory language.
+
+  * A node can be in <<<conflict>>>, means that the node <<or at least one>> of its subnodes participating in the same
+  publication process <<are not fully valid>> in staging in all mandatory languages, so you need to translate the problematic node.

@@ -18,7 +18,7 @@ Jahia Crazy Jane - Web Module - Multi Language
 
 * What happen if I delete a language in my site ?
 
- Deleting a language in Crazy Jane is a non destructive action, this will only remove the langauge from the available
+ Deleting a language in Crazy Jane is a non destructive action, this will only remove the language from the available
  languages in your site, this will note erase any content from your repository (as your content could be reused
  anywhere in this language).
 
@@ -29,3 +29,21 @@ Jahia Crazy Jane - Web Module - Multi Language
 
  No, every new language will not appear in live mode until the content you are accessing is existing in the chosen
  language. Unless you have activated the mixing language options.
+
+ When adding a new language you have to publish the site node to make this language available in live, you can publish nodes
+ in this language but as long as the site node has not been published the language will not be available in live.
+
+* How do we handle mandatory languages ?
+
+  Mandatory languages only impact the way you can publish a node in edition or the way you can see a node in live mode.
+
+  In edit mode a node <<MUST>> have a value in each mandatory language for each of its mandatory properties to allow it to be published.
+  Once you can publish your node each language will have its own workflow so they can be really published at different time.
+
+  In live mode a node <<MUST>> have a value in each mandatory language for each of its mandatory properties to allow it to be seen by users.
+
+  So if you have two mandatory language for example (en,fr) each page you create must have a title in both languages to be published.
+  To be seen in live a page must have finish its workflow in each language, if the english workflow for my page is finished on monday.
+  And the one in french in finished on tuesday my english page will only be visible for my end users on tuesday when the french workflow is over
+  even if my page in english exist in my live repository since monday.
+

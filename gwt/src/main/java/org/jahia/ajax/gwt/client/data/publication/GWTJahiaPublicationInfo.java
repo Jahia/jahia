@@ -24,7 +24,8 @@ public class GWTJahiaPublicationInfo extends BaseModel implements Serializable {
     public static final int LIVE_MODIFIED = 7;
     public static final int LIVE_ONLY = 8;
     public static final int CONFLICT = 9;
-
+    public static final int MANDATORY_LANGUAGE_VALID = 10;
+    
     private Set<Integer> subnodesStatus = new HashSet<Integer>();
 
     private List<GWTJahiaPublicationInfo> subnodes = new ArrayList<GWTJahiaPublicationInfo>();

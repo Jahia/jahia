@@ -727,18 +727,19 @@ public class WorkflowService {
                 }
 
                 String outcome = task.getOutcome();
+                if (outcome != null) {
+                    String key = task.getName().replaceAll(" ", ".").trim().toLowerCase() + "." +
+                            outcome.replaceAll(" ", ".").trim().toLowerCase();
+                    String displayOutcome;
+                    try {
+                        displayOutcome = resourceBundle.getString(key);
+                    } catch (Exception e) {
+                        logger.info("Missing ressource : " + key + " in " + resourceBundle);
+                        displayOutcome = outcome;
+                    }
 
-                String key = task.getName().replaceAll(" ", ".").trim().toLowerCase() + "." +
-                        outcome.replaceAll(" ", ".").trim().toLowerCase();
-                String displayOutcome;
-                try {
-                    displayOutcome = resourceBundle.getString(key);
-                } catch (Exception e) {
-                    logger.info("Missing ressource : " + key + " in " + resourceBundle);
-                    displayOutcome = outcome;
+                    task.setDisplayOutcome(displayOutcome);
                 }
-
-                task.setDisplayOutcome(displayOutcome);
             }
         }
         return list;

@@ -233,10 +233,9 @@ public class SimpleJahiaJcrFacets {
                     String locale = params.getFieldParam(f, "facet.locale");
                     ExtendedPropertyDefinition epd = NodeTypeRegistry.getInstance().getNodeType(
                             params.get("f." + f + ".facet.nodetype")).getPropertyDefinition(
-                            StringUtils.removeEnd(fieldName, "_" + locale));
+                            fieldName);
                     String fieldNameInIndex = getFieldNameInIndex(fieldName, epd, locale);
-                    res.add(StringUtils.removeEnd(StringUtils.substringBeforeLast(f,
-                            PROPNAME_INDEX_SEPARATOR), "_" + locale)
+                    res.add(StringUtils.substringBeforeLast(f, PROPNAME_INDEX_SEPARATOR)
                             + PROPNAME_INDEX_SEPARATOR + fieldNameInIndex,
                             getTermCounts(f, epd, fieldNameInIndex));
                 } catch (RepositoryException e) {

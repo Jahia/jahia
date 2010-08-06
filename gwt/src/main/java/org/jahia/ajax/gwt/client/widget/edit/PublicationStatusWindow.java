@@ -5,19 +5,12 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.GroupingStore;
-import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Info;
-import com.extjs.gxt.ui.client.widget.Label;
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.grid.*;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
-import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -29,7 +22,6 @@ import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.workflow.dialog.WorkflowActionDialog;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -83,12 +75,12 @@ class PublicationStatusWindow extends Window {
         }
         if (selectedNode.getWorkflowInfo().getPossibleWorkflows().get(0) != null) {
             ok.addSelectionListener(new ButtonEventSelectionListener(uuids, selectedNode,
-                    selectedNode.getWorkflowInfo().getPossibleWorkflows().get(0)));
+                    selectedNode.getWorkflowInfo().getPossibleWorkflows().get(0),infos));
             addButton(ok);
         }
         if (PermissionsUtils.isPermitted("edit-mode/publication", JahiaGWTParameters.getSiteKey())) {
             noWorkflow = new Button(Messages.get("label.bypassWorkflow", "Bypass workflow"));
-            noWorkflow.addSelectionListener(new ButtonEventSelectionListener(uuids, null, null));
+            noWorkflow.addSelectionListener(new ButtonEventSelectionListener(uuids, null, null, null));
             addButton(noWorkflow);
         }
 
@@ -99,13 +91,16 @@ class PublicationStatusWindow extends Window {
         private List<String> uuids;
         private final GWTJahiaNode selectedNode;
         private final GWTJahiaWorkflowDefinition gwtJahiaWorkflowDefinition;
+        private final List<GWTJahiaPublicationInfo> infos;
         protected boolean workflow;
 
         public ButtonEventSelectionListener(List<String> uuids, GWTJahiaNode selectedNode,
-                                            GWTJahiaWorkflowDefinition gwtJahiaWorkflowDefinition) {
+                                            GWTJahiaWorkflowDefinition gwtJahiaWorkflowDefinition,
+                                            List<GWTJahiaPublicationInfo> infos) {
             this.uuids = uuids;
             this.selectedNode = selectedNode;
             this.gwtJahiaWorkflowDefinition = gwtJahiaWorkflowDefinition;
+            this.infos = infos;
         }
 
         public void componentSelected(ButtonEvent event) {
@@ -134,7 +129,7 @@ class PublicationStatusWindow extends Window {
                                 });
             } else {
                 hide();
-                new WorkflowActionDialog(selectedNode, gwtJahiaWorkflowDefinition, uuids, allSubTree, linker,null).show();
+                new WorkflowActionDialog(selectedNode, gwtJahiaWorkflowDefinition, uuids, allSubTree, linker,selectedNode.getLanguageCode(),infos).show();
             }
         }
     }

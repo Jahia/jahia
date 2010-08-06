@@ -19,6 +19,7 @@ import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.extjs.gxt.ui.client.widget.treegrid.WidgetTreeGridCellRenderer;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -26,6 +27,8 @@ import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
@@ -35,11 +38,10 @@ import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: ktlili
+ * PublicationManagerEngine allows to launch publication process for different languages from one simple UI.
+ * User: rincevent
  * Date: Apr 28, 2010
  * Time: 4:32:33 PM
- * To change this template use File | Settings | File Templates.
  */
 public class PublicationManagerEngine extends Window {
     private final Linker linker;
@@ -148,7 +150,7 @@ public class PublicationManagerEngine extends Window {
         public void componentSelected(ButtonEvent ce) {
             final ListStore<GWTJahiaNode> store = m_tree.getStore();
             List<GWTJahiaNode> nodes = store.getModels();
-            Map<String, GWTJahiaWorkflowDefinition> workflowDefinitionMap = new HashMap<String, GWTJahiaWorkflowDefinition>();
+            final Map<String, GWTJahiaWorkflowDefinition> workflowDefinitionMap = new HashMap<String, GWTJahiaWorkflowDefinition>();
             Map<String, Map<String, List<GWTJahiaNode>>> workflowDefinitionMapMap = new HashMap<String, Map<String, List<GWTJahiaNode>>>();
             for (GWTJahiaNode node : nodes) {
                 Record record = store.getRecord(node);
@@ -182,18 +184,21 @@ public class PublicationManagerEngine extends Window {
             }
             for (String definition : workflowDefinitionMapMap.keySet()) {
                 Map<String, List<GWTJahiaNode>> map = workflowDefinitionMapMap.get(definition);
-                for (String language : map.keySet()) {
+                for (final String language : map.keySet()) {
                     List<GWTJahiaNode> gwtJahiaNodes = map.get(language);
                     List<String> identifiers = new LinkedList<String>();
+                    List<GWTJahiaPublicationInfo> infoList = new LinkedList<GWTJahiaPublicationInfo>();
                     GWTJahiaNode node = gwtJahiaNodes.get(0);
                     for (GWTJahiaNode jahiaNode : gwtJahiaNodes) {
                         identifiers.add(jahiaNode.getUUID());
+                        infoList.addAll(jahiaNode.getFullPublicationInfos().get(language));
                     }
+
                     WorkflowActionDialog workflowActionDialog = new WorkflowActionDialog(node,
                                                                                          workflowDefinitionMap.get(
                                                                                                  definition),
                                                                                          identifiers, false, linker,
-                                                                                         language);
+                                                                                         language, infoList);
                     workflowActionDialog.addWindowListener(new WindowListener() {
                         @Override
                         public void windowHide(WindowEvent we) {

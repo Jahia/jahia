@@ -857,6 +857,7 @@ public class NavigationHelper {
                 if (node1 != null) {
                     String[] codes = node1.getActiveLanguageCodes();
                     Map<String, GWTJahiaPublicationInfo> infoMap = new HashMap<String, GWTJahiaPublicationInfo>();
+                    Map<String, List<GWTJahiaPublicationInfo>> infosMap = new HashMap<String, List<GWTJahiaPublicationInfo>>();
                     JCRSessionWrapper session = node.getSession();
                     for (String code : codes) {
                         JCRSessionWrapper localeSession = sessionFactory.getCurrentUserSession(
@@ -865,8 +866,11 @@ public class NavigationHelper {
                                                                                             Collections.singleton(code),
                                                                                             localeSession);
                         infoMap.put(code, info);
+                        List<GWTJahiaPublicationInfo> infos = publication.getPublicationInfo(Arrays.asList(node.getIdentifier()),Collections.singleton(code),localeSession,false);
+                        infosMap.put(code,infos);
                     }
                     n.setPublicationInfos(infoMap);
+                    n.setFullPublicationInfos(infosMap);
                 }
             } catch (UnsupportedRepositoryOperationException e) {
                 // do nothing

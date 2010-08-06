@@ -111,6 +111,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     private boolean matchFilters = false;
     private Map<String, GWTJahiaPublicationInfo> publicationInfos;
     private Map<String, GWTJahiaWorkflowInfo> workflowInfos;
+    private Map<String, List<GWTJahiaPublicationInfo>> fullPublicationInfos;
 
     public GWTJahiaNode() {
     }
@@ -533,5 +534,13 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     public Map<String, GWTJahiaWorkflowInfo> getWorkflowInfos() {
         return workflowInfos;
+    }
+
+    public void setFullPublicationInfos(Map<String, List<GWTJahiaPublicationInfo>> fullPublicationInfos) {
+        this.fullPublicationInfos = fullPublicationInfos;
+    }
+
+    public Map<String, List<GWTJahiaPublicationInfo>> getFullPublicationInfos() {
+        return fullPublicationInfos;
     }
 }

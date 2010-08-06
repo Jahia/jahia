@@ -109,18 +109,7 @@ public class WorkflowActionDialog extends Window {
         commentPanel.add(commentsContainer);
 
         if ( action.get("publicationInfos") != null) {
-            final ContentPanel publicationStatusPanel = new ContentPanel(new FitLayout());
-            commentPanel.setHeading(Messages.get("label.comments", "Comments"));
-            commentPanel.setBorders(false);
-            commentPanel.setCollapsible(false);
-            commentPanel.setTitleCollapse(false);
-            commentPanel.setScrollMode(Style.Scroll.NONE);
-            GroupingStore<GWTJahiaPublicationInfo> store = new GroupingStore<GWTJahiaPublicationInfo>();
-            store.add((List<GWTJahiaPublicationInfo>) action.get("publicationInfos"));
-            PublicationStatusGrid g = new PublicationStatusGrid(store);
-            publicationStatusPanel.add(g);
-            publicationStatusPanel.setHeight(150);
-            add(publicationStatusPanel);
+            displayPublicationInfos((List<GWTJahiaPublicationInfo>) action.get("publicationInfos"), 150);
         }
 
         // Display add a comment
@@ -191,19 +180,32 @@ public class WorkflowActionDialog extends Window {
         add(commentPanel);
     }
 
+    private void displayPublicationInfos(List<GWTJahiaPublicationInfo> infos, int height) {
+        final ContentPanel publicationStatusPanel = new ContentPanel(new FitLayout());
+        GroupingStore<GWTJahiaPublicationInfo> store = new GroupingStore<GWTJahiaPublicationInfo>();
+        store.add(infos);
+        PublicationStatusGrid g = new PublicationStatusGrid(store);
+        publicationStatusPanel.add(g);
+        publicationStatusPanel.setHeight(height);
+        add(publicationStatusPanel);
+    }
+
     public WorkflowActionDialog(final GWTJahiaNode node, final GWTJahiaWorkflowDefinition wf, final List<String> uuids,
-                                final boolean allSubTree, final Linker linker,final String language) {
+                                final boolean allSubTree, final Linker linker,final String language,final List<GWTJahiaPublicationInfo> publicationInfos) {
 
         contentManagement = JahiaContentManagementService.App.getInstance();
         contentDefinition = JahiaContentDefinitionService.App.getInstance();
         setModal(true);
         setHeading("Start workflow [" + wf.getName() + "] for node: " + node.getDisplayName());
         setWidth(800);
-        setHeight(300);
+        setHeight(600);
         setFrame(true);
-        setLayout(new FitLayout());
+        setLayout(new FlowLayout());
         final Window dialog = this;
-        final LayoutContainer panel = new LayoutContainer(new VBoxLayout());
+        displayPublicationInfos(publicationInfos, 250);
+        final LayoutContainer panel = new LayoutContainer(new RowLayout(Style.Orientation.VERTICAL));
+        panel.setBorders(false);
+        panel.setScrollMode(Style.Scroll.NONE);        
         String formResourceName = wf.getFormResourceName();
         if (formResourceName != null && !"".equals(formResourceName)) {
             contentDefinition.getNodeType(formResourceName, new BaseAsyncCallback<GWTJahiaNodeType>() {

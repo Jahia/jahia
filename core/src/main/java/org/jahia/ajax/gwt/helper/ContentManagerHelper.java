@@ -934,8 +934,10 @@ public class ContentManagerHelper {
         PropertyIterator pi = destinationNode.getProperties();
         while (pi.hasNext()) {
             JCRPropertyWrapper oldChild = (JCRPropertyWrapper) pi.next();
-            if (!names.contains(oldChild.getName())) {
-                oldChild.remove();
+            if (!oldChild.getDefinition().isProtected()) {
+                if (!names.contains(oldChild.getName())) {
+                    oldChild.remove();
+                }
             }
         }
 

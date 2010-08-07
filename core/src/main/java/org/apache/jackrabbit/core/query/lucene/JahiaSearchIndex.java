@@ -36,6 +36,7 @@ import org.apache.jackrabbit.core.SessionImpl;
 import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.query.ExecutableQuery;
 import org.apache.jackrabbit.core.query.QueryHandler;
+import org.apache.jackrabbit.core.state.ChildNodeEntry;
 import org.apache.jackrabbit.core.state.NodeState;
 import org.apache.jackrabbit.spi.Path;
 import org.apache.jackrabbit.spi.commons.query.qom.QueryObjectModelTree;
@@ -57,6 +58,7 @@ import java.util.List;
  */
 public class JahiaSearchIndex extends SearchIndex {
     private static final Logger log = Logger.getLogger(JahiaSearchIndex.class);
+    private static final String TRANSLATION_LOCALNODENAME_PREFIX = "translation_"; 
 
     /**
      * This implementation forwards the call to
@@ -118,6 +120,16 @@ public class JahiaSearchIndex extends SearchIndex {
 
                 } catch (Exception e) {
                     log.error("Cannot search moved nodes",e);
+                }
+            }
+            for (ChildNodeEntry childNodeEntry : node.getChildNodeEntries()) {
+                if (childNodeEntry.getName().getLocalName().startsWith(TRANSLATION_LOCALNODENAME_PREFIX)) {
+                    try {
+                        addList.add((NodeState) getContext().getItemStateManager().getItemState(childNodeEntry.getId()));
+                        removeList.add(childNodeEntry.getId());                        
+                    } catch (Exception e) {
+                        log.warn("Index of translation node may not be updated",e);
+                    } 
                 }
             }
         }

@@ -3,3 +3,6 @@
 [jnt:rss] > jnt:content, mix:title, jmix:queryContent
  - url (string) mandatory indexed=no
  - nbEntries (long) = 10 indexed=no
+
+
+[jnt:rssable] > jnt:content, jmix:siteComponentContent, jmix:bindedComponent

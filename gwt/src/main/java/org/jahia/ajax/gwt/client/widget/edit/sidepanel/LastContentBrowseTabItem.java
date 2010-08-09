@@ -77,6 +77,7 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
 
         final LayoutContainer previewLayoutContainer = new LayoutContainer();
         previewLayoutContainer.setLayout(new FitLayout());
+        previewLayoutContainer.setId("bodywrapper");
         grid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> gwtJahiaNodeSelectionChangedEvent) {

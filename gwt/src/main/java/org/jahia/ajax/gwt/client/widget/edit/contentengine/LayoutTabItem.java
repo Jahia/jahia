@@ -61,15 +61,18 @@ public class LayoutTabItem extends PropertiesTabItem {
             if (subNodesTemplateField != null) {
                 subNodesTemplateField.addSelectionChangedListener(listener);
             }
-
+            listener.selectionChanged(null);
 
             setLayout(new RowLayout());
             add(propertiesEditor);
 
             htmlPreview = new LayoutContainer(new FitLayout());
+            htmlPreview.setId("bodywrapper");
+            htmlPreview.setStyleAttribute("background-color", "white");
             htmlPreview.addStyleName("x-panel");
             htmlPreview.setScrollMode(Style.Scroll.AUTO);
             add(htmlPreview);
+
         }
     }
 
@@ -84,6 +87,7 @@ public class LayoutTabItem extends PropertiesTabItem {
             JahiaContentManagementService.App.getInstance().getRenderedContent(engine.getNode().getPath(), null, null, template, "preview", contextParams, false, null, new BaseAsyncCallback<GWTRenderResult>() {
                 public void onSuccess(GWTRenderResult result) {
                     HTML html = new HTML(result.getResult());
+
                     setHTML(html);
                     layout();
                 }

@@ -69,7 +69,7 @@ public class TaskService {
      * @throws RepositoryException in case of an error
      */
     public void createTask(final Task task, final String forUser) throws RepositoryException {
-        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+        JCRTemplate.getInstance().doExecuteWithSystemSessionInSameWorkspaceAndLocale(new JCRCallback<Boolean>() {
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 createTask(task, forUser, session);
 

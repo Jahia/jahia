@@ -635,8 +635,8 @@ public class JahiaAdministration extends HttpServlet {
         logger.debug("processLogin started");
 
         boolean loginError = true;
-        String jahiaLoginUsername;
-        String jahiaLoginPassword;
+        String jahiaLoginUsername = null;
+        String jahiaLoginPassword = null;
 
         JahiaUser theUser = null;
         JahiaGroup theGroup;
@@ -645,8 +645,12 @@ public class JahiaAdministration extends HttpServlet {
 
         // get form values...
         if (rootName == null && rootPass == null) {
-            jahiaLoginUsername = request.getParameter("login_username").trim();
-            jahiaLoginPassword = request.getParameter("login_password").trim();
+            if (request.getParameter("login_username") != null) {
+                jahiaLoginUsername = request.getParameter("login_username").trim();
+            }
+            if (request.getParameter("login_password") != null) {
+                jahiaLoginPassword = request.getParameter("login_password").trim();                
+            }
         } else {
             jahiaLoginUsername = rootName;
             jahiaLoginPassword = rootPass;

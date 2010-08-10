@@ -42,7 +42,7 @@
 %><c:if test="${empty suggestion}"><%
 SuggestionsTag parent = (SuggestionsTag) findAncestorWithClass(this, SuggestionsTag.class);
 if (parent == null) {
-     throw new JspTagException("Suggestion tern must be provided either through the 'suggestion' attribute" + 
+     throw new JspTagException("Suggestion term must be provided either through the 'suggestion' attribute" + 
              " or by nesting this tag into <s:suggestions/> tag");
 }
 jspContext.setAttribute("suggestion", parent.getSuggestion().getSuggestedQuery());

@@ -44,6 +44,7 @@ import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.index.TermDocs;
 import org.apache.lucene.search.*;
 
 import javax.jcr.RepositoryException;
@@ -91,33 +92,35 @@ public class JahiaSearchIndex extends SearchIndex {
         for (final NodeState node : new ArrayList<NodeState>(addList)) {
             if (node.getParentId() != null) {
                 try {
-                    searcher.search(new TermQuery(new Term(FieldNames.UUID, node.getNodeId().toString())),new HitCollector() {
-                        public void collect(int thisdoc, float score) {
-                            try {
-                                String oldUuid = reader.document(thisdoc).get("_:PARENT");
-                                String uuid = node.getParentId().toString();
-                                if (!oldUuid.equals(uuid)) {
-                                    searcher.search(new TermQuery(new Term(JahiaNodeIndexer.ANCESTOR, node.getId().toString())),new HitCollector() {
-                                        public void collect(int doc, float score) {
-                                            try {
-                                                String uuid = reader.document(doc).get("_:UUID");
+                    int doc = -1;
+                    TermDocs docs = reader.termDocs(new Term(FieldNames.UUID, node.getNodeId().toString()));
+                    try {
+                        if (docs.next()) {
+                            doc = docs.doc();
+                            
+                            String oldUuid = reader.document(doc).get(FieldNames.PARENT);
+                            String uuid = node.getParentId().toString();
+                            if (!oldUuid.equals(uuid)) {
+                                searcher.search(new TermQuery(new Term(JahiaNodeIndexer.ANCESTOR, node.getId().toString())),new HitCollector() {
+                                    public void collect(int doc, float score) {
+                                        try {
+                                            String uuid = reader.document(doc).get(FieldNames.UUID);
 
-                                                final NodeId id = new NodeId(uuid);
-                                                addList.add((NodeState) getContext().getItemStateManager().getItemState(id));
-                                                removeList.add(id);
-                                            } catch (Exception e) {
-                                                log.error("Cannot search moved nodes",e);
-                                            }
+                                            final NodeId id = new NodeId(uuid);
+                                            addList.add((NodeState) getContext().getItemStateManager().getItemState(id));
+                                            removeList.add(id);
+                                        } catch (Exception e) {
+                                            log.error("Cannot search moved nodes",e);
                                         }
-                                    });
-                                }
-
-                            } catch (Exception e) {
-                                log.error("Cannot search moved nodes",e);
+                                    }
+                                });
                             }
                         }
-                    });
-
+                    } catch (Exception e) {
+                        log.error("Cannot search moved nodes",e);
+                    } finally {
+                        docs.close();
+                    }                        
                 } catch (Exception e) {
                     log.error("Cannot search moved nodes",e);
                 }

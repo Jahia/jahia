@@ -1,6 +1,6 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
-[jnt:topTenPages] > jnt:content, jmix:editorialContent
+[jnt:topTenPages] > jnt:content, jmix:siteComponentContent
 
 [jnt:recommendable] > jnt:content, jmix:bindedComponent, jmix:siteComponentContent
  - j:nodeTypeFilter (string)

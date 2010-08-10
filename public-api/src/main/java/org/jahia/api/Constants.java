@@ -166,6 +166,7 @@ public class Constants {
 
     public static final String JAHIANT_JAHIACONTENT = "jnt:jahiacontent";
     public static final String JAHIANT_PAGE = "jnt:page";
+    public static final String JAHIANT_CONTENT = "jnt:content";    
     public static final String JAHIANT_CONTENTLIST = "jnt:contentList";
     public static final String JAHIANT_PAGE_LINK = "jmix:link";
     public static final String JAHIANT_INTERNAL_PAGE_LINK = "jnt:nodeLink";

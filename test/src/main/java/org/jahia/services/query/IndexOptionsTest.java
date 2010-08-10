@@ -109,13 +109,13 @@ public class IndexOptionsTest {
                 Query q = queryManager.createQuery(query, Query.JCR_SQL2);
                 QueryResult queryResult = q.execute();
                 
-                assertEquals("Query did not return correct number of facets", 0, getResultSize(queryResult.getNodes()));
+                assertEquals("Query did not return correct number of results", 0, getResultSize(queryResult.getNodes()));
 
-                query = "select indexFields.* from [test_templates:fieldsWithIndexOptions] as indexFields where indexFields.nonIndexedSmallText like 'n%'";
-                q = queryManager.createQuery(query, Query.JCR_SQL2);
+                query = "//element(*, test_templates:fieldsWithIndexOptions)[jcr:like(@nonIndexedSmallText, 'n%')]";
+                q = queryManager.createQuery(query, Query.XPATH);
                 queryResult = q.execute();
 
-                assertEquals("Query did not return correct number of facets", 0, getResultSize(queryResult.getNodes()));                
+                assertEquals("Query did not return correct number of results", 0, getResultSize(queryResult.getNodes()));                
             }
 
         } catch (Exception ex) {
@@ -152,7 +152,7 @@ public class IndexOptionsTest {
                 Query q = queryManager.createQuery(query, Query.JCR_SQL2);
                 QueryResult queryResult = q.execute();
 
-                assertEquals("Query did not return correct number of facets", 0, getResultSize(queryResult.getNodes()));                
+                assertEquals("Query did not return correct number of results", 0, getResultSize(queryResult.getNodes()));                
 
                 query = "select indexFields.* from [test_templates:fieldsWithIndexOptions] as indexFields where indexFields.nofulltextSmallText like 'ZXY%'";
                 q = queryManager.createQuery(query, Query.JCR_SQL2);

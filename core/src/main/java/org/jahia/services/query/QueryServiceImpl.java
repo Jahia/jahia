@@ -274,18 +274,6 @@ public class QueryServiceImpl extends QueryService {
         info.setMode(MODIFY_MODE);
 
         try {
-            Source newSource = (Source) ((SourceImpl) getModifiedSource(source, info)).accept(
-                    visitor, null);
-
-            Constraint newConstraint = null;
-            if (constraint != null) {
-                newConstraint = (Constraint) ((ConstraintImpl) constraint).accept(visitor, null);
-                for (Constraint constraintToAdd : info.getNewConstraints()) {
-                    newConstraint = info.getQueryObjectModelFactory().and(newConstraint,
-                            constraintToAdd);
-                }
-            }
-
             Ordering[] newOrderings = new Ordering[orderings.length];
             int i = 0;
             for (Ordering ordering : orderings) {
@@ -303,6 +291,19 @@ public class QueryServiceImpl extends QueryService {
                 newColumn = (Column) ((ColumnImpl) column).accept(visitor, null);
                 newColumns[i++] = newColumn;
             }
+            
+            Constraint newConstraint = null;
+            if (constraint != null) {
+                newConstraint = (Constraint) ((ConstraintImpl) constraint).accept(visitor, null);
+                for (Constraint constraintToAdd : info.getNewConstraints()) {
+                    newConstraint = info.getQueryObjectModelFactory().and(newConstraint,
+                            constraintToAdd);
+                }
+            }
+
+            Source newSource = (Source) ((SourceImpl) getModifiedSource(source, info)).accept(
+                    visitor, null);            
+            
             info.setNewQueryObjectModel(info.getQueryObjectModelFactory().createQuery(newSource,
                     newConstraint, newOrderings, newColumns));
         } catch (Exception e) {
@@ -911,16 +912,18 @@ public class QueryServiceImpl extends QueryService {
                                 newLanguageCodes.add(NO_LOCALE);
                                 getNewLanguagesPerSelector().put(selector.getSelectorName(),
                                         newLanguageCodes);
-                            }
-                            ExtendedNodeType nodeType = NodeTypeRegistry.getInstance().getNodeType(
-                                    selector.getNodeTypeName());
-                            boolean isFulltextIncludingMultilingualProperties = (propertyName == null && node instanceof FullTextSearch) ? isFulltextIncludingMultilingualProperties(
-                                    nodeType, selector) : false;
-                            ExtendedPropertyDefinition propDef = propertyName != null ? getPropertyDefinition(
-                                    nodeType, selector, propertyName) : null;
-                            if (propDef != null && propDef.isInternationalized()
-                                    || isFulltextIncludingMultilingualProperties) {
-                                newLanguageCodes.remove(NO_LOCALE);
+                            } 
+                            if (newLanguageCodes.contains(NO_LOCALE)) {
+                                ExtendedNodeType nodeType = NodeTypeRegistry.getInstance()
+                                        .getNodeType(selector.getNodeTypeName());
+                                boolean isFulltextIncludingMultilingualProperties = (propertyName == null && node instanceof FullTextSearch) ? isFulltextIncludingMultilingualProperties(
+                                        nodeType, selector) : false;
+                                ExtendedPropertyDefinition propDef = propertyName != null ? getPropertyDefinition(
+                                        nodeType, selector, propertyName) : null;
+                                if (propDef != null && propDef.isInternationalized()
+                                        || isFulltextIncludingMultilingualProperties) {
+                                    newLanguageCodes.remove(NO_LOCALE);
+                                }
                             }
 
                             getModificationInfo().setModificationNecessary(true);
@@ -948,6 +951,12 @@ public class QueryServiceImpl extends QueryService {
                                             : qomFactory.or(langConstraint, currentConstraint);
                                 }
                                 getModificationInfo().getNewConstraints().add(langConstraint);
+                                if (languageCodes == null) {
+                                    languageCodes = new HashSet<String>();
+                                    getLanguagesPerSelector().put(selector.getSelectorName(),
+                                            languageCodes);
+                                }
+                                languageCodes.addAll(newLanguageCodes);
                             }
                         }
                     }

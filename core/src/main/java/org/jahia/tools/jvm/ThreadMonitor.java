@@ -124,7 +124,8 @@ public class ThreadMonitor {
      */
     public boolean findDeadlock(PrintWriter writer) {
        long[] tids = tmbean.findMonitorDeadlockedThreads();
-       if (tids == null) { 
+       if (tids == null) {
+           writer.println("No deadlock found.");
            return false;
        } else {
            writer.println("Deadlock found :-");

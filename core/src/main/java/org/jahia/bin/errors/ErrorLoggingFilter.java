@@ -31,41 +31,29 @@
  */
 package org.jahia.bin.errors;
 
-import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
-import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
-import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
-import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
-
-import java.io.*;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.cache.Cache;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
-import org.jahia.tools.jvm.ThreadMonitor;
+
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.Iterator;
+
+import static javax.servlet.http.HttpServletResponse.*;
 
 /**
  * Error logging filter that is called before an error page, configured in the
  * Web application deployment descriptor.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class ErrorLoggingFilter implements Filter {
@@ -79,6 +67,7 @@ public class ErrorLoggingFilter implements Filter {
      * (non-Javadoc)
      * @see javax.servlet.Filter#destroy()
      */
+
     public void destroy() {
         // nothing to do
     }
@@ -88,8 +77,9 @@ public class ErrorLoggingFilter implements Filter {
      * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest,
      * javax.servlet.ServletResponse, javax.servlet.FilterChain)
      */
+
     public void doFilter(ServletRequest request, ServletResponse response,
-            FilterChain filterChain) throws IOException, ServletException {
+                         FilterChain filterChain) throws IOException, ServletException {
 
         Boolean alreadyForwarded = (Boolean) request
                 .getAttribute("org.jahia.exception.forwarded");
@@ -103,21 +93,21 @@ public class ErrorLoggingFilter implements Filter {
 
     protected void dumpToFile(HttpServletRequest request) {
         try {
-        Throwable t = getException(request);
+            Throwable t = getException(request);
 
-        int code = (Integer) request
-                .getAttribute("javax.servlet.error.status_code");
+            int code = (Integer) request
+                    .getAttribute("javax.servlet.error.status_code");
 
-        code = code != 0 ? code : SC_INTERNAL_SERVER_ERROR;
+            code = code != 0 ? code : SC_INTERNAL_SERVER_ERROR;
 
-        if (code < 500) {
-            logger.debug("Status code below 500, will not dump error to file");
-            return;
-        }
+            if (code < 500) {
+                logger.debug("Status code below 500, will not dump error to file");
+                return;
+            }
 
-        File errorFile = ErrorFileDumper.dumpToFile(t, request);
+            File errorFile = ErrorFileDumper.dumpToFile(t, request);
             if (errorFile != null) {
-            logger.error("Error details were dumped to file " + errorFile.getAbsolutePath());
+                logger.error("Error details were dumped to file " + errorFile.getAbsolutePath());
             }
         } catch (Throwable throwable) {
             logger.warn("Error creating error file", throwable);
@@ -126,8 +116,8 @@ public class ErrorLoggingFilter implements Filter {
     }
 
     protected void emailAlert(HttpServletRequest request,
-            HttpServletResponse response) {
-        
+                              HttpServletResponse response) {
+
         Throwable t = getException(request);
         try {
             if (lastMailedException != null && t != null
@@ -175,35 +165,35 @@ public class ErrorLoggingFilter implements Filter {
                 .getAttribute("javax.servlet.error.status_code");
 
         switch (code.intValue()) {
-        case SC_NOT_FOUND:
-            message = "Requested resource is not available: "
-                    + request.getAttribute("javax.servlet.error.request_uri");
-            break;
+            case SC_NOT_FOUND:
+                message = "Requested resource is not available: "
+                        + request.getAttribute("javax.servlet.error.request_uri");
+                break;
 
-        case SC_UNAUTHORIZED:
-            message = "Authorization required for resource: "
-                    + request.getAttribute("javax.servlet.error.request_uri");
-            break;
+            case SC_UNAUTHORIZED:
+                message = "Authorization required for resource: "
+                        + request.getAttribute("javax.servlet.error.request_uri");
+                break;
 
-        case SC_FORBIDDEN:
-            message = "Access denied for resource: "
-                    + request.getAttribute("javax.servlet.error.request_uri");
-            break;
+            case SC_FORBIDDEN:
+                message = "Access denied for resource: "
+                        + request.getAttribute("javax.servlet.error.request_uri");
+                break;
 
-        default:
-            if (message != null) {
-                if (ex != null && StringUtils.isNotEmpty(ex.getMessage())
-                        && !message.equals(ex.getMessage())) {
-                    message = message + ". Error message: " + ex.getMessage();
-                }
-            } else {
-                if (ex != null && StringUtils.isNotEmpty(ex.getMessage())) {
-                    message = ex.getMessage();
+            default:
+                if (message != null) {
+                    if (ex != null && StringUtils.isNotEmpty(ex.getMessage())
+                            && !message.equals(ex.getMessage())) {
+                        message = message + ". Error message: " + ex.getMessage();
+                    }
                 } else {
-                    message = "Unexpected exception occurred";
+                    if (ex != null && StringUtils.isNotEmpty(ex.getMessage())) {
+                        message = ex.getMessage();
+                    } else {
+                        message = "Unexpected exception occurred";
+                    }
                 }
-            }
-            break;
+                break;
         }
 
         if (logger.isInfoEnabled()) {
@@ -213,7 +203,7 @@ public class ErrorLoggingFilter implements Filter {
                 message = message
                         + "\n"
                         + request
-                                .getAttribute("org.jahia.exception.requestInfo");
+                        .getAttribute("org.jahia.exception.requestInfo");
             }
         }
 
@@ -221,7 +211,7 @@ public class ErrorLoggingFilter implements Filter {
     }
 
     protected void handle(HttpServletRequest request,
-            HttpServletResponse response) {
+                          HttpServletResponse response) {
 
         // add request information
         request.setAttribute("org.jahia.exception.requestInfo",
@@ -244,22 +234,23 @@ public class ErrorLoggingFilter implements Filter {
      * (non-Javadoc)
      * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
      */
+
     public void init(FilterConfig cfg) throws ServletException {
         // do nothing
     }
 
     protected boolean isEmailAlertRequired(HttpServletRequest request,
-            HttpServletResponse response) {
+                                           HttpServletResponse response) {
 
         Throwable error = getException(request);
 
         return error != null
                 && (error instanceof JahiaException)
                 && ServicesRegistry.getInstance().getMailService()
-                        .getSettings().getNotificationSeverity() != 0
+                .getSettings().getNotificationSeverity() != 0
                 && ServicesRegistry.getInstance().getMailService()
-                        .getSettings().getNotificationSeverity() <= ((JahiaException) error)
-                        .getSeverity();
+                .getSettings().getNotificationSeverity() <= ((JahiaException) error)
+                .getSeverity();
     }
 
     private boolean isMailServiceEnabled() {
@@ -267,7 +258,7 @@ public class ErrorLoggingFilter implements Filter {
     }
 
     protected void logDebugInfo(HttpServletRequest request,
-            HttpServletResponse response) {
+                                HttpServletResponse response) {
 
         if (logger.isDebugEnabled()) {
             logger.debug("Handling exception for request ["
@@ -282,7 +273,7 @@ public class ErrorLoggingFilter implements Filter {
                     + "\n"
                     + "Exception type: "
                     + request
-                            .getAttribute("javax.servlet.error.exception_type")
+                    .getAttribute("javax.servlet.error.exception_type")
                     + "\n" + "Exception: "
                     + request.getAttribute("javax.servlet.error.exception")
                     + "\n" + "Servlet name: "
@@ -291,7 +282,7 @@ public class ErrorLoggingFilter implements Filter {
     }
 
     protected void logException(HttpServletRequest request,
-            HttpServletResponse response) {
+                                HttpServletResponse response) {
 
         Throwable ex = getException(request);
         int code = (Integer) request
@@ -324,9 +315,8 @@ public class ErrorLoggingFilter implements Filter {
 
     /**
      * Returns the request information for logging purposes.
-     * 
-     * @param request
-     *            the http request object
+     *
+     * @param request the http request object
      * @return the request information for logging purposes
      */
     private static String getRequestInfo(HttpServletRequest request) {
@@ -341,10 +331,10 @@ public class ErrorLoggingFilter implements Filter {
             }
             info.append("Request information:").append("\nURL: ").append(uri)
                     .append("\nMethod: ").append(request.getMethod()).append(
-                            "\nProtocol: ").append(request.getProtocol())
+                    "\nProtocol: ").append(request.getProtocol())
                     .append("\nRemote host: ").append(request.getRemoteHost())
                     .append("\nRemote address: ").append(
-                            request.getRemoteAddr()).append("\nRemote port: ")
+                    request.getRemoteAddr()).append("\nRemote port: ")
                     .append(request.getRemotePort()).append("\nRemote user: ")
                     .append(request.getRemoteUser()).append("\nSession ID: ")
                     .append(request.getRequestedSessionId()).append("\nSession user: ")

@@ -7,11 +7,11 @@ import java.io.File;
 import java.io.IOException;
 
 /**
+ * A Log4J appender that will log exceptions through the ErrorFileDumper system.
  * Created by IntelliJ IDEA.
  * User: loom
  * Date: Jul 16, 2010
  * Time: 3:40:31 PM
- * To change this template use File | Settings | File Templates.
  */
 public class ExceptionAppender extends AppenderSkeleton {
 
@@ -20,7 +20,6 @@ public class ExceptionAppender extends AppenderSkeleton {
 
     @Override
     protected void append(LoggingEvent event) {
-        //To change body of implemented methods use File | Settings | File Templates.
         if (event.getThrowableInformation() != null) {
             try {
                 File errorFile = ErrorFileDumper.dumpToFile(event.getThrowableInformation().getThrowable(), null);
@@ -28,17 +27,16 @@ public class ExceptionAppender extends AppenderSkeleton {
                     System.err.println("Error dumped to file " + errorFile.getAbsolutePath());
                 }
             } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                e.printStackTrace();
             }
         }
     }
 
     public void close() {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public boolean requiresLayout() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return false;
     }
 
 }

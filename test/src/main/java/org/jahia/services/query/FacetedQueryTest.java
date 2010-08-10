@@ -348,7 +348,7 @@ public class FacetedQueryTest {
         Calendar calendar = new GregorianCalendar(2000, 0, 1, 12, 0);
 
         JCRNodeWrapper cats = session.getNode("/categories");
-        cats.checkout();
+        session.getWorkspace().getVersionManager().checkout(cats.getPath());
         if (!cats.hasNode("cat1")) cats.addNode("cat1", "jnt:category");
         if (!cats.hasNode("cat2")) cats.addNode("cat2", "jnt:category");
         if (!cats.hasNode("cat3")) cats.addNode("cat3", "jnt:category");
@@ -357,7 +357,7 @@ public class FacetedQueryTest {
         JCRNodeWrapper cat3 = cats.getNode("cat3");
 
         JCRNodeWrapper node = session.getNode("/sites/jcrFacetTest/contents");
-        node.checkout();
+        session.getWorkspace().getVersionManager().checkout(node.getPath());        
         createEvent(node, MEETING, PARIS, calendar, cat1, i++);
         createEvent(node, MEETING, GENEVA, calendar, cat1, i++);
         calendar.add(Calendar.DAY_OF_MONTH, 5);

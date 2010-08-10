@@ -96,7 +96,6 @@ import org.apache.jackrabbit.spi.commons.query.qom.SelectorImpl;
 import org.apache.jackrabbit.spi.commons.query.qom.SourceImpl;
 import org.apache.jackrabbit.spi.commons.query.qom.StaticOperandImpl;
 import org.apache.jackrabbit.spi.commons.query.qom.UpperCaseImpl;
-import org.apache.jackrabbit.util.Text;
 import org.apache.jackrabbit.value.ValueFactoryImpl;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
@@ -109,18 +108,17 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 /**
  * The default implementation of Jahia's QueryService.
  * 
- * Jahia's query service is based on the JCR QueryObjectModelFactory and thus supports all kinds of
- * complex queries specified in JSR-283 (Content Repository for Java� Technology API 2.0)
+ * Jahia's query service is based on the JCR QueryObjectModelFactory and thus supports all kinds of complex queries specified in JSR-283
+ * (Content Repository for Java� Technology API 2.0)
  * 
- * Queries can be created with the API by using the QueryObjectModel.
- * Jahia will also provide a query builder user interface.
- * It is also possible to use SQL-2 and the deprecated XPATH language. 
+ * Queries can be created with the API by using the QueryObjectModel. Jahia will also provide a query builder user interface. It is also
+ * possible to use SQL-2 and the deprecated XPATH language.
  * 
- * As Jahia can plug-in multiple repositories via the universal content hub (UCH), the queries can be
- * converted to other languages, like the EntropySoft connector query language.
+ * As Jahia can plug-in multiple repositories via the universal content hub (UCH), the queries can be converted to other languages, like the
+ * EntropySoft connector query language.
  * 
- * The query service provides methods to modify and optimize the queries to support and make use of Jahia's 
- * internal data model implementation.
+ * The query service provides methods to modify and optimize the queries to support and make use of Jahia's internal data model
+ * implementation.
  * 
  * @author Benjamin Papez
  */
@@ -131,17 +129,16 @@ public class QueryServiceImpl extends QueryService {
 
     /**
      * The initialization mode for the first QOM traversing iteration
-     */    
+     */
     private static int INITIALIZE_MODE = 1;
-    
+
     /**
      * The check for modification mode for the second QOM traversing iteration
      */
     private static int CHECK_FOR_MODIFICATION_MODE = 2;
-    
+
     /**
-     * The optional modification mode for the third QOM traversing iteration only called
-     * if query modification is necessary.
+     * The optional modification mode for the third QOM traversing iteration only called if query modification is necessary.
      */
     private static int MODIFY_MODE = 3;
 
@@ -151,8 +148,7 @@ public class QueryServiceImpl extends QueryService {
     }
 
     /**
-     * Return the unique service instance. If the instance does not exist, a new
-     * instance is created.
+     * Return the unique service instance. If the instance does not exist, a new instance is created.
      * 
      * @return The unique service instance.
      */
@@ -178,24 +174,34 @@ public class QueryServiceImpl extends QueryService {
         // do nothing
     }
 
-    /* (non-Javadoc)
-     * @see org.jahia.services.query.QueryService#modifyAndOptimizeQuery(javax.jcr.query.qom.QueryObjectModel, javax.jcr.query.qom.QueryObjectModelFactory, org.jahia.services.content.JCRSessionWrapper)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.jahia.services.query.QueryService#modifyAndOptimizeQuery(javax.jcr.query.qom.QueryObjectModel,
+     * javax.jcr.query.qom.QueryObjectModelFactory, org.jahia.services.content.JCRSessionWrapper)
      */
-    public QueryObjectModel modifyAndOptimizeQuery(QueryObjectModel qom, 
-            QueryObjectModelFactory qomFactory, JCRSessionWrapper session) throws RepositoryException {
-        ModificationInfo info = getModificationInfo(qom.getSource(), qom.getConstraint(), qom.getOrderings(), qom
-                .getColumns(), qomFactory, session);
+    public QueryObjectModel modifyAndOptimizeQuery(QueryObjectModel qom,
+            QueryObjectModelFactory qomFactory, JCRSessionWrapper session)
+            throws RepositoryException {
+        ModificationInfo info = getModificationInfo(qom.getSource(), qom.getConstraint(),
+                qom.getOrderings(), qom.getColumns(), qomFactory, session);
         return info.getNewQueryObjectModel() != null ? info.getNewQueryObjectModel() : qom;
     }
 
-    /* (non-Javadoc)
-     * @see org.jahia.services.query.QueryService#modifyAndOptimizeQuery(javax.jcr.query.qom.Source, javax.jcr.query.qom.Constraint, javax.jcr.query.qom.Ordering[], javax.jcr.query.qom.Column[], javax.jcr.query.qom.QueryObjectModelFactory, org.jahia.services.content.JCRSessionWrapper)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.jahia.services.query.QueryService#modifyAndOptimizeQuery(javax.jcr.query.qom.Source, javax.jcr.query.qom.Constraint,
+     * javax.jcr.query.qom.Ordering[], javax.jcr.query.qom.Column[], javax.jcr.query.qom.QueryObjectModelFactory,
+     * org.jahia.services.content.JCRSessionWrapper)
      */
-    public QueryObjectModel modifyAndOptimizeQuery(Source source, Constraint constraint, Ordering[] orderings,
-            Column[] columns, QueryObjectModelFactory qomFactory, JCRSessionWrapper session) throws RepositoryException {
-        ModificationInfo info = getModificationInfo(source, constraint, orderings, columns, qomFactory, session);
-        return info.getNewQueryObjectModel() != null ? info.getNewQueryObjectModel() : qomFactory.createQuery(source,
-                constraint, orderings, columns);
+    public QueryObjectModel modifyAndOptimizeQuery(Source source, Constraint constraint,
+            Ordering[] orderings, Column[] columns, QueryObjectModelFactory qomFactory,
+            JCRSessionWrapper session) throws RepositoryException {
+        ModificationInfo info = getModificationInfo(source, constraint, orderings, columns,
+                qomFactory, session);
+        return info.getNewQueryObjectModel() != null ? info.getNewQueryObjectModel() : qomFactory
+                .createQuery(source, constraint, orderings, columns);
     }
 
     protected Source getModifiedSource(Source source, ModificationInfo info) {
@@ -205,19 +211,20 @@ public class QueryServiceImpl extends QueryService {
     /**
      * We use a QOMTreeVisitor implementation to traverse through the query object model three times.
      * 
-     * The ModificationInfo.mode changes before each iteration from INITIALIZE_MODE to 
-     * CHECK_FOR_MODIFICATION_MODE and at last MODIFY_MODE, which is only called if modification is necessary.  
+     * The ModificationInfo.mode changes before each iteration from INITIALIZE_MODE to CHECK_FOR_MODIFICATION_MODE and at last MODIFY_MODE,
+     * which is only called if modification is necessary.
      */
-    protected ModificationInfo getModificationInfo(Source source, Constraint constraint, Ordering[] orderings,
-            Column[] columns, QueryObjectModelFactory qomFactory, JCRSessionWrapper session) throws RepositoryException {
+    protected ModificationInfo getModificationInfo(Source source, Constraint constraint,
+            Ordering[] orderings, Column[] columns, QueryObjectModelFactory qomFactory,
+            JCRSessionWrapper session) throws RepositoryException {
         ModificationInfo info = new ModificationInfo(qomFactory);
 
         QOMTreeVisitor visitor = new QueryModifierAndOptimizerVisitor(info, source, session);
 
         try {
             info.setMode(INITIALIZE_MODE);
-            ((SourceImpl)source).accept(visitor, null);
-            
+            ((SourceImpl) source).accept(visitor, null);
+
             if (constraint != null) {
                 ((ConstraintImpl) constraint).accept(visitor, null);
             }
@@ -230,18 +237,18 @@ public class QueryServiceImpl extends QueryService {
                 for (Column column : columns) {
                     ((ColumnImpl) column).accept(visitor, null);
                 }
-            }  
+            }
         } catch (Exception e) {
             throw new RepositoryException(e);
         }
         try {
             info.setMode(CHECK_FOR_MODIFICATION_MODE);
-            ((SourceImpl)source).accept(visitor, null);
-            
+            ((SourceImpl) source).accept(visitor, null);
+
             if (constraint != null) {
                 ((ConstraintImpl) constraint).accept(visitor, null);
             }
-            if (orderings != null)  {
+            if (orderings != null) {
                 for (Ordering ordering : orderings) {
                     ((OrderingImpl) ordering).accept(visitor, null);
                 }
@@ -261,19 +268,21 @@ public class QueryServiceImpl extends QueryService {
         return info;
     }
 
-    protected void makeModifications(Source source, Constraint constraint, Ordering[] orderings, Column[] columns,
-            ModificationInfo info, QOMTreeVisitor visitor, QueryObjectModelFactory qomFactory)
-            throws RepositoryException {
+    protected void makeModifications(Source source, Constraint constraint, Ordering[] orderings,
+            Column[] columns, ModificationInfo info, QOMTreeVisitor visitor,
+            QueryObjectModelFactory qomFactory) throws RepositoryException {
         info.setMode(MODIFY_MODE);
 
         try {
-            Source newSource = (Source)((SourceImpl)getModifiedSource(source, info)).accept(visitor, null);
-            
+            Source newSource = (Source) ((SourceImpl) getModifiedSource(source, info)).accept(
+                    visitor, null);
+
             Constraint newConstraint = null;
             if (constraint != null) {
                 newConstraint = (Constraint) ((ConstraintImpl) constraint).accept(visitor, null);
                 for (Constraint constraintToAdd : info.getNewConstraints()) {
-                    newConstraint = info.getQueryObjectModelFactory().and(newConstraint, constraintToAdd);
+                    newConstraint = info.getQueryObjectModelFactory().and(newConstraint,
+                            constraintToAdd);
                 }
             }
 
@@ -285,15 +294,15 @@ public class QueryServiceImpl extends QueryService {
                 newOrdering = (Ordering) ((OrderingImpl) ordering).accept(visitor, null);
                 newOrderings[i++] = newOrdering;
             }
-            
-            Column[] newColumns = new Column[columns.length];            
+
+            Column[] newColumns = new Column[columns.length];
             i = 0;
             for (Column column : columns) {
                 Column newColumn = column;
 
                 newColumn = (Column) ((ColumnImpl) column).accept(visitor, null);
                 newColumns[i++] = newColumn;
-            }            
+            }
             info.setNewQueryObjectModel(info.getQueryObjectModelFactory().createQuery(newSource,
                     newConstraint, newOrderings, newColumns));
         } catch (Exception e) {
@@ -313,7 +322,9 @@ public class QueryServiceImpl extends QueryService {
         return foundSelector;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.jahia.services.query.QueryService#getValueFactory()
      */
     public ValueFactory getValueFactory() {
@@ -323,21 +334,20 @@ public class QueryServiceImpl extends QueryService {
     /**
      * We use this QOMTreeVisitor implementation to traverse through the query object model three times.
      * 
-     * The ModificationInfo.mode changes before each iteration from INITIALIZE_MODE to 
-     * CHECK_FOR_MODIFICATION_MODE and at last MODIFY_MODE, which is only called if modification is necessary.
+     * The ModificationInfo.mode changes before each iteration from INITIALIZE_MODE to CHECK_FOR_MODIFICATION_MODE and at last MODIFY_MODE,
+     * which is only called if modification is necessary.
      * 
-     * In INITIALIZE_MODE we analyze the query to check, whether language constraints are already set for
-     * selectors and we check whether selectors to nodes having internationlized properties are already joined with
-     * their translation nodes and we store the node types per selector.
+     * In INITIALIZE_MODE we analyze the query to check, whether language constraints are already set for selectors and we check whether
+     * selectors to nodes having internationlized properties are already joined with their translation nodes and we store the node types per
+     * selector.
      * 
-     * In CHECK_FOR_MODIFICATION_MODE we analyze the query to see, whether modifications needs to be made because
-     * of Jahia's internal datamodel changes (mainly internationalized properties, which are copied to subnodes and
-     * propertynames are suffixed with the language code). We will also check if modifications need to be done due to
-     * performance optimizations. This mode sets the ModificationInfo.modificationNecessary variable to mark the 
-     * necessity of modification.
+     * In CHECK_FOR_MODIFICATION_MODE we analyze the query to see, whether modifications needs to be made because of Jahia's internal
+     * datamodel changes (mainly internationalized properties, which are copied to subnodes and propertynames are suffixed with the language
+     * code). We will also check if modifications need to be done due to performance optimizations. This mode sets the
+     * ModificationInfo.modificationNecessary variable to mark the necessity of modification.
      * 
-     * The MODIFY_MODE is only called if modification appears necessary (after previous step). This mode returns a 
-     * modified query object model in ModificationInfo.newQueryObjectModel.
+     * The MODIFY_MODE is only called if modification appears necessary (after previous step). This mode returns a modified query object
+     * model in ModificationInfo.newQueryObjectModel.
      * 
      */
     class QueryModifierAndOptimizerVisitor extends DefaultQOMTreeVisitor {
@@ -347,39 +357,51 @@ public class QueryServiceImpl extends QueryService {
 
         private Map<String, Selector> selectorsJoinedWithTranslation = new HashMap<String, Selector>();
 
-        private Map<String, List<String>> languagesPerSelector = new HashMap<String, List<String>>();
+        private Map<String, Set<String>> languagesPerSelector = new HashMap<String, Set<String>>();
+
+        private Map<String, Set<String>> newLanguagesPerSelector = new HashMap<String, Set<String>>();
 
         private Map<String, Set<String>> nodeTypesPerSelector = new HashMap<String, Set<String>>();
 
-        private JCRSessionWrapper session = null;        
+        private static final String NO_LOCALE = "no_locale";
+
+        private JCRSessionWrapper session = null;
 
         /**
-         * Constructor for the QueryModifierAndOptimizerVisitor 
-         * @param modificationInfo object gathering all modification infos
-         * @param originalSource Source object of original query
-         * @param session the current JCR session used for the query 
+         * Constructor for the QueryModifierAndOptimizerVisitor
+         * 
+         * @param modificationInfo
+         *            object gathering all modification infos
+         * @param originalSource
+         *            Source object of original query
+         * @param session
+         *            the current JCR session used for the query
          */
-        public QueryModifierAndOptimizerVisitor(ModificationInfo modificationInfo, Source originalSource,
-                JCRSessionWrapper session) {
+        public QueryModifierAndOptimizerVisitor(ModificationInfo modificationInfo,
+                Source originalSource, JCRSessionWrapper session) {
             super();
             this.modificationInfo = modificationInfo;
             this.originalSource = originalSource;
-            this.session = session;            
+            this.session = session;
         }
 
         /**
-         * In INITIALIZE_MODE checks whether a selector is set to nt:base and in such a case looks, which nodes are actually 
-         * placed as child nodes. If all are the same then store the primaryChildNodeType, otherwise the nodetypes, common to
-         * all child nodes. This is needed to be able to obtain property definitions.
+         * In INITIALIZE_MODE checks whether a selector is set to nt:base and in such a case looks, which nodes are actually placed as child
+         * nodes. If all are the same then store the primaryChildNodeType, otherwise the nodetypes, common to all child nodes. This is
+         * needed to be able to obtain property definitions.
          * 
          * In MODIFY_MODE return the unchanged node.
          */
-        @Override        
+        @Override
         public Object visit(ChildNodeImpl node, Object data) throws Exception {
             if (getModificationInfo().getMode() == INITIALIZE_MODE) {
-                if (Constants.NT_BASE.equals(getSelector(getOriginalSource(), node.getSelectorName()).getNodeTypeName())) {
+                String nodeTypeName = getSelector(getOriginalSource(), node.getSelectorName())
+                        .getNodeTypeName();
+                if (Constants.NT_BASE.equals(nodeTypeName)
+                        || Constants.JAHIANT_CONTENT.equals(nodeTypeName)) {
                     Set<String> commonChildNodeTypes = new HashSet<String>();
-                    String primaryChildNodeType = getCommonChildNodeTypes(node.getParentPath(), commonChildNodeTypes);
+                    String primaryChildNodeType = getCommonChildNodeTypes(node.getParentPath(),
+                            commonChildNodeTypes);
                     if (primaryChildNodeType != null) {
                         commonChildNodeTypes = new HashSet<String>();
                         commonChildNodeTypes.add(primaryChildNodeType);
@@ -392,48 +414,48 @@ public class QueryServiceImpl extends QueryService {
         }
 
         /**
-         * In INITIALIZE_MODE checks whether the propertyName of the QOM node is internationalized. If yes and the selector for the translation
-         * subnode is missing, indicate creation and that the query must be modified, which is done in MODIFY_MODE. 
+         * In INITIALIZE_MODE checks whether the propertyName of the QOM node is internationalized. If yes and the selector for the
+         * translation subnode is missing, indicate creation and that the query must be modified, which is done in MODIFY_MODE.
          * 
          * In MODIFY_MODE either return the modified node or if modification is not necessary, the unchanged node.
          */
-        @Override        
+        @Override
         public Object visit(PropertyValueImpl node, Object data) throws Exception {
             Object returnedData = getNewPropertyBasedNodeIfRequired(node);
             return (getModificationInfo().getMode() == MODIFY_MODE ? returnedData : node);
         }
 
         /**
-         * In INITIALIZE_MODE checks whether the propertyName of the QOM node is internationalized. If yes and the selector for the translation
-         * subnode is missing, indicate creation and that the query must be modified, which is done in MODIFY_MODE. 
+         * In INITIALIZE_MODE checks whether the propertyName of the QOM node is internationalized. If yes and the selector for the
+         * translation subnode is missing, indicate creation and that the query must be modified, which is done in MODIFY_MODE.
          * 
          * In MODIFY_MODE either return the modified node or if modification is not necessary, the unchanged node.
          */
-        @Override        
+        @Override
         public Object visit(ColumnImpl node, Object data) throws Exception {
             Object returnedData = getNewPropertyBasedNodeIfRequired(node);
             return (getModificationInfo().getMode() == MODIFY_MODE ? returnedData : node);
         }
 
         /**
-         * In INITIALIZE_MODE checks whether the propertyName of the QOM node is internationalized. If yes and the selector for the translation
-         * subnode is missing, indicate creation and that the query must be modified, which is done in MODIFY_MODE. 
+         * In INITIALIZE_MODE checks whether the propertyName of the QOM node is internationalized. If yes and the selector for the
+         * translation subnode is missing, indicate creation and that the query must be modified, which is done in MODIFY_MODE.
          * 
          * In MODIFY_MODE either return the modified node or if modification is not necessary, the unchanged node.
          */
-        @Override        
+        @Override
         public Object visit(FullTextSearchImpl node, Object data) throws Exception {
             Object returnedData = getNewPropertyBasedNodeIfRequired(node);
             return (getModificationInfo().getMode() == MODIFY_MODE ? returnedData : node);
         }
 
         /**
-         * In INITIALIZE_MODE checks whether the propertyName of the QOM node is internationalized. If yes and the selector for the translation
-         * subnode is missing, indicate creation and that the query must be modified, which is done in MODIFY_MODE. 
+         * In INITIALIZE_MODE checks whether the propertyName of the QOM node is internationalized. If yes and the selector for the
+         * translation subnode is missing, indicate creation and that the query must be modified, which is done in MODIFY_MODE.
          * 
          * In MODIFY_MODE either return the modified node or if modification is not necessary, the unchanged node.
          */
-        @Override        
+        @Override
         public Object visit(PropertyExistenceImpl node, Object data) throws Exception {
             Object returnedData = getNewPropertyBasedNodeIfRequired(node);
             return (getModificationInfo().getMode() == MODIFY_MODE ? returnedData : node);
@@ -442,10 +464,10 @@ public class QueryServiceImpl extends QueryService {
         /**
          * Calls accept on each of the attached constraints of the AND node.
          * 
-         * In MODIFY_MODE check if the constraints returned were modified, and if yes create a new node and return it, 
-         * otherwise return the unchanged node.
+         * In MODIFY_MODE check if the constraints returned were modified, and if yes create a new node and return it, otherwise return the
+         * unchanged node.
          */
-        @Override        
+        @Override
         public final Object visit(AndImpl node, Object data) throws Exception {
             Constraint constraint1 = node.getConstraint1();
             Constraint constraint2 = node.getConstraint2();
@@ -463,8 +485,8 @@ public class QueryServiceImpl extends QueryService {
                 modified = true;
             }
             if (getModificationInfo().getMode() == MODIFY_MODE) {
-                data = modified ? getModificationInfo().getQueryObjectModelFactory().and(constraint1, constraint2)
-                        : node;
+                data = modified ? getModificationInfo().getQueryObjectModelFactory().and(
+                        constraint1, constraint2) : node;
             }
             return data;
         }
@@ -472,25 +494,27 @@ public class QueryServiceImpl extends QueryService {
         /**
          * Calls accept on the two operands in the comparison node.
          * 
-         * In INITIALIZE_MODE check whether there is already a language based comparison in the original query, so 
-         * that this language is used instead of the current locale in the session.
+         * In INITIALIZE_MODE check whether there is already a language based comparison in the original query, so that this language is
+         * used instead of the current locale in the session.
          * 
-         * In MODIFY_MODE check if the dynamic operand returned was modified, and if yes create a new node and return it, 
-         * otherwise return the unchanged node.   
+         * In MODIFY_MODE check if the dynamic operand returned was modified, and if yes create a new node and return it, otherwise return
+         * the unchanged node.
          */
-        @Override        
+        @Override
         public Object visit(ComparisonImpl node, Object data) throws Exception {
             Object returnedData = ((DynamicOperandImpl) node.getOperand1()).accept(this, data);
 
             if (getModificationInfo().getMode() == INITIALIZE_MODE) {
                 if (QueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO.equals(node.getOperator())
                         && node.getOperand1() instanceof PropertyValue
-                        && Constants.JCR_LANGUAGE.equals(((PropertyValue) node.getOperand1()).getPropertyName())) {
-                    Selector selector = getSelector(getOriginalSource(), ((PropertyValue) node.getOperand1())
-                            .getSelectorName());
-                    List<String> languages = getLanguagesPerSelector().get(selector.getSelectorName());
+                        && Constants.JCR_LANGUAGE.equals(((PropertyValue) node.getOperand1())
+                                .getPropertyName())) {
+                    Selector selector = getSelector(getOriginalSource(),
+                            ((PropertyValue) node.getOperand1()).getSelectorName());
+                    Set<String> languages = getLanguagesPerSelector().get(
+                            selector.getSelectorName());
                     if (languages == null) {
-                        languages = new ArrayList<String>();
+                        languages = new HashSet<String>();
                         getLanguagesPerSelector().put(selector.getSelectorName(), languages);
                     }
                     String language = ((Literal) node.getOperand2()).getLiteralValue().getString();
@@ -504,50 +528,54 @@ public class QueryServiceImpl extends QueryService {
 
             if (getModificationInfo().getMode() == MODIFY_MODE) {
                 data = returnedData != null && !returnedData.equals(node.getOperand1()) ? getModificationInfo()
-                        .getQueryObjectModelFactory().comparison((DynamicOperand) returnedData, node.getOperator(),
-                                node.getOperand2()) : node;
+                        .getQueryObjectModelFactory().comparison((DynamicOperand) returnedData,
+                                node.getOperator(), node.getOperand2()) : node;
             }
 
             return data;
         }
 
         /**
-         * Calls accept on the two sources and the join condition in the join
-         * node.
+         * Calls accept on the two sources and the join condition in the join node.
          * 
-         * In INITIALIZE_MODE check whether the original query already contains a childnode-JOIN on the translation
-         * node, so that it then does not have to be added.
+         * In INITIALIZE_MODE check whether the original query already contains a childnode-JOIN on the translation node, so that it then
+         * does not have to be added.
          * 
-         * In MODIFY_MODE check if the sources or join condition returned were modified, and if yes create a new 
-         * node and return it, otherwise return the unchanged node. 
+         * In MODIFY_MODE check if the sources or join condition returned were modified, and if yes create a new node and return it,
+         * otherwise return the unchanged node.
          */
-        @Override        
+        @Override
         public Object visit(JoinImpl node, Object data) throws Exception {
             if (getModificationInfo().getMode() == INITIALIZE_MODE) {
                 if (node.getJoinCondition() instanceof ChildNodeJoinCondition) {
-                    ChildNodeJoinCondition childNodeJoin = (ChildNodeJoinCondition) node.getJoinCondition();
+                    ChildNodeJoinCondition childNodeJoin = (ChildNodeJoinCondition) node
+                            .getJoinCondition();
                     String childSelectorName = childNodeJoin.getChildSelectorName();
                     Selector childSelector = getSelector(getOriginalSource(), childSelectorName);
                     if (Constants.JAHIANT_TRANSLATION.equals(childSelector.getNodeTypeName())) {
-                        getSelectorsJoinedWithTranslation().put(childNodeJoin.getParentSelectorName(), childSelector);
+                        getSelectorsJoinedWithTranslation().put(
+                                childNodeJoin.getParentSelectorName(), childSelector);
                     }
                 }
             }
 
             Object returnedRight = ((SourceImpl) node.getRight()).accept(this, data);
             Object returnedLeft = ((SourceImpl) node.getLeft()).accept(this, data);
-            Object returnedJoinCondition = ((JoinConditionImpl) node.getJoinCondition()).accept(this, data);
+            Object returnedJoinCondition = ((JoinConditionImpl) node.getJoinCondition()).accept(
+                    this, data);
 
             if (getModificationInfo().getMode() == MODIFY_MODE) {
-                data = returnedRight != null && !returnedRight.equals(node.getRight()) || returnedLeft != null
-                        && !returnedLeft.equals(node.getLeft()) || returnedJoinCondition != null
+                data = returnedRight != null && !returnedRight.equals(node.getRight())
+                        || returnedLeft != null && !returnedLeft.equals(node.getLeft())
+                        || returnedJoinCondition != null
                         && !returnedJoinCondition.equals(node.getJoinCondition()) ? getModificationInfo()
-                        .getQueryObjectModelFactory().join(
-                                returnedLeft != null ? (Source) returnedLeft : node.getLeft(),
+                        .getQueryObjectModelFactory()
+                        .join(returnedLeft != null ? (Source) returnedLeft : node.getLeft(),
                                 returnedRight != null ? (Source) returnedRight : node.getRight(),
                                 node.getJoinType(),
-                                returnedJoinCondition != null ? (JoinCondition) returnedJoinCondition : node
-                                        .getJoinCondition()) : node;
+                                returnedJoinCondition != null ? (JoinCondition) returnedJoinCondition
+                                        : node.getJoinCondition())
+                        : node;
             }
 
             return data;
@@ -556,8 +584,8 @@ public class QueryServiceImpl extends QueryService {
         /**
          * Calls accept on the property value in the length node.
          * 
-         * In MODIFY_MODE check if the property value returned was modified, and if yes create a new node and return it, 
-         * otherwise return the unchanged node. 
+         * In MODIFY_MODE check if the property value returned was modified, and if yes create a new node and return it, otherwise return
+         * the unchanged node.
          */
         @Override
         public Object visit(LengthImpl node, Object data) throws Exception {
@@ -572,15 +600,16 @@ public class QueryServiceImpl extends QueryService {
         /**
          * Calls accept on the dynamic operand in the lower-case node.
          * 
-         * In MODIFY_MODE check if the operand returned was modified, and if yes create a new node and return it, 
-         * otherwise return the unchanged node. 
+         * In MODIFY_MODE check if the operand returned was modified, and if yes create a new node and return it, otherwise return the
+         * unchanged node.
          */
         @Override
         public Object visit(LowerCaseImpl node, Object data) throws Exception {
             Object returnedData = ((DynamicOperandImpl) node.getOperand()).accept(this, data);
             if (getModificationInfo().getMode() == MODIFY_MODE) {
                 data = returnedData != null && !returnedData.equals(node.getOperand()) ? getModificationInfo()
-                        .getQueryObjectModelFactory().lowerCase((DynamicOperand) returnedData) : node;
+                        .getQueryObjectModelFactory().lowerCase((DynamicOperand) returnedData)
+                        : node;
             }
             return data;
         }
@@ -588,10 +617,10 @@ public class QueryServiceImpl extends QueryService {
         /**
          * Calls accept on the constraint in the NOT node.
          * 
-         * In MODIFY_MODE check if the constraint returned was modified, and if yes create a new node and return it, 
-         * otherwise return the unchanged node. 
+         * In MODIFY_MODE check if the constraint returned was modified, and if yes create a new node and return it, otherwise return the
+         * unchanged node.
          */
-        @Override        
+        @Override
         public Object visit(NotImpl node, Object data) throws Exception {
             Object returnedData = ((ConstraintImpl) node.getConstraint()).accept(this, data);
             if (getModificationInfo().getMode() == MODIFY_MODE) {
@@ -604,17 +633,18 @@ public class QueryServiceImpl extends QueryService {
         /**
          * Calls accept on the dynamic operand in the ordering node.
          * 
-         * In MODIFY_MODE check if the operand returned was modified, and if yes create a new node and return it, 
-         * otherwise return the unchanged node.  
+         * In MODIFY_MODE check if the operand returned was modified, and if yes create a new node and return it, otherwise return the
+         * unchanged node.
          */
-        @Override        
+        @Override
         public Object visit(OrderingImpl node, Object data) throws Exception {
             Object returnedData = ((DynamicOperandImpl) node.getOperand()).accept(this, data);
 
             if (getModificationInfo().getMode() == MODIFY_MODE) {
-                data = returnedData != null && !returnedData.equals(node.getOperand()) ? (node.isAscending() ? getModificationInfo()
-                        .getQueryObjectModelFactory().ascending((DynamicOperand) returnedData)
-                        : getModificationInfo().getQueryObjectModelFactory().descending((DynamicOperand) returnedData))
+                data = returnedData != null && !returnedData.equals(node.getOperand()) ? (node
+                        .isAscending() ? getModificationInfo().getQueryObjectModelFactory()
+                        .ascending((DynamicOperand) returnedData) : getModificationInfo()
+                        .getQueryObjectModelFactory().descending((DynamicOperand) returnedData))
                         : node;
             }
             return data;
@@ -623,10 +653,10 @@ public class QueryServiceImpl extends QueryService {
         /**
          * Calls accept on each of the attached constraints of the OR node.
          * 
-         * In MODIFY_MODE check if the constraints returned were modified, and if yes create a new node and return it, 
-         * otherwise return the unchanged node. 
+         * In MODIFY_MODE check if the constraints returned were modified, and if yes create a new node and return it, otherwise return the
+         * unchanged node.
          */
-        @Override        
+        @Override
         public final Object visit(OrImpl node, Object data) throws Exception {
             Constraint constraint1 = node.getConstraint1();
             Constraint constraint2 = node.getConstraint2();
@@ -644,8 +674,8 @@ public class QueryServiceImpl extends QueryService {
                 modified = true;
             }
             if (getModificationInfo().getMode() == MODIFY_MODE) {
-                data = modified ? getModificationInfo().getQueryObjectModelFactory().or(constraint1, constraint2)
-                        : node;
+                data = modified ? getModificationInfo().getQueryObjectModelFactory().or(
+                        constraint1, constraint2) : node;
             }
             return data;
         }
@@ -659,10 +689,10 @@ public class QueryServiceImpl extends QueryService {
          * <li>Columns</li>
          * </ul>
          * 
-         * In MODIFY_MODE check if the nodes returned were modified, and if yes create a new QOM and return it, 
-         * otherwise return the unchanged QOM.  
+         * In MODIFY_MODE check if the nodes returned were modified, and if yes create a new QOM and return it, otherwise return the
+         * unchanged QOM.
          */
-        @Override        
+        @Override
         public Object visit(QueryObjectModelTree node, Object data) throws Exception {
             node.getSource().accept(this, data);
 
@@ -682,10 +712,11 @@ public class QueryServiceImpl extends QueryService {
                 newColumnObjects[i] = columns[i].accept(this, data);
             }
             if (getModificationInfo().getMode() == MODIFY_MODE) {
-                data = newConstraint != null && !newConstraint.equals(constraint) || newOrderingObjects != null
-                        && !newOrderingObjects.equals(orderings) || newColumnObjects != null
-                        && !newColumnObjects.equals(columns) ? getModificationInfo().getQueryObjectModelFactory()
-                        .createQuery(getModifiedSource(node.getSource(), getModificationInfo()),
+                data = newConstraint != null && !newConstraint.equals(constraint)
+                        || newOrderingObjects != null && !newOrderingObjects.equals(orderings)
+                        || newColumnObjects != null && !newColumnObjects.equals(columns) ? getModificationInfo()
+                        .getQueryObjectModelFactory().createQuery(
+                                getModifiedSource(node.getSource(), getModificationInfo()),
                                 (Constraint) newConstraint, (Ordering[]) newOrderingObjects,
                                 (Column[]) newColumnObjects) : node;
             }
@@ -695,8 +726,8 @@ public class QueryServiceImpl extends QueryService {
         /**
          * Calls accept on the dynamic operand in the lower-case node.
          * 
-         * In MODIFY_MODE check if the operand returned was modified, and if yes create a new node and return it, 
-         * otherwise return the unchanged node. 
+         * In MODIFY_MODE check if the operand returned was modified, and if yes create a new node and return it, otherwise return the
+         * unchanged node.
          */
         @Override
         public Object visit(UpperCaseImpl node, Object data) throws Exception {
@@ -707,7 +738,6 @@ public class QueryServiceImpl extends QueryService {
             }
             return data;
         }
-
 
         /**
          * Does nothing and returns <code>data</code>, but in MODIFY_NODE return the unchanged node.
@@ -726,17 +756,16 @@ public class QueryServiceImpl extends QueryService {
         }
 
         /**
-         * In MODIFY_MODE check if the selector is based on a nodetype, which is modified so that the translation subnode
-         * is used in the query. In this case create a new fullTextSearchScore node pointing to the selector of the
-         * translation nodetype. 
+         * In MODIFY_MODE check if the selector is based on a nodetype, which is modified so that the translation subnode is used in the
+         * query. In this case create a new fullTextSearchScore node pointing to the selector of the translation nodetype.
          */
         @Override
         public Object visit(FullTextSearchScoreImpl node, Object data) throws Exception {
-            return (getModificationInfo().getMode() == MODIFY_MODE ? (getSelectorsJoinedWithTranslation().get(
-                    node.getSelectorName()) != null ? getModificationInfo().getQueryObjectModelFactory()
-                    .fullTextSearchScore(
-                            getSelectorsJoinedWithTranslation().get(node.getSelectorName()).getSelectorName()) : node)
-                    : data);
+            return (getModificationInfo().getMode() == MODIFY_MODE ? (getSelectorsJoinedWithTranslation()
+                    .get(node.getSelectorName()) != null ? getModificationInfo()
+                    .getQueryObjectModelFactory().fullTextSearchScore(
+                            getSelectorsJoinedWithTranslation().get(node.getSelectorName())
+                                    .getSelectorName()) : node) : data);
         }
 
         /**
@@ -788,15 +817,15 @@ public class QueryServiceImpl extends QueryService {
         }
 
         /**
-         * In INITIALIZE_MODE checks whether the propertyName of the QOM node is internationalized. If yes and the selector for the translation
-         * subnode is missing, indicate creation and that the query must be modified, which is done in MODIFY_MODE. 
+         * In INITIALIZE_MODE checks whether the propertyName of the QOM node is internationalized. If yes and the selector for the
+         * translation subnode is missing, indicate creation and that the query must be modified, which is done in MODIFY_MODE.
          * 
          * In MODIFY_MODE either return the modified node or if modification is not necessary, the unchanged node.
          */
         @Override
         public Object visit(EquiJoinConditionImpl node, Object data) throws Exception {
             Object returnedData = getNewPropertyBasedNodeIfRequired(node);
-            return (getModificationInfo().getMode() == MODIFY_MODE ? returnedData : node);            
+            return (getModificationInfo().getMode() == MODIFY_MODE ? returnedData : node);
         }
 
         /**
@@ -813,19 +842,23 @@ public class QueryServiceImpl extends QueryService {
         @Override
         public Object visit(SelectorImpl node, Object data) throws Exception {
             if (getModificationInfo().getMode() == INITIALIZE_MODE) {
-                if (node.equals(getOriginalSource()) && Constants.JAHIANT_TRANSLATION.equals(node.getNodeTypeName())) {
+                if (node.equals(getOriginalSource())
+                        && Constants.JAHIANT_TRANSLATION.equals(node.getNodeTypeName())) {
                     getSelectorsJoinedWithTranslation().put(node.getSelectorName(), node);
                 }
             }
-            return super.visit(node, data);
+            return (getModificationInfo().getMode() == MODIFY_MODE ? node : data);
         }
 
-        private AbstractQOMNode getNewPropertyBasedNodeIfRequired(AbstractQOMNode node) throws RepositoryException {
+        private AbstractQOMNode getNewPropertyBasedNodeIfRequired(AbstractQOMNode node)
+                throws RepositoryException {
             AbstractQOMNode newNode = node;
             if (node instanceof EquiJoinCondition) {
-                newNode = getNewPropertyBasedNodeIfRequired(((EquiJoinCondition) node).getSelector1Name(),
+                newNode = getNewPropertyBasedNodeIfRequired(
+                        ((EquiJoinCondition) node).getSelector1Name(),
                         ((EquiJoinCondition) node).getProperty1Name(), node);
-                newNode = getNewPropertyBasedNodeIfRequired(((EquiJoinCondition) node).getSelector2Name(),
+                newNode = getNewPropertyBasedNodeIfRequired(
+                        ((EquiJoinCondition) node).getSelector2Name(),
                         ((EquiJoinCondition) node).getProperty2Name(), newNode);
             } else {
                 String selectorName = null;
@@ -847,128 +880,117 @@ public class QueryServiceImpl extends QueryService {
             }
             return newNode;
         }
-        
-        private AbstractQOMNode getNewPropertyBasedNodeIfRequired (String selectorName, String propertyName, AbstractQOMNode node) throws RepositoryException {
+
+        private AbstractQOMNode getNewPropertyBasedNodeIfRequired(String selectorName,
+                String propertyName, AbstractQOMNode node) throws RepositoryException {
             Selector selector = getSelector(getOriginalSource(), selectorName);
             if (selector == null) {
                 return node;
             }
 
             try {
-                List<String> languageCodes = getLanguagesPerSelector().get(selector.getSelectorName());
-                if ((languageCodes == null || languageCodes.isEmpty()) && session != null && session.getLocale() != null) {
-                    languageCodes = new ArrayList<String>();
-                    languageCodes.add(session.getLocale().toString());
-                }
-                boolean isFilter = false;
-                if (node instanceof FullTextSearch && StringUtils.startsWith(propertyName, "rep:filter(")) {
-                    propertyName = Text.unescapeIllegalJcrChars(propertyName.substring(
-                            "rep:filter(".length(), propertyName.lastIndexOf(")")));
-                    isFilter = true;
-                }
-                if (languageCodes != null && !languageCodes.isEmpty()) {
-                    ExtendedNodeType nodeType = NodeTypeRegistry.getInstance().getNodeType(selector.getNodeTypeName());
-                    boolean isFulltextIncludingMultilingualProperties = (propertyName == null && node instanceof FullTextSearch) ? 
-                            isFulltextIncludingMultilingualProperties(nodeType, selector) : false;
-                    ExtendedPropertyDefinition propDef = propertyName != null ? getPropertyDefinition(nodeType,
-                            selector, propertyName) : null;
-                    if (propDef != null && propDef.isInternationalized() || isFulltextIncludingMultilingualProperties) {
-                        if (getModificationInfo().getMode() == INITIALIZE_MODE) {
-                            QueryObjectModelFactory qomFactory = getModificationInfo().getQueryObjectModelFactory();
-                            Selector translationSelector = getSelectorsJoinedWithTranslation().get(
+                if (getModificationInfo().getMode() == CHECK_FOR_MODIFICATION_MODE
+                        || getModificationInfo().getMode() == MODIFY_MODE) {
+                    // check for language dependent modifications and use the translation selector on
+                    // jnt:translation node if user specified it in query
+                    
+                    if (getSelectorsJoinedWithTranslation().get(selector.getSelectorName()) != null) {
+                        selector = getSelectorsJoinedWithTranslation().get(selector.getSelectorName());
+                    }
+                    Set<String> languageCodes = getLanguagesPerSelector().get(
+                            selector.getSelectorName());
+                    if ((languageCodes == null || languageCodes.isEmpty()) && session != null
+                            && session.getLocale() != null) {
+                        if (getModificationInfo().getMode() == CHECK_FOR_MODIFICATION_MODE) {
+                            
+                            Set<String> newLanguageCodes = getNewLanguagesPerSelector().get(
                                     selector.getSelectorName());
-                            String translationSelectorName = null;
-                            if (translationSelector == null) {
-                                translationSelectorName = selector.getSelectorName() + "translationAdded";
-                                translationSelector = qomFactory.selector(Constants.JAHIANT_TRANSLATION,
-                                        translationSelectorName);
-                                getSelectorsJoinedWithTranslation()
-                                        .put(selector.getSelectorName(), translationSelector);
-                                if (getLanguagesPerSelector().get(selector.getSelectorName()) == null) {
-                                    getModificationInfo().getNewConstraints().add(
-                                            qomFactory.comparison(qomFactory.propertyValue(translationSelectorName,
-                                                    Constants.JCR_LANGUAGE),
-                                                    QueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO, qomFactory
-                                                            .literal(getValueFactory()
-                                                                    .createValue(languageCodes.get(0)))));
-                                }
-
-                                Join newJoin = getModificationInfo().getQueryObjectModelFactory().join(
-                                        getModificationInfo().getNewJoin() != null ? getModificationInfo().getNewJoin()
-                                                : getOriginalSource(),
-                                        translationSelector,
-                                        QueryObjectModelConstants.JCR_JOIN_TYPE_INNER,
-                                        qomFactory.childNodeJoinCondition(translationSelectorName, selector
-                                                .getSelectorName()));
-                                getModificationInfo().setNewJoin(newJoin);
+                            if (newLanguageCodes == null) {
+                                newLanguageCodes = new HashSet<String>();
+                                newLanguageCodes.add(session.getLocale().toString());
+                                newLanguageCodes.add(NO_LOCALE);
+                                getNewLanguagesPerSelector().put(selector.getSelectorName(),
+                                        newLanguageCodes);
                             }
-                        } else if (getModificationInfo().getMode() == CHECK_FOR_MODIFICATION_MODE) {
-                            if (!(isFulltextIncludingMultilingualProperties && !getSelectorsJoinedWithTranslation()
-                                    .get(selector.getSelectorName()).getSelectorName().endsWith("translationAdded"))) {
-                                getModificationInfo().setModificationNecessary(true);
+                            ExtendedNodeType nodeType = NodeTypeRegistry.getInstance().getNodeType(
+                                    selector.getNodeTypeName());
+                            boolean isFulltextIncludingMultilingualProperties = (propertyName == null && node instanceof FullTextSearch) ? isFulltextIncludingMultilingualProperties(
+                                    nodeType, selector) : false;
+                            ExtendedPropertyDefinition propDef = propertyName != null ? getPropertyDefinition(
+                                    nodeType, selector, propertyName) : null;
+                            if (propDef != null && propDef.isInternationalized()
+                                    || isFulltextIncludingMultilingualProperties) {
+                                newLanguageCodes.remove(NO_LOCALE);
+                            }
+
+                            getModificationInfo().setModificationNecessary(true);
+                        } else {
+                            QueryObjectModelFactory qomFactory = getModificationInfo()
+                                    .getQueryObjectModelFactory();
+                            Set<String> newLanguageCodes = getNewLanguagesPerSelector().get(
+                                    selector.getSelectorName());
+                            if (newLanguageCodes != null) {
+                                Constraint langConstraint = null;
+                                for (String newLanguageCode : newLanguageCodes) {
+                                    Constraint currentConstraint = NO_LOCALE
+                                            .equals(newLanguageCode) ? qomFactory.not(qomFactory
+                                            .propertyExistence(selector.getSelectorName(),
+                                                    Constants.JCR_LANGUAGE))
+                                            : qomFactory
+                                                    .comparison(
+                                                            qomFactory.propertyValue(
+                                                                    selector.getSelectorName(),
+                                                                    Constants.JCR_LANGUAGE),
+                                                            QueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO,
+                                                            qomFactory.literal(getValueFactory()
+                                                                    .createValue(newLanguageCode)));
+                                    langConstraint = langConstraint == null ? currentConstraint
+                                            : qomFactory.or(langConstraint, currentConstraint);
+                                }
+                                getModificationInfo().getNewConstraints().add(langConstraint);
                             }
                         }
                     }
-                    if (getModificationInfo().getMode() == MODIFY_MODE) {
-                        QueryObjectModelFactory qomFactory = getModificationInfo().getQueryObjectModelFactory();
-                        Selector translationSelector = getSelectorsJoinedWithTranslation().get(
-                                selector.getSelectorName());
-                        if (translationSelector != null) {
-                            String translationSelectorName = translationSelector.getSelectorName();
+                    if (node instanceof Column) {
+                        String columnName = ((Column) node).getColumnName();
+                        if (StringUtils.startsWith(columnName, "rep:facet(")
+                                && !StringUtils.contains(columnName, "locale=")) {
+                            ExtendedNodeType nodeType = NodeTypeRegistry.getInstance().getNodeType(
+                                    selector.getNodeTypeName());
+                            ExtendedPropertyDefinition propDef = propertyName != null ? getPropertyDefinition(
+                                    nodeType, selector, propertyName) : null;
                             if (propDef != null && propDef.isInternationalized()) {
-                                if (node instanceof Column) {
-                                    String columnName = ((Column) node).getColumnName();
-                                    if (StringUtils.startsWith(columnName, "rep:facet(")
-                                            && !StringUtils.contains(columnName, "locale=")) {
-                                        String facetOptions = columnName.substring("rep:facet("
-                                                .length());
-                                        columnName = "rep:facet(locale=" + languageCodes.get(0)
+                                if (getModificationInfo().getMode() == CHECK_FOR_MODIFICATION_MODE) {
+                                    getModificationInfo().setModificationNecessary(true);
+                                } else {
+                                    String facetOptions = columnName.substring("rep:facet("
+                                            .length());
+                                    if (languageCodes == null) {
+                                        languageCodes = getNewLanguagesPerSelector().get(
+                                                selector.getSelectorName());
+                                    }
+                                    String languageCode = null;
+                                    for (String currentLanguageCode : languageCodes) {
+                                        if (!NO_LOCALE.equals(currentLanguageCode)) {
+                                            languageCode = currentLanguageCode;
+                                            break;
+                                        }
+
+                                    }
+                                    if (!StringUtils.isEmpty(languageCode)) {
+                                        columnName = "rep:facet(locale=" + languageCode
                                                 + (facetOptions.trim().length() > 1 ? "&" : "")
                                                 + facetOptions;
-                                    } 
-                                    node = (AbstractQOMNode) qomFactory.column(
-                                            translationSelectorName, propertyName, columnName);
+                                        QueryObjectModelFactory qomFactory = getModificationInfo()
+                                                .getQueryObjectModelFactory();
+                                        node = (AbstractQOMNode) qomFactory.column(
+                                                selector.getSelectorName(), propertyName,
+                                                columnName);
+                                    }
                                 }
-                            } 
-                            
-                            if (node instanceof PropertyValue) {
-                                node = (AbstractQOMNode) qomFactory.propertyValue(
-                                        translationSelectorName, propertyName);
-                            } else if (node instanceof FullTextSearch) {
-                                node = (AbstractQOMNode) qomFactory.fullTextSearch(translationSelectorName,
-                                        isFilter ? "rep:filter(" + Text.escapeIllegalJcrChars(propertyName) + ")"
-                                                : propertyName, ((FullTextSearch) node).getFullTextSearchExpression());
-                            } else if (node instanceof PropertyExistence) {
-                                node = (AbstractQOMNode) qomFactory.propertyExistence(
-                                        translationSelectorName, propertyName);
-                            } else if (node instanceof EquiJoinCondition) {
-                                node = (AbstractQOMNode) qomFactory
-                                        .equiJoinCondition(
-                                                selector.getSelectorName().equals(
-                                                        ((EquiJoinCondition) node)
-                                                                .getSelector1Name()) ? translationSelectorName
-                                                        : ((EquiJoinCondition) node)
-                                                                .getSelector1Name(),
-                                                selector.getSelectorName().equals(
-                                                        ((EquiJoinCondition) node)
-                                                                .getSelector1Name()) ? propertyName
-                                                        : ((EquiJoinCondition) node)
-                                                                .getProperty1Name(),
-                                                selector.getSelectorName().equals(
-                                                        ((EquiJoinCondition) node)
-                                                                .getSelector2Name()) ? translationSelectorName
-                                                        : ((EquiJoinCondition) node)
-                                                                .getSelector2Name(),
-                                                selector.getSelectorName().equals(
-                                                        ((EquiJoinCondition) node)
-                                                                .getSelector2Name()) ? propertyName
-                                                        : ((EquiJoinCondition) node)
-                                                                .getProperty2Name());
                             }
-
                         }
                     }
-
                 }
             } catch (NoSuchNodeTypeException e) {
                 logger.debug("Type " + selector.getNodeTypeName() + " not found in registry", e);
@@ -976,12 +998,13 @@ public class QueryServiceImpl extends QueryService {
             return node;
         }
 
-        private ExtendedPropertyDefinition getPropertyDefinition(ExtendedNodeType nodeType, Selector selector,
-                String propertyName) throws RepositoryException {
+        private ExtendedPropertyDefinition getPropertyDefinition(ExtendedNodeType nodeType,
+                Selector selector, String propertyName) throws RepositoryException {
             ExtendedPropertyDefinition propDef = null;
 
             if (!Constants.JAHIANT_TRANSLATION.equals(nodeType.getName())) {
-                if (Constants.NT_BASE.equals(nodeType.getName())) {
+                if (Constants.NT_BASE.equals(nodeType.getName())
+                        || Constants.JAHIANT_CONTENT.equals(nodeType.getName())) {
                     Set<String> nodeTypes = getNodeTypesPerSelector().get(
                             selector.getSelectorName());
                     if (nodeTypes != null) {
@@ -993,7 +1016,7 @@ public class QueryServiceImpl extends QueryService {
                             }
                         }
                     }
-                } 
+                }
                 if (propDef == null) {
                     propDef = nodeType.getPropertyDefinitionsAsMap().get(propertyName);
                 }
@@ -1001,13 +1024,16 @@ public class QueryServiceImpl extends QueryService {
             return propDef;
         }
 
-        private boolean isFulltextIncludingMultilingualProperties(ExtendedNodeType nodeType, Selector selector) throws RepositoryException {
+        private boolean isFulltextIncludingMultilingualProperties(ExtendedNodeType nodeType,
+                Selector selector) throws RepositoryException {
             boolean isFulltextIncludingMultilingualProperties = true;
             if (Constants.JAHIANT_TRANSLATION.equals(nodeType.getName())) {
                 isFulltextIncludingMultilingualProperties = false;
-            } else if (!Constants.NT_BASE.equals(nodeType.getName())) {
+            } else if (!Constants.NT_BASE.equals(nodeType.getName())
+                    && !Constants.JAHIANT_CONTENT.equals(nodeType.getName())) {
                 isFulltextIncludingMultilingualProperties = false;
-                for (ExtendedPropertyDefinition propDef : nodeType.getPropertyDefinitionsAsMap().values()) {
+                for (ExtendedPropertyDefinition propDef : nodeType.getPropertyDefinitionsAsMap()
+                        .values()) {
                     if (propDef.isInternationalized()) {
                         isFulltextIncludingMultilingualProperties = true;
                         break;
@@ -1053,7 +1079,7 @@ public class QueryServiceImpl extends QueryService {
         }
 
         /**
-         * @return the Source object of the original query 
+         * @return the Source object of the original query
          */
         public Source getOriginalSource() {
             return originalSource;
@@ -1069,8 +1095,15 @@ public class QueryServiceImpl extends QueryService {
         /**
          * @return a map holding per selector languages already set in the original query
          */
-        public Map<String, List<String>> getLanguagesPerSelector() {
+        public Map<String, Set<String>> getLanguagesPerSelector() {
             return languagesPerSelector;
+        }
+
+        /**
+         * @return a map holding per selector new languages to be set
+         */
+        public Map<String, Set<String>> getNewLanguagesPerSelector() {
+            return newLanguagesPerSelector;
         }
 
         /**
@@ -1083,10 +1116,10 @@ public class QueryServiceImpl extends QueryService {
     };
 
     /**
-     * This class is used to gather modification information mainly set during the INITIALIZE_MODE traversing.
-     * During traversing in CHECK_FOR_MODIFICATION mode mainly only the modificationNecessary variable is set.
-     * The information of this object is then used during the MODIFY_MODE traversing iteration.
-     *
+     * This class is used to gather modification information mainly set during the INITIALIZE_MODE traversing. During traversing in
+     * CHECK_FOR_MODIFICATION mode mainly only the modificationNecessary variable is set. The information of this object is then used during
+     * the MODIFY_MODE traversing iteration.
+     * 
      */
     class ModificationInfo {
         private int mode = INITIALIZE_MODE;
@@ -1096,14 +1129,16 @@ public class QueryServiceImpl extends QueryService {
         private Join newJoin = null;
 
         private QueryObjectModelFactory queryObjectModelFactory = null;
-        
+
         private QueryObjectModel newQueryObjectModel = null;
 
         private List<Constraint> newConstraints = new ArrayList<Constraint>();
 
         /**
          * Constructor setting the QueryObjectModelFactory to be used for modifying the query
-         * @param queryObjectModelFactory to be used for modifying the query
+         * 
+         * @param queryObjectModelFactory
+         *            to be used for modifying the query
          */
         public ModificationInfo(QueryObjectModelFactory queryObjectModelFactory) {
             super();
@@ -1119,7 +1154,9 @@ public class QueryServiceImpl extends QueryService {
 
         /**
          * Set true when modification of the query is found to be necessary otherwise set false
-         * @param modificationNecessary true when modification of the query is necessary otherwise false
+         * 
+         * @param modificationNecessary
+         *            true when modification of the query is necessary otherwise false
          */
         public void setModificationNecessary(boolean modificationNecessary) {
             this.modificationNecessary = modificationNecessary;
@@ -1141,7 +1178,9 @@ public class QueryServiceImpl extends QueryService {
 
         /**
          * Set the new Source, which in any case is a join when adding translation node queries
-         * @param newJoin when a new translation node is added.
+         * 
+         * @param newJoin
+         *            when a new translation node is added.
          */
         public void setNewJoin(Join newJoin) {
             setModificationNecessary(true);
@@ -1149,22 +1188,27 @@ public class QueryServiceImpl extends QueryService {
         }
 
         /**
-         * @return the mode of the current iteration
-         * either <ul> <li>{@link org.jahia.services.query.QueryServiceImpl#INITIALIZE_MODE},</li>
+         * @return the mode of the current iteration either
+         *         <ul>
+         *         <li>{@link org.jahia.services.query.QueryServiceImpl#INITIALIZE_MODE},</li>
          *         <li>{@link org.jahia.services.query.QueryServiceImpl#CHECK_FOR_MODIFICATION_MODE},</li>
          *         <li>{@link org.jahia.services.query.QueryServiceImpl#MODIFY_MODE}</li>
-         *         </ul> 
+         *         </ul>
          */
         public int getMode() {
             return mode;
         }
 
         /**
-         * Set mode for next iteration which is either <ul> <li>{@link org.jahia.services.query.QueryServiceImpl#INITIALIZE_MODE},</li>
-         *         <li>{@link org.jahia.services.query.QueryServiceImpl#CHECK_FOR_MODIFICATION_MODE},</li>
-         *         <li>{@link org.jahia.services.query.QueryServiceImpl#MODIFY_MODE}</li>
-         *         </ul>  
-         * @param mode for the next iteration
+         * Set mode for next iteration which is either
+         * <ul>
+         * <li>{@link org.jahia.services.query.QueryServiceImpl#INITIALIZE_MODE},</li>
+         * <li>{@link org.jahia.services.query.QueryServiceImpl#CHECK_FOR_MODIFICATION_MODE},</li>
+         * <li>{@link org.jahia.services.query.QueryServiceImpl#MODIFY_MODE}</li>
+         * </ul>
+         * 
+         * @param mode
+         *            for the next iteration
          */
         public void setMode(int mode) {
             this.mode = mode;
@@ -1179,7 +1223,9 @@ public class QueryServiceImpl extends QueryService {
 
         /**
          * Set the new modified query object model
-         * @param newQueryObjectModel set after modification
+         * 
+         * @param newQueryObjectModel
+         *            set after modification
          */
         public void setNewQueryObjectModel(QueryObjectModel newQueryObjectModel) {
             this.newQueryObjectModel = newQueryObjectModel;

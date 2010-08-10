@@ -37,8 +37,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.google.gwt.user.server.rpc.SerializationPolicy;
-import com.google.gwt.user.server.rpc.impl.LegacySerializationPolicy;
-import org.jahia.registries.ServicesRegistry;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -107,18 +105,26 @@ public class GWTController extends RemoteServiceServlet implements Controller,
     @Override
     public String processCall(String payload) throws SerializationException {
         RemoteService remoteService = null;
+        RPCRequest rpcRequest = null;
         try {
             remoteService = (RemoteService) applicationContext.getBean(remoteServiceName);
             setServiceData(remoteService, false);
 
-            RPCRequest rpcRequest = RPC.decodeRequest(payload, remoteService
-                    .getClass(), this);
+            rpcRequest = RPC.decodeRequest(payload, remoteService.getClass(), this);
+            
+            if (logger.isDebugEnabled()) {
+                logger.debug("Executing method " + rpcRequest.getMethod());
+            }
 
             return RPC.invokeAndEncodeResponse(remoteService, rpcRequest
                     .getMethod(), rpcRequest.getParameters(), rpcRequest
                     .getSerializationPolicy());
-        } catch (Throwable e) {
-            logger.error("An error occurred calling the GWT service " + remoteServiceName + ". Cause: " + e.getMessage(), e);
+        } catch (Exception e) {
+            if (rpcRequest != null) {
+                logger.error("An error occurred calling the GWT service method " + rpcRequest.getMethod() + ". Cause: " + e.getMessage(), e);
+            } else {
+                logger.error("An error occurred calling the GWT service " + (remoteService != null ? remoteService.getClass().getName() : remoteServiceName) + ". Cause: " + e.getMessage(), e);
+            }
             return RPC.encodeResponseForFailure(null, e);
         } finally {
             if (remoteService != null) {

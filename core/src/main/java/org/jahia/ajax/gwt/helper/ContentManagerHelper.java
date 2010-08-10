@@ -659,7 +659,7 @@ public class ContentManagerHelper {
             }
         }
         acl.setPermissionLabels(labels);
-        acl.setPermissionsDependencies(node.getPermissionsDependencies());
+        acl.setPermissionsDependencies(new HashMap<String, List<String>>(node.getPermissionsDependencies()));
         return acl;
     }
 

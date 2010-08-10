@@ -2,9 +2,7 @@ package org.apache.jackrabbit.core.query.lucene;
 
 import org.apache.jackrabbit.core.query.lucene.constraint.Constraint;
 import org.apache.jackrabbit.core.query.lucene.constraint.EvaluationContext;
-import org.apache.jackrabbit.core.query.lucene.constraint.SelectorBasedConstraint;
 import org.apache.jackrabbit.spi.Name;
-import org.apache.jackrabbit.spi.commons.query.qom.SelectorImpl;
 import org.apache.lucene.document.Document;
 
 import java.io.IOException;

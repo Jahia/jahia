@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -316,13 +315,13 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
                                 .indexOf("facet.date.") >= 0) ? FacetParams.FACET_DATE
                                 : FacetParams.FACET_FIELD, propertyName);
                     }
-                    String facetKey = null;
+
                     String nodeType = null;
                     for (String option : StringUtils.split(facetOptions, "&")) {
                         String key = StringUtils.substringBefore(option, "=");
                         String value = StringUtils.substringAfter(option, "=");                        
                         if ("key".equals(key)) {
-                            facetKey = value;
+                            //facetKey = value;
                         } else if ("nodetype".equals(key)) {
                             nodeType = value;
                         }                        

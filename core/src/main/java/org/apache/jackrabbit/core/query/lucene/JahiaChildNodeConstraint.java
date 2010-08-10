@@ -1,15 +1,11 @@
 package org.apache.jackrabbit.core.query.lucene;
 
-import org.apache.jackrabbit.core.NodeImpl;
-import org.apache.jackrabbit.core.SessionImpl;
 import org.apache.jackrabbit.core.query.lucene.constraint.ChildNodeConstraint;
 import org.apache.jackrabbit.core.query.lucene.constraint.EvaluationContext;
-import org.apache.jackrabbit.core.query.lucene.constraint.QueryConstraint;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.query.qom.ChildNodeImpl;
 import org.apache.jackrabbit.spi.commons.query.qom.SelectorImpl;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.search.Query;
 
 import javax.jcr.RepositoryException;
 import java.io.IOException;

@@ -27,6 +27,8 @@ import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.apache.jackrabbit.spi.commons.query.qom.QueryObjectModelTree;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.KeywordAnalyzer;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.index.TermEnum;
 import org.apache.lucene.index.IndexReader;
@@ -169,7 +171,7 @@ public class SimpleJahiaJcrFacets {
                 QueryParser qp = new QueryParser(FieldNames.FULLTEXT, new KeywordAnalyzer());
                 qp.setLowercaseExpandedTerms(false);
                 Query qobj = qp.parse(q);
-                long count = OpenBitSet.intersectionCount(getDocIdSetForHits(searcher.search(qobj)),
+                long count = OpenBitSet.intersectionCount(getDocIdSetForHits(searcher.search(qobj), ""),
                         docs);
                 if (count >= mincount) {
                     res.add(q, count);
@@ -180,7 +182,7 @@ public class SimpleJahiaJcrFacets {
         return res;
     }
 
-    public NamedList<Object> getTermCounts(String field, ExtendedPropertyDefinition epd, String fieldNameInIndex)
+    public NamedList<Object> getTermCounts(String field, ExtendedPropertyDefinition epd, String fieldNameInIndex, String locale)
             throws IOException, RepositoryException {
         int offset = params.getFieldInt(field, FacetParams.FACET_OFFSET, 0);
         int limit = params.getFieldInt(field, FacetParams.FACET_LIMIT, 100);
@@ -204,12 +206,12 @@ public class SimpleJahiaJcrFacets {
                 || epd.getRequiredType() == PropertyType.BOOLEAN) {
             // Always use filters for booleans... we know the number of values is very small.
             counts = getFacetTermEnumCounts(searcher, docs, field, fieldNameInIndex, offset, limit, mincount,
-                    missing, sort, prefix);
+                    missing, sort, prefix, epd.isInternationalized() ? (locale == null ? "" : locale): null);
         } else {
             // TODO: future logic could use filters instead of the fieldcache if
             // the number of terms in the field is small enough.
             counts = getFieldCacheCounts(searcher, docs, fieldNameInIndex, offset, limit, mincount, missing, sort,
-                    prefix);
+                    prefix, epd.isInternationalized() ? (locale == null ? "" : locale): null);
         }
 
         return counts;
@@ -237,7 +239,7 @@ public class SimpleJahiaJcrFacets {
                     String fieldNameInIndex = getFieldNameInIndex(fieldName, epd, locale);
                     res.add(StringUtils.substringBeforeLast(f, PROPNAME_INDEX_SEPARATOR)
                             + PROPNAME_INDEX_SEPARATOR + fieldNameInIndex,
-                            getTermCounts(f, epd, fieldNameInIndex));
+                            getTermCounts(f, epd, fieldNameInIndex, locale));
                 } catch (RepositoryException e) {
                     logger.error("Cant display facets for: " + f, e);
                 }
@@ -251,11 +253,21 @@ public class SimpleJahiaJcrFacets {
      * 
      * @see FacetParams#FACET_MISSING
      */
-    public static int getFieldMissingCount(IndexSearcher searcher, OpenBitSet docs, String fieldName)
+    public int getFieldMissingCount(IndexSearcher searcher, OpenBitSet docs, String fieldName, String locale)
             throws IOException {
-
-        OpenBitSet hasVal = getDocIdSetForHits(searcher.search(new ConstantScoreRangeQuery(
-                fieldName, null, null, false, false)));
+        Query query = null;
+        if (StringUtils.isEmpty(locale)) {
+            query = new ConstantScoreRangeQuery(fieldName, null, null, false, false);
+        } else {
+            BooleanQuery booleanQuery = new BooleanQuery();
+            booleanQuery.add(new ConstantScoreRangeQuery(fieldName, null, null, false, false),
+                    BooleanClause.Occur.MUST);
+            booleanQuery.add(
+                    new TermQuery(new Term(JahiaNodeIndexer.TRANSLATION_LANGUAGE, locale)),
+                    BooleanClause.Occur.MUST);
+            query = booleanQuery;
+        }
+        OpenBitSet hasVal = getDocIdSetForHits(searcher.search(query), locale);
         return (int) OpenBitSet.andNotCount(docs, hasVal);
     }
 
@@ -274,9 +286,9 @@ public class SimpleJahiaJcrFacets {
      * Use the Lucene FieldCache to get counts for each unique field value in <code>docs</code>. The field must have at most one indexed
      * token per document.
      */
-    public static NamedList<Object> getFieldCacheCounts(IndexSearcher searcher, OpenBitSet docs,
+    public NamedList<Object> getFieldCacheCounts(IndexSearcher searcher, OpenBitSet docs,
             String fieldName, int offset, int limit, int mincount, boolean missing, boolean sort,
-            String prefix) throws IOException {
+            String prefix, String locale) throws IOException {
         // TODO: If the number of terms is high compared to docs.size(), and zeros==false,
         // we should use an alternate strategy to avoid
         // 1) creating another huge int[] for the counts
@@ -385,7 +397,7 @@ public class SimpleJahiaJcrFacets {
         }
 
         if (missing) {
-            res.add(null, getFieldMissingCount(searcher, docs, fieldName));
+            res.add(null, getFieldMissingCount(searcher, docs, fieldName, locale));
         }
 
         return res;
@@ -401,7 +413,7 @@ public class SimpleJahiaJcrFacets {
      */
     public NamedList<Object> getFacetTermEnumCounts(IndexSearcher searcher, OpenBitSet docs,
             String field, String fieldName, int offset, int limit, int mincount, boolean missing,
-            boolean sort, String prefix) throws IOException {
+            boolean sort, String prefix, String locale) throws IOException {
 
         /*
          * :TODO: potential optimization... cache the Terms with the highest docFreq and try them first don't enum if we get our max from
@@ -447,13 +459,19 @@ public class SimpleJahiaJcrFacets {
                     if (df >= minDfFilterCache) {
                         // use the filter cache
                         c = (int) OpenBitSet.intersectionCount(getDocIdSetForHits(searcher
-                                .search(new TermQuery(t))), docs);
+                                .search(new TermQuery(t)), locale), docs);
                     } else {
                         // iterate over TermDocs to calculate the intersection
                         td.seek(te);
                         c = 0;
                         while (td.next()) {
-                            if (docs.fastGet(td.doc())) {
+                            int doc = td.doc();
+                            if (locale != null) {
+                                doc = getMainDocIdForTranslations(searcher.getIndexReader()
+                                        .document(doc), locale);
+                            }
+                            
+                            if (docs.fastGet(doc)) {
                                 c++;
                             }
                         }
@@ -489,7 +507,7 @@ public class SimpleJahiaJcrFacets {
         }
 
         if (missing) {
-            res.add(null, getFieldMissingCount(searcher, docs, fieldName));
+            res.add(null, getFieldMissingCount(searcher, docs, fieldName, locale));
         }
 
         te.close();
@@ -507,9 +525,7 @@ public class SimpleJahiaJcrFacets {
             fieldName = fieldName.substring(0, idx + 1)
                     + (epd != null && epd.isFacetable() ? JahiaNodeIndexer.FACET_PREFIX
                             : FieldNames.FULLTEXT_PREFIX)
-                    + fieldName.substring(idx + 1)
-                    + (epd.isInternationalized() && !StringUtils.isEmpty(langCode) ? "_" + langCode
-                            : "");
+                    + fieldName.substring(idx + 1);
         } catch (RepositoryException e) {
             // will never happen
         }
@@ -683,7 +699,7 @@ public class SimpleJahiaJcrFacets {
      * @see ConstantScoreRangeQuery
      */
     protected int rangeCount(Query rangeQuery) throws IOException {
-        return (int) OpenBitSet.intersectionCount(getDocIdSetForHits(searcher.search(rangeQuery)),
+        return (int) OpenBitSet.intersectionCount(getDocIdSetForHits(searcher.search(rangeQuery), null),
                 docs);
     }
 
@@ -720,17 +736,55 @@ public class SimpleJahiaJcrFacets {
         }
     }
 
-    private static OpenBitSet getDocIdSetForHits(Hits hits) {
+    private OpenBitSet getDocIdSetForHits(Hits hits, String locale) {
         OpenBitSet docIds = null;
         try {
             BitSet bitset = new BitSet();
+            int docId;
             for (Iterator<Hit> it = hits.iterator(); it.hasNext();) {
-                bitset.set(it.next().getId());
+                if (locale == null) {
+                    docId = it.next().getId();
+                } else {
+                    Hit hit = it.next();
+                    Document doc = hit.getDocument();
+                    docId = getMainDocIdForTranslations(doc, locale);
+                    if (docId == -1) {
+                        docId = hit.getId();
+                    } else {
+                        bitset.set(hit.getId());                        
+                    }
+                }
+                bitset.set(docId);
             }
             docIds = new OpenBitSetDISI(new DocIdBitSet(bitset).iterator(), bitset.size());
         } catch (IOException e) {
             logger.debug("Can't retrive bitset from hits", e);
         }
         return docIds;
+    }
+
+    private int getMainDocIdForTranslations(Document doc, String locale) {
+        int docId = -1;
+        Field parentNode = doc.getField(JahiaNodeIndexer.TRANSLATED_NODE_PARENT);
+        if (parentNode != null
+                && (StringUtils.isEmpty(locale) || locale.equals(doc.getField(
+                        JahiaNodeIndexer.TRANSLATION_LANGUAGE).stringValue()))) {
+            try {
+                String id = doc.getField(FieldNames.PARENT).stringValue();
+                TermDocs docs = searcher.getIndexReader().termDocs(new Term(FieldNames.UUID, id));
+                try {
+                    if (docs.next()) {
+                        return docs.doc();
+                    } else {
+                        throw new IOException("Node with id " + id + " not found in index");
+                    }
+                } finally {
+                    docs.close();
+                }                
+            } catch (IOException e) {
+                logger.debug("Can't retrive parent node of translation node", e);
+            }
+        }
+        return docId;
     }
 }

@@ -57,7 +57,6 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.tags.TaggingService;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
@@ -85,9 +84,8 @@ public class Service extends JahiaService {
     private JahiaSitesService sitesService;
     private SchedulerService schedulerService;
     private CacheService cacheService;
-    private JahiaUserManagerService userManager;
 
-    public static synchronized Service getInstance() {
+    public static Service getInstance() {
         if (instance == null) {
             instance = new Service();
         }
@@ -190,7 +188,7 @@ public class Service extends JahiaService {
                                 infos.get("sitekey"));
                         String serverName = (String) infos.get("siteservername");
                         boolean serverNameEx = (sitesService.getSite(serverName) != null && !"localhost".equals(serverName)) || "".equals(serverName);
-                        if (!user.getJahiaUser().isAdminMember(0)) {
+                        if (!user.getJahiaUser().isRoot()) {
                             return;
                         }
                         if (!siteKeyEx && !serverNameEx) {
@@ -238,7 +236,7 @@ public class Service extends JahiaService {
 
         } else if (type.endsWith("zip")) {
             try {
-                processFileImport(prepareFileImports(node, node.getName()));
+                processFileImport(prepareFileImports(node, node.getName()), user.getJahiaUser());
             } catch (IOException e) {
                 logger.error(e);
             } catch (ServletException e) {
@@ -410,9 +408,8 @@ public class Service extends JahiaService {
         return importInfos;
     }
 
-    private void processFileImport(List<Map<Object, Object>> importsInfos)
+    private void processFileImport(List<Map<Object, Object>> importsInfos, JahiaUser user)
             throws IOException, ServletException, JahiaException {
-        final JahiaUser user = userManager.lookupUser("root");
         boolean license = LicenseActionChecker.isAuthorizedByLicense("org.jahia.actions.server.admin.sites.ManageSites",
                 0);
         boolean noMoreSite = false;
@@ -653,10 +650,6 @@ public class Service extends JahiaService {
 
     public void setCacheService(CacheService cacheService) {
         this.cacheService = cacheService;
-    }
-
-    public void setUserManager(JahiaUserManagerService userManager) {
-        this.userManager = userManager;
     }
 
     @Override

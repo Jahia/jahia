@@ -1,1 +1,1 @@
-/usr/local/Jahia_CE_v${product.version}
+/usr/local/Jahia_xCM_CE_v${product.version}

@@ -1,6 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <userInput>
     <panel order="0">
+        <field type="title" txt="Installation type" id="installation.title"/>
+        
+        <field type="staticText" align="left"
+               txt="Here you can choose your preferred installation type."
+               id="installation.type1"/>
+        
+        <field type="staticText" align="left"
+               txt="Express installation completes the common Jahia setup using pre-packaged Apache Tomcat 6.0 server and embedded Sun Java DB / Apache Derby DBMS, whereas the Custom install allows advanced configuration of the target application server, DBMS and addition options:"
+               id="installation.type2"/>
+        
+        <field type="space" />
+        
+        <field type="radio" variable="installation.type" alight="left">
+            <spec>
+                <choice txt="Express install" id="installation.type.express" value="express" set="true"/>
+                <choice txt="Custom install (advanced)" id="installation.type.advanced" value="advanced"/>
+            </spec>
+        </field>
+        
+    </panel>
+    
+    <panel order="1">
         <field type="title" txt="Server type" id="server.title"/>
         <field type="radio" variable="server.type" alight="left">
             <description align="left" txt="Choose target application server type" id="server.type"/>
@@ -12,24 +34,22 @@
             </spec>
         </field>
     </panel>
-    <panel order="1">
+    
+    <panel order="2" topBuffer="0">
         <field type="title" txt="Database connection settings" id="dbSettings.title"/>
+        <field type="space" />
         <field type="radio" variable="dbSettings.mode">
             <description align="left" txt="Choose your preferred database connection type" id="dbSettings.chooseMode"/>
             <spec>
-                <choice txt="Use an embedded Apache Derby database engine" id="dbSettings.mode.embedded" value="embedded" set="true"/>
-                <choice txt="Use a standalone DBMS (configured on the next step)" id="dbSettings.mode.standalone" value="standalone"/>
+                <choice txt="Use a standalone DBMS" id="dbSettings.mode.standalone" value="standalone" revalidate="yes" set="true"/>
+                <choice txt="Use an embedded Sun Java DB / Apache Derby database engine" id="dbSettings.mode.embedded" value="embedded" revalidate="yes"/>
             </spec>
         </field>
-    </panel>
-    <panel order="2">
-        <field type="title" txt="Database connection settings" id="dbSettings.dbms.title"/>
-        <field type="radio" variable="dbSettings.dbms.type" alight="left">
+        <field type="radio" variable="dbSettings.dbms.type" alight="left" conditionid="cnd.db.mode.standalone">
             <description align="left" txt="Choose your DBMS type" id="dbSettings.dbms.type"/>
             <spec>
                 <choice txt="Microsoft SQL Server" id="dbSettings.dbms.type.mssql" value="mssql"/>
-                <choice txt="MySQL 5.x InnoDB" id="dbSettings.dbms.type.mysql.innodb" value="mysql_innodb" set="true"/>
-                <choice txt="MySQL 5.x" id="dbSettings.dbms.type.mysql" value="mysql"/>
+                <choice txt="MySQL 5.x" id="dbSettings.dbms.type.mysql" value="mysql" set="true"/>
                 <choice txt="Oracle 10.2.1.0 / Oracle 11.x" id="dbSettings.dbms.type.oracle" value="oracle"/>
                 <choice txt="Oracle 9.x / Oracle 10.1.x" id="dbSettings.dbms.type.oracle.legacy" value="oracle_legacy"/>
                 <choice txt="PostgreSQL 7.4.x / 8.x" id="dbSettings.dbms.type.postgresql" value="postgresql"/>
@@ -37,22 +57,77 @@
             </spec>
         </field>
     </panel>
+    
     <panel order="3">
         <field type="title" txt="Database connection settings" id="dbSettings.dbms.title"/>
-        <field type="text" align="left" variable="dbSettings.connection.driver">
-            <spec txt="Database driver (*)" id="dbSettings.connection.driver" size="15" set="${var.db.driver}"/>
+        <!-- DB driver and URL fields are for each DB type due to value initialization problem (if the DB type is changed) -->
+        <!-- Microsoft SQL Server -->
+        <field type="text" align="left" variable="dbSettings.connection.driver.mssql" conditionid="cnd.db.dbms.mssql">
+            <spec txt="Database driver (*)" id="dbSettings.connection.driver" size="25" set="${def.db.driver.mssql}"/>
             <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Database driver is a mandatory field" id="dbSettings.connection.driver.mandatory"/>
         </field>
-        <field type="text" align="left" variable="dbSettings.connection.url">
-            <spec txt="Database URL (*)" id="dbSettings.connection.url" size="15" set="${var.db.url}"/>
+        <field type="text" align="left" variable="dbSettings.connection.url.mssql" conditionid="cnd.db.dbms.mssql">
+            <spec txt="Database URL (*)" id="dbSettings.connection.url" size="25" set="${def.db.url.mssql}"/>
             <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Database URL is a mandatory field" id="dbSettings.connection.url.mandatory"/>
         </field>
+        
+        <!-- MySQL -->
+        <field type="text" align="left" variable="dbSettings.connection.driver.mysql" conditionid="cnd.db.dbms.mysql">
+            <spec txt="Database driver (*)" id="dbSettings.connection.driver" size="25" set="${def.db.driver.mysql}"/>
+            <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Database driver is a mandatory field" id="dbSettings.connection.driver.mandatory"/>
+        </field>
+        <field type="text" align="left" variable="dbSettings.connection.url.mysql" conditionid="cnd.db.dbms.mysql">
+            <spec txt="Database URL (*)" id="dbSettings.connection.url" size="25" set="${def.db.url.mysql}"/>
+            <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Database URL is a mandatory field" id="dbSettings.connection.url.mandatory"/>
+        </field>
+        
+        <!-- Oracle 10/11 -->
+        <field type="text" align="left" variable="dbSettings.connection.driver.oracle" conditionid="cnd.db.dbms.oracle">
+            <spec txt="Database driver (*)" id="dbSettings.connection.driver" size="25" set="${def.db.driver.oracle}"/>
+            <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Database driver is a mandatory field" id="dbSettings.connection.driver.mandatory"/>
+        </field>
+        <field type="text" align="left" variable="dbSettings.connection.url.oracle" conditionid="cnd.db.dbms.oracle">
+            <spec txt="Database URL (*)" id="dbSettings.connection.url" size="25" set="${def.db.url.oracle}"/>
+            <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Database URL is a mandatory field" id="dbSettings.connection.url.mandatory"/>
+        </field>
+        
+        <!-- Oracle 9 -->
+        <field type="text" align="left" variable="dbSettings.connection.driver.oracle_legacy" conditionid="cnd.db.dbms.oracle_legacy">
+            <spec txt="Database driver (*)" id="dbSettings.connection.driver" size="25" set="${def.db.driver.oracle}"/>
+            <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Database driver is a mandatory field" id="dbSettings.connection.driver.mandatory"/>
+        </field>
+        <field type="text" align="left" variable="dbSettings.connection.url.oracle_legacy" conditionid="cnd.db.dbms.oracle_legacy">
+            <spec txt="Database URL (*)" id="dbSettings.connection.url" size="25" set="${def.db.url.oracle}"/>
+            <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Database URL is a mandatory field" id="dbSettings.connection.url.mandatory"/>
+        </field>
+        
+        <!-- PostgreSQL -->
+        <field type="text" align="left" variable="dbSettings.connection.driver.postgresql" conditionid="cnd.db.dbms.postgresql">
+            <spec txt="Database driver (*)" id="dbSettings.connection.driver" size="25" set="${def.db.driver.postgresql}"/>
+            <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Database driver is a mandatory field" id="dbSettings.connection.driver.mandatory"/>
+        </field>
+        <field type="text" align="left" variable="dbSettings.connection.url.postgresql" conditionid="cnd.db.dbms.postgresql">
+            <spec txt="Database URL (*)" id="dbSettings.connection.url" size="25" set="${def.db.url.postgresql}"/>
+            <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Database URL is a mandatory field" id="dbSettings.connection.url.mandatory"/>
+        </field>
+        
+        <!-- Derby -->
+        <field type="text" align="left" variable="dbSettings.connection.driver.derby" conditionid="cnd.db.dbms.derby">
+            <spec txt="Database driver (*)" id="dbSettings.connection.driver" size="25" set="${def.db.driver.derby}"/>
+            <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Database driver is a mandatory field" id="dbSettings.connection.driver.mandatory"/>
+        </field>
+        <field type="text" align="left" variable="dbSettings.connection.url.derby" conditionid="cnd.db.dbms.derby">
+            <spec txt="Database URL (*)" id="dbSettings.connection.url" size="25" set="${def.db.url.derby}"/>
+            <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Database URL is a mandatory field" id="dbSettings.connection.url.mandatory"/>
+        </field>
+        
+
         <field type="text" align="left" variable="dbSettings.connection.username">
-            <spec txt="Database username" id="dbSettings.connection.username" size="15" set="jahia"/>
+            <spec txt="Database username" id="dbSettings.connection.username" size="20" set="jahia"/>
         </field>
         <field type="password" align="left" variable="dbSettings.connection.password">
             <spec>
-                <pwd set="jahia" size="15" txt="Database password" id="dbSettings.connection.password"/>
+                <pwd set="jahia" size="20" txt="Database password" id="dbSettings.connection.password"/>
             </spec>
         </field>
         <field type="space"/>
@@ -60,39 +135,45 @@
             <spec txt="Create required database tables?" id="dbSettings.dbms.createTables" true="true" false="false" set="true"/>
         </field>
     </panel>
+    
     <panel order="4">
-        <field type="title" txt="SuperUser (administrator) settings" id="superUser.title"/>
+        <field type="title" txt="System administrator (root) settings" id="superUser.title"/>
+        <!-- Allow changing the root username when we will support it
         <field type="text" align="left" variable="superUser.username">
-            <spec txt="Administrator username" id="superUser.username" size="15" set="root"/>
+            <spec txt="Username" id="superUser.username" size="15" set="root"/>
             <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Administrator username is a mandatory field" id="superUser.username.mandatory"/>
         </field>
+         -->
+        <field type="staticText" align="left" id="superUser.username"/>
         <field type="password" align="left" variable="superUser.password">
             <spec>
-                <pwd set="" size="15" txt="Administrator password" id="superUser.password"/>
-                <pwd set="" size="15" txt="Confirm administrator password" id="superUser.passwordConfirm"/>
+                <pwd set="" size="15" txt="Password" id="superUser.password"/>
+                <pwd set="" size="15" txt="Password confirmation" id="superUser.passwordConfirm"/>
             </spec>
             <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Administrator password is a mandatory field" id="superUser.password.mandatory"/>
             <validator
                 class="com.izforge.izpack.util.PasswordEqualityValidator" txt="Both passwords must match" id="superUser.password.match"/>
         </field>
-        <field type="text" align="left" variable="superUser.firstname">
-            <spec txt="First name" id="superUser.firstname" size="15" set="Jahia"/>
+        <field type="text" align="left" variable="superUser.firstname" conditionid="cnd.installation.type.advanced">
+            <spec txt="First name" id="superUser.firstname" size="15" set=""/>
         </field>
-        <field type="text" align="left" variable="superUser.lastname">
-            <spec txt="Last name" id="superUser.lastname" size="15" set="Super Administrator"/>
+        <field type="text" align="left" variable="superUser.lastname" conditionid="cnd.installation.type.advanced">
+            <spec txt="Last name" id="superUser.lastname" size="15" set=""/>
         </field>
-        <field type="text" align="left" variable="superUser.email">
-            <spec txt="E-mail address" id="superUser.email" size="15" set=""/>
+        <field type="text" align="left" variable="superUser.email" conditionid="cnd.installation.type.advanced">
+            <spec txt="E-mail" id="superUser.email" size="15" set=""/>
         </field>
         <field type="space"/>
         <field type="space"/>
         <field type="space"/>
         <field type="divider" align="bottom"/>
-        <field type="staticText" align="left" txt="(*) - this field is is required" id="common.requiredFieldHint"/>
+        <field type="staticText" align="left" txt="(*) - this field is required" id="common.requiredFieldHint"/>
     </panel>
+    
     <panel order="5">
         <field type="title" txt="Mail settings (optional)" id="mailSettings.title"/>
         <field type="staticText" txt="The settings below are optional. Leave them empty to disable E-Mail notification. Specifying them will enable the E-Mail notification feature." id="mailSettings.description"/>
+        <field type="space"/>
         <field type="text" align="left" variable="mailSettings.server">
             <spec txt="Mail server" id="mailSettings.server" size="20"/>
         </field>
@@ -101,6 +182,19 @@
         </field>
         <field type="text" align="left" variable="mailSettings.from">
             <spec txt="Mail from - sender" id="mailSettings.from" size="20"/>
+        </field>
+        <field type="space"/>
+        <field type="staticText" txt="" id="mailSettings.link" align="right"/>
+    </panel>
+
+    <panel order="6">
+        <field type="title" txt="Installation" id="afterInstall.title"/>
+        <field type="staticText" txt="Installation successfull" id="afterInstall.description"/>
+        <field type="check" variable="afterInstall.launchJahia" alight="left" conditionid="cnd.pack.tomcat">
+            <spec txt="Launch Jahia" id="afterInstall.launchJahia" true="true" false="false" set="true"/>
+        </field>
+        <field type="check" variable="afterInstall.viewReadme" alight="left">
+            <spec txt="Open README file" id="afterInstall.viewReadme" true="true" false="false" set="true"/>
         </field>
     </panel>
 </userInput>

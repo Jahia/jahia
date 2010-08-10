@@ -153,7 +153,7 @@
         TIMESTAMP_ bigint,
         STATE_ varchar(255),
         primary key (DBID_)
-    );
+    ) ENGINE=InnoDB;
 
     create table JBPM4_DEPLOYPROP (
         DBID_ bigint not null,
@@ -163,7 +163,7 @@
         STRINGVAL_ varchar(255),
         LONGVAL_ bigint,
         primary key (DBID_)
-    );
+    ) ENGINE=InnoDB;
 
     create table JBPM4_EXECUTION (
         DBID_ bigint not null,
@@ -185,7 +185,7 @@
         SUBPROCINST_ bigint,
         PARENT_IDX_ integer,
         primary key (DBID_)
-    );
+    ) ENGINE=InnoDB;
 
     create table JBPM4_HIST_ACTINST (
         DBID_ bigint not null,
@@ -202,7 +202,7 @@
         NEXTIDX_ integer,
         HTASK_ bigint,
         primary key (DBID_)
-    );
+    ) ENGINE=InnoDB;
 
     create table JBPM4_HIST_DETAIL (
         DBID_ bigint not null,
@@ -228,7 +228,7 @@
         PARENT_ bigint,
         PARENT_IDX_ integer,
         primary key (DBID_)
-    );
+    ) ENGINE=InnoDB;
 
     create table JBPM4_HIST_PROCINST (
         DBID_ bigint not null,
@@ -243,7 +243,7 @@
         ENDACTIVITY_ varchar(255),
         NEXTIDX_ integer,
         primary key (DBID_)
-    );
+    ) ENGINE=InnoDB;
 
     create table JBPM4_HIST_TASK (
         DBID_ bigint not null,
@@ -259,7 +259,7 @@
         NEXTIDX_ integer,
         SUPERTASK_ bigint,
         primary key (DBID_)
-    );
+    ) ENGINE=InnoDB;
 
     create table JBPM4_HIST_VAR (
         DBID_ bigint not null,
@@ -271,7 +271,7 @@
         HPROCI_ bigint,
         HTASK_ bigint,
         primary key (DBID_)
-    );
+    ) ENGINE=InnoDB;
 
     create table JBPM4_ID_GROUP (
         DBID_ bigint not null,
@@ -281,7 +281,7 @@
         TYPE_ varchar(255),
         PARENT_ bigint,
         primary key (DBID_)
-    );
+    ) ENGINE=InnoDB;
 
     create table JBPM4_ID_MEMBERSHIP (
         DBID_ bigint not null,
@@ -290,7 +290,7 @@
         GROUP_ bigint,
         NAME_ varchar(255),
         primary key (DBID_)
-    );
+    ) ENGINE=InnoDB;
 
     create table JBPM4_ID_USER (
         DBID_ bigint not null,
@@ -301,7 +301,7 @@
         FAMILYNAME_ varchar(255),
         BUSINESSEMAIL_ varchar(255),
         primary key (DBID_)
-    );
+    ) ENGINE=InnoDB;
 
     create table JBPM4_JOB (
         DBID_ bigint not null,
@@ -321,7 +321,7 @@
         EVENT_ varchar(255),
         REPEAT_ varchar(255),
         primary key (DBID_)
-    );
+    ) ENGINE=InnoDB;
 
     create table JBPM4_LOB (
         DBID_ bigint not null,
@@ -330,7 +330,7 @@
         DEPLOYMENT_ bigint,
         NAME_ longtext,
         primary key (DBID_)
-    );
+    ) ENGINE=InnoDB;
 
     create table JBPM4_PARTICIPATION (
         DBID_ bigint not null,
@@ -341,14 +341,14 @@
         TASK_ bigint,
         SWIMLANE_ bigint,
         primary key (DBID_)
-    );
+    ) ENGINE=InnoDB;
 
     create table JBPM4_PROPERTY (
         KEY_ varchar(255) not null,
         VERSION_ integer not null,
         VALUE_ varchar(255),
         primary key (KEY_)
-    );
+    ) ENGINE=InnoDB;
 
     create table JBPM4_SWIMLANE (
         DBID_ bigint not null,
@@ -357,7 +357,7 @@
         ASSIGNEE_ varchar(255),
         EXECUTION_ bigint,
         primary key (DBID_)
-    );
+    ) ENGINE=InnoDB;
 
     create table JBPM4_TASK (
         DBID_ bigint not null,
@@ -383,7 +383,7 @@
         SWIMLANE_ bigint,
         TASKDEFNAME_ varchar(255),
         primary key (DBID_)
-    );
+    ) ENGINE=InnoDB;
 
     create table JBPM4_VARIABLE (
         DBID_ bigint not null,
@@ -403,7 +403,7 @@
         TEXT_VALUE_ longtext,
         EXESYS_ bigint,
         primary key (DBID_)
-    );
+    ) ENGINE=InnoDB;
 
     create index IDX_DEPLPROP_DEPL on JBPM4_DEPLOYPROP (DEPLOYMENT_);
 

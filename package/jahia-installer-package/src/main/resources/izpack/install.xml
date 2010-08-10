@@ -16,40 +16,86 @@
     <variables>
         <variable name="product.name" value="${product.name}"/>
         <variable name="product.version" value="${jahia.package.version}"/>
+        
+        <!-- default values for DB driver -->
+        <variable name="def.db.driver.mssql" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
+        <variable name="def.db.driver.mysql" value="com.mysql.jdbc.Driver"/>
+        <variable name="def.db.driver.oracle" value="oracle.jdbc.OracleDriver"/>
+        <variable name="def.db.driver.postgresql" value="org.postgresql.Driver"/>
+        <variable name="def.db.driver.derby" value="org.apache.derby.jdbc.ClientDriver"/>
+
+        <variable name="def.db.url.mssql" value="jdbc:sqlserver://localhost;databaseName=jahia"/>
+        <variable name="def.db.url.mysql" value="jdbc:mysql://localhost/jahia?useUnicode=true&amp;characterEncoding=UTF-8&amp;useServerPrepStmts=false"/>
+        <variable name="def.db.url.oracle" value="jdbc:oracle:thin:@localhost:1521:jahia"/>
+        <variable name="def.db.url.postgresql" value="jdbc:postgresql://localhost:5432/jahia"/>
+        <variable name="def.db.url.derby" value="jdbc:derby://localhost:1527/jahia;create=true"/>
+        
+        <variable name="superUser.username" value="root"/>
+        
+        <variable name="TargetPanel.noWhitespaces" value="true"/>
     </variables>
     <dynamicvariables>
         <variable name="jahia.war.contextPath" value=""/>
         <variable name="jahia.war.target.path" value="$INSTALL_PATH/tomcat/webapps/ROOT" condition="cnd.pack.tomcat"/>
         <variable name="jahia.war.target.path" value="$INSTALL_PATH/build" condition="!cnd.pack.tomcat"/>
         
-        <variable name="server.type" value="tomcat" condition="cnd.pack.tomcat"/>
+        <variable name="server.type" value="tomcat" condition="cnd.installation.type.express|cnd.pack.tomcat"/>
 
         <!-- embedded Derby defaults -->
-        <variable name="dbSettings.dbms.type" value="derby_embedded" condition="cnd.db.dbms.derby_embedded"/>
-        <variable name="dbSettings.dbms.createTables" value="true" condition="cnd.db.dbms.derby_embedded"/>
-        <variable name="dbSettings.connection.driver" value="org.apache.derby.jdbc.EmbeddedDriver" condition="cnd.db.dbms.derby_embedded"/>
-        <variable name="dbSettings.connection.url" value="jdbc:derby:directory:$context/WEB-INF/var/dbdata/jahia;create=true" condition="cnd.db.dbms.derby_embedded"/>
-        <variable name="dbSettings.connection.username" value="" condition="cnd.db.dbms.derby_embedded"/>
-        <variable name="dbSettings.connection.password" value="" condition="cnd.db.dbms.derby_embedded"/>
+        <variable name="dbSettings.dbms.type" value="derby_embedded" condition="cnd.installation.type.express|cnd.db.dbms.derby_embedded"/>
+        <variable name="dbSettings.dbms.createTables" value="true" condition="cnd.installation.type.express|cnd.db.dbms.derby_embedded"/>
+        <variable name="dbSettings.connection.driver" value="org.apache.derby.jdbc.EmbeddedDriver" condition="cnd.installation.type.express|cnd.db.dbms.derby_embedded"/>
+        <variable name="dbSettings.connection.url" value="jdbc:derby:directory:jahia;create=true" condition="cnd.installation.type.express|cnd.db.dbms.derby_embedded"/>
+        <variable name="dbSettings.connection.username" value="" condition="cnd.installation.type.express|cnd.db.dbms.derby_embedded"/>
+        <variable name="dbSettings.connection.password" value="" condition="cnd.installation.type.express|cnd.db.dbms.derby_embedded"/>
         
-        <variable name="var.db.driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" condition="cnd.db.dbms.mssql" />
-        <variable name="var.db.driver" value="com.mysql.jdbc.Driver" condition="cnd.db.dbms.mysql_innodb" />
-        <variable name="var.db.driver" value="com.mysql.jdbc.Driver" condition="cnd.db.dbms.mysql" />
-        <variable name="var.db.driver" value="oracle.jdbc.OracleDriver" condition="cnd.db.dbms.oracle" />
-        <variable name="var.db.driver" value="oracle.jdbc.OracleDriver" condition="cnd.db.dbms.oracle_legacy" />
-        <variable name="var.db.driver" value="org.postgresql.Driver" condition="cnd.db.dbms.postgresql" />
-        <variable name="var.db.driver" value="org.apache.derby.jdbc.ClientDriver" condition="cnd.db.dbms.derby" />
+        <variable name="superUser.firstname" value="" condition="cnd.installation.type.express"/>
+        <variable name="superUser.lastname" value="" condition="cnd.installation.type.express"/>
+        <variable name="superUser.email" value="" condition="cnd.installation.type.express"/>
+        
+        <!-- DB drivers for standalone DBMSs -->
+        <variable name="dbSettings.connection.driver" value="${dbSettings.connection.driver.mssql}" condition="cnd.db.dbms.mssql" />
+        <variable name="dbSettings.connection.driver" value="${dbSettings.connection.driver.mysql}" condition="cnd.db.dbms.mysql" />
+        <variable name="dbSettings.connection.driver" value="${dbSettings.connection.driver.oracle}" condition="cnd.db.dbms.oracle" />
+        <variable name="dbSettings.connection.driver" value="${dbSettings.connection.driver.oracle_legacy}" condition="cnd.db.dbms.oracle_legacy" />
+        <variable name="dbSettings.connection.driver" value="${dbSettings.connection.driver.postgresql}" condition="cnd.db.dbms.postgresql" />
+        <variable name="dbSettings.connection.driver" value="${dbSettings.connection.driver.derby}" condition="cnd.db.dbms.derby" />
 
-        <variable name="var.db.url" value="jdbc:sqlserver://localhost;databaseName=jahia" condition="cnd.db.dbms.mssql" />
-        <variable name="var.db.url" value="jdbc:mysql://localhost/jahia?useUnicode=true&amp;characterEncoding=UTF-8&amp;useServerPrepStmts=false" condition="cnd.db.dbms.mysql_innodb" />
-        <variable name="var.db.url" value="jdbc:mysql://localhost/jahia?useUnicode=true&amp;characterEncoding=UTF-8&amp;useServerPrepStmts=false" condition="cnd.db.dbms.mysql" />
-        <variable name="var.db.url" value="jdbc:oracle:thin:@localhost:1521:jahia" condition="cnd.db.dbms.oracle" />
-        <variable name="var.db.url" value="jdbc:oracle:thin:@localhost:1521:jahia" condition="cnd.db.dbms.oracle_legacy" />
-        <variable name="var.db.url" value="jdbc:postgresql://localhost:5432/jahia" condition="cnd.db.dbms.postgresql" />
-        <variable name="var.db.url" value="jdbc:derby://localhost:1527/jahia;create=true" condition="cnd.db.dbms.derby" />
+        <!-- DB URLs for standalone DBMSs -->
+        <variable name="dbSettings.connection.url" value="${dbSettings.connection.url.mssql}" condition="cnd.db.dbms.mssql" />
+        <variable name="dbSettings.connection.url" value="${dbSettings.connection.url.mysql}" condition="cnd.db.dbms.mysql" />
+        <variable name="dbSettings.connection.url" value="${dbSettings.connection.url.oracle}" condition="cnd.db.dbms.oracle" />
+        <variable name="dbSettings.connection.url" value="${dbSettings.connection.url.oracle_legacy}" condition="cnd.db.dbms.oracle_legacy" />
+        <variable name="dbSettings.connection.url" value="${dbSettings.connection.url.postgresql}" condition="cnd.db.dbms.postgresql" />
+        <variable name="dbSettings.connection.url" value="${dbSettings.connection.url.derby}" condition="cnd.db.dbms.derby" />
+
+        <!-- mail settings -->
+        <variable name="mailSettings.administrator" value=""/>
+        <variable name="mailSettings.from" value=""/>
+        <variable name="mailSettings.server" value=""/>
     </dynamicvariables>
     
     <conditions>
+        <!-- Only for Sun JDK
+        <condition type="variable" id="cnd.arch.32">
+            <name>SYSTEM_sun_arch_data_model</name>
+            <value>32</value>
+        </condition>
+        <condition type="variable" id="cnd.arch.64">
+            <name>SYSTEM_sun_arch_data_model</name>
+            <value>64</value>
+        </condition>
+        -->
+       
+        <condition type="variable" id="cnd.installation.type.express">
+            <name>installation.type</name>
+            <value>express</value>
+        </condition>
+        <condition type="variable" id="cnd.installation.type.advanced">
+            <name>installation.type</name>
+            <value>advanced</value>
+        </condition>
+        
         <condition type="packselection" id="cnd.pack.tomcat">
             <packid>tomcat</packid>
         </condition>
@@ -57,6 +103,11 @@
         <condition type="variable" id="cnd.server.type.jboss">
             <name>server.type</name>
             <value>jboss</value>
+        </condition>
+        
+        <condition type="variable" id="cnd.server.type.was">
+            <name>server.type</name>
+            <value>was</value>
         </condition>
         
         <condition type="or" id="cnd.skip.shared.libs">
@@ -75,10 +126,6 @@
         <condition type="variable" id="cnd.db.dbms.mssql">
             <name>dbSettings.dbms.type</name>
             <value>mssql</value>
-        </condition>
-        <condition type="variable" id="cnd.db.dbms.mysql_innodb">
-            <name>dbSettings.dbms.type</name>
-            <value>mysql_innodb</value>
         </condition>
         <condition type="variable" id="cnd.db.dbms.mysql">
             <name>dbSettings.dbms.type</name>
@@ -100,12 +147,22 @@
             <name>dbSettings.dbms.type</name>
             <value>derby</value>
         </condition>
+
+        <condition type="variable" id="cnd.launch.jahia">
+            <name>afterInstall.launchJahia</name>
+            <value>true</value>
+        </condition>
+        <condition type="variable" id="cnd.view.readme">
+            <name>afterInstall.viewReadme</name>
+            <value>true</value>
+        </condition>
     </conditions>
     <guiprefs height="480" resizable="yes" width="640">
         <modifier key="useFlags" value="yes"/>
         <modifier key="langDisplayType" value="native"/>
         <modifier key="headingPanelCounter" value="progressbar"/>
         <modifier key="headingPanelCounterPos" value="inNavigationPanel"/>
+        <modifier key="showDebugWindow" value="true"/>
     </guiprefs>
     <locale>
         <langpack iso3="eng"/>
@@ -118,6 +175,7 @@
     <resources>
         <res id="TargetPanel.dir.unix" src="unix-path.txt" />
         <res id="TargetPanel.dir.windows" src="windows-path.txt" />
+        <res id="TargetPanel.dir.mac" src="mac-path.txt" />
         <res id="installer.langsel.img" src="../images/language-selection.png"/>
         <res id="Installer.image" src="../images/left-side.png"/>
         <res id="LicencePanel.licence" parse="no" src="../licenses/license.txt"/>
@@ -151,82 +209,89 @@
         <res id="CustomLangpack.xml_spa" src="i18n/customLang.spa.xml"/>
     </resources>
     <panels>
-        <panel classname="CheckedHelloPanel"/>
+        <!-- 
+        <panel classname="HelloPanel"/>
         <panel classname="LicencePanel"/>
-        <panel classname="PacksPanel" id="packsPanel"/>
+         -->
         <panel classname="TargetPanel"/>
-        <panel classname="UserInputPanel" condition="!cnd.pack.tomcat" id="serverType"/>
-        <panel classname="UserInputPanel" id="dbMode"/>
-        <panel classname="UserInputPanel" condition="cnd.db.mode.standalone" id="dbmsType"/>
-        <panel classname="UserInputPanel" condition="cnd.db.mode.standalone" id="connectionManual"/>
+        <panel classname="UserInputPanel" id="installType"/>
+        <panel classname="PacksPanel" id="packsPanel" condition="cnd.installation.type.advanced"/>
+        <panel classname="UserInputPanel" condition="cnd.installation.type.advanced+!cnd.pack.tomcat" id="serverType"/>
+        <panel classname="UserInputPanel" condition="cnd.installation.type.advanced" id="dbType"/>
+        <panel classname="UserInputPanel" condition="cnd.db.mode.standalone" id="dbSettings"/>
         <panel classname="UserInputPanel" id="superUser"/>
-        <panel classname="UserInputPanel" id="mailSettings"/>
+        <panel classname="UserInputPanel" condition="cnd.installation.type.advanced" id="mailSettings"/>
         <panel classname="ShortcutPanel" id="shortcutPanel"/>
         <panel classname="SummaryPanel"/>
         <panel classname="InstallPanel"/>
-        <!-- 
-        <panel classname="ProcessPanel" condition="cnd.pack.tomcat" />
-         -->
+        <panel classname="UserInputPanel" id="afterInstall" condition="izpack.windowsinstall"/>
+        <panel classname="ProcessPanel"/>
         <panel classname="SimpleFinishPanel"/>
     </panels>
     
-    <native type="izpack" name="ShellLink.dll" />
+    <native name="ShellLink_x64.dll" type="izpack">
+        <os family="windows" />
+        <os arch="amd64"/>
+        <os arch="ia64"/>
+        <os arch="x86_64"/>
+    </native>
     <native name="ShellLink.dll" type="izpack">
         <os family="windows" />
+        <os arch="ia32"/>
+        <os arch="i386"/>
+        <os arch="i486"/>
+        <os arch="i586"/>
+        <os arch="i686"/>
+        <os arch="x86"/>
     </native>
-    <native name="COIOSHelper.dll" stage="both" type="3rdparty">
+    <!-- 
+    <native name="COIOSHelper_x64.dll" stage="both" type="3rdparty">
         <os family="windows" />
     </native>
+     -->
+     
+    <jar src="../${artifactId}-${version}.jar" stage="install"/>
     
+    <listeners>
+        <listener installer="LateShortcutInstallListener">
+            <os family="windows" />
+        </listener>
+    </listeners>
+    <!-- 
     <listeners>
         <listener installer="RegistryInstallerListener" uninstaller="RegistryUninstallerListener">
             <os family="windows" />
         </listener>
     </listeners>
-     
+     -->
+      
     <packs>
         <pack name="Jahia Core" id="core" preselected="yes" required="yes">
             <description/>
             <fileset dir="../licenses" targetdir="$INSTALL_PATH/licenses" />
-            <fileset dir="../links" targetdir="$INSTALL_PATH/bin" />
-            <fileset dir="../artifacts/jahia" targetdir="$INSTALL_PATH/build" />
+            <fileset dir="../links" targetdir="$INSTALL_PATH/bin">
+                <exclude name="StartJahia*"/>
+            </fileset>
+            <fileset dir="../artifacts/jahia" targetdir="${jahia.war.target.path}">
+                <exclude name="WEB-INF/lib/juel-api-2.1.2.jar"/>
+            </fileset>
+            <fileset dir="../images" targetdir="$INSTALL_PATH/bin" override="update">
+                <include name="jahia.ico"/>
+            </fileset>
+            <singlefile override="update" src="../artifacts/jahia/WEB-INF/lib/juel-api-2.1.2.jar" target="${jahia.war.target.path}/juel-api-2.1.2.jar" condition="cnd.server.type.was"/>
             <fileset dir="../artifacts/jahia-jboss-config" targetdir="$INSTALL_PATH/jahia-jboss-config" condition="cnd.server.type.jboss"/>
             <singlefile override="update" src="install.properties" target="$INSTALL_PATH/install.properties"/>
             <singlefile override="update" src="../dependency/configurators-${jahia.configurators.version}-standalone.jar" target="$INSTALL_PATH/configurators.jar"/>
             <singlefile override="update" src="../dependency/archivers-${jahia.archivers.version}-standalone.jar" target="$INSTALL_PATH/archivers.jar"/>
             <singlefile override="update" src="../artifacts/shared-libraries-all.zip" target="$INSTALL_PATH/shared-libraries.zip" condition="!cnd.skip.shared.libs"/>
             <parsable targetfile="$INSTALL_PATH/install.properties" type="javaprop"/>
-            <executable targetfile="$INSTALL_PATH/archivers.jar" stage="postinstall" type="jar" keep="false" condition="cnd.pack.tomcat">
-                <args>
-                    <arg value="-m"/><!-- copy and delete the build folder after archiving -->
-                    <arg value="$INSTALL_PATH/build"/>
-                    <arg value="${jahia.war.target.path}"/>
-                    <arg value="${server.type}"/>
-                </args>
-            </executable>
-            <executable targetfile="$INSTALL_PATH/configurators.jar" stage="postinstall" type="jar" keep="false">
-                <args>
-                    <arg value="$INSTALL_PATH/install.properties"/>
-                </args>
-            </executable>
-            <executable targetfile="$INSTALL_PATH/archivers.jar" stage="postinstall" type="jar" keep="true" condition="cnd.server.type.jboss">
-                <args>
-                    <arg value="-cm"/><!-- zip and delete the build folder after archiving -->
-                    <arg value="$INSTALL_PATH/jahia-jboss-config"/>
-                    <arg value="$INSTALL_PATH/jahia-jboss-config.sar"/>
-                </args>
-            </executable>
-            <executable targetfile="$INSTALL_PATH/archivers.jar" stage="postinstall" type="jar" keep="false" condition="!cnd.pack.tomcat">
-                <args>
-                    <arg value="-cm"/><!-- zip and delete the build folder after archiving -->
-                    <arg value="$INSTALL_PATH/build"/>
-                    <arg value="$INSTALL_PATH/ROOT.war"/>
-                    <arg value="${server.type}"/>
-                </args>
-            </executable>
+            <parsable targetfile="$INSTALL_PATH/bin/Readme.URL"/>
         </pack>
         <pack name="Apache Tomcat" id="tomcat" preselected="yes" required="no">
             <description/>
+            <fileset dir="../links" targetdir="$INSTALL_PATH/bin">
+                <include name="StartJahia*"/>
+            </fileset>
             <fileset dir="../artifacts/apache-tomcat-${jahia.tomcat.version}" targetdir="$INSTALL_PATH/tomcat" />
             <file override="update" src="../artifacts/shared-libraries-all.zip" targetdir="$INSTALL_PATH/tomcat/lib" unpack="true"/>
             <fileset dir="../tomcat" targetdir="$INSTALL_PATH/tomcat" override="update" />
@@ -245,6 +310,10 @@
             <parsable targetfile="$INSTALL_PATH/stopJahia.bat" type="shell" os="windows"/>
             <parsable targetfile="$INSTALL_PATH/stopJahia.sh" type="shell" os="unix"/>
             <parsable targetfile="$INSTALL_PATH/stopJahia.sh" type="shell" os="mac"/>
+            
+            <parsable targetfile="$INSTALL_PATH/bin/StartJahia.URL"/>
+            <parsable targetfile="$INSTALL_PATH/bin/StartJahiaAdministration.URL"/>
+            
             <executable targetfile="$INSTALL_PATH/tomcat/bin/catalina.sh" />
             <executable targetfile="$INSTALL_PATH/tomcat/bin/digest.sh" />
             <executable targetfile="$INSTALL_PATH/tomcat/bin/setclasspath.sh" />
@@ -255,12 +324,14 @@
             <executable targetfile="$INSTALL_PATH/startJahia.sh" />
             <executable targetfile="$INSTALL_PATH/stopJahia.sh" />
         </pack>
+        <!-- 
         <pack name="TODO: Jahia Unified Content Hub" id="juch" preselected="no" required="no">
             <description/>
         </pack>
         <pack name="TODO: Jahia Documentation" id="docs" preselected="no" required="no">
             <description/>
         </pack>
+         -->
     </packs>
 
 </installation>

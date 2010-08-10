@@ -3,6 +3,82 @@
     <skipIfNotSupported/>
     <programGroup defaultName="${product.name} ${product.version}" location="applications"/>
     
+<!-- Documentation -->
+    <shortcut
+        name="Jahia Readme"
+        subgroup="\Documentation"
+        description="Open the Jahia README file"
+        target="${jahia.war.target.path}\html\startup\readme.html"
+        programGroup="yes"
+        encoding="UTF-8">
+        <createForPack name="Apache Tomcat"/>
+    </shortcut>
+    <shortcut
+        name="Jahia Community Web Site"
+        subgroup="\Documentation"
+        description="Opens the Jahia Community Web site"
+        target="$INSTALL_PATH\bin\JahiaCommunity.URL"
+        iconFile="%SystemRoot%\system32\shell32.dll"
+        iconIndex="13"
+        programGroup="yes"
+        encoding="UTF-8">
+    </shortcut>
+    <shortcut
+        name="Jahia Company Web Site"
+        subgroup="\Documentation"
+        description="Opens the Jahia Company Web site"
+        target="$INSTALL_PATH\bin\JahiaCorporate.URL"
+        iconFile="%SystemRoot%\system32\shell32.dll"
+        iconIndex="13"
+        programGroup="yes"
+        encoding="UTF-8">
+    </shortcut>
+    <shortcut
+        name="Jahiapedia"
+        subgroup="\Documentation"
+        description="Opens the Jahiapedia page on the Jahia Community Web site"
+        target="$INSTALL_PATH\bin\Jahiapedia.URL"
+        iconFile="%SystemRoot%\system32\shell32.dll"
+        iconIndex="13"
+        programGroup="yes"
+        encoding="UTF-8">
+    </shortcut>
+    <shortcut
+        name="Issue Tracking"
+        subgroup="\Documentation"
+        description="Opens the Issue Tracking system"
+        target="$INSTALL_PATH\bin\IssueTrackingCommunity.URL"
+        iconFile="%SystemRoot%\system32\shell32.dll"
+        iconIndex="13"
+        programGroup="yes"
+        encoding="UTF-8">
+    </shortcut>
+    
+<!-- Shortcuts -->
+    <shortcut
+        name="Jahia"
+        subgroup="\Shortcuts (only when Jahia is running)"
+        description="Open the Jahia welcome page (running on localhost)"
+        target="$INSTALL_PATH\bin\StartJahia.URL"
+        iconFile="$INSTALL_PATH\bin\jahia.ico"
+        iconIndex="0"
+        programGroup="yes"
+        encoding="UTF-8">
+        <createForPack name="Apache Tomcat"/>
+    </shortcut>
+    <shortcut
+        name="Jahia Administration"
+        subgroup="\Shortcuts (only when Jahia is running)"
+        description="Open the Jahia Administration page (running on localhost)"
+        target="$INSTALL_PATH\bin\StartJahiaAdministration.URL"
+        iconFile="$INSTALL_PATH\bin\jahia.ico"
+        iconIndex="0"
+        programGroup="yes"
+        encoding="UTF-8">
+        <createForPack name="Apache Tomcat"/>
+    </shortcut>
+
+<!-- Start/stop Tomcat -->    
     <shortcut
         name="Start Jahia"
         target="$INSTALL_PATH\startJahia.bat"
@@ -20,7 +96,6 @@
         encoding="UTF-8">
         <createForPack name="Apache Tomcat"/>
     </shortcut>
-
     <shortcut
         name="Stop Jahia"
         target="$INSTALL_PATH\stopJahia.bat"
@@ -39,11 +114,12 @@
         <createForPack name="Apache Tomcat"/>
     </shortcut>
 
+<!-- Uninstaller -->    
     <shortcut
         name="Uninstall Jahia"
         description="This removes the Jahia Community Edition Server from your system"
-        target="java"
-        commandLine="-jar &quot;$INSTALL_PATH/Uninstaller/uninstaller.jar&quot;"
+        target="$JAVA_HOME\bin\java.exe"
+        commandLine="-jar $INSTALL_PATH\Uninstaller\uninstaller.jar"
         initialState="noShow"
         programGroup="yes"
         desktop="no"
@@ -54,60 +130,5 @@
         type="Application"
         encoding="UTF-8">
     </shortcut>
-<!-- 
-    <shortcut
-        name="Jahia Community Web Site"
-        target="$INSTALL_PATH\bin\JahiaCommunity.URL"
-        programGroup="yes"
-        desktop="no"
-        applications="no"
-        startMenu="yes"
-        startup="no"
-        workingDirectory=""
-        commandLine=""
-        initialState="noShow"
-        iconIndex="0"
-        url="http://www.jahia.org"
-        type="Link"
-        encoding="UTF-8"
-        description="Jahia Community Web Site">
-   </shortcut>
     
-   <shortcut
-        name="Jahiapedia"
-        target="$INSTALL_PATH\bin\Jahiapedia.URL"
-        programGroup="yes"
-        desktop="no"
-        applications="no"
-        startMenu="yes"
-        startup="no"
-        workingDirectory=""
-        commandLine=""
-        initialState="noShow"
-        iconIndex="0"
-        url="http://www.jahia.org/cms/home/Jahiapedia"
-        type="Link"
-        encoding="UTF-8"
-        description="Jahiapedia">
-   </shortcut>
-    
-    
-   <shortcut
-        name="Issue Tracking"
-        target="$INSTALL_PATH\bin\IssueTrackingCommunity.URL"
-        programGroup="yes"
-        desktop="no"
-        applications="no"
-        startMenu="yes"
-        startup="no"
-        workingDirectory=""
-        commandLine=""
-        initialState="noShow"
-        iconIndex="0"
-        url="http://jira.jahia.org/"
-        type="Link"
-        encoding="UTF-8"
-        description="Issue Tracking">
-   </shortcut>
- -->
 </shortcuts>

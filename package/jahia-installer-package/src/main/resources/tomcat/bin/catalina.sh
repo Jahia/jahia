@@ -116,6 +116,9 @@ PRGDIR=`dirname "$PRG"`
 # Only set CATALINA_HOME if not already set
 [ -z "$CATALINA_HOME" ] && CATALINA_HOME=`cd "$PRGDIR/.." >/dev/null; pwd`
 
+CATALINA_OPTS="$CATALINA_OPTS -Dderby.system.home=%CATALINA_HOME%/webapps/ROOT/WEB-INF/var/dbdata"
+export CATALINA_OPTS
+
 # Ensure that any user defined CLASSPATH variables are not used on startup,
 # but allow them to be specified in setenv.sh, in rare case when it is needed.
 CLASSPATH=

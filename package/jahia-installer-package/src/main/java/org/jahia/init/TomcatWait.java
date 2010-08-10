@@ -1,6 +1,6 @@
 /**
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
+ * Copyright (C) 2002-2010 Jahia Solutions Group SA. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -34,7 +34,10 @@
 package org.jahia.init;
 
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
+
+import com.izforge.izpack.util.AbstractUIProcessHandler;
 
 /**
  * <p>Title: Tomcat waiting utility</p>
@@ -46,58 +49,53 @@ import java.net.URL;
  * @version 1.0
  */
 
-public class TomcatWait
-{
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(TomcatWait.class);
-
+public class TomcatWait {
     private static final String DEFAULT_TARGET_URL = "http://localhost:8080/cms/html/startup/startjahia.html";
 
-    public static void main(String args[])
-    {
-        String targetURL = DEFAULT_TARGET_URL;
-        if (args.length == 0) {
-            logger.error("Missing targetURL, defaulting to " + DEFAULT_TARGET_URL);
-        } else {
-            targetURL = args[0];
+    public static void main(String args[]) throws MalformedURLException {
+        execute(args.length == 0 ? DEFAULT_TARGET_URL : args[0]);
+    }
+
+    /**
+     * @param handler The UI handler for user interaction and to send output to.
+     * @return true on success, false if processing should stop
+     */
+    public boolean run(AbstractUIProcessHandler handler, String[] args) {
+        try {
+            execute(args.length == 0 ? DEFAULT_TARGET_URL : args[0]);
+        } catch (Exception e) {
+            return false;
         }
-        URL url = null;
-        try
-        {
-            url = new URL(targetURL);
-        }
-        catch(Throwable throwable)
-        {
-            logger.error("Error in URL parameter : " + targetURL, throwable);
-            return;
-        }
+        return true;
+    }
+
+    private static void execute(String pingUrl) throws MalformedURLException {
+        URL url = new URL(pingUrl);
+
         boolean flag = false;
-        System.out.print("Waiting for Web Server to become available at " + targetURL + ".");
+        System.out.print("Waiting for Web Server to become available at " + url);
+
         try {
             Thread.sleep(1000); // sleep 1 second before making the connection
         } catch (InterruptedException ie) {
-            logger.error(ie.getMessage(), ie);
+            // ignore it
         }
-        while(!flag) {
+        while (!flag) {
             System.out.print(".");
             try {
                 Thread.sleep(500); // sleep 500 ms between tries.
             } catch (InterruptedException ie) {
-                logger.error(ie.getMessage(), ie);
+                // ignore it
             }
 
-            try
-            {
+            try {
                 InputStream inputstream = url.openStream();
                 flag = true;
                 inputstream.close();
-            }
-            catch(Exception throwable1)
-            {
+            } catch (Exception throwable1) {
                 flag = false;
             }
         }
-        System.out.println("");
-        System.out.println("Web Server now available.");
+        System.out.println("\nWeb Server now available.");
     }
 }

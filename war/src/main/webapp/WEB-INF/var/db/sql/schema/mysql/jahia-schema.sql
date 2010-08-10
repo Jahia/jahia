@@ -24,7 +24,7 @@
     create table jahia_db_test (
         testfield varchar(255) not null,
         primary key (testfield)
-    );
+    ) ENGINE=InnoDB;
 
     create table jahia_installedpatch (
         install_number integer not null,
@@ -33,13 +33,13 @@
         result_code integer,
         install_date datetime,
         primary key (install_number)
-    );
+    ) ENGINE=InnoDB;
 
     create table jahia_pwd_policies (
         jahia_pwd_policy_id integer not null,
         name varchar(255) not null,
         primary key (jahia_pwd_policy_id)
-    );
+    ) ENGINE=InnoDB;
 
     create table jahia_pwd_policy_rule_params (
         jahia_pwd_policy_rule_param_id integer not null,
@@ -49,7 +49,7 @@
         type char(1) not null,
         value varchar(255),
         primary key (jahia_pwd_policy_rule_param_id)
-    );
+    ) ENGINE=InnoDB;
 
     create table jahia_pwd_policy_rules (
         jahia_pwd_policy_rule_id integer not null,
@@ -63,7 +63,7 @@
         last_rule bit not null,
         periodical bit not null,
         primary key (jahia_pwd_policy_rule_id)
-    );
+    ) ENGINE=InnoDB;
 
     create table jahia_subscriptions (
         id_jahia_subscriptions integer not null,
@@ -81,7 +81,7 @@
         confirmation_request_timestamp bigint,
         properties longtext,
         primary key (id_jahia_subscriptions)
-    );
+    ) ENGINE=InnoDB;
 
     create table jahia_version (
         install_number integer not null,
@@ -89,7 +89,7 @@
         release_number varchar(20),
         install_date datetime,
         primary key (install_number)
-    );
+    ) ENGINE=InnoDB;
 
     alter table jahia_pwd_policy_rule_params 
         add index FKBE451EF45A0DB19B (jahia_pwd_policy_rule_id), 

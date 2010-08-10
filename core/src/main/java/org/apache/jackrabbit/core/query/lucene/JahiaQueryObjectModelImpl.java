@@ -16,7 +16,6 @@ import org.apache.jackrabbit.core.nodetype.NodeTypeManagerImpl;
 import org.apache.jackrabbit.core.query.PropertyTypeRegistry;
 import org.apache.jackrabbit.core.query.lucene.constraint.AndConstraint;
 import org.apache.jackrabbit.core.query.lucene.constraint.Constraint;
-import org.apache.jackrabbit.core.query.lucene.constraint.ConstraintBuilder;
 import org.apache.jackrabbit.spi.commons.nodetype.PropertyDefinitionImpl;
 import org.apache.jackrabbit.spi.commons.query.qom.ColumnImpl;
 import org.apache.jackrabbit.spi.commons.query.qom.OrderingImpl;
@@ -61,7 +60,7 @@ public class JahiaQueryObjectModelImpl extends QueryObjectModelImpl {
             Constraint c = JahiaConstraintBuilder.create(qomTree.getConstraint(),
                     getBindVariableValues(), qomTree.getSource().getSelectors(),
                     factory, session.getValueFactory());
-            query = new FilterMultiColumnQuery(query, new AndConstraint(nodup, c));
+            query = new FilterMultiColumnQuery(query, new AndConstraint(c, nodup));
         } else {
             query = new FilterMultiColumnQuery(query, nodup);
         }

@@ -199,7 +199,7 @@
                                             <arg value="start"/>
                                         </exec>
                                         <echo message="Sleeping while tomcat is starting..."/>
-                                        <sleep seconds="45"/>
+                                        <sleep seconds="90"/>
                                     </tasks>
                                 </configuration>
                                 <goals>

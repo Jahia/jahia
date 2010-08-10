@@ -37,6 +37,16 @@
 
     <profiles>
         <profile>
+            <id>code-coverage</id>
+            <dependencies>
+                <dependency>
+                    <groupId>com.cenqua.clover</groupId>
+                    <artifactId>clover</artifactId>
+                    <version>${clover.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
             <id>eclipse-integration</id>
             <build>
                 <plugins>

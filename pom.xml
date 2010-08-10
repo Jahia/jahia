@@ -40,6 +40,7 @@
     <apache.tika.version>0.7</apache.tika.version>
     <camel.version>2.4.0</camel.version>
     <gwt.version>2.0.4</gwt.version>
+    <clover.version>2.6.3</clover.version>
       
     <driver.derby.version>10.5.3.0_1</driver.derby.version>
     <driver.mssql.version>1.2-fixed</driver.mssql.version>
@@ -207,6 +208,7 @@
                   <plugin>
                       <groupId>com.atlassian.maven.plugins</groupId>
                       <artifactId>maven-clover2-plugin</artifactId>
+                      <version>${clover.version}</version>
                       <configuration>
                           <generateHistorical>false</generateHistorical>
                           <targetPercentage>7%</targetPercentage>
@@ -238,7 +240,7 @@
                               <phase>verify</phase>
                               <goals>
                                   <goal>aggregate</goal>
-                                  <goal>save-history</goal>
+                                  <!--goal>save-history</goal-->
                                   <goal>clover</goal>
                               </goals>
                           </execution>

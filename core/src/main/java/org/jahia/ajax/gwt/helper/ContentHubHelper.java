@@ -59,9 +59,9 @@ public class ContentHubHelper {
     }
 
     public void mount(final String name, final String root, final JahiaUser user) throws GWTJahiaServiceException {
-        if (user.isAdminMember(0)) {
+        if (user.isRoot()) {
             try {
-                JCRTemplate.getInstance().doExecuteWithSystemSession(user.getName(), new JCRCallback() {
+                JCRTemplate.getInstance().doExecuteWithSystemSession(user.getName(), new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         JCRNodeWrapper parent = session.getNode("/");
                         JCRNodeWrapper mounts;

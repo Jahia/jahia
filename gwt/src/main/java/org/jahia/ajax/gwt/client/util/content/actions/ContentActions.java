@@ -536,16 +536,7 @@ public class ContentActions {
      * @param linker
      */
     public static void mountFolder(final Linker linker) {
-//        GWTJahiaNode parent = (GWTJahiaNode) linker.getMainNode() ;
-//        if (parent == null) {
-//            final List<GWTJahiaNode> selectedItems =  linker.getSelectedNodes() ;
-//            if (selectedItems != null && selectedItems.size() == 1) {
-//                parent = selectedItems.get(0) ;
-//            }
-//        }
-//        if (parent != null && !parent.isFile()) {
         new Mounter(linker);
-//        }
     }
 
     /**

@@ -260,6 +260,9 @@
                 <ref bean="Toolbar.Item.Unmount"/>
             </list>
         </property>
+        <property name="visibility">
+            <bean class="org.jahia.services.uicomponents.bean.contentmanager.RootUserVisibility"/>
+        </property>
     </bean>
     <bean id="Toolbar.ItemsGroup.Menu.Image"
           class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">

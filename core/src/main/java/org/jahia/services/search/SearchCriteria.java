@@ -40,7 +40,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.list.LazyList;
 import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.lang.StringUtils;
@@ -49,6 +48,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jahia.services.search.SearchCriteria.Term.MatchType;
 import org.jahia.utils.DateUtils;
+import org.jahia.utils.SerializableFactory;
 
 /**
  * Bean for holding all search parameters.
@@ -480,10 +480,6 @@ public class SearchCriteria implements Serializable {
         public String toString() {
             return ReflectionToStringBuilder.reflectionToString(this);
         }
-    }
-
-    private static abstract class SerializableFactory implements Factory, Serializable {
-        
     }
 
     /**

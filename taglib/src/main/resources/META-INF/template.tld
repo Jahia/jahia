@@ -49,7 +49,6 @@
         &lt;template:template&gt;
             &lt;template:templateHead&gt;
                &lt;%@ include file="common/template-head.jspf" %&gt;
-               &lt;utility:applicationResources/&gt;
            &lt;/template:templateHead&gt;
            &lt;template:templateBody&gt;
            &lt;/template:templateBody&gt;
@@ -518,6 +517,14 @@
         	<required>false</required>
         	<rtexprvalue>true</rtexprvalue>
         	<type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>
+                An optional title value for this asset (in case of a link). 
+            </description>
+            <name>title</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
     <tag>

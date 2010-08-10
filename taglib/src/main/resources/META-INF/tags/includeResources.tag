@@ -47,7 +47,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
-<c:forTokens items="${fn:toLowerCase(functions:default(types, 'css,inlinecss,javascript,inlinejavascript'))}" delims="," var="resourceType">
+<c:forTokens items="${fn:toLowerCase(functions:default(types, 'css,inlinecss,javascript,inlinejavascript,opensearch'))}" delims="," var="resourceType">
     <c:choose>
         <c:when test="${resourceType eq 'css' and invertCss}">
             <c:set var="resources" value="${functions:reverse(renderContext.staticAssets[resourceType])}"/>
@@ -73,6 +73,9 @@
 			<c:when test="${'inlinecss' == resourceType || 'inlinejavascript' == resourceType}">
 				${resource}
 			</c:when>
+            <c:when test="${'opensearch' == resourceType}">
+                <link rel="search" type="application/opensearchdescription+xml" href="${fn:escapeXml(resource)}" title="${fn:escapeXml(functions:default(renderContext.staticAssetOptions[resource].title, 'Jahia search'))}" />
+            </c:when>
 		</c:choose>
 	</c:forEach>
 	<c:if test="${not empty resources && 'inlinecss' == resourceType}">

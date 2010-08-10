@@ -39,6 +39,7 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.utils.SerializableFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -70,7 +71,21 @@ public class RenderContext {
     private String redirect;
     
     @SuppressWarnings("unchecked")
-    private Map<String, Set<String>> staticAssets = LazyMap.decorate(new CaseInsensitiveMap(), new SetFactory());
+    private Map<String, Set<String>> staticAssets = LazyMap.decorate(new CaseInsensitiveMap(),
+            new SerializableFactory() {
+                public Object create() {
+                    return new LinkedHashSet<String>();
+                }
+            });
+
+    /** Static asset options (e.g. link title) keyed by asset resource (URL) */
+    @SuppressWarnings("unchecked")
+    private Map<String, Map<String, String>> staticAssetOptions = LazyMap.decorate(
+            new HashMap<String, Map<String, Object>>(), new SerializableFactory() {
+                public Object create() {
+                    return new HashMap<String, Object>();
+                }
+            });
 
     private String contentType;
 
@@ -297,6 +312,13 @@ public class RenderContext {
      */
     public void setRedirect(String redirect) {
         this.redirect = redirect;
+    }
+
+    /**
+     * @return the staticAssetOptions
+     */
+    public Map<String, Map<String, String>> getStaticAssetOptions() {
+        return staticAssetOptions;
     }
 
 }

@@ -36,10 +36,10 @@ import org.apache.log4j.Logger;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.render.RenderContext;
+import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.net.MalformedURLException;
 import java.util.LinkedList;
 import java.util.Map;
@@ -49,16 +49,17 @@ import java.util.List;
 /**
  * Add some resources to the head tag of the HTML.
  *
- * @author : rincevent
- * @since : JAHIA 6.1
+ * @author rincevent
+ * @since JAHIA 6.5
  * Created : 27 oct. 2009
  */
-public class AddResourcesTag extends BodyTagSupport {
+public class AddResourcesTag extends AbstractJahiaTag {
     private static final long serialVersionUID = -552052631291168495L;
     private transient static Logger logger = Logger.getLogger(AddResourcesTag.class);
     private boolean insert;
     private String type;
     private String resources;
+    private String title;
 
     /**
      * Default processing of the end tag returning EVAL_PAGE.
@@ -69,9 +70,8 @@ public class AddResourcesTag extends BodyTagSupport {
      */
     @Override
     public int doEndTag() throws JspException {
-        RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
         JahiaTemplatesPackage templatesPackage = (JahiaTemplatesPackage) pageContext.getAttribute("currentModule", PageContext.REQUEST_SCOPE);
-        addResources(renderContext, templatesPackage, type, resources);
+        addResources(getRenderContext(), templatesPackage, type, resources);
         resetState();
         return super.doEndTag();
     }
@@ -101,6 +101,9 @@ public class AddResourcesTag extends BodyTagSupport {
                 resource = mapping.containsKey(resource) ? mapping.get(resource) : resource;
                 if (links == null || !links.contains(resource)) {
                     renderContext.addStaticAsset(type, resource, insert);
+                    if (title != null) {
+                        renderContext.getStaticAssetOptions().get(resource).put("title", title);
+                    }
                 }
             } else {
                 for (String lookupPath : lookupPaths){
@@ -122,6 +125,9 @@ public class AddResourcesTag extends BodyTagSupport {
                             }
                             if (links == null || !links.contains(pathWithContext)) {
                                 renderContext.addStaticAsset(type, pathWithContext, insert);
+                                if (title != null) {
+                                    renderContext.getStaticAssetOptions().get(resource).put("title", title);
+                                }
                             }
                             found = true;
                             break;
@@ -152,8 +158,7 @@ public class AddResourcesTag extends BodyTagSupport {
     @Override
     public int doAfterBody() throws JspException {
         if ("inlinecss".equals(type) || "inlinejavascript".equals(type)) {
-            RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
-            renderContext.addStaticAsset(type, getBodyContent().getString(), insert);
+            getRenderContext().addStaticAsset(type, getBodyContent().getString(), insert);
             getBodyContent().clearBody();
         }
         return super.doAfterBody();
@@ -161,20 +166,25 @@ public class AddResourcesTag extends BodyTagSupport {
     
  
     @Override
-    public void release() {
-        resetState();
-        super.release();
-    }
-
     protected void resetState() {
         insert = false;
         resources = null;
         type = null;
+        title = null;
+        super.resetState();
     }
     
     @SuppressWarnings("unchecked")
     protected Map<String, String> getStaticAssetMapping() {
         return (Map<String, String>) SpringContextSingleton.getBean("org.jahia.services.render.StaticAssetMappingRegistry");
+    }
+
+    /**
+     * Sets the title to be used for the asset if applicable.
+     * @param title the title to set
+     */
+    public void setTitle(String title) {
+        this.title = title;
     }
 
 }

@@ -1,19 +1,28 @@
 package org.jahia.services.render;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.jcr.RepositoryException;
+
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
-import org.jahia.bin.*;
+import org.jahia.bin.Captcha;
+import org.jahia.bin.Contribute;
+import org.jahia.bin.DocumentConverter;
+import org.jahia.bin.Edit;
+import org.jahia.bin.Find;
+import org.jahia.bin.FindPrincipal;
+import org.jahia.bin.Initializers;
+import org.jahia.bin.Logout;
+import org.jahia.bin.Render;
+import org.jahia.bin.Studio;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.scripting.Script;
-import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
-
-import javax.jcr.RepositoryException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Main URL generation class. This class is exposed to the template developers to make it easy to them to access
@@ -46,6 +55,8 @@ public class URLGenerator {
     private Map<String, String> languages;
 
     private Map<String, String> templates;
+
+    private Map<String, String> templateTypes;
 
     private String templatesPath;
 
@@ -212,6 +223,18 @@ public class URLGenerator {
             });
         }
         return templates;
+    }
+
+    @SuppressWarnings("unchecked")
+    public Map<String, String> getTemplateTypes() {
+        if (templateTypes == null) {
+            templateTypes = LazyMap.decorate(new HashMap<String, String>(), new Transformer() {
+                public Object transform(Object templateType) {
+                    return buildURL(resource.getNode(), resource.getTemplate(), (String) templateType);
+                }
+            });
+        }
+        return templateTypes;
     }
 
     /**

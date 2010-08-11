@@ -31,6 +31,7 @@
  */
 package org.jahia.services.content.impl.vfs;
 
+import org.jahia.services.content.nodetypes.Name;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.apache.commons.vfs.FileSystemException;
@@ -107,7 +108,27 @@ public class VFSSessionImpl implements Session {
         try {
             FileObject object = repository.getFile(s);
             if (!object.exists()) {
-                throw new PathNotFoundException(s);
+                // if it's a property, let's try to find the file by removing the last part of the path.
+                int lastSlashPos = s.lastIndexOf("/");
+                if (lastSlashPos > -1) {
+                    String nodePath = s.substring(0, lastSlashPos);
+                    object = repository.getFile(nodePath);
+                    if (!object.exists()) {
+                        throw new PathNotFoundException(s);
+                    }
+                    // we found the node, let's build it and return it.
+                    String propertyName = s.substring(lastSlashPos+1);
+                    Name propertyQName = null;
+                    int prefixSeparatorPos = propertyName.indexOf(":");
+                    if (prefixSeparatorPos > -1) {
+                        propertyQName = new Name(propertyName.substring(prefixSeparatorPos+1), propertyName.substring(0, prefixSeparatorPos), "");
+                    } else {
+                        propertyQName = new Name(propertyName, "", "");
+                    }
+                    return new VFSPropertyImpl(propertyQName, new VFSNodeImpl(object, this), this);
+                } else {
+                    throw new PathNotFoundException(s);
+                }
             }
             return new VFSNodeImpl(object, this);
         } catch (FileSystemException e) {

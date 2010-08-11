@@ -31,8 +31,14 @@
  */
 package org.jahia.services.content.impl.vfs;
 
+import org.apache.commons.vfs.FileObject;
+import org.jahia.api.Constants;
+import org.jahia.services.content.nodetypes.Name;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+
 import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.PropertyDefinition;
 import javax.jcr.lock.LockException;
 import javax.jcr.version.VersionException;
@@ -48,6 +54,17 @@ import java.math.BigDecimal;
  * To change this template use File | Settings | File Templates.
  */
 public class VFSPropertyImpl extends VFSItemImpl implements Property {
+
+    private Node node;
+    private VFSSessionImpl session;
+    private Name name;
+
+    public VFSPropertyImpl(Name name, Node node, VFSSessionImpl session) {
+        this.name = name;
+        this.node = node;
+        this.session = session;
+    }
+
     public void setValue(Value value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         //To change body of implemented methods use File | Settings | File Templates.
     }
@@ -133,7 +150,7 @@ public class VFSPropertyImpl extends VFSItemImpl implements Property {
     }
 
     public PropertyDefinition getDefinition() throws RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return NodeTypeRegistry.getInstance().getNodeType(node.getPrimaryNodeType().getName()).getPropertyDefinition(name.toString());
     }
 
     public int getType() throws RepositoryException {

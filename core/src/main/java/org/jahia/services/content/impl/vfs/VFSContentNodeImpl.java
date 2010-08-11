@@ -35,6 +35,7 @@ package org.jahia.services.content.impl.vfs;
 import org.apache.commons.vfs.FileContent;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.io.IOUtils;
+import org.jahia.services.content.nodetypes.Name;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.impl.vfs.PropertyIteratorImpl;
 import org.jahia.api.Constants;
@@ -129,7 +130,7 @@ public class VFSContentNodeImpl extends VFSItemImpl implements Node {
                 OutputStream outputStream = content.getOutputStream();
                 IOUtils.copy(inputStream, outputStream);
                 outputStream.close();
-                return new DataPropertyImpl();
+                return new DataPropertyImpl(new Name(s, "", ""), this, session);
             } catch (IOException e) {
                 throw new RepositoryException("Cannot write to stream", e);
             }
@@ -179,7 +180,7 @@ public class VFSContentNodeImpl extends VFSItemImpl implements Node {
 
     public Property getProperty(String s) throws PathNotFoundException, RepositoryException {
         if (s.equals(Constants.JCR_DATA)) {
-            return new VFSPropertyImpl() {
+            return new VFSPropertyImpl(new Name(s, "", ""), this, session) {
                 public long getLength() throws ValueFormatException, RepositoryException {
                     try {
                         return content.getSize();
@@ -205,7 +206,7 @@ public class VFSContentNodeImpl extends VFSItemImpl implements Node {
                 }
             };
         } else if (s.equals(Constants.JCR_MIMETYPE)) {
-            return new VFSPropertyImpl() {
+            return new VFSPropertyImpl(new Name(s, "", ""), this, session) {
                 public String getString() throws ValueFormatException, RepositoryException {
                     try {
                         String s1 = content.getContentInfo().getContentType();
@@ -442,6 +443,11 @@ public class VFSContentNodeImpl extends VFSItemImpl implements Node {
     }
 
     class DataPropertyImpl extends VFSPropertyImpl {
+
+        public DataPropertyImpl(Name name, Node node, VFSSessionImpl session) {
+            super(name, node, session);
+        }
+
         public InputStream getStream() throws ValueFormatException, RepositoryException {
             try {
                 return content.getInputStream();

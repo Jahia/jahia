@@ -60,6 +60,8 @@ import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeDefinition;
 import javax.jcr.nodetype.NodeType;
+import javax.jcr.security.AccessControlManager;
+import javax.jcr.security.Privilege;
 import javax.jcr.version.*;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -288,27 +290,63 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             if (ws == null) {
                 return false;
             }
+            // todo all the code below should only use the JCR 2.0 API !
             if (ws.equals(workspace.getName())) {
-                SessionImpl jrSession = (SessionImpl) session.getProviderSession(provider);
-                Path path = jrSession.getQPath(localPath).getNormalizedPath();
-                return jrSession.getAccessManager().isGranted(path, permissions);
+                Session providerSession = session.getProviderSession(provider);
+                if (providerSession instanceof SessionImpl) {
+                    SessionImpl jrSession = (SessionImpl) session.getProviderSession(provider);
+                    Path path = jrSession.getQPath(localPath).getNormalizedPath();
+                    return jrSession.getAccessManager().isGranted(path, permissions);
+                } else {
+                    // this is not a Jackrabbit implementation, we will use the new JCR 2.0 API instead.
+                    AccessControlManager accessControlManager = providerSession.getAccessControlManager();
+                    if (accessControlManager != null) {
+                        List<Privilege> privileges = convertPermToPrivileges(perm, accessControlManager);
+                        return accessControlManager.hasPrivileges(localPath, privileges.toArray(new Privilege[privileges.size()]));
+                    }
+                    return true;
+                }
             } else {
-                SessionImpl jrSession = (SessionImpl) provider.getCurrentUserSession("live");
-                Node current = this;
-                while (true) {
-                    try {
-                        Path path = jrSession.getQPath(current.getCorrespondingNodePath(ws)).getNormalizedPath();
-                        return jrSession.getAccessManager().isGranted(path, permissions);
-                    } catch (ItemNotFoundException nfe) {
-                        // corresponding node not found
+                Session providerSession = provider.getCurrentUserSession("live");
+                if (providerSession instanceof SessionImpl) {
+                    SessionImpl jrSession = (SessionImpl) provider.getCurrentUserSession("live");
+                    Node current = this;
+                    while (true) {
                         try {
-                            current = current.getParent();
-                        } catch (AccessDeniedException e) {
-                            return false;
-                        } catch (ItemNotFoundException e) {
-                            return false;
+                            Path path = jrSession.getQPath(current.getCorrespondingNodePath(ws)).getNormalizedPath();
+                            return jrSession.getAccessManager().isGranted(path, permissions);
+                        } catch (ItemNotFoundException nfe) {
+                            // corresponding node not found
+                            try {
+                                current = current.getParent();
+                            } catch (AccessDeniedException e) {
+                                return false;
+                            } catch (ItemNotFoundException e) {
+                                return false;
+                            }
                         }
                     }
+                } else {
+                    // we are not dealing with a Jackrabbit session, we will use the JCR 2.0 API instead.
+                    AccessControlManager accessControlManager = providerSession.getAccessControlManager();
+                    if (accessControlManager != null) {
+                        Node current = this;
+                        List<Privilege> privileges = convertPermToPrivileges(perm, accessControlManager);
+                        while (true) {
+                            try {
+                                return accessControlManager.hasPrivileges(current.getCorrespondingNodePath(ws), privileges.toArray(new Privilege[privileges.size()]));
+                            } catch (ItemNotFoundException infe) {
+                                try {
+                                    current = current.getParent();
+                                } catch (AccessDeniedException ade) {
+                                    return false;
+                                } catch (ItemNotFoundException infe2) {
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                    return true;
                 }
             }
         } catch (AccessControlException e) {
@@ -317,6 +355,18 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             logger.error("Cannot check perm ", re);
             return false;
         }
+    }
+
+    private List<Privilege> convertPermToPrivileges(String perm, AccessControlManager accessControlManager) throws RepositoryException {
+        List<Privilege> privileges = new ArrayList<Privilege>();
+        if (READ.equals(perm) || READ_LIVE.equals(perm)) {
+            privileges.add(accessControlManager.privilegeFromName(Privilege.JCR_READ));
+        } else if (WRITE.equals(perm) || WRITE_LIVE.equals(perm)) {
+            privileges.add(accessControlManager.privilegeFromName(Privilege.JCR_ADD_CHILD_NODES));
+        } else if (MODIFY_ACL.equals(perm)) {
+            privileges.add(accessControlManager.privilegeFromName(Privilege.JCR_MODIFY_ACCESS_CONTROL));
+        }
+        return privileges;
     }
 
     /**
@@ -876,6 +926,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public ExtendedNodeDefinition getDefinition() throws RepositoryException {
         NodeDefinition definition = objectNode.getDefinition();
+        if (definition == null) {
+            return null;
+        }
         ExtendedNodeType nt = NodeTypeRegistry.getInstance().getNodeType(definition.getDeclaringNodeType().getName());
         if (definition.getName().equals("*")) {
             for (ExtendedNodeDefinition d : nt.getUnstructuredChildNodeDefinitions().values()) {

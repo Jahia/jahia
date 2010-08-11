@@ -34,6 +34,9 @@ package org.jahia.services.content.impl.vfs;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileType;
+import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.Name;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.impl.vfs.PropertyIteratorImpl;
 import org.jahia.api.Constants;
@@ -89,6 +92,10 @@ public class VFSNodeImpl extends VFSItemImpl implements Node {
 
     public Node getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {
         try {
+            FileObject parentFileObject = fileObject.getParent();
+            if (parentFileObject == null) {
+                throw new ItemNotFoundException("Trying to retrieve parent of root node");
+            }
             return new VFSNodeImpl(fileObject.getParent(), session);
         } catch (FileSystemException e) {
             throw new RepositoryException(e);
@@ -323,17 +330,21 @@ public class VFSNodeImpl extends VFSItemImpl implements Node {
     }
 
     public NodeType getPrimaryNodeType() throws RepositoryException {
+        return getExtendedPrimaryNodeType();
+    }
+
+    public ExtendedNodeType getExtendedPrimaryNodeType() throws RepositoryException {
         try {
             FileType fileType = fileObject.getType();
             if (fileType == FileType.FILE) {
-                return NodeTypeRegistry.getInstance().getNodeType("nt:file");
+                return NodeTypeRegistry.getInstance().getNodeType(Constants.NT_FILE);
             } else if (fileType == FileType.FOLDER) {
-                return NodeTypeRegistry.getInstance().getNodeType("nt:folder");
+                return NodeTypeRegistry.getInstance().getNodeType(Constants.NT_FOLDER);
             }
         } catch (FileSystemException e) {
             throw new RepositoryException(e);
         }
-        return NodeTypeRegistry.getInstance().getNodeType("nt:file");
+        return NodeTypeRegistry.getInstance().getNodeType(Constants.NT_FILE);
     }
 
     public NodeType[] getMixinNodeTypes() throws RepositoryException {
@@ -357,6 +368,15 @@ public class VFSNodeImpl extends VFSItemImpl implements Node {
     }
 
     public NodeDefinition getDefinition() throws RepositoryException {
+        VFSNodeImpl parentNode = (VFSNodeImpl) getParent();
+        ExtendedNodeType parentNodeType = parentNode.getExtendedPrimaryNodeType();
+        ExtendedNodeDefinition nodeDefinition = parentNodeType.getNodeDefinition(getPrimaryNodeType().getName());
+        if (nodeDefinition != null) {
+            return nodeDefinition;
+        }
+        for (ExtendedNodeDefinition extendedNodeDefinition : parentNodeType.getUnstructuredChildNodeDefinitions().values()) {
+            return extendedNodeDefinition;
+        }        
         return null;
     }
 

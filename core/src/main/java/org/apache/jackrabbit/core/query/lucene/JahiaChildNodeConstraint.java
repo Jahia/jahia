@@ -34,8 +34,8 @@ public class JahiaChildNodeConstraint extends ChildNodeConstraint {
         sn.getDoc(context.getIndexReader());
         Document doc = context.getIndexReader().document(sn.getDoc(context.getIndexReader()));
         final String id = getBaseNodeId(context).toString();
-
-        return id.equals(doc.get(FieldNames.PARENT)) ||
-                id.equals(doc.get(JahiaNodeIndexer.TRANSLATED_NODE_PARENT));
+        String parentId = doc.get(FieldNames.PARENT);
+        String translatedNodeParentId = doc.get(JahiaNodeIndexer.TRANSLATED_NODE_PARENT);        
+        return id.equals(translatedNodeParentId) || (id.equals(parentId) && translatedNodeParentId == null);
     }
 }

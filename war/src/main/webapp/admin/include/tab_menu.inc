@@ -122,8 +122,12 @@
             </div>
         </li>
     </ul>
-    <ul class="dex-langbar-wrapper" style="width: 10%;">
+    <ul class="dex-langbar-wrapper" style="width: 20%;">
         <li>
+            <c:url value="/cms/logout" var="logoutUrl">
+                <c:param name="redirect" value="${pageContext.request.contextPath}/administration"/>
+            </c:url>
+            <span style="margin-right: 10px"><a href="${logoutUrl}"><img src="${pageContext.request.contextPath}/icons/logout.png" alt=" " height="16" width="16" align="top"/>&nbsp;<fmt:message key="label.logout"/></a></span>
             <%
             String userLocale = UserPreferencesHelper.getPreferredLocale(jData.getProcessingContext().getUser(), theSite).toString();
             %>
@@ -148,14 +152,16 @@
             </select>
         </li>
     </ul>
+    <%--
     <!-- License expiration message -->
-    <ul class="dex-license-wrapper" style="width: 10%;">
+    <ul class="dex-license-wrapper" style="width: 10%">
         <li>
             <% if (daysLeft != null) { %>
-            <fmt:message key="org.jahia.admin.daysLeftWarning.label"/>&nbsp;:&nbsp;<%=daysLeft %>
+            <fmt:message key="org.jahia.admin.daysLeftWarning.label"/>:&nbsp;<%=daysLeft %>
             <% } else { %>
             &nbsp;
             <% } %>
         </li>
     </ul>
+    --%>
 </div>

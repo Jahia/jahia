@@ -399,17 +399,6 @@ br.clearFloat{
   height: 32px;
 }
 
-.dex-langbar-wrapper {
-  margin: 0;
-  padding: 0;
-  position: relative;
-  list-style: none;
-  float: right;
-  text-align: right;
-  background: url(images/andromeda/bkg-tab.png) 0 -192px;
-  height: 32px;
-}
-
 .dex-license-wrapper li {
   margin: 0;
   padding: 0;
@@ -422,6 +411,17 @@ br.clearFloat{
   zoom: 1;
   height: 32px;
   color: #333333;
+}
+
+.dex-langbar-wrapper {
+  margin: 0;
+  padding: 0;
+  position: relative;
+  list-style: none;
+  float: right;
+  text-align: right;
+  background: url(images/andromeda/bkg-tab.png) 0 -192px;
+  height: 32px;
 }
 
 /**

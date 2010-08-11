@@ -34,7 +34,6 @@
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
 import org.jahia.pipelines.PipelineException;
-import org.jahia.pipelines.valves.Valve;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.usermanager.JahiaUser;
@@ -47,7 +46,7 @@ import javax.servlet.http.HttpServletRequest;
  * Date: 15 d�c. 2004
  * Time: 13:03:08
  */
-public class HttpBasicAuthValveImpl implements Valve {
+public class HttpBasicAuthValveImpl extends BaseAuthValve {
     private static final transient Logger logger = Logger
             .getLogger(HttpBasicAuthValveImpl.class);
 
@@ -75,6 +74,10 @@ public class HttpBasicAuthValveImpl implements Valve {
                     if (jahiaUser.verifyPassword(pass)) {
                         if (logger.isDebugEnabled()) {
                             logger.debug("User " + user + " authenticated.");
+                        }
+                        if (isAccounteLocked(jahiaUser)) {
+                            logger.debug("Login failed. Account is locked for user " + user);
+                            return;
                         }
                         authContext.getSessionFactory().setCurrentUser(jahiaUser);
                         return;

@@ -227,6 +227,19 @@
         </select>
     </td>
 </tr>
+<tr>
+    <td align="right">
+        <label for="accountLocked"><fmt:message key="label.accountLocked"/>&nbsp;</label>
+    </td>
+    <td>
+        <%
+            propValue = getUserProp(userProperties, "j:accountLocked");
+        %>
+        <input type="checkbox" class="input" id="accountLocked"
+               name='<%=ManageUsers.USER_PROPERTY_PREFIX + "j:accountLocked"%>' value="true"
+               <% if ("true".equals(propValue)) {%>checked="checked"<% } %> />
+    </td>
+</tr>
 <%-- You can add your custom user properties here --%>
 <tr>
     <td align="right">

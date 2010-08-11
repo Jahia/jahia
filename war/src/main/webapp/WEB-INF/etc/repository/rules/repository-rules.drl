@@ -35,6 +35,14 @@ rule "publish user (create)"
         Publish the node
 end
 
+rule "Remove user from cache when updated"
+    when
+		A property j:accountLocked has been set on a node
+			- the node has the type jnt:user
+    then
+        Remove entry node.getName() from cache "JCR_USER_CACHE"
+end
+
 rule "publish groups"
     when
        A new node is created

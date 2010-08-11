@@ -1152,23 +1152,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
         return authPipeline;
     }
 
-    // BEGIN [added by Pascal Aubry for CAS authentication]
-    /**
-     * Tell if Jahia is using Single Sign-On for authentication.
-     * @return true if SSO should be used, false otherwise.
-     */
-    static public boolean usesSso() {
-        return authPipeline.hasValveOfClass(SsoValve.class);
-    }
-    /**
-     * Return the (first) SSO valve.
-     * @return a SsoValve instance, or null if none.
-     */
-    static public SsoValve getSsoValve() {
-        return (SsoValve) authPipeline.getFirstValveOfClass(SsoValve.class);
-    }
-    // END [added by Pascal Aubry for CAS authentication]
-
     static public ServletConfig getStaticServletConfig() {
         return staticServletConfig;
     }

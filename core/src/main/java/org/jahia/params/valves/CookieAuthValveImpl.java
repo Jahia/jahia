@@ -38,14 +38,11 @@ import org.jahia.engines.EngineMessage;
 import org.jahia.engines.EngineMessages;
 import org.jahia.params.ProcessingContext;
 import org.jahia.pipelines.PipelineException;
-import org.jahia.pipelines.valves.Valve;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.pwdpolicy.PolicyEnforcementResult;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.settings.SettingsBean;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -53,7 +50,6 @@ import javax.servlet.http.HttpSession;
 import java.security.Principal;
 import java.security.SecureRandom;
 import java.util.Iterator;
-import java.util.Locale;
 import java.util.Properties;
 import java.util.Set;
 
@@ -67,7 +63,7 @@ import java.util.Set;
  * @version 1.0
  */
 
-public class CookieAuthValveImpl implements Valve {
+public class CookieAuthValveImpl extends BaseAuthValve {
     private static final transient Logger logger = Logger.getLogger(CookieAuthValveImpl.class);
 
     private CookieAuthConfig cookieAuthConfig;
@@ -104,35 +100,39 @@ public class CookieAuthValveImpl implements Valve {
                     getJahiaUserManagerService().searchUsers(searchCriterias);
             if (foundUsers.size() == 1) {
                 jahiaUser = (JahiaUser) foundUsers.iterator().next();
-                HttpSession session = authContext.getRequest().getSession(false);
-                if (session !=null) {
-                    session.setAttribute(ProcessingContext.SESSION_USER, jahiaUser);
-                }
-
-                if (cookieAuthConfig.isRenewalActivated()) {
-                    // we can now renew the cookie.
-                    String cookieUserKey = null;
-                    // now let's look for a free random cookie value key.
-                    while (cookieUserKey == null) {
-                        cookieUserKey = CookieAuthValveImpl.generateRandomString(cookieAuthConfig.getIdLength());
-                        searchCriterias = new Properties();
-                        searchCriterias.setProperty(userPropertyName, cookieUserKey);
-                        Set<Principal> usersWithKey = ServicesRegistry.getInstance().
-                                getJahiaUserManagerService().
-                                searchUsers(searchCriterias);
-                        if (usersWithKey.size() > 0) {
-                            cookieUserKey = null;
-                        }
+                if (isAccounteLocked(jahiaUser)) {
+                    jahiaUser = null;
+                } else {
+                    HttpSession session = authContext.getRequest().getSession(false);
+                    if (session !=null) {
+                        session.setAttribute(ProcessingContext.SESSION_USER, jahiaUser);
                     }
-                    // let's save the identifier for the user in the database
-                    jahiaUser.setProperty(userPropertyName, cookieUserKey);
-                    // now let's save the same identifier in the cookie.
-                    authCookie.setValue(cookieUserKey);
-                    authCookie.setPath(StringUtils.isNotEmpty(authContext.getRequest().getContextPath()) ?
-                            authContext.getRequest().getContextPath() : "/");
-                    authCookie.setMaxAge(cookieAuthConfig.getMaxAgeInSeconds());
-                    HttpServletResponse realResponse = authContext.getResponse();
-                    realResponse.addCookie(authCookie);
+    
+                    if (cookieAuthConfig.isRenewalActivated()) {
+                        // we can now renew the cookie.
+                        String cookieUserKey = null;
+                        // now let's look for a free random cookie value key.
+                        while (cookieUserKey == null) {
+                            cookieUserKey = CookieAuthValveImpl.generateRandomString(cookieAuthConfig.getIdLength());
+                            searchCriterias = new Properties();
+                            searchCriterias.setProperty(userPropertyName, cookieUserKey);
+                            Set<Principal> usersWithKey = ServicesRegistry.getInstance().
+                                    getJahiaUserManagerService().
+                                    searchUsers(searchCriterias);
+                            if (usersWithKey.size() > 0) {
+                                cookieUserKey = null;
+                            }
+                        }
+                        // let's save the identifier for the user in the database
+                        jahiaUser.setProperty(userPropertyName, cookieUserKey);
+                        // now let's save the same identifier in the cookie.
+                        authCookie.setValue(cookieUserKey);
+                        authCookie.setPath(StringUtils.isNotEmpty(authContext.getRequest().getContextPath()) ?
+                                authContext.getRequest().getContextPath() : "/");
+                        authCookie.setMaxAge(cookieAuthConfig.getMaxAgeInSeconds());
+                        HttpServletResponse realResponse = authContext.getResponse();
+                        realResponse.addCookie(authCookie);
+                    }
                 }
             }
         }
@@ -145,9 +145,9 @@ public class CookieAuthValveImpl implements Valve {
             authContext.getSessionFactory().setCurrentUser(jahiaUser);
 
             // do a switch to the user's preferred language
-            if (SettingsBean.getInstance().isConsiderPreferredLanguageAfterLogin()) {
-                Locale preferredUserLocale = UserPreferencesHelper.getPreferredLocale(jahiaUser);
-            }
+//            if (SettingsBean.getInstance().isConsiderPreferredLanguageAfterLogin()) {
+//                Locale preferredUserLocale = UserPreferencesHelper.getPreferredLocale(jahiaUser);
+//            }
 
             enforcePasswordPolicy(jahiaUser, authContext);
             jahiaUser.setProperty(JahiaUserManagerService.PROP_LAST_LOGIN_DATE,
@@ -171,7 +171,7 @@ public class CookieAuthValveImpl implements Valve {
                 authContext.getRequest().getSession().setAttribute(EngineMessages.CONTEXT_KEY, resultMessages);
                 try {
                     String redirectUrl = null;
-                    redirectUrl = new StringBuffer(64).append(authContext.getRequest().getContextPath()).append("/cms/")
+                    redirectUrl = new StringBuffer(64).append(authContext.getRequest().getContextPath())
                             .append(Render.getRenderServletPath()).append("/default/en/users").append(theUser.getName())
                             .append(".html").toString();
                     authContext.getResponse().sendRedirect(redirectUrl);

@@ -681,7 +681,12 @@ public class ManageUsers extends AbstractAdministrationModule {
             displayUsers(request, response, session);
         } else {
             // set request attributes...
-            request.setAttribute("selectedUsers", selectedUsers);
+            
+            JahiaUserManagerService userService = ServicesRegistry.getInstance().getJahiaUserManagerService();
+            JahiaUser user = userService.lookupUserByKey(selectedUsers.substring(1));
+
+            request.setAttribute("userReadOnly", JahiaUserManagerService.isGuest(user) || user.isRoot() || Boolean.valueOf(userService.getProvider(user.getProviderName()).isReadOnly()));
+            request.setAttribute("selectedUser", user);
             session.setAttribute("userMessage", userMessage);
             session.setAttribute("isError", isError);
             request.setAttribute("jspSource", JSP_PATH + "user_management/user_remove.jsp");
@@ -709,11 +714,8 @@ public class ManageUsers extends AbstractAdministrationModule {
                                    HttpSession           session)
     throws IOException, ServletException, JahiaException
     {
-        logger.debug("Started");
-
-        /*session.setAttribute("selectedUsers", null);
+        session.setAttribute("selectedUsers", null);
         String userName = request.getParameter("username");
-        if (!userName.equals("guest")) {
             // try to delete the user and memberships...
             try {
                 JahiaUser user = userManager.lookupUser(userName);
@@ -725,16 +727,12 @@ public class ManageUsers extends AbstractAdministrationModule {
                     userMessage += getMessage("org.jahia.admin.userMessage.removed.label");
                     isError = false;
                   } else {
-                  userMessage = getMessage("org.jahia.admin.userMessage.cannotRemoveYourUser.label");
+                      userMessage = getMessage("org.jahia.admin.userMessage.cannotRemoveYourUser.label");
                 }
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
-              userMessage = getMessage("org.jahia.admin.userMessage.cannotRemoveUser.label");
-              userMessage += " " + userName + ".";
+                userMessage = getMessage("org.jahia.admin.userMessage.cannotRemoveUser.label") + " " + userName + ".";
             }
-        } else {
-          userMessage = getMessage("org.jahia.admin.userMessage.cannotRemoveGuest.label");
-        }*/
         displayUsers( request, response, session);
     }
 

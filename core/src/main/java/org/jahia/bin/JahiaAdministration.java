@@ -684,32 +684,38 @@ public class JahiaAdministration extends HttpServlet {
 
             if (theUser != null) {
                 if (theUser.verifyPassword(jahiaLoginPassword)) {
-                    if (theGroup.isMember(theUser)) {
-                        loginError = false;
-                        superAdmin = true;
-                        logger.debug("Login granted: " + jahiaLoginUsername + " entered correct password.");
+                    if (!theUser.isRoot() && Boolean.valueOf(theUser.getProperty("j:accountLocked"))) {
+                        logger.debug("Login failed. Account is locked for user " + jahiaLoginUsername);
+                        String dspMsg = JahiaResourceBundle.getJahiaInternalResource("message.accountLocked", request.getLocale());
+                        request.setAttribute(JahiaAdministration.CLASS_NAME + "jahiaDisplayMessage", dspMsg);
                     } else {
-                        List<JahiaSite> adminGrantedSites;
-                        try {
-                            adminGrantedSites = getAdminGrantedSites(theUser);
-                        } catch (JahiaException e) {
-                            adminGrantedSites = new ArrayList<JahiaSite>();
-                        }
-                        superAdmin = false;
-                        if (adminGrantedSites.size() > 0) {
+                        if (theGroup.isMember(theUser)) {
                             loginError = false;
-                            JahiaSite firstAdminSite = adminGrantedSites.get(0);
-                            entrySiteID = firstAdminSite.getID();
+                            superAdmin = true;
+                            logger.debug("Login granted: " + jahiaLoginUsername + " entered correct password.");
                         } else {
-                            String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.bin.JahiaConfigurationWizard.JahiaDisplayMessage.isntadministrator1.label",
-                                    request.getLocale());
-                            dspMsg += " ";
-                            dspMsg += jahiaLoginUsername;
-                            dspMsg += " ";
-                            dspMsg += JahiaResourceBundle.getJahiaInternalResource("org.jahia.bin.JahiaConfigurationWizard.JahiaDisplayMessage.isntadministrator2.label",
-                                    request.getLocale());
-                            request.setAttribute(JahiaAdministration.CLASS_NAME + "jahiaDisplayMessage", dspMsg);
-                            logger.error("Login Error: User " + jahiaLoginUsername + " is not a system administrator.");
+                            List<JahiaSite> adminGrantedSites;
+                            try {
+                                adminGrantedSites = getAdminGrantedSites(theUser);
+                            } catch (JahiaException e) {
+                                adminGrantedSites = new ArrayList<JahiaSite>();
+                            }
+                            superAdmin = false;
+                            if (adminGrantedSites.size() > 0) {
+                                loginError = false;
+                                JahiaSite firstAdminSite = adminGrantedSites.get(0);
+                                entrySiteID = firstAdminSite.getID();
+                            } else {
+                                String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.bin.JahiaConfigurationWizard.JahiaDisplayMessage.isntadministrator1.label",
+                                        request.getLocale());
+                                dspMsg += " ";
+                                dspMsg += jahiaLoginUsername;
+                                dspMsg += " ";
+                                dspMsg += JahiaResourceBundle.getJahiaInternalResource("org.jahia.bin.JahiaConfigurationWizard.JahiaDisplayMessage.isntadministrator2.label",
+                                        request.getLocale());
+                                request.setAttribute(JahiaAdministration.CLASS_NAME + "jahiaDisplayMessage", dspMsg);
+                                logger.error("Login Error: User " + jahiaLoginUsername + " is not a system administrator.");
+                            }
                         }
                     }
                 } else {

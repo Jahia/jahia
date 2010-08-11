@@ -33,7 +33,6 @@ package org.jahia.params.valves;
 
 import org.apache.log4j.Logger;
 import org.jahia.pipelines.PipelineException;
-import org.jahia.pipelines.valves.Valve;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.security.license.LicenseActionChecker;
@@ -51,13 +50,11 @@ import java.util.Collection;
 import java.util.Iterator;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: 15 d�c. 2004
  * Time: 13:02:36
- * To change this template use File | Settings | File Templates.
  */
-public class JaasAuthValveImpl implements Valve {
+public class JaasAuthValveImpl extends BaseAuthValve {
 
     private static final transient Logger logger = Logger.getLogger(JaasAuthValveImpl.class);
 
@@ -78,6 +75,10 @@ public class JaasAuthValveImpl implements Valve {
                 JahiaUser user =
                         ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(principal.getName());
                 if (user != null) {
+                    if (isAccounteLocked(user)) {
+                        logger.debug("Login failed. Account is locked for user " + principal.getName());
+                        return;
+                    }
                     authContext.getSessionFactory().setCurrentUser(user);
                     return;
                 }

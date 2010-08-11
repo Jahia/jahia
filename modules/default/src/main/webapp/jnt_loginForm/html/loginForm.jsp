@@ -31,9 +31,8 @@
 </script>
 <ui:loginArea class="Form loginForm" action="${pageContext.request.contextPath}/cms/login">
     <h3 class="loginIcon">${currentNode.properties['jcr:title'].string}</h3>
-    <ui:isLoginError>
-        <span class="error"><fmt:message bundle="JahiaInternalResources"
-                                         key="loginForm.error.invalidpasswordorusername.label"/></span>
+    <ui:isLoginError var="loginResult">
+        <span class="error"><fmt:message bundle="JahiaInternalResources" key="${loginResult == 'account_locked' ? 'message.accountLocked' : 'message.invalidUsernamePassword'}"/></span>
     </ui:isLoginError>
 
     <p>

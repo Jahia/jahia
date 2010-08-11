@@ -36,10 +36,13 @@ package org.jahia.services.usermanager;
 import org.apache.log4j.Logger;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 
 import java.util.*;
+
+import javax.jcr.RepositoryException;
 
 /**
  * A JahiaUser represents a physical person who is defined by a username and
@@ -241,8 +244,6 @@ public class JahiaLDAPUser extends JahiaBasePrincipal implements JahiaUser {
      * @param key Property's name.
      *
      * @return Return true on success or false on any failure.
-     *
-     * @todo FIXME : not supported in this read-only implementation
      */
     public synchronized boolean removeProperty (String key) {
         boolean result = false;
@@ -252,7 +253,7 @@ public class JahiaLDAPUser extends JahiaBasePrincipal implements JahiaUser {
         }
 
         if ((key != null) && (key.length () > 0) && (!mProperties.isReadOnly(key))) {
-            JCRUserManagerProvider userManager = (JCRUserManagerProvider) SpringContextSingleton.getInstance().getContext().getBean("JCRUserManagerProvider");
+            JCRUserManagerProvider userManager = (JCRUserManagerProvider) SpringContextSingleton.getBean("JCRUserManagerProvider");
             JCRUser jcrUser = (JCRUser) userManager.lookupExternalUser(getName());
             if(jcrUser!=null) {
                 jcrUser.removeProperty(key);
@@ -307,8 +308,18 @@ public class JahiaLDAPUser extends JahiaBasePrincipal implements JahiaUser {
 
         if ((key != null) && (value != null) && (!mProperties.isReadOnly(key))) {
             // Remove these lines if LDAP problem --------------------
-            JCRUserManagerProvider userManager = (JCRUserManagerProvider) SpringContextSingleton.getInstance().getContext().getBean("JCRUserManagerProvider");
+            JCRUserManagerProvider userManager = (JCRUserManagerProvider) SpringContextSingleton.getBean("JCRUserManagerProvider");
             JCRUser jcrUser = (JCRUser) userManager.lookupExternalUser(getName());
+            if (jcrUser == null) {
+                // deploy
+                try {
+                    JCRStoreService.getInstance().deployExternalUser(getName(), getProviderName());
+                    jcrUser = (JCRUser) userManager.lookupExternalUser(getName());
+                } catch (RepositoryException e) {
+                    logger.error("Error deploying external user '" + getName() + "' for provider '" + getProviderName()
+                            + "' into JCR repository. Cause: " + e.getMessage(), e);
+                }
+            }
             if(jcrUser!=null) {
                 jcrUser.setProperty(key, value);
                 result = true;

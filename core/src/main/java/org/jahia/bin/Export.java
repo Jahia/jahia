@@ -49,11 +49,13 @@ import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.jdom.transform.XSLTransformer;
+import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -73,12 +75,15 @@ import static org.jahia.api.Constants.LIVE_WORKSPACE;
  * @since : JAHIA 6.1
  *        Created : 2 avr. 2010
  */
-public class Export extends HttpServlet implements Controller {
+public class Export extends HttpServlet implements Controller, ServletContextAware {
     private transient static Logger logger = Logger.getLogger(Export.class);
 
     private String defaultWorkspace = LIVE_WORKSPACE;
+
     private static FileCleaningTracker fileCleaningTracker = new FileCleaningTracker();
 
+    private ServletContext servletContext;
+    
     /**
      * Process the request and return a ModelAndView object which the DispatcherServlet
      * will render. A <code>null</code> return value is not an error: It indicates that
@@ -180,9 +185,9 @@ public class Export extends HttpServlet implements Controller {
             } else if ("zip".equals(exportFormat)) {
                 resp.setContentType("application/zip");
                 if ("template".equals(params.get(ImportExportService.CLEANUP))) {
-                    params.put(ImportExportService.XSL_PATH, request.getRealPath("/WEB-INF/etc/repository/export/" + "templatesCleanup.xsl"));
+                    params.put(ImportExportService.XSL_PATH, servletContext.getRealPath("/WEB-INF/etc/repository/export/" + "templatesCleanup.xsl"));
                 } else if ("simple".equals(params.get(ImportExportService.CLEANUP))) {
-                    params.put(ImportExportService.XSL_PATH, request.getRealPath("/WEB-INF/etc/repository/export/" + "cleanup.xsl"));
+                    params.put(ImportExportService.XSL_PATH, servletContext.getRealPath("/WEB-INF/etc/repository/export/" + "cleanup.xsl"));
                 }
                 JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace);
                 JCRNodeWrapper node = session.getNode(nodePath);
@@ -209,7 +214,7 @@ public class Export extends HttpServlet implements Controller {
             inputStream.close();
             inputStream = new ByteArrayInputStream(stream.getData());
         }
-        XSLTransformer xslTransformer = new XSLTransformer(request.getRealPath(
+        XSLTransformer xslTransformer = new XSLTransformer(servletContext.getRealPath(
                 "/WEB-INF/etc/repository/export/" + xsl));
         SAXBuilder saxBuilder = new SAXBuilder(false);
         Document document = saxBuilder.build(inputStream);
@@ -239,5 +244,9 @@ public class Export extends HttpServlet implements Controller {
     public void destroy() {
         super.destroy();
         fileCleaningTracker.exitWhenFinished();
+    }
+
+    public void setServletContext(ServletContext servletContext) {
+        this.servletContext = servletContext;
     }
 }

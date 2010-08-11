@@ -37,7 +37,6 @@ import org.jahia.engines.EngineMessage;
 import org.jahia.engines.EngineMessages;
 import org.jahia.params.ProcessingContext;
 import org.jahia.pipelines.PipelineException;
-import org.jahia.pipelines.valves.Valve;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
@@ -58,11 +57,12 @@ import java.util.Set;
 /**
  * @author Thomas Draier
  */
-public class LoginEngineAuthValveImpl implements Valve {
+public class LoginEngineAuthValveImpl extends BaseAuthValve {
     private static final transient Logger logger = Logger.getLogger(LoginEngineAuthValveImpl.class);
     public static final String VALVE_RESULT = "login_valve_result";
     public static final String BAD_PASSWORD = "bad_password";
     public static final String UNKNOWN_USER = "unknown_user";
+    public static final String ACCOUNT_LOCKED = "account_locked";
     public static final String OK = "ok";
     public static final String USE_COOKIE = "useCookie";
     public static final String LOGIN_TAG_PARAMETER = "doLogin";
@@ -73,9 +73,6 @@ public class LoginEngineAuthValveImpl implements Valve {
     public static final String GO_TO_HOMEPAGE = "2";
 
     private CookieAuthConfig cookieAuthConfig;
-
-    public void initialize() {
-    }
 
     public void invoke(Object context, ValveContext valveContext) throws PipelineException {
         final AuthValveContext authContext = (AuthValveContext) context;
@@ -99,13 +96,20 @@ public class LoginEngineAuthValveImpl implements Valve {
                         theUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(username);
                         if (theUser != null) {
                             if (theUser.verifyPassword(password)) {
-                                ok = true;
+                                if (!isAccounteLocked(theUser)) {
+                                    ok = true;
+                                } else {
+                                    logger.warn("Login failed: account for user " + theUser.getUsername() + " is locked.");
+                                    httpServletRequest.setAttribute(VALVE_RESULT, ACCOUNT_LOCKED);
+                                }
                             } else {
-                                logger.warn("Couldn't validate password for user " + theUser.getUserKey() + "!");
-                                logger.debug("User " + username + " entered bad password");
+                                logger.warn("Login failed: user " + theUser.getUsername() + " provided bad password.");
                                 httpServletRequest.setAttribute(VALVE_RESULT, BAD_PASSWORD);
                             }
                         } else {
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("Login failed. Unknown username " + username + ".");
+                            }
                             httpServletRequest.setAttribute(VALVE_RESULT, UNKNOWN_USER);
                         }
                     }

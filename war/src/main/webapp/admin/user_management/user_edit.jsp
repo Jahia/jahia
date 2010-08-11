@@ -288,7 +288,24 @@
         </select>
     </td>
 </tr>
-<%-- You can add your custom user properties here --%>
+<tr>
+    <td align="right">
+        <label for="accountLockedView"><fmt:message key="label.accountLocked"/>&nbsp;</label>
+    </td>
+    <td>
+        <%
+            iReadOnly = isPropReadOnly(userProps, "j:accountLocked");
+            propValue = getUserProp(userProps, "j:accountLocked");
+        %>
+        <input type="checkbox" class="input" id="accountLockedView" name="accountLockedView"
+               value="true" <% if ("true".equals(propValue)) {%>checked="checked"<% } %>
+               onclick="javascript:{document.getElementById('accountLocked').value= this.checked ? 'true' : 'false';}"
+               <% if (iReadOnly) {%>disabled="disabled"<% } %>/>
+        <input type="hidden" id="accountLocked"
+               name='<%=ManageUsers.USER_PROPERTY_PREFIX+"j:accountLocked"%>'
+               value='<%= "true".equals(propValue) ? "true" : "false" %>'/>
+    </td>
+</tr>
 <% if (!JahiaPasswordPolicyService.getInstance().isPasswordReadOnly(jUser)) { %>
 <tr>
     <td align="right">
@@ -313,6 +330,7 @@
     </td>
 </tr>
 <% } %>
+<%-- You can add your custom user properties here --%>
 <tr>
 	<td colspan="2">
 		<div id="gwtroleprincipal" siteKey="<%=jParams.getSiteKey()%>"  principalKey="<%=jUser.getUserKey()%>" class="jahia-admin-gxt"></div>
@@ -349,32 +367,6 @@
     </td>
 </tr>
 
-<tr>
-    <td>&nbsp;
-        <% if (provider.equalsIgnoreCase("ldap")) { %>
-        <% if (isSuperAdminProp == null) {%>
-        <span class="dex-PushButton">
-            <span class="first-child">
-                <a href="#reset" class="ico-restore" onclick="document.mainForm.reset(); return false;"><fmt:message key="org.jahia.admin.users.ManageUsers.resetChangeNotHome.label"/></a>
-            </span>
-        </span>
-        <% } else { %>
-        <span class="dex-PushButton">
-            <span class="first-child">
-                <a href="#reset" class="ico-restore" onclick="document.mainForm.reset(); return false;"><fmt:message key="org.jahia.admin.resetChanges.label"/></a>
-            </span>
-        </span>
-        <% } %>
-        <% } %>
-    </td>
-    <td>
-        <br>
-
-        <div class="buttonList" style="padding-top: 8px; padding-bottom: 8px">
-
-        </div>
-    </td>
-</tr>
 </table>
 
 <!--  -->

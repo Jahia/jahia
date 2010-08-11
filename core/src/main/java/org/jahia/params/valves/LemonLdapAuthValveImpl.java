@@ -34,7 +34,6 @@
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
 import org.jahia.pipelines.PipelineException;
-import org.jahia.pipelines.valves.Valve;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.security.license.LicenseActionChecker;
@@ -47,13 +46,11 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: 15 d�c. 2004
  * Time: 13:03:08
- * To change this template use File | Settings | File Templates.
  */
-public class LemonLdapAuthValveImpl implements Valve {
+public class LemonLdapAuthValveImpl extends BaseAuthValve {
     private static final transient Logger logger = Logger
             .getLogger(LemonLdapAuthValveImpl.class);
 
@@ -88,6 +85,10 @@ public class LemonLdapAuthValveImpl implements Valve {
                         JahiaUserManagerLDAPProvider jahiaUserManagerLDAPProvider = (JahiaUserManagerLDAPProvider)userManagerProviderBean;
                         JahiaUser jahiaUser = jahiaUserManagerLDAPProvider.lookupUserFromDN(dn);
                         if (jahiaUser != null) {
+                            if (isAccounteLocked(jahiaUser)) {
+                                logger.debug("Login failed. Account is locked for user " + dn);
+                                return;
+                            }
                             logger.debug("DN found in ldap provider, user authenticated");
                             authContext.getSessionFactory().setCurrentUser(jahiaUser);
                             request.setAttribute("lemonldap.profile", prof);

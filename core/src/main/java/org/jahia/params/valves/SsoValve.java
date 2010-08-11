@@ -31,15 +31,16 @@
  */
 package org.jahia.params.valves;
 
+import org.apache.log4j.Logger;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.pipelines.PipelineException;
-import org.jahia.pipelines.valves.Valve;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.security.license.LicenseActionChecker;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -54,12 +55,14 @@ import javax.servlet.http.HttpSession;
  * @version 1.0
  */
 
-public abstract class SsoValve implements Valve {
+public abstract class SsoValve extends BaseAuthValve {
 
     /**
      * Logger instance
      */
-    protected static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(SsoValve.class);
+    protected static final Logger logger = Logger.getLogger(SsoValve.class);
+    
+    protected boolean isAuthorizedByLicense;
 
     /**
      * Retrieve the credentials from the request.
@@ -70,6 +73,12 @@ public abstract class SsoValve implements Valve {
      */
     public abstract Object retrieveCredentials(HttpServletRequest request) throws Exception;
 
+    @Override
+    public void initialize() {
+        super.initialize();
+        isAuthorizedByLicense = LicenseActionChecker.isAuthorizedByLicense("org.jahia.params.valves.SsoValve", 0);
+    }
+    
     /**
      * Validate the credentials.
      *
@@ -85,11 +94,14 @@ public abstract class SsoValve implements Valve {
      */
     public void invoke(Object context, ValveContext valveContext) throws PipelineException {
 
-        if (!LicenseActionChecker.isAuthorizedByLicense("org.jahia.params.valves.SsoValve", 0)) {
+        if (!isAuthorizedByLicense) {
             valveContext.invokeNext(context);
+            return;
         }
 
-        logger.debug("starting " + this.getClass().getName() + ".invoke()...");
+        if (logger.isDebugEnabled()) {
+            logger.debug("starting " + this.getClass().getName() + ".invoke()...");
+        }
         AuthValveContext authContext = (AuthValveContext) context;
 
         // at first look if the user was previously authenticated
@@ -99,8 +111,10 @@ public abstract class SsoValve implements Valve {
         if (session != null) {
             sessionUser = (JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER);
         }
-        if (sessionUser != null && !sessionUser.getUsername().equals("guest")) {
-            logger.debug("user '" + sessionUser.getUsername() + "' was already authenticated!");
+        if (sessionUser != null && !JahiaUserManagerService.isGuest(sessionUser)) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("user '" + sessionUser.getUsername() + "' was already authenticated!");
+            }
             authContext.getSessionFactory().setCurrentUser(sessionUser);
             return;
         }
@@ -116,7 +130,9 @@ public abstract class SsoValve implements Valve {
             logger.debug("no credentials found!");
             return;
         }
-        logger.debug("credentials = " + credentials);
+        if (logger.isDebugEnabled()) {
+            logger.debug("credentials = " + credentials);
+        }
 
         logger.debug("validating credentials...");
         String uid;
@@ -128,13 +144,21 @@ public abstract class SsoValve implements Valve {
         if (uid == null) {
             logger.debug("credentials were not validated!");
         }
-        logger.debug("uid = " + uid);
+        if (logger.isDebugEnabled()) {
+            logger.debug("uid = " + uid);
+        }
 
         logger.debug("checking user existence in Jahia database...");
         JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(uid);
         if (user == null) {
             throw new PipelineException("user '" + uid + "' was authenticated but not found in database!");
         }
+        
+        if (isAccounteLocked(user)) {
+            logger.debug("Login failed. Account is locked for user " + uid);
+            return;
+        }
+        
         if (session != null) {
             servletRequest.getSession().invalidate();
             // user has been successfully authenticated, note this in the current session.

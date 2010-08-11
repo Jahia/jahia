@@ -77,8 +77,8 @@ function keyDown(e) {
         <ui:loginArea action="${pageContext.request.contextPath}/cms/login">
             <h3 class="loginIcon"><fmt:message key="label.login"/></h3>
             <br class="clearFloat" />
-        <ui:isLoginError>
-          <span class="error"><fmt:message key="message.invalidUsernamePassword"/></span>
+        <ui:isLoginError var="loginResult">
+          <span class="error"><fmt:message key="${loginResult == 'account_locked' ? 'message.accountLocked' : 'message.invalidUsernamePassword'}"/></span>
         </ui:isLoginError>
         <table cellspacing="1" cellpadding="0" border="0" class="formTable">
             <tbody>

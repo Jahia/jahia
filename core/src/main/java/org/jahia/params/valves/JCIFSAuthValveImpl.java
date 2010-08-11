@@ -32,7 +32,6 @@
 package org.jahia.params.valves;
 
 import org.jahia.pipelines.PipelineException;
-import org.jahia.pipelines.valves.Valve;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.security.license.LicenseActionChecker;
@@ -47,7 +46,7 @@ import java.security.Principal;
  * Time: 18:59:12
  * Copyright (C) Jahia Inc.
  */
-public class JCIFSAuthValveImpl implements Valve {
+public class JCIFSAuthValveImpl extends BaseAuthValve {
 
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(JCIFSAuthValveImpl.class);
 
@@ -77,6 +76,10 @@ public class JCIFSAuthValveImpl implements Valve {
                     JahiaUser jahiaUser =
                             ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(userName);
                     if (jahiaUser != null) {
+                        if (isAccounteLocked(jahiaUser)) {
+                            logger.debug("Login failed. Account is locked for user " + userName);
+                            return;
+                        }
                         authContext.getSessionFactory().setCurrentUser(jahiaUser);
                         return;
                     }

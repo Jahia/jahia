@@ -40,6 +40,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.list.LazyList;
 import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.lang.StringUtils;
@@ -48,7 +49,6 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jahia.services.search.SearchCriteria.Term.MatchType;
 import org.jahia.utils.DateUtils;
-import org.jahia.utils.SerializableFactory;
 
 /**
  * Bean for holding all search parameters.
@@ -719,11 +719,11 @@ public class SearchCriteria implements Serializable {
 
     private Map<String /* nodeType */, Map<String /* propertyName */, NodeProperty>> properties = LazyMap
             .decorate(new HashMap<String, Map<String, NodeProperty>>(),
-                    new SerializableFactory() {
+                    new Factory() {
                         public Object create() {
                             return LazyMap.decorate(
                                     new HashMap<String, NodeProperty>(),
-                                    new SerializableFactory() {
+                                    new Factory() {
                                         public Object create() {
                                             return new NodeProperty();
                                         }
@@ -736,7 +736,7 @@ public class SearchCriteria implements Serializable {
     private CommaSeparatedMultipleValue sites = new CommaSeparatedMultipleValue();
     
     private List<Term> terms = LazyList.decorate(new LinkedList<Term>(),
-            new SerializableFactory() {
+            new Factory() {
                 public Object create() {
                     return new Term();
                 }

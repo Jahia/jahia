@@ -631,6 +631,15 @@ public class Service extends JahiaService {
         }
     }
 
+    public void flushCacheEntry(String cacheId, String cacheEntryKey, KnowledgeHelper drools) {
+        Cache<Object, Object> cache = cacheService.getCache(cacheId);
+        if (cache != null) {
+            cache.remove(cacheEntryKey);
+        } else {
+            logger.warn("No cache found for name '" + cacheId + "'. Skip flushing.");
+        }
+    }
+
     public void flushAllCaches(KnowledgeHelper drools) {
         cacheService.flushAllCaches();
         logger.info("All caches flushed.");

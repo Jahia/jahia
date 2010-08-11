@@ -126,7 +126,7 @@ public class JahiaConstraintBuilder extends ConstraintBuilder {
 
         public Object visit(DescendantNodeImpl node, Object data)
                 throws Exception {
-            return new DescendantNodeConstraint(node,
+            return new JahiaDescendantNodeConstraint(node,
                     getSelector(node.getSelectorQName()));
         }
 

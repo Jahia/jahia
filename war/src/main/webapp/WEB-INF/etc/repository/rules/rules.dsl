@@ -84,6 +84,7 @@
 [consequence][]Grant permission {task} from workflow {workflow} to role {role} on the {node}=service.defineWorkflowRule({node},{workflow},{task},"r:" + {role},drools);
 [consequence][]Flush {cacheName}=service.flushCache("{cacheName}",drools);
 [consequence][]Flush all caches=service.flushAllCaches(drools);
+[consequence][]Remove entry {cacheEntry} from cache {cacheName}=service.flushCacheEntry({cacheName},{cacheEntry},drools);
 [consequence][]Notify new user with mail template "{template}"=notificationService.notifyNewUser(node,"{template}",drools);
 [consequence][]Notify current user with mail template "{template}" from "{fromMail}" copy to "{ccList}" blind copy to "{bccList}"=notificationService.notifyCurrentUser(user,"{template}","{fromMail}","{ccList}","{bccList}",drools);
 [consequence][]Notify current user with mail template "{template}" from "{fromMail}"=notificationService.notifyCurrentUser(user,"{template}","{fromMail}",drools);

@@ -103,8 +103,10 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactoryImpl {
 
                             if (q1 != null && q2 != null) {
                                 BooleanQuery and = new BooleanQuery();
-                                and.add(q1, BooleanClause.Occur.MUST);
-                                and.add(q2, BooleanClause.Occur.MUST);
+                                and.add(q1, areAllClausesProhibited(q1) ? BooleanClause.Occur.SHOULD
+                                        : BooleanClause.Occur.MUST);
+                                and.add(q2, areAllClausesProhibited(q2) ? BooleanClause.Occur.SHOULD
+                                        : BooleanClause.Occur.MUST);
                                 return and;
                             } else if (q1 != null) {
                                 return q1;
@@ -157,7 +159,8 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactoryImpl {
                     if (q != null) {
                         BooleanQuery and = new BooleanQuery();
                         and.add(adapter.getQuery(), BooleanClause.Occur.MUST);
-                        and.add(q, BooleanClause.Occur.MUST);
+                        and.add(q, areAllClausesProhibited(q) ? BooleanClause.Occur.SHOULD
+                                        : BooleanClause.Occur.MUST);
                         adapter.setQuery(and);
                     }
                 }
@@ -170,5 +173,18 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactoryImpl {
         return query;
     }
 
+    private boolean areAllClausesProhibited(Query q) {
+        boolean allClausesProhibited = false;
+        if (q instanceof BooleanQuery) {
+            allClausesProhibited = true;
+            for (BooleanClause clause : ((BooleanQuery) q).getClauses()) {
+                if (!clause.isProhibited()) {
+                    allClausesProhibited = false;
+                    break;
+                }
+            }
+        }
+        return allClausesProhibited;
+    }
 
 }

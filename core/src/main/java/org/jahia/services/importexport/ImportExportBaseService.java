@@ -31,6 +31,7 @@
  */
 package org.jahia.services.importexport;
 
+import org.apache.commons.collections.set.ListOrderedSet;
 import org.apache.commons.io.FileCleaningTracker;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.DeferredFileOutputStream;
@@ -745,9 +746,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         p.load(is);
         Set<Object> keys = p.keySet();
         boolean isMultiLang = LicenseActionChecker.isAuthorizedByLicense("org.jahia.actions.sites.*.admin.languages.ManageSiteLanguages", 0);
-        boolean siteSettings = false;
-        final Set<String> languages = site.getLanguages();
-        languages.clear();
+        final Map<Integer, String> languages = new TreeMap<Integer, String>();
         final Set<String> mandatoryLanguages = site.getMandatoryLanguages();
         mandatoryLanguages.clear();
         for (Object key : keys) {
@@ -758,23 +757,12 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
             if (firstKey.equals("language")) {
                 String lang = st.nextToken();
-                String t = st.nextToken();
 
-                if (!languages.contains(lang)) {
-                    if (isMultiLang || languages.isEmpty()) {
-                        siteSettings = true;
-                        if(languages.isEmpty()) {
-                            site.setDefaultLanguage(lang);
-                        }
-                        languages.add(lang);
-                    } else {
-                        logger.warn("Multilanguage is not authorized by license, " + lang + " will be ignored");
-                        continue;
+                if (!languages.containsValue(lang)) {
+                    languages.put(Integer.valueOf(p.getProperty("language." + lang + ".rank", "0")), lang);
+                    if (Boolean.valueOf(p.getProperty("language." + lang + ".mandatory", "false"))) {
+                        mandatoryLanguages.add(lang);
                     }
-                }
-                if ("mandatory".equals(t)) {
-                    mandatoryLanguages.add(lang);
-                    siteSettings = true;
                 }
             } else if (firstKey.equals("mixLanguage")) {
                 site.setMixLanguagesActive(Boolean.getBoolean(value));
@@ -783,14 +771,26 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 sitesService.setDefaultSite(site);
             }
         }
-        site.setLanguages(languages);
-        site.setMandatoryLanguages(mandatoryLanguages);
-        if (siteSettings) {
+        @SuppressWarnings("unchecked")
+        Set<String> siteLangs = ListOrderedSet.decorate(new LinkedList<String>(languages.values()));
+        if (!siteLangs.isEmpty()) {
+            if (!isMultiLang) {
+                Set<String> singleLang = new HashSet<String>();
+                singleLang.add(siteLangs.iterator().next());
+                site.setLanguages(singleLang);
+                site.setMandatoryLanguages(singleLang);
+            } else {
+                site.setLanguages(siteLangs);
+                site.setMandatoryLanguages(mandatoryLanguages);
+            }
+            site.setDefaultLanguage(siteLangs.iterator().next());
             try {
                 sitesService.updateSite(site);
             } catch (JahiaException e) {
                 logger.error("Cannot update site", e);
             }
+        } else {
+            logger.error("Unable to find site languages in the provided site.properties descriptor. Skip importing site settings.");
         }
     }
 

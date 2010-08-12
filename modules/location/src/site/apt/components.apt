@@ -16,10 +16,13 @@ Geotagging and map components
 
   []
   
-  These components are available in the <Editorial content> group of components in the
+  These components are available in the <Editorial content> group of components and in
+  the <Site components> group in the
   selector panel:
     
-[./images/map-components.png] Location and map components
+[./images/location-component.png] Location components
+
+[./images/map-components.png] Map components
 
   
 * Defining locations

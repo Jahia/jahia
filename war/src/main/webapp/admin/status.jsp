@@ -33,6 +33,7 @@
 --%>
 <%@include file="/admin/include/header.inc"%>
 <%@page import = "org.jahia.bin.*"%>
+<%@page import="org.jahia.bin.errors.ErrorFileDumper" %>
 <%@page import = "java.util.*" %>
 <%@page import = "java.text.*" %>
 <%@page import = "org.jahia.registries.*" %>
@@ -59,6 +60,7 @@
     long maxMemoryInKBytes       =  maxMemoryInBytes.longValue() >> 10;
     long maxMemoryInMBytes       =  maxMemoryInBytes.longValue() >> 20;
     stretcherToOpen   = 0;
+    pageContext.setAttribute("timestamp", System.currentTimeMillis());
 %>
 
 
@@ -130,7 +132,7 @@
         var found = false;
         toggles.each(function(h2, i){
             var div = Element.find(h2, 'nextSibling'); //element.find is located in prototype.lite
-            if (window.location.href.indexOf(h2.title) > 0) {
+            if (window.location.href.indexOf('#' + h2.title) > 0) {
                 myAccordion.showThisHideOpen(div);
                 found = true;
             }
@@ -164,29 +166,13 @@
                 <div class="object-title">
                      <fmt:message key="org.jahia.admin.serverStatus.label"/>
                 </div>
+                <div style="float:right;display:inline;padding:5px 10px 0 0">
+                    <a href="<c:url value='/tools/systemInfo.jsp?file=true'/>"><img src="<c:url value='/icons/download.png'/>" height="16" width="16" alt=" " align="top"/>Download full status</a>
+                </div>
             </div>
 <form name="jahiaAdmin" action='<%=JahiaAdministration.composeActionURL(request,response,"status","&sub=process")%>' method="post">
 
-<div class="stretcher-head head">
-    <div class="object-title">
-    <a href="#locks" class="sectionLink"><fmt:message key="org.jahia.admin.status.ManageStatus.title.lockSection.label"/></a>
-    </div>                
-</div>
-<div class="stretcher">
-    <table border="0" cellspacing="0" cellpadding="5">
-        <tr class="evenLine">
-            <td width="100%">
-                <strong><fmt:message key="org.jahia.admin.status.ManageStatus.flushLocks.label"/>&nbsp;:</strong><br>
-            </td>
-            <td>
-                
-                <input type="submit" name="flushLocks" value="<fmt:message key="org.jahia.admin.status.ManageStatus.flush.label"/>">
-            </td>
-        </tr>
-    </table>
-</div>
-
-<div class="stretcher-head head">
+<div class="stretcher-head head" title="cache">
     <div class="object-title">
      <a href="#caches" class="sectionLink"><fmt:message key="label.cache"/></a>
     </div>                
@@ -198,10 +184,10 @@
     <table border="0" cellspacing="0" cellpadding="5">
         <tr class="evenLine">
             <td width="100%">
-                <strong><fmt:message key="org.jahia.admin.status.ManageStatus.flushAllCaches.label"/>&nbsp;:</strong><br>
+                <strong><fmt:message key="org.jahia.admin.status.ManageStatus.flushAllCaches.label"/>:</strong><br>
             </td>
             <td>
-                <input type="submit" name="flushAllCaches" value="<fmt:message key="org.jahia.admin.status.ManageStatus.flush.label"/>">
+                <input type="submit" name="flushAllCaches" value="<fmt:message key='org.jahia.admin.status.ManageStatus.flushAllCaches.label'/>">
             </td>
         </tr>
     </table>
@@ -229,11 +215,15 @@
                     String efficiencyStr = "0";
                     if (!Double.isNaN(curCache.getCacheEfficiency())) {
                         efficiencyStr = percentFormat.format(curCache.getCacheEfficiency());
+                        pageContext.setAttribute("cacheEfficiency", Double.valueOf(curCache.getCacheEfficiency()));
+                    } else {
+                        pageContext.setAttribute("cacheEfficiency", Double.valueOf(0));
                     }
+                    pageContext.setAttribute("cache", curCache);
         %>
         <tr class="<%=cacheLineClass%>">
             <td width="100%">
-                <%=curCache.getName()%> : <strong><fmt:message key="<%=resourceKey%>"/></strong>
+                <%=curCache.getName()%>: <strong><fmt:message key="<%=resourceKey%>"/></strong>
                 <br>
                 <%=curCache.size()%>&nbsp;
                 <% if(curCache.size() > 1){
@@ -241,18 +231,31 @@
             } else {
             %><fmt:message key="org.jahia.admin.entrie.label"/><%
                 } %>
+                <c:set var="effColour" value="#222222"/>
+                <c:choose>
+                    <c:when test="${cacheEfficiency > 0 && cacheEfficiency < 30}">
+                        <c:set var="effColour" value="red"/>
+                    </c:when>
+                    <c:when test="${cacheEfficiency >= 30 && cacheEfficiency < 70}">
+                        <c:set var="effColour" value="blue"/>
+                    </c:when>
+                    <c:when test="${cacheEfficiency >= 70}">
+                        <c:set var="effColour" value="green"/>
+                    </c:when>
+                </c:choose>
                 &nbsp;
-                <fmt:message key="org.jahia.admin.status.ManageStatus.groupSize.label"/> :
-                <%=curCache.getGroupsSize()%>
+                <fmt:message key="org.jahia.admin.status.ManageStatus.groupSize.label"/>:
+                ${cache.groupsSize}
                 &nbsp;
-                <fmt:message key="org.jahia.admin.status.ManageStatus.groupsKeysTotal.label"/> :
-                <%=curCache.getGroupsKeysTotal()%>
+                <fmt:message key="org.jahia.admin.status.ManageStatus.groupsKeysTotal.label"/>:
+                ${cache.groupsKeysTotal}
                 <br>
-                <fmt:message key="org.jahia.admin.status.ManageStatus.successfulHits.label"/> :
-                <%=curCache.getSuccessHits()%> / <%=curCache.getTotalHits()%>&nbsp;
+                <fmt:message key="org.jahia.admin.status.ManageStatus.successfulHits.label"/>:
+                ${cache.successHits} / ${cache.totalHits}
+                &nbsp;
                 <fmt:message key="org.jahia.admin.status.ManageStatus.totalHits.label"/>,
-                <fmt:message key="org.jahia.admin.status.ManageStatus.efficiency.label"/> :
-                <%=efficiencyStr%> %
+                <fmt:message key="org.jahia.admin.status.ManageStatus.efficiency.label"/>:
+                <span style="color: ${effColour}"><%=efficiencyStr%> %</span>
             </td>
             <td>
                 <input type="submit" name="flush_<%=curCache.getName()%>" value="<fmt:message key="org.jahia.admin.status.ManageStatus.flush.label"/>">
@@ -270,39 +273,44 @@
             </tr>
         </thead>
         <%
-            SessionFactory factory = (SessionFactory) SpringContextSingleton.getInstance().getContext().getBean("sessionFactory");
+            SessionFactory factory = (SessionFactory) SpringContextSingleton.getBean("sessionFactory");
             Statistics statistics = factory.getStatistics();
+            String enableStats = request.getParameter("enableStats");
+            if (enableStats != null) {
+                System.out.println("enableStats: " + enableStats);
+                statistics.setStatisticsEnabled(Boolean.valueOf(enableStats));
+            }
             if (statistics.isStatisticsEnabled()) {
         %>
         <tr class="oddLine">
-            <td >Number of opened session : <%=statistics.getSessionOpenCount()%>
+            <td >Number of opened session: <%=statistics.getSessionOpenCount()%>
             </td>
-            <td colspan="5">Number of closed session : <%=statistics.getSessionCloseCount()%>
+            <td colspan="5">Number of closed session: <%=statistics.getSessionCloseCount()%>
             </td>
         </tr>
         <tr class="evenLine">
-            <td>Number of query cache hits : <%=statistics.getQueryCacheHitCount()%>
+            <td>Number of query cache hits: <%=statistics.getQueryCacheHitCount()%>
             </td>
-            <td>Number of query cache miss : <%=statistics.getQueryCacheMissCount()%>
+            <td>Number of query cache miss: <%=statistics.getQueryCacheMissCount()%>
             </td>
-            <td>Number of query cache put : <%=statistics.getQueryCachePutCount()%>
+            <td>Number of query cache put: <%=statistics.getQueryCachePutCount()%>
             </td>
-            <td>Number of query execution : <%=statistics.getQueryExecutionCount()%>
+            <td>Number of query execution: <%=statistics.getQueryExecutionCount()%>
             </td>
-            <td colspan="2">Max time for query execution in ms : <%=statistics.getQueryExecutionMaxTime()%>
+            <td colspan="2">Max time for query execution in ms: <%=statistics.getQueryExecutionMaxTime()%>
             </td>
 
         </tr>
         <tr class="oddLine">
-            <td colspan="2">Number of second level cache hits : <%=statistics.getSecondLevelCacheHitCount()%>
+            <td colspan="2">Number of second level cache hits: <%=statistics.getSecondLevelCacheHitCount()%>
             </td>
-            <td colspan="2">Number of second level cache miss : <%=statistics.getSecondLevelCacheMissCount()%>
+            <td colspan="2">Number of second level cache miss: <%=statistics.getSecondLevelCacheMissCount()%>
             </td>
-            <td colspan="2" align="left">Number of second level cache put : <%=statistics.getSecondLevelCachePutCount()%>
+            <td colspan="2" align="left">Number of second level cache put: <%=statistics.getSecondLevelCachePutCount()%>
             </td>
         </tr>
         <tr class="evenLine">
-            <td>Names of second level caches :</td>
+            <td>Names of second level caches:</td>
             <td>Cache hits</td>
             <td>Cache miss</td>
             <td>Cache put</td>
@@ -330,15 +338,15 @@
             }
         %>
         <tr class="oddLine">
-            <td>Number of entity load count : <%=statistics.getEntityLoadCount()%>
+            <td>Number of entity load count: <%=statistics.getEntityLoadCount()%>
             </td>
-            <td>Number of entity fetch count : <%=statistics.getEntityFetchCount()%>
+            <td>Number of entity fetch count: <%=statistics.getEntityFetchCount()%>
             </td>
-            <td>Number of entity insert count : <%=statistics.getEntityInsertCount()%>
+            <td>Number of entity insert count: <%=statistics.getEntityInsertCount()%>
             </td>
-            <td>Number of entity update count : <%=statistics.getEntityUpdateCount()%>
+            <td>Number of entity update count: <%=statistics.getEntityUpdateCount()%>
             </td>
-            <td>Number of entity delete count : <%=statistics.getEntityDeleteCount()%>
+            <td>Number of entity delete count: <%=statistics.getEntityDeleteCount()%>
             </td>
         </tr>
         <tr class="evenLine">
@@ -373,25 +381,30 @@
         <%
             }
         %>
+            <tr class="oddLine">
+                <td colspan="6"><a href="?do=status&amp;sub=display&amp;enableStats=false&amp;timestamp=${timestamp}">Disable statistics</a></td>
+            </tr>
         <%
-            }
+            } else {
         %>
+            <tr class="oddLine">
+                <td colspan="6"><a href="?do=status&amp;sub=display&amp;enableStats=true&amp;timestamp=${timestamp}">Enable statistics</a></td>
+            </tr>
+        <%  } %>
     </table>
 </div>
 
-<!-- BEGIN - ESI server control panel access -->
-<%
-    ProcessingContext jParams = null;
-    if (jData != null) {
-        jParams = jData.getProcessingContext();
-    }
-%>
-
-<div class="stretcher-head head">
+<div class="stretcher-head head" title="memory">
     <div class="object-title">
       <a href="#memory" class="sectionLink"><fmt:message key="org.jahia.admin.status.ManageStatus.title.memorySection.label"/></a>
     </div>                
 </div>
+<c:if test="${param['gc']}">
+<% System.gc(); %>
+</c:if>
+<c:if test="${param['threadDump']}">
+<% ErrorFileDumper.outputSystemInfo(new java.io.PrintWriter(System.out), false, false, false, false, true, true); %>
+</c:if>
 <div class="stretcher">
     <table class="evenOddTable full" width="100%" border="0" cellspacing="0" cellpadding="5">
         <tr class="evenLine">
@@ -418,10 +431,17 @@
                 <%=freeMemoryInMBytes%>&nbsp;<fmt:message key="org.jahia.admin.status.ManageStatus.mB.label"/>&nbsp;(<%=freeMemoryInKBytes%>&nbsp;<fmt:message key="org.jahia.admin.status.ManageStatus.kB.label"/>)
             </td>
         </tr>
+        <tr class="oddLine">
+            <td colspan="2" align="right">
+                <a href="?do=status&amp;sub=display&amp;threadDump=true&amp;timestamp=${timestamp}#memory"><img src="<c:url value='/icons/tab-workflow.png'/>" height="16" width="16" alt=" " align="top"/>Perform thread dump</a>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="?do=status&amp;sub=display&amp;gc=true&amp;timestamp=${timestamp}#memory"><img src="<c:url value='/icons/refresh.png'/>" height="16" width="16" alt=" " align="top"/>Run Garbage Collector</a>
+            </td>
+        </tr>
     </table>
 </div>
 
-<div class="stretcher-head head">
+<div class="stretcher-head head" title="systemInfo">
     <div class="object-title">
       <a href="#systemInfo" class="sectionLink"><fmt:message key="org.jahia.admin.status.ManageStatus.title.systemInfoSection.label"/></a>
     </div>                

@@ -128,83 +128,7 @@ public class ErrorFileDumper {
         String stackTraceStr = stackTraceToString(t);
         strOut.println(stackTraceStr);
 
-        // now let's output the system properties.
-        strOut.println();
-        strOut.println("System properties:");
-        strOut.println("-------------------");
-        Map orderedProperties = new TreeMap(System.getProperties());
-        Iterator entrySetIter = orderedProperties.entrySet().iterator();
-        while (entrySetIter.hasNext()) {
-            Map.Entry curEntry = (Map.Entry) entrySetIter.next();
-            String curPropertyName = (String) curEntry.getKey();
-            String curPropertyValue = (String) curEntry.getValue();
-            strOut.println("   " + curPropertyName + " : " + curPropertyValue);
-        }
-        strOut.println("");
-
-        if (SettingsBean.getInstance() != null) {
-            strOut.println("Server configuration:");
-            strOut.println("---------------------");
-            SettingsBean settings = SettingsBean.getInstance();
-            Map jahiaOrderedProperties = new TreeMap(settings.getPropertiesFile());
-            Iterator jahiaEntrySetIter = jahiaOrderedProperties.entrySet().iterator();
-            while (jahiaEntrySetIter.hasNext()) {
-                Map.Entry curEntry = (Map.Entry) jahiaEntrySetIter.next();
-                String curPropertyName = (String) curEntry.getKey();
-                String curPropertyValue = null;
-                if (curEntry.getValue() == null) {
-                    curPropertyValue = null;
-                } else if (curEntry.getValue() instanceof String) {
-                    curPropertyValue = (String) curEntry.getValue();
-                } else {
-                    curPropertyValue = curEntry.getValue().toString();
-                }
-                if (curPropertyName.toLowerCase().indexOf("password") == -1) {
-                    strOut.println("   " + curPropertyName + " = " + curPropertyValue);
-                }
-            }
-        }
-
-        strOut.println("");
-        strOut.println("Memory status:");
-        strOut.println("---------------");
-        strOut.println("Max memory   : " + Runtime.getRuntime().maxMemory() + " bytes");
-        strOut.println("Free memory  : " + Runtime.getRuntime().freeMemory() + " bytes");
-        strOut.println("Total memory : " + Runtime.getRuntime().totalMemory() + " bytes");
-
-        strOut.println("");
-        if (ServicesRegistry.getInstance().getCacheService() != null) {
-            strOut.println("Cache status:");
-            strOut.println("--------------");
-
-            SortedSet sortedCacheNames = new TreeSet(ServicesRegistry.getInstance().getCacheService().getNames());
-            Iterator cacheNameIte = sortedCacheNames.iterator();
-            DecimalFormat percentFormat = new DecimalFormat("###.##");
-            while (cacheNameIte.hasNext()) {
-                String curCacheName = (String) cacheNameIte.next();
-                Object objectCache = ServicesRegistry.getInstance().getCacheService().getCache(curCacheName);
-                if (objectCache instanceof Cache) {
-                    Cache curCache = (Cache) objectCache;
-                    long cacheLimit = curCache.getCacheLimit();
-                    String efficiencyStr = "0";
-                    if (!Double.isNaN(curCache.getCacheEfficiency())) {
-                        efficiencyStr = percentFormat.format(curCache.getCacheEfficiency());
-                    }
-                    strOut.println("name=" + curCacheName + " size=" + curCache.size() + " limit=" +
-                            cacheLimit / (1024 * 1024) + "MB" + " successful hits=" + curCache.getSuccessHits() +
-                            " total hits=" + curCache.getTotalHits() + " efficiency=" + efficiencyStr + "%");
-                }
-            }
-
-            strOut.println("");
-        }
-        strOut.println("Thread status:");
-        strOut.println("--------------");
-        ThreadMonitor threadMonitor = new ThreadMonitor();
-        threadMonitor.generateThreadInfo(strOut);
-        strOut.println("");
-        strOut.println("Deadlock status :");
-        threadMonitor.findDeadlock(strOut);
+        outputSystemInfoAll(strOut);
 
         strOut.println("");
         strOut.println(
@@ -214,6 +138,109 @@ public class ErrorFileDumper {
         strOut.println("Yours Faithfully, ");
         strOut.println("    Server Notification Service");
         return msgBodyWriter;
+    }
+
+    public static void outputSystemInfoAll(PrintWriter strOut) {
+        outputSystemInfo(strOut, true, true, true, true, true, true);
+    }
+    
+    public static void outputSystemInfo(PrintWriter strOut, boolean systemProperties, boolean jahiaSettings, boolean memory, boolean caches, boolean threads, boolean deadlocks) {
+        if (systemProperties) {
+            // now let's output the system properties.
+            strOut.println();
+            strOut.println("System properties:");
+            strOut.println("-------------------");
+            Map orderedProperties = new TreeMap(System.getProperties());
+            Iterator entrySetIter = orderedProperties.entrySet().iterator();
+            while (entrySetIter.hasNext()) {
+                Map.Entry curEntry = (Map.Entry) entrySetIter.next();
+                String curPropertyName = (String) curEntry.getKey();
+                String curPropertyValue = (String) curEntry.getValue();
+                strOut.println("   " + curPropertyName + " : " + curPropertyValue);
+            }
+        }
+        
+        if (jahiaSettings) {
+            strOut.println();
+    
+            if (SettingsBean.getInstance() != null) {
+                strOut.println("Server configuration:");
+                strOut.println("---------------------");
+                SettingsBean settings = SettingsBean.getInstance();
+                Map jahiaOrderedProperties = new TreeMap(settings.getPropertiesFile());
+                Iterator jahiaEntrySetIter = jahiaOrderedProperties.entrySet().iterator();
+                while (jahiaEntrySetIter.hasNext()) {
+                    Map.Entry curEntry = (Map.Entry) jahiaEntrySetIter.next();
+                    String curPropertyName = (String) curEntry.getKey();
+                    String curPropertyValue = null;
+                    if (curEntry.getValue() == null) {
+                        curPropertyValue = null;
+                    } else if (curEntry.getValue() instanceof String) {
+                        curPropertyValue = (String) curEntry.getValue();
+                    } else {
+                        curPropertyValue = curEntry.getValue().toString();
+                    }
+                    if (curPropertyName.toLowerCase().indexOf("password") == -1) {
+                        strOut.println("   " + curPropertyName + " = " + curPropertyValue);
+                    }
+                }
+            }
+        }
+        
+        if (memory) {
+            strOut.println();
+            strOut.println("Memory status:");
+            strOut.println("---------------");
+            strOut.println("Max memory   : " + Runtime.getRuntime().maxMemory() + " bytes");
+            strOut.println("Free memory  : " + Runtime.getRuntime().freeMemory() + " bytes");
+            strOut.println("Total memory : " + Runtime.getRuntime().totalMemory() + " bytes");
+        }
+
+        if (caches) {
+            strOut.println();
+            if (ServicesRegistry.getInstance().getCacheService() != null) {
+                strOut.println("Cache status:");
+                strOut.println("--------------");
+    
+                SortedSet sortedCacheNames = new TreeSet(ServicesRegistry.getInstance().getCacheService().getNames());
+                Iterator cacheNameIte = sortedCacheNames.iterator();
+                DecimalFormat percentFormat = new DecimalFormat("###.##");
+                while (cacheNameIte.hasNext()) {
+                    String curCacheName = (String) cacheNameIte.next();
+                    Object objectCache = ServicesRegistry.getInstance().getCacheService().getCache(curCacheName);
+                    if (objectCache instanceof Cache) {
+                        Cache curCache = (Cache) objectCache;
+                        long cacheLimit = curCache.getCacheLimit();
+                        String efficiencyStr = "0";
+                        if (!Double.isNaN(curCache.getCacheEfficiency())) {
+                            efficiencyStr = percentFormat.format(curCache.getCacheEfficiency());
+                        }
+                        strOut.println("name=" + curCacheName + " size=" + curCache.size() + " limit=" +
+                                cacheLimit / (1024 * 1024) + "MB" + " successful hits=" + curCache.getSuccessHits() +
+                                " total hits=" + curCache.getTotalHits() + " efficiency=" + efficiencyStr + "%");
+                    }
+                }
+    
+            }
+        }
+        
+        ThreadMonitor threadMonitor = null;
+        if (threads) {
+            strOut.println();
+            strOut.println("Thread status:");
+            strOut.println("--------------");
+            threadMonitor = new ThreadMonitor();
+            threadMonitor.generateThreadInfo(strOut);
+        }
+        
+        if (deadlocks) {
+            strOut.println();
+            strOut.println("Deadlock status:");
+            threadMonitor = threadMonitor != null ? threadMonitor : new ThreadMonitor();
+            threadMonitor.findDeadlock(strOut);
+        }
+        
+        strOut.flush();
     }
 
     /**

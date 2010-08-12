@@ -172,7 +172,7 @@ public class SimpleSearchTest {
             List<Hit<?>> hits = searchService.search(criteria, context)
                     .getResults();
             assertEquals("Unexpected number of search results for: " + criteria.toString(),
-                    48, hits.size());
+                    49, hits.size());
         } catch (Exception ex) {
             logger.warn("Exception during test", ex);
         }
@@ -210,7 +210,7 @@ public class SimpleSearchTest {
             List<Hit<?>> hits = searchService.search(criteria, context)
                     .getResults();
             assertEquals("Unexpected number of search results for: " + criteria.toString(),
-                    48, hits.size());
+                    49, hits.size());
         } catch (Exception ex) {
             logger.warn("Exception during test", ex);
         }
@@ -361,7 +361,7 @@ public class SimpleSearchTest {
             List<Hit<?>> hits = searchService.search(criteria, context)
                     .getResults();
             assertEquals("Unexpected number of search results for: "
-                            + criteria.toString(), 48 * 2, hits.size());
+                            + criteria.toString(), 49 * 2, hits.size());
         } catch (Exception ex) {
             logger.warn("Exception during test", ex);
         }

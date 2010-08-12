@@ -12,7 +12,7 @@
 //---------------------------------------------------------
 
 [jmix:nodenameInfo] > mix:referenceable mixin
- - j:nodename (string) protected hidden
+ - j:nodename (string) protected hidden nofulltext
  - j:fullpath (string) protected hidden nofulltext
 
 [jnt:systemNode] > nt:unstructured, jmix:nodenameInfo
@@ -492,7 +492,7 @@
 
 [jmix:navMenuItem] mixin
  itemtype = options
- - j:displayInMenu (string,choicelist) = 'primary' autocreated multiple < 'primary','secondary'
+ - j:displayInMenu (string,choicelist) = 'primary' autocreated multiple nofulltext < 'primary','secondary'
 
 [jnt:page] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata, mix:title, jmix:publication, jmix:tagged, jmix:navMenuItem, jmix:hasTemplateNode
  orderable

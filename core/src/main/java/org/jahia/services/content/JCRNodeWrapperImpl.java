@@ -294,10 +294,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             if (ws.equals(workspace.getName())) {
                 Session providerSession = session.getProviderSession(provider);
                 if (providerSession instanceof SessionImpl) {
-                    SessionImpl jrSession = (SessionImpl) session.getProviderSession(provider);
-                    Path path = jrSession.getQPath(localPath).getNormalizedPath();
-                    return jrSession.getAccessManager().isGranted(path, permissions);
-                } else {
+                SessionImpl jrSession = (SessionImpl) session.getProviderSession(provider);
+                Path path = jrSession.getQPath(localPath).getNormalizedPath();
+                return jrSession.getAccessManager().isGranted(path, permissions);
+            } else {
                     // this is not a Jackrabbit implementation, we will use the new JCR 2.0 API instead.
                     AccessControlManager accessControlManager = providerSession.getAccessControlManager();
                     if (accessControlManager != null) {
@@ -309,23 +309,23 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             } else {
                 Session providerSession = provider.getCurrentUserSession("live");
                 if (providerSession instanceof SessionImpl) {
-                    SessionImpl jrSession = (SessionImpl) provider.getCurrentUserSession("live");
-                    Node current = this;
-                    while (true) {
+                SessionImpl jrSession = (SessionImpl) provider.getCurrentUserSession("live");
+                Node current = this;
+                while (true) {
+                    try {
+                        Path path = jrSession.getQPath(current.getCorrespondingNodePath(ws)).getNormalizedPath();
+                        return jrSession.getAccessManager().isGranted(path, permissions);
+                    } catch (ItemNotFoundException nfe) {
+                        // corresponding node not found
                         try {
-                            Path path = jrSession.getQPath(current.getCorrespondingNodePath(ws)).getNormalizedPath();
-                            return jrSession.getAccessManager().isGranted(path, permissions);
-                        } catch (ItemNotFoundException nfe) {
-                            // corresponding node not found
-                            try {
-                                current = current.getParent();
-                            } catch (AccessDeniedException e) {
-                                return false;
-                            } catch (ItemNotFoundException e) {
-                                return false;
-                            }
+                            current = current.getParent();
+                        } catch (AccessDeniedException e) {
+                            return false;
+                        } catch (ItemNotFoundException e) {
+                            return false;
                         }
                     }
+                }
                 } else {
                     // we are not dealing with a Jackrabbit session, we will use the JCR 2.0 API instead.
                     AccessControlManager accessControlManager = providerSession.getAccessControlManager();
@@ -342,7 +342,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                                     return false;
                                 } catch (ItemNotFoundException infe2) {
                                     return false;
-                                }
+            }
                             }
                         }
                     }
@@ -1236,7 +1236,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public JCRPropertyWrapper setProperty(String name, Value value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         final Locale locale = getSession().getLocale();
         ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
-        if (value.getType() != epd.getRequiredType()) {
+        if (PropertyType.UNDEFINED != epd.getRequiredType() && value.getType() != epd.getRequiredType()) {
             value = getSession().getValueFactory().createValue(value.getString(), epd.getRequiredType());
         }
         value = JCRStoreService.getInstance().getInterceptorChain().beforeSetValue(this, name, epd, value);
@@ -1272,7 +1272,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         final Locale locale = getSession().getLocale();
         ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
         for (int i = 0; i < values.length; i++) {
-            if (values[i].getType() != epd.getRequiredType()) {
+            if (PropertyType.UNDEFINED != epd.getRequiredType() && values[i].getType() != epd.getRequiredType()) {
                 values[i] = getSession().getValueFactory().createValue(values[i].getString(), epd.getRequiredType());
             }
         }

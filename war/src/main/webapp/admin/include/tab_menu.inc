@@ -36,6 +36,7 @@
                     org.jahia.params.ProcessingContext,
                     org.jahia.services.sites.JahiaSite,
                     org.jahia.services.sites.JahiaSitesService,
+                    org.jahia.services.usermanager.JahiaUser,
                     org.jahia.registries.ServicesRegistry,
                     org.jahia.utils.LanguageCodeConverters,
                     org.jahia.services.preferences.user.UserPreferencesHelper" 
@@ -129,7 +130,7 @@
             </c:url>
             <span style="margin-right: 10px"><a href="${logoutUrl}"><img src="${pageContext.request.contextPath}/icons/logout.png" alt=" " height="16" width="16" align="top"/>&nbsp;<fmt:message key="label.logout"/></a></span>
             <%
-            String userLocale = UserPreferencesHelper.getPreferredLocale(jData.getProcessingContext().getUser(), theSite).toString();
+            String userLocale = UserPreferencesHelper.getPreferredLocale((JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER)).toString();
             %>
             <script type="text/javascript">
                 function doSwitchLanguage(lang) {

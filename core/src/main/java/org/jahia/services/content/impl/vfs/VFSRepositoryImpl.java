@@ -38,6 +38,9 @@ import org.apache.commons.vfs.FileObject;
 import org.apache.log4j.Logger;
 
 import javax.jcr.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -55,7 +58,34 @@ public class VFSRepositoryImpl implements Repository {
 
     private FileSystemManager manager;
 
+    private Map<String, Value> repositoryDescriptors = new HashMap<String, Value>();
+
+    private void initDescriptors() {
+        repositoryDescriptors.put(Repository.OPTION_ACCESS_CONTROL_SUPPORTED, new VFSValueImpl(false));
+        repositoryDescriptors.put(Repository.OPTION_ACTIVITIES_SUPPORTED, new VFSValueImpl(false));
+        repositoryDescriptors.put(Repository.OPTION_BASELINES_SUPPORTED, new VFSValueImpl(false));
+        repositoryDescriptors.put(Repository.OPTION_JOURNALED_OBSERVATION_SUPPORTED, new VFSValueImpl(false));
+        repositoryDescriptors.put(Repository.OPTION_LIFECYCLE_SUPPORTED, new VFSValueImpl(false));
+        repositoryDescriptors.put(Repository.OPTION_LOCKING_SUPPORTED, new VFSValueImpl(false));
+        repositoryDescriptors.put(Repository.OPTION_NODE_AND_PROPERTY_WITH_SAME_NAME_SUPPORTED, new VFSValueImpl(false));
+        repositoryDescriptors.put(Repository.OPTION_NODE_TYPE_MANAGEMENT_SUPPORTED, new VFSValueImpl(false));
+        repositoryDescriptors.put(Repository.OPTION_OBSERVATION_SUPPORTED, new VFSValueImpl(false));
+        repositoryDescriptors.put(Repository.OPTION_QUERY_SQL_SUPPORTED, new VFSValueImpl(false));
+        repositoryDescriptors.put(Repository.OPTION_RETENTION_SUPPORTED, new VFSValueImpl(false));
+        repositoryDescriptors.put(Repository.OPTION_SHAREABLE_NODES_SUPPORTED, new VFSValueImpl(false));
+        repositoryDescriptors.put(Repository.OPTION_SIMPLE_VERSIONING_SUPPORTED, new VFSValueImpl(false));
+        repositoryDescriptors.put(Repository.OPTION_TRANSACTIONS_SUPPORTED, new VFSValueImpl(false));
+        repositoryDescriptors.put(Repository.OPTION_UNFILED_CONTENT_SUPPORTED, new VFSValueImpl(false));
+        repositoryDescriptors.put(Repository.OPTION_UPDATE_MIXIN_NODE_TYPES_SUPPORTED, new VFSValueImpl(false));
+        repositoryDescriptors.put(Repository.OPTION_UPDATE_PRIMARY_NODE_TYPE_SUPPORTED, new VFSValueImpl(false));
+        repositoryDescriptors.put(Repository.OPTION_VERSIONING_SUPPORTED, new VFSValueImpl(false));
+        repositoryDescriptors.put(Repository.OPTION_WORKSPACE_MANAGEMENT_SUPPORTED, new VFSValueImpl(false));
+        repositoryDescriptors.put(Repository.OPTION_XML_EXPORT_SUPPORTED, new VFSValueImpl(false));
+        repositoryDescriptors.put(Repository.OPTION_XML_IMPORT_SUPPORTED, new VFSValueImpl(false));
+    }
+
     public VFSRepositoryImpl(String root) {
+        initDescriptors();
         this.root = root;
 
         try {
@@ -75,11 +105,20 @@ public class VFSRepositoryImpl implements Repository {
     }
 
     public String[] getDescriptorKeys() {
-        return new String[0];
+        return repositoryDescriptors.keySet().toArray(new String[repositoryDescriptors.size()]);
     }
 
     public String getDescriptor(String s) {
-        return null;
+        Value descriptorValue = repositoryDescriptors.get(s);
+        if (descriptorValue == null) {
+            return null;
+        }
+        try {
+            return descriptorValue.getString();
+        } catch (RepositoryException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            return null;
+        }
     }
 
     public Session login(Credentials credentials, String s) throws LoginException, NoSuchWorkspaceException, RepositoryException {
@@ -107,11 +146,11 @@ public class VFSRepositoryImpl implements Repository {
     }
 
     public boolean isSingleValueDescriptor(String key) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return true;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public Value getDescriptorValue(String key) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return repositoryDescriptors.get(key);
     }
 
     public Value[] getDescriptorValues(String key) {

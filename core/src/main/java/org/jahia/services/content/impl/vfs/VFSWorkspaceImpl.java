@@ -195,22 +195,23 @@ public class VFSWorkspaceImpl implements Workspace {
     }
 
     public LockManager getLockManager() throws UnsupportedRepositoryOperationException, RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        throw new UnsupportedRepositoryOperationException("Locks are not supported by the VFS Repository");
     }
 
     public VersionManager getVersionManager() throws UnsupportedRepositoryOperationException, RepositoryException {
+        // throw new UnsupportedRepositoryOperationException("Versioning is not supported by the VFS Repository");
         return new VFSVersionManagerImpl();
     }
 
     public void createWorkspace(String name) throws AccessDeniedException, UnsupportedRepositoryOperationException, RepositoryException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        throw new UnsupportedRepositoryOperationException("Workspace creation is not supported by the VFS Repository");
     }
 
     public void createWorkspace(String name, String srcWorkspace) throws AccessDeniedException, UnsupportedRepositoryOperationException, NoSuchWorkspaceException, RepositoryException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        throw new UnsupportedRepositoryOperationException("Workspace creation is not supported by the VFS Repository");
     }
 
     public void deleteWorkspace(String name) throws AccessDeniedException, UnsupportedRepositoryOperationException, NoSuchWorkspaceException, RepositoryException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        throw new UnsupportedRepositoryOperationException("Workspace deleting is not supported by the VFS Repository");
     }
 }

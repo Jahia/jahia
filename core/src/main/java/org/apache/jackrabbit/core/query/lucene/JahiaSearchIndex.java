@@ -35,7 +35,6 @@ import org.apache.jackrabbit.core.ItemManager;
 import org.apache.jackrabbit.core.SessionImpl;
 import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.query.ExecutableQuery;
-import org.apache.jackrabbit.core.query.QueryHandler;
 import org.apache.jackrabbit.core.state.ChildNodeEntry;
 import org.apache.jackrabbit.core.state.NodeState;
 import org.apache.jackrabbit.spi.Path;
@@ -73,6 +72,7 @@ public class JahiaSearchIndex extends SearchIndex {
      * @throws RepositoryException if an error occurs while indexing a node.
      * @throws IOException         if an error occurs while updating the index.
      */
+    @Override    
     public void updateNodes(Iterator<NodeId> remove, Iterator<NodeState> add)
             throws RepositoryException, IOException {
 
@@ -179,7 +179,9 @@ public class JahiaSearchIndex extends SearchIndex {
                 getContext().getItemStateManager());
         searcher.setSimilarity(getSimilarity()); 
         MultiColumnQueryHits hits = query.execute(searcher, orderings, resultFetchHint);
-        JahiaFilterMultiColumnQueryHits filteredHits = new JahiaFilterMultiColumnQueryHits(hits, reader) {
+        JahiaFilterMultiColumnQueryHits filteredHits = new JahiaFilterMultiColumnQueryHits(hits,
+                query instanceof JahiaQueryImpl ? ((JahiaQueryImpl) query).getConstraint()
+                        : null, searcher) {
             public void close() throws IOException {
                 try {
                     super.close();
@@ -226,7 +228,9 @@ public class JahiaSearchIndex extends SearchIndex {
         searcher.setSimilarity(getSimilarity());
         MultiColumnQueryHits hits = searcher.execute(query, sort, resultFetchHint,
                 QueryImpl.DEFAULT_SELECTOR_NAME);
-        JahiaFilterMultiColumnQueryHits filteredHits = new JahiaFilterMultiColumnQueryHits(hits, reader) {
+        JahiaFilterMultiColumnQueryHits filteredHits = new JahiaFilterMultiColumnQueryHits(hits,
+                queryImpl instanceof JahiaQueryImpl ? ((JahiaQueryImpl) queryImpl).getConstraint()
+                        : null, searcher) {
             public void close() throws IOException {
                 try {
                     super.close();
@@ -240,26 +244,23 @@ public class JahiaSearchIndex extends SearchIndex {
         return filteredHits;
     }
     
-    /**
-     * Creates a new query by specifying the query object model. If the query
-     * object model is considered invalid for the implementing class, an
-     * InvalidQueryException is thrown.
-     *
-     * @param session the session of the current user creating the query
-     *                object.
-     * @param itemMgr the item manager of the current user.
-     * @param qomTree query query object model tree.
-     * @return A <code>Query</code> object.
-     * @throws javax.jcr.query.InvalidQueryException
-     *          if the query object model tree is invalid.
-     * @see QueryHandler#createExecutableQuery(SessionImpl, ItemManager, QueryObjectModelTree)
-     */
+    @Override
     public ExecutableQuery createExecutableQuery(
             SessionImpl session,
             ItemManager itemMgr,
             QueryObjectModelTree qomTree) throws InvalidQueryException {
         QueryObjectModelImpl query = new JahiaQueryObjectModelImpl(session, itemMgr, this,
                 getContext().getPropertyTypeRegistry(), qomTree);
+        query.setRespectDocumentOrder(getRespectDocumentOrder());
+        return query;
+    }
+
+    @Override
+    public ExecutableQuery createExecutableQuery(SessionImpl session, ItemManager itemMgr,
+            String statement, String language) throws InvalidQueryException {
+        JahiaQueryImpl query = new JahiaQueryImpl(session, itemMgr, this,
+                getContext().getPropertyTypeRegistry(), statement, language, getQueryNodeFactory());
+        query.setConstraint(new NoDuplicatesConstraint());
         query.setRespectDocumentOrder(getRespectDocumentOrder());
         return query;
     }    

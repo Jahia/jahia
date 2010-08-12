@@ -96,7 +96,7 @@
             <div>
                 <div>
           <span class="tab-icon ico-studio">
-            <a href='<%=Jahia.getContextPath() + "/cms/studio/default/en/templateSets/templates-intranet/home.html" %>'>Exit to Studio</a>
+            <a href="<c:url value='/cms/studio/default/en/templateSets/templates-intranet/home.html'/>"><fmt:message key="org.jahia.admin.exitToStudio.label"/></a>
           </span>
                 </div>
             </div>
@@ -128,7 +128,7 @@
             <c:url value="/cms/logout" var="logoutUrl">
                 <c:param name="redirect" value="${pageContext.request.contextPath}/administration"/>
             </c:url>
-            <span style="margin-right: 10px"><a href="${logoutUrl}"><img src="${pageContext.request.contextPath}/icons/logout.png" alt=" " height="16" width="16" align="top"/>&nbsp;<fmt:message key="label.logout"/></a></span>
+            <span style="margin-right: 10px"><a href="${logoutUrl}"><img src="${pageContext.request.contextPath}/css/images/andromeda/logout.png" alt=" " height="16" width="16" align="top"/>&nbsp;<fmt:message key="label.logout"/></a></span>
             <%
             String userLocale = UserPreferencesHelper.getPreferredLocale((JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER)).toString();
             %>

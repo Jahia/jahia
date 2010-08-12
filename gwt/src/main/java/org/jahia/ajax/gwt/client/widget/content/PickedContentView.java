@@ -107,7 +107,7 @@ public class PickedContentView extends BottomRightComponent implements PickedCon
                 }
             }
         });
-        column.setHeader(Messages.getResource("displayName"));
+        column.setHeader(Messages.get("displayName"));
         configs.add(column);
 
         //name
@@ -129,20 +129,20 @@ public class PickedContentView extends BottomRightComponent implements PickedCon
             }
         });
         column.setId("name");
-        column.setHeader(Messages.getResource("name"));
+        column.setHeader(Messages.get("name"));
         configs.add(column);
 
         // displaName
         column = new ColumnConfig();
         column.setId("displayName");
         column.setHidden(true);
-        column.setHeader(Messages.getResource("displayName"));
+        column.setHeader(Messages.get("displayName"));
         configs.add(column);
 
         // path
         column = new ColumnConfig();
         column.setId("path");
-        column.setHeader(Messages.getResource("path"));
+        column.setHeader(Messages.get("path"));
         configs.add(column);
 
         // remvove
@@ -153,7 +153,7 @@ public class PickedContentView extends BottomRightComponent implements PickedCon
         column.setHeader("");
         column.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
             public Object render(final GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
-                final Button pickContentButton = new Button(Messages.getResource("label.remove"));
+                final Button pickContentButton = new Button(Messages.get("label.remove"));
                 pickContentButton.setIcon(StandardIconsProvider.STANDARD_ICONS.minusRound());
                 pickContentButton.setIconStyle("gwt-icons-delete");
                 pickContentButton.setBorders(false);

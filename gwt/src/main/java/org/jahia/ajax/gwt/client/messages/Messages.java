@@ -37,7 +37,9 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.i18n.client.Dictionary;
 
 /**
- * User: ktlili
+ * Provider of the I18N text in the GWT components.
+ * 
+ * @author Khaled Tlili
  * Date: 1 oct. 2008
  * Time: 17:35:39
  */
@@ -50,56 +52,62 @@ public class Messages {
 
 
     /**
-     * Retrieve the resource bundle using <code>RESOURCE_BUNDLE_MODULE_TYPE</code> as default module name
+     * Retrieves the value for the specified key from the resource bundle.
      *
-     * @param key
-     * @return
+     * @param key the key of the message to look up
+     * @return the found localized message or a key if the message was not found
      */
-    public static String getResource(String key) {
-        try {
-            //Log.debug("Dictionary name: " + jahiaModuleType + "_rb_" + elementId);
-            Dictionary jahiaParamDictionary = Dictionary.getDictionary(DICTIONARY_NAME);
-            return jahiaParamDictionary.get(key.replace('.','_'));
-        } catch (Exception e) {
-            Log.error("Can't retrieve [" + key + "]", e);
-            return key;
-        }
+    public static String get(String key) {
+        return get(key, key);
     }
-
+    
     /**
-     * Retrieve the resource bundle using <code>RESOURCE_BUNDLE_MODULE_TYPE</code> as default module type
-     * and <code>APPLICATION_RESOURCE_BUNDLE_ID</code> as default element id
+     * Retrieves the value for the specified key from the resource bundle.
      *
-     * @param key
+     * @param key the key of the message to look up
      * @param defaultValue if the value is null or empty, return the defaultValue
-     * @return
+     * @return the found localized message or the provided default value if the message was not found
      */
-    public static String getNotEmptyResource(String key, String defaultValue) {
+    public static String get(String key, String defaultValue) {
         String value = defaultValue;
-        try {
-            Dictionary jahiaParamDictionary = Dictionary.getDictionary(DICTIONARY_NAME);
-            value = jahiaParamDictionary.get(key.replace('.','_'));
-            if (value == null || "".equals(value.trim())){
-                value = defaultValue;
+        if (key != null) {
+            try {
+                Dictionary dict = Dictionary.getDictionary(DICTIONARY_NAME);
+                value = dict.get(key.contains(".") ? key.replace('.', '_') : key);
+            } catch (MissingResourceException e) {
+                if (Log.isDebugEnabled()) {
+                    Log.debug("Can't retrieve [" + key + "]. Using default value: " + defaultValue, e);
+                }
+            } catch (Exception e) {
+                Log.error("Can't retrieve [" + key + "]. Using default value: " + defaultValue + ". Cause: " + e.getMessage(), e);
             }
-        } catch (MissingResourceException e) {
-            Log.debug("Can't retrieve [" + key + "]", e);
-        } catch (Exception e) {
-            Log.error("Can't retrieve [" + key + "]", e);
+        } else {
+            if (Log.isDebugEnabled()) {
+                Log.debug("Provided key is null. Using default value: " + defaultValue);
+            }
         }
         return value;
     }
     
     /**
-     * Retrieve the resource bundle using <code>RESOURCE_BUNDLE_MODULE_TYPE</code> as default module type
-     * and <code>APPLICATION_RESOURCE_BUNDLE_ID</code> as default element id
+     * Retrieves the value for the specified key from the resource bundle replacing placeholders if available.
      *
-     * @param key
+     * @param key the key of the message to look up
      * @param defaultValue if the value is null or empty, return the defaultValue
-     * @return
+     * @return the found localized message or the provided default value if the message was not found
      */
-    public static String get(String key, String defaultValue) {
-        return getNotEmptyResource(key, defaultValue);
+    public static String getWithArgs(String key, String defaultValue, Object[] args) {
+        String msg = get(key, defaultValue);
+        if (msg != null && msg.contains("{0}") && args != null && args.length > 0) {
+            for (int i = 0; i < args.length; i++) {
+                String placeholder = "{" + i + "}";
+                if (msg.contains(placeholder)) {
+                    msg = msg.replace(placeholder, String.valueOf(args[i]));
+                }
+            }
+        }
+        
+       return msg;
     }
 
 }

@@ -48,7 +48,7 @@ public class PasswordPrompt extends Window {
 
         m_linker = linker ;
 
-        setHeading(Messages.getResource("label.password"));
+        setHeading(Messages.get("label.password"));
         setSize(500, 200);
         setResizable(false);
         ButtonBar buttons = new ButtonBar() ;
@@ -62,21 +62,21 @@ public class PasswordPrompt extends Window {
         final TextField<String> user = new TextField<String>();
         user.setValue(username);
         user.setName("label.username");
-        user.setFieldLabel(Messages.getResource("label.username"));
+        user.setFieldLabel(Messages.get("label.username"));
         form.add(user);
 
         final TextField<String> pass = new TextField<String>();
         pass.setName("label.password");
-        pass.setFieldLabel(Messages.getResource("label.password"));
+        pass.setFieldLabel(Messages.get("label.password"));
         pass.setPassword(true);
         form.add(pass);
 
-        Button cancel = new Button(Messages.getResource("label.cancel"), new SelectionListener<ButtonEvent>() {
+        Button cancel = new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 hide() ;
             }
         });
-        Button submit = new Button(Messages.getResource("label.ok"), new SelectionListener<ButtonEvent>() {
+        Button submit = new Button(Messages.get("label.ok"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 JahiaContentManagementService.App.getInstance().storePasswordForProvider(providerKey, user.getValue(), pass.getValue(), new BaseAsyncCallback() {
                     public void onSuccess(Object o) {
@@ -86,7 +86,7 @@ public class PasswordPrompt extends Window {
                     }
 
                     public void onApplicationFailure(Throwable throwable) {
-                        Log.error(Messages.getResource("fm_fail"), throwable);
+                        Log.error(Messages.get("fm_fail"), throwable);
                         hide();
                     }
                 });

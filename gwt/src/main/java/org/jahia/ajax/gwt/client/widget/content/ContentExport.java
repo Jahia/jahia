@@ -60,7 +60,7 @@ public class ContentExport extends Window {
         super() ;
 
         m_linker = linker ;
-        setHeading(Messages.getResource("label.export"));
+        setHeading(Messages.get("label.export"));
         setSize(500, 150);
         setResizable(false);
         ButtonBar buttons = new ButtonBar() ;
@@ -78,13 +78,13 @@ public class ContentExport extends Window {
             }
 
             public void onApplicationFailure(Throwable caught) {
-                com.google.gwt.user.client.Window.alert(Messages.getResource("fm_fail") + "\n" + caught.getLocalizedMessage());
-                Log.error(Messages.getResource("fm_fail"), caught);
+                com.google.gwt.user.client.Window.alert(Messages.get("fm_fail") + "\n" + caught.getLocalizedMessage());
+                Log.error(Messages.get("fm_fail"), caught);
             }
 
         });
 
-        Button cancel = new Button(Messages.getResource("label.cancel"), new SelectionListener<ButtonEvent>() {
+        Button cancel = new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 hide() ;
             }

@@ -253,7 +253,7 @@ public class PublicationManagerEngine extends Window {
             if(state==0) return "";
             //String title = Messages.get("fm_column_publication_info_" + state, String.valueOf(state));
             final String label = statusToLabel.get(state);
-            final String title = Messages.getNotEmptyResource("label.publication." + label, label);
+            final String title = Messages.get("label.publication." + label, label);
             StringBuilder builder = new StringBuilder().append("<div class='x-grid3-check-col").append(
                     " x-grid3-check-col").append(getCheckState(node, state)).append(" x-grid3-cc-").append(
                     getId() + "-" + config.name).append("'>").append("<img src=\"").append(

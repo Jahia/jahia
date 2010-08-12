@@ -23,25 +23,25 @@ public class PublicationStatusGrid extends Grid<GWTJahiaPublicationInfo> {
         super();
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
-        ColumnConfig column = new ColumnConfig("title", Messages.getResource("label.path"), 450);
+        ColumnConfig column = new ColumnConfig("title", Messages.get("label.path"), 450);
         configs.add(column);
-        column = new ColumnConfig("nodetype", Messages.getResource("label.nodetype"), 150);
+        column = new ColumnConfig("nodetype", Messages.get("label.nodetype"), 150);
         configs.add(column);
 
-        column = new ColumnConfig("status", Messages.getResource("org.jahia.jcr.publication.currentStatus"), 150);
+        column = new ColumnConfig("status", Messages.get("org.jahia.jcr.publication.currentStatus"), 150);
         column.setRenderer(new TreeGridCellRenderer<GWTJahiaPublicationInfo>() {
             @Override
             public Object render(GWTJahiaPublicationInfo model, String property, ColumnData config, int rowIndex,
                                  int colIndex, ListStore listStore, Grid grid) {
                 switch (model.getStatus()) {
                     case GWTJahiaPublicationInfo.NOT_PUBLISHED:
-                        return Messages.getResource("org.jahia.jcr.publication.status_notyetpublished");
+                        return Messages.get("org.jahia.jcr.publication.status_notyetpublished");
                     case GWTJahiaPublicationInfo.LOCKED:
-                        return Messages.getResource("label.locked");
+                        return Messages.get("label.locked");
                     case GWTJahiaPublicationInfo.PUBLISHED:
-                        return Messages.getResource("label.published");
+                        return Messages.get("label.published");
                     case GWTJahiaPublicationInfo.MODIFIED:
-                        return Messages.getResource("label.modified");
+                        return Messages.get("label.modified");
                     case GWTJahiaPublicationInfo.UNPUBLISHED:
                         return "Unpublished";
                     case GWTJahiaPublicationInfo.CONFLICT:

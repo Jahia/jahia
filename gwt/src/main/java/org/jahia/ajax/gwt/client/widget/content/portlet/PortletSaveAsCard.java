@@ -51,7 +51,7 @@ public class PortletSaveAsCard extends MashupWizardCard {
     private TextField<String> saveAs = new TextField<String>();
 
     public PortletSaveAsCard() {
-        super(Messages.getNotEmptyResource("label.finish","Finish"), Messages.getNotEmptyResource("org.jahia.engines.MashupsManager.wizard.saveas.label",""));
+        super(Messages.get("label.finish","Finish"), Messages.get("org.jahia.engines.MashupsManager.wizard.saveas.label",""));
     }
 
     public void createUI() {
@@ -59,7 +59,7 @@ public class PortletSaveAsCard extends MashupWizardCard {
         FormPanel simple = new FormPanel();
         simple.setFieldWidth(300);
         simple.setLabelWidth(200);
-        saveAs.setFieldLabel(Messages.getNotEmptyResource("org.jahia.engines.MashupsManager.wizard.saveas.label","Save as"));
+        saveAs.setFieldLabel(Messages.get("org.jahia.engines.MashupsManager.wizard.saveas.label","Save as"));
         saveAs.setAllowBlank(false);
         saveAs.setMinLength(5);
         try {

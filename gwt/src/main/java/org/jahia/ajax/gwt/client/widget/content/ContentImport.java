@@ -60,7 +60,7 @@ public class ContentImport extends Window {
 
         m_linker = linker;
 
-        setHeading(Messages.getResource("label.export"));
+        setHeading(Messages.get("label.export"));
         setSize(500, 150);
         setResizable(false);
         setModal(true);
@@ -72,16 +72,16 @@ public class ContentImport extends Window {
         form.setBorders(false);
 
         final FileUploadField field = new FileUploadField("import");
-        field.setFieldLabel(Messages.getResource("label.import"));
+        field.setFieldLabel(Messages.get("label.import"));
         form.add(field);
 
-        Button submit = new Button(Messages.getResource("label.ok"), new SelectionListener<ButtonEvent>() {
+        Button submit = new Button(Messages.get("label.ok"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 doImport(n.getPath(), field.getValue());
             }
         });
 
-        Button cancel = new Button(Messages.getResource("label.cancel"), new SelectionListener<ButtonEvent>() {
+        Button cancel = new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 hide();
             }
@@ -99,8 +99,8 @@ public class ContentImport extends Window {
         JahiaContentManagementService.App.getInstance().importContent(path, value.toString(), new BaseAsyncCallback() {
 
             public void onApplicationFailure(Throwable caught) {
-                com.google.gwt.user.client.Window.alert(Messages.getResource("fm_fail") + "\n" + caught.getLocalizedMessage());
-                Log.error(Messages.getResource("fm_fail"), caught);
+                com.google.gwt.user.client.Window.alert(Messages.get("fm_fail") + "\n" + caught.getLocalizedMessage());
+                Log.error(Messages.get("fm_fail"), caught);
             }
 
             public void onSuccess(Object result) {

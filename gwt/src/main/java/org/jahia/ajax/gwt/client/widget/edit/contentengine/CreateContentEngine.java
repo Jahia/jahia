@@ -85,7 +85,7 @@ public class CreateContentEngine extends AbstractContentEngine {
      * init buttons
      */
     protected void initFooter() {
-        Button ok = new Button(Messages.getResource("label.save"));
+        Button ok = new Button(Messages.get("label.save"));
         ok.setHeight(BUTTON_HEIGHT);
         ok.setEnabled(true);
         ok.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
@@ -93,14 +93,14 @@ public class CreateContentEngine extends AbstractContentEngine {
 
         buttonBar.add(ok);
 
-        Button okAndNew = new Button(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.properties.saveAndNew.label"));
+        Button okAndNew = new Button(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.properties.saveAndNew.label"));
         okAndNew.setHeight(BUTTON_HEIGHT);
         okAndNew.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
 
         okAndNew.addSelectionListener(new CreateAndAddNewSelectionListener());
         buttonBar.add(okAndNew);
 
-        Button cancel = new Button(Messages.getResource("label.cancel"));
+        Button cancel = new Button(Messages.get("label.cancel"));
         cancel.setHeight(BUTTON_HEIGHT);
         cancel.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonCancel());
         cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {

@@ -180,8 +180,8 @@ public class EditActions {
                         }
 
                         public void onSuccess(Object result) {
-                            Info.display(Messages.getResource("label.content.unpublished"),
-                                    Messages.getResource("label.content.unpublished"));
+                            Info.display(Messages.get("label.content.unpublished"),
+                                    Messages.get("label.content.unpublished"));
                             linker.refresh(EditLinker.REFRESH_ALL);
                         }
                     });
@@ -198,19 +198,32 @@ public class EditActions {
         final int[] nbUsage = new int[1];
         if (linker.getSelectedNodes() != null && !linker.getSelectedNodes().isEmpty()) {
             // Usages
-            List<String> l = new ArrayList<String>();
+            final List<String> l = new ArrayList<String>();
             for (GWTJahiaNode node : linker.getSelectedNodes()) {
                 l.add(node.getPath());
             }
             JahiaContentManagementService.App.getInstance()
                     .getUsages(l, new BaseAsyncCallback<List<GWTJahiaNodeUsage>>() {
                         public void onSuccess(List<GWTJahiaNodeUsage> result) {
-                            String message = Messages.get("label,remove.confirm", "Do you really want to continue?");
+                            String message = l.size() > 1 ? Messages.getWithArgs("message.remove.multiple.confirm", "Do you really want to remove the {0} selected resources?", new String[] {String.valueOf(l.size())}) : 
+                                Messages.getWithArgs("message.remove.single.confirm", "Do you really want to remove the selected resource {0}?", new String[] {linker.getSelectedNodes().get(0).getName()});
+                            if (l.size() > 1) {
+                                message += "<br/><br/>";
+                                int i = 0;
+                                for (GWTJahiaNode node : linker.getSelectedNodes()) {
+                                    if (i > 4) {
+                                        message += "<br/>...";
+                                        break;
+                                    }
+                                    message += "<br/>" + node.getName();
+                                    i++;
+                                }
+                            }
                             String n = "";
                             for (GWTJahiaNodeUsage nodeUsage : result) {
                                 if (!nodeUsage.getNodeName().equals(n)) {
                                     message += "<br><br>" + nodeUsage.getNodeName() + " " +
-                                            Messages.get("label.remove.used", "is used in page <br>") + " " +
+                                            Messages.get("label.remove.used", "is used in") + "<br>" +
                                             nodeUsage.getPageTitle();
                                 } else {
                                     message += "<br>" + nodeUsage.getPageTitle();

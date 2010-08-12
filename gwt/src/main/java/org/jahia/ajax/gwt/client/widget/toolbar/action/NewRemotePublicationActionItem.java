@@ -28,7 +28,7 @@ public class NewRemotePublicationActionItem extends BaseActionItem  {
         }
         if (parent != null && !parent.isFile()) {
             com.extjs.gxt.ui.client.widget.Window w = new com.extjs.gxt.ui.client.widget.Window();
-            w.setHeading(Messages.getNotEmptyResource("remotepublication_new", "New Remote Publication"));
+            w.setHeading(Messages.get("remotepublication_new", "New Remote Publication"));
             w.setModal(true);
             w.setResizable(false);
             w.setBodyBorder(false);

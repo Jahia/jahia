@@ -65,7 +65,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
  */
 public class LinkChecker extends ContentPanel {
 
-    private static String[] WORKFLOW_STATE = new String[]{Messages.getResource("lc_versioned"), Messages.getResource("lc_live"), Messages.getResource("lc_staging"), Messages.getResource("lc_notify")};
+    private static String[] WORKFLOW_STATE = new String[]{Messages.get("lc_versioned"), Messages.get("lc_live"), Messages.get("lc_staging"), Messages.get("lc_notify")};
     private static String[] WORKFLOW_IMAGES = new String[]{"600", "111", "121", "130"};
     private static Map<Integer, String> CODE_ICONS;
 
@@ -134,19 +134,19 @@ public class LinkChecker extends ContentPanel {
                         if (!status.isActive()) {
                             Log.debug("polling over");
                             stop();
-                            m_status.setText(Messages.getResource("lc_processed") + " "
+                            m_status.setText(Messages.get("lc_processed") + " "
                                             + status.getProcessed() + " "
-                                            + Messages.getResource("lc_linksfound") + " "
+                                            + Messages.get("lc_linksfound") + " "
                                             + status.getFailed() + " "
-                                            + Messages.getResource("lc_invalid"));
+                                            + Messages.get("lc_invalid"));
                         } else {
-                            m_status.setBusy(Messages.getResource("lc_checking")+"... "
-                                            + Messages.getResource("lc_processed") + " "
-                                            + status.getProcessed() + " " + Messages.getResource("lc_of") + " "
+                            m_status.setBusy(Messages.get("lc_checking")+"... "
+                                            + Messages.get("lc_processed") + " "
+                                            + status.getProcessed() + " " + Messages.get("lc_of") + " "
                                             + status.getTotal() +" "
-                                            + Messages.getResource("lc_linksfound") + " "
+                                            + Messages.get("lc_linksfound") + " "
                                             + status.getFailed() + " "
-                                            + Messages.getResource("lc_invalid"));
+                                            + Messages.get("lc_invalid"));
                         }
                     }
                 });
@@ -156,19 +156,19 @@ public class LinkChecker extends ContentPanel {
         // ui layout
         setHeaderVisible(false);
         ToolBar toolBar = new ToolBar();
-        stop = new Button(Messages.getResource("lc_stop"), new SelectionListener<ButtonEvent>() {
+        stop = new Button(Messages.get("lc_stop"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 stopPolling();
             }
         });
         stop.setEnabled(false);
-        final Button csvExport = new Button(Messages.getResource("lc_exportcsv"), new SelectionListener<ButtonEvent>() {
+        final Button csvExport = new Button(Messages.get("lc_exportcsv"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent toolBarEvent) {
                 new CSVExporter(m_store.getModels()).show();
             }
         });
         csvExport.setEnabled(false);
-        Button checkLinks = new Button(Messages.getResource("lc_checkLinks"), new SelectionListener<ButtonEvent>() {
+        Button checkLinks = new Button(Messages.get("lc_checkLinks"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 m_store.removeAll();
                 LinkCheckerService.App.getInstance().checkLinks(new BaseAsyncCallback<Boolean>() {
@@ -203,7 +203,7 @@ public class LinkChecker extends ContentPanel {
     private void startPolling() {
         Log.debug("scheduled every 2 seconds");
         m_timer.scheduleRepeating(2000);
-        m_status.setBusy(Messages.getResource("lc_checking"));
+        m_status.setBusy(Messages.get("lc_checking"));
     }
 
     private void stopPolling() {
@@ -234,28 +234,28 @@ public class LinkChecker extends ContentPanel {
                 .add(new RowExpander(
                         XTemplate
                                 .create("<p><b>"
-                                        + Messages.getResource("lc_link")
+                                        + Messages.get("lc_link")
                                         + ":</b> {link}</p><br/>"
                                         + "<p><b>"
-                                        + Messages.getResource("lc_page")
+                                        + Messages.get("lc_page")
                                         + ":</b> <a href=\"{pageUrl}\" target=\"_blank\">{pageTitle} [{pageId}]</a></p><br/>"
                                         + "<p><b>"
-                                        + Messages.getResource("lc_field")
+                                        + Messages.get("lc_field")
                                         + ":</b> {fieldType} [{fieldId}]</p><br/>"
                                         + "<p><b>"
-                                        + Messages.getResource("lc_language")
+                                        + Messages.get("lc_language")
                                         + ":</b> {languageCode}</p><br/>"
                                         + "<p><b>"
-                                        + Messages.getResource("lc_workflow")
+                                        + Messages.get("lc_workflow")
                                         + ":</b> {workflowState}</p><br/>"
                                         + "<p><b>"
-                                        + Messages.getResource("lc_code")
+                                        + Messages.get("lc_code")
                                         + ":</b> {code} {codeText}</p><br/>"
                                         + "<p><b>"
-                                        + Messages.getResource("lc_details")
+                                        + Messages.get("lc_details")
                                         + ":</b><br/>{errorDetails}</p><br/>"
                                         + "<p><b>"
-                                        + Messages.getResource("lc_edit")
+                                        + Messages.get("lc_edit")
                                         + ":</b> <a href=\"{updateUrl}\" target=\"_blank\"><img src=\""
                                         + ctx
                                         + "/gwt/resources/org/jahia/ajax/gwt/public/images/actions/update.png\""
@@ -279,7 +279,7 @@ public class LinkChecker extends ContentPanel {
         });
         headerList.add(col);
 
-        col = new ColumnConfig("code", Messages.getResource("lc_code"), 50);
+        col = new ColumnConfig("code", Messages.get("lc_code"), 50);
         col.setSortable(true);
         col.setResizable(true);
         col.setRenderer(new GridCellRenderer<GWTJahiaCheckedLink>() {
@@ -290,12 +290,12 @@ public class LinkChecker extends ContentPanel {
         });
         headerList.add(col);
 
-        col = new ColumnConfig("link", Messages.getResource("lc_link"), 250);
+        col = new ColumnConfig("link", Messages.get("lc_link"), 250);
         col.setSortable(true);
         col.setResizable(true);
         headerList.add(col);
 
-        col = new ColumnConfig("pageTitle", Messages.getResource("lc_pageTitle"), 150);
+        col = new ColumnConfig("pageTitle", Messages.get("lc_pageTitle"), 150);
         col.setSortable(true);
         col.setResizable(true);
         col.setRenderer(new GridCellRenderer<GWTJahiaCheckedLink>(){
@@ -306,12 +306,12 @@ public class LinkChecker extends ContentPanel {
             }});
         headerList.add(col);
 
-        col = new ColumnConfig("languageCode", Messages.getResource("lc_language"), 50);
+        col = new ColumnConfig("languageCode", Messages.get("lc_language"), 50);
         col.setSortable(true);
         col.setResizable(true);
         headerList.add(col);
 
-        col = new ColumnConfig("workflowState", Messages.getResource("lc_workflow"), 90);
+        col = new ColumnConfig("workflowState", Messages.get("lc_workflow"), 90);
         col.setSortable(true);
         col.setResizable(true);
         col.setRenderer(new GridCellRenderer<GWTJahiaCheckedLink>() {
@@ -326,7 +326,7 @@ public class LinkChecker extends ContentPanel {
 
         headerList.add(col);
 
-        col = new ColumnConfig("edit", Messages.getResource("lc_edit"), 50);
+        col = new ColumnConfig("edit", Messages.get("lc_edit"), 50);
         col.setSortable(false);
         col.setResizable(false);
         col.setRenderer(new GridCellRenderer<GWTJahiaCheckedLink>() {

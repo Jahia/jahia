@@ -58,7 +58,7 @@ public class ContentSearchForm extends ContentPanel {
         searchForm.setBorders(false);
         searchForm.setBodyBorder(false);
         searchField = new TextField<String>();
-        searchField.setFieldLabel(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.search.label"));
+        searchField.setFieldLabel(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.search.label"));
 
         final Button ok = new Button("", new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent e) {
@@ -73,7 +73,7 @@ public class ContentSearchForm extends ContentPanel {
             }
         });
         save.setIconStyle("gwt-toolbar-icon-saveAsSharedComponent");
-        save.setToolTip(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.saveSearch.label"));
+        save.setToolTip(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.saveSearch.label"));
 
         // main search field
         HorizontalPanel mainField = new HorizontalPanel();
@@ -324,7 +324,7 @@ public class ContentSearchForm extends ContentPanel {
     public void saveSearch() {
         GWTJahiaSearchQuery query = getCurrentQuery();
         if (query != null && query.getQuery().length() > 0) {
-            String name = Window.prompt(Messages.getNotEmptyResource("org.jahia.engines.filemanager.Filemanager_Engine.saveSearchName.label", "Please enter a name for this search"), JCRClientUtils.cleanUpFilename(query.getQuery()));
+            String name = Window.prompt(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.saveSearchName.label", "Please enter a name for this search"), JCRClientUtils.cleanUpFilename(query.getQuery()));
             if (name != null && name.length() > 0) {
                 name = JCRClientUtils.cleanUpFilename(name);
                 final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
@@ -335,7 +335,7 @@ public class ContentSearchForm extends ContentPanel {
 
                     public void onApplicationFailure(Throwable throwable) {
                         if (throwable instanceof ExistingFileException) {
-                            Window.alert(Messages.getNotEmptyResource("fm_inUseSaveSearch", "The entered name is already in use."));
+                            Window.alert(Messages.get("fm_inUseSaveSearch", "The entered name is already in use."));
                         } else {
                             Log.error("error", throwable);
                         }

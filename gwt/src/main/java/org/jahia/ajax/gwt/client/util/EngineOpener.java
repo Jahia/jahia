@@ -58,7 +58,7 @@ public class EngineOpener {
 
     public static void openEngine(String url, String windowName, String windowParams) {
         if (closePreviousEngine(Messages
-                .getNotEmptyResource(
+                .get(
                         "org.jahia.engines.confirmWindowClose",
                         "Opening a new engine window will close the currently opened one. Do you want to continue?"))) {
             open(url, windowName, windowParams);

@@ -82,7 +82,7 @@ public abstract class FormQuickRSS extends FormQuickMashup {
 
 
         // save properties button
-        Button saveButton = new Button(Messages.getResource("label.save"));
+        Button saveButton = new Button(Messages.get("label.save"));
         saveButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 if (nameField.getValue() == null || nameField.getValue().trim().length() == 0

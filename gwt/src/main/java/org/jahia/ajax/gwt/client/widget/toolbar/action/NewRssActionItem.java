@@ -27,7 +27,7 @@ public class NewRssActionItem extends BaseActionItem   {
         }
         if (parent != null && !parent.isFile()) {
             com.extjs.gxt.ui.client.widget.Window w = new com.extjs.gxt.ui.client.widget.Window();
-            w.setHeading(Messages.getNotEmptyResource("label.newRssMashup", "New RSS"));
+            w.setHeading(Messages.get("label.newRssMashup", "New RSS"));
             w.setModal(true);
             w.setResizable(false);
             w.setBodyBorder(false);

@@ -63,8 +63,8 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
             }
         });
         displayColumns.add(col);
-        displayColumns.add(new ColumnConfig("displayName", Messages.getResource("label.name"), 170));
-        ColumnConfig columnConfig = new ColumnConfig("jcr:lastModified", Messages.getResource("label.lastModif"),
+        displayColumns.add(new ColumnConfig("displayName", Messages.get("label.name"), 170));
+        ColumnConfig columnConfig = new ColumnConfig("jcr:lastModified", Messages.get("label.lastModif"),
                                                      100);
         columnConfig.setDateTimeFormat(DateTimeFormat.getShortDateTimeFormat());
         displayColumns.add(columnConfig);

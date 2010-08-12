@@ -38,7 +38,7 @@ public class SimpleModule extends Module {
         if (mainModule.getConfig().getName().equals("studiomode")) {
             head = new Header();
             add(head);
-            setHeaderText(Messages.getResource("label.content") + " : " + path.substring(path.lastIndexOf('/') + 1));
+            setHeaderText(Messages.get("label.content") + " : " + path.substring(path.lastIndexOf('/') + 1));
             head.addStyleName("x-panel-header");
             head.addStyleName("x-panel-header-simplemodule");
             setBorders(false);

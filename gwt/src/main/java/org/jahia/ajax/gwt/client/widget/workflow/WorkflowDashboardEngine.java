@@ -118,9 +118,9 @@ public class WorkflowDashboardEngine extends Window {
         });
         displayColumns.add(expander);
 
-        displayColumns.add(new ColumnConfig("node.displayName", Messages.getResource("label.name"), 150));
+        displayColumns.add(new ColumnConfig("node.displayName", Messages.get("label.name"), 150));
 
-        ColumnConfig config = new ColumnConfig("displayName", Messages.getResource("label.status"), 140);
+        ColumnConfig config = new ColumnConfig("displayName", Messages.get("label.status"), 140);
 //        config.setRenderer(new GridCellRenderer() {
 //            public Object render(ModelData model, String property, ColumnData config, int rowIndex, int colIndex,
 //                                 ListStore listStore, Grid grid) {
@@ -152,7 +152,7 @@ public class WorkflowDashboardEngine extends Window {
 //        config.setSortable(false);
         displayColumns.add(config);
 
-        config = new ColumnConfig("startDate", Messages.getResource("label.workflow.taskStartTime"), 140);
+        config = new ColumnConfig("startDate", Messages.get("label.workflow.taskStartTime"), 140);
 //        config.setSortable(true);
 //        config.setRenderer(new GridCellRenderer() {
 //            public Object render(ModelData model, String property, ColumnData config, int rowIndex, int colIndex,
@@ -164,7 +164,7 @@ public class WorkflowDashboardEngine extends Window {
 //        });
         displayColumns.add(config);
 
-        config = new ColumnConfig("title", Messages.getResource("label.workflow.titleOfInstance"), 2000);
+        config = new ColumnConfig("title", Messages.get("label.workflow.titleOfInstance"), 2000);
 //        config.setSortable(true);
 //        config.setRenderer(new GridCellRenderer() {
 //            public Object render(ModelData model, String property, ColumnData config, int rowIndex, int colIndex,

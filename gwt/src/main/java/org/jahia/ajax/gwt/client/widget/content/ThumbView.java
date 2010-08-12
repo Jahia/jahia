@@ -90,7 +90,7 @@ public class ThumbView extends TopRightComponent {
         }
 
         ToolBar bar = new ToolBar();
-        bar.add(new LabelToolItem(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.thumbFilter.label")));
+        bar.add(new LabelToolItem(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.thumbFilter.label")));
 
         configuration = config;
 
@@ -149,16 +149,16 @@ public class ThumbView extends TopRightComponent {
 
         bar.add(field);
         bar.add(new SeparatorToolItem());
-        bar.add(new LabelToolItem(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.thumbSort.label")));
+        bar.add(new LabelToolItem(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.thumbSort.label")));
 
         // please keep same order as in sort() method
         List<String> sorts = new ArrayList<String>();
-        sorts.add(Messages.getResource("label.in"));
+        sorts.add(Messages.get("label.in"));
 //        if (config.isDisplaySize()) {
-            sorts.add(Messages.getResource("label.size"));
+            sorts.add(Messages.get("label.size"));
 //        }
 //        if (config.isDisplayDate()) {
-            sorts.add(Messages.getResource("label.lastModif"));
+            sorts.add(Messages.get("label.lastModif"));
 //        }
 
         sort = new SimpleComboBox<String>();
@@ -173,7 +173,7 @@ public class ThumbView extends TopRightComponent {
                 sort();
             }
         });
-        sortOrder = new ToggleButton(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.invertSort.label"));
+        sortOrder = new ToggleButton(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.invertSort.label"));
         sortOrder.addListener(Events.Select, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent componentEvent) {
                 sort();

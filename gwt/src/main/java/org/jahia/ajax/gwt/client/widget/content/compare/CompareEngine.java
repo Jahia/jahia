@@ -100,7 +100,7 @@ public class CompareEngine extends Window {
      * init buttons
      */
     protected void initFooter() {
-        Button cancel = new Button(Messages.getResource("label.cancel"));
+        Button cancel = new Button(Messages.get("label.cancel"));
         cancel.setHeight(BUTTON_HEIGHT);
         cancel.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonCancel());
         cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {

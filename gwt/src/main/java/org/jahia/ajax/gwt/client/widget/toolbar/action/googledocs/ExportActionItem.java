@@ -150,7 +150,7 @@ public class ExportActionItem extends BaseActionItem {
 
     private static void export(Linker linker, GWTJahiaNode selection) {
         linker.loading(Messages
-                .getResource("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.downloading.label"));
+                .get("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.downloading.label"));
         new ExportWindow(selection).show();
         linker.loaded();
     }

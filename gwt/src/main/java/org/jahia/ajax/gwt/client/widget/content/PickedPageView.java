@@ -152,7 +152,7 @@ public class PickedPageView extends BottomRightComponent implements PickedConten
         url = new TextField<String>();
         url.setFieldLabel("Url");
         url.setEnabled(!isInternal);
-        Button pickContentButton = new Button(Messages.getResource("label.remove"));
+        Button pickContentButton = new Button(Messages.get("label.remove"));
         pickContentButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent buttonEvent) {
                 getLinker().select(null);

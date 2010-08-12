@@ -26,7 +26,7 @@ public class NewGadgetActionItem extends BaseActionItem   {
         }
         if (parent != null && !parent.isFile()) {
             com.extjs.gxt.ui.client.widget.Window w = new com.extjs.gxt.ui.client.widget.Window();
-            w.setHeading(Messages.getNotEmptyResource("label.newGoogleGadgetMashup", "New Google Gadget"));
+            w.setHeading(Messages.get("label.newGoogleGadgetMashup", "New Google Gadget"));
             w.setModal(true);
             w.setResizable(false);
             w.setBodyBorder(false);

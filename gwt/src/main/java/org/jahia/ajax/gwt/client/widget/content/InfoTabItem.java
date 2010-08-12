@@ -24,7 +24,7 @@ public class InfoTabItem extends EditEngineTabItem {
     private FlowPanel infoPanel;
 
     public InfoTabItem(NodeHolder engine) {
-        super(Messages.getResource("label.information"), engine);
+        super(Messages.get("label.information"), engine);
     }
 
     public void create(GWTJahiaLanguage locale) {
@@ -47,11 +47,11 @@ public class InfoTabItem extends EditEngineTabItem {
                 }
                 String name = selectedNode.getName();
                 if (name != null) {
-                    flowPanel.add(new HTML("<b>" + Messages.getResource("label.name") + ":</b> " + name));
+                    flowPanel.add(new HTML("<b>" + Messages.get("label.name") + ":</b> " + name));
                 }
                 String path = selectedNode.getPath();
                 if (path != null) {
-                    flowPanel.add(new HTML("<b>" + Messages.getResource("label.path") + ":</b> " + path));
+                    flowPanel.add(new HTML("<b>" + Messages.get("label.path") + ":</b> " + path));
                 }
                 String id = selectedNode.getUUID();
                 if (id != null) {
@@ -60,18 +60,18 @@ public class InfoTabItem extends EditEngineTabItem {
                 if (selectedNode.isFile()) {
                     Long s = selectedNode.getSize();
                     if (s != null) {
-                        flowPanel.add(new HTML("<b>" + Messages.getResource("label.size") + ":</b> " +
+                        flowPanel.add(new HTML("<b>" + Messages.get("label.size") + ":</b> " +
                                 Formatter.getFormattedSize(s.longValue()) + " (" + s.toString() + " bytes)"));
                     }
                 }
                 Date date = selectedNode.get("jcr:lastModified");
                 if (date != null) {
-                    flowPanel.add(new HTML("<b>" + Messages.getResource("label.lastModif") + ":</b> " +
+                    flowPanel.add(new HTML("<b>" + Messages.get("label.lastModif") + ":</b> " +
                             org.jahia.ajax.gwt.client.util.Formatter.getFormattedDate(date, "d/MM/y")));
                 }
                 if (selectedNode.isLocked() && selectedNode.getLockOwner() != null) {
                     flowPanel.add(new HTML(
-                            "<b>" + Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.info.lock.label") + ":</b> " + selectedNode.getLockOwner()));
+                            "<b>" + Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.info.lock.label") + ":</b> " + selectedNode.getLockOwner()));
                 }
 
                 flowPanel.add(new HTML("<b>" + Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.nodes.label", "Types") + ":</b> " + selectedNode.getNodeTypes()));
@@ -89,9 +89,9 @@ public class InfoTabItem extends EditEngineTabItem {
                         numberFolders++;
                     }
                 }
-                flowPanel.add(new HTML("<b>" + Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.info.nbFiles.label") + " :</b> " + numberFiles));
-                flowPanel.add(new HTML("<b>" + Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.info.nbFolders.label") + " :</b> " + numberFolders));
-                flowPanel.add(new HTML("<b>" + Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.info.totalSize.label") + " :</b> " +
+                flowPanel.add(new HTML("<b>" + Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.info.nbFiles.label") + " :</b> " + numberFiles));
+                flowPanel.add(new HTML("<b>" + Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.info.nbFolders.label") + " :</b> " + numberFolders));
+                flowPanel.add(new HTML("<b>" + Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.info.totalSize.label") + " :</b> " +
                         org.jahia.ajax.gwt.client.util.Formatter.getFormattedSize(size)));
             }
             g.setWidget(0, 1, flowPanel);

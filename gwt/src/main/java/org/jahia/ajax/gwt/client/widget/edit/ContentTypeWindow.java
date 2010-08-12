@@ -107,7 +107,7 @@ public class ContentTypeWindow extends Window {
         buttonBar = new ButtonBar();
         buttonBar.setAlignment(Style.HorizontalAlignment.CENTER);
 
-        ok = new Button(Messages.getResource("label.ok"));
+        ok = new Button(Messages.get("label.ok"));
         ok.setHeight(EditContentEngine.BUTTON_HEIGHT);
         ok.setEnabled(false);
         ok.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
@@ -128,7 +128,7 @@ public class ContentTypeWindow extends Window {
 
         buttonBar.add(ok);
 
-        cancel = new Button(Messages.getResource("label.cancel"));
+        cancel = new Button(Messages.get("label.cancel"));
         cancel.setHeight(EditContentEngine.BUTTON_HEIGHT);
         cancel.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonCancel());
         cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {

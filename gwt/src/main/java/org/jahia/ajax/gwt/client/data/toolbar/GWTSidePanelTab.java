@@ -138,28 +138,28 @@ public class GWTSidePanelTab  implements Serializable {
 
     public List<GWTColumn> getTableColumns() {
         if (tableColumns.isEmpty()) {
-            addTableColumn(new GWTColumn("name", Messages.getResource("label.name"),-1));
+            addTableColumn(new GWTColumn("name", Messages.get("label.name"),-1));
         }
         return tableColumns;
     }
 
     public List<String> getTableColumnKeys() {
         if (tableColumns.isEmpty()) {
-            addTableColumn(new GWTColumn("name", Messages.getResource("label.name"),-1));
+            addTableColumn(new GWTColumn("name", Messages.get("label.name"),-1));
         }
         return tableColumnKeys;
     }
 
     public List<GWTColumn> getTreeColumns() {
         if (treeColumns.isEmpty()) {
-            addTreeColumn(new GWTColumn("name", Messages.getResource("label.name"),-1));
+            addTreeColumn(new GWTColumn("name", Messages.get("label.name"),-1));
         }
         return treeColumns;
     }
 
     public List<String> getTreeColumnKeys() {
         if (treeColumns.isEmpty()) {
-            addTreeColumn(new GWTColumn("name", Messages.getResource("label.name"),-1));
+            addTreeColumn(new GWTColumn("name", Messages.get("label.name"),-1));
         }
         return treeColumnKeys;
     }

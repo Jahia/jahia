@@ -77,7 +77,7 @@ public abstract class SearchField extends ToolBar {
         add(ok);
         add(new FillToolItem());
         if (saveSearchbutton) {
-            Button save = new Button(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.saveSearch.label"));
+            Button save = new Button(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.saveSearch.label"));
             save.addSelectionListener(new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent event) {
                    onSaveButtonClicked(field.getRawValue());

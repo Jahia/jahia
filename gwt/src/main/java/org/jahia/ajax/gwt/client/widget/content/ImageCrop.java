@@ -67,7 +67,7 @@ public class ImageCrop extends Window {
         setSize(712, 550);
 
         this.linker = linker;
-        setHeading(Messages.getResource("label.crop"));
+        setHeading(Messages.get("label.crop"));
 
         FormPanel form = new FormPanel();
         form.setFrame(false);
@@ -82,7 +82,7 @@ public class ImageCrop extends Window {
         } else {
             newname.setValue(n.getName() + "_crop");
         }
-        newname.setFieldLabel(Messages.getResource("label.rename"));
+        newname.setFieldLabel(Messages.get("label.rename"));
         form.add(newname);
         
         final NumberField top = new NumberField();
@@ -118,12 +118,12 @@ public class ImageCrop extends Window {
         form.add(image);
         
         ButtonBar buttons = new ButtonBar();
-        Button cancel = new Button(Messages.getResource("label.cancel"), new SelectionListener<ButtonEvent>() {
+        Button cancel = new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 hide();
             }
         });
-        Button submit = new Button(Messages.getResource("label.ok"), new SelectionListener<ButtonEvent>() {
+        Button submit = new Button(Messages.get("label.ok"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 if (width.getValue().intValue() > 0 && height.getValue().intValue() > 0) {
                     cropImage(n.getPath(), newname.getValue().toString(), top.getValue().intValue(), left.getValue()
@@ -151,12 +151,12 @@ public class ImageCrop extends Window {
         JahiaContentManagementService.App.getInstance().cropImage(path, targetName, top, left, width, height, force, new BaseAsyncCallback<Object>() {
             public void onApplicationFailure(Throwable throwable) {
                 if (throwable instanceof ExistingFileException) {
-                    if (com.google.gwt.user.client.Window.confirm(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.alreadyExists.label") + "\n" + Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.confirm.overwrite.label"))) {
+                    if (com.google.gwt.user.client.Window.confirm(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.alreadyExists.label") + "\n" + Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.confirm.overwrite.label"))) {
                         cropImage(path, targetName, top, left, width, height, true);
                     }
                 } else {
-                    com.google.gwt.user.client.Window.alert(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.failure.crop.label") + "\n" + throwable.getLocalizedMessage());
-                    Log.error(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.failure.crop.label"), throwable);
+                    com.google.gwt.user.client.Window.alert(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.failure.crop.label") + "\n" + throwable.getLocalizedMessage());
+                    Log.error(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.failure.crop.label"), throwable);
                 }
             }
 

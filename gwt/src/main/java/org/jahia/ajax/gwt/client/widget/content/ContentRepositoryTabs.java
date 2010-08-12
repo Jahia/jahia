@@ -106,7 +106,7 @@ public class ContentRepositoryTabs extends LeftComponent {
         savedSearchPanel.setBodyBorder(false);
         savedSearchPanel.setBorders(false);
         savedSearchPanel.setScrollMode(Style.Scroll.NONE);
-        savedSearchPanel.setHeading(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.repository.savedSearch.label"));
+        savedSearchPanel.setHeading(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.repository.savedSearch.label"));
         savedSearchPanel.getHeader().setIconStyle("gwt-toolbar-icon-savedSearch");
         savedSearchPanel.getHeader().setBorders(false);
 
@@ -124,7 +124,7 @@ public class ContentRepositoryTabs extends LeftComponent {
             }
         });
         Menu queryMenu = new Menu();
-        final MenuItem removeQuery = new MenuItem(Messages.getResource("label.remove"), new SelectionListener<MenuEvent>() {
+        final MenuItem removeQuery = new MenuItem(Messages.get("label.remove"), new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent event) {
                 final DataListItem item = queryList.getSelectedItem();
                 if (item != null) {
@@ -145,7 +145,7 @@ public class ContentRepositoryTabs extends LeftComponent {
         });
         removeQuery.setIconStyle("label.remove");
 
-        final MenuItem renameQuery = new MenuItem(Messages.getResource("label.rename"), new SelectionListener<MenuEvent>() {
+        final MenuItem renameQuery = new MenuItem(Messages.get("label.rename"), new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent event) {
                 final DataListItem item = queryList.getSelectedItem();
                 if (item != null) {

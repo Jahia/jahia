@@ -56,7 +56,7 @@ public class PortletModesCard extends MashupWizardCard {
 
 
     public PortletModesCard() {
-        super(Messages.getNotEmptyResource("org.jahia.engines.MashupsManager.wizard.modesperm.label", "Modes permissions"), Messages.getNotEmptyResource("org.jahia.engines.MashupsManager.wizard.modesperm.description.label", "Set modes permissions"));
+        super(Messages.get("org.jahia.engines.MashupsManager.wizard.modesperm.label", "Modes permissions"), Messages.get("org.jahia.engines.MashupsManager.wizard.modesperm.description.label", "Set modes permissions"));
     }
 
     public void next() {
@@ -93,15 +93,15 @@ public class PortletModesCard extends MashupWizardCard {
                 }
             });
         } else {
-            add(new Label(Messages.getNotEmptyResource("org.jahia.engines.MashupsManager.wizard.modesperm.onlyViewMode", "The selected portlets contains only view mode.")));
+            add(new Label(Messages.get("org.jahia.engines.MashupsManager.wizard.modesperm.onlyViewMode", "The selected portlets contains only view mode.")));
         }
     }
 
     private void initModeMappingEditor(GWTJahiaNodeACL acl) {
         modeMappingEditor = new AclEditor(acl, getPortletWizardWindow().getParentNode().getAclContext());
         modeMappingEditor.setAclGroup(JCRClientUtils.MODES_ACL);
-        modeMappingEditor.setAddUsersLabel(Messages.getNotEmptyResource("org.jahia.engines.MashupsManager.wizard.modes.adduser.label", "Add mode-user permission"));
-        modeMappingEditor.setAddGroupsLabel(Messages.getNotEmptyResource("org.jahia.engines.MashupsManager.wizard.modes.addgroup.label", "Add mode-group permission"));
+        modeMappingEditor.setAddUsersLabel(Messages.get("org.jahia.engines.MashupsManager.wizard.modes.adduser.label", "Add mode-user permission"));
+        modeMappingEditor.setAddGroupsLabel(Messages.get("org.jahia.engines.MashupsManager.wizard.modes.addgroup.label", "Add mode-group permission"));
         Button saveButton = modeMappingEditor.getSaveButton();
         saveButton.setVisible(false);
         Button restoreButton = modeMappingEditor.getRestoreButton();

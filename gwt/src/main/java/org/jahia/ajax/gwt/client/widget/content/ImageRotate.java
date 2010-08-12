@@ -63,7 +63,7 @@ public class ImageRotate extends Window {
 
         m_linker = linker ;
 
-        setHeading(Messages.getResource("label.rotate"));
+        setHeading(Messages.get("label.rotate"));
         setSize(500, 150);
         setResizable(false);
         ButtonBar buttons = new ButtonBar() ;
@@ -83,20 +83,20 @@ public class ImageRotate extends Window {
         } else {
             newname.setValue(n.getName() + "_rotate");
         }
-        newname.setFieldLabel(Messages.getResource("label.rename"));
+        newname.setFieldLabel(Messages.get("label.rename"));
         form.add(newname);
 
-        Button cancel = new Button(Messages.getResource("label.cancel"), new SelectionListener<ButtonEvent>() {
+        Button cancel = new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 hide() ;
             }
         });
-        Button left = new Button(Messages.getResource("label.rotateLeft"), new SelectionListener<ButtonEvent>() {
+        Button left = new Button(Messages.get("label.rotateLeft"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 rotateImage(n.getPath(), newname.getValue(), false, false) ;
             }
         }) ;
-        Button right = new Button(Messages.getResource("label.rotateRight"), new SelectionListener<ButtonEvent>() {
+        Button right = new Button(Messages.get("label.rotateRight"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 rotateImage(n.getPath(), newname.getValue(), true, false) ;
             }
@@ -114,12 +114,12 @@ public class ImageRotate extends Window {
          JahiaContentManagementService.App.getInstance().rotateImage(path, target, clockwise, force, new BaseAsyncCallback() {
              public void onApplicationFailure(Throwable throwable) {
                  if (throwable instanceof ExistingFileException) {
-                    if (com.google.gwt.user.client.Window.confirm(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.alreadyExists.label") + "\n"+ Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.confirm.overwrite.label"))) {
+                    if (com.google.gwt.user.client.Window.confirm(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.alreadyExists.label") + "\n"+ Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.confirm.overwrite.label"))) {
                          rotateImage(path, target, clockwise, true);
                      }
                 } else {
-                    com.google.gwt.user.client.Window.alert(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.failure.rotate.label") + "\n" + throwable.getLocalizedMessage());
-                    Log.error(Messages.getResource("org.jahia.engines.filemanager.Filemanager_Engine.failure.rotate.label"), throwable);
+                    com.google.gwt.user.client.Window.alert(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.failure.rotate.label") + "\n" + throwable.getLocalizedMessage());
+                    Log.error(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.failure.rotate.label"), throwable);
                 }
              }
 

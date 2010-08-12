@@ -738,7 +738,7 @@ public class AclEditor {
      * @return
      */
     public String getResource(String key) {
-        return Messages.getResource(key);
+        return Messages.get(key);
     }
 
 }

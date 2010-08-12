@@ -59,7 +59,7 @@ class PublicationStatusWindow extends Window {
         final Grid<GWTJahiaPublicationInfo> grid = new PublicationStatusGrid(store);
         add(grid);
 
-        cancel = new Button(Messages.getResource("label.cancel"), new SelectionListener<ButtonEvent>() {
+        cancel = new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 hide();
             }
@@ -68,7 +68,7 @@ class PublicationStatusWindow extends Window {
         setButtonAlign(Style.HorizontalAlignment.CENTER);
 
 
-        ok = new Button(Messages.getResource("label.publish"));
+        ok = new Button(Messages.get("label.publish"));
         GWTJahiaNode selectedNode = linker.getSelectedNode();
         if (selectedNode == null) {
             selectedNode = linker.getMainNode();
@@ -121,8 +121,8 @@ class PublicationStatusWindow extends Window {
                                     }
 
                                     public void onSuccess(Object result) {
-                                        Info.display(Messages.getResource("message.content.published"),
-                                                Messages.getResource("message.content.published"));
+                                        Info.display(Messages.get("message.content.published"),
+                                                Messages.get("message.content.published"));
                                         linker.refresh(Linker.REFRESH_ALL);
                                         hide();
                                     }

@@ -56,7 +56,7 @@ public class PortletFormCard extends MashupWizardCard {
     private PropertiesEditor pe;
 
     public PortletFormCard() {
-        super(Messages.getNotEmptyResource("label.parameters","Parameters"), Messages.getNotEmptyResource("org.jahia.engines.MashupsManager.wizard.parameters.edit.label","Edit parameters"));
+        super(Messages.get("label.parameters","Parameters"), Messages.get("org.jahia.engines.MashupsManager.wizard.parameters.edit.label","Edit parameters"));
     }
 
     public void createUI() {

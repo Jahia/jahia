@@ -71,9 +71,9 @@ public class PrincipalRolePanel extends LayoutContainer {
         cp.setBorders(false);
         cp.setBodyBorder(false);
         ToolBar bar = new ToolBar();
-        Button addUser = new Button(Messages.getResource("label.addUsersToRole"));
+        Button addUser = new Button(Messages.get("label.addUsersToRole"));
         addUser.setIconStyle("um-adduser");
-        Button addGroup = new Button(Messages.getResource("label.addGroupsToRole"));
+        Button addGroup = new Button(Messages.get("label.addGroupsToRole"));
         addGroup.setIconStyle("um-addgroup");
         bar.add(new FillToolItem());
         bar.setAlignment(HorizontalAlignment.LEFT);

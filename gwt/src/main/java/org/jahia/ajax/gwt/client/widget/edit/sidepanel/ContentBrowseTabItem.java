@@ -78,7 +78,7 @@ class ContentBrowseTabItem extends BrowseTabItem {
             }
         });
         displayColumns.add(col);
-        displayColumns.add(new ColumnConfig("displayName", Messages.getResource("label.name"), 280));
+        displayColumns.add(new ColumnConfig("displayName", Messages.get("label.name"), 280));
         final Grid<GWTJahiaNode> grid = new Grid<GWTJahiaNode>(contentStore, new ColumnModel(displayColumns));
 
         contentContainer.add(grid);

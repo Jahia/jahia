@@ -59,6 +59,7 @@ import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
+import org.jahia.ajax.gwt.client.widget.toolbar.ActionMenu;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 
@@ -292,8 +293,7 @@ public class ContentTreeGrid extends LayoutContainer {
            }); */
             m_treeGrid.setHideHeaders(true);
             m_treeGrid.setBorders(false);
-
-
+            m_treeGrid.setContextMenu(new ActionMenu(configuration.getToolbarSet(), linker));
         }
 
         public void setContent(Object root) {

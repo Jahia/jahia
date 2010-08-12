@@ -64,7 +64,7 @@ class SearchTabItem extends SidePanelTabItem {
         searchForm.setBodyBorder(false);
         searchForm.setPadding(4);
         searchField = new TextField<String>();
-        searchField.setFieldLabel(Messages.getResource("label.search"));
+        searchField.setFieldLabel(Messages.get("label.search"));
         searchField.addListener(KeyboardEvents.Enter, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
                 // grid.mask("Loading", "x-mask-loading");
@@ -72,7 +72,7 @@ class SearchTabItem extends SidePanelTabItem {
                 loader.load(0,nbResults);
             }
         });
-        final Button ok = new Button(Messages.getResource("label.search"), new SelectionListener<ButtonEvent>() {
+        final Button ok = new Button(Messages.get("label.search"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent e) {
                 //  grid.mask("Loading", "x-mask-loading");
                 contentStore.removeAll();
@@ -81,7 +81,7 @@ class SearchTabItem extends SidePanelTabItem {
         });
         ok.setIconStyle("gwt-toolbar-icon-savedSearch");
         ok.setIcon(StandardIconsProvider.STANDARD_ICONS.search());
-        final Button drag = new Button(Messages.getResource("org.jahia.jcr.edit.drag.label"));
+        final Button drag = new Button(Messages.get("org.jahia.jcr.edit.drag.label"));
         new EditModeDragSource(drag) {
             @Override
             protected void onDragStart(DNDEvent e) {

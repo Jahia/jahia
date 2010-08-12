@@ -84,7 +84,7 @@ public abstract class FormQuickRemotePublication extends FormPanel {
 
         final TextField nameField = new TextField();
         nameField.setName("name");
-        nameField.setFieldLabel(Messages.getNotEmptyResource("name", "Name"));
+        nameField.setFieldLabel(Messages.get("name", "Name"));
         nameField.setAllowBlank(false);
         nameField.setMaxLength(200);
         add(nameField);
@@ -101,7 +101,7 @@ public abstract class FormQuickRemotePublication extends FormPanel {
                 }
             }
         });
-        remoteUrlField.setFieldLabel(Messages.getNotEmptyResource("remoteUrl", "Remote URL"));
+        remoteUrlField.setFieldLabel(Messages.get("remoteUrl", "Remote URL"));
         remoteUrlField.setAllowBlank(false);
         add(remoteUrlField);
 
@@ -117,20 +117,20 @@ public abstract class FormQuickRemotePublication extends FormPanel {
                 }
             }
         });
-        remotePath.setFieldLabel(Messages.getNotEmptyResource("remotePath", "Remote Path"));
+        remotePath.setFieldLabel(Messages.get("remotePath", "Remote Path"));
         remotePath.setAllowBlank(false);
         add(remotePath);
 
         final TextField remoteUser = new TextField();
         remoteUser.setName("remoteUser");
-        remoteUser.setFieldLabel(Messages.getNotEmptyResource("remoteUser", "Remote User"));
+        remoteUser.setFieldLabel(Messages.get("remoteUser", "Remote User"));
         remoteUser.setAllowBlank(false);
         add(remoteUser);
 
         final TextField remotePassword = new TextField();
         remotePassword.setPassword(true);
         remotePassword.setName("remotePassword");
-        remotePassword.setFieldLabel(Messages.getNotEmptyResource("remotePassword", "Remote Password"));
+        remotePassword.setFieldLabel(Messages.get("remotePassword", "Remote Password"));
         remotePassword.setAllowBlank(false);
         add(remotePassword);
 
@@ -138,12 +138,12 @@ public abstract class FormQuickRemotePublication extends FormPanel {
                 Messages.get("picker_link_selection", "Selected page"), null, "/", null, null,
                 ManagerConfigurationFactory.CONTENTPICKER, false);
         localPath.setName("node");
-        localPath.setFieldLabel(Messages.getNotEmptyResource("node", "Node"));
+        localPath.setFieldLabel(Messages.get("node", "Node"));
         add(localPath);
 
 
         // save properties button
-        Button saveButton = new Button(Messages.getResource("label.save"));
+        Button saveButton = new Button(Messages.get("label.save"));
         saveButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent componentEvent) {
 

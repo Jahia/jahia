@@ -133,7 +133,7 @@ public class ContentPickerField extends TriggerField<List<GWTJahiaNode>> {
                 final ButtonBar bar = new ButtonBar();
                 bar.setAlignment(Style.HorizontalAlignment.CENTER);
 
-                final Button ok = new Button(Messages.getResource("label.save"), new SelectionListener<ButtonEvent>() {
+                final Button ok = new Button(Messages.get("label.save"), new SelectionListener<ButtonEvent>() {
                     public void componentSelected(ButtonEvent event) {
                         List<GWTJahiaNode> selection = contentPicker.getSelectedNodes();
                         setValue(selection);
@@ -143,7 +143,7 @@ public class ContentPickerField extends TriggerField<List<GWTJahiaNode>> {
                 ok.setIconStyle("gwt-icons-save");
                 bar.add(ok);
 
-                final Button cancel = new Button(Messages.getResource("label.cancel"), new SelectionListener<ButtonEvent>() {
+                final Button cancel = new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
                     public void componentSelected(ButtonEvent event) {
                         w.hide();
                     }

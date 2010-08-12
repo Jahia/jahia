@@ -396,9 +396,9 @@ public class WorkflowActionDialog extends Window {
                                                                             }
 
                                                                             public void onSuccess(Object result) {
-                                                                                Info.display(Messages.getResource(
+                                                                                Info.display(Messages.get(
                                                                                         "message.content.published"),
-                                                                                             Messages.getResource(
+                                                                                             Messages.get(
                                                                                                      "message.content.published"));
                                                                                 linker.refresh(Linker.REFRESH_ALL);
                                                                                 dialog.hide();

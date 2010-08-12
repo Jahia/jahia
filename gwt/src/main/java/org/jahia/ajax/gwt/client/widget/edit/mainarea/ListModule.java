@@ -20,9 +20,9 @@ public class ListModule extends SimpleModule {
         add(head);
 
         if (path.contains("/")) {
-            head.setText(Messages.getResource("label.list") + " : " + path.substring(path.lastIndexOf('/') + 1));
+            head.setText(Messages.get("label.list") + " : " + path.substring(path.lastIndexOf('/') + 1));
         } else {
-            head.setText(Messages.getResource("label.list") + " : " + path);
+            head.setText(Messages.get("label.list") + " : " + path);
         }
         setBorders(false);
 //        setBodyBorder(false);

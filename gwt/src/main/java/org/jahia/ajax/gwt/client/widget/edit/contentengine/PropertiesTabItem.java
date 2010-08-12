@@ -151,7 +151,7 @@ public class PropertiesTabItem extends EditEngineTabItem {
 
                 propertiesEditor.add(toolBar);
 
-                Button item = new Button(Messages.getResource("label.save"));
+                Button item = new Button(Messages.get("label.save"));
                 item.setIconStyle("gwt-icons-save");
                 item.setEnabled(engine.getNode().isWriteable() && !engine.getNode().isLocked());
                 item.addSelectionListener(new SelectionListener<ButtonEvent>() {

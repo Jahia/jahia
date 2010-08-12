@@ -81,7 +81,7 @@ public abstract class FormQuick extends FormPanel {
         setStyleAttribute("padding", "4");
         setLabelWidth(150);
         setFieldWidth(400);
-        final Button saveButton = new Button(Messages.getResource("label.save"));
+        final Button saveButton = new Button(Messages.get("label.save"));
         addButton(saveButton);        
         JahiaContentDefinitionService.App.getInstance().getNodeType(nodetype, new AsyncCallback<GWTJahiaNodeType>() {
             public void onFailure(Throwable throwable) {
@@ -92,7 +92,7 @@ public abstract class FormQuick extends FormPanel {
                 final TextField<String> nameField = new TextField<String>();
                 final Map<String,GWTJahiaItemDefinition> defs = new HashMap<String,GWTJahiaItemDefinition>();
                 nameField.setName("name");
-                nameField.setFieldLabel(Messages.getNotEmptyResource("name", "Name"));
+                nameField.setFieldLabel(Messages.get("name", "Name"));
                 nameField.setAllowBlank(false);
                 nameField.setMaxLength(200);
                 add(nameField);

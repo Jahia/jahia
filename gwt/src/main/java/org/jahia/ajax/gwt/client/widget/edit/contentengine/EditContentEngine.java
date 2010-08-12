@@ -103,7 +103,7 @@ public class EditContentEngine extends AbstractContentEngine {
      * init buttons
      */
     protected void initFooter() {
-        ok = new Button(Messages.getResource("label.save"));
+        ok = new Button(Messages.get("label.save"));
         ok.setHeight(BUTTON_HEIGHT);
         ok.setEnabled(false);
         ok.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
@@ -124,7 +124,7 @@ public class EditContentEngine extends AbstractContentEngine {
             });
             addButton(this.restore);
         }*/
-        Button cancel = new Button(Messages.getResource("label.cancel"));
+        Button cancel = new Button(Messages.get("label.cancel"));
         cancel.setHeight(BUTTON_HEIGHT);
         cancel.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonCancel());
         cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {

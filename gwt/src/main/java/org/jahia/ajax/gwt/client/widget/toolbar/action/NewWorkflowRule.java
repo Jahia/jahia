@@ -27,7 +27,7 @@ public class NewWorkflowRule  extends BaseActionItem {
         }
         if (parent != null && !parent.isFile()) {
             com.extjs.gxt.ui.client.widget.Window w = new com.extjs.gxt.ui.client.widget.Window();
-            w.setHeading(Messages.getNotEmptyResource("label.newworkflowrule", "New workflow rule"));
+            w.setHeading(Messages.get("label.newworkflowrule", "New workflow rule"));
             w.setModal(true);
             w.setResizable(false);
             w.setBodyBorder(false);

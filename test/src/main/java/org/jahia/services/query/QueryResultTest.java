@@ -31,6 +31,7 @@
  */
 package org.jahia.services.query;
 
+import org.apache.jackrabbit.util.ISO8601;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -61,6 +62,9 @@ public class QueryResultTest {
 
     private final static String TESTSITE_NAME = "jcrQueryTest";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
+    private final static String XPATH_SITECONTENT_ROOT_NODE = "/jcr:root/sites/" + TESTSITE_NAME;
+    
+    private final static String NEWS_NAME_PREFIX = "news_";
 
     private static final String MEETING = "meeting";
     private static final String CONSUMER_SHOW = "consumerShow";
@@ -70,7 +74,7 @@ public class QueryResultTest {
     private static final String PRESS_CONFERENCE = "pressConference";
     private static final String PARIS = "paris";
     private static final String GENEVA = "geneva";
-    
+
     private static final int NOT_CHILD_CHECK = 1;
     private static final int NOT_DESCENDANT_CHECK = 2;
 
@@ -129,8 +133,7 @@ public class QueryResultTest {
         checkResultSize(res, 43);
 
         // check childnodes with not
-        res = doQuery(
-                session,
+        res = doQuery(session,
                 "SELECT * FROM [jmix:editorialContent] as content WHERE NOT ISCHILDNODE(content, ["
                         + SITECONTENT_ROOT_NODE + "/contents/news]) ORDER BY content.[jcr:title]",
                 Query.JCR_SQL2);
@@ -139,38 +142,75 @@ public class QueryResultTest {
         // check childnodes with not and not
         res = doQuery(session,
                 "SELECT * FROM [jmix:editorialContent] as content WHERE NOT (ISCHILDNODE(content, ["
-                        + SITECONTENT_ROOT_NODE
-                        + "/contents/events]) OR ISCHILDNODE(content, ["
+                        + SITECONTENT_ROOT_NODE + "/contents/events]) OR ISCHILDNODE(content, ["
                         + SITECONTENT_ROOT_NODE + "/contents/news])) ORDER BY content.[jcr:title]",
                 Query.JCR_SQL2);
-        int size2 = checkHierarchy(res, NOT_CHILD_CHECK, SITECONTENT_ROOT_NODE + "/contents/events", SITECONTENT_ROOT_NODE + "/contents/news");
-        assertEquals("Difference between result sizes is wrong.", 27, size - size2);        
-        
+        int size2 = checkHierarchy(res, NOT_CHILD_CHECK,
+                SITECONTENT_ROOT_NODE + "/contents/events", SITECONTENT_ROOT_NODE
+                        + "/contents/news");
+        assertEquals("Difference between result sizes is wrong.", 27, size - size2);
+
         // check childnodes with descendant and not child
-        res = doQuery(session,
+        res = doQuery(
+                session,
                 "SELECT * FROM [jmix:editorialContent] as content WHERE ISDESCENDANTNODE(content, ["
                         + SITECONTENT_ROOT_NODE + "/contents]) AND NOT ISCHILDNODE(content, ["
                         + SITECONTENT_ROOT_NODE + "/contents/events]) ORDER BY content.[jcr:title]",
                 Query.JCR_SQL2);
         checkResultSize(res, 23);
-        
+
         // check childnodes with comparison
         res = doQuery(session,
                 "SELECT * FROM [jmix:editorialContent] as content WHERE ISCHILDNODE(content, ["
                         + SITECONTENT_ROOT_NODE
-                        + "/contents/news]) AND content.[jcr:title] LIKE 'news_1%'",
-                Query.JCR_SQL2);
+                        + "/contents/news]) AND content.[jcr:title] LIKE 'news_1%'", Query.JCR_SQL2);
         checkResultSize(res, 7);
-        
+
         // check childnodes with freetext
         res = doQuery(session,
                 "SELECT * FROM [jmix:editorialContent] as content WHERE ISCHILDNODE(content, ["
                         + SITECONTENT_ROOT_NODE
-                        + "/contents/news]) AND contains(content.*, 'cucumber')",
-                Query.JCR_SQL2);
-        checkResultSize(res, 10);        
+                        + "/contents/news]) AND contains(content.*, 'cucumber')", Query.JCR_SQL2);
+        checkResultSize(res, 10);
     }
-    
+
+    @Test
+    public void testChildNodeXPathQueries() throws Exception {
+
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(
+                Constants.EDIT_WORKSPACE,
+                LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE));
+
+        QueryResultWrapper res;
+
+        // check one childnode
+        res = doQuery(session, XPATH_SITECONTENT_ROOT_NODE
+                + "/contents/news/element(*, jnt:news) order by @jcr:title", Query.XPATH);
+        checkResultSize(res, 16);
+
+        // check two childnodes with or
+        res = doQuery(
+                session,
+                XPATH_SITECONTENT_ROOT_NODE
+                        + "/contents/*[fn:name() = 'news' or fn:name() = 'events']/element(*, jmix:editorialContent) order by @jcr:title",
+                Query.XPATH);
+        checkResultSize(res, 43);
+
+        // check childnodes with comparison
+        res = doQuery(
+                session,
+                XPATH_SITECONTENT_ROOT_NODE
+                        + "/contents/news/element(*, jmix:editorialContent)[@date = '" + ISO8601.format(new GregorianCalendar(2000, 0, 1, 12, 0)) + "']",
+                Query.XPATH);
+        checkResultSize(res, 2);
+
+        // check childnodes with freetext
+        res = doQuery(session, XPATH_SITECONTENT_ROOT_NODE
+                + "/contents/news/element(*, jmix:editorialContent)[jcr:contains(., 'cucumber') or jcr:contains(j:translation_en, 'cucumber')]",
+                Query.XPATH);
+        checkResultSize(res, 10);
+    }
+
     @Test
     public void testDescendantNodeQueries() throws Exception {
 
@@ -196,12 +236,12 @@ public class QueryResultTest {
         checkResultSize(res, 50);
 
         // check descendantnodes with not
-        res = doQuery(
-                session,
+        res = doQuery(session,
                 "SELECT * FROM [jmix:editorialContent] as content WHERE NOT ISDESCENDANTNODE(content, ["
                         + SITECONTENT_ROOT_NODE + "/contents/news]) ORDER BY content.[jcr:title]",
                 Query.JCR_SQL2);
-        int size = checkHierarchy(res, NOT_DESCENDANT_CHECK, SITECONTENT_ROOT_NODE + "/contents/news");
+        int size = checkHierarchy(res, NOT_DESCENDANT_CHECK, SITECONTENT_ROOT_NODE
+                + "/contents/news");
 
         // check descendantnodes with not and not
         res = doQuery(session,
@@ -210,35 +250,80 @@ public class QueryResultTest {
                         + "/contents/events]) OR ISDESCENDANTNODE(content, ["
                         + SITECONTENT_ROOT_NODE + "/contents/news])) ORDER BY content.[jcr:title]",
                 Query.JCR_SQL2);
-        int size2 = checkHierarchy(res, NOT_DESCENDANT_CHECK, SITECONTENT_ROOT_NODE + "/contents/events", SITECONTENT_ROOT_NODE + "/contents/news");
-        assertEquals("Difference between result sizes is wrong.", 27, size - size2);        
-        
+        int size2 = checkHierarchy(res, NOT_DESCENDANT_CHECK, SITECONTENT_ROOT_NODE
+                + "/contents/events", SITECONTENT_ROOT_NODE + "/contents/news");
+        assertEquals("Difference between result sizes is wrong.", 27, size - size2);
+
         // check descendantnodes with descendant and not descendant
         res = doQuery(session,
                 "SELECT * FROM [jmix:editorialContent] as content WHERE ISDESCENDANTNODE(content, ["
                         + SITECONTENT_ROOT_NODE + "/contents]) AND NOT ISDESCENDANTNODE(content, ["
-                        + SITECONTENT_ROOT_NODE
-                        + "/contents/news]) ORDER BY content.[jcr:title]",
+                        + SITECONTENT_ROOT_NODE + "/contents/news]) ORDER BY content.[jcr:title]",
                 Query.JCR_SQL2);
         checkResultSize(res, 27);
-        
-        // check childnodes with comparison
+
+        // check descendantnodes with comparison
         res = doQuery(session,
                 "SELECT * FROM [jmix:editorialContent] as content WHERE ISDESCENDANTNODE(content, ["
                         + SITECONTENT_ROOT_NODE
-                        + "/contents/news]) AND content.[jcr:title] LIKE 'news_1%'",
-                Query.JCR_SQL2);
+                        + "/contents/news]) AND content.[jcr:title] LIKE 'news_1%'", Query.JCR_SQL2);
         checkResultSize(res, 11);
-        
-        // check childnodes with freetext
+
+        // check descendantnodes with freetext
         res = doQuery(session,
                 "SELECT * FROM [jmix:editorialContent] as content WHERE ISDESCENDANTNODE(content, ["
                         + SITECONTENT_ROOT_NODE
-                        + "/contents/news]) AND contains(content.*, 'cucumber')",
-                Query.JCR_SQL2);
-        checkResultSize(res, 13);        
+                        + "/contents/news]) AND contains(content.*, 'cucumber')", Query.JCR_SQL2);
+        checkResultSize(res, 13);
+
+        // check descendantnodes or childnodes with comparison
+        res = doQuery(
+                session,
+                "SELECT * FROM [jmix:editorialContent] as content WHERE (ISCHILDNODE(content, ["
+                        + SITECONTENT_ROOT_NODE
+                        + "/contents/news]) AND content.[jcr:title] LIKE 'news_1%') OR (ISDESCENDANTNODE(content, ["
+                        + SITECONTENT_ROOT_NODE + "/contents/events]) AND content.[location] = '"
+                        + GENEVA + "')", Query.JCR_SQL2);
+        checkResultSize(res, 7 + 12);
     }
-    
+
+    @Test
+    public void testDescendantNodeXPathQueries() throws Exception {
+
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(
+                Constants.EDIT_WORKSPACE,
+                LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE));
+
+        QueryResultWrapper res;
+
+        // check one descendantnode
+        res = doQuery(session, XPATH_SITECONTENT_ROOT_NODE
+                + "/contents/news//element(*, jnt:news) order by @jcr:title", Query.XPATH);        
+        checkResultSize(res, 23);
+
+        // check two descendantnodes with or
+        res = doQuery(
+                session,
+                XPATH_SITECONTENT_ROOT_NODE
+                        + "/contents/*[fn:name() = 'news' or fn:name() = 'events']//element(*, jmix:editorialContent) order by @jcr:title",
+                Query.XPATH);        
+        checkResultSize(res, 50);
+
+        // check descendantnodes with comparison
+        res = doQuery(
+                session,
+                XPATH_SITECONTENT_ROOT_NODE
+                        + "/contents/news//element(*, jmix:editorialContent)[@date = '" + ISO8601.format(new GregorianCalendar(2000, 0, 1, 12, 0)) + "']",
+                Query.XPATH);        
+        checkResultSize(res, 5);
+
+        // check descendantnodes with freetext
+        res = doQuery(session, XPATH_SITECONTENT_ROOT_NODE
+                + "/contents/news//element(*, jmix:editorialContent) [jcr:contains(., 'cucumber')]",
+                Query.XPATH);        
+        checkResultSize(res, 13);
+    }
+
     private int checkHierarchy(QueryResultWrapper res, int check, final String... pathes) {
         int size = 0;
         try {
@@ -248,12 +333,13 @@ public class QueryResultTest {
                 for (String path : pathes) {
                     if (check == NOT_CHILD_CHECK) {
                         assertFalse(
-                                "There is a child node in the result, which should not be there: " + node.getParent().getPath(),
-                                node.getParent().getPath().equals(path));
-                    } else if (check == NOT_DESCENDANT_CHECK) {          
+                                "There is a child node in the result, which should not be there: "
+                                        + node.getParent().getPath(), node.getParent().getPath()
+                                        .equals(path));
+                    } else if (check == NOT_DESCENDANT_CHECK) {
                         assertFalse(
-                                "There is a descendant node in the result, which should not be there: " + node.getPath(),
-                                node.getPath().startsWith(path));                        
+                                "There is a descendant node in the result, which should not be there: "
+                                        + node.getPath(), node.getPath().startsWith(path));
                     }
                 }
                 size++;
@@ -324,42 +410,43 @@ public class QueryResultTest {
         JCRNodeWrapper newsListNode = createList(contentNode, "news");
 
         calendar = new GregorianCalendar(2000, 0, 1, 12, 0);
-        String newsNamePrefix = "news_";
         i = 0;
-        createNews(newsListNode, newsNamePrefix + i++, FIRST_PHONE_SENTENCE, calendar, cat1);
-        createNews(newsListNode, newsNamePrefix + i++, FIRST_TELEGRAPH_SENTENCE, calendar, cat1);
+        createNews(newsListNode, NEWS_NAME_PREFIX + i++, FIRST_PHONE_SENTENCE, calendar, cat1);
+        createNews(newsListNode, NEWS_NAME_PREFIX + i++, FIRST_TELEGRAPH_SENTENCE, calendar, cat1);
         calendar.add(Calendar.DAY_OF_MONTH, 5);
-        createNews(newsListNode, newsNamePrefix + i++, FIRST_PHONE_SENTENCE, calendar, cat1);
-        createNews(newsListNode, newsNamePrefix + i++, FIRST_PHONE_SENTENCE, calendar, cat1);
+        createNews(newsListNode, NEWS_NAME_PREFIX + i++, FIRST_PHONE_SENTENCE, calendar, cat1);
+        createNews(newsListNode, NEWS_NAME_PREFIX + i++, FIRST_PHONE_SENTENCE, calendar, cat1);
         calendar.add(Calendar.DAY_OF_MONTH, 5);
-        createNews(newsListNode, newsNamePrefix + i++, FIRST_TELEGRAPH_SENTENCE, calendar, cat1);
-        createNews(newsListNode, newsNamePrefix + i++, FIRST_PHONE_SENTENCE, calendar, cat2);
+        createNews(newsListNode, NEWS_NAME_PREFIX + i++, FIRST_TELEGRAPH_SENTENCE, calendar, cat1);
+        createNews(newsListNode, NEWS_NAME_PREFIX + i++, FIRST_PHONE_SENTENCE, calendar, cat2);
         calendar.add(Calendar.DAY_OF_MONTH, 5);
-        createNews(newsListNode, newsNamePrefix + i++, FIRST_PHONE_SENTENCE, calendar, cat2);
-        createNews(newsListNode, newsNamePrefix + i++, FIRST_TELEGRAPH_SENTENCE, calendar, cat2);
+        createNews(newsListNode, NEWS_NAME_PREFIX + i++, FIRST_PHONE_SENTENCE, calendar, cat2);
+        createNews(newsListNode, NEWS_NAME_PREFIX + i++, FIRST_TELEGRAPH_SENTENCE, calendar, cat2);
         calendar.add(Calendar.DAY_OF_MONTH, 5);
-        createNews(newsListNode, newsNamePrefix + i++, FIRST_TELEGRAPH_SENTENCE, calendar, cat2);
-        createNews(newsListNode, newsNamePrefix + i++, FIRST_PHONE_SENTENCE, calendar, cat2);
+        createNews(newsListNode, NEWS_NAME_PREFIX + i++, FIRST_TELEGRAPH_SENTENCE, calendar, cat2);
+        createNews(newsListNode, NEWS_NAME_PREFIX + i++, FIRST_PHONE_SENTENCE, calendar, cat2);
         calendar.add(Calendar.DAY_OF_MONTH, 5);
-        createNews(newsListNode, newsNamePrefix + i++, FIRST_PHONE_SENTENCE, calendar, cat2);
-        createNews(newsListNode, newsNamePrefix + i++, FIRST_PHONE_SENTENCE, calendar, cat3);
+        createNews(newsListNode, NEWS_NAME_PREFIX + i++, FIRST_PHONE_SENTENCE, calendar, cat2);
+        createNews(newsListNode, NEWS_NAME_PREFIX + i++, FIRST_PHONE_SENTENCE, calendar, cat3);
         calendar.add(Calendar.DAY_OF_MONTH, 5);
-        createNews(newsListNode, newsNamePrefix + i++, FIRST_TELEGRAPH_SENTENCE, calendar, cat3);
-        createNews(newsListNode, newsNamePrefix + i++, FIRST_TELEGRAPH_SENTENCE, calendar, cat3);
+        createNews(newsListNode, NEWS_NAME_PREFIX + i++, FIRST_TELEGRAPH_SENTENCE, calendar, cat3);
+        createNews(newsListNode, NEWS_NAME_PREFIX + i++, FIRST_TELEGRAPH_SENTENCE, calendar, cat3);
         calendar.add(Calendar.DAY_OF_MONTH, 5);
-        createNews(newsListNode, newsNamePrefix + i++, FIRST_PHONE_SENTENCE, calendar, cat3);
-        createNews(newsListNode, newsNamePrefix + i++, FIRST_PHONE_SENTENCE, calendar, cat3);
+        createNews(newsListNode, NEWS_NAME_PREFIX + i++, FIRST_PHONE_SENTENCE, calendar, cat3);
+        createNews(newsListNode, NEWS_NAME_PREFIX + i++, FIRST_PHONE_SENTENCE, calendar, cat3);
 
         JCRNodeWrapper newsSubListNode = createList(newsListNode, "news");
-
+        
         calendar.add(Calendar.DAY_OF_MONTH, 5);
-        createNews(newsSubListNode, newsNamePrefix + i++, FIRST_PHONE_SENTENCE, calendar, cat3);
-        createNews(newsSubListNode, newsNamePrefix + i++, FIRST_TELEGRAPH_SENTENCE, calendar, cat3);
-        createNews(newsSubListNode, newsNamePrefix + i++, FIRST_TELEGRAPH_SENTENCE, calendar, cat3);
-        createNews(newsSubListNode, newsNamePrefix + i++, FIRST_TELEGRAPH_SENTENCE, calendar, cat3);
-        createNews(newsSubListNode, newsNamePrefix + i++, FIRST_TELEGRAPH_SENTENCE, calendar, cat3);
-        createNews(newsSubListNode, newsNamePrefix + i++, FIRST_PHONE_SENTENCE, calendar, cat3);
-        createNews(newsSubListNode, newsNamePrefix + i++, FIRST_PHONE_SENTENCE, calendar, cat3);
+        createNews(newsSubListNode, NEWS_NAME_PREFIX + i++, FIRST_PHONE_SENTENCE, calendar, cat3);
+        createNews(newsSubListNode, NEWS_NAME_PREFIX + i++, FIRST_TELEGRAPH_SENTENCE, calendar, cat3);
+        createNews(newsSubListNode, NEWS_NAME_PREFIX + i++, FIRST_TELEGRAPH_SENTENCE, calendar, cat3);
+        createNews(newsSubListNode, NEWS_NAME_PREFIX + i++, FIRST_TELEGRAPH_SENTENCE, calendar, cat3);
+        
+        calendar = new GregorianCalendar(2000, 0, 1, 12, 0);        
+        createNews(newsSubListNode, NEWS_NAME_PREFIX + i++, FIRST_TELEGRAPH_SENTENCE, calendar, cat3);
+        createNews(newsSubListNode, NEWS_NAME_PREFIX + i++, FIRST_PHONE_SENTENCE, calendar, cat3);
+        createNews(newsSubListNode, NEWS_NAME_PREFIX + i++, FIRST_PHONE_SENTENCE, calendar, cat3);
 
         session.save();
     }

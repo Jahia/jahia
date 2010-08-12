@@ -5,13 +5,10 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-Title: ${currentNode.properties['title'].string}
-<br /><br />
-url: ${currentNode.properties['url'].string}
-<br /><br />
-description: 
-<br/>${currentNode.properties['description'].string}
-<br /><br />
-note:
-<br />
-${currentNode.properties['note'].string}
+<h3>Title: ${currentNode.properties['title'].string}</h3>
+<p>url: ${currentNode.properties['url'].string}</p>
+<h4>description: </h4>
+<p>${currentNode.properties['description'].string}</p>
+
+<h4>note:</h4>
+<p>${currentNode.properties['note'].string}</p>

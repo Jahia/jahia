@@ -11,7 +11,7 @@
 <c:if test="${pageContext.request.serverPort == 80}">
     <c:set var="serverUrl" value="${pageContext.request.scheme}://${pageContext.request.serverName}"/>
 </c:if>
-<a href="javascript:(function(){CJN_SERVER='${serverUrl}';CJN_NOTE_FORM='${url.base}${currentNode.path}.js.html.ajax';try{var%20x=document.createElement('SCRIPT');x.type='text/javascript';x.src=CJN_SERVER+'/javascript/jahiaclip.js?'+(new%20Date().getTime()/100000);document.getElementsByTagName('head')[0].appendChild(x);}catch(e){alert(e);}})();"><img alt="Jahia Think Box" src="${url.currentModule}/img/logo_jahia_community.png" border="0" /></a>
+<a href="javascript:(function(){CJN_SERVER='${serverUrl}';CJN_NOTE_FORM='${url.base}${currentNode.path}.js.html.ajax';try{var%20x=document.createElement('SCRIPT');x.type='text/javascript';x.src=CJN_SERVER+'/javascript/jahiaclip.js?'+(new%20Date().getTime()/100000);document.getElementsByTagName('head')[0].appendChild(x);}catch(e){alert(e);}})();"><img alt="Jahia Think Box" src="${url.currentModule}/img/jahia-app-thinkbox-h30px.png" border="0" /></a>
 
 
 

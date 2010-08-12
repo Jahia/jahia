@@ -4,7 +4,7 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<template:addResources type="css" resources="note.css"/>
+<template:addResources type="css" resources="thinkbox.css"/>
 <%-- Get all contents --%>
 
 
@@ -27,7 +27,7 @@ session.setAttribute("noteHTML", request.getParameter("noteHTML"));
 <div id="content">
 <div class="header">
 
-          <div class="leftside logo-top"><img class="logo" src="${url.currentModule}/img/logo.png" alt="logo" width="350px" /></div>
+          <div class="leftside logo-top"><img class="logo" src="${url.currentModule}/img/jahia-app-thinkbox-h50px.png" alt="thinkbox logo" /></div>
           <div class="rightside infousers"><p>Hello, <a href="#">${renderContext.user.name} </a><br /></p>
           </div>
 <div class="clear"></div></div>
@@ -113,7 +113,7 @@ session.setAttribute("noteHTML", request.getParameter("noteHTML"));
 <div id="content">
 <div class="header">
 
-          <div class="leftside logo-top"><img class="logo" src="${url.currentModule}/img/logo.png" alt="logo" width="350px" /></div>
+          <div class="leftside logo-top"><img class="logo" src="${url.currentModule}/img/jahia-app-thinkbox-h50px.png" alt="thinkbox logo" /></div>
           <div class="rightside infousers"><p>Hello, <a href="#">${renderContext.user.name} </a><br /></p>
           </div>
 <div class="clear"></div></div>

@@ -19,10 +19,12 @@ Total elements: ${listTotalSize}
 Pas de notes
 </c:if>
 <c:if test="${listTotalSize > 0}">
+<ul>
     <c:forEach items="${result.nodes}" var="itemNode">
     	
-    <a href="${url.base}${itemNode.path}.html">${itemNode.properties['title'].string}</a> - updated on <fmt:formatDate value="${itemNode.properties['jcr:lastModified'].date.time}" dateStyle="short" type="both"/>.
-    <br />
+    <li><a href="${url.base}${itemNode.path}.html">${itemNode.properties['title'].string}</a> - updated on <fmt:formatDate value="${itemNode.properties['jcr:lastModified'].date.time}" dateStyle="short" type="both"/>.
+    </li>
     	
     </c:forEach>
+ <ul>
 </c:if>

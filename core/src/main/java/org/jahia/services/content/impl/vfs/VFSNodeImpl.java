@@ -148,7 +148,7 @@ public class VFSNodeImpl extends VFSItemImpl implements Node {
 
     public Node addNode(String name, String type) throws ItemExistsException, PathNotFoundException, NoSuchNodeTypeException, LockException, VersionException, ConstraintViolationException, RepositoryException {
         try {
-            if (type.equals(Constants.NT_FOLDER) || type.equals(Constants.JAHIANT_FOLDER)) {
+            if (type.equals(Constants.NT_FOLDER) || type.equals(Constants.JAHIANT_FOLDER) || type.equals(Constants.JAHIANT_CONTENTLIST)) {
                 FileObject obj = fileObject.resolveFile(name);
                 obj.createFolder();
                 return new VFSNodeImpl(obj, session);

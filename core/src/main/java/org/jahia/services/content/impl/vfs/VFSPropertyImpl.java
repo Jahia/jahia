@@ -58,19 +58,22 @@ public class VFSPropertyImpl extends VFSItemImpl implements Property {
     private Node node;
     private VFSSessionImpl session;
     private Name name;
+    private Value[] values;
+    private Value value;
 
-    public VFSPropertyImpl(Name name, Node node, VFSSessionImpl session) {
+    public VFSPropertyImpl(Name name, Node node, VFSSessionImpl session, Value value) {
         this.name = name;
         this.node = node;
         this.session = session;
+        this.value = value;
     }
 
     public void setValue(Value value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        this.value = value;
     }
 
     public void setValue(Value[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        this.values = values;
     }
 
     public void setValue(String s) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
@@ -106,39 +109,57 @@ public class VFSPropertyImpl extends VFSItemImpl implements Property {
     }
 
     public Value getValue() throws ValueFormatException, RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return value;
     }
 
     public Value[] getValues() throws ValueFormatException, RepositoryException {
-        return new Value[0];  //To change body of implemented methods use File | Settings | File Templates.
+        return values;
     }
 
     public String getString() throws ValueFormatException, RepositoryException {
+        if (value != null) {
+            return value.getString();
+        }
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public InputStream getStream() throws ValueFormatException, RepositoryException {
+        if (value != null) {
+            return value.getStream();
+        }
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public long getLong() throws ValueFormatException, RepositoryException {
+        if (value != null) {
+            return value.getLong();
+        }
         return 0;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public double getDouble() throws ValueFormatException, RepositoryException {
+        if (value != null) {
+            return value.getDouble();
+        }
         return 0;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public Calendar getDate() throws ValueFormatException, RepositoryException {
+        if (value != null) {
+            return value.getDate();
+        }
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public boolean getBoolean() throws ValueFormatException, RepositoryException {
+        if (value != null) {
+            return value.getBoolean();
+        }
         return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public Node getNode() throws ValueFormatException, RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return node;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public long getLength() throws ValueFormatException, RepositoryException {
@@ -154,7 +175,7 @@ public class VFSPropertyImpl extends VFSItemImpl implements Property {
     }
 
     public int getType() throws RepositoryException {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        return value.getType();  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public void setValue(Binary value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
@@ -166,18 +187,21 @@ public class VFSPropertyImpl extends VFSItemImpl implements Property {
     }
 
     public Binary getBinary() throws ValueFormatException, RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return value.getBinary();  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public BigDecimal getDecimal() throws ValueFormatException, RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return value.getDecimal();  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public Property getProperty() throws ItemNotFoundException, ValueFormatException, RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return this;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public boolean isMultiple() throws RepositoryException {
+        if (values != null) {
+            return true;
+        }
         return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

@@ -108,6 +108,7 @@ public class VFSSessionImpl implements Session {
         try {
             FileObject object = repository.getFile(s);
             if (!object.exists()) {
+                /*
                 // if it's a property, let's try to find the file by removing the last part of the path.
                 int lastSlashPos = s.lastIndexOf("/");
                 if (lastSlashPos > -1) {
@@ -129,6 +130,8 @@ public class VFSSessionImpl implements Session {
                 } else {
                     throw new PathNotFoundException(s);
                 }
+                */
+                throw new PathNotFoundException(s);
             }
             return new VFSNodeImpl(object, this);
         } catch (FileSystemException e) {
@@ -170,7 +173,7 @@ public class VFSSessionImpl implements Session {
     }
 
     public ValueFactory getValueFactory() throws UnsupportedRepositoryOperationException, RepositoryException {
-        return null;
+        return new VFSValueFactoryImpl();
     }
 
     public void checkPermission(String s, String s1) throws AccessControlException, RepositoryException {

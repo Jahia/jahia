@@ -132,7 +132,9 @@ public class VFSContentNodeImpl extends VFSItemImpl implements Node {
                 OutputStream outputStream = content.getOutputStream();
                 IOUtils.copy(inputStream, outputStream);
                 outputStream.close();
-                return new DataPropertyImpl(new Name(s, "", ""), this, session);
+                VFSValueFactoryImpl valueFactory = (VFSValueFactoryImpl) session.getValueFactory();
+                Value value = valueFactory.createValue(new VFSBinaryImpl(content));
+                return new DataPropertyImpl(new Name(s, "", ""), this, session, value);
             } catch (IOException e) {
                 throw new RepositoryException("Cannot write to stream", e);
             }
@@ -181,8 +183,11 @@ public class VFSContentNodeImpl extends VFSItemImpl implements Node {
     }
 
     public Property getProperty(String s) throws PathNotFoundException, RepositoryException {
+        VFSValueFactoryImpl valueFactory = (VFSValueFactoryImpl) session.getValueFactory();
         if (s.equals(Constants.JCR_DATA)) {
-            return new VFSPropertyImpl(new Name(s, "", ""), this, session) {
+            Value value = null;
+            value = valueFactory.createValue(new VFSBinaryImpl(content));
+            return new VFSPropertyImpl(new Name(s, "", ""), this, session, value) {
                 public long getLength() throws ValueFormatException, RepositoryException {
                     try {
                         return content.getSize();
@@ -208,7 +213,17 @@ public class VFSContentNodeImpl extends VFSItemImpl implements Node {
                 }
             };
         } else if (s.equals(Constants.JCR_MIMETYPE)) {
-            return new VFSPropertyImpl(new Name(s, "", ""), this, session) {
+            String s1 = null;
+            try {
+                s1 = content.getContentInfo().getContentType();
+            } catch (FileSystemException e) {
+                throw new RepositoryException("Error while retrieving file's content type", e);
+            }
+            if (s1 == null) {
+                s1 = MimetypesFileTypeMap.getDefaultFileTypeMap().getContentType("."+content.getFile().getName().getExtension());
+            }
+            Value value = valueFactory.createValue(s1);
+            return new VFSPropertyImpl(new Name(s, "", ""), this, session, value) {
                 public String getString() throws ValueFormatException, RepositoryException {
                     try {
                         String s1 = content.getContentInfo().getContentType();
@@ -455,8 +470,8 @@ public class VFSContentNodeImpl extends VFSItemImpl implements Node {
 
     class DataPropertyImpl extends VFSPropertyImpl {
 
-        public DataPropertyImpl(Name name, Node node, VFSSessionImpl session) {
-            super(name, node, session);
+        public DataPropertyImpl(Name name, Node node, VFSSessionImpl session, Value value) {
+            super(name, node, session, value);
         }
 
         public InputStream getStream() throws ValueFormatException, RepositoryException {

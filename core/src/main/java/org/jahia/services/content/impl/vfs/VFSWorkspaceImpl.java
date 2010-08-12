@@ -199,7 +199,7 @@ public class VFSWorkspaceImpl implements Workspace {
     }
 
     public VersionManager getVersionManager() throws UnsupportedRepositoryOperationException, RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return new VFSVersionManagerImpl();
     }
 
     public void createWorkspace(String name) throws AccessDeniedException, UnsupportedRepositoryOperationException, RepositoryException {

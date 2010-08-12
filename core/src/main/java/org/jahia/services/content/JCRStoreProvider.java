@@ -610,6 +610,10 @@ public class JCRStoreProvider {
     public JCRPropertyWrapper getPropertyWrapper(Property prop, JCRSessionWrapper session) throws RepositoryException {
         PropertyDefinition def = prop.getDefinition();
 
+        if (def == null) {
+            throw new RepositoryException("Couldn't retrieve property definition for property " + prop.getPath());
+        }
+
         JCRNodeWrapper jcrNode;
 
         if (def.getDeclaringNodeType().isNodeType(Constants.JAHIANT_TRANSLATION)) {

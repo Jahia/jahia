@@ -35,6 +35,8 @@ package org.jahia.services.content.impl.vfs;
 import org.apache.commons.vfs.FileContent;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.io.IOUtils;
+import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.Name;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.impl.vfs.PropertyIteratorImpl;
@@ -299,6 +301,15 @@ public class VFSContentNodeImpl extends VFSItemImpl implements Node {
     }
 
     public NodeDefinition getDefinition() throws RepositoryException {
+        VFSNodeImpl parentNode = (VFSNodeImpl) getParent();
+        ExtendedNodeType parentNodeType = parentNode.getExtendedPrimaryNodeType();
+        ExtendedNodeDefinition nodeDefinition = parentNodeType.getNodeDefinition("jcr:content");
+        if (nodeDefinition != null) {
+            return nodeDefinition;
+        }
+        for (ExtendedNodeDefinition extendedNodeDefinition : parentNodeType.getUnstructuredChildNodeDefinitions().values()) {
+            return extendedNodeDefinition;
+        }
         return null;
     }
 

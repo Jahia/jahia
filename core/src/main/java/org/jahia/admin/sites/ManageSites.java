@@ -107,6 +107,24 @@ import java.util.zip.ZipInputStream;
  * @version 1.0
  */
 public class ManageSites extends AbstractAdministrationModule {
+
+    private static final Map<String, Integer> RANK;
+    static {
+        RANK = new HashMap<String, Integer>(3);
+        RANK.put("users.xml", 10);
+        RANK.put("serverPermissions.xml", 20);
+        RANK.put("shared.zip", 30);
+    }
+    private static final Comparator<Map<Object, Object>> IMPORTS_COMPARATOR = new Comparator<Map<Object,Object>>() {
+        public int compare(Map<Object, Object> o1, Map<Object, Object> o2) {
+            Integer rank1 = RANK.get((String) o1.get("importFileName"));
+            Integer rank2 = RANK.get((String) o2.get("importFileName"));
+            rank1 = rank1 != null ? rank1 : 100;
+            rank2 = rank2 != null ? rank2 : 100;
+            return rank1.compareTo(rank2);
+        }
+    };
+    
 // ------------------------------ FIELDS ------------------------------
 
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(ManageSites.class);
@@ -1786,32 +1804,21 @@ public class ManageSites extends AbstractAdministrationModule {
                 }
 
                 List<Map<Object, Object>> importsInfos = new ArrayList<Map<Object, Object>>();
-                Map<String, File> importsInfosSorted = new TreeMap<String, File>();
-                File users = null;
-                File serverPermissions = null;
                 for (Iterator<File> iterator = importList.iterator(); iterator.hasNext();) {
                     File i = iterator.next();
-                    String fileName = imports.get(i);
                     Map<Object, Object> value = prepareSiteImport(i, imports.get(i));
                     if (value != null) {
                         importsInfos.add(value);
-                        if ("users.xml".equals(fileName)) {
-                            users = i;
-                        } else if ("serverPermissions.xml".equals(fileName)) {
-                            serverPermissions = i;
-                        } else {
-                            importsInfosSorted.put(fileName, i);
-                        }
                     }
                 }
 
-                List<File> sorted = new LinkedList<File>(importsInfosSorted.values());
-                if (serverPermissions != null) {
-                    sorted.add(0, serverPermissions);
+                Collections.sort(importsInfos, IMPORTS_COMPARATOR);
+
+                List<File> sorted = new LinkedList<File>();
+                for (Map<Object, Object> info : importsInfos) {
+                    sorted.add((File) info.get("importFile"));
                 }
-                if (users != null) {
-                    sorted.add(0, users);
-                }
+                
                 jParams.getSessionState().setAttribute("importsInfos", importsInfos);
                 jParams.getSessionState().setAttribute("importsInfosSorted", sorted);
             } catch (IOException e) {

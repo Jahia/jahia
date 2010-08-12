@@ -33,9 +33,9 @@ package org.jahia.taglibs.utility.i18n;
 
 import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.Util;
+import org.jahia.params.ProcessingContext;
 import org.jahia.services.render.RenderContext;
 import org.jahia.taglibs.AbstractJahiaTag;
-import org.jahia.taglibs.utility.Utils;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.jcr.RepositoryException;
@@ -79,11 +79,14 @@ public class SetBundleTag extends AbstractJahiaTag {
             Locale locale = useUiLocale ? getUILocale() : null;
             if (locale == null) {
                 try {
-                    locale = context != null ? context.getMainResourceLocale() : pageContext.getRequest().getLocale();
+                    locale = context != null ? context.getMainResourceLocale() : (Locale) pageContext.getAttribute(ProcessingContext.SESSION_LOCALE, PageContext.SESSION_SCOPE);
                 } catch (Exception e) {
                     logger.debug(e.getMessage(), e);
                     locale = pageContext.getRequest().getLocale();
                 }
+            }
+            if (locale == null) {
+                locale = pageContext.getRequest().getLocale();
             }
             ResourceBundle resourceBundle = null;
             try {

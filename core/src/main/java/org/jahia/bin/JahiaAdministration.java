@@ -82,6 +82,7 @@ import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.security.license.LicenseManager;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.pages.ContentPage;
+import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.rbac.PermissionIdentity;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSiteTools;
@@ -737,6 +738,9 @@ public class JahiaAdministration extends HttpServlet {
                 session.setAttribute(CLASS_NAME + "configJahia", Boolean.TRUE);
             }
             session.setAttribute(ProcessingContext.SESSION_USER, theUser);
+            
+            request.getSession().setAttribute(ProcessingContext.SESSION_UI_LOCALE, UserPreferencesHelper.getPreferredLocale(theUser));
+            
             if (redirectTo == null) {
                 displayMenu(request, response, session);
             } else {

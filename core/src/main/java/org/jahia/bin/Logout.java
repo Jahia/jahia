@@ -1,11 +1,14 @@
 package org.jahia.bin;
 
+import java.util.Locale;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.params.ProcessingContext;
 import org.jahia.params.valves.CookieAuthConfig;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaUser;
@@ -42,8 +45,14 @@ public class Logout extends HttpServlet implements Controller {
         if (cookieAuthConfig.isActivated()) {
             removeAuthCookie(request, response);
         }
+        Locale uiLocale = (Locale) request.getSession().getAttribute(ProcessingContext.SESSION_UI_LOCALE);
+        Locale locale = (Locale) request.getSession().getAttribute(ProcessingContext.SESSION_LOCALE);
+        
         request.getSession().invalidate();
 
+        request.getSession().setAttribute(ProcessingContext.SESSION_UI_LOCALE, uiLocale);
+        request.getSession().setAttribute(ProcessingContext.SESSION_LOCALE, locale);
+        
         String redirectActiveStr = request.getParameter("redirectActive");
         boolean redirectActive = true;
         if (redirectActiveStr != null) {

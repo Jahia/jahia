@@ -56,6 +56,7 @@ import java.util.Calendar;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.math.BigDecimal;
+import java.util.UUID;
 
 /**
  * Created by IntelliJ IDEA.
@@ -466,7 +467,7 @@ public class VFSNodeImpl extends VFSItemImpl implements Node {
 
     public String getIdentifier() throws RepositoryException {
         try {
-            return fileObject.getURL().toString();
+            return UUID.nameUUIDFromBytes(fileObject.getURL().toString().getBytes()).toString();
         } catch (FileSystemException fse) {
             throw new RepositoryException("Error retrieving URL for VFS file", fse);
         }

@@ -1,5 +1,6 @@
 package org.apache.jackrabbit.core.query.lucene;
 
+import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.query.lucene.constraint.ChildNodeConstraint;
 import org.apache.jackrabbit.core.query.lucene.constraint.EvaluationContext;
 import org.apache.jackrabbit.spi.Name;
@@ -33,9 +34,14 @@ public class JahiaChildNodeConstraint extends ChildNodeConstraint {
 
         sn.getDoc(context.getIndexReader());
         Document doc = context.getIndexReader().document(sn.getDoc(context.getIndexReader()));
-        final String id = getBaseNodeId(context).toString();
-        String parentId = doc.get(FieldNames.PARENT);
-        String translatedNodeParentId = doc.get(JahiaNodeIndexer.TRANSLATED_NODE_PARENT);        
-        return id.equals(translatedNodeParentId) || (id.equals(parentId) && translatedNodeParentId == null);
+        NodeId baseNode = getBaseNodeId(context);
+        if (baseNode == null) {
+            return false;
+        } else {
+            final String id = baseNode.toString();
+            String parentId = doc.get(FieldNames.PARENT);
+            String translatedNodeParentId = doc.get(JahiaNodeIndexer.TRANSLATED_NODE_PARENT);        
+            return id.equals(translatedNodeParentId) || (id.equals(parentId) && translatedNodeParentId == null);
+        }
     }
 }

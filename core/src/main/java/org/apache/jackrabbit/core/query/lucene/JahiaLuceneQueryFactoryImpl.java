@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.HierarchyManager;
 import org.apache.jackrabbit.core.SessionImpl;
 import org.apache.jackrabbit.spi.commons.query.qom.*;
+import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.KeywordAnalyzer;
 import org.apache.lucene.index.Term;
@@ -14,12 +15,13 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.SortComparatorSource;
 
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.qom.Literal;
 import javax.jcr.query.qom.StaticOperand;
 
 public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactoryImpl {
-
+    private static final Logger logger = Logger.getLogger(JahiaFilterMultiColumnQueryHits.class);
     private final SessionImpl session;
 
     public JahiaLuceneQueryFactoryImpl(SessionImpl session, SortComparatorSource scs, HierarchyManager hmgr,
@@ -52,19 +54,30 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactoryImpl {
     }
 
     public Query create(ChildNodeImpl cn) throws RepositoryException {
-        Query q1 = new JackrabbitTermQuery(
-                new Term(FieldNames.PARENT, session.getNode(cn.getParentPath()).getIdentifier()));
-        Query q2 = new JackrabbitTermQuery(
-                new Term(JahiaNodeIndexer.TRANSLATED_NODE_PARENT, session.getNode(cn.getParentPath()).getIdentifier()));
-        BooleanQuery or = new BooleanQuery();
-        or.add(q1, BooleanClause.Occur.SHOULD);
-        or.add(q2, BooleanClause.Occur.SHOULD);
+        BooleanQuery or = null;
+        try {
+            Query q1 = new JackrabbitTermQuery(
+                    new Term(FieldNames.PARENT, session.getNode(cn.getParentPath()).getIdentifier()));
+            Query q2 = new JackrabbitTermQuery(
+                    new Term(JahiaNodeIndexer.TRANSLATED_NODE_PARENT, session.getNode(cn.getParentPath()).getIdentifier()));
+            or = new BooleanQuery();
+            or.add(q1, BooleanClause.Occur.SHOULD);
+            or.add(q2, BooleanClause.Occur.SHOULD);
+        } catch (PathNotFoundException e) {
+            logger.warn("Path given in query cannot be found: " + cn.getParentPath(), e);
+        }
         return or;
     }
 
     public Query create(DescendantNodeImpl dn) throws RepositoryException {
-        return new JackrabbitTermQuery(
-                new Term(JahiaNodeIndexer.ANCESTOR, session.getNode(dn.getAncestorPath()).getIdentifier()));
+        Query query = null;
+        try {
+            query = new JackrabbitTermQuery(
+                    new Term(JahiaNodeIndexer.ANCESTOR, session.getNode(dn.getAncestorPath()).getIdentifier()));
+        } catch (PathNotFoundException e) {
+            logger.warn("Path given in query cannot be found: " + dn.getAncestorPath(), e);
+        }        
+        return query;
     }
 
     /**

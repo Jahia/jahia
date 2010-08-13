@@ -229,6 +229,9 @@ public class TextExtractionService implements InitializingBean {
                 logger.debug("Text extraction service is disabled. Skipping metadata extraction.");
             }
         }
+        // TODO check if for HTML file parsing the approach with setting character limit to 0
+        // actually works.
+        // Otherwise use DefaultHandler as suggested in http://tika.markmail.org/message/hecedrucfge4evo2
         doParse(parserMetadata, stream, metadata, 0);
     }
 

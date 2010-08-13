@@ -4,7 +4,7 @@
 
 Contract: ${currentNode.properties.contract.string}<br/>
 
-Contract 2:
+Contract with bundle:
 <jcr:nodePropertyRenderer node="${currentNode}" name="contractI18n" renderer="resourceBundle"/><br/>
 
 Country:

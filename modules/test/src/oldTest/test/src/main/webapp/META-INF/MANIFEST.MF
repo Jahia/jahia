@@ -7,5 +7,6 @@ Class-Path: webtemplates-6.5-SNAPSHOT.zip webtemplates65-6.5-SNAPSHOT.
  r commons-beanutils-core-1.7.0.jar caja-r3574.jar htmlparser-1.0.7.ja
  r json_simple-r1.jar sanselan-0.97-incubator.jar shindig-features-1.1
  -BETA3-incubating-SNAPSHOT.jar nutch-1.0.jar hadoop-core-0.19.1.jar d
- erby-10.4.2.0.jar json-taglib-0.4.1.jar commons-el-1.0.jar
+ erby-10.4.2.0.jar json-taglib-0.4.1.jar commons-el-1.0.jar derbyclien
+ t-10.5.3.0_1.jar
 

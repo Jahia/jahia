@@ -15,15 +15,21 @@ import java.util.Set;
 public class NoDuplicatesConstraint implements Constraint {
     private Set<String> ids = new HashSet<String>();
 
-    public boolean evaluate(ScoreNode[] row, Name[] selectorNames, EvaluationContext context) throws IOException {
+    public boolean evaluate(ScoreNode[] row, Name[] selectorNames, EvaluationContext context)
+            throws IOException {
         String id = "";
         for (ScoreNode sn : row) {
-            sn.getDoc(context.getIndexReader());
-            Document doc = context.getIndexReader().document(sn.getDoc(context.getIndexReader()));
-            if (doc.getField(JahiaNodeIndexer.TRANSLATED_NODE_PARENT) != null) {
-                id += doc.getField(FieldNames.PARENT).stringValue();
+            if (sn == null) {
+                id += "null";
             } else {
-                id += sn.getNodeId().toString();
+                sn.getDoc(context.getIndexReader());
+                Document doc = context.getIndexReader().document(
+                        sn.getDoc(context.getIndexReader()));
+                if (doc.getField(JahiaNodeIndexer.TRANSLATED_NODE_PARENT) != null) {
+                    id += doc.getField(FieldNames.PARENT).stringValue();
+                } else {
+                    id += sn.getNodeId().toString();
+                }
             }
         }
         if (ids.contains(id)) {

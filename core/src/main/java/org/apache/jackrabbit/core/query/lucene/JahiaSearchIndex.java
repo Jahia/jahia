@@ -50,8 +50,10 @@ import javax.jcr.RepositoryException;
 import javax.jcr.query.InvalidQueryException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Implements a {@link org.apache.jackrabbit.core.query.QueryHandler} using Lucene and handling Jahia specific definitions.
@@ -78,12 +80,20 @@ public class JahiaSearchIndex extends SearchIndex {
 
         final List<NodeState> addList = new ArrayList<NodeState>();
         final List<NodeId> removeList = new ArrayList<NodeId>();
+        final Set<NodeId> removedIds = new HashSet<NodeId>();
+        final Set<NodeId> addedIds = new HashSet<NodeId>();
+        
         while (add.hasNext()) {
             final NodeState state = add.next();
+            if (state != null) {
+                addedIds.add(state.getNodeId());
+            }
             addList.add(state);
         }
         while (remove.hasNext()) {
-            removeList.add(remove.next());
+            NodeId nodeId = remove.next();
+            removedIds.add(nodeId);            
+            removeList.add(nodeId);
         }
 
         final IndexReader reader = getIndexReader();
@@ -107,8 +117,13 @@ public class JahiaSearchIndex extends SearchIndex {
                                             String uuid = reader.document(doc).get(FieldNames.UUID);
 
                                             final NodeId id = new NodeId(uuid);
-                                            addList.add((NodeState) getContext().getItemStateManager().getItemState(id));
-                                            removeList.add(id);
+                                            if (!addedIds.contains(id)) {
+                                                addList.add((NodeState) getContext()
+                                                        .getItemStateManager().getItemState(id));
+                                            }
+                                            if (!removedIds.contains(id)) {
+                                                removeList.add(id);
+                                            }
                                         } catch (Exception e) {
                                             log.error("Cannot search moved nodes",e);
                                         }
@@ -128,8 +143,16 @@ public class JahiaSearchIndex extends SearchIndex {
             for (ChildNodeEntry childNodeEntry : node.getChildNodeEntries()) {
                 if (childNodeEntry.getName().getLocalName().startsWith(TRANSLATION_LOCALNODENAME_PREFIX)) {
                     try {
-                        addList.add((NodeState) getContext().getItemStateManager().getItemState(childNodeEntry.getId()));
-                        removeList.add(childNodeEntry.getId());                        
+                        if (!addedIds.contains(childNodeEntry.getId())) {
+                            addList.add((NodeState) getContext().getItemStateManager()
+                                    .getItemState(childNodeEntry.getId()));
+                        }
+                        if (!removedIds.contains(childNodeEntry.getId())
+                                && reader.termDocs(
+                                                new Term(FieldNames.UUID, childNodeEntry.getId()
+                                                        .toString())).next()) {
+                            removeList.add(childNodeEntry.getId());
+                        }
                     } catch (Exception e) {
                         log.warn("Index of translation node may not be updated",e);
                     } 

@@ -175,7 +175,7 @@ public class JCRWorkspaceWrapper implements Workspace {
                 source = source.substring(provider.getMountPoint().length());
             }
             final String sourcePath = source;
-            JCRNodeWrapper sourceNode = session.getNode(source);
+            Node sourceNode = session.getProviderSession(provider).getNode(source);
             if (sourceNode.isNodeType("jmix:shareable")) {
                 final String destination = dest;
                 final JCRCallback callback = new JCRCallback() {

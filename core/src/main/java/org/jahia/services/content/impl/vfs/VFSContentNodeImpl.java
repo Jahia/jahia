@@ -138,7 +138,7 @@ public class VFSContentNodeImpl extends VFSItemImpl implements Node {
             } catch (IOException e) {
                 throw new RepositoryException("Cannot write to stream", e);
             }
-        } 
+        }
         throw new ConstraintViolationException("Unknown type");
     }
 
@@ -413,7 +413,7 @@ public class VFSContentNodeImpl extends VFSItemImpl implements Node {
 
 
     public Property setProperty(String name, Binary value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return setProperty(name, value.getStream());
     }
 
     public Property setProperty(String name, BigDecimal value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {

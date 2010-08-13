@@ -117,6 +117,9 @@ public class JCRStoreProvider {
     private boolean initialized = false;
     
     private boolean providesDynamicMountPoints;
+
+    private Boolean versioningAvailable = null;
+    private Boolean lockingAvailable = null;
     
     public String getKey() {
         return key;
@@ -852,6 +855,50 @@ public class JCRStoreProvider {
 
     public void setProvidesDynamicMountPoints(boolean providesDynamicMountPoints) {
         this.providesDynamicMountPoints = providesDynamicMountPoints;
+    }
+
+    public boolean isVersioningAvailable() {
+        if (versioningAvailable != null) {
+            return versioningAvailable;
+        }
+        Repository repository = getRepository();
+        Value versioningOptionValue = repository.getDescriptorValue(Repository.OPTION_VERSIONING_SUPPORTED);
+        if (versioningOptionValue == null) {
+            versioningAvailable = Boolean.FALSE;
+            return false;
+        }
+        Value simpleVersioningOptionValue = repository.getDescriptorValue(Repository.OPTION_SIMPLE_VERSIONING_SUPPORTED);
+        if (simpleVersioningOptionValue == null) {
+            versioningAvailable = Boolean.FALSE;
+            return false;
+        }
+        try {
+            versioningAvailable = versioningOptionValue.getBoolean() & simpleVersioningOptionValue.getBoolean();
+        } catch (RepositoryException e) {
+            logger.warn("Error while trying to check for versioning support", e);
+            versioningAvailable = Boolean.FALSE;
+            return false;
+        }
+        return versioningAvailable;
+    }
+
+    public boolean isLockingAvailable() {
+        if (lockingAvailable != null) {
+            return lockingAvailable;
+        }
+        Repository repository = getRepository();
+        Value lockingOptionValue = repository.getDescriptorValue(Repository.OPTION_LOCKING_SUPPORTED);
+        if (lockingOptionValue == null) {
+            lockingAvailable = Boolean.FALSE;
+            return false;
+        }
+        try {
+            lockingAvailable = lockingOptionValue.getBoolean();
+        } catch (RepositoryException e) {
+            logger.warn("Error while trying to check for locking support", e);
+            lockingAvailable = Boolean.FALSE;
+        }
+        return lockingAvailable;
     }
 
 }

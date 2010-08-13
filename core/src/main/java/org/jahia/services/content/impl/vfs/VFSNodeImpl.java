@@ -282,7 +282,7 @@ public class VFSNodeImpl extends VFSItemImpl implements Node {
     }
 
     public String getUUID() throws UnsupportedRepositoryOperationException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        return getIdentifier();
     }
 
     public int getIndex() throws RepositoryException {
@@ -433,10 +433,11 @@ public class VFSNodeImpl extends VFSItemImpl implements Node {
     }
 
     public Lock getLock() throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException, RepositoryException {
-        return null;
+        throw new UnsupportedRepositoryOperationException("Locking is not supported on VFS repository");
     }
 
     public void unlock() throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException, InvalidItemStateException, RepositoryException {
+        throw new UnsupportedRepositoryOperationException("Locking is not supported on VFS repository");
     }
 
     public boolean holdsLock() throws RepositoryException {
@@ -464,7 +465,11 @@ public class VFSNodeImpl extends VFSItemImpl implements Node {
     }
 
     public String getIdentifier() throws RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        try {
+            return fileObject.getURL().toString();
+        } catch (FileSystemException fse) {
+            throw new RepositoryException("Error retrieving URL for VFS file", fse);
+        }
     }
 
     public PropertyIterator getReferences(String name) throws RepositoryException {

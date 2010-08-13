@@ -92,4 +92,14 @@ public abstract class AbstractHit<T> implements Hit<T> {
                 .append("lastModifiedBy", this.getLastModifiedBy()).toString();
     }
 
+    @Override
+    public int hashCode() {
+        return resource.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return resource.equals(obj);
+    }
+
 }

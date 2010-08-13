@@ -31,10 +31,14 @@
  */
 package org.jahia.services.search;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.collections.Transformer;
@@ -150,6 +154,40 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
 
     public String getIconType() {
         return "";
+    }
+    
+    public List<AbstractHit<?>> getUsages() {
+        List<AbstractHit<?>> usages = new ArrayList<AbstractHit<?>>();
+        JCRNodeWrapper pageNode = resource;
+        try {
+            while (pageNode != null && !pageNode.isNodeType(Constants.JAHIANT_PAGE)) {
+                try {
+                    pageNode = pageNode.getParent();
+                } catch (ItemNotFoundException e) {
+                    // we have reached the root node
+                    pageNode = null;
+                }
+            }
+            if (pageNode != null && !pageNode.equals(resource)) {
+                usages.add(new PageHit(pageNode, context));
+            }
+        } catch (RepositoryException e) {
+        }
+        try {        
+            for (PropertyIterator it = resource.getReferences(); it.hasNext();) {
+                try {
+                    JCRNodeWrapper node = (JCRNodeWrapper) it.nextProperty().getParent();
+                    AbstractHit<?> hit = node.isNodeType(Constants.JAHIANT_PAGE) ? new PageHit(node,
+                            context) : new JCRNodeHit(node, context);
+                    if (!usages.contains(hit) && !node.equals(resource)) {
+                        usages.add(hit);
+                    }
+                } catch (Exception e) {
+                }
+            }
+        } catch (RepositoryException e) {
+        }
+        return usages;
     }
 
 }

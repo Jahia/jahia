@@ -143,20 +143,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
         if (node.isFile() || node.isNodeType(Constants.NT_FOLDER)) {
             searchHit = new FileHit(node, context);
         } else {
-            JCRNodeWrapper pageNode = node;
-            while (pageNode != null && !pageNode.isNodeType(Constants.JAHIANT_PAGE)) {
-                try {
-                    pageNode = pageNode.getParent();
-                } catch (ItemNotFoundException e) {
-                    // we have reached the root node
-                    pageNode = null;
-                }
-            }
-            if (pageNode != null) {
-                searchHit = new PageHit(pageNode, context);
-            } else {
-                searchHit = new JCRNodeHit(node, context);
-            }
+            searchHit = new JCRNodeHit(node, context);
         }
 
         try {

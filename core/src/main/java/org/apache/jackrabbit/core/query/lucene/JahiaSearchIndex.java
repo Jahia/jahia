@@ -117,12 +117,14 @@ public class JahiaSearchIndex extends SearchIndex {
                                             String uuid = reader.document(doc).get(FieldNames.UUID);
 
                                             final NodeId id = new NodeId(uuid);
+                                            if (!removedIds.contains(id) && !addedIds.contains(id)) {
+                                                removeList.add(id);
+                                                removedIds.add(id);
+                                            }                                            
                                             if (!addedIds.contains(id)) {
                                                 addList.add((NodeState) getContext()
                                                         .getItemStateManager().getItemState(id));
-                                            }
-                                            if (!removedIds.contains(id)) {
-                                                removeList.add(id);
+                                                addedIds.add(id);
                                             }
                                         } catch (Exception e) {
                                             log.error("Cannot search moved nodes",e);
@@ -143,15 +145,15 @@ public class JahiaSearchIndex extends SearchIndex {
             for (ChildNodeEntry childNodeEntry : node.getChildNodeEntries()) {
                 if (childNodeEntry.getName().getLocalName().startsWith(TRANSLATION_LOCALNODENAME_PREFIX)) {
                     try {
+                        if (!removedIds.contains(childNodeEntry.getId())
+                                && !addedIds.contains(childNodeEntry.getId())) {
+                            removeList.add(childNodeEntry.getId());
+                            removedIds.add(childNodeEntry.getId());                            
+                        }                        
                         if (!addedIds.contains(childNodeEntry.getId())) {
                             addList.add((NodeState) getContext().getItemStateManager()
                                     .getItemState(childNodeEntry.getId()));
-                        }
-                        if (!removedIds.contains(childNodeEntry.getId())
-                                && reader.termDocs(
-                                                new Term(FieldNames.UUID, childNodeEntry.getId()
-                                                        .toString())).next()) {
-                            removeList.add(childNodeEntry.getId());
+                            addedIds.add(childNodeEntry.getId());                            
                         }
                     } catch (Exception e) {
                         log.warn("Index of translation node may not be updated",e);

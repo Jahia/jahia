@@ -119,10 +119,19 @@ public class CrawlingPageVisitorTest {
             segmentsPath = new Path(testdir, "segments");
 
             final JahiaSite defaultSite = ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite();
-            final JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
-            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
-                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    if (defaultSite == null) {
+            JCRNodeWrapper homeNode = null;
+            if (defaultSite != null) {
+                try {
+                    JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE,
+                            LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE));                    
+                    homeNode = session.getRootNode().getNode("sites/" + defaultSite.getSiteKey() + "/home");
+                } catch (PathNotFoundException e) {
+                }
+            }
+            if (homeNode == null) {
+                final JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
+                JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         try {
                             TestHelper.createPrepackagedSite(ACMESITE_NAME, "localhost", TestHelper.ACME_TEMPLATES,
                                     SettingsBean.getInstance().getJahiaVarDiskPath()
@@ -133,10 +142,10 @@ public class CrawlingPageVisitorTest {
                         } catch (Exception e) {
                             logger.error("Cannot create or publish site", e);
                         }
+                        return null;
                     }
-                    return null;
-                }
-            });
+                });
+            }
         } catch (Exception ex) {
             logger.warn("Exception during test setUp", ex);
         }
@@ -178,29 +187,31 @@ public class CrawlingPageVisitorTest {
 
     @Test
     public void testPrecompileJsps() throws IOException {
-        HttpClient client = new HttpClient();
-
-        client.getState().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials("jahia", "password"));
-
-        GetMethod get = new GetMethod(getPrecompileServletURL() + "?compile_type=all&jsp_precompile=true");
         try {
-            get.setDoAuthentication(true);
+            HttpClient client = new HttpClient();
 
-            int statusCode = client.executeMethod(get);
+            client.getState().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials("jahia", "password"));
 
-            assertEquals("Precompile method failed", HttpStatus.SC_OK, statusCode);
-            assertThat("Precompilation found buggy JSPs", get.getResponseBodyAsString(), new StringContains("No problems found!"));
-            assertEquals("There were exceptions during the precompile process", "", appender.getErrorLogs());
-        } finally {
-            get.releaseConnection();
+            GetMethod get = new GetMethod(getPrecompileServletURL() + "?compile_type=all&jsp_precompile=true");
+            try {
+                get.setDoAuthentication(true);
+
+                int statusCode = client.executeMethod(get);
+
+                assertEquals("Precompile servlet failed", HttpStatus.SC_OK, statusCode);
+                assertThat("Precompilation found buggy JSPs", get.getResponseBodyAsString(), new StringContains("No problems found!"));
+                assertEquals("There were exceptions during the precompile process", "", appender.getErrorLogs());
+            } finally {
+                get.releaseConnection();
+            }
+        } catch (Exception e) {
+            assertNotNull("Precompile servlet request threw exception: " + e.getLocalizedMessage() , null);
         }
     }
 
     @Test
     public void testFetchDefaultSiteLive() throws IOException {
-        JahiaSite defaultSite = ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite();
-        String siteRootNode = defaultSite != null ? "sites/" + defaultSite.getSiteKey() : ACME_SITECONTENT_ROOT_NODE;
-        crawlUrls(getBaseUrls(Constants.LIVE_WORKSPACE, siteRootNode));
+        crawlUrls(getBaseUrls(Constants.LIVE_WORKSPACE, ACME_SITECONTENT_ROOT_NODE));
         assertEquals("There were errors during the crawling", "", appender.getErrorLogs());        
     }
 
@@ -208,7 +219,7 @@ public class CrawlingPageVisitorTest {
 //    public void testFetchDefaultSiteEdit() throws IOException {
 //        JahiaSite defaultSite = ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite();
 //        String siteRootNode = defaultSite != null ? "sites/" + defaultSite.getSiteKey() : ACME_SITECONTENT_ROOT_NODE;
-//        crawlUrls(getBaseUrls(Constants.EDIT_WORKSPACE, siteRootNode));
+//        crawlUrls(getBaseUrls(Constants.EDIT_WORKSPACE, ACME_SITECONTENT_ROOT_NODE));
 //        assertEquals("There were errors during the crawling", "", appender.getErrorLogs());
 //    }
 //
@@ -251,15 +262,24 @@ public class CrawlingPageVisitorTest {
 
             // generate seedlist
             RenderContext renderCtx = new RenderContext(ctx.getRequest(), ctx.getResponse(), ctx.getUser());
-            JCRNodeWrapper homeNode = session.getRootNode().getNode(sitePath + "/home");
+                        
+            JCRNodeWrapper homeNode = null;
+            try {
+                homeNode = session.getRootNode().getNode(sitePath + "/home");
+            } catch (PathNotFoundException e) {
+                if (ACME_SITECONTENT_ROOT_NODE.equals(sitePath)) {
+                    JahiaSite defaultSite = ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite();
+                    sitePath = defaultSite != null ? "sites/" + defaultSite.getSiteKey() : null;
+                    homeNode = session.getRootNode().getNode(sitePath + "/home");                    
+                }
+            }
+            
             Resource resource = new Resource(homeNode, "html", null, Resource.CONFIGURATION_PAGE);
             renderCtx.setMainResource(resource);
             renderCtx.setSite(homeNode.resolveSite());
             URLGenerator urlgenerator = new URLGenerator(renderCtx, resource);
             urls.add(urlgenerator.getServer()
                     + (Constants.LIVE_WORKSPACE.equals(workspace) ? urlgenerator.getLive() : urlgenerator.getEdit()));
-        } catch (PathNotFoundException e) {
-            logger.warn(sitePath + " cannot be crawled as it is not existing");
         } catch (Exception e) {
             logger.error("Exception during test", e);
         }

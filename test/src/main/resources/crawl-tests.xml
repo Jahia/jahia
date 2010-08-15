@@ -6,7 +6,7 @@
 
 <property>
   <name>plugin.includes</name>
-  <value>parse-html|protocol-httpclient|urlfilter-regex</value>
+  <value>protocol-httpclient|parse-(text|html|js)|urlfilter-regex</value>
   <description>Enable required plugins.</description>
 </property>
 
@@ -47,6 +47,19 @@
   <value>100000</value>
   <description>The default network timeout, in milliseconds.</description>
 </property>
+
+<property>
+  <name>http.auth.basic.user</name>
+  <value>root</value>
+  <description>HTTP Basic Authentication</description>
+</property>
+
+<property>
+  <name>http.auth.basic.pass</name>
+  <value>root1234</value>
+  <description>HTTP Basic Authentication</description>
+</property>
+
 
 </configuration>
 

@@ -35,6 +35,7 @@
 import org.jahia.exceptions.JahiaException;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -102,49 +103,49 @@ return null;
     static public List<ObjectLink> findByLeftAndRightObjectKeys (ObjectKey leftObjectKey,
         ObjectKey rightObjectKey)
         throws JahiaException {
-        return null;
+        return Collections.emptyList();
     }
 
     static public List<ObjectLink> findByLeftObjectKey (ObjectKey leftObjectKey)
         throws JahiaException {
-        return null;
+        return Collections.emptyList();
     }
 
     static public List<ObjectLink> findByRightObjectKey (ObjectKey rightObjectKey)
         throws JahiaException {
-        return null;
+        return Collections.emptyList();
     }
 
     static public List<ObjectLink> findByTypeAndLeftAndRightObjectKeys (String type,
         ObjectKey leftObjectKey,
         ObjectKey rightObjectKey)
         throws JahiaException {
-        return null;
+        return Collections.emptyList();
     }
 
     static public List<ObjectLink> findByTypeAndLeftAndLikeRightObjectKeys (String type,
             ObjectKey leftObjectKey,
             String rightObjectKey)
             throws JahiaException {
-        return null;
+        return Collections.emptyList();
     }
     
     static public List<ObjectLink> findByTypeAndLeftObjectKey (String type,
         ObjectKey leftObjectKey)
         throws JahiaException {
-        return null;
+        return Collections.emptyList();
     }
 
     static public List<ObjectLink> findByTypeAndRightObjectKey (String type,
         ObjectKey rightObjectKey)
         throws JahiaException {
-        return null;
+        return Collections.emptyList();
     }
 
     static public List<ObjectLink> findByTypeAndRightAndLikeLeftObjectKey(String type,
 			ObjectKey rightObjectKey, String leftObjectKey)
 			throws JahiaException {
-        return null;
+        return Collections.emptyList();
 	}
     
     public void save()

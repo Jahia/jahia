@@ -2,7 +2,7 @@
  README FOR JAHIA SOURCE CODE
 ==============================================================================
 
- All source code, binaries and documentation is copyrighted (c) 2002-2009 by
+ All source code, binaries and documentation is copyrighted (c) 2002-2010 by
  Jahia Solutions Group SA. All Rights Reserved.
 
  INTRODUCTION
@@ -81,7 +81,7 @@
        machine takes 2 minutes 40 seconds. These times do not include JSP or
        GWT compilation.
 
-    7. Point your browser to http://localhost:8080/cms (in case you have not chosen option 10 ).
+    7. Point your browser to http://localhost:8080/
     	 Default root password is root1234
 
     8. Create your first virtual site and enjoy.

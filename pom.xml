@@ -1,4 +1,9 @@
-<project>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
   <artifactId>jahia-root</artifactId>
   <name>Jahia Project Root</name>
@@ -29,6 +34,8 @@
     <jahia.archivers.version>2.2</jahia.archivers.version>
     <jahia.configurators.version>2.2</jahia.configurators.version>
     <jahia.deployers.version>2.1</jahia.deployers.version>
+
+    <jahia.war.classifier></jahia.war.classifier>
     
     <pluto.version>2.0.2</pluto.version>
     <spring.version>2.5.6.SEC02</spring.version>
@@ -340,6 +347,9 @@
         </profile>
         <profile>
             <id>jahia-test</id>
+            <properties>
+				<jahia.war.classifier>test</jahia.war.classifier>            
+            </properties>
             <modules>
                 <module>test</module>
             </modules>
@@ -398,34 +408,35 @@
         </plugins>
     </pluginManagement>
     <plugins>
-        <plugin>
-           <groupId>org.apache.maven.plugins</groupId>
-           <artifactId>maven-enforcer-plugin</artifactId>
-            <executions>
-          <execution>
-            <id>enforce-versions</id>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <configuration>
-              <rules>
-                <requireMavenVersion>
-                  <version>2.1</version>
-                </requireMavenVersion>
-                <requireJavaVersion>
-                  <version>1.5</version>
-                </requireJavaVersion>
-              </rules>
-            </configuration>
-          </execution>
-        </executions>         </plugin>
+	<plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-enforcer-plugin</artifactId>
+		<executions>
+			<execution>
+				<id>enforce-versions</id>
+				<goals>
+					<goal>enforce</goal>
+				</goals>
+				<configuration>
+					<rules>
+						<requireMavenVersion>
+							<version>2.1</version>
+						</requireMavenVersion>
+						<requireJavaVersion>
+							<version>1.5</version>
+						</requireJavaVersion>
+					</rules>
+				</configuration>
+			</execution>
+		</executions>
+	</plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <!-- put your configurations here -->
           <source>1.5</source>
           <target>1.5</target>
+          <verbose>true</verbose>
         </configuration>
       </plugin>
       <plugin>

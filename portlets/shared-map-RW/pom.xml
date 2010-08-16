@@ -26,17 +26,7 @@
   </dependencies>
 
 	<build>
-		<!--finalName>jahia-portlet-exo</finalName-->
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<!-- put your configurations here -->
-					<source>1.5</source>
-					<target>1.5</target>
-				</configuration>
-			</plugin>
 			<!-- configure maven-war-plugin to use updated web.xml -->
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>

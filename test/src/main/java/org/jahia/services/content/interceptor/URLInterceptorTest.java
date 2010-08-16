@@ -48,7 +48,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import javax.jcr.RepositoryException;
-import javax.jcr.NodeIterator;
 import javax.jcr.nodetype.ConstraintViolationException;
 import java.util.Locale;
 
@@ -93,7 +92,7 @@ public class URLInterceptorTest {
             shared.getNode("refContent").remove();
         }
         if (!shared.isCheckedOut()) {
-            shared.checkout();
+            session.checkout(shared);
         }
 
         node = shared.addNode("testContent", "jnt:mainContent");
@@ -112,46 +111,6 @@ public class URLInterceptorTest {
     public static void oneTimeTearDown() throws Exception {
         TestHelper.deleteSite("test");
         session.save();
-    }
-
-    @Test
-    public void testReferenceEncoding() throws Exception {
-        valideEncoding("<a href=\"" + Jahia.getContextPath() + "/cms/render/default/en/shared/refContent.html\">test</a>",
-                "<a href=\"##cms-context##/render/default/en/##ref:link1##.html\">test</a>", 1);
-        valideEncoding("<a href=\"" + Jahia.getContextPath() + "/cms/edit/default/en/shared/refContent.html\">test</a>",
-                "<a href=\"##cms-context##/edit/default/en/##ref:link1##.html\">test</a>", 1);
-        valideEncoding("<a href=\"" + Jahia.getContextPath() + "/cms/render/live/fr/shared/refContent.html\">test</a>",
-                "<a href=\"##cms-context##/render/live/fr/##ref:link1##.html\">test</a>", 1);
-        valideEncoding("<a href=\"" + Jahia.getContextPath() + "/cms/render/live/{lang}/shared/refContent.html\">test</a>",
-                "<a href=\"##cms-context##/render/live/{lang}/##ref:link1##.html\">test</a>", 1);
-        valideEncoding("<a href=\"" + Jahia.getContextPath() + "/cms/{mode}/en/shared/refContent.html\">test</a>",
-                "<a href=\"##cms-context##/{mode}/en/##ref:link1##.html\">test</a>", 1);
-        valideEncoding("<a href=\"" + Jahia.getContextPath() + "/cms/{mode}/{lang}/shared/refContent.html\">test</a>",
-                "<a href=\"##cms-context##/{mode}/{lang}/##ref:link1##.html\">test</a>", 1);
-        valideEncoding("<a href=\"" + Jahia.getContextPath() + "/cms/{mode}/{lang}/shared/refContent.html\">test</a>" +
-                "<a href=\"" + Jahia.getContextPath() + "/cms/{mode}/{lang}/shared/refContent.html\">test</a>",
-                "<a href=\"##cms-context##/{mode}/{lang}/##ref:link1##.html\">test</a>"+
-                        "<a href=\"##cms-context##/{mode}/{lang}/##ref:link1##.html\">test</a>", 1);
-        valideEncoding("<a href=\"" + Jahia.getContextPath() + "/cms/{mode}/{lang}/shared/refContent.html\">test</a>" +
-                "<a href=\"" + Jahia.getContextPath() + "/cms/{mode}/{lang}/shared/testContent.html\">test</a>",
-                "<a href=\"##cms-context##/{mode}/{lang}/##ref:link1##.html\">test</a>" +
-                        "<a href=\"##cms-context##/{mode}/{lang}/##ref:link2##.html\">test</a>", 2);
-
-        valideEncoding("<img src=\"" + Jahia.getContextPath() + "/files/default/shared/refContent\">",
-                "<img src=\"##doc-context##/default/##ref:link1##\">", 1);
-
-
-    }
-
-    private void valideEncoding(String value, String expectedValue, int expectedRefSize) throws RepositoryException {
-        JCRNodeWrapper n = localizedSession.getNode("/shared/testContent");
-        n.setProperty("body", value);
-        localizedSession.save();
-
-        JCRNodeWrapper nodeCheck = session.getNode("/shared/testContent/j:translation");
-        assertEquals("Invalid encoded value", expectedValue, nodeCheck.getProperty("body_en").getString());
-        NodeIterator ni = nodeCheck.getParent().getNodes("j:referenceInField");
-        assertEquals("Invalid number of references", expectedRefSize,ni.getSize());
     }
 
     @Test

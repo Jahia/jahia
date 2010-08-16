@@ -43,22 +43,35 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<template:addResources type="css" resources="mainresource.css" />
+<template:addResources type="css" resources="mainresource.css"/>
 
 <c:choose>
-     <c:when test="${not empty inWrapper and inWrapper eq false}">
+    <c:when test="${not empty inWrapper and inWrapper eq false}">
 
-         <c:set value="${currentNode.nodes}" var="currentList" scope="request"/>
+        <c:set value="${currentNode.nodes}" var="currentList" scope="request"/>
 
-        <div class="mainResourceArea">
+        <div class="mainResourceArea<c:if test="${not empty currentNode.properties['j:mockupStyle']}"> ${currentNode.properties['j:mockupStyle'].string}</c:if>">
             <div class="mainResourceAreaTemplate">
                 <span>List : ${currentNode.name}</span>
             </div>
-            <c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}" end="${moduleMap.end}">
+            <c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}"
+                       end="${moduleMap.end}">
                 <template:module node="${subchild}"/>
             </c:forEach>
             <c:if test="${currentList.size == 0}">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed dignissim tellus in metus viverra pharetra. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Mauris eu risus elit. Donec nibh diam, commodo in adipiscing et, euismod sed orci. Donec eu metus eget mauris fringilla pretium. Mauris vehicula, arcu malesuada malesuada varius, est leo porttitor lacus, id fermentum lacus eros ac sem. Proin non nunc magna, nec euismod diam. Ut faucibus dignissim erat sit amet sagittis. Aenean vestibulum, odio a imperdiet semper, diam lacus egestas velit, non lobortis libero massa et risus. Nunc quis sagittis est. Duis non orci vel quam posuere rutrum. Fusce et fringilla lorem. Nam tempus, dolor pretium consequat bibendum, odio leo feugiat odio, vitae pulvinar velit ipsum sit amet augue. Fusce ultrices ultricies tortor. Nunc vel pulvinar ipsum. Cras et nibh turpis, ac ornare leo. Cras elementum magna et risus porta accumsan. Duis dui leo, tincidunt at blandit non, euismod eu odio.
+                <div class="loremipsum">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed dignissim tellus in metus viverra
+                    pharetra. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos
+                    himenaeos. Mauris eu risus elit. Donec nibh diam, commodo in adipiscing et, euismod sed orci. Donec
+                    eu metus eget mauris fringilla pretium. Mauris vehicula, arcu malesuada malesuada varius, est leo
+                    porttitor lacus, id fermentum lacus eros ac sem. Proin non nunc magna, nec euismod diam. Ut faucibus
+                    dignissim erat sit amet sagittis. Aenean vestibulum, odio a imperdiet semper, diam lacus egestas
+                    velit, non lobortis libero massa et risus. Nunc quis sagittis est. Duis non orci vel quam posuere
+                    rutrum. Fusce et fringilla lorem. Nam tempus, dolor pretium consequat bibendum, odio leo feugiat
+                    odio, vitae pulvinar velit ipsum sit amet augue. Fusce ultrices ultricies tortor. Nunc vel pulvinar
+                    ipsum. Cras et nibh turpis, ac ornare leo. Cras elementum magna et risus porta accumsan. Duis dui
+                    leo, tincidunt at blandit non, euismod eu odio.
+                </div>
             </c:if>
             <c:if test="${renderContext.editMode}">
                 Add archetype elements here: <template:module path="*"/>
@@ -66,12 +79,11 @@
         </div>
 
 
-
     </c:when>
     <c:otherwise>
         <jcr:nodeProperty node="${currentNode}" name="j:allowedTypes" var="restrictions" scope="request"/>
         <c:if test="${not empty restrictions}">
-            <c:forEach items="${restrictions}" var="value" >
+            <c:forEach items="${restrictions}" var="value">
                 <c:if test="${not empty nodeTypes}">
                     <c:set var="nodeTypes" value="${nodeTypes} ${value.string}"/>
                 </c:if>
@@ -80,9 +92,13 @@
                 </c:if>
             </c:forEach>
         </c:if>
-        <template:wrappedContent template="${currentNode.properties['j:areaTemplate'].string}" path="${currentNode.name}" nodeTypes="${nodeTypes}" >
+        <template:wrappedContent template="${currentNode.properties['j:areaTemplate'].string}"
+                                 path="${currentNode.name}" nodeTypes="${nodeTypes}">
             <c:if test="${not empty currentNode.properties['j:subNodesTemplate'].string}">
-                <template:param name="subNodesTemplate" value="${currentNode.properties['j:subNodesTemplate'].string}" />
+                <template:param name="subNodesTemplate" value="${currentNode.properties['j:subNodesTemplate'].string}"/>
+            </c:if>
+            <c:if test="${not empty currentNode.properties['j:mockupStyle'].string}">
+                <template:param name="mockupStyle" value="${currentNode.properties['j:mockupStyle'].string}"/>
             </c:if>
         </template:wrappedContent>
     </c:otherwise>

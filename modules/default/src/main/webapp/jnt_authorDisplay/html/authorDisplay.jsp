@@ -49,12 +49,13 @@
 <c:set var="mainTemplate" value="${currentNode.properties['j:userTemplate'].string}"/>
 <c:choose>
     <c:when test="${renderContext.editMode}">
-        <div class="mainResourceArea">
+        <div class="mainResourceArea<c:if test="${not empty currentNode.properties['j:mockupStyle']}"> ${currentNode.properties['j:mockupStyle'].string}</c:if>">
             <c:if test="${not empty currentNode.properties['j:userTemplate'].string}">
                 <div class="mainResourceTemplate">
                     <span>${currentNode.properties['j:userTemplate'].string}</span>
                 </div>
             </c:if>
+            <div class="loremipsum">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed dignissim tellus in metus viverra pharetra.
             Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Mauris eu risus
             elit. Donec nibh diam, commodo in adipiscing et, euismod sed orci. Donec eu metus eget mauris fringilla
@@ -65,6 +66,7 @@
             consequat bibendum, odio leo feugiat odio, vitae pulvinar velit ipsum sit amet augue. Fusce ultrices
             ultricies tortor. Nunc vel pulvinar ipsum. Cras et nibh turpis, ac ornare leo. Cras elementum magna et risus
             porta accumsan. Duis dui leo, tincidunt at blandit non, euismod eu odio.
+            </div>
         </div>
     </c:when>
     <c:otherwise>

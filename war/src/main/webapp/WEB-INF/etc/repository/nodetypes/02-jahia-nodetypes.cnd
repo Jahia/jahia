@@ -335,17 +335,20 @@
  - j:applyOn (string, choicelist[subnodetypes = 'jnt:page,jnt:content,jnt:contentList,jnt:folder,jnt:file',resourceBundle]) multiple
  - j:templateKey (string)
 
-[jnt:mainResourceDisplay] > jnt:content, jmix:renderableMainResource, jmix:siteComponentContent
+[jmix:mockupStyle] mixin
+ - j:mockupStyle (string)
 
-[jnt:mainResourceArea] > jnt:content, jmix:renderableArea, jmix:siteComponentContent, jmix:listRestrictions
+[jnt:mainResourceDisplay] > jnt:content, jmix:renderableMainResource, jmix:siteComponentContent, jmix:mockupStyle
+
+[jnt:mainResourceArea] > jnt:content, jmix:renderableArea, jmix:siteComponentContent, jmix:listRestrictions, jmix:mockupStyle
  + * (jmix:droppableContent) = jmix:droppableContent version
 
-[jnt:absoluteArea] > jnt:content, jmix:renderableArea, jmix:siteComponentContent, jmix:listRestrictions
+[jnt:absoluteArea] > jnt:content, jmix:renderableArea, jmix:siteComponentContent, jmix:listRestrictions, jmix:mockupStyle
  - j:basenode (weakreference)
 
-[jnt:currentUserDisplay] > nt:base, jmix:renderableUser, jmix:siteComponentContent
+[jnt:currentUserDisplay] > nt:base, jmix:renderableUser, jmix:siteComponentContent, jmix:mockupStyle
 
-[jnt:authorDisplay] > nt:base, jmix:renderableUser, jmix:siteComponentContent
+[jnt:authorDisplay] > nt:base, jmix:renderableUser, jmix:siteComponentContent, jmix:mockupStyle
 
 [jmix:renderableMainResource] mixin
  - j:mainResourceTemplate (string, choicelist[templates=mainresource,resourceBundle,image]) nofulltext

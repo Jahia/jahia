@@ -58,7 +58,9 @@ import org.springframework.web.servlet.view.InternalResourceView;
  */
 public class TextExtractor extends HttpServlet implements Controller {
 
-    private static Logger logger = Logger.getLogger(TextExtractor.class);
+	private static final long serialVersionUID = 7741046486853963555L;
+
+	private static Logger logger = Logger.getLogger(TextExtractor.class);
 
     private SettingsBean settingsBean;
 
@@ -76,7 +78,8 @@ public class TextExtractor extends HttpServlet implements Controller {
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         if (!textExtractionService.isEnabled()) {
-            response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Text extraction service is not enabled.");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Text extraction service is not enabled.");
+            return null;
         }
 
         FileUpload upload = new FileUpload(request, settingsBean.getTmpContentDiskPath(), Integer.MAX_VALUE);

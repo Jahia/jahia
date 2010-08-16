@@ -65,7 +65,9 @@ import org.springframework.web.servlet.mvc.Controller;
  */
 public class DocumentConverter extends HttpServlet implements Controller {
 
-    private static Logger logger = Logger.getLogger(DocumentConverter.class);
+	private static final long serialVersionUID = -3949472591925972005L;
+
+	private static Logger logger = Logger.getLogger(DocumentConverter.class);
 
     private DocumentConverterService converterService;
 
@@ -187,7 +189,8 @@ public class DocumentConverter extends HttpServlet implements Controller {
      */
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         if (!converterService.isEnabled()) {
-            response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Conversion service is not enabled.");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Conversion service is not enabled.");
+            return null;
         }
 
         ModelAndView result = null;
@@ -198,6 +201,7 @@ public class DocumentConverter extends HttpServlet implements Controller {
             result = handleGet(request, response);
         } else {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Multipart data is not found in the POST request");
+            return null;
         }
 
         return result;

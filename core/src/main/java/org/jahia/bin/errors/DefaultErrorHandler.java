@@ -57,7 +57,6 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaForbiddenAccessException;
 import org.jahia.exceptions.JahiaInvalidModeException;
 import org.jahia.exceptions.JahiaRuntimeException;
-import org.jahia.exceptions.JahiaServerOverloadedException;
 import org.jahia.exceptions.JahiaSessionExpirationException;
 import org.jahia.exceptions.JahiaUnauthorizedException;
 import org.jahia.services.SpringContextSingleton;
@@ -110,8 +109,7 @@ public class DefaultErrorHandler implements ErrorHandler {
      *         {@link DefaultErrorHandler})
      */
     public static DefaultErrorHandler getInstance() {
-        return (DefaultErrorHandler) SpringContextSingleton.getInstance().getContext()
-                .getBean("org.jahia.bin.errors.handler");
+        return (DefaultErrorHandler) SpringContextSingleton.getBean("org.jahia.bin.errors.handler");
     }
 
     /**
@@ -154,8 +152,6 @@ public class DefaultErrorHandler implements ErrorHandler {
             } else if (e instanceof JahiaForbiddenAccessException
                     || e instanceof JahiaInvalidModeException) {
                 code = SC_FORBIDDEN;
-            } else if (e instanceof JahiaServerOverloadedException) {
-                code = SC_SERVICE_UNAVAILABLE;
             } else {
                 code = getErrorCode(e);
             }
@@ -165,16 +161,16 @@ public class DefaultErrorHandler implements ErrorHandler {
             } else if (e instanceof JahiaUnauthorizedException) {
                 code = SC_UNAUTHORIZED;
             } else {
-                throw (JahiaRuntimeException) e;
+//                throw (JahiaRuntimeException) e;
             }
         } else if (e instanceof ClassNotFoundException) {
             code = SC_BAD_REQUEST;
         } else if (e instanceof IOException) {
-            throw (IOException) e;
+//            throw (IOException) e;
         } else if (e instanceof ServletException) {
-            throw (ServletException) e;
+//            throw (ServletException) e;
         } else {
-            throw new ServletException(e);
+//            throw new ServletException(e);
         }
 
         if (code != 0) {

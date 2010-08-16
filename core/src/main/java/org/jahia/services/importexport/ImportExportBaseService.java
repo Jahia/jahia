@@ -43,7 +43,6 @@ import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.params.ProcessingContext;
 import org.jahia.security.license.LicenseActionChecker;
 import org.jahia.services.JahiaService;
 import org.jahia.services.categories.Category;
@@ -205,7 +204,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         this.fileWatcherService = fileWatcherService;
     }
 
-    public void exportAll(OutputStream outputStream, Map<String, Object> params, ProcessingContext processingContext)
+    public void exportAll(OutputStream outputStream, Map<String, Object> params)
             throws JahiaException, RepositoryException, IOException, SAXException, JDOMException {
         Iterator<JahiaSite> en = sitesService.getSites();
         List<JahiaSite> l = new ArrayList<JahiaSite>();
@@ -213,10 +212,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             JahiaSite jahiaSite = (JahiaSite) en.next();
             l.add(jahiaSite);
         }
-        exportSites(outputStream, params, processingContext, l);
+        exportSites(outputStream, params, l);
     }
 
-    public void exportSites(OutputStream outputStream, Map<String, Object> params, ProcessingContext processingContext, List<JahiaSite> sites)
+    public void exportSites(OutputStream outputStream, Map<String, Object> params, List<JahiaSite> sites)
             throws JahiaException, RepositoryException, IOException, SAXException, JDOMException {
         ZipOutputStream zout = new ZipOutputStream(outputStream);
 
@@ -231,18 +230,12 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         DataWriter dw;
 
-        JahiaSite s = processingContext.getSite();
-
         for (Iterator<JahiaSite> iterator = sites.iterator(); iterator.hasNext();) {
             JahiaSite jahiaSite = iterator.next();
             anEntry = new ZipEntry(jahiaSite.getSiteKey() + ".zip");
             zout.putNextEntry(anEntry);
-            exportSite(jahiaSite, zout, processingContext, params);
+            exportSite(jahiaSite, zout, params);
         }
-
-        processingContext.setSite(s);
-        processingContext.setSiteID(s.getID());
-        processingContext.setSiteKey(s.getSiteKey());
 
         anEntry = new ZipEntry(SERVER_PERMISSIONS_XML);
         zout.putNextEntry(anEntry);
@@ -273,21 +266,18 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         zout.finish();
     }
 
-    private void exportSite(JahiaSite jahiaSite, OutputStream out, ProcessingContext processingContext, Map<String, Object> params)
+    private void exportSite(final JahiaSite site, OutputStream out, Map<String, Object> params)
             throws JahiaException, RepositoryException, SAXException, IOException, JDOMException {
-        processingContext.setSite(jahiaSite);
-        processingContext.setSiteID(jahiaSite.getID());
-        processingContext.setSiteKey(jahiaSite.getSiteKey());
-
         ZipOutputStream zout = new ZipOutputStream(out);
 
         zout.putNextEntry(new ZipEntry(SITE_PROPERTIES));
-        exportSiteInfos(zout, processingContext.getSite());
+        exportSiteInfos(zout, site);
         zout.putNextEntry(new ZipEntry(SITE_PERMISSIONS_XML));
         DataWriter dw = new DataWriter(new OutputStreamWriter(zout, "UTF-8"));
-        exportSitePermissions(dw, processingContext.getSite());
+        exportSitePermissions(dw, site);
         dw.flush();
-        Set<JCRNodeWrapper> files = Collections.singleton(jcrStoreService.getSessionFactory().getCurrentUserSession().getNode("/sites/"+processingContext.getSite().getSiteKey()));
+        Set<JCRNodeWrapper> files = Collections.singleton(jcrStoreService.getSessionFactory().getCurrentUserSession().getNode("/sites/"+
+                site.getSiteKey()));
         exportNodes(jcrStoreService.getSessionFactory().getCurrentUserSession().getRootNode(), jcrStoreService.getSessionFactory().getCurrentUserSession(), files, zout, new HashSet<String>(),
                     params);
         zout.finish();
@@ -807,7 +797,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         importCategoriesAndGetUuidProps(is, importHandler);
     }
 
-    public void importServerPermissions(ProcessingContext jParams, InputStream is) {
+    public void importServerPermissions(InputStream is) {
 //        handleImport(is, new PermissionsImportHandler("org.jahia.actions.server", "serverPermission", (Map) jParams.getAttribute("sitePermissions_siteKeyMapping")));
     }
 

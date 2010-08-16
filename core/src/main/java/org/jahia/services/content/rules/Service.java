@@ -474,7 +474,7 @@ public class Service extends JahiaService {
                 File file = (File) infos.get("importFile");
                 if (infos.get("importFileName").equals("serverPermissions.xml")) {
                     // pass the old-new site key information for server permissions
-                    ImportExportBaseService.getInstance().importServerPermissions(ctx, new FileInputStream(file));
+                    ImportExportBaseService.getInstance().importServerPermissions(new FileInputStream(file));
                 }
 
             }

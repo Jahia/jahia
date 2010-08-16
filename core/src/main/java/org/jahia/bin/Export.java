@@ -96,84 +96,35 @@ public class Export extends HttpServlet implements Controller, ServletContextAwa
      * @throws Exception in case of errors
      */
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    
+        String method = request.getMethod();
+        if (method.equals("POST")) {
+            doPost(request, response);
+        } else if (method.equals("GET")) {
+            doGet(request, response);
+        }
 
-        export(request, response);
         return null;
     }
 
-    private void export(HttpServletRequest request, HttpServletResponse resp) throws Exception {
+    protected void doGet(HttpServletRequest request, HttpServletResponse resp) throws javax.servlet.ServletException, java.io.IOException {
         String path = StringUtils.substringAfter(request.getPathInfo().substring(1), "/");
         String workspace = StringUtils.defaultIfEmpty(StringUtils.substringBefore(path, "/"), defaultWorkspace);
         String[] strings = ("/" + StringUtils.substringAfter(path, "/")).split("\\.");
         String nodePath = strings[0];
         String exportFormat = strings[1];
-        ProcessingContext processingContext = Jahia.createParamBean(request, resp, request.getSession());
         //make sure this file is not cached by the client (or a proxy middleman)
         resp.setHeader("Expires", "Thu, 01 Jan 1970 00:00:00 GMT");
         resp.setHeader("Pragma", "no-cache");
         resp.setHeader("Cache-Control", "no-cache");
 
-        Map<String, Object> params = new HashMap<String, Object>();
-
-        params.put(ImportExportService.VIEW_CONTENT, !"false".equals(request.getParameter("viewContent")));
-        params.put(ImportExportService.VIEW_VERSION, "true".equals(request.getParameter("viewVersion")));
-        params.put(ImportExportService.VIEW_ACL, !"false".equals(request.getParameter("viewAcl")));
-        params.put(ImportExportService.VIEW_METADATA, !"false".equals(request.getParameter("viewMetadata")));
-        params.put(ImportExportService.VIEW_JAHIALINKS, !"false".equals(request.getParameter("viewLinks")));
-        params.put(ImportExportService.VIEW_WORKFLOW, "true".equals(request.getParameter("viewWorkflow")));
-        params.put(ImportExportService.CLEANUP, request.getParameter(ImportExportService.CLEANUP));
+        Map<String, Object> params = getParams(request);
 
         OutputStream outputStream = resp.getOutputStream();
         try {
             ImportExportService ie = ServicesRegistry.getInstance().getImportExportService();
 
-            if ("all".equals(request.getParameter("exportformat"))) {
-                if (!processingContext.getUser().isRoot()) {
-                    resp.setStatus(HttpURLConnection.HTTP_UNAUTHORIZED);
-                    return;
-                }
-
-                resp.setContentType("application/zip");
-                params.put(ImportExportService.INCLUDE_ALL_FILES, Boolean.TRUE);
-                params.put(ImportExportService.INCLUDE_TEMPLATES, Boolean.TRUE);
-                params.put(ImportExportService.INCLUDE_SITE_INFOS, Boolean.TRUE);
-                params.put(ImportExportService.INCLUDE_DEFINITIONS, Boolean.TRUE);
-                params.put(ImportExportService.VIEW_WORKFLOW, Boolean.TRUE);
-                params.put(ImportExportService.VIEW_PID, Boolean.TRUE);
-
-                ie.exportAll(outputStream, params, processingContext);
-                outputStream.close();
-            } else if ("site".equals(processingContext.getParameter("exportformat"))) {
-                if (!processingContext.getUser().isRoot()) {
-                    resp.setStatus(HttpURLConnection.HTTP_UNAUTHORIZED);
-                    return;
-                }
-
-                List<JahiaSite> sites = new ArrayList<JahiaSite>();
-                String[] sitekeys = processingContext.getParameterValues("sitebox");
-                if (sitekeys != null) {
-                    for (String sitekey : sitekeys) {
-                        JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(sitekey);
-                        sites.add(site);
-                    }
-                }
-
-                if (sites.isEmpty()) {
-                    JahiaAdministration.doRedirect(request, resp, request.getSession(),
-                                                   JahiaAdministration.JSP_PATH + "no_sites_selected.jsp");
-                } else {
-                    resp.setContentType("application/zip");
-                    params.put(ImportExportService.INCLUDE_ALL_FILES, Boolean.TRUE);
-                    params.put(ImportExportService.INCLUDE_TEMPLATES, Boolean.TRUE);
-                    params.put(ImportExportService.INCLUDE_SITE_INFOS, Boolean.TRUE);
-                    params.put(ImportExportService.INCLUDE_DEFINITIONS, Boolean.TRUE);
-                    params.put(ImportExportService.VIEW_WORKFLOW, Boolean.TRUE);
-                    params.put(ImportExportService.VIEW_PID, Boolean.TRUE);
-
-                    ie.exportSites(outputStream, params, processingContext, sites);
-                    outputStream.close();
-                }
-            } else if ("xml".equals(exportFormat)) {
+            if ("xml".equals(exportFormat)) {
                 resp.setContentType("text/xml");
                 if ("template".equals(params.get(ImportExportService.CLEANUP))) {
                     generateCleanedUpXML(request, resp, nodePath, "templatesCleanup.xsl");
@@ -198,6 +149,79 @@ public class Export extends HttpServlet implements Controller, ServletContextAwa
             logger.error("Exception during export", e);
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse resp) throws javax.servlet.ServletException, java.io.IOException {
+        Map<String, Object> params = getParams(request);
+
+        OutputStream outputStream = resp.getOutputStream();
+        try {
+            ImportExportService ie = ServicesRegistry.getInstance().getImportExportService();
+
+            if ("all".equals(request.getParameter("exportformat"))) {
+                if (!JCRSessionFactory.getInstance().getCurrentUser().isRoot()) {
+                    resp.setStatus(HttpURLConnection.HTTP_UNAUTHORIZED);
+                    return;
+                }
+
+                resp.setContentType("application/zip");
+                params.put(ImportExportService.INCLUDE_ALL_FILES, Boolean.TRUE);
+                params.put(ImportExportService.INCLUDE_TEMPLATES, Boolean.TRUE);
+                params.put(ImportExportService.INCLUDE_SITE_INFOS, Boolean.TRUE);
+                params.put(ImportExportService.INCLUDE_DEFINITIONS, Boolean.TRUE);
+                params.put(ImportExportService.VIEW_WORKFLOW, Boolean.TRUE);
+                params.put(ImportExportService.VIEW_PID, Boolean.TRUE);
+
+                ie.exportAll(outputStream, params);
+                outputStream.close();
+            } else if ("site".equals(request.getParameter("exportformat"))) {
+                if (!JCRSessionFactory.getInstance().getCurrentUser().isRoot()) {
+                    resp.setStatus(HttpURLConnection.HTTP_UNAUTHORIZED);
+                    return;
+                }
+
+                List<JahiaSite> sites = new ArrayList<JahiaSite>();
+                String[] sitekeys = request.getParameterValues("sitebox");
+                if (sitekeys != null) {
+                    for (String sitekey : sitekeys) {
+                        JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(sitekey);
+                        sites.add(site);
+                    }
+                }
+
+                if (sites.isEmpty()) {
+                    JahiaAdministration.doRedirect(request, resp, request.getSession(),
+                                                   JahiaAdministration.JSP_PATH + "no_sites_selected.jsp");
+                } else {
+                    resp.setContentType("application/zip");
+                    params.put(ImportExportService.INCLUDE_ALL_FILES, Boolean.TRUE);
+                    params.put(ImportExportService.INCLUDE_TEMPLATES, Boolean.TRUE);
+                    params.put(ImportExportService.INCLUDE_SITE_INFOS, Boolean.TRUE);
+                    params.put(ImportExportService.INCLUDE_DEFINITIONS, Boolean.TRUE);
+                    params.put(ImportExportService.VIEW_WORKFLOW, Boolean.TRUE);
+                    params.put(ImportExportService.VIEW_PID, Boolean.TRUE);
+
+                    ie.exportSites(outputStream, params, sites);
+                    outputStream.close();
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Exception during export", e);
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private Map<String, Object> getParams(HttpServletRequest request) {
+        Map<String, Object> params = new HashMap<String, Object>();
+
+        params.put(ImportExportService.VIEW_CONTENT, !"false".equals(request.getParameter("viewContent")));
+        params.put(ImportExportService.VIEW_VERSION, "true".equals(request.getParameter("viewVersion")));
+        params.put(ImportExportService.VIEW_ACL, !"false".equals(request.getParameter("viewAcl")));
+        params.put(ImportExportService.VIEW_METADATA, !"false".equals(request.getParameter("viewMetadata")));
+        params.put(ImportExportService.VIEW_JAHIALINKS, !"false".equals(request.getParameter("viewLinks")));
+        params.put(ImportExportService.VIEW_WORKFLOW, "true".equals(request.getParameter("viewWorkflow")));
+        params.put(ImportExportService.CLEANUP, request.getParameter(ImportExportService.CLEANUP));
+        return params;
     }
 
     private void generateCleanedUpXML(HttpServletRequest request, HttpServletResponse resp, String nodePath,

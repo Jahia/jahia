@@ -100,21 +100,20 @@ public interface ImportExportService {
 
     // Export
 
-    void exportAll(OutputStream out, Map<String, Object> params, ProcessingContext jParams) throws JahiaException, RepositoryException, SAXException, IOException, JDOMException;
+    void exportAll(OutputStream out, Map<String, Object> params) throws JahiaException, RepositoryException, SAXException, IOException, JDOMException;
 
     /**
      * Export complete sites
      *
      * @param outputStream
      * @param params
-     * @param processingContext
      * @param sites
      * @throws JahiaException
      * @throws RepositoryException
      * @throws IOException
      * @throws SAXException
      */
-    void exportSites(OutputStream outputStream, Map<String, Object> params, ProcessingContext processingContext, List<JahiaSite> sites)
+    void exportSites(OutputStream outputStream, Map<String, Object> params, List<JahiaSite> sites)
             throws JahiaException, RepositoryException, IOException, SAXException, JDOMException;
 
     /**
@@ -184,7 +183,7 @@ public interface ImportExportService {
 
     void importCategories(Category rootCategory, InputStream is);
 
-    void importServerPermissions(ProcessingContext jParams, InputStream is);
+    void importServerPermissions(InputStream is);
 
     List<String[]> importUsers(File file) throws IOException ;
 

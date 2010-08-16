@@ -47,6 +47,7 @@
 <%@ page import="org.jahia.security.license.LicenseActionChecker" %>
 <%@ page import="org.jahia.admin.sites.ManageSites" %>
 <%@ page import="java.io.File" %>
+<%@ page import="org.jahia.bin.Export" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="defaultSet" value="webtemplates65.zip"/>
@@ -79,7 +80,7 @@
 
     function sendExportForm(selectedSite) {
         selectSite(selectedSite);
-        document.main.action = '<%=jParams.composeSiteUrl() + "/engineName/export/"%>' + (selectedSite ? selectedSite + '_' : '') + '<%= "export_" + new SimpleDateFormat("yyyy-MM-dd-HH-mm").format(new Date()) + ".zip"%>';
+        document.main.action = '<%=request.getContextPath() + Export.getExportServletPath()%>/default/' + (selectedSite ? selectedSite + '_' : '') + '<%= "export_" + new SimpleDateFormat("yyyy-MM-dd-HH-mm").format(new Date()) + ".zip"%>';
         document.main.submit();
     }
 
@@ -181,7 +182,7 @@
             </th>
         </tr>
         </thead>
-        <form name="main">
+        <form name="main" method="POST">
             <input type="hidden" name="do" value="sites"/><input type="hidden" name="sub" value="multipledelete"/><input
                 type="hidden" name="exportformat" value="site"/>
             <tbody>

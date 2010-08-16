@@ -2057,7 +2057,7 @@ public class ManageSites extends AbstractAdministrationModule {
                             InputStream is = new FileInputStream(file);
                             try {
                                 ImportExportBaseService.getInstance()
-                                        .importServerPermissions(jParams, new FileInputStream(file));
+                                        .importServerPermissions(new FileInputStream(file));
                             } finally {
                                 IOUtils.closeQuietly(is);
                                 file.delete();

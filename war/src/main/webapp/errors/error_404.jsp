@@ -44,12 +44,13 @@
 <head>
     <meta name="robots" content="noindex, nofollow"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/andromeda.css" type="text/css"/>
-    <title><fmt:message key="org.jahia.bin.JahiaErrorDisplay.pageNotFound.label"/>-</title>
+    <title><fmt:message key="label.error.404.title"/></title>
 
 </head>
 <body class="login">
 <div class="grass"></div>
 <div class="grass2"></div>
+<div class="hive"></div>
 <div class="bear"></div>
 <div class="cloud"></div>
 <div class="cloud2"></div>
@@ -57,10 +58,9 @@
 
     <div id="adminLogin">
             <br class="clearFloat" />
-            <h3 class="loginIcon"><fmt:message key="org.jahia.bin.JahiaErrorDisplay.pageNotFound.label"/></h3>
-        <p><fmt:message key="org.jahia.bin.JahiaErrorDisplay.fileNotFound.label"/></p>
+            <h3 class="loginIcon"><fmt:message key="label.error.404.title"/></h3>
+        <p><fmt:message key="label.error.404.description"/></p>
             <br class="clearFloat" />
     </div>
 </body>
 </html>
-

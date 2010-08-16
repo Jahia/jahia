@@ -1,4 +1,4 @@
-<%@page language="java" contentType="text/html; charset=UTF-8"%> 
+<%@page language="java" contentType="text/html; charset=UTF-8"%>
 <%--
 
     This file is part of Jahia: An integrated WCM, DMS and Portal Solution
@@ -32,106 +32,35 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" 
-%><%@taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" 
-%>
+<%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal"%>
+<%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <utility:setBundle basename="JahiaInternalResources"/>
-<%@page import="java.text.MessageFormat"
-%><%@page import="org.jahia.bin.Jahia" 
-%><%@page import="org.jahia.params.ParamBean" 
-%><%@page import="org.jahia.utils.i18n.JahiaResourceBundle"
-%><?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><%!
-    private final int REDIRECTION_DELAY = 5000;
-%><%
-    final ParamBean jParams = (ParamBean) request.getAttribute("org.jahia.params.ParamBean");
-%>
-<c:set var="isInvalidModeError" value="${not empty requestScope['org.jahia.exception'] && requestScope['org.jahia.exception'].class.name == 'org.jahia.exceptions.JahiaInvalidModeException'}"/>
-<c:set var="isGuest" value="${empty sessionScope['org.jahia.usermanager.jahiauser'] || sessionScope['org.jahia.usermanager.jahiauser'].username == 'guest'}"/>
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta name="robots" content="noindex, nofollow"/>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/error.css" type="text/css"/>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/javascript/jahia.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/errors/error_include.js"></script>
-<c:if test="${isInvalidModeError}">
-    <title><fmt:message key="org.jahia.bin.JahiaErrorDisplay.invalidMode.label"/></title>
-    <script type="text/javascript">
-        <!--
-        function redirectToPage()  {
-            window.location.href = "<%=jParams.composeOperationUrl(ParamBean.NORMAL, null)%>";
-        }	
-      
-        window.onload = function() {
-            setTimeout("redirectToPage()", <%=REDIRECTION_DELAY%>);
-        }
-    //-->
-    </script>
-</c:if>
-<c:if test="${not isInvalidModeError}">
-    <title><fmt:message key="org.jahia.bin.JahiaErrorDisplay.httpForbidden.label"/></title>
-</c:if>    
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/andromeda.css" type="text/css"/>
+    <title><fmt:message key="label.error.403.title"/></title>
+
 </head>
-<body>
-<br/><br/><br/>
-<c:if test="${isInvalidModeError}">
-<table class="errorbox" align="center" width="530" height="63" border="0" cellspacing="0" cellpadding="0">
-    <tr>
-        <td class="boxtitle"><fmt:message key="label.errorPage"/></td>
-    </tr>
-    <tr>
-        <td class="boxcontent">
-            <p class="bold"><fmt:message key="org.jahia.bin.JahiaErrorDisplay.invalidModeRequested.label"/></p>
+<body class="login">
+<div class="grass"></div>
+<div class="grass2"></div>
+<div class="hive"></div>
+<div class="bear"></div>
+<div class="cloud"></div>
+<div class="cloud2"></div>
+<h2 class="loginlogo_community"></h2>
 
-            <p><a href="#redirect" onclick="redirectToPage(); return false;">
-                <%=MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource(
-                    "org.jahia.bin.JahiaErrorDisplay.redirectToNormal.label",
-                    jParams.getLocale()), new Object[]{new Integer(REDIRECTION_DELAY / 1000)})%>
-                </a>
-            </p>
-        </td>
-    </tr>
-</table>
-</c:if>
-<c:if test="${not isInvalidModeError}">
-<table class="errorbox" align="center" width="530" height="63" border="0" cellspacing="0" cellpadding="0">
-    <tr>
-        <td colspan="2" class="boxtitle"><fmt:message key="label.errorPage"/></td>
-    </tr>
-    <tr>
-        <td colspan="2" class="boxcontent">
-            <p class="bold"><fmt:message key="org.jahia.bin.JahiaErrorDisplay.error403.label"/></p>
-
-            <p><fmt:message key="org.jahia.bin.JahiaErrorDisplay.accessForbidden.label"/></p>
-
-            <c:if test="${isGuest}">
-                <p><fmt:message key="org.jahia.bin.JahiaErrorDisplay.loginAgain.label"/></p>
-            </c:if>
-        </td>
-    </tr>
-    <tr>
-        <td align="left" class="boxcontent">
-            <c:if test="${isGuest}">
-            <a href="javascript:EnginePopup('<%=Jahia.getServletPath()%>','login')" class="bold"><fmt:message key="org.jahia.bin.JahiaErrorDisplay.login.label"/></a>
-            </c:if>
-            <c:if test="${not isGuest}">
-            <a href="${pageContext.request.contextPath}/logout.jsp" class="bold"><fmt:message key="org.jahia.bin.JahiaErrorDisplay.logout.label"/></a>
-            </c:if>
-        </td>
-        <td align="right" class="boxcontent">
-          <script type="text/javascript">
-            <!--
-            if (window.opener != null) {
-                document.writeln( "<a href=\"javascript:window.close()\" class=\"bold\"><fmt:message key="org.jahia.bin.JahiaErrorDisplay.close.label"/></a>" );
-            }
-            // -->
-          </script>                    
-        </td>
-    </tr>
-</table>
-</c:if>
+    <div id="adminLogin">
+            <br class="clearFloat" />
+            <h3 class="loginIcon"><fmt:message key="label.error.403.title"/></h3>
+        <p><fmt:message key="label.error.403.description"/></p>
+            <br class="clearFloat" />
+    </div>
 </body>
 </html>

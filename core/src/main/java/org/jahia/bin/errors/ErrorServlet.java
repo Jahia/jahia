@@ -32,30 +32,23 @@
 
 package org.jahia.bin.errors;
 
-import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-import static javax.servlet.http.HttpServletResponse.SC_SERVICE_UNAVAILABLE;
 
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.TimeZone;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.time.FastDateFormat;
 import org.apache.log4j.Logger;
 import org.jahia.bin.filters.ResponseCacheControlFilter;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaRuntimeException;
-import org.jahia.exceptions.JahiaServerOverloadedException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.settings.SettingsBean;
-import org.jahia.utils.DateUtils;
 
 /**
  * Error pages dispatcher servlet.
@@ -64,19 +57,11 @@ import org.jahia.utils.DateUtils;
  */
 public class ErrorServlet extends HttpServlet {
 
-    private static final FastDateFormat DATE_FORMAT = FastDateFormat
-            .getInstance(DateUtils.DEFAULT_DATETIME_FORMAT);
+	private static final long serialVersionUID = -6990851339777685000L;
 
     private static final Logger logger = Logger.getLogger(ErrorServlet.class);
 
     protected int getErrorCode(HttpServletRequest request) {
-        Throwable error = getException(request);
-        
-        // trick for 503 error
-        if (error instanceof JahiaServerOverloadedException) {
-            return SC_SERVICE_UNAVAILABLE;
-        }
-        
         int errorCode = (Integer) request
                 .getAttribute("javax.servlet.error.status_code");
 
@@ -190,38 +175,6 @@ public class ErrorServlet extends HttpServlet {
         }
 
         int errorCode = getErrorCode(request);
-
-        switch (errorCode) {
-        case SC_SERVICE_UNAVAILABLE: {
-            // special handling for server overloaded exception --> set
-            // retry-after header
-            Throwable rootCause = (Throwable) request
-                    .getAttribute("javax.servlet.error.exception");
-            rootCause = rootCause != null ? rootCause : (Throwable) request
-                    .getAttribute("org.jahia.exception");
-
-            while (rootCause != null && rootCause.getCause() != null) {
-                rootCause = rootCause.getCause();
-            }
-            if (rootCause != null
-                    && rootCause instanceof JahiaServerOverloadedException) {
-                Calendar cal = Calendar
-                        .getInstance(TimeZone.getTimeZone("GMT"));
-                cal.add(Calendar.SECOND,
-                        ((JahiaServerOverloadedException) rootCause)
-                                .getSuggestedRetryTime());
-                response.setHeader("Retry-After", DATE_FORMAT.format(cal
-                        .getTime())
-                        + " GMT");
-            }
-            break;
-        }
-
-        case SC_FORBIDDEN: {
-
-            break;
-        }
-        }
 
         response.setStatus(errorCode);
         response.setContentType("text/html; charset="

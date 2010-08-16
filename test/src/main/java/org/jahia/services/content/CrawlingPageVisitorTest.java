@@ -64,7 +64,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.internal.matchers.StringContains;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
@@ -76,6 +75,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 /**
@@ -200,7 +200,7 @@ public class CrawlingPageVisitorTest {
                 int statusCode = client.executeMethod(get);
 
                 assertEquals("Precompile servlet failed", HttpStatus.SC_OK, statusCode);
-                assertThat("Precompilation found buggy JSPs", get.getResponseBodyAsString(), new StringContains("No problems found!"));
+                assertThat("Precompilation found buggy JSPs", get.getResponseBodyAsString(), containsString("No problems found!"));
                 assertEquals("There were exceptions during the precompile process", "", appender.getErrorLogs());
             } finally {
                 get.releaseConnection();

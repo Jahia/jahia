@@ -93,7 +93,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     private static final String REPOSITORY_XML = "repository.xml";
     private static final String CATEGORIES_XML = "categories.xml";
     private static final String SITE_PERMISSIONS_XML = "sitePermissions.xml";
-    private static final String SERVER_PERMISSIONS_XML = "serverPermissions.xml";
     private static final String USERS_XML = "users.xml";
     private static final String SITE_PROPERTIES = "site.properties";
     private static final String EXPORT_PROPERTIES = "export.properties";
@@ -237,11 +236,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             exportSite(jahiaSite, zout, params);
         }
 
-        anEntry = new ZipEntry(SERVER_PERMISSIONS_XML);
-        zout.putNextEntry(anEntry);
-        dw = new DataWriter(new OutputStreamWriter(zout, "UTF-8"));
-        exportServerPermissions(dw);
-
         JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession();
 
         // export shared files -->
@@ -272,10 +266,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         zout.putNextEntry(new ZipEntry(SITE_PROPERTIES));
         exportSiteInfos(zout, site);
-        zout.putNextEntry(new ZipEntry(SITE_PERMISSIONS_XML));
-        DataWriter dw = new DataWriter(new OutputStreamWriter(zout, "UTF-8"));
-        exportSitePermissions(dw, site);
-        dw.flush();
         Set<JCRNodeWrapper> files = Collections.singleton(jcrStoreService.getSessionFactory().getCurrentUserSession().getNode("/sites/"+
                 site.getSiteKey()));
         exportNodes(jcrStoreService.getSessionFactory().getCurrentUserSession().getRootNode(), jcrStoreService.getSessionFactory().getCurrentUserSession(), files, zout, new HashSet<String>(),
@@ -440,14 +430,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
 
         p.store(out, "");
-    }
-
-    private void exportServerPermissions(ContentHandler ch) throws JahiaException, SAXException {
-//        exportPermissions(ch, "org.jahia.actions.server", "serverPermission");
-    }
-
-    private void exportSitePermissions(ContentHandler ch, JahiaSite site) throws JahiaException, SAXException {
-//        exportPermissions(ch, ManageSiteRoles.SITE_PERMISSIONS_PREFIX + site.getID(), "sitePermission");
     }
 
     public void importSiteZip(File file, List<ImportAction> actions, ExtendedImportResult result, JahiaSite site, Map<Object, Object> infos) throws RepositoryException, IOException {

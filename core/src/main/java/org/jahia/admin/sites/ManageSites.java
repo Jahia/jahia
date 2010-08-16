@@ -1843,7 +1843,10 @@ public class ManageSites extends AbstractAdministrationModule {
         importInfos.put("importFile", i);
         importInfos.put("importFileName", filename);
         importInfos.put("selected", Boolean.TRUE);
-        importInfos.put("originatingJahiaRelease", ((Properties)jParams.getAttribute("exportProps")).getProperty("JahiaRelease"));
+        final Properties exportProps = (Properties) jParams.getAttribute("exportProps");
+        if (exportProps != null) {
+            importInfos.put("originatingJahiaRelease", exportProps.getProperty("JahiaRelease"));
+        }
         if (filename.endsWith(".xml")) {
             importInfos.put("type", "xml");
         } else {

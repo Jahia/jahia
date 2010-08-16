@@ -329,14 +329,6 @@
             <id>qa-build</id>
             <modules>
                 <module>package</module>
-                <module>test</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>qa-jboss</id>
-            <modules>
-                <module>package</module>
-                <module>test</module>
             </modules>
         </profile>
         <profile>

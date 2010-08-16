@@ -1,8 +1,11 @@
 package org.apache.jackrabbit.core.query.lucene;
 
+import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.HierarchyManager;
 import org.apache.jackrabbit.core.SessionImpl;
+import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.query.qom.*;
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
@@ -17,6 +20,7 @@ import org.apache.lucene.search.SortComparatorSource;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import javax.jcr.query.qom.Literal;
 import javax.jcr.query.qom.StaticOperand;
 
@@ -26,8 +30,11 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactoryImpl {
 
     public JahiaLuceneQueryFactoryImpl(SessionImpl session, SortComparatorSource scs, HierarchyManager hmgr,
                                        NamespaceMappings nsMappings, Analyzer analyzer, SynonymProvider synonymProvider,
-                                       IndexFormatVersion version) {
-        super(session, scs, hmgr, nsMappings, analyzer, synonymProvider, version);
+                                       IndexFormatVersion version, Map<Name, Value> bindVariables) {
+        super(session, scs, hmgr, nsMappings, analyzer, synonymProvider, version
+// TODO: uncommment when migrating to Jackrabbit 2.1.1
+//                , bindVariables
+                );
         this.session = session;
     }
 

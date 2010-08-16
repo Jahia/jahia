@@ -51,7 +51,8 @@ public class JahiaQueryObjectModelImpl extends QueryObjectModelImpl {
                 index.getSortComparatorSource(),
                 index.getContext().getHierarchyManager(),
                 index.getNamespaceMappings(), index.getTextAnalyzer(),
-                index.getSynonymProvider(), index.getIndexFormatVersion());
+                index.getSynonymProvider(), index.getIndexFormatVersion(),
+                getBindVariableValues());
 
         MultiColumnQuery query = factory.create(qomTree);
 

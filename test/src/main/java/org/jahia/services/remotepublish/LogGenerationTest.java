@@ -83,15 +83,15 @@ public class LogGenerationTest extends TestCase {
 
         final JCRNodeWrapper node = session.getNode("/sites/jcrRPTest/home");
         JCRNodeWrapper source = node.addNode("source", "jnt:page");
-        JCRNodeWrapper page1 = source.addNode("page1", "jnt:page");
-        JCRNodeWrapper page2 = source.addNode("page2", "jnt:page");
+        source.addNode("page1", "jnt:page");
+        source.addNode("page2", "jnt:page");
         JCRNodeWrapper page3 = source.addNode("page3", "jnt:page");
         session.save();
 
         Calendar now = new GregorianCalendar();
 
         JCRPublicationService.getInstance()
-                .publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+                .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
 
         JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
@@ -115,12 +115,12 @@ public class LogGenerationTest extends TestCase {
 
         now = log.getDate();
 
-        page3.checkout();
+        session.checkout(page3);
         page3.setProperty("jcr:title", "title_changed");
         session.save();
 
         JCRPublicationService.getInstance()
-                .publish("/sites/jcrRPTest/home/source", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+                .publish(source.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
 
         RemotePublicationService.getInstance().generateLog(source, now, new FileOutputStream(tmp));
 
@@ -141,16 +141,16 @@ public class LogGenerationTest extends TestCase {
 
 
         JCRPublicationService.getInstance()
-                .publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+                .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
 
         Calendar now = new GregorianCalendar();
-        source.checkout();
-        page1.checkout();
+        session.checkout(source);
+        session.checkout(page1);
         page1.remove();
         session.save();
 
         JCRPublicationService.getInstance()
-                .publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+                .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
 
         JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
@@ -165,8 +165,7 @@ public class LogGenerationTest extends TestCase {
         Map<String, Object> addedProperties = new HashMap<String, Object>();
         Map<String, Object> updatedProperties = new HashMap<String, Object>();
         Set<String> removedProperties = new HashSet<String>();
-        LogBundleEnd log =
-                parseResults(tmp, source, added, removed, addedProperties, updatedProperties, removedProperties);
+        parseResults(tmp, source, added, removed, addedProperties, updatedProperties, removedProperties);
 
         assertTrue("Removed page not in log", removed.contains("/sites/jcrRPTest/home/source/page1"));
     }
@@ -184,7 +183,7 @@ public class LogGenerationTest extends TestCase {
                 .publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
 
         Calendar now = new GregorianCalendar();
-        source.checkout();
+        session.checkout(source);
         source.setProperty("j:firstName", "testAddNewPropertyAndUpdatePropertyLogGeneration");
         session.save();
 
@@ -204,7 +203,7 @@ public class LogGenerationTest extends TestCase {
         Map<String, Object> addedProperties = new HashMap<String, Object>();
         Map<String, Object> updatedProperties = new HashMap<String, Object>();
         Set<String> removedProperties = new HashSet<String>();
-        LogBundleEnd log = parseResults(tmp, liveSource, addedNodes, removedNodes, addedProperties, updatedProperties,
+        parseResults(tmp, liveSource, addedNodes, removedNodes, addedProperties, updatedProperties,
                 removedProperties);
 
         assertTrue("New property j:firstname not in log",
@@ -229,7 +228,7 @@ public class LogGenerationTest extends TestCase {
                 .publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
 
 
-        source.checkout();
+        session.checkout(source);
         source.setProperty("j:firstName", "testAddNewPropertyAndUpdatePropertyLogGeneration");
         session.save();
 
@@ -238,7 +237,7 @@ public class LogGenerationTest extends TestCase {
 
         Calendar now = new GregorianCalendar();
 
-        source.checkout();
+        session.checkout(source);
         source.getProperty("j:firstName").remove();
         session.save();
 
@@ -258,7 +257,7 @@ public class LogGenerationTest extends TestCase {
         Map<String, Object> addedProperties = new HashMap<String, Object>();
         Map<String, Object> updatedProperties = new HashMap<String, Object>();
         Set<String> removedProperties = new HashSet<String>();
-        LogBundleEnd log = parseResults(tmp, liveSource, addedNodes, removedNodes, addedProperties, updatedProperties,
+        parseResults(tmp, liveSource, addedNodes, removedNodes, addedProperties, updatedProperties,
                 removedProperties);
 
         assertTrue("Removed property j:firstname not in log",
@@ -273,7 +272,7 @@ public class LogGenerationTest extends TestCase {
         JCRNodeWrapper source = session.getNode("/sites/jcrRPTest/files");
 
         JCRPublicationService.getInstance()
-                .publish("/sites/jcrRPTest/files", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+                .publish(source.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
 
         Calendar now = new GregorianCalendar();
 
@@ -283,7 +282,7 @@ public class LogGenerationTest extends TestCase {
         InputStream is = new ByteArrayInputStream(value.getBytes("UTF-8"));
 
         String name = "test.txt";
-        JCRNodeWrapper testFile = source.uploadFile(name, is, mimeType);
+        source.uploadFile(name, is, mimeType);
 
         session.save();
 
@@ -304,8 +303,7 @@ public class LogGenerationTest extends TestCase {
         Map<String, Object> addedProperties = new HashMap<String, Object>();
         Map<String, Object> updatedProperties = new HashMap<String, Object>();
         Set<String> removedProperties = new HashSet<String>();
-        LogBundleEnd log =
-                parseResults(tmp, source, added, removed, addedProperties, updatedProperties, removedProperties);
+        parseResults(tmp, source, added, removed, addedProperties, updatedProperties, removedProperties);
         assertTrue("Invalid type for binary property",
                 addedProperties.get("/sites/jcrRPTest/files/test.txt/jcr:content/jcr:data") instanceof byte[]);
         byte[] bytes = (byte[]) addedProperties.get("/sites/jcrRPTest/files/test.txt/jcr:content/jcr:data");

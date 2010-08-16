@@ -88,7 +88,7 @@ public class ActionTest extends TestCase {
 
         JCRNodeWrapper node = session.getNode("/sites/jcrRPTest/home");
         JCRNodeWrapper source = node.addNode("source", "jnt:page");
-        JCRNodeWrapper page1 = source.addNode("page1", "jnt:page");
+        source.addNode("page1", "jnt:page");
         JCRNodeWrapper target = node.addNode("target", "jnt:page");
 
         JCRNodeWrapper rp = node.addNode("rp", "jnt:remotePublication");
@@ -102,7 +102,7 @@ public class ActionTest extends TestCase {
 
         session.save();
 
-        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
+        JCRPublicationService.getInstance().publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
                 true);
 
         HttpClient client = new HttpClient();

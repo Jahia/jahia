@@ -4,7 +4,7 @@
     <module>
         <web>
             <web-uri>jahia.war</web-uri>
-            <context-root>/</context-root>
+            <context-root>${jahia.deploy.war.contextPath}</context-root>
         </web>
     </module>
     <!--

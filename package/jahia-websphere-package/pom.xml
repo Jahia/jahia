@@ -10,15 +10,6 @@
     <name>Jahia Websphere Package</name>
     <packaging>pom</packaging>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.jahia.server</groupId>
-            <artifactId>jahia-war</artifactId>
-            <version>${jahia.package.version}</version>
-            <type>war</type>
-        </dependency>
-    </dependencies>
-
     <modules>
         <module>shared-libraries</module>
         <module>ear</module>

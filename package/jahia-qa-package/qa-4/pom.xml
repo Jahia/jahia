@@ -20,6 +20,7 @@
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-ear</artifactId>
             <version>${jahia.package.version}</version>
+            <classifier>${jahia.war.classifier}</classifier>
             <type>pom</type>
         </dependency>
     </dependencies>

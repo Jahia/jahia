@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>org.jahia.server</groupId>
         <artifactId>jahia-root</artifactId>
@@ -8,7 +11,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jahia-test</artifactId>
     <name>Jahia test package</name>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 
     <dependencies>
         <!--Cross project dependencies-->
@@ -16,30 +19,21 @@
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
             <version>${jahia.package.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-log4j12</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.jahia.server</groupId>
-            <artifactId>jahia-war</artifactId>
-            <version>${jahia.package.version}</version>
-            <type>war</type>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>remotepublish</artifactId>
             <version>${jahia.package.version}</version>
             <classifier>classes</classifier>
+            <scope>provided</scope>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>social-service</artifactId>
             <version>${jahia.package.version}</version>
+            <scope>provided</scope>
             <type>jar</type>
         </dependency>
         <dependency>
@@ -47,16 +41,6 @@
             <artifactId>portlet-api</artifactId>
             <version>2.0</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>jasperreports</groupId>
-            <artifactId>jasperreports</artifactId>
-            <version>3.5.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-all</artifactId>
-            <version>1.6.4</version>
         </dependency>
 
         <dependency>
@@ -76,6 +60,26 @@
                     <groupId>cglib</groupId>
                     <artifactId>cglib-full</artifactId>
                 </exclusion>
+                <exclusion>
+                	<artifactId>jbpm-api</artifactId>
+                	<groupId>org.jbpm.jbpm4</groupId>
+                </exclusion>
+                <exclusion>
+                	<artifactId>hibernate-core</artifactId>
+                	<groupId>org.hibernate</groupId>
+                </exclusion>
+                <exclusion>
+                	<artifactId>log4j</artifactId>
+                	<groupId>log4j</groupId>
+                </exclusion>
+                <exclusion>
+                	<artifactId>cglib-nodep</artifactId>
+                	<groupId>cglib</groupId>
+                </exclusion>
+                <exclusion>
+                	<artifactId>jbpm-log</artifactId>
+                	<groupId>org.jbpm.jbpm4</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
 
@@ -88,6 +92,16 @@
             <groupId>junit-addons</groupId>
             <artifactId>junit-addons</artifactId>
             <version>1.4</version>
+            <exclusions>
+            	<exclusion>
+            		<artifactId>xmlParserAPIs</artifactId>
+            		<groupId>xerces</groupId>
+            	</exclusion>
+            	<exclusion>
+            		<artifactId>xercesImpl</artifactId>
+            		<groupId>xerces</groupId>
+            	</exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>xmlunit</groupId>
@@ -98,6 +112,12 @@
             <groupId>org.apache.ant</groupId>
             <artifactId>ant-junit</artifactId>
             <version>1.7.1</version>
+            <exclusions>
+            	<exclusion>
+            		<artifactId>ant</artifactId>
+            		<groupId>org.apache.ant</groupId>
+            	</exclusion>
+            </exclusions>
         </dependency>
         
         <dependency>
@@ -483,6 +503,17 @@
             </build>
         </profile>
     </profiles>
+    <build>
+    	<plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+              		<archiveClasses>true</archiveClasses>
+                </configuration>                   
+            </plugin>
+        </plugins>
+    </build>
     <reporting>
         <plugins>
             <plugin>

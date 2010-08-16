@@ -49,15 +49,6 @@
         <outputDirectory>${basedir}/target</outputDirectory>
         <plugins>
             <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3</version>
-                <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
-                    <verbose>true</verbose>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.3</version>
@@ -104,6 +95,7 @@
                                     <groupId>org.jahia.server</groupId>
                                     <artifactId>jahia-war</artifactId>
                                     <version>${jahia.package.version}</version>
+            						<classifier>${jahia.war.classifier}</classifier>
                                     <type>war</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/artifacts/jahia</outputDirectory>

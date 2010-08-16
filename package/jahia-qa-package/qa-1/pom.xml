@@ -20,13 +20,8 @@
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-ear</artifactId>
             <version>${jahia.package.version}</version>
+            <classifier>${jahia.war.classifier}</classifier>
             <type>pom</type>
-        </dependency>
-        <dependency>
-            <groupId>org.jahia.server</groupId>
-            <artifactId>jahia-test</artifactId>
-            <version>${jahia.package.version}</version>
-            <type>jar</type>
         </dependency>
     </dependencies>
 
@@ -69,26 +64,6 @@
 
                                     </artifactItems>
                                     <outputDirectory>${project.build.directory}/apache-tomcat-${jahia.tomcat.version}/webapps</outputDirectory>
-                                    <overWriteReleases>true</overWriteReleases>
-                                    <overWriteSnapshots>true</overWriteSnapshots>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>copy-testjar</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>copy</goal>
-                                </goals>
-                                <configuration>
-                                    <artifactItems>
-                                        <artifactItem>
-                                            <groupId>org.jahia.server</groupId>
-                                            <artifactId>jahia-test</artifactId>
-                                            <version>${jahia.package.version}</version>
-                                            <type>jar</type>
-                                        </artifactItem>
-                                    </artifactItems>
-                                    <outputDirectory>${project.build.directory}/apache-tomcat-${jahia.tomcat.version}/webapps/${jahia.deploy.war.dirName}/WEB-INF/lib</outputDirectory>
                                     <overWriteReleases>true</overWriteReleases>
                                     <overWriteSnapshots>true</overWriteSnapshots>
                                 </configuration>

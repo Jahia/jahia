@@ -1,16 +1,6 @@
-package org.jahia.services.uicomponents.resolver.toolbar.impl;
-
-import org.jahia.exceptions.JahiaException;
-import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.uicomponents.bean.toolbar.Item;
-import org.jahia.services.uicomponents.bean.toolbar.Selected;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.utils.LanguageCodeConverters;
-
-import java.util.*;
 /**
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
+ * Copyright (C) 2002-2010 Jahia Solutions Group SA. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -38,7 +28,18 @@ import java.util.*;
  * in accordance with the terms contained in a separate written agreement
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
- **/
+ */
+
+package org.jahia.services.uicomponents.resolver.toolbar.impl;
+
+import org.jahia.exceptions.JahiaException;
+import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.uicomponents.bean.toolbar.Item;
+import org.jahia.services.uicomponents.bean.toolbar.Selected;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.utils.LanguageCodeConverters;
+
+import java.util.*;
 
 /**
  * User: ktlili

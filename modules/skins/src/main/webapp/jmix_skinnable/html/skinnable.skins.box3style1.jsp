@@ -1,7 +1,8 @@
+<%@ taglib uri="http://www.jahia.org/tags/jcr" prefix="jcr" %>
 <%--
 
     This file is part of Jahia: An integrated WCM, DMS and Portal Solution
-    Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
+    Copyright (C) 2002-2010 Jahia Solutions Group SA. All rights reserved.
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -31,7 +32,7 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-<%@ taglib uri="http://www.jahia.org/tags/jcr" prefix="jcr" %>
+
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <template:addResources type="css" resources="box3.css"/>

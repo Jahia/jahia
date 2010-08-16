@@ -1,7 +1,8 @@
+<%@ tag body-content="empty" description="Renders language selection control. By default all active languages of the site are used. This can be overridden by providing a list of languages to be displayed." %>
 <%--
 
     This file is part of Jahia: An integrated WCM, DMS and Portal Solution
-    Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
+    Copyright (C) 2002-2010 Jahia Solutions Group SA. All rights reserved.
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -31,8 +32,6 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-<%@ tag body-content="empty"
-        description="Renders language selection control. By default all active languages of the site are used. This can be overridden by providing a list of languages to be displayed." %>
 <%@ tag import="java.util.Locale, org.jahia.services.sites.JahiaSite, org.jahia.utils.LanguageCodeConverters" %>
 <%@ tag dynamic-attributes="attributes"%>
 <%@ attribute name="display" required="false" type="java.lang.Boolean"

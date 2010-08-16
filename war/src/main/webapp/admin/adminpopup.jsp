@@ -1,7 +1,8 @@
+<%@page contentType="text/html; charset=UTF-8"%>
 <%--
 
     This file is part of Jahia: An integrated WCM, DMS and Portal Solution
-    Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
+    Copyright (C) 2002-2010 Jahia Solutions Group SA. All rights reserved.
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -31,8 +32,7 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-<%@page contentType="text/html; charset=UTF-8"
-%><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <%@page language = "java" %>
 <%@page import = "java.util.*"%>
 <%@page import = "org.jahia.bin.Jahia"%>

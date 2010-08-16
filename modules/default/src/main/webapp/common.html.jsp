@@ -1,7 +1,8 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
 
     This file is part of Jahia: An integrated WCM, DMS and Portal Solution
-    Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
+    Copyright (C) 2002-2010 Jahia Solutions Group SA. All rights reserved.
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -31,7 +32,7 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>

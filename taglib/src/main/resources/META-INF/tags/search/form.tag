@@ -1,7 +1,8 @@
+<%@ tag body-content="scriptless" description="Renders the HTML form element to wrap up the search controls." %>
 <%--
 
     This file is part of Jahia: An integrated WCM, DMS and Portal Solution
-    Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
+    Copyright (C) 2002-2010 Jahia Solutions Group SA. All rights reserved.
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -31,7 +32,7 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-<%@ tag body-content="scriptless" description="Renders the HTML form element to wrap up the search controls." %>
+
 <%@ tag dynamic-attributes="attributes"%>
 <jsp:useBean id="searchTermIndexes" class="java.util.HashMap" scope="request"/>
 <jsp:useBean id="searchTermMatchIndexes" class="java.util.HashMap" scope="request"/>

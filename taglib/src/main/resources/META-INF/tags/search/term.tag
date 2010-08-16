@@ -1,7 +1,8 @@
+<%@ tag body-content="empty" description="Renders search term input control." %>
 <%--
 
     This file is part of Jahia: An integrated WCM, DMS and Portal Solution
-    Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
+    Copyright (C) 2002-2010 Jahia Solutions Group SA. All rights reserved.
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -31,7 +32,7 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-<%@ tag body-content="empty" description="Renders search term input control." %>
+
 <%@ tag dynamic-attributes="attributes"%>
 <%@ attribute name="display" required="false" type="java.lang.Boolean"
               description="Should we display an input control for this query element or create a hidden one? In case of the hidden input field, the value should be provided. [true]"

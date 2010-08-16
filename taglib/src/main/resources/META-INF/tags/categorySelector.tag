@@ -1,7 +1,8 @@
+<%@ tag body-content="empty" description="Renders the link to the category selection engine (as a popup window)." %>
 <%--
 
     This file is part of Jahia: An integrated WCM, DMS and Portal Solution
-    Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
+    Copyright (C) 2002-2010 Jahia Solutions Group SA. All rights reserved.
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -31,7 +32,7 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-<%@ tag body-content="empty" description="Renders the link to the category selection engine (as a popup window)." %>
+
 <%@ attribute name="fieldId" required="true" type="java.lang.String"
               description="The input field name and ID to synchronize the seletcted category value with." %>
 <%@ attribute name="fieldIdIncludeChildren" required="false" type="java.lang.String"

@@ -1,15 +1,8 @@
 <%@ tag import="org.jahia.params.ProcessingContext" %>
-<%@ tag import="org.jahia.registries.ServicesRegistry" %>
-<%@ tag import="org.jahia.services.content.JCRNodeWrapper" %>
-<%@ tag import="org.jahia.services.content.JCRStoreService" %>
-<%@ tag import="javax.jcr.RepositoryException" %>
-<%@ tag import="java.util.ArrayList" %>
-<%@ tag import="java.util.Iterator" %>
-<%@ tag import="org.jahia.services.content.JCRSessionFactory" %>
 <%--
 
     This file is part of Jahia: An integrated WCM, DMS and Portal Solution
-    Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
+    Copyright (C) 2002-2010 Jahia Solutions Group SA. All rights reserved.
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -39,6 +32,14 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
+
+<%@ tag import="org.jahia.registries.ServicesRegistry" %>
+<%@ tag import="org.jahia.services.content.JCRNodeWrapper" %>
+<%@ tag import="org.jahia.services.content.JCRStoreService" %>
+<%@ tag import="javax.jcr.RepositoryException" %>
+<%@ tag import="java.util.ArrayList" %>
+<%@ tag import="java.util.Iterator" %>
+<%@ tag import="org.jahia.services.content.JCRSessionFactory" %>
 <%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
 <%@ taglib uri="http://www.jahia.org/tags/templateLib" prefix="template" %>
 <%@ taglib prefix="internal" uri="http://www.jahia.org/tags/internalLib" %>

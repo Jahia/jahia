@@ -1,32 +1,6 @@
-package org.jahia.ajax.gwt.client.widget.content;
-
-import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
-import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
-import org.jahia.ajax.gwt.client.widget.tripanel.BottomRightComponent;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
-import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServiceAsync;
-import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
-import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
-import org.jahia.ajax.gwt.client.util.URL;
-import org.jahia.ajax.gwt.client.messages.Messages;
-import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.layout.FormLayout;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.*;
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.data.BaseModelData;
-import com.allen_sauer.gwt.log.client.Log;
-
-import java.util.List;
-import java.util.ArrayList; /**
+/**
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
+ * Copyright (C) 2002-2010 Jahia Solutions Group SA. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -54,7 +28,35 @@ import java.util.ArrayList; /**
  * in accordance with the terms contained in a separate written agreement
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
- **/
+ */
+
+package org.jahia.ajax.gwt.client.widget.content;
+
+import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
+import org.jahia.ajax.gwt.client.widget.tripanel.BottomRightComponent;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
+import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServiceAsync;
+import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
+import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
+import org.jahia.ajax.gwt.client.util.URL;
+import org.jahia.ajax.gwt.client.messages.Messages;
+import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.layout.FormLayout;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.*;
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.allen_sauer.gwt.log.client.Log;
+
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * User: ktlili

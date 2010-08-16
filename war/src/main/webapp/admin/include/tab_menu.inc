@@ -1,7 +1,17 @@
+<%@page import="java.util.Locale,
+                    org.jahia.params.ParamBean,
+                    org.jahia.params.ProcessingContext,
+                    org.jahia.services.sites.JahiaSite,
+                    org.jahia.services.sites.JahiaSitesService,
+                    org.jahia.services.usermanager.JahiaUser,
+                    org.jahia.registries.ServicesRegistry,
+                    org.jahia.utils.LanguageCodeConverters,
+                    org.jahia.services.preferences.user.UserPreferencesHelper" 
+%>
 <%--
 
     This file is part of Jahia: An integrated WCM, DMS and Portal Solution
-    Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
+    Copyright (C) 2002-2010 Jahia Solutions Group SA. All rights reserved.
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -31,16 +41,7 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-<%@page import="java.util.Locale,
-                    org.jahia.params.ParamBean,
-                    org.jahia.params.ProcessingContext,
-                    org.jahia.services.sites.JahiaSite,
-                    org.jahia.services.sites.JahiaSitesService,
-                    org.jahia.services.usermanager.JahiaUser,
-                    org.jahia.registries.ServicesRegistry,
-                    org.jahia.utils.LanguageCodeConverters,
-                    org.jahia.services.preferences.user.UserPreferencesHelper" 
-%><%
+<%
     JahiaSitesService siteService = ServicesRegistry.getInstance().getJahiaSitesService();
     JahiaSite theSite = (JahiaSite) session.getAttribute(ProcessingContext.SESSION_SITE);
     if (theSite != null && theSite.getID() == -1) {

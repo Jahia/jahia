@@ -1,6 +1,6 @@
 /**
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
+ * Copyright (C) 2002-2010 Jahia Solutions Group SA. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -29,6 +29,7 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
+
 package org.jahia.services.query;
 
 import javax.jcr.RepositoryException;
@@ -45,7 +46,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 
 /**
  * Jahia's query service is based on the JCR QueryObjectModelFactory and thus supports all kinds of
- * complex queries specified in JSR-283 (Content Repository for Java™ Technology API 2.0)
+ * complex queries specified in JSR-283 (Content Repository for Javaï¿½ Technology API 2.0)
  * 
  * Queries can be created with the API by using the QueryObjectModel.
  * Jahia will also provide a query builder user interface.

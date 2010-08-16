@@ -1,7 +1,8 @@
+<%@ tag body-content="scriptless" description="Renders the HTML form element to wrap up the login controls." %>
 <%--
 
     This file is part of Jahia: An integrated WCM, DMS and Portal Solution
-    Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
+    Copyright (C) 2002-2010 Jahia Solutions Group SA. All rights reserved.
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -31,7 +32,7 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-<%@ tag body-content="scriptless" description="Renders the HTML form element to wrap up the login controls." %>
+
 <%@ tag dynamic-attributes="attributes"%>
 <%@ attribute name="doRedirect" required="false" type="java.lang.Boolean"
               description="Do we need to perform a client-side redirect after the login? Setting it to true, will will prevent browser built-in warning message if the page needs to be reloaded (after POST method). [true]"%>

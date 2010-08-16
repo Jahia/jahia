@@ -1,7 +1,8 @@
+<%@ tag body-content="empty" description="Renders the search URL built from current search request parameters, considering the specified suggestion search term. The suggested term can be specified explicitly by providing suggestion attribute or by nesting this tag inside &lt;s:suggestions/&gt; tag." import="org.jahia.taglibs.search.SuggestionsTag" %>
 <%--
 
     This file is part of Jahia: An integrated WCM, DMS and Portal Solution
-    Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
+    Copyright (C) 2002-2010 Jahia Solutions Group SA. All rights reserved.
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -31,10 +32,7 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-<%@ tag body-content="empty"
-        description="Renders the search URL built from current search request parameters, considering the specified suggestion search term. The suggested term can be specified explicitly by providing suggestion attribute or by nesting this tag inside &lt;s:suggestions/&gt; tag."
-        import="org.jahia.taglibs.search.SuggestionsTag" 
-%><%@ attribute name="suggestion" required="false" type="java.lang.String"
+<%@ attribute name="suggestion" required="false" type="java.lang.String"
               description="The search term suggestion to generate the URL for."
 %><%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"
 %><%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" 

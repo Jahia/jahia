@@ -1,7 +1,8 @@
+<%@page import="org.jahia.utils.LanguageCodeConverters,java.util.Iterator,java.util.Locale,java.util.Set" %>
 <%--
 
     This file is part of Jahia: An integrated WCM, DMS and Portal Solution
-    Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
+    Copyright (C) 2002-2010 Jahia Solutions Group SA. All rights reserved.
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -31,7 +32,7 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-<%@page import="org.jahia.utils.LanguageCodeConverters,java.util.Iterator,java.util.Locale,java.util.Set" %>
+
 <%@include file="/admin/include/header.inc" %>
 <%
     Set<String> languageSet = (Set<String>) request.getAttribute("languageSet");

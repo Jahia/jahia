@@ -7,5 +7,7 @@
         <skipLine><![CDATA[(\s|\t)*((<%@)|(<!DOCTYPE)|(%>)).*]]></skipLine>
         <firstLineDetectionPattern><![CDATA[(\s|\t)*<%--.*$]]></firstLineDetectionPattern>
         <lastLineDetectionPattern><![CDATA[.*--%>]]></lastLineDetectionPattern>
+        <allowBlankLines>false</allowBlankLines>
+        <isMultiline>true</isMultiline>
     </dynascript_style>
 </additionalHeaders>

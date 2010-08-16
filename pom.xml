@@ -262,9 +262,9 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>com.google.code.maven-license-plugin</groupId>
+                        <groupId>com.mycila.maven-license-plugin</groupId>
                         <artifactId>maven-license-plugin</artifactId>
-                        <version>1.4.0</version>
+                        <version>1.8.0</version>
                         <configuration>
                             <basedir>${basedir}</basedir>
                             <header>header.txt</header>
@@ -277,6 +277,7 @@
                                 <include>src/**/*.jsp</include>
                                 <include>src/**/*.jspf</include>
                                 <include>src/**/*.inc</include>
+                                <include>src/main/webapp/WEB-INF/web.xml</include>
                             </includes>
                             <excludes>
                                 <exclude>src/main/java/compressionFilters/**</exclude>
@@ -292,7 +293,7 @@
                             </mapping>
                             <useDefaultMapping>true</useDefaultMapping>
                             <properties>
-                                <year>2009</year>
+                                <year>2010</year>
                             </properties>
                             <encoding>UTF-8</encoding>
                             <headerDefinitions>

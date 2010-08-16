@@ -1,6 +1,6 @@
 /**
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
+ * Copyright (C) 2002-2010 Jahia Solutions Group SA. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -29,6 +29,7 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
+
 //  EV      12.01.2001
 //  SH      12.12.2001 Adding JahiaData reference, only for reasons of speed
 //  because in some cases we were recreating it instead of using the already

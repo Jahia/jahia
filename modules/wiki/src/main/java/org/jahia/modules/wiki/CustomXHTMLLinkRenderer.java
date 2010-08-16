@@ -1,31 +1,6 @@
-package org.jahia.modules.wiki;
-
-import org.xwiki.component.annotation.Component;
-import org.xwiki.component.annotation.Requirement;
-import org.xwiki.component.annotation.InstantiationStrategy;
-import org.xwiki.component.manager.ComponentManager;
-import org.xwiki.component.manager.ComponentLookupException;
-import org.xwiki.component.phase.InitializationException;
-import org.xwiki.component.phase.Initializable;
-import org.xwiki.component.descriptor.ComponentInstantiationStrategy;
-import org.xwiki.rendering.renderer.LinkLabelGenerator;
-import org.xwiki.rendering.renderer.xhtml.XHTMLLinkRenderer;
-import org.xwiki.rendering.renderer.printer.XHTMLWikiPrinter;
-import org.xwiki.rendering.listener.Link;
-import org.xwiki.rendering.listener.LinkType;
-import org.xwiki.rendering.listener.Attachment;
-import org.xwiki.rendering.internal.renderer.xhtml.DefaultXHTMLLinkRenderer;
-import org.xwiki.rendering.wiki.WikiModel;
-import org.xwiki.rendering.parser.AttachmentParser;
-import org.apache.commons.lang.StringUtils;
-import org.jahia.services.render.RenderContext;
-import org.jahia.services.content.JCRNodeWrapper;
-
-import javax.jcr.RepositoryException;
-import java.util.Map;
-import java.util.LinkedHashMap; /**
+/**
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
- * Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
+ * Copyright (C) 2002-2010 Jahia Solutions Group SA. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -53,7 +28,34 @@ import java.util.LinkedHashMap; /**
  * in accordance with the terms contained in a separate written agreement
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
- **/
+ */
+
+package org.jahia.modules.wiki;
+
+import org.xwiki.component.annotation.Component;
+import org.xwiki.component.annotation.Requirement;
+import org.xwiki.component.annotation.InstantiationStrategy;
+import org.xwiki.component.manager.ComponentManager;
+import org.xwiki.component.manager.ComponentLookupException;
+import org.xwiki.component.phase.InitializationException;
+import org.xwiki.component.phase.Initializable;
+import org.xwiki.component.descriptor.ComponentInstantiationStrategy;
+import org.xwiki.rendering.renderer.LinkLabelGenerator;
+import org.xwiki.rendering.renderer.xhtml.XHTMLLinkRenderer;
+import org.xwiki.rendering.renderer.printer.XHTMLWikiPrinter;
+import org.xwiki.rendering.listener.Link;
+import org.xwiki.rendering.listener.LinkType;
+import org.xwiki.rendering.listener.Attachment;
+import org.xwiki.rendering.internal.renderer.xhtml.DefaultXHTMLLinkRenderer;
+import org.xwiki.rendering.wiki.WikiModel;
+import org.xwiki.rendering.parser.AttachmentParser;
+import org.apache.commons.lang.StringUtils;
+import org.jahia.services.render.RenderContext;
+import org.jahia.services.content.JCRNodeWrapper;
+
+import javax.jcr.RepositoryException;
+import java.util.Map;
+import java.util.LinkedHashMap;
 
 /**
  * User: ktlili

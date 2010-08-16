@@ -1,7 +1,8 @@
+<%@ tag body-content="empty" description="Renders the label of a facet." %>
 <%--
 
     This file is part of Jahia: An integrated WCM, DMS and Portal Solution
-    Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
+    Copyright (C) 2002-2010 Jahia Solutions Group SA. All rights reserved.
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -31,7 +32,7 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-<%@ tag body-content="empty" description="Renders the label of a facet." %>
+
 <%@ attribute name="display" required="false" type="java.lang.Boolean" description="Should we display the label or just return it in the parameter set by attribute var."%>
 <%@ attribute name="var" required="false" type="java.lang.String" description="Request scoped attribute name for setting the label."%>
 <%@ attribute name="currentFacetField" required="false" type="org.apache.solr.client.solrj.response.FacetField" description="Either the FacetField for the current facet." %>

@@ -1,7 +1,8 @@
+<%@ tag body-content="empty" description="Renders the link/button to the GWT-based user/group selector (requires GWT Edit module to be loaded)." %>
 <%--
 
     This file is part of Jahia: An integrated WCM, DMS and Portal Solution
-    Copyright (C) 2002-2009 Jahia Solutions Group SA. All rights reserved.
+    Copyright (C) 2002-2010 Jahia Solutions Group SA. All rights reserved.
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -31,9 +32,6 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-<%@ tag body-content="empty"
-        description="Renders the link/button to the GWT-based user/group selector (requires GWT Edit module to be loaded)."
-        %>
 <%@ attribute name="mode" required="false" type="java.lang.String" description="The selection mode: users, groups or both. [both]" %>
 <%@ attribute name="onSelect" required="false" type="java.lang.String" description="The JavaScript function to be called after a user/group is selected. The selected principal type (u or g), principal key and principal name will be passed as arguments to this function. If the function returns true, the principal name will be also set into the field value. Otherwise nothing will be done by this tag." %>
 <%@ attribute name="fieldId" required="false" type="java.lang.String" description="The HTML element ID of the input field, where the proncipal name should be stored. If not provided, nothing will be done by this tag." %>

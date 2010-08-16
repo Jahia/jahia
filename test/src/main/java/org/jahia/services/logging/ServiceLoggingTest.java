@@ -32,17 +32,17 @@
 
 package org.jahia.services.logging;
 
-import junit.framework.TestCase;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Level;
-import org.jahia.bin.Jahia;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.tags.TaggingService;
 import org.jahia.test.TestHelper;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.springframework.util.StopWatch;
 
 import javax.jcr.Node;
@@ -51,52 +51,71 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+
 /**
  * Created by IntelliJ IDEA.
- *
+ * 
  * @author : rincevent
- * @since : JAHIA 6.1
- *        Created : 27 nov. 2009
+ * @since : JAHIA 6.1 Created : 27 nov. 2009
  */
-public class ServiceLoggingTest extends TestCase {
+public class ServiceLoggingTest {
     private static transient Logger logger = Logger.getLogger(ServiceLoggingTest.class);
     private static final int TAGS_TO_CREATE = 1000;
 
-	private int counter = 0;
+    private int counter = 0;
 
-	private TaggingService service;
+    private TaggingService service;
     private final static String TESTSITE_NAME = "serviceLoggingTest";
-    private JahiaSite site;
 
-	private String tagPrefix;
+    private String tagPrefix;
 
-	private String generateTagName() {
-		return tagPrefix + counter++;
-	}
+    private String generateTagName() {
+        return tagPrefix + counter++;
+    }
 
-	@Override
-	protected void setUp() throws Exception {
-        site = TestHelper.createSite(TESTSITE_NAME);
-		tagPrefix = "test-" + System.currentTimeMillis() + "-";
-		service = (TaggingService) SpringContextSingleton.getBean("org.jahia.services.tags.TaggingService");
-	}
+    @Before
+    public void setUp() {
+        try {
+            TestHelper.createSite(TESTSITE_NAME);
+            tagPrefix = "test-" + System.currentTimeMillis() + "-";
+            service = (TaggingService) SpringContextSingleton
+                    .getBean("org.jahia.services.tags.TaggingService");
+        } catch (Exception e) {
+            logger.error("Error setting up ServiceLoggingTest environment", e);
+        }
+    }
 
-	@Override
-	protected void tearDown() throws Exception {
-        deleteAllTags();
-        TestHelper.deleteSite(TESTSITE_NAME);
+    @After
+    public void tearDown() {
+        try {
+            deleteAllTags();
+        } catch (Exception e) {
+            logger.error("Error tearing down ServiceLoggingTest environment", e);
+        }
+        try {
+            TestHelper.deleteSite(TESTSITE_NAME);
+        } catch (Exception e) {
+            logger.error("Error tearing down ServiceLoggingTest environment", e);
+        }        
         tagPrefix = null;
-		counter = 0;
-		service = null;
-	}
+        counter = 0;
+        service = null;
+    }
 
     private void deleteAllTags() throws RepositoryException {
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                session.getWorkspace().getVersionManager().checkout("/sites/" + TESTSITE_NAME + "/tags");
-                NodeIterator nodeIterator = session.getWorkspace().getQueryManager().createQuery(
-                        "select * from [jnt:tag] " + "where ischildnode([/sites/" + TESTSITE_NAME
-                                + "/tags]) and name() like '" + tagPrefix + "%'", Query.JCR_SQL2).execute().getNodes();
+                session.getWorkspace().getVersionManager()
+                        .checkout("/sites/" + TESTSITE_NAME + "/tags");
+                NodeIterator nodeIterator = session
+                        .getWorkspace()
+                        .getQueryManager()
+                        .createQuery(
+                                "select * from [jnt:tag] " + "where ischildnode([/sites/"
+                                        + TESTSITE_NAME + "/tags]) and name() like '" + tagPrefix
+                                        + "%'", Query.JCR_SQL2).execute().getNodes();
                 while (nodeIterator.hasNext()) {
                     Node node = nodeIterator.nextNode();
                     try {
@@ -118,31 +137,33 @@ public class ServiceLoggingTest extends TestCase {
             }
         });
     }
-
+    
+    @Test
     public void testCreateMultipleTags() throws RepositoryException {
-		String tag;
+        String tag;
         Logger metricsLogger = Logger.getLogger("loggingService");
         Logger profilerMetricsLogger = Logger.getLogger("profilerLoggingService");
         profilerMetricsLogger.setLevel(Level.OFF);
         StopWatch stopWatch = new StopWatch();
         metricsLogger.setLevel(Level.TRACE);
-        stopWatch.start("Create "+TAGS_TO_CREATE+" with logs");
-		for (int i = 0; i < TAGS_TO_CREATE; i++) {
-			tag = generateTagName();
-			service.createTag(tag, TESTSITE_NAME);
-		}
+        stopWatch.start("Create " + TAGS_TO_CREATE + " with logs");
+        for (int i = 0; i < TAGS_TO_CREATE; i++) {
+            tag = generateTagName();
+            service.createTag(tag, TESTSITE_NAME);
+        }
         stopWatch.stop();
         final long withLogs = stopWatch.getTotalTimeMillis();
         deleteAllTags();
         metricsLogger.setLevel(Level.OFF);
-        stopWatch.start("Create "+TAGS_TO_CREATE+" without logs");
-		for (int i = 0; i < TAGS_TO_CREATE; i++) {
-			tag = generateTagName();
-			service.createTag(tag, TESTSITE_NAME);
-		}
+        stopWatch.start("Create " + TAGS_TO_CREATE + " without logs");
+        for (int i = 0; i < TAGS_TO_CREATE; i++) {
+            tag = generateTagName();
+            service.createTag(tag, TESTSITE_NAME);
+        }
         stopWatch.stop();
         final long withoutLogs = stopWatch.getTotalTimeMillis();
-        assertTrue("Logs as more than 5% impact on peformance",((Math.abs(withLogs-withoutLogs)/withoutLogs)*100)>5);
+        assertThat("Logs has more than 5% impact on peformance",
+                ((Math.abs(withLogs - withoutLogs) / withoutLogs) * 100), lessThan(5L));
         logger.error(stopWatch.prettyPrint());
-	}
+    }
 }

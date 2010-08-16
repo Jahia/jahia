@@ -903,7 +903,7 @@ public class ContentManagerHelper {
 
         PropertyIterator props = source.getProperties();
 
-        Set<String> names = new HashSet<String>();
+        List<String> names = new ArrayList<String>();
         while (props.hasNext()) {
             Property property = props.nextProperty();
             names.add(property.getName());
@@ -969,7 +969,14 @@ public class ContentManagerHelper {
                 oldChild.remove();
             }
         }
-
+        if (destinationNode.getPrimaryNodeType().hasOrderableChildNodes()) {
+            Collections.reverse(names);
+            String previous = null;
+            for (String name : names) {
+                destinationNode.orderBefore(name, previous);
+                previous = name;
+            }
+        }
     }
 
     private void keepReference(JCRNodeWrapper destinationNode, Map<String, List<String>> references, Property property,

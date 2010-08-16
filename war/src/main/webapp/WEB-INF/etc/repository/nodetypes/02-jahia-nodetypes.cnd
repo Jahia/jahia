@@ -346,6 +346,9 @@
 [jnt:absoluteArea] > jnt:content, jmix:renderableArea, jmix:siteComponentContent, jmix:listRestrictions, jmix:mockupStyle
  - j:basenode (weakreference)
 
+[jnt:levelAbsoluteArea] > jnt:content, jmix:renderableArea, jmix:siteComponentContent, jmix:listRestrictions, jmix:mockupStyle
+ - j:level (long)
+
 [jnt:currentUserDisplay] > nt:base, jmix:renderableUser, jmix:siteComponentContent, jmix:mockupStyle
 
 [jnt:authorDisplay] > nt:base, jmix:renderableUser, jmix:siteComponentContent, jmix:mockupStyle

@@ -357,11 +357,11 @@ public class JCRSitesProvider {
                         siteNode.getProperty("j:gaProfile").remove();
                     }
                     session.save();
+                    JCRPublicationService.getInstance().publish(siteNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
+                            false);
                     return null;
                 }
             });
-//            JCRPublicationService.getInstance().publish("/sites/"+site.getSiteKey(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
-//                    false);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

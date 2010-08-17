@@ -864,7 +864,11 @@ public class ContentManagerHelper {
     public void synchro(final JCRNodeWrapper source, final JCRNodeWrapper destinationNode, JCRSessionWrapper session,
                         Map<String, List<String>> references) throws RepositoryException {
         if (source.isNodeType("jnt:template")) {
-            templatesSynchro(source, destinationNode, session, references);
+            templatesSynchro(source, destinationNode, session, references, true);
+            return;
+        }
+        if (source.isNodeType("jnt:folder") || source.isNodeType("jnt:contentList")) {
+            templatesSynchro(source, destinationNode, session, references, false);
             return;
         }
 
@@ -882,7 +886,7 @@ public class ContentManagerHelper {
 
     }
     public void templatesSynchro(final JCRNodeWrapper source, final JCRNodeWrapper destinationNode, JCRSessionWrapper session,
-                        Map<String, List<String>> references) throws RepositoryException {
+                                 Map<String, List<String>> references, boolean doRemove) throws RepositoryException {
         if ("j:acl".equals(destinationNode.getName())) {
             return;
         }
@@ -957,16 +961,18 @@ public class ContentManagerHelper {
 
             if (destinationNode.hasNode(child.getName())) {
                 JCRNodeWrapper node = destinationNode.getNode(child.getName());
-                templatesSynchro(child, node, session, references);
+                templatesSynchro(child, node, session, references, doRemove);
             } else {
                 child.copy(destinationNode, child.getName(), false);
             }
         }
-        ni = destinationNode.getNodes();
-        while (ni.hasNext()) {
-            JCRNodeWrapper oldChild = (JCRNodeWrapper) ni.next();
-            if (!names.contains(oldChild.getName())) {
-                oldChild.remove();
+        if (doRemove) {
+            ni = destinationNode.getNodes();
+            while (ni.hasNext()) {
+                JCRNodeWrapper oldChild = (JCRNodeWrapper) ni.next();
+                if (!names.contains(oldChild.getName())) {
+                    oldChild.remove();
+                }
             }
         }
         if (destinationNode.getPrimaryNodeType().hasOrderableChildNodes()) {

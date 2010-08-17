@@ -16,12 +16,6 @@
 	<c:set var="pageTitle" value="${currentNode.properties['jcr:title'].string}"/>
     <template:templateHead title="${fn:escapeXml(not empty pageTitle ? pageTitle : currentNode.name)}">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<jcr:nodeProperty var="theme" node="${currentNode}" name="j:theme" inherited="true"/>
-		<c:if test="${!empty theme}">
-			<c:forEach var="themeFile" items="${jcr:getChildrenOfType(theme.node,'nt:file')}">
-				<template:addResources type="css" resources="${themeFile.url}" insert="true"/>
-			</c:forEach>
-		</c:if>
 	</template:templateHead>
     <template:templateBody>
         ${wrappedContent}

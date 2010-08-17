@@ -98,12 +98,12 @@ public class DocumentViewExporter {
         export(node, set);
     }
 
-    public void export(JCRNodeWrapper rootNode, SortedSet<JCRNodeWrapper> files) throws SAXException, RepositoryException {
+    public void export(JCRNodeWrapper rootNode, SortedSet<JCRNodeWrapper> nodes) throws SAXException, RepositoryException {
         this.rootNode = rootNode;
 
         ch.startDocument();
 
-        for (Iterator<JCRNodeWrapper> iterator = files.iterator(); iterator.hasNext();) {
+        for (Iterator<JCRNodeWrapper> iterator = nodes.iterator(); iterator.hasNext();) {
             JCRNodeWrapper node = iterator.next();
             exportNode(node);
         }

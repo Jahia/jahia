@@ -36,7 +36,6 @@ import org.apache.commons.io.FileCleaningTracker;
 import org.apache.commons.io.output.DeferredFileOutputStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -83,7 +82,8 @@ public class Export extends HttpServlet implements Controller, ServletContextAwa
     private static FileCleaningTracker fileCleaningTracker = new FileCleaningTracker();
 
     private ServletContext servletContext;
-    
+    public static final String CLEANUP = "cleanup";
+
     /**
      * Process the request and return a ModelAndView object which the DispatcherServlet
      * will render. A <code>null</code> return value is not an error: It indicates that
@@ -124,24 +124,23 @@ public class Export extends HttpServlet implements Controller, ServletContextAwa
         try {
             ImportExportService ie = ServicesRegistry.getInstance().getImportExportService();
 
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace);
+            JCRNodeWrapper node = session.getNode(nodePath);
             if ("xml".equals(exportFormat)) {
                 resp.setContentType("text/xml");
-                if ("template".equals(params.get(ImportExportService.CLEANUP))) {
-                    generateCleanedUpXML(request, resp, nodePath, "templatesCleanup.xsl");
-                } else if ("simple".equals(params.get(ImportExportService.CLEANUP))) {
-                    generateCleanedUpXML(request, resp, nodePath, "cleanup.xsl");
-                } else {
-                    getXml(nodePath, outputStream);
+                if ("template".equals(request.getParameter(CLEANUP))) {
+                    params.put(ImportExportService.XSL_PATH,servletContext.getRealPath("/WEB-INF/etc/repository/export/" + "templatesCleanup.xsl"));
+                } else if ("simple".equals(request.getParameter(CLEANUP))) {
+                    params.put(ImportExportService.XSL_PATH,servletContext.getRealPath("/WEB-INF/etc/repository/export/" + "cleanup.xsl"));
                 }
+                ie.exportNode(node, outputStream, params);
             } else if ("zip".equals(exportFormat)) {
                 resp.setContentType("application/zip");
-                if ("template".equals(params.get(ImportExportService.CLEANUP))) {
+                if ("template".equals(request.getParameter(CLEANUP))) {
                     params.put(ImportExportService.XSL_PATH, servletContext.getRealPath("/WEB-INF/etc/repository/export/" + "templatesCleanup.xsl"));
-                } else if ("simple".equals(params.get(ImportExportService.CLEANUP))) {
+                } else if ("simple".equals(request.getParameter(CLEANUP))) {
                     params.put(ImportExportService.XSL_PATH, servletContext.getRealPath("/WEB-INF/etc/repository/export/" + "cleanup.xsl"));
                 }
-                JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace);
-                JCRNodeWrapper node = session.getNode(nodePath);
                 ie.exportZip(node, outputStream, params);
                 outputStream.close();
             }
@@ -220,39 +219,7 @@ public class Export extends HttpServlet implements Controller, ServletContextAwa
         params.put(ImportExportService.VIEW_METADATA, !"false".equals(request.getParameter("viewMetadata")));
         params.put(ImportExportService.VIEW_JAHIALINKS, !"false".equals(request.getParameter("viewLinks")));
         params.put(ImportExportService.VIEW_WORKFLOW, "true".equals(request.getParameter("viewWorkflow")));
-        params.put(ImportExportService.CLEANUP, request.getParameter(ImportExportService.CLEANUP));
         return params;
-    }
-
-    private void generateCleanedUpXML(HttpServletRequest request, HttpServletResponse resp, String nodePath,
-                                      final String xsl)
-            throws IOException, RepositoryException, JDOMException {
-        OutputStream outputStream;
-        File tempFile = File.createTempFile("exportTemplates", "xml");
-        outputStream = new DeferredFileOutputStream(1024 * 1024 * 10, tempFile);
-        getXml(nodePath, outputStream);
-        DeferredFileOutputStream stream = (DeferredFileOutputStream) outputStream;
-        InputStream inputStream = new BufferedInputStream(new FileInputStream(stream.getFile()));
-        fileCleaningTracker.track(stream.getFile(), inputStream);
-        if (stream.isInMemory()) {
-            inputStream.close();
-            inputStream = new ByteArrayInputStream(stream.getData());
-        }
-        XSLTransformer xslTransformer = new XSLTransformer(servletContext.getRealPath(
-                "/WEB-INF/etc/repository/export/" + xsl));
-        SAXBuilder saxBuilder = new SAXBuilder(false);
-        Document document = saxBuilder.build(inputStream);
-        Document document1 = xslTransformer.transform(document);
-        XMLOutputter xmlOutputter = new XMLOutputter(Format.getPrettyFormat());
-        xmlOutputter.output(document1, resp.getOutputStream());
-        inputStream.close();
-    }
-
-    private void getXml(String nodePath, OutputStream outputStream) throws RepositoryException, IOException {
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
-        Node node = session.getNode(nodePath);
-        session.exportDocumentView(node.getPath(), outputStream, true, false);
-        outputStream.close();
     }
 
     public static String getExportServletPath() {
@@ -267,7 +234,6 @@ public class Export extends HttpServlet implements Controller, ServletContextAwa
     @Override
     public void destroy() {
         super.destroy();
-        fileCleaningTracker.exitWhenFinished();
     }
 
     public void setServletContext(ServletContext servletContext) {

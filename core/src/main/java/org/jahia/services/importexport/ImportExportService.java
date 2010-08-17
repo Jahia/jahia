@@ -55,48 +55,29 @@ import java.util.Map;
  * Time: 12:21:48
  */
 public interface ImportExportService {
-    String JCR_URI ="http://www.jcp.org/jcr/1.0";
-    String NT_URI="http://www.jcp.org/jcr/nt/1.0";
-    String PT_URI="http://www.jcp.org/jcr/pt/1.0";
-    String SV_URI="http://www.jcp.org/jcr/sv/1.0";
-    String JAHIA_URI="http://www.jahia.org/";
-    String JAHIAGED_URI="GED:";
-    String NS_URI = "http://www.w3.org/2000/xmlns/";
-    String DAV_URI = "DAV:";
+    public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 
-    String REMOVED_STATUS = "removed";
-    String UNCHANGED_STATUS = "unchanged";
-    String ADDED_STATUS = "added";
-    String UPDATED_STATUS = "updated";
+    String JAHIA_URI="http://www.jahia.org/";
 
     String FROM = "from";
     String TO = "to";
-    String LOCK_KEY = "lock";
     String INCLUDE_TEMPLATES = "templates";
     String INCLUDE_SITE_INFOS = "siteinfos";
-    String INCLUDE_REFERENCED_NODES = "files";
     String INCLUDE_ALL_FILES = "allfiles";
     String INCLUDE_DEFINITIONS = "definitions";
-    String LINK = "link";
     String VIEW_CONTENT = "content";
     String VIEW_VERSION = "version";
     String VIEW_METADATA = "metadata";
     String VIEW_JAHIALINKS = "links";
-    String VIEW_PICKERS = "pickers";
     String VIEW_ACL = "acl";
     String VIEW_WORKFLOW = "wf";
     String VIEW_PID = "pid";
-    String INCLUDED = "included";
-    String FILES_DATE = "filesdate";
 
-    String EXPORT_FORMAT = "format";
-    String LEGACY_EXPORTER = "legacy";
-    String SYSTEM_EXPORTER = "sys";
-    String DOCUMENT_EXPORTER = "doc";
-
-    public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
-    String CLEANUP = "cleanup";
     String XSL_PATH = "xsl_path";
+    String NO_RECURSE = "noRecurse";
+    String SKIP_BINARY = "skipBinary";
+
+    String SYSTEM_VIEW = "systemView";
 
     // Export
 
@@ -115,6 +96,19 @@ public interface ImportExportService {
      */
     void exportSites(OutputStream outputStream, Map<String, Object> params, List<JahiaSite> sites)
             throws JahiaException, RepositoryException, IOException, SAXException, JDOMException;
+
+    /**
+     * Export JCR node as xml
+     *
+     * @param node node to export
+     * @param out outputstream
+     * @param params
+     * @throws JahiaException
+     * @throws RepositoryException
+     * @throws SAXException
+     * @throws IOException
+     */
+    void exportNode(JCRNodeWrapper node, OutputStream out, Map<String, Object> params) throws JahiaException, RepositoryException, SAXException, IOException, JDOMException;
 
     /**
      * Export JCR content along with binaries into a zip

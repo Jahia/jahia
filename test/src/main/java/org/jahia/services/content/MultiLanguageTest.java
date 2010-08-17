@@ -35,18 +35,16 @@ package org.jahia.services.content;
 import junit.framework.TestCase;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
-import org.jahia.bin.Jahia;
-import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
 import org.junit.*;
 
+import com.google.common.collect.Sets;
+
 import javax.jcr.PathNotFoundException;
-import java.util.LinkedHashSet;
 import java.util.Locale;
-import java.util.Set;
 
 /**
  * Regroups tests that test multi-lingual features of Jahia.
@@ -59,14 +57,12 @@ public class MultiLanguageTest extends TestCase {
 
     private static Logger logger = Logger.getLogger(MultiLanguageTest.class);
     private JahiaSite site;
-    private ProcessingContext ctx;
     private final static String TESTSITE_NAME = "jcrMultiLanguageTest";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
 
     @Before
     public void setUp() throws Exception {
-        site = TestHelper.createSite(TESTSITE_NAME);
-        ctx = Jahia.getThreadParamBean();
+        site = TestHelper.createSite(TESTSITE_NAME, Sets.newHashSet(Locale.ENGLISH.toString(), Locale.FRENCH.toString()), null, true);
         Assert.assertNotNull(site);
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
         session.save();
@@ -74,29 +70,15 @@ public class MultiLanguageTest extends TestCase {
 
     @org.junit.Test
     public void testFallBackLanguage() throws Exception {
-
-        // the setMixLanguage call is not really used, only session fallback is used, but we do the work here for
-        // consistency anyway.
-        site.setMixLanguagesActive(true);
-        Set<String> currentLanguages = new LinkedHashSet<String>();
-        currentLanguages.add("en");
-        currentLanguages.add("fr");
-        site.setLanguages(currentLanguages);
-        site.setDefaultLanguage("en");
-        ServicesRegistry.getInstance().getJahiaSitesService().updateSite(site);
-
         JCRPublicationService jcrService = ServicesRegistry.getInstance()
                 .getJCRPublicationService();
 
         String defaultLanguage = site.getDefaultLanguage();
 
-        Locale englishLocale = LanguageCodeConverters.languageCodeToLocale("en");
-        Locale frenchLocale = LanguageCodeConverters.languageCodeToLocale("fr");
-
-        JCRSessionWrapper englishEditSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, englishLocale, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
-        JCRSessionWrapper englishLiveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE, englishLocale, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
+        JCRSessionWrapper englishEditSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
+        JCRSessionWrapper englishLiveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
         JCRNodeWrapper stageRootNode = englishEditSession.getNode(SITECONTENT_ROOT_NODE);
-        JCRNodeWrapper liveRootNode = englishLiveSession.getNode(SITECONTENT_ROOT_NODE);
+        englishLiveSession.getNode(SITECONTENT_ROOT_NODE);
         JCRNodeWrapper stageNode = (JCRNodeWrapper) stageRootNode.getNode("home");
 
         JCRNodeWrapper textNode1 = stageNode.addNode("text1", "jnt:text");
@@ -104,10 +86,10 @@ public class MultiLanguageTest extends TestCase {
 
         englishEditSession.save();
 
-        jcrService.publish(stageNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, currentLanguages,
+        jcrService.publish(stageNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, Sets.newHashSet(Locale.ENGLISH.toString(), Locale.FRENCH.toString()),
                 false);
 
-        JCRSessionWrapper frenchEditSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, frenchLocale, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
+        JCRSessionWrapper frenchEditSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.FRENCH, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
         JCRNodeWrapper frenchTextNode = frenchEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/text1");
         String frenchTextPropertyValue = frenchTextNode.getPropertyAsString("text");
 
@@ -118,7 +100,7 @@ public class MultiLanguageTest extends TestCase {
         site.setMixLanguagesActive(false);
         ServicesRegistry.getInstance().getJahiaSitesService().updateSite(site);
 
-        frenchEditSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, frenchLocale);
+        frenchEditSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.FRENCH);
         frenchTextNode = frenchEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/text1");
         frenchTextPropertyValue = frenchTextNode.getPropertyAsString("text");
         assertNull("English text node should not be available in edit workspace when mixed language is de-activated.", frenchTextPropertyValue);
@@ -128,7 +110,7 @@ public class MultiLanguageTest extends TestCase {
 
         // Now let's do the checks on the live sessions
 
-        JCRSessionWrapper frenchLiveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE, frenchLocale, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
+        JCRSessionWrapper frenchLiveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.FRENCH, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
         JCRNodeWrapper frenchLiveTextNode = frenchLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home/text1");
         String frenchLiveTextPropertyValue = frenchLiveTextNode.getPropertyAsString("text");
 
@@ -139,7 +121,7 @@ public class MultiLanguageTest extends TestCase {
         site.setMixLanguagesActive(false);
         ServicesRegistry.getInstance().getJahiaSitesService().updateSite(site);
 
-        frenchLiveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE, frenchLocale);
+        frenchLiveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.FRENCH);
         try {
             frenchLiveTextNode = frenchLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home/text1");
             assertTrue("English text node should not be available in live workspace when mixed language is not activated.",frenchLiveTextNode!=null);

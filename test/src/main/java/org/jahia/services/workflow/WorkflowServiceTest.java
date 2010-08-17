@@ -38,6 +38,7 @@ import org.apache.log4j.Logger;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.rbac.RoleIdentity;
@@ -50,6 +51,8 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.google.common.collect.Sets;
 
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
@@ -76,6 +79,7 @@ public class WorkflowServiceTest {
     private static int nodeCounter;
     private JCRNodeWrapper stageNode;
     private static WorkflowService service;
+    private static JCRPublicationService publicationService;
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
@@ -84,6 +88,7 @@ public class WorkflowServiceTest {
         initUsersGroup();
         JCRSessionFactory.getInstance().getCurrentUserSession().save();
         service = WorkflowService.getInstance();
+        publicationService = JCRPublicationService.getInstance();
     }
 
     @AfterClass
@@ -129,6 +134,9 @@ public class WorkflowServiceTest {
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         final WorkflowDefinition workflow = workflowList.get(0);
         assertNotNull("Worflow should not be null", workflow);
+        map.put("publicationInfos", publicationService.getPublicationInfos(
+                Arrays.asList(stageNode.getIdentifier()),
+                Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
         final String processId = service.startProcess(stageNode, workflow.getKey(), "jBPM", map);
         assertNotNull("The startup of a process should have return an id", processId);
         final List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode, null);
@@ -153,6 +161,9 @@ public class WorkflowServiceTest {
             }
         }
         assertNotNull("Unable to find workflow process '2 Step Publication Process'", workflow);
+        map.put("publicationInfos", publicationService.getPublicationInfos(
+                Arrays.asList(stageNode.getIdentifier()),
+                Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
         final String processId = service.startProcess(stageNode, workflow.getKey(), "jBPM", map);
         assertNotNull("The startup of a process should have return an id", processId);
         final List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode, null);
@@ -194,6 +205,9 @@ public class WorkflowServiceTest {
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         final WorkflowDefinition workflow = workflowList.get(0);
         assertNotNull("Workflow should not be null", workflow);
+        map.put("publicationInfos", publicationService.getPublicationInfos(
+                Arrays.asList(stageNode.getIdentifier()),
+                Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
         final String processId = service.startProcess(stageNode, workflow.getKey(), "jBPM", map);
         assertNotNull("The startup of a process should have return an id", processId);
         final List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode, null);
@@ -226,6 +240,9 @@ public class WorkflowServiceTest {
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         final WorkflowDefinition workflow = workflowList.get(0);
         assertNotNull("Workflow should not be null", workflow);
+        map.put("publicationInfos", publicationService.getPublicationInfos(
+                Arrays.asList(stageNode.getIdentifier()),
+                Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
         final String processId = service.startProcess(stageNode, workflow.getKey(), PROVIDER, map);
         assertNotNull("The startup of a process should have return an id", processId);
         final List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode, null);
@@ -263,6 +280,9 @@ public class WorkflowServiceTest {
             }
         }
         assertNotNull("Unable to find workflow process '2 Step Publication Process'", workflow);
+        map.put("publicationInfos", publicationService.getPublicationInfos(
+                Arrays.asList(stageNode.getIdentifier()),
+                Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
         final String processId = service.startProcess(stageNode, workflow.getKey(), PROVIDER,map);
         assertNotNull("The startup of a process should have return an id", processId);
         final List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode, null);
@@ -364,6 +384,9 @@ public class WorkflowServiceTest {
             }
         }
         assertNotNull("Unable to find workflow process '2 Step Publication Process'", workflow);
+        map.put("publicationInfos", publicationService.getPublicationInfos(
+                Arrays.asList(stageNode.getIdentifier()),
+                Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
         final String processId = service.startProcess(stageNode, workflow.getKey(), PROVIDER, map);
         assertNotNull("The startup of a process should have return an id", processId);
         List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode, null);
@@ -412,6 +435,9 @@ public class WorkflowServiceTest {
             }
         }
         assertNotNull("Unable to find workflow process '1 Step Publication Process'", workflow);
+        map.put("publicationInfos", publicationService.getPublicationInfos(
+                Arrays.asList(stageNode.getIdentifier()),
+                Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
         final String processId = service.startProcess(stageNode, workflow.getKey(), PROVIDER, map);
         assertNotNull("The startup of a process should have return an id", processId);
         final List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode, null);
@@ -446,6 +472,9 @@ public class WorkflowServiceTest {
             }
         }
         assertNotNull("Unable to find workflow process '1 Step Publication Process'", workflow);
+        map.put("publicationInfos", publicationService.getPublicationInfos(
+                Arrays.asList(stageNode.getIdentifier()),
+                Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
         final String processId = service.startProcess(stageNode, workflow.getKey(), PROVIDER, map);
         assertNotNull("The startup of a process should have return an id", processId);
         final List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode, null);
@@ -495,6 +524,9 @@ public class WorkflowServiceTest {
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         final WorkflowDefinition workflow = workflowList.get(0);
         assertNotNull("Workflow should not be null", workflow);
+        map.put("publicationInfos", publicationService.getPublicationInfos(
+                Arrays.asList(stageNode.getIdentifier()),
+                Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));        
         final String processId = service.startProcess(stageNode, workflow.getKey(), "jBPM", map);
         assertNotNull("The startup of a process should have return an id", processId);
         final List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode, null);

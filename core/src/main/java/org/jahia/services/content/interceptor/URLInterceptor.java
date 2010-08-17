@@ -153,7 +153,7 @@ public class URLInterceptor implements PropertyInterceptor, InitializingBean {
             while (ni.hasNext()) {
                 JCRNodeWrapper ref = (JCRNodeWrapper) ni.next();
                 if (name.equals(ref.getProperty("j:fieldName").getString())) {
-                    refs.put(ref.getProperty("j:reference").getString(), Long.valueOf(StringUtils.substringAfter(node.getName(), "_")));
+                    refs.put(ref.getProperty("j:reference").getString(), Long.valueOf(StringUtils.substringAfter(ref.getName(), "_")));
                 }
             }
         }

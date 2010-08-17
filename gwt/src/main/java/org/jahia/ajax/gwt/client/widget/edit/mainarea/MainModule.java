@@ -98,7 +98,7 @@ public class MainModule extends Module {
         scrollContainer = new LayoutContainer(new FlowLayout());
         add(head);
         add(scrollContainer);
-
+        scrollContainer.addStyleName("gwt-body-edit");
         Hover.getInstance().setMainModule(this);
         Selection.getInstance().setMainModule(this);
 

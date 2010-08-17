@@ -18,7 +18,7 @@ img,body,html{border:0;}
 /******************************************************************************
 * Body and GWT .x-border-layout-ct BG
 ******************************************************************************/
-.x-border-layout-ct {
+.gwt-body-edit {
 	background-color:#7b7b7b;
 }
 body {

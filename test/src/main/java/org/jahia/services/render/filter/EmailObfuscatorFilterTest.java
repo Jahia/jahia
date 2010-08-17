@@ -32,8 +32,14 @@
 
 package org.jahia.services.render.filter;
 
+import org.jahia.bin.Jahia;
+import org.jahia.params.ParamBean;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
+import org.jahia.utils.LanguageCodeConverters;
+
 import junit.framework.TestCase;
 
 import java.util.regex.Pattern;
@@ -68,7 +74,10 @@ public class EmailObfuscatorFilterTest extends TestCase {
                 return s;
             }
         });
-        String result = chain.doFilter(null,null);
+        ParamBean ctx = (ParamBean) Jahia.getThreadParamBean();
+        RenderContext renderCtx = new RenderContext(ctx.getRequest(), ctx.getResponse(), ctx.getUser());        
+        
+        String result = chain.doFilter(renderCtx, null);
 
         assertFalse("Email found in result : "+result, mailPattern.matcher(result).find());
     }

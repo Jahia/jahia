@@ -35,8 +35,6 @@ package org.jahia.services.versioning;
 import junit.framework.TestCase;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
-import org.jahia.bin.Jahia;
-import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPublicationService;
@@ -44,7 +42,6 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.VersionInfo;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
-import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -59,7 +56,6 @@ import java.util.Locale;
 public class VersioningTest extends TestCase {
     private static Logger logger = Logger.getLogger(VersioningTest.class);
     private JahiaSite site;
-    private ProcessingContext ctx;
     private final static String TESTSITE_NAME = "jcrVersioningTest";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
     private static final String MAIN_CONTENT_TITLE = "Main content title update ";
@@ -69,7 +65,6 @@ public class VersioningTest extends TestCase {
     protected void setUp() throws Exception {
         try {
             site = TestHelper.createSite(TESTSITE_NAME, "localhost"+System.currentTimeMillis(), TestHelper.INTRANET_TEMPLATES, null);
-            ctx = Jahia.getThreadParamBean();
             assertNotNull(site);
         } catch (Exception ex) {
             logger.warn("Exception during test setUp", ex);
@@ -86,11 +81,8 @@ public class VersioningTest extends TestCase {
         try {
             JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
 
-            Locale englishLocale = LanguageCodeConverters.languageCodeToLocale("en");
-
-            JCRSessionWrapper editSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, englishLocale);
-            JCRSessionWrapper liveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE, englishLocale);
-
+            JCRSessionWrapper editSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
+            JCRSessionWrapper liveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
 
             JCRNodeWrapper stageRootNode = editSession.getNode(SITECONTENT_ROOT_NODE);
 
@@ -122,7 +114,7 @@ public class VersioningTest extends TestCase {
             editSession.save();
 
             // publish it
-            jcrService.publish(stageNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+            jcrService.publish(stageNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
 
             for (int i = 1; i < NUMBER_OF_VERSIONS; i++) {
 
@@ -132,7 +124,7 @@ public class VersioningTest extends TestCase {
                     mainContent.setProperty("jcr:title", MAIN_CONTENT_TITLE + updateNumber);
                     mainContent.setProperty("body", MAIN_CONTENT_BODY + updateNumber);
                     editSession.save();
-                    jcrService.publish(mainContent.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
+                    jcrService.publish(mainContent.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
                             true);
                 }
 
@@ -141,13 +133,13 @@ public class VersioningTest extends TestCase {
                 editSession.save();
 
                 // each time the node i published, a new version should be created
-                jcrService.publish(stagedSubPage.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
+                jcrService.publish(stagedSubPage.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
                         false);
 
                 editSession.checkout(stagedSubSubPage);
                 stagedSubSubPage.setProperty("jcr:title", "subtitle" + i);
                 editSession.save();
-                jcrService.publish(stagedSubSubPage.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
+                jcrService.publish(stagedSubSubPage.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
                         false);
             }
 

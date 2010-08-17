@@ -94,11 +94,11 @@ public class GetFeedActionTest extends TestCase {
                         LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
 
         JCRNodeWrapper node = session.getNode("/sites/"+TESTSITE_NAME+ "/contents");
-        node.checkout();
+        session.checkout(node);
         node.addNode("feeds","jnt:contentList");
         session.save();
 
-        JCRPublicationService.getInstance().publish("/sites/"+TESTSITE_NAME+"/contents", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
+        JCRPublicationService.getInstance().publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
                 true);
 
         testFeed("testSDAFeed", "res:feedimporter/newsml/newsml_1_2_sda", "2_textwithphotoreference.xml");
@@ -119,13 +119,12 @@ public class GetFeedActionTest extends TestCase {
 
         session.checkout(node);
 
-        JCRNodeWrapper target;
         JCRNodeWrapper sdaFeedNode = node.addNode(nodeName, "jnt:feed");
 
         sdaFeedNode.setProperty("url", feedURL);
 
         session.save();
-        JCRPublicationService.getInstance().publish("/sites/"+TESTSITE_NAME+"/contents/feeds/" + nodeName, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
+        JCRPublicationService.getInstance().publish(sdaFeedNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
                 true);
 
         HttpClient client = new HttpClient();
@@ -151,7 +150,7 @@ public class GetFeedActionTest extends TestCase {
         JCRSessionWrapper liveSession = JCRSessionFactory.getInstance()
                 .getCurrentUserSession(Constants.LIVE_WORKSPACE,
                         LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
-        target = liveSession.getNode("/sites/"+TESTSITE_NAME+ "/contents/feeds/"+nodeName+"/" + testNodeName);
+        JCRNodeWrapper target = liveSession.getNode("/sites/"+TESTSITE_NAME+ "/contents/feeds/"+nodeName+"/" + testNodeName);
         // assertNotNull("Feed should have some childs", target); deactivated because we load content in a single language.
     }
 

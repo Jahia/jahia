@@ -152,7 +152,7 @@ public class ServiceLoggingTest {
             service.createTag(tag, TESTSITE_NAME);
         }
         stopWatch.stop();
-        final long withLogs = stopWatch.getTotalTimeMillis();
+        final long withLogs = stopWatch.getLastTaskTimeMillis();
         deleteAllTags();
         metricsLogger.setLevel(Level.OFF);
         stopWatch.start("Create " + TAGS_TO_CREATE + " without logs");
@@ -161,9 +161,9 @@ public class ServiceLoggingTest {
             service.createTag(tag, TESTSITE_NAME);
         }
         stopWatch.stop();
-        final long withoutLogs = stopWatch.getTotalTimeMillis();
+        final long withoutLogs = stopWatch.getLastTaskTimeMillis();
         assertThat("Logs has more than 5% impact on peformance",
-                ((Math.abs(withLogs - withoutLogs) / withoutLogs) * 100), lessThan(5L));
+                ((Math.abs(withLogs - withoutLogs) / (float)withoutLogs) * 100), lessThan((float)5));
         logger.error(stopWatch.prettyPrint());
     }
 }

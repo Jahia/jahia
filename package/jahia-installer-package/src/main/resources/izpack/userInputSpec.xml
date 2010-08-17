@@ -49,7 +49,7 @@
             <spec>
                 <choice txt="Microsoft SQL Server" id="dbSettings.dbms.type.mssql" value="mssql"/>
                 <choice txt="MySQL 5.x" id="dbSettings.dbms.type.mysql" value="mysql" set="true"/>
-                <choice txt="Oracle 11.x" id="dbSettings.dbms.type.oracle" value="oracle"/>
+                <choice txt="Oracle 10g / 11g" id="dbSettings.dbms.type.oracle" value="oracle"/>
                 <choice txt="PostgreSQL 8.x" id="dbSettings.dbms.type.postgresql" value="postgresql"/>
                 <choice txt="Sun Java DB / Apache Derby (standalone)" id="dbSettings.dbms.type.derby" value="derby"/>
             </spec>

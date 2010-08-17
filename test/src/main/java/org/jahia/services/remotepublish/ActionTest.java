@@ -88,8 +88,11 @@ public class ActionTest extends TestCase {
 
         JCRNodeWrapper node = session.getNode("/sites/jcrRPTest/home");
         JCRNodeWrapper source = node.addNode("source", "jnt:page");
-        source.addNode("page1", "jnt:page");
+        source.setProperty("jcr:title", "Source");        
+        JCRNodeWrapper page1 = source.addNode("page1", "jnt:page");
+        page1.setProperty("jcr:title", "Page1");
         JCRNodeWrapper target = node.addNode("target", "jnt:page");
+        target.setProperty("jcr:title", "Target");
 
         JCRNodeWrapper rp = node.addNode("rp", "jnt:remotePublication");
         String baseurl = "http://localhost:8080" + Jahia.getContextPath() + "/cms";

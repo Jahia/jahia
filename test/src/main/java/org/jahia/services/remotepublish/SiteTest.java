@@ -77,17 +77,19 @@ public class SiteTest extends TestCase {
     }
 
     public void testImportExportOfSmallSite() throws Exception {
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
+                LanguageCodeConverters.languageCodeToLocale(
+                        site.getDefaultLanguage()));
 
         final JCRNodeWrapper node = session.getNode("/sites/jcrRPTest/home");
         JCRNodeWrapper page1 = node.addNode("page1", "jnt:page");
-        page1.setProperty("jcr:title","Page1");
+        page1.setProperty("jcr:title", "Page1");
         JCRNodeWrapper page2 = node.addNode("page2", "jnt:page");
-        page2.setProperty("jcr:title","Page2");
+        page2.setProperty("jcr:title", "Page2");
         JCRNodeWrapper page3 = node.addNode("page3", "jnt:page");
-        page3.setProperty("jcr:title","Page3");
+        page3.setProperty("jcr:title", "Page3");
         session.save();
-        JCRPublicationService.getInstance().publish("/sites/jcrRPTest/home", Constants.EDIT_WORKSPACE,
+        JCRPublicationService.getInstance().publish(node.getIdentifier(), Constants.EDIT_WORKSPACE,
                                                     Constants.LIVE_WORKSPACE, null, true);
 
         JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE,
@@ -100,7 +102,7 @@ public class SiteTest extends TestCase {
         RemotePublicationService.getInstance().generateLog(liveSite, null, new FileOutputStream(tmp));
         TestHelper.deleteSite("targetSite");
         TestHelper.createSite("targetSite");
-        JCRPublicationService.getInstance().publish("/sites/targetSite/home", Constants.EDIT_WORKSPACE,
+        JCRPublicationService.getInstance().publish(node.getIdentifier(), Constants.EDIT_WORKSPACE,
                                                     Constants.LIVE_WORKSPACE, null, true);
         RemotePublicationService.getInstance().replayLog(liveSession.getNode("/sites/targetSite"),
                                                          new FileInputStream(tmp));

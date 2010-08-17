@@ -37,8 +37,11 @@ import org.apache.commons.compress.utils.IOUtils;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.modules.remotepublish.RemotePublicationService;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
 
@@ -82,6 +85,7 @@ public class LogReplayTest extends TestCase {
 
         final JCRNodeWrapper node = session.getNode("/sites/jcrRPTest/home");
         final JCRNodeWrapper target = node.addNode("target", "jnt:page");
+        target.setProperty("jcr:title", "Target");
         session.save();
 
         InputStream is = getClass().getClassLoader().getResourceAsStream("remotepublish/remote1.log.gz");
@@ -100,10 +104,15 @@ public class LogReplayTest extends TestCase {
 
         final JCRNodeWrapper node = session.getNode("/sites/jcrRPTest/home");
         JCRNodeWrapper source = node.addNode("source", "jnt:page");
+        source.setProperty("jcr:title", "Source");
         JCRNodeWrapper page1 = source.addNode("page1", "jnt:page");
-        source.addNode("page2", "jnt:page");
-        source.addNode("page3", "jnt:page");
-        node.addNode("target", "jnt:page");
+        page1.setProperty("jcr:title", "Page1");
+        JCRNodeWrapper page2 = source.addNode("page2", "jnt:page");
+        page2.setProperty("jcr:title", "Page2");
+        JCRNodeWrapper page3 = source.addNode("page3", "jnt:page");
+        page3.setProperty("jcr:title", "Page3");
+        JCRNodeWrapper target = node.addNode("target", "jnt:page");
+        target.setProperty("jcr:title", "Target");
         session.save();
 
         Calendar now = new GregorianCalendar();
@@ -113,7 +122,7 @@ public class LogReplayTest extends TestCase {
 
         JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
-        final JCRNodeWrapper target = liveSession.getNode("/sites/jcrRPTest/home/target");
+        target = liveSession.getNode("/sites/jcrRPTest/home/target");
 
         JCRNodeWrapper liveSource = liveSession.getNodeByUUID(source.getIdentifier());
 
@@ -152,50 +161,57 @@ public class LogReplayTest extends TestCase {
         logger.info("testLogAddAndUpdateOfProperty : start");
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
+        JahiaUser user1 = JCRUserManagerProvider.getInstance().createUser("source-user", "password", new Properties());
+        JahiaUser user2 = JCRUserManagerProvider.getInstance().createUser("target-user", "password", new Properties());
+        
+        try {
+            final JCRNodeWrapper node = session.getNode("/sites/jcrRPTest/home");
+            JCRNodeWrapper source = node.addNode("source-user", "jnt:user");
+            JCRNodeWrapper target = node.addNode("target-user", "jnt:user");
+            session.save();
 
-        final JCRNodeWrapper node = session.getNode("/sites/jcrRPTest/home");
-        JCRNodeWrapper source = node.addNode("source", "jnt:user");
-        node.addNode("target", "jnt:user");
-        session.save();
 
+            JCRPublicationService.getInstance()
+                    .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
 
-        JCRPublicationService.getInstance()
-                .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+            Calendar now = new GregorianCalendar();
+            session.checkout(source);
+            source.setProperty("j:firstName", "testLogAddAndUpdateOfProperty");
+            session.save();
 
-        Calendar now = new GregorianCalendar();
-        session.checkout(source);
-        source.setProperty("j:firstName", "testLogAddAndUpdateOfProperty");
-        session.save();
+            JCRPublicationService.getInstance()
+                    .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+            JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE,
+                    LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
+            target = liveSession.getNode("/sites/jcrRPTest/home/target");
 
-        JCRPublicationService.getInstance()
-                .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
-        JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE,
-                LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
-        final JCRNodeWrapper target = liveSession.getNode("/sites/jcrRPTest/home/target");
+            JCRNodeWrapper liveSource = liveSession.getNodeByUUID(source.getIdentifier());
 
-        JCRNodeWrapper liveSource = liveSession.getNodeByUUID(source.getIdentifier());
+            File tmp = File.createTempFile("remoteAddNode", ".log.gz");
+            RemotePublicationService.getInstance().generateLog(liveSource, now, new FileOutputStream(tmp));
 
-        File tmp = File.createTempFile("remoteAddNode", ".log.gz");
-        RemotePublicationService.getInstance().generateLog(liveSource, now, new FileOutputStream(tmp));
+            RemotePublicationService.getInstance().replayLog(target, new FileInputStream(tmp));
 
-        RemotePublicationService.getInstance().replayLog(target, new FileInputStream(tmp));
+            assertEquals("Property j:firstName does not match testLogAddAndUpdateOfProperty",
+                    "testLogAddAndUpdateOfProperty", target.getProperty("j:firstName").getString());
 
-        assertEquals("Property j:firstName does not match testLogAddAndUpdateOfProperty",
-                "testLogAddAndUpdateOfProperty", target.getProperty("j:firstName").getString());
-
-        JCRPublicationService.getInstance()
-                .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
-        now = new GregorianCalendar();
-        session.checkout(source);
-        source.setProperty("j:firstName", "testLogAddAndUpdateOfProperty_updated");
-        session.save();
-        JCRPublicationService.getInstance()
-                .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
-        tmp = File.createTempFile("remoteRemoveNode", ".log.gz");
-        RemotePublicationService.getInstance().generateLog(liveSource, now, new FileOutputStream(tmp));
-        RemotePublicationService.getInstance().replayLog(target, new FileInputStream(tmp));
-        assertEquals("Property j:firstName does not match testLogAddAndUpdateOfProperty_updated",
-                "testLogAddAndUpdateOfProperty_updated", target.getProperty("j:firstName").getString());
+            JCRPublicationService.getInstance()
+                    .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+            now = new GregorianCalendar();
+            session.checkout(source);
+            source.setProperty("j:firstName", "testLogAddAndUpdateOfProperty_updated");
+            session.save();
+            JCRPublicationService.getInstance()
+                    .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+            tmp = File.createTempFile("remoteRemoveNode", ".log.gz");
+            RemotePublicationService.getInstance().generateLog(liveSource, now, new FileOutputStream(tmp));
+            RemotePublicationService.getInstance().replayLog(target, new FileInputStream(tmp));
+            assertEquals("Property j:firstName does not match testLogAddAndUpdateOfProperty_updated",
+                    "testLogAddAndUpdateOfProperty_updated", target.getProperty("j:firstName").getString());
+        } finally {
+            ServicesRegistry.getInstance().getJahiaUserManagerService().deleteUser(user1);
+            ServicesRegistry.getInstance().getJahiaUserManagerService().deleteUser(user2);
+        }
 
     }
 
@@ -203,52 +219,60 @@ public class LogReplayTest extends TestCase {
         logger.info("testLogAddAndRemoveOfProperty : start");
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
-
-        final JCRNodeWrapper node = session.getNode("/sites/jcrRPTest/home");
-        JCRNodeWrapper source = node.addNode("source", "jnt:user");
-        node.addNode("target", "jnt:user");
-        session.save();
-
-
-        JCRPublicationService.getInstance()
-                .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
-
-        Calendar now = new GregorianCalendar();
-        session.checkout(source);
-        source.setProperty("j:firstName", "testLogAddAndUpdateOfProperty");
-        session.save();
-
-        JCRPublicationService.getInstance()
-                .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
-        JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE,
-                LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
-
-        final JCRNodeWrapper target = liveSession.getNode("/sites/jcrRPTest/home/target");
-
-        JCRNodeWrapper liveSource = liveSession.getNodeByUUID(source.getIdentifier());
-
-        File tmp = File.createTempFile("remoteAddNode", ".log.gz");
-        RemotePublicationService.getInstance().generateLog(liveSource, now, new FileOutputStream(tmp));
-        RemotePublicationService.getInstance().replayLog(target, new FileInputStream(tmp));
-
-        assertEquals("Property j:firstName does not match testLogAddAndUpdateOfProperty",
-                "testLogAddAndUpdateOfProperty", target.getProperty("j:firstName").getString());
-
-        JCRPublicationService.getInstance()
-                .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
-        now = new GregorianCalendar();
-        session.checkout(source);
-        source.getProperty("j:firstName").remove();
-        session.save();
-        JCRPublicationService.getInstance()
-                .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
-        tmp = File.createTempFile("remoteRemoveNode", ".log.gz");
-        RemotePublicationService.getInstance().generateLog(liveSource, now, new FileOutputStream(tmp));
-        RemotePublicationService.getInstance().replayLog(target, new FileInputStream(tmp));
+        JahiaUser user1 = JCRUserManagerProvider.getInstance().createUser("source-user", "password", new Properties());
+        JahiaUser user2 = JCRUserManagerProvider.getInstance().createUser("target-user", "password", new Properties());
         try {
-            target.getProperty("j:firstName");
-            fail("Property j:firstName should not exist");
-        } catch (PathNotFoundException e) {
+            final JCRNodeWrapper node = session.getNode("/sites/jcrRPTest/home");
+            JCRNodeWrapper source = node.addNode("source-user", "jnt:user");
+            JCRNodeWrapper target = node.addNode("target-user", "jnt:user");
+            session.save();
+
+            JCRPublicationService.getInstance().publish(node.getIdentifier(),
+                    Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+
+            Calendar now = new GregorianCalendar();
+            session.checkout(source);
+            source.setProperty("j:firstName", "testLogAddAndUpdateOfProperty");
+            session.save();
+
+            JCRPublicationService.getInstance().publish(node.getIdentifier(),
+                    Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+            JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(
+                    Constants.LIVE_WORKSPACE,
+                    LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
+
+            target = liveSession.getNode("/sites/jcrRPTest/home/target");
+
+            JCRNodeWrapper liveSource = liveSession.getNodeByUUID(source.getIdentifier());
+
+            File tmp = File.createTempFile("remoteAddNode", ".log.gz");
+            RemotePublicationService.getInstance().generateLog(liveSource, now,
+                    new FileOutputStream(tmp));
+            RemotePublicationService.getInstance().replayLog(target, new FileInputStream(tmp));
+
+            assertEquals("Property j:firstName does not match testLogAddAndUpdateOfProperty",
+                    "testLogAddAndUpdateOfProperty", target.getProperty("j:firstName").getString());
+
+            JCRPublicationService.getInstance().publish(node.getIdentifier(),
+                    Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+            now = new GregorianCalendar();
+            session.checkout(source);
+            source.getProperty("j:firstName").remove();
+            session.save();
+            JCRPublicationService.getInstance().publish(node.getIdentifier(),
+                    Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+            tmp = File.createTempFile("remoteRemoveNode", ".log.gz");
+            RemotePublicationService.getInstance().generateLog(liveSource, now,
+                    new FileOutputStream(tmp));
+            RemotePublicationService.getInstance().replayLog(target, new FileInputStream(tmp));
+            try {
+                target.getProperty("j:firstName");
+                fail("Property j:firstName should not exist");
+            } catch (PathNotFoundException e) {
+            }
+        } finally {
+            ServicesRegistry.getInstance().getJahiaUserManagerService().deleteUser(user1);
+            ServicesRegistry.getInstance().getJahiaUserManagerService().deleteUser(user2);
         }
 
     }
@@ -260,11 +284,15 @@ public class LogReplayTest extends TestCase {
 
         final JCRNodeWrapper node = session.getNode("/sites/jcrRPTest/home");
         JCRNodeWrapper source = node.addNode("source", "jnt:page");
+        source.setProperty("jcr:title", "Source");
         JCRNodeWrapper page1 = source.addNode("page1", "jnt:page");
-        JCRNodeWrapper page2 = page1.addNode("page2", "jnt:page");
-        JCRNodeWrapper page3 = page2.addNode("page3", "jnt:page");
+        page1.setProperty("jcr:title", "Page1");
+        JCRNodeWrapper page2 = source.addNode("page2", "jnt:page");
+        page2.setProperty("jcr:title", "Page2");
+        JCRNodeWrapper page3 = source.addNode("page3", "jnt:page");
         page3.setProperty("jcr:title", "testLogMoveOfNode");
-        node.addNode("target", "jnt:page");
+        JCRNodeWrapper target = node.addNode("target", "jnt:page");
+        target.setProperty("jcr:title", "Target");        
         session.save();
 
         Calendar now = new GregorianCalendar();
@@ -274,7 +302,7 @@ public class LogReplayTest extends TestCase {
         JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
 
-        final JCRNodeWrapper target = liveSession.getNode("/sites/jcrRPTest/home/target");
+        target = liveSession.getNode("/sites/jcrRPTest/home/target");
 
         JCRNodeWrapper liveSource = liveSession.getNodeByUUID(source.getIdentifier());
 
@@ -328,7 +356,7 @@ public class LogReplayTest extends TestCase {
 
         JCRNodeWrapper node = session.getNode("/sites/jcrRPTest/files");
         JCRNodeWrapper source = node.addNode("source", "jnt:folder");
-        node.addNode("target", "jnt:folder");
+        JCRNodeWrapper target = node.addNode("target", "jnt:folder");
 
         Calendar now = new GregorianCalendar();
 
@@ -338,24 +366,24 @@ public class LogReplayTest extends TestCase {
         InputStream is = new ByteArrayInputStream(value.getBytes("UTF-8"));
 
         String name = "test.txt";
-        source.uploadFile(name, is, mimeType);
+        JCRNodeWrapper fileNode = source.uploadFile(name, is, mimeType);
 
         session.save();
 
         JCRPublicationService.getInstance()
-                .publish("/sites/jcrRPTest/files", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+                .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
         JCRPublicationService.getInstance()
-                .publish("/sites/jcrRPTest/files/source", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+                .publish(source.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
         JCRPublicationService.getInstance()
-                .publish("/sites/jcrRPTest/files/source/test.txt", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,
+                .publish(fileNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,
                         null, true);
         JCRPublicationService.getInstance()
-                .publish("/sites/jcrRPTest/files/target", Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+                .publish(target.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
 
         JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
 
-        final JCRNodeWrapper target = liveSession.getNode("/sites/jcrRPTest/files/target");
+        target = liveSession.getNode("/sites/jcrRPTest/files/target");
 
         source = liveSession.getNodeByUUID(source.getIdentifier());
 
@@ -384,11 +412,17 @@ public class LogReplayTest extends TestCase {
 
         final JCRNodeWrapper node = session.getNode("/sites/jcrRPTest/home");
         JCRNodeWrapper source = node.addNode("source", "jnt:page");
+        source.setProperty("jcr:title", "Source");
         JCRNodeWrapper page1 = source.addNode("page1", "jnt:page");
+        page1.setProperty("jcr:title", "Page1");
         JCRNodeWrapper subpage = page1.addNode("subpage", "jnt:page");
-        subpage.addNode("subsubpage", "jnt:page");
+        subpage.setProperty("jcr:title", "Subpage");
+        JCRNodeWrapper subsubpage = subpage.addNode("subsubpage", "jnt:page");
+        subsubpage.setProperty("jcr:title", "SubSubPage");
         JCRNodeWrapper page2 = source.addNode("page2", "jnt:page");
-        node.addNode("target", "jnt:page");
+        page2.setProperty("jcr:title", "Page2");
+        JCRNodeWrapper target = node.addNode("target", "jnt:page");
+        target.setProperty("jcr:title", "Target");
         session.save();
 
         Calendar now = new GregorianCalendar();
@@ -399,7 +433,7 @@ public class LogReplayTest extends TestCase {
         JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
 
-        final JCRNodeWrapper target = liveSession.getNode("/sites/jcrRPTest/home/target");
+        target = liveSession.getNode("/sites/jcrRPTest/home/target");
 
         JCRNodeWrapper liveSource = liveSession.getNodeByUUID(source.getIdentifier());
 
@@ -445,13 +479,21 @@ public class LogReplayTest extends TestCase {
 
         final JCRNodeWrapper node = session.getNode("/sites/jcrRPTest/home");
         JCRNodeWrapper source = node.addNode("source", "jnt:page");
+        source.setProperty("jcr:title", "Source");
         JCRNodeWrapper page1 = source.addNode("page1", "jnt:page");
+        page1.setProperty("jcr:title", "Page1");
         JCRNodeWrapper page2 = source.addNode("page2", "jnt:page");
+        page2.setProperty("jcr:title", "Page2");
         JCRNodeWrapper page3 = source.addNode("page3", "jnt:page");
+        page3.setProperty("jcr:title", "Page3");
         JCRNodeWrapper page4 = source.addNode("page4", "jnt:page");
+        page4.setProperty("jcr:title", "Page4");
         JCRNodeWrapper page5 = source.addNode("page5", "jnt:page");
+        page5.setProperty("jcr:title", "Page5");
         JCRNodeWrapper page6 = source.addNode("page6", "jnt:page");
-        node.addNode("target", "jnt:page");
+        page6.setProperty("jcr:title", "Page6");
+        JCRNodeWrapper target = node.addNode("target", "jnt:page");
+        target.setProperty("jcr:title", "Target");
         session.save();
 
         Calendar now = new GregorianCalendar();
@@ -461,7 +503,7 @@ public class LogReplayTest extends TestCase {
         JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
 
-        final JCRNodeWrapper target = liveSession.getNode("/sites/jcrRPTest/home/target");
+        target = liveSession.getNode("/sites/jcrRPTest/home/target");
 
         JCRNodeWrapper liveSource = liveSession.getNodeByUUID(source.getIdentifier());
 

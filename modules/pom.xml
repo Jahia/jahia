@@ -122,15 +122,15 @@
         <module>staticHTML</module>
         <module>tabularList</module>
         <module>tasks</module>
+        <module>teasers</module>
         <module>test</module>
         <module>templates-web</module>
         <module>templates-intranet</module>
         <module>templates-apps</module>
+        <module>thinkboxes</module>
         <module>topstories</module>
         <module>twitter</module>
-        <module>wiki</module>
         <module>userregistration</module>
-        <module>thinkboxes</module>
-        <module>teasers</module>
+        <module>wiki</module>
     </modules>
 </project>

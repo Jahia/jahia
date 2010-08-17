@@ -36,12 +36,8 @@
         </xsl:choose>
     </xsl:template>
     <xsl:template match="/">
-        <content>
-            <templateSets>
-                <xsl:copy>
-                    <xsl:apply-templates select="child::node()|@*"/>
-                </xsl:copy>
-            </templateSets>
-        </content>
+        <xsl:copy>
+            <xsl:apply-templates select="child::node()|@*"/>
+        </xsl:copy>
     </xsl:template>
 </xsl:stylesheet>

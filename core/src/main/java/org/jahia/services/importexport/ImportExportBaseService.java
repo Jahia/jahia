@@ -274,18 +274,18 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         zout.finish();
     }
 
-    public void exportZip(JCRNodeWrapper node, OutputStream out, Map<String, Object> params) throws JahiaException, RepositoryException, SAXException, IOException, JDOMException {
+    public void exportZip(JCRNodeWrapper node, JCRNodeWrapper exportRoot, OutputStream out, Map<String, Object> params) throws JahiaException, RepositoryException, SAXException, IOException, JDOMException {
         ZipOutputStream zout = new ZipOutputStream(out);
         Set<JCRNodeWrapper> nodes = new HashSet<JCRNodeWrapper>();
         nodes.add(node);
-        exportNodesWithBinaries(node, nodes, zout, new HashSet<String>(),params);
+        exportNodesWithBinaries(exportRoot == null ? node : exportRoot, nodes, zout, new HashSet<String>(),params);
         zout.finish();
     }
 
-    public void exportNode(JCRNodeWrapper node, OutputStream out, Map<String, Object> params) throws JahiaException, RepositoryException, SAXException, IOException, JDOMException {
+    public void exportNode(JCRNodeWrapper node, JCRNodeWrapper exportRoot, OutputStream out, Map<String, Object> params) throws JahiaException, RepositoryException, SAXException, IOException, JDOMException {
         TreeSet<JCRNodeWrapper> nodes = new TreeSet<JCRNodeWrapper>();
         nodes.add(node);
-        exportNodes(node, nodes, out, new HashSet<String>(), params);
+        exportNodes(exportRoot == null ? node : exportRoot, nodes, out, new HashSet<String>(), params);
     }
 
     private void exportNodesWithBinaries(JCRNodeWrapper rootNode, Set<JCRNodeWrapper> nodes, ZipOutputStream zout, Set<String> typesToIgnore, Map<String, Object> params)
@@ -468,33 +468,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         Map<String, List<String>> references = new HashMap<String, List<String>>();
 
-        NoCloseZipInputStream zis = new NoCloseZipInputStream(new FileInputStream(file));
-        try {
-            while (true) {
-                ZipEntry zipentry = zis.getNextEntry();
-                if (zipentry == null) break;
-                String name = zipentry.getName();
-                if (name.endsWith(".xml")) {
-                    BufferedReader br = new BufferedReader(new InputStreamReader(zis));
-                    long i = 0;
-                    while (br.readLine() != null) {
-                        i++;
-                    }
-                    sizes.put(name, i);
-                } else {
-                    sizes.put(name, zipentry.getSize());
-                }
-                if (name.contains("/")) {
-                    fileList.add("/" + name);
-                }
-                zis.closeEntry();
-            }
-        } finally {
-            zis.reallyClose();
-        }
+        getFileList(file, sizes, fileList);
 
         Map<String, String> pathMapping = session.getPathMapping();
-
+        NoCloseZipInputStream zis;
         if (sizes.containsKey(USERS_XML)) {
             // Import users first
             zis = new NoCloseZipInputStream(new FileInputStream(file));
@@ -956,13 +933,67 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     }
 
-    public void importZip(String parentNodePath, File file, boolean noRoot) throws IOException, RepositoryException, JahiaException {
-        JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession(null,null,null);
+    public void importZip(final String parentNodePath, final File file, final boolean noRoot) throws IOException, RepositoryException, JahiaException {
+        if (JCRSessionFactory.getInstance().getCurrentUser() != null) {
+            JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession(null,null,null);
+            importZip(parentNodePath, file, noRoot, session);
+        } else {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Boolean>() {
+                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    try {
+                        importZip(parentNodePath, file, noRoot, session);
+                    } catch (IOException e) {
+                        throw new RepositoryException(e);
+                    } catch (JahiaException e) {
+                        throw new RepositoryException(e);
+                    }
+                    return null;
+                }
+            });
+        }
+    }
+
+    private void importZip(String parentNodePath, File file, boolean noRoot, JCRSessionWrapper session)
+            throws IOException, RepositoryException, JahiaException {
         Map<String, Long> sizes = new HashMap<String, Long>();
         List<String> fileList = new ArrayList<String>();
 
         Map<String, List<String>> references = new HashMap<String, List<String>>();
 
+        getFileList(file, sizes, fileList);
+        NoCloseZipInputStream zis;
+
+//        if (sizes.containsKey(REPOSITORY_XML)) {
+        // Import repository content
+        zis = new NoCloseZipInputStream(new FileInputStream(file));
+        try {
+            while (true) {
+                ZipEntry zipentry = zis.getNextEntry();
+                if (zipentry == null) break;
+                String name = zipentry.getName();
+                if (name.equals(REPOSITORY_XML)) {
+                    DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(session, parentNodePath, file, fileList, null);
+
+                    documentViewImportHandler.setReferences(references);
+                    documentViewImportHandler.setNoRoot(noRoot);
+
+                    handleImport(zis, documentViewImportHandler);
+                    session.save();
+                    break;
+                } else if (name.endsWith(".xml")) {
+                    importXML(parentNodePath, zis, false);
+                }
+                zis.closeEntry();
+            }
+        } finally {
+            zis.reallyClose();
+        }
+//        }
+
+        session.save();
+    }
+
+    private void getFileList(File file, Map<String, Long> sizes, List<String> fileList) throws IOException {
         NoCloseZipInputStream zis = new NoCloseZipInputStream(new FileInputStream(file));
         try {
             while (true) {
@@ -987,35 +1018,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         } finally {
             zis.reallyClose();
         }
-
-//        if (sizes.containsKey(REPOSITORY_XML)) {
-            // Import repository content
-            zis = new NoCloseZipInputStream(new FileInputStream(file));
-        try {
-            while (true) {
-                ZipEntry zipentry = zis.getNextEntry();
-                if (zipentry == null) break;
-                String name = zipentry.getName();
-                if (name.equals(REPOSITORY_XML)) {
-                    DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(session, parentNodePath, file, fileList, null);
-
-                    documentViewImportHandler.setReferences(references);
-                    documentViewImportHandler.setNoRoot(noRoot);
-                    
-                    handleImport(zis, documentViewImportHandler);
-                    session.save();
-                    break;
-                } else if (name.endsWith(".xml")) {
-                    importXML(parentNodePath, zis, false);
-                }
-                zis.closeEntry();
-            }
-        } finally {
-            zis.reallyClose();
-        }
-//        }
-
-        session.save();
     }
 
     public void setCategoryService(CategoryService categoryService) {

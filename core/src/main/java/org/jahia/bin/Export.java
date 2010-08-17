@@ -33,7 +33,6 @@
 package org.jahia.bin;
 
 import org.apache.commons.io.FileCleaningTracker;
-import org.apache.commons.io.output.DeferredFileOutputStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.registries.ServicesRegistry;
@@ -42,18 +41,10 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.sites.JahiaSite;
-import org.jdom.Document;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
-import org.jdom.transform.XSLTransformer;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -126,6 +117,10 @@ public class Export extends HttpServlet implements Controller, ServletContextAwa
 
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace);
             JCRNodeWrapper node = session.getNode(nodePath);
+            JCRNodeWrapper exportRoot = null;
+            if (request.getParameter("root") != null) {
+                exportRoot = session.getNode(request.getParameter("root"));
+            }
             if ("xml".equals(exportFormat)) {
                 resp.setContentType("text/xml");
                 if ("template".equals(request.getParameter(CLEANUP))) {
@@ -133,7 +128,7 @@ public class Export extends HttpServlet implements Controller, ServletContextAwa
                 } else if ("simple".equals(request.getParameter(CLEANUP))) {
                     params.put(ImportExportService.XSL_PATH,servletContext.getRealPath("/WEB-INF/etc/repository/export/" + "cleanup.xsl"));
                 }
-                ie.exportNode(node, outputStream, params);
+                ie.exportNode(node, exportRoot, outputStream, params);
             } else if ("zip".equals(exportFormat)) {
                 resp.setContentType("application/zip");
                 if ("template".equals(request.getParameter(CLEANUP))) {
@@ -141,7 +136,7 @@ public class Export extends HttpServlet implements Controller, ServletContextAwa
                 } else if ("simple".equals(request.getParameter(CLEANUP))) {
                     params.put(ImportExportService.XSL_PATH, servletContext.getRealPath("/WEB-INF/etc/repository/export/" + "cleanup.xsl"));
                 }
-                ie.exportZip(node, outputStream, params);
+                ie.exportZip(node, exportRoot, outputStream, params);
                 outputStream.close();
             }
         } catch (Exception e) {

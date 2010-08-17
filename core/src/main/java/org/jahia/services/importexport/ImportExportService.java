@@ -101,27 +101,27 @@ public interface ImportExportService {
      * Export JCR node as xml
      *
      * @param node node to export
-     * @param out outputstream
-     * @param params
-     * @throws JahiaException
+     * @param exportRoot
+     *@param out outputstream
+     * @param params   @throws JahiaException
      * @throws RepositoryException
      * @throws SAXException
      * @throws IOException
      */
-    void exportNode(JCRNodeWrapper node, OutputStream out, Map<String, Object> params) throws JahiaException, RepositoryException, SAXException, IOException, JDOMException;
+    void exportNode(JCRNodeWrapper node, JCRNodeWrapper exportRoot, OutputStream out, Map<String, Object> params) throws JahiaException, RepositoryException, SAXException, IOException, JDOMException;
 
     /**
      * Export JCR content along with binaries into a zip
      *
      * @param node node to export
-     * @param out outputstream
-     * @param params
-     * @throws JahiaException
+     * @param exportRoot
+     *@param out outputstream
+     * @param params   @throws JahiaException
      * @throws RepositoryException
      * @throws SAXException
      * @throws IOException
      */
-    void exportZip(JCRNodeWrapper node, OutputStream out, Map<String, Object> params) throws JahiaException, RepositoryException, SAXException, IOException, JDOMException;
+    void exportZip(JCRNodeWrapper node, JCRNodeWrapper exportRoot, OutputStream out, Map<String, Object> params) throws JahiaException, RepositoryException, SAXException, IOException, JDOMException;
 
     // Import
 

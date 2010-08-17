@@ -39,7 +39,6 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
-import org.jahia.params.ProcessingContext;
 import org.jahia.params.valves.LoginEngineAuthValveImpl;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -69,7 +68,6 @@ public class RenderTest extends TestCase {
 
     private static Logger logger = Logger.getLogger(RenderTest.class);
     private JahiaSite site;
-    private ProcessingContext ctx;
     private final static String TESTSITE_NAME = "renderTest";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
     private static final String MAIN_CONTENT_TITLE = "Main content title update ";
@@ -84,7 +82,6 @@ public class RenderTest extends TestCase {
 
         try {
             site = TestHelper.createSite(TESTSITE_NAME, "localhost"+System.currentTimeMillis(), TestHelper.INTRANET_TEMPLATES, null);
-            ctx = Jahia.getThreadParamBean();
             assertNotNull(site);
         } catch (Exception ex) {
             logger.warn("Exception during test setUp", ex);
@@ -132,8 +129,8 @@ public class RenderTest extends TestCase {
     public void testVersionRender() throws RepositoryException {
         JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
 
-        JCRSessionWrapper editSession = jcrService.getSessionFactory().getCurrentUserSession();
-        JCRSessionWrapper liveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE);
+        JCRSessionWrapper editSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
+        JCRSessionWrapper liveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
 
         JCRNodeWrapper stageRootNode = editSession.getNode(SITECONTENT_ROOT_NODE);
 
@@ -154,7 +151,7 @@ public class RenderTest extends TestCase {
         editSession.save();
 
         // publish it
-        jcrService.publish(stageNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+        jcrService.publish(stageNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
 
         for (int i = 1; i < NUMBER_OF_VERSIONS; i++) {
             editSession.checkout(stagedSubPage);
@@ -162,7 +159,7 @@ public class RenderTest extends TestCase {
             editSession.save();
 
             // each time the node i published, a new version should be created
-            jcrService.publish(stagedSubPage.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false);
+            jcrService.publish(stagedSubPage.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false);
         }
 
         // now let's do a little system versioning ourselves...
@@ -201,7 +198,7 @@ public class RenderTest extends TestCase {
         Locale englishLocale = LanguageCodeConverters.languageCodeToLocale("en");
 
         JCRSessionWrapper editSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, englishLocale);
-        JCRSessionWrapper liveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE, englishLocale);
+        jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE, englishLocale);
 
         JCRNodeWrapper stageRootNode = editSession.getNode(SITECONTENT_ROOT_NODE);
 

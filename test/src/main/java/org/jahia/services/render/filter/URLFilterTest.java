@@ -62,6 +62,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.google.common.collect.Sets;
+
 import static org.junit.Assert.*;
 
 /**
@@ -74,7 +76,7 @@ public class URLFilterTest {
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
-        JahiaSite site = TestHelper.createSite(TESTSITE_NAME);
+        JahiaSite site = TestHelper.createSite(TESTSITE_NAME, Sets.newHashSet("en", "fr"), null, false);
 
         ParamBean paramBean = (ParamBean) Jahia.getThreadParamBean();
 

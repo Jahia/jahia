@@ -45,6 +45,7 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.exceptions.JahiaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 import org.apache.commons.codec.binary.Base64;
 
 import javax.jcr.ItemExistsException;
@@ -67,6 +68,7 @@ import java.sql.PreparedStatement;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.security.MessageDigest;
@@ -88,6 +90,22 @@ public class TestHelper {
 
     public static JahiaSite createSite(String name) throws Exception {
         return createSite(name, "localhost"+System.currentTimeMillis(), ACME_TEMPLATES, null);
+    }
+    
+    public static JahiaSite createSite(String name, Set<String> languages, Set<String> mandatoryLanguages, boolean mixLanguagesActive) throws Exception {
+        JahiaSite site = createSite(name, "localhost"+System.currentTimeMillis(), ACME_TEMPLATES, null);
+        JahiaSitesService service = ServicesRegistry.getInstance().getJahiaSitesService();
+        if (!CollectionUtils.isEmpty(languages) && !languages.equals(site.getLanguages())) {
+            site.setLanguages(languages);
+        }
+        if (!CollectionUtils.isEmpty(mandatoryLanguages) && !mandatoryLanguages.equals(site.getMandatoryLanguages())) {
+            site.setMandatoryLanguages(mandatoryLanguages);
+        }
+        if (mixLanguagesActive != site.isMixLanguagesActive()) {
+            site.setMixLanguagesActive(mixLanguagesActive);
+        }
+        service.updateSite(site);
+        return site;
     }
 
     public static JahiaSite createSite(String name, String serverName, String templateSet, File importFile)

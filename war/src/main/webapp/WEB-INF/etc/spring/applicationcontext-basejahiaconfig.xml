@@ -190,5 +190,14 @@
 
 
     <bean id="org.jahia.bin.errors.handler" class="org.jahia.bin.errors.DefaultErrorHandler"/>
-    
+
+	<bean id="MaintenanceFilter" class="org.jahia.bin.filters.MaintenanceFilter">
+		<property name="allowedResources">
+			<set>
+				<value>^/css/.*</value>
+				<value>^/engines/images/.*</value>
+				<value>^/tools/.*</value>
+			</set>
+		</property>
+	</bean>    
 </beans>

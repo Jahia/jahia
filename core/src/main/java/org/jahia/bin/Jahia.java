@@ -50,20 +50,19 @@
 
 package org.jahia.bin;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.apache.log4j.Logger;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.exceptions.JahiaPageNotFoundException;
 import org.jahia.exceptions.JahiaSiteNotFoundException;
 import org.jahia.hibernate.cache.JahiaBatchingClusterCacheHibernateProvider;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.ProcessingContextFactory;
-import org.jahia.params.valves.SsoValve;
 import org.jahia.pipelines.Pipeline;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.registries.ServicesRegistry;
@@ -76,7 +75,6 @@ import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.JahiaConsole;
 import org.jahia.utils.LanguageCodeConverters;
@@ -92,10 +90,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.text.MessageFormat;
 import java.util.Properties;
-import java.util.StringTokenizer;
 
 /**
  * This is the main servlet of Jahia.
@@ -116,16 +112,9 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
     private static Logger logger = Logger.getLogger(Jahia.class);
     private static Logger accessLogger = Logger.getLogger("accessLogger");
 
-    /** this class name */
-    static public final String CLASS_NAME = "Jahia";
-
     /** license filename */
     static private final String LICENSE_FILENAME = "license.xml";
 
-    /** ... */
-    static private final String JAHIA_LAUNCH = "jahiaLaunch";
-
-    // web app descriptor initialization parameter
     static private final String INIT_PARAM_SUPPORTED_JDK_VERSIONS =
         "supported_jdk_versions";
 
@@ -141,38 +130,16 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
 
     public final static String COPYRIGHT_TXT = "2010 Jahia Solutions Group SA" ;
 
-    /**
-     * the lock name in the lock registry
-     */
-    public static final String JAHIA_LOCK_NAME = CLASS_NAME + "_lock_name";
-
-    /** Jahia lock session id */
-    public static final String JAHIA_LOCK_SESSION_ID = CLASS_NAME +
-        "_lock_session_id";
-
-    /** Jahia lock session id */
-    public static final String JAHIA_LOCK = CLASS_NAME + "_lock";
-
-    /** Jahia lock user */
-    public static final String JAHIA_LOCK_USER = CLASS_NAME + "_lock_user";
-
-    static private int initTryCount = 0;
-    static private boolean reInit = false;
-    static private boolean mInitError;
-    static private boolean mInitWarning;
-    static private boolean mInitiated = false;
-    static private boolean runInstaller;
     static private boolean maintenance = false;
 
     static protected final String JDK_REQUIRED = "1.5";
 
     private static SettingsBean jSettings;
-    private ServletConfig config;
+
     static private ServletConfig staticServletConfig;
 
-    static protected Exception initException; // used to catch exception on init, where we don't have request and response...
-    static protected Exception initWarningException;
-
+    static private boolean mInitiated = false;
+    
     static protected String mLicenseFilename;
     static private String publicKeyStoreResourceName = "/jahiapublickeystore";
     static private String publicKeyStorePassword = "jahiapublickeystore";
@@ -192,8 +159,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
 
     static private License coreLicense;
     static private ResourceMessage[] licenseErrorMessages;
-
-    static private boolean supportedJDKWarningAlreadyShowed = false;
 
     static private ThreadLocal<ProcessingContext> paramBeanThreadLocal = new ThreadLocal<ProcessingContext>();
     static private ThreadLocal<HttpServlet> servletThreadLocal = new ThreadLocal<HttpServlet>();
@@ -259,177 +224,90 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
         super.init(aConfig);
         logger.info("Initializing Jahia...");
 
-        mInitError = false;
-        runInstaller = false;
-        if (initTryCount < 5) {
-            initTryCount++;
-        }
-
-        // the first time display the welcome banner...
-        if (initTryCount == 1) {
-            JahiaConsole.startupWithTrust(getBuildNumber());
-        }
-
-        // get servlet basic variables, like config and context...
-        this.config = aConfig;
-        staticServletConfig = aConfig;
-        final ServletContext context = aConfig.getServletContext();
-
-        if (jahiaContextPath == null) {
-            initContextData(getServletContext());
-        }
-        // get some value from the web.xml file...
-        final String supportedJDKVersions = this.config.getInitParameter(
-            INIT_PARAM_SUPPORTED_JDK_VERSIONS);
-        jahiaInitAdminServletPath = this.config.getInitParameter(
-            INIT_PARAM_ADMIN_SERVLET_PATH);
-
-        if ( (!supportedJDKWarningAlreadyShowed) &&
-            (supportedJDKVersions != null)) {
-            Version currentJDKVersion;
-            try {
-                currentJDKVersion = new Version(System.getProperty(
-                    "java.version"));
-                if (!isSupportedJDKVersion(currentJDKVersion,
-                                           supportedJDKVersions)) {
-                    mInitWarning = true;
-                    StringBuffer jemsg = new StringBuffer();
-                    jemsg.append("WARNING<br/>\n");
-                    jemsg.append(
-                        "You are using an unsupported JDK version\n");
-                    jemsg.append("or have an invalid ").append(
-                                 INIT_PARAM_SUPPORTED_JDK_VERSIONS).append(
-                                 " parameter string in \n");
-                    jemsg.append(
-                        "the deployment descriptor file web.xml.\n");
-                    jemsg.append(
-                        "<br/><br/>Here is the range specified in the web.xml file : ").
-                            append(supportedJDKVersions).append(".\n");
-                    jemsg.append(
-                            "<br/>If you want to disable this warning, remove the ");
-                    jemsg.append(INIT_PARAM_SUPPORTED_JDK_VERSIONS);
-                    jemsg.append("\n");
-                    jemsg.append(
-                        "<br/>initialization parameter in the tomcat/webapps/jahia/WEB-INF/web.xml<br/>\n");
-                    jemsg.append("<br/><br/>Please note that if you deactivate this check or use unsupported versions<br/>\n");
-                    jemsg.append("<br/>You might run into serious problems and we cannot offer support for these.<br/>\n");
-                    jemsg.append("<br/>You may download a supported JDK from <a href=\"http://java.sun.com\" target=\"_newSunWindow\">http://java.sun.com</a>.");
-                    jemsg.append("<br/><br/>&nbsp;\n");
-                    initWarningException = new JahiaException(jemsg.toString(),
-                        "JDK version warning",
-                        JahiaException.INITIALIZATION_ERROR,
-                        JahiaException.WARNING_SEVERITY);
-                    logger.error("Invalid JDK version", initWarningException);
-                }
-            } catch (NumberFormatException nfe) {
-                logger.warn("Couldn't convert JDK version to internal version testing system, ignoring JDK version test...");
-            }
-            supportedJDKWarningAlreadyShowed = true;
-        }
-
-        if (Jahia.jahiaInitAdminServletPath == null) {
-            logger.warn("Error in web.xml for init parameter " +
-                         INIT_PARAM_ADMIN_SERVLET_PATH +
-                         ". Make sure it's set...Trying to use hardcoded /administration/ dispatching ...");
-            jahiaInitAdminServletPath = "/administration/";
-        }
-
-        jahiaEtcFilesPath = context.getRealPath("/WEB-INF/etc");
-        jahiaVarFilesPath = context.getRealPath("/WEB-INF/var");
-
-        // set default paths...
-        jahiaPropertiesPath = context.getRealPath("/WEB-INF/etc/config/");
-        mLicenseFilename = jahiaPropertiesPath + File.separator +
-                           LICENSE_FILENAME;
-
-        jahiaBaseFilesPath = context.getRealPath("/WEB-INF/var");
-        jahiaTemplatesScriptsPath = jahiaBaseFilesPath + File.separator +
-                                    "templates";
-
-        // check if there is a jahia.properties file...
-        boolean jahiaPropertiesExists = SettingsBean.getInstance() != null && context.getResourceAsStream(SettingsBean.JAHIA_PROPERTIES_FILE_PATH) != null;
-
-        /* init the listener registry */
-        //JahiaListenersRegistry.getInstance().init( this.config );
-
-        // if the jahia properties file exists try to init...
-        if (!jahiaPropertiesExists) {
-            // jahia.properties doesn't exists, launch JahiaConfigurationWizard...
-            Jahia.runInstaller = true;
-            return;
-        }
-        
-        // Check if the license file exists.
-        final File licenseFile = new File(mLicenseFilename);
-        if (!licenseFile.exists()) {
-            logger.fatal(
-                "Could not find jahia.license file (was looking for it at " +
-                licenseFile.toString() + ")");
-            mInitError = true;
-            return;
-        }
-
-        // Check the license file
-        mInitError = (! checkLicense());
-        if (mInitError) {
-            logger.fatal("Invalid License !");
-            initException = new JahiaException("Invalid License",
-                "Environement Initialization Exception",
-                JahiaException.
-                        INITIALIZATION_ERROR,
-                JahiaException.FATAL_SEVERITY);
-            return;
-        }
-
         try {
-            // retrieve the jSettings object...
-            Jahia.jSettings = SettingsBean.getInstance();
-            
-            Jahia.jSettings.setBuildNumber(getBuildNumber());
-           
-        } catch (NullPointerException npe) {
-            // error while reading jahia.properties, launch JahiaConfigurationWizard...
-            Jahia.runInstaller = true;
-            return;
-        } catch (NumberFormatException nfe) {
-            // error while reading jahia.properties, launch JahiaConfigurationWizard...
-            Jahia.runInstaller = true;
-            return;
-        }
-
-        // Initialize all the registered services.
-        try {
+	        JahiaConsole.startupWithTrust(getBuildNumber());
+	
+	        // get servlet basic variables, like config and context...
+	        staticServletConfig = aConfig;
+	        final ServletContext context = aConfig.getServletContext();
+	
+	        if (jahiaContextPath == null) {
+	            initContextData(getServletContext());
+	        }
+	        // get some value from the web.xml file...
+	        jahiaInitAdminServletPath = aConfig.getInitParameter(
+	            INIT_PARAM_ADMIN_SERVLET_PATH);
+	
+	        verifyJavaVersion(aConfig.getInitParameter(INIT_PARAM_SUPPORTED_JDK_VERSIONS));
+	
+	        if (Jahia.jahiaInitAdminServletPath == null) {
+	            jahiaInitAdminServletPath = "/administration/";
+	        }
+	
+	        jahiaEtcFilesPath = context.getRealPath("/WEB-INF/etc");
+	        jahiaVarFilesPath = context.getRealPath("/WEB-INF/var");
+	
+	        // set default paths...
+	        jahiaPropertiesPath = context.getRealPath("/WEB-INF/etc/config/");
+	        mLicenseFilename = jahiaPropertiesPath + File.separator +
+	                           LICENSE_FILENAME;
+	
+	        jahiaBaseFilesPath = context.getRealPath("/WEB-INF/var");
+	        jahiaTemplatesScriptsPath = jahiaBaseFilesPath + File.separator +
+	                                    "templates";
+	
+	        // check if there is a jahia.properties file...
+	        boolean jahiaPropertiesExists = SettingsBean.getInstance() != null && context.getResourceAsStream(SettingsBean.JAHIA_PROPERTIES_FILE_PATH) != null;
+	
+	        if (!jahiaPropertiesExists) {
+	        	logger.fatal("Cannot find settings file under " + SettingsBean.JAHIA_PROPERTIES_FILE_PATH);
+	            throw new JahiaInitializationException("Cannot find settings file under " + SettingsBean.JAHIA_PROPERTIES_FILE_PATH);
+	        }
+	        
+	        Jahia.setMaintenance(SettingsBean.getInstance().isMaintenanceMode());
+	        
+	        // Check if the license file exists.
+	        final File licenseFile = new File(mLicenseFilename);
+	        if (!licenseFile.exists()) {
+	            logger.fatal(
+	                "Could not find jahia.license file (was looking for it at " +
+	                licenseFile.toString() + ")");
+	            throw new JahiaInitializationException("Could not find jahia.license file (was looking for it at " + licenseFile.toString() + ")");
+	        }
+	
+	        // Check the license file
+	        if (!checkLicense()) {
+	            logger.fatal("Invalid License!");
+	            throw new JahiaInitializationException("Invalid License");
+	        }
+	
+	        try {
+	            // retrieve the jSettings object...
+	            Jahia.jSettings = SettingsBean.getInstance();
+	            
+	            Jahia.jSettings.setBuildNumber(getBuildNumber());
+	           
+	        } catch (Exception e) {
+	        	logger.fatal("Unable to initialize Jahia settings and build number", e);
+	        	throw new JahiaInitializationException("Unable to initialize Jahia settings and build number", e);
+	        }
+	
+	        // Initialize all the registered services.
             if (initServicesRegistry()) {
                 ServicesRegistry.getInstance().getSchedulerService().startSchedulers();
-
-                // Todo : Have a convenience way to add listeners from service
-//                JahiaEventListenerInterface listener = ServicesRegistry.getInstance()
-//                                                       .getMetadataService().getMetadataEventListener();
-//                JahiaListenersRegistry.getInstance().addListener(listener);
             }
 
             // Check the license file
-            mInitError = (! checkLicenseLimit());
-            if (mInitError) {
+            if (!checkLicenseLimit()) {
                 String licenseErrors = processLicenseErrorMessages();
                 if (licenseErrors == null) {
-                    initException = new JahiaException(
-                        "License Limit Violation",
-                        "Environement Initialization Exception",
-                        JahiaException.INITIALIZATION_ERROR,
-                        JahiaException.FATAL_SEVERITY);
+                	logger.fatal("License Limit Violation");
+                    throw new JahiaInitializationException("License Limit Violation");
                 } else {
-                    initException = new JahiaException(
-                        licenseErrors,
-                        licenseErrors,
-                        JahiaException.INITIALIZATION_ERROR,
-                        JahiaException.FATAL_SEVERITY);
+                	logger.fatal("licenseErrors");
+                    throw new JahiaInitializationException(licenseErrors);
                 }
-                logger.fatal(
-                        "License error: " + initException.getMessage(), initException);
-                return;
             }
-            // JahiaMBeanServer.getInstance().init(getSettings());
 
             // Activate the JMS synchronization if needed
             final CacheService factory = ServicesRegistry.getInstance().getCacheService();
@@ -437,10 +315,7 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
                 factory.enableClusterSync();
             }
 
-            createAuthorizationPipeline(config);
-
-            // initialize content portlets
-            // ServicesRegistry.getInstance().getJahiaWebAppsDeployerService().initPortletListener();
+            createAuthorizationPipeline(aConfig);
 
             /* todo let's find a cleaner way to initialize this static repository reference, maybe if we move
              * Jackrabbit to be initialized using Spring we could initialize these dependencies using Spring
@@ -450,19 +325,57 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
             JahiaAccessManager.getRepository();
             JahiaAccessManager.getJahiaUserService();
 
+            mInitiated = true;
         } catch (Exception je) {
             logger.error("Error during initialization of Jahia", je);
             // init error, stop Jahia!
-            mInitError = true;
-            initException = je;
-            return;
+            if (je instanceof ServletException) {
+            	throw (ServletException) je;
+            } else {
+            	throw new ServletException(je);
+            }
         }
-
-        mInitiated = true;
-
     } // end init
 
-    private void createAuthorizationPipeline (final ServletConfig aConfig) throws JahiaException {
+    private void verifyJavaVersion(String supportedJDKVersions) throws JahiaInitializationException {
+        if (supportedJDKVersions != null) {
+                Version currentJDKVersion;
+                try {
+                    currentJDKVersion = new Version(System.getProperty("java.version"));
+                    if (!isSupportedJDKVersion(currentJDKVersion, supportedJDKVersions)) {
+                        StringBuffer jemsg = new StringBuffer();
+                        jemsg.append("WARNING<br/>\n");
+                        jemsg.append(
+                            "You are using an unsupported JDK version\n");
+                        jemsg.append("or have an invalid ").append(
+                                     INIT_PARAM_SUPPORTED_JDK_VERSIONS).append(
+                                     " parameter string in \n");
+                        jemsg.append(
+                            "the deployment descriptor file web.xml.\n");
+                        jemsg.append(
+                            "<br/><br/>Here is the range specified in the web.xml file : ").
+                                append(supportedJDKVersions).append(".\n");
+                        jemsg.append(
+                                "<br/>If you want to disable this warning, remove the ");
+                        jemsg.append(INIT_PARAM_SUPPORTED_JDK_VERSIONS);
+                        jemsg.append("\n");
+                        jemsg.append(
+                            "<br/>initialization parameter in the tomcat/webapps/jahia/WEB-INF/web.xml<br/>\n");
+                        jemsg.append("<br/><br/>Please note that if you deactivate this check or use unsupported versions<br/>\n");
+                        jemsg.append("<br/>You might run into serious problems and we cannot offer support for these.<br/>\n");
+                        jemsg.append("<br/>You may download a supported JDK from <a href=\"http://java.sun.com\" target=\"_newSunWindow\">http://java.sun.com</a>.");
+                        jemsg.append("<br/><br/>&nbsp;\n");
+                        JahiaInitializationException e = new JahiaInitializationException(jemsg.toString());
+                        logger.error("Invalid JDK version", e);
+                        throw e;
+                    }
+                } catch (NumberFormatException nfe) {
+                    logger.warn("Couldn't convert JDK version to internal version testing system, ignoring JDK version test...", nfe);
+                }
+            }
+	}
+
+	private void createAuthorizationPipeline (final ServletConfig aConfig) throws JahiaException {
         try {
             authPipeline = (Pipeline) SpringContextSingleton.getInstance().getContext().getBean("authPipeline");
             authPipeline.initialize();
@@ -488,11 +401,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
 
         logger.info("Shutdown requested");
 
-        // check first if Jahia was initialized or if we just ran the configuration wizard.
-        if (!mInitiated) {
-            super.destroy();
-            return;
-        }
         try {
             // first we shutdown the scheduler, because it might be running lots of
             // jobs.
@@ -571,86 +479,11 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
                 Jahia.jahiaHttpPort = request.getServerPort();
             }
 
-            // check witch action to do...
-            if (mInitWarning) { // init error, stop Jahia...
-                // we only display warnings once.
-                Exception exToThrow = initWarningException; 
-                initWarningException = null;
-                mInitWarning = false;
-                if (exToThrow != null) {
-                    throw exToThrow;
-                }
-            } else if (mInitError) { // init error, stop Jahia...
-                logger.error("INIT ERROR. Jahia is not started.");
-                if (initException != null) {
-                    throw initException;
-                }
-
-                return;
-
-            } else if (runInstaller || SpringContextSingleton.getInstance().getContext() == null) { // run the installer...
-                logger.debug("Redirecting to Configuration Wizard...");
-                runInstaller = false;
-                reInit = true;
-                response.sendRedirect("/config");
-
-                return;
-
-            } else if (request.getAttribute(JAHIA_LAUNCH) != null) { // redirect on an another servlet...
-
-                if (request.getAttribute(JAHIA_LAUNCH).equals("installation")) {
-                    logger.debug("Redirecting to Configuration Wizard...");
-                    response.sendRedirect("/config");
-                    return;
-                    } else if (request.getAttribute(JAHIA_LAUNCH).equals(
-                            "administration")) {
-                        logger.debug("Redirecting to Administration...");
-                        jahiaLaunch(request, response,
-                                    Jahia.jahiaInitAdminServletPath);
-                        return;
-                    }
-
-            } else if (reInit) { // re-init Jahia...
-                logger.debug("Reinitializing Jahia...");
-                Jahia.reInit = false;
-                init(config);
-            } else if (maintenance) {
-                jahiaLaunch(request, response, "/errors/maintenance.jsp");
-                return;
-            }
-
             if (ParamBean.getDefaultSite() == null) {
                 JahiaSitesService jahiaSitesService = ServicesRegistry.getInstance().getJahiaSitesService();
                 if (jahiaSitesService.getNbSites() > 0) {
                     jahiaSitesService.setDefaultSite(jahiaSitesService.getSites().next());
                 } else {
-                    Cookie[] cookies = request.getCookies();
-                    if (cookies != null) {
-                        for (int i = 0; i < cookies.length; i++) {
-                            Cookie curCookie = cookies[i];
-                            if (curCookie.getName().equals("jahiaWizardKey")) {
-                                String value = new String(Base64
-                                        .decodeBase64(URLDecoder.decode(
-                                                curCookie.getValue(), "UTF-8")
-                                                .getBytes("UTF-8")), "UTF-8");
-                                StringTokenizer t = new StringTokenizer(value,":");
-                                String name = t.nextToken();
-                                final JahiaUser rootUser = ServicesRegistry.getInstance().
-                                        getJahiaUserManagerService().lookupUser(name);
-                                if (rootUser != null) {
-                                    if (rootUser.verifyPassword(t.nextToken())) {
-                                        session.setAttribute(ProcessingContext.SESSION_USER,
-                                                rootUser);
-                                        session.setAttribute(JahiaAdministration.CLASS_NAME + "isSuperAdmin",Boolean.TRUE);
-                                        session.setAttribute(JahiaAdministration.CLASS_NAME + "accessGranted",Boolean.TRUE);
-                                        session.setAttribute(JahiaAdministration.CLASS_NAME + "jahiaLoginUsername", name);
-                                        session.setAttribute(JahiaAdministration.CLASS_NAME + "redirectToJahia",Boolean.TRUE);
-                                    }
-                                } 
-                            }
-                        }
-                    }
-
                     jahiaLaunch(request, response,
                                 Jahia.jahiaInitAdminServletPath+"?do=sites&sub=list");
                     return;
@@ -784,10 +617,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
 
     public static void setJahiaHttpPort(int theJahiaHttpPort) {
         Jahia.jahiaHttpPort = theJahiaHttpPort;
-    }
-
-    public static String getInitAdminServletPath () {
-        return jahiaInitAdminServletPath;
     }
 
     public static ProcessingContext getThreadParamBean () {

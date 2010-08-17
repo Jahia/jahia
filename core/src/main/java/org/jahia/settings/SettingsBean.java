@@ -77,7 +77,7 @@ public class SettingsBean {
     private String licenseFilename;
     private String propertiesFileName;
     // this is the famous build number...
-    public int buildNumber;
+    private int buildNumber;
 
     private Properties properties;
 
@@ -180,6 +180,8 @@ public class SettingsBean {
 
     private ServerDeploymentInterface serverDeployer = null;
 
+	private boolean maintenanceMode;
+
     /**
      * Default constructor.
      *
@@ -233,6 +235,8 @@ public class SettingsBean {
             serverHome = getString("serverHome", "");
             ServerDeploymentFactory.setTargetServerDirectory(serverHome);
             serverDeployer = ServerDeploymentFactory.getInstance().getImplementation(server + serverVersion);
+            
+            maintenanceMode = getBoolean("maintenanceMode", false);
             
             jahiaTemplatesDiskPath = pathResolver.resolvePath (getString("jahiaTemplatesDiskPath"));
             jahiaJspDiskPath = pathResolver.resolvePath (getString("jahiaJspDiskPath"));
@@ -973,13 +977,6 @@ public class SettingsBean {
         this.considerPreferredLanguageAfterLogin = considerPreferredLanguageAfterLogin;
     }
 
-    /**
-     * Saves the current configuration back to files. 
-     */
-    public void save() {
-    	
-    }
-
 	public boolean isMail_service_activated() {
     	return mail_service_activated;
     }
@@ -1033,4 +1030,8 @@ public class SettingsBean {
     public ServerDeploymentInterface getServerDeployer() {
         return serverDeployer;
     }
+
+	public boolean isMaintenanceMode() {
+		return maintenanceMode;
+	}
 }

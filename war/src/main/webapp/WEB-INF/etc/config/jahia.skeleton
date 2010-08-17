@@ -27,7 +27,9 @@ release                                                =
 server                                                 =
 serverVersion                                          =
 serverHome                                             =
-
+# Set this to true to enable maintenance mode, i.e. no requests will be
+# served except to /tools/
+maintenanceMode                                        = false
 
 ######################################################################
 ### Disk Paths  ######################################################

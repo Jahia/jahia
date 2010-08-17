@@ -35,6 +35,7 @@ package org.jahia.bin.errors;
 import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.jahia.bin.filters.MaintenanceFilter;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
@@ -220,6 +221,13 @@ public class ErrorLoggingFilter implements Filter {
 
         logDebugInfo(request, response);
 
+		if (HttpServletResponse.SC_SERVICE_UNAVAILABLE == (Integer) request
+		        .getAttribute("javax.servlet.error.status_code")
+		        && StringUtils.equals(MaintenanceFilter.MAINTENANCE, (String) request
+		                .getAttribute("javax.servlet.error.message"))) {
+			return;
+		}
+        
         logException(request, response);
 
         if (SettingsBean.getInstance().isDumpErrorsToFiles()) {
@@ -286,6 +294,7 @@ public class ErrorLoggingFilter implements Filter {
                                 HttpServletResponse response) {
 
         Throwable ex = getException(request);
+        
         int code = (Integer) request
                 .getAttribute("javax.servlet.error.status_code");
         code = code != 0 ? code : SC_INTERNAL_SERVER_ERROR;
@@ -341,9 +350,10 @@ public class ErrorLoggingFilter implements Filter {
                     .append(request.getRequestedSessionId()).append("\nSession user: ")
                     .append(getUserInfo(request)).append("\nRequest headers: ");
 
-            Iterator headerNames = new EnumerationIterator(request.getHeaderNames());
+            @SuppressWarnings("unchecked")
+            Iterator<String> headerNames = new EnumerationIterator(request.getHeaderNames());
             while (headerNames.hasNext()) {
-                String headerName = (String) headerNames.next();
+                String headerName = headerNames.next();
                 String headerValue = request.getHeader(headerName);
                 info.append("\n  ").append(headerName).append(": ").append(
                         headerValue);

@@ -106,7 +106,10 @@ public class VersionService extends JahiaService {
 
     public boolean installAllPatches() {
         status = new ArrayList<Status>();
-        Jahia.setMaintenance(true);
+        boolean switchToMaintenance = !Jahia.isMaintenance();
+        if (switchToMaintenance) {
+        	Jahia.setMaintenance(true);
+        }
         try {
             List<JahiaVersion> list = manager.getAllVersion();
             if (!list.isEmpty()) {
@@ -136,7 +139,9 @@ public class VersionService extends JahiaService {
         } catch (Exception e) {
             return false;
         } finally {
-            Jahia.setMaintenance(false);
+        	if (switchToMaintenance) {
+        		Jahia.setMaintenance(false);
+        	}
         }
         return false;
     }

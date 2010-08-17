@@ -41,7 +41,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.jahia.bin.filters.MaintenanceFilter;
 import org.jahia.bin.filters.ResponseCacheControlFilter;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaRuntimeException;
@@ -57,174 +59,172 @@ import org.jahia.settings.SettingsBean;
  */
 public class ErrorServlet extends HttpServlet {
 
+	private static final Logger logger = Logger.getLogger(ErrorServlet.class);
+
 	private static final long serialVersionUID = -6990851339777685000L;
 
-    private static final Logger logger = Logger.getLogger(ErrorServlet.class);
+	protected void forwardToErrorPage(String errorPagePath, HttpServletRequest request,
+	        HttpServletResponse response) throws ServletException, IOException {
+		if (null == errorPagePath) {
+			logger.info("No appropriate error page found for error code '" + getErrorCode(request)
+			        + "'. Using server's default page.");
+			throw new JahiaRuntimeException(
+			        "No appropriate error page found. Server's default page will be used.");
+		} else {
+			if (logger.isDebugEnabled()) {
+				logger.debug("Forwarding request to the following error page: " + errorPagePath);
+			}
 
-    protected int getErrorCode(HttpServletRequest request) {
-        int errorCode = (Integer) request
-                .getAttribute("javax.servlet.error.status_code");
+			request.setAttribute("org.jahia.exception.forwarded", Boolean.TRUE);
+			getServletContext().getRequestDispatcher(errorPagePath).forward(request, response);
+		}
+	}
 
-        return errorCode != 0 ? errorCode : SC_INTERNAL_SERVER_ERROR;
+	protected int getErrorCode(HttpServletRequest request) {
+		int errorCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
 
-    }
+		return errorCode != 0 ? errorCode : SC_INTERNAL_SERVER_ERROR;
 
-    protected Throwable getException(HttpServletRequest request) {
-        Throwable ex = (Throwable) request
-                .getAttribute("javax.servlet.error.exception");
-        ex = ex != null ? ex : (Throwable) request
-                .getAttribute("org.jahia.exception");
+	}
 
-        return ex;
-    }
+	protected String getErrorPagePath(HttpServletRequest request, HttpServletResponse response)
+	        throws ServletException, IOException {
 
-    protected String getErrorPagePath(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
+		String path = null;
+		String page = request.getParameter("page");
+		int errorCode = getErrorCode(request);
 
-        String path = null;
-        String page = request.getParameter("page");
-        int errorCode = getErrorCode(request);
+		if (null == page) {
+			page = "error_" + errorCode + ".jsp";
+		}
 
-        if (null == page) {
-            page = "error_" + errorCode + ".jsp";
-        }
+		// use specified page
+		if (page.startsWith("/")) {
+			// absolute path specified
+			if (getServletContext().getResource(page) != null) {
+				path = page;
+			} else {
+				logger.warn("No resource found at the specified path '" + page
+				        + "'. Fallback to standard error page heuristic algorithm.");
+			}
+		}
 
-        // use specified page
-        if (page.startsWith("/")) {
-            // absolute path specified
-            if (getServletContext().getResource(page) != null) {
-                path = page;
-            } else {
-                logger
-                        .warn("No resource found at the specified path '"
-                                + page
-                                + "'. Fallback to standard error page heuristic algorithm.");
-            }
-        }
+		if (null == path) {
 
-        if (null == path) {
+			JahiaSite site = null;
+			SettingsBean settings = SettingsBean.getInstance();
+			String jspPath = settings.getJspContext()
+			        + (!settings.getJspContext().endsWith("/") ? "/" : "");
 
-            JahiaSite site = null;
-            SettingsBean settings = SettingsBean.getInstance();
-            String jspPath = settings.getJspContext()
-                    + (!settings.getJspContext().endsWith("/") ? "/" : "");
+			if (settings.getSiteErrorEnabled()) {
+				// site information available?
+				try {
+					site = (JahiaSite) request.getSession().getAttribute(
+					        "org.jahia.services.sites.jahiasite");
+				} catch (Exception e) {
+					// ignore
+				}
+			}
 
-            if (settings.getSiteErrorEnabled()) {
-                // site information available?
-                try {
-                    site = (JahiaSite) request.getSession().getAttribute(
-                            "org.jahia.services.sites.jahiasite");
-                } catch (Exception e) {
-                    // ignore
-                }
-            }
+			// relative page path specified
+			// site information available?
+			if (site != null) {
+				// check site-specific page
+				String pathToCheck = jspPath + "errors/sites/" + site.getSiteKey() + "/" + page;
+				if (getServletContext().getResource(pathToCheck) != null) {
+					path = pathToCheck;
+				} else {
+					pathToCheck = jspPath + "errors/sites/" + site.getSiteKey() + "/error.jsp";
+					path = getServletContext().getResource(pathToCheck) != null ? pathToCheck
+					        : null;
+				}
 
-            // relative page path specified
-            // site information available?
-            if (site != null) {
-                // check site-specific page
-                String pathToCheck = jspPath + "errors/sites/"
-                        + site.getSiteKey() + "/" + page;
-                if (getServletContext().getResource(pathToCheck) != null) {
-                    path = pathToCheck;
-                } else {
-                    pathToCheck = jspPath + "errors/sites/" + site.getSiteKey()
-                            + "/error.jsp";
-                    path = getServletContext().getResource(pathToCheck) != null ? pathToCheck
-                            : null;
-                }
+				if (null == path && site.getTemplatePackageName() != null) {
+					// try template set error page considering inheritance
+					JahiaTemplateManagerService templateService = ServicesRegistry.getInstance()
+					        .getJahiaTemplateManagerService();
+					JahiaTemplatesPackage pkg = templateService.getTemplatePackage(site
+					        .getTemplatePackageName());
+					pathToCheck = pkg.getRootFolderPath() + "errors/" + page;
+					path = getServletContext().getResource(pathToCheck) != null ? pathToCheck
+					        : null;
+					if (null == path) {
+						pathToCheck = pkg.getRootFolderPath() + "/errors/error.jsp";
+						path = getServletContext().getResource(pathToCheck) != null ? pathToCheck
+						        : null;
+					}
+				}
+			}
 
-                if (null == path && site.getTemplatePackageName() != null) {
-                    // try template set error page considering inheritance
-                    JahiaTemplateManagerService templateService = ServicesRegistry
-                            .getInstance().getJahiaTemplateManagerService();
-                    JahiaTemplatesPackage pkg = templateService.getTemplatePackage(site.getTemplatePackageName());
-                    pathToCheck = pkg.getRootFolderPath() + "errors/" + page;
-                    path = getServletContext().getResource(pathToCheck) != null ? pathToCheck
-                            : null;
-                    if (null == path) {
-                        pathToCheck = pkg.getRootFolderPath() + "/errors/error.jsp";
-                        path = getServletContext().getResource(pathToCheck) != null ? pathToCheck
-                                : null;
-                    }
-                }
-            }
+			if (null == path) {
+				String pathToCheck = jspPath + "errors/" + page;
+				if (getServletContext().getResource(pathToCheck) != null) {
+					path = pathToCheck;
+				} else {
+					pathToCheck = jspPath + "errors/error.jsp";
+					path = getServletContext().getResource(pathToCheck) != null ? pathToCheck
+					        : null;
+				}
+			}
+		}
 
-            if (null == path) {
-                String pathToCheck = jspPath + "errors/" + page;
-                if (getServletContext().getResource(pathToCheck) != null) {
-                    path = pathToCheck;
-                } else {
-                    pathToCheck = jspPath + "errors/error.jsp";
-                    path = getServletContext().getResource(pathToCheck) != null ? pathToCheck
-                            : null;
-                }
-            }
-        }
+		return path;
+	}
 
-        return path;
-    }
+	protected Throwable getException(HttpServletRequest request) {
+		Throwable ex = (Throwable) request.getAttribute("javax.servlet.error.exception");
+		ex = ex != null ? ex : (Throwable) request.getAttribute("org.jahia.exception");
 
-    protected void process(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
+		return ex;
+	}
 
-        if (response.isCommitted()) {
-            logger
-                    .warn("Response is already committed. Skipping error processing.");
-            return;
-        }
+	protected void process(HttpServletRequest request, HttpServletResponse response)
+	        throws ServletException, IOException {
 
-        int errorCode = getErrorCode(request);
+		if (response.isCommitted()) {
+			logger.warn("Response is already committed. Skipping error processing.");
+			return;
+		}
 
-        response.setStatus(errorCode);
-        response.setContentType("text/html; charset="
-                + SettingsBean.getInstance().getCharacterEncoding());
-        response.resetBuffer();
+		int errorCode = getErrorCode(request);
 
-        String errorPagePath = getErrorPagePath(request, response);
-        if (null == errorPagePath) {
-            logger.info("No appropriate error page found for error code '"
-                    + errorCode + "'. Using server's default page.");
-            throw new JahiaRuntimeException(
-                    "No appropriate error page found. Server's default page will be used.");
-        } else {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Forwarding request to the following error page: "
-                        + errorPagePath);
-            }
+		response.setStatus(errorCode);
+		response.setContentType("text/html; charset="
+		        + SettingsBean.getInstance().getCharacterEncoding());
+		response.resetBuffer();
 
-            request.setAttribute("org.jahia.exception.forwarded", Boolean.TRUE);
-            getServletContext().getRequestDispatcher(errorPagePath).forward(
-                    request, response);
-        }
-    }
+		String errorPagePath = getErrorPagePath(request, response);
+		forwardToErrorPage(errorPagePath, request, response);
+	}
 
-    protected void service(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
+	protected void service(HttpServletRequest request, HttpServletResponse response)
+	        throws ServletException, IOException {
 
-        ResponseCacheControlFilter.setNoCacheHeaders(response);
-        
-        // check if the Basic Authentication is required
-        Integer errorCode = (Integer) request
-                .getAttribute("javax.servlet.error.status_code");
+		ResponseCacheControlFilter.setNoCacheHeaders(response);
 
-        if (errorCode == HttpServletResponse.SC_UNAUTHORIZED
-                && getException(request) == null) {
-            if (!response.containsHeader("WWW-Authenticate")) {
-                response.setHeader("WWW-Authenticate",
-                        "BASIC realm=\"Secured Jahia tools\"");
-            }
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        } else {
-            // otherwise continue with processing of the error
-            String method = request.getMethod();
-            if (method.equals("GET") || method.equals("POST")) {
-                process(request, response);
-            } else {
-                response.sendError(errorCode != null ? errorCode.intValue()
-                        : HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            }
-        }
-    }
+		// check if the Basic Authentication is required
+		Integer errorCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
+
+		if (errorCode == HttpServletResponse.SC_UNAUTHORIZED && getException(request) == null) {
+			if (!response.containsHeader("WWW-Authenticate")) {
+				response.setHeader("WWW-Authenticate", "BASIC realm=\"Secured Jahia tools\"");
+			}
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		} else {
+			if (errorCode == HttpServletResponse.SC_SERVICE_UNAVAILABLE
+			        && StringUtils.equals(MaintenanceFilter.MAINTENANCE, (String) request.getAttribute("javax.servlet.error.message"))) {
+				forwardToErrorPage("/errors/maintenance.jsp", request, response);
+			} else {
+				// otherwise continue with processing of the error
+				String method = request.getMethod();
+				if (method.equals("GET") || method.equals("POST")) {
+					process(request, response);
+				} else {
+					response.sendError(errorCode != null ? errorCode.intValue()
+					        : HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				}
+			}
+		}
+	}
 
 }

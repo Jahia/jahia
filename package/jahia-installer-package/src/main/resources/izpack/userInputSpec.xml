@@ -29,7 +29,6 @@
             <spec>
                 <choice txt="Apache Tomcat 6.0.x" id="server.type.tomcat" value="tomcat" set="true"/>
                 <choice txt="IBM WebSphere 6.1" id="server.type.was" value="was"/>
-                <choice txt="Oracle WebLogic 10.x/11g" id="server.type.weblogic" value="weblogic"/>
                 <choice txt="Red Hat JBoss 4.2.x" id="server.type.jboss" value="jboss"/>
             </spec>
         </field>
@@ -50,9 +49,8 @@
             <spec>
                 <choice txt="Microsoft SQL Server" id="dbSettings.dbms.type.mssql" value="mssql"/>
                 <choice txt="MySQL 5.x" id="dbSettings.dbms.type.mysql" value="mysql" set="true"/>
-                <choice txt="Oracle 10.2.1.0 / Oracle 11.x" id="dbSettings.dbms.type.oracle" value="oracle"/>
-                <choice txt="Oracle 9.x / Oracle 10.1.x" id="dbSettings.dbms.type.oracle.legacy" value="oracle_legacy"/>
-                <choice txt="PostgreSQL 7.4.x / 8.x" id="dbSettings.dbms.type.postgresql" value="postgresql"/>
+                <choice txt="Oracle 11.x" id="dbSettings.dbms.type.oracle" value="oracle"/>
+                <choice txt="PostgreSQL 8.x" id="dbSettings.dbms.type.postgresql" value="postgresql"/>
                 <choice txt="Sun Java DB / Apache Derby (standalone)" id="dbSettings.dbms.type.derby" value="derby"/>
             </spec>
         </field>
@@ -81,22 +79,12 @@
             <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Database URL is a mandatory field" id="dbSettings.connection.url.mandatory"/>
         </field>
         
-        <!-- Oracle 10/11 -->
+        <!-- Oracle -->
         <field type="text" align="left" variable="dbSettings.connection.driver.oracle" conditionid="cnd.db.dbms.oracle">
             <spec txt="Database driver (*)" id="dbSettings.connection.driver" size="25" set="${def.db.driver.oracle}"/>
             <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Database driver is a mandatory field" id="dbSettings.connection.driver.mandatory"/>
         </field>
         <field type="text" align="left" variable="dbSettings.connection.url.oracle" conditionid="cnd.db.dbms.oracle">
-            <spec txt="Database URL (*)" id="dbSettings.connection.url" size="25" set="${def.db.url.oracle}"/>
-            <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Database URL is a mandatory field" id="dbSettings.connection.url.mandatory"/>
-        </field>
-        
-        <!-- Oracle 9 -->
-        <field type="text" align="left" variable="dbSettings.connection.driver.oracle_legacy" conditionid="cnd.db.dbms.oracle_legacy">
-            <spec txt="Database driver (*)" id="dbSettings.connection.driver" size="25" set="${def.db.driver.oracle}"/>
-            <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Database driver is a mandatory field" id="dbSettings.connection.driver.mandatory"/>
-        </field>
-        <field type="text" align="left" variable="dbSettings.connection.url.oracle_legacy" conditionid="cnd.db.dbms.oracle_legacy">
             <spec txt="Database URL (*)" id="dbSettings.connection.url" size="25" set="${def.db.url.oracle}"/>
             <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Database URL is a mandatory field" id="dbSettings.connection.url.mandatory"/>
         </field>

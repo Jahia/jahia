@@ -57,7 +57,6 @@
         <variable name="dbSettings.connection.driver" value="${dbSettings.connection.driver.mssql}" condition="cnd.db.dbms.mssql" />
         <variable name="dbSettings.connection.driver" value="${dbSettings.connection.driver.mysql}" condition="cnd.db.dbms.mysql" />
         <variable name="dbSettings.connection.driver" value="${dbSettings.connection.driver.oracle}" condition="cnd.db.dbms.oracle" />
-        <variable name="dbSettings.connection.driver" value="${dbSettings.connection.driver.oracle_legacy}" condition="cnd.db.dbms.oracle_legacy" />
         <variable name="dbSettings.connection.driver" value="${dbSettings.connection.driver.postgresql}" condition="cnd.db.dbms.postgresql" />
         <variable name="dbSettings.connection.driver" value="${dbSettings.connection.driver.derby}" condition="cnd.db.dbms.derby" />
 
@@ -65,7 +64,6 @@
         <variable name="dbSettings.connection.url" value="${dbSettings.connection.url.mssql}" condition="cnd.db.dbms.mssql" />
         <variable name="dbSettings.connection.url" value="${dbSettings.connection.url.mysql}" condition="cnd.db.dbms.mysql" />
         <variable name="dbSettings.connection.url" value="${dbSettings.connection.url.oracle}" condition="cnd.db.dbms.oracle" />
-        <variable name="dbSettings.connection.url" value="${dbSettings.connection.url.oracle_legacy}" condition="cnd.db.dbms.oracle_legacy" />
         <variable name="dbSettings.connection.url" value="${dbSettings.connection.url.postgresql}" condition="cnd.db.dbms.postgresql" />
         <variable name="dbSettings.connection.url" value="${dbSettings.connection.url.derby}" condition="cnd.db.dbms.derby" />
 
@@ -134,10 +132,6 @@
         <condition type="variable" id="cnd.db.dbms.oracle">
             <name>dbSettings.dbms.type</name>
             <value>oracle</value>
-        </condition>
-        <condition type="variable" id="cnd.db.dbms.oracle_legacy">
-            <name>dbSettings.dbms.type</name>
-            <value>oracle_legacy</value>
         </condition>
         <condition type="variable" id="cnd.db.dbms.postgresql">
             <name>dbSettings.dbms.type</name>

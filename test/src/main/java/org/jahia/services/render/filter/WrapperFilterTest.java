@@ -43,10 +43,12 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaAdminUser;
+import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.data.JahiaData;
 import org.jahia.test.TestHelper;
 
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 import junit.framework.TestCase;
@@ -74,13 +76,13 @@ public class WrapperFilterTest extends TestCase {
         JahiaData jData = new JahiaData(paramBean, false);
         paramBean.setAttribute(JahiaData.JAHIA_DATA, jData);
 
-        session = JCRSessionFactory.getInstance().getCurrentUserSession();
+        session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
         this.site = (JCRSiteNode) session.getNode("/sites/"+site.getSiteKey());
 
         JCRNodeWrapper shared = session.getNode("/shared");
 
         if (!shared.isCheckedOut()) {
-            shared.checkout();
+            session.checkout(shared);
         }
 
         if (shared.hasNode("testContent")) {

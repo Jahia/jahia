@@ -90,6 +90,8 @@ public class JCRItemWrapperImpl implements JCRItemWrapper {
     public JCRItemWrapper getAncestor(int i) throws ItemNotFoundException, AccessDeniedException, RepositoryException {
         if (i >= provider.getDepth()) {
             return provider.getNodeWrapper((Node) item.getAncestor(i-provider.getDepth()), getSession());
+        } else if (i < 0) {
+            throw new ItemNotFoundException();            
         }
         return session.getItem(StringUtils.substringBeforeLast(provider.getMountPoint(),"/")).getAncestor(i);
     }
@@ -143,8 +145,9 @@ public class JCRItemWrapperImpl implements JCRItemWrapper {
     /**
      * {@inheritDoc}
      */
-    public boolean isSame(Item item) throws RepositoryException {
-        return item.isSame(item);
+    public boolean isSame(Item otherItem) throws RepositoryException {
+        return item.isSame(otherItem)
+                || (otherItem instanceof JCRItemWrapperImpl && otherItem.isSame(item));
     }
 
     /**

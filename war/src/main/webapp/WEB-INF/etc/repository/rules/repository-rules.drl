@@ -17,6 +17,7 @@ global RulesNotificationService notificationService
 global Logger logger
 global JCRStoreProvider provider
 
+/*
 rule "Test type"
     when
         A new node is created
@@ -24,6 +25,7 @@ rule "Test type"
     then
         Add the type jmix:test
 end
+*/
 
 rule "publish user (create)"
     when

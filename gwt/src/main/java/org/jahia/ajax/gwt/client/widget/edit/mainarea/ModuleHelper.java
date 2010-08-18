@@ -271,7 +271,7 @@ public class ModuleHelper {
                 if (path.indexOf('.') > -1) {
                     path = path.substring(0, path.indexOf('.'));
                 }
-                DOM.setElementAttribute(element, "href", "#");
+                DOM.setElementAttribute(element, "href", "#"+path+":"+(template != null?template:"")+":"+params);
                 if (template == null) {
                     DOM.setElementAttribute(element, "onclick", "window.goTo('" + path + "',null,'" + params + "')");
                 } else {

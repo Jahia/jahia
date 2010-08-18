@@ -32,6 +32,7 @@
 
 package org.jahia.services.templates;
 
+import java.io.*;
 import java.util.*;
 
 import org.apache.log4j.Logger;
@@ -44,7 +45,13 @@ import org.jahia.exceptions.JahiaTemplateServiceException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaService;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.rules.BackgroundAction;
+import org.jahia.services.importexport.ImportExportBaseService;
+import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.services.cache.Cache;
@@ -52,8 +59,13 @@ import org.jahia.services.pages.JahiaPageTemplateBaseService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.TemplatePackageApplicationContextLoader.ContextInitializedEvent;
+import org.jahia.settings.SettingsBean;
+import org.jdom.JDOMException;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
+import org.xml.sax.SAXException;
+
+import javax.jcr.RepositoryException;
 
 /**
  * Template and template set deployment and management service.
@@ -349,5 +361,75 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             templatePackageDeployer.performInitialImport();
         }
     }
+
+    public void createModule(String moduleName) {
+        File tmplRootFolder = new File(settingsBean.getJahiaTemplatesDiskPath(), moduleName);
+        if (tmplRootFolder.exists()) {
+            return;
+        }
+        if (!tmplRootFolder.exists()) {
+            logger.info("Start creating new template package '" + moduleName + "'");
+
+            tmplRootFolder.mkdirs();
+
+            new File(tmplRootFolder, "META-INF").mkdirs();
+            new File(tmplRootFolder, "WEB-INF").mkdirs();
+            new File(tmplRootFolder, "resources").mkdirs();
+            new File(tmplRootFolder, "css").mkdirs();
+
+            try {
+                File manifest = new File(tmplRootFolder + "/META-INF/MANIFEST.MF");
+
+
+                BufferedWriter writer = new BufferedWriter(new FileWriter(manifest));
+                writer.write("Manifest-Version: 1.0");
+                writer.newLine();
+                writer.write("Created-By: Jahia");
+                writer.newLine();
+                writer.write("Built-By: "+ JCRSessionFactory.getInstance().getCurrentUser().getName());
+                writer.newLine();
+//                writer.write("Build-Jdk: 1.6.0_20");
+                writer.write("depends: Default Jahia Templates");
+                writer.newLine();
+                writer.write("package-name: "+moduleName);
+                writer.newLine();
+                writer.write("root-folder: "+moduleName);
+                writer.newLine();
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+
+            logger.info("Package '" + moduleName + "' successfully created");
+        }
+    }
+
+    public void regenerateImportFile(final String moduleName) throws RepositoryException {
+        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
+            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                try {
+                    File importFile = new File(new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath(), moduleName), "import.zip");
+                    Map<String,Object> params = new HashMap<String, Object>();
+                    params.put(ImportExportService.XSL_PATH,SettingsBean.getInstance().getJahiaEtcDiskPath()+"/repository/export/templatesCleanup.xsl");
+
+                    ImportExportBaseService
+                            .getInstance().exportZip(session.getNode("/templateSets/"+moduleName), session.getRootNode(),
+                            new FileOutputStream(importFile), params);
+                } catch (JahiaException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                } catch (RepositoryException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                } catch (SAXException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                } catch (IOException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                } catch (JDOMException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+                return null;  //To change body of implemented methods use File | Settings | File Templates.
+            }
+        });
+    }
+
 
 }

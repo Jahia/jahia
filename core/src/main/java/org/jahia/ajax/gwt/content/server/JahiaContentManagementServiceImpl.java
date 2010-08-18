@@ -94,6 +94,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolationException;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
@@ -1366,6 +1367,26 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         contentManager.synchro(pathsToSyncronize, retrieveCurrentSession());
     }
 
+    public GWTJahiaNode createTemplateSet(String key) throws GWTJahiaServiceException {
+        try {
+            return contentManager.createTemplateSet(key, retrieveCurrentSession());
+        } catch (Exception e) {
+            logger.error("",e);
+            throw new GWTJahiaServiceException(e.toString());
+        }
+    }
+
+    public GWTJahiaNode generateWar(String moduleName) throws GWTJahiaServiceException {
+        try {
+            GWTJahiaNode node = contentManager.generateWar(moduleName, retrieveCurrentSession());
+
+            return node;
+        } catch (Exception e) {
+            logger.error("",e);
+            throw new GWTJahiaServiceException(e.toString());
+        }
+    }
+
 
     /**
      * @param seoHelper the seoHelper to set
@@ -1636,7 +1657,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
 	/**
 	 * Returns the source node that is used in the specified reference node.
-	 * 
+	 *
 	 * @param referenceIdentifier
 	 *            the current reference node UUID
 	 * @return the source node that is used in the specified reference node
@@ -1645,7 +1666,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 	 */
 	public GWTJahiaNode getSource(String referenceIdentifier) throws GWTJahiaServiceException {
 		GWTJahiaNode gwtSourceNode = null;
-		
+
         try {
             JCRSessionWrapper session = retrieveCurrentSession();
             JCRNodeWrapper node = session.getNodeByIdentifier(referenceIdentifier);
@@ -1658,7 +1679,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }
-        
+
 	    return gwtSourceNode;
     }
 }

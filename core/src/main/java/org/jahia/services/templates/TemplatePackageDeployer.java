@@ -95,6 +95,12 @@ class TemplatePackageDeployer implements ServletContextAware {
                     for (File file : files) {
                         timestamps.put(file.getPath(), file.lastModified());
                     }
+                    File spring = new File(deployedFolder,"META-INF/spring");
+                    if (spring.exists()) {
+                        for (File file : spring.listFiles()) {
+                            timestamps.put(file.getPath(), file.lastModified());
+                        }
+                    }
                 }
             }
         }
@@ -111,6 +117,8 @@ class TemplatePackageDeployer implements ServletContextAware {
 
             List<JahiaTemplatesPackage> remaining = new LinkedList<JahiaTemplatesPackage>();
 
+            boolean reloadSpringContext = false;
+
             File[] deployedFolders = deployedTemplatesFolder.listFiles();
             for (File deployedFolder : deployedFolders) {
                 if (deployedFolder.isDirectory()) {
@@ -118,7 +126,21 @@ class TemplatePackageDeployer implements ServletContextAware {
                     for (File file : files) {
                         if (!timestamps.containsKey(file.getPath()) || timestamps.get(file.getPath()) != file.lastModified()) {
                             timestamps.put(file.getPath(), file.lastModified());
-                            timestamps.remove(deployedFolder.getPath());
+
+                            JahiaTemplatesPackage packageHandler = getPackage(deployedFolder);
+                            if (packageHandler != null) {
+                                remaining.add(packageHandler);
+                            }
+                        }
+                    }
+
+                    File spring = new File(deployedFolder,"META-INF/spring");
+                    if (spring.exists()) {
+                        for (File file : spring.listFiles()) {
+                            if (!timestamps.containsKey(file.getPath()) || timestamps.get(file.getPath()) != file.lastModified()) {
+                                timestamps.put(file.getPath(), file.lastModified());
+                                reloadSpringContext = true;
+                            }
                         }
                     }
 
@@ -146,6 +168,8 @@ class TemplatePackageDeployer implements ServletContextAware {
                 // flush not cacheable fragments cache
                 AggregateCacheFilter.clearNotCacheableFragmentCache();
                 // reload the Spring application context for modules
+            }
+            if (reloadSpringContext) {
                 templatePackageRegistry.resetBeanModules();
                 contextLoader.reload();
             }

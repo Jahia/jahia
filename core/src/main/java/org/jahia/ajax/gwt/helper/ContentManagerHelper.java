@@ -44,18 +44,26 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.importexport.ImportExportBaseService;
+import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.importexport.ReferencesHelper;
 import org.jahia.services.sites.JahiaSitesService;
+import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jdom.JDOMException;
+import org.xml.sax.SAXException;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.*;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * Created by IntelliJ IDEA.
@@ -832,6 +840,16 @@ public class ContentManagerHelper {
     public void synchro(final Map<String, String> pathsToSyncronize, JCRSessionWrapper currentUserSession)
             throws GWTJahiaServiceException {
         try {
+            final String s = "toto" + System.currentTimeMillis();
+            createTemplateSet(s, currentUserSession);
+            generateWar(s, currentUserSession);
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (RepositoryException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+        try {
             JCRTemplate.getInstance()
                     .doExecuteWithSystemSession(currentUserSession.getUser().getUsername(), new JCRCallback<Object>() {
                         public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
@@ -885,8 +903,10 @@ public class ContentManagerHelper {
         }
 
     }
-    public void templatesSynchro(final JCRNodeWrapper source, final JCRNodeWrapper destinationNode, JCRSessionWrapper session,
-                                 Map<String, List<String>> references, boolean doRemove) throws RepositoryException {
+
+    public void templatesSynchro(final JCRNodeWrapper source, final JCRNodeWrapper destinationNode,
+                                 JCRSessionWrapper session, Map<String, List<String>> references, boolean doRemove)
+            throws RepositoryException {
         if ("j:acl".equals(destinationNode.getName())) {
             return;
         }
@@ -993,5 +1013,81 @@ public class ContentManagerHelper {
         references.get(value).add(destinationNode.getIdentifier() + "/" + property.getName());
     }
 
+
+    public GWTJahiaNode createTemplateSet(String key, JCRSessionWrapper session) throws IOException, RepositoryException {
+        File path = new File(SettingsBean.getInstance().getJahiaEtcDiskPath(), "/repository/templatesSet.xml");
+        if (path.exists()) {
+            InputStream is = null;
+            try {
+                is = new FileInputStream(path);
+                JCRNodeWrapper templateSet = session.getNode("/templateSets").addNode(key, "jnt:virtualsite");
+                templateSet.setProperty("j:installedModules",new Value[] {session.getValueFactory().createValue(key)});
+                session.importXML("/templateSets/" + key, is, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
+                session.save();
+                ServicesRegistry.getInstance().getJahiaTemplateManagerService().createModule(key);
+
+                return navigation.getGWTJahiaNode(templateSet);
+            } finally {
+                org.apache.commons.io.IOUtils.closeQuietly(is);
+            }
+        }
+        return null;
+    }
+    
+    public GWTJahiaNode generateWar(String moduleName, JCRSessionWrapper session) {
+        try {
+            ServicesRegistry.getInstance().getJahiaTemplateManagerService().regenerateImportFile(moduleName);
+            File f = File.createTempFile("templateSet",".war");
+            File templateDir = new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath(), moduleName);
+
+            ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(f));
+            zip(templateDir, templateDir, zos);
+            zos.close();
+
+            JCRNodeWrapper privateFolder = session.getNode("/users/"+session.getUser().getName()+"/files/private");
+
+            if (!privateFolder.hasNode("templates-sets")) {
+                if (!privateFolder.isCheckedOut()) {
+                    privateFolder.checkout();
+                }
+                privateFolder.addNode("templates-sets", Constants.JAHIANT_FOLDER);
+            }
+            JCRNodeWrapper parent = privateFolder.getNode("templates-sets");
+            if (!parent.isCheckedOut()) {
+                parent.checkout();
+            }
+            JCRNodeWrapper res = parent.uploadFile(moduleName + ".war", new FileInputStream(f), "application/x-zip");
+            session.save();
+
+            f.delete();
+
+            return navigation.getGWTJahiaNode(res);
+        } catch (RepositoryException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+        return null;
+    }
+
+    private void zip(File dir, File rootDir, ZipOutputStream zos) throws IOException {
+        File[] files = dir.listFiles();
+        for (File file : files) {
+            if (file.isFile()) {
+                ZipEntry ze = new ZipEntry(file.getPath().substring(rootDir.getPath().length()+1));
+                zos.putNextEntry(ze);
+                final FileInputStream input = new FileInputStream(file);
+                IOUtils.copy(input, zos);
+                input.close();
+            }
+
+            if (file.isDirectory()) {
+                ZipEntry ze = new ZipEntry(file.getPath().substring(rootDir.getPath().length()+1)+"/");
+                zos.putNextEntry(ze);
+                zip(file, rootDir, zos);
+            }
+        }
+    }
 
 }

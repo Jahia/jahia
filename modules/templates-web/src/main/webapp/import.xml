@@ -194,11 +194,6 @@
         <DENY_r_web-designer j:privileges="jcr:write_live jcr:modifyAccessControl" j:protected="false" j:principal="r:web-designer" j:aceType="DENY" jcr:primaryType="jnt:ace" />
       </j:acl>
       <workflowrules jcr:primaryType="jnt:workflowRules">
-        <nt_base_jBPM_1-step-publication j:workflow="jBPM:1-step-publication" jcr:primaryType="jnt:workflowRule">
-          <GRANT_r_editor-in-chief j:privileges="review start" j:protected="false" j:principal="r:editor-in-chief" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-          <GRANT_r_editor j:privileges="start" j:protected="false" j:principal="r:editor" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-          <GRANT_r_publisher j:privileges="review" j:protected="false" j:principal="r:publisher" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
-        </nt_base_jBPM_1-step-publication>
         <jBPM_1-step-publication j:workflow="jBPM:1-step-publication" jcr:primaryType="jnt:workflowRule">
           <GRANT_r_editor-in-chief j:privileges="review start" j:protected="false" j:principal="r:editor-in-chief" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
           <GRANT_r_editor j:privileges="start" j:protected="false" j:principal="r:editor" j:aceType="GRANT" jcr:primaryType="jnt:ace" />

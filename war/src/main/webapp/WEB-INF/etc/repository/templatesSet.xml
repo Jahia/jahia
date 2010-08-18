@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templatesSet xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0"
+           xmlns:jcr="http://www.jcp.org/jcr/1.0"
+           xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0"
+           xmlns:mix="http://www.jcp.org/jcr/mix/1.0" jcr:mixinTypes="jmix:sitemap jmix:accessControlled"
+           jcr:primaryType="jnt:virtualsite" changefreq="monthly" j:installedModules="templates-web" priority="0.5">
+
+    <contents jcr:primaryType="jnt:contentList">
+        <site_components jcr:primaryType="jnt:contentList"/>
+    </contents>
+
+    <files jcr:primaryType="jnt:folder"/>
+
+    <mashups jcr:primaryType="jnt:portletList"/>
+
+    <themes jcr:primaryType="jnt:folder"/>
+
+    <home jcr:mixinTypes="jmix:sitemap jmix:hasDefaultTemplateNode"
+          j:defaultTemplateNode="/templates/base" j:displayInMenu="primary"
+          jcr:primaryType="jnt:page" changefreq="monthly"
+          j:templateNode="/templates/base/home" priority="0.5">
+    </home>
+
+    <templates jcr:primaryType="jnt:templatesFolder">
+        <base jcr:mixinTypes="jmix:renderable" j:template="default" jcr:primaryType="jnt:masterTemplate">
+            <wrappercontent jcr:primaryType="jnt:contentList">
+                <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:mainResourceTemplate="fullpage"/>
+            </wrappercontent>
+          <home jcr:primaryType="jnt:masterTemplate">
+            <wrappercontent jcr:primaryType="jnt:contentList" />
+          </home>
+          <simple jcr:primaryType="jnt:masterTemplate">
+            <wrappercontent jcr:primaryType="jnt:contentList" />
+          </simple>
+        </base>
+    </templates>
+  
+</templatesSet>

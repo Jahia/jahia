@@ -46,6 +46,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -57,6 +58,8 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class SiteSwitcherActionItem extends BaseActionItem {
+    private static List<SiteSwitcherActionItem> instances = new ArrayList<SiteSwitcherActionItem>();
+
     private transient ComboBox<GWTJahiaNode> mainComponent;
     private GWTJahiaNode selectedSite;
 
@@ -77,9 +80,22 @@ public class SiteSwitcherActionItem extends BaseActionItem {
     @Override
     public void init(GWTJahiaToolbarItem gwtToolbarItem, final Linker linker) {
         super.init(gwtToolbarItem, linker);
+        instances.add(this);
         initMainComponent();
-        JahiaContentManagementService.App.getInstance().getRoot(root, Arrays.asList("jnt:virtualsite"), null, null,null,null,null, new BaseAsyncCallback<List<GWTJahiaNode>>() {
+        refreshSitesList(linker);
+    }
+
+    public static void refreshAllSitesList(final Linker linker) {
+        for (SiteSwitcherActionItem instance : instances) {
+            instance.refreshSitesList(linker);
+        }
+    }
+
+    private void refreshSitesList(final Linker linker) {
+        JahiaContentManagementService
+                .App.getInstance().getRoot(root, Arrays.asList("jnt:virtualsite"), null, null,null,null,null, new BaseAsyncCallback<List<GWTJahiaNode>>() {
             public void onSuccess(List<GWTJahiaNode> sites) {
+                mainComponent.removeAllListeners();
                 mainComponent.getStore().removeAll();
                 mainComponent.getStore().add(sites);
                 for (GWTJahiaNode site : sites) {

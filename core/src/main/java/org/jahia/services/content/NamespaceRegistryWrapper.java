@@ -45,8 +45,8 @@ import java.util.HashMap;
  * @author toto
  */
 public class NamespaceRegistryWrapper implements NamespaceRegistry {
-    private Map nsToPrefix = new HashMap();
-    private Map prefixToNs = new HashMap();
+    private Map<String, String> nsToPrefix = new HashMap<String, String>();
+    private Map<String, String> prefixToNs = new HashMap<String, String>();
 
     public NamespaceRegistryWrapper() {
         internalRegister(Constants.JAHIA_PREF, Constants.JAHIA_NS);
@@ -63,7 +63,7 @@ public class NamespaceRegistryWrapper implements NamespaceRegistry {
             throw new NamespaceException();
         }
 
-        internalRegister(uri,prefix);
+        internalRegister(prefix, uri);
     }
 
     private void internalRegister(String prefix, String uri) {

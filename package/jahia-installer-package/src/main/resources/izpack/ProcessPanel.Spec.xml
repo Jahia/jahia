@@ -39,6 +39,7 @@
             <arg>$INSTALL_PATH\*.jar</arg>
         </executefile>
     </job>
+    <!-- 
     <job name="Cleanup">
         <os family="unix" />
         <os family="mac" />
@@ -46,6 +47,7 @@
             <arg>$INSTALL_PATH/*.jar</arg>
         </executefile>
     </job>
+     -->
     
     <job name="Start Apache Tomcat" condition="cnd.launch.jahia">
         <executeForPack name="Apache Tomcat"/>
@@ -72,7 +74,6 @@
     </job>
     <job name="Wait for Apache Tomcat startup" condition="cnd.launch.jahia">
         <executeForPack name="Apache Tomcat"/>
-        <os family="windows" />
         <executeclass name="org.jahia.init.TomcatWait">
             <arg>http://localhost:8080${jahia.war.contextPath}/ping.jsp</arg>
         </executeclass>

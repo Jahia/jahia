@@ -218,7 +218,7 @@
         <panel classname="ShortcutPanel" id="shortcutPanel"/>
         <panel classname="SummaryPanel"/>
         <panel classname="InstallPanel"/>
-        <panel classname="UserInputPanel" id="afterInstall" condition="izpack.windowsinstall"/>
+        <panel classname="UserInputPanel" id="afterInstall"/>
         <panel classname="ProcessPanel"/>
         <panel classname="SimpleFinishPanel"/>
     </panels>

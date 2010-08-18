@@ -54,7 +54,6 @@
             <env>CATALINA_HOME=$INSTALL_PATH\tomcat</env>
         </executefile>
     </job>
-    <!-- 
     <job name="Start Apache Tomcat" condition="cnd.launch.jahia">
         <executeForPack name="Apache Tomcat"/>
         <os family="unix" />
@@ -63,7 +62,6 @@
             <env>CATALINA_HOME=$INSTALL_PATH/tomcat</env>
         </executefile>
     </job>
-     -->
     <job name="Show Readme" condition="cnd.view.readme">
         <executeForPack name="Apache Tomcat"/>
         <os family="windows" />

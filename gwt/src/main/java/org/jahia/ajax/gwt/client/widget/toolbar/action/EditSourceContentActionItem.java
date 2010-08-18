@@ -32,22 +32,23 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditActions;
 
 /**
- * Created by IntelliJ IDEA.
-* User: toto
-* Date: Sep 25, 2009
-* Time: 6:59:03 PM
-*/
-public class EditContentActionItem extends BaseActionItem {
-    public void onComponentSelection() {
-        EditActions.edit(linker);
-    }
+ * Action item used to open the edit engine for the original content source.
+ * 
+ * @author Sergiy Shyrkov
+ */
+public class EditSourceContentActionItem extends BaseActionItem {
 
-    public void handleNewLinkerSelection() {
-        LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.isWriteable());
-    }
+	private static final long serialVersionUID = -2912157212228173779L;
+
+	public void onComponentSelection() {
+		EditActions.editSource(linker);
+	}
+
+	public void handleNewLinkerSelection() {
+		setEnabled(linker.getSelectionContext().isWriteable() && linker.getSelectedNode() != null
+		        && linker.getSelectedNode().isReference());
+	}
 }

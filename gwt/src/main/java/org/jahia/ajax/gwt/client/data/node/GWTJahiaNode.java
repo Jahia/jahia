@@ -92,6 +92,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     private boolean displayable = false;
     private boolean isShared = false;
+    private boolean reference = false;
     private String url;
     private boolean hasChildren = false;
     private boolean portlet = false;
@@ -543,5 +544,13 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     public Map<String, List<GWTJahiaPublicationInfo>> getFullPublicationInfos() {
         return fullPublicationInfos;
+    }
+
+	public boolean isReference() {
+    	return reference;
+    }
+
+	public void setReference(boolean reference) {
+    	this.reference = reference;
     }
 }

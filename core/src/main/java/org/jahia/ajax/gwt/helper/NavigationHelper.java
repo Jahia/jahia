@@ -762,6 +762,12 @@ public class NavigationHelper {
         } catch (RepositoryException e) {
             logger.error("Error when getting shares", e);
         }
+        
+        try {
+	        n.setReference(node.isNodeType("jmix:nodeReference"));
+        } catch (RepositoryException e1) {
+	        logger.error("Error checking node type", e1);
+        }
 
         try {
             List<Locale> locales = node.getLockedLocales();

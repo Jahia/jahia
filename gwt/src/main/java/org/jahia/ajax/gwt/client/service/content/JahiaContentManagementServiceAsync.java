@@ -322,4 +322,7 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
     void getGoogleDocsExportFormats(String nodeIdentifier, AsyncCallback<List<String>> async);
     
     void synchronizeWithGoogleDocs(String nodeIdentifier, AsyncCallback<Void> async);
+    
+	void getSource(String referenceIdentifier, AsyncCallback<GWTJahiaNode> async);
+
 }

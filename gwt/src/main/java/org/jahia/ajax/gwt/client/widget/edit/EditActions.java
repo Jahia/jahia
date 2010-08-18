@@ -99,13 +99,28 @@ public class EditActions {
 
 
     /**
-     * Dispay edit content window
+     * Display edit content window
      *
      * @param linker
      */
     public static void edit(Linker linker) {
         if (linker.getMainNode() != null) {
             EngineLoader.showEditEngine(linker, linker.getSelectedNode());
+        }
+    }
+
+    /**
+     * Display edit content window for the source content.
+     *
+     * @param linker
+     */
+    public static void editSource(final Linker linker) {
+        if (linker.getMainNode() != null) {
+            JahiaContentManagementService.App.getInstance().getSource(linker.getSelectedNode().getUUID(), new BaseAsyncCallback<GWTJahiaNode>() {
+                public void onSuccess(GWTJahiaNode result) {
+                    EngineLoader.showEditEngine(linker, result);
+                }
+            });
         }
     }
 
@@ -144,7 +159,6 @@ public class EditActions {
             selectedNodes.add(linker.getMainNode());
         }
         if (!selectedNodes.isEmpty()) {
-            final List<GWTJahiaNode> s = new ArrayList<GWTJahiaNode>();
             final List<String> uuids = new ArrayList<String>();
             for (GWTJahiaNode selectedNode : selectedNodes) {
                 uuids.add(selectedNode.getUUID());
@@ -177,7 +191,6 @@ public class EditActions {
             selectedNode = linker.getMainNode();
         }
         if (selectedNode != null) {
-            final GWTJahiaNode s = selectedNode;
 
 //            JahiaContentManagementService.App.getInstance().publish(Arrays.asList(selectedNode.getUUID()), false, "", false, true, new BaseAsyncCallback() {
 //                public void onApplicationFailure(Throwable caught) {
@@ -205,7 +218,7 @@ public class EditActions {
         }
         if (selectedNode != null) {
             JahiaContentManagementService.App.getInstance()
-                    .unpublish(Arrays.asList(selectedNode.getPath()), new BaseAsyncCallback() {
+                    .unpublish(Arrays.asList(selectedNode.getPath()), new BaseAsyncCallback<Object>() {
                         public void onApplicationFailure(Throwable caught) {
                             Log.error("Cannot publish", caught);
                             com.google.gwt.user.client.Window.alert("Cannot unpublish " + caught.getMessage());
@@ -227,7 +240,6 @@ public class EditActions {
      * @param linker
      */
     public static void delete(final Linker linker) {
-        final int[] nbUsage = new int[1];
         if (linker.getSelectedNodes() != null && !linker.getSelectedNodes().isEmpty()) {
             // Usages
             final List<String> l = new ArrayList<String>();
@@ -270,7 +282,7 @@ public class EditActions {
                                             paths.add(node.getPath());
                                         }
                                         JahiaContentManagementService.App.getInstance()
-                                                .deletePaths(paths, new BaseAsyncCallback() {
+                                                .deletePaths(paths, new BaseAsyncCallback<Object>() {
                                                     public void onApplicationFailure(Throwable throwable) {
                                                         Log.error(throwable.getMessage(), throwable);
                                                         MessageBox.alert("", throwable.getMessage(), null);

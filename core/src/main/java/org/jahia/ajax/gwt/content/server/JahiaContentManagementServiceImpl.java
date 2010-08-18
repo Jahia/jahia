@@ -1633,4 +1633,32 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }
+
+	/**
+	 * Returns the source node that is used in the specified reference node.
+	 * 
+	 * @param referenceIdentifier
+	 *            the current reference node UUID
+	 * @return the source node that is used in the specified reference node
+	 * @throws GWTJahiaServiceException
+	 *             in case of an error
+	 */
+	public GWTJahiaNode getSource(String referenceIdentifier) throws GWTJahiaServiceException {
+		GWTJahiaNode gwtSourceNode = null;
+		
+        try {
+            JCRSessionWrapper session = retrieveCurrentSession();
+            JCRNodeWrapper node = session.getNodeByIdentifier(referenceIdentifier);
+            if (node.hasProperty("j:node")) {
+            	JCRNodeWrapper source = (JCRNodeWrapper) node.getProperty("j:node").getNode();
+            	if (source != null) {
+            		gwtSourceNode = navigation.getGWTJahiaNode(source);
+            	}
+            }
+        } catch (RepositoryException e) {
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+        
+	    return gwtSourceNode;
+    }
 }

@@ -321,7 +321,18 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
     List<GWTJahiaNode> getRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes, List<String> filters,
                                List<String> fields, List<String> selectedNodes, List<String> openPaths, boolean checkSubChild) throws GWTJahiaServiceException;
 
-// -------------------------- INNER CLASSES --------------------------
+	/**
+	 * Returns the source node that is used in the specified reference node.
+	 * 
+	 * @param referenceIdentifier
+	 *            the current reference node UUID
+	 * @return the source node that is used in the specified reference node
+	 * @throws GWTJahiaServiceException
+	 *             in case of an error
+	 */
+	GWTJahiaNode getSource(String referenceIdentifier) throws GWTJahiaServiceException;
+
+	// -------------------------- INNER CLASSES --------------------------
 
     public static class App {
         private static JahiaContentManagementServiceAsync app = null;

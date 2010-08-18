@@ -1,0 +1,43 @@
+<test = 'http://www.apache.org/jackrabbit/test'>
+<nt = 'http://www.jcp.org/jcr/nt/1.0'>
+
+[test:emptyNodeType] > nt:base 
+
+[test:mixinNodeType]
+  mixin
+
+[test:orderedNodeType] > nt:base
+  orderable
+
+[test:itemNodeType] > nt:base
+- * (string) queryops '=,<>,<,<=,>,>='
+- test:emptyItem (string) queryops '=,<>,<,<=,>,>='
+- test:autoCreatedItem (string) = 'defvalue' autocreated queryops '=,<>,LIKE'
+- test:mandatoryItem (string) mandatory
+- test:copyItem (string) copy
+- test:versionItem (string) version
+- test:initializeItem (string) initialize 
+- test:computeItem (string) compute
+- test:abortItem (string) abort
+- test:protectedItem (string) protected
+
+[test:propertyNodeType] > nt:base
+- test:emptyProperty (string)
+- test:binaryProperty (binary) < '[0,)'
+- test:booleanProperty (boolean) = true < true, false 
+- test:dateProperty (date) = '2005-01-01T00:00:00.000Z' < '[2005-01-01T00:00:00.000Z,2006-01-01T00:00:00.000Z)'
+- test:doubleProperty (double) = '1.5' nofulltext queryops '=,<>,>,>=,<,<=' < '[,0.0)', '(1.0,2.0)', '(3.0,]'
+- test:longProperty (long) = 25 nofulltext < '(-10,0]', '[1,2]', '[10,100)'
+- test:nameProperty (name) = 'test:testName' nofulltext < 'test:testName'
+- test:pathProperty (path) nofulltext < '/test:testPath'
+- test:pathProperty1 (path) nofulltext < '/test:testPath/*'
+- test:pathProperty2 (path) nofulltext < 'test:testPath/*'
+- test:referenceProperty (reference) nofulltext < 'nt:base'
+- test:stringProperty (string) = 'banana','bananas' multiple nofulltext < 'bananas?'
+- test:multipleProperty (string) multiple nofulltext
+
+[test:childNodeType] > nt:base
++ test:emptyNode (nt:base)
++ test:siblingNode (nt:base) multiple
++ test:defaultTypeNode (nt:base) = nt:base
++ test:requiredTypeNode (nt:base, nt:unstructured)

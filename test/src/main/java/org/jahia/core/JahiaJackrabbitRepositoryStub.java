@@ -33,6 +33,7 @@
 package org.jahia.core;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.Principal;
@@ -50,11 +51,11 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
+import javax.jcr.Workspace;
 import javax.jcr.nodetype.NodeType;
+import javax.jcr.nodetype.NodeTypeManager;
 import javax.jcr.retention.RetentionPolicy;
 
-import org.apache.jackrabbit.api.JackrabbitNodeTypeManager;
-import org.apache.jackrabbit.api.JackrabbitWorkspace;
 import org.apache.jackrabbit.core.JackrabbitRepositoryStub;
 import org.apache.jackrabbit.core.NodeImpl;
 import org.apache.jackrabbit.core.SessionImpl;
@@ -62,12 +63,14 @@ import org.apache.jackrabbit.core.retention.RetentionPolicyImpl;
 import org.apache.jackrabbit.test.NotExecutableException;
 import org.apache.jackrabbit.test.RepositoryStub;
 import org.apache.jackrabbit.test.RepositoryStubException;
-import org.jahia.services.SpringContextSingleton;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.jcr.JCRGroupManagerProvider;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
-import org.springframework.context.ApplicationContext;
 
 public class JahiaJackrabbitRepositoryStub extends RepositoryStub {
 
@@ -129,29 +132,25 @@ public class JahiaJackrabbitRepositoryStub extends RepositoryStub {
 
     @Override
     public synchronized Repository getRepository() throws RepositoryStubException {
-        ApplicationContext context = (ApplicationContext) SpringContextSingleton.getInstance()
-                .getContext();
-        Repository repository = null;
-        if (context != null) {
-            repository = (Repository) context.getBean("jackrabbit");
-        }
+        Repository repository = JCRSessionFactory.getInstance();
         if (repository == null) {
             throw new RepositoryStubException("Failed to start repository");
         } else {
             try {
-                Session session = repository.login(superuser);
+                Session session = JCRSessionFactory.getInstance().getCurrentUserSession();
                 try {
                     if (!isTestWorkspacePrepared(session)) {
                         prepareTestContent(session);
                     }
                 } finally {
-                    session.logout();
                 }
             } catch (Exception e) {
                 RepositoryStubException exception = new RepositoryStubException(
                         "Failed to start repository");
                 exception.initCause(e);
                 throw exception;
+            } finally {
+                //JCRSessionFactory.getInstance().setCurrentUser(null);
             }
         }
         return repository;
@@ -161,35 +160,23 @@ public class JahiaJackrabbitRepositoryStub extends RepositoryStub {
             IOException {
         boolean workspacePrepared = false;
 
-        JackrabbitWorkspace workspace = (JackrabbitWorkspace) session.getWorkspace();
-        Collection<String> workspaces = Arrays.asList(workspace.getAccessibleWorkspaceNames());
-        if (workspaces.contains(settings.getProperty(PROP_PREFIX + "." + PROP_WORKSPACE_NAME))) {
-            try {
-                if (session.getRootNode().getNode("testdata") != null) {
-                    workspacePrepared = true;
-                }
-            } catch (PathNotFoundException e) {
+        try {
+            if (session.getRootNode().getNode("testdata") != null) {
+                workspacePrepared = true;
             }
+        } catch (PathNotFoundException e) {
         }
         return workspacePrepared;
     }
 
-    private void prepareTestContent(Session session) throws RepositoryException, IOException {
-        JackrabbitWorkspace workspace = (JackrabbitWorkspace) session.getWorkspace();
-        Collection<String> workspaces = Arrays.asList(workspace.getAccessibleWorkspaceNames());
-        if (!workspaces.contains(settings.getProperty(PROP_PREFIX + "." + PROP_WORKSPACE_NAME))) {
-            workspace.createWorkspace(settings.getProperty(PROP_PREFIX + "." + PROP_WORKSPACE_NAME));
-        }
+    private void prepareTestContent(Session session) throws RepositoryException, IOException, org.jahia.services.content.nodetypes.ParseException {
+        Workspace workspace = session.getWorkspace();
 
-        JackrabbitNodeTypeManager manager = (JackrabbitNodeTypeManager) workspace
-                .getNodeTypeManager();
-        if (!manager.hasNodeType("test:versionable")) {
-            InputStream xml = getResource("test-nodetypes.xml");
-            try {
-                manager.registerNodeTypes(xml, JackrabbitNodeTypeManager.TEXT_XML);
-            } finally {
-                xml.close();
-            }
+        NodeTypeManager manager = workspace.getNodeTypeManager();
+        if (manager instanceof NodeTypeRegistry) {
+            ((NodeTypeRegistry) manager).addDefinitionsFile(
+                    new File(JahiaJackrabbitRepositoryStub.class.getResource("test_nodetypes.cnd")
+                            .getPath()), NodeTypeRegistry.SYSTEM + "-testnodetypes", true);
         }
 
         JahiaUser readOnlyUser = JCRUserManagerProvider.getInstance().lookupUser(readonly.getUserID());
@@ -206,8 +193,8 @@ public class JahiaJackrabbitRepositoryStub extends RepositoryStub {
         addLifecycleTestData(getOrAddNode(data, "lifecycle"));
         addExportTestData(getOrAddNode(data, "docViewTest"));
 
-        Node conf = getOrAddNode(session.getRootNode(), "testconf");
-        addRetentionTestData(getOrAddNode(conf, "retentionTest"));
+//        Node conf = getOrAddNode(session.getRootNode(), "testconf");
+//        addRetentionTestData(getOrAddNode(conf, "retentionTest"));
 
         session.save();
     }
@@ -304,7 +291,8 @@ public class JahiaJackrabbitRepositoryStub extends RepositoryStub {
         transition.setProperty("to", "identity");
 
         Node lifecycle = getOrAddNode(node, "node");
-        ((NodeImpl) lifecycle).assignLifecyclePolicy(policy, "identity");
+        ((NodeImpl) ((JCRNodeWrapper) lifecycle).getRealNode()).assignLifecyclePolicy(
+                ((JCRNodeWrapper) policy).getRealNode(), "identity");        
     }
 
     private void addExportTestData(Node node) throws RepositoryException, IOException {

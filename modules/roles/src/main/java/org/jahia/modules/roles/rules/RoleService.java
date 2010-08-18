@@ -43,6 +43,8 @@ import org.drools.spi.KnowledgeHelper;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.rules.AddedNodeFact;
 import org.jahia.services.rbac.Permission;
 import org.jahia.services.rbac.PermissionIdentity;
@@ -163,14 +165,23 @@ public class RoleService {
         String groupKey = group;
         if (group != null && !group.contains(":")) {
             String siteKey = JCRContentUtils.getSiteKey(role);
-            JahiaSite site = null;
+            int siteId = 0;
             try {
-                site = siteKey != null ? siteService.getSiteByKey(siteKey) : null;
+                JahiaSite site = siteKey != null ? siteService.getSiteByKey(siteKey) : null;
+                if (site == null) {
+                	JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+                	if (session != null) {
+                		JCRNodeWrapper siteNode = session.getNode("/sites/" + siteKey);
+                		siteId = (int) siteNode.getProperty("j:siteId").getLong();
+                	}
+                } else {
+                	siteId = site.getID();
+                }
             } catch (JahiaException e) {
-                logger.warn("Unable to find group for key '" + groupKey + "'", e);
+                logger.warn("Unable to find site for key '" + siteKey + "'", e);
             }
-            if (site != null) {
-                groupKey = group + ":" + site.getID();
+            if (siteId != 0) {
+                groupKey = group + ":" + siteId;
             }
         }
         JahiaGroup principal = groupService.lookupGroup(groupKey);

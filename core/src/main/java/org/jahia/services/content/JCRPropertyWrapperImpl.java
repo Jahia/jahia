@@ -32,6 +32,9 @@
 
 package org.jahia.services.content;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.spi.Path;
+import org.apache.jackrabbit.value.ValueHelper;
 import org.jahia.data.beans.CategoryBean;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 
@@ -182,12 +185,38 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
         return getValue().getBoolean();
     }
 
-    public Node getNode() throws ValueFormatException, RepositoryException {
-        return session.getNodeByUUID(getValue().getString());
-    }
+    public JCRNodeWrapper getNode() throws ValueFormatException, RepositoryException {
+        Value value = getValue();
+        int type = value.getType();
+        switch (type) {
+            case PropertyType.REFERENCE:
+            case PropertyType.WEAKREFERENCE:
+                return session.getNodeByUUID(value.getString());
 
-    public Node getReferencedNode() throws ValueFormatException, RepositoryException {
-        return session.getNodeByUUID(getValue().getString());
+            case PropertyType.PATH:
+            case PropertyType.NAME:
+                String path = value.getString();
+                boolean absolute = StringUtils.startsWith(path, "/");
+                return (absolute) ? session.getNode(path) : getParent().getNode(path);
+
+            case PropertyType.STRING:
+                try {
+                    Value refValue = ValueHelper.convert(value, PropertyType.REFERENCE, session.getValueFactory());
+                    return session.getNodeByUUID(refValue.getString());
+                } catch (RepositoryException e) {
+                    // try if STRING value can be interpreted as PATH value
+                    Value pathValue = ValueHelper.convert(value, PropertyType.PATH, session.getValueFactory());
+                    absolute = StringUtils.startsWith(pathValue.getString(), "/");
+                    return (absolute) ? session.getNode(pathValue.getString()) : getParent().getNode(pathValue.getString());
+                }
+
+            default:
+                throw new ValueFormatException("Property value cannot be converted to a PATH, REFERENCE or WEAKREFERENCE");
+        }        
+      }
+
+    public JCRNodeWrapper getReferencedNode() throws ValueFormatException, RepositoryException {
+        return getNode();
     }
 
     public Binary getBinary() throws ValueFormatException, RepositoryException {
@@ -199,7 +228,11 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
     }
 
     public Property getProperty() throws ItemNotFoundException, ValueFormatException, RepositoryException {
-        return session.getProperty(getValue().getString());
+        Value value = getValue();
+        Value pathValue = ValueHelper.convert(value, PropertyType.PATH, session.getValueFactory());
+        String path = pathValue.getString();
+        boolean absolute = StringUtils.startsWith(path, "/");
+        return (absolute) ? session.getProperty(path) : getParent().getProperty(path);        
     }
 
     public long getLength() throws ValueFormatException, RepositoryException {
@@ -257,7 +290,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
     }
 
     public boolean isSame(Item item) throws RepositoryException {
-        return property.isSame(item);
+        return property.isSame(item) || (item instanceof JCRItemWrapperImpl && item.isSame(property));
     }
 
     public void accept(ItemVisitor itemVisitor) throws RepositoryException {

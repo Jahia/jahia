@@ -141,8 +141,8 @@ public class IDGeneratorDAO extends HibernateDaoSupport {
                     String tableName = fqnID.substring(0, separatorPos);
                     String columnName = fqnID.substring(separatorPos + 1);
                     Long maxValue = (Long) session.createSQLQuery(
-                            "SELECT MAX(" + columnName + ") as maxValue FROM "
-                            + tableName).addScalar("maxValue",
+                            "SELECT MAX(" + columnName + ") as theMaxValue FROM "
+                            + tableName).addScalar("theMaxValue",
                                                    Hibernate.LONG).uniqueResult();
                     if (maxValue == null) {
                         maxValue = (long) 0;

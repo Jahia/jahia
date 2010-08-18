@@ -42,6 +42,7 @@ import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -108,7 +109,12 @@ public class MainModule extends Module {
 
     public void initWithLinker(EditLinker linker) {
         this.editLinker = linker;
-        display(originalHtml);
+        if ("".equals(Window.Location.getHash())) {
+            display(originalHtml);
+        } else {
+            String hash = Window.Location.getHash();
+            goToHashMarker(hash);
+        }
 
         sinkEvents(Event.ONCLICK + Event.ONDBLCLICK + Event.ONMOUSEOVER + Event.ONMOUSEOUT);
 
@@ -283,6 +289,7 @@ public class MainModule extends Module {
         mask("Loading", "x-mask-loading");
         this.path = path;
         this.template = template;
+        setUrlMarker(path, template, "");
         refresh();
     }
 
@@ -299,9 +306,27 @@ public class MainModule extends Module {
         module.path = path;
         module.template = template;
         module.moduleParams = params;
+        setUrlMarker(path, template, param);
         module.refresh();
     }
 
+    private static void setUrlMarker(String path, String template, String param) {
+        String currentHref = Window.Location.getHref();
+        if (currentHref.indexOf("#") > 0) {
+            currentHref = currentHref.substring(0,currentHref.indexOf("#"));
+        }
+        Window.Location.assign(currentHref+"#"+ path + ":" + (template == null ? "" : template) + ":"+(param == null ? "" : param));
+    }
+
+    private void goToHashMarker(String hash) {
+        int index = hash.indexOf(":");
+        String url = hash.substring(1, index);
+        int index2 = hash.indexOf(":", index + 1);
+        String template = hash.substring(index+1, index2);
+        String param = hash.substring(index2+1);
+        staticGoTo(url, template, param);
+    }
+    
     public void switchLanguage(String language) {
         mask("Loading", "x-mask-loading");
         editLinker.setLocale(language);

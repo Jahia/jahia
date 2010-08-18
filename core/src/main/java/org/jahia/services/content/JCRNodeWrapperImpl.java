@@ -1169,7 +1169,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 if (epd != null && epd.isInternationalized()) {
                     try {
                         final Node localizedNode = getI18N(locale);
-                        String localeString = localizedNode.getProperty("jcr:language").getString();
                         return new JCRPropertyWrapperImpl(this, localizedNode.getProperty(name),
                                 session, provider, getApplicablePropertyDefinition(name),
                                 name);
@@ -1417,7 +1416,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (locale != null) {
             try {
                 final Node localizedNode = getI18N(locale);
-                String localeString = localizedNode.getProperty("jcr:language").getString();
                 return localizedNode.hasProperty(s);
             } catch (ItemNotFoundException e) {
             }
@@ -1914,7 +1912,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public void checkpoint() {
         try {
-            JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_CHECKPOINT, new JCRCallback() {
+            JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_CHECKPOINT, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     objectNode.checkin();
                     objectNode.checkout();
@@ -2324,7 +2322,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public void update(final String srcWorkspace) throws NoSuchWorkspaceException, AccessDeniedException, LockException, InvalidItemStateException, RepositoryException {
-        JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_UPDATE, new JCRCallback() {
+        JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_UPDATE, new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 objectNode.update(srcWorkspace);
                 return null;
@@ -2460,7 +2458,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     try {
                         if (i == 0) {
                             next = getPrimaryNodeType();
-                        } else if (i == 1 && objectNode.isNodeType("nt:frozenNode")) {
+                        } else if (i == 1 && isNodeType("nt:frozenNode")) {
                             next = NodeTypeRegistry.getInstance().getNodeType(objectNode.getProperty("jcr:frozenPrimaryType").getString());
                         } else {
                             if (mix == null) {
@@ -2472,15 +2470,24 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                                 next = null;
                             }
                         }
-                        i++;
                     } catch (RepositoryException e) {
                         logger.warn(e.getMessage(), e);
+                    } finally {
+                        i++;
                     }
                     fetched = true;
                 }
                 return (next != null);
             }
-
+            private boolean isNodeType(String nodeType) {
+                boolean isNodeType = false;
+                try {
+                    isNodeType = objectNode.isNodeType(nodeType);
+                } catch (RepositoryException e) {
+                    logger.warn(e.getMessage(), e);
+                }
+                return isNodeType;
+            }
             public ExtendedNodeType next() {
                 if (!fetched) {
                     hasNext();

@@ -97,7 +97,7 @@ public class Logout extends HttpServlet implements Controller {
         }
 
         if (redirectActive) {
-            response.sendRedirect(redirect.length() == 0 ? "/" : redirect);
+            response.sendRedirect(StringUtils.isEmpty(redirect) ? "/" : redirect);
         }
         return null;
     }

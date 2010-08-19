@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0">
     <users>
-        <author j:nodename="author" jcr:created="2009-05-19T15:20:25.161+02:00" jcr:lastModified="2009-05-19T15:20:25.373+02:00" jcr:createdBy="author" jcr:primaryType="jnt:user" jcr:uuid="a91eb8de-dd97-4bba-8abf-b347d21ecd58" jcr:lastModifiedBy="author" j:fullpath="/users/author" jcr:mixinTypes="jmix:accessControlled">
+        <author j:nodename="author" jcr:created="2009-05-19T15:20:25.161+02:00" jcr:lastModified="2009-05-19T15:20:25.373+02:00" jcr:createdBy="author" jcr:primaryType="jnt:user" jcr:uuid="a91eb8de-dd97-4bba-8abf-b347d21ecd58" jcr:lastModifiedBy="author" j:fullpath="/users/author" jcr:mixinTypes="jmix:accessControlled jmix:roleBasedAccessControlled">
             <files j:nodename="files" jcr:created="2009-05-19T15:20:25.162+02:00" jcr:lastModified="2009-05-19T15:20:25.372+02:00" jcr:createdBy="author" jcr:primaryType="jnt:folder" jcr:uuid="edc8059f-e989-4d97-9a86-644a70fa35eb" jcr:lastModifiedBy="author" j:fullpath="/users/author/files">
                 <private j:nodename="private" jcr:created="2009-05-19T15:20:25.162+02:00" jcr:lastModified="2009-05-19T15:20:25.371+02:00" jcr:createdBy="author" jcr:primaryType="jnt:folder" jcr:uuid="05e61ca0-8c46-424d-ade6-5d75bd8f8f8f" jcr:lastModifiedBy="author" j:fullpath="/users/author/files/private" jcr:mixinTypes="jmix:accessControlled">
                     <j:acl jcr:primaryType="jnt:acl">
@@ -19,7 +19,7 @@
                 <DENY_u_root j:protected="false" jcr:primaryType="jnt:ace" j:principal="u:author" j:privileges="" j:aceType="DENY"></DENY_u_root>
             </j:acl>
         </author>
-        <publisher j:nodename="publisher" jcr:created="2009-05-19T15:20:25.430+02:00" jcr:lastModified="2009-05-19T15:20:25.578+02:00" jcr:createdBy="publisher" jcr:primaryType="jnt:user" jcr:uuid="a20e12d2-957b-4c5d-ac6d-3442d700f52d" jcr:lastModifiedBy="publisher" j:fullpath="/users/publisher" jcr:mixinTypes="jmix:accessControlled">
+        <publisher j:nodename="publisher" jcr:created="2009-05-19T15:20:25.430+02:00" jcr:lastModified="2009-05-19T15:20:25.578+02:00" jcr:createdBy="publisher" jcr:primaryType="jnt:user" jcr:uuid="a20e12d2-957b-4c5d-ac6d-3442d700f52d" jcr:lastModifiedBy="publisher" j:fullpath="/users/publisher" jcr:mixinTypes="jmix:accessControlled jmix:roleBasedAccessControlled">
             <files j:nodename="files" jcr:created="2009-05-19T15:20:25.430+02:00" jcr:lastModified="2009-05-19T15:20:25.577+02:00" jcr:createdBy="publisher" jcr:primaryType="jnt:folder" jcr:uuid="b08b62af-d816-4977-b4b7-b987f958e1cd" jcr:lastModifiedBy="publisher" j:fullpath="/users/publisher/files">
                 <private j:nodename="private" jcr:created="2009-05-19T15:20:25.431+02:00" jcr:lastModified="2009-05-19T15:20:25.576+02:00" jcr:createdBy="publisher" jcr:primaryType="jnt:folder" jcr:uuid="06786e8d-821e-4b60-b66d-703578a78cd0" jcr:lastModifiedBy="publisher" j:fullpath="/users/publisher/files/private" jcr:mixinTypes="jmix:accessControlled">
                     <j:acl jcr:primaryType="jnt:acl">
@@ -35,7 +35,7 @@
                 <DENY_u_publisher j:protected="false" jcr:primaryType="jnt:ace" j:principal="u:publisher" j:privileges="" j:aceType="DENY"></DENY_u_publisher>
             </j:acl>
         </publisher>
-        <siteadmin j:nodename="siteadmin" jcr:created="2009-05-19T15:20:25.629+02:00" jcr:lastModified="2009-05-19T15:20:25.776+02:00" jcr:createdBy="siteadmin" jcr:primaryType="jnt:user" jcr:uuid="b29026fe-503b-4e4d-829b-341ddb6936fe" jcr:lastModifiedBy="siteadmin" j:fullpath="/users/siteadmin" jcr:mixinTypes="jmix:accessControlled">
+        <siteadmin j:nodename="siteadmin" jcr:created="2009-05-19T15:20:25.629+02:00" jcr:lastModified="2009-05-19T15:20:25.776+02:00" jcr:createdBy="siteadmin" jcr:primaryType="jnt:user" jcr:uuid="b29026fe-503b-4e4d-829b-341ddb6936fe" jcr:lastModifiedBy="siteadmin" j:fullpath="/users/siteadmin" jcr:mixinTypes="jmix:accessControlled jmix:roleBasedAccessControlled">
             <files j:nodename="files" jcr:created="2009-05-19T15:20:25.629+02:00" jcr:lastModified="2009-05-19T15:20:25.775+02:00" jcr:createdBy="siteadmin" jcr:primaryType="jnt:folder" jcr:uuid="c91076fd-7d21-4b1e-8df9-7b8083eafb2e" jcr:lastModifiedBy="siteadmin" j:fullpath="/users/siteadmin/files">
                 <private j:nodename="private" jcr:created="2009-05-19T15:20:25.630+02:00" jcr:lastModified="2009-05-19T15:20:25.774+02:00" jcr:createdBy="siteadmin" jcr:primaryType="jnt:folder" jcr:uuid="38c19e36-11a0-4388-8036-48bdaf3f2267" jcr:lastModifiedBy="siteadmin" j:fullpath="/users/siteadmin/files/private" jcr:mixinTypes="jmix:accessControlled">
                     <j:acl jcr:primaryType="jnt:acl">

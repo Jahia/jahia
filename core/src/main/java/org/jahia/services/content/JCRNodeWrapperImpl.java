@@ -1413,7 +1413,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         boolean result = objectNode.hasProperty(s);
         if (result) return true;
         final Locale locale = getSession().getLocale();
-        if (locale != null) {
+        if (locale != null && !s.equals("jcr:language")) {
             try {
                 final Node localizedNode = getI18N(locale);
                 return localizedNode.hasProperty(s);

@@ -82,6 +82,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     protected Node objectNode = null;
     protected JCRFileContent fileContent = null;
+    protected JCRSiteNode site = null;
     protected Map<Locale, Node> i18NobjectNodes = null;
 
     protected static String[] defaultPerms = {Constants.JCR_READ_RIGHTS_LIVE, Constants.JCR_READ_RIGHTS, Constants.JCR_WRITE_RIGHTS, Constants.JCR_MODIFYACCESSCONTROL_RIGHTS, Constants.JCR_WRITE_RIGHTS_LIVE};
@@ -800,22 +801,20 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public Map<String, String> getPropertiesAsString() {
         if (propertiesAsString == null) {
             Map<String, String> res = Collections.emptyMap();
-            if (checkValidity()) {
-                res = LazyMap.decorate(new HashMap<String, String>(), new Transformer() {
-                    public Object transform(Object input) {
-                        String name = (String) input;
-                        try {
-                            if (hasProperty(name)) {
-                                Property p = getProperty(name);
-                                return p.getString();
-                            }
-                        } catch (RepositoryException e) {
-                            logger.error("Repository error while retrieving property " + name, e);
+            res = LazyMap.decorate(new HashMap<String, String>(), new Transformer() {
+                public Object transform(Object input) {
+                    String name = (String) input;
+                    try {
+                        if (hasProperty(name)) {
+                            Property p = getProperty(name);
+                            return p.getString();
                         }
-                        return null;
+                    } catch (RepositoryException e) {
+                        logger.error("Repository error while retrieving property " + name, e);
                     }
-                });
-            }
+                    return null;
+                }
+            });
             propertiesAsString = res;
         }
 
@@ -825,28 +824,26 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public Map<String, String> getAllPropertiesAsString() throws RepositoryException {
         if (propertiesAsString == null) {
             Map<String, String> res = new HashMap<String, String>();
-            if (checkValidity()) {
-                PropertyIterator pi = getProperties();
-                if (pi != null) {
-                    while (pi.hasNext()) {
-                        Property p = pi.nextProperty();
-                        if (p.getType() == PropertyType.BINARY) {
-                            continue;
-                        }
-                        if (!p.isMultiple()) {
-                            res.put(p.getName(), p.getString());
-                        } else {
-                            Value[] vs = p.getValues();
-                            StringBuffer b = new StringBuffer();
-                            for (int i = 0; i < vs.length; i++) {
-                                Value v = vs[i];
-                                b.append(v.getString());
-                                if (i + 1 < vs.length) {
-                                    b.append(" ");
-                                }
+            PropertyIterator pi = getProperties();
+            if (pi != null) {
+                while (pi.hasNext()) {
+                    Property p = pi.nextProperty();
+                    if (p.getType() == PropertyType.BINARY) {
+                        continue;
+                    }
+                    if (!p.isMultiple()) {
+                        res.put(p.getName(), p.getString());
+                    } else {
+                        Value[] vs = p.getValues();
+                        StringBuffer b = new StringBuffer();
+                        for (int i = 0; i < vs.length; i++) {
+                            Value v = vs[i];
+                            b.append(v.getString());
+                            if (i + 1 < vs.length) {
+                                b.append(" ");
                             }
-                            res.put(p.getName(), b.toString());
                         }
+                        res.put(p.getName(), b.toString());
                     }
                 }
             }
@@ -1120,6 +1117,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return getI18N(locale, true);
     }
 
+    private boolean hasI18N(Locale locale) throws RepositoryException {
+        return ((i18NobjectNodes != null && i18NobjectNodes.containsKey(locale)) || objectNode.hasNode("j:translation_"+locale));
+    }
+
     private Node getI18N(Locale locale, boolean fallback) throws RepositoryException {
         //getSession().getLocale()
         if (i18NobjectNodes == null) {
@@ -1162,56 +1163,43 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public JCRPropertyWrapper getProperty(String name) throws javax.jcr.PathNotFoundException, javax.jcr.RepositoryException {
-        if (checkValidity()) {
-            final Locale locale = getSession().getLocale();
-            ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
-            if (locale != null) {
-                if (epd != null && epd.isInternationalized()) {
-                    try {
-                        final Node localizedNode = getI18N(locale);
-                        return new JCRPropertyWrapperImpl(this, localizedNode.getProperty(name),
-                                session, provider, getApplicablePropertyDefinition(name),
-                                name);
-                    } catch (ItemNotFoundException e) {
-                        return new JCRPropertyWrapperImpl(this, objectNode.getProperty(name), session, provider, epd);
-                    }
+        final Locale locale = getSession().getLocale();
+        ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
+        if (locale != null) {
+            if (epd != null && epd.isInternationalized()) {
+                try {
+                    final Node localizedNode = getI18N(locale);
+                    return new JCRPropertyWrapperImpl(this, localizedNode.getProperty(name),
+                            session, provider, getApplicablePropertyDefinition(name),
+                            name);
+                } catch (ItemNotFoundException e) {
+                    return new JCRPropertyWrapperImpl(this, objectNode.getProperty(name), session, provider, epd);
                 }
             }
-            return new JCRPropertyWrapperImpl(this, objectNode.getProperty(name), session, provider, epd);
-        } else {
-            throw new PathNotFoundException(
-                    "Property " + name + " not found on node " + objectNode.getPath() + " for this language " + getSession().getLocale());
         }
+        return new JCRPropertyWrapperImpl(this, objectNode.getProperty(name), session, provider, epd);
     }
 
     /**
      * {@inheritDoc}
      */
     public PropertyIterator getProperties() throws RepositoryException {
-        if (checkValidity()) {
-            final Locale locale = getSession().getLocale();
-            if (locale != null) {
-                return new LazyPropertyIterator(this, locale);
-            }
-            return new LazyPropertyIterator(this);
-        } else {
-            return new EmptyPropertyIterator();
+        final Locale locale = getSession().getLocale();
+        if (locale != null) {
+            return new LazyPropertyIterator(this, locale);
         }
+        return new LazyPropertyIterator(this);
     }
 
     /**
      * {@inheritDoc}
      */
     public PropertyIterator getProperties(String s) throws RepositoryException {
-        if (checkValidity()) {
-            final Locale locale = getSession().getLocale();
-            if (locale != null) {
-                return new LazyPropertyIterator(this, locale, s);
-            }
-            return new LazyPropertyIterator(this, null, s);
-        } else {
-            return new EmptyPropertyIterator();
+        final Locale locale = getSession().getLocale();
+        if (locale != null) {
+            return new LazyPropertyIterator(this, locale, s);
         }
+        return new LazyPropertyIterator(this, null, s);
     }
 
 
@@ -1414,10 +1402,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (result) return true;
         final Locale locale = getSession().getLocale();
         if (locale != null && !s.equals("jcr:language")) {
-            try {
+            if (hasI18N(locale)) {
                 final Node localizedNode = getI18N(locale);
                 return localizedNode.hasProperty(s);
-            } catch (ItemNotFoundException e) {
             }
         }
         return false;
@@ -1431,9 +1418,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (result) return true;
         final Locale locale = getSession().getLocale();
         if (locale != null) {
-            try {
+            if (hasI18N(locale)) {
                 return getI18N(locale).hasProperties();
-            } catch (ItemNotFoundException e) {
             }
         }
         return false;
@@ -2700,7 +2686,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         try {
             Locale locale = jcrSessionWrapper.getLocale();
             if (locale != null) {
-                final boolean translated = objectNode.getNodes("j:translation_*").hasNext();
+                boolean translated = hasTranslations();
                 JCRSiteNode siteNode = resolveSite();
                 if(siteNode==null) {
                     return checkI18nAndMandatoryPropertiesForLocale(locale, translated);
@@ -2717,7 +2703,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     }
                 }
             } else if(languages!=null) {
-                final boolean translated = objectNode.getNodes("j:translation_*").hasNext();
+                boolean translated = hasTranslations();
                 for (String language : languages) {
                     locale = LanguageCodeConverters.getLocaleFromCode(language);
                     if(checkI18nAndMandatoryPropertiesForLocale(locale, translated)) {
@@ -2745,12 +2731,24 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return true;
     }
 
+    private boolean hasTranslations() throws RepositoryException {
+        NodeIterator ni = objectNode.getNodes();
+        boolean translated = false;
+        while (!translated && ni.hasNext()) {
+            Node n = (Node) ni.next();
+            if (n.getName().startsWith("j:translation_")) {
+                translated = true;
+            }
+        }
+        return translated;
+    }
+
     public boolean checkI18nAndMandatoryPropertiesForLocale(Locale locale, boolean translated)
             throws RepositoryException {
         Node i18n = null;
-        try {
+        if (hasI18N(locale)) {
             i18n = getI18N(locale, false);
-        } catch (ItemNotFoundException e) {
+        } else {
             if (translated) {
                 return false;
             }
@@ -2767,16 +2765,24 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
 
     public JCRSiteNode resolveSite() throws RepositoryException {
-        JCRNodeWrapper current = this;
+        if (site != null) {
+            return site;
+        }
+
         try {
-            while (true) {
-                if (current.isNodeType("jnt:virtualsite") && current instanceof JCRSiteNode) {
-                    return (JCRSiteNode) current;
-                }
-                current = current.getParent();
+            if (isNodeType("jnt:virtualsite")) {
+                return (site = (JCRSiteNode) provider.getService().decorate(this));
+            }
+            String path = getPath();
+            if (path.startsWith("/sites/")) {
+                return (site = (JCRSiteNode) session.getNode(path.substring(0, path.indexOf('/',7))));
+            }
+
+            if (path.startsWith("/templateSets/")) {
+                return (site = (JCRSiteNode) session.getNode(path.substring(0, path.indexOf('/',14))));
             }
         } catch (ItemNotFoundException e) {
-        }
+        }            
         return null;
 //        return ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite();
     }

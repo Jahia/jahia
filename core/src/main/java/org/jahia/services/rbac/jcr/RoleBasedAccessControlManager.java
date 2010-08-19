@@ -34,12 +34,7 @@ package org.jahia.services.rbac.jcr;
 
 import static org.jahia.services.rbac.jcr.RoleManager.PROPERTY_PERMISSSIONS;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
@@ -307,24 +302,26 @@ public class RoleBasedAccessControlManager {
         }
     }
 
-    private boolean hasDirectPermission(String principalPath, Permission permission, JCRSessionWrapper session)
+    private boolean hasDirectPermission(JCRNodeWrapper principalNode, Permission permission, JCRSessionWrapper session)
             throws InvalidQueryException, RepositoryException {
-        boolean hasIt = false;
-        JCRNodeWrapper permissionNode = roleManager.loadPermissionNode(permission, session);
-        QueryResult result = session.getWorkspace().getQueryManager().createQuery(
-                "/jcr:root" + ISO9075.encodePath(principalPath) + "/jcr:deref(@" + PROPERTY_ROLES + ", '*')/jcr:deref(@"
-                        + PROPERTY_PERMISSSIONS + ", " + JCRContentUtils.stringToQueryLiteral(permission.getName())
-                        + ")", Query.XPATH).execute();
-        // the permission is specified by path
-        for (NodeIterator iterator = result.getNodes(); iterator.hasNext();) {
-            Node node = iterator.nextNode();
-            if (node.getIdentifier().equals(permissionNode.getIdentifier())) {
-                hasIt = true;
-                break;
+        if (principalNode.hasProperty(PROPERTY_ROLES)) {
+            List<String> roleIds = new ArrayList<String>();
+            Value[] roles = principalNode.getProperty(PROPERTY_ROLES).getValues();
+
+            if (roles != null && roles.length > 0) {
+                JCRNodeWrapper permissionNode = roleManager.loadPermissionNode(permission, session);
+                for (Value role : roles) {
+                    Value[] perms = session.getNodeByUUID(role.getString()).getProperty("j:permissions").getValues();
+                    for (Value perm : perms) {
+                        if (perm.getString().equals(permissionNode.getIdentifier())) {
+                            return true;
+                        }
+                    }
+                }
             }
         }
 
-        return hasIt;
+        return false;
     }
 
     private boolean hasDirectRole(JCRNodeWrapper principal, JCRNodeWrapper role, JCRSessionWrapper session)
@@ -430,7 +427,7 @@ public class RoleBasedAccessControlManager {
     public boolean isPermitted(final JahiaPrincipal principal, final Permission permission, JCRSessionWrapper session)
             throws PathNotFoundException, RepositoryException {
         JCRNodeWrapper principalNode = getPrincipalNode(principal, session);
-        boolean permitted = principalNode != null ? hasDirectPermission(principalNode.getPath(), permission, session)
+        boolean permitted = principalNode != null ? hasDirectPermission(principalNode, permission, session)
                 || hasInheritedPermission(principal, principalNode, permission, session) : false;
         if (logger.isDebugEnabled()) {
             logger.debug("isPermitted('" + principal.getName() + "', '" + permission.getName() + "'): " + permitted);

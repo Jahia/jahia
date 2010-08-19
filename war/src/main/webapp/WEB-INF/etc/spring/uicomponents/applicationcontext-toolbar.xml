@@ -856,7 +856,7 @@
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="url"/>
-                    <property name="value" value="$context/cms/logout?redirect=$context"/>
+                    <property name="value" value="$context/cms/logout?redirect=$location-path$location-hash"/>
                 </bean>
             </list>
         </property>

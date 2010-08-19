@@ -94,7 +94,6 @@ import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolationException;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
@@ -458,12 +457,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void paste(List<String> pathsToCopy, String destinationPath, String newName, boolean cut)
             throws GWTJahiaServiceException {
-        contentManager.copy(pathsToCopy, destinationPath, newName, false, cut, false, false, retrieveCurrentSession());
+        contentManager.copy(pathsToCopy, destinationPath, newName, false, cut, false, false, retrieveCurrentSession(null));
     }
 
     public void pasteReferences(List<String> pathsToCopy, String destinationPath, String newName)
             throws GWTJahiaServiceException {
-        contentManager.copy(pathsToCopy, destinationPath, newName, false, false, true, false, retrieveCurrentSession());
+        contentManager.copy(pathsToCopy, destinationPath, newName, false, false, true, false, retrieveCurrentSession(null));
     }
 
     public GWTJahiaGetPropertiesResult getProperties(String path, String langCode) throws GWTJahiaServiceException {
@@ -1042,7 +1041,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public String getNodeURL(String path, String version, String workspace, String locale, int mode)
             throws GWTJahiaServiceException {
         return this.template
-                .getNodeURL(path, version, mode, getRequest(), getResponse(), retrieveCurrentSession(workspace));
+                .getNodeURL(path, version, mode, getRequest(), getResponse(), retrieveCurrentSession(workspace, getLocale()));
     }
 
     public void importContent(String parentPath, String fileKey) throws GWTJahiaServiceException {

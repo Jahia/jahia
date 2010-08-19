@@ -51,6 +51,7 @@ import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.decorator.JCRPortletNode;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.nodetypes.ConstraintsHelper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.utils.FileUtils;
@@ -969,6 +970,16 @@ public class NavigationHelper {
             if (!fields.contains("j:width")) {
                 fields.add("j:width");
             }
+        }
+
+        // reference types
+        try {
+            String cons = ConstraintsHelper.getConstraints(node);
+            if (cons != null) {
+                n.set("referenceTypes", ConstraintsHelper.getReferenceTypes(cons, null));
+            }
+        } catch (RepositoryException e) {
+            logger.error("Cannot get property " + GWTJahiaNode.AVAILABLE_WORKKFLOWS + " on node " + node.getPath());
         }
 
         // properties

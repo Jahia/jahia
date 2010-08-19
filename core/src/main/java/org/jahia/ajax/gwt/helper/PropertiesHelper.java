@@ -147,12 +147,10 @@ public class PropertiesHelper {
                     nodeProp.setName(propName);
                     List<GWTJahiaNodePropertyValue> gwtValues = new ArrayList<GWTJahiaNodePropertyValue>();
                     GWTJahiaNode linkNode = navigation.getGWTJahiaNode((JCRNodeWrapper) node);
-                    if (node.isNodeType(Constants.JAHIANT_INTERNAL_PAGE_LINK)) {
+                    if (node.isNodeType(Constants.JAHIANT_NODE_LINK)) {
                         linkNode.set("linkType", "internal");
-                    } else if (node.isNodeType(Constants.JAHIANT_INTERNAL_PAGE_LINK)) {
+                    } else if (node.isNodeType(Constants.JAHIANT_EXTERNAL_PAGE_LINK)) {
                         linkNode.set("linkType", "external");
-                    } else if (node.isNodeType(Constants.JAHIANT_DIRECT_PAGE_LINK)) {
-                        linkNode.set("linkType", "internal");
                     }
 
                     // url
@@ -345,7 +343,7 @@ public class PropertiesHelper {
                                 }
                                 // case of internal link
                                 else if (linkType.equalsIgnoreCase("internal") && nodeReference != null) {
-                                    Node content = objectNode.addNode(prop.getName(), Constants.JAHIANT_INTERNAL_PAGE_LINK);
+                                    Node content = objectNode.addNode(prop.getName(), Constants.JAHIANT_NODE_LINK);
                                     content.setProperty(Constants.JCR_TITLE, linkTitle);
                                     content.setProperty(Constants.NODE, nodeReference.getUUID());
                                     content.setProperty(Constants.JCR_LASTMODIFIED, new GregorianCalendar());

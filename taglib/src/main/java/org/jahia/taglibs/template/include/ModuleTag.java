@@ -35,10 +35,9 @@ package org.jahia.taglibs.template.include;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
-import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.ConstraintsHelper;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.*;
 import org.jahia.services.render.scripting.Script;
@@ -171,12 +170,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 Integer currentLevel =
                         (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
                 try {
-                    Set<String> cons = node.getPrimaryNodeType().getUnstructuredChildNodeDefinitions().keySet();
-                    for (String s : cons) {
-                        if (!s.equals(Constants.JAHIANT_TRANSLATION)) {
-                            constraints = (StringUtils.isEmpty(constraints)) ? s : constraints + " " + s;
-                        }
-                    }
+                    constraints = ConstraintsHelper.getConstraints(node);
                 } catch (RepositoryException e) {
                     logger.error("Error when getting list constraints", e);
                 }
@@ -337,7 +331,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         }
 
         if (constraints != null) {
-            String referenceTypes = getReferenceTypes();
+            String referenceTypes = ConstraintsHelper.getReferenceTypes(constraints, nodeTypes);
             buffer.append((referenceTypes != null) ? " referenceTypes=\"" + referenceTypes + "\"" : "");
         }
 
@@ -348,59 +342,6 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             buffer.delete(0, buffer.length());
         }
 
-    }
-
-    private String getReferenceTypes() throws NoSuchNodeTypeException {
-        StringBuffer buffer = new StringBuffer();
-        List<ExtendedNodeType> refs =
-                NodeTypeRegistry.getInstance().getNodeType("jmix:nodeReference").getSubtypesAsList();
-
-        String[] nodeTypesArray;
-        if (StringUtils.isEmpty(nodeTypes)) {
-            nodeTypesArray = new String[]{"nt:base"};
-        } else {
-            nodeTypesArray = nodeTypes.split(" ");
-        }
-        final String[] constraintsArray = constraints.split(" ");
-        for (ExtendedNodeType ref : refs) {
-            if (ref.getPropertyDefinitionsAsMap().get("j:node") != null) {
-                for (String s : constraintsArray) {
-                    if (ref.isNodeType(s)) {
-                        String[] refConstraints = ref.getPropertyDefinitionsAsMap().get("j:node").getValueConstraints();
-                        if (refConstraints.length == 0) {
-                            refConstraints = new String[]{"jmix:droppableContent"};
-                        }
-                        List<String> finalConstraints = new ArrayList<String>();
-                        for (String refConstraint : refConstraints) {
-                            for (String nt : nodeTypesArray) {
-                                if (NodeTypeRegistry.getInstance().getNodeType(nt).isNodeType(refConstraint)) {
-                                    finalConstraints.add(nt);
-                                } else if (NodeTypeRegistry.getInstance().getNodeType(refConstraint).isNodeType(nt)) {
-                                    finalConstraints.add(refConstraint);
-                                }
-                            }
-                        }
-
-                        refConstraints = finalConstraints.toArray(new String[finalConstraints.size()]);
-                        if (refConstraints.length > 0) {
-                            buffer.append(ref.getName());
-                            buffer.append("[");
-                            if (refConstraints.length > 0) {
-                                for (int i = 0; i < refConstraints.length; i++) {
-                                    buffer.append(refConstraints[i]);
-                                    if (i + 1 < refConstraints.length) {
-                                        buffer.append(",");
-                                    }
-                                }
-                            }
-                            buffer.append("] ");
-                        }
-                        break;
-                    }
-                }
-            }
-        }
-        return buffer.toString().trim();
     }
 
     protected void printModuleEnd() throws IOException {

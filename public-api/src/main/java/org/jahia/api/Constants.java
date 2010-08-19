@@ -170,9 +170,8 @@ public class Constants {
     public static final String JAHIANT_CONTENT = "jnt:content";    
     public static final String JAHIANT_CONTENTLIST = "jnt:contentList";
     public static final String JAHIANT_PAGE_LINK = "jmix:link";
-    public static final String JAHIANT_INTERNAL_PAGE_LINK = "jnt:nodeLink";
+    public static final String JAHIANT_NODE_LINK = "jnt:nodeLink";
     public static final String JAHIANT_EXTERNAL_PAGE_LINK = "jnt:externalLink";
-    public static final String JAHIANT_DIRECT_PAGE_LINK = "jnt:nodeLink";
     public static final String JAHIANT_PORTLET = "jnt:portlet";
     public static final String JAHIANT_LAYOUT = "jnt:layout";
     public static final String JAHIANT_LAYOUTITEM = "jnt:layoutItem";

@@ -504,6 +504,7 @@
  orderable
  - jcr:title (string) i18n mandatory
  + * (nt:base) = nt:base version
+ + * (jmix:navMenuItem)
 
 [jnt:content] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata
 
@@ -586,8 +587,6 @@
 [jnt:containerList] > nt:base,  jmix:basemetadata
  orderable
  + * (jnt:container) version
-
-[jnt:internalPageLink] > jnt:nodeLink
 
 [jnt:externalPageLink] > jnt:externalLink
 

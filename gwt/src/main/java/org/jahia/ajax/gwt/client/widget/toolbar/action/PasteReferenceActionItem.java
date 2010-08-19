@@ -74,7 +74,7 @@ public class PasteReferenceActionItem extends BaseActionItem  {
             public void onSuccess(List<GWTJahiaNodeType> result) {
                 GWTJahiaNode copiedNode = CopyPasteEngine.getInstance().getCopiedPaths().get(0);
                 Map<String, GWTJahiaNodeProperty> props = new HashMap<String, GWTJahiaNodeProperty>(2);
-                props.put("jcr:title", new GWTJahiaNodeProperty("jcr:title", new GWTJahiaNodePropertyValue(linker.getSelectedNode().getDisplayName(), GWTJahiaNodePropertyType.STRING)));
+                props.put("jcr:title", new GWTJahiaNodeProperty("jcr:title", new GWTJahiaNodePropertyValue(copiedNode.getDisplayName(), GWTJahiaNodePropertyType.STRING)));
                 props.put("j:node", new GWTJahiaNodeProperty("j:node", new GWTJahiaNodePropertyValue(copiedNode, GWTJahiaNodePropertyType.WEAKREFERENCE)));
                 if (result.size() == 1) {
                     EngineLoader.showCreateEngine(linker, linker.getSelectedNode(), result.get(0), props, copiedNode.getName(), false);
@@ -95,23 +95,27 @@ public class PasteReferenceActionItem extends BaseActionItem  {
         boolean b = lh.isMainSelection() && lh.isParentWriteable() && lh.isPasteAllowed() ||
                 lh.isTableSelection() && lh.isWriteable() && lh.isPasteAllowed();
 
+        String refTypes;
         if (linker instanceof EditLinker && b) {
             final Module module = ((EditLinker) linker).getSelectedModule();
-            if (module.getReferenceTypes().length() > 0) {
-                String[] refs = module.getReferenceTypes().split(" ");
-                allowedRefs = new ArrayList<String>();
-                for (String ref : refs) {
-                    String[] types = ref.split("\\[|\\]");
-                    if (checkNodeType(CopyPasteEngine.getInstance().getCopiedPaths(), types[1])) {
-                        allowedRefs.add(types[0]);
-                    }
+            refTypes = module.getReferenceTypes();
+        } else {
+            refTypes = linker.getSelectedNode().get("referenceTypes");
+        }
+        if (refTypes != null && refTypes.length() > 0) {
+            String[] refs = refTypes.split(" ");
+            allowedRefs = new ArrayList<String>();
+            for (String ref : refs) {
+                String[] types = ref.split("\\[|\\]");
+                if (checkNodeType(CopyPasteEngine.getInstance().getCopiedPaths(), types[1])) {
+                    allowedRefs.add(types[0]);
                 }
-                if (this.allowedRefs.size() == 0) {
-                    b = false;
-                }
-            } else {
+            }
+            if (this.allowedRefs.size() == 0) {
                 b = false;
             }
+        } else {
+            b = false;
         }
 
         setEnabled(b);

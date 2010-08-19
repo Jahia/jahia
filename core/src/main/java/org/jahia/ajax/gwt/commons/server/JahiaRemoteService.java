@@ -103,10 +103,10 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
      * @return
      * @throws GWTJahiaServiceException
      */
-    protected JCRSessionWrapper retrieveCurrentSession(String workspace) throws GWTJahiaServiceException {
+    protected JCRSessionWrapper retrieveCurrentSession(String workspace, Locale locale) throws GWTJahiaServiceException {
         checkSession();
         try {
-            return JCRSessionFactory.getInstance().getCurrentUserSession(workspace, getLocale());
+            return JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale);
         } catch (RepositoryException e) {
             logger.error(e, e);
             throw new GWTJahiaServiceException("Cannot open user session");

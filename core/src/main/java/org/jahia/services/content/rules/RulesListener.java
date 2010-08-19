@@ -171,6 +171,7 @@ public class RulesListener extends DefaultEventListener {
                 dslFiles.add(
                         new File(SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/rules/rules.dsl"));
                 builder.addPackageFromDrl(drl, new StringReader(getDslFiles()));
+                drl.close();
             }
 
             //            builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.rfm" ) ) );

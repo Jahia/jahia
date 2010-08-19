@@ -43,6 +43,7 @@ import org.jahia.hibernate.model.JahiaInstalledPatch;
 import org.jahia.hibernate.model.JahiaVersion;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaService;
+import org.jahia.settings.SettingsBean;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -231,7 +232,10 @@ public class VersionService extends JahiaService {
 
         Properties v = new Properties();
         try {
-            v.load(new FileInputStream(org.jahia.settings.SettingsBean.getInstance().getJahiaVarDiskPath() + File.separator + "versions.properties"));
+            final FileInputStream inStream = new FileInputStream(
+                    SettingsBean.getInstance().getJahiaVarDiskPath() + File.separator + "versions.properties");
+            v.load(inStream);
+            inStream.close();
             for (Iterator<?> it = v.keySet().iterator(); it.hasNext();) {
                 String s = (String) it.next();
                 versions.put(new Integer(s), v.getProperty(s));

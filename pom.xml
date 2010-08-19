@@ -340,6 +340,12 @@
         </profile>
         <profile>
             <id>jahia-test</id>
+        	<activation>
+        		<property>
+        			<name>jahia.run.tests</name>
+        			<value>true</value>
+        		</property>
+        	</activation>
             <properties>
 				<jahia.war.classifier>test</jahia.war.classifier>            
             </properties>

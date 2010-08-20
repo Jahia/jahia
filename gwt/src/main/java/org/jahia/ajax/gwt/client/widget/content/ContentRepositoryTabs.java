@@ -70,7 +70,7 @@ public class ContentRepositoryTabs extends LeftComponent {
     private TabItem browseTabITem;
     private TabItem searchTabITem;
 
-    private ContentPanel browseComponent;
+    private LayoutContainer browseComponent;
     private ContentSearchForm contentSearchForm;
     private JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
 
@@ -172,11 +172,8 @@ public class ContentRepositoryTabs extends LeftComponent {
 
         // init main panel and add accordions
         ChangeAccordionListener<ComponentEvent> accordionListener = new ChangeAccordionListener<ComponentEvent>();
-        browseComponent = new ContentPanel(new AccordionLayout());
-        browseComponent.setScrollMode(Style.Scroll.AUTO);
-        browseComponent.getHeader().setBorders(false);
-        browseComponent.setHeaderVisible(false);
-        browseComponent.setBodyBorder(true);
+        browseComponent = new LayoutContainer(new AccordionLayout());
+        browseComponent.setScrollMode(Style.Scroll.NONE);
         browseComponent.setBorders(true);
         for (RepositoryTab tab : repositories) {
             browseComponent.add(tab);

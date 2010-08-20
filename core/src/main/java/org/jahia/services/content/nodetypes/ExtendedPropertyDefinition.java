@@ -32,6 +32,8 @@
 
 package org.jahia.services.content.nodetypes;
 
+import org.apache.jackrabbit.spi.commons.nodetype.InvalidConstraintException;
+import org.apache.jackrabbit.spi.commons.nodetype.constraint.ValueConstraint;
 import org.apache.log4j.Logger;
 
 import javax.jcr.Value;
@@ -114,6 +116,16 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
             }
         }
         return res.toArray(new Value[res.size()]);
+    }
+    
+    public ValueConstraint[] getValueConstraintObjects() {
+        ValueConstraint[] constraints = null;
+        try {
+            constraints = ValueConstraint.create(getRequiredType(), getValueConstraints());
+        } catch (InvalidConstraintException e) {
+            logger.warn("Internal error during creation of constraint.", e);
+        }
+        return constraints;
     }
 
     public String[] getValueConstraints() {

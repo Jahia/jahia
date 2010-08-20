@@ -116,8 +116,8 @@ public class JahiaNodeIndexer extends NodeIndexer {
     private static Name siteFolderTypeName = null;
 
     private static final DateField dateType = new DateField();
-    private static final Name MIXIN_TYPES = NameFactoryImpl.getInstance().create(Constants.JCR_NS, "mixinTypes");
-    private static final Name PRIMARY_TYPE = NameFactoryImpl.getInstance().create(Constants.JCR_NS, "primaryType");
+    private static final Name MIXIN_TYPES = NameFactoryImpl.getInstance().create(Name.NS_JCR_URI, "mixinTypes");
+    private static final Name PRIMARY_TYPE = NameFactoryImpl.getInstance().create(Name.NS_JCR_URI, "primaryType");
 
     /**
      * Creates a new node indexer.
@@ -241,7 +241,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
             try {
                 for (Name propName : node.getPropertyNames()) {
                     if ("language".equals(propName.getLocalName())
-                            && Constants.JCR_NS.equals(propName.getNamespaceURI())) {
+                            && Name.NS_JCR_URI.equals(propName.getNamespaceURI())) {
                         PropertyId id = new PropertyId(node.getNodeId(), propName);
                         PropertyState propState = (PropertyState) stateProvider.getItemState(id);
                         language = propState.getValues()[0].getString();

@@ -43,14 +43,6 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class Constants {
-    public static final String JCR_NS = "http://www.jcp.org/jcr/1.0";
-    public static final String NT_NS = "http://www.jcp.org/jcr/nt/1.0";
-    public static final String MIX_NS = "http://www.jcp.org/jcr/mix/1.0";
-
-    public static final String JCR_PREF = "jcr";
-    public static final String NT_PREF = "nt";
-    public static final String MIX_PREF = "mix";
-
     public static final String JCR_ACTIVITY = "jcr:activity";
     public static final String JCR_AUTOCREATED = "jcr:autoCreated";
     public static final String JCR_BASEVERSION = "jcr:baseVersion";

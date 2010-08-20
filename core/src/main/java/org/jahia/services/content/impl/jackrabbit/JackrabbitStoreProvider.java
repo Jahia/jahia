@@ -39,11 +39,9 @@
 package org.jahia.services.content.impl.jackrabbit;
 
 import org.apache.jackrabbit.api.JackrabbitWorkspace;
-import org.jahia.api.Constants;
+import org.apache.jackrabbit.spi.Name;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRNodeWrapperImpl;
-import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreProvider;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -145,7 +143,7 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
         List<NodeTypeDefinition> nts = new ArrayList<NodeTypeDefinition>();
         while (nti.hasNext()) {
             ExtendedNodeType nodeType = (ExtendedNodeType) nti.next();
-            if (!Constants.NT_NS.equals(nodeType.getNameObject().getUri()) && !Constants.MIX_NS.equals(nodeType.getNameObject().getUri())) {
+            if (!Name.NS_NT_URI.equals(nodeType.getNameObject().getUri()) && !Name.NS_MIX_URI.equals(nodeType.getNameObject().getUri())) {
                 try {
                     namespaceRegistry.getURI(nodeType.getNameObject().getPrefix());
                 } catch (NamespaceException e) {

@@ -78,6 +78,9 @@ public class VFSContentStoreProviderTest {
             session.save();
 
             session.logout();
+
+            dynamicMountDir.delete();
+            staticMountDir.delete();
         } catch (Exception ex) {
             logger.warn("Exception during test tearDown", ex);
         }
@@ -101,14 +104,14 @@ public class VFSContentStoreProviderTest {
         vfsProvider.start();
 
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
-        try {
-            JCRNodeWrapper mountNode = session.getNode("/mounts/static-mount");
-            assertNode(mountNode, 0);
-        } catch (PathNotFoundException pnfe) {
-            logger.error("Mount point not available", pnfe);
-            Assert.assertTrue("Static mount point is not properly setup", false);
-        }
-
+        JCRNodeWrapper mountNode = getNode(session, "/mounts/static-mount");
+        assertNode(mountNode, 0);
+        createFolder(session, "folder1", mountNode);
+        JCRNodeWrapper folder1Node = getNode(session, "/mounts/static-mount/folder1");
+        assertNode(folder1Node, 0);
+        session.checkout(folder1Node);
+        folder1Node.remove();
+        session.save();
         vfsProvider.stop();
     }
 
@@ -119,16 +122,29 @@ public class VFSContentStoreProviderTest {
         contentHubHelper.mount("dynamic-mount", "file://" + dynamicMountDir.getAbsolutePath(), jahiaRootUser);
 
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
-        try {
-            JCRNodeWrapper mountNode = session.getNode("/mounts/dynamic-mount");
-            assertNode(mountNode, 0);
+        JCRNodeWrapper mountNode = getNode(session, "/mounts/dynamic-mount");
+        assertNode(mountNode, 0);
+        createFolder(session, "folder1", mountNode);
+        JCRNodeWrapper folder1Node = getNode(session, "/mounts/dynamic-mount/folder1");
+        assertNode(folder1Node, 0);
+        session.checkout(folder1Node);
+        folder1Node.remove();
+        session.save();
 
-            mountNode.remove();
-            session.save();
+        mountNode.remove();
+        session.save();
+
+    }
+
+    private JCRNodeWrapper getNode(JCRSessionWrapper session, String path) throws RepositoryException {
+        try {
+            JCRNodeWrapper node = session.getNode(path);
+            return node;
         } catch (PathNotFoundException pnfe) {
             logger.error("Mount point not available", pnfe);
-            Assert.assertTrue("Dynamic mount point is not properly setup", false);
+            Assert.assertTrue("Node at " + path + " could not be found !", false);
         }
+        return null;
     }
 
     private void assertNode(Node node, int depth)
@@ -164,6 +180,12 @@ public class VFSContentStoreProviderTest {
             Node childNode = nodeIterator.nextNode();
             assertNode(childNode, depth + 1);
         }
+    }
+
+    private void createFolder(JCRSessionWrapper session, String name, Node node) throws RepositoryException {
+        session.checkout(node);
+        node.addNode(name, "jnt:folder");
+        session.save();
     }
 
 }

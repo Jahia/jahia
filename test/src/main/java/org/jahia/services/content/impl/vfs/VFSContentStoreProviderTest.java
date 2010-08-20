@@ -30,7 +30,7 @@ import java.io.File;
 public class VFSContentStoreProviderTest {
     private static Logger logger = Logger.getLogger(VFSContentStoreProviderTest.class);
     private static final String TESTSITE_NAME = "vfsContentProviderTest";
-    private static final String SITECONTENT_ROOT_NODE = "/sites/vfsContentProviderTest";
+    private static final String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
     private static JahiaSite site;
     private static File dynamicMountDir;
     private static File staticMountDir;
@@ -42,7 +42,7 @@ public class VFSContentStoreProviderTest {
             site = (JahiaSite) JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
                 public JahiaSite doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
-                        return TestHelper.createSite("vfsContentProviderTest", "localhost", "templates-web", null);
+                        return TestHelper.createSite(TESTSITE_NAME, "localhost", "templates-web", null);
                     }
                     catch (Exception e) {
                         logger.error("Cannot create or publish site", e);
@@ -72,8 +72,8 @@ public class VFSContentStoreProviderTest {
     public static void oneTimeTearDown() throws Exception {
         try {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
-            if (session.nodeExists("/sites/vfsContentProviderTest")) {
-                TestHelper.deleteSite("vfsContentProviderTest");
+            if (session.nodeExists(SITECONTENT_ROOT_NODE)) {
+                TestHelper.deleteSite(TESTSITE_NAME);
             }
             session.save();
 
@@ -89,7 +89,7 @@ public class VFSContentStoreProviderTest {
         vfsProvider.setKey("local");
         vfsProvider.setRoot("file://" + staticMountDir.getAbsolutePath());
         vfsProvider.setRmibind("local");
-        vfsProvider.setMountPoint("localFs");
+        vfsProvider.setMountPoint("/mounts/static-mount");
         vfsProvider.setUserManagerService(ServicesRegistry.getInstance().getJahiaUserManagerService());
         vfsProvider.setGroupManagerService(ServicesRegistry.getInstance().getJahiaGroupManagerService());
         vfsProvider.setSitesService(ServicesRegistry.getInstance().getJahiaSitesService());
@@ -106,7 +106,7 @@ public class VFSContentStoreProviderTest {
             assertNode(mountNode, 0);
         } catch (PathNotFoundException pnfe) {
             logger.error("Mount point not available", pnfe);
-            Assert.assertTrue("Dynamic mount point is not properly setup", false);
+            Assert.assertTrue("Static mount point is not properly setup", false);
         }
 
         vfsProvider.stop();
@@ -122,6 +122,9 @@ public class VFSContentStoreProviderTest {
         try {
             JCRNodeWrapper mountNode = session.getNode("/mounts/dynamic-mount");
             assertNode(mountNode, 0);
+
+            mountNode.remove();
+            session.save();
         } catch (PathNotFoundException pnfe) {
             logger.error("Mount point not available", pnfe);
             Assert.assertTrue("Dynamic mount point is not properly setup", false);

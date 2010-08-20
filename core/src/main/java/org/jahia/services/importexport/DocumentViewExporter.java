@@ -32,8 +32,10 @@
 
 package org.jahia.services.importexport;
 
+import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.util.ISO9075;
 import org.apache.jackrabbit.value.ValueHelper;
+import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
@@ -43,6 +45,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 import javax.jcr.*;
+
 import java.util.*;
 
 /**
@@ -53,6 +56,8 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class DocumentViewExporter {
+    protected static final Logger logger = Logger.getLogger(DocumentViewExporter.class);
+    
     private static final String CDATA = "CDATA";
     private static final String NS_URI = "http://www.w3.org/2000/xmlns/";
 
@@ -77,13 +82,14 @@ public class DocumentViewExporter {
         this.stack = new Stack<String>();
 
         prefixes = new HashMap<String, String>();
-        prefixes.put(Constants.NT_PREF, Constants.NT_NS);
-        prefixes.put(Constants.JCR_PREF, Constants.JCR_NS);
-        prefixes.put(Constants.MIX_PREF, Constants.MIX_NS);
-        prefixes.put(Constants.JAHIANT_PREF, Constants.JAHIANT_NS);
-        prefixes.put(Constants.JAHIA_PREF, Constants.JAHIA_NS);
-        prefixes.put(Constants.JAHIAMIX_PREF, Constants.JAHIAMIX_NS);
-
+        try {
+            for (String prefix : session.getNamespacePrefixes()) {
+                prefixes.put(prefix, session.getNamespaceURI(prefix));
+            }
+        } catch (RepositoryException e) {
+            logger.warn("Namespace not correctly exported", e);
+        }
+        
         exportedShareable = new HashMap<String, String>();
     }
 
@@ -165,7 +171,7 @@ public class DocumentViewExporter {
                     String currentpath = peek + "/" + name;
                     String pt = session.getNode(currentpath).getPrimaryNodeTypeName();
                     AttributesImpl atts = new AttributesImpl();
-                    atts.addAttribute(Constants.JCR_NS, "primaryType", "jcr:primaryType", CDATA, pt);
+                    atts.addAttribute(Name.NS_JCR_URI, "primaryType", "jcr:primaryType", CDATA, pt);
                     startElement(encodedName, atts);
                     stack.push(currentpath);
                 }

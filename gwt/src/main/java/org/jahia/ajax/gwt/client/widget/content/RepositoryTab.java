@@ -117,7 +117,7 @@ public class RepositoryTab extends ContentPanel {
         });
 //        m_tree.init();
 
-        setScrollMode(Style.Scroll.AUTO);
+        setScrollMode(Style.Scroll.NONE);
         setHeading(repo.getTitle());
         getHeader().addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
             public void componentSelected(IconButtonEvent event) {

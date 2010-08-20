@@ -32,8 +32,9 @@
 
 package org.jahia.services.content.nodetypes;
 
-import org.apache.commons.collections.map.ListOrderedMap;
-import org.apache.commons.collections.set.ListOrderedSet;
+import org.apache.jackrabbit.core.value.InternalValue;
+import org.apache.jackrabbit.spi.commons.nodetype.constraint.ValueConstraint;
+import org.apache.jackrabbit.spi.commons.value.QValueValue;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -41,8 +42,11 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
 
+import javax.jcr.PropertyType;
+import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.nodetype.*;
+
 import java.util.*;
 
 /**
@@ -54,16 +58,17 @@ import java.util.*;
 public class ExtendedNodeType implements NodeType {
 
     private static final transient Logger logger = Logger.getLogger(ExtendedNodeType.class);
-
+    public static final Name NT_BASE_NAME = new Name("base", org.apache.jackrabbit.spi.Name.NS_NT_PREFIX, org.apache.jackrabbit.spi.Name.NS_NT_URI);
+    
     private NodeTypeRegistry registry;
     private String systemId;
     private List<ExtendedItemDefinition> items = new ArrayList<ExtendedItemDefinition>();
     private List<String> groupedItems;
 
-    private Map<String, ExtendedNodeDefinition> nodes = new ListOrderedMap();
-    private Map<String, ExtendedPropertyDefinition> properties = new ListOrderedMap();
-    private Map<String, ExtendedNodeDefinition> unstructuredNodes = new ListOrderedMap();
-    private Map<Integer, ExtendedPropertyDefinition> unstructuredProperties = new ListOrderedMap();
+    private Map<String, ExtendedNodeDefinition> nodes = new LinkedHashMap<String, ExtendedNodeDefinition>();
+    private Map<String, ExtendedPropertyDefinition> properties = new LinkedHashMap<String, ExtendedPropertyDefinition>();
+    private Map<String, ExtendedNodeDefinition> unstructuredNodes = new LinkedHashMap<String, ExtendedNodeDefinition>();
+    private Map<Integer, ExtendedPropertyDefinition> unstructuredProperties = new LinkedHashMap<Integer, ExtendedPropertyDefinition>();
 
     private Map<String, ExtendedNodeDefinition> allNodes;
     private Map<String, ExtendedPropertyDefinition> allProperties;
@@ -175,7 +180,7 @@ public class ExtendedNodeType implements NodeType {
 
 
     public ExtendedNodeType[] getSupertypes() {
-        ListOrderedSet l = new ListOrderedSet();
+        Set<ExtendedNodeType> l = new LinkedHashSet<ExtendedNodeType>();
         boolean primaryFound = false;
         ExtendedNodeType[] d = getDeclaredSupertypes();
         for (int i = 0; i < d.length; i++) {
@@ -336,7 +341,7 @@ public class ExtendedNodeType implements NodeType {
 
     public synchronized Map<String, ExtendedPropertyDefinition> getPropertyDefinitionsAsMap() {
         if (allProperties == null) {
-            allProperties = new ListOrderedMap();
+            allProperties = new LinkedHashMap<String, ExtendedPropertyDefinition>();
 
             allProperties.putAll(properties);
 
@@ -359,7 +364,7 @@ public class ExtendedNodeType implements NodeType {
 
     public Map<Integer,ExtendedPropertyDefinition> getUnstructuredPropertyDefinitions() {
         if (allUnstructuredProperties == null) {
-            allUnstructuredProperties = new ListOrderedMap();
+            allUnstructuredProperties = new LinkedHashMap<Integer,ExtendedPropertyDefinition>();
 
             allUnstructuredProperties.putAll(unstructuredProperties);
 
@@ -403,7 +408,7 @@ public class ExtendedNodeType implements NodeType {
 
     public Map<String, ExtendedNodeDefinition> getChildNodeDefinitionsAsMap() {
         if (allNodes == null) {
-            allNodes = new ListOrderedMap();
+            allNodes = new LinkedHashMap<String, ExtendedNodeDefinition>();
             ExtendedNodeType[] supertypes = getSupertypes();
             for (int i = supertypes.length-1; i >=0 ; i--) {
                 ExtendedNodeType nodeType = supertypes[i];
@@ -425,7 +430,7 @@ public class ExtendedNodeType implements NodeType {
 
     public Map<String,ExtendedNodeDefinition> getUnstructuredChildNodeDefinitions() {
         if (allUnstructuredNodes == null) {
-            allUnstructuredNodes = new ListOrderedMap();
+            allUnstructuredNodes = new LinkedHashMap<String,ExtendedNodeDefinition>();
             allUnstructuredNodes.putAll(unstructuredNodes);
 
             ExtendedNodeType[] supertypes = getSupertypes();
@@ -475,60 +480,137 @@ public class ExtendedNodeType implements NodeType {
     }
 
     public boolean canSetProperty(String propertyName, Value value) {
-        if (getPropertyDefinitionsAsMap().containsKey(propertyName)) {
-            ExtendedPropertyDefinition propertyDefinition = getPropertyDefinitionsAsMap().get(propertyName);
-            if (!propertyDefinition.isMultiple()) {
-                if (canSetProperty(value, propertyDefinition))  {
-                    return true;
-                }
-            }
+        if (value == null) {
+            // setting a property to null is equivalent of removing it
+            return canRemoveItem(propertyName);
         }
-        Collection<ExtendedPropertyDefinition> unstruct = getUnstructuredPropertyDefinitions().values();
-        for (ExtendedPropertyDefinition definition : unstruct) {
-            if (!definition.isMultiple()) {
-                if (canSetProperty(value,definition))  {
-                    return true;
-                }
+        try {
+            ExtendedPropertyDefinition def = getPropertyDefinitionsAsMap()
+                    .containsKey(propertyName) ? getPropertyDefinitionsAsMap().get(propertyName)
+                    : getMatchingPropDef(getUnstructuredPropertyDefinitions().values(),
+                            value.getType(), false);
+            if (def == null) {
+                def = getMatchingPropDef(getUnstructuredPropertyDefinitions().values(),
+                        PropertyType.UNDEFINED, false);
             }
+            if (def != null) {
+                if (def.isMultiple() || def.isProtected()) {
+                    return false;
+                }
+                int targetType;
+                if (def.getRequiredType() != PropertyType.UNDEFINED
+                        && def.getRequiredType() != value.getType()) {
+                    // type conversion required
+                    targetType = def.getRequiredType();
+                } else {
+                    // no type conversion required
+                    targetType = value.getType();
+                }
+                // perform type conversion as necessary and create InternalValue
+                // from (converted) Value
+                InternalValue internalValue = null;
+                if (targetType != value.getType()) {
+                    // type conversion required, but Jahia cannot do it, because we have no valueFactory, resolver, store or session object here
+                    // Value targetVal = ValueHelper.convert(
+                    // value, targetType,
+                    // valueFactory);
+                    if (value.getType() != PropertyType.BINARY
+                            && !((value.getType() == PropertyType.PATH || value.getType() == PropertyType.NAME) && !(value instanceof QValueValue))) {
+                        internalValue = InternalValue.create(value, null, null);
+                    }
+                } else {
+                    // no type conversion required
+                    if (value.getType() != PropertyType.BINARY
+                            && !((value.getType() == PropertyType.PATH || value.getType() == PropertyType.NAME) && !(value instanceof QValueValue))) {
+                        internalValue = InternalValue.create(value, null, null);
+                    }
+                }
+                if (internalValue != null) {
+                    checkSetPropertyValueConstraints(def, new InternalValue[] { internalValue });
+                }
+                return true;
+            }
+        } catch (RepositoryException e) {
+            // fall through
         }
         return false;
     }
-
-    private boolean canSetProperty(Value v , ExtendedPropertyDefinition propDef) {
-        return !propDef.isMultiple() && v.getType() == propDef.getRequiredType();
-    }
-
 
     public boolean canSetProperty(String propertyName, Value[] values) {
-        if (getPropertyDefinitionsAsMap().containsKey(propertyName)) {
-            ExtendedPropertyDefinition propertyDefinition = getPropertyDefinitionsAsMap().get(propertyName);
-            if (propertyDefinition.isMultiple()) {
-                if (canSetProperty(values, propertyDefinition))  {
-                    return true;
-                }
-            }
+        if (values == null) {
+            // setting a property to null is equivalent of removing it
+            return canRemoveItem(propertyName);
         }
-        Collection<ExtendedPropertyDefinition> unstruct = getUnstructuredPropertyDefinitions().values();
-        for (ExtendedPropertyDefinition definition : unstruct) {
-            if (definition.isMultiple()) {
-                if (canSetProperty(values,definition))  {
-                    return true;
+        try {
+            // determine type of values
+            int type = PropertyType.UNDEFINED;
+            for (Value value : values) {
+                if (value == null) {
+                    // skip null values as those would be purged
+                    continue;
+                }
+                if (type == PropertyType.UNDEFINED) {
+                    type = value.getType();
+                } else if (type != value.getType()) {
+                    // inhomogeneous types
+                    return false;
                 }
             }
+            ExtendedPropertyDefinition def = getPropertyDefinitionsAsMap()
+                    .containsKey(propertyName) ? getPropertyDefinitionsAsMap().get(propertyName)
+                    : getMatchingPropDef(getUnstructuredPropertyDefinitions().values(), type, true);
+            if (def == null) {
+                def = getMatchingPropDef(getUnstructuredPropertyDefinitions().values(),
+                        PropertyType.UNDEFINED, true);
+            }
+            if (def != null) {
+                if (!def.isMultiple() || def.isProtected()) {
+                    return false;
+                }
+                int targetType;
+                if (def.getRequiredType() != PropertyType.UNDEFINED
+                        && def.getRequiredType() != type) {
+                    // type conversion required, but Jahia cannot do it, because we have no valueFactory, resolver, store or session object here
+                    targetType = def.getRequiredType();
+                } else {
+                    // no type conversion required
+                    targetType = type;
+                }
+                List<InternalValue> list = new ArrayList<InternalValue>();
+                for (Value value : values) {
+                    if (value != null) {
+                        // perform type conversion as necessary and create InternalValue
+                        // from (converted) Value
+                        InternalValue internalValue = null;
+                        if (targetType != value.getType()) {
+                            // type conversion required
+                            // Value targetVal = ValueHelper.convert(
+                            // value, targetType,
+                            // valueFactory);
+                            if (value.getType() != PropertyType.BINARY
+                                    && !((value.getType() == PropertyType.PATH || value.getType() == PropertyType.NAME) && !(value instanceof QValueValue))) {
+                                internalValue = InternalValue.create(value, null, null);
+                            }
+                        } else {
+                            // no type conversion required
+                            if (value.getType() != PropertyType.BINARY
+                                    && !((value.getType() == PropertyType.PATH || value.getType() == PropertyType.NAME) && !(value instanceof QValueValue))) {
+                                internalValue = InternalValue.create(value, null, null);
+                            }
+                        }
+                        list.add(internalValue);
+                    }
+                }
+                if (!list.isEmpty()) {
+                    InternalValue[] internalValues = list.toArray(new InternalValue[list.size()]);
+                    checkSetPropertyValueConstraints(def, internalValues);
+                }
+                return true;
+            }
+        } catch (RepositoryException e) {
+            // fall through
         }
         return false;
-    }
-
-    private boolean canSetProperty(Value[] values , ExtendedPropertyDefinition propDef) {
-        if (!propDef.isMultiple()) {
-            return false;
-        }
-        for (Value value : values) {
-            if (value.getType() != propDef.getRequiredType()) {
-                return false;
-            }
-        }
-        return true;
     }
 
     public boolean canAddChildNode(String childNodeName) {
@@ -543,24 +625,25 @@ public class ExtendedNodeType implements NodeType {
     public boolean canAddChildNode(String childNodeName, String nodeTypeName) {
         try {
             ExtendedNodeType nt = NodeTypeRegistry.getInstance().getNodeType(nodeTypeName);
-            if (getChildNodeDefinitionsAsMap().containsKey(childNodeName)) {
-                if (canAddChildNode(nt,getChildNodeDefinitionsAsMap().get(childNodeName)))  {
-                    return true;
+            if (!nt.isAbstract() && !nt.isMixin()) {
+                if (getChildNodeDefinitionsAsMap().containsKey(childNodeName)) {
+                    if (canAddChildNode(nt,getChildNodeDefinitionsAsMap().get(childNodeName)))  {
+                        return true;
+                    }
+                }
+                Collection<ExtendedNodeDefinition> unstruct = getUnstructuredChildNodeDefinitions().values();
+                for (ExtendedNodeDefinition definition : unstruct) {
+                    if (canAddChildNode(nt,definition))  {
+                        return true;
+                    }
                 }
             }
-            Collection<ExtendedNodeDefinition> unstruct = getUnstructuredChildNodeDefinitions().values();
-            for (ExtendedNodeDefinition definition : unstruct) {
-                if (canAddChildNode(nt,definition))  {
-                    return true;
-                }
-            }
-        } catch (NoSuchNodeTypeException e) {
-            logger.error("Cannot find node type : "+nodeTypeName);
-            return false;
+        } catch (RepositoryException e) {
+            // fall through
         }
         return false;
     }
-
+    
     private boolean canAddChildNode(ExtendedNodeType nt, ExtendedNodeDefinition nodeDef) {
         String[] epd = nodeDef.getRequiredPrimaryTypeNames();
         for (String s : epd) {
@@ -569,19 +652,36 @@ public class ExtendedNodeType implements NodeType {
             }
         }
         return true;
-    }
-
+    }    
 
     public boolean canRemoveItem(String s) {
-        return true;
+        try {
+            checkRemoveItemConstraints(s);
+            return true;
+        } catch (RepositoryException re) {
+            // fall through
+        }
+        return false;
     }
 
     public boolean canRemoveNode(String nodeName) {
+        try {
+            checkRemoveNodeConstraints(nodeName);
+            return true;
+        } catch (RepositoryException re) {
+            // fall through
+        }
         return true;
     }
 
     public boolean canRemoveProperty(String propertyName) {
-        return true;
+        try {
+            checkRemovePropertyConstraints(propertyName);
+            return true;
+        } catch (RepositoryException re) {
+            // fall through
+        }
+        return false;
     }
 
     void setPropertyDefinition(String name, ExtendedPropertyDefinition p) {
@@ -852,5 +952,213 @@ public class ExtendedNodeType implements NodeType {
             return r.toArray(new NodeDefinition[r.size()]);
         }
     }
+    
+    /**
+     * @param name
+     * @throws ConstraintViolationException
+     */
+    private void checkRemoveItemConstraints(String s) throws ConstraintViolationException {
+        ExtendedItemDefinition def = getPropertyDefinitionsAsMap().get(name);
+        if (def == null) {
+            def = getChildNodeDefinitionsAsMap().get(name);
+        }
+        if (def != null) {
+            if (def.isMandatory()) {
+                throw new ConstraintViolationException("can't remove mandatory item");
+            }
+            if (def.isProtected()) {
+                throw new ConstraintViolationException("can't remove protected item");
+            }
+        }
+    }
 
+    /**
+     * @param name
+     * @throws ConstraintViolationException
+     */
+    private void checkRemoveNodeConstraints(String name) throws ConstraintViolationException {
+        ExtendedNodeDefinition def = getChildNodeDefinitionsAsMap().get(name);
+        if (def != null) {
+                if (def.isMandatory()) {
+                    throw new ConstraintViolationException("can't remove mandatory node");
+                }
+                if (def.isProtected()) {
+                    throw new ConstraintViolationException("can't remove protected node");
+                }
+        }
+    }
+
+    /**
+     * @param name
+     * @throws ConstraintViolationException
+     */
+    private void checkRemovePropertyConstraints(String propertyName)
+            throws ConstraintViolationException {
+        ExtendedPropertyDefinition def = getPropertyDefinitionsAsMap().get(propertyName);
+        if (def != null) {
+            if (def.isMandatory()) {
+                throw new ConstraintViolationException("can't remove mandatory property");
+            }
+            if (def.isProtected()) {
+                throw new ConstraintViolationException("can't remove protected property");
+            }
+        }
+    }    
+    
+    private ExtendedPropertyDefinition getMatchingPropDef(Collection<ExtendedPropertyDefinition> defs, int type) {
+        ExtendedPropertyDefinition match = null;
+        for (ExtendedPropertyDefinition pd : defs) {
+            int reqType = pd.getRequiredType();
+            // match type
+            if (reqType == PropertyType.UNDEFINED
+                    || type == PropertyType.UNDEFINED
+                    || reqType == type) {
+                if (match == null) {
+                    match = pd;
+                } else {
+                    // check if this definition is a better match than
+                    // the one we've already got
+                    if (match.getRequiredType() != pd.getRequiredType()) {
+                        if (match.getRequiredType() == PropertyType.UNDEFINED) {
+                            // found better match
+                            match = pd;
+                        }
+                    } else {
+                        if (match.isMultiple() && !pd.isMultiple()) {
+                            // found better match
+                            match = pd;
+                        }
+                    }
+                }
+                if (match.getRequiredType() != PropertyType.UNDEFINED
+                        && !match.isMultiple()) {
+                    // found best possible match, get outta here
+                    return match;
+                }
+            }
+        }
+        return match;
+    }    
+
+    private ExtendedPropertyDefinition getMatchingPropDef(Collection<ExtendedPropertyDefinition> defs, int type,
+            boolean multiValued) {
+        ExtendedPropertyDefinition match = null;
+        for (ExtendedPropertyDefinition pd : defs) {
+            int reqType = pd.getRequiredType();
+            // match type
+            if (reqType == PropertyType.UNDEFINED || type == PropertyType.UNDEFINED
+                    || reqType == type) {
+                // match multiValued flag
+                if (multiValued == pd.isMultiple()) {
+                    // found match
+                    if (pd.getRequiredType() != PropertyType.UNDEFINED) {
+                        // found best possible match, get outta here
+                        return pd;
+                    } else {
+                        if (match == null) {
+                            match = pd;
+                        }
+                    }
+                }
+            }
+        }
+        return match;
+    }
+    
+    private ExtendedNodeDefinition getMatchingNodeDef(String name, String nodeTypeName)
+            throws NoSuchNodeTypeException, ConstraintViolationException {
+        ExtendedNodeType entTarget = null;
+        if (nodeTypeName != null) {
+            entTarget = NodeTypeRegistry.getInstance().getNodeType(nodeTypeName);
+        }
+
+        // try named node definitions first
+        ExtendedNodeDefinition def = getChildNodeDefinitionsAsMap().get(name);
+            if (def != null) {
+                String[] types = def.getRequiredPrimaryTypeNames();
+                // node definition with that name exists
+                if (entTarget != null && types != null) {
+                    // check 'required primary types' constraint
+                    if (includesNodeTypes(entTarget.getChildNodeDefinitionsAsMap().keySet(), types)) {
+                        // found named node definition
+                        return def;
+                    }
+                } else if (def.getDefaultPrimaryType() != null) {
+                    // found node definition with default node type
+                    return def;
+                }
+            }
+        
+
+        // no item with that name defined;
+        // try residual node definitions
+        Collection<ExtendedNodeDefinition> nda = getUnstructuredChildNodeDefinitions().values();
+        for (ExtendedNodeDefinition nd : nda) {
+            if (entTarget != null && nd.getRequiredPrimaryTypes() != null) {
+                // check 'required primary types' constraint
+                if (!includesNodeTypes(entTarget.getChildNodeDefinitionsAsMap().keySet(), nd.getRequiredPrimaryTypeNames())) {
+                    continue;
+                }
+                // found residual node definition
+                return nd;
+            } else {
+                // since no node type has been specified for the new node,
+                // it must be determined from the default node type;
+                if (nd.getDefaultPrimaryType() != null) {
+                    // found residual node definition with default node type
+                    return nd;
+                }
+            }
+        }
+
+        // no applicable definition found
+        throw new ConstraintViolationException("no matching child node definition found for " + name);
+    }
+    
+    /**
+     * Tests if the value constraints defined in the property definition
+     * <code>pd</code> are satisfied by the the specified <code>values</code>.
+     * <p/>
+     * Note that the <i>protected</i> flag is not checked. Also note that no
+     * type conversions are attempted if the type of the given values does not
+     * match the required type as specified in the given definition.
+     */
+    private static void checkSetPropertyValueConstraints(ExtendedPropertyDefinition pd,
+                                                        InternalValue[] values)
+            throws ConstraintViolationException, RepositoryException {
+        // check multi-value flag
+        if (!pd.isMultiple() && values != null && values.length > 1) {
+            throw new ConstraintViolationException("the property is not multi-valued");
+        }
+
+        ValueConstraint[] constraints = pd.getValueConstraintObjects();
+        if (constraints == null || constraints.length == 0) {
+            // no constraints to check
+            return;
+        }
+        if (values != null && values.length > 0) {
+            // check value constraints on every value
+            for (InternalValue value : values) {
+                // constraints are OR-ed together
+                boolean satisfied = false;
+                ConstraintViolationException cve = null;
+                for (ValueConstraint constraint : constraints) {
+                    try {
+                        constraint.check(value);
+                        satisfied = true;
+                        break;
+                    } catch (ConstraintViolationException e) {
+                        cve = e;
+                    }
+                }
+                if (!satisfied) {
+                    // re-throw last exception we encountered
+                    throw cve;
+                }
+            }
+        }
+    }    
+    private boolean includesNodeTypes(Set<String> allNodeTypes, String[] nodeTypeNames) {
+        return allNodeTypes.containsAll(Arrays.asList(nodeTypeNames));
+    }
 }

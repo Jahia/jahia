@@ -306,6 +306,7 @@ public class RulesListener extends DefaultEventListener {
                                     String path = event.getPath();
                                     String propertyName = path.substring(path.lastIndexOf('/') + 1);
                                     if (!propertiesToIgnore.contains(propertyName)) {
+                                        try {
                                         JCRPropertyWrapper p = (JCRPropertyWrapper) s.getItem(path);
 
                                         JCRNodeWrapper parent = p.getParent();
@@ -326,6 +327,12 @@ public class RulesListener extends DefaultEventListener {
                                                 rn = new AddedNodeFact(parent);
                                             }
                                             list.add(new ChangedPropertyFact(rn, p));
+                                        }
+                                        } catch (PathNotFoundException pnfe) {
+                                            if (logger.isDebugEnabled()) {
+                                                logger.debug("Path " + path + " not found, might be normal if using VFS", pnfe);
+                                            }
+                                            logger.warn("Couldn't access path " + path + ", ignoring it since it's not supported on some external repositories... ");
                                         }
                                     }
                                 } else if (event.getType() == Event.NODE_REMOVED) {

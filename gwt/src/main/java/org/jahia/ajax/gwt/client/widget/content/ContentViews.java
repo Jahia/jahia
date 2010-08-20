@@ -51,7 +51,6 @@ public class ContentViews extends TopRightComponent {
 
     private TableView tableView;
     private ThumbView thumbView;
-    private TemplateView templateView;
 
     private ThumbView detailedThumbView;
 
@@ -68,7 +67,6 @@ public class ContentViews extends TopRightComponent {
         configuration = config;
         tableView = new TableView(config);
         thumbView = new ThumbView(config, false);
-        templateView = new TemplateView(config);
         detailedThumbView = new ThumbView(config, true);
         m_component = new ContentPanel(new FitLayout());
         m_component.setHeaderVisible(false);
@@ -102,10 +100,6 @@ public class ContentViews extends TopRightComponent {
         switchToView(detailedThumbView);
     }
 
-    public void switchToTemplateView() {
-        switchToView(templateView);
-    }
-
     public void switchToView(TopRightComponent newView) {
         if (current != newView) {
             List<GWTJahiaNode> currentSelection = current.getSelection();
@@ -132,7 +126,6 @@ public class ContentViews extends TopRightComponent {
         tableView.initWithLinker(linker);
         thumbView.initWithLinker(linker);
         detailedThumbView.initWithLinker(linker);
-        templateView.initWithLinker(linker);
     }
 
     public void initContextMenu() {

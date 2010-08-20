@@ -46,9 +46,9 @@ import com.extjs.gxt.ui.client.widget.Component;
 
 import java.util.List;
 
-public class ContentManagerEmbedded extends TriPanelBrowserLayout {
+public class ContentManager extends TriPanelBrowserLayout {
 
-    public ContentManagerEmbedded(final List<String> filters, final List<String> mimeTypes, final List<String> selectedPaths, final GWTManagerConfiguration config,
+    public ContentManager(final List<String> filters, final List<String> mimeTypes, final List<String> selectedPaths, final GWTManagerConfiguration config,
                                   final int southSize) {
         // superclass constructor (define linker)
         super(config);
@@ -94,21 +94,7 @@ public class ContentManagerEmbedded extends TriPanelBrowserLayout {
         final ContentViews contentViews = new ContentViews(config);
         final BottomRightComponent tabs = new ContentDetails(config);
         final TopBar toolbar = new ContentToolbar(config, linker) {
-            protected void setListView() {
-                contentViews.switchToListView();
-            }
 
-            protected void setThumbView() {
-                contentViews.switchToThumbView();
-            }
-
-            protected void setDetailedThumbView() {
-                contentViews.switchToDetailedThumbView();
-            }
-
-            protected void setTemplateView() {
-                contentViews.switchToTemplateView();
-            }
         };
         BottomBar statusBar = new ContentStatusBar();
 

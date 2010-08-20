@@ -63,18 +63,6 @@ public class ContentToolbar extends TopBar {
     }
 
 
-    protected void setListView() {
-    }
-
-    protected void setThumbView() {
-    }
-
-    protected void setDetailedThumbView() {
-    }
-
-    protected void setTemplateView() {
-    }
-
     public void handleNewSelection() {
         m_component.handleNewLinkerSelection();
     }

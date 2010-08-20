@@ -55,12 +55,9 @@ import org.jahia.ajax.gwt.client.widget.Linker;
  */
 public class ContentExportTemplate extends Window {
 
-    private Linker m_linker ;
-
     public ContentExportTemplate(final Linker linker, final GWTJahiaNode n) {
         super() ;
 
-        m_linker = linker ;
         setHeading(Messages.get("label.export"));
         setSize(500, 150);
         setResizable(false);

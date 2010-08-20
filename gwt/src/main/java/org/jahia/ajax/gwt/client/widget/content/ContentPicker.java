@@ -32,18 +32,13 @@
 
 package org.jahia.ajax.gwt.client.widget.content;
 
-import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
-import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
 import org.jahia.ajax.gwt.client.widget.tripanel.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.Style;
 
 /**
  * File and folder picker control.
@@ -82,21 +77,7 @@ public class ContentPicker extends TriPanelBrowserLayout {
         BottomRightComponent bottomComponents = new PickedContentView(selectionLabel, selectedNodes, multiple, config);
 
         final TopBar toolbar = new ContentToolbar(config, linker) {
-            protected void setListView() {
-                contentViews.switchToListView();
-            }
 
-            protected void setThumbView() {
-                contentViews.switchToThumbView();
-            }
-
-            protected void setDetailedThumbView() {
-                contentViews.switchToDetailedThumbView();
-            }
-
-            protected void setTemplateView() {
-                contentViews.switchToTemplateView();
-            }
         };
 
         initWidgets(tree.getComponent(), contentViews.getComponent(), multiple ? bottomComponents.getComponent() : null, toolbar.getComponent(), null);

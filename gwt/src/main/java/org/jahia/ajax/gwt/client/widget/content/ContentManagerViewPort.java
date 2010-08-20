@@ -48,7 +48,7 @@ import java.util.List;
 public class ContentManagerViewPort extends Viewport {
     public ContentManagerViewPort(final List<String> filters, List<String> mimeTypes, List<String> selectedPaths, final GWTManagerConfiguration config) {
         setLayout(new FitLayout());
-        ContentManagerEmbedded contentManager = new ContentManagerEmbedded(filters, mimeTypes, selectedPaths, config,
+        ContentManager contentManager = new ContentManager(filters, mimeTypes, selectedPaths, config,
                 250);
 
         add(contentManager);

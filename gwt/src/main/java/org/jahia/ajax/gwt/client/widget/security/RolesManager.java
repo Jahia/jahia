@@ -43,7 +43,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
-import org.jahia.ajax.gwt.client.widget.content.ContentManagerEmbedded;
+import org.jahia.ajax.gwt.client.widget.content.ContentManager;
 
 /**
  * User: ktlili
@@ -70,7 +70,7 @@ public class RolesManager extends LayoutContainer {
         JahiaContentManagementService.App.getInstance().getManagerConfiguration(config, new BaseAsyncCallback<GWTManagerConfiguration>() {
             public void onSuccess(GWTManagerConfiguration config) {
                 PermissionsUtils.loadPermissions(config.getPermissions());
-                final ContentManagerEmbedded cm = new ContentManagerEmbedded(null, null, null, config, 500);
+                final ContentManager cm = new ContentManager(null, null, null, config, 500);
                 final PermissionRolePanel pr = new PermissionRolePanel(siteKey);
                 cm.getLinker().registerExtraComponent(pr);
 

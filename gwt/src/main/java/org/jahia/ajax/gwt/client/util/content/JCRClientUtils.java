@@ -95,10 +95,6 @@ public final class JCRClientUtils {
     public final static String USAGE = "usage";
     public final static String VERSIONING = "versioning";
     
-    public static short FILE_TABLE = 1;
-    public static short THUMB_VIEW = 2;
-    public static short DETAILED_THUMB_VIEW = 3;
-
     public static String cleanUpFilename(String name) {
         name = name.replaceAll("([\\*:/\\\\<>|?\"])", " ");
         name = name.trim();

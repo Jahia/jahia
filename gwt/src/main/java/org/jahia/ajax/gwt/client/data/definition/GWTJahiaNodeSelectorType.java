@@ -44,12 +44,9 @@ public class GWTJahiaNodeSelectorType {
     public static final int RICHTEXT = 2;
     public static final int DATETIMEPICKER = 3;
     public static final int DATEPICKER = 4;
-    public static final int FILE = 9;
+    public static final int PICKER = 9;
     public static final int CHECKBOX = 11;
     public static final int COLOR = 12;
     public static final int CATEGORY = 13;
     public static final int CHOICELIST = 14;
-
-    public static final int PORTLET = 20;
-    public static final int PORTLETDEFINITION = 22;
 }

@@ -32,22 +32,22 @@
 
 package org.jahia.ajax.gwt.client.widget.content;
 
+import com.extjs.gxt.ui.client.widget.Viewport;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
-import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
 import org.jahia.ajax.gwt.client.util.WindowUtil;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.tripanel.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -59,49 +59,26 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
  * @author rfelden
  *         Date: 27 ao�t 2008
  */
-public class ContentPickerViewport extends TriPanelBrowserViewport {
+public class ContentPickerViewport extends Viewport {
     private PickedContent pickedContent;
     public static final int BUTTON_HEIGHT = 24;
 
 
-    public ContentPickerViewport(final String jahiaContextPath,final String jahiaServletPath,final  String selectionLabel, final String rootPath,final  Map<String, String> selectorOptions, final List<GWTJahiaNode> selectedNodes,final List<String> filters,final  List<String> mimeTypes,final GWTManagerConfiguration managerConfiguration,final  boolean multiple, String callback) {
-        super(managerConfiguration);
-
-        if (mimeTypes != null && mimeTypes.size() > 0) {
-            managerConfiguration.getMimeTypes().addAll(mimeTypes);
-        }
-        if (filters != null && filters.size() > 0) {
-            managerConfiguration.getFilters().addAll(filters);
-        }
-
-        // construction of the UI components
-        boolean linkPicker = managerConfiguration.getName().equalsIgnoreCase(ManagerConfigurationFactory.LINKPICKER);
-        final BottomRightComponent bottomComponents;
-        if (linkPicker) {
-            bottomComponents = new PickedPageView(false, true, selectedNodes, multiple, managerConfiguration, true);
-        } else {
-            bottomComponents = new PickedContentView(selectionLabel, selectedNodes, multiple, managerConfiguration);
-        }
-
-        // top right componet
-        final TopRightComponent contentPicker = new ContentPickerBrowser(managerConfiguration.getName(), rootPath, selectedNodes, managerConfiguration, multiple);
+    public ContentPickerViewport(final String jahiaContextPath, final String jahiaServletPath, final String selectionLabel,
+                                 final Map<String, String> selectorOptions, final List<GWTJahiaNode> selectedNodes,
+                                 final List<String> filters, final List<String> mimeTypes, final GWTManagerConfiguration config,
+                                 final boolean multiple, String callback) {
+        setLayout(new FitLayout());
+        final ContentPicker picker =
+                new ContentPicker(selectionLabel, selectorOptions, selectedNodes, filters, mimeTypes, config, multiple);
 
         // buttom component
         final Component bar = initButtonBar(jahiaContextPath,jahiaServletPath,callback);
+        picker.setBottomComponent(bar);
 
-        if (linkPicker) {
-            setCenterData(new BorderLayoutData(Style.LayoutRegion.SOUTH, 500));
-            initWidgets(null, bottomComponents.getComponent(), contentPicker.getComponent(), null, bar);
-        } else {
-            initWidgets(null, contentPicker.getComponent(), bottomComponents.getComponent(), null, bar);
-        }
+        add(picker);
 
-        // linker initializations
-        linker.registerComponents(null, contentPicker, bottomComponents, null, null);
-        contentPicker.initContextMenu();
-        linker.handleNewSelection();
-
-        pickedContent = (PickedContent) bottomComponents;
+        pickedContent = (PickedContent) picker.getLinker().getBottomRightObject();
     }
 
     /**

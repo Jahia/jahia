@@ -305,7 +305,7 @@ public class ContentTreeGrid extends LayoutContainer {
             // not implemebented
         }
 
-        public Object getSelection() {
+        public List<GWTJahiaNode> getSelection() {
             if (m_treeGrid == null) {
                 return null;
             }

@@ -48,12 +48,9 @@ import com.extjs.gxt.ui.client.widget.form.StoreFilterField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.toolbar.*;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -74,6 +71,7 @@ public class ThumbView extends TopRightComponent {
     private SimpleComboBox<String> sort;
     private ToggleButton sortOrder ;
     private ListLoader<ListLoadResult<GWTJahiaNode>> loader;
+    private List<GWTJahiaNode> selection;
 
     private GWTManagerConfiguration configuration;
 
@@ -114,6 +112,9 @@ public class ThumbView extends TopRightComponent {
                 super.onLoadSuccess(gwtJahiaNode, gwtJahiaNodeListLoadResult);
                 if (getLinker() != null) {
                     getLinker().loaded();
+                }
+                if (selection != null) {
+                    view.getSelectionModel().setSelection(selection);
                 }
             }
         };
@@ -190,12 +191,11 @@ public class ThumbView extends TopRightComponent {
         view.setStore(store);
 
         view.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
-            public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> gwtJahiaNodeSelectionChangedEvent) {
-                getLinker().onTableItemSelected();
-                TopRightComponent topRight = getLinker().getTopRightObject() ;
-                if (topRight instanceof ContentPickerBrowser) {
-                    ((ContentPickerBrowser) topRight).handleNewSelection();
+            public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
+                if (event.getSelection() != null && !event.getSelection().isEmpty() ) {
+                    selection = event.getSelection();
                 }
+                getLinker().onTableItemSelected();
             }
         });
         view.addListener(Events.DoubleClick, new Listener<ListViewEvent>() {
@@ -265,13 +265,17 @@ public class ThumbView extends TopRightComponent {
         store.removeAll();
     }
 
-    public Object getSelection() {
-        List<GWTJahiaNode> elts = view.getSelectionModel().getSelectedItems();
+    public List<GWTJahiaNode> getSelection() {
+        List<GWTJahiaNode> elts = selection;
         if (elts != null && elts.size() > 0) {
             return elts;
         } else {
             return null;
         }
+    }
+
+    public void selectNodes(List<GWTJahiaNode> node) {
+        this.selection = node;
     }
 
     public void refresh() {

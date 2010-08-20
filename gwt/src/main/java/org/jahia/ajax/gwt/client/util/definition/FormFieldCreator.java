@@ -60,20 +60,6 @@ import java.util.List;
  */
 public class FormFieldCreator {
 
-
-    public static class Selector {
-        public static final int SMALLTEXT = 1;
-        public static final int RICHTEXT = 2;
-        public static final int DATETIMEPICKER = 3;
-        public static final int DATEPICKER = 4;
-        public static final int FILE = 9;
-        public static final int APPLICATION = 10;
-        public static final int CHECKBOX = 11;
-        public static final int COLOR = 12;
-        public static final int CATEGORY = 13;
-        public static final int CHOICELIST = 14;
-    }
-
     public static final DateTimeFormat dateFormat = DateTimeFormat.getFormat("dd.MM.yyyy HH:mm");
 
     /**
@@ -143,16 +129,6 @@ public class FormFieldCreator {
                     }
                     ((DateField) field).setHideTrigger(propDefinition.isProtected());
                     break;
-                case GWTJahiaNodeSelectorType.PORTLET:
-                    field = new ContentPickerField(Messages.get("picker_mashup_header", "Mashup picker"),
-                            Messages.get("picker_mashup_selection", "Mashup selected:"),
-                            definition.getSelectorOptions(), definition.getSelectorOptions().get("folder") != null ?
-                                    definition.getSelectorOptions().get("folder") : "/", null, null,
-                            ManagerConfigurationFactory.MASHUPPICKER, propDefinition.isMultiple());
-                    break;
-                /* case GWTJahiaNodeSelectorType.PORTLETDEFINITION:
-                field = new PortletDefinitionField();
-                break;*/
                 case GWTJahiaNodeSelectorType.CHECKBOX:
                     field = new CheckBox();
                     // hack to align check box to rigth
@@ -164,17 +140,16 @@ public class FormFieldCreator {
                 case GWTJahiaNodeSelectorType.CATEGORY:
                     field = new ContentPickerField(Messages.get("picker_cat_header", "Categories picker"),
                             Messages.get("picker_category_selection", "Category selected: "),
-                            definition.getSelectorOptions(), definition.getSelectorOptions().get("root") != null ?
-                                    definition.getSelectorOptions().get("root") : "/categories", null, null,
+                            definition.getSelectorOptions(), null, null,
                             ManagerConfigurationFactory.CATEGORYPICKER, propDefinition.isMultiple());
                     break;
-                case GWTJahiaNodeSelectorType.FILE:
+                case GWTJahiaNodeSelectorType.PICKER:
                     field = new ContentPickerField(Messages.get("picker_file_header", "Files picker"),
                             Messages.get("picker_file_selection", "File selected: "), definition.getSelectorOptions(),
-                            definition.getSelectorOptions().get("folder") != null ?
-                                    definition.getSelectorOptions().get("folder") : "/",
                             getSelectorOptionAsList(definition, "filters"), getSelectorOptionAsList(definition, "mime"),
-                            ManagerConfigurationFactory.FILEPICKER, propDefinition.isMultiple());
+                            definition.getSelectorOptions().get("type") != null ?
+                                    definition.getSelectorOptions().get("type")+"picker" :
+                                    ManagerConfigurationFactory.EDITORIALCONTENTPICKER, propDefinition.isMultiple());
                     break;
 
                 case GWTJahiaNodeSelectorType.CHOICELIST:
@@ -183,7 +158,7 @@ public class FormFieldCreator {
                         store.add(initializerValues);
                     } else if (propDefinition.getValueConstraints() != null) {
                         for (String s : propDefinition.getValueConstraints()) {
-                            store.add(new GWTJahiaValueDisplayBean(s,s));
+                            store.add(new GWTJahiaValueDisplayBean(s, s));
                         }
                     }
                     if (propDefinition.isMultiple()) {
@@ -205,7 +180,9 @@ public class FormFieldCreator {
                         combo.setTypeAhead(true);
                         combo.setTriggerAction(TriggerAction.ALL);
                         combo.setForceSelection(true);
-                        if (propDefinition.getSelectorOptions() != null && (propDefinition.getSelectorOptions().containsKey("image") || propDefinition.getSelectorOptions().containsKey("moduleImage"))) {
+                        if (propDefinition.getSelectorOptions() != null &&
+                                (propDefinition.getSelectorOptions().containsKey("image") ||
+                                        propDefinition.getSelectorOptions().containsKey("moduleImage"))) {
                             combo.setTemplate(getComboTemplate());
                         }
                         field = combo;
@@ -222,10 +199,8 @@ public class FormFieldCreator {
                             propDefinition.getRequiredType() == GWTJahiaNodePropertyType.WEAKREFERENCE) {
                         field = new ContentPickerField(Messages.get("picker_content_header", "Content picker"),
                                 Messages.get("picker_content_selection", "Content selected: "),
-                                definition.getSelectorOptions(), definition.getSelectorOptions().get("folder") != null ?
-                                        definition.getSelectorOptions().get("folder") : "/",
-                                getSelectorOptionAsList(definition, "filters"),
-                                getSelectorOptionAsList(definition, "mime"), ManagerConfigurationFactory.CONTENTPICKER,
+                                definition.getSelectorOptions(), getSelectorOptionAsList(definition, "filters"),
+                                getSelectorOptionAsList(definition, "mime"), ManagerConfigurationFactory.EDITORIALCONTENTPICKER,
                                 propDefinition.isMultiple());
                     } else {
                         field = new TextField();
@@ -242,16 +217,6 @@ public class FormFieldCreator {
                     nodeDefinition.getRequiredPrimaryTypes()[0].equals("nt:resource") ||
                     nodeDefinition.getRequiredPrimaryTypes()[0].equals("jnt:resource")) {
                 field = new FileUploadField(definition.getName());
-            }
-
-            // case of page piker
-            if (nodeDefinition.getRequiredPrimaryTypes()[0].equals("jmix:link")) {
-                field = new ContentPickerField(Messages.get("label.pagePicker", "Page picker"),
-                        Messages.get("label.selectedPage", "Selected page"), definition.getSelectorOptions(),
-                        definition.getSelectorOptions().get("folder") != null ?
-                                definition.getSelectorOptions().get("folder") : "/",
-                        getSelectorOptionAsList(definition, "filters"), null, ManagerConfigurationFactory.LINKPICKER,
-                        false);
             }
         }
         if (field == null) {
@@ -316,7 +281,8 @@ public class FormFieldCreator {
                 if (propDefinition.isMultiple()) {
                     final CustomDualListField<GWTJahiaValueDisplayBean> list =
                             (CustomDualListField<GWTJahiaValueDisplayBean>) field;
-                    final List<GWTJahiaValueDisplayBean> displayBeans = new ArrayList<GWTJahiaValueDisplayBean>(list.getFromList().getStore().getModels());
+                    final List<GWTJahiaValueDisplayBean> displayBeans =
+                            new ArrayList<GWTJahiaValueDisplayBean>(list.getFromList().getStore().getModels());
 
                     for (GWTJahiaNodePropertyValue jahiaNodePropertyValue : values) {
                         String val = jahiaNodePropertyValue.getString();
@@ -324,8 +290,7 @@ public class FormFieldCreator {
                             for (GWTJahiaValueDisplayBean displayBean : displayBeans) {
                                 if (displayBean.getValue().equals(val)) {
                                     selection.add(displayBean);
-                                    list.getFromList().getStore()
-                                            .remove(displayBean);
+                                    list.getFromList().getStore().remove(displayBean);
                                 }
                             }
                         }
@@ -369,7 +334,9 @@ public class FormFieldCreator {
                     case GWTJahiaNodePropertyType.PATH:
                     case GWTJahiaNodePropertyType.URI:
                     case GWTJahiaNodePropertyType.UNDEFINED:
-                        if (values.get(0).getString() != null) { field.setValue(join(values)); }
+                        if (values.get(0).getString() != null) {
+                            field.setValue(join(values));
+                        }
                         break;
                     case GWTJahiaNodePropertyType.REFERENCE:
                     case GWTJahiaNodePropertyType.WEAKREFERENCE:

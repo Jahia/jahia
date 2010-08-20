@@ -12,7 +12,7 @@
 - weakreference (weakreference)
 - weakReferenceFile (weakreference, file)
 - weakReferenceFolder (weakreference, file[folder])
-- weakReferenceFileMimeImage (weakreference, file[mime='image/*'])
+- weakReferenceFileMimeImage (weakreference, picker[type='image'])
 
 - string (string)
 - stringWithDefault (string) = 'string test'
@@ -54,10 +54,10 @@
 [jnt:weakreferenceTest] > jnt:content, mix:title
 orderable
 - weakreferenceTest (weakreference)
-- weakReferenceFile (weakreference, file)
-- weakReferenceFolder (weakreference, file[folder])
-- weakReferenceFileMimeImage (weakreference, file[mime='image/*'])
-- weakReferenceFileMimeText (weakreference, file[mime='text/*'])
+- weakReferenceFile (weakreference, picker[type='file'])
+- weakReferenceFolder (weakreference, picker[type='folder'])
+- weakReferenceFileMimeImage (weakreference, picker[type='image'])
+- weakReferenceFileMimeText (weakreference, picker[type='file',mime='text/*'])
 
 
 [jnt:dateTest] > jnt:content

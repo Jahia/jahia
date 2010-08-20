@@ -48,24 +48,14 @@ import java.util.List;
 
 public class ContentManagerEmbedded extends TriPanelBrowserLayout {
 
-    public ContentManagerEmbedded(final List<String> filters, final List<String> mimeTypes, List<String> selectedPaths, final GWTManagerConfiguration config) {
+    public ContentManagerEmbedded(final List<String> filters, final List<String> mimeTypes, final List<String> selectedPaths, final GWTManagerConfiguration config,
+                                  final int southSize) {
         // superclass constructor (define linker)
         super(config);
         setWidth("100%");
         setHeight("700px");
-        setCenterData(new BorderLayoutData(Style.LayoutRegion.SOUTH, 500));
+        setCenterData(new BorderLayoutData(Style.LayoutRegion.SOUTH, southSize));
 
-
-        init(filters, mimeTypes, selectedPaths, config);
-    }
-
-    /**
-     * initialize
-     * @param filters
-     * @param mimeTypes
-     * @param config
-     */
-    private void init(final List<String> filters, final List<String> mimeTypes, final List<String> selectedPaths, final GWTManagerConfiguration config) {
         if (mimeTypes != null && mimeTypes.size() > 0) {
             config.getMimeTypes().addAll(mimeTypes);
         }
@@ -77,7 +67,7 @@ public class ContentManagerEmbedded extends TriPanelBrowserLayout {
         LeftComponent tree = null;
         Component leftTree = null;
 
-        if(!config.isHideLeftPanel()){
+        if (!config.isHideLeftPanel()) {
             tree = new ContentRepositoryTabs(config, selectedPaths);
             leftTree = tree.getComponent();
         } else {
@@ -85,7 +75,8 @@ public class ContentManagerEmbedded extends TriPanelBrowserLayout {
             leftTree = null;
             DeferredCommand.addCommand(new Command() {
                 public void execute() {
-                    JahiaContentManagementService.App.getInstance().getRoot(config.getRepositories().get(0).getPaths(), null,null,null,null,selectedPaths,null,new BaseAsyncCallback<List<GWTJahiaNode>>() {
+                    JahiaContentManagementService.App.getInstance().getRoot(config.getRepositories().get(0).getPaths(), null,null,null,null,
+                            selectedPaths,null,new BaseAsyncCallback<List<GWTJahiaNode>>() {
                         public void onSuccess(List<GWTJahiaNode> gwtJahiaNode) {
                             linker.setLeftPanelSelectionWhenHidden(gwtJahiaNode.get(0));
                             linker.refresh();
@@ -101,8 +92,8 @@ public class ContentManagerEmbedded extends TriPanelBrowserLayout {
 
 
         final ContentViews contentViews = new ContentViews(config);
-        BottomRightComponent tabs = new ContentDetails(config);
-        TopBar toolbar = new ContentToolbar(config, linker) {
+        final BottomRightComponent tabs = new ContentDetails(config);
+        final TopBar toolbar = new ContentToolbar(config, linker) {
             protected void setListView() {
                 contentViews.switchToListView();
             }
@@ -133,5 +124,11 @@ public class ContentManagerEmbedded extends TriPanelBrowserLayout {
         linker.registerComponents(tree, contentViews, tabs, toolbar, statusBar);
         contentViews.initContextMenu();
         linker.handleNewSelection();
+        if (config.isExpandRoot()) {
+        } else {
+            linker.handleNewSelection();
+        }
+        addStyleName("x-viewport-"+ config.getName());
     }
+
 }

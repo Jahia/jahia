@@ -1,7 +1,7 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
 [jnt:html] > jnt:content, jmix:editorialContent
- - file (weakreference,file[mime='text/*'])
+ - file (weakreference,picker[type='file',mime='text/*'])
  - width (long) indexed=no
  - height (long) indexed=no
  - frameborder (long) = '0' indexed=no

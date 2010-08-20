@@ -32,6 +32,10 @@
 
 package org.jahia.ajax.gwt.client.widget.tripanel;
 
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -40,19 +44,28 @@ package org.jahia.ajax.gwt.client.widget.tripanel;
  */
 public abstract class TopRightComponent extends LinkableComponent {
 
-    public abstract void setContent(Object root) ;
+    public abstract void setContent(Object root);
 
     // this method provides a way to add already processed content
-    public void setProcessedContent(Object content) {}
 
-    public abstract void clearTable() ;
+    public void setProcessedContent(Object content) {
+    }
 
-    public abstract Object getSelection() ;
+    public abstract void clearTable();
 
-    public abstract void refresh() ;
+    public List<GWTJahiaNode> getSelection() {
+        return null;
+    }
 
-    public void setSelectPathAfterDataUpdate(String path) {}
+    public void selectNodes(List<GWTJahiaNode> nodes) {
+    }
 
-    public void clearSelection() {}
+    public abstract void refresh();
+
+    public void setSelectPathAfterDataUpdate(String path) {
+    }
+
+    public void clearSelection() {
+    }
 
 }

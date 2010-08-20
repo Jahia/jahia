@@ -39,6 +39,8 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  * User: toto

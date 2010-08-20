@@ -271,7 +271,7 @@
  - j:facebookIDPublic (boolean)=true
  - j:linkedinID (string)
  - j:linkedinIDPublic (boolean)=true
- - j:picture (weakreference,file) < jnt:file
+ - j:picture (weakreference,picker[type='file']) < jnt:file
  - j:picturePublic (boolean)=true
  - * (string)
  + j:addresses (jnt:addresses) = jnt:addresses mandatory autocreated
@@ -552,7 +552,7 @@
  + * (jnt:portletDefinition)
 
 [jnt:portlet] > nt:base, jmix:nodenameInfo, jmix:thumbnail, jmix:basemetadata, mix:title, jmix:publication
- - j:application (string,portletdefinition) hidden nofulltext
+ - j:application (string) hidden nofulltext
  - j:applicationRef (reference) hidden < jnt:portletDefinition
  - j:definition (string)
  - j:cacheScope (string, choicelist) nofulltext < 'private','public'

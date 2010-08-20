@@ -207,41 +207,6 @@ public class PickedContentView extends BottomRightComponent implements PickedCon
         m_grid.setView(view);
 
 
-        //  final TabItem item = new TabItem("Selection");
-        //  item.setLayout(new FillLayout());
-        //  item.add(m_grid);
-        //  m_component.add(item);
-
-        // display preview only for file
-        /*   if (pickerType != null && (pickerType.equalsIgnoreCase(ManagerConfigurationFactory.FILEPICKER))) {
-            if (!pickerType.equalsIgnoreCase(ManagerConfigurationFactory.LINKPICKER)) {
-                m_thumbsListView = new ThumbsListView(true);
-                m_thumbsListView.setStore(store);
-                m_thumbsListView.setTemplate(getThumbsListTemplate());
-                m_thumbsListView.setItemSelector("div.thumb-wrap");
-                m_thumbsListView.setOverStyle("x-view-over");
-
-                itemPreview.setLayout(new FitLayout());
-                ContentPanel previewPanel = new ContentPanel(new FitLayout());
-                previewPanel.setHeaderVisible(false);
-                previewPanel.setScrollMode(Style.Scroll.AUTO);
-                previewPanel.setId("images-view");
-                previewPanel.setBorders(true);
-                previewPanel.setBodyBorder(false);
-                previewPanel.add(m_thumbsListView);
-                itemPreview.add(previewPanel);
-            }
-            m_component.add(itemPreview);
-        }
-
-        // case of a page
-        if (multiple && pickerType != null && pickerType.equalsIgnoreCase(ManagerConfigurationFactory.LINKPICKER)){
-            m_component.add(itemPreview);
-
-        }*/
-
-        //add(m_component);
-
     }
 
     public void clear() {
@@ -264,10 +229,6 @@ public class PickedContentView extends BottomRightComponent implements PickedCon
                 List<GWTJahiaNode> list = new ArrayList<GWTJahiaNode>();
                 list.add((GWTJahiaNode) root);
                 setSelection(list);
-            }
-
-            if (!multiple && config.getName().equalsIgnoreCase(ManagerConfigurationFactory.LINKPICKER)) {
-                itemPreview.setUrl(((GWTJahiaNode) root).getPath());
             }
         }
     }

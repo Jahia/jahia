@@ -10,4 +10,4 @@
  - fax (string)
  - email (string)
  - biography (string, richtext) i18n
- - picture (weakreference, file[mime='image/*'])
+ - picture (weakreference, picker[type='image'])

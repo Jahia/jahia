@@ -32,11 +32,13 @@
 
 package org.jahia.ajax.gwt.client.widget.content;
 
+import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
 import org.jahia.ajax.gwt.client.widget.tripanel.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -53,7 +55,7 @@ import com.extjs.gxt.ui.client.Style;
 public class ContentPicker extends TriPanelBrowserLayout {
     private PickedContent pickedContent;
 
-    public ContentPicker(String selectionLabel, final String rootPath, Map<String, String> selectorOptions, final List<GWTJahiaNode> selectedNodes,
+    public ContentPicker(String selectionLabel, Map<String, String> selectorOptions, final List<GWTJahiaNode> selectedNodes,
                          List<String> filters, List<String> mimeTypes, GWTManagerConfiguration config, boolean multiple) {
         super(config);
         //setWidth("714px");
@@ -66,43 +68,42 @@ public class ContentPicker extends TriPanelBrowserLayout {
             config.getFilters().addAll(filters);
         }
 
+        List<String> selectedPaths = new ArrayList<String>();
+        for (GWTJahiaNode node : selectedNodes) {
+            final String path = node.getPath();
+            selectedPaths.add(path.substring(0, path.lastIndexOf("/")));
+        }
         // construction of the UI components
-        BottomRightComponent bottomComponents;
-        if (config.getName().equalsIgnoreCase(ManagerConfigurationFactory.LINKPICKER)) {
-            boolean externalAllowed = true;
-            boolean internalAllowed = true;
-            if (selectorOptions != null) {
-                String type = selectorOptions.get("type");
-                if (type != null) {
-                    externalAllowed = type.indexOf("external") != 0;
-                    internalAllowed = type.indexOf("internal") != 0;
-                }
-            } else {
-                // allow only internal if no selector specified
-                externalAllowed = false;
-                internalAllowed = true;
+        final LeftComponent tree = new ContentRepositoryTabs(config, selectedPaths);
+        final ContentViews contentViews = new ContentViews(config);
+
+        contentViews.selectNodes(selectedNodes);
+
+        BottomRightComponent bottomComponents = new PickedContentView(selectionLabel, selectedNodes, multiple, config);
+
+        final TopBar toolbar = new ContentToolbar(config, linker) {
+            protected void setListView() {
+                contentViews.switchToListView();
             }
-            bottomComponents = new PickedPageView(externalAllowed, internalAllowed, selectedNodes, multiple, config, false);
-        } else {
-            bottomComponents = new PickedContentView(selectionLabel, selectedNodes, multiple, config);
-        }
-        TopRightComponent contentPicker = new ContentPickerBrowser(config.getName(), rootPath, selectedNodes, config, multiple);
 
-        MyStatusBar statusBar = new FilterStatusBar(config.getFilters(), config.getMimeTypes(), config.getNodeTypes());
+            protected void setThumbView() {
+                contentViews.switchToThumbView();
+            }
 
-        // setup widgets in layout
+            protected void setDetailedThumbView() {
+                contentViews.switchToDetailedThumbView();
+            }
 
-        if (config.getName().equalsIgnoreCase(ManagerConfigurationFactory.LINKPICKER)) {
-            setCenterData(new BorderLayoutData(Style.LayoutRegion.SOUTH, 300));
-            initWidgets(null, contentPicker.getComponent(), bottomComponents.getComponent(), null, statusBar);
-        } else {
-            setCenterData(new BorderLayoutData(Style.LayoutRegion.SOUTH, 150));
-            initWidgets(null, contentPicker.getComponent(), bottomComponents.getComponent(), null, statusBar);
-        }
+            protected void setTemplateView() {
+                contentViews.switchToTemplateView();
+            }
+        };
+
+        initWidgets(tree.getComponent(), contentViews.getComponent(), multiple ? bottomComponents.getComponent() : null, toolbar.getComponent(), null);
 
         // linker initializations
-        linker.registerComponents(null, contentPicker, bottomComponents, null, null);
-        contentPicker.initContextMenu();
+        linker.registerComponents(tree, contentViews, bottomComponents, toolbar, null);
+//        contentPicker.initContextMenu();
         linker.handleNewSelection();
 
         pickedContent = (PickedContent) bottomComponents;

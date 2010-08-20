@@ -45,17 +45,13 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
-import com.google.gwt.dom.client.Node;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.util.content.FileStoreSorter;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
-import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
@@ -77,6 +73,7 @@ public class TableView extends TopRightComponent {
     private ListStore<GWTJahiaNode> store;
     private ListLoader<ListLoadResult<GWTJahiaNode>> loader;
     private GWTManagerConfiguration configuration;
+    private List<GWTJahiaNode> selection;
 
     public TableView(final GWTManagerConfiguration config) {
         m_component = new LayoutContainer(new FitLayout());
@@ -103,6 +100,9 @@ public class TableView extends TopRightComponent {
                 super.onLoadSuccess(gwtJahiaNode, gwtJahiaNodeListLoadResult);
                 if (getLinker() != null) {
                     getLinker().loaded();
+                }
+                if (selection != null) {
+                    m_grid.getSelectionModel().setSelection(selection);
                 }
             }
         };
@@ -144,7 +144,10 @@ public class TableView extends TopRightComponent {
 
         // on selection change listener
         m_grid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
-            public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> gwtJahiaNodeSelectionChangedEvent) {
+            public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
+                if (event.getSelection() != null && !event.getSelection().isEmpty() ) {
+                    selection = event.getSelection();
+                }
                 getLinker().onTableItemSelected();
             }
         });
@@ -176,6 +179,10 @@ public class TableView extends TopRightComponent {
 
 
         m_component.add(m_grid);
+    }
+
+    public void selectNodes(List<GWTJahiaNode> nodes) {
+        selection = nodes;
     }
 
     @Override
@@ -221,8 +228,8 @@ public class TableView extends TopRightComponent {
         store.removeAll();
     }
 
-    public Object getSelection() {
-        List<GWTJahiaNode> elts = m_grid.getSelectionModel().getSelectedItems();
+    public List<GWTJahiaNode> getSelection() {
+        List<GWTJahiaNode> elts = selection;
         if (elts != null && elts.size() > 0) {
             return elts;
         } else {

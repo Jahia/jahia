@@ -503,7 +503,7 @@ public class JahiaCndReader {
             } else if (currentTokenEquals(Lexer.JAHIA_FILEFIELD)) {
                 ExtendedPropertyDefinition pdi = new ExtendedPropertyDefinition(registry);
                 pdi.setRequiredType(ExtendedPropertyType.WEAKREFERENCE);
-                pdi.setSelector(SelectorType.FILEPICKER);
+                pdi.setSelector(SelectorType.CONTENTPICKER);
                 pdi.setInternationalized(true);
                 nextToken();
                 doPropertyDefinition(pdi, ntd);
@@ -511,7 +511,7 @@ public class JahiaCndReader {
             } else if (currentTokenEquals(Lexer.JAHIA_PORTLETFIELD)) {
                 ExtendedPropertyDefinition pdi = new ExtendedPropertyDefinition(registry);
                 pdi.setRequiredType(PropertyType.REFERENCE);
-                pdi.setSelector(SelectorType.PORTLET);
+                pdi.setSelector(SelectorType.CONTENTPICKER);
                 pdi.setInternationalized(false);
                 nextToken();
                 doPropertyDefinition(pdi, ntd);
@@ -643,18 +643,14 @@ public class JahiaCndReader {
             pdi.setSelector(SelectorType.DATETIMEPICKER);
         } else if (currentTokenEquals(Lexer.CATEGORY)) {
             pdi.setSelector(SelectorType.CATEGORY);
-        } else if (currentTokenEquals(Lexer.FILEPICKER)) {
-            pdi.setSelector(SelectorType.FILEPICKER);
+        } else if (currentTokenEquals(Lexer.CONTENTPICKER)) {
+            pdi.setSelector(SelectorType.CONTENTPICKER);
         } else if (currentTokenEquals(Lexer.FILEUPLOAD)) {
             pdi.setSelector(SelectorType.FILEUPLOAD);
         } else if (currentTokenEquals(Lexer.COLOR)) {
             pdi.setSelector(SelectorType.COLOR);
         } else if (currentTokenEquals(Lexer.CHECKBOX)) {
             pdi.setSelector(SelectorType.CHECKBOX);
-        } else if (currentTokenEquals(Lexer.PORTLETDEFINITION)) {
-            pdi.setSelector(SelectorType.PORTLETDEFINITION);
-        } else if (currentTokenEquals(Lexer.PORTLET)) {
-            pdi.setSelector(SelectorType.PORTLET);
         } else {
             lexer.fail("Unknown type '" + currentToken + "' specified");
         }

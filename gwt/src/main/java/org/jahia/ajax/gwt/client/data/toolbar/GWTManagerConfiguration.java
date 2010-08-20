@@ -64,7 +64,7 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
     private List<String> filters;
     private List<String> mimeTypes;
 
-    private short defaultView;
+    private String defaultView;
     private boolean enableFileDoubleClick = true;
     private boolean useCheckboxForSelection = true;
 
@@ -211,11 +211,11 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
         this.mimeTypes = mimeTypes;
     }
 
-    public short getDefaultView() {
+    public String getDefaultView() {
         return defaultView;
     }
 
-    public void setDefaultView(short defaultView) {
+    public void setDefaultView(String defaultView) {
         this.defaultView = defaultView;
     }
 

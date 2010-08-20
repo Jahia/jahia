@@ -196,7 +196,7 @@
 /* Newsletter */
 
 [test_templates:newsletterIssueHeader] > jnt:content
- file logo (file[mime='image/*'])
+ file logo (picker[type='image'])
  bigText introduction
 
 [test_templates:newsletterIssueFooter] > jnt:content
@@ -204,12 +204,12 @@
 
 [test_templates:newsletterIssue] > jnt:content
  page link (page[type="direct",templates="Newsletter issue"])
- file image (file[mime='image/*'])
+ file image (picker[type='image'])
  bigText description
  
 [test_templates:newsletterChannel] > jnt:content
  page link (page[type="direct",templates="Newsletter"])
- file image (file[mime='image/*'])
+ file image (picker[type='image'])
  bigText description
 
 /* end of Newsletter*/

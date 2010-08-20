@@ -39,12 +39,15 @@ import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.Style;
 import com.allen_sauer.gwt.log.client.Log;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 import org.jahia.ajax.gwt.client.util.definition.FormFieldCreator;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaPropertyDefinition;
+
+import java.util.List;
 
 /**
  * 
@@ -110,10 +113,6 @@ public class FormView extends TopRightComponent {
     }
 
     public void clearTable() {
-    }
-
-    public Object getSelection() {
-        return null ;
     }
 
     public void refresh() {

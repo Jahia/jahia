@@ -3,7 +3,7 @@
 [jnt:press] > jnt:content, mix:title, jmix:editorialContent
  - body (string, richtext) i18n
  - date (date)
- - pdfVersion (weakreference, file) i18n
+ - pdfVersion (weakreference, picker[type='file']) i18n
 
 [jnt:pressReleases] > jnt:content, jmix:queryContent
- - searchPath (weakreference, file[folder])
+ - searchPath (weakreference, picker[type='file'])

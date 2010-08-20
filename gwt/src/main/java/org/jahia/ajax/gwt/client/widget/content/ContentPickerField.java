@@ -33,27 +33,26 @@
 package org.jahia.ajax.gwt.client.widget.content;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.widget.form.TriggerField;
-import com.extjs.gxt.ui.client.widget.form.PropertyEditor;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.button.ButtonBar;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.Window;
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.widget.Window;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.button.ButtonBar;
+import com.extjs.gxt.ui.client.widget.form.PropertyEditor;
+import com.extjs.gxt.ui.client.widget.form.TwinTriggerField;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -63,18 +62,20 @@ import java.util.Map;
  * Time: 6:37:07 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ContentPickerField extends TriggerField<List<GWTJahiaNode>> {
+public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
+//    protected El clear;
+//    protected String clearStyle = "x-form-clear-trigger";
+
     private List<GWTJahiaNode> value;
     private String selectionLabel;
     private String header;
-    private String rootPath;
     private List<String> filters;
     private List<String> mimeTypes;
     private String configuration;
     private boolean multiple;
     private Map<String, String> selectorOptions;
 
-    public ContentPickerField(String header, String selectionLabel, Map<String, String> selectorOptions, String rootPath,
+    public ContentPickerField(String header, String selectionLabel, Map<String, String> selectorOptions,
                               List<String> filters, List<String> mimeTypes, String configuration, boolean multiple) {
         super();
         this.header = header;
@@ -101,12 +102,13 @@ public class ContentPickerField extends TriggerField<List<GWTJahiaNode>> {
                 return new ArrayList<GWTJahiaNode>();
             }
         });
-        this.rootPath = rootPath;
         this.filters = filters;
         this.mimeTypes = mimeTypes;
         this.configuration = configuration;
         this.multiple = multiple;
         this.selectorOptions = selectorOptions;
+        setTwinTriggerStyle("x-form-clear-trigger");
+        setEditable(false);
         setValue(new ArrayList<GWTJahiaNode>());
     }
 
@@ -116,51 +118,58 @@ public class ContentPickerField extends TriggerField<List<GWTJahiaNode>> {
         if (disabled || isReadOnly()) {
             return;
         }
-        JahiaContentManagementService.App.getInstance().getManagerConfiguration(configuration, new BaseAsyncCallback<GWTManagerConfiguration>() {
-            public void onSuccess(GWTManagerConfiguration config) {
-                PermissionsUtils.loadPermissions(config.getPermissions());
-                final Window w = new Window();
-                w.setLayout(new FitLayout());
-                final ContentPicker contentPicker = new ContentPicker(selectionLabel, rootPath, selectorOptions, getValue(),
-                        filters, mimeTypes,config, multiple);
+        JahiaContentManagementService.App.getInstance()
+                .getManagerConfiguration(configuration, new BaseAsyncCallback<GWTManagerConfiguration>() {
+                    public void onSuccess(GWTManagerConfiguration config) {
+                        PermissionsUtils.loadPermissions(config.getPermissions());
+                        final Window w = new Window();
+                        w.setLayout(new FitLayout());
+                        final ContentPicker contentPicker =
+                                new ContentPicker(selectionLabel, selectorOptions, getValue(), filters, mimeTypes,
+                                        config, multiple);
 
-                w.setHeading(header);
-                w.setModal(true);
-                w.setSize(900, 700);
-                w.setResizable(true);
-                w.setMaximizable(true);
-                w.setBodyBorder(false);
+                        w.setHeading(header);
+                        w.setModal(true);
+                        w.setSize(900, 700);
+                        w.setResizable(true);
+                        w.setMaximizable(true);
+                        w.setBodyBorder(false);
 
-                final ButtonBar bar = new ButtonBar();
-                bar.setAlignment(Style.HorizontalAlignment.CENTER);
+                        final ButtonBar bar = new ButtonBar();
+                        bar.setAlignment(Style.HorizontalAlignment.CENTER);
 
-                final Button ok = new Button(Messages.get("label.save"), new SelectionListener<ButtonEvent>() {
-                    public void componentSelected(ButtonEvent event) {
-                        List<GWTJahiaNode> selection = contentPicker.getSelectedNodes();
-                        setValue(selection);
-                        w.hide();
+                        final Button ok = new Button(Messages.get("label.save"), new SelectionListener<ButtonEvent>() {
+                            public void componentSelected(ButtonEvent event) {
+                                List<GWTJahiaNode> selection = contentPicker.getSelectedNodes();
+                                setValue(selection);
+                                w.hide();
+                            }
+                        });
+                        ok.setIconStyle("gwt-icons-save");
+                        bar.add(ok);
+
+                        final Button cancel =
+                                new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
+                                    public void componentSelected(ButtonEvent event) {
+                                        w.hide();
+                                    }
+                                });
+                        cancel.setIconStyle("gwt-icons-cancel");
+
+                        bar.add(cancel);
+                        w.add(contentPicker);
+                        w.setBottomComponent(bar);
+                        w.show();
+                    }
+
+                    public void onApplicationFailure(Throwable throwable) {
+                        Log.error("Error while loading user permission", throwable);
                     }
                 });
-                ok.setIconStyle("gwt-icons-save");
-                bar.add(ok);
+    }
 
-                final Button cancel = new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
-                    public void componentSelected(ButtonEvent event) {
-                        w.hide();
-                    }
-                });
-                cancel.setIconStyle("gwt-icons-cancel");
-
-                bar.add(cancel);
-                w.add(contentPicker);
-                w.setBottomComponent(bar);
-                w.show();
-            }
-
-            public void onApplicationFailure(Throwable throwable) {
-                Log.error("Error while loading user permission", throwable);
-            }
-        });
+    protected void onTwinTriggerClick(ComponentEvent ce) {
+        setValue(new ArrayList<GWTJahiaNode>());
     }
 
     @Override
@@ -175,5 +184,30 @@ public class ContentPickerField extends TriggerField<List<GWTJahiaNode>> {
         this.value = value;
     }
 
+//    @Override public void onComponentEvent(ComponentEvent ce) {
+//        super.onComponentEvent(ce);
+//        int type = ce.getEventTypeInt();
+//        if (ce.getTarget() == clear.dom && type == Event.ONCLICK && !readOnly) {
+//            onClearClick(ce);
+//        }
+//    }
+//
+//    @Override
+//    protected Size adjustInputSize() {
+//        return new Size(trigger.getWidth() * 2, 0);
+//    }
+//
+//    @Override protected void onResize(int width, int height) {
+//        super.onResize(width, height);
+//        clear.setX(trigger.getX()+17);
+//    }
+//
+//    @Override protected void onRender(Element target, int index) {
+//        super.onRender(target, index);
+//        clear = new El(DOM.createImg());
+//        clear.dom.setClassName("x-form-trigger " + clearStyle);
+//        clear.dom.setPropertyString("src", GXT.BLANK_IMAGE_URL);
+//        el().appendChild(clear.dom);
+//    }
 }
 

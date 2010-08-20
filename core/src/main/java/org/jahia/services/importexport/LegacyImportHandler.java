@@ -886,9 +886,6 @@ public class LegacyImportHandler extends DefaultHandler {
                         return v;
                     }
                 }
-                case SelectorType.PORTLET: {
-
-                }
                 default: {
                     if (value.startsWith("/")) {
                         try {

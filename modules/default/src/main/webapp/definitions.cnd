@@ -29,7 +29,7 @@
  - thirdDirection (string, choicelist[resourceBundle]) = 'asc' autocreated indexed=no < 'asc','desc'
 
 [jnt:fileList] > jnt:content, jmix:editorialContent
- - folder (weakreference, file[folder])
+ - folder (weakreference, picker[type='folder'])
 
 [jnt:frame] > jnt:content, mix:title, jmix:editorialContent
  - source (string) indexed=no
@@ -44,7 +44,7 @@
 
 [jnt:video] > jnt:content, mix:title, jmix:editorialContent
  - name (string)
- - source (weakreference, file)
+ - source (weakreference, picker[type='file'])
  - width (long) = '0'
  - height (long) = '0'
  - hspace (long) = '0'
@@ -59,7 +59,7 @@
  - loop (string, choicelist[resourceBundle]) analyzer='keyword' nofulltext < 'true','false'
 
 [jnt:flash] > jnt:content, mix:title, jmix:editorialContent
- - flashSource (weakreference, file)
+ - flashSource (weakreference, picker[type='file'])
  - width (string) analyzer='keyword' nofulltext
  - height (string) analyzer='keyword' nofulltext
  - flashPlayer (string) = '9' analyzer='keyword' nofulltext
@@ -86,7 +86,7 @@
 
 [jnt:mainContent] > jnt:content, mix:title, jmix:editorialContent
  - body (string, richtext) i18n
- - image (weakreference, file[mime='image/*']) i18n
+ - image (weakreference, picker[type='image']) i18n
  - align (string,choicelist[resourceBundle]) = left indexed=no < left,right,default
 
 [jnt:pageTagging] > jnt:content, mix:title, jmix:siteComponentContent
@@ -100,7 +100,7 @@
 [jnt:shortcuts] > jnt:content, jmix:siteComponentContent
 
 [jnt:banner] > jnt:content, mix:title, jmix:editorialContent
- - background (weakreference, file[mime='image/*']) i18n
+ - background (weakreference, picker[type='image']) i18n
  - cast (string, richtext) i18n
  - positionTop (long) indexed=no
  - positionLeft (long) indexed=no

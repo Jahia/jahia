@@ -35,7 +35,6 @@ package org.jahia.ajax.gwt.module.contentpicker.client;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.Layout;
 import com.extjs.gxt.ui.client.widget.layout.AnchorLayout;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
@@ -81,7 +80,6 @@ public class ContentPickerEntryPoint extends CommonEntryPoint {
             final String jahiaContextPath = DOM.getElementAttribute(panel.getElement(), "jahiaContextPath");
             final String jahiaServletPath = DOM.getElementAttribute(panel.getElement(), "jahiaServletPath");
             final String selectionLabel = DOM.getElementAttribute(panel.getElement(), "selectionLabel");
-            final String rootPath = DOM.getElementAttribute(panel.getElement(), "rootPath");
             final Map<String, String> selectorOptions = new HashMap<String, String>();
             final List<GWTJahiaNode> selectedNodes = ContentHelper.getSelectedContentNodesFromHTML();
             final String filtersString = DOM.getElementAttribute(panel.getElement(), "filters");
@@ -96,7 +94,8 @@ public class ContentPickerEntryPoint extends CommonEntryPoint {
             JahiaContentManagementService.App.getInstance().getManagerConfiguration(conf, new BaseAsyncCallback<GWTManagerConfiguration>() {
                 public void onSuccess(GWTManagerConfiguration config) {
                     PermissionsUtils.loadPermissions(config.getPermissions());
-                    panel.add(new ContentPickerViewport(jahiaContextPath, jahiaServletPath, selectionLabel, rootPath, selectorOptions, selectedNodes, filters, mimeTypes, config, multiple, callback));
+                    panel.add(new ContentPickerViewport(jahiaContextPath, jahiaServletPath, selectionLabel,
+                            selectorOptions, selectedNodes, filters, mimeTypes, config, multiple, callback));
                 }
 
                 public void onApplicationFailure(Throwable throwable) {

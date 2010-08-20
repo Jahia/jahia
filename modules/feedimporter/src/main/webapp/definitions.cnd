@@ -35,7 +35,7 @@
  - mediatype (string)
  - datacontent (string)
  - role (string)
- - image (weakreference, file[mime='image/*'])
+ - image (weakreference, picker[type='image'])
 
  [jnt:newsMLUrgencyQuery] > jnt:query, jmix:sandboxContent
  - minimumUrgencyValue (long)

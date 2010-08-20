@@ -289,7 +289,7 @@
                 <ref bean="Toolbar.Item.refresh"/>
                 <ref bean="Toolbar.Item.Separator"/>
                 <ref bean="Toolbar.Item.ListView"/>
-                <ref bean="Toolbar.Item.ThumsView"/>
+                <ref bean="Toolbar.Item.ThumbsView"/>
                 <ref bean="Toolbar.Item.Detailedview"/>
             </list>
         </property>
@@ -402,7 +402,6 @@
                 <ref bean="Toolbar.Item.Cut"/>
                 <ref bean="Toolbar.Item.Paste"/>
                 <ref bean="Toolbar.Item.PasteReference"/>
-                <ref bean="Toolbar.Item.SaveAsPortalComponent"/>
             </list>
         </property>
     </bean>
@@ -1188,7 +1187,7 @@
         <property name="titleKey" value="label.list"/>
         <property name="icon" value="listView"/>
     </bean>
-    <bean id="Toolbar.Item.ThumsView" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.ThumbsView" class="org.jahia.services.uicomponents.bean.toolbar.Item">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchViewActionItem">
                 <property name="view" value="thumbs"/>

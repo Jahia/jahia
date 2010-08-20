@@ -70,7 +70,7 @@ public class RolesManager extends LayoutContainer {
         JahiaContentManagementService.App.getInstance().getManagerConfiguration(config, new BaseAsyncCallback<GWTManagerConfiguration>() {
             public void onSuccess(GWTManagerConfiguration config) {
                 PermissionsUtils.loadPermissions(config.getPermissions());
-                final ContentManagerEmbedded cm = new ContentManagerEmbedded(null, null, null, config);
+                final ContentManagerEmbedded cm = new ContentManagerEmbedded(null, null, null, config, 500);
                 final PermissionRolePanel pr = new PermissionRolePanel(siteKey);
                 cm.getLinker().registerExtraComponent(pr);
 

@@ -30,22 +30,27 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.ajax.gwt.client.util.content.actions;
+package org.jahia.ajax.gwt.client.widget.content;
+
+import com.extjs.gxt.ui.client.widget.Viewport;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
+
+import java.util.List;
+
 
 /**
- * User: rfelden
- * Date: 7 janv. 2009 - 14:04:14
+ * Created by IntelliJ IDEA.
+ *
+ * @author rfelden
+ * @version 19 juin 2008 - 15:22:43
  */
-public class ManagerConfigurationFactory {
+public class ContentManagerViewPort extends Viewport {
+    public ContentManagerViewPort(final List<String> filters, List<String> mimeTypes, List<String> selectedPaths, final GWTManagerConfiguration config) {
+        setLayout(new FitLayout());
+        ContentManagerEmbedded contentManager = new ContentManagerEmbedded(filters, mimeTypes, selectedPaths, config,
+                250);
 
-    public static final String CONTENTPICKER = "contentpicker";
-
-    public static final String FILEPICKER = "filepicker";
-    public static final String IMAGEPICKER = "imagepicker";
-    public static final String FOLDERPICKER = "folderpicker";
-    public static final String PAGEPICKER = "pagepicker";
-    public static final String EDITORIALCONTENTPICKER = "editorialpicker";
-    public static final String CATEGORYPICKER = "categorypicker";
-
-
+        add(contentManager);
+    }
 }

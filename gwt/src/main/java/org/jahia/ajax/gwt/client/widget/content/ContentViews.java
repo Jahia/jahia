@@ -38,7 +38,6 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionMenu;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
-import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
@@ -78,11 +77,11 @@ public class ContentViews extends TopRightComponent {
 
 
         // set default view
-        if (config.getDefaultView() == JCRClientUtils.FILE_TABLE) {
+        if ("list".equals(config.getDefaultView())) {
             current = tableView;
-        } else if (config.getDefaultView() == JCRClientUtils.THUMB_VIEW) {
+        } else if ("thumbs".equals(config.getDefaultView())) {
             current = thumbView;
-        } else if (config.getDefaultView() == JCRClientUtils.DETAILED_THUMB_VIEW) {
+        } else if ("detailed".equals(config.getDefaultView())) {
             current = detailedThumbView;
         } else {
             current = tableView;
@@ -109,6 +108,7 @@ public class ContentViews extends TopRightComponent {
 
     public void switchToView(TopRightComponent newView) {
         if (current != newView) {
+            List<GWTJahiaNode> currentSelection = current.getSelection();
             clearTable();
             m_component.removeAll();
             current = newView;
@@ -122,7 +122,8 @@ public class ContentViews extends TopRightComponent {
             } else {
                 current.setProcessedContent(searchResults);
             }
-            getLinker().handleNewSelection();
+            newView.selectNodes(currentSelection);
+//            getLinker().handleNewSelection();
         }
     }
 
@@ -157,11 +158,17 @@ public class ContentViews extends TopRightComponent {
         }
     }
 
-    public Object getSelection() {
+    public List<GWTJahiaNode> getSelection() {
         if (current != null) {
             return current.getSelection();
         } else {
             return null;
+        }
+    }
+
+    public void selectNodes(List<GWTJahiaNode> nodes) {
+        if (current != null) {
+            current.selectNodes(nodes);
         }
     }
 

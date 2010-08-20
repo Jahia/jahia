@@ -45,7 +45,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 * Time: 6:58:56 PM
 * To change this template use File | Settings | File Templates.
 */
-public class PublishAllActionItem extends PublishActionItem {
+public class PublishAllActionItem extends BaseActionItem {
     public void onComponentSelection() {
         EditActions.publish(linker, true);
     }
@@ -56,7 +56,6 @@ public class PublishAllActionItem extends PublishActionItem {
             gwtJahiaNode = linker.getMainNode();
         }
         if (gwtJahiaNode != null) {
-            GWTJahiaPublicationInfo info = gwtJahiaNode.getPublicationInfo();
             updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getName());
         }
     }

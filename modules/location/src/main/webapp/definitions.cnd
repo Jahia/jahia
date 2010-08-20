@@ -41,5 +41,5 @@
  - j:zoom (long) mandatory indexed=no
  - j:height (long) = 300 indexed=no
  - j:width (long) = 500 indexed=no
- - j:markerImage (weakreference, file[mime='image/*'])
+ - j:markerImage (weakreference, picker[type='image'])
  

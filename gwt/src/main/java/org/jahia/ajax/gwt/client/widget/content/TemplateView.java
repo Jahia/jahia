@@ -113,10 +113,6 @@ public class TemplateView extends TopRightComponent {
         m_component.removeAll();
     }
 
-    public Object getSelection() {
-        return null;
-    }
-
     public void refresh() {
         //m_table.getView().refresh(true);
         setContent(getLinker().getTreeSelection());

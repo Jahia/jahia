@@ -17,7 +17,7 @@
  - j:type (string)
  - j:mimeType (string)
  - j:taggedPeople (string) multiple
- - j:data (weakreference, file) < jnt:file
+ - j:data (weakreference, picker[type='file']) < jnt:file
 
 [jnt:socialMediaItemCollection] > jnt:content, jmix:droppableContent
  + * (jnt:socialMediaItem)

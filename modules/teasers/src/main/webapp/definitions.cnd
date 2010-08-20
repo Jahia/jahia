@@ -8,5 +8,5 @@
 
 [jnt:teaser] > jnt:content, mix:title, jmix:editorialContent
  - abstract (string, text[multiline]) i18n
- - image (weakreference, file[mime='image/*'])
- - link (weakreference)
+ - image (weakreference, picker[type='image'])
+ - link (weakreference, picker[type='editorial'])

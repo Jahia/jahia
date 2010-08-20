@@ -64,7 +64,7 @@ public class ManagerConfiguration implements Serializable {
     private List<String> filters = new ArrayList<String>();
     private List<String> mimeTypes = new ArrayList<String>();
 
-    private short defaultView;
+    private String defaultView;
     private boolean enableFileDoubleClick = true;
     private boolean useCheckboxForSelection = true;
 
@@ -172,11 +172,11 @@ public class ManagerConfiguration implements Serializable {
         this.mimeTypes = mimeTypes;
     }
 
-    public short getDefaultView() {
+    public String getDefaultView() {
         return defaultView;
     }
 
-    public void setDefaultView(short defaultView) {
+    public void setDefaultView(String defaultView) {
         this.defaultView = defaultView;
     }
 

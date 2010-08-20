@@ -33,14 +33,11 @@
 package org.jahia.core;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.Principal;
 import java.security.acl.Group;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Properties;
 
 import javax.jcr.Node;
@@ -51,9 +48,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
-import javax.jcr.Workspace;
 import javax.jcr.nodetype.NodeType;
-import javax.jcr.nodetype.NodeTypeManager;
 import javax.jcr.retention.RetentionPolicy;
 
 import org.apache.jackrabbit.core.JackrabbitRepositoryStub;
@@ -63,10 +58,8 @@ import org.apache.jackrabbit.core.retention.RetentionPolicyImpl;
 import org.apache.jackrabbit.test.NotExecutableException;
 import org.apache.jackrabbit.test.RepositoryStub;
 import org.apache.jackrabbit.test.RepositoryStubException;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.jcr.JCRGroupManagerProvider;
@@ -141,7 +134,7 @@ public class JahiaJackrabbitRepositoryStub extends RepositoryStub {
                 try {
                     if (!isTestWorkspacePrepared(session)) {
                         prepareTestContent(session);
-                    }
+                    } 
                 } finally {
                 }
             } catch (Exception e) {
@@ -170,15 +163,6 @@ public class JahiaJackrabbitRepositoryStub extends RepositoryStub {
     }
 
     private void prepareTestContent(Session session) throws RepositoryException, IOException, org.jahia.services.content.nodetypes.ParseException {
-        Workspace workspace = session.getWorkspace();
-
-        NodeTypeManager manager = workspace.getNodeTypeManager();
-        if (manager instanceof NodeTypeRegistry) {
-            ((NodeTypeRegistry) manager).addDefinitionsFile(
-                    new File(JahiaJackrabbitRepositoryStub.class.getResource("test_nodetypes.cnd")
-                            .getPath()), NodeTypeRegistry.SYSTEM + "-testnodetypes", true);
-        }
-
         JahiaUser readOnlyUser = JCRUserManagerProvider.getInstance().lookupUser(readonly.getUserID());
         if (readOnlyUser == null) {
             readOnlyUser = JCRUserManagerProvider.getInstance().createUser(readonly.getUserID(), new String(readonly.getPassword()), new Properties());
@@ -258,14 +242,14 @@ public class JahiaJackrabbitRepositoryStub extends RepositoryStub {
         if (node.hasNode("myResource")) {
             node.getNode("myResource").remove();
         }
-
+        ValueFactory factory = node.getSession().getValueFactory();
         Node resource = node.addNode("myResource", "nt:resource");
         // nt:resource not longer referenceable since JCR 2.0
         resource.addMixin("mix:referenceable");
         resource.setProperty("jcr:encoding", ENCODING);
         resource.setProperty("jcr:mimeType", "text/plain");
         resource.setProperty("jcr:data",
-                new ByteArrayInputStream("Hello w\u00F6rld.".getBytes(ENCODING)));
+                factory.createBinary(new ByteArrayInputStream("Hello w\u00F6rld.".getBytes(ENCODING))));
         resource.setProperty("jcr:lastModified", Calendar.getInstance());
 
         Node resReference = getOrAddNode(node, "reference");
@@ -274,7 +258,6 @@ public class JahiaJackrabbitRepositoryStub extends RepositoryStub {
         resReference.addMixin("mix:referenceable");
 
         Node multiReference = node.addNode("multiReference");
-        ValueFactory factory = node.getSession().getValueFactory();
         multiReference.setProperty("ref",
                 new Value[] { factory.createValue(resource), factory.createValue(resReference) });
     }
@@ -348,7 +331,7 @@ public class JahiaJackrabbitRepositoryStub extends RepositoryStub {
         resource.setProperty("jcr:encoding", ENCODING);
         resource.setProperty("jcr:mimeType", "text/plain");
         byte[] bytes = "Hello w\u00F6rld.".getBytes(ENCODING);
-        resource.setProperty(name, new ByteArrayInputStream(bytes));
+        resource.setProperty(name, node.getSession().getValueFactory().createBinary(new ByteArrayInputStream(bytes)));
         resource.setProperty("jcr:lastModified", Calendar.getInstance());
     }
 

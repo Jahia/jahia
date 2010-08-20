@@ -41,17 +41,20 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaAdminUser;
 import org.jahia.services.version.EntryLoadRequest;
+import org.jahia.test.SurefireJUnitXMLResultFormatter;
 import org.jahia.exceptions.JahiaException;
+import org.junit.internal.TextListener;
+import org.junit.internal.requests.FilterRequest;
+import org.junit.runner.Description;
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Request;
+import org.junit.runner.manipulation.Filter;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.tools.ant.taskdefs.optional.junit.JUnitResultFormatter;
-import org.apache.tools.ant.taskdefs.optional.junit.JUnitTest;
-import org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner;
-import org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -61,7 +64,9 @@ import javax.servlet.ServletException;
 import java.io.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import junit.framework.TestCase;
 
@@ -112,14 +117,24 @@ public class TestServlet extends HttpServlet implements Controller, ServletConte
         try {
             String pathInfo = StringUtils.substringAfter(httpServletRequest.getPathInfo(), "/test");
             if (StringUtils.isNotEmpty(pathInfo)) {
+                final Set<String> ignoreTests = getIgnoreTests();
                 // Execute one test
                 String className = pathInfo.substring(pathInfo.lastIndexOf('/')+1);
                 try {
-                    JUnitResultFormatter unitResultFormatter = new XMLJUnitResultFormatter();
-                    unitResultFormatter.setOutput(httpServletResponse.getOutputStream());
-                    JUnitTestRunner runner =  new JUnitTestRunner(new JUnitTest(className,false,false,false), false,false,false);
-                    runner.addFormatter(unitResultFormatter);
-                    runner.run();
+                    JUnitCore junitcore = new JUnitCore();
+                    junitcore.addListener (new SurefireJUnitXMLResultFormatter(httpServletResponse.getOutputStream()));
+                    junitcore.run(new FilterRequest(Request.classes(new Class[]{Class.forName(className)}), new Filter() {
+
+                        @Override
+                        public boolean shouldRun(Description description) {
+                            return !ignoreTests.contains(description.getDisplayName());
+                        }
+
+                        @Override
+                        public String describe() {
+                            return "Filter out Jahia configured methods";
+                        }
+                    })); 
                 } catch (Exception e) {
                     logger.error("Error executing test", e);
                 }
@@ -147,6 +162,23 @@ public class TestServlet extends HttpServlet implements Controller, ServletConte
             }
         }
 
+    }
+    
+    private Set<String> getIgnoreTests() {
+        Set<String> ignoreTests = new HashSet<String>();
+        try {
+            InputStream is = getClass().getClassLoader().getResourceAsStream("IgnoreTest.properties");
+            if (is != null) {
+                List<String> lines = IOUtils.readLines(is);
+                IOUtils.closeQuietly(is);
+                for (String line : lines) {
+                    ignoreTests.add(line);
+                }
+            }
+        } catch (IOException e) {
+            logger.warn("Cannot read IgnoreTest.properties", e);
+        }
+        return ignoreTests;
     }
 
     private boolean isMethodAnnotationPresent(Class<?> checkedClass, Class<? extends Annotation> annotationClass) {

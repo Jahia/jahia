@@ -124,7 +124,7 @@ import java.util.*;
  */
 public class JahiaCndReader {
     private static Logger logger = Logger.getLogger(JahiaCndReader.class);
-
+    
     protected String systemId;
     protected String filename;
 
@@ -136,7 +136,7 @@ public class JahiaCndReader {
     /**
      * the list of parsed nodetype defs
      */
-    protected List<ExtendedNodeType> nodeTypesList = new LinkedList();
+    protected List<ExtendedNodeType> nodeTypesList = new LinkedList<ExtendedNodeType>();
 
     /**
      * the underlying lexer
@@ -210,7 +210,7 @@ public class JahiaCndReader {
         }
 
     }
-
+    
     /**
      * processes the namespace declaration
      *
@@ -981,8 +981,8 @@ public class JahiaCndReader {
                 ndi.setHidden(true);
             } else if (currentTokenEquals(Lexer.PROTECTED)) {
                 ndi.setProtected(true);
-            } else if (currentTokenEquals(Lexer.MULTIPLE)) {
-                ndi.setAllowsSameNameSiblings(true);
+            } else if (currentTokenEquals(Lexer.MULTIPLE) || currentTokenEquals(Lexer.SNS)) {
+                ndi.setAllowsSameNameSiblings(true);                
             } else if (currentTokenEquals(Lexer.COPY)) {
                 ndi.setOnParentVersion(OnParentVersionAction.COPY);
             } else if (currentTokenEquals(Lexer.VERSION)) {

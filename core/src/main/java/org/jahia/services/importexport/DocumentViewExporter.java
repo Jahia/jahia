@@ -32,6 +32,7 @@
 
 package org.jahia.services.importexport;
 
+import org.apache.axis.utils.StringUtils;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.util.ISO9075;
 import org.apache.jackrabbit.value.ValueHelper;
@@ -84,7 +85,10 @@ public class DocumentViewExporter {
         prefixes = new HashMap<String, String>();
         try {
             for (String prefix : session.getNamespacePrefixes()) {
-                prefixes.put(prefix, session.getNamespaceURI(prefix));
+                if (!StringUtils.isEmpty(prefix) && !Name.NS_REP_PREFIX.equals(prefix)
+                        && !prefix.startsWith(Name.NS_XML_PREFIX)) {
+                    prefixes.put(prefix, session.getNamespaceURI(prefix));
+                }
             }
         } catch (RepositoryException e) {
             logger.warn("Namespace not correctly exported", e);

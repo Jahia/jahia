@@ -43,7 +43,6 @@ import org.jahia.services.usermanager.JahiaAdminUser;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.test.SurefireJUnitXMLResultFormatter;
 import org.jahia.exceptions.JahiaException;
-import org.junit.internal.TextListener;
 import org.junit.internal.requests.FilterRequest;
 import org.junit.runner.Description;
 import org.junit.runner.JUnitCore;
@@ -64,11 +63,15 @@ import javax.servlet.ServletException;
 import java.io.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /**
  * JUnit test runner servlet.
@@ -123,7 +126,8 @@ public class TestServlet extends HttpServlet implements Controller, ServletConte
                 try {
                     JUnitCore junitcore = new JUnitCore();
                     junitcore.addListener (new SurefireJUnitXMLResultFormatter(httpServletResponse.getOutputStream()));
-                    junitcore.run(new FilterRequest(Request.classes(new Class[]{Class.forName(className)}), new Filter() {
+                    List<Class> classes = getTestClasses(Class.forName(className), new ArrayList<Class>());
+                    junitcore.run(new FilterRequest(Request.classes(classes.toArray(new Class[classes.size()])), new Filter() {
 
                         @Override
                         public boolean shouldRun(Description description) {
@@ -162,6 +166,51 @@ public class TestServlet extends HttpServlet implements Controller, ServletConte
             }
         }
 
+    }
+    
+    private List<Class> getTestClasses(Class testClass, List<Class> classes) {
+        Method suiteMethod = null;
+        try {
+            // check if there is a suite method
+            suiteMethod = testClass.getMethod("suite", new Class[0]);
+        } catch (NoSuchMethodException e) {
+            // no appropriate suite method found. We don't report any
+            // error here since it might be perfectly normal.
+        }
+
+        if (suiteMethod != null) {
+            // if there is a suite method available, then try
+            // to extract the suite from it. If there is an error
+            // here it will be caught below and reported.
+            try {
+                classes = getTestClasses((Test)suiteMethod.invoke(null, new Class[0]), classes);
+                
+            } catch (Exception e) {
+                logger.error("Error getting classes of suite", e);
+            }
+        } else {
+            classes.add(testClass);
+        }
+        return classes;
+    }
+    
+    private List<Class> getTestClasses(Test test, List<Class> classes) {
+        if (test instanceof TestSuite) {
+            // if there is a suite method available, then try
+            // to extract the suite from it. If there is an error
+            // here it will be caught below and reported.
+            Set<Class> tempClasses = new HashSet<Class>();
+            for (Enumeration<Test> tests = ((TestSuite)test).tests(); tests.hasMoreElements(); ) {
+                Test currentTest = tests.nextElement();
+                if (currentTest instanceof TestSuite || !tempClasses.contains(currentTest.getClass())) {
+                    classes = getTestClasses(currentTest, classes);
+                    tempClasses.add(currentTest.getClass());
+                }
+            }
+        } else {
+            classes.add(test.getClass());
+        }
+        return classes;
     }
     
     private Set<String> getIgnoreTests() {

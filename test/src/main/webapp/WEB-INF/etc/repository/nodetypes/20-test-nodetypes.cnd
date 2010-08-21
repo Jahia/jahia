@@ -41,3 +41,76 @@
 + test:siblingNode (nt:base) multiple
 + test:defaultTypeNode (nt:base) = nt:base
 + test:requiredTypeNode (nt:base, nt:unstructured)
+
+[test:versionable] > nt:base, mix:versionable
+- * (undefined) copy
+- test:copyOnParentVersionProp (string) copy
+- test:versionOnParentVersionProp (string) version
+- test:initializeOnParentVersionProp (string) initialize
+- test:computeOnParentVersionProp (string) compute
+- test:ignoreOnParentVersionProp (string) ignore
+- test:abortOnParentVersionProp (string) abort
++ * (nt:base) = test:versionable copy
++ test:copyOnParentVersion (nt:base) = nt:unstructured copy
++ test:versionOnParentVersion (nt:base) = nt:unstructured version
++ test:initializeOnParentVersion (nt:base) = nt:unstructured initialize
++ test:computeOnParentVersion (nt:base) = nt:unstructured compute
++ test:ignoreOnParentVersion (nt:base) = nt:unstructured ignore
++ test:abortOnParentVersion (nt:base) = nt:unstructured abort
+
+[test:refTargetNode] > nt:base, mix:versionable
+- * (undefined) copy
+
+[test:canSetProperty] > nt:base
+- String (string) copy
+- StringMultiple (string) copy multiple
+- StringConstraints (string) copy < 'abc', 'def', 'ghi'
+- StringMultipleConstraints (string) copy multiple < 'abc', 'def', 'ghi'
+- Binary (binary) copy
+- BinaryMultiple (binary) copy multiple
+- BinaryConstraints (binary) copy < '(,100)'
+- BinaryMultipleConstraints (binary) copy < '(,100)'
+- Date (date) copy
+- DateMultiple (date) copy multiple
+- DateConstraints (date) copy < '(1974-02-15T00:00:00.000Z,)'
+- DateMultipleConstraints (date) copy < '(1974-02-15T00:00:00.000Z,)'
+- Double (double) copy
+- DoubleMultiple (double) copy multiple
+- DoubleConstraints (double) copy < '(100,)'
+- DoubleMultipleConstraints (double) copy < '(,100)'
+- Long (long) copy
+- LongMultiple (long) copy multiple
+- LongConstraints (long) copy < '(100,)'
+- LongMultipleConstraints (long) copy < '(,100)'
+- Boolean (boolean) copy
+- BooleanMultiple (boolean) copy multiple
+- BooleanConstraints (boolean) copy < true
+- BooleanMultipleConstraints (boolean) copy < true
+- Name (name) copy
+- NameMultiple (name) copy multiple
+- NameConstraints (name) copy < 'abc'
+- NameMultipleConstraints (name) copy < 'abc'
+- Path (path) copy
+- PathMultiple (path) copy multiple
+- PathConstraints (path) copy < '/abc'
+- PathMultipleConstraints (path) copy < '/abc'
+- ReferenceConstraints (reference) copy < test:canSetProperty
+- ReferenceMultipleConstraints (reference) copy < test:canSetProperty
+
+[test:canAddChildNode] > nt:base
++ testChildWithDefaultType (nt:base) = nt:base copy
++ testChildWithoutDefaultType (nt:base) copy
+
+[test:setProperty] > nt:base, mix:referenceable
+- * (undefined) copy
+- test:multiProperty (undefined) copy multiple
++ * (nt:base) = test:setProperty copy 
+
+[test:setPropertyAssumingType] > nt:base
+- test:singleProperty (undefined) copy
+- test:multipleProperty (undefined) copy multiple
++ * (nt:base) = test:setPropertyAssumingType copy
+
+[test:sameNameSibsFalseChildNodeDefinition] > nt:base
+- * (undefined) copy
++ * (nt:base) = test:sameNameSibsFalseChildNodeDefinition compute

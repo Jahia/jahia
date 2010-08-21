@@ -145,7 +145,7 @@ public class SurefireJUnitXMLResultFormatter extends RunListener {
     /**
      * tests that failed.
      */
-    private Set<Failure> failedTests = new HashSet<Failure>();
+    private Set<Description> failedTests = new HashSet<Description>();
     /**
      * Timing helper.
      */
@@ -298,7 +298,7 @@ public class SurefireJUnitXMLResultFormatter extends RunListener {
     public void testFailure(Failure failure) throws Exception {
         if (failure.getDescription() != null) {
             testFinished(failure.getDescription());
-            failedTests.add(failure);
+            failedTests.add(failure.getDescription());
         }
 
         Element nested = doc.createElement(FAILURE);

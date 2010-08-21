@@ -146,8 +146,7 @@ public class JCRItemWrapperImpl implements JCRItemWrapper {
      * {@inheritDoc}
      */
     public boolean isSame(Item otherItem) throws RepositoryException {
-        return item.isSame(otherItem)
-                || (otherItem instanceof JCRItemWrapperImpl && otherItem.isSame(item));
+        return otherItem.isSame(item);
     }
 
     /**

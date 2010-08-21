@@ -397,18 +397,19 @@ public class QueryServiceImpl extends QueryService {
         @Override
         public Object visit(ChildNodeImpl node, Object data) throws Exception {
             if (getModificationInfo().getMode() == INITIALIZE_MODE) {
-                String nodeTypeName = getSelector(getOriginalSource(), node.getSelectorName())
-                        .getNodeTypeName();
-                if (Constants.NT_BASE.equals(nodeTypeName)
-                        || Constants.JAHIANT_CONTENT.equals(nodeTypeName)) {
-                    Set<String> commonChildNodeTypes = new HashSet<String>();
-                    String primaryChildNodeType = getCommonChildNodeTypes(node.getParentPath(),
-                            commonChildNodeTypes);
-                    if (primaryChildNodeType != null) {
-                        commonChildNodeTypes = new HashSet<String>();
-                        commonChildNodeTypes.add(primaryChildNodeType);
+                Selector selector = getSelector(getOriginalSource(), node.getSelectorName());
+                if (selector != null) {
+                    String nodeTypeName = selector.getNodeTypeName();
+                    if (Constants.NT_BASE.equals(nodeTypeName) || Constants.JAHIANT_CONTENT.equals(nodeTypeName)) {
+                        Set<String> commonChildNodeTypes = new HashSet<String>();
+                        String primaryChildNodeType = getCommonChildNodeTypes(node.getParentPath(),
+                                commonChildNodeTypes);
+                        if (primaryChildNodeType != null) {
+                            commonChildNodeTypes = new HashSet<String>();
+                            commonChildNodeTypes.add(primaryChildNodeType);
+                        }
+                        getNodeTypesPerSelector().put(node.getSelectorName(), commonChildNodeTypes);
                     }
-                    getNodeTypesPerSelector().put(node.getSelectorName(), commonChildNodeTypes);
                 }
             }
 

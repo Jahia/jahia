@@ -33,7 +33,6 @@
 package org.jahia.services.content;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.spi.Path;
 import org.apache.jackrabbit.value.ValueHelper;
 import org.jahia.data.beans.CategoryBean;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -96,9 +95,12 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
     }
 
     public void setValue(String[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        Value[] v = new Value[values.length];
-        for (int i = 0; i < values.length; i++) {
-            v[i] = getSession().getValueFactory().createValue(values[i]);
+        Value[] v = null;
+        if (values != null) {
+            v = new Value[values.length];
+            for (int i = 0; i < values.length; i++) {
+                v[i] = getSession().getValueFactory().createValue(values[i]);
+            }
         }
         setValue(v);
     }

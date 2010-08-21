@@ -1259,9 +1259,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public JCRPropertyWrapper setProperty(String name, Value[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         final Locale locale = getSession().getLocale();
         ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
-        for (int i = 0; i < values.length; i++) {
-            if (PropertyType.UNDEFINED != epd.getRequiredType() && values[i].getType() != epd.getRequiredType()) {
-                values[i] = getSession().getValueFactory().createValue(values[i].getString(), epd.getRequiredType());
+        if (values != null) {
+            for (int i = 0; i < values.length; i++) {
+                if (PropertyType.UNDEFINED != epd.getRequiredType() && values[i].getType() != epd.getRequiredType()) {
+                    values[i] = getSession().getValueFactory()
+                            .createValue(values[i].getString(), epd.getRequiredType());
+                }
             }
         }
 
@@ -1298,9 +1301,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public JCRPropertyWrapper setProperty(String name, String[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        Value[] v = new Value[values.length];
-        for (int i = 0; i < values.length; i++) {
-            v[i] = getSession().getValueFactory().createValue(values[i]);
+        Value[] v = null;
+        if (values != null) {
+            v = new Value[values.length];
+            for (int i = 0; i < values.length; i++) {
+                v[i] = getSession().getValueFactory().createValue(values[i]);
+            }
         }
         return setProperty(name, v);
     }
@@ -1309,9 +1315,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public JCRPropertyWrapper setProperty(String name, String[] values, int type) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        Value[] v = new Value[values.length];
-        for (int i = 0; i < values.length; i++) {
-            v[i] = getSession().getValueFactory().createValue(values[i], type);
+        Value[] v = null;
+        if (values != null) {
+            v = new Value[values.length];
+            for (int i = 0; i < values.length; i++) {
+                v[i] = getSession().getValueFactory().createValue(values[i], type);
+            }
         }
         return setProperty(name, v);
     }

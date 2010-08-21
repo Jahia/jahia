@@ -83,22 +83,34 @@ public class QueryResultWrapper implements QueryResult {
         }
 
         public Object invoke(Object proxy, Method method, Object[] args)
-                throws IllegalArgumentException, IllegalAccessException, InvocationTargetException,
+                throws IllegalArgumentException, IllegalAccessException, Exception,
                 RepositoryException {
-            Object result = method.invoke(underlying, args);
-            if (!(result instanceof JCRNodeWrapper)
-                    && ("nextNode".equals(method.getName()) || "next".equals(method.getName()))) {
-                Node node = (Node) result;
-                if (session.getLocale() != null && node.isNodeType(Constants.JAHIANT_TRANSLATION)) {
-                    try {
-                        node = node.getParent();
-                    } catch (ItemNotFoundException e) {
-                        // keep same node
+            try {
+                Object result = method.invoke(underlying, args);
+                if (!(result instanceof JCRNodeWrapper)
+                        && ("nextNode".equals(method.getName()) || "next".equals(method.getName()))) {
+                    Node node = (Node) result;
+                    if (session.getLocale() != null && node.isNodeType(Constants.JAHIANT_TRANSLATION)) {
+                        try {
+                            node = node.getParent();
+                        } catch (ItemNotFoundException e) {
+                            // keep same node
+                        }
                     }
+                    result = provider.getNodeWrapper(node, session);
                 }
-                result = provider.getNodeWrapper(node, session);
+                return result;
+            } catch (InvocationTargetException e) {
+                // lets unwrap the exception
+                Throwable throwable = e.getCause();
+                if (throwable instanceof Exception) {
+                    Exception exception = (Exception)throwable;
+                    throw exception;
+                } else {
+                    Error error = (Error)throwable;
+                    throw error;
+                }
             }
-            return result;
         }
     }
 
@@ -195,7 +207,7 @@ public class QueryResultWrapper implements QueryResult {
         }
 
         private Node wrap(Node node) throws RepositoryException {
-            return getProvider().getNodeWrapper(node, getSession());
+            return node != null ? getProvider().getNodeWrapper(node, getSession()) : null;
         }
 
         public String getSpellcheck() throws ItemNotFoundException, RepositoryException {

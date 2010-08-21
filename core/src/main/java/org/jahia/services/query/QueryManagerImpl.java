@@ -33,6 +33,7 @@
 package org.jahia.services.query;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.jcr.Node;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
@@ -88,7 +90,19 @@ public class QueryManagerImpl implements QueryManager {
                 return Proxy.newProxyInstance(qom.getClass().getClassLoader(), new Class[] { QueryObjectModel.class },
                         new QOMInvocationHandler(qom, provider));
             } else {
-                return method.invoke(underlying, args);
+                try {
+                    return method.invoke(underlying, args);
+                } catch (InvocationTargetException e) {
+                    // lets unwrap the exception
+                    Throwable throwable = e.getCause();
+                    if (throwable instanceof Exception) {
+                        Exception exception = (Exception) throwable;
+                        throw exception;
+                    } else {
+                        Error error = (Error) throwable;
+                        throw error;
+                    }
+                }
             }
         }
     }
@@ -110,11 +124,23 @@ public class QueryManagerImpl implements QueryManager {
         }
 
         public Object invoke(Object proxy, Method method, Object[] args) throws Exception {
-            Object result = method.invoke(underlying, args);
-            if ("execute".equals(method.getName())) {
-                result = new QueryResultWrapper((QueryResult)result, provider, session);
+            try {
+                Object result = method.invoke(underlying, args);
+                if ("execute".equals(method.getName())) {
+                    result = new QueryResultWrapper((QueryResult) result, provider, session);
+                }
+                return result;
+            } catch (InvocationTargetException e) {
+                // lets unwrap the exception
+                Throwable throwable = e.getCause();
+                if (throwable instanceof Exception) {
+                    Exception exception = (Exception) throwable;
+                    throw exception;
+                } else {
+                    Error error = (Error) throwable;
+                    throw error;
+                }
             }
-            return result;
         }
     }
 
@@ -145,7 +171,11 @@ public class QueryManagerImpl implements QueryManager {
     }
 
     public Query getQuery(Node node) throws InvalidQueryException, RepositoryException {
-        return new QueryWrapper(node, session, sessionFactory);
+        try {
+            return new QueryWrapper(node, session, sessionFactory);
+        } catch (PathNotFoundException e) {
+            throw new InvalidQueryException("Node is not of type nt:query");
+        }
     }
 
     public String[] getSupportedQueryLanguages() throws RepositoryException {

@@ -81,7 +81,7 @@ public class PublicationHelper {
      */
     public GWTJahiaPublicationInfo getSimplePublicationInfo(String uuid, Set<String> languages, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         try {
-            PublicationInfo pubInfo = publicationService.getPublicationInfo(uuid, languages, false, true, false, currentUserSession.getWorkspace().getName(), "live").get(0);
+            PublicationInfo pubInfo = publicationService.getPublicationInfo(uuid, languages, false, true, false, currentUserSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE).get(0);
             GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(pubInfo.getRoot().getPath(), pubInfo.getRoot().getStatus(), pubInfo.getRoot().isCanPublish());
             for (PublicationInfo.PublicationNode sub : pubInfo.getRoot().getChildren()) {
                 if (sub.getPath().contains("/j:translation")) {
@@ -106,7 +106,7 @@ public class PublicationHelper {
     public List<GWTJahiaPublicationInfo> getPublicationInfo(List<String> uuids, Set<String> languages,
                                                             JCRSessionWrapper currentUserSession, boolean allSubTree) throws GWTJahiaServiceException {
         try {
-            List<PublicationInfo> infos = publicationService.getPublicationInfos(uuids, languages, true, true, allSubTree, currentUserSession.getWorkspace().getName(), "live");
+            List<PublicationInfo> infos = publicationService.getPublicationInfos(uuids, languages, true, true, allSubTree, currentUserSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE);
             List<GWTJahiaPublicationInfo> list = convert(infos, currentUserSession);
 //            List<GWTJahiaPublicationInfo> res = new ArrayList<GWTJahiaPublicationInfo>(list);
 //            for (GWTJahiaPublicationInfo info : list) {
@@ -229,7 +229,7 @@ public class PublicationHelper {
         try {
             // todo : if workflow started on untranslated node, translation will be created and not added into the publish tree calculated here 
 
-            List<PublicationInfo> infos = publicationService.getPublicationInfos(uuids, languages, true, true, allSubTree, session.getWorkspace().getName(), "live");
+            List<PublicationInfo> infos = publicationService.getPublicationInfos(uuids, languages, true, true, allSubTree, session.getWorkspace().getName(), Constants.LIVE_WORKSPACE);
             if (workflow) {
                 Map<WorkflowDefinition, List<PublicationInfo>> m = new HashMap<WorkflowDefinition, List<PublicationInfo>>();
 

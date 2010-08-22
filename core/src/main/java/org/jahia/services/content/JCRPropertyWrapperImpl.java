@@ -91,25 +91,41 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
     }
 
     public void setValue(String value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        setValue(getSession().getValueFactory().createValue(value));
+        if (value != null) {
+            setValue(getSession().getValueFactory().createValue(value));
+        } else {
+            remove();
+        }
     }
 
     public void setValue(String[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        Value[] v = null;
         if (values != null) {
-            v = new Value[values.length];
-            for (int i = 0; i < values.length; i++) {
-                v[i] = getSession().getValueFactory().createValue(values[i]);
+            Value[] v = null;
+            if (values != null) {
+                v = new Value[values.length];
+                for (int i = 0; i < values.length; i++) {
+                    if (values[i] != null) {
+                        v[i] = getSession().getValueFactory().createValue(values[i]);
+                    } else {
+                        v[i] = null;
+                    }
+                }
             }
+            setValue(v);
+        } else {
+            remove();
         }
-        setValue(v);
     }
 
     /**
      * @deprecated As of JCR 2.0, {@link #setValue(Binary)} should be used instead.
      */
     public void setValue(InputStream value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        setValue(getSession().getValueFactory().createValue(value));
+        if (value != null) {
+            setValue(getSession().getValueFactory().createValue(value));
+        } else {
+            remove();
+        }
     }
 
     public void setValue(long value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
@@ -121,7 +137,11 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
     }
 
     public void setValue(Calendar value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        setValue(getSession().getValueFactory().createValue(value));
+        if (value != null) {
+            setValue(getSession().getValueFactory().createValue(value));
+        } else {
+            remove();
+        }
     }
 
     public void setValue(boolean value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
@@ -129,18 +149,31 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
     }
 
     public void setValue(Node value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        if (value instanceof JCRNodeWrapper) {
-            value = ((JCRNodeWrapper) value).getRealNode();
+        if (value != null) {
+            if (value instanceof JCRNodeWrapper) {
+                value = ((JCRNodeWrapper) value).getRealNode();
+            }
+            setValue(getSession().getValueFactory().createValue(value,
+                    def.getRequiredType() == PropertyType.WEAKREFERENCE));
+        } else {
+            remove();
         }
-        setValue(getSession().getValueFactory().createValue(value, def.getRequiredType() == PropertyType.WEAKREFERENCE));
     }
 
     public void setValue(Binary value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        setValue(getSession().getValueFactory().createValue(value));
+        if (value != null) {
+            setValue(getSession().getValueFactory().createValue(value));
+        } else {
+            remove();
+        }
     }
 
     public void setValue(BigDecimal value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        setValue(getSession().getValueFactory().createValue(value));
+        if (value != null) {
+            setValue(getSession().getValueFactory().createValue(value));
+        } else {
+            remove();
+        }
     }
 
     public Value getValue() throws ValueFormatException, RepositoryException {

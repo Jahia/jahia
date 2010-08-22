@@ -284,10 +284,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 ws = "default";
             } else if (READ_LIVE.equals(perm)) {
                 permissions = Permission.READ;
-                ws = "live";
+                ws = Constants.LIVE_WORKSPACE;
             } else if (WRITE_LIVE.equals(perm)) {
                 permissions = Permission.ADD_NODE;
-                ws = "live";
+                ws = Constants.LIVE_WORKSPACE;
             }
             if (ws == null) {
                 return false;
@@ -309,9 +309,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     return true;
                 }
             } else {
-                Session providerSession = provider.getCurrentUserSession("live");
+                Session providerSession = provider.getCurrentUserSession(Constants.LIVE_WORKSPACE);
                 if (providerSession instanceof SessionImpl) {
-                SessionImpl jrSession = (SessionImpl) provider.getCurrentUserSession("live");
+                SessionImpl jrSession = (SessionImpl) provider.getCurrentUserSession(Constants.LIVE_WORKSPACE);
                 Node current = this;
                 while (true) {
                     try {
@@ -522,10 +522,14 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 if (identifier != null) {
                     org.jahia.services.content.nodetypes.Name jahiaName = new org.jahia.services.content.nodetypes.Name(name, NodeTypeRegistry.getInstance().getNamespaces());
                     Name qname = NameFactoryImpl.getInstance().create(jahiaName.getUri() == null ? "" : jahiaName.getUri(), jahiaName.getLocalName());
-                    org.jahia.services.content.nodetypes.Name jahiaTypeName = NodeTypeRegistry.getInstance().getNodeType(type).getNameObject();
-                    Name typeName = NameFactoryImpl.getInstance().create(jahiaTypeName.getUri(), jahiaTypeName.getLocalName());
-                    Node child;
-                    child = ((NodeImpl) objectNode).addNode(qname, typeName, org.apache.jackrabbit.core.id.NodeId.valueOf(identifier));
+                    Name typeName = null;
+                    if (type != null) {
+                        org.jahia.services.content.nodetypes.Name jahiaTypeName = NodeTypeRegistry.getInstance()
+                                .getNodeType(type).getNameObject();
+                        typeName = NameFactoryImpl.getInstance().create(jahiaTypeName.getUri(),
+                                jahiaTypeName.getLocalName());
+                    }
+                    Node child = ((NodeImpl) objectNode).addNode(qname, typeName, org.apache.jackrabbit.core.id.NodeId.valueOf(identifier));
                     return provider.getNodeWrapper(child, buildSubnodePath(name), session);
                 } else {
                     return addNode(name, type);
@@ -1214,7 +1218,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public JCRPropertyWrapper setProperty(String name, String value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        Value v = getSession().getValueFactory().createValue(value);
+        Value v = null;
+        if (value != null) {
+            v = getSession().getValueFactory().createValue(value);
+        }
         return setProperty(name, v);
     }
 
@@ -1261,7 +1268,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
         if (values != null) {
             for (int i = 0; i < values.length; i++) {
-                if (PropertyType.UNDEFINED != epd.getRequiredType() && values[i].getType() != epd.getRequiredType()) {
+                if (values[i] != null && PropertyType.UNDEFINED != epd.getRequiredType() && values[i].getType() != epd.getRequiredType()) {
                     values[i] = getSession().getValueFactory()
                             .createValue(values[i].getString(), epd.getRequiredType());
                 }
@@ -1305,7 +1312,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (values != null) {
             v = new Value[values.length];
             for (int i = 0; i < values.length; i++) {
-                v[i] = getSession().getValueFactory().createValue(values[i]);
+                if (values[i] != null) {
+                    v[i] = getSession().getValueFactory().createValue(values[i]);
+                } else {
+                    v[i] = null;
+                }
             }
         }
         return setProperty(name, v);
@@ -1319,7 +1330,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (values != null) {
             v = new Value[values.length];
             for (int i = 0; i < values.length; i++) {
-                v[i] = getSession().getValueFactory().createValue(values[i], type);
+                if (values[i] != null) {
+                    v[i] = getSession().getValueFactory().createValue(values[i], type);
+                } else {
+                    v[i] = null;
+                }
             }
         }
         return setProperty(name, v);
@@ -1329,7 +1344,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public JCRPropertyWrapper setProperty(String name, String value, int type) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        Value v = getSession().getValueFactory().createValue(value, type);
+        Value v = null;
+        if (value != null) {
+            v = getSession().getValueFactory().createValue(value, type);
+        }
         return setProperty(name, v);
     }
 
@@ -1337,7 +1355,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public JCRPropertyWrapper setProperty(String name, InputStream value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        Value v = getSession().getValueFactory().createValue(value);
+        Value v = null;
+        if (value != null) {
+            v = getSession().getValueFactory().createValue(value);
+        }
         return setProperty(name, v);
     }
 
@@ -1369,7 +1390,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public JCRPropertyWrapper setProperty(String name, Calendar value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        Value v = getSession().getValueFactory().createValue(value);
+        Value v = null;
+        if (value != null) {
+            v = getSession().getValueFactory().createValue(value);
+        }
         return setProperty(name, v);
     }
 
@@ -1377,12 +1401,15 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public JCRPropertyWrapper setProperty(String name, Node value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        if (value instanceof JCRNodeWrapper) {
-            value = ((JCRNodeWrapper) value).getRealNode();
-        }
-        ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
+        Value v = null;
+        if (value != null) {
+            if (value instanceof JCRNodeWrapper) {
+                value = ((JCRNodeWrapper) value).getRealNode();
+            }
+            ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
 
-        Value v = getSession().getValueFactory().createValue(value, epd.getRequiredType() == PropertyType.WEAKREFERENCE);
+            v = getSession().getValueFactory().createValue(value, epd.getRequiredType() == PropertyType.WEAKREFERENCE);
+        }
         return setProperty(name, v);
     }
 
@@ -1390,7 +1417,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public JCRPropertyWrapper setProperty(String name, Binary value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        Value v = getSession().getValueFactory().createValue(value);
+        Value v = null;
+        if (value != null) {
+            v = getSession().getValueFactory().createValue(value);
+        }
         return setProperty(name, v);
     }
 
@@ -1398,7 +1428,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public JCRPropertyWrapper setProperty(String name, BigDecimal value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        Value v = getSession().getValueFactory().createValue(value);
+        Value v = null;
+        if (value != null) {
+            v = getSession().getValueFactory().createValue(value);
+        }
         return setProperty(name, v);
     }
 
@@ -2371,14 +2404,14 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public void restore(Version version, boolean b) throws VersionException, ItemExistsException, UnsupportedRepositoryOperationException, LockException, RepositoryException {
-        getRealNode().restore(((JCRVersion) version).getRealNode(), b);
+        getRealNode().restore(version instanceof JCRVersion ? ((JCRVersion) version).getRealNode() : version, b);
     }
 
     /**
      * {@inheritDoc}
      */
     public void restore(Version version, String s, boolean b) throws PathNotFoundException, ItemExistsException, VersionException, ConstraintViolationException, UnsupportedRepositoryOperationException, LockException, InvalidItemStateException, RepositoryException {
-        getRealNode().restore(((JCRVersion) version).getRealNode(), s, b);
+        getRealNode().restore(version instanceof JCRVersion ? ((JCRVersion) version).getRealNode() : version, s, b);
     }
 
     /**
@@ -2638,8 +2671,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             sharedNode.getRealNode().getSession().save();
 
             try {
-                final String path = sharedNode.getCorrespondingNodePath("live");
-                JCRTemplate.getInstance().doExecuteWithSystemSession(null, "live", new JCRCallback<Object>() {
+                final String path = sharedNode.getCorrespondingNodePath(Constants.LIVE_WORKSPACE);
+                JCRTemplate.getInstance().doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         JCRNodeWrapper n = session.getNode(path);
                         n.checkout();

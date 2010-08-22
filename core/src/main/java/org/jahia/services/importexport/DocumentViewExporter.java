@@ -85,8 +85,7 @@ public class DocumentViewExporter {
         prefixes = new HashMap<String, String>();
         try {
             for (String prefix : session.getNamespacePrefixes()) {
-                if (!StringUtils.isEmpty(prefix) && !Name.NS_REP_PREFIX.equals(prefix)
-                        && !prefix.startsWith(Name.NS_XML_PREFIX)) {
+                if (!StringUtils.isEmpty(prefix) && !prefix.startsWith(Name.NS_XML_PREFIX)) {
                     prefixes.put(prefix, session.getNamespaceURI(prefix));
                 }
             }

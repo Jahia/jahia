@@ -102,7 +102,7 @@ public class JCRWorkspaceWrapper implements Workspace {
             }
             final String fSource = source;
             final String fDest = dest;
-            JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.WORKSPACE_COPY, new JCRCallback() {
+            JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.WORKSPACE_COPY, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     session.getProviderSession(provider).getWorkspace().copy(fSource, fDest);
                     return null;
@@ -123,7 +123,7 @@ public class JCRWorkspaceWrapper implements Workspace {
             }
             final String fSource = source;
             final String fDest = dest;
-            JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.WORKSPACE_COPY, new JCRCallback() {
+            JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.WORKSPACE_COPY, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     session.getProviderSession(provider).getWorkspace().copy(srcWs, fSource, fDest);
                     return null;
@@ -145,7 +145,7 @@ public class JCRWorkspaceWrapper implements Workspace {
             }
             final String fSource = source;
             final String fDest = dest;
-            JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.WORKSPACE_CLONE, new JCRCallback() {
+            JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.WORKSPACE_CLONE, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     session.getProviderSession(provider).getWorkspace().clone(srcWs,fSource,fDest,removeExisting);
                     return null;
@@ -179,7 +179,7 @@ public class JCRWorkspaceWrapper implements Workspace {
             Node sourceNode = session.getProviderSession(provider).getNode(source);
             if (sourceNode.isNodeType("jmix:shareable")) {
                 final String destination = dest;
-                final JCRCallback callback = new JCRCallback() {
+                final JCRCallback<Object> callback = new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         JCRNodeWrapper sourceNode = session.getNode(sourcePath);
                         JCRNodeWrapper parentNode = session.getNode(StringUtils.substringBeforeLast(destination,"/"));
@@ -229,7 +229,7 @@ public class JCRWorkspaceWrapper implements Workspace {
                 if (sessionMove) {
                     callback.doInJCR(session);
                 } else {
-                    JCRTemplate.getInstance().doExecute(session.isSystem(), session.getUser().getUsername(), getName(), session.getLocale(), new JCRCallback() {
+                    JCRTemplate.getInstance().doExecute(session.isSystem(), session.getUser().getUsername(), getName(), session.getLocale(), new JCRCallback<Object>() {
                         public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                             return JCRObservationManager.doWorkspaceWriteCall(session, JCRObservationManager.WORKSPACE_MOVE, callback);
                         }
@@ -241,7 +241,7 @@ public class JCRWorkspaceWrapper implements Workspace {
                 } else {
                     final String fSource = source;
                     final String fDest = dest;
-                    JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.WORKSPACE_MOVE, new JCRCallback() {
+                    JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.WORKSPACE_MOVE, new JCRCallback<Object>() {
                         public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                             session.getProviderSession(provider).getWorkspace().move(fSource, fDest);
                             return null;
@@ -383,24 +383,33 @@ public class JCRWorkspaceWrapper implements Workspace {
         }
 
         public VersionHistory getVersionHistory(String absPath) throws UnsupportedRepositoryOperationException, RepositoryException {
-            return versionManager.getVersionHistory(absPath);
+            return (VersionHistory) session.getNode(absPath).getProvider().getNodeWrapper(versionManager.getVersionHistory(absPath), session);
         }
 
         public Version getBaseVersion(String absPath) throws UnsupportedRepositoryOperationException, RepositoryException {
             return versionManager.getBaseVersion(absPath);
         }
 
-        public void restore(final Version[] versions, final boolean removeExisting) throws ItemExistsException, UnsupportedRepositoryOperationException, VersionException, LockException, InvalidItemStateException, RepositoryException {
-            JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_RESTORE, new JCRCallback() {
-                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    versionManager.restore(versions, removeExisting);
-                    return null;
-                }
-            });
+        public void restore(final Version[] versions, final boolean removeExisting) throws ItemExistsException,
+                UnsupportedRepositoryOperationException, VersionException, LockException, InvalidItemStateException,
+                RepositoryException {
+            JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_RESTORE,
+                    new JCRCallback<Object>() {
+                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            Version[] undecoratedVersions = new Version[(versions.length)];
+                            int i = 0;
+                            for (Version version : versions) {
+                                undecoratedVersions[i++] = version instanceof JCRVersion ? ((JCRVersion) version)
+                                        .getRealNode() : version;
+                            }
+                            versionManager.restore(undecoratedVersions, removeExisting);
+                            return null;
+                        }
+                    });
         }
 
         public void restore(final String absPath, final String versionName, final boolean removeExisting) throws VersionException, ItemExistsException, UnsupportedRepositoryOperationException, LockException, InvalidItemStateException, RepositoryException {
-            JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_RESTORE, new JCRCallback() {
+            JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_RESTORE, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     versionManager.restore(absPath, versionName, removeExisting);
                     return null;
@@ -409,25 +418,25 @@ public class JCRWorkspaceWrapper implements Workspace {
         }
 
         public void restore(final Version version, final boolean removeExisting) throws VersionException, ItemExistsException, InvalidItemStateException, UnsupportedRepositoryOperationException, LockException, RepositoryException {
-            JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_RESTORE, new JCRCallback() {
+            JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_RESTORE, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    versionManager.restore(version, removeExisting);
+                    versionManager.restore(version instanceof JCRVersion ? ((JCRVersion) version).getRealNode() : version, removeExisting);
                     return null;
                 }
             });
         }
 
         public void restore(final String absPath, final Version version, final boolean removeExisting) throws PathNotFoundException, ItemExistsException, VersionException, ConstraintViolationException, UnsupportedRepositoryOperationException, LockException, InvalidItemStateException, RepositoryException {
-            JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_RESTORE, new JCRCallback() {
+            JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_RESTORE, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    versionManager.restore(absPath, version, removeExisting);
+                    versionManager.restore(absPath, version instanceof JCRVersion ? ((JCRVersion) version).getRealNode() : version, removeExisting);
                     return null;
                 }
             });
         }
 
         public void restoreByLabel(final String absPath, final String versionLabel, final boolean removeExisting) throws VersionException, ItemExistsException, UnsupportedRepositoryOperationException, LockException, InvalidItemStateException, RepositoryException {
-            JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_RESTORE, new JCRCallback() {
+            JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_RESTORE, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     versionManager.restoreByLabel(absPath, versionLabel, removeExisting);
                     return null;
@@ -452,11 +461,11 @@ public class JCRWorkspaceWrapper implements Workspace {
         }
 
         public void doneMerge(String absPath, Version version) throws VersionException, InvalidItemStateException, UnsupportedRepositoryOperationException, RepositoryException {
-            versionManager.doneMerge(absPath, version);
+            versionManager.doneMerge(absPath, version instanceof JCRVersion ? ((JCRVersion) version).getRealNode() : version);
         }
 
         public void cancelMerge(String absPath, Version version) throws VersionException, InvalidItemStateException, UnsupportedRepositoryOperationException, RepositoryException {
-            versionManager.cancelMerge(absPath, version);
+            versionManager.cancelMerge(absPath, version instanceof JCRVersion ? ((JCRVersion) version).getRealNode() : version);
         }
 
         public Node createConfiguration(String s) throws UnsupportedRepositoryOperationException, RepositoryException {

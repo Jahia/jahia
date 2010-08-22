@@ -4,7 +4,7 @@
       <contents jcr:primaryType="jnt:contentList">
         <site_components jcr:primaryType="jnt:contentList">
           <login-to-jahia jcr:mixinTypes="jmix:shareable" jcr:primaryType="jnt:loginForm">
-            <j:translation_en jcr:title_en="Login to Jahia" jcr:language="en" jcr:primaryType="jnt:translation"/>
+            <j:translation_en jcr:title="Login to Jahia" jcr:language="en" jcr:primaryType="jnt:translation"/>
           </login-to-jahia>
         </site_components>
       </contents>

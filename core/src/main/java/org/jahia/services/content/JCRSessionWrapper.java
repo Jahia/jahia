@@ -156,7 +156,7 @@ public class JCRSessionWrapper implements Session {
 //    }
 
     public Session impersonate(Credentials credentials) throws LoginException, RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        throw new UnsupportedRepositoryOperationException();
     }
 
     public JCRNodeWrapper getNodeByUUID(String uuid) throws ItemNotFoundException, RepositoryException {
@@ -317,8 +317,7 @@ public class JCRSessionWrapper implements Session {
 
     public void importXML(String path, InputStream inputStream, int uuidBehavior, boolean noRoot)
             throws IOException, InvalidSerializedDataException, RepositoryException {
-        JCRNodeWrapper node = null;
-        node = getNode(path);
+        JCRNodeWrapper node = getNode(path);
         try {
             if (!node.isCheckedOut()) {
                 checkout(node);

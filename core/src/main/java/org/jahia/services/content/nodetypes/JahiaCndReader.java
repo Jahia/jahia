@@ -981,7 +981,7 @@ public class JahiaCndReader {
                 ndi.setHidden(true);
             } else if (currentTokenEquals(Lexer.PROTECTED)) {
                 ndi.setProtected(true);
-            } else if (currentTokenEquals(Lexer.MULTIPLE) || currentTokenEquals(Lexer.SNS)) {
+            } else if (currentTokenEquals(Lexer.MULTIPLE) /*|| currentTokenEquals(Lexer.SNS)*/) {
                 ndi.setAllowsSameNameSiblings(true);                
             } else if (currentTokenEquals(Lexer.COPY)) {
                 ndi.setOnParentVersion(OnParentVersionAction.COPY);

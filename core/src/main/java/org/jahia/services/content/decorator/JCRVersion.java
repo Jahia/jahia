@@ -88,7 +88,8 @@ public class JCRVersion extends JCRNodeDecorator implements Version {
     }
 
     public JCRVersion getLinearSuccessor() throws RepositoryException {
-        return (JCRVersion) getProvider().getNodeWrapper(getRealNode().getLinearSuccessor(), (JCRSessionWrapper) getSession());
+        Version linearSuccessor = getRealNode().getLinearSuccessor();
+        return linearSuccessor != null ? (JCRVersion) getProvider().getNodeWrapper(linearSuccessor, (JCRSessionWrapper) getSession()) : null;
     }
 
     public JCRVersion getLinearPredecessor() throws RepositoryException {

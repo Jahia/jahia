@@ -40,6 +40,7 @@ package org.jahia.services.content.impl.jackrabbit;
 
 import org.apache.jackrabbit.api.JackrabbitWorkspace;
 import org.apache.jackrabbit.spi.Name;
+import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.content.JCRNodeWrapperImpl;
 import org.jahia.services.content.JCRStoreProvider;
@@ -75,12 +76,12 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
         Session livesession = null;
         try {
             try {
-                session = getSystemSession(null, "live");
+                session = getSystemSession(null, Constants.LIVE_WORKSPACE);
             } catch (NoSuchWorkspaceException e) {
                 session = getSystemSession();
                 JackrabbitWorkspace jrWs = (JackrabbitWorkspace) session
                         .getWorkspace();
-                jrWs.createWorkspace("live");
+                jrWs.createWorkspace(Constants.LIVE_WORKSPACE);
                 liveWorkspaceCreated = true;
                 session.logout();
             }
@@ -90,7 +91,13 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
                 Node n = session.getNode("/");
                 recurseCheckin(n, session.getWorkspace().getVersionManager());
                 NodeIterator ni = n.getNodes();
-                livesession = getSystemSession(null, "live");
+                livesession = getSystemSession(null, Constants.LIVE_WORKSPACE);
+                
+                Node liveRootNode = livesession.getRootNode();
+                if (!liveRootNode.isNodeType(Constants.MIX_REFERENCEABLE)) {
+                    liveRootNode.addMixin(Constants.MIX_REFERENCEABLE);
+                    livesession.save();
+                }
 
                 while (ni.hasNext()) {
                     Node node = (Node) ni.next();

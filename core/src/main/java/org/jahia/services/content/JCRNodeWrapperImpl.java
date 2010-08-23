@@ -1231,7 +1231,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public JCRPropertyWrapper setProperty(String name, Value value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         final Locale locale = getSession().getLocale();
         ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
-        if (PropertyType.UNDEFINED != epd.getRequiredType() && value.getType() != epd.getRequiredType()) {
+        if (value != null && PropertyType.UNDEFINED != epd.getRequiredType() && value.getType() != epd.getRequiredType()) {
             value = getSession().getValueFactory().createValue(value.getString(), epd.getRequiredType());
         }
         value = JCRStoreService.getInstance().getInterceptorChain().beforeSetValue(this, name, epd, value);

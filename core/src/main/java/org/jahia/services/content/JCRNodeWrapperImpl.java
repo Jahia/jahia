@@ -719,7 +719,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                         JCRStoreProvider storeProvider = entry.getValue();
                         String root = storeProvider.getRelativeRoot();
                         final Node node = session.getProviderSession(storeProvider).getNode(root.length() == 0 ? "/" : root);
-                        list.add(storeProvider.getNodeWrapper(node, buildSubnodePath(node.getName()), session));
+                        String mountPointName = entry.getKey().substring(entry.getKey().lastIndexOf("/") +1);
+                        list.add(storeProvider.getNodeWrapper(node, buildSubnodePath(mountPointName), session));
                     }
                 }
             }

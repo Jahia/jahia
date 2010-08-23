@@ -410,7 +410,7 @@ body {
 	font-style:italic;
 	margin-bottom:10px;
 	margin-top:10px;
-	padding:10px;
+	padding:20px;
 }
 
 #bodywrapper div.intro{
@@ -576,6 +576,7 @@ body {
 	line-height:1.2em;
 	padding:0.2em;
 	margin: 1em 0;
+	clear:both;
 }
 #bodywrapper .bottomanchor a,
 #bodywrapper .bottomanchor a:link,
@@ -659,6 +660,17 @@ body {
 #bodywrapper ul.breadcrumb a:active {
 	color:#900;
 	text-decoration:underline;
+}
+#bodywrapper pre {
+	background-color:#EAEAEA;
+	border-left:4px solid #CCCCCC;
+	font-family:Courier,"Courier New",monospace;
+	font-size:100%;
+	overflow:auto;
+	margin-bottom:15px;
+	margin-top:15px;
+	padding:20px;
+	line-height:100%
 }
 /******************************************************************************
 * navigationN2
@@ -1108,6 +1120,7 @@ background-color:#eaeaea
 	padding: 10px;
 	background-color:#eaeaea;
 	border:1px solid #ccc;
+	list-style:none;
 }
 #bodywrapper .summary a,
 #bodywrapper .summary a:link,
@@ -1122,6 +1135,7 @@ background-color:#eaeaea
 #bodywrapper .summary ul {
 	margin:0;
 	padding:0 0 0 2em;
+	list-style:none;
 }
 #bodywrapper .summary li {
 	padding:0;
@@ -1303,6 +1317,14 @@ display:none
 	color: #333;
 	background-color:#eaeaea;
 	padding:0 0.5em;
+}
+/******************************************************************************
+*  highlight
+******************************************************************************/
+#bodywrapper .highlight{
+	background-color:#ffff99;
+	padding-right:0.5em;
+	padding-left:0.5em;
 }
 /******************************************************************************
 *  Home shortcuts

@@ -170,7 +170,6 @@ public class CrawlingPageVisitorTest {
     @AfterClass
     public static void oneTimeTearDown() throws Exception {
         try {
-            fs.delete(testdir);
             TestHelper.deleteSite(ACMESITE_NAME);
         } catch (Exception ex) {
             logger.warn("Exception during test tearDown", ex);

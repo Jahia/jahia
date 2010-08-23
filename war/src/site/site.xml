@@ -31,6 +31,9 @@ under the License.
             <item name="Notifications" href="./notifications.html"/>
             <item name="Users batch creation" href="./users_batch_creation.html"/>
         </menu>
+        <menu name="Databases">
+            <item name="MySQL" href="./databases/mysql.html"/>
+        </menu>
         <menu ref="modules"/>
         <menu ref="reports"/>
     </body>

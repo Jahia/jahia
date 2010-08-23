@@ -40,6 +40,7 @@ import org.jahia.data.files.JahiaFileField;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
 import java.util.Properties;
 
@@ -52,7 +53,7 @@ import java.util.Properties;
  */
 public class JCRFrozenNode extends JCRNodeDecorator {
     private transient static Logger logger = Logger.getLogger(JCRFrozenNode.class);
-
+    private JCRSiteNode site;
 
     public JCRFrozenNode(JCRNodeWrapper node) {
         super(node);
@@ -72,4 +73,24 @@ public class JCRFrozenNode extends JCRNodeDecorator {
         return super.getUrl();
     }
 
+
+    @Override
+    public JCRSiteNode resolveSite() throws RepositoryException {
+        if (site != null) {
+            return site;
+        }
+
+        try {
+            String path = node.getProperty("j:fullpath").getValue().getString();
+            if (path.startsWith("/sites/")) {
+                return (site = (JCRSiteNode) getSession().getNode(path.substring(0, path.indexOf('/',7))));
+            }
+
+            if (path.startsWith("/templateSets/")) {
+                return (site = (JCRSiteNode) getSession().getNode(path.substring(0, path.indexOf('/',14))));
+            }
+        } catch (ItemNotFoundException e) {
+        }
+        return null;
+    }
 }

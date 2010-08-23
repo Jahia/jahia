@@ -1439,14 +1439,21 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
-    public boolean hasProperty(String s) throws RepositoryException {
-        boolean result = objectNode.hasProperty(s);
+    public boolean hasProperty(String propertyName) throws RepositoryException {
+        boolean result = objectNode.hasProperty(propertyName);
         if (result) return true;
         final Locale locale = getSession().getLocale();
-        if (locale != null && !s.equals("jcr:language")) {
-            if (hasI18N(locale)) {
-                final Node localizedNode = getI18N(locale);
-                return localizedNode.hasProperty(s);
+        if (locale != null && !propertyName.equals("jcr:language")) {
+            try {
+                ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(propertyName);
+                if (epd != null && epd.isInternationalized()) {
+                    if (hasI18N(locale)) {
+                        final Node localizedNode = getI18N(locale);
+                        return localizedNode.hasProperty(propertyName);
+                    }
+                }
+            } catch (ConstraintViolationException e) {
+                return false;
             }
         }
         return false;

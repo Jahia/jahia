@@ -3,7 +3,9 @@ var contributionI18n = {
     'ok': 'OK',
     'cancel': 'Cancel',
     'edit': 'Click to edit',
-    'uploaded': 'file uploaded click on preview to see the new file'
+    'uploaded': 'file uploaded click on preview to see the new file',
+    'error' : 'an error occurred, please check the file you try to upload'    
+
 }
 function initEditFields(id) {
     $(".edit" + id).editable(function (value, settings) {

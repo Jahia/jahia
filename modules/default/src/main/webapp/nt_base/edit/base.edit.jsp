@@ -34,7 +34,7 @@
                       scope="application"/>
 <utility:useConstants var="selectorType" className="org.jahia.services.content.nodetypes.SelectorType"
                       scope="application"/>
-<c:if test="${empty requestScope.ajaxCall}">
+<c:if test="${!renderContext.ajaxRequest}">
     <script>
         $(document).ready(function(){
             initEditFields("${currentNode.identifier}");
@@ -63,7 +63,7 @@
             <label>${jcr:label(propertyDefinition,renderContext.mainResourceLocale)}&nbsp;:</label>
             <c:choose>
                 <c:when test="${(propertyDefinition.requiredType == jcrPropertyTypes.REFERENCE || propertyDefinition.requiredType == jcrPropertyTypes.WEAKREFERENCE)}">
-                    <c:if test="${propertyDefinition.selector eq selectorType.FILEUPLOAD or propertyDefinition.selector eq selectorType.FILEPICKER}">
+                    <c:if test="${propertyDefinition.selector eq selectorType.FILEUPLOAD or propertyDefinition.selector eq selectorType.CONTENTPICKER}">
                         <div class="file${currentNode.identifier}" jcr:id="${propertyDefinition.name}"
                              jcr:url="${url.base}${currentNode.path}">
                             <span><fmt:message key="add.file"/></span>

@@ -47,7 +47,7 @@ $.editable.addInputType('ajaxupload', {
                     settings.callback(data, status,original);
                 },
                 error: function (data, status, e) {
-                    alert(e);
+                    alert(contributionI18n['error']);
                 }
             });
             return(false);

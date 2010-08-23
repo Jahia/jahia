@@ -164,15 +164,6 @@ public class TemplateHeaderTag extends AbstractJahiaTag {
 
         if (includeGwt) {
             buf.append(GWTInitializer.getInitString(pageContext)).append("\n");
-        } else {
-            buf.append("<script type='text/javascript'>\n/* <![CDATA[ */\n");
-            Map<String, String> params = new HashMap<String, String>(2);
-            params.put(JahiaGWTParameters.CONTEXT_PATH, ((HttpServletRequest)request).getContextPath());
-            Locale locale =(Locale) pageContext.getAttribute(ParamBean.SESSION_UI_LOCALE, PageContext.SESSION_SCOPE);
-            params.put(JahiaGWTParameters.UI_LANGUAGE, locale != null ? locale.toString() : Locale.ENGLISH.toString());
-            buf.append(GWTInitializer.getJahiaGWTConfig(params));
-            buf.append("\n/* ]]> */\n</script>\n");
-            
         }
 
         buf.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");

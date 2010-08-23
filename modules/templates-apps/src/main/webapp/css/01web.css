@@ -225,7 +225,6 @@ body {
 	background:#3297cb url(img/contactformlegend.png) repeat-x bottom left;
 	border:1px solid #ccc;
 	display:inline;
-	color:#fff;
 	font-weight:bold;
 	text-transform:uppercase
 }
@@ -266,6 +265,29 @@ body {
 	margin:0;
 	padding:0;
 	vertical-align: bottom;
+}
+#bodywrapper pre {
+	background-color:#E0E0E0;
+	border-left:4px solid #A5A5A5;
+	font-family:Courier,"Courier New",monospace;
+	font-size:100%;
+	overflow:auto;
+	margin-bottom:15px;
+	margin-top:15px;
+	padding:20px;
+	line-height:100%
+}
+#bodywrapper .highlight{
+	background-color:#ffff99;
+	padding-right:0.5em;
+	padding-left:0.5em;
+}
+#bodywrapper code, #bodywrapper .code {
+	background-color:#E0E0E0;
+	font-family:Courier,"Courier New",monospace;
+	font-weight:normal;
+	padding-right:0.5em;
+	padding-left:0.5em;
 }
 /******************************************************************************
 *  Images
@@ -484,20 +506,19 @@ body {
 	padding:0.2em;
 	margin: 1em 0;
 	font-size:0.85em;
+	clear:both
 }
 #bodywrapper .bottomanchor a,
 #bodywrapper .bottomanchor a:link,
 #bodywrapper .bottomanchor a:visited  {
 	float:right;
 	margin:0 ;
-	background: url(img/bottomanchor.png) no-repeat top right;
-	padding-right:20px;
 	text-transform:uppercase
 }
 #bodywrapper .bottomanchor a:hover ,
 #bodywrapper .bottomanchor a:active  {
 	cursor: pointer;
-	text-decoration:UNDERLINE;
+	text-decoration: underline;
 }
 
 /******************************************************************************
@@ -650,6 +671,7 @@ border: 1px solid #fff;
 	background-color:#eaeaea;
 	border:1px solid #ccc;
 	margin:0;
+	list-style:none;
 }
 
 #bodywrapper .summary a,
@@ -665,6 +687,7 @@ border: 1px solid #fff;
 #bodywrapper .summary ul {
 	margin:0;
 	padding:0 0 0 2em;
+	list-style:none;
 }
 #bodywrapper .summary li {
 	padding:0;
@@ -707,4 +730,16 @@ border: 1px solid #fff;
 	margin:10px;
 	background-color:#ffebe8;
 	border:1px solid #cc3300;
+}
+/******************************************************************************
+* Links
+******************************************************************************/
+#bodywrapper div.more {
+    float: right;
+    display: block;
+}
+
+#bodywrapper a.returnLink {
+    float: left;
+	display: block;
 }

@@ -184,6 +184,9 @@ public class AggregateCacheFilter extends AbstractFilter {
             String cachedRenderContent = ESI_INCLUDE_STOPTAG_REGEXP.matcher(previousOut).replaceAll("</esi:include>");
             cachedRenderContent = ESI_INCLUDE_STARTTAG_REGEXP.matcher(cachedRenderContent).replaceAll(
                     "<esi:include src=\"$1\">");
+            if(debugEnabled) {
+                logger.debug("Storing for key: "+key+" content:\n"+cachedRenderContent);
+            }
             Source source = new Source(cachedRenderContent);
             // This will remove all blank line and drastically reduce data in memory
             source = new Source((new SourceFormatter(source)).toString());
@@ -257,6 +260,9 @@ public class AggregateCacheFilter extends AbstractFilter {
             OutputDocument outputDocument = new OutputDocument(htmlContent);
             for (Tag esiIncludeTag : esiIncludeTags) {
                 StartTag segment = (StartTag) esiIncludeTag;
+                if(logger.isDebugEnabled()){
+                    logger.debug(segment.toString());
+                }
                 String cacheKey = segment.getAttributeValue("src").replaceAll("_perUser_",
                                                                               renderContext.getUser().getUsername());
                 String mrCacheKey = cacheKey.replaceAll("_mr_",renderContext.getMainResource().getNode().getPath());
@@ -267,6 +273,9 @@ public class AggregateCacheFilter extends AbstractFilter {
                         logger.debug(cacheKey + " has been found in cache");
                         final CacheEntry cacheEntry = (CacheEntry) element.getValue();
                         String content = (String) cacheEntry.getObject();
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Document replace from : "+segment.getStartTagType()+" to "+segment.getElement().getEndTag().getEndTagType()+ " with "+content);
+                        }
                         outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(),
                                                aggregateContent(cache, content, renderContext));
                         if (cacheEntry.getProperty(RESOURCES) != null) { renderContext.addStaticAsset((Map<String, Set<String>>) cacheEntry.getProperty(RESOURCES)); }

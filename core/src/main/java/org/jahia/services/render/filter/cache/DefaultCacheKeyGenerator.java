@@ -122,6 +122,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                 args.add(appendAcls(resource, renderContext));
             } else if ("wrapped".equals(field)) {
                 args.add(String.valueOf(resource.hasWrapper()));
+                args.add(String.valueOf(resource.getContextConfiguration()));
             } else if ("custom".equals(field)) {
                 args.add((String) resource.getModuleParams().get("module.cache.additional.key"));
             }

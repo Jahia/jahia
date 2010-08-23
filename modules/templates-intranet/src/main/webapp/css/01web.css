@@ -462,8 +462,31 @@ body {
 	border:1px solid #A5A5A5;
 	font-style:italic;
 	margin-bottom:15px;
+	margin-top:20px;
+	padding:20px;
+}
+#bodywrapper pre {
+	background-color:#E0E0E0;
+	border-left:4px solid #A5A5A5;
+	font-family:Courier,"Courier New",monospace;
+	font-size:100%;
+	overflow:auto;
+	margin-bottom:15px;
 	margin-top:15px;
 	padding:20px;
+	line-height:100%
+}
+#bodywrapper code, #bodywrapper .code {
+	background-color:#E0E0E0;
+	font-family:Courier,"Courier New",monospace;
+	font-weight:normal;
+	padding-right:0.5em;
+	padding-left:0.5em;
+}
+#bodywrapper .highlight{
+	background-color:#ffff99;
+	padding-right:0.5em;
+	padding-left:0.5em;
 }
 #bodywrapper textarea {
 	font-family: Arial, Helvetica, sans-serif;
@@ -481,6 +504,7 @@ body {
 	color:#666;
 	padding:4px 5px;
 	background-color:#f6f6f6;
+	
 }
 #bodywrapper label{
 	font-weight:bold;
@@ -697,14 +721,13 @@ body {
 	padding:0.2em;
 	margin: 1em 0;
 	font-size:0.85em;
+	clear:both;
 }
 #bodywrapper .bottomanchor a,
 #bodywrapper .bottomanchor a:link,
 #bodywrapper .bottomanchor a:visited  {
 	float:right;
 	margin:0 ;
-	background: url(img/bottomanchor.png) no-repeat top right;
-	padding-right:20px;
 	text-transform:uppercase
 }
 #bodywrapper .bottomanchor a:hover ,
@@ -867,6 +890,7 @@ body {
 	padding: 10px;
 	background-color:#eaeaea;
 	border:1px solid #ccc;
+	list-style:none;
 }
 
 #bodywrapper .summary a,
@@ -882,6 +906,7 @@ body {
 #bodywrapper .summary ul {
 	margin:0;
 	padding:0 0 0 2em;
+	list-style:none;
 }
 #bodywrapper .summary li {
 	padding:0;
@@ -928,8 +953,6 @@ body {
 ******************************************************************************/
 #bodywrapper div.more {
     float: right;
-    font-size: 11px;
-    font-weight: bold;
     background: transparent url( img/more.png ) no-repeat 0 50%;
     padding: 0 0 0 15px;
     margin-bottom: 0;

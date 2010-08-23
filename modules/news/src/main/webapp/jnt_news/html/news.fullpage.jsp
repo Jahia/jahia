@@ -26,9 +26,13 @@
     <c:if test="${!empty newsCategories }">
         <div class="newsMeta">
             <span class="categoryLabel"><fmt:message key='label.categories'/> :</span>
-                    <c:forEach items="${newsCategories}" var="category">
-                       <span class="categorytitle">${category.node.properties['jcr:title'].string}</span>
-                    </c:forEach>
+            <jcr:nodeProperty node="${currentNode}" name="j:defaultCategory" var="cat"/>
+            <c:if test="${cat != null}">
+                        <c:forEach items="${cat}" var="category">
+                            <span class="categorytitle">${category.node.properties['j:nodename'].string}</span>
+                        </c:forEach>
+
+            </c:if>
         </div>
     </c:if>
     <!-- image and news body -->

@@ -1,17 +1,23 @@
 package org.jahia.services.content.impl.vfs;
 
 import org.apache.log4j.Logger;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.helper.ContentHubHelper;
+import org.jahia.ajax.gwt.helper.NavigationHelper;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.test.TestHelper;
+import org.jahia.utils.LanguageCodeConverters;
 import org.junit.AfterClass;
-import org.junit.Assert;
+import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -19,6 +25,9 @@ import javax.jcr.*;
 import javax.jcr.nodetype.NodeDefinition;
 import javax.jcr.nodetype.NodeType;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,6 +43,11 @@ public class VFSContentStoreProviderTest {
     private static JahiaSite site;
     private static File dynamicMountDir;
     private static File staticMountDir;
+    private static final String STATIC_MOUNT_FILE_NAME = "staticMountDirectory";
+    private static final String DYNAMIC_MOUNT_FILE_NAME = "dynamicMountDirectory";
+    private static final String MOUNTS_STATIC_MOUNT_POINT = "/mounts/static-mount-point";
+    private static final String MOUNTS_DYNAMIC_MOUNT_POINT = "/mounts/dynamic-mount-point";
+    private static final String MOUNTS_DYNAMIC_MOUNT_POINT_NAME = "dynamic-mount-point";
 
     @BeforeClass
     public static void oneTimeSetUp()
@@ -54,12 +68,12 @@ public class VFSContentStoreProviderTest {
             });
             File sysTempDir = new File(System.getProperty("java.io.tmpdir"));
 
-            staticMountDir = new File(sysTempDir, "static-mount");
+            staticMountDir = new File(sysTempDir, STATIC_MOUNT_FILE_NAME);
             if (!staticMountDir.exists()) {
                 staticMountDir.mkdir();
             }
 
-            dynamicMountDir = new File(sysTempDir, "dynamic-mount");
+            dynamicMountDir = new File(sysTempDir, DYNAMIC_MOUNT_FILE_NAME);
             if (!dynamicMountDir.exists())
                 dynamicMountDir.mkdir();
         }
@@ -87,12 +101,12 @@ public class VFSContentStoreProviderTest {
     }
 
     @Test
-    public void testStaticMount() throws JahiaInitializationException, RepositoryException {
+    public void testStaticMount() throws JahiaInitializationException, RepositoryException, GWTJahiaServiceException {
         VFSContentStoreProvider vfsProvider = new VFSContentStoreProvider();
         vfsProvider.setKey("local");
         vfsProvider.setRoot("file://" + staticMountDir.getAbsolutePath());
         vfsProvider.setRmibind("local");
-        vfsProvider.setMountPoint("/mounts/static-mount");
+        vfsProvider.setMountPoint(MOUNTS_STATIC_MOUNT_POINT);
         vfsProvider.setUserManagerService(ServicesRegistry.getInstance().getJahiaUserManagerService());
         vfsProvider.setGroupManagerService(ServicesRegistry.getInstance().getJahiaGroupManagerService());
         vfsProvider.setSitesService(ServicesRegistry.getInstance().getJahiaSitesService());
@@ -104,10 +118,12 @@ public class VFSContentStoreProviderTest {
         vfsProvider.start();
 
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
-        JCRNodeWrapper mountNode = getNode(session, "/mounts/static-mount");
+        assertRootNavigation(session);
+
+        JCRNodeWrapper mountNode = getNode(session, MOUNTS_STATIC_MOUNT_POINT);
         assertNode(mountNode, 0);
         createFolder(session, "folder1", mountNode);
-        JCRNodeWrapper folder1Node = getNode(session, "/mounts/static-mount/folder1");
+        JCRNodeWrapper folder1Node = getNode(session, MOUNTS_STATIC_MOUNT_POINT + "/folder1");
         assertNode(folder1Node, 0);
         session.checkout(folder1Node);
         folder1Node.remove();
@@ -115,17 +131,58 @@ public class VFSContentStoreProviderTest {
         vfsProvider.stop();
     }
 
+    private void assertRootNavigation(JCRSessionWrapper session) throws RepositoryException, GWTJahiaServiceException {
+        JCRSiteNode siteNode = (JCRSiteNode) session.getNode(SITECONTENT_ROOT_NODE);
+        NavigationHelper navigationHelper = (NavigationHelper) SpringContextSingleton.getInstance().getContext().getBean("NavigationHelper");
+        Locale locale = LanguageCodeConverters.languageCodeToLocale("en");
+        List<String> paths = new ArrayList<String>();
+        paths.add("/mounts");
+        List<GWTJahiaNode> rootNodes = navigationHelper.retrieveRoot(paths, null,null,null,null,
+                            null,null,siteNode, session, locale);
+        List<String> nodeTypes = new ArrayList<String>();
+        nodeTypes.add("nt:file");
+        nodeTypes.add("nt:folder");
+        nodeTypes.add("jnt:mountPoints");
+        List<String> fields = new ArrayList<String>();
+        fields.add("providerKey");
+        fields.add("icon");
+        fields.add("name");
+        fields.add("locked");
+        fields.add("size");
+        fields.add("jcr:lastModified");
+        for (GWTJahiaNode rootNode : rootNodes) {
+            assertGWTJahiaNode(rootNode, "/mounts");
+            List<GWTJahiaNode> childNodes = navigationHelper.ls(rootNode, nodeTypes, new ArrayList<String>(), new ArrayList<String>(), fields, session);
+            for (GWTJahiaNode childNode : childNodes) {
+                assertGWTJahiaNode(childNode, "/mounts/" + childNode.getName());
+                List<GWTJahiaNode> childChildNodes = navigationHelper.ls(childNode, nodeTypes, new ArrayList<String>(), new ArrayList<String>(), fields, session);                
+            }
+        }
+    }
+
+    private void assertGWTJahiaNode(GWTJahiaNode jahiaGWTNode, String expectedPath) {
+        assertEquals("Expected path and actual GWT node path are not equal !", expectedPath, jahiaGWTNode.getPath());
+        int lastSlashPosInPath = jahiaGWTNode.getPath().lastIndexOf("/");
+        if (lastSlashPosInPath > -1)
+            assertEquals("Last part of path and name are not equal !", jahiaGWTNode.getPath().substring(lastSlashPosInPath + 1), jahiaGWTNode.getName());
+        else {
+            assertEquals("Last part of path and name are not equal !", jahiaGWTNode.getPath(), jahiaGWTNode.getName());
+        }
+    }
+
     @Test
     public void testDynamicMount() throws GWTJahiaServiceException, RepositoryException {
         ContentHubHelper contentHubHelper = (ContentHubHelper) SpringContextSingleton.getInstance().getContext().getBean("ContentHubHelper");
         JahiaUser jahiaRootUser = ServicesRegistry.getInstance().getJahiaGroupManagerService().getAdminUser(0);
-        contentHubHelper.mount("dynamic-mount", "file://" + dynamicMountDir.getAbsolutePath(), jahiaRootUser);
+        contentHubHelper.mount(MOUNTS_DYNAMIC_MOUNT_POINT_NAME, "file://" + dynamicMountDir.getAbsolutePath(), jahiaRootUser);
 
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
-        JCRNodeWrapper mountNode = getNode(session, "/mounts/dynamic-mount");
+        assertRootNavigation(session);
+
+        JCRNodeWrapper mountNode = getNode(session, MOUNTS_DYNAMIC_MOUNT_POINT);
         assertNode(mountNode, 0);
         createFolder(session, "folder1", mountNode);
-        JCRNodeWrapper folder1Node = getNode(session, "/mounts/dynamic-mount/folder1");
+        JCRNodeWrapper folder1Node = getNode(session, MOUNTS_DYNAMIC_MOUNT_POINT + "/folder1");
         assertNode(folder1Node, 0);
         session.checkout(folder1Node);
         folder1Node.remove();
@@ -142,7 +199,7 @@ public class VFSContentStoreProviderTest {
             return node;
         } catch (PathNotFoundException pnfe) {
             logger.error("Mount point not available", pnfe);
-            Assert.assertTrue("Node at " + path + " could not be found !", false);
+            assertTrue("Node at " + path + " could not be found !", false);
         }
         return null;
     }
@@ -150,24 +207,24 @@ public class VFSContentStoreProviderTest {
     private void assertNode(Node node, int depth)
             throws RepositoryException {
         NodeType primaryNodeType = node.getPrimaryNodeType();
-        Assert.assertNotNull("Primary node type is null !", primaryNodeType);
+        assertNotNull("Primary node type is null !", primaryNodeType);
         NodeDefinition nodeDefinition = node.getDefinition();
-        Assert.assertNotNull("Node definition is null !", nodeDefinition);
+        assertNotNull("Node definition is null !", nodeDefinition);
         String nodeIdentifier = node.getIdentifier();
-        Assert.assertNotNull("Node identifier is null!", nodeIdentifier);
+        assertNotNull("Node identifier is null!", nodeIdentifier);
         NodeType[] nodeMixinNodeTypes = node.getMixinNodeTypes();
-        Assert.assertNotNull("Mixin types are null !", nodeMixinNodeTypes);
-        Assert.assertNotNull("Node path is null!", node.getPath());
-        Assert.assertNotNull("Node name is null!", node.getName());
+        assertNotNull("Mixin types are null !", nodeMixinNodeTypes);
+        assertNotNull("Node path is null!", node.getPath());
+        assertNotNull("Node name is null!", node.getName());
         int lastSlashPosInPath = node.getPath().lastIndexOf("/");
         if (lastSlashPosInPath > -1)
-            Assert.assertEquals("Last part of path and name are not equal !", node.getPath().substring(lastSlashPosInPath + 1), node.getName());
+            assertEquals("Last part of path and name are not equal !", node.getPath().substring(lastSlashPosInPath + 1), node.getName());
         else {
-            Assert.assertEquals("Last part of path and name are not equal !", node.getPath(), node.getName());
+            assertEquals("Last part of path and name are not equal !", node.getPath(), node.getName());
         }
 
         PropertyIterator propertyIterator = node.getProperties();
-        Assert.assertNotNull("Property iterator is null !", propertyIterator);
+        assertNotNull("Property iterator is null !", propertyIterator);
         while (propertyIterator.hasNext()) {
             Property property = propertyIterator.nextProperty();
             property.isMultiple();
@@ -175,7 +232,7 @@ public class VFSContentStoreProviderTest {
             property.isNode();
         }
         NodeIterator nodeIterator = node.getNodes();
-        Assert.assertNotNull("Child node iterator is null !", nodeIterator);
+        assertNotNull("Child node iterator is null !", nodeIterator);
         while (nodeIterator.hasNext()) {
             Node childNode = nodeIterator.nextNode();
             assertNode(childNode, depth + 1);

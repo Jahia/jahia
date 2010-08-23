@@ -44,7 +44,19 @@
 <div class="FormContribute">
     <c:set var="type" value="${currentNode.primaryNodeType}"/>
     <c:forEach items="${type.propertyDefinitions}" var="propertyDefinition">
-        <c:if test="${!propertyDefinition.multiple and propertyDefinition.contentItem}">
+        <c:if test="${propertyDefinition.name eq 'jcr:title'}">
+            <c:set var="prop" value="${currentNode.properties[propertyDefinition.name]}"/>
+            <c:set var="scriptPropName" value="${fn:replace(propertyDefinition.name,':','_')}"/>
+    <p>
+    <label>${jcr:label(propertyDefinition,renderContext.mainResourceLocale)}&nbsp;:</label>
+            <span jcr:id="${propertyDefinition.name}" class="edit${currentNode.identifier}"
+                  id="edit${currentNode.identifier}${scriptPropName}"
+                  jcr:url="${url.base}${currentNode.path}">${prop.string}</span>
+    </p>
+        </c:if>
+    </c:forEach>
+    <c:forEach items="${type.propertyDefinitions}" var="propertyDefinition">
+        <c:if test="${!propertyDefinition.multiple and propertyDefinition.contentItem and !(propertyDefinition.name eq 'jcr:title')}">
             <c:set var="prop" value="${currentNode.properties[propertyDefinition.name]}"/>
             <c:set var="scriptPropName" value="${fn:replace(propertyDefinition.name,':','_')}"/>
             <p>

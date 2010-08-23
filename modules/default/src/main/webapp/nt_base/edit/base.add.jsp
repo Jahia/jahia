@@ -64,7 +64,16 @@
         <fieldset>
             <legend>${jcr:label(type,renderContext.mainResourceLocale)}</legend>
             <c:forEach items="${type.propertyDefinitions}" var="propertyDefinition">
-                <c:if test="${!propertyDefinition.multiple and propertyDefinition.contentItem}">
+                <c:if test="${propertyDefinition.name eq 'jcr:title'}">
+                    <label class="left"
+                           for="${fn:replace(propertyDefinition.name,':','_')}">${jcr:label(propertyDefinition,renderContext.mainResourceLocale)}</label>
+                    <input type="text" id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
+                           name="${propertyDefinition.name}" <c:if test="${not empty workflowTaskFormTask}">value="${workflowTaskFormTask.variables[propertyDefinition.name][0].value}"</c:if>/>
+
+                </c:if>
+            </c:forEach>            
+            <c:forEach items="${type.propertyDefinitions}" var="propertyDefinition">
+                <c:if test="${!propertyDefinition.multiple and propertyDefinition.contentItem and !(propertyDefinition.name eq 'jcr:title')}">
                     <p class="field">
                         <c:choose>
                             <c:when test="${(propertyDefinition.requiredType == jcrPropertyTypes.REFERENCE || propertyDefinition.requiredType == jcrPropertyTypes.WEAKREFERENCE)}">

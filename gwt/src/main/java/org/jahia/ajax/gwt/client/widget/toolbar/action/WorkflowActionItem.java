@@ -39,7 +39,6 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -103,7 +102,7 @@ public class WorkflowActionItem extends BaseActionItem {
                             public void componentSelected(MenuEvent ce) {
                                 String formResourceName = wf.getFormResourceName();
                                 if (formResourceName!=null && !"".equals(formResourceName)) {
-                                    new WorkflowActionDialog(node, wf).show();
+                                    new WorkflowActionDialog(node, wf, linker).show();
                                 } else {
                                     JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
                                     async.startWorkflow(node.getPath(), wf,new ArrayList<GWTJahiaNodeProperty>(), new BaseAsyncCallback() {

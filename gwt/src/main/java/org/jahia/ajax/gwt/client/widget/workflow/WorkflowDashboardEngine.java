@@ -34,27 +34,20 @@ package org.jahia.ajax.gwt.client.widget.workflow;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.core.XTemplate;
-import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Info;
-import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.menu.Menu;
-import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTRenderResult;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowAction;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowTaskComment;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryItem;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryProcess;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryTask;
@@ -62,12 +55,10 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.edit.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.workflow.dialog.WorkflowActionDialog;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -286,7 +277,7 @@ public class WorkflowDashboardEngine extends Window {
 
                 for (GWTJahiaWorkflowAction action : node.getWorkflowInfos().get(task.get("language")).getAvailableActions()) {
                     if (action.getName().equals(task.getName())) {
-                        WorkflowActionDialog dialog = new WorkflowActionDialog(node, action);
+                        WorkflowActionDialog dialog = new WorkflowActionDialog(node, action, linker);
                         dialog.setWorkflowDashboard(WorkflowDashboardEngine.this);
                         dialog.show();
                         break;

@@ -81,7 +81,7 @@ public class WorkflowActionDialog extends Window {
     private JahiaContentDefinitionServiceAsync contentDefinition;
     private WorkflowDashboardEngine workflowDashboard;
 
-    public WorkflowActionDialog(final GWTJahiaNode node, final GWTJahiaWorkflowAction action) {
+    public WorkflowActionDialog(final GWTJahiaNode node, final GWTJahiaWorkflowAction action, final Linker linker) {
         contentManagement = JahiaContentManagementService.App.getInstance();
         contentDefinition = JahiaContentDefinitionService.App.getInstance();
         setModal(true);
@@ -168,12 +168,12 @@ public class WorkflowActionDialog extends Window {
                                                                   propertiesEditor.renderNewFormPanel();
                                                                   actionPanel.add(propertiesEditor);
                                                                   generateActionButtons(propertiesEditor, action, node,
-                                                                                        dialog, actionPanel);
+                                                                                        dialog, actionPanel, linker);
                                                                   dialog.layout();
                                                               }
                                                           });
         } else {
-            generateActionButtons(null, action, node, dialog, actionPanel);
+            generateActionButtons(null, action, node, dialog, actionPanel, linker);
         }
 
         add(actionPanel);
@@ -261,7 +261,7 @@ public class WorkflowActionDialog extends Window {
         });
     }
 
-    public WorkflowActionDialog(final GWTJahiaNode node, final GWTJahiaWorkflowDefinition wf) {
+    public WorkflowActionDialog(final GWTJahiaNode node, final GWTJahiaWorkflowDefinition wf, final Linker linker) {
         contentManagement = JahiaContentManagementService.App.getInstance();
         contentDefinition = JahiaContentDefinitionService.App.getInstance();
         setModal(true);
@@ -281,12 +281,12 @@ public class WorkflowActionDialog extends Window {
                     propertiesEditor.setViewInheritedItems(false);
                     propertiesEditor.renderNewFormPanel();
                     panel.add(propertiesEditor);
-                    generateStartWorkflowButton(propertiesEditor, wf, node, dialog, panel);
+                    generateStartWorkflowButton(propertiesEditor, wf, node, dialog, panel, linker);
                     dialog.layout();
                 }
             });
         } else {
-            generateStartWorkflowButton(null, wf, node, dialog, panel);
+            generateStartWorkflowButton(null, wf, node, dialog, panel, linker);
         }
 
 
@@ -294,7 +294,8 @@ public class WorkflowActionDialog extends Window {
     }
 
     private void generateActionButtons(final PropertiesEditor propertiesEditor, final GWTJahiaWorkflowAction action,
-                                       final GWTJahiaNode node, final Window dialog, LayoutContainer panel) {
+                                       final GWTJahiaNode node, final Window dialog, LayoutContainer panel,
+                                       final Linker linker) {
         HorizontalPanel horizontalPanel = new HorizontalPanel();
         horizontalPanel.setTableWidth("100%");
         horizontalPanel.setWidth(790);
@@ -323,6 +324,7 @@ public class WorkflowActionDialog extends Window {
                                                                     dialog.hide();
                                                                     Info.display("Workflow executed",
                                                                                  "Workflow executed");
+                                                                    linker.refresh(Linker.REFRESH_MAIN);
                                                                 }
 
                                                                 public void onApplicationFailure(Throwable caught) {
@@ -342,7 +344,7 @@ public class WorkflowActionDialog extends Window {
 
     private void generateStartWorkflowButton(final PropertiesEditor propertiesEditor,
                                              final GWTJahiaWorkflowDefinition wf, final GWTJahiaNode node,
-                                             final Window dialog, LayoutContainer panel) {
+                                             final Window dialog, LayoutContainer panel, Linker linker) {
         HorizontalPanel horizontalPanel = new HorizontalPanel();
 
         final Button button = new Button("Start Workflow : " + wf.getName());

@@ -132,7 +132,7 @@ public class TemplateNodeFilter extends AbstractFilter {
                     template = addDerivedTemplates(resource, template, templateNode);
                     if (template == null && current == node) {
                         template = new Template(templateNode.hasProperty("j:template") ? templateNode.getProperty("j:template").getString() :
-                            "fullpage", templateNode, template);
+                            templateName!=null?templateName:"fullpage", templateNode, template);
                     }
                 }
                 if (template == null && current.hasProperty("j:defaultTemplateNode")) {

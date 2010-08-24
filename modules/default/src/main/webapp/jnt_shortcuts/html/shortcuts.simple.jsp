@@ -38,8 +38,7 @@
             <a href="${url.base}${rootPage.path}.html"><fmt:message key="home"/></a>
         </li>
         <li class="shortcuts-sitemap">
-            <a href="${url.base}${rootPage.path}.sitemap.html"><fmt:message
-                    key="sitemap"/></a>
+            <a href="${url.base}${renderContext.site.path}/home.sitemap.html"><fmt:message key="sitemap"/></a>
         </li>
     </ul>
 </div>

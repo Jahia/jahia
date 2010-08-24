@@ -69,7 +69,7 @@ public class CacheFilter extends AbstractFilter {
             boolean debugEnabled = logger.isDebugEnabled();
             boolean displayCacheInfo = Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
             String key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
-            String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername()).replaceAll("_mr_",renderContext.getMainResource().getNode().getPath());
+            String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername()).replaceAll("_mr_",renderContext.getMainResource().getNode().getPath()+renderContext.getMainResource().getTemplate());
             if (debugEnabled) {
                 logger.debug("Cache filter for key " + key);
             }
@@ -111,7 +111,7 @@ public class CacheFilter extends AbstractFilter {
             boolean debugEnabled = logger.isDebugEnabled();
             boolean displayCacheInfo = Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
             String key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
-            String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername()).replaceAll("_mr_",renderContext.getMainResource().getNode().getPath());
+            String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername()).replaceAll("_mr_",renderContext.getMainResource().getNode().getPath()+renderContext.getMainResource().getTemplate());
             if (debugEnabled) {
                 logger.debug("Generating content for node : " + perUserKey);
             }

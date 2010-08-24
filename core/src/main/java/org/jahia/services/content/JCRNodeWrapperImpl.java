@@ -1873,8 +1873,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 String currentType = StringUtils.substringAfter(value.getString(),":");
                 if (currentType.equals(type)) {
                     if (getSession().isSystem() || getSession().getUserID().equals(owner)) {
-                        final List<Value> valueList = new ArrayList<Value>(Arrays.asList(types));
-                        valueList.remove(value);
+                        final Map<String,Value> valueList = new HashMap<String, Value>();
+                        for (Value v : types) {
+                            valueList.put(v.getString(),v);
+                        }
+                        valueList.remove(value.getString());
                         if (!objectNode.isCheckedOut()) {
                             objectNode.checkout();
                         }
@@ -1884,7 +1887,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                             property.remove();
                             objectNode.getProperty("j:lockTypes").remove();
                         } else {
-                            objectNode.setProperty("j:lockTypes", valueList.toArray(new Value[valueList.size()]));
+                            objectNode.setProperty("j:lockTypes", valueList.values().toArray(new Value[valueList.size()]));
                         }
                         getSession().save();
 

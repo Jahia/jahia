@@ -319,6 +319,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
                 mountPoints.put(mountPoint, p);
             }
         }
+        logger.info("Added provider " + key + " at mount point " + mountPoint + " using implementation " + p.getClass().getName());
     }
 
     public void removeProvider(String key) {
@@ -328,6 +329,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
             mountPoints.remove(p.getMountPoint());
             dynamicMountPoints.remove(p.getMountPoint());
         }
+        logger.info("Removed provider " + key + " at mount point " + p.getMountPoint() + " using implementation " + p.getClass().getName());
     }
 
     /**

@@ -4,6 +4,10 @@ Jahia Crazy Jane - Templates Module
 
   Here You will find all general documentation about template.
 
+	* Module directory structure
+
+	  Information about {{{./directory_structure.html} module directory structure}}.
+
 	* Dynamic Modules
 
 	  General instructions on how to create a new {{{./dynamic_module.html} dynamic module}}.

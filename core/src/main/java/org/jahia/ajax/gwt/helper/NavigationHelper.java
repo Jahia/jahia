@@ -481,7 +481,7 @@ public class NavigationHelper {
                 while (usages.hasNext()) {
                     JCRNodeWrapper usage = (JCRNodeWrapper) usages.next();
                     if (!usage.getPath().equals(node.getPath())) {
-                        addUsage(result, usage);
+                        addUsage(result, usage, "shared");
                     }
                 }
             } catch (RepositoryException e) {
@@ -496,11 +496,11 @@ public class NavigationHelper {
                         Value[] referenceValues = reference.getValues();
                         for (Value currentValue : referenceValues) {
                             JCRNodeWrapper refNode = currentUserSession.getNodeByUUID(currentValue.getString());
-                            addUsage(result, refNode);
+                            addUsage(result, refNode, "reference");
                         }
                     } else {
                         JCRNodeWrapper refNode = (JCRNodeWrapper) reference.getNode();
-                        addUsage(result, refNode);
+                        addUsage(result, refNode, "reference");
                     }
                 }
                 PropertyIterator wr = node.getWeakReferences();
@@ -510,12 +510,12 @@ public class NavigationHelper {
                         Value[] referenceValues = reference.getValues();
                         for (Value currentValue : referenceValues) {
                             JCRNodeWrapper refNode = currentUserSession.getNodeByUUID(currentValue.getString());
-                            addUsage(result, refNode);
+                            addUsage(result, refNode, "weakreference");
                         }
                     } else {
                         if (!reference.getPath().startsWith("/referencesKeeper")) {
                             JCRNodeWrapper refNode = reference.getParent();
-                            addUsage(result, refNode);
+                            addUsage(result, refNode, "weakreference");
                         }
                     }
                 }
@@ -526,7 +526,7 @@ public class NavigationHelper {
         return result;
     }
 
-    private void addUsage(List<GWTJahiaNodeUsage> result, JCRNodeWrapper refNode) throws RepositoryException {
+    private void addUsage(List<GWTJahiaNodeUsage> result, JCRNodeWrapper refNode, String type) throws RepositoryException {
         JCRNodeWrapper parent =
                 refNode.isNodeType("jnt:page") ? refNode : lookUpParentPageNode(refNode);
         String language = null;
@@ -550,6 +550,7 @@ public class NavigationHelper {
         }
 
         usage.setLanguage(language);
+        usage.setType(type);
         result.add(usage);
     }
 

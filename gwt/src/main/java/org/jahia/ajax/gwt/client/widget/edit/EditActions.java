@@ -46,6 +46,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.compare.CompareEngine;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.EngineLoader;
@@ -246,62 +247,85 @@ public class EditActions {
             for (GWTJahiaNode node : linker.getSelectedNodes()) {
                 l.add(node.getPath());
             }
-            JahiaContentManagementService.App.getInstance()
-                    .getUsages(l, new BaseAsyncCallback<List<GWTJahiaNodeUsage>>() {
-                        public void onSuccess(List<GWTJahiaNodeUsage> result) {
-                            String message = l.size() > 1 ? Messages.getWithArgs("message.remove.multiple.confirm", "Do you really want to remove the {0} selected resources?", new String[] {String.valueOf(l.size())}) : 
-                                Messages.getWithArgs("message.remove.single.confirm", "Do you really want to remove the selected resource {0}?", new String[] {linker.getSelectedNodes().get(0).getName()});
-                            if (l.size() > 1) {
-                                message += "<br/><br/>";
-                                int i = 0;
-                                for (GWTJahiaNode node : linker.getSelectedNodes()) {
-                                    if (i > 4) {
-                                        message += "<br/>...";
-                                        break;
-                                    }
-                                    message += "<br/>" + node.getName();
-                                    i++;
-                                }
+            final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
+            async.getUsages(l, new BaseAsyncCallback<List<GWTJahiaNodeUsage>>() {
+                public void onSuccess(List<GWTJahiaNodeUsage> result) {
+                    if (l.size() == 1 && linker.getSelectedNode().isReference()) {
+                        List<String> paths = new ArrayList<String>();
+                        for (GWTJahiaNode node : linker.getSelectedNodes()) {
+                            paths.add(node.getPath());
+                        }
+                        async.deletePaths(paths, new BaseAsyncCallback<Object>() {
+                            public void onApplicationFailure(Throwable throwable) {
+                                Log.error(throwable.getMessage(), throwable);
+                                MessageBox.alert("", throwable.getMessage(), null);
                             }
-                            String n = "";
-                            for (GWTJahiaNodeUsage nodeUsage : result) {
+
+                            public void onSuccess(Object o) {
+                                linker.refresh(EditLinker.REFRESH_ALL);
+                                linker.select(null);
+                            }
+                        });
+                    } else {
+                        String message = l.size() > 1 ? Messages.getWithArgs("message.remove.multiple.confirm",
+                                                                             "Do you really want to remove the {0} selected resources?",
+                                                                             new String[]{String.valueOf(
+                                                                                     l.size())}) : Messages.getWithArgs(
+                                "message.remove.single.confirm",
+                                "Do you really want to remove the selected resource {0}?",
+                                new String[]{linker.getSelectedNodes().get(0).getName()});
+                        if (l.size() > 1) {
+                            message += "<br/><br/>";
+                            int i = 0;
+                            for (GWTJahiaNode node : linker.getSelectedNodes()) {
+                                if (i > 4) {
+                                    message += "<br/>...";
+                                    break;
+                                }
+                                message += "<br/>" + node.getName();
+                                i++;
+                            }
+                        }
+                        String n = "";
+                        for (GWTJahiaNodeUsage nodeUsage : result) {
+                            if (!"weakreference".equals(nodeUsage.getType())) {
                                 if (!nodeUsage.getNodeName().equals(n)) {
-                                    message += "<br><br>" + nodeUsage.getNodeName() + " " +
-                                            Messages.get("label.remove.used", "is used in") + "<br>" +
-                                            nodeUsage.getPageTitle();
+                                    message += "<br><br>" + nodeUsage.getNodeName() + " " + Messages.get(
+                                            "label.remove.used", "is used in") + "<br>" + nodeUsage.getPageTitle();
                                 } else {
                                     message += "<br>" + nodeUsage.getPageTitle();
                                 }
                                 n = nodeUsage.getNodeName();
                             }
-                            MessageBox.confirm("", message, new Listener<MessageBoxEvent>() {
-                                public void handleEvent(MessageBoxEvent be) {
-                                    if (be.getButtonClicked().getText().equalsIgnoreCase(Dialog.YES)) {
-                                        List<String> paths = new ArrayList<String>();
-                                        for (GWTJahiaNode node : linker.getSelectedNodes()) {
-                                            paths.add(node.getPath());
-                                        }
-                                        JahiaContentManagementService.App.getInstance()
-                                                .deletePaths(paths, new BaseAsyncCallback<Object>() {
-                                                    public void onApplicationFailure(Throwable throwable) {
-                                                        Log.error(throwable.getMessage(), throwable);
-                                                        MessageBox.alert("", throwable.getMessage(), null);
-                                                    }
-
-                                                    public void onSuccess(Object o) {
-                                                        linker.refresh(EditLinker.REFRESH_ALL);
-                                                        linker.select(null);
-                                                    }
-                                                });
+                        }
+                        MessageBox.confirm("", message, new Listener<MessageBoxEvent>() {
+                            public void handleEvent(MessageBoxEvent be) {
+                                if (be.getButtonClicked().getText().equalsIgnoreCase(Dialog.YES)) {
+                                    List<String> paths = new ArrayList<String>();
+                                    for (GWTJahiaNode node : linker.getSelectedNodes()) {
+                                        paths.add(node.getPath());
                                     }
-                                }
-                            });
-                        }
+                                    async.deletePaths(paths, new BaseAsyncCallback<Object>() {
+                                        public void onApplicationFailure(Throwable throwable) {
+                                            Log.error(throwable.getMessage(), throwable);
+                                            MessageBox.alert("", throwable.getMessage(), null);
+                                        }
 
-                        public void onApplicationFailure(Throwable caught) {
-                            com.google.gwt.user.client.Window.alert("Cannot get status: " + caught.getMessage());
-                        }
-                    });
+                                        public void onSuccess(Object o) {
+                                            linker.refresh(EditLinker.REFRESH_ALL);
+                                            linker.select(null);
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    }
+                }
+
+                public void onApplicationFailure(Throwable caught) {
+                    com.google.gwt.user.client.Window.alert("Cannot get status: " + caught.getMessage());
+                }
+            });
         }
     }
 

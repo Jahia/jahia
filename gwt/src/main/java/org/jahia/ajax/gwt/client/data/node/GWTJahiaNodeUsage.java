@@ -142,4 +142,12 @@ public class GWTJahiaNodeUsage extends BaseModelData implements Serializable {
     public void setVersionName(String versionName) {
         set("versionName", versionName);
     }
+
+    public void setType(String type) {
+        set("type",type);
+    }
+
+    public String getType() {
+        return get("type");
+    }
 }

@@ -114,7 +114,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     private PublicationHelper publication;
     private WorkflowHelper workflow;
     private VersioningHelper versioning;
-    private MashupHelper mashup;
+    private PortletHelper portlet;
     private ContentDefinitionHelper contentDefinition;
     private ContentHubHelper contentHub;
     private PropertiesHelper properties;
@@ -153,8 +153,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         this.contentManager = contentManager;
     }
 
-    public void setMashup(MashupHelper mashup) {
-        this.mashup = mashup;
+    public void setPortlet(PortletHelper portlet) {
+        this.portlet = portlet;
     }
 
     public void setNavigation(NavigationHelper navigation) {
@@ -390,7 +390,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public List<GWTJahiaPortletDefinition> searchPortlets(String match) throws GWTJahiaServiceException {
         try {
-            return mashup.searchPortlets(match, getRemoteJahiaUser(), getLocale());
+            return portlet.searchPortlets(match, getRemoteJahiaUser(), getLocale());
         } catch (Exception e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }
@@ -759,16 +759,16 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public GWTJahiaNode createPortletInstance(String path, GWTJahiaNewPortletInstance wiz)
             throws GWTJahiaServiceException {
-        return mashup.createPortletInstance(path, wiz, retrieveCurrentSession());
+        return portlet.createPortletInstance(path, wiz, retrieveCurrentSession());
     }
 
     public GWTJahiaNode createRSSPortletInstance(String path, String name, String url) throws GWTJahiaServiceException {
-        return mashup.createRSSPortletInstance(path, name, url, getSite(), retrieveCurrentSession());
+        return portlet.createRSSPortletInstance(path, name, url, getSite(), retrieveCurrentSession());
     }
 
     public GWTJahiaNode createGoogleGadgetPortletInstance(String path, String name, String script)
             throws GWTJahiaServiceException {
-        return mashup.createGoogleGadgetPortletInstance(path, name, script, getSite(), retrieveCurrentSession());
+        return portlet.createGoogleGadgetPortletInstance(path, name, script, getSite(), retrieveCurrentSession());
     }
 
     public void checkExistence(String path) throws GWTJahiaServiceException {
@@ -1516,17 +1516,17 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
     }
 
-    public GWTJahiaCreateMashupInitBean initializeCreateMashupEngine(String typename, String parentpath)
+    public GWTJahiaCreatePortletInitBean initializeCreatePortletEngine(String typename, String parentpath)
             throws GWTJahiaServiceException {
 
         GWTJahiaCreateEngineInitBean result = initializeCreateEngine(typename, parentpath);
-        GWTJahiaCreateMashupInitBean mashupInitBean = new GWTJahiaCreateMashupInitBean();
-        mashupInitBean.setInitializersValues(result.getInitializersValues());
-        mashupInitBean.setLanguages(result.getLanguages());
-        mashupInitBean.setMixin(result.getMixin());
-        mashupInitBean.setNodeType(contentDefinition.getNodeType(typename, getUILocale()));
+        GWTJahiaCreatePortletInitBean portletInitBean = new GWTJahiaCreatePortletInitBean();
+        portletInitBean.setInitializersValues(result.getInitializersValues());
+        portletInitBean.setLanguages(result.getLanguages());
+        portletInitBean.setMixin(result.getMixin());
+        portletInitBean.setNodeType(contentDefinition.getNodeType(typename, getUILocale()));
 
-        return mashupInitBean;
+        return portletInitBean;
     }
 
     public GWTJahiaEditEngineInitBean initializeEditEngine(String nodepath) throws GWTJahiaServiceException {

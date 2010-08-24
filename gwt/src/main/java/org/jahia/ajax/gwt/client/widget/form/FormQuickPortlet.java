@@ -41,10 +41,10 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
  * Time: 11:29:25
  * To change this template use File | Settings | File Templates.
  */
-public abstract class FormQuickMashup extends FormPanel {
+public abstract class FormQuickPortlet extends FormPanel {
     private String folderPath;
 
-    protected FormQuickMashup(String folderPath) {
+    protected FormQuickPortlet(String folderPath) {
         this.folderPath = folderPath;
     }
 
@@ -56,6 +56,6 @@ public abstract class FormQuickMashup extends FormPanel {
         this.folderPath = folderPath;
     }
 
-    public abstract void onMashupCreated();
+    public abstract void onPortletCreated();
 
 }

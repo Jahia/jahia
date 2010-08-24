@@ -11,7 +11,7 @@
         <description>This portlet will render an HTML fragment</description>
         <portlet-name>JahiaHTMLPortlet</portlet-name>
         <display-name>HTML portlet</display-name>
-        <portlet-class>org.jahia.portlets.HTMLMashupPortlet</portlet-class>
+        <portlet-class>org.jahia.portlets.HTMLPortlet</portlet-class>
         <init-param>
             <name>rootPath</name>
             <value>/WEB-INF/fragments/html</value>

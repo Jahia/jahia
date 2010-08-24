@@ -43,7 +43,7 @@ import org.jahia.ajax.gwt.client.widget.form.FormQuickRSS;
 import java.util.List;
 
 /**
- * Action item for showing RSS mashup creation form.
+ * Action item for showing RSS portlet creation form.
  * User: toto
  * Date: Sep 25, 2009
  * Time: 6:58:27 PM
@@ -59,14 +59,14 @@ public class NewRssActionItem extends BaseActionItem   {
         }
         if (parent != null && !parent.isFile()) {
             com.extjs.gxt.ui.client.widget.Window w = new com.extjs.gxt.ui.client.widget.Window();
-            w.setHeading(Messages.get("label.newRssMashup", "New RSS"));
+            w.setHeading(Messages.get("label.newRssPortlet", "New RSS"));
             w.setModal(true);
             w.setResizable(false);
             w.setBodyBorder(false);
             w.setLayout(new FillLayout());
             w.setWidth(350);
             w.add(new FormQuickRSS(parent.getPath()) {
-                public void onMashupCreated() {
+                public void onPortletCreated() {
                     linker.refresh(EditLinker.REFRESH_ALL);
                 }
             });

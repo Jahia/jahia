@@ -89,8 +89,8 @@
     background-image: url(../images/view-publish-status.png) !important;
 }
 
-.gwt-toolbar-icon-newmashup {
-    background-image: url(../images/new-mashup.png) !important;
+.gwt-toolbar-icon-newportlet {
+    background-image: url(../images/new-portlet.png) !important;
 }
 
 .gwt-toolbar-icon-newcategory {
@@ -103,12 +103,12 @@
     background-image: url(../images/execute-remote-publication.png) !important;
 }
 
-.gwt-toolbar-icon-newrssmashup {
-    background-image: url(../images/new-rss-mashup.png) !important;
+.gwt-toolbar-icon-newrssportlet {
+    background-image: url(../images/new-rss-portlet.png) !important;
 }
 
-.gwt-toolbar-icon-newgooglegadgetmashup {
-    background-image: url(../images/new-google-gadget-mashup.png) !important;
+.gwt-toolbar-icon-newgooglegadgetportlet {
+    background-image: url(../images/new-google-gadget-portlet.png) !important;
 }
 
 .gwt-toolbar-icon-remove {
@@ -209,16 +209,16 @@
     background-image: url(../images/disabled/add-content.png) !important;
 }
 
-.gwt-toolbar-icon-newmashup-bw {
-    background-image: url(../images/disabled/new-mashup.png) !important;
+.gwt-toolbar-icon-newportlet-bw {
+    background-image: url(../images/disabled/new-portlet.png) !important;
 }
 
-.gwt-toolbar-icon-newrssmashup-bw {
-    background-image: url(../images/disabled/new-rss-mashup.png) !important;
+.gwt-toolbar-icon-newrssportlet-bw {
+    background-image: url(../images/disabled/new-rss-portlet.png) !important;
 }
 
-.gwt-toolbar-icon-newgooglegadgetmashup-bw {
-    background-image: url(../images/disabled/new-google-gadget-mashup.png) !important;
+.gwt-toolbar-icon-newgooglegadgetportlet-bw {
+    background-image: url(../images/disabled/new-google-gadget-portlet.png) !important;
 }
 
 .gwt-toolbar-icon-remove-bw {
@@ -307,8 +307,8 @@
     background-image: url(../images/users-repository.png) !important;
 }
 
-.gwt-toolbar-icon-myMashupRepository {
-    background-image: url(../images/my-mashup-repository.png) !important;
+.gwt-toolbar-icon-myPortletRepository {
+    background-image: url(../images/my-portlet-repository.png) !important;
 }
 
 .gwt-toolbar-icon-savedSearch {
@@ -323,19 +323,19 @@
     background-image: url(../images/shared-repository.png) !important;
 }
 
-.gwt-toolbar-icon-sharedMashupRepository {
-    background-image: url(../images/shared-mashup-repository.png) !important;
+.gwt-toolbar-icon-sharedPortletRepository {
+    background-image: url(../images/shared-portlet-repository.png) !important;
 }
 
 .gwt-toolbar-icon-websiteRepository {
     background-image: url(../images/website-repository.png) !important;
 }
 
-.gwt-toolbar-icon-websiteMashupRepository {
-    background-image: url(../images/website-mashup-repository.png) !important;
+.gwt-toolbar-icon-websitePortletRepository {
+    background-image: url(../images/website-portlet-repository.png) !important;
 }
 
-.gwt-toolbar-icon-mashupRepository {
+.gwt-toolbar-icon-portletRepository {
     background-image: url(../images/portlet-repository.png) !important;
 }
 
@@ -347,8 +347,8 @@
     background-image: url(../images/save-as-shared-component.png) !important;
 }
 
-fm-globalMashupRepository {
-    background-image: url(../images/global-mashup-repository.png) !important;
+fm-globalPortletRepository {
+    background-image: url(../images/global-portlet-repository.png) !important;
 }
 
 .gwt-toolbar-icon-previewPane {
@@ -1113,7 +1113,7 @@ html>body .gwt-versionComparison-versionsPanel {
     background-image: url(../images/icons/icon-zip.png);
 }
 
-.icon-mashup {
+.icon-portlet {
     background-image: url(../images/icons/application_type.gif);
 }
 

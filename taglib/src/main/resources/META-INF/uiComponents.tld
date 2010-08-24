@@ -53,14 +53,14 @@
         </attribute>
     </tag>
 
-     <!-- mashup -->
+     <!-- portlet -->
     <tag>
         <description>render a portlet node.</description>
         <name>portletRender</name>
         <tag-class>org.jahia.taglibs.uicomponents.portlets.PortletRenderTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
-            <name>mashupNode</name>
+            <name>portletNode</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
             <type>org.jahia.services.content.JCRNodeWrapper</type>

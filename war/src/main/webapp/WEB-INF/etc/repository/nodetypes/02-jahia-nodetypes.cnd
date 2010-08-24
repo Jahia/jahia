@@ -344,7 +344,7 @@
  + * (jmix:droppableContent) = jmix:droppableContent version
 
 [jnt:absoluteArea] > jnt:content, jmix:renderableArea, jmix:siteComponentContent, jmix:listRestrictions, jmix:mockupStyle
- - j:basenode (weakreference)
+ - j:basenode (weakreference,picker[type='page'])
 
 [jnt:levelAbsoluteArea] > jnt:content, jmix:renderableArea, jmix:siteComponentContent, jmix:listRestrictions, jmix:mockupStyle
  - j:level (long)
@@ -460,10 +460,10 @@
 [jmix:nodeReference] mixin
 
 [jnt:fileReference] > jnt:content, jmix:nodeReference, jmix:editorialContent
- - j:node (weakreference) < jnt:file
+ - j:node (weakreference,picker[type='file']) < jnt:file
 
 [jnt:imageReference] > jnt:content, jmix:nodeReference, jmix:editorialContent
- - j:node (weakreference) < jmix:image
+ - j:node (weakreference,picker[type='image']) < jmix:image
  - j:alternateText (string)
 
 [jnt:contentReference] > jnt:content, jmix:nodeReference, jmix:editorialContent
@@ -563,7 +563,7 @@
  + * (jnt:portletList)
 
 [jnt:portletReference] > jnt:content,  jmix:nodeReference, jmix:editorialContent
- - j:node (weakreference) < jnt:portlet
+ - j:node (weakreference,picker[type='portlet']) < jnt:portlet
 
 //---------------------------------------------------------
 // Internal //

@@ -46,12 +46,12 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 /**
- * Form for creating new Google gadget mashup.
+ * Form for creating new Google gadget portlet.
  * User: jahia
  * Date: 27 f�vr. 2009
  * Time: 16:43:07
  */
-public abstract class FormQuickGoogleGadget extends FormQuickMashup {
+public abstract class FormQuickGoogleGadget extends FormQuickPortlet {
 
     public FormQuickGoogleGadget(String folderPath) {
         super(folderPath);
@@ -90,7 +90,7 @@ public abstract class FormQuickGoogleGadget extends FormQuickMashup {
                 }
                 JahiaContentManagementService.App.getInstance().createGoogleGadgetPortletInstance(getFolderPath(), nameField.getValue(), scriptField.getValue(),new BaseAsyncCallback<GWTJahiaNode>() {
                     public void onSuccess(GWTJahiaNode gwtJahiaNode) {
-                        onMashupCreated();
+                        onPortletCreated();
                         if (getParent() instanceof Window) {
                             ((Window) getParent()).hide();
                         }

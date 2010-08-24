@@ -40,9 +40,7 @@ import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.button.Button;
 
@@ -54,11 +52,11 @@ import java.util.ArrayList;
  * Date: 25 nov. 2008
  * Time: 10:28:09
  */
-public class PortletRoleCard extends MashupWizardCard {
+public class PortletRoleCard extends PortletWizardCard {
     private AclEditor aclEditor;
 
     public PortletRoleCard() {
-        super(Messages.get("org.jahia.engines.MashupsManager.wizard.rolesperm.label", "Roles permissions"), Messages.get("org.jahia.engines.MashupsManager.wizard.rolesperm.description.label", "Set roles permissions"));
+        super(Messages.get("org.jahia.engines.PortletsManager.wizard.rolesperm.label", "Roles permissions"), Messages.get("org.jahia.engines.PortletsManager.wizard.rolesperm.description.label", "Set roles permissions"));
     }
 
     public void next() {
@@ -94,15 +92,15 @@ public class PortletRoleCard extends MashupWizardCard {
                 }
             });
         } else {
-            add(new Label(Messages.get("org.jahia.engines.MashupsManager.wizard.roles.any", "The selected portlets defines any roles.")));
+            add(new Label(Messages.get("org.jahia.engines.PortletsManager.wizard.roles.any", "The selected portlets defines any roles.")));
         }
     }
 
     private void initAclEditor(GWTJahiaNodeACL acl) {
         aclEditor = new AclEditor(acl, getPortletWizardWindow().getParentNode().getAclContext());
         aclEditor.setAclGroup(JCRClientUtils.ROLES_ACL);
-        aclEditor.setAddUsersLabel(Messages.get("org.jahia.engines.MashupsManager.wizard.roles.adduser.label", "Add rode-user permission"));
-        aclEditor.setAddGroupsLabel(Messages.get("org.jahia.engines.MashupsManager.wizard.roles.addgroup.label", "Add rode-group permission"));
+        aclEditor.setAddUsersLabel(Messages.get("org.jahia.engines.PortletsManager.wizard.roles.adduser.label", "Add rode-user permission"));
+        aclEditor.setAddGroupsLabel(Messages.get("org.jahia.engines.PortletsManager.wizard.roles.addgroup.label", "Add rode-group permission"));
         Button saveButton = aclEditor.getSaveButton();
         saveButton.setVisible(false);
 

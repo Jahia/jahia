@@ -64,9 +64,9 @@ public final class JCRClientUtils {
 
     public final static String ALL_FILES = "files";
 
-    public final static String MY_MASHUP_REPOSITORY = "myMashupRepository";
-    public final static String SHARED_MASHUP_REPOSITORY = "sharedMashupRepository";
-    public final static String WEBSITE_MASHUP_REPOSITORY = "websiteMashupRepository";
+    public final static String MY_MASHUP_REPOSITORY = "myPortletRepository";
+    public final static String SHARED_MASHUP_REPOSITORY = "sharedPortletRepository";
+    public final static String WEBSITE_MASHUP_REPOSITORY = "websitePortletRepository";
 
     public final static String CATEGORY_REPOSITORY = "categoryRepository";
     public final static String TAG_REPOSITORY = "tagRepository";
@@ -83,7 +83,7 @@ public final class JCRClientUtils {
     public final static String MODES_ACL = "modes";
     public final static String ROLES_ACL = "roles";
 
-    public final static String ALL_MASHUPS = "mashups";
+    public final static String ALL_MASHUPS = "portlets";
 
     public final static String ALL_CONTENT = "contents";
 

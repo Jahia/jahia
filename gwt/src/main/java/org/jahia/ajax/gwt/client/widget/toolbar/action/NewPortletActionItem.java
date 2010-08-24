@@ -29,27 +29,25 @@
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
+package org.jahia.ajax.gwt.client.widget.toolbar.action;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
+import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 
 /**
- * Calls the "New mashup folder" dialog.
- * 
- * @author Sergiy Shyrkov
- */
-public class NewMashupFolderActionItem extends BaseActionItem {
-
-    private static final long serialVersionUID = 5025003057041235936L;
-
+ * Created by IntelliJ IDEA.
+* User: toto
+* Date: Sep 25, 2009
+* Time: 6:58:25 PM
+* To change this template use File | Settings | File Templates.
+*/
+public class NewPortletActionItem extends BaseActionItem  {
     public void onComponentSelection() {
-        ContentActions.createNode(linker, getGwtToolbarItem().getTitle(), "jnt:portletList");
+        ContentActions.showPortletWizard(linker);
     }
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.isMainSelection() && lh.isParentWriteable() || lh.isTableSelection() && lh.isSingleFolder()
-                && lh.isWriteable());
+        setEnabled(lh.isMainSelection() && lh.isParentWriteable() || lh.isTableSelection() && lh.isSingleFolder() && lh.isWriteable());
     }
 }

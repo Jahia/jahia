@@ -58,18 +58,18 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Side panel tab item for browsing mashup repository.
+ * Side panel tab item for browsing portlet repository.
  * User: toto
  * Date: Dec 21, 2009
  * Time: 2:22:24 PM
  */
-class MashupBrowseTabItem extends BrowseTabItem {
+class PortletBrowseTabItem extends BrowseTabItem {
     protected LayoutContainer contentContainer;
     protected ListLoader<ListLoadResult<GWTJahiaNode>> listLoader;
     protected ListStore<GWTJahiaNode> contentStore;
     protected ImageDragSource dragSource;
 
-    public MashupBrowseTabItem(GWTSidePanelTab config) {
+    public PortletBrowseTabItem(GWTSidePanelTab config) {
         super(config);
 
         contentContainer = new LayoutContainer();
@@ -110,7 +110,7 @@ class MashupBrowseTabItem extends BrowseTabItem {
         ThumbsListView listView = new ThumbsListView(true);
         listView.setStyleAttribute("overflow-x", "hidden");
         listView.setStore(contentStore);
-        listView.setTemplate(getMashupTemplate());
+        listView.setTemplate(getPortletTemplate());
         contentContainer.add(listView);
 
         tree.setContextMenu(createContextMenu(config.getTreeContextMenu(), tree.getSelectionModel()));
@@ -189,11 +189,11 @@ class MashupBrowseTabItem extends BrowseTabItem {
     }
 
     /**
-     * Mashup template
+     * Portlet template
      *
      * @return
      */
-    public native String getMashupTemplate() /*-{
+    public native String getPortletTemplate() /*-{
     return ['<tpl for=".">',
         '<div style="padding: 5px ;border-bottom: 1px solid #D9E2F4;float: left;width: 100%;" class="thumb-wrap" id="{name}">',
         '<div><div style="width: 140px; float: left; text-align: center;" class="thumb">{nodeImg}</div>',

@@ -101,25 +101,25 @@ background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow.gif);
 .x-viewport-filemanager .x-toolbar-first .x-btn-mc em.x-btn-arrow {
 background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow.gif);
 }
-/*Mashup Manager */
-.x-viewport-mashupmanager .x-toolbar-first {
+/*Portlet Manager */
+.x-viewport-portletmanager .x-toolbar-first {
 	background:none !important;
-	background : #333333 url(../images/xtheme-jahia-andromeda/header/toolbar/mashupManagerMode-bg.png) no-repeat top right !important;
+	background : #333333 url(../images/xtheme-jahia-andromeda/header/toolbar/portletManagerMode-bg.png) no-repeat top right !important;
 	border-color:#333333!important;
 }
-.x-viewport-mashupmanager .x-toolbar-first button {
+.x-viewport-portletmanager .x-toolbar-first button {
 	color:#fff !important;
 }	
-.x-viewport-mashupmanager .x-toolbar-first .x-btn-tl, .x-viewport-mashupmanager .x-toolbar-first .x-btn-tr, .x-viewport-mashupmanager .x-toolbar-first .x-btn-tc, .x-viewport-mashupmanager .x-toolbar-first .x-btn-ml, .x-viewport-mashupmanager .x-toolbar-first .x-btn-mr, .x-viewport-mashupmanager .x-toolbar-first .x-btn-mc, .x-viewport-mashupmanager .x-toolbar-first .x-btn-bl, .x-viewport-mashupmanager .x-toolbar-first .x-btn-br, .x-viewport-mashupmanager .x-toolbar-first .x-btn-bc{
+.x-viewport-portletmanager .x-toolbar-first .x-btn-tl, .x-viewport-portletmanager .x-toolbar-first .x-btn-tr, .x-viewport-portletmanager .x-toolbar-first .x-btn-tc, .x-viewport-portletmanager .x-toolbar-first .x-btn-ml, .x-viewport-portletmanager .x-toolbar-first .x-btn-mr, .x-viewport-portletmanager .x-toolbar-first .x-btn-mc, .x-viewport-portletmanager .x-toolbar-first .x-btn-bl, .x-viewport-portletmanager .x-toolbar-first .x-btn-br, .x-viewport-portletmanager .x-toolbar-first .x-btn-bc{
 	background-image:url(../images/xtheme-jahia-andromeda/header/button/btn.png)!important;
 }
-.x-viewport-mashupmanager .x-toolbar-first .xtb-sep {
+.x-viewport-portletmanager .x-toolbar-first .xtb-sep {
 	background-image:url(../images/xtheme-jahia-andromeda/header/grid/grid-split.gif) !important;
 }
-.x-viewport-mashupmanager .x-toolbar-first .x-btn-over button {
+.x-viewport-portletmanager .x-toolbar-first .x-btn-over button {
     color:#000 !important;
 }
-.x-viewport-mashupmanager .x-toolbar-first .x-btn-mc em.x-btn-arrow {
+.x-viewport-portletmanager .x-toolbar-first .x-btn-mc em.x-btn-arrow {
 background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow.gif);
 }
 

@@ -88,7 +88,7 @@ public class ApplicationsManagerServiceTest extends TestCase {
     public void testEntryPointInstance() throws Exception {
         ApplicationBean applicationBean = applicationsManagerService.getApplications().get(0);
         EntryPointDefinition definition = applicationBean.getEntryPointDefinitions().get(0);
-        final EntryPointInstance instance = applicationsManagerService.createEntryPointInstance(definition,"/shared/mashups");
+        final EntryPointInstance instance = applicationsManagerService.createEntryPointInstance(definition,"/shared/portlets");
         assertNotNull(instance);
         assertEquals(definition.getContext()+"."+definition.getName(),instance.getDefName());
         assertEquals(instance,applicationsManagerService.getEntryPointInstance(instance.getID()));

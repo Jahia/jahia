@@ -177,7 +177,7 @@
     background: url( ../images/min/filemanager.png ) no-repeat scroll 0 center !important;
 }
 
-.gwt-toolbar-icon-mashupmanager-min {
+.gwt-toolbar-icon-portletmanager-min {
     background: url( ../images/min/application_server.png ) no-repeat scroll 0 center !important;
 }
 
@@ -349,7 +349,7 @@
     background: url( ../images/normal/filemanager.png ) no-repeat scroll 0 center !important;
 }
 
-.gwt-toolbar-icon-mashupmanager-normal {
+.gwt-toolbar-icon-portletmanager-normal {
     background: url( ../images/normal/application_server.png ) no-repeat scroll 0 center !important;
 }
 

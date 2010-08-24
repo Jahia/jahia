@@ -74,7 +74,7 @@ public class PortletWizardWindow extends AddContentWizardWindow {
 
     @Override
     public String getHeaderTitle() {
-        return Messages.get("label.newMashup", "Add mashup");
+        return Messages.get("label.newPortlet", "Add portlet");
     }
     
 }

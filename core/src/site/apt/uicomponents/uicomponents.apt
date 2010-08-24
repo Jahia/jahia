@@ -279,7 +279,7 @@ Jahia Crazy Jane - Core module - UiComponents framework
                 <ref bean="sidePanelTab.content"/>
                 <ref bean="sidePanelTab.images"/>
                 <ref bean="sidePanelTab.files"/>
-                <ref bean="sidePanelTab.mashups"/>
+                <ref bean="sidePanelTab.portlets"/>
                 <ref bean="sidePanelTab.search"/>
                 <ref bean="sidePanelTab.workflow"/>
             </list>
@@ -319,7 +319,7 @@ Jahia Crazy Jane - Core module - UiComponents framework
                 <ref bean="sidePanelTab.content"/>
                 <ref bean="sidePanelTab.images"/>
                 <ref bean="sidePanelTab.files"/>
-                <ref bean="sidePanelTab.mashups"/>
+                <ref bean="sidePanelTab.portlets"/>
                 <ref bean="sidePanelTab.search"/>
                 <ref bean="sidePanelTab.workflow"/>
             </list>

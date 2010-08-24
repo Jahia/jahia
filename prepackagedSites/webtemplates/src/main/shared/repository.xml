@@ -11,7 +11,7 @@
                     <imports j:nodename="imports" jcr:created="2009-05-19T15:20:25.163+02:00" jcr:lastModified="2009-05-19T15:20:25.370+02:00" jcr:createdBy="author" jcr:primaryType="jnt:importDropBox" jcr:uuid="0cda9a04-2582-41d7-a41d-8f2b6fed4e3b" jcr:lastModifiedBy="author" j:fullpath="/users/author/files/private/imports"></imports>
                 </private>
             </files>
-            <mashups j:nodename="mashups" jcr:created="2009-05-19T15:20:25.163+02:00" jcr:lastModified="2009-05-19T15:20:25.373+02:00" jcr:createdBy="author" jcr:primaryType="jnt:folder" jcr:uuid="ba11bccc-1c0b-432d-8d8b-3464b580290c" jcr:lastModifiedBy="author" j:fullpath="/users/author/mashups"></mashups>
+            <portlets j:nodename="portlets" jcr:created="2009-05-19T15:20:25.163+02:00" jcr:lastModified="2009-05-19T15:20:25.373+02:00" jcr:createdBy="author" jcr:primaryType="jnt:folder" jcr:uuid="ba11bccc-1c0b-432d-8d8b-3464b580290c" jcr:lastModifiedBy="author" j:fullpath="/users/author/portlets"></portlets>
             <j:acl jcr:primaryType="jnt:acl">
                 <GRANT_u_author j:protected="false" jcr:primaryType="jnt:ace" j:principal="u:author" j:privileges="jcr:read jcr:write" j:aceType="GRANT"></GRANT_u_author>
                 <DENY_u_author j:protected="false" jcr:primaryType="jnt:ace" j:principal="u:author" j:privileges="" j:aceType="DENY"></DENY_u_author>
@@ -29,7 +29,7 @@
                     <imports j:nodename="imports" jcr:created="2009-05-19T15:20:25.432+02:00" jcr:lastModified="2009-05-19T15:20:25.575+02:00" jcr:createdBy="publisher" jcr:primaryType="jnt:importDropBox" jcr:uuid="c1a44595-0961-4aa0-a438-8a958ecb570c" jcr:lastModifiedBy="publisher" j:fullpath="/users/publisher/files/private/imports"></imports>
                 </private>
             </files>
-            <mashups j:nodename="mashups" jcr:created="2009-05-19T15:20:25.432+02:00" jcr:lastModified="2009-05-19T15:20:25.577+02:00" jcr:createdBy="publisher" jcr:primaryType="jnt:folder" jcr:uuid="292a14b4-e2ec-43fa-bfab-923ba4bca0ba" jcr:lastModifiedBy="publisher" j:fullpath="/users/publisher/mashups"></mashups>
+            <portlets j:nodename="portlets" jcr:created="2009-05-19T15:20:25.432+02:00" jcr:lastModified="2009-05-19T15:20:25.577+02:00" jcr:createdBy="publisher" jcr:primaryType="jnt:folder" jcr:uuid="292a14b4-e2ec-43fa-bfab-923ba4bca0ba" jcr:lastModifiedBy="publisher" j:fullpath="/users/publisher/portlets"></portlets>
             <j:acl jcr:primaryType="jnt:acl">
                 <GRANT_u_publisher j:protected="false" jcr:primaryType="jnt:ace" j:principal="u:publisher" j:privileges="jcr:read jcr:write" j:aceType="GRANT"></GRANT_u_publisher>
                 <DENY_u_publisher j:protected="false" jcr:primaryType="jnt:ace" j:principal="u:publisher" j:privileges="" j:aceType="DENY"></DENY_u_publisher>
@@ -45,7 +45,7 @@
                     <imports j:nodename="imports" jcr:created="2009-05-19T15:20:25.631+02:00" jcr:lastModified="2009-05-19T15:20:25.773+02:00" jcr:createdBy="siteadmin" jcr:primaryType="jnt:importDropBox" jcr:uuid="7b2eef0c-f385-496e-8405-15d1f9d353f5" jcr:lastModifiedBy="siteadmin" j:fullpath="/users/siteadmin/files/private/imports"></imports>
                 </private>
             </files>
-            <mashups j:nodename="mashups" jcr:created="2009-05-19T15:20:25.631+02:00" jcr:lastModified="2009-05-19T15:20:25.774+02:00" jcr:createdBy="siteadmin" jcr:primaryType="jnt:folder" jcr:uuid="ee7cf6d6-f8ef-4248-800a-b0cf26eafeef" jcr:lastModifiedBy="siteadmin" j:fullpath="/users/siteadmin/mashups"></mashups>
+            <portlets j:nodename="portlets" jcr:created="2009-05-19T15:20:25.631+02:00" jcr:lastModified="2009-05-19T15:20:25.774+02:00" jcr:createdBy="siteadmin" jcr:primaryType="jnt:folder" jcr:uuid="ee7cf6d6-f8ef-4248-800a-b0cf26eafeef" jcr:lastModifiedBy="siteadmin" j:fullpath="/users/siteadmin/portlets"></portlets>
             <j:acl jcr:primaryType="jnt:acl">
                 <GRANT_u_siteadmin j:protected="false" jcr:primaryType="jnt:ace" j:principal="u:siteadmin" j:privileges="jcr:read jcr:write" j:aceType="GRANT"></GRANT_u_siteadmin>
                 <DENY_u_siteadmin j:protected="false" jcr:primaryType="jnt:ace" j:principal="u:siteadmin" j:privileges="" j:aceType="DENY"></DENY_u_siteadmin>
@@ -61,7 +61,7 @@
                     <imports j:nodename="imports" jcr:created="2009-05-19T15:20:25.815+02:00" jcr:lastModified="2009-05-19T15:20:25.970+02:00" jcr:createdBy="visitor" jcr:primaryType="jnt:importDropBox" jcr:uuid="d5026084-783a-4f76-a00e-cab36f71b9e5" jcr:lastModifiedBy="visitor" j:fullpath="/users/visitor/files/private/imports"></imports>
                 </private>
             </files>
-            <mashups j:nodename="mashups" jcr:created="2009-05-19T15:20:25.815+02:00" jcr:lastModified="2009-05-19T15:20:25.972+02:00" jcr:createdBy="visitor" jcr:primaryType="jnt:folder" jcr:uuid="55e5480e-8ec5-44c8-8d10-9c52d2d3fcd8" jcr:lastModifiedBy="visitor" j:fullpath="/users/visitor/mashups"></mashups>
+            <portlets j:nodename="portlets" jcr:created="2009-05-19T15:20:25.815+02:00" jcr:lastModified="2009-05-19T15:20:25.972+02:00" jcr:createdBy="visitor" jcr:primaryType="jnt:folder" jcr:uuid="55e5480e-8ec5-44c8-8d10-9c52d2d3fcd8" jcr:lastModifiedBy="visitor" j:fullpath="/users/visitor/portlets"></portlets>
             <j:acl jcr:primaryType="jnt:acl">
                 <GRANT_u_visitor j:protected="false" jcr:primaryType="jnt:ace" j:principal="u:visitor" j:privileges="jcr:read jcr:write" j:aceType="GRANT"></GRANT_u_visitor>
                 <DENY_u_visitor j:protected="false" jcr:primaryType="jnt:ace" j:principal="u:visitor" j:privileges="" j:aceType="DENY"></DENY_u_visitor>

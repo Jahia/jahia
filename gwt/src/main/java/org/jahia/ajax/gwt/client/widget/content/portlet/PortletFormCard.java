@@ -33,10 +33,9 @@
 package org.jahia.ajax.gwt.client.widget.content.portlet;
 
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.data.GWTJahiaCreatePortletInitBean;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
-import org.jahia.ajax.gwt.client.data.GWTJahiaCreateMashupInitBean;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -53,11 +52,11 @@ import java.util.*;
  * Date: 2 d�c. 2008
  * Time: 17:21:06
  */
-public class PortletFormCard extends MashupWizardCard {
+public class PortletFormCard extends PortletWizardCard {
     private PropertiesEditor pe;
 
     public PortletFormCard() {
-        super(Messages.get("label.parameters","Parameters"), Messages.get("org.jahia.engines.MashupsManager.wizard.parameters.edit.label","Edit parameters"));
+        super(Messages.get("label.parameters","Parameters"), Messages.get("org.jahia.engines.PortletsManager.wizard.parameters.edit.label","Edit parameters"));
     }
 
     public void createUI() {
@@ -77,8 +76,8 @@ public class PortletFormCard extends MashupWizardCard {
 
     // laod form asyn
     private void createUIAsync() {
-        JahiaContentManagementService.App.getInstance().initializeCreateMashupEngine(getGwtJahiaNewPortletInstance().getGwtJahiaPortletDefinition().getPortletType(), getParentNode().getPath(), new BaseAsyncCallback<GWTJahiaCreateMashupInitBean>() {
-            public void onSuccess(GWTJahiaCreateMashupInitBean result) {
+        JahiaContentManagementService.App.getInstance().initializeCreatePortletEngine(getGwtJahiaNewPortletInstance().getGwtJahiaPortletDefinition().getPortletType(), getParentNode().getPath(), new BaseAsyncCallback<GWTJahiaCreatePortletInitBean>() {
+            public void onSuccess(GWTJahiaCreatePortletInitBean result) {
                 List<GWTJahiaNodeType> list = new ArrayList<GWTJahiaNodeType>(1);
                 list.add(result.getNodeType());
                 Map<String, GWTJahiaNodeProperty> defaultValues = new HashMap<String, GWTJahiaNodeProperty>();

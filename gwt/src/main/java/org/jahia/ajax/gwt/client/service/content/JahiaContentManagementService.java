@@ -37,13 +37,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.data.GWTJahiaCreateEngineInitBean;
-import org.jahia.ajax.gwt.client.data.GWTJahiaCreateMashupInitBean;
-import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
-import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
-import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
-import org.jahia.ajax.gwt.client.data.GWTJahiaSearchQuery;
-import org.jahia.ajax.gwt.client.data.GWTRenderResult;
+import org.jahia.ajax.gwt.client.data.*;
+import org.jahia.ajax.gwt.client.data.GWTJahiaCreatePortletInitBean;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsData;
@@ -298,7 +293,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     GWTJahiaCreateEngineInitBean initializeCreateEngine(String typeName, String parentPath) throws GWTJahiaServiceException;
 
-    GWTJahiaCreateMashupInitBean initializeCreateMashupEngine(String typeName, String parentPath) throws GWTJahiaServiceException;
+    GWTJahiaCreatePortletInitBean initializeCreatePortletEngine(String typeName, String parentPath) throws GWTJahiaServiceException;
 
     GWTJahiaEditEngineInitBean initializeEditEngine(String nodePath) throws GWTJahiaServiceException;
 

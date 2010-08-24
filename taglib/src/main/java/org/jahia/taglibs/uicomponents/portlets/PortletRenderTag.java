@@ -57,13 +57,13 @@ import java.io.IOException;
 public class PortletRenderTag extends AbstractJahiaTag {
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(PortletRenderTag.class);
 
-    private Node mashupNode;
+    private Node portletNode;
     private int windowId;
 
     public int doStartTag() {
         try {
-            if(!(mashupNode instanceof JCRNodeWrapper)){
-                logger.error("mashupNode must be an instance of JCRNodeWrapper");
+            if(!(portletNode instanceof JCRNodeWrapper)){
+                logger.error("portletNode must be an instance of JCRNodeWrapper");
                 return SKIP_BODY;               
             }
             if (windowId <= 0) {
@@ -78,7 +78,7 @@ public class PortletRenderTag extends AbstractJahiaTag {
                         PageContext.REQUEST_SCOPE);
                 windowId = globalId;
             }
-            drawMashup(new JCRPortletNode((JCRNodeWrapper) mashupNode), windowId, pageContext.getOut(), pageContext.getServletContext());
+            drawPortlet(new JCRPortletNode((JCRNodeWrapper) portletNode), windowId, pageContext.getOut(), pageContext.getServletContext());
 
         } catch (Exception e) {
             logger.error(e, e);
@@ -90,17 +90,17 @@ public class PortletRenderTag extends AbstractJahiaTag {
     @Override
     public int doEndTag() throws JspException {
         super.doEndTag();
-        mashupNode = null;
+        portletNode = null;
         windowId=-1;
         return EVAL_PAGE;
     }
 
-    public Node getMashupNode() {
-        return mashupNode;
+    public Node getPortletNode() {
+        return portletNode;
     }
 
-    public void setMashupNode(Node mashupNode) {
-        this.mashupNode = mashupNode;
+    public void setPortletNode(Node portletNode) {
+        this.portletNode = portletNode;
     }
 
     public int getWindowId() {
@@ -112,18 +112,18 @@ public class PortletRenderTag extends AbstractJahiaTag {
     }
 
     /**
-     * draw mashup node
+     * draw portlet node
      *
      * @param jcrPortletNode
      * @return
      */
-    public void drawMashup(JCRPortletNode jcrPortletNode, int windowId, final JspWriter out, ServletContext servletContext) throws JahiaException, IOException {
+    public void drawPortlet(JCRPortletNode jcrPortletNode, int windowId, final JspWriter out, ServletContext servletContext) throws JahiaException, IOException {
 
         String appID = null;
         try {
             appID = jcrPortletNode.getUUID();
         } catch (RepositoryException e) {
-            throw new JahiaException("Error rendering mashup", "Error rendering mashup",
+            throw new JahiaException("Error rendering portlet", "Error rendering portlet",
                     JahiaException.APPLICATION_ERROR, JahiaException.ERROR_SEVERITY, e);
         }
 

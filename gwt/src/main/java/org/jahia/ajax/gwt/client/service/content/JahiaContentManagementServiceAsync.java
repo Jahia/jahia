@@ -37,7 +37,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jahia.ajax.gwt.client.data.GWTJahiaCreateEngineInitBean;
-import org.jahia.ajax.gwt.client.data.GWTJahiaCreateMashupInitBean;
+import org.jahia.ajax.gwt.client.data.GWTJahiaCreatePortletInitBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
@@ -308,7 +308,7 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void initializeCreateEngine(String typeName, String parentPath, AsyncCallback<GWTJahiaCreateEngineInitBean> async);
 
-    void initializeCreateMashupEngine(String typeName, String parentPath, AsyncCallback<GWTJahiaCreateMashupInitBean> async);
+    void initializeCreatePortletEngine(String typeName, String parentPath, AsyncCallback<GWTJahiaCreatePortletInitBean> async);
 
     void initializeEditEngine(String nodePath, AsyncCallback<GWTJahiaEditEngineInitBean> async);
 

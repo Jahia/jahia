@@ -39,7 +39,6 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -52,12 +51,12 @@ import java.util.ArrayList;
  * Date: 2 d�c. 2008
  * Time: 17:21:22
  */
-public class PortletModesCard extends MashupWizardCard {
+public class PortletModesCard extends PortletWizardCard {
     private AclEditor modeMappingEditor;
 
 
     public PortletModesCard() {
-        super(Messages.get("org.jahia.engines.MashupsManager.wizard.modesperm.label", "Modes permissions"), Messages.get("org.jahia.engines.MashupsManager.wizard.modesperm.description.label", "Set modes permissions"));
+        super(Messages.get("org.jahia.engines.PortletsManager.wizard.modesperm.label", "Modes permissions"), Messages.get("org.jahia.engines.PortletsManager.wizard.modesperm.description.label", "Set modes permissions"));
     }
 
     public void next() {
@@ -94,15 +93,15 @@ public class PortletModesCard extends MashupWizardCard {
                 }
             });
         } else {
-            add(new Label(Messages.get("org.jahia.engines.MashupsManager.wizard.modesperm.onlyViewMode", "The selected portlets contains only view mode.")));
+            add(new Label(Messages.get("org.jahia.engines.PortletsManager.wizard.modesperm.onlyViewMode", "The selected portlets contains only view mode.")));
         }
     }
 
     private void initModeMappingEditor(GWTJahiaNodeACL acl) {
         modeMappingEditor = new AclEditor(acl, getPortletWizardWindow().getParentNode().getAclContext());
         modeMappingEditor.setAclGroup(JCRClientUtils.MODES_ACL);
-        modeMappingEditor.setAddUsersLabel(Messages.get("org.jahia.engines.MashupsManager.wizard.modes.adduser.label", "Add mode-user permission"));
-        modeMappingEditor.setAddGroupsLabel(Messages.get("org.jahia.engines.MashupsManager.wizard.modes.addgroup.label", "Add mode-group permission"));
+        modeMappingEditor.setAddUsersLabel(Messages.get("org.jahia.engines.PortletsManager.wizard.modes.adduser.label", "Add mode-user permission"));
+        modeMappingEditor.setAddGroupsLabel(Messages.get("org.jahia.engines.PortletsManager.wizard.modes.addgroup.label", "Add mode-group permission"));
         Button saveButton = modeMappingEditor.getSaveButton();
         saveButton.setVisible(false);
         Button restoreButton = modeMappingEditor.getRestoreButton();

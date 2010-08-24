@@ -64,13 +64,13 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Mashup management helper.
+ * Portlet management helper.
  * User: toto
  * Date: Sep 28, 2009
  * Time: 2:43:33 PM
  */
-public class MashupHelper {
-    private static Logger logger = Logger.getLogger(MashupHelper.class);
+public class PortletHelper {
+    private static Logger logger = Logger.getLogger(PortletHelper.class);
 
     private ApplicationsManagerService applicationsManager;
 

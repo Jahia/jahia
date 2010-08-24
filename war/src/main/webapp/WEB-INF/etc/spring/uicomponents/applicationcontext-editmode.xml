@@ -157,7 +157,7 @@
                 <ref bean="sidePanelTab.content"/>
                 <ref bean="sidePanelTab.filesimages"/>
                 <ref bean="sidePanelTab.categories"/>
-                <ref bean="sidePanelTab.mashups"/>
+                <ref bean="sidePanelTab.portlets"/>
                 <ref bean="sidePanelTab.search"/>
             </list>
         </property>
@@ -304,7 +304,7 @@
                 <ref bean="sidePanelTab.content"/>
                 <ref bean="sidePanelTab.filesimages"/>
                 <ref bean="sidePanelTab.categories"/>
-                <ref bean="sidePanelTab.mashups"/>
+                <ref bean="sidePanelTab.portlets"/>
                 <ref bean="sidePanelTab.search"/>
                 <ref bean="sidePanelTab.lastContent"/>
             </list>
@@ -589,14 +589,14 @@
         </property>
         <property name="visibility" value="$site/selector/files-and-images"/>
     </bean>
-    <bean id="sidePanelTab.mashups" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
-        <property name="key" value="mashups"/>
-        <property name="icon" value="tab-mashups"/>
+    <bean id="sidePanelTab.portlets" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
+        <property name="key" value="portlets"/>
+        <property name="icon" value="tab-portlets"/>
         <property name="paths">
             <list>
-                <value>/shared/mashups</value>
-                <value>$site/mashups</value>
-                <value>$user/mashups</value>
+                <value>/shared/portlets</value>
+                <value>$site/portlets</value>
+                <value>$user/portlets</value>
             </list>
         </property>
         <property name="folderTypes" value="jnt:portletList"/>
@@ -609,8 +609,8 @@
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
-                        <ref bean="Toolbar.Item.NewMashupFolder"/>
-                        <ref bean="Toolbar.Item.NewMashup"/>
+                        <ref bean="Toolbar.Item.NewPortletFolder"/>
+                        <ref bean="Toolbar.Item.NewPortlet"/>
                         <ref bean="Toolbar.Item.NewRss"/>
                         <ref bean="Toolbar.Item.NewGadget"/>
                         <ref bean="Toolbar.Item.Separator"/>
@@ -642,7 +642,7 @@
                 <property name="contextMenu" value="true"/>
             </bean>
         </property>
-        <property name="visibility" value="$site/selector/mashups"/>
+        <property name="visibility" value="$site/selector/portlets"/>
     </bean>
 
     <bean id="sidePanelTab.search" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">

@@ -34,7 +34,6 @@ package org.jahia.ajax.gwt.client.widget.content.portlet;
 
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.Window;
 import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
@@ -48,11 +47,11 @@ import org.jahia.ajax.gwt.client.widget.Linker;
  * Date: 4 d�c. 2008
  * Time: 12:31:50
  */
-public class PortletSaveAsCard extends MashupWizardCard {
+public class PortletSaveAsCard extends PortletWizardCard {
     private TextField<String> saveAs = new TextField<String>();
 
     public PortletSaveAsCard() {
-        super(Messages.get("label.finish","Finish"), Messages.get("org.jahia.engines.MashupsManager.wizard.saveas.label",""));
+        super(Messages.get("label.finish","Finish"), Messages.get("org.jahia.engines.PortletsManager.wizard.saveas.label",""));
     }
 
     public void createUI() {
@@ -60,7 +59,7 @@ public class PortletSaveAsCard extends MashupWizardCard {
         FormPanel simple = new FormPanel();
         simple.setFieldWidth(300);
         simple.setLabelWidth(200);
-        saveAs.setFieldLabel(Messages.get("org.jahia.engines.MashupsManager.wizard.saveas.label","Save as"));
+        saveAs.setFieldLabel(Messages.get("org.jahia.engines.PortletsManager.wizard.saveas.label","Save as"));
         saveAs.setAllowBlank(false);
         saveAs.setMinLength(5);
         try {
@@ -79,7 +78,7 @@ public class PortletSaveAsCard extends MashupWizardCard {
 
     public void next() {
         // on  finish
-        String path = "/shared/mashups";
+        String path = "/shared/portlets";
         if (getParentNode() != null) {
             path = getParentNode().getPath();
         }

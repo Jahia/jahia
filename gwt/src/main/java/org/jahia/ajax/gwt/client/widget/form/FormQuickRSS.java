@@ -45,12 +45,12 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.allen_sauer.gwt.log.client.Log;
 
 /**
- * RSS mashup creating form.
+ * RSS portlet creating form.
  * User: jahia
  * Date: 27 f�vr. 2009
  * Time: 16:20:39
  */
-public abstract class FormQuickRSS extends FormQuickMashup {
+public abstract class FormQuickRSS extends FormQuickPortlet {
 
 
     public FormQuickRSS(String folderPath) {
@@ -92,7 +92,7 @@ public abstract class FormQuickRSS extends FormQuickMashup {
                 }
                 JahiaContentManagementService.App.getInstance().createRSSPortletInstance(getFolderPath(), nameField.getValue(), urlField.getValue(), new BaseAsyncCallback<GWTJahiaNode>() {
                     public void onSuccess(GWTJahiaNode gwtJahiaNode) {
-                        onMashupCreated();                        
+                        onPortletCreated();
                         if(getParent() instanceof Window){
                             ((Window)getParent()).hide();
                         }

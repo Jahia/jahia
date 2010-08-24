@@ -10,7 +10,7 @@
 
       </contents>
       <files jcr:primaryType="jnt:folder" />
-      <mashups jcr:primaryType="jnt:portletList" />
+      <portlets jcr:primaryType="jnt:portletList" />
       <themes jcr:primaryType="jnt:folder" />
       <home jcr:mixinTypes="jmix:sitemap jmix:hasDefaultTemplateNode" j:defaultTemplateNode="/templateSets/templates-intranet/templates/base" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" j:templateNode="/templateSets/templates-intranet/templates/base/home" priority="0.5">
         <j:translation_en jcr:title="Home" jcr:language="en" jcr:primaryType="jnt:translation" />

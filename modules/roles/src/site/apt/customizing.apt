@@ -29,7 +29,7 @@ Customizing built-in roles and permissions
 
   * <<<edit-mode>>> - all the tabs of the edit content and create content engine can be toggled using permissions of this group
 
-  * <<<managers>>> - access to different managers (document manager, mashup manager, content manager, etc.) can be granted using these permissions
+  * <<<managers>>> - access to different managers (document manager, portlet manager, content manager, etc.) can be granted using these permissions
 
   * <<<selector>>> - the so called selector (left-side panel) in the edit mode can be customized using this permission group by showing/hiding different selector tabs
 

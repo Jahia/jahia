@@ -49,7 +49,6 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.Style;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,11 +58,11 @@ import java.util.List;
  * Date: 25 nov. 2008
  * Time: 10:25:59
  */
-public class PortletDefinitionCard extends MashupWizardCard {
+public class PortletDefinitionCard extends PortletWizardCard {
     private Grid<GWTJahiaPortletDefinition> grid;
 
     public PortletDefinitionCard() {
-        super(Messages.get("org.jahia.engines.MashupsManager.wizard.portletdef.label", "Mashup"), Messages.get("org.jahia.engines.MashupsManager.wizard.portletdef.label", "Select a portlet definition"));
+        super(Messages.get("org.jahia.engines.PortletsManager.wizard.portletdef.label", "Portlet"), Messages.get("org.jahia.engines.PortletsManager.wizard.portletdef.label", "Select a portlet definition"));
         createUI();
     }
 

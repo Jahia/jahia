@@ -7,7 +7,7 @@
 <div class="content clearfix">
 <div class="left">
 <h3>Corporate Portal</h3>
-<p class="grey">Jahia offers the ability to place portlets or social gadgets on any page of your site as easily as if you were adding a piece of text or a picture. Thanks to its built-in Mashup Center, empowered end users can manage, categorize or instantiate the hundreds of possible micro-applications through a unified and centralized interface, regardless of the underlying technology.</p>
+<p class="grey">Jahia offers the ability to place portlets or social gadgets on any page of your site as easily as if you were adding a piece of text or a picture. Thanks to its built-in Portlet Center, empowered end users can manage, categorize or instantiate the hundreds of possible micro-applications through a unified and centralized interface, regardless of the underlying technology.</p>
 
 </div>
 <div class="left">

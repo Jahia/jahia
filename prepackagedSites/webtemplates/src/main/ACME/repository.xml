@@ -257,8 +257,8 @@
                     </Photos>
                 </Pictures>
             </files>
-            <mashups j:nodename="mashups" jcr:created="2009-05-19T17:13:04.121+02:00" jcr:lastModified="2009-05-19T17:13:22.761+02:00" jcr:createdBy="root" jcr:primaryType="jnt:portletList" jcr:uuid="272ecf6b-abcf-4159-8961-61e9a872eed1" jcr:lastModifiedBy="root" j:fullpath="/sites/ACME/mashups">
-                <RSS_x0020_News j:nodename="RSS News" jcr:created="2009-05-19T17:13:18.779+02:00" jcr:lastModified="2009-05-19T17:13:22.855+02:00" jcr:createdBy="root" jcr:primaryType="jnt:portletList" jcr:mixinTypes="jmix:test" jcr:uuid="b37b48b3-97e4-4d5d-9920-c17f3695e177" jcr:lastModifiedBy="root" j:fullpath="/sites/ACME/mashups/RSS News">
+            <portlets j:nodename="portlets" jcr:created="2009-05-19T17:13:04.121+02:00" jcr:lastModified="2009-05-19T17:13:22.761+02:00" jcr:createdBy="root" jcr:primaryType="jnt:portletList" jcr:uuid="272ecf6b-abcf-4159-8961-61e9a872eed1" jcr:lastModifiedBy="root" j:fullpath="/sites/ACME/portlets">
+                <RSS_x0020_News j:nodename="RSS News" jcr:created="2009-05-19T17:13:18.779+02:00" jcr:lastModified="2009-05-19T17:13:22.855+02:00" jcr:createdBy="root" jcr:primaryType="jnt:portletList" jcr:mixinTypes="jmix:test" jcr:uuid="b37b48b3-97e4-4d5d-9920-c17f3695e177" jcr:lastModifiedBy="root" j:fullpath="/sites/ACME/portlets/RSS News">
                     <CNN_x0020__x0028_c_x0029__x0020_Hot_x0020_Topics_x0020_RSS jcr:title="CNN (c) Hot Topics RSS" j:expirationTime="0" jcr:description="CNN.com delivers up-to-the-minute news and information on the latest top stories, weather, entertainment, politics and more." jcr:primaryType="jnt:rssPortlet" url="http://rss.cnn.com/rss/edition.rss" j:application="$context/rss!JahiaRSSPortlet" jcr:uuid="6e60f1da-567c-467a-ad69-5277951f56b2">
                         <thumbnail jcr:lastModified="2009-01-28T16:17:11.899+01:00" jcr:mimeType="image/gif" jcr:primaryType="jnt:resource" jcr:uuid="cda5cc36-4630-46ce-bebf-fe423f4a36cb"></thumbnail>
                     </CNN_x0020__x0028_c_x0029__x0020_Hot_x0020_Topics_x0020_RSS>
@@ -278,7 +278,7 @@
                         <thumbnail jcr:lastModified="2009-01-28T16:17:38.359+01:00" jcr:mimeType="image/gif" jcr:primaryType="jnt:resource" jcr:uuid="7ccd1292-f047-4dfd-983f-01b752ce8da8"></thumbnail>
                     </National_x0020_Geographic_x0020__x0028_c_x0029__x0020_news>
                 </RSS_x0020_News>
-                <Google_x0020_Gadgets j:nodename="Google Gadgets" jcr:created="2009-05-19T17:13:18.815+02:00" jcr:lastModified="2009-05-19T17:13:22.856+02:00" jcr:createdBy="root" jcr:primaryType="jnt:portletList" jcr:mixinTypes="jmix:test" jcr:uuid="d171836c-1bcd-4045-8d63-74844e1a1b1c" jcr:lastModifiedBy="root" j:fullpath="/sites/ACME/mashups/Google Gadgets">
+                <Google_x0020_Gadgets j:nodename="Google Gadgets" jcr:created="2009-05-19T17:13:18.815+02:00" jcr:lastModified="2009-05-19T17:13:22.856+02:00" jcr:createdBy="root" jcr:primaryType="jnt:portletList" jcr:mixinTypes="jmix:test" jcr:uuid="d171836c-1bcd-4045-8d63-74844e1a1b1c" jcr:lastModifiedBy="root" j:fullpath="/sites/ACME/portlets/Google Gadgets">
                     <Google_x0020__x0028_c_x0029__x0020_Gadget_x0020_-_x0020_Clock j:defaultCategory="" jcr:title="Google (c) Clock Example" j:expirationTime="0" code="&lt;script src=&quot;http://www.gmodules.com/ig/ifr?url=http://www.canbuffi.de/gadgets/clock/clock.xml&amp;amp;up_title=Clock%20%26%20Date&amp;amp;up_time_format=0&amp;amp;up_seconds=1&amp;amp;up_date_format=0&amp;amp;up_dayofweek=1&amp;amp;up_offset_hours=&amp;amp;up_offset_minutes=&amp;amp;up_daylight=0&amp;amp;up_color=red&amp;amp;synd=open&amp;amp;w=320&amp;amp;h=120&amp;amp;title=Google+Clock&amp;amp;lang=en&amp;amp;country=ALL&amp;amp;border=%23ffffff%7C3px%2C1px+solid+%23999999&amp;amp;output=js&quot;&gt;&lt;/script&gt;" jcr:description="Adds a nice digital clock to your iGoogle. You can choose between different time formats (12/24h), different date formats (English, German and French date format), timezones and enable daylight savings. Until now it is translated into German, French, Croatian and Serbian; more translations will foll...  Sebastian Majstorovic - Cologne, Germany." jcr:primaryType="jnt:googleGadgetPortlet" j:application="$context/googlegadget!JahiaGoogleGadget" jcr:uuid="2dea87f7-a95f-4512-82a5-20ec772ac67a">
                         <thumbnail jcr:lastModified="2009-01-28T16:14:28.162+01:00" jcr:mimeType="image/gif" jcr:primaryType="jnt:resource" jcr:uuid="ec3716d6-587d-4889-9165-1fe87c804280"></thumbnail>
                     </Google_x0020__x0028_c_x0029__x0020_Gadget_x0020_-_x0020_Clock>
@@ -302,7 +302,7 @@
                         <thumbnail jcr:lastModified="2009-05-19T17:47:51.215+02:00" jcr:mimeType="image/gif" jcr:primaryType="jnt:resource" jcr:uuid="bd5f94c4-f29f-42b1-9111-fc0fa5bc4637"></thumbnail>
                     </Google_x0020__x0028_c_x0029__x0020_Gadget_x0020_-_x0020_Calendar>
                 </Google_x0020_Gadgets>
-            </mashups>
+            </portlets>
         </ACME>
     </sites>
     <users>

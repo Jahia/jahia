@@ -43,9 +43,9 @@ import org.jahia.ajax.gwt.client.widget.wizard.WizardCard;
  * Date: 4 d�c. 2008
  * Time: 11:09:55
  */
-public abstract class MashupWizardCard extends WizardCard {
+public abstract class PortletWizardCard extends WizardCard {
 
-    public MashupWizardCard(String cardtitle, String text) {
+    public PortletWizardCard(String cardtitle, String text) {
         super(cardtitle, text);
         setLayout(new FitLayout());
     }

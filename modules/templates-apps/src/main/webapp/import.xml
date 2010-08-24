@@ -8,7 +8,7 @@
           </login-to-jahia>
         </site_components>
       </contents>
-      <mashups jcr:primaryType="jnt:portletList"/>
+      <portlets jcr:primaryType="jnt:portletList"/>
       <themes jcr:primaryType="jnt:folder"/>
       <templates jcr:primaryType="jnt:templatesFolder">
         <base jcr:mixinTypes="jmix:renderable" j:template="apps" jcr:primaryType="jnt:masterTemplate">

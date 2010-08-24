@@ -35,11 +35,11 @@ package org.jahia.ajax.gwt.client.data;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 
 /**
- * Initialization data for the "New Mashup" wizard.
+ * Initialization data for the "New Portlet" wizard.
  * 
  * @author Sergiy Shyrkov
  */
-public class GWTJahiaCreateMashupInitBean extends GWTJahiaCreateEngineInitBean {
+public class GWTJahiaCreatePortletInitBean extends GWTJahiaCreateEngineInitBean {
 
     private static final long serialVersionUID = -2361660608693412906L;
 
@@ -48,7 +48,7 @@ public class GWTJahiaCreateMashupInitBean extends GWTJahiaCreateEngineInitBean {
     /**
      * Initializes an instance of this class.
      */
-    public GWTJahiaCreateMashupInitBean() {
+    public GWTJahiaCreatePortletInitBean() {
     }
 
     /**

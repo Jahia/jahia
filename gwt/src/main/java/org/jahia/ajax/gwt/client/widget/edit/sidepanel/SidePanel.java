@@ -50,7 +50,7 @@ import java.util.List;
 
 /**
  * Side panel widget that allows creation of new content using drag and drop from different sources
- * (new content panel, file repository, image repository, page tree, mashups, etc.).
+ * (new content panel, file repository, image repository, page tree, portlets, etc.).
  * User: toto
  * Date: Dec 18, 2009
  * Time: 5:27:33 PM
@@ -82,8 +82,8 @@ public class SidePanel extends ContentPanel {
                 tabItem = new ContentBrowseTabItem(tab);
             } else if (tab.getName().equals("filesimages")) {
                 tabItem = new FileImagesBrowseTabItem(tab);
-            } else if (tab.getName().equals("mashups")) {
-                tabItem = new MashupBrowseTabItem(tab);
+            } else if (tab.getName().equals("portlets")) {
+                tabItem = new PortletBrowseTabItem(tab);
             } else if (tab.getName().equals("search")) {
                 tabItem = new SearchTabItem(tab);
             } else if (tab.getName().equals("categories")) {

@@ -17,7 +17,7 @@
         </j:acl>
 
         <files jcr:primaryType="jnt:folder"/>
-        <mashups jcr:primaryType="jnt:portletList"/>
+        <portlets jcr:primaryType="jnt:portletList"/>
         <portalComponents jcr:primaryType="jnt:contentList"/>
         <contents jcr:primaryType="jnt:contentList"/>
         <conversions jcr:primaryType="jnt:contentList"/>
@@ -44,7 +44,7 @@
                 </private>
             </files>
 
-            <mashups jcr:primaryType="jnt:portletList"/>
+            <portlets jcr:primaryType="jnt:portletList"/>
 
             <contents jcr:primaryType="jnt:contentList"/>
 

@@ -427,11 +427,11 @@ public class ContentActions {
     }
 
     /**
-     * Show mashup wizard form
+     * Show portlet wizard form
      *
      * @param linker
      */
-    public static void showMashupWizard(final Linker linker) {
+    public static void showPortletWizard(final Linker linker) {
         GWTJahiaNode parent = (GWTJahiaNode) linker.getMainNode();
         if (parent == null) {
             final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();

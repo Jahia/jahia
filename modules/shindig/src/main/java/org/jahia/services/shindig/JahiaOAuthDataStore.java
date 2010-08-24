@@ -88,7 +88,7 @@ public class JahiaOAuthDataStore implements OAuthDataStore {
 
     public OAuthConsumer getConsumer(String consumerKey) {
       //try {
-        // TODO we should lookup deployed mashups here for consumerSecret info.
+        // TODO we should lookup deployed portlets here for consumerSecret info.
         /*
         JSONObject app = service.getDb().getJSONObject("apps").getJSONObject(Preconditions.checkNotNull(consumerKey));
         String consumerSecret = app.getString("consumerSecret");

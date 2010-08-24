@@ -87,7 +87,7 @@
         <property name="items">
             <list>
                 <ref bean="Toolbar.Item.FileManager"/>
-                <ref bean="Toolbar.Item.MashupManager"/>
+                <ref bean="Toolbar.Item.PortletManager"/>
                 <ref bean="Toolbar.Item.ContentManager"/>
                 <ref bean="Toolbar.Item.CategoryManager"/>
                 <ref bean="Toolbar.Item.TagManager"/>
@@ -689,16 +689,16 @@
         </property>
     </bean>
     
-    <!-- Mashup Manager -->
-    <bean id="Toolbar.Item.MashupManager" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <!-- Portlet Manager -->
+    <bean id="Toolbar.Item.PortletManager" class="org.jahia.services.uicomponents.bean.toolbar.Item">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
         </property>
-        <property name="titleKey" value="label.mashupmanager"/>
-        <property name="icon" value="mashupManager"/>
+        <property name="titleKey" value="label.portletmanager"/>
+        <property name="icon" value="portletManager"/>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="siteActionPermission" value="managers/mashup-manager"/>
+                <property name="siteActionPermission" value="managers/portlet-manager"/>
             </bean>
         </property>
 
@@ -706,7 +706,7 @@
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="url"/>
-                    <property name="value" value="$context/engines/manager.jsp?conf=mashupmanager&amp;site=$siteuuid"/>
+                    <property name="value" value="$context/engines/manager.jsp?conf=portletmanager&amp;site=$siteuuid"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="width"/>
@@ -1064,21 +1064,21 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewGadgetActionItem"/>
         </property>
-        <property name="titleKey" value="label.newGoogleGadgetMashup"/>
+        <property name="titleKey" value="label.newGoogleGadgetPortlet"/>
         <property name="icon" value="newGadget"/>
     </bean>
 
-    <bean id="Toolbar.Item.NewMashup" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.NewPortlet" class="org.jahia.services.uicomponents.bean.toolbar.Item">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewMashupActionItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewPortletActionItem"/>
         </property>
-        <property name="titleKey" value="label.newMashup"/>
-        <property name="icon" value="newMashup"/>
+        <property name="titleKey" value="label.newPortlet"/>
+        <property name="icon" value="newPortlet"/>
     </bean>
 
-    <bean id="Toolbar.Item.NewMashupFolder" class="org.jahia.services.uicomponents.bean.toolbar.Item" parent="Toolbar.Item.NewFolder">
+    <bean id="Toolbar.Item.NewPortletFolder" class="org.jahia.services.uicomponents.bean.toolbar.Item" parent="Toolbar.Item.NewFolder">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewMashupFolderActionItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewPortletFolderActionItem"/>
         </property>
     </bean>
 
@@ -1086,7 +1086,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewRssActionItem"/>
         </property>
-        <property name="titleKey" value="label.newRssMashup"/>
+        <property name="titleKey" value="label.newRssPortlet"/>
         <property name="icon" value="newRss"/>
     </bean>
 

@@ -162,10 +162,10 @@
         <!-- accordion panels-->
         <property name="repositories">
             <list>
-                <ref bean="repository.website"/>
-                <ref bean="repository.shared"/>
-                <ref bean="repository.myexternal"/>
-                <ref bean="repository.my"/>
+                <ref bean="repository.websitefiles"/>
+                <ref bean="repository.sharedfiles"/>
+                <ref bean="repository.myexternalfiles"/>
+                <ref bean="repository.myfiles"/>
                 <ref bean="repository.users"/>
             </list>
         </property>
@@ -207,8 +207,8 @@
         </property>
     </bean>
 
-    <!-- mashup manager -->
-    <bean id="mashupmanager" parent="abstractmanager">
+    <!-- portlet manager -->
+    <bean id="portletmanager" parent="abstractmanager">
         <property name="nodeTypes" value="jnt:portlet"/>
         <property name="folderTypes" value="jnt:portletList"/>
         <property name="toolbarSet">
@@ -224,8 +224,8 @@
                                                   value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
                                         <property name="items">
                                             <list>
-                                                <ref bean="Toolbar.Item.NewMashupFolder"/>
-                                                <ref bean="Toolbar.Item.NewMashup"/>
+                                                <ref bean="Toolbar.Item.NewPortletFolder"/>
+                                                <ref bean="Toolbar.Item.NewPortlet"/>
                                                 <ref bean="Toolbar.Item.NewRss"/>
                                                 <ref bean="Toolbar.Item.NewGadget"/>
                                             </list>
@@ -236,7 +236,7 @@
                                 </list>
                             </property>
                         </bean>
-                        <ref bean="org.jahia.toolbar.manager.mashups.shortcuts"/>
+                        <ref bean="org.jahia.toolbar.manager.portlets.shortcuts"/>
                     </list>
                 </property>
             </bean>
@@ -252,9 +252,9 @@
         <!-- accordion panels-->
         <property name="repositories">
             <list>
-                <ref bean="repository.websitemahsup"/>
-                <ref bean="repository.shared"/>
-                <ref bean="repository.mymashup"/>
+                <ref bean="repository.websiteportlets"/>
+                <ref bean="repository.sharedfiles"/>
+                <ref bean="repository.myportlets"/>
             </list>
         </property>
         <!-- tabs -->
@@ -705,7 +705,7 @@
                                                 <ref bean="Toolbar.Item.NewContentList"/>
                                                 <ref bean="Toolbar.Item.NewContent"/>
                                                 <ref bean="Toolbar.Item.NewPage"/>
-                                                <ref bean="Toolbar.Item.NewMashup"/>
+                                                <ref bean="Toolbar.Item.NewPortlet"/>
                                                 <ref bean="Toolbar.Item.NewRss"/>
                                                 <ref bean="Toolbar.Item.NewGadget"/>
                                                 <ref bean="Toolbar.Item.upload"/>
@@ -1055,9 +1055,9 @@
         <!-- accordion panels-->
         <property name="repositories">
             <list>
-                <ref bean="repository.website"/>
-                <ref bean="repository.shared"/>
-                <ref bean="repository.myexternal"/>
+                <ref bean="repository.websitefiles"/>
+                <ref bean="repository.sharedfiles"/>
+                <ref bean="repository.myexternalfiles"/>
                 <ref bean="repository.users"/>
             </list>
         </property>
@@ -1137,9 +1137,9 @@
         <!-- accordion panels-->
         <property name="repositories">
             <list>
-                <ref bean="repository.website"/>
-                <ref bean="repository.shared"/>
-                <ref bean="repository.myexternal"/>
+                <ref bean="repository.websitefiles"/>
+                <ref bean="repository.sharedfiles"/>
+                <ref bean="repository.myexternalfiles"/>
                 <ref bean="repository.users"/>
             </list>
         </property>
@@ -1206,9 +1206,9 @@
         <!-- accordion panels-->
         <property name="repositories">
             <list>
-                <ref bean="repository.website"/>
-                <ref bean="repository.shared"/>
-                <ref bean="repository.myexternal"/>
+                <ref bean="repository.websitefiles"/>
+                <ref bean="repository.sharedfiles"/>
+                <ref bean="repository.myexternalfiles"/>
                 <ref bean="repository.users"/>
             </list>
         </property>
@@ -1221,6 +1221,77 @@
             </list>
         </property>
     </bean>
+
+    <bean id="portletpicker" parent="abstractmanager">
+        <property name="nodeTypes" >
+            <list>
+                <value>jnt:portlet</value>
+            </list>
+        </property>
+        <property name="folderTypes">
+            <list>
+                <value>jnt:portletList</value>
+            </list>
+        </property>
+
+        <property name="enableTextMenu" value="false"/>
+        <property name="toolbarSet">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
+                <property name="toolbars">
+                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                        <property name="items">
+                            <list>
+                                <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
+                                    <property name="layout" value="button"/>
+                                    <property name="items">
+                                        <list>
+                                            <ref bean="Toolbar.Item.NewPortletFolder"/>
+                                            <ref bean="Toolbar.Item.NewPortlet"/>
+                                            <ref bean="Toolbar.Item.NewRss"/>
+                                            <ref bean="Toolbar.Item.NewGadget"/>
+                                            <ref bean="Toolbar.Item.Rename"/>
+                                            <ref bean="Toolbar.Item.Delete"/>
+                                            <ref bean="Toolbar.Item.Copy"/>
+                                            <ref bean="Toolbar.Item.Cut"/>
+                                            <ref bean="Toolbar.Item.Paste"/>
+                                            <ref bean="Toolbar.Item.PasteReference"/>
+                                            <ref bean="Toolbar.Item.Separator"/>
+                                            <ref bean="Toolbar.Item.ListView"/>
+                                            <ref bean="Toolbar.Item.ThumbsView"/>
+                                            <ref bean="Toolbar.Item.Detailedview"/>
+                                        </list>
+                                    </property>
+                                </bean>
+                            </list>
+                        </property>
+                    </bean>
+                </property>
+            </bean>
+        </property>
+        <property name="displaySearchInPage" value="false"/>
+        <property name="displaySearchInContent" value="false"/>
+        <property name="displaySearchInFile" value="false"/>
+        <property name="displaySearchInTag" value="true"/>
+        <property name="useCheckboxForSelection" value="false"/>
+        <!-- accordion panels-->
+        <property name="repositories">
+            <list>
+                <ref bean="repository.websiteportlets"/>
+                <ref bean="repository.sharedportlets"/>
+                <ref bean="repository.myportlets"/>
+            </list>
+        </property>
+
+        <!-- table columns-->
+        <property name="tableColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>icon,40,empty</value>
+                <value>name,*,label.name</value>
+                <value>size,140,label.size</value>
+            </list>
+        </property>
+    </bean>
+
 
     <!-- Page picker -->
     <bean id="pagepicker" parent="abstractmanager">
@@ -1426,7 +1497,7 @@
                             <ref bean="Toolbar.Item.NewContentList"/>
                             <ref bean="Toolbar.Item.NewContent"/>
                             <ref bean="Toolbar.Item.NewPage"/>
-                            <ref bean="Toolbar.Item.NewMashup"/>
+                            <ref bean="Toolbar.Item.NewPortlet"/>
                             <ref bean="Toolbar.Item.NewRss"/>
                             <ref bean="Toolbar.Item.NewGadget"/>
                             <ref bean="Toolbar.Item.upload"/>
@@ -1469,8 +1540,8 @@
     </bean>
     <!-- end of the Document Manager -->
 
-    <!-- Mashup Manager -->
-    <bean id="org.jahia.toolbar.manager.mashups.shortcuts" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+    <!-- portlet Manager -->
+    <bean id="org.jahia.toolbar.manager.portlets.shortcuts" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
         <property name="contextMenu" value="true"/>
         <property name="items">
             <list>
@@ -1478,8 +1549,8 @@
                     <property name="layout" value="button"/>
                     <property name="items">
                         <list>
-                            <ref bean="Toolbar.Item.NewMashupFolder"/>
-                            <ref bean="Toolbar.Item.NewMashup"/>
+                            <ref bean="Toolbar.Item.NewPortletFolder"/>
+                            <ref bean="Toolbar.Item.NewPortlet"/>
                             <ref bean="Toolbar.Item.NewRss"/>
                             <ref bean="Toolbar.Item.NewGadget"/>
                         </list>
@@ -1491,7 +1562,7 @@
             </list>
         </property>
     </bean>
-    <!-- end of the Mashup Manager -->
+    <!-- end of the portlet Manager -->
 
     <!-- roles -->
     <bean id="org.jahia.toolbar.manager.roles.menu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
@@ -1551,34 +1622,46 @@
         <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.repository.globalRepository.label"/>
     </bean>
 
-    <bean id="repository.shared" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+    <bean id="repository.sharedfiles" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="sharedRepository"/>
         <property name="paths" value="/shared/files"/>
         <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.repository.sharedRepository.label"/>
     </bean>
 
-    <bean id="repository.my" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+    <bean id="repository.myfiles" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="myRepository"/>
         <property name="paths" value="$user/files"/>
         <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.repository.myRepository.label"/>
     </bean>
 
-    <bean id="repository.website" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+    <bean id="repository.websitefiles" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="websiteRepository"/>
         <property name="paths" value="$site/files"/>
         <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.repository.websiteRepository.label"/>
     </bean>
 
-    <bean id="repository.myexternal" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+    <bean id="repository.myexternalfiles" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="myExternalRepository"/>
         <property name="paths" value="/mounts"/>
         <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.repository.myExternalRepository.label"/>
     </bean>
 
-    <bean id="repository.sharedmashup" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-        <property name="key" value="sharedMashupRepository"/>
-        <property name="paths" value="/shared/mashups"/>
-        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.repository.sharedMashupRepository.label"/>
+    <bean id="repository.sharedportlets" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+        <property name="key" value="sharedPortletRepository"/>
+        <property name="paths" value="/shared/portlets"/>
+        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.repository.sharedPortletRepository.label"/>
+    </bean>
+
+    <bean id="repository.myportlets" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+        <property name="key" value="myPortletRepository"/>
+        <property name="paths" value="$user/portlets"/>
+        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.repository.myPortletRepository.label"/>
+    </bean>
+
+    <bean id="repository.websiteportlets" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+        <property name="key" value="websitePortletRepository"/>
+        <property name="paths" value="$site/portlets"/>
+        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.repository.websitePortletRepository.label"/>
     </bean>
 
     <bean id="repository.sharedcontent" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
@@ -1587,23 +1670,12 @@
         <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.repository.sharedRepository.label"/>
     </bean>
 
-    <bean id="repository.websitemahsup" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-        <property name="key" value="websiteMashupRepository"/>
-        <property name="paths" value="$site/mashups"/>
-        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.repository.websiteMashupRepository.label"/>
-    </bean>
-
-    <bean id="repository.mymashup" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-        <property name="key" value="myMashupRepository"/>
-        <property name="paths" value="$user/mashups"/>
-        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.repository.myMashupRepository.label"/>
-    </bean>
-
     <bean id="repository.mycontent" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="myContentRepository"/>
         <property name="paths" value="$user/content"/>
         <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.repository.myRepository.label"/>
     </bean>
+
 
     <bean id="repository.users" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="usersRepository"/>

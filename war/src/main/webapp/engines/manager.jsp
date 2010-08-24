@@ -3,7 +3,7 @@ Map<String, String> configToPermissionMapping = new HashMap<String, String>();
 configToPermissionMapping.put("categorymanager", "category-manager");
 configToPermissionMapping.put("contentmanager", "content-manager");
 configToPermissionMapping.put("filemanager", "file-manager");
-configToPermissionMapping.put("mashupmanager", "mashup-manager");
+configToPermissionMapping.put("portletmanager", "portlet-manager");
 configToPermissionMapping.put("remotepublicationmanager", "remote-publication-manager");
 configToPermissionMapping.put("sitemanager", "site-manager");
 configToPermissionMapping.put("tagmanager", "tag-manager");

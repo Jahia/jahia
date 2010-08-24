@@ -51,9 +51,9 @@ import java.io.PrintWriter;
  * Date: Nov 28, 2008
  * Time: 5:26:49 PM
  */
-public class HTMLMashupPortlet extends JahiaPortlet {
+public class HTMLPortlet extends JahiaPortlet {
 	
-	private static Logger logger = Logger.getLogger(HTMLMashupPortlet.class);
+	private static Logger logger = Logger.getLogger(HTMLPortlet.class);
 
     public void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws PortletException, IOException {
         renderResponse.setContentType("text/html");
@@ -62,7 +62,7 @@ public class HTMLMashupPortlet extends JahiaPortlet {
             try {
                 JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(renderRequest.getRemoteUser());
                 Node node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(epi.getID());
-                String html = node.hasProperty("html") ? node.getProperty("html").getString() : "Please, provide your HTML content for this mashup";
+                String html = node.hasProperty("html") ? node.getProperty("html").getString() : "Please, provide your HTML content for this portlet";
                 PrintWriter pw = renderResponse.getWriter();
                 pw.print(html);
             } catch (RepositoryException e) {
@@ -72,7 +72,7 @@ public class HTMLMashupPortlet extends JahiaPortlet {
             	} catch (Exception infoEx) {
             		// will not display any info
             	}
-            	logger.error("Error rendering HTML mashup - " + info + ". Cause: " + e.getMessage(), e);
+            	logger.error("Error rendering HTML portlet - " + info + ". Cause: " + e.getMessage(), e);
             }
 
         }

@@ -64,7 +64,7 @@ public class JahiaRenderConfigServiceImpl extends RenderConfigServiceImpl {
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(JahiaRenderConfigServiceImpl.class);
     private JCRSessionFactory sessionFactory;
     public final static String PAGE_CONFIG_ATTR = "org.jahia.services.applications.pluto.pageconfig";
-    public final String DEFAULT_PAGE_NAME = "Mashup manager";
+    public final String DEFAULT_PAGE_NAME = "Portlet manager";
 
     @Override
     public void addPage(PageConfig pageConfig) {
@@ -102,7 +102,7 @@ public class JahiaRenderConfigServiceImpl extends RenderConfigServiceImpl {
 
     @Override
     /**
-     * Get a "fake" page that contains ALL mashups (portlet instances)
+     * Get a "fake" page that contains ALL portlets (portlet instances)
      */
     public PageConfig getDefaultPage() {
         ProcessingContext processingContext = Jahia.getThreadParamBean();

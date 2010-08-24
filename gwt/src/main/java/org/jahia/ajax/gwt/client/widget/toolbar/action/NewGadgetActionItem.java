@@ -42,7 +42,7 @@ import org.jahia.ajax.gwt.client.widget.form.FormQuickGoogleGadget;
 import java.util.List;
 
 /**
- * Action item for displaying new Google Gadget mashup creation form.
+ * Action item for displaying new Google Gadget portlet creation form.
  * User: toto
  * Date: Sep 25, 2009
  * Time: 6:58:30 PM
@@ -58,7 +58,7 @@ public class NewGadgetActionItem extends BaseActionItem   {
         }
         if (parent != null && !parent.isFile()) {
             com.extjs.gxt.ui.client.widget.Window w = new com.extjs.gxt.ui.client.widget.Window();
-            w.setHeading(Messages.get("label.newGoogleGadgetMashup", "New Google Gadget"));
+            w.setHeading(Messages.get("label.newGoogleGadgetPortlet", "New Google Gadget"));
             w.setModal(true);
             w.setResizable(false);
             w.setBodyBorder(false);
@@ -66,7 +66,7 @@ public class NewGadgetActionItem extends BaseActionItem   {
             w.setWidth(350);
             w.add(new FormQuickGoogleGadget(parent.getPath()) {
                 @Override
-                public void onMashupCreated() {
+                public void onPortletCreated() {
                     linker.refresh(EditLinker.REFRESH_ALL);
                 }
             });

@@ -53,11 +53,8 @@ import javax.jcr.version.VersionException;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
 import java.io.InputStream;
-import java.util.Calendar;
-import java.util.Arrays;
-import java.util.ArrayList;
+import java.util.*;
 import java.math.BigDecimal;
-import java.util.UUID;
 
 /**
  * Created by IntelliJ IDEA.
@@ -69,17 +66,37 @@ import java.util.UUID;
 public class VFSNodeImpl extends VFSItemImpl implements Node {
     private FileObject fileObject;
     private VFSSessionImpl session;
+    private Map<String, VFSPropertyImpl> properties = null;
 
     public VFSNodeImpl(FileObject fileObject, VFSSessionImpl session) {
         this.fileObject = fileObject;
         this.session = session;
+        this.properties = new HashMap<String, VFSPropertyImpl>();
+        try {
+            if (fileObject.exists() && (fileObject.getContent() != null)) {
+                long lastModifiedTime = fileObject.getContent().getLastModifiedTime();
+                if (lastModifiedTime > 0) {
+                    ValueFactory valueFactory = session.getValueFactory();
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTimeInMillis(lastModifiedTime);
+                    properties.put(Constants.JCR_CREATED, new VFSPropertyImpl(new Name("created", org.apache.jackrabbit.spi.Name.NS_JCR_PREFIX, org.apache.jackrabbit.spi.Name.NS_JCR_URI), this, session, valueFactory.createValue(calendar)));
+                    properties.put(Constants.JCR_LASTMODIFIED, new VFSPropertyImpl(new Name("lastModified", org.apache.jackrabbit.spi.Name.NS_JCR_PREFIX, org.apache.jackrabbit.spi.Name.NS_JCR_URI), this, session, valueFactory.createValue(calendar)));
+                }
+            }
+        } catch (FileSystemException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (UnsupportedRepositoryOperationException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (RepositoryException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
 
     public String getPath() throws RepositoryException {
-        String s = fileObject.getName().getPath().substring(((VFSRepositoryImpl)session.getRepository()).getRootPath().length());
+        String s = fileObject.getName().getPath().substring(((VFSRepositoryImpl) session.getRepository()).getRootPath().length());
         if (!s.startsWith("/")) {
-            s = "/"+s;
+            s = "/" + s;
         }
         return s;
     }
@@ -162,7 +179,7 @@ public class VFSNodeImpl extends VFSItemImpl implements Node {
                 // 
             }
         } catch (FileSystemException e) {
-            throw new RepositoryException("Cannot add node",e);
+            throw new RepositoryException("Cannot add node", e);
         }
         return null;
     }
@@ -249,7 +266,7 @@ public class VFSNodeImpl extends VFSItemImpl implements Node {
     public NodeIterator getNodes() throws RepositoryException {
         try {
             if (fileObject.getType() == FileType.FILE) {
-                return  new VFSContentNodeIteratorImpl(session, fileObject.getContent());
+                return new VFSContentNodeIteratorImpl(session, fileObject.getContent());
             } else {
                 return new VFSNodeIteratorImpl(session, fileObject.getChildren());
             }
@@ -268,7 +285,11 @@ public class VFSNodeImpl extends VFSItemImpl implements Node {
     }
 
     public Property getProperty(String s) throws PathNotFoundException, RepositoryException {
-        throw new PathNotFoundException(s);
+        Property property = properties.get(s);
+        if (property == null) {
+            throw new PathNotFoundException(s);
+        }
+        return property;
     }
 
     public PropertyIterator getProperties() throws RepositoryException {
@@ -378,7 +399,7 @@ public class VFSNodeImpl extends VFSItemImpl implements Node {
         }
         for (ExtendedNodeDefinition extendedNodeDefinition : parentNodeType.getUnstructuredChildNodeDefinitions().values()) {
             return extendedNodeDefinition;
-        }        
+        }
         return null;
     }
 
@@ -469,7 +490,7 @@ public class VFSNodeImpl extends VFSItemImpl implements Node {
     public String getIdentifier() throws RepositoryException {
         try {
             // return UUID.nameUUIDFromBytes(fileObject.getURL().toString().getBytes()).toString();
-            return fileObject.getURL().toString(); 
+            return fileObject.getURL().toString();
         } catch (FileSystemException fse) {
             throw new RepositoryException("Error retrieving URL for VFS file", fse);
         }

@@ -48,6 +48,7 @@ import javax.jcr.Value;
 import javax.jcr.nodetype.*;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Jahia extended JCR node type information.
@@ -65,10 +66,10 @@ public class ExtendedNodeType implements NodeType {
     private List<ExtendedItemDefinition> items = new ArrayList<ExtendedItemDefinition>();
     private List<String> groupedItems;
 
-    private Map<String, ExtendedNodeDefinition> nodes = new LinkedHashMap<String, ExtendedNodeDefinition>();
-    private Map<String, ExtendedPropertyDefinition> properties = new LinkedHashMap<String, ExtendedPropertyDefinition>();
-    private Map<String, ExtendedNodeDefinition> unstructuredNodes = new LinkedHashMap<String, ExtendedNodeDefinition>();
-    private Map<Integer, ExtendedPropertyDefinition> unstructuredProperties = new LinkedHashMap<Integer, ExtendedPropertyDefinition>();
+    private Map<String, ExtendedNodeDefinition> nodes = new ConcurrentHashMap<String, ExtendedNodeDefinition>();
+    private Map<String, ExtendedPropertyDefinition> properties = new ConcurrentHashMap<String, ExtendedPropertyDefinition>();
+    private Map<String, ExtendedNodeDefinition> unstructuredNodes = new ConcurrentHashMap<String, ExtendedNodeDefinition>();
+    private Map<Integer, ExtendedPropertyDefinition> unstructuredProperties = new ConcurrentHashMap<Integer, ExtendedPropertyDefinition>();
 
     private Map<String, ExtendedNodeDefinition> allNodes;
     private Map<String, ExtendedPropertyDefinition> allProperties;
@@ -90,7 +91,7 @@ public class ExtendedNodeType implements NodeType {
     private List<String> mixinExtendNames = new ArrayList<String>();
     private List<ExtendedNodeType> mixinExtend = new ArrayList<ExtendedNodeType>();
 
-    private Map<Locale, String> labels = new HashMap<Locale, String>(1);
+    private Map<Locale, String> labels = new ConcurrentHashMap<Locale, String>(1);
     
     public ExtendedNodeType(NodeTypeRegistry registry, String systemId) {
         this.registry = registry;
@@ -430,7 +431,7 @@ public class ExtendedNodeType implements NodeType {
 
     public Map<String,ExtendedNodeDefinition> getUnstructuredChildNodeDefinitions() {
         if (allUnstructuredNodes == null) {
-            allUnstructuredNodes = new LinkedHashMap<String,ExtendedNodeDefinition>();
+            allUnstructuredNodes = new ConcurrentHashMap<String,ExtendedNodeDefinition>();
             allUnstructuredNodes.putAll(unstructuredNodes);
 
             ExtendedNodeType[] supertypes = getSupertypes();

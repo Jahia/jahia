@@ -33,6 +33,7 @@
 package org.jahia.services.content.nodetypes;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.jcr.nodetype.ItemDefinition;
 import javax.jcr.version.OnParentVersionAction;
@@ -60,8 +61,8 @@ public class ExtendedItemDefinition implements ItemDefinition {
     private int onParentVersion = OnParentVersionAction.COPY;
     private int onConflict = OnConflictAction.USE_LATEST;
     protected int selector = 0;
-    private Map<String,String> selectorOptions = new HashMap<String,String>();
-    private Map<Locale, String> labels = new HashMap<Locale, String>(1);
+    private Map<String,String> selectorOptions = new ConcurrentHashMap<String,String>();
+    private Map<Locale, String> labels = new ConcurrentHashMap<Locale, String>(1);
     private boolean override = false;
 
     public ExtendedNodeType getDeclaringNodeType() {

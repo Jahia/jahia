@@ -558,7 +558,7 @@
  - j:cacheScope (string, choicelist) nofulltext < 'private','public'
  - j:expirationTime (long)
 
-[jnt:portletList] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:listContent, mix:title, jmix:list
+[jnt:portletList] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:listContent, mix:title, jmix:list, jmix:publication
  + * (jnt:portlet) = jnt:portlet
  + * (jnt:portletList)
 

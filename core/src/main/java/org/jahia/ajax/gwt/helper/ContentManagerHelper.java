@@ -840,16 +840,6 @@ public class ContentManagerHelper {
     public void synchro(final Map<String, String> pathsToSyncronize, JCRSessionWrapper currentUserSession)
             throws GWTJahiaServiceException {
         try {
-            final String s = "toto" + System.currentTimeMillis();
-            createTemplateSet(s, currentUserSession);
-            generateWar(s, currentUserSession);
-        } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (RepositoryException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-
-        try {
             JCRTemplate.getInstance()
                     .doExecuteWithSystemSession(currentUserSession.getUser().getUsername(), new JCRCallback<Object>() {
                         public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {

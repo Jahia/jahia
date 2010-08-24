@@ -94,7 +94,12 @@ public class VFSSessionImpl implements Session {
 
     public Node getRootNode() throws RepositoryException {
         try {
-            return new VFSNodeImpl(repository.getFile("/"), this);
+            FileObject rootFileObject = repository.getFile("/");
+            if (rootFileObject.exists()) {
+                return new VFSNodeImpl(rootFileObject, this);
+            } else {
+                throw new PathNotFoundException("File " + rootFileObject.getURL() + " does not exist");
+            }
         } catch (FileSystemException e) {
             throw new RepositoryException(e);
 

@@ -412,8 +412,11 @@ public class JCRStoreProvider {
             for (JCRNodeWrapper mountPointNode : result) {
                 if (mountPointNode instanceof JCRMountPointNode) {
                     try {
-                        ((JCRMountPointNode) mountPointNode).checkValidity();
-                        logger.info("Registered mount point: " + mountPointNode.getPath());
+                        if (((JCRMountPointNode) mountPointNode).checkValidity()) {
+                            logger.info("Registered mount point: " + mountPointNode.getPath());
+                        } else {
+                            throw new RepositoryException("Couldn't mount dynamic mount point " + mountPointNode.getPath());
+                        }
                     } catch (Exception e) {
                         logger.error("Unable to register dynamic mount point for path " + mountPointNode.getPath(), e);
                     }

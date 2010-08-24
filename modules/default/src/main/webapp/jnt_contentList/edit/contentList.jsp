@@ -4,6 +4,7 @@
 <%@ taglib prefix="workflow" uri="http://www.jahia.org/tags/workflow" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/jcr" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="propertyDefinition" type="org.jahia.services.content.nodetypes.ExtendedPropertyDefinition"--%>
 <%--@elvariable id="type" type="org.jahia.services.content.nodetypes.ExtendedNodeType"--%>
@@ -33,12 +34,15 @@
 
         <c:set var="inSite" value="true"/>
         <c:forEach items="${moduleMap.currentList}" var="child" begin="${moduleMap.begin}" end="${moduleMap.end}" varStatus="status">
-            <%@include file="edit.jspf" %>
-            <%@include file="workflow.jspf" %>
-            <div id="edit-${child.identifier}">
-                <template:module templateType="html" node="${child}"/>
-            </div>
-            <hr/>
+        <%-- only editorial contents are contribuable --%>
+            <c:if test="${functions:isNodeType(child,'jmix:editorialContent')}">
+                <%@include file="edit.jspf" %>
+                <%@include file="workflow.jspf" %>
+                <div id="edit-${child.identifier}">
+                    <template:module templateType="html" node="${child}"/>
+                </div>
+                <hr/>
+            </c:if>
         </c:forEach>
         <div class="clear"></div>
         <c:if test="${moduleMap.editable and renderContext.editMode}">

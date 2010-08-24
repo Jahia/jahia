@@ -531,7 +531,7 @@
  - j:editableInContribution (boolean)
  - j:canOrderInContribution (boolean)
  - j:canDeleteInContribution (boolean)
- - j:contributeTypes (string, choicelist[subnodetypes = 'jmix:droppableContent,jnt:file,jnt:folder']) multiple
+ - j:contributeTypes (string, choicelist[subnodetypes = 'jmix:editorialContent,jnt:file,jnt:folder']) multiple
 
 [jmix:listRestrictions] mixin
  - j:allowedTypes (string, choicelist[subnodetypes = 'jmix:droppableContent,jnt:file,jnt:folder']) multiple

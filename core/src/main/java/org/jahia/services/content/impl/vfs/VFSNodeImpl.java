@@ -468,7 +468,8 @@ public class VFSNodeImpl extends VFSItemImpl implements Node {
 
     public String getIdentifier() throws RepositoryException {
         try {
-            return UUID.nameUUIDFromBytes(fileObject.getURL().toString().getBytes()).toString();
+            // return UUID.nameUUIDFromBytes(fileObject.getURL().toString().getBytes()).toString();
+            return fileObject.getURL().toString(); 
         } catch (FileSystemException fse) {
             throw new RepositoryException("Error retrieving URL for VFS file", fse);
         }

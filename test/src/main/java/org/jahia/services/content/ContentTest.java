@@ -32,9 +32,6 @@
 
 package org.jahia.services.content;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import org.apache.commons.io.IOUtils;
 import org.apache.jackrabbit.JcrConstants;
 import org.apache.log4j.Logger;
@@ -42,6 +39,12 @@ import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.Description;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import javax.jcr.*;
 import javax.jcr.lock.Lock;
@@ -52,21 +55,36 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import static org.junit.Assert.*;
 
 /**
  * This is a test case
  */
-public class ContentTest extends TestCase {
+@RunWith(Parameterized.class)
+public class ContentTest {
     private static final transient Logger logger = Logger.getLogger(ContentTest.class);
-    private JahiaSite site;
+    private static JahiaSite site;
     private final static String TESTSITE_NAME = "contentTestSite";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
 
-
+    @Parameterized.Parameters
+    public static Collection<Object[]> data() {
+        Collection<Object[]> data = new ArrayList<Object[]>();
+        final Map<String, JCRStoreProvider> mountPoints = JCRSessionFactory.getInstance().getMountPoints();
+        for (String providerRoot : mountPoints.keySet()) {
+            if (providerRoot.equals("/")) {
+                providerRoot = "/shared";
+            }
+            Object[] parameter = new Object[1];
+            parameter[0] = providerRoot;
+            data.add(parameter);
+        }
+        return data;        
+    }
+    
+    /*
     public static Test suite() {
         TestSuite suite = new TestSuite();
         final Map<String, JCRStoreProvider> mountPoints = JCRSessionFactory.getInstance().getMountPoints();
@@ -83,25 +101,29 @@ public class ContentTest extends TestCase {
         }
         return suite;
     }
+    */
 
-    private ProcessingContext ctx;
+    private static ProcessingContext ctx;
     private String providerRoot;
 
-    private List<String> nodes = new ArrayList();
+    private static List<String> nodes = new ArrayList();
 
-    public ContentTest(String name, String path) {
-        super(name);
+    public ContentTest(String path) {
         this.providerRoot = path;
     }
 
-    @Override
-    protected void setUp() throws Exception {
+    protected java.lang.String getName() {
+        return providerRoot;
+    }
+
+    @BeforeClass
+    public static void oneTimeSetup() throws Exception {
         ctx = Jahia.getThreadParamBean();
         site = TestHelper.createSite(TESTSITE_NAME);
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    @AfterClass
+    public static void oneTimeTearDown() throws Exception {
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 for (String node : nodes) {
@@ -114,16 +136,12 @@ public class ContentTest extends TestCase {
         nodes.clear();
     }
 
-    @Override
-    public String getName() {
-        return super.getName() + " in " + providerRoot;
-    }
-
     /**
      * Test creation / deletion of folder
      *
      * @throws RepositoryException
      */
+    @Test
     public void testCreateFolder() throws Exception {
 
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
@@ -157,6 +175,7 @@ public class ContentTest extends TestCase {
      *
      * @throws RepositoryException
      */
+    @Test
     public void testUpload() throws Exception {
 
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
@@ -179,13 +198,17 @@ public class ContentTest extends TestCase {
             assertEquals(providerRoot + " : Mime type is not the same", mimeType,
                     testFile.getFileContent().getContentType());
 
-            long creationDate = testFile.getCreationDateAsDate().getTime();
+            Date creationDate = testFile.getCreationDateAsDate();
+            assertNotNull(providerRoot + " : Creation date is null !", creationDate);
+            long creationTime = creationDate.getTime();
             assertTrue(providerRoot + " : Creation date invalid",
-                    creationDate < (System.currentTimeMillis() + 600000) && creationDate > (System.currentTimeMillis() - 600000));
+                    creationTime < (System.currentTimeMillis() + 600000) && creationTime > (System.currentTimeMillis() - 600000));
 
-            long lastModifiedDate = testFile.getLastModifiedAsDate().getTime();
+            Date lastModifiedDate = testFile.getLastModifiedAsDate();
+            assertNotNull(providerRoot + " : Last modified date is null !", lastModifiedDate);
+            long lastModifiedTime = lastModifiedDate.getTime();
             assertTrue(providerRoot + " : Modification date invalid",
-                    lastModifiedDate < (System.currentTimeMillis() + 600000) && lastModifiedDate > (System.currentTimeMillis() - 600000));
+                    lastModifiedTime < (System.currentTimeMillis() + 600000) && lastModifiedTime > (System.currentTimeMillis() - 600000));
 
             testFile = session.getNode(providerRoot + "/" + name);
 
@@ -204,6 +227,7 @@ public class ContentTest extends TestCase {
      *
      * @throws RepositoryException
      */
+    @Test
     public void testSetStringProperty() throws Exception {
 
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
@@ -260,6 +284,7 @@ public class ContentTest extends TestCase {
      *
      * @throws RepositoryException
      */
+    @Test
     public void testRename() throws Exception {
 
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
@@ -302,6 +327,7 @@ public class ContentTest extends TestCase {
      *
      * @throws RepositoryException
      */
+    @Test
     public void testMove() throws Exception {
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
 
@@ -344,6 +370,7 @@ public class ContentTest extends TestCase {
     /**
      * Test lock / unlock operations
      */
+    @Test
     public void testLock() throws Exception {
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
 
@@ -393,6 +420,7 @@ public class ContentTest extends TestCase {
      *
      * @throws RepositoryException
      */
+    @Test
     public void testSearch() throws Exception {
 
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
@@ -435,6 +463,7 @@ public class ContentTest extends TestCase {
      * 3- checks if the reordering feature is ok
      * @throws Exception
      */
+    @Test
     public void testOrdering() throws Exception {
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
 

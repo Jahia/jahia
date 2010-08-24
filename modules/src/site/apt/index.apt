@@ -35,3 +35,7 @@ Jahia Crazy Jane - Templates Module
 	* Auto-completion
 
 	  How to integrate {{{./autocompletion.html}auto-completion}} into your templates.
+
+	* Module Map
+
+	  Share variables within modules in {{{./moduleMap.html}module map}}.

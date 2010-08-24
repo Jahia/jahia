@@ -1,0 +1,18 @@
+Module Map
+
+  This map is use to share objects within modules in ajax context
+
+* write :
+
++-------------
+<c:set target="${moduleMap}" property="editable" value="true" />
++-------------
+
+* read :
+
++-------------
+${moduleMap.editable}
++-------------
+
+
+

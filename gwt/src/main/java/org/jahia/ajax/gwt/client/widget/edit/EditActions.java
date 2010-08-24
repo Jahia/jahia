@@ -117,11 +117,7 @@ public class EditActions {
      */
     public static void editSource(final Linker linker) {
         if (linker.getMainNode() != null) {
-            JahiaContentManagementService.App.getInstance().getSource(linker.getSelectedNode().getUUID(), new BaseAsyncCallback<GWTJahiaNode>() {
-                public void onSuccess(GWTJahiaNode result) {
-                    EngineLoader.showEditEngine(linker, result);
-                }
-            });
+            EngineLoader.showEditEngine(linker, linker.getSelectedNode().getReferencedNode());
         }
     }
 

@@ -76,7 +76,7 @@ public class RightsTabItem extends EditEngineTabItem {
     }
 
     private void getACL(final GWTJahiaNode node) {
-        mask("Loading ACL ...");
+        mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
         JahiaContentManagementService.App.getInstance().getACL(node.getPath(), new BaseAsyncCallback<GWTJahiaNodeACL>() {
             /**
              * onsuccess

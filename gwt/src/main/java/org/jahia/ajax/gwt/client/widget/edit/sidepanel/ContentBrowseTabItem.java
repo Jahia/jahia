@@ -119,7 +119,7 @@ class ContentBrowseTabItem extends BrowseTabItem {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
                 listLoader.load(event.getSelectedItem());
-                contentContainer.mask("Loading", "x-mask-loading");
+                contentContainer.mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
             }
         });
 

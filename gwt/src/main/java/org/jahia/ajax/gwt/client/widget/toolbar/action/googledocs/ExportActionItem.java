@@ -105,7 +105,7 @@ public class ExportActionItem extends BaseActionItem {
             final String basePath = JahiaGWTParameters.getContextPath() + "/cms/gconvert/"
                     + JahiaGWTParameters.getWorkspace() + node.getPath() + "?exportFormat=";
             
-            panel.mask(Messages.get("label_loading","Loading..."));
+            panel.mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
             JahiaContentManagementService.App.getInstance().getGoogleDocsExportFormats(node.getUUID(), new BaseAsyncCallback<List<String>>() {
 
                 public void onSuccess(List<String> result) {

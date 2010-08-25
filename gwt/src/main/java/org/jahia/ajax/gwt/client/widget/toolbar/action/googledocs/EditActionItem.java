@@ -119,7 +119,7 @@ public class EditActionItem extends BaseActionItem {
                                 + JahiaGWTParameters.getWorkspace() + node.getPath(), "_blank", "");
                         btnEdit.setText(msgStop);
                     } else {
-                        panel.mask(Messages.get("label.synchronizing", "Synchronizing..."));
+                        panel.mask(Messages.get("label.synchronizing", "Synchronizing..."), "x-mask-loading");
                         JahiaContentManagementService.App.getInstance().synchronizeWithGoogleDocs(node.getUUID(),
                                 new BaseAsyncCallback<Void>() {
                                     @Override

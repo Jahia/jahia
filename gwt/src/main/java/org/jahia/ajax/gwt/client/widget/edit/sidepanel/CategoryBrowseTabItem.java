@@ -46,6 +46,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTColumn;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
@@ -109,7 +110,7 @@ public class CategoryBrowseTabItem extends BrowseTabItem {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
                 listLoader.load(event.getSelectedItem());
-                contentContainer.mask("Loading", "x-mask-loading");
+                contentContainer.mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
             }
         });
 

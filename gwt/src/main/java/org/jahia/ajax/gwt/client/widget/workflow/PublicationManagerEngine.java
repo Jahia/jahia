@@ -167,7 +167,7 @@ public class PublicationManagerEngine extends Window {
         buttonBar.add(button);
         setBottomComponent(buttonBar);
 
-        m_tree.mask("Loading ...");
+        m_tree.mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
 
         loader.addLoadListener(new LoadListener() {
             public void loaderLoad(LoadEvent le) {

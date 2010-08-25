@@ -120,7 +120,7 @@ public class PropertiesTabItem extends EditEngineTabItem {
         if (!isMultiLang() && isProcessed()) {
             return;
         }
-        mask("Loading properties...");
+        mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
         if (engine.getMixin() != null) {
             unmask();
             boolean addSharedLangLabel = true;

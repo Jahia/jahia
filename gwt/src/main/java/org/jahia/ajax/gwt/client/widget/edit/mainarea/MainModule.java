@@ -95,7 +95,7 @@ public class MainModule extends Module {
         head.setStyleAttribute("position", "relative");
         head.addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
             public void componentSelected(IconButtonEvent event) {
-                mask("Loading", "x-mask-loading");
+                mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
                 refresh(EditLinker.REFRESH_MAIN);
             }
         }));
@@ -290,7 +290,7 @@ public class MainModule extends Module {
     }
 
     public void goTo(String path, String template) {
-        mask("Loading", "x-mask-loading");
+        mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
         this.path = path;
         this.template = template;
         setUrlMarker(path, template, "");
@@ -306,7 +306,7 @@ public class MainModule extends Module {
                 params.put(key[0], key[1]);
             }
         }
-        module.mask("Loading", "x-mask-loading");
+        module.mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
         module.path = path;
         module.template = template;
         module.moduleParams = params;
@@ -332,7 +332,7 @@ public class MainModule extends Module {
     }
     
     public void switchLanguage(String language) {
-        mask("Loading", "x-mask-loading");
+        mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
         editLinker.setLocale(language);
         refresh();
     }

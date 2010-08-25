@@ -149,7 +149,7 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
     }
 
     private void fillStore() {
-        contentContainer.mask("Loading", "x-mask-loading");
+        contentContainer.mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
         contentStore.removeAll();
         JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
         async.searchSQL(config.getParams().get("search"), Integer.valueOf(config.getParams().get("limit")),

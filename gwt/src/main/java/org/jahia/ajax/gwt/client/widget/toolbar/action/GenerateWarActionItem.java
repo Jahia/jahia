@@ -5,6 +5,7 @@ import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -27,7 +28,7 @@ public class GenerateWarActionItem extends BaseActionItem {
         dl.setHeight(120);
         dl.show();
 
-        JahiaContentManagementService.App.getInstance().generateWar(JahiaGWTParameters.getSiteKey(), new AsyncCallback<GWTJahiaNode>() {
+        JahiaContentManagementService.App.getInstance().generateWar(JahiaGWTParameters.getSiteKey(), new BaseAsyncCallback<GWTJahiaNode>() {
             public void onSuccess(GWTJahiaNode result) {
                 dl.removeAll();
                 HTML link = new HTML(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.downloadMessage.label") + "<br /><br /><a href=\"" + result.getUrl() + "\" target=\"_new\">" + result.getName() + "</a>");
@@ -35,7 +36,7 @@ public class GenerateWarActionItem extends BaseActionItem {
                 dl.layout();
             }
 
-            public void onFailure(Throwable caught) {
+            public void onApplicationFailure(Throwable caught) {
                 dl.hide();;
                 Info.display("War creation failed","War creation failed");
             }

@@ -84,10 +84,7 @@ public abstract class FormQuick extends FormPanel {
         setFieldWidth(400);
         final Button saveButton = new Button(Messages.get("label.save"));
         addButton(saveButton);        
-        JahiaContentDefinitionService.App.getInstance().getNodeType(nodetype, new AsyncCallback<GWTJahiaNodeType>() {
-            public void onFailure(Throwable throwable) {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
+        JahiaContentDefinitionService.App.getInstance().getNodeType(nodetype, new BaseAsyncCallback<GWTJahiaNodeType>() {
             public void onSuccess(GWTJahiaNodeType gwtJahiaNodeType) {
 
                 final TextField<String> nameField = new TextField<String>();

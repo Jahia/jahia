@@ -4,30 +4,28 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-	<bean name="baseWrappingController" class="org.springframework.web.servlet.mvc.ServletWrappingController" abstract="true" depends-on="guiceInitializer"/>
-	
-    <bean name="xml-to-html" parent="baseWrappingController">
+    <bean name="xml-to-html" class="org.springframework.web.servlet.mvc.ServletWrappingController" depends-on="guiceInitializer">
         <property name="servletClass" value="org.apache.shindig.gadgets.servlet.GadgetRenderingServlet"/>
     </bean>
-    <bean name="proxy" parent="baseWrappingController">
+    <bean name="proxy" class="org.springframework.web.servlet.mvc.ServletWrappingController" depends-on="guiceInitializer">
         <property name="servletClass" value="org.apache.shindig.gadgets.servlet.ProxyServlet"/>
     </bean>
-    <bean name="makeRequest" parent="baseWrappingController">
+    <bean name="makeRequest" class="org.springframework.web.servlet.mvc.ServletWrappingController" depends-on="guiceInitializer">
         <property name="servletClass" value="org.apache.shindig.gadgets.servlet.MakeRequestServlet"/>
     </bean>
-    <bean name="concat" parent="baseWrappingController">
+    <bean name="concat" class="org.springframework.web.servlet.mvc.ServletWrappingController" depends-on="guiceInitializer">
         <property name="servletClass" value="org.apache.shindig.gadgets.servlet.ConcatProxyServlet"/>
     </bean>
-    <bean name="oauthCallback" parent="baseWrappingController">
+    <bean name="oauthCallback" class="org.springframework.web.servlet.mvc.ServletWrappingController" depends-on="guiceInitializer">
         <property name="servletClass" value="org.apache.shindig.gadgets.servlet.OAuthCallbackServlet"/>
     </bean>
-    <bean name="metadata" parent="baseWrappingController">
+    <bean name="metadata" class="org.springframework.web.servlet.mvc.ServletWrappingController" depends-on="guiceInitializer">
         <property name="servletClass" value="org.apache.shindig.gadgets.servlet.RpcServlet"/>
     </bean>
-    <bean name="js" parent="baseWrappingController">
+    <bean name="js" class="org.springframework.web.servlet.mvc.ServletWrappingController" depends-on="guiceInitializer">
         <property name="servletClass" value="org.apache.shindig.gadgets.servlet.JsServlet"/>
     </bean>
-    <bean name="socialRestapiServlet" parent="baseWrappingController">
+    <bean name="socialRestapiServlet" class="org.springframework.web.servlet.mvc.ServletWrappingController" depends-on="guiceInitializer">
         <property name="servletClass" value="org.apache.shindig.protocol.DataServiceServlet"/>
         <property name="initParameters">
             <props>
@@ -35,7 +33,7 @@
             </props>
         </property>
     </bean>
-    <bean name="socialJsonRpcServlet" parent="baseWrappingController">
+    <bean name="socialJsonRpcServlet" class="org.springframework.web.servlet.mvc.ServletWrappingController" depends-on="guiceInitializer">
         <property name="servletClass" value="org.apache.shindig.protocol.JsonRpcServlet"/>
         <property name="initParameters">
             <props>
@@ -43,7 +41,7 @@
             </props>
         </property>
     </bean>
-    <bean name="gadgetsJsonRpcServlet" parent="baseWrappingController">
+    <bean name="gadgetsJsonRpcServlet" class="org.springframework.web.servlet.mvc.ServletWrappingController" depends-on="guiceInitializer">
         <property name="servletClass" value="org.apache.shindig.protocol.JsonRpcServlet"/>
         <property name="initParameters">
             <props>
@@ -51,7 +49,7 @@
             </props>
         </property>
     </bean>
-    <bean name="gadgetsRestapiServlet" parent="baseWrappingController">
+    <bean name="gadgetsRestapiServlet" class="org.springframework.web.servlet.mvc.ServletWrappingController" depends-on="guiceInitializer">
         <property name="servletClass" value="org.apache.shindig.protocol.DataServiceServlet"/>
         <property name="initParameters">
             <props>
@@ -59,7 +57,7 @@
             </props>
         </property>
     </bean>
-    <bean name="sampleOAuth" parent="baseWrappingController">
+    <bean name="sampleOAuth" class="org.springframework.web.servlet.mvc.ServletWrappingController" depends-on="guiceInitializer">
         <property name="servletClass" value="org.apache.shindig.social.sample.oauth.SampleOAuthServlet"/>
     </bean>
 

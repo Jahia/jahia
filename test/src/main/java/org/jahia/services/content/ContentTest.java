@@ -42,7 +42,6 @@ import org.jahia.test.TestHelper;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -54,13 +53,14 @@ import javax.jcr.query.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.lang.reflect.Method;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 import static org.junit.Assert.*;
 
 /**
- * This is a test case
+ * This test unit tests all basic content operations on all connected providers. This is useful to test common
+ * functionality across the Entropy and VFS connectors.
  */
 @RunWith(Parameterized.class)
 public class ContentTest {
@@ -81,27 +81,8 @@ public class ContentTest {
             parameter[0] = providerRoot;
             data.add(parameter);
         }
-        return data;        
+        return data;
     }
-    
-    /*
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
-        final Map<String, JCRStoreProvider> mountPoints = JCRSessionFactory.getInstance().getMountPoints();
-        for (String providerRoot : mountPoints.keySet()) {
-            if (providerRoot.equals("/")) {
-                providerRoot = "/shared";
-            }
-            Method[] methods = ContentTest.class.getMethods();
-            for (Method method : methods) {
-                if (method.getName().startsWith("test")) {
-                    suite.addTest(new ContentTest(method.getName(), providerRoot));
-                }
-            }
-        }
-        return suite;
-    }
-    */
 
     private static ProcessingContext ctx;
     private String providerRoot;
@@ -155,13 +136,13 @@ public class ContentTest {
             session.save();
             nodes.add(testCollection.getUUID());
 
-//            assertTrue(providerRoot + " : Created folder is not a collection", testCollection.isCollection());
+            assertTrue(providerRoot + " : Created folder is not a collection", testCollection.isCollection());
 
-//            long creationDate = testCollection.getCreationDateAsDate().getTime();
-//            assertTrue(providerRoot+ " : Creation date invalid", creationDate < System.currentTimeMillis() && creationDate > System.currentTimeMillis()-10000);
+            long creationDate = testCollection.getCreationDateAsDate().getTime();
+            assertTrue(providerRoot + " : Creation date invalid", creationDate < System.currentTimeMillis() && creationDate > System.currentTimeMillis() - 10000);
 
-//            long lastModifiedDate = testCollection.getLastModifiedAsDate().getTime();
-//            assertTrue(providerRoot+ " : Modification date invalid", lastModifiedDate < System.currentTimeMillis() && lastModifiedDate > System.currentTimeMillis()-10000);
+            long lastModifiedDate = testCollection.getLastModifiedAsDate().getTime();
+            assertTrue(providerRoot + " : Modification date invalid", lastModifiedDate < System.currentTimeMillis() && lastModifiedDate > System.currentTimeMillis() - 10000);
 
             testCollection = session.getNode(providerRoot + "/" + name);
 
@@ -191,7 +172,7 @@ public class ContentTest {
             String name = "test" + System.currentTimeMillis() + ".txt";
             JCRNodeWrapper testFile = rootNode.uploadFile(name, is, mimeType);
             session.save();
-            nodes.add(testFile.getUUID());
+            nodes.add(testFile.getIdentifier());
 
             assertEquals(providerRoot + " : Size is not the same", value.length(),
                     testFile.getFileContent().getContentLength());
@@ -239,7 +220,7 @@ public class ContentTest {
 
             JCRNodeWrapper testCollection = rootNode.createCollection(name);
             session.save();
-            nodes.add(testCollection.getUUID());
+            nodes.add(testCollection.getIdentifier());
 
             final String value = "Title test";
 
@@ -253,14 +234,14 @@ public class ContentTest {
             testCollection = session.getNode(providerRoot + "/" + name);
             try {
                 String actual = testCollection.getProperty("jcr:description").getString();
-                assertEquals("getProperty() Property value is not the same", value, actual);
+                assertEquals(providerRoot + " : getProperty() Property value is not the same", value, actual);
             } catch (PathNotFoundException e) {
                 fail("getProperty() cannot find property");
             }
 
-            assertEquals("getPropertyAsString() : Property value is not the same", value,
+            assertEquals(providerRoot + " : getPropertyAsString() : Property value is not the same", value,
                     testCollection.getPropertyAsString("jcr:description"));
-            assertEquals("getPropertiesAsString() : Property value is not the same", value,
+            assertEquals(providerRoot + " : getPropertiesAsString() : Property value is not the same", value,
                     testCollection.getPropertiesAsString().get("jcr:description"));
 
             boolean found = false;
@@ -300,14 +281,14 @@ public class ContentTest {
             String name = "test" + System.currentTimeMillis() + ".txt";
             JCRNodeWrapper testFile = rootNode.uploadFile(name, is, mimeType);
             session.save();
-            nodes.add(testFile.getUUID());
+            nodes.add(testFile.getIdentifier());
 
             final String newname = "renamed" + name;
             boolean result = false;
             try {
                 result = testFile.rename(newname);
 
-                assertTrue("rename returned false", result);
+                assertTrue(providerRoot + " : rename returned false", result);
 
                 try {
                     testFile = session.getNode(providerRoot + "/" + newname);
@@ -341,18 +322,18 @@ public class ContentTest {
 
             String name = "test" + System.currentTimeMillis() + ".txt";
             JCRNodeWrapper testFile = rootNode.uploadFile(name, is, mimeType);
-            nodes.add(testFile.getUUID());
+            nodes.add(testFile.getIdentifier());
 
             final String collectionName = "foldertest" + System.currentTimeMillis();
             JCRNodeWrapper testCollection = rootNode.createCollection(collectionName);
-            nodes.add(testCollection.getUUID());
+            nodes.add(testCollection.getIdentifier());
 
             session.save();
 
             try {
                 session.move(testFile.getPath(), providerRoot + "/" + collectionName + "/" + testFile.getName());
             } catch (RepositoryException e) {
-                fail("move throwed exception :" + e);
+                fail(providerRoot + " : move throwed exception :" + e);
             }
 
 
@@ -384,7 +365,7 @@ public class ContentTest {
 
             String name = "test" + System.currentTimeMillis() + ".txt";
             JCRNodeWrapper testFile = rootNode.uploadFile(name, is, mimeType);
-            nodes.add(testFile.getUUID());
+            nodes.add(testFile.getIdentifier());
 
             session.save();
 
@@ -392,23 +373,23 @@ public class ContentTest {
                 boolean result = testFile.lockAndStoreToken("user");
                 testFile.save();
 
-                assertTrue("lockAndStoreToken returned false", result);
+                assertTrue(providerRoot + " : lockAndStoreToken returned false", result);
 
                 Lock lock = testFile.getLock();
-                assertNotNull("lock is null", lock);
+                assertNotNull(providerRoot + " : lock is null", lock);
 
                 try {
                     testFile.unlock();
                 } catch (LockException e) {
-                    fail("unlock failed");
+                    fail(providerRoot + " : unlock failed");
                 }
             }
 
             Lock lock = testFile.lock(false, false);
-            assertNotNull("Lock is null", lock);
-            assertTrue("Node not locked", testFile.isLocked());
+            assertNotNull(providerRoot + " : Lock is null", lock);
+            assertTrue(providerRoot + " : Node not locked", testFile.isLocked());
             testFile.unlock();
-            assertFalse("Node not unlocked", testFile.isLocked());
+            assertFalse(providerRoot + " : Node not unlocked", testFile.isLocked());
         } finally {
             session.logout();
         }
@@ -416,7 +397,7 @@ public class ContentTest {
     }
 
     /**
-     * Test file upload
+     * Test file search
      *
      * @throws RepositoryException
      */
@@ -444,13 +425,15 @@ public class ContentTest {
                     Query.JCR_SQL2);
             QueryResult queryResult = query.execute();
             RowIterator it = queryResult.getRows();
-//           result size now returns -1 assertTrue("Bad result number (" + it.getSize() + " instead of 1)", (it.getSize() == 1));
+            int resultCount = 0;
             while (it.hasNext()) {
                 Row row = it.nextRow();
+                resultCount++;
                 String path = row.getValue(JcrConstants.JCR_PATH).getString();
-                assertEquals("Wrong file found ('" + path + "' instead of '" + testFile.getPath() + "')",
+                assertEquals(providerRoot + " : Wrong file found ('" + path + "' instead of '" + testFile.getPath() + "')",
                         testFile.getPath(), path);
             }
+            assertEquals(providerRoot + " : Invalid number of results returned by query", 1, resultCount);
         } finally {
             session.logout();
         }
@@ -461,6 +444,7 @@ public class ContentTest {
      * 1- creates a page with a list that contains several nodes
      * 2- reorders list children
      * 3- checks if the reordering feature is ok
+     *
      * @throws Exception
      */
     @Test
@@ -470,16 +454,16 @@ public class ContentTest {
         try {
             logger.debug("Get site node");
             JCRNodeWrapper siteNode = session.getNode(SITECONTENT_ROOT_NODE);
-            if(!siteNode.isCheckedOut()){
+            if (!siteNode.isCheckedOut()) {
                 session.checkout(siteNode);
             }
 
             logger.debug("Create a new page");
-            JCRNodeWrapper page = siteNode.addNode("page" + System.currentTimeMillis(),"jnt:page");
+            JCRNodeWrapper page = siteNode.addNode("page" + System.currentTimeMillis(), "jnt:page");
 
             // create a new collection with several children
             logger.debug("Create a new list");
-            JCRNodeWrapper listNode = page.addNode("list" + System.currentTimeMillis(),"jnt:contentList");
+            JCRNodeWrapper listNode = page.addNode("list" + System.currentTimeMillis(), "jnt:contentList");
 
 
             logger.debug("Add children to list");
@@ -500,7 +484,7 @@ public class ContentTest {
             // check re-ordoring
             logger.debug("Check new ordering");
             JCRNodeWrapper targetNode = session.getNode(listNode.getPath());
-            if(!targetNode.isCheckedOut()){
+            if (!targetNode.isCheckedOut()) {
                 session.checkout(targetNode);
             }
 
@@ -510,11 +494,65 @@ public class ContentTest {
                 JCRNodeWrapper currentTargetChildNode = (JCRNodeWrapper) targetNodeChildren.nextNode();
                 JCRNodeWrapper node = children.get(index);
                 index++;
-                assertEquals("Bad resulr: nodes["+index+"] are different: "+currentTargetChildNode.getPath()+" != "+node.getPath(),currentTargetChildNode.getPath(),node.getPath());
+                assertEquals(providerRoot + " Bad result: nodes[" + index + "] are different: " + currentTargetChildNode.getPath() + " != " + node.getPath(), currentTargetChildNode.getPath(), node.getPath());
             }
 
         } finally {
             session.logout();
+        }
+    }
+
+    /**
+     * Test referencing a provider file node inside the main repository.
+     *
+     * @throws RepositoryException
+     * @throws UnsupportedEncodingException
+     */
+    @Test
+    public void testReferencing() throws RepositoryException, UnsupportedEncodingException {
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+        try {
+            JCRNodeWrapper siteNode = session.getNode(SITECONTENT_ROOT_NODE);
+            if (!siteNode.isCheckedOut()) {
+                session.checkout(siteNode);
+            }
+
+            JCRNodeWrapper rootNode = session.getNode(providerRoot);
+            String value = "This is a test";
+            String mimeType = "text/plain";
+
+            InputStream is = new ByteArrayInputStream(value.getBytes("UTF-8"));
+
+            String name = "test" + System.currentTimeMillis() + ".txt";
+            JCRNodeWrapper testFile = rootNode.uploadFile(name, is, mimeType);
+            nodes.add(testFile.getIdentifier());
+
+            logger.debug("Create a new page");
+            JCRNodeWrapper page = siteNode.addNode("page" + System.currentTimeMillis(), "jnt:page");
+            logger.debug("Create a new list");
+            JCRNodeWrapper listNode = page.addNode("list" + System.currentTimeMillis(), "jnt:contentList");
+
+            JCRNodeWrapper refNode = listNode.addNode("ref" + +System.currentTimeMillis(), "jnt:fileReference");
+            refNode.setProperty("j:node", testFile);
+
+            session.save();
+
+            PropertyIterator refPropertyIterator = testFile.getReferences();
+            int resultCount = 0;
+            while (refPropertyIterator.hasNext()) {
+                resultCount++;
+                Property refProperty = refPropertyIterator.nextProperty();
+                assertEquals("Reference property name is invalid !", "j:node", refProperty.getName());
+                assertNotNull("Reference node is null", refProperty.getNode());
+                assertEquals("Reference identifier is invalid !", testFile.getIdentifier(), refProperty.getNode().getIdentifier());
+            }
+            assertEquals("Invalid number of file references !", 1, resultCount);
+
+        } finally {
+            if (session != null) {
+                session.logout();
+            }
+
         }
     }
 }

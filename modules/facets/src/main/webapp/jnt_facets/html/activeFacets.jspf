@@ -14,9 +14,10 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="acl" type="java.lang.String"--%>
 
-<div class="filterList">
+
     <c:forEach items="${activeFacetsVars[activeFacetMapVarName]}" var="facet" varStatus="activeFacetStat">
-        <c:if test="${activeFacetStat.first}">    
+        <c:if test="${activeFacetStat.first}">
+		<div class="activefacetsList">
             <h4><fmt:message key="facets.activeFacets"/></h4>
             <ul>
         </c:if>            
@@ -34,6 +35,7 @@
         </c:forEach> 
         <c:if test="${activeFacetStat.last}">        
             </ul>
-        </c:if>               
+        </c:if> 
+		<div class="clear"></div>
+		</div>             
     </c:forEach>
-</div>

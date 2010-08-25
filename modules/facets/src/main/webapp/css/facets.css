@@ -1,0 +1,44 @@
+/******************************************************************************
+* Facets List
+******************************************************************************/
+#bodywrapper div.activefacetsList{
+	background-color:#ffffff ;
+	margin:0;
+	padding:1em 1em 0.5em;
+	border: 1px solid #cecece;
+	line-height:normal;
+	margin-bottom:1em;
+}
+#bodywrapper .activefacetsList h4 {
+	margin:0;
+	padding:0;
+}
+#bodywrapper .activefacetsList ul {
+	margin:0.2em 0.5em;
+}
+#bodywrapper .activefacetsList li{
+	list-style-type:none;
+	padding:0.4em;
+	float:left;
+	font-size:0.85em;
+	line-height:normal;
+}
+/******************************************************************************
+* Categories
+******************************************************************************/
+#bodywrapper div.facetsList {
+	margin-bottom:1em;
+}
+#bodywrapper .facetsList h4 {	}
+#bodywrapper .facetsList ul {
+	margin:0.2em 0.5em;
+}
+#bodywrapper .facetsList li{
+	list-style-type:none;
+	background: url(img/facetsListArrow.png) no-repeat 0.5em 0.6em;
+	padding:0.2em;
+	padding-left:18px;
+}
+#bodywrapper .facetsList li:hover{
+	background-color:#eaeaea
+}

@@ -267,7 +267,7 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
 
 
     public boolean lockAndStoreToken(String type) throws RepositoryException  {
-        return node.lockAndStoreToken("user");
+        return node.lockAndStoreToken(type);
     }
 
     public String getLockOwner() {

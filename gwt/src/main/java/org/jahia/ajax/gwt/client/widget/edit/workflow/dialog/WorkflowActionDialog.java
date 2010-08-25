@@ -183,7 +183,12 @@ public class WorkflowActionDialog extends Window {
     private void displayPublicationInfos(List<GWTJahiaPublicationInfo> infos, int height) {
         final ContentPanel publicationStatusPanel = new ContentPanel(new FitLayout());
         GroupingStore<GWTJahiaPublicationInfo> store = new GroupingStore<GWTJahiaPublicationInfo>();
-        store.add(infos);
+        for (GWTJahiaPublicationInfo info : infos) {
+            if (info.getStatus() > GWTJahiaPublicationInfo.PUBLISHED) {
+                store.add(info);
+            }
+        }
+
         PublicationStatusGrid g = new PublicationStatusGrid(store);
         publicationStatusPanel.add(g);
         publicationStatusPanel.setHeight(height);

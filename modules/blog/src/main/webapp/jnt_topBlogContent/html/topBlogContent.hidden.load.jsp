@@ -18,3 +18,4 @@
              statement="select * from [jnt:blogContent] as blogContent  where isdescendantnode(blogContent, ['${renderContext.mainResource.node.path}']) order by blogContent.[jcr:lastModified] desc"/>
 <c:set target="${moduleMap}" property="editable" value="false" />
 <c:set target="${moduleMap}" property="listQuery" value="${result}" />
+<c:set target="${moduleMap}" property="subNodesTemplate" value="blogList" />

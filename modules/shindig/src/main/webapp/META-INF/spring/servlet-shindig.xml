@@ -4,28 +4,30 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-    <bean name="xml-to-html" class="org.springframework.web.servlet.mvc.ServletWrappingController">
+	<bean name="baseWrappingController" class="org.springframework.web.servlet.mvc.ServletWrappingController" abstract="true" depends-on="guiceInitializer"/>
+	
+    <bean name="xml-to-html" parent="baseWrappingController">
         <property name="servletClass" value="org.apache.shindig.gadgets.servlet.GadgetRenderingServlet"/>
     </bean>
-    <bean name="proxy" class="org.springframework.web.servlet.mvc.ServletWrappingController">
+    <bean name="proxy" parent="baseWrappingController">
         <property name="servletClass" value="org.apache.shindig.gadgets.servlet.ProxyServlet"/>
     </bean>
-    <bean name="makeRequest" class="org.springframework.web.servlet.mvc.ServletWrappingController">
+    <bean name="makeRequest" parent="baseWrappingController">
         <property name="servletClass" value="org.apache.shindig.gadgets.servlet.MakeRequestServlet"/>
     </bean>
-    <bean name="concat" class="org.springframework.web.servlet.mvc.ServletWrappingController">
+    <bean name="concat" parent="baseWrappingController">
         <property name="servletClass" value="org.apache.shindig.gadgets.servlet.ConcatProxyServlet"/>
     </bean>
-    <bean name="oauthCallback" class="org.springframework.web.servlet.mvc.ServletWrappingController">
+    <bean name="oauthCallback" parent="baseWrappingController">
         <property name="servletClass" value="org.apache.shindig.gadgets.servlet.OAuthCallbackServlet"/>
     </bean>
-    <bean name="metadata" class="org.springframework.web.servlet.mvc.ServletWrappingController">
+    <bean name="metadata" parent="baseWrappingController">
         <property name="servletClass" value="org.apache.shindig.gadgets.servlet.RpcServlet"/>
     </bean>
-    <bean name="js" class="org.springframework.web.servlet.mvc.ServletWrappingController">
+    <bean name="js" parent="baseWrappingController">
         <property name="servletClass" value="org.apache.shindig.gadgets.servlet.JsServlet"/>
     </bean>
-    <bean name="socialRestapiServlet" class="org.springframework.web.servlet.mvc.ServletWrappingController">
+    <bean name="socialRestapiServlet" parent="baseWrappingController">
         <property name="servletClass" value="org.apache.shindig.protocol.DataServiceServlet"/>
         <property name="initParameters">
             <props>
@@ -33,7 +35,7 @@
             </props>
         </property>
     </bean>
-    <bean name="socialJsonRpcServlet" class="org.springframework.web.servlet.mvc.ServletWrappingController">
+    <bean name="socialJsonRpcServlet" parent="baseWrappingController">
         <property name="servletClass" value="org.apache.shindig.protocol.JsonRpcServlet"/>
         <property name="initParameters">
             <props>
@@ -41,7 +43,7 @@
             </props>
         </property>
     </bean>
-    <bean name="gadgetsJsonRpcServlet" class="org.springframework.web.servlet.mvc.ServletWrappingController">
+    <bean name="gadgetsJsonRpcServlet" parent="baseWrappingController">
         <property name="servletClass" value="org.apache.shindig.protocol.JsonRpcServlet"/>
         <property name="initParameters">
             <props>
@@ -49,7 +51,7 @@
             </props>
         </property>
     </bean>
-    <bean name="gadgetsRestapiServlet" class="org.springframework.web.servlet.mvc.ServletWrappingController">
+    <bean name="gadgetsRestapiServlet" parent="baseWrappingController">
         <property name="servletClass" value="org.apache.shindig.protocol.DataServiceServlet"/>
         <property name="initParameters">
             <props>
@@ -57,7 +59,7 @@
             </props>
         </property>
     </bean>
-    <bean name="sampleOAuth" class="org.springframework.web.servlet.mvc.ServletWrappingController">
+    <bean name="sampleOAuth" parent="baseWrappingController">
         <property name="servletClass" value="org.apache.shindig.social.sample.oauth.SampleOAuthServlet"/>
     </bean>
 

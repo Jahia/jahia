@@ -131,6 +131,9 @@ class TemplatePackageDeployer implements ServletContextAware {
                             if (packageHandler != null) {
                                 remaining.add(packageHandler);
                             }
+                            if (file.getName().startsWith("import.")) {
+                                reloadSpringContext = true;
+                            }
                         }
                     }
 

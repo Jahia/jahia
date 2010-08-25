@@ -1848,11 +1848,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             throw new LockException("Node not locked");
         }
 
-        if (session.getLocale() != null && !isNodeType(Constants.JAHIANT_TRANSLATION)) {
+        if (session.getLocale() != null && !isNodeType(Constants.JAHIANT_TRANSLATION) && hasI18N(session.getLocale())) {
             Node trans = getI18N(session.getLocale(), false);
-            if (trans != null) {
-                unlock(trans, type);
-            }
+            unlock(trans, type);
         }
 
         if (!isNodeType(Constants.JAHIANT_TRANSLATION) && !getLockedLocales().isEmpty()) {

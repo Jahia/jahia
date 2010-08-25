@@ -23,7 +23,7 @@
         <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
         <input type="hidden" name="newNodeOutputFormat" value="html"/>
 
-                <div id="formCommentableComment">
+                <div id="formGenericComment">
 
                     <fieldset>
                         <p class="field">

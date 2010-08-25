@@ -6,7 +6,7 @@
 <jcr:nodeProperty node="${currentNode}" name="jcr:createdBy" var="createdBy"/>
 <jcr:nodeProperty node="${currentNode}" name="content" var="content"/>
 <jcr:node var="userNode" path="/users/${createdBy.string}"/>
-<li class="docspaceitemcomment">
+<li class="genericListCommentLi">
     <div class="image">
         <div class="itemImage itemImageLeft">
 

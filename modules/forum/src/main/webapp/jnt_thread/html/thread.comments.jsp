@@ -23,7 +23,7 @@
     });
 </script>
 
-<ul class="docspacelistcomment" id="${currentNode.UUID}">
+<ul class="genericListComment" id="${currentNode.UUID}">
     <c:set target="${moduleMap}" property="commentsList" value="${currentNode.nodes}" />
     <c:set target="${moduleMap}" property="listTotalSize" value="${fn:length(currentNode.nodes)}"/>
     <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.init"/>

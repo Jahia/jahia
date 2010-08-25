@@ -13,21 +13,12 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="acl" type="java.lang.String"--%>
-<template:addResources type="css" resources="forum.css"/>
+<template:addResources type="css" resources="commentable.css"/>
 <c:set var="bindedComponent" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 <c:if test="${not empty bindedComponent}">
     <jcr:node var="comments" path="${bindedComponent.path}/comments"/>
     <c:if test="${not empty comments}">
-    <div class="boxdocspace">
-        <div class="boxdocspacepadding10 boxdocspacemarginbottom16">
-            <div class="boxdocspace-inner">
-                <div class="boxdocspace-inner-border">
-                    <template:module node="${comments}" template="comments"/>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!--stop boxdocspace -->
+		<template:module node="${comments}" template="comments"/>
     </c:if>
 </c:if>
 <template:linker property="j:bindedComponent"/>

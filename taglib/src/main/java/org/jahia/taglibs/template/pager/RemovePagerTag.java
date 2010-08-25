@@ -35,6 +35,8 @@ package org.jahia.taglibs.template.pager;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.TagSupport;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -66,33 +68,37 @@ public class RemovePagerTag extends TagSupport {
 
     @Override
     public int doEndTag() throws JspException {
-        Object value = pageContext.getAttribute("old_begin"+id, PageContext.REQUEST_SCOPE);
-        if (value != null) {
-            pageContext.setAttribute("begin", value, PageContext.REQUEST_SCOPE);
+        Map<String,Object> moduleMap  = (HashMap<String,Object>)  pageContext.getRequest().getAttribute("moduleMap");
+        if (moduleMap == null) {
+            moduleMap = new HashMap<String,Object>();
         }
-        value = pageContext.getAttribute("old_end"+id, PageContext.REQUEST_SCOPE);
+        Object value = moduleMap.get("old_begin");
         if (value != null) {
-            pageContext.setAttribute("end", value, PageContext.REQUEST_SCOPE);
+            moduleMap.put("begin", value);
         }
-        value = pageContext.getAttribute("old_pageSize"+id, PageContext.REQUEST_SCOPE);
+        value = moduleMap.get("old_end"+id);
         if (value != null) {
-            pageContext.setAttribute("pageSize", value, PageContext.REQUEST_SCOPE);
+            moduleMap.put("end", value);
         }
-        value = pageContext.getAttribute("old_nbPages"+id, PageContext.REQUEST_SCOPE);
+        value = moduleMap.get("old_pageSize");
         if (value != null) {
-            pageContext.setAttribute("nbPages", value, PageContext.REQUEST_SCOPE);
+            moduleMap.put("pageSize", value);
         }
-        value = pageContext.getAttribute("old_currentPage"+id, PageContext.REQUEST_SCOPE);
+        value = moduleMap.get("old_nbPages"+id);
         if (value != null) {
-            pageContext.setAttribute("currentPage", value, PageContext.REQUEST_SCOPE);
+            moduleMap.put("nbPages", value);
         }
-        value = pageContext.getAttribute("old_paginationActive"+id, PageContext.REQUEST_SCOPE);
+        value = moduleMap.get("old_currentPage"+id);
         if (value != null) {
-            pageContext.setAttribute("paginationActive", value, PageContext.REQUEST_SCOPE);
+            moduleMap.put("currentPage", value);
         }
-        value = pageContext.getAttribute("old_totalSize"+id, PageContext.REQUEST_SCOPE);
+        value = moduleMap.get("old_paginationActive"+id);
         if (value != null) {
-            pageContext.setAttribute("totalSize", value, PageContext.REQUEST_SCOPE);
+            moduleMap.put("paginationActive", value);
+        }
+        value = moduleMap.get("old_totalSize"+id);
+        if (value != null) {
+            moduleMap.put("totalSize", value);
         }
         return super.doEndTag();
     }

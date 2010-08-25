@@ -35,6 +35,8 @@ package org.jahia.taglibs.template.pager;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.TagSupport;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -61,54 +63,62 @@ public class InitPagerTag extends TagSupport {
 
     @Override
     public int doStartTag() throws JspException {
-        Object value = pageContext.getAttribute("begin", PageContext.REQUEST_SCOPE);
-        if (value != null) {
-            pageContext.setAttribute("old_begin"+id, value, PageContext.REQUEST_SCOPE);
-        }
-        value = pageContext.getAttribute("end", PageContext.REQUEST_SCOPE);
-        if (value != null) {
-            pageContext.setAttribute("old_end"+id, value, PageContext.REQUEST_SCOPE);
-        }
-        value = pageContext.getAttribute("pageSize", PageContext.REQUEST_SCOPE);
-        if (value != null) {
-            pageContext.setAttribute("old_pageSize"+id, value, PageContext.REQUEST_SCOPE);
-        }
-        value = pageContext.getAttribute("nbPages", PageContext.REQUEST_SCOPE);
-        if (value != null) {
-            pageContext.setAttribute("old_nbPages"+id, value, PageContext.REQUEST_SCOPE);
-        }
-        value = pageContext.getAttribute("currentPage", PageContext.REQUEST_SCOPE);
-        if (value != null) {
-            pageContext.setAttribute("old_currentPage"+id, value, PageContext.REQUEST_SCOPE);
-        }
-        value = pageContext.getAttribute("paginationActive", PageContext.REQUEST_SCOPE);
-        if (value != null) {
-            pageContext.setAttribute("old_paginationActive"+id, value, PageContext.REQUEST_SCOPE);
-        }
-        value = pageContext.getAttribute("totalSize", PageContext.REQUEST_SCOPE);
-        if (value != null) {
-            pageContext.setAttribute("old_totalSize"+id, value, PageContext.REQUEST_SCOPE);
-        }
-        String beginStr = pageContext.getRequest().getParameter("begin");
-        String endStr = pageContext.getRequest().getParameter("end");
+        try {
+            Map<String,Object> moduleMap  = (HashMap<String,Object>)  pageContext.getRequest().getAttribute("moduleMap");
+            if (moduleMap == null) {
+                moduleMap = new HashMap<String,Object>();
+            }
+            Object value = moduleMap.get("begin");
+            if (value != null) {
+                moduleMap.put("old_begin"+id, value);
+            }
+            value = moduleMap.get("end");
+            if (value != null) {
+                moduleMap.put("old_end"+id, value);
+            }
+            value = moduleMap.get("pageSize");
+            if (value != null) {
+                moduleMap.put("old_pageSize"+id, value);
+            }
+            value = moduleMap.get("nbPages");
+            if (value != null) {
+                moduleMap.put("old_nbPages"+id, value);
+            }
+            value = moduleMap.get("currentPage");
+            if (value != null) {
+                moduleMap.put("old_currentPage"+id, value);
+            }
+            value = moduleMap.get("paginationActive");
+            if (value != null) {
+                moduleMap.put("old_paginationActive"+id, value);
+            }
+            value = moduleMap.get("totalSize");
+            if (value != null) {
+                moduleMap.put("old_totalSize"+id, value);
+            }
+            String beginStr = pageContext.getRequest().getParameter("begin");
+            String endStr = pageContext.getRequest().getParameter("end");
 
-        int begin = beginStr == null ? 0 : Integer.parseInt(beginStr);
-        int end = endStr == null ? pageSize - 1 : Integer.parseInt(endStr);
-        if(totalSize < pageSize) {
-            begin = 0;
-        }
-        long nbPages = totalSize / pageSize;
-        if (nbPages * pageSize < totalSize) {
-            nbPages++;
-        }
-        pageContext.setAttribute("begin", begin, PageContext.REQUEST_SCOPE);
-        pageContext.setAttribute("end", end, PageContext.REQUEST_SCOPE);
-        pageContext.setAttribute("pageSize", pageSize, PageContext.REQUEST_SCOPE);
-        pageContext.setAttribute("nbPages", nbPages, PageContext.REQUEST_SCOPE);
-        pageContext.setAttribute("currentPage", begin / pageSize + 1, PageContext.REQUEST_SCOPE);
-        pageContext.setAttribute("paginationActive", true, PageContext.REQUEST_SCOPE);
-        pageContext.setAttribute("totalSize", totalSize, PageContext.REQUEST_SCOPE);
-        return super.doStartTag();
+            int begin = beginStr == null ? 0 : Integer.parseInt(beginStr);
+            int end = endStr == null ? pageSize - 1 : Integer.parseInt(endStr);
+            if(totalSize < pageSize) {
+                begin = 0;
+            }
+            long nbPages = totalSize / pageSize;
+            if (nbPages * pageSize < totalSize) {
+                nbPages++;
+            }
+            moduleMap.put("begin", begin);
+            moduleMap.put("end", end);
+            moduleMap.put("pageSize", pageSize);
+            moduleMap.put("nbPages", nbPages);
+            moduleMap.put("currentPage", begin / pageSize + 1);
+            moduleMap.put("paginationActive", true);
+            moduleMap.put("totalSize", totalSize);
+            pageContext.setAttribute("moduleMap",moduleMap);
+        } catch (Exception e) {
+            throw new JspException(e);
+        }        return super.doStartTag();
     }
 
     @Override

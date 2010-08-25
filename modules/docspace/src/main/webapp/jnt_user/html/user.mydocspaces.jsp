@@ -32,9 +32,9 @@
             <c:set var="pageSize" value="${param.pagesize}"/>
         </c:otherwise>
     </c:choose>
-    <template:initPager totalSize="${moduleMap.listTotalSize}" pageSize="${pageSize}" id="${currentNode.identifier}"/>
+    <template:initPager totalSize="${listTotalSize}" pageSize="${pageSize}" id="${currentNode.identifier}"/>
     <ul class="docspacelist">
-        <c:forEach items="${moduleMap.currentList}" var="subchild" varStatus="status" begin="${moduleMap.begin}" end="${moduleMap.end}">
+        <c:forEach items="${currentList}" var="subchild" varStatus="status" begin="${moduleMap.begin}" end="${moduleMap.end}">
             <c:if test="${jcr:hasPermission(subchild, 'write') and (not empty jcr:getParentOfType(subchild, 'jnt:page'))}">
                 <li>
                     <a class="adocspace" href="${url.basePreview}${subchild.path}.html"

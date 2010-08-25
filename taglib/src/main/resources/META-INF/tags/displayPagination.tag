@@ -21,45 +21,46 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="javascript" resources="jquery.min.js"/>
 <template:addResources type="javascript" resources="ajaxreplace.js"/>
-<c:if test="${not empty paginationActive and totalSize > 0 and nbPages > 1}">
-    <c:set var="searchUrl" value="${url.current}"/>
+<c:if test="${not empty moduleMap.paginationActive and moduleMap.totalSize > 0 and moduleMap.nbPages > 1}">
+    <c:set var="searchUrl" value="${url.current}.ajax"/>
     <c:if test="${not empty currentResource.moduleParams.displaySearchParams}">
         <c:set var="searchUrl"><search:searchUrl/></c:set>
     </c:if>
     <c:url value="${searchUrl}" context="/" var="basePaginationUrl"/>
+    <c:set target="${moduleMap}" property="basePaginationUrl" value="${basePaginationUrl}"/>
     <div class="pagination"><!--start pagination-->
 
-        <div class="paginationPosition"><span>Page ${currentPage} of ${nbPages} (${totalSize} results)</span>
+        <div class="paginationPosition"><span>Page ${currentPage} of ${moduleMap.nbPages} (${moduleMap.totalSize} results)</span>
         </div>
         <div class="paginationNavigation">
             <label for="pageSizeSelector">Nb of items:</label>
             <select id="pageSizeSelector"
-                    onchange="replace('${currentNode.UUID}','${basePaginationUrl}&begin=${begin}&pagesize='+$('#pageSizeSelector').val(),'${currentResource.moduleParams.callback}')">
-                <c:if test="${empty nbItemsList}">
-                    <c:set var="nbItemsList" value="5,10,25,50,100"/>
+                    onchange="jreplace('${currentNode.UUID}','${basePaginationUrl}',{begin:${moduleMap.begin},pagesize:$('#pageSizeSelector').val()},'${currentResource.moduleParams.callback}')">
+                <c:if test="${empty moduleMap.nbItemsList}">
+                    <c:set target="${moduleMap}" property="nbItemsList" value="5,10,25,50,100"/>
                 </c:if>
-                <c:forTokens items="${nbItemsList}" delims="," var="opt">
-                    <option value="${opt}" <c:if test="${pageSize eq opt}">selected="true" </c:if>>${opt}</option>
+                <c:forTokens items="${moduleMap.nbItemsList}" delims="," var="opt">
+                    <option value="${opt}" <c:if test="${moduleMap.pageSize eq opt}">selected="true" </c:if>>${opt}</option>
                 </c:forTokens>
             </select>
             &nbsp;
-            <c:if test="${currentPage>1}">
+            <c:if test="${moduleMap.currentPage>1}">
                 <a class="previousLink"
-                   onclick="jreplace('${currentNode.UUID}','${basePaginationUrl}',{begin:${ (currentPage-2) * pageSize },end:${ (currentPage-1)*pageSize-1},pagesize:${pageSize}},'${currentResource.moduleParams.callback}')">Previous</a>
+                   onclick="jreplace('${currentNode.UUID}','${moduleMap.basePaginationUrl}',{begin:${ (moduleMap.currentPage-2) * moduleMap.pageSize },end:${ (moduleMap.currentPage-1)*moduleMap.pageSize-1},pagesize:${moduleMap.pageSize}},'${currentResource.moduleParams.callback}')">Previous</a>
             </c:if>
-            <c:forEach begin="1" end="${nbPages}" var="i">
-                <c:if test="${i != currentPage}">
+            <c:forEach begin="1" end="${moduleMap.nbPages}" var="i">
+                <c:if test="${i != moduleMap.currentPage}">
                     <span><a class="paginationPageUrl"
-                             onclick="jreplace('${currentNode.UUID}','${basePaginationUrl}',{begin:${ (i-1) * pageSize },end:${ i*pageSize-1},pagesize:${pageSize}},'${currentResource.moduleParams.callback}')"> ${ i }</a></span>
+                             onclick="jreplace('${currentNode.UUID}','${moduleMap.basePaginationUrl}',{begin:${ (i-1) * moduleMap.pageSize },end:${ i*moduleMap.pageSize-1},pagesize:${moduleMap.pageSize}},'${currentResource.moduleParams.callback}')"> ${ i }</a></span>
                 </c:if>
-                <c:if test="${i == currentPage}">
+                <c:if test="${i == moduleMap.currentPage}">
                     <span class="currentPage">${ i }</span>
                 </c:if>
             </c:forEach>
 
-            <c:if test="${currentPage<nbPages}">
+            <c:if test="${moduleMap.currentPage<moduleMap.nbPages}">
                 <a class="nextLink"
-                   onclick="jreplace('${currentNode.UUID}','${basePaginationUrl}',{begin:${ currentPage * pageSize },end:${ (currentPage+1)*pageSize-1},pagesize:${pageSize}},'${currentResource.moduleParams.callback}')">Next</a>
+                   onclick="jreplace('${currentNode.UUID}','${moduleMap.basePaginationUrl}',{begin:${ moduleMap.currentPage * moduleMap.pageSize },end:${ (moduleMap.currentPage+1)*moduleMap.pageSize-1},pagesize:${moduleMap.pageSize}},'${currentResource.moduleParams.callback}')">Next</a>
             </c:if>
         </div>
 

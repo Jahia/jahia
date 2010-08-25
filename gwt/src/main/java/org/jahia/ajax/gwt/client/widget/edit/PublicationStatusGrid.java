@@ -38,6 +38,7 @@ import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.widget.workflow.PublicationManagerEngine;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,21 +66,8 @@ public class PublicationStatusGrid extends Grid<GWTJahiaPublicationInfo> {
             @Override
             public Object render(GWTJahiaPublicationInfo model, String property, ColumnData config, int rowIndex,
                                  int colIndex, ListStore listStore, Grid grid) {
-                switch (model.getStatus()) {
-                    case GWTJahiaPublicationInfo.NOT_PUBLISHED:
-                        return Messages.get("org.jahia.jcr.publication.status_notyetpublished");
-                    case GWTJahiaPublicationInfo.LOCKED:
-                        return Messages.get("label.locked");
-                    case GWTJahiaPublicationInfo.PUBLISHED:
-                        return Messages.get("label.published");
-                    case GWTJahiaPublicationInfo.MODIFIED:
-                        return Messages.get("label.modified");
-                    case GWTJahiaPublicationInfo.UNPUBLISHED:
-                        return "Unpublished";
-                    case GWTJahiaPublicationInfo.CONFLICT:
-                        return "Conflict - cannot publish";
-                }
-                return "";
+                final String label = PublicationManagerEngine.statusToLabel.get(model.getStatus());
+                return Messages.get("label.publication." + label, label);
             }
         });
         configs.add(column);

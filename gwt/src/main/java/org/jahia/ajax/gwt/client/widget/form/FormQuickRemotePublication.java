@@ -135,8 +135,7 @@ public abstract class FormQuickRemotePublication extends FormPanel {
         remotePassword.setAllowBlank(false);
         add(remotePassword);
 
-        final ContentPickerField localPath = new ContentPickerField(Messages.get("label.pagePicker", "Page picker"),
-                Messages.get("picker_link_selection", "Selected page"), null, null, null,
+        final ContentPickerField localPath = new ContentPickerField(null, null, null,
                 ManagerConfigurationFactory.PAGEPICKER, false);
         localPath.setName("node");
         localPath.setFieldLabel(Messages.get("node", "Node"));

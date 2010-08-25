@@ -37,11 +37,9 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.util.WindowUtil;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
-import org.jahia.ajax.gwt.client.widget.tripanel.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -70,7 +68,7 @@ public class ContentPickerViewport extends Viewport {
                                  final boolean multiple, String callback) {
         setLayout(new FitLayout());
         final ContentPicker picker =
-                new ContentPicker(selectionLabel, selectorOptions, selectedNodes, filters, mimeTypes, config, multiple);
+                new ContentPicker(selectorOptions, selectedNodes, filters, mimeTypes, config, multiple);
 
         // buttom component
         final Component bar = initButtonBar(jahiaContextPath,jahiaServletPath,callback);

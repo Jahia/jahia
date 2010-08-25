@@ -68,18 +68,14 @@ public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
 
     private List<GWTJahiaNode> value;
     private String selectionLabel;
-    private String header;
     private List<String> filters;
     private List<String> mimeTypes;
     private String configuration;
     private boolean multiple;
     private Map<String, String> selectorOptions;
 
-    public ContentPickerField(String header, String selectionLabel, Map<String, String> selectorOptions,
-                              List<String> filters, List<String> mimeTypes, String configuration, boolean multiple) {
+    public ContentPickerField(Map<String, String> selectorOptions, List<String> filters, List<String> mimeTypes, String configuration, boolean multiple) {
         super();
-        this.header = header;
-        this.selectionLabel = selectionLabel;
         setPropertyEditor(new PropertyEditor<List<GWTJahiaNode>>() {
             public String getStringValue(List<GWTJahiaNode> value) {
                 String s = "";
@@ -125,10 +121,10 @@ public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
                         final Window w = new Window();
                         w.setLayout(new FitLayout());
                         final ContentPicker contentPicker =
-                                new ContentPicker(selectionLabel, selectorOptions, getValue(), filters, mimeTypes,
+                                new ContentPicker(selectorOptions, getValue(), filters, mimeTypes,
                                         config, multiple);
 
-                        w.setHeading(header);
+                        w.setHeading(Messages.get("label."+config.getName(), config.getName()));
                         w.setModal(true);
                         w.setSize(900, 700);
                         w.setResizable(true);

@@ -68,11 +68,8 @@ public class PickedContentView extends BottomRightComponent implements PickedCon
     private boolean multiple;
     private List<GWTJahiaNode> selectedNodes;
     private String emtypSelectionMessage = "No selection";
-    private String selectionHeaderMessage = "Image selected: ";
-    private TabItem itemPreview = new TabItem("Preview");
 
-    public PickedContentView(String selectionLabel, List<GWTJahiaNode> selectedNodes, boolean multiple, final GWTManagerConfiguration config) {
-        this.selectionHeaderMessage = selectionLabel;
+    public PickedContentView(List<GWTJahiaNode> selectedNodes, boolean multiple, final GWTManagerConfiguration config) {
         this.config = config;
         this.selectedNodes = selectedNodes;
         this.multiple = multiple;
@@ -201,7 +198,7 @@ public class PickedContentView extends BottomRightComponent implements PickedCon
         view.setEmptyText(emtypSelectionMessage);
         view.setGroupRenderer(new GridGroupRenderer() {
             public String render(GroupColumnData data) {
-                return selectionHeaderMessage + ((GWTJahiaNode) data.models.get(0)).getPath();
+                return Messages.get("label."+config.getName()+".selection", config.getName()+".selection") + ((GWTJahiaNode) data.models.get(0)).getPath();
             }
         });
         m_grid.setView(view);

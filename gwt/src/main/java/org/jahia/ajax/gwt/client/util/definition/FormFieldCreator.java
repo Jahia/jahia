@@ -43,7 +43,6 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
 import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
 import org.jahia.ajax.gwt.client.widget.form.CKEditorField;
@@ -138,14 +137,11 @@ public class FormFieldCreator {
                 case GWTJahiaNodeSelectorType.COLOR:
                     break;
                 case GWTJahiaNodeSelectorType.CATEGORY:
-                    field = new ContentPickerField(Messages.get("picker_cat_header", "Categories picker"),
-                            Messages.get("picker_category_selection", "Category selected: "),
-                            definition.getSelectorOptions(), null, null,
+                    field = new ContentPickerField(definition.getSelectorOptions(), null, null,
                             ManagerConfigurationFactory.CATEGORYPICKER, propDefinition.isMultiple());
                     break;
                 case GWTJahiaNodeSelectorType.PICKER:
-                    field = new ContentPickerField(Messages.get("picker_file_header", "Files picker"),
-                            Messages.get("picker_file_selection", "File selected: "), definition.getSelectorOptions(),
+                    field = new ContentPickerField(definition.getSelectorOptions(),
                             getSelectorOptionAsList(definition, "filters"), getSelectorOptionAsList(definition, "mime"),
                             definition.getSelectorOptions().get("type") != null ?
                                     definition.getSelectorOptions().get("type")+"picker" :
@@ -197,9 +193,7 @@ public class FormFieldCreator {
                 default:
                     if (propDefinition.getRequiredType() == GWTJahiaNodePropertyType.REFERENCE ||
                             propDefinition.getRequiredType() == GWTJahiaNodePropertyType.WEAKREFERENCE) {
-                        field = new ContentPickerField(Messages.get("picker_content_header", "Content picker"),
-                                Messages.get("picker_content_selection", "Content selected: "),
-                                definition.getSelectorOptions(), getSelectorOptionAsList(definition, "filters"),
+                        field = new ContentPickerField(definition.getSelectorOptions(), getSelectorOptionAsList(definition, "filters"),
                                 getSelectorOptionAsList(definition, "mime"), ManagerConfigurationFactory.EDITORIALCONTENTPICKER,
                                 propDefinition.isMultiple());
                     } else {

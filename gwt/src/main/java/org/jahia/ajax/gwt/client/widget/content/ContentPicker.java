@@ -50,8 +50,8 @@ import java.util.Map;
 public class ContentPicker extends TriPanelBrowserLayout {
     private PickedContent pickedContent;
 
-    public ContentPicker(String selectionLabel, Map<String, String> selectorOptions, final List<GWTJahiaNode> selectedNodes,
-                         List<String> filters, List<String> mimeTypes, GWTManagerConfiguration config, boolean multiple) {
+    public ContentPicker(Map<String, String> selectorOptions, final List<GWTJahiaNode> selectedNodes, List<String> filters, List<String> mimeTypes,
+                         GWTManagerConfiguration config, boolean multiple) {
         super(config);
         //setWidth("714px");
         setHeight("700px");
@@ -74,7 +74,7 @@ public class ContentPicker extends TriPanelBrowserLayout {
 
         contentViews.selectNodes(selectedNodes);
 
-        BottomRightComponent bottomComponents = new PickedContentView(selectionLabel, selectedNodes, multiple, config);
+        BottomRightComponent bottomComponents = new PickedContentView(selectedNodes, multiple, config);
 
         final TopBar toolbar = new ContentToolbar(config, linker) {
 

@@ -34,6 +34,7 @@ package org.jahia.ajax.gwt.client.widget.workflow;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.core.El;
+import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.TreeLoader;
 import com.extjs.gxt.ui.client.event.*;
@@ -165,7 +166,16 @@ public class PublicationManagerEngine extends Window {
         Button button = new Button("Start Workflow");
         buttonBar.add(button);
         setBottomComponent(buttonBar);
+
+        m_tree.mask("Loading ...");
+
+        loader.addLoadListener(new LoadListener() {
+            public void loaderLoad(LoadEvent le) {
+                m_tree.unmask();
+            }
+        });
         loader.load();
+
         button.addSelectionListener(new StartWorkflowButtonSelectionListener(this));
     }
 

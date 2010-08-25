@@ -57,8 +57,10 @@
         <property name="uiConfig" ref="UiConfigHelper"/>
         <property name="analytics" ref="AnalyticsHelper"/>
         <property name="sessionPollingFrequency" value="300000"/>
+        <!--
         <property name="googleDocsExportFormats" ref="GoogleDocsExportFormats"/>
         <property name="googleDocsServiceFactory" ref="GoogleDocsServiceFactory"/>
+        -->
     </bean>
 
     <bean name="toolbarServiceController" parent="abstractServiceController">

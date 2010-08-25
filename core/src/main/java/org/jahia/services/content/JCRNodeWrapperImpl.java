@@ -2736,10 +2736,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         try {
             Locale locale = jcrSessionWrapper.getLocale();
             if (locale != null) {
-                boolean translated = hasTranslations();
                 JCRSiteNode siteNode = resolveSite();
                 if(siteNode==null) {
-                    return checkI18nAndMandatoryPropertiesForLocale(locale, translated);
+                    return checkI18nAndMandatoryPropertiesForLocale(locale);
                 } else {
                     Set<String> mandatoryLanguages = siteNode.getMandatoryLanguages();
                     if(!siteNode.getLanguagesAsLocales().contains(locale)){
@@ -2747,16 +2746,15 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     }
                     for (String mandatoryLanguage : mandatoryLanguages) {
                         locale = LanguageCodeConverters.getLocaleFromCode(mandatoryLanguage);
-                        if(!checkI18nAndMandatoryPropertiesForLocale(locale, translated)){
+                        if(!checkI18nAndMandatoryPropertiesForLocale(locale)){
                             return false;
                         }
                     }
                 }
             } else if(languages!=null) {
-                boolean translated = hasTranslations();
                 for (String language : languages) {
                     locale = LanguageCodeConverters.getLocaleFromCode(language);
-                    if(checkI18nAndMandatoryPropertiesForLocale(locale, translated)) {
+                    if(checkI18nAndMandatoryPropertiesForLocale(locale)) {
                         JCRSiteNode siteNode = resolveSite();
                         if(siteNode!=null) {
                             Set<String> mandatoryLanguages = siteNode.getMandatoryLanguages();
@@ -2765,7 +2763,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                             }
                             for (String mandatoryLanguage : mandatoryLanguages) {
                                 locale = LanguageCodeConverters.getLocaleFromCode(mandatoryLanguage);
-                                if(!checkI18nAndMandatoryPropertiesForLocale(locale,translated)) {
+                                if(!checkI18nAndMandatoryPropertiesForLocale(locale)) {
                                     return false;
                                 }
                             }
@@ -2793,15 +2791,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return translated;
     }
 
-    public boolean checkI18nAndMandatoryPropertiesForLocale(Locale locale, boolean translated)
+    public boolean checkI18nAndMandatoryPropertiesForLocale(Locale locale)
             throws RepositoryException {
         Node i18n = null;
         if (hasI18N(locale)) {
             i18n = getI18N(locale, false);
-        } else {
-            if (translated) {
-                return false;
-            }
         }
         for (ExtendedPropertyDefinition def : getPrimaryNodeType().getPropertyDefinitionsAsMap().values()) {
             if (def.isInternationalized() && def.isMandatory()) {

@@ -72,9 +72,9 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getUser();
     }
 
-    public boolean checkI18nAndMandatoryPropertiesForLocale(Locale locale, boolean translated)
+    public boolean checkI18nAndMandatoryPropertiesForLocale(Locale locale)
             throws RepositoryException {
-        return node.checkI18nAndMandatoryPropertiesForLocale(locale, translated);
+        return node.checkI18nAndMandatoryPropertiesForLocale(locale);
     }
 
     public Map<String, List<String[]>> getAclEntries() {

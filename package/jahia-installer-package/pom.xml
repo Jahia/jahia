@@ -19,18 +19,6 @@
         <staging.dir>${project.build.directory}/izpack</staging.dir>
         <launch4j.jahia.version>6.5.0.0</launch4j.jahia.version>
     </properties>
-    <pluginRepositories>
-        <pluginRepository>
-         <id>CodehausSnapshots</id>
-         <url>http://snapshots.repository.codehaus.org/</url>
-         <snapshots>
-           <enabled>false</enabled>
-         </snapshots>
-         <releases>
-           <enabled>false</enabled>
-         </releases>
-        </pluginRepository>
-    </pluginRepositories>
     
     <dependencies>
         <dependency>

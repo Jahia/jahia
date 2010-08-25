@@ -1,0 +1,17 @@
+scriptinfo request parameter
+
+If true, this parameter adds information about files in modules used to render content.
+
+To activate, add scriptinfo=true in the url parameters
+
+It will add a span tag in source code (use class hidden) for each file used for render.
+
+example :
+
+   <span class='hidden' script='Path dispatch : /modules/default/jmix_list/html/list.hidden.load.jsp' node='/sites/ACME/templates/base/header'></span>
+
+
+    <span class='hidden' script='Path dispatch : /modules/default/jnt_shortcuts/html/shortcuts.inline.jsp' node='/sites/ACME/templates/base/header/shortcuts'></span>
+
+
+this functionality only works on development mode.

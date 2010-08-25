@@ -64,19 +64,23 @@ public class TemplateScriptFilter extends AbstractFilter {
         HttpServletRequest request = renderContext.getRequest();
         Script script = (Script) request.getAttribute("script");
         renderContext.getResourcesStack().push(resource);
-        String output;
+        StringBuffer output = new StringBuffer();
         try {
             if (logger.isDebugEnabled()) {
                 logger.debug("Render " + script.getTemplate().getPath() + " for resource: " + resource +
                              " with mainResource " + renderContext.getMainResource());
             }
-            output = script.execute(resource, renderContext);
+            if (SettingsBean.getInstance().isDevelopmentMode() && Boolean.valueOf(renderContext.getRequest().getParameter("scriptinfo")) && !resource.getTemplate().equals("wrapper.fullpage")) {
+                output.append("\n<span class='hidden' script='").append(script.getTemplate().getInfo()).append("' node='").append(resource.getNode().getPath()).append("'></span>\n");
+            }
+            output.append(script.execute(resource, renderContext));
+            
         } catch (RenderException e) {
-            output = handleError(script.getTemplate().getInfo(), e, renderContext, resource);
+            output.append(handleError(script.getTemplate().getInfo(), e, renderContext, resource));
         } finally {
             renderContext.getResourcesStack().pop();
         }
-        return output.trim();
+        return output.toString().trim();
     }
 
 

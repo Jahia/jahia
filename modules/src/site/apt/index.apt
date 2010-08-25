@@ -39,3 +39,7 @@ Jahia Crazy Jane - Templates Module
 	* Module Map
 
 	  Share variables within modules in {{{./moduleMap.html}module map}}.
+
+	* scriptinfo Request Parameter
+
+	  {{{./scriptinfo.html} Parameter}} that adds path of scripts (jsp, etc ...) in modules used to render content.

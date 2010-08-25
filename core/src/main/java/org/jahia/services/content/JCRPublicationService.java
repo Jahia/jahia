@@ -188,7 +188,7 @@ public class JCRPublicationService extends JahiaService {
      * Referenced nodes will also be published.
      * Parent node must be published, or will be published if publishParent is true.
      *
-     * @param path                 Path of the node to publish
+     * @param uuid                 Uuid of the node to publish
      * @param sourceWorkspace      the source workspace of the publication
      * @param destinationWorkspace the destination workspace of the publication
      * @param languages            set of languages you wish to publish
@@ -789,21 +789,6 @@ public class JCRPublicationService extends JahiaService {
                                     boolean includesReferences, boolean includesSubnodes, boolean allsubtree, final JCRSessionWrapper sourceSession,
                                     final JCRSessionWrapper destinationSession, Set<String> uuids, List<PublicationInfo> infos)
             throws RepositoryException {
-        if (uuids.contains(info.getUuid())) {
-            return;
-        }
-        uuids.add(info.getUuid());
-
-//        JCRNodeWrapper stageNode = null;
-//        try {
-//            stageNode = sourceSession.getNodeByUUID(info.getUuid());
-//        } catch (ItemNotFoundException e) {
-//            stageNode = destinationSession.getNodeByUUID(info.getUuid());
-//            info.setPath(stageNode.getPath());
-//            info.setStatus(PublicationInfo.LIVE_ONLY);
-//            return;
-//        }
-//        info.setPath(stageNode.getPath());
         JCRNodeWrapper publishedNode = null;
         try {
             publishedNode = destinationSession.getNodeByUUID(node.getIdentifier());
@@ -868,11 +853,9 @@ public class JCRPublicationService extends JahiaService {
                             for (Value v : vs) {
                                 try {
                                     JCRNodeWrapper ref = node.getSession().getNodeByUUID(v.getString());
-//                            if (!referencedNode.contains(ref)) {
                                     if (!ref.isNodeType("jnt:page")) {
                                         getPublicationInfo(ref, info.addReference(ref.getIdentifier(), ref.getPath()).getRoot(), languages, includesReferences, includesSubnodes, false, sourceSession, destinationSession, uuids, infos);
                                     }
-//                            }
                                 } catch (ItemNotFoundException e) {
                                     if (definition.getRequiredType() == PropertyType.REFERENCE) {
                                         logger.warn("Cannot get reference " + v.getString());
@@ -885,11 +868,9 @@ public class JCRPublicationService extends JahiaService {
                         } else {
                             try {
                                 JCRNodeWrapper ref = (JCRNodeWrapper) p.getNode();
-//                        if (!referencedNode.contains(ref)) {
                                 if (!ref.isNodeType("jnt:page")) {
                                     getPublicationInfo(ref, info.addReference(ref.getIdentifier(), ref.getPath()).getRoot(), languages, includesReferences, includesSubnodes, false, sourceSession, destinationSession, uuids, infos);
                                 }
-//                        }
                             } catch (ItemNotFoundException e) {
                                 logger.warn("Cannot get reference " + p.getString());
                             }

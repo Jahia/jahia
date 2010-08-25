@@ -906,8 +906,9 @@ public class JCRPublicationService extends JahiaService {
                     PublicationInfo newinfo = new PublicationInfo(n.getIdentifier(), n.getPath());
                     infos.add(newinfo);
                     subinfo = newinfo.getRoot();
+                    getPublicationInfo(n, subinfo, languages, includesReferences, includesSubnodes, allsubtree, sourceSession, destinationSession, uuids, infos);
                 }
-                if (allsubtree || !hasIndependantPublication) {
+                if (!hasIndependantPublication) {
                     if (languages != null && n.isNodeType("mix:language")) {
                         String translationLanguage = n.getProperty("jcr:language").getString();
                         if (languages.contains(translationLanguage)) {

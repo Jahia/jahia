@@ -17,26 +17,28 @@
 <c:if test="${empty startNode}">
     <c:set var="startNode" value="${jcr:getMeAndParentsOfType(renderContext.mainResource.node, 'jnt:page')[0]}"/>
 </c:if>
+<c:if test="${!empty startNode}">
 <h4 class="boxdocspace-title"><fmt:message key="docspace.label.docspace.last.document"/></h4>
-<ul class="docspacelist">
-    <jcr:sql var="result"
-             sql="select * from [jnt:file] as file where isdescendantnode(file, ['${startNode.path}']) order by file.[jcr:lastModified] desc"/>
-    <c:forEach items="${result.nodes}" var="document" end="9">
-        <li>
-            <c:if test="${jcr:hasPermission(document, 'write')}">
-                <span class="icon ${functions:fileIcon(document.name)}"></span><a
-                    href="${url.basePreview}${document.path}.html"
-                    title="${document.name}">${functions:abbreviate(document.name,20,30,'...')}</a>
-            </c:if>
-            <c:if test="${not jcr:hasPermission(document, 'write')}">
-                <span class="icon ${functions:fileIcon(document.name)}"></span><a
-                    href="${url.baseLive}${document.path}.docspace.html"
-                    title="${document.name}">${functions:abbreviate(document.name,20,30,'...')}</a>
-            </c:if>
-            <span class="docspacelistinfo"><fmt:message
-                            key="docspace.label.document.lastModification"/>&nbsp;<fmt:formatDate
-                            value="${document.properties['jcr:lastModified'].time}" dateStyle="medium"/></span>
-            <p class="docspacelistinfo2">${functions:abbreviate(functions:removeHtmlTags(document.properties['jcr:description'].string),100,150,'...')}</p>
-        </li>
-    </c:forEach>
-</ul>
+    <ul class="docspacelist">
+        <jcr:sql var="result"
+                 sql="select * from [jnt:file] as file where isdescendantnode(file, ['${startNode.path}']) order by file.[jcr:lastModified] desc"/>
+        <c:forEach items="${result.nodes}" var="document" end="9">
+            <li>
+                <c:if test="${jcr:hasPermission(document, 'write')}">
+                    <span class="icon ${functions:fileIcon(document.name)}"></span><a
+                        href="${url.basePreview}${document.path}.html"
+                        title="${document.name}">${functions:abbreviate(document.name,20,30,'...')}</a>
+                </c:if>
+                <c:if test="${not jcr:hasPermission(document, 'write')}">
+                    <span class="icon ${functions:fileIcon(document.name)}"></span><a
+                        href="${url.baseLive}${document.path}.docspace.html"
+                        title="${document.name}">${functions:abbreviate(document.name,20,30,'...')}</a>
+                </c:if>
+                <span class="docspacelistinfo"><fmt:message
+                                key="docspace.label.document.lastModification"/>&nbsp;<fmt:formatDate
+                                value="${document.properties['jcr:lastModified'].time}" dateStyle="medium"/></span>
+                <p class="docspacelistinfo2">${functions:abbreviate(functions:removeHtmlTags(document.properties['jcr:description'].string),100,150,'...')}</p>
+            </li>
+        </c:forEach>
+    </ul>
+</c:if>

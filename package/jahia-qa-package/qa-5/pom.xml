@@ -101,8 +101,10 @@
                                 <param>/home/bamboo/bin/siteImport_testSite.zip</param>
                             </siteImportLocation>
                             <cluster_activated>false</cluster_activated>
-                            <processingServer>true</processingServer>
-                            <databaseUrl>jdbc:mysql://10.8.37.246/qa_245?useUnicode=true&amp;characterEncoding=UTF-8&amp;useServerPrepStmts=false</databaseUrl>
+                            <processingServer>false</processingServer>
+                            <!--databaseUrl>jdbc:mysql://10.8.37.246/qa_245?useUnicode=true&amp;characterEncoding=UTF-8&amp;useServerPrepStmts=false</databaseUrl-->
+                            <databaseType>mssql</databaseType>
+                            <databaseUrl>jdbc:sqlserver://10.8.37.8;databaseName=qa_245</databaseUrl>
                             <databaseUsername>jahia</databaseUsername>
                             <databasePassword>jahia</databasePassword>
                             <overwritedb>true</overwritedb>

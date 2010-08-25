@@ -35,6 +35,9 @@ package org.apache.jackrabbit.server.io;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
 /**
  * <code>JahiaIOManager</code>...
  */
@@ -79,6 +82,13 @@ public class JahiaIOManager extends IOManagerImpl {
         addIOHandler(new DirListingExportHandler(this));
         addIOHandler(new ExtraContentHandler(this));
         addIOHandler(new SymLinkHandler(this));
-        addIOHandler(new DefaultHandler(this, Constants.JAHIANT_FOLDER, Constants.JAHIANT_FILE, Constants.JAHIANT_RESOURCE));
+        addIOHandler(new DefaultHandler(this, Constants.JAHIANT_FOLDER, Constants.JAHIANT_FILE, Constants.JAHIANT_RESOURCE) {
+            @Override protected Node getContentNode(ImportContext context, boolean isCollection)
+                    throws RepositoryException {
+                Node parentNode = (Node)context.getImportRoot();
+                parentNode.checkout();
+                return super.getContentNode(context, isCollection);
+            }
+        });
     }
 }

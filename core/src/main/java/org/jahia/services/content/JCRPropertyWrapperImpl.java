@@ -62,12 +62,14 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
         super(session, provider);
         this.node = objectNode;
         this.property = property;
-        try {
-            this.localPath = property.getPath();
-            this.name = property.getName();
-            this.def = def;
-        } catch (RepositoryException e) {
-            e.printStackTrace();
+        if (property != null) {
+            try {
+                this.localPath = property.getPath();
+                this.name = property.getName();
+                this.def = def;
+            } catch (RepositoryException e) {
+                e.printStackTrace();
+            }
         }
     }
 

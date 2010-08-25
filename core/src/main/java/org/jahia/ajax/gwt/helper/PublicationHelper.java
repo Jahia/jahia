@@ -175,17 +175,17 @@ public class PublicationHelper {
 
     private GWTJahiaPublicationInfo convert(PublicationInfo.PublicationNode node, JCRSessionWrapper currentUserSession) {        
         GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(node.getPath(), node.getStatus(), node.isCanPublish());
-            try {
-                JCRNodeWrapper n = currentUserSession.getNodeByUUID(node.getUuid());
-                if (n.hasProperty("jcr:title")) {
-                    gwtInfo.setTitle(n.getProperty("jcr:title").getString());
-                    gwtInfo.setNodetype(n.getPrimaryNodeType().getLabel(currentUserSession.getLocale())); 
-                } else {
-                    gwtInfo.setTitle(n.getName());
-                }
-            } catch (RepositoryException e) {
-                gwtInfo.setTitle(node.getPath());
+        try {
+            JCRNodeWrapper n = currentUserSession.getNodeByUUID(node.getUuid());
+            if (n.hasProperty("jcr:title")) {
+                gwtInfo.setTitle(n.getProperty("jcr:title").getString());
+            } else {
+                gwtInfo.setTitle(n.getName());
             }
+            gwtInfo.setNodetype(n.getPrimaryNodeType().getLabel(currentUserSession.getLocale()));
+        } catch (RepositoryException e) {
+            gwtInfo.setTitle(node.getPath());
+        }
         return gwtInfo;
     }
 

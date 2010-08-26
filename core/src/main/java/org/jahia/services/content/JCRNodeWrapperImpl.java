@@ -1728,7 +1728,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     objectNode.checkout();
                 }
                 objectNode.setProperty("j:locktoken", lock.getLockToken());
-                objectNode.getSession().removeLockToken(lock.getLockToken());
+//                objectNode.getSession().removeLockToken(lock.getLockToken());
             } catch (RepositoryException e) {
                 logger.error("Cannot store token for "+getPath(),e);
                 objectNode.unlock();
@@ -1871,9 +1871,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     private void unlock(final Node objectNode, String type) throws RepositoryException {
         if (hasProperty("j:locktoken")) {
-            Property property = getProperty("j:locktoken");
+            Property property = objectNode.getProperty("j:locktoken");
             String token = property.getString();
-            Value[] types = getProperty("j:lockTypes").getValues();
+            Value[] types = objectNode.getProperty("j:lockTypes").getValues();
             for (Value value : types) {
                 String owner = StringUtils.substringBefore(value.getString(),":");
                 String currentType = StringUtils.substringAfter(value.getString(),":");
@@ -1888,7 +1888,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                             objectNode.checkout();
                         }
                         if (valueList.isEmpty()) {
-                            session.addLockToken(token);
+                            objectNode.getSession().addLockToken(token);
                             objectNode.unlock();
                             property.remove();
                             objectNode.getProperty("j:lockTypes").remove();

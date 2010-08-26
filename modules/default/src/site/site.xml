@@ -15,6 +15,7 @@
                 <item name="Customization" href="navMenuCustomizing.html"/>
             </item>
             <item name="Tagging" href="tagging.html"/>
+            <item name="Lists" href="lists.html"/>
             <item name="User Profile" href="profile.html">
                 <item name="Edit Simple Text" href="profile.html#Simple"/>
                 <item name="Edit Rich Text" href="profile.html#Rich"/>

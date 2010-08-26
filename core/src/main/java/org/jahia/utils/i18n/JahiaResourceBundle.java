@@ -33,13 +33,17 @@
 package org.jahia.utils.i18n;
 
 import org.apache.log4j.Logger;
-import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.settings.SettingsBean;
 
+import java.lang.ref.ReferenceQueue;
+import java.lang.ref.SoftReference;
+import java.lang.ref.WeakReference;
 import java.text.MessageFormat;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Jahia implementation of the resource bundle, which considers template set inheritance.
@@ -50,13 +54,32 @@ import java.util.*;
 public class JahiaResourceBundle extends ResourceBundle {
     private transient static Logger logger = Logger.getLogger(JahiaResourceBundle.class);
     private static final Locale EMPTY_LOCALE = new Locale("", "");
-    private static Map<ClassLoader, Map<String, Map<Locale, ResourceBundle>>> map = new HashMap<ClassLoader, Map<String, Map<Locale, ResourceBundle>>>();
-
     private final String basename;
     private final Locale locale;
     private final JahiaTemplatesPackage templatesPackage;
     public static final String JAHIA_INTERNAL_RESOURCES = "JahiaInternalResources";
     private static final String MISSING_RESOURCE = "???";
+
+
+    /**
+     * The cache is a map from cache keys (with bundle base name, locale, and
+     * class loader) to either a resource bundle or NONEXISTENT_BUNDLE wrapped by a
+     * JahiaBundleReference.
+     * <p/>
+     * The cache is a ConcurrentMap, allowing the cache to be searched
+     * concurrently by multiple threads.  This will also allow the cache keys
+     * to be reclaimed along with the ClassLoaders they reference.
+     * <p/>
+     * This variable would be better named "cache", but we keep the old
+     * name for compatibility with some workarounds for bug 4212439.
+     */
+    private static final ConcurrentMap<JahiaCacheKey, JahiaBundleReference> jahiaCacheList = new ConcurrentHashMap<JahiaCacheKey, JahiaBundleReference>(
+            64);
+
+    /**
+     * Queue for reference objects referring to class loaders or bundles.
+     */
+    private static final ReferenceQueue jahiaReferenceQueue = new ReferenceQueue();
 
 
     public JahiaResourceBundle(Locale locale, String templatesPackageName) {
@@ -67,8 +90,7 @@ public class JahiaResourceBundle extends ResourceBundle {
         this(basename, locale, null, null);
     }
 
-    public JahiaResourceBundle(Locale locale, String templatesPackageName,
-                               ClassLoader classLoader) {
+    public JahiaResourceBundle(Locale locale, String templatesPackageName, ClassLoader classLoader) {
         this(null, locale, templatesPackageName, classLoader);
     }
 
@@ -76,11 +98,11 @@ public class JahiaResourceBundle extends ResourceBundle {
         this(basename, locale, templatesPackageName, null);
     }
 
-    public JahiaResourceBundle(String basename, Locale locale, String templatesPackageName,
-                               ClassLoader classLoader) {
+    public JahiaResourceBundle(String basename, Locale locale, String templatesPackageName, ClassLoader classLoader) {
         this.basename = basename;
         this.locale = locale;
-        this.templatesPackage = templatesPackageName != null ? ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(templatesPackageName) : null;
+        this.templatesPackage = templatesPackageName != null ? ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(
+                templatesPackageName) : null;
     }
 
     @Override
@@ -91,8 +113,7 @@ public class JahiaResourceBundle extends ResourceBundle {
             try {
                 o = lookupBundle(basename, locale, templatesRBLoader).getString(s);
             } catch (MissingResourceException e) {
-                logger.debug("Not found '" + s
-                        + "' in the base resource bundle '" + basename + "'");
+                logger.debug("Not found '" + s + "' in the base resource bundle '" + basename + "'");
             }
         }
         if (o == null && templatesPackage != null) {
@@ -108,15 +129,13 @@ public class JahiaResourceBundle extends ResourceBundle {
                         break;
                     }
                 } catch (MissingResourceException e1) {
-                     logger.debug("Try to find '" + s
-           + "' in resource bundle '" + bundleToLookup + "'");
+                    logger.debug("Try to find '" + s + "' in resource bundle '" + bundleToLookup + "'");
                 }
             }
         }
         if (o == null) {
             throw new MissingResourceException("Cannot find resource " + s, basename, s);
         }
-
 
 
         return o;
@@ -136,11 +155,9 @@ public class JahiaResourceBundle extends ResourceBundle {
      * @return
      */
     private JahiaTemplatesRBLoader getClassLoader() {
-        String templatesPackageName = templatesPackage != null ? templatesPackage
-                .getName() : null;
-        return templatesPackageName != null ? JahiaTemplatesRBLoader
-                .getInstance(Thread.currentThread().getContextClassLoader(),
-                        templatesPackageName) : null;
+        String templatesPackageName = templatesPackage != null ? templatesPackage.getName() : null;
+        return templatesPackageName != null ? JahiaTemplatesRBLoader.getInstance(
+                Thread.currentThread().getContextClassLoader(), templatesPackageName) : null;
     }
 
     /**
@@ -182,7 +199,8 @@ public class JahiaResourceBundle extends ResourceBundle {
      * @return
      */
     public static String getString(String bundle, String key, Locale locale, String templatePackageName) {
-        return new JahiaResourceBundle(bundle, locale, templatePackageName, Thread.currentThread().getContextClassLoader()).getString(key);
+        return new JahiaResourceBundle(bundle, locale, templatePackageName,
+                                       Thread.currentThread().getContextClassLoader()).getString(key);
     }
 
     /**
@@ -195,7 +213,8 @@ public class JahiaResourceBundle extends ResourceBundle {
      * @param loader
      * @return
      */
-    public static String getString(String bundle, String key, Locale locale, String templatePackageName, ClassLoader loader) {
+    public static String getString(String bundle, String key, Locale locale, String templatePackageName,
+                                   ClassLoader loader) {
         return new JahiaResourceBundle(bundle, locale, templatePackageName, loader).getString(key);
     }
 
@@ -218,25 +237,22 @@ public class JahiaResourceBundle extends ResourceBundle {
      * @param loader
      * @return
      */
-    private static ResourceBundle lookupBundle(String baseName,
-                                               Locale preferredLocale, ClassLoader loader) {
+    private static ResourceBundle lookupBundle(String baseName, Locale preferredLocale, ClassLoader loader) {
+        JahiaCacheKey cacheKey = new JahiaCacheKey(baseName, preferredLocale, loader);
+        ResourceBundle bundle = null;
 
-        if (map.get(loader) == null) {
-            map.put(loader, new HashMap<String, Map<Locale, ResourceBundle>>());
+        // Quick lookup of the cache.
+        JahiaBundleReference bundleRef = jahiaCacheList.get(cacheKey);
+        if (bundleRef != null) {
+            bundle = bundleRef.get();
+            bundleRef = null;
+            return bundle;
         }
-        if (map.get(loader).get(baseName) == null) {
-            map.get(loader).put(baseName, new HashMap<Locale, ResourceBundle>());
-        }
+        bundle = loader != null ? ResourceBundle.getBundle(baseName, preferredLocale,
+                                                           loader) : ResourceBundle.getBundle(baseName,
+                                                                                              preferredLocale);
+        jahiaCacheList.put(cacheKey, new JahiaBundleReference(bundle, jahiaReferenceQueue, cacheKey));
 
-        ResourceBundle bundle;
-        if (map.get(loader).get(baseName).containsKey(preferredLocale)) {
-            bundle = map.get(loader).get(baseName).get(preferredLocale);
-        } else {
-            bundle = loader != null ? ResourceBundle.getBundle(
-                    baseName, preferredLocale, loader) : ResourceBundle.getBundle(
-                    baseName, preferredLocale);
-            map.get(loader).get(baseName).put(preferredLocale, bundle);
-        }
 
         ResourceBundle match = null;
 
@@ -245,9 +261,8 @@ public class JahiaResourceBundle extends ResourceBundle {
             if (availableLocale.equals(preferredLocale)) {
                 match = bundle;
             } else if (preferredLocale.getLanguage().equals(
-                    availableLocale.getLanguage())
-                    && (availableLocale.getCountry().length() == 0 || preferredLocale
-                    .getCountry().equals(availableLocale.getCountry()))) {
+                    availableLocale.getLanguage()) && (availableLocale.getCountry().length() == 0 || preferredLocale.getCountry().equals(
+                    availableLocale.getCountry()))) {
                 match = bundle;
             }
             if (match == null && !EMPTY_LOCALE.equals(preferredLocale)) {
@@ -325,5 +340,220 @@ public class JahiaResourceBundle extends ResourceBundle {
         return bundles;
     }
 
+    /**
+     * Key used for cached resource bundles.  The key checks the base
+     * name, the locale, and the class loader to determine if the
+     * resource is a match to the requested one. The loader may be
+     * null, but the base name and the locale must have a non-null
+     * value.
+     */
+    private static final class JahiaCacheKey implements Cloneable {
+        // These three are the actual keys for lookup in Map.
+        private String name;
+        private Locale locale;
+        private JahiaLoaderReference loaderRef;
 
+        // bundle format which is necessary for calling
+        // Control.needsReload().
+        private String format;
+
+        // These time values are in JahiaCacheKey so that NONEXISTENT_BUNDLE
+        // doesn't need to be cloned for caching.
+
+        // The time when the bundle has been loaded
+        private volatile long loadTime;
+
+        // The time when the bundle expires in the cache, or either
+        // Control.TTL_DONT_CACHE or Control.TTL_NO_EXPIRATION_CONTROL.
+        private volatile long expirationTime;
+
+        // Placeholder for an error report by a Throwable
+        private Throwable cause;
+
+        // Hash code value cache to avoid recalculating the hash code
+        // of this instance.
+        private int hashCodeCache;
+
+        JahiaCacheKey(String baseName, Locale locale, ClassLoader loader) {
+            this.name = baseName;
+            this.locale = locale;
+            if (loader == null) {
+                this.loaderRef = null;
+            } else {
+                loaderRef = new JahiaLoaderReference(loader, jahiaReferenceQueue, this);
+            }
+            calculateHashCode();
+        }
+
+        String getName() {
+            return name;
+        }
+
+        JahiaCacheKey setName(String baseName) {
+            if (!this.name.equals(baseName)) {
+                this.name = baseName;
+                calculateHashCode();
+            }
+            return this;
+        }
+
+        Locale getLocale() {
+            return locale;
+        }
+
+        JahiaCacheKey setLocale(Locale locale) {
+            if (!this.locale.equals(locale)) {
+                this.locale = locale;
+                calculateHashCode();
+            }
+            return this;
+        }
+
+        ClassLoader getLoader() {
+            return (loaderRef != null) ? loaderRef.get() : null;
+        }
+
+        public boolean equals(Object other) {
+            if (this == other) {
+                return true;
+            }
+            try {
+                final JahiaCacheKey otherEntry = (JahiaCacheKey) other;
+                //quick check to see if they are not equal
+                if (hashCodeCache != otherEntry.hashCodeCache) {
+                    return false;
+                }
+                //are the names the same?
+                if (!name.equals(otherEntry.name)) {
+                    return false;
+                }
+                // are the locales the same?
+                if (!locale.equals(otherEntry.locale)) {
+                    return false;
+                }
+                //are refs (both non-null) or (both null)?
+                if (loaderRef == null) {
+                    return otherEntry.loaderRef == null;
+                }
+                ClassLoader loader = loaderRef.get();
+                return (otherEntry.loaderRef != null)
+                       // with a null reference we can no longer find
+                       // out which class loader was referenced; so
+                       // treat it as unequal
+                       && (loader != null) && (loader == otherEntry.loaderRef.get());
+            } catch (NullPointerException e) {
+            } catch (ClassCastException e) {
+            }
+            return false;
+        }
+
+        public int hashCode() {
+            return hashCodeCache;
+        }
+
+        private void calculateHashCode() {
+            hashCodeCache = name.hashCode() << 3;
+            hashCodeCache ^= locale.hashCode();
+            ClassLoader loader = getLoader();
+            if (loader != null) {
+                hashCodeCache ^= loader.hashCode();
+            }
+        }
+
+        public Object clone() {
+            try {
+                JahiaCacheKey clone = (JahiaCacheKey) super.clone();
+                if (loaderRef != null) {
+                    clone.loaderRef = new JahiaLoaderReference(loaderRef.get(), jahiaReferenceQueue, clone);
+                }
+                // Clear the reference to a Throwable
+                clone.cause = null;
+                return clone;
+            } catch (CloneNotSupportedException e) {
+                //this should never happen
+                throw new InternalError();
+            }
+        }
+
+        String getFormat() {
+            return format;
+        }
+
+        void setFormat(String format) {
+            this.format = format;
+        }
+
+        private void setCause(Throwable cause) {
+            if (this.cause == null) {
+                this.cause = cause;
+            } else {
+                // Override the cause if the previous one is
+                // ClassNotFoundException.
+                if (this.cause instanceof ClassNotFoundException) {
+                    this.cause = cause;
+                }
+            }
+        }
+
+        private Throwable getCause() {
+            return cause;
+        }
+
+        public String toString() {
+            String l = locale.toString();
+            if (l.length() == 0) {
+                if (locale.getVariant().length() != 0) {
+                    l = "__" + locale.getVariant();
+                } else {
+                    l = "\"\"";
+                }
+            }
+            return "JahiaCacheKey[" + name + ", lc=" + l + ", ldr=" + getLoader() + "(format=" + format + ")]";
+        }
+    }
+
+    /**
+     * The common interface to get a JahiaCacheKey in JahiaLoaderReference and
+     * JahiaBundleReference.
+     */
+    private static interface JahiaCacheKeyReference {
+        public JahiaCacheKey getCacheKey();
+    }
+
+    /**
+     * References to class loaders are weak references, so that they can be
+     * garbage collected when nobody else is using them. The ResourceBundle
+     * class has no reason to keep class loaders alive.
+     */
+    private static final class JahiaLoaderReference extends WeakReference<ClassLoader>
+            implements JahiaCacheKeyReference {
+        private JahiaCacheKey cacheKey;
+
+        JahiaLoaderReference(ClassLoader referent, ReferenceQueue q, JahiaCacheKey key) {
+            super(referent, q);
+            cacheKey = key;
+        }
+
+        public JahiaCacheKey getCacheKey() {
+            return cacheKey;
+        }
+    }
+
+    /**
+     * References to bundles are soft references so that they can be garbage
+     * collected when they have no hard references.
+     */
+    private static final class JahiaBundleReference extends SoftReference<ResourceBundle>
+            implements JahiaCacheKeyReference {
+        private JahiaCacheKey cacheKey;
+
+        JahiaBundleReference(ResourceBundle referent, ReferenceQueue q, JahiaCacheKey key) {
+            super(referent, q);
+            cacheKey = key;
+        }
+
+        public JahiaCacheKey getCacheKey() {
+            return cacheKey;
+        }
+    }
 }

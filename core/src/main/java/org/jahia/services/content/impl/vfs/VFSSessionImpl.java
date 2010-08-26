@@ -32,23 +32,22 @@
 
 package org.jahia.services.content.impl.vfs;
 
-import org.jahia.services.content.nodetypes.Name;
+import org.apache.commons.vfs.FileObject;
+import org.apache.commons.vfs.FileSystemException;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
-import org.apache.commons.vfs.FileSystemException;
-import org.apache.commons.vfs.FileObject;
 
 import javax.jcr.*;
-import javax.jcr.retention.RetentionManager;
-import javax.jcr.security.AccessControlManager;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.retention.RetentionManager;
+import javax.jcr.security.AccessControlManager;
 import javax.jcr.version.VersionException;
-import java.security.AccessControlException;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.security.AccessControlException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -73,7 +72,7 @@ public class VFSSessionImpl implements Session {
     }
 
     public String getUserID() {
-        return ((SimpleCredentials)credentials).getUserID();
+        return ((SimpleCredentials) credentials).getUserID();
     }
 
     public Object getAttribute(String s) {
@@ -106,8 +105,17 @@ public class VFSSessionImpl implements Session {
         }
     }
 
-    public Node getNodeByUUID(String s) throws ItemNotFoundException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+    public Node getNodeByUUID(String uuid) throws ItemNotFoundException, RepositoryException {
+        FileObject fileObject = null;
+        try {
+            fileObject = repository.getFileByIdentifier(uuid);
+            if (!fileObject.exists()) {
+                throw new PathNotFoundException(uuid);
+            }
+            return new VFSNodeImpl(fileObject, this);
+        } catch (FileSystemException fse) {
+            throw new RepositoryException(fse);
+        }
     }
 
     public Item getItem(String s) throws PathNotFoundException, RepositoryException {
@@ -167,11 +175,11 @@ public class VFSSessionImpl implements Session {
     }
 
     public void save() throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException, VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
-      
+
     }
 
     public void refresh(boolean b) throws RepositoryException {
-      
+
     }
 
     public boolean hasPendingChanges() throws RepositoryException {
@@ -183,7 +191,7 @@ public class VFSSessionImpl implements Session {
     }
 
     public void checkPermission(String s, String s1) throws AccessControlException, RepositoryException {
-      
+
     }
 
     public ContentHandler getImportContentHandler(String s, int i) throws PathNotFoundException, ConstraintViolationException, VersionException, LockException, RepositoryException {
@@ -191,27 +199,27 @@ public class VFSSessionImpl implements Session {
     }
 
     public void importXML(String s, InputStream inputStream, int i) throws IOException, PathNotFoundException, ItemExistsException, ConstraintViolationException, VersionException, InvalidSerializedDataException, LockException, RepositoryException {
-      
+
     }
 
     public void exportSystemView(String s, ContentHandler contentHandler, boolean b, boolean b1) throws PathNotFoundException, SAXException, RepositoryException {
-      
+
     }
 
     public void exportSystemView(String s, OutputStream outputStream, boolean b, boolean b1) throws IOException, PathNotFoundException, RepositoryException {
-      
+
     }
 
     public void exportDocumentView(String s, ContentHandler contentHandler, boolean b, boolean b1) throws PathNotFoundException, SAXException, RepositoryException {
-      
+
     }
 
     public void exportDocumentView(String s, OutputStream outputStream, boolean b, boolean b1) throws IOException, PathNotFoundException, RepositoryException {
-      
+
     }
 
     public void setNamespacePrefix(String s, String s1) throws NamespaceException, RepositoryException {
-      
+
     }
 
     public String[] getNamespacePrefixes() throws RepositoryException {
@@ -227,7 +235,7 @@ public class VFSSessionImpl implements Session {
     }
 
     public void logout() {
-      
+
     }
 
     public boolean isLive() {
@@ -235,7 +243,7 @@ public class VFSSessionImpl implements Session {
     }
 
     public void addLockToken(String s) {
-      
+
     }
 
     public String[] getLockTokens() {
@@ -243,7 +251,7 @@ public class VFSSessionImpl implements Session {
     }
 
     public void removeLockToken(String s) {
-      
+
     }
 
     public Node getNodeByIdentifier(String id) throws ItemNotFoundException, RepositoryException {

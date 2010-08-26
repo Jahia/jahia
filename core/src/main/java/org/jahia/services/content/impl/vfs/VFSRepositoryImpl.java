@@ -32,14 +32,13 @@
 
 package org.jahia.services.content.impl.vfs;
 
+import org.apache.commons.vfs.FileObject;
+import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.VFS;
-import org.apache.commons.vfs.FileSystemException;
-import org.apache.commons.vfs.FileObject;
 import org.apache.log4j.Logger;
 
 import javax.jcr.*;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,9 +50,9 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public class VFSRepositoryImpl implements Repository {
-    
+
     private static final transient Logger logger = Logger.getLogger(VFSRepositoryImpl.class);
-    
+
     private String root;
     private String rootPath;
 
@@ -139,7 +138,11 @@ public class VFSRepositoryImpl implements Repository {
     }
 
     public FileObject getFile(String path) throws FileSystemException {
-        return manager.resolveFile(root+path);
+        return manager.resolveFile(root + path);
+    }
+
+    public FileObject getFileByIdentifier(String identifier) throws FileSystemException {
+        return manager.resolveFile(identifier);
     }
 
     public boolean isStandardDescriptor(String key) {

@@ -108,7 +108,7 @@ public class ContentTest {
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 for (String node : nodes) {
-                    session.getNodeByUUID(node).remove();
+                    session.getNodeByIdentifier(node).remove();
                 }
                 session.save();
                 return null;
@@ -354,6 +354,10 @@ public class ContentTest {
     @Test
     public void testLock() throws Exception {
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+        JCRStoreProvider provider = JCRSessionFactory.getInstance().getProvider(providerRoot);
+        if (!provider.isLockingAvailable()) {
+            return;
+        }
 
         try {
             JCRNodeWrapper rootNode = session.getNode(providerRoot);
@@ -405,6 +409,7 @@ public class ContentTest {
     public void testSearch() throws Exception {
 
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+        JCRStoreProvider provider = JCRSessionFactory.getInstance().getProvider(providerRoot);
 
         try {
             JCRNodeWrapper rootNode = session.getNode(providerRoot);
@@ -537,7 +542,7 @@ public class ContentTest {
 
             session.save();
 
-            PropertyIterator refPropertyIterator = testFile.getReferences();
+            PropertyIterator refPropertyIterator = testFile.getWeakReferences();
             int resultCount = 0;
             while (refPropertyIterator.hasNext()) {
                 resultCount++;

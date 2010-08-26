@@ -16,6 +16,11 @@ ul.x-tab-strip{display:block;width:100%;zoom:1;}
 .x-tab-strip .x-tab-strip-iconOnly span.x-tab-strip-text {
 	padding-left:9px;
 }
+/*grey filter modal*/
+.x-modal {
+  filter: alpha(opacity = 50);
+  opacity: .5;
+}
 /******************************************************************************
 * Header 
 ******************************************************************************/

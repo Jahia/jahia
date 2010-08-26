@@ -67,15 +67,18 @@ public class EditManager extends ContentPanel {
         data.setFloatable(true);
         sidePanel = new SidePanel(config);
         sidePanel.setStyleAttribute("z-index", "999");
+        sidePanel.addStyleName("gwt-only-panel");
         add(sidePanel, data);
 
         toolbar =  new ActionToolbarLayoutContainer(config.getTopToolbar());
         toolbar.setStyleAttribute("z-index", "999");
         toolbar.setStyleAttribute("position", "relative");
+        toolbar.addStyleName("gwt-only-panel");
         setTopComponent(toolbar);
 
         setScrollMode(Style.Scroll.NONE);
         mainModule = new MainModule(html, path, template, config);
+        mainModule.getHeader().addStyleName("gwt-only-panel");        
         add(mainModule, new BorderLayoutData(Style.LayoutRegion.CENTER));
 
         editLinker = new EditLinker(mainModule, sidePanel, toolbar, config);

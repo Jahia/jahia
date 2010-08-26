@@ -54,7 +54,7 @@
 		<c:if test="${count > 0}">
 	    	<h4><fmt:message key="search.results.found"><fmt:param value="${count}"/></fmt:message></h4>
             <div id="${currentNode.UUID}">
-                <c:set var="listTotalSize" value="${count}" scope="request"/>
+                <c:set target="${moduleMap}" property="listTotalSize" value="${count}" />
                 <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.init"/>
                 <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.end">
                     <template:param name="displaySearchParams" value="true"/>

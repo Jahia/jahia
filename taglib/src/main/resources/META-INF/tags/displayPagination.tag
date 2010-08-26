@@ -22,10 +22,12 @@
 <template:addResources type="javascript" resources="jquery.min.js"/>
 <template:addResources type="javascript" resources="ajaxreplace.js"/>
 <c:if test="${not empty moduleMap.paginationActive and moduleMap.totalSize > 0 and moduleMap.nbPages > 1}">
-    <c:set var="searchUrl" value="${url.current}.ajax"/>
+    <c:set target="${moduleMap}" property="usePagination" value="true"/>
+    <c:set var="searchUrl" value="${url.current}"/>
     <c:if test="${not empty currentResource.moduleParams.displaySearchParams}">
         <c:set var="searchUrl"><search:searchUrl/></c:set>
     </c:if>
+    <c:set var="searchUrl" value="${searchUrl}"/>
     <c:url value="${searchUrl}" context="/" var="basePaginationUrl"/>
     <c:set target="${moduleMap}" property="basePaginationUrl" value="${basePaginationUrl}"/>
     <div class="pagination"><!--start pagination-->
@@ -66,6 +68,7 @@
 
         <div class="clear"></div>
     </div>
+    <c:set target="${moduleMap}" property="usePagination" value="false"/>
     <c:remove var="listTemplate"/>
     <!--stop pagination-->
 </c:if>

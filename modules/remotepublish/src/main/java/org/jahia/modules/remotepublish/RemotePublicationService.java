@@ -701,7 +701,7 @@ public class RemotePublicationService implements InitializingBean {
         org.apache.commons.httpclient.Credentials defaultcreds = new UsernamePasswordCredentials(remoteUser, remotePassword);
         client.getState()
                 .setCredentials(new AuthScope(url.getHost(), url.getPort(), AuthScope.ANY_REALM), defaultcreds);
-        String lang = source.resolveSite().getDefaultLanguage();
+        String lang = source.getResolveSite().getDefaultLanguage();
         PostMethod prepare = new PostMethod(remoteUrl + "/render/live/" + lang + remotePath + ".preparereplay.do");
         prepare.addRequestHeader(new Header("accept", "application/json"));
         prepare.addParameter("sourceUuid", source.getIdentifier());

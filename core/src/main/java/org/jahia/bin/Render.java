@@ -340,7 +340,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         if (urlResolver.getPath().endsWith(".do")) {
             resource = urlResolver.getResource(getVersionDate(req));
             renderContext.setMainResource(resource);
-            JCRSiteNode site = resource.getNode().resolveSite();
+            JCRSiteNode site = resource.getNode().getResolveSite();
             renderContext.setSite(site);
 
             action = templateService.getActions().get(resource.getTemplate());
@@ -638,7 +638,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     }
                     resource = urlResolver.getResource(date);
                     renderContext.setMainResource(resource);
-                    JCRSiteNode site = resource.getNode().resolveSite();
+                    JCRSiteNode site = resource.getNode().getResolveSite();
 
                     renderContext.setSite(site);
 //                    resource.pushWrapper("wrapper.fullpage");

@@ -105,7 +105,7 @@ public class TemplateHelper {
                 }
             }
 
-            JCRSiteNode site = node.resolveSite();
+            JCRSiteNode site = node.getResolveSite();
             renderContext.setSite(site);
             String res = renderService.render(r, renderContext);
             Map<String, Set<String>> map = renderContext.getStaticAssets();
@@ -187,7 +187,7 @@ public class TemplateHelper {
             request.setAttribute("mode", "edit");
             final RenderContext renderContext = new RenderContext(request, response, currentUserSession.getUser());
 
-            JCRSiteNode site = node.resolveSite();
+            JCRSiteNode site = node.getResolveSite();
             renderContext.setSite(site);
 
             if (mode == EDIT) {

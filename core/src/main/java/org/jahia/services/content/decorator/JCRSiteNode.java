@@ -57,7 +57,7 @@ public class JCRSiteNode extends JCRNodeDecorator {
         super(node);
     }
 
-    public JCRSiteNode resolveSite() throws RepositoryException {
+    public JCRSiteNode getResolveSite() throws RepositoryException {
         return this;
     }
     

@@ -2748,7 +2748,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         try {
             Locale locale = jcrSessionWrapper.getLocale();
             if (locale != null) {
-                JCRSiteNode siteNode = resolveSite();
+                JCRSiteNode siteNode = getResolveSite();
                 if(siteNode==null) {
                     return checkI18nAndMandatoryPropertiesForLocale(locale);
                 } else {
@@ -2767,7 +2767,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 for (String language : languages) {
                     locale = LanguageCodeConverters.getLocaleFromCode(language);
                     if(checkI18nAndMandatoryPropertiesForLocale(locale)) {
-                        JCRSiteNode siteNode = resolveSite();
+                        JCRSiteNode siteNode = getResolveSite();
                         if(siteNode!=null) {
                             Set<String> mandatoryLanguages = siteNode.getMandatoryLanguages();
                             if(mandatoryLanguages==null || mandatoryLanguages.isEmpty()) {
@@ -2820,7 +2820,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
 
-    public JCRSiteNode resolveSite() throws RepositoryException {
+    public JCRSiteNode getResolveSite() throws RepositoryException {
         if (site != null) {
             return site;
         }

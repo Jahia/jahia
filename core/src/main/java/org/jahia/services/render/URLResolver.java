@@ -387,7 +387,7 @@ public class URLResolver {
                                 // ignore it
                             }
                         }
-                        JCRSiteNode site = node.resolveSite();
+                        JCRSiteNode site = node.getResolveSite();
 
                         JCRSessionWrapper userSession = site != null
                                 && site.getDefaultLanguage() != null
@@ -480,7 +480,7 @@ public class URLResolver {
                             }
                         }
 
-                        JCRSiteNode site = node.resolveSite();
+                        JCRSiteNode site = node.getResolveSite();
                         JCRSessionWrapper userSession;
 
                         if (site != null) {

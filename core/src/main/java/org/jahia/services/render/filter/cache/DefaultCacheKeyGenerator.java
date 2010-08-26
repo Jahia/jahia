@@ -246,7 +246,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                         JCRNodeWrapper row = (JCRNodeWrapper) nodeIterator.next();
                         final String roleName = StringUtils.substringAfter(row.getProperty("j:principal").getString(),
                                                                            ":");
-                        RoleIdentity roleIdentity = new RoleIdentity(roleName, row.resolveSite().getSiteKey());
+                        RoleIdentity roleIdentity = new RoleIdentity(roleName, row.getResolveSite().getSiteKey());
                         if (!aclRoles.contains(roleIdentity)) {
                             aclRoles.add(roleIdentity);
                         }

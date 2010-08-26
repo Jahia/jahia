@@ -99,7 +99,7 @@ public class NewsMLImporter {
                         if (refFile == null) {
                             logger.warn("Couldn't find file " + ref + " in feed location " + contextFileObject.toString());
                         } else {
-                            JCRNodeWrapper targetParentNode = feedNode.resolveSite();
+                            JCRNodeWrapper targetParentNode = feedNode.getResolveSite();
                             if (targetParentNode == null) {
                                 targetParentNode = feedNode.getSession().getNode("/shared/files");
                             } else {

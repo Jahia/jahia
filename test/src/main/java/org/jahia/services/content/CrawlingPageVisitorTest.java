@@ -237,7 +237,7 @@ public class CrawlingPageVisitorTest {
 //                JCRNodeWrapper homeNode = session.getRootNode().getNode("sites/" + defaultSite.getSiteKey() + "/home");
 //                Resource resource = new Resource(homeNode, "html", null, Resource.CONFIGURATION_PAGE);
 //                renderCtx.setMainResource(resource);
-//                renderCtx.setSite(homeNode.resolveSite());
+//                renderCtx.setSite(homeNode.getResolveSite());
 //                URLGenerator urlgenerator = new URLGenerator(renderCtx, resource);
 //
 //                final StringBuffer adminUrl = new StringBuffer();
@@ -276,7 +276,7 @@ public class CrawlingPageVisitorTest {
             
             Resource resource = new Resource(homeNode, "html", null, Resource.CONFIGURATION_PAGE);
             renderCtx.setMainResource(resource);
-            renderCtx.setSite(homeNode.resolveSite());
+            renderCtx.setSite(homeNode.getResolveSite());
             URLGenerator urlgenerator = new URLGenerator(renderCtx, resource);
             urls.add(urlgenerator.getServer()
                     + (Constants.LIVE_WORKSPACE.equals(workspace) ? urlgenerator.getLive() : urlgenerator.getEdit()));

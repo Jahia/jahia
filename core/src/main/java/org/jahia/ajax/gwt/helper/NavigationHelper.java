@@ -739,7 +739,7 @@ public class NavigationHelper {
         n.setVersioned(node.isVersioned());
         n.setLanguageCode(node.getLanguage());
         try {
-            JCRSiteNode site = node.resolveSite();
+            JCRSiteNode site = node.getResolveSite();
             if (site != null) {
                 n.setSiteUUID(site.getUUID());
                 n.setAclContext("site:" + site.getName());
@@ -862,7 +862,7 @@ public class NavigationHelper {
 
         if (fields.contains(GWTJahiaNode.PUBLICATION_INFOS)) {
             try {
-                JCRSiteNode node1 = node.resolveSite();
+                JCRSiteNode node1 = node.getResolveSite();
                 if (node1 != null) {
                     String[] codes = node1.getActiveLanguageCodes();
                     Map<String, GWTJahiaPublicationInfo> infoMap = new HashMap<String, GWTJahiaPublicationInfo>();
@@ -907,7 +907,7 @@ public class NavigationHelper {
 
         if (fields.contains(GWTJahiaNode.WORKFLOW_INFOS)) {
             try {
-                JCRSiteNode node1 = node.resolveSite();
+                JCRSiteNode node1 = node.getResolveSite();
                 if (node1 != null) {
                     String[] codes = node1.getActiveLanguageCodes();
                     Map<String, GWTJahiaWorkflowInfo> infoMap = new HashMap<String, GWTJahiaWorkflowInfo>();

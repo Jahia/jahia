@@ -753,7 +753,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
 
     boolean checkLanguageValidity(Set<String> languages);
 
-    JCRSiteNode resolveSite() throws RepositoryException;
+    JCRSiteNode getResolveSite() throws RepositoryException;
 
     boolean checkI18nAndMandatoryPropertiesForLocale(Locale locale) throws RepositoryException;
 

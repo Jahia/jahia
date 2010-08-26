@@ -8,16 +8,12 @@
 
 <jcr:nodeProperty node="${currentNode}" name="maxNews" var="maxNews"/>
 <jcr:nodeProperty node="${currentNode}" name="filter" var="filter"/>
-<c:set var="theSite" value="${renderContext.site}"/>
-<c:if test="${empty theSite}">
-	<c:set var="theSite" value="${jcr:getParentOfType(currentNode,'jnt:virtualsite')}"/>
-</c:if>
 <c:choose>
 <c:when test="${empty filter.string}">
-    <c:set var="lastNewsStatement" value="select * from [jnt:news] as news where ISDESCENDANTNODE(news,'${theSite.path}') order by news.[date] desc"/>
+    <c:set var="lastNewsStatement" value="select * from [jnt:news] as news where ISDESCENDANTNODE(news,'${currentNode.resolveSite.path}') order by news.[date] desc"/>
 </c:when>
 <c:otherwise>
-    <c:set var="lastNewsStatement" value="select * from [jnt:news] as news where ISDESCENDANTNODE(news,'${theSite.path}') and news.[j:defaultCategory]='${filter.string}' order by news.[date] desc"/>
+    <c:set var="lastNewsStatement" value="select * from [jnt:news] as news where ISDESCENDANTNODE(news,'${currentNode.resolveSite.path}') and news.[j:defaultCategory]='${filter.string}' order by news.[date] desc"/>
 </c:otherwise>
 </c:choose>
 <query:definition var="listQuery" statement="${lastNewsStatement}" limit="${maxNews.long}"  />

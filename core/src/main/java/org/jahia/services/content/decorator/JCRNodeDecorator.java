@@ -699,8 +699,8 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
     }
 
 
-    public JCRSiteNode resolveSite() throws RepositoryException {
-        return node.resolveSite();
+    public JCRSiteNode getResolveSite() throws RepositoryException {
+        return node.getResolveSite();
     }
 
     public List<VersionInfo> getVersionInfos() throws RepositoryException {

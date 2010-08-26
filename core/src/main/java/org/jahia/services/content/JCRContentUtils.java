@@ -314,7 +314,7 @@ public final class JCRContentUtils {
             return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     JCRNodeWrapper node = session.getNodeByUUID(nodeUUID);
-                    JCRSiteNode site = node.resolveSite();
+                    JCRSiteNode site = node.getResolveSite();
                     Map<String, List<String[]>> aclEntriesMap = node.getAclEntries();
 
                     Set<Map.Entry<String,List<String[]>>> principalSet = aclEntriesMap.entrySet();

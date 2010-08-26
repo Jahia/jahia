@@ -75,7 +75,7 @@ public class JCRFrozenNode extends JCRNodeDecorator {
 
 
     @Override
-    public JCRSiteNode resolveSite() throws RepositoryException {
+    public JCRSiteNode getResolveSite() throws RepositoryException {
         if (site != null) {
             return site;
         }

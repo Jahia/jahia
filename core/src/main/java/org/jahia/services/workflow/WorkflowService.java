@@ -207,7 +207,7 @@ public class WorkflowService {
                 }
                 final Set<WorkflowDefinition> workflows = new LinkedHashSet<WorkflowDefinition>();
 
-                JCRSiteNode site = node.resolveSite();
+                JCRSiteNode site = node.getResolveSite();
 
                 Map<String, List<String[]>> rules = getWorkflowRules(node, null);
                 for (String wfName : rules.keySet()) {
@@ -262,7 +262,7 @@ public class WorkflowService {
                 JahiaUserManagerService userService = ServicesRegistry.getInstance().getJahiaUserManagerService();
                 JahiaGroupManagerService groupService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
 
-                JCRSiteNode site = node.resolveSite();
+                JCRSiteNode site = node.getResolveSite();
 
                 Map<String, List<String[]>> rules = getWorkflowRules(node, null);
 

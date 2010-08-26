@@ -76,7 +76,7 @@ public class NodesChoiceListInitializerImpl implements ChoiceListInitializer {
                 JCRSiteNode site = null;
                 JCRNodeWrapper contextNode = (JCRNodeWrapper) context.get("contextNode");
                 if (contextNode != null) {
-                    site = contextNode.resolveSite();
+                    site = contextNode.getResolveSite();
                 } else {
                     final JahiaSite defaultSite = JahiaSitesBaseService.getInstance().getDefaultSite();
                     if (defaultSite != null) {

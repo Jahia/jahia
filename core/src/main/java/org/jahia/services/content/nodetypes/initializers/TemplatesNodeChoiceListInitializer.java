@@ -69,7 +69,7 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
         List<ChoiceListValue> vs = new ArrayList<ChoiceListValue>();
 
         try {
-            JCRNodeWrapper site = node.resolveSite();
+            JCRNodeWrapper site = node.getResolveSite();
             final JCRSessionWrapper session = site.getSession();
             final QueryManager queryManager = session.getWorkspace().getQueryManager();
             QueryResult result = queryManager.createQuery("select * from [jnt:masterTemplate] as n where isdescendantnode(n,['"+site.getPath()+"'])", Query.JCR_SQL2).execute();

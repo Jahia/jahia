@@ -12,6 +12,7 @@
         <requiresjdk>no</requiresjdk>
         <writeinstallationinformation>no</writeinstallationinformation>
         <run-privileged condition="izpack.windowsinstall.vista|izpack.windowsinstall.7"/>
+        <summarylogfilepath>$INSTALL_PATH/logs/summary.html</summarylogfilepath>
     </info>
     <variables>
         <variable name="product.name" value="${product.name}"/>
@@ -244,6 +245,7 @@
     <jar src="../${artifactId}-${version}.jar" stage="install"/>
     
     <listeners>
+        <listener installer="SummaryLoggerInstallerListener"/>
         <listener installer="LateShortcutInstallListener">
             <os family="windows" />
             <os family="unix" />

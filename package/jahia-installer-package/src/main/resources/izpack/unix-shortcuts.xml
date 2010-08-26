@@ -103,6 +103,7 @@
         startup="no"
         iconFile="$INSTALL_PATH/bin/start.png"
         iconIndex="0"
+        terminal="true"
         type="Application"
         encoding="UTF-8">
         <createForPack name="Apache Tomcat"/>
@@ -120,6 +121,7 @@
         startMenu="no"
         iconFile="$INSTALL_PATH/bin/stop.png"
         iconIndex="0"
+        terminal="true"
         startup="no"
         type="Application"
         encoding="UTF-8">

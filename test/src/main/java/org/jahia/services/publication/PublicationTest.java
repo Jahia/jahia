@@ -849,7 +849,7 @@ public class PublicationTest extends TestCase {
 
         // Case 3 : now let's unpublish the node and test it's presence in the live workspace.
 
-        jcrService.unpublish(englishEditPage1Node.getIdentifier(), languages);
+        jcrService.unpublish(englishEditPage1Node.getPath(), languages);
         testNodeNotInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page1", "Page 1 should have been unpublished !");
         testNodeNotInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page1/page1_subpage1", "Sub Page 1 should not have been published");
         testNodeNotInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page1/page1_subpage2", "Sub Page 2 should not have been published");

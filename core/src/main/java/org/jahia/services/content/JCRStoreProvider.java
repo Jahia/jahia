@@ -607,7 +607,7 @@ public class JCRStoreProvider {
 
     public JCRNodeWrapper getNodeWrapper(Node objectNode, String path, JCRSessionWrapper session) throws RepositoryException {
         final JCRNodeWrapperImpl w = new JCRNodeWrapperImpl(objectNode, path, session, this);
-        if(w.checkValidity()) {
+        if (objectNode.isNew() || w.checkValidity()) {
             return service.decorate(w);
         } else {
             throw new PathNotFoundException("This node doesn't exist in this language "+objectNode.getPath());

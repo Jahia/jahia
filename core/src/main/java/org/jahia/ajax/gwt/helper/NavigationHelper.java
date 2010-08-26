@@ -117,11 +117,11 @@ public class NavigationHelper {
     public List<GWTJahiaNode> ls(GWTJahiaNode gwtParentNode, List<String> nodeTypes, List<String> mimeTypes,
                                  List<String> nameFilters, List<String> fields, JCRSessionWrapper currentUserSession)
             throws GWTJahiaServiceException {
-        return ls(gwtParentNode, nodeTypes, mimeTypes, nameFilters, fields, currentUserSession,false);
+        return ls(gwtParentNode, nodeTypes, mimeTypes, nameFilters, fields, false, currentUserSession);
     }
 
     public List<GWTJahiaNode> ls(GWTJahiaNode gwtParentNode, List<String> nodeTypes, List<String> mimeTypes,
-                                 List<String> nameFilters, List<String> fields, JCRSessionWrapper currentUserSession, boolean checkSubChild)
+                                 List<String> nameFilters, List<String> fields, boolean checkSubChild, JCRSessionWrapper currentUserSession)
             throws GWTJahiaServiceException {
         JCRNodeWrapper node = null;
         try {
@@ -334,7 +334,7 @@ public class NavigationHelper {
                         if (openPath.startsWith(node.getPath()) && !node.isExpandOnLoad() && !node.isFile()) {
                             node.setExpandOnLoad(true);
                             List<GWTJahiaNode> list =
-                                    ls(node, nodeTypes, mimeTypes, filters, fields, currentUserSession,checkSubChild);
+                                    ls(node, nodeTypes, mimeTypes, filters, fields, checkSubChild, currentUserSession);
                             for (int j = 0; j < list.size(); j++) {
                                 node.insert(list.get(j), j);
                                 allNodes.add(list.get(j));

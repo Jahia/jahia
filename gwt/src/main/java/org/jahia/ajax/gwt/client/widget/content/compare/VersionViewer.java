@@ -254,7 +254,7 @@ public class VersionViewer extends ContentPanel {
             mask();
             if (version == null || (version.getVersionNumber() == null || version.getVersionNumber().length() == 0)) {
                 // version is not specified. Current.
-                contentService.getNodeURL(currentNode.getPath(), locale, currentMode, new BaseAsyncCallback<String>() {
+                contentService.getNodeURL(currentNode.getPath(), null, null, locale, currentMode, new BaseAsyncCallback<String>() {
                     public void onSuccess(String url) {
                         currentFrame = setUrl(url);
                         setHeading(url);

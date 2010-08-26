@@ -34,10 +34,7 @@ package org.jahia.ajax.gwt.client.widget.node;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.BaseTreeLoader;
-import com.extjs.gxt.ui.client.data.DataProxy;
-import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.store.TreeStoreEvent;
@@ -294,15 +291,16 @@ public class GWTJahiaNodeTreeFactory {
                     listAsyncCallback.onSuccess(list);
                 } else {
                     JahiaContentManagementService.App.getInstance()
-                            .ls(gwtJahiaNode, nodeTypes, mimeTypes, filters, fields, checkSubchilds,
-                                    new BaseAsyncCallback<List<GWTJahiaNode>>() {
-                                        public void onSuccess(List<GWTJahiaNode> result) {
-                                            listAsyncCallback.onSuccess(result);
+                            .lsLoad(gwtJahiaNode, nodeTypes, mimeTypes, filters, fields, checkSubchilds,
+                                    new BaseAsyncCallback<ListLoadResult<GWTJahiaNode>>() {
+                                        public void onSuccess(ListLoadResult<GWTJahiaNode> result) {
+                                            listAsyncCallback.onSuccess(result.getData());
                                         }
 
                                         @Override public void onApplicationFailure(Throwable caught) {
                                             listAsyncCallback.onFailure(caught);
                                         }
+
                                     });
                 }
             }

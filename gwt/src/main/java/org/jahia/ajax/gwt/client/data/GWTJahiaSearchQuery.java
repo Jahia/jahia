@@ -44,7 +44,6 @@ import java.util.List;
  * Time: 4:19:05 PM
  */
 public class GWTJahiaSearchQuery implements Serializable {
-    private int limit;
     private String query;
     private List<GWTJahiaNode> pages;
     private GWTJahiaLanguage language;
@@ -58,14 +57,6 @@ public class GWTJahiaSearchQuery implements Serializable {
     private List<String> filters;
     private List<String> mimeTypes;
     private String originSiteUuid;
-    
-    public int getLimit() {
-        return limit;
-    }
-
-    public void setLimit(int limit) {
-        this.limit = limit;
-    }
 
     public String getQuery() {
         return query;

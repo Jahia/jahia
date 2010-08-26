@@ -84,7 +84,7 @@ class PortletBrowseTabItem extends BrowseTabItem {
             protected void load(Object gwtJahiaFolder, AsyncCallback<ListLoadResult<GWTJahiaNode>> listAsyncCallback) {
                 Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getName());
                 JahiaContentManagementService.App.getInstance()
-                        .lsLoad((GWTJahiaNode) gwtJahiaFolder, JCRClientUtils.PORTLET_NODETYPES, null, null, Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.THUMBNAILS, GWTJahiaNode.TAGS), listAsyncCallback);
+                        .lsLoad((GWTJahiaNode) gwtJahiaFolder, JCRClientUtils.PORTLET_NODETYPES, null, null, Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.THUMBNAILS, GWTJahiaNode.TAGS), false, listAsyncCallback);
             }
         };
 

@@ -102,7 +102,7 @@ public class ThumbView extends TopRightComponent {
                 JahiaContentManagementService.App.getInstance().lsLoad((GWTJahiaNode) gwtJahiaFolder,
                         configuration.getAllNodeTypes(),
                         configuration.getMimeTypes(), configuration.getFilters(), configuration.getTableColumnKeys(),
-                        listAsyncCallback);
+                        false, listAsyncCallback);
             }
         };
 

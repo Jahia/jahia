@@ -93,7 +93,7 @@ public class SiteSwitcherActionItem extends BaseActionItem {
 
     private void refreshSitesList(final Linker linker) {
         JahiaContentManagementService
-                .App.getInstance().getRoot(root, Arrays.asList("jnt:virtualsite"), null, null,null,null,null, new BaseAsyncCallback<List<GWTJahiaNode>>() {
+                .App.getInstance().getRoot(root, Arrays.asList("jnt:virtualsite"), null, null,null,null,null, false,new BaseAsyncCallback<List<GWTJahiaNode>>() {
             public void onSuccess(List<GWTJahiaNode> sites) {
                 mainComponent.removeAllListeners();
                 mainComponent.getStore().removeAll();

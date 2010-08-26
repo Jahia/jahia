@@ -82,14 +82,7 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void getEditConfiguration(String name, AsyncCallback<GWTEditConfiguration> async);
 
-    void ls(GWTJahiaNode folder, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, AsyncCallback<List<GWTJahiaNode>> async);
-
-    void ls(GWTJahiaNode folder, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, boolean checkSubChild, AsyncCallback<List<GWTJahiaNode>> async);
-
-    void lsLoad(GWTJahiaNode folder, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields,
-                AsyncCallback<ListLoadResult<GWTJahiaNode>> async);
-
-    void getRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, List<String> selectedNodes, List<String> openPaths, AsyncCallback<List<GWTJahiaNode>> async);
+    void lsLoad(GWTJahiaNode folder, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, boolean checkSubChild, AsyncCallback<ListLoadResult<GWTJahiaNode>> async);
 
     void getRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, List<String> selectedNodes, List<String> openPaths, boolean checkSubChild, AsyncCallback<List<GWTJahiaNode>> async);
 
@@ -98,8 +91,6 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
     void getTagNode(String tagName, boolean create,AsyncCallback<GWTJahiaNode> async);
 
     public void saveOpenPathsForRepository(String repositoryType, List<String> paths, AsyncCallback async);
-
-    void search(String searchString, int limit, AsyncCallback<List<GWTJahiaNode>> async);
 
     void search(GWTJahiaSearchQuery search,int limit,int offset, AsyncCallback<PagingLoadResult<GWTJahiaNode>> async);    
 
@@ -113,11 +104,7 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void getSavedSearch(AsyncCallback<List<GWTJahiaNode>> async);
 
-    void saveSearch(String searchString, String name, AsyncCallback<GWTJahiaNode> async);
-
-    void saveSearch(String searchString, String path, String name, AsyncCallback asyncCallback);
-
-    void saveSearch(GWTJahiaSearchQuery searchQuery, String path, String name, AsyncCallback asyncCallback); 
+    void saveSearch(GWTJahiaSearchQuery searchQuery, String path, String name, AsyncCallback asyncCallback);
 
     void saveSearchOnTopOf(String searchString, String path, String name, AsyncCallback asyncCallback);
 
@@ -209,8 +196,6 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void getRenderedContent(String path, String workspace, String locale, String template, String configuration, Map<String, String> contextParams, boolean editMode, String configName, AsyncCallback<GWTRenderResult> async);
 
-    void getNodeURL(String path, String locale,  int mode,AsyncCallback<String> async);
-
     void getNodeURL(String path, String version,String workspace, String locale, int mode, AsyncCallback<String> async);
 
     void importContent(String parentPath, String fileKey, AsyncCallback async);
@@ -266,15 +251,6 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
      * @param async the callback
      */
     void getUrlMappings(GWTJahiaNode node, String locale, AsyncCallback<List<GWTJahiaUrlMapping>> async);
-    
-    /**
-     * Updates the URL mapping for the specified node. 
-     * @param node the node to be updated
-     * @param updatedLocales locales that were edited
-     * @param mappings URL mapping list to store
-     * @param async the callback
-     */
-    void saveUrlMappings(GWTJahiaNode node, Set<String> updatedLocales, List<GWTJahiaUrlMapping> mappings, AsyncCallback async);
 
     /**
      * Get analytics data
@@ -301,8 +277,6 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void isValidSession(AsyncCallback<Integer> async)  throws GWTJahiaServiceException;
 
-    void getAllWrappers(String path, List<String> fields, AsyncCallback<ListLoadResult<GWTJahiaNode>> nodes);
-
     void searchRolesInContext(String search, int offset, int limit, String context,
                               AsyncCallback<PagingLoadResult<GWTJahiaRole>> asyncCallback);
 
@@ -327,6 +301,4 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
     
     void synchronizeWithGoogleDocs(String nodeIdentifier, AsyncCallback<Void> async);
     
-	void getSource(String referenceIdentifier, AsyncCallback<GWTJahiaNode> async);
-
 }

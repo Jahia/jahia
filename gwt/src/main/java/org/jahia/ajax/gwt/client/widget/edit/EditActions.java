@@ -75,7 +75,7 @@ public class EditActions {
             String path = linker.getMainNode().getPath();
             String locale = JahiaGWTParameters.getUILanguage();
             JahiaContentManagementService.App.getInstance()
-                    .getNodeURL(path, locale, mode, new BaseAsyncCallback<String>() {
+                    .getNodeURL(path, null, null, locale, mode, new BaseAsyncCallback<String>() {
                         public void onSuccess(String url) {
                             com.google.gwt.user.client.Window.open(url, "mode" + mode, "");
                         }

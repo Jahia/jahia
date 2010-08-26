@@ -32,8 +32,6 @@
 
 package org.jahia.services.content;
 
-import org.apache.commons.collections.map.ListOrderedMap;
-
 import java.io.Serializable;
 import java.util.*;
 
@@ -55,40 +53,38 @@ public class PublicationInfo implements Serializable {
     public static final int CONFLICT = 9;
     public static final int MANDATORY_LANGUAGE_VALID = 10;
     
-    private PublicationNode root;
+    private PublicationInfoNode root;
 
     public PublicationInfo() {
     }
 
     public PublicationInfo(String rootUuid, String path) {
-        this.root = new PublicationNode(rootUuid, path);
+        this.root = new PublicationInfoNode(rootUuid, path);
     }
 
-    public PublicationInfo(PublicationNode root) {
+    public PublicationInfo(PublicationInfoNode root) {
         this.root = root;
     }
 
-    public PublicationNode getRoot() {
+    public PublicationInfoNode getRoot() {
         return root;
     }
 
-    public List<PublicationNode> getAllChildInfo() {
-        List<PublicationNode> nodes = new ArrayList<PublicationNode>();
-        nodes.add(root);
-        for (int i=0; i<nodes.size(); i++) {
-            final PublicationNode node = nodes.get(i);
-            nodes.addAll(node.getChildren());
-        }
-        return nodes;
+    public void setRoot(PublicationInfoNode root) {
+        this.root = root;
     }
 
     public List<String> getAllUuids() {
         List<String> uuids = new ArrayList<String>();
-        List<PublicationNode> nodes = new ArrayList<PublicationNode>();
+        List<PublicationInfoNode> nodes = new ArrayList<PublicationInfoNode>();
         nodes.add(root);
         for (int i=0; i<nodes.size(); i++) {
-            final PublicationNode node = nodes.get(i);
-            nodes.addAll(node.getChildren());
+            final PublicationInfoNode node = nodes.get(i);
+            for (PublicationInfoNode infoNode : node.getChildren()) {
+                if (!nodes.contains(infoNode)) {
+                    nodes.add(infoNode);
+                }
+            }
             uuids.add(node.getUuid());
         }
         return uuids;
@@ -96,22 +92,25 @@ public class PublicationInfo implements Serializable {
 
     public List<PublicationInfo> getAllReferences() {
         List<PublicationInfo> uuids = new ArrayList<PublicationInfo>();
-        List<PublicationNode> nodes = new ArrayList<PublicationNode>();
+        List<PublicationInfoNode> nodes = new ArrayList<PublicationInfoNode>();
         nodes.add(root);
         for (int i=0; i<nodes.size(); i++) {
-            final PublicationNode node = nodes.get(i);
-            nodes.addAll(node.getChildren());
+            final PublicationInfoNode node = nodes.get(i);
+            for (PublicationInfoNode infoNode : node.getChildren()) {
+                if (!nodes.contains(infoNode)) {
+                    nodes.add(infoNode);
+                }
+            }
             uuids.addAll(node.getReferences());
         }
         return uuids;
     }
 
     public void clearInternalAndPublishedReferences(List<String> uuids) {
-        List<PublicationNode> nodes = new ArrayList<PublicationNode>();
+        List<PublicationInfoNode> nodes = new ArrayList<PublicationInfoNode>();
         nodes.add(root);
         for (int i=0; i<nodes.size(); i++) {
-            final PublicationNode node = nodes.get(i);
-            nodes.addAll(node.getChildren());
+            final PublicationInfoNode node = nodes.get(i);
             List<PublicationInfo> toRemove = new ArrayList<PublicationInfo>();
             for (PublicationInfo info : node.getReferences()) {
                 if (uuids.contains(info.getRoot().getUuid()) || !info.needPublication()) {
@@ -124,11 +123,15 @@ public class PublicationInfo implements Serializable {
 
     public Set<Integer> getTreeStatus() {
         Set<Integer> status = new HashSet<Integer>();
-        List<PublicationNode> nodes = new ArrayList<PublicationNode>();
+        List<PublicationInfoNode> nodes = new ArrayList<PublicationInfoNode>();
         nodes.add(root);
         for (int i=0; i<nodes.size(); i++) {
-            final PublicationNode node = nodes.get(i);
-            nodes.addAll(node.getChildren());
+            final PublicationInfoNode node = nodes.get(i);
+            for (PublicationInfoNode infoNode : node.getChildren()) {
+                if (!nodes.contains(infoNode)) {
+                    nodes.add(infoNode);
+                }
+            }
             status.add(node.getStatus());
         }
         return status;
@@ -140,69 +143,4 @@ public class PublicationInfo implements Serializable {
         return !treeStatus.contains(PUBLISHED) || treeStatus.size() != 1;
     }
 
-    public class PublicationNode implements Serializable {
-        private String uuid;
-        private String path;
-        private int status;
-        private boolean canPublish;
-        private List<PublicationNode> child = new ArrayList<PublicationNode>();
-        private List<PublicationInfo> references = new ArrayList<PublicationInfo>();
-        private List<String> pruned;
-
-        public PublicationNode() {
-        }
-
-        public PublicationNode(String uuid, String path) {
-            this.uuid = uuid;
-            this.path = path;
-        }
-
-        public String getUuid() {
-            return uuid;
-        }
-
-        public String getPath() {
-            return path;
-        }
-
-        public int getStatus() {
-            return status;
-        }
-
-        public void setStatus(int status) {
-            this.status = status;
-        }
-
-        public boolean isCanPublish() {
-            return canPublish;
-        }
-
-        public void setCanPublish(boolean canPublish) {
-            this.canPublish = canPublish;
-        }
-
-        public List<PublicationNode> getChildren() {
-            return child;
-        }
-
-        public List<PublicationInfo> getReferences() {
-            return references;
-        }
-
-        public List<String> getPruned() {
-            return pruned;
-        }
-
-        public PublicationNode addChild(String uuid, String path) {
-            final PublicationNode node = new PublicationNode(uuid, path);
-            child.add(node);
-            return node;
-        }
-
-        public PublicationInfo addReference(String uuid, String path) {
-            final PublicationInfo ref = new PublicationInfo(uuid, path);
-            references.add(ref);
-            return ref;
-        }
-    }
 }

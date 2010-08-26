@@ -45,7 +45,6 @@ import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.workflow.WorkflowVariable;
 
-import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import java.util.*;
 
@@ -83,7 +82,7 @@ public class PublicationHelper {
         try {
             PublicationInfo pubInfo = publicationService.getPublicationInfo(uuid, languages, false, true, false, currentUserSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE).get(0);
             GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(pubInfo.getRoot().getPath(), pubInfo.getRoot().getStatus(), pubInfo.getRoot().isCanPublish());
-            for (PublicationInfo.PublicationNode sub : pubInfo.getRoot().getChildren()) {
+            for (PublicationInfoNode sub : pubInfo.getRoot().getChildren()) {
                 if (sub.getPath().contains("/j:translation")) {
                     String key = StringUtils.substringBeforeLast(sub.getPath(), "/j:translation");
                     if (sub.getStatus() > gwtInfo.getStatus()) {
@@ -124,20 +123,20 @@ public class PublicationHelper {
     public List<GWTJahiaPublicationInfo> convert(List<PublicationInfo> pubInfos, JCRSessionWrapper currentUserSession) {
         List<GWTJahiaPublicationInfo> gwtInfos = new ArrayList<GWTJahiaPublicationInfo>();
         for (PublicationInfo pubInfo : pubInfos) {
-            PublicationInfo.PublicationNode node = pubInfo.getRoot();
+            PublicationInfoNode node = pubInfo.getRoot();
             gwtInfos.addAll(convert(pubInfo, pubInfo.getRoot().getPath(), currentUserSession));
         }
         return gwtInfos;
     }
 
     private List<GWTJahiaPublicationInfo> convert(PublicationInfo pubInfo, String mainTitle, JCRSessionWrapper currentUserSession) {
-        PublicationInfo.PublicationNode node = pubInfo.getRoot();
+        PublicationInfoNode node = pubInfo.getRoot();
         List<GWTJahiaPublicationInfo> gwtInfos = new ArrayList<GWTJahiaPublicationInfo>();
         convert(gwtInfos, mainTitle, node, currentUserSession);
         return gwtInfos;
     }
 
-    private GWTJahiaPublicationInfo convert(List<GWTJahiaPublicationInfo> all, String mainTitle, PublicationInfo.PublicationNode node,
+    private GWTJahiaPublicationInfo convert(List<GWTJahiaPublicationInfo> all, String mainTitle, PublicationInfoNode node,
                                             JCRSessionWrapper currentUserSession) {
         GWTJahiaPublicationInfo gwtInfo = convert(node, currentUserSession);
         all.add(gwtInfo);
@@ -145,7 +144,7 @@ public class PublicationHelper {
 
         Map<String, GWTJahiaPublicationInfo> gwtInfos = new HashMap<String, GWTJahiaPublicationInfo>();
         gwtInfos.put(node.getPath(), gwtInfo);
-        for (PublicationInfo.PublicationNode sub : node.getChildren()) {
+        for (PublicationInfoNode sub : node.getChildren()) {
             if (sub.getPath().contains("/j:translation")) {
                 String key = StringUtils.substringBeforeLast(sub.getPath(), "/j:translation");
                 GWTJahiaPublicationInfo lastPub = gwtInfos.get(key);
@@ -173,7 +172,7 @@ public class PublicationHelper {
         return gwtInfo;
     }
 
-    private GWTJahiaPublicationInfo convert(PublicationInfo.PublicationNode node, JCRSessionWrapper currentUserSession) {        
+    private GWTJahiaPublicationInfo convert(PublicationInfoNode node, JCRSessionWrapper currentUserSession) {
         GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(node.getPath(), node.getStatus(), node.isCanPublish());
         try {
             JCRNodeWrapper n = currentUserSession.getNodeByUUID(node.getUuid());
@@ -282,7 +281,7 @@ public class PublicationHelper {
         }
     }
 
-    public boolean splitWorkflows(Map<WorkflowDefinition, List<PublicationInfo>> m, PublicationInfo.PublicationNode node, WorkflowDefinition currentDef, JCRSessionWrapper session) throws RepositoryException {
+    public boolean splitWorkflows(Map<WorkflowDefinition, List<PublicationInfo>> m, PublicationInfoNode node, WorkflowDefinition currentDef, JCRSessionWrapper session) throws RepositoryException {
         JCRNodeWrapper n = session.getNodeByUUID(node.getUuid());
         boolean split = false;
 
@@ -301,8 +300,8 @@ public class PublicationHelper {
                 }
             }
         }
-        List<PublicationInfo.PublicationNode> childSplit = new ArrayList<PublicationInfo.PublicationNode>();
-        for (PublicationInfo.PublicationNode childNode : node.getChildren()) {
+        List<PublicationInfoNode> childSplit = new ArrayList<PublicationInfoNode>();
+        for (PublicationInfoNode childNode : node.getChildren()) {
             if (splitWorkflows(m, childNode, currentDef, session)) {
                 childSplit.add(childNode);
             }

@@ -334,9 +334,9 @@ public class PublicationHelper {
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      *          in case of any RepositoryException
      */
-    public void unpublish(String path, Set<String> languages, JahiaUser user) throws GWTJahiaServiceException {
+    public void unpublish(String uuid, Set<String> languages, JahiaUser user) throws GWTJahiaServiceException {
         try {
-            publicationService.unpublish(path, languages);
+            publicationService.unpublish(uuid, languages);
         } catch (RepositoryException e) {
             logger.error("repository exception", e);
             throw new GWTJahiaServiceException(e.getMessage());

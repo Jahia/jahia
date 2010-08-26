@@ -1082,7 +1082,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         long l = System.currentTimeMillis();
         JCRSessionWrapper session = retrieveCurrentSession();
         for (String s : paths) {
-            publication.unpublish(s, Collections.singleton(session.getLocale().toString()), session.getUser());
+            try {
+                JCRNodeWrapper node = session.getNode(s);
+                publication.unpublish(node.getIdentifier(), Collections.singleton(session.getLocale().toString()), session.getUser());
+            } catch (RepositoryException e) {
+                throw new GWTJahiaServiceException(e.getMessage());
+            }
         }
         logger.debug("-->" + (System.currentTimeMillis() - l));
     }

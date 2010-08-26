@@ -734,10 +734,10 @@ public class JCRPublicationService extends JahiaService {
      * @param languages
      * @throws javax.jcr.RepositoryException
      */
-    public void unpublish(String path, Set<String> languages) throws RepositoryException {
+    public void unpublish(String uuid, Set<String> languages) throws RepositoryException {
         JCRSessionWrapper sourceSession = getSessionFactory().getCurrentUserSession();
         JCRSessionWrapper destinationSession = getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE);
-        JCRNodeWrapper node = sourceSession.getNode(path);
+        JCRNodeWrapper node = sourceSession.getNodeByUUID(uuid);
         VersionManager vm = sourceSession.getWorkspace().getVersionManager();
         if (!vm.isCheckedOut(node.getPath())) {
             vm.checkout(node.getPath());

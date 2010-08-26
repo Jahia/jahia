@@ -360,7 +360,7 @@ public class ContentSearchForm extends ContentPanel {
             if (name != null && name.length() > 0) {
                 name = JCRClientUtils.cleanUpFilename(name);
                 final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
-                service.saveSearch(query,null, name, new BaseAsyncCallback<GWTJahiaNode>() {
+                service.saveSearch(query,null, name, false, new BaseAsyncCallback<GWTJahiaNode>() {
                     public void onSuccess(GWTJahiaNode o) {
                         Log.debug("saved.");
                     }

@@ -107,9 +107,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     public List<GWTJahiaNode> getSavedSearch() throws GWTJahiaServiceException;
 
-    public void saveSearch(GWTJahiaSearchQuery searchQuery, String path, String name) throws GWTJahiaServiceException;
-
-    public void saveSearchOnTopOf(String searchString, String path, String name) throws GWTJahiaServiceException;
+    public void saveSearch(GWTJahiaSearchQuery searchQuery, String path, String name, boolean onTopOf) throws GWTJahiaServiceException;
 
     public void mount(String path, String target, String root) throws GWTJahiaServiceException;
 

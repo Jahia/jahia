@@ -371,18 +371,18 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return search.getSavedSearch(retrieveCurrentSession());
     }
 
-    public void saveSearch(GWTJahiaSearchQuery searchQuery, String path, String name) throws GWTJahiaServiceException {
-        final GWTJahiaNode jahiaNode = search.saveSearch(searchQuery, path, name, retrieveCurrentSession());
-    }
-
-    public void saveSearchOnTopOf(String searchString, String path, String name) throws GWTJahiaServiceException {
-        final GWTJahiaNode parentNode = navigation.getParentNode(path, retrieveCurrentSession());
-        final GWTJahiaNode jahiaNode =
-                search.saveSearch(searchString, parentNode.getPath(), name, retrieveCurrentSession());
-        try {
-            contentManager.moveOnTopOf(jahiaNode.getPath(), path, retrieveCurrentSession());
-        } catch (RepositoryException e) {
-            throw new GWTJahiaServiceException(e.getMessage());
+    public void saveSearch(GWTJahiaSearchQuery searchQuery, String path, String name, boolean onTopOf) throws GWTJahiaServiceException {
+        if (onTopOf) {
+            final GWTJahiaNode parentNode = navigation.getParentNode(path, retrieveCurrentSession());
+            final GWTJahiaNode jahiaNode =
+                    search.saveSearch(searchQuery, parentNode.getPath(), name, retrieveCurrentSession());
+            try {
+                contentManager.moveOnTopOf(jahiaNode.getPath(), path, retrieveCurrentSession());
+            } catch (RepositoryException e) {
+                throw new GWTJahiaServiceException(e.getMessage());
+            }
+        } else {
+            search.saveSearch(searchQuery, path, name, retrieveCurrentSession());
         }
     }
 

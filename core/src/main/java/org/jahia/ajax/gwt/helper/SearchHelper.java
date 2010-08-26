@@ -243,39 +243,6 @@ public class SearchHelper {
     }
 
     /**
-     * Simple save search
-     *
-     * @param searchString
-     * @param path
-     * @param name
-     * @param currentUserSession
-     * @return
-     * @throws GWTJahiaServiceException
-     */
-    public GWTJahiaNode saveSearch(String searchString, String path, String name, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
-        try {
-            if (name == null) {
-                throw new GWTJahiaServiceException("Could not store query with null name");
-            }
-
-            JCRNodeWrapper parent = currentUserSession.getNode(path);
-            name = contentManager.findAvailableName(parent, name, currentUserSession);
-            Query q = createQuery(searchString, currentUserSession);
-            q.storeAsNode(path + "/" + name);
-            parent.saveSession();
-
-            return navigation.getGWTJahiaNode(currentUserSession.getNode(path + "/" + name));
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException("Could not store query");
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException("Could not store query");
-        }
-    }
-
-
-    /**
      * Save search
      *
      * @param search

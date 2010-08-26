@@ -184,9 +184,9 @@ public class EditModeDNDListener extends DNDListener {
                 GWTJahiaSearchQuery q = e.getStatus().getData(SOURCE_QUERY);
                 e.getStatus().setData(OPERATION_CALLED, "true");
                 if ("*".equals(name)) {
-                    async.saveSearch(q, parentPath, "jnt_query", callback);
+                    async.saveSearch(q, parentPath, "jnt_query", false, callback);
                 } else {
-                    async.saveSearch(q, parentPath, name, callback);
+                    async.saveSearch(q, parentPath, name, false,  callback);
                 }
             }
         } else if (SIMPLEMODULE_TYPE.equals(targetType)) {
@@ -257,9 +257,10 @@ public class EditModeDNDListener extends DNDListener {
                 }
             } else if (QUERY_SOURCE_TYPE.equals(sourceType)) {
                 // Item creation
-                String q = e.getStatus().getData(SOURCE_QUERY);
+                GWTJahiaSearchQuery q = e.getStatus().getData(SOURCE_QUERY);
                 e.getStatus().setData(OPERATION_CALLED, "true");
-                async.saveSearchOnTopOf(q, targetPath, "jnt_query", callback);
+
+                async.saveSearch(q, targetPath, "jnt_query", true, callback);
             }
         } else if (PAGETREE_TYPE.equals(targetType)) {
             if (PAGETREE_TYPE.equals(sourceType)) {

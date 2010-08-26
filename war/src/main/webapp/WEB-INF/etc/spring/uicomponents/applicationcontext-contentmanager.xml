@@ -32,7 +32,7 @@
                             <value>metadata</value>
                             <value>tags</value>
                             <value>categories</value>
-                            <value>option</value>
+                            <value>options</value>
                             <value>rights</value>
                             <value>usages</value>
                             <value>publication</value>
@@ -51,7 +51,7 @@
                             <value>metadata</value>
                             <value>tags</value>
                             <value>categories</value>
-                            <value>option</value>
+                            <value>options</value>
                             <value>rights</value>
                             <value>usages</value>
                             <value>publication</value>
@@ -75,7 +75,7 @@
                             <value>metadata</value>
                             <value>tags</value>
                             <value>categories</value>
-                            <value>option</value>
+                            <value>options</value>
                             <value>rights</value>
                         </list>
                     </property>
@@ -89,7 +89,7 @@
                             <value>metadata</value>
                             <value>tags</value>
                             <value>categories</value>
-                            <value>option</value>
+                            <value>options</value>
                             <value>rights</value>
                         </list>
                     </property>
@@ -757,7 +757,7 @@
                 <value>metadata</value>
                 <value>tags</value>
                 <value>categories</value>
-                <value>option</value>
+                <value>options</value>
                 <value>rights</value>
                 <value>usages</value>
                 <value>publication</value>

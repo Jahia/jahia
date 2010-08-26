@@ -62,7 +62,6 @@ public class GWTJahiaItemDefinition implements Serializable {
     public static final String LAYOUT = "layout";
     public static final String OPTIONS = "options";
     public static final String TEMPLATE = "template";
-    public static final String CACHE = "publication";
 
     public GWTJahiaItemDefinition() {
     }

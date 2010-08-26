@@ -113,46 +113,11 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
      * Creates and initializes all window tabs.
      */
     protected void initTabs() {
-        for (String tab : config.getTabs()) {
-            if (tab.equals("info")) {
-                tabs.add(new InfoTabItem(this));
-            } else if (tab.equals("content")) {
-                tabs.add(new ContentTabItem(this));
-            } else if (tab.equals("template")) {
-                tabs.add(new TemplateOptionsTabItem(this));
-            } else if (tab.equals("layout")) {
-                tabs.add(new LayoutTabItem(this));
-            } else if (tab.equals("metadata")) {
-                tabs.add(new MetadataTabItem(this));
-            } else if (tab.equals("tags")) {
-                tabs.add(new TagsTabItem(this));
-            } else if (tab.equals("categories")) {
-                tabs.add(new CategoriesTabItem(this));
-            } else if (tab.equals("option")) {
-                tabs.add(new OptionsTabItem(this));
-            } else if (tab.equals("rights")) {
-                tabs.add(new RightsTabItem(this));
-            } else if (tab.equals("usages")) {
-                tabs.add(new UsagesTabItem(this));
-            } else if (tab.equals("publication")) {
-                tabs.add(new PublicationTabItem(this));
-            } else if (tab.equals("workflow")) {
-                tabs.add(new WorkflowTabItem(this));
-            } else if (tab.equals("seo")) {
-                tabs.add(new SeoTabItem(this));
-            } else if (tab.equals("analytics")) {
-                tabs.add(new AnalyticsTabItem(this));
-            } else if (tab.equals("rolePrincipals")) {
-                tabs.add(new RolePrincipalsTabItem(this));
-            } else if (tab.equals("portlets")) {
-                tabs.add(new PortletsTabItem(this));
-            }
-        }
+        EditEngineTabItem.addTabs(config.getTabs(), tabs, this);
         for (TabItem tabItem : tabs.getItems()) {
             ((EditEngineTabItem) tabItem).setToolbarEnabled(true);
         }
     }
-
 
     public Component getComponent() {
         return m_component;

@@ -31,10 +31,14 @@
  */
 
 package org.jahia.ajax.gwt.client.widget.edit.contentengine;
+import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
+import org.jahia.ajax.gwt.client.widget.content.InfoTabItem;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -72,5 +76,41 @@ public abstract class EditEngineTabItem extends AsyncTabItem {
 
     public void setToolbarEnabled(boolean enabled) {
         this.toolbarEnabled = enabled;
+    }
+
+    public static void addTabs(final List<String> tabsConfig, final TabPanel tabs, final NodeHolder nodeHolder) {
+        for (String tab : tabsConfig) {
+            if (tab.equals("info")) {
+                tabs.add(new InfoTabItem(nodeHolder));
+            } else if (tab.equals("content")) {
+                tabs.add(new ContentTabItem(nodeHolder));
+            } else if (tab.equals("template")) {
+                tabs.add(new TemplateOptionsTabItem(nodeHolder));
+            } else if (tab.equals("layout")) {
+                tabs.add(new LayoutTabItem(nodeHolder));
+            } else if (tab.equals("metadata")) {
+                tabs.add(new MetadataTabItem(nodeHolder));
+            } else if (tab.equals("tags")) {
+                tabs.add(new TagsTabItem(nodeHolder));
+            } else if (tab.equals("categories")) {
+                tabs.add(new CategoriesTabItem(nodeHolder));
+            } else if (tab.equals("options")) {
+                tabs.add(new OptionsTabItem(nodeHolder));
+            } else if (tab.equals("rights")) {
+                tabs.add(new RightsTabItem(nodeHolder));
+            } else if (tab.equals("usages")) {
+                tabs.add(new UsagesTabItem(nodeHolder));
+            } else if (tab.equals("workflow")) {
+                tabs.add(new WorkflowTabItem(nodeHolder));
+            } else if (tab.equals("seo")) {
+                tabs.add(new SeoTabItem(nodeHolder));
+            } else if (tab.equals("analytics")) {
+                tabs.add(new AnalyticsTabItem(nodeHolder));
+            } else if (tab.equals("rolePrincipals")) {
+                tabs.add(new RolePrincipalsTabItem(nodeHolder));
+            } else if (tab.equals("portlets")) {
+                tabs.add(new PortletsTabItem(nodeHolder));
+            }
+        }
     }
 }

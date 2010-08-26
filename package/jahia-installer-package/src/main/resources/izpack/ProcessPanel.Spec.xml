@@ -2,15 +2,24 @@
 <processing>
     <job name="Configure Jahia">
         <executeForPack name="Jahia Core"/>
+        <executefile name="echo">
+        	<arg>Configuring Jahia...</arg>
+        </executefile>
         <executefile name="$JAVA_HOME/bin/java">
             <arg>-Dderby.system.home=${jahia.war.target.path}/WEB-INF/var/dbdata</arg>
             <arg>-jar</arg>
             <arg>$INSTALL_PATH/configurators.jar</arg>
             <arg>$INSTALL_PATH/install.properties</arg>
         </executefile>
+        <executefile name="echo">
+        	<arg>...done configuring.</arg>
+        </executefile>
     </job>
     <job name="Prepare WAR" condition="!cnd.pack.tomcat">
         <executeForPack name="Jahia Core"/>
+        <executefile name="echo">
+        	<arg>Preparing Jahia WAR...</arg>
+        </executefile>
         <executefile name="$JAVA_HOME/bin/java">
             <arg>-jar</arg>
             <arg>$INSTALL_PATH/archivers.jar</arg>
@@ -19,9 +28,15 @@
             <arg>$INSTALL_PATH/ROOT.war</arg>
             <arg>${server.type}</arg>
         </executefile>
+        <executefile name="echo">
+        	<arg>...done WAR packaging.</arg>
+        </executefile>
     </job>
     <job name="JBoss SAR" condition="cnd.server.type.jboss">
         <executeForPack name="Jahia Core"/>
+        <executefile name="echo">
+        	<arg>Preparing JBoss Jahia SAR...</arg>
+        </executefile>
         <executefile name="$JAVA_HOME/bin/java">
             <arg>-jar</arg>
             <arg>$INSTALL_PATH/archivers.jar</arg>
@@ -29,61 +44,133 @@
             <arg>$INSTALL_PATH/jahia-jboss-config</arg>
             <arg>$INSTALL_PATH/jahia-jboss-config.sar</arg>
         </executefile>
+        <executefile name="echo">
+        	<arg>...done SAR packaging.</arg>
+        </executefile>
     </job>
-    <job name="Cleanup">
+    <job name="Cleanup archivers.jar">
         <os family="windows" />
+        <executefile name="echo">
+        	<arg>Removing archivers.jar...</arg>
+        </executefile>
         <executefile name="cmd">
             <arg>/c</arg>
             <arg>del</arg>
             <arg>/q</arg>
-            <arg>$INSTALL_PATH\*.jar</arg>
+            <arg>$INSTALL_PATH\archivers.jar</arg>
+        </executefile>
+        <executefile name="echo">
+        	<arg>...done removing archivers.jar.</arg>
         </executefile>
     </job>
-    <!-- 
-    <job name="Cleanup">
+    <job name="Cleanup configurators.jar">
+        <os family="windows" />
+        <executefile name="echo">
+        	<arg>Removing configurators.jar...</arg>
+        </executefile>
+        <executefile name="cmd">
+            <arg>/c</arg>
+            <arg>del</arg>
+            <arg>/q</arg>
+            <arg>$INSTALL_PATH\configurators.jar</arg>
+        </executefile>
+        <executefile name="echo">
+        	<arg>...done removing configurators.jar.</arg>
+        </executefile>
+    </job>
+    <job name="Cleanup archivers.jar">
         <os family="unix" />
         <os family="mac" />
+        <executefile name="echo">
+        	<arg>Removing archivers.jar...</arg>
+        </executefile>
         <executefile name="rm">
-            <arg>$INSTALL_PATH/*.jar</arg>
+            <arg>$INSTALL_PATH/archivers.jar</arg>
+        </executefile>
+        <executefile name="echo">
+        	<arg>...done removing archivers.jar.</arg>
         </executefile>
     </job>
-     -->
+    <job name="Cleanup configurators.jar">
+        <os family="unix" />
+        <os family="mac" />
+        <executefile name="echo">
+        	<arg>Removing configurators.jar...</arg>
+        </executefile>
+        <executefile name="rm">
+            <arg>$INSTALL_PATH/configurators.jar</arg>
+        </executefile>
+        <executefile name="echo">
+        	<arg>...done removing configurators.jar.</arg>
+        </executefile>
+    </job>
     
     <job name="Start Apache Tomcat" condition="cnd.launch.jahia">
         <executeForPack name="Apache Tomcat"/>
         <os family="windows" />
+        <executefile name="echo">
+        	<arg>Starting Apache Tomcat...</arg>
+        </executefile>
         <executefile name="$INSTALL_PATH\tomcat\bin\startup.bat">
             <env>CATALINA_HOME=$INSTALL_PATH\tomcat</env>
+        </executefile>
+        <executefile name="echo">
+        	<arg>...Apache Tomcat start initiated.</arg>
         </executefile>
     </job>
     <job name="Start Apache Tomcat" condition="cnd.launch.jahia">
         <executeForPack name="Apache Tomcat"/>
         <os family="unix" />
         <os family="mac" />
+        <executefile name="echo">
+        	<arg>Starting Apache Tomcat...</arg>
+        </executefile>
         <executefile name="$INSTALL_PATH/tomcat/bin/startup.sh">
             <env>CATALINA_HOME=$INSTALL_PATH/tomcat</env>
+        </executefile>
+        <executefile name="echo">
+        	<arg>...Apache Tomcat start initiated.</arg>
         </executefile>
     </job>
     <job name="Show Readme" condition="cnd.view.readme">
         <executeForPack name="Apache Tomcat"/>
         <os family="windows" />
+        <executefile name="echo">
+        	<arg>Opening README file...</arg>
+        </executefile>
         <executefile name="cmd">
             <arg>/c</arg>
             <arg>$INSTALL_PATH\bin\Readme.URL</arg>
         </executefile>
+        <executefile name="echo">
+        	<arg>...done.</arg>
+        </executefile>
     </job>
     <job name="Wait for Apache Tomcat startup" condition="cnd.launch.jahia">
         <executeForPack name="Apache Tomcat"/>
+        <executefile name="echo">
+        	<arg>Waiting for Apache Tomcat to start up...</arg>
+        </executefile>
         <executeclass name="org.jahia.init.TomcatWait">
             <arg>http://localhost:8080${jahia.war.contextPath}/ping.jsp</arg>
+            <arg>300000</arg>
         </executeclass>
+        <executefile name="echo">
+        	<arg>...done Apache Tomcat start up.</arg>
+        </executefile>
     </job>
     <job name="Launch Jahia" condition="cnd.launch.jahia">
         <executeForPack name="Apache Tomcat"/>
         <os family="windows" />
+        <executefile name="echo">
+        	<arg>Launching Jahia...</arg>
+        </executefile>
         <executefile name="cmd">
             <arg>/c</arg>
             <arg>$INSTALL_PATH\bin\StartJahia.URL</arg>
+        </executefile>
+        <executefile name="echo">
+        	<arg>...done.</arg>
         </executefile>
     </job>
 </processing>

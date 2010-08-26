@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<shortcuts>
+    <skipIfNotSupported/>
+    <programGroup defaultName="${product.name} ${product.version}" location="applications"/>
+    
+<!-- Documentation -->
+    <shortcut
+        name="Jahia Readme"
+        subgroup="\Documentation"
+        description="Open the Jahia README file"
+        url="${jahia.war.target.path}/html/startup/readme.html"
+        programGroup="yes"
+        type="Link"
+        encoding="UTF-8">
+        <createForPack name="Apache Tomcat"/>
+    </shortcut>
+    <shortcut
+        name="Jahia Community Web Site"
+        subgroup="\Documentation"
+        description="Opens the Jahia Community Web site"
+        url="http://www.jahia.org/"
+        type="Link"
+        programGroup="yes"
+        encoding="UTF-8">
+    </shortcut>
+    <shortcut
+        name="Jahia Company Web Site"
+        subgroup="\Documentation"
+        description="Opens the Jahia Company Web site"
+        url="http://www.jahia.com/"
+        type="Link"
+        programGroup="yes"
+        encoding="UTF-8">
+    </shortcut>
+    <shortcut
+        name="Jahiapedia"
+        subgroup="\Documentation"
+        description="Opens the Jahiapedia page on the Jahia Community Web site"
+        url="http://www.jahia.org/cms/home/Jahiapedia"
+        type="Link"
+        programGroup="yes"
+        encoding="UTF-8">
+    </shortcut>
+    <shortcut
+        name="Issue Tracking"
+        subgroup="/Documentation"
+        description="Opens the Issue Tracking system"
+        url="http://jira.jahia.org/"
+        type="Link"
+        programGroup="yes"
+        encoding="UTF-8">
+    </shortcut>
+    
+<!-- Shortcuts -->
+    <shortcut
+        name="Jahia (plain)"
+        description="Open the Jahia welcome page (running on localhost)"
+        iconFile="$INSTALL_PATH/bin/jahia.png"
+        iconIndex="0"
+        url="http://localhost:8080${jahia.war.contextPath}"
+        type="Link"
+        programGroup="yes"
+        encoding="UTF-8">
+        <createForPack name="Apache Tomcat"/>
+    </shortcut>
+    <shortcut
+        name="Jahia"
+        subgroup="\Shortcuts (only when Jahia is running)"
+        description="Open the Jahia welcome page (running on localhost)"
+        iconFile="$INSTALL_PATH/bin/jahia.png"
+        iconIndex="0"
+        url="http://localhost:8080${jahia.war.contextPath}"
+        type="Link"
+        programGroup="yes"
+        encoding="UTF-8">
+        <createForPack name="Apache Tomcat"/>
+    </shortcut>
+    <shortcut
+        name="Jahia Administration"
+        subgroup="Shortcuts (only when Jahia is running)"
+        description="Open the Jahia Administration page (running on localhost)"
+        iconFile="$INSTALL_PATH/bin/jahia.png"
+        iconIndex="0"
+        url="http://localhost:8080${jahia.war.contextPath}/administration"
+        type="Link"
+        programGroup="yes"
+        encoding="UTF-8">
+        <createForPack name="Apache Tomcat"/>
+    </shortcut>
+
+<!-- Start/stop Tomcat -->    
+    <shortcut
+        name="Start Jahia"
+        target="$INSTALL_PATH/startJahia.sh"
+        commandLine=""
+        workingDirectory="$INSTALL_PATH/"
+        description="This starts the Jahia Community Edition Server"
+        initialState="normal"
+        programGroup="yes"
+        desktop="no"
+        applications="no"
+        startMenu="no"
+        startup="no"
+        iconFile="$INSTALL_PATH/bin/start.png"
+        iconIndex="0"
+        type="Application"
+        encoding="UTF-8">
+        <createForPack name="Apache Tomcat"/>
+    </shortcut>
+    <shortcut
+        name="Stop Jahia"
+        target="$INSTALL_PATH/stopJahia.bat"
+        commandLine=""
+        workingDirectory="$INSTALL_PATH/"
+        description="This stops the Jahia Community Edition Server"
+        initialState="normal"
+        programGroup="yes"
+        desktop="no"
+        applications="no"
+        startMenu="no"
+        iconFile="$INSTALL_PATH/bin/stop.png"
+        iconIndex="0"
+        startup="no"
+        type="Application"
+        encoding="UTF-8">
+        <createForPack name="Apache Tomcat"/>
+    </shortcut>
+
+<!-- Uninstaller -->    
+    <shortcut
+        name="Uninstall Jahia"
+        description="This removes the Jahia Community Edition Server from your system"
+        target="$JAVA_HOME/bin/java"
+        commandLine="-jar $INSTALL_PATH/Uninstaller/uninstaller.jar"
+        initialState="noShow"
+        programGroup="yes"
+        desktop="no"
+        applications="no"
+        startMenu="no"
+        iconFile="trashcan_full"
+        iconIndex="0"
+        type="Application"
+        encoding="UTF-8">
+    </shortcut>
+
+</shortcuts>

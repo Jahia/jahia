@@ -177,9 +177,8 @@
         <res id="ProcessPanel.Spec.xml" src="ProcessPanel.Spec.xml"/>
 
         <res id="shortcutSpec.xml" src="windows-shortcuts.xml"/>
-        <!-- 
         <res id="Unix_shortcutSpec.xml" src="unix-shortcuts.xml"/>
-         -->
+
         <res id="userInputSpec.xml" src="userInputSpec.xml"/>
         <res id="userInputLang.xml_eng" src="i18n/userInputLang.eng.xml" />
         <res id="userInputLang.xml_fra" src="i18n/userInputLang.fra.xml" />
@@ -224,13 +223,11 @@
     </panels>
     
     <native name="ShellLink_x64.dll" type="izpack">
-        <os family="windows" />
         <os arch="amd64"/>
         <os arch="ia64"/>
         <os arch="x86_64"/>
     </native>
     <native name="ShellLink.dll" type="izpack">
-        <os family="windows" />
         <os arch="ia32"/>
         <os arch="i386"/>
         <os arch="i486"/>
@@ -249,8 +246,10 @@
     <listeners>
         <listener installer="LateShortcutInstallListener">
             <os family="windows" />
+            <os family="unix" />
         </listener>
     </listeners>
+
     <!-- 
     <listeners>
         <listener installer="RegistryInstallerListener" uninstaller="RegistryUninstallerListener">
@@ -271,6 +270,7 @@
             </fileset>
             <fileset dir="../images" targetdir="$INSTALL_PATH/bin" override="update">
                 <include name="jahia.ico"/>
+                <include name="jahia.png"/>
             </fileset>
             <singlefile override="update" src="../artifacts/jahia/WEB-INF/lib/juel-api-2.1.2.jar" target="${jahia.war.target.path}/juel-api-2.1.2.jar" condition="cnd.server.type.was"/>
             <fileset dir="../artifacts/jahia-jboss-config" targetdir="$INSTALL_PATH/jahia-jboss-config" condition="cnd.server.type.jboss"/>
@@ -297,6 +297,7 @@
             </fileset>
             <fileset dir="../images" targetdir="$INSTALL_PATH/bin" override="update">
                 <include name="st*.ico"/>
+                <include name="st*.png"/>
             </fileset>
             <parsable targetfile="$INSTALL_PATH/startJahia.bat" type="shell" os="windows"/>
             <parsable targetfile="$INSTALL_PATH/startJahia.sh" type="shell" os="unix" />

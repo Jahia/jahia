@@ -51,9 +51,10 @@ import com.izforge.izpack.util.AbstractUIProcessHandler;
 
 public class TomcatWait {
     private static final String DEFAULT_TARGET_URL = "http://localhost:8080/cms/html/startup/startjahia.html";
+    private static final long DEFAULT_WAIT_TIMEOUT = 180000L;
 
     public static void main(String args[]) throws MalformedURLException {
-        execute(args.length == 0 ? DEFAULT_TARGET_URL : args[0]);
+        execute(args.length == 0 ? DEFAULT_TARGET_URL : args[0], args.length < 2 ? DEFAULT_WAIT_TIMEOUT : Long.valueOf(args[1]));
     }
 
     /**
@@ -62,27 +63,31 @@ public class TomcatWait {
      */
     public boolean run(AbstractUIProcessHandler handler, String[] args) {
         try {
-            execute(args.length == 0 ? DEFAULT_TARGET_URL : args[0]);
+            execute(args.length == 0 ? DEFAULT_TARGET_URL : args[0], args.length < 2 ? DEFAULT_WAIT_TIMEOUT : Long.valueOf(args[1]));
         } catch (Exception e) {
             return false;
         }
         return true;
     }
 
-    private static void execute(String pingUrl) throws MalformedURLException {
+    private static void execute(String pingUrl, long timeout) throws MalformedURLException {
         URL url = new URL(pingUrl);
 
         boolean flag = false;
         System.out.print("Waiting for Web Server to become available at " + url);
+        
+        long time = 0;
 
         try {
+        	time+=1000;
             Thread.sleep(1000); // sleep 1 second before making the connection
         } catch (InterruptedException ie) {
             // ignore it
         }
-        while (!flag) {
+        while (!flag && time <= timeout) {
             System.out.print(".");
             try {
+            	time+=500;
                 Thread.sleep(500); // sleep 500 ms between tries.
             } catch (InterruptedException ie) {
                 // ignore it
@@ -96,6 +101,6 @@ public class TomcatWait {
                 flag = false;
             }
         }
-        System.out.println("\nWeb Server now available.");
+        System.out.println(flag ? "\nWeb Server now available." : "\nTimeout waiting for Web Server startup.");
     }
 }

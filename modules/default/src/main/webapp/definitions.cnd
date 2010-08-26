@@ -121,3 +121,7 @@
  - buttonLabel (string)
 
 [jnt:backToParentPage] > jnt:content, jmix:siteComponentContent, mix:title
+
+[jnt:relatedTagging] > jnt:content, jmix:list, mix:title, jmix:queryContent
+ - j:type (string, choicelist[nodetypes=nt:base,resourceBundle])
+ - j:nbOfResult (long) = 5  autocreated

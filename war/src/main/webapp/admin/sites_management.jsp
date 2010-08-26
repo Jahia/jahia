@@ -206,10 +206,10 @@
                         title="<fmt:message key='label.delete'/>" width="16"
                         height="16" border="0" style="cursor: pointer;"/></a>&nbsp;
                         <a href="#export" onclick="sendExportForm('<%=site.getSiteKey()%>'); return false;"
-                             title="<fmt:message key='org.jahia.admin.site.ManageSites.export.label'/>"><img
+                             title="<fmt:message key='label.export'/>"><img
                         src="<%=URL%>images/icons/admin/adromeda/export1.png"
-                        alt="<fmt:message key='org.jahia.admin.site.ManageSites.export.label'/>"
-                        title="<fmt:message key='org.jahia.admin.site.ManageSites.export.label'/>"
+                        alt="<fmt:message key='label.export'/>"
+                        title="<fmt:message key='label.export'/>"
                         width="16" height="16" border="0" style="cursor: pointer;"/></a>
                 </td>
             </tr>

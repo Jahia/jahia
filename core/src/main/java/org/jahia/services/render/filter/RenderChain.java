@@ -128,6 +128,7 @@ public class RenderChain {
                 }
             }
         } catch (Exception e) {
+            logger.error("Error while rendering the resource: " + resource);
             throw new RenderFilterException(e);
         } finally {
             popAttributes(renderContext.getRequest());

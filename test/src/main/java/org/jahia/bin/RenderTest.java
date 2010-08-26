@@ -160,6 +160,11 @@ public class RenderTest extends TestCase {
 
             // each time the node i published, a new version should be created
             jcrService.publish(stagedSubPage.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                logger.error(e.getMessage(), e);
+            }
         }
 
         // now let's do a little system versioning ourselves...

@@ -135,7 +135,7 @@ public class JCRVersionService extends JahiaService {
      * @return the closest version at or before the date specified.
      * @throws RepositoryException
      */
-    public static Version findClosestVersion(VersionHistory vh, Date versionDate) throws RepositoryException {
+    public static Version findClosestVersion(VersionHistory vh, Date versionDate) throws RepositoryException {        
         VersionIterator vi = vh.getAllLinearVersions();
         Version lastVersion = null;
         Version closestVersion = null;

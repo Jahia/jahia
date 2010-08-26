@@ -2054,6 +2054,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
             Node frozen = v.getNode(Constants.JCR_FROZENNODE);
             return new JCRFrozenNodeAsRegular(provider.getNodeWrapper(frozen, session), versionDate);
+        } catch (UnsupportedRepositoryOperationException e) {
+            if(getSession().getVersionDate()==null) {
+                logger.error("Error while retrieving frozen version", e);
+            }
         } catch (RepositoryException e) {
             logger.error("Error while retrieving frozen version", e);
         }
@@ -2827,11 +2831,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
             String path = getPath();
             if (path.startsWith("/sites/")) {
-                return (site = (JCRSiteNode) session.getNode(path.substring(0, path.indexOf('/',7))));
+                return (site = new JCRSiteNode(getSession().getNode(path.substring(0, path.indexOf('/',7)))));
             }
 
             if (path.startsWith("/templateSets/")) {
-                return (site = (JCRSiteNode) session.getNode(path.substring(0, path.indexOf('/',14))));
+                return (site = new JCRSiteNode(getSession().getNode(path.substring(0, path.indexOf('/',14)))));
             }
         } catch (ItemNotFoundException e) {
         }            

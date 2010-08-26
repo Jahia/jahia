@@ -36,10 +36,7 @@ import junit.framework.TestCase;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPublicationService;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.VersionInfo;
+import org.jahia.services.content.*;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
 
@@ -195,7 +192,9 @@ public class VersioningTest extends TestCase {
 
     private void validateVersionedNode(int index, VersionInfo curVersionInfo, String versionName, JCRNodeWrapper versionNode) throws RepositoryException {
         assertNotNull("Version node is null !!", versionNode);
-        String versionTitle = versionNode.getPropertyAsString("jcr:title");
+        JCRPropertyWrapper property = versionNode.getProperty("jcr:title");
+        assertNotNull("Title property should not be null on versioned node",property);
+        String versionTitle = property.getString();
         String title = "title" + index;
         Calendar checkinCalendar = curVersionInfo.getCheckinDate();
         Date checkinDate = null;
@@ -211,7 +210,6 @@ public class VersioningTest extends TestCase {
         // let's check the mixin types
         assertTrue("Versioned node should be viewed as a mixin node type jmix:basemetadata", versionNode.isNodeType("jmix:basemetadata"));
         assertTrue("Versioned node should be viewed as a mixin node type jmix:nodenameInfo", versionNode.isNodeType("jmix:nodenameInfo"));
-        assertTrue("Versioned node should be viewed as a mixin node type jmix:renderable", versionNode.isNodeType("jmix:renderable"));
 
         // getNode check
         assertEquals("Versioned node getNode() returns invalid node name", "home_subsubpage1", versionNode.getNode("home_subsubpage1").getName());

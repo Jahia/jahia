@@ -632,7 +632,11 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 } else {
                     Resource resource;
 
-                    resource = urlResolver.getResource(getVersionDate(req));
+                    Date date = getVersionDate(req);
+                    if(date!=null) {
+                        jcrSessionFactory.setVersionDate(date);
+                    }
+                    resource = urlResolver.getResource(date);
                     renderContext.setMainResource(resource);
                     JCRSiteNode site = resource.getNode().resolveSite();
 

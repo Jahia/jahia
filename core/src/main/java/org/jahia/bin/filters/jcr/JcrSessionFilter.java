@@ -89,6 +89,7 @@ public class JcrSessionFilter implements Filter {
             if (Jahia.isInitiated()) {
                 sessionFactory.setCurrentUser(null);
                 sessionFactory.setCurrentLocale(null);
+                sessionFactory.setVersionDate(null);
                 sessionFactory.closeAllSessions();
             }
         }

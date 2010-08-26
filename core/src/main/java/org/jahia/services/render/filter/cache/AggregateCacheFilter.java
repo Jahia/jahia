@@ -82,11 +82,6 @@ public class AggregateCacheFilter extends AbstractFilter {
 
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
-        final Script script = (Script) renderContext.getRequest().getAttribute("script");
-        chain.pushAttribute(renderContext.getRequest(), "cache.perUser", Boolean.valueOf(
-                script.getTemplate().getProperties().getProperty("cache.perUser", "false")));
-        chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.valueOf(
-                script.getTemplate().getProperties().getProperty("cache.mainResource", "false")));
         boolean debugEnabled = logger.isDebugEnabled();
         boolean displayCacheInfo = Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
         Set<String> servedFromCache = (Set<String>) renderContext.getRequest().getAttribute("servedFromCache");
@@ -94,13 +89,19 @@ public class AggregateCacheFilter extends AbstractFilter {
             servedFromCache = new HashSet<String>();
             renderContext.getRequest().setAttribute("servedFromCache", servedFromCache);
         }
+        final Script script = (Script) renderContext.getRequest().getAttribute("script");
+        if (script != null) {
+            chain.pushAttribute(renderContext.getRequest(), "cache.perUser", Boolean.valueOf(
+                    script.getTemplate().getProperties().getProperty("cache.perUser", "false")));
+            chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.valueOf(
+                    script.getTemplate().getProperties().getProperty("cache.mainResource", "false")));
 
-        if (Boolean.valueOf(script.getTemplate().getProperties().getProperty("cache.additional.key.useMainResourcePath",
-                                                                             "false"))) {
-            resource.getModuleParams().put("module.cache.additional.key",
-                                           renderContext.getMainResource().getNode().getPath());
+            if (Boolean.valueOf(script.getTemplate().getProperties().getProperty(
+                    "cache.additional.key.useMainResourcePath", "false"))) {
+                resource.getModuleParams().put("module.cache.additional.key",
+                                               renderContext.getMainResource().getNode().getPath());
+            }
         }
-
         String key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
 
         if (debugEnabled) {
@@ -144,10 +145,12 @@ public class AggregateCacheFilter extends AbstractFilter {
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception {
         final Script script = (Script) renderContext.getRequest().getAttribute("script");
-        chain.pushAttribute(renderContext.getRequest(), "cache.perUser", Boolean.valueOf(
-                script.getTemplate().getProperties().getProperty("cache.perUser", "false")));
-        chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.valueOf(
-                script.getTemplate().getProperties().getProperty("cache.mainResource", "false")));
+        if (script != null) {
+            chain.pushAttribute(renderContext.getRequest(), "cache.perUser", Boolean.valueOf(
+                    script.getTemplate().getProperties().getProperty("cache.perUser", "false")));
+            chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.valueOf(
+                    script.getTemplate().getProperties().getProperty("cache.mainResource", "false")));
+        }
         resource.getDependencies().add(resource.getNode());
         String key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
         Set<String> servedFromCache = (Set<String>) renderContext.getRequest().getAttribute("servedFromCache");
@@ -165,8 +168,8 @@ public class AggregateCacheFilter extends AbstractFilter {
         }
         if (cacheable) {
             String cacheAttribute = (String) renderContext.getRequest().getAttribute("expiration");
-            Long expiration = cacheAttribute != null ? Long.valueOf(cacheAttribute) : Long.valueOf(
-                    script.getTemplate().getProperties().getProperty("cache.expiration", "-1"));
+            Long expiration = cacheAttribute != null ? Long.valueOf(cacheAttribute) : Long.valueOf(script!=null?
+                    script.getTemplate().getProperties().getProperty("cache.expiration", "-1"):"-1");
             Set<JCRNodeWrapper> depNodeWrappers = resource.getDependencies();
             for (JCRNodeWrapper nodeWrapper : depNodeWrappers) {
                 String path = nodeWrapper.getPath();

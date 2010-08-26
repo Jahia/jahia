@@ -32,6 +32,7 @@
 
 package org.jahia.services.content;
 
+import com.ibm.icu.text.UnicodeSet;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.jahia.jaas.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
@@ -71,6 +72,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     private ServletContext servletContext;
     private ThreadLocal<JahiaUser> currentUser = new ThreadLocal<JahiaUser>();
     private ThreadLocal<Locale> currentLocale = new ThreadLocal<Locale>();
+    private ThreadLocal<Date> currentVersionDate = new ThreadLocal<Date>();
 
 
     private JCRSessionFactory() {
@@ -261,7 +263,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
                     user = userService.lookupUser(jahiaPrincipal.getName());
                 }
             }
-            return new JCRSessionWrapper(user, credentials, jahiaPrincipal.isSystem(), workspace, locale, this, fallbackLocale);
+            return new JCRSessionWrapper(user, credentials, jahiaPrincipal.isSystem(), workspace, locale, this, fallbackLocale,currentVersionDate.get());
         }
         throw new LoginException("Can't login");
     }
@@ -401,5 +403,9 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
 
     public void setCurrentLocale(Locale locale) {
         currentLocale.set(locale);
+    }
+
+    public void setVersionDate(Date versionDate) {
+        currentVersionDate.set(versionDate);
     }
 }

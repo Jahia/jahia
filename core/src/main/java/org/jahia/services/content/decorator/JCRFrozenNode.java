@@ -83,11 +83,11 @@ public class JCRFrozenNode extends JCRNodeDecorator {
         try {
             String path = node.getProperty("j:fullpath").getValue().getString();
             if (path.startsWith("/sites/")) {
-                return (site = (JCRSiteNode) getSession().getNode(path.substring(0, path.indexOf('/',7))));
+                return (site = new JCRSiteNode(getSession().getNode(path.substring(0, path.indexOf('/',7)))));
             }
 
             if (path.startsWith("/templateSets/")) {
-                return (site = (JCRSiteNode) getSession().getNode(path.substring(0, path.indexOf('/',14))));
+                return (site = new JCRSiteNode(getSession().getNode(path.substring(0, path.indexOf('/',14)))));
             }
         } catch (ItemNotFoundException e) {
         }

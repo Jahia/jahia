@@ -32,10 +32,12 @@
 
 package org.jahia.services.content.decorator;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ChildrenCollectorFilter;
 import org.jahia.api.Constants;
 import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 
 import javax.jcr.*;
@@ -84,7 +86,7 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
                         childEntries.add(new JCRFrozenNodeAsRegular((JCRNodeWrapper)closestVersion.getFrozenNode(), versionDate));
                     }
                 } else if (child.isNodeType(Constants.NT_FROZENNODE)) {
-                    childEntries.add(new JCRFrozenNodeAsRegular((JCRNodeWrapper) child, versionDate));
+                    childEntries.add(getSession().getNodeByUUID(child.getProperty(Constants.JCR_FROZENUUID).getString()));
                 } else {
                     // skip
                 }
@@ -180,6 +182,14 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
         if (parentAlreadyResolved) {
             return resolvedParentNode;
         }
+        JCRPropertyWrapper property = getProperty("j:fullpath");
+        if(property!=null) {
+            String path = StringUtils.substringBeforeLast(property.getString(), "/");
+            if(!"".equals(path))
+            return getSession().getNode(path);
+        }
+        return null;
+        /*
         JCRNodeWrapper parentNode = super.getParent();
 
         if (parentNode.isNodeType(Constants.NT_FROZENNODE)) {
@@ -201,7 +211,7 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
             // this shouldn't happen, EVER !
             logger.error("Integrity error, found frozen node with a parent that is not a frozen node nor a version node ! Ignoring it !");
             return null;
-        }
+        } */
     }
 
     private JCRNodeWrapper findRegularParentNode() throws RepositoryException {
@@ -259,28 +269,15 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
     public String getName() {
 
         try {
-            JCRNodeWrapper parentNode = super.getParent();
-            if (parentNode.isNodeType(Constants.NT_FROZENNODE)) {
-                return super.getName();
-            } else if (parentNode.isNodeType(Constants.NT_VERSION)) {
-                JCRNodeWrapper closestVersionedChildNode = findClosestParentVersionedChildNode((Version)parentNode);
-                if (closestVersionedChildNode != null) {
-                    return closestVersionedChildNode.getName();
-                } else {
-                    String frozenUUID = getProperty(Constants.JCR_FROZENUUID).getString();
-                    JCRNodeWrapper regularNode = getSession().getNodeByUUID(frozenUUID);
-                    if (regularNode != null) {
-                        return regularNode.getName();
-                    }
-                }
-                return null;
-            } else {
-                return null;
+            JCRPropertyWrapper property = getProperty("j:fullpath");
+            if(property!=null) {
+                String name = StringUtils.substringAfterLast(property.getString(), "/");
+                return name;
             }
-        } catch (RepositoryException re) {
-            logger.error("Error retrieving node name for versioned frozen node ", re);
-            return null;
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
         }
+        return null;
     }
 
     @Override
@@ -305,9 +302,22 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
     }
 
     @Override
-    public JCRPropertyWrapper getProperty(String
-        path) throws PathNotFoundException, RepositoryException {
-        return super.getProperty(path);
+    public JCRPropertyWrapper getProperty(String name) throws PathNotFoundException, RepositoryException {
+        final Locale locale = getSession().getLocale();
+        ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
+        if (locale != null) {
+            if (epd != null && epd.isInternationalized()) {
+                try {
+                    final Node localizedNode = getI18N(locale);
+                    return new JCRPropertyWrapperImpl(this, localizedNode.getProperty(name),
+                            getSession(), getProvider(), getApplicablePropertyDefinition(name),
+                            name);
+                } catch (ItemNotFoundException e) {
+                    return super.getProperty(name);
+                }
+            }
+        }
+        return super.getProperty(name);
     }
 
     @Override
@@ -385,5 +395,21 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
             logger.error(e.getMessage(), e);
         }
         return currentPath;
+    }
+
+    @Override
+    public Node getI18N(Locale locale) throws RepositoryException {
+        Node node1 = super.getI18N(locale);
+        if(node1.hasProperty("jcr:childVersionHistory")) {
+            JCRVersionHistory versionHistory = (JCRVersionHistory) getSession().getNodeByUUID(node1.getProperty("jcr:childVersionHistory").getString(),
+                                                             true, versionDate);
+            Version v = JCRVersionService.findClosestVersion(versionHistory, versionDate);
+            if (v == null) {
+                return null;
+            }
+            Node frozen = v.getNode(Constants.JCR_FROZENNODE);
+            node1 = frozen;
+        }
+        return node1;
     }
 }

@@ -62,10 +62,12 @@ public class CacheFilter extends AbstractFilter {
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         if (!(resource.getNode() instanceof JCRFrozenNodeAsRegular)) {
             final Script script = (Script) renderContext.getRequest().getAttribute("script");
-            chain.pushAttribute(renderContext.getRequest(), "cache.perUser",
-                    Boolean.valueOf(script.getTemplate().getProperties().getProperty("cache.perUser", "false")));
-            chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.valueOf(
-                script.getTemplate().getProperties().getProperty("cache.mainResource", "false")));
+            if (script != null) {
+                chain.pushAttribute(renderContext.getRequest(), "cache.perUser", Boolean.valueOf(
+                        script.getTemplate().getProperties().getProperty("cache.perUser", "false")));
+                chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.valueOf(
+                        script.getTemplate().getProperties().getProperty("cache.mainResource", "false")));
+            }
             boolean debugEnabled = logger.isDebugEnabled();
             boolean displayCacheInfo = Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
             String key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
@@ -103,10 +105,12 @@ public class CacheFilter extends AbstractFilter {
             throws Exception {
         if (!(resource.getNode() instanceof JCRFrozenNodeAsRegular)) {
             final Script script = (Script) renderContext.getRequest().getAttribute("script");
-            chain.pushAttribute(renderContext.getRequest(), "cache.perUser",
-                    Boolean.valueOf(script.getTemplate().getProperties().getProperty("cache.perUser", "false")));
-            chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.valueOf(
-                script.getTemplate().getProperties().getProperty("cache.mainResource", "false")));
+            if (script!=null) {
+                chain.pushAttribute(renderContext.getRequest(), "cache.perUser",
+                        Boolean.valueOf(script.getTemplate().getProperties().getProperty("cache.perUser", "false")));
+                chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.valueOf(
+                    script.getTemplate().getProperties().getProperty("cache.mainResource", "false")));
+            }
             Map<String, Map<String, Integer>> templatesCacheExpiration = renderContext.getTemplatesCacheExpiration();
             boolean debugEnabled = logger.isDebugEnabled();
             boolean displayCacheInfo = Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
@@ -123,7 +127,7 @@ public class CacheFilter extends AbstractFilter {
 
             String cacheAttribute = (String) renderContext.getRequest().getAttribute("expiration");
             Long expiration = cacheAttribute != null ? Long.valueOf(cacheAttribute) :
-                    Long.valueOf(script.getTemplate().getProperties().getProperty("cache.expiration", "-1"));
+                    Long.valueOf(script!=null?script.getTemplate().getProperties().getProperty("cache.expiration", "-1"):"-1");
             Set<JCRNodeWrapper> depNodeWrappers = resource.getDependencies();
             for (JCRNodeWrapper nodeWrapper : depNodeWrappers) {
                 Long lowestExpiration = 0L;

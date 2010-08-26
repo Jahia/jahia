@@ -180,7 +180,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                             .getAttribute("areaNodeTypesRestriction" + (currentLevel - 1), PageContext.REQUEST_SCOPE);
                 }
                 try {
-                    if (this instanceof AreaTag && constrainedNodeTypes != null && !"".equals(constrainedNodeTypes.trim())) {
+                    if (constrainedNodeTypes != null && !"".equals(constrainedNodeTypes.trim())) {
                         StringTokenizer st = new StringTokenizer(constrainedNodeTypes, " ");
                         boolean found = false;
                         Node displayedNode = node;
@@ -245,11 +245,6 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
                         printModuleEnd();
                     } else {
-                        try {
-                            logger.info( "node : " + resource.getNode().getPath() + " - " + RenderService.getInstance().resolveScript(resource, renderContext).getTemplate().getInfo());
-                        } catch (TemplateNotFoundException e) {
-                            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                        }
                         render(renderContext, resource);
                     }
                 } catch (RepositoryException e) {

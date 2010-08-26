@@ -52,7 +52,7 @@
             <div class="clear"></div>
             <span class="forum-corners-bottom"><span></span></span>
         </div>
-        <template:module node="${currentNode}" template="newTopicForm"/>
+        <template:include template="newTopicForm"/>
         <div class="forum-actions">
             <div class="forum-pagination">
                 ${functions:length(currentNode.nodes)} topics

@@ -82,6 +82,8 @@ public abstract class EditEngineTabItem extends AsyncTabItem {
         for (String tab : tabsConfig) {
             if (tab.equals("info")) {
                 tabs.add(new InfoTabItem(nodeHolder));
+            } else if (tab.equals("listOrderingContent")) {
+                tabs.add(new ListOrderingContentTabItem(nodeHolder));
             } else if (tab.equals("content")) {
                 tabs.add(new ContentTabItem(nodeHolder));
             } else if (tab.equals("template")) {

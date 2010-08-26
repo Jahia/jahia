@@ -60,13 +60,9 @@ public class ListOrderingContentTabItem extends ContentTabItem {
     private static final String JMIX_ORDERED_LIST = "jmix:orderedList";
 
 
-    public ListOrderingContentTabItem(AbstractContentEngine engine) {
+    public ListOrderingContentTabItem(NodeHolder engine) {
         super(engine);
         setTitle(Messages.get("label.engineTab.contentList", "Content"));
-    }
-
-    public ListOrderingContentTabItem(AbstractContentEngine engine, boolean multilangue) {
-        super(engine, multilangue);
     }
 
     @Override

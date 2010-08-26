@@ -68,7 +68,6 @@
                             <property name="titleKey" value="label.exportWar"/>
                             <property name="icon" value="templateExport"/>
                         </bean>
-                        <ref bean="Toolbar.Item.TemplateExport"/>
                         <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.ItemsGroup.Managers"/>
                         <ref bean="Toolbar.Item.Separator"/>

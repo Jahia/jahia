@@ -692,4 +692,39 @@ div.addArticle{
 #bodywrapper .formPreferences  .fp_button {
 	margin-left: 31%
 }
+/******************************************************************************
+*  Form Post Create and edtit
+******************************************************************************/
+#bodywrapper #formPost {
+	margin: 0;
+	padding:0;
+    clear:both;
+}
+#bodywrapper #formPost p{
+	margin:0;
+	padding:0;
+	margin-bottom:0.5em;
+}
+#bodywrapper #formPost p.field{
+	margin-bottom:0.5em;
+}
+#bodywrapper #formPost label{
+display:block
+}
+#bodywrapper #formPost textarea,
+#bodywrapper #formPost input{
+	width:98%
+}
+#bodywrapper #formPost input.button{
+	width:auto
+}
+#bodywrapper #formPost fieldset{
+	border:none;
+	margin:0;
+	padding:0;
+}
+#bodywrapper #formPost .post-tags {
+	margin:0 ;
+}
+
 

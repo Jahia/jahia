@@ -22,33 +22,38 @@
         });
     });
 </script>
-<div class="post">
-    <form method="post" action="${renderContext.mainResource.node.name}/" name="blogPost">
+    <form id="formPost" method="post" action="${renderContext.mainResource.node.name}/" name="blogPost">
         <input type="hidden" name="autoCheckin" value="true">
         <input type="hidden" name="nodeType" value="jnt:blogContent">
         <fmt:formatDate value="${created.time}" type="date" pattern="dd" var="userCreatedDay"/>
         <fmt:formatDate value="${created.time}" type="date" pattern="mm" var="userCreatedMonth"/>
-        <div class="post-date"><span>${userCreatedMonth}</span>${userCreatedDay}</div>
-        <h2 class="post-title"><input type="text" value="<c:out value='${title.string}'/>" name="jcr:title"/></h2>
         <p class="post-info"><fmt:message key="blog.label.by"/> <a href="${url.base}/users/${createdBy.string}.html">${createdBy.string}</a>
             - <fmt:formatDate value="${created.time}" type="date" dateStyle="medium"/>
         </p>
-        <ul class="post-tags">
-            <c:set var="tags" value=""/>
-            <jcr:nodeProperty node="${renderContext.mainResource.node}" name="j:tags" var="assignedTags"/>
-            <c:forEach items="${assignedTags}" var="tag" varStatus="status">
-                <li>${tag.node.name}</li>
-                <c:set var="tags" value="${tags}${tag.node.name}${!status.last ? ',' : ''}"/>
-            </c:forEach>
-        </ul>
-        <div class="post-content">
-                <p><textarea name="text" rows="10" cols="70" id="editContent">
-                    ${fn:escapeXml(text.string)}
-                </textarea>	</p>
-            <p>
+		<p>
+	    	<label>Title: </label>
+			<input type="text" value="<c:out value='${title.string}'/>" name="jcr:title"/>
+        </p>
 
-                <fmt:message key="blog.label.tag"/>:&nbsp;
+        <div class="post-content">
+        	<label>Post: </label>
+                <textarea name="text" rows="10" cols="70" id="editContent">
+                    ${fn:escapeXml(text.string)}
+                </textarea>
+            
+            <ul class="post-tags">
+                <c:set var="tags" value=""/>
+                <jcr:nodeProperty node="${renderContext.mainResource.node}" name="j:tags" var="assignedTags"/>
+                <c:forEach items="${assignedTags}" var="tag" varStatus="status">
+                    <li>${tag.node.name}</li>
+                    <c:set var="tags" value="${tags}${tag.node.name}${!status.last ? ',' : ''}"/>
+                </c:forEach>
+            </ul>
+			<p>
+                <label><fmt:message key="blog.label.tag"/>:&nbsp;</label>
                 <input type="text" name="j:newTag" value="${tags}"/>
+            </p>
+            <p>
                 <input
                         class="button"
                         type="button"
@@ -59,4 +64,3 @@
             </p>
         </div>
     </form>
-</div>

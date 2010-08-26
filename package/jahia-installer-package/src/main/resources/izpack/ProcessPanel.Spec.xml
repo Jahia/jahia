@@ -7,7 +7,7 @@
             <arg>-Dderby.system.home=${jahia.war.target.path}/WEB-INF/var/dbdata</arg>
             <arg>-jar</arg>
             <arg>$INSTALL_PATH/configurators.jar</arg>
-            <arg>$INSTALL_PATH/install.properties</arg>
+            <arg>$INSTALL_PATH/logs/install.properties</arg>
         </executefile>
     </job>
     <job name="Prepare WAR" condition="!cnd.pack.tomcat">
@@ -83,7 +83,7 @@
         <os family="windows" />
         <executefile name="cmd">
             <arg>/c</arg>
-            <arg>$INSTALL_PATH\bin\Readme.URL</arg>
+            <arg>$INSTALL_PATH\docs\Readme.URL</arg>
         </executefile>
     </job>
     <job name="Wait for Apache Tomcat startup" condition="cnd.launch.jahia">
@@ -98,7 +98,7 @@
         <os family="windows" />
         <executefile name="cmd">
             <arg>/c</arg>
-            <arg>$INSTALL_PATH\bin\StartJahia.URL</arg>
+            <arg>$INSTALL_PATH\OpenJahia.URL</arg>
         </executefile>
     </job>
 </processing>

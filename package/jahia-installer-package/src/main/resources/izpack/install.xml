@@ -12,7 +12,7 @@
         <requiresjdk>no</requiresjdk>
         <writeinstallationinformation>no</writeinstallationinformation>
         <run-privileged condition="izpack.windowsinstall.vista|izpack.windowsinstall.7"/>
-        <summarylogfilepath>$INSTALL_PATH/logs/summary.html</summarylogfilepath>
+        <summarylogfilepath>$INSTALL_PATH/logs/InstallSummary.html</summarylogfilepath>
     </info>
     <variables>
         <variable name="product.name" value="${product.name}"/>
@@ -171,6 +171,7 @@
         <res id="TargetPanel.dir.unix" src="unix-path.txt" />
         <res id="TargetPanel.dir.windows" src="windows-path.txt" />
         <res id="TargetPanel.dir.mac" src="mac-path.txt" />
+        <res id="TargetPanel.dir.macosx" src="mac-path.txt" />
         <res id="installer.langsel.img" src="../images/language-selection.png"/>
         <res id="Installer.image" src="../images/left-side.png"/>
         <res id="LicencePanel.licence" parse="no" src="../licenses/license.txt"/>
@@ -264,29 +265,29 @@
         <pack name="Jahia Core" id="core" preselected="yes" required="yes">
             <description/>
             <fileset dir="../licenses" targetdir="$INSTALL_PATH/licenses" />
-            <fileset dir="../links" targetdir="$INSTALL_PATH/bin">
-                <exclude name="StartJahia*"/>
+            <fileset dir="../links" targetdir="$INSTALL_PATH/docs">
+                <exclude name="OpenJahia*"/>
             </fileset>
             <fileset dir="../artifacts/jahia" targetdir="${jahia.war.target.path}">
                 <exclude name="WEB-INF/lib/juel-api-2.1.2.jar"/>
             </fileset>
-            <fileset dir="../images" targetdir="$INSTALL_PATH/bin" override="update">
+            <fileset dir="../images" targetdir="$INSTALL_PATH/icons" override="update">
                 <include name="jahia.ico"/>
                 <include name="jahia.png"/>
             </fileset>
             <singlefile override="update" src="../artifacts/jahia/WEB-INF/lib/juel-api-2.1.2.jar" target="${jahia.war.target.path}/juel-api-2.1.2.jar" condition="cnd.server.type.was"/>
             <fileset dir="../artifacts/jahia-jboss-config" targetdir="$INSTALL_PATH/jahia-jboss-config" condition="cnd.server.type.jboss"/>
-            <singlefile override="update" src="install.properties" target="$INSTALL_PATH/install.properties"/>
+            <singlefile override="update" src="install.properties" target="$INSTALL_PATH/logs/install.properties"/>
             <singlefile override="update" src="../dependency/configurators-${jahia.configurators.version}-standalone.jar" target="$INSTALL_PATH/configurators.jar"/>
             <singlefile override="update" src="../dependency/archivers-${jahia.archivers.version}-standalone.jar" target="$INSTALL_PATH/archivers.jar"/>
             <singlefile override="update" src="../artifacts/shared-libraries-all.zip" target="$INSTALL_PATH/shared-libraries.zip" condition="!cnd.skip.shared.libs"/>
-            <parsable targetfile="$INSTALL_PATH/install.properties" type="javaprop"/>
-            <parsable targetfile="$INSTALL_PATH/bin/Readme.URL"/>
+            <parsable targetfile="$INSTALL_PATH/logs/install.properties" type="javaprop"/>
+            <parsable targetfile="$INSTALL_PATH/docs/Readme.URL"/>
         </pack>
         <pack name="Apache Tomcat" id="tomcat" preselected="yes" required="no">
             <description/>
-            <fileset dir="../links" targetdir="$INSTALL_PATH/bin">
-                <include name="StartJahia*"/>
+            <fileset dir="../links" targetdir="$INSTALL_PATH">
+                <include name="OpenJahia*"/>
             </fileset>
             <fileset dir="../artifacts/apache-tomcat-${jahia.tomcat.version}" targetdir="$INSTALL_PATH/tomcat" />
             <file override="update" src="../artifacts/shared-libraries-all.zip" targetdir="$INSTALL_PATH/tomcat/lib" unpack="true"/>
@@ -297,7 +298,7 @@
             <fileset dir="../scripts" targetdir="$INSTALL_PATH" override="update" condition="!izpack.windowsinstall">
                 <include name="st*.sh"/>
             </fileset>
-            <fileset dir="../images" targetdir="$INSTALL_PATH/bin" override="update">
+            <fileset dir="../images" targetdir="$INSTALL_PATH/icons" override="update">
                 <include name="st*.ico"/>
                 <include name="st*.png"/>
             </fileset>
@@ -308,8 +309,8 @@
             <parsable targetfile="$INSTALL_PATH/stopJahia.sh" type="shell" os="unix"/>
             <parsable targetfile="$INSTALL_PATH/stopJahia.sh" type="shell" os="mac"/>
             
-            <parsable targetfile="$INSTALL_PATH/bin/StartJahia.URL"/>
-            <parsable targetfile="$INSTALL_PATH/bin/StartJahiaAdministration.URL"/>
+            <parsable targetfile="$INSTALL_PATH/OpenJahia.URL"/>
+            <parsable targetfile="$INSTALL_PATH/OpenJahiaAdministration.URL"/>
             
             <executable targetfile="$INSTALL_PATH/tomcat/bin/catalina.sh" />
             <executable targetfile="$INSTALL_PATH/tomcat/bin/digest.sh" />

@@ -107,7 +107,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                 args.add(resource.getLocale().toString());
             } else if ("path".equals(field)) {
                 StringBuilder s = new StringBuilder(resource.getNode().getPath());
-                if ((Boolean) renderContext.getRequest().getAttribute("cache.mainResource")) {
+                if (Boolean.TRUE.equals(renderContext.getRequest().getAttribute("cache.mainResource"))) {
                     s.append("_mr_");
                 }
                 args.add(s.toString());
@@ -133,7 +133,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
 
     private String appendAcls(Resource resource, RenderContext renderContext) {
         try {
-            if ((Boolean) renderContext.getRequest().getAttribute("cache.perUser")) {
+            if (Boolean.TRUE.equals(renderContext.getRequest().getAttribute("cache.perUser"))) {
                 return "_perUser_";
             }
             // Search for user specific acl

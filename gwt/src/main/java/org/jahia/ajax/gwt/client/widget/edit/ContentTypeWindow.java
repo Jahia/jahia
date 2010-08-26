@@ -78,13 +78,13 @@ public class ContentTypeWindow extends Window {
         this.parentNode = parent;
         setLayout(new FillLayout());
         setBodyBorder(false);
-        setSize(950, 750);
+        setSize(400, 650);
         setClosable(true);
         setResizable(true);
         setModal(true);
         setMaximizable(true);
         setIcon(StandardIconsProvider.STANDARD_ICONS.engineLogoJahia());
-        contentTypeTree = new ContentTypeTree(types, 695,500,25);
+        contentTypeTree = new ContentTypeTree(types, 400,500,25);
         TreeGrid treeGrid = contentTypeTree.getTreeGrid();
         treeGrid.sinkEvents(Event.ONDBLCLICK + Event.ONCLICK);
         treeGrid.addListener(Events.OnDoubleClick, new Listener<BaseEvent>() {

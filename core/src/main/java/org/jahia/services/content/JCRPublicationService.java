@@ -822,7 +822,7 @@ public class JCRPublicationService extends JahiaService {
         PublicationInfo tree = new PublicationInfo(uuid, stageNode.getPath());
         infos.add(tree);
         getPublicationInfo(stageNode, tree.getRoot(), languages, includesReferences, includesSubnodes, allsubtree,
-                sourceSession, destinationSession, new HashSet<String>(), infos);
+                sourceSession, destinationSession, new HashMap<String,PublicationInfo.PublicationNode>(), infos);
         return infos;
     }
 
@@ -845,10 +845,17 @@ public class JCRPublicationService extends JahiaService {
     private void getPublicationInfo(JCRNodeWrapper node, PublicationInfo.PublicationNode info, Set<String> languages,
                                     boolean includesReferences, boolean includesSubnodes, boolean allsubtree,
                                     final JCRSessionWrapper sourceSession, final JCRSessionWrapper destinationSession,
-                                    Set<String> uuids, List<PublicationInfo> infos) throws RepositoryException {
+                                    Map<String, PublicationInfo.PublicationNode> uuids, List<PublicationInfo> infos) throws RepositoryException {
+        final String uuid = node.getIdentifier();
+        if (uuids.containsKey(uuid)) {
+            info.setStatus(uuids.get(uuid).getStatus());
+            info.setCanPublish(uuids.get(uuid).isCanPublish());
+            return;
+        }
+
         JCRNodeWrapper publishedNode = null;
         try {
-            publishedNode = destinationSession.getNodeByUUID(node.getIdentifier());
+            publishedNode = destinationSession.getNodeByUUID(uuid);
         } catch (ItemNotFoundException e) {
             if (logger.isDebugEnabled()) {
                 logger.debug("No live node for staging node " + node.getPath());
@@ -894,6 +901,8 @@ public class JCRPublicationService extends JahiaService {
         // todo : performance problem on permission check
 //        info.setCanPublish(stageNode.hasPermission(JCRNodeWrapper.WRITE_LIVE));
         info.setCanPublish(true);
+
+        uuids.put(uuid, info);
 
         if (includesReferences || includesSubnodes) {
             if (includesReferences) {

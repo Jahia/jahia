@@ -805,7 +805,7 @@
             <list>
                 <value>jnt:virtualsitesFolder</value>
                 <value>jnt:virtualsite</value>
-                <value>jnt:page</value>
+                <value>jmix:navMenuItem</value>
             </list>
         </property>
         <property name="enableTextMenu" value="true"/>

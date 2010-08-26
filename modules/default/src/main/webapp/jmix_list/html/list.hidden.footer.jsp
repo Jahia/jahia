@@ -18,4 +18,5 @@
     <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.end"/>
 </c:if>
 <c:if test="${not omitFormatting}"></div></c:if>
+<c:if test="${! empty moduleMap.ulClass}"></ul> <c:set target="${moduleMap}" property="ulClass" value=""/></c:if>
 <template:removePager id="${currentNode.identifier}"/>

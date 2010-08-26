@@ -16,6 +16,8 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <c:if test="${not omitFormatting}"><div id="${currentNode.UUID}"></c:if>
+<c:if test="${! empty moduleMap.ulClass}"><ul class="${module.ulClass}"></c:if>
+
     <c:choose>
         <c:when test="${not empty subNodesTemplate}">
             <c:set target="${moduleMap}" property="subNodesTemplate" value="${subNodesTemplate}"/>

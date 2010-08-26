@@ -12,4 +12,5 @@
 <c:set target="${moduleMap}" property="editable" value="false" />
 <c:set target="${moduleMap}" property="listQuery" value="${listQuery}" />
 <c:set target="${moduleMap}" property="subNodesTemplate" value="blogList" />
+<c:set target="${moduleMap}" property="ulClass" value="topblog" />
 

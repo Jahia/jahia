@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+    This file is part of Jahia: An integrated WCM, DMS and Portal Solution
+    Copyright (C) 2002-2010 Jahia Limited. All rights reserved.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+    As a special exception to the terms and conditions of version 2.0 of
+    the GPL (or any later version), you may redistribute this Program in connection
+    with Free/Libre and Open Source Software ("FLOSS") applications as described
+    in Jahia's FLOSS exception. You should have received a copy of the text
+    describing the FLOSS exception, and it is also available here:
+    http://www.jahia.com/license"
+
+    Commercial and Supported Versions of the program
+    Alternatively, commercial and supported versions of the program may be used
+    in accordance with the terms contained in a separate written agreement
+    between you and Jahia Limited. If you are unsure which license is appropriate
+    for your use, please contact the sales department at sales@jahia.com.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>jahia-test-parent</artifactId>
+		<groupId>org.jahia.server</groupId>
+		<version>6.5-SNAPSHOT</version>
+	</parent>
+	<groupId>org.jahia.server</groupId>
+	<artifactId>jahia-test-service</artifactId>
+	<name>Jahia Test Service Library</name>
+	<packaging>jar</packaging>
+
+	<description>This is a library that is used by the Jahia Test project.</description>
+
+	<profiles>
+        <profile>
+            <id>excludeBeforeJDK16</id>
+            <activation>
+                <jdk>1.5</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/*CrawlingPageVisitorTest*.java</exclude>
+                                <exclude>**/*CrawlDBTestUtil*.java</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>crawler-deployment</id>
+            <activation>
+                <jdk>[1.6,)</jdk>
+            </activation>
+            <dependencies>
+                <!-- Nutch and its dependencies -->
+                <dependency>
+                    <groupId>org.apache.nutch</groupId>
+                    <artifactId>nutch</artifactId>
+                    <version>1.0</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.mahout.hadoop</groupId>
+                    <artifactId>hadoop-core</artifactId>
+                    <version>0.19.1</version>
+                </dependency> 
+                <!-- End of Nutch and its dependencies -->
+            </dependencies>
+        </profile>           
+		<profile>
+			<id>eclipse-integration</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-eclipse-plugin</artifactId>
+						<configuration>
+							<wtpversion>1.5</wtpversion>
+							<additionalProjectnatures>
+								<projectnature>org.eclipse.wst.common.project.facet.core.nature</projectnature>
+								<projectnature>org.eclipse.wst.common.modulecore.ModuleCoreNature</projectnature>
+								<projectnature>org.eclipse.jem.workbench.JavaEMFNature</projectnature>
+							</additionalProjectnatures>
+							<additionalBuildcommands>
+								<buildCommand>
+									<name>org.eclipse.wst.common.project.facet.core.builder</name>
+									<arguments></arguments>
+								</buildCommand>
+								<buildCommand>
+									<name>org.eclipse.wst.validation.validationbuilder</name>
+									<arguments></arguments>
+								</buildCommand>
+							</additionalBuildcommands>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.jahia.server</groupId>
+			<artifactId>jahia-impl</artifactId>
+			<version>${jahia.package.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jahia.server</groupId>
+			<artifactId>jahia-gwt</artifactId>
+			<version>${jahia.package.version}</version>
+			<scope>provided</scope>
+		</dependency>
+        <dependency>
+            <groupId>javax.portlet</groupId>
+            <artifactId>portlet-api</artifactId>
+            <version>2.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.server</groupId>
+            <artifactId>jahia-impl</artifactId>
+            <version>${jahia.package.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.modules</groupId>
+            <artifactId>remotepublish</artifactId>
+            <version>${jahia.package.version}</version>
+            <classifier>classes</classifier>
+            <scope>provided</scope>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.modules</groupId>
+            <artifactId>social-service</artifactId>
+            <version>${jahia.package.version}</version>
+            <scope>provided</scope>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>javax.portlet</groupId>
+            <artifactId>portlet-api</artifactId>
+            <version>2.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.jackrabbit</groupId>
+            <artifactId>jackrabbit-jcr-tests</artifactId>
+            <version>${jackrabbit.version}</version>
+        </dependency>        
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-all</artifactId>
+            <version>1.2</version>
+        </dependency>        
+        <dependency>
+            <groupId>org.jbpm.jbpm4</groupId>
+            <artifactId>jbpm-test-base</artifactId>
+            <version>4.3</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-jdk14</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>cglib</groupId>
+                    <artifactId>cglib-full</artifactId>
+                </exclusion>
+                <exclusion>
+                	<artifactId>jbpm-api</artifactId>
+                	<groupId>org.jbpm.jbpm4</groupId>
+                </exclusion>
+                <exclusion>
+                	<artifactId>hibernate-core</artifactId>
+                	<groupId>org.hibernate</groupId>
+                </exclusion>
+                <exclusion>
+                	<artifactId>log4j</artifactId>
+                	<groupId>log4j</groupId>
+                </exclusion>
+                <exclusion>
+                	<artifactId>cglib-nodep</artifactId>
+                	<groupId>cglib</groupId>
+                </exclusion>
+                <exclusion>
+                	<artifactId>jbpm-log</artifactId>
+                	<groupId>org.jbpm.jbpm4</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.1</version>
+        </dependency>
+        <dependency>
+            <groupId>junit-addons</groupId>
+            <artifactId>junit-addons</artifactId>
+            <version>1.4</version>
+            <exclusions>
+            	<exclusion>
+            		<artifactId>xmlParserAPIs</artifactId>
+            		<groupId>xerces</groupId>
+            	</exclusion>
+            	<exclusion>
+            		<artifactId>xercesImpl</artifactId>
+            		<groupId>xerces</groupId>
+            	</exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>xmlunit</groupId>
+            <artifactId>xmlunit</artifactId>
+            <version>1.3</version>
+        </dependency>
+	</dependencies>
+</project>

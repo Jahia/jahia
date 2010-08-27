@@ -73,7 +73,7 @@ public class EditActions {
     public static void switchMode(final Linker linker, final int mode) {
         if (linker.getMainNode() != null) {
             String path = linker.getMainNode().getPath();
-            String locale = JahiaGWTParameters.getUILanguage();
+            String locale = JahiaGWTParameters.getLanguage();
             JahiaContentManagementService.App.getInstance()
                     .getNodeURL(path, null, null, locale, mode, new BaseAsyncCallback<String>() {
                         public void onSuccess(String url) {

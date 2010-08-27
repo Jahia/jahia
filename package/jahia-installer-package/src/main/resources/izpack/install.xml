@@ -75,17 +75,6 @@
     </dynamicvariables>
     
     <conditions>
-        <!-- Only for Sun JDK
-        <condition type="variable" id="cnd.arch.32">
-            <name>SYSTEM_sun_arch_data_model</name>
-            <value>32</value>
-        </condition>
-        <condition type="variable" id="cnd.arch.64">
-            <name>SYSTEM_sun_arch_data_model</name>
-            <value>64</value>
-        </condition>
-        -->
-       
         <condition type="variable" id="cnd.installation.type.express">
             <name>installation.type</name>
             <value>express</value>
@@ -153,7 +142,7 @@
         </condition>
     </conditions>
     <guiprefs height="480" resizable="yes" width="640">
-        <modifier key="useFlags" value="yes"/>
+        <modifier key="useFlags" value="no"/>
         <modifier key="langDisplayType" value="native"/>
         <modifier key="headingPanelCounter" value="progressbar"/>
         <modifier key="headingPanelCounterPos" value="inNavigationPanel"/>
@@ -175,6 +164,8 @@
         <res id="installer.langsel.img" src="../images/language-selection.png"/>
         <res id="Installer.image" src="../images/left-side.png"/>
         <res id="LicencePanel.licence" parse="no" src="../licenses/license.txt"/>
+
+		<res id="AntActionsSpec.xml" src="AntActionsSpec.xml" />
 
         <res id="ProcessPanel.Spec.xml" src="ProcessPanel.Spec.xml"/>
 
@@ -216,11 +207,11 @@
         <panel classname="UserInputPanel" condition="cnd.db.mode.standalone" id="dbSettings"/>
         <panel classname="UserInputPanel" id="superUser"/>
         <panel classname="UserInputPanel" condition="cnd.installation.type.advanced" id="mailSettings"/>
-        <panel classname="ShortcutPanel" id="shortcutPanel"/>
         <panel classname="SummaryPanel"/>
         <panel classname="InstallPanel"/>
         <panel classname="UserInputPanel" id="afterInstall"/>
         <panel classname="ProcessPanel"/>
+        <panel classname="ShortcutPanel" id="shortcutPanel"/>
         <panel classname="SimpleFinishPanel"/>
     </panels>
     
@@ -247,10 +238,15 @@
     
     <listeners>
         <listener installer="SummaryLoggerInstallerListener"/>
+        <!--
         <listener installer="LateShortcutInstallListener">
             <os family="windows" />
             <os family="unix" />
         </listener>
+        -->
+        <!--
+	    <listener installer="AntActionInstallerListener"/>
+	    -->
     </listeners>
 
     <!-- 

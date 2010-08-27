@@ -5,9 +5,9 @@ drop table JR_FS_LIVE_FSENTRY cascade constraints;
 drop table JR_FSV_FSENTRY cascade constraints;
 
 # PersistenceManager
-trigger JR_DEFAULT_t1;
-trigger JR_LIVE_t1;
-trigger JR_V_t1;
+drop trigger JR_DEFAULT_t1;
+drop trigger JR_LIVE_t1;
+drop trigger JR_V_t1;
 drop sequence JR_DEFAULT_seq_names_id;
 drop sequence JR_LIVE_seq_names_id;
 drop sequence JR_V_seq_names_id;

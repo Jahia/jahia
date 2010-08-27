@@ -100,7 +100,7 @@
 </logic:present>
 
 <form name="mainForm" action='<%=JahiaAdministration.composeActionURL(request,response,"users","&sub=processCreate")%>'
-      method="post" onkeydown="javascript:handleKeyCode(event.keyCode);">
+      method="post" onkeydown="javascript:handleKeyCode(event.keyCode);" autocomplete="off">
 <!-- Create new user -->
 <input type="hidden" name="actionType" value="save"/>
 

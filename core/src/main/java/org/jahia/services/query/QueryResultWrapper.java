@@ -32,10 +32,6 @@
 
 package org.jahia.services.query;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,11 +51,7 @@ import org.apache.jackrabbit.commons.iterator.RowIteratorAdapter;
 import org.apache.jackrabbit.core.query.lucene.JahiaMultiColumnQueryResult;
 import org.apache.jackrabbit.value.StringValue;
 import org.apache.solr.client.solrj.response.FacetField;
-import org.jahia.api.Constants;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPropertyWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRStoreProvider;
+import org.jahia.services.content.*;
 
 /**
  * Implementation of the JCR {@link QueryResult}.
@@ -68,51 +60,6 @@ import org.jahia.services.content.JCRStoreProvider;
  */
 public class QueryResultWrapper implements QueryResult {
 
-    /**
-     * Invocation handler to decorate the {@link NodeIterator} instance of the query result in order to wrap each {@link Node} into
-     * {@link JCRNodeWrapper}.
-     * 
-     * @author Sergiy Shyrkov
-     */
-    private class NodeWrapperInvocationHandler implements InvocationHandler {
-        private final NodeIterator underlying;
-
-        NodeWrapperInvocationHandler(NodeIterator underlying) {
-            super();
-            this.underlying = underlying;
-        }
-
-        public Object invoke(Object proxy, Method method, Object[] args)
-                throws IllegalArgumentException, IllegalAccessException, Exception,
-                RepositoryException {
-            try {
-                Object result = method.invoke(underlying, args);
-                if (!(result instanceof JCRNodeWrapper)
-                        && ("nextNode".equals(method.getName()) || "next".equals(method.getName()))) {
-                    Node node = (Node) result;
-                    if (session.getLocale() != null && node.isNodeType(Constants.JAHIANT_TRANSLATION)) {
-                        try {
-                            node = node.getParent();
-                        } catch (ItemNotFoundException e) {
-                            // keep same node
-                        }
-                    }
-                    result = provider.getNodeWrapper(node, session);
-                }
-                return result;
-            } catch (InvocationTargetException e) {
-                // lets unwrap the exception
-                Throwable throwable = e.getCause();
-                if (throwable instanceof Exception) {
-                    Exception exception = (Exception)throwable;
-                    throw exception;
-                } else {
-                    Error error = (Error)throwable;
-                    throw error;
-                }
-            }
-        }
-    }
 
     private JCRStoreProvider provider;
     private QueryResult result;
@@ -243,8 +190,7 @@ public class QueryResultWrapper implements QueryResult {
 
     public NodeIterator getNodes() throws RepositoryException {
         final NodeIterator ni = result.getNodes();
-        return (NodeIterator) Proxy.newProxyInstance(ni.getClass().getClassLoader(),
-                new Class[] { NodeIterator.class }, new NodeWrapperInvocationHandler(ni));
+        return new NodeIteratorWrapper(ni, session, provider);
     }
 
     public List<FacetField> getFacetFields() {

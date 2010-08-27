@@ -737,6 +737,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 try {
                     JCRNodeWrapper child = provider.getNodeWrapper(node, buildSubnodePath(node.getName()), session);
                     list.add(child);
+                } catch (ItemNotFoundException e) {
+                    if (logger.isDebugEnabled())
+                        logger.debug(e.getMessage(), e);
                 } catch (PathNotFoundException e) {
                     if (logger.isDebugEnabled())
                         logger.debug(e.getMessage(), e);

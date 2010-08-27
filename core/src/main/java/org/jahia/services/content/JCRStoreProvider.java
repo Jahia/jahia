@@ -602,7 +602,7 @@ public class JCRStoreProvider {
         if (w.checkValidity()) {
             return service.decorate(w);
         } else {
-            throw new PathNotFoundException("This node doesn't exist in this language " + objectNode.getPath());
+            throw new ItemNotFoundException("This node doesn't exist in this language " + objectNode.getPath());
         }
     }
 
@@ -611,7 +611,7 @@ public class JCRStoreProvider {
         if (objectNode.isNew() || w.checkValidity()) {
             return service.decorate(w);
         } else {
-            throw new PathNotFoundException("This node doesn't exist in this language " + objectNode.getPath());
+            throw new ItemNotFoundException("This node doesn't exist in this language " + objectNode.getPath());
         }
     }
 

@@ -142,6 +142,7 @@ class PublicationStatusWindow extends Window {
             }
             cancel.setEnabled(false);
             if (gwtJahiaWorkflowDefinition == null) {
+                mask(Messages.get("label.executing","Executing..."), "x-mask-loading");
                 JahiaContentManagementService.App.getInstance()
                         .publish(uuids, allSubTree, false, false, null,null,
                                 new BaseAsyncCallback() {

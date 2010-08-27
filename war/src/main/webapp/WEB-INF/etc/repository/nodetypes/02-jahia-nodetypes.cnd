@@ -28,12 +28,16 @@
 //---------------------------------------------------------
 
 [jmix:categorized] mixin
- extends = jnt:content, jnt:page
+ extends = nt:hierarchyNode, jnt:content, jnt:page
  itemtype = classification
  - j:defaultCategory (reference, category[autoSelectParent=false]) facetable multiple
 
+[jmix:description] mixin
+ itemtype = metadata
+  - jcr:description (STRING) i18n itemtype = metadata
+
 [jmix:keywords] mixin
- extends = jnt:content, jnt:page
+ extends = nt:hierarchyNode, jnt:content, jnt:page
  itemtype = metadata
  - j:keywords (string) multiple
 
@@ -50,7 +54,7 @@
   - j:originWS (string) protected nofulltext hidden
 
 [jmix:tagged] mixin
- extends = jnt:content, jnt:page
+ extends = nt:hierarchyNode, jnt:content, jnt:page
  itemtype = classification
  - j:tags (weakreference, category[autoSelectParent=false]) facetable multiple
  - j:newTag (string) hidden indexed=no
@@ -58,7 +62,7 @@
 [jmix:versionInfo] mixin
 - j:checkinDate (date) hidden
 
-[jmix:basemetadata] > mix:referenceable, mix:created, jmix:lockable, mix:lastModified, jmix:lastPublished, jmix:i18n, jmix:originWS, mix:versionable, jmix:versionInfo mixin
+[jmix:basemetadata] > mix:referenceable, mix:created, jmix:lockable, mix:lastModified, jmix:lastPublished, jmix:i18n, jmix:originWS, mix:versionable, jmix:versionInfo, jmix:description mixin
 
 //---------------------------------------------------------
 // Multi language

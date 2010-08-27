@@ -151,7 +151,27 @@
                             </property>
                             <property name="contextMenu" value="true"/>
                         </bean>
-                        <ref bean="org.jahia.toolbar.manager.documents.shortcuts"/>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                            <property name="items">
+                                <list>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
+                                        <property name="layout" value="button"/>
+                                        <property name="items">
+                                            <list>
+                                                <ref bean="Toolbar.Item.NewFolder"/>
+                                                <ref bean="Toolbar.Item.upload"/>
+                                                <ref bean="Toolbar.Item.Download"/>
+                                                <ref bean="Toolbar.Item.FilePreview"/>
+                                                <ref bean="Toolbar.Item.Webfolder"/>
+                                            </list>
+                                        </property>
+                                    </bean>
+                                    <ref bean="Toolbar.ItemsGroup.Shortcuts.Modify"/>
+                                    <ref bean="Toolbar.ItemsGroup.Shortcuts.Copy"/>
+                                    <ref bean="Toolbar.ItemsGroup.Shortcuts.Refresh"/>
+                                </list>
+                            </property>
+                        </bean>
                     </list>
                 </property>
             </bean>
@@ -238,7 +258,27 @@
                                 </list>
                             </property>
                         </bean>
-                        <ref bean="org.jahia.toolbar.manager.portlets.shortcuts"/>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                            <property name="contextMenu" value="true"/>
+                            <property name="items">
+                                <list>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
+                                        <property name="layout" value="button"/>
+                                        <property name="items">
+                                            <list>
+                                                <ref bean="Toolbar.Item.NewPortletFolder"/>
+                                                <ref bean="Toolbar.Item.NewPortlet"/>
+                                                <ref bean="Toolbar.Item.NewRss"/>
+                                                <ref bean="Toolbar.Item.NewGadget"/>
+                                            </list>
+                                        </property>
+                                    </bean>
+                                    <ref bean="Toolbar.ItemsGroup.Shortcuts.Modify"/>
+                                    <ref bean="Toolbar.ItemsGroup.Shortcuts.Copy"/>
+                                    <ref bean="Toolbar.ItemsGroup.Shortcuts.Refresh"/>
+                                </list>
+                            </property>
+                        </bean>
                     </list>
                 </property>
             </bean>
@@ -312,7 +352,26 @@
                             </property>
                             <property name="contextMenu" value="true"/>
                         </bean>
-                        <ref bean="org.jahia.toolbar.manager.categories.shortcuts"/>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                            <property name="items">
+                                <list>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
+                                        <property name="layout" value="button"/>
+                                        <property name="items">
+                                            <list>
+                                                <ref bean="Toolbar.Item.NewCategory"/>
+                                                <ref bean="Toolbar.Item.Separator"/>
+                                                <ref bean="Toolbar.Item.Export"/>
+                                                <ref bean="Toolbar.Item.Import"/>
+                                            </list>
+                                        </property>
+                                    </bean>
+                                    <ref bean="Toolbar.ItemsGroup.Shortcuts.Modify"/>
+                                    <ref bean="Toolbar.ItemsGroup.Shortcuts.Copy"/>
+                                    <ref bean="Toolbar.ItemsGroup.Shortcuts.Refresh"/>
+                                </list>
+                            </property>
+                        </bean>
                     </list>
                 </property>
             </bean>
@@ -732,7 +791,32 @@
                             </property>
                             <property name="contextMenu" value="true"/>
                         </bean>
-                        <ref bean="org.jahia.toolbar.manager.content.shortcuts"/>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                            <property name="items">
+                                <list>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
+                                        <property name="layout" value="button"/>
+                                        <property name="items">
+                                            <list>
+                                                <ref bean="Toolbar.Item.NewFolder"/>
+                                                <ref bean="Toolbar.Item.NewContentList"/>
+                                                <ref bean="Toolbar.Item.NewContent"/>
+                                                <ref bean="Toolbar.Item.NewPage"/>
+                                                <ref bean="Toolbar.Item.NewPortlet"/>
+                                                <ref bean="Toolbar.Item.NewRss"/>
+                                                <ref bean="Toolbar.Item.NewGadget"/>
+                                                <ref bean="Toolbar.Item.upload"/>
+                                                <ref bean="Toolbar.Item.Download"/>
+                                                <ref bean="Toolbar.Item.Webfolder"/>
+                                            </list>
+                                        </property>
+                                    </bean>
+                                    <ref bean="Toolbar.ItemsGroup.Shortcuts.Modify"/>
+                                    <ref bean="Toolbar.ItemsGroup.Shortcuts.Copy"/>
+                                    <ref bean="Toolbar.ItemsGroup.Shortcuts.Refresh"/>
+                                </list>
+                            </property>
+                        </bean>
                     </list>
                 </property>
             </bean>
@@ -1422,9 +1506,25 @@
         <property name="toolbarSet">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
                 <property name="toolbars">
-                    <list>
-                        <ref bean="org.jahia.toolbar.manager.categories.shortcuts"/>
-                    </list>
+                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                        <property name="items">
+                            <list>
+                                <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
+                                    <property name="layout" value="button"/>
+                                    <property name="items">
+                                        <list>
+                                            <ref bean="Toolbar.Item.NewCategory"/>
+                                            <ref bean="Toolbar.Item.Separator"/>
+                                        </list>
+                                    </property>
+                                </bean>
+                                <ref bean="Toolbar.ItemsGroup.Shortcuts.Modify"/>
+                                <ref bean="Toolbar.ItemsGroup.Shortcuts.Copy"/>
+                                <ref bean="Toolbar.ItemsGroup.Shortcuts.Refresh"/>
+                            </list>
+                        </property>
+                        <property name="contextMenu" value="true"/>
+                    </bean>
                 </property>
             </bean>
         </property>
@@ -1461,110 +1561,8 @@
     </bean>
 
 
-    <!-- Category Manager -->
-    <bean id="org.jahia.toolbar.manager.categories.shortcuts"
-          class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-        <property name="items">
-            <list>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-                    <property name="layout" value="button"/>
-                    <property name="items">
-                        <list>
-                            <ref bean="Toolbar.Item.NewCategory"/>
-                            <ref bean="Toolbar.Item.Separator"/>
-                            <ref bean="Toolbar.Item.Export"/>
-                            <ref bean="Toolbar.Item.Import"/>
-                        </list>
-                    </property>
-                </bean>
-                <ref bean="Toolbar.ItemsGroup.Shortcuts.Modify"/>
-                <ref bean="Toolbar.ItemsGroup.Shortcuts.Copy"/>
-                <ref bean="Toolbar.ItemsGroup.Shortcuts.Refresh"/>
-            </list>
-        </property>
-    </bean>
-    <!-- end of the Category Manager -->
-
-    <!-- Content Manager -->
-    <bean id="org.jahia.toolbar.manager.content.shortcuts" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-        <property name="items">
-            <list>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-                    <property name="layout" value="button"/>
-                    <property name="items">
-                        <list>
-                            <ref bean="Toolbar.Item.NewFolder"/>
-                            <ref bean="Toolbar.Item.NewContentList"/>
-                            <ref bean="Toolbar.Item.NewContent"/>
-                            <ref bean="Toolbar.Item.NewPage"/>
-                            <ref bean="Toolbar.Item.NewPortlet"/>
-                            <ref bean="Toolbar.Item.NewRss"/>
-                            <ref bean="Toolbar.Item.NewGadget"/>
-                            <ref bean="Toolbar.Item.upload"/>
-                            <ref bean="Toolbar.Item.Download"/>
-                            <ref bean="Toolbar.Item.Webfolder"/>
-                        </list>
-                    </property>
-                </bean>
-                <ref bean="Toolbar.ItemsGroup.Shortcuts.Modify"/>
-                <ref bean="Toolbar.ItemsGroup.Shortcuts.Copy"/>
-                <ref bean="Toolbar.ItemsGroup.Shortcuts.Refresh"/>
-            </list>
-        </property>
-    </bean>
-    <!-- end of the Content Manager -->
-
-    <!-- Document Manager -->
-
-    <bean id="org.jahia.toolbar.manager.documents.shortcuts"
-          class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-        <property name="items">
-            <list>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-                    <property name="layout" value="button"/>
-                    <property name="items">
-                        <list>
-                            <ref bean="Toolbar.Item.NewFolder"/>
-                            <ref bean="Toolbar.Item.upload"/>
-                            <ref bean="Toolbar.Item.Download"/>
-                            <ref bean="Toolbar.Item.FilePreview"/>
-                            <ref bean="Toolbar.Item.Webfolder"/>
-                        </list>
-                    </property>
-                </bean>
-                <ref bean="Toolbar.ItemsGroup.Shortcuts.Modify"/>
-                <ref bean="Toolbar.ItemsGroup.Shortcuts.Copy"/>
-                <ref bean="Toolbar.ItemsGroup.Shortcuts.Refresh"/>
-            </list>
-        </property>
-    </bean>
-    <!-- end of the Document Manager -->
-
-    <!-- portlet Manager -->
-    <bean id="org.jahia.toolbar.manager.portlets.shortcuts" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-        <property name="contextMenu" value="true"/>
-        <property name="items">
-            <list>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-                    <property name="layout" value="button"/>
-                    <property name="items">
-                        <list>
-                            <ref bean="Toolbar.Item.NewPortletFolder"/>
-                            <ref bean="Toolbar.Item.NewPortlet"/>
-                            <ref bean="Toolbar.Item.NewRss"/>
-                            <ref bean="Toolbar.Item.NewGadget"/>
-                        </list>
-                    </property>
-                </bean>
-                <ref bean="Toolbar.ItemsGroup.Shortcuts.Modify"/>
-                <ref bean="Toolbar.ItemsGroup.Shortcuts.Copy"/>
-                <ref bean="Toolbar.ItemsGroup.Shortcuts.Refresh"/>
-            </list>
-        </property>
-    </bean>
-    <!-- end of the portlet Manager -->
-
     <!-- roles -->
+
     <bean id="org.jahia.toolbar.manager.roles.menu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
         <property name="items">
             <list>

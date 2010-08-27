@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="pageHitService" class="org.jahia.modules.pagehit.PageHitService"
+          init-method="start" factory-method="getInstance">
+        <property name="sessionFactoryBean" ref="sessionFactory"/>
+        <property name="mappingClass" value="org.jahia.modules.pagehit.PageHit"/>
+        <property name="from" value="seda:logMsgs?size=10000&amp;concurrentConsumers=5"/>
+    </bean>
+
+    <!--<bean id="recommender" class="org.jahia.modules.rating.mahout.Recommender">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="from" value="seda:logMsgs?size=10000&amp;concurrentConsumers=5"/>
+        &lt;!&ndash; Define when we need to refresh recommendations (here every 25 submissions of rating data) &ndash;&gt;
+        <property name="refreshRecommendationsEvery" value="25"/>
+    </bean>-->
+</beans>

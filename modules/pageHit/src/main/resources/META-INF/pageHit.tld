@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+        version="2.0">
+
+    <description>Jahia Page Hit modules recommender functions library</description>
+    <display-name>Jahia Page Hit Service</display-name>
+    <tlib-version>6.5</tlib-version>
+    <short-name>pageHits</short-name>
+    <uri>http://www.jahia.org/tags/pageHits</uri>
+    <function>
+        <description> </description>
+        <name>getNumberOfHits</name>
+        <function-class>org.jahia.modules.pagehit.PageHitFunctions</function-class>
+        <function-signature>long getNumberOFHits(org.jahia.services.content.JCRNodeWrapper)</function-signature>
+        <example>${pagehits:getNumberOfHits(renderContext.mainResource.node)}</example>
+    </function>
+</taglib>

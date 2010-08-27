@@ -48,6 +48,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.AccessControlException;
+import java.util.UUID;
 
 /**
  * Created by IntelliJ IDEA.
@@ -106,6 +107,12 @@ public class VFSSessionImpl implements Session {
     }
 
     public Node getNodeByUUID(String uuid) throws ItemNotFoundException, RepositoryException {
+        try {
+            UUID testUUID = UUID.fromString(uuid);
+            throw new ItemNotFoundException("This repository does not support UUID as identifiers");
+        } catch (IllegalArgumentException iae) {
+            // this is expected, we should not be using UUIDs
+        }
         FileObject fileObject = null;
         try {
             fileObject = repository.getFileByIdentifier(uuid);
@@ -114,13 +121,13 @@ public class VFSSessionImpl implements Session {
             }
             return new VFSNodeImpl(fileObject, this);
         } catch (FileSystemException fse) {
-            throw new RepositoryException(fse);
+            throw new ItemNotFoundException("File system exception while trying to retrieve " + uuid, fse);
         }
     }
 
-    public Item getItem(String s) throws PathNotFoundException, RepositoryException {
+    public Item getItem(String path) throws PathNotFoundException, RepositoryException {
         try {
-            FileObject object = repository.getFile(s);
+            FileObject object = repository.getFile(path);
             if (!object.exists()) {
                 /*
                 // if it's a property, let's try to find the file by removing the last part of the path.
@@ -145,15 +152,23 @@ public class VFSSessionImpl implements Session {
                     throw new PathNotFoundException(s);
                 }
                 */
-                throw new PathNotFoundException(s);
+                throw new PathNotFoundException(path);
             }
             return new VFSNodeImpl(object, this);
-        } catch (FileSystemException e) {
-            throw new RepositoryException(e);
+        } catch (FileSystemException fse) {
+            throw new PathNotFoundException("Couldn't retrieve path " + path + " because of file system exception", fse);
         }
     }
 
-    public boolean itemExists(String s) throws RepositoryException {
+    public boolean itemExists(String path) throws RepositoryException {
+        try {
+            FileObject object = repository.getFile(path);
+            if (object.exists()) {
+                return true;
+            }
+        } catch (FileSystemException fse) {
+            return false;
+        }
         return false;
     }
 

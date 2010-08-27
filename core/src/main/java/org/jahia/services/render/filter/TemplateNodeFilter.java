@@ -33,7 +33,7 @@
 package org.jahia.services.render.filter;
 
 import org.apache.log4j.Logger;
-import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.*;
 import org.jahia.services.render.*;
 
 import javax.jcr.ItemNotFoundException;
@@ -42,6 +42,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
+import java.util.List;
 
 /**
  * WrapperFilter
@@ -117,7 +118,6 @@ public class TemplateNodeFilter extends AbstractFilter {
             templateName = null;
         }
         JCRNodeWrapper current = node;
-
         Template template = null;
         try {
             if (current.isNodeType("jnt:derivedTemplate")) {
@@ -126,7 +126,10 @@ public class TemplateNodeFilter extends AbstractFilter {
 
             JCRNodeWrapper templateNode = null;
 
-            while (template == null) {
+            List<JCRItemWrapper> ancestors = current.getAncestors();
+            ancestors.add(current);
+            for (int i = ancestors.size() -1 ; i >= 0 && template == null; i--) {
+                current = (JCRNodeWrapper) ancestors.get(i);
                 if (current.hasProperty("j:templateNode")) {
                     templateNode = (JCRNodeWrapper) current.getProperty("j:templateNode").getNode();
                     template = addDerivedTemplates(resource, template, templateNode);
@@ -147,8 +150,8 @@ public class TemplateNodeFilter extends AbstractFilter {
                     templateNode = current;
                     break;
                 }
-                current = current.getParent();
             }
+
             templateNode = templateNode.getParent();
             while (!(templateNode.isNodeType("jnt:templatesFolder"))) {
                 template = new Template(templateNode.hasProperty("j:template") ? templateNode.getProperty("j:template").getString() :

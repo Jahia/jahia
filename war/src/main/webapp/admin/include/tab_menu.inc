@@ -47,7 +47,7 @@
             </div>
         </li>
         <% if (theSite != null) {
-            String siteName = theSite.getTitle();;
+            String siteName = theSite.getTitle().substring(0,theSite.getTitle().length() > 25?25:theSite.getTitle().length());
         %>
         <li class="dex-TabBarItem<% if (stretcherToOpen == 1) { %>-selected<% } %>">
             <div>

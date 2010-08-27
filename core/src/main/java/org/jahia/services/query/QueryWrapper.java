@@ -32,20 +32,12 @@
 
 package org.jahia.services.query;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import org.apache.commons.lang.StringUtils;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRStoreProvider;
 
-import javax.jcr.ItemExistsException;
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-import javax.jcr.UnsupportedRepositoryOperationException;
-import javax.jcr.Value;
+import javax.jcr.*;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.query.InvalidQueryException;
@@ -54,15 +46,11 @@ import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.qom.QueryObjectModel;
 import javax.jcr.version.VersionException;
-
-import org.apache.commons.lang.StringUtils;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRStoreProvider;
+import java.util.*;
 
 /**
  * An implementation of the JCR {@link Query} for multiple providers.
- * 
+ *
  * @author Thomas Draier
  */
 class QueryWrapper implements Query {
@@ -76,7 +64,7 @@ class QueryWrapper implements Query {
     private JCRSessionFactory service;
     private JCRSessionWrapper session;
 
-    public QueryWrapper(String statement, String language, JCRSessionWrapper session, JCRSessionFactory service) throws InvalidQueryException, RepositoryException  {
+    public QueryWrapper(String statement, String language, JCRSessionWrapper session, JCRSessionFactory service) throws InvalidQueryException, RepositoryException {
         this.statement = statement;
         this.language = language;
         this.vars = new HashMap<String, Value>();
@@ -97,15 +85,16 @@ class QueryWrapper implements Query {
 
         if (language.equals(Query.XPATH)) {
             if (!statement.startsWith("//")) {
-                JCRStoreProvider p = service.getProvider("/"+statement);
+                JCRStoreProvider p = service.getProvider("/" + statement);
                 providers = Collections.singletonList(p);
             }
-        } 
+        }
         for (JCRStoreProvider jcrStoreProvider : providers) {
             QueryManager qm = jcrStoreProvider.getQueryManager(session);
             if (qm != null) {
-                Query query = qm.createQuery(statement,language);
-                if (Query.JCR_SQL2.equals(language)) {
+                Query query = qm.createQuery(statement, language);
+                if (jcrStoreProvider.isDefault() &&
+                        Query.JCR_SQL2.equals(language)) {
                     query = QueryServiceImpl.getInstance().modifyAndOptimizeQuery(
                             (QueryObjectModel) query, qm.getQOMFactory(), session);
                 }
@@ -115,12 +104,16 @@ class QueryWrapper implements Query {
     }
 
     public QueryResult execute() throws RepositoryException {
-        List<QueryResultWrapper> results = new LinkedList<QueryResultWrapper>(); 
-        for (Map.Entry<JCRStoreProvider,Query> entry : queries.entrySet()) {
+        List<QueryResultWrapper> results = new LinkedList<QueryResultWrapper>();
+        for (Map.Entry<JCRStoreProvider, Query> entry : queries.entrySet()) {
             // should gather results
             final Query query = entry.getValue();
-            if (limit > 0) {query.setLimit(limit);}
-            if (offset > 0) {query.setOffset(offset);}
+            if (limit > 0) {
+                query.setLimit(limit);
+            }
+            if (offset > 0) {
+                query.setOffset(offset);
+            }
             QueryResultWrapper subResults = new QueryResultWrapper(query.execute(), entry.getKey(), session);
             results.add(subResults);
         }
@@ -143,8 +136,8 @@ class QueryWrapper implements Query {
     }
 
     public Node storeAsNode(String s) throws ItemExistsException, PathNotFoundException, VersionException, ConstraintViolationException, LockException, UnsupportedRepositoryOperationException, RepositoryException {
-        String path = StringUtils.substringBeforeLast(s,"/");
-        String name = StringUtils.substringAfterLast(s,"/");
+        String path = StringUtils.substringBeforeLast(s, "/");
+        String name = StringUtils.substringAfterLast(s, "/");
         Node n = (Node) session.getItem(path);
         node = n.addNode(name, "jnt:query");
 

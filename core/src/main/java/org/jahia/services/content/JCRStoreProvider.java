@@ -32,21 +32,21 @@
 
 package org.jahia.services.content;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.apache.jackrabbit.rmi.server.ServerAdapterFactory;
 import org.apache.jackrabbit.util.ISO9075;
-import org.apache.commons.io.IOUtils;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.services.content.decorator.JCRMountPointNode;
+import org.jahia.services.content.impl.jackrabbit.JackrabbitStoreProvider;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.usermanager.jcr.JCRUser;
-import org.jahia.services.content.decorator.JCRMountPointNode;
-import org.jahia.services.content.impl.jackrabbit.JackrabbitStoreProvider;
-import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.settings.SettingsBean;
 
 import javax.jcr.*;
@@ -56,17 +56,23 @@ import javax.jcr.observation.ObservationManager;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
-import javax.naming.*;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.naming.Reference;
+import javax.naming.StringRefAddr;
 import javax.naming.spi.ObjectFactory;
 import javax.servlet.ServletRequest;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.File;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Set;
 
 /**
  * A store provider to handle different backend stores within a site. There are multiple
@@ -113,7 +119,7 @@ public class JCRStoreProvider {
     private JCRSessionFactory sessionFactory;
     protected Repository repo = null;
 
-    private boolean isMainStorage = false;
+    private boolean mainStorage = false;
     private boolean isDynamicallyMounted = false;
     private boolean initialized = false;
 
@@ -778,11 +784,11 @@ public class JCRStoreProvider {
     }
 
     public boolean isMainStorage() {
-        return isMainStorage;
+        return mainStorage;
     }
 
     public void setMainStorage(boolean mainStorage) {
-        isMainStorage = mainStorage;
+        this.mainStorage = mainStorage;
     }
 
     public boolean isDynamicallyMounted() {
@@ -795,6 +801,10 @@ public class JCRStoreProvider {
 
     public boolean isExportable() {
         return true;
+    }
+
+    public boolean isDefault() {
+        return ("/".equals(mountPoint));
     }
 
     private void dump(Node n) throws RepositoryException {

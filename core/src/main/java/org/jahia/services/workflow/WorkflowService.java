@@ -911,4 +911,8 @@ public class WorkflowService {
     public Set<String> getTypesOfWorkflow() {
         return workflowTypes.keySet();
     }
+
+    public void deleteProcess(String processId, String provider) {
+        providers.get(provider).deleteProcess(processId);
+    }
 }

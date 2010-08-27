@@ -551,7 +551,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
                 }
             }
             historyItems.add(new HistoryWorkflow(jbpmHistoryItem.getProcessInstanceId(),
-                    processDefKey != null ? new WorkflowDefinition(def.getName(), def.getKey(), this.key) : null,
+                    def != null ? new WorkflowDefinition(def.getName(), def.getKey(), this.key) : null,
                     jbpmHistoryItem.getKey(), getKey(), jbpmHistoryItem.getStartTime(), jbpmHistoryItem.getEndTime(),
                     jbpmHistoryItem.getEndActivityName()));
 
@@ -590,5 +590,9 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         }
 
         return historyItems;
+    }
+
+    public void deleteProcess(String processId) {
+        executionService.deleteProcessInstance(processId);
     }
 }

@@ -98,4 +98,6 @@ public interface WorkflowProvider {
      * @return a list of history records for workflow tasks
      */
     List<HistoryWorkflowTask> getHistoryWorkflowTasks(String processId);
+
+    void deleteProcess(String processId);
 }

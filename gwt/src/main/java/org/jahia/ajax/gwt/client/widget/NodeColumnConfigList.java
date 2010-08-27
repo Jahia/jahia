@@ -198,9 +198,10 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
             ColumnConfig col = new ColumnConfig(column.getKey(), column.getTitle(), i);
             col.setResizable(column.isResizable());
             col.setSortable(column.isSortable());
-
+            col.setMenuDisabled(true);
             if ("icon".equals(column.getKey())) {
                 col.setAlignment(Style.HorizontalAlignment.CENTER);
+                col.setSortable(false);
                 col.setRenderer(ICON_RENDERER);
             } else if ("locked".equals(column.getKey())) {
                 col.setAlignment(Style.HorizontalAlignment.CENTER);

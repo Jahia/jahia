@@ -9,10 +9,10 @@
 
 [jnt:blogEntryFormEdition] > jnt:content, jmix:blogContent, mix:title
 
-[jnt:topBlog] > jnt:content, jmix:blogContent, jmix:list, jmix:pager
+[jnt:topBlog] > jnt:content, jmix:blogContent, jmix:list, jmix:pager, mix:title
 
-[jnt:topBlogContent] > jnt:content, jmix:blogContent, jmix:list, jmix:pager
+[jnt:topBlogContent] > jnt:content, jmix:blogContent, jmix:list, jmix:pager, mix:title
 
-[jnt:topBlogComment] > jnt:content, jmix:blogContent, jmix:list, jmix:pager
+[jnt:topBlogComment] > jnt:content, jmix:blogContent, jmix:list, jmix:pager, mix:title
 
 [jnt:addBlogLink] > jnt:content,jmix:blogContent

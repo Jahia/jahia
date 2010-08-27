@@ -1,31 +1,31 @@
-#bodywrapper #navigationN1-2 ul {
+#bodywrapper .navigationN1-2 ul {
 margin:0;
 padding:0;
 font-size:0.85em;
 line-height:1.4em
 }
-#bodywrapper #navigationN1-2 li {
+#bodywrapper .navigationN1-2 li {
 list-style:none;
 float:left;
 padding-right:1em;
 border-right:1px dotted #333
 }
-#bodywrapper #navigationN1-2 li.lastInLevel {
+#bodywrapper .navigationN1-2 li.lastInLevel {
 border-right:none
 }
-#bodywrapper #navigationN1-2 li a,
-#bodywrapper #navigationN1-2 li a:link,
-#bodywrapper #navigationN1-2 li a:visited
+#bodywrapper .navigationN1-2 li a,
+#bodywrapper .navigationN1-2 li a:link,
+#bodywrapper .navigationN1-2 li a:visited
 {
 	color:#333;
 	text-decoration:none;
 }
-#bodywrapper #navigationN1-2 li a:hover,
-#bodywrapper #navigationN1-2 li a:active {
+#bodywrapper .navigationN1-2 li a:hover,
+#bodywrapper .navigationN1-2 li a:active {
 	color:#333;
 	text-decoration:underline;
 }
-#bodywrapper #navigationN1-2 li.selected {
+#bodywrapper .navigationN1-2 li.selected {
 
 }
 

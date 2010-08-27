@@ -129,7 +129,7 @@ shortcuts
 	width:82px;
 	float:right;
 }
-#bodywrapper #navigation #shortcuts{
+#bodywrapper .navigation #shortcuts{
 	float:right;
 }
 #bodywrapper #shortcuts h3 {

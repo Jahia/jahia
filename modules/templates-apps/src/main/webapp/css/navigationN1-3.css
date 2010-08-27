@@ -1,17 +1,17 @@
-#bodywrapper #navigationN1-3 ul {
+#bodywrapper .navigationN1-3 ul {
 margin:0.5em 0;
 padding:0;
 }
-#bodywrapper #navigationN1-3 li {
+#bodywrapper .navigationN1-3 li {
 list-style:none;
 float:left;
 }
-#bodywrapper #navigationN1-3 li.lastInLevel {
+#bodywrapper .navigationN1-3 li.lastInLevel {
 border-right:none
 }
-#bodywrapper #navigationN1-3 li a,
-#bodywrapper #navigationN1-3 li a:link,
-#bodywrapper #navigationN1-3 li a:visited
+#bodywrapper .navigationN1-3 li a,
+#bodywrapper .navigationN1-3 li a:link,
+#bodywrapper .navigationN1-3 li a:visited
 {
 	color:#fff;
 	text-decoration:none;
@@ -28,18 +28,18 @@ border-right:none
 	-webkit-box-shadow: 0px 1px 2px #999;
 	box-shadow: 0px 1px 2px #999;
 }
-#bodywrapper #navigationN1-3 li a:hover,
-#bodywrapper #navigationN1-3 li a:active {
+#bodywrapper .navigationN1-3 li a:hover,
+#bodywrapper .navigationN1-3 li a:active {
 	text-decoration:none;
 	color:#fff;
 	background-color:#005094;
 	border:1px solid #006699;
 }
-#bodywrapper #navigationN1-3 li.selected a{
+#bodywrapper .navigationN1-3 li.selected a{
 	background:#8ebde5 url(navigationN1-3/topnav_selected.png) repeat-x; color:#000;
 	border:1px solid #8ebde5;
 }
-#bodywrapper #navigationN1-3 li a:hover{
+#bodywrapper .navigationN1-3 li a:hover{
 	background:#8ebde5 url(navigationN1-3/topnav_active.png) repeat-x; color:#fff;
 	border:1px solid #003366;
 }

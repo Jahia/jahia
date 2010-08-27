@@ -1,24 +1,24 @@
-#bodywrapper #navigationN2-2{
+#bodywrapper .navigationN2-2{
 	border:1px solid #ccc;
 	border-bottom:none;
 	font-size:0.9em;
 }
-#bodywrapper #navigationN2-2 ul {
+#bodywrapper .navigationN2-2 ul {
 	list-style-image:none;
 	list-style-position:outside;
 	list-style-type:none;
 	margin:0;
 	padding:0;
 }
-#bodywrapper #navigationN2-2 li {
+#bodywrapper .navigationN2-2 li {
 	list-style-type:none;
 	margin:0;
 	padding:0;
 }
 
-#bodywrapper #navigationN2-2 li a,
-#bodywrapper #navigationN2-2 li a:link,
-#bodywrapper #navigationN2-2 li a:visited
+#bodywrapper .navigationN2-2 li a,
+#bodywrapper .navigationN2-2 li a:link,
+#bodywrapper .navigationN2-2 li a:visited
 {
 	border-bottom:1px solid #ccc;
 	padding:0.2em 0.5em;
@@ -26,31 +26,31 @@
 	text-decoration:none;
 	color:#333;
 }
-#bodywrapper #navigationN2-2 li a:hover,
-#bodywrapper #navigationN2-2 li a:active {
+#bodywrapper .navigationN2-2 li a:hover,
+#bodywrapper .navigationN2-2 li a:active {
 	text-decoration:underline;
 }
-#bodywrapper #navigationN2-2 li.selected a {
+#bodywrapper .navigationN2-2 li.selected a {
 	background-color: #eaeaea;
 	font-weight:bold;
 }
-#bodywrapper #navigationN2-2 li.selected ul li a{
+#bodywrapper .navigationN2-2 li.selected ul li a{
 	background-color: transparent;
 	font-weight:normal;
 }
-#bodywrapper #navigationN2-2 ul.level_2 li a
+#bodywrapper .navigationN2-2 ul.level_2 li a
 {
 	padding-left:2em;
 }
-#bodywrapper #navigationN2-2 ul.level_3 li a
+#bodywrapper .navigationN2-2 ul.level_3 li a
 {
 	padding-left:4em;
 }
-#bodywrapper #navigationN2-2 ul.level_4 li a
+#bodywrapper .navigationN2-2 ul.level_4 li a
 {
 	padding-left:6em;
 }
-#bodywrapper #navigationN2-2 ul.level_5 li a
+#bodywrapper .navigationN2-2 ul.level_5 li a
 {
 	padding-left:8em;
 }

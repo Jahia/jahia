@@ -223,113 +223,113 @@ body {
 /******************************************************************************
 * navigationN2
 ******************************************************************************/
-#bodywrapper div #navigationN2 {
+#bodywrapper div .navigationN2 {
 	border-top:5px solid #7B7B7B;
 	margin-bottom:10px;
 }
 
-#bodywrapper #navigationN2 ul{
+#bodywrapper .navigationN2 ul{
 	margin:0;
 	padding:0;
 	list-style: none;
 	background-color:#f4f4f4;
 
 }
-#bodywrapper #navigationN2 li{
+#bodywrapper .navigationN2 li{
 	margin:0;
 	padding:0;
 	background: none;
 	line-height:2.2em;
 	list-style:none
 }
-#bodywrapper #navigationN2 li li{
+#bodywrapper .navigationN2 li li{
 	margin:0;
 	padding:0;
 	border-bottom:none;
 }
-#bodywrapper #navigationN2 a,
-#bodywrapper #navigationN2 a:link,
-#bodywrapper #navigationN2 a:visited {
+#bodywrapper .navigationN2 a,
+#bodywrapper .navigationN2 a:link,
+#bodywrapper .navigationN2 a:visited {
 	display: block;
 	text-decoration: none;
 	height:1%;
 	background: none;
 	color:#333;
 }
-#bodywrapper #navigationN2 a:hover,
-#bodywrapper #navigationN2 a:active{
+#bodywrapper .navigationN2 a:hover,
+#bodywrapper .navigationN2 a:active{
 	background:none;
 }
 
-#bodywrapper #navigationN2 .level_1 a,
-#bodywrapper #navigationN2 .level_1 a:link,
-#bodywrapper #navigationN2 .level_1 a:visited {
+#bodywrapper .navigationN2 .level_1 a,
+#bodywrapper .navigationN2 .level_1 a:link,
+#bodywrapper .navigationN2 .level_1 a:visited {
 	padding:0 2px 0 20px;
 	background: url(img/bg-navigationN2.png) no-repeat 10px 50%;
 	border-bottom:1px solid #ccc;
 	margin:1px 0;
 }
-#bodywrapper #navigationN2 .level_1 a:hover,
-#bodywrapper #navigationN2 .level_1 a:active{
+#bodywrapper .navigationN2 .level_1 a:hover,
+#bodywrapper .navigationN2 .level_1 a:active{
 	background: url(img/bg-navigationN2-selected.png) no-repeat 10px 50%;
 	background-color:#ddd3ca;
 }
 
-#bodywrapper #navigationN2 .level_2 a,
-#bodywrapper #navigationN2 .level_2 a:link,
-#bodywrapper #navigationN2 .level_2 a:visited {
+#bodywrapper .navigationN2 .level_2 a,
+#bodywrapper .navigationN2 .level_2 a:link,
+#bodywrapper .navigationN2 .level_2 a:visited {
 	padding:0 2px 0 40px;
 	background: url(img/bg-navigationN2.png) no-repeat 30px 50% ;
 }
 
-#bodywrapper #navigationN2 .level_2 a:hover,
-#bodywrapper #navigationN2 .level_2 a:active{
+#bodywrapper .navigationN2 .level_2 a:hover,
+#bodywrapper .navigationN2 .level_2 a:active{
 	background: url(img/bg-navigationN2-selected.png) no-repeat 30px 50% ;
 	background-color:#ddd3ca;
 }
 
-#bodywrapper #navigationN2 .level_3 a,
-#bodywrapper #navigationN2 .level_3 a:link,
-#bodywrapper #navigationN2 .level_3 a:visited {
+#bodywrapper .navigationN2 .level_3 a,
+#bodywrapper .navigationN2 .level_3 a:link,
+#bodywrapper .navigationN2 .level_3 a:visited {
 	padding:0 2px 0 60px;
 	background: url(img/bg-navigationN2.png) no-repeat 50px 50% ;
 
 }
-#bodywrapper #navigationN2 .level_3 a:hover,
-#bodywrapper #navigationN2 .level_3 a:active{
+#bodywrapper .navigationN2 .level_3 a:hover,
+#bodywrapper .navigationN2 .level_3 a:active{
 	background: url(img/bg-navigationN2-selected.png) no-repeat 50px 50% ;
 	background-color:#ddd3ca;
 }
 
-#bodywrapper #navigationN2 .level_4 a,
-#bodywrapper #navigationN2 .level_4 a:link,
-#bodywrapper #navigationN2 .level_4 a:visited {
+#bodywrapper .navigationN2 .level_4 a,
+#bodywrapper .navigationN2 .level_4 a:link,
+#bodywrapper .navigationN2 .level_4 a:visited {
 	padding:0 2px 0 80px;
 	background: url(img/bg-navigationN2.png) no-repeat 70px 50%;
 
 }
-#bodywrapper #navigationN2 .level_4 a:hover,
-#bodywrapper #navigationN2 .level_4 a:active{
+#bodywrapper .navigationN2 .level_4 a:hover,
+#bodywrapper .navigationN2 .level_4 a:active{
 	background: url(img/bg-navigationN2-selected.png) no-repeat 70px 50% ;
 	background-color:#ddd3ca;
 }
 
-#bodywrapper #navigationN2 .level_5 a,
-#bodywrapper #navigationN2 .level_5 a:link,
-#bodywrapper #navigationN2 .level_5 a:visited {
+#bodywrapper .navigationN2 .level_5 a,
+#bodywrapper .navigationN2 .level_5 a:link,
+#bodywrapper .navigationN2 .level_5 a:visited {
 	padding:0 2px 0 100px ;
 	background: url(img/bg-navigationN2.png) no-repeat 90px 50% ;
 }
-#bodywrapper #navigationN2 .level_5 a:hover,
-#bodywrapper #navigationN2 .level_5 a:active{
+#bodywrapper .navigationN2 .level_5 a:hover,
+#bodywrapper .navigationN2 .level_5 a:active{
 	background: url(img/bg-navigationN2-selected.png) no-repeat 90px 50% ;
 	background-color:#ddd3ca;
 }
-#bodywrapper #navigationN2 li.selected a {
+#bodywrapper .navigationN2 li.selected a {
 	background-image: url(img/bg-navigationN2-selected.png) !important;
 	color:#3366CC;
 }
-#bodywrapper #navigationN2 li.selected li a {
+#bodywrapper .navigationN2 li.selected li a {
 	background-image: url(img/bg-navigationN2.png)!important;
 	color:#333;
 }

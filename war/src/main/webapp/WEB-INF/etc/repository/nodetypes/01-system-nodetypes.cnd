@@ -106,7 +106,9 @@
 [mix:title]
   mixin
   - jcr:title (STRING) i18n
+/** Moved to jmix:description
   - jcr:description (STRING) i18n itemtype = metadata
+  */
 
 /**
  * This mixin node type can be used to add standardized creation information

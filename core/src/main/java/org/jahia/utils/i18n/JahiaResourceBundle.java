@@ -246,7 +246,7 @@ public class JahiaResourceBundle extends ResourceBundle {
         if (bundleRef != null) {
             bundle = bundleRef.get();
             bundleRef = null;
-            return bundle;
+            if (bundle != null) return bundle;
         }
         bundle = loader != null ? ResourceBundle.getBundle(baseName, preferredLocale,
                                                            loader) : ResourceBundle.getBundle(baseName,

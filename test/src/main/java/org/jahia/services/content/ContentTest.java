@@ -410,6 +410,9 @@ public class ContentTest {
 
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
         JCRStoreProvider provider = JCRSessionFactory.getInstance().getProvider(providerRoot);
+        if (!provider.isSearchAvailable()) {
+            return;
+        }
 
         try {
             JCRNodeWrapper rootNode = session.getNode(providerRoot);

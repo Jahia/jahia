@@ -39,10 +39,7 @@ import org.apache.commons.vfs.VFS;
 import org.apache.log4j.Logger;
 
 import javax.jcr.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -61,6 +58,63 @@ public class VFSRepositoryImpl implements Repository {
     private FileSystemManager manager;
 
     private Map<String, Object> repositoryDescriptors = new HashMap<String, Object>();
+
+    private static final Set<String> STANDARD_KEYS = new HashSet<String>() {{
+        add(Repository.QUERY_FULL_TEXT_SEARCH_SUPPORTED);
+        add(Repository.QUERY_JOINS);
+        add(Repository.QUERY_LANGUAGES);
+        add(Repository.QUERY_STORED_QUERIES_SUPPORTED);
+        add(Repository.QUERY_XPATH_DOC_ORDER);
+        add(Repository.QUERY_XPATH_POS_INDEX);
+        add(Repository.REP_NAME_DESC);
+        add(Repository.REP_VENDOR_DESC);
+        add(Repository.REP_VENDOR_URL_DESC);
+        add(Repository.SPEC_NAME_DESC);
+        add(Repository.SPEC_VERSION_DESC);
+        add(Repository.WRITE_SUPPORTED);
+        add(Repository.IDENTIFIER_STABILITY);
+        add(Repository.LEVEL_1_SUPPORTED);
+        add(Repository.LEVEL_2_SUPPORTED);
+
+        add(Repository.OPTION_NODE_TYPE_MANAGEMENT_SUPPORTED);
+        add(Repository.NODE_TYPE_MANAGEMENT_AUTOCREATED_DEFINITIONS_SUPPORTED);
+        add(Repository.NODE_TYPE_MANAGEMENT_INHERITANCE);
+        add(Repository.NODE_TYPE_MANAGEMENT_MULTIPLE_BINARY_PROPERTIES_SUPPORTED);
+        add(Repository.NODE_TYPE_MANAGEMENT_MULTIVALUED_PROPERTIES_SUPPORTED);
+        add(Repository.NODE_TYPE_MANAGEMENT_ORDERABLE_CHILD_NODES_SUPPORTED);
+        add(Repository.NODE_TYPE_MANAGEMENT_OVERRIDES_SUPPORTED);
+        add(Repository.NODE_TYPE_MANAGEMENT_PRIMARY_ITEM_NAME_SUPPORTED);
+        add(Repository.NODE_TYPE_MANAGEMENT_PROPERTY_TYPES);
+        add(Repository.NODE_TYPE_MANAGEMENT_RESIDUAL_DEFINITIONS_SUPPORTED);
+        add(Repository.NODE_TYPE_MANAGEMENT_SAME_NAME_SIBLINGS_SUPPORTED);
+        add(Repository.NODE_TYPE_MANAGEMENT_VALUE_CONSTRAINTS_SUPPORTED);
+        add(Repository.NODE_TYPE_MANAGEMENT_UPDATE_IN_USE_SUPORTED);
+        add(Repository.OPTION_ACCESS_CONTROL_SUPPORTED);
+        add(Repository.OPTION_JOURNALED_OBSERVATION_SUPPORTED);
+        add(Repository.OPTION_LIFECYCLE_SUPPORTED);
+        add(Repository.OPTION_LOCKING_SUPPORTED);
+        add(Repository.OPTION_OBSERVATION_SUPPORTED);
+        add(Repository.OPTION_NODE_AND_PROPERTY_WITH_SAME_NAME_SUPPORTED);
+        add(Repository.OPTION_QUERY_SQL_SUPPORTED);
+        add(Repository.OPTION_RETENTION_SUPPORTED);
+        add(Repository.OPTION_SHAREABLE_NODES_SUPPORTED);
+        add(Repository.OPTION_SIMPLE_VERSIONING_SUPPORTED);
+        add(Repository.OPTION_TRANSACTIONS_SUPPORTED);
+        add(Repository.OPTION_UNFILED_CONTENT_SUPPORTED);
+        add(Repository.OPTION_UPDATE_MIXIN_NODE_TYPES_SUPPORTED);
+        add(Repository.OPTION_UPDATE_PRIMARY_NODE_TYPE_SUPPORTED);
+        add(Repository.OPTION_VERSIONING_SUPPORTED);
+        add(Repository.OPTION_WORKSPACE_MANAGEMENT_SUPPORTED);
+        add(Repository.OPTION_XML_EXPORT_SUPPORTED);
+        add(Repository.OPTION_XML_IMPORT_SUPPORTED);
+        add(Repository.OPTION_ACTIVITIES_SUPPORTED);
+        add(Repository.OPTION_BASELINES_SUPPORTED);
+
+    }};
+
+    public boolean isStandardDescriptor(String key) {
+        return STANDARD_KEYS.contains(key);
+    }
 
     private void initDescriptors() {
 
@@ -180,12 +234,13 @@ public class VFSRepositoryImpl implements Repository {
         return manager.resolveFile(identifier);
     }
 
-    public boolean isStandardDescriptor(String key) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
     public boolean isSingleValueDescriptor(String key) {
-        return true;  //To change body of implemented methods use File | Settings | File Templates.
+        Object repositoryDescriptor = repositoryDescriptors.get(key);
+        if (repositoryDescriptor instanceof Value) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public Value getDescriptorValue(String key) {

@@ -110,7 +110,7 @@ public class VFSSessionImpl implements Session {
         try {
             fileObject = repository.getFileByIdentifier(uuid);
             if (!fileObject.exists()) {
-                throw new PathNotFoundException(uuid);
+                throw new ItemNotFoundException(uuid);
             }
             return new VFSNodeImpl(fileObject, this);
         } catch (FileSystemException fse) {

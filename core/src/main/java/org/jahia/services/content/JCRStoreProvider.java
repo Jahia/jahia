@@ -69,10 +69,10 @@ import java.rmi.RemoteException;
 import java.util.*;
 
 /**
- * A store provider to handle different backend stores within a site. There are multiple 
- * subclasses for the different repository vendors. 
- * 
- * The main and default repository in Jahia is based on the {@link JackrabbitStoreProvider}, 
+ * A store provider to handle different backend stores within a site. There are multiple
+ * subclasses for the different repository vendors.
+ * <p/>
+ * The main and default repository in Jahia is based on the {@link JackrabbitStoreProvider},
  * but you can have different repositories mounted, which are based on other store providers.
  *
  * @author toto
@@ -80,7 +80,7 @@ import java.util.*;
 public class JCRStoreProvider {
 
     private static org.apache.log4j.Logger logger =
-        org.apache.log4j.Logger.getLogger(JCRStoreProvider.class);
+            org.apache.log4j.Logger.getLogger(JCRStoreProvider.class);
 
     private String key;
     private String mountPoint;
@@ -116,12 +116,13 @@ public class JCRStoreProvider {
     private boolean isMainStorage = false;
     private boolean isDynamicallyMounted = false;
     private boolean initialized = false;
-    
+
     private boolean providesDynamicMountPoints;
 
     private Boolean versioningAvailable = null;
     private Boolean lockingAvailable = null;
-    
+    private Boolean searchAvailable = null;
+
     public String getKey() {
         return key;
     }
@@ -305,9 +306,9 @@ public class JCRStoreProvider {
             }
 
             authenticationType = tmpAuthenticationType;
-        } catch (Exception e){
-            logger.error("Repository init error",e);
-            throw  new JahiaInitializationException("Repository init error",e) ;
+        } catch (Exception e) {
+            logger.error("Repository init error", e);
+            throw new JahiaInitializationException("Repository init error", e);
         }
     }
 
@@ -321,14 +322,14 @@ public class JCRStoreProvider {
                 try {
                     workspace.getNodeTypeManager().getNodeType("jmix:droppableContent");
                 } catch (RepositoryException e) {
-                    File f = new File(SettingsBean.getInstance().getJahiaVarDiskPath()+"/definitions.properties");
+                    File f = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/definitions.properties");
                     f.delete();
                 }
 
                 registerCustomNodeTypes(workspace);
                 session.save();
             } catch (RepositoryException e) {
-                logger.error("Cannot register nodetypes",e);
+                logger.error("Cannot register nodetypes", e);
             } finally {
                 session.logout();
             }
@@ -339,7 +340,7 @@ public class JCRStoreProvider {
         Set<String> workspaces = service.getListeners().keySet();
         for (String ws : workspaces) {
             // This session must not be released
-            final Session session = getSystemSession(null,ws);
+            final Session session = getSystemSession(null, ws);
             final Workspace workspace = session.getWorkspace();
 
             ObservationManager observationManager = workspace.getObservationManager();
@@ -382,12 +383,12 @@ public class JCRStoreProvider {
 
                     stream = new FileInputStream(
                             org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/root.xml");
-                    session.importXML("/", stream,ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW,true);
+                    session.importXML("/", stream, ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW, true);
                     Node userNode = (Node) session.getItem("/users");
                     NodeIterator nodeIterator = userNode.getNodes();
                     while (nodeIterator.hasNext()) {
                         Node node = (Node) nodeIterator.next();
-                        if(!"guest".equals(node.getName())) {
+                        if (!"guest".equals(node.getName())) {
                             JCRNodeWrapperImpl.changePermissions(node, "u:" + node.getName(), "rw");
                         }
                     }
@@ -451,18 +452,18 @@ public class JCRStoreProvider {
                 try {
                     registerCustomNodeTypes(systemId, workspace);
                 } catch (RepositoryException e) {
-                    logger.error("Cannot register nodetypes",e);
+                    logger.error("Cannot register nodetypes", e);
                 }
                 session.save();
             } finally {
                 session.logout();
             }
-        } catch (Exception e){
-            logger.error("Repository init error",e);
+        } catch (Exception e) {
+            logger.error("Repository init error", e);
         }
     }
 
-    public synchronized Repository getRepository(){
+    public synchronized Repository getRepository() {
         if (repo == null) {
             if (repositoryName != null) {
                 repo = getRepositoryByJNDI();
@@ -489,12 +490,12 @@ public class JCRStoreProvider {
         try {
             Hashtable<String, String> env = new Hashtable<String, String>();
             InitialContext initctx = new InitialContext(env);
-             // ((ObjectFactory)Class.forName(((Reference) initctx.lookup(repositoryName)).getFactoryClassName()).newInstance()).getObjectInstance(((Reference) initctx.lookup(repositoryName)), null,null,null)
+            // ((ObjectFactory)Class.forName(((Reference) initctx.lookup(repositoryName)).getFactoryClassName()).newInstance()).getObjectInstance(((Reference) initctx.lookup(repositoryName)), null,null,null)
             repo = (Repository) initctx.lookup(repositoryName);
             logger.info("Repository " + getKey() + " acquired via JNDI");
             return repo;
         } catch (NamingException e) {
-            logger.error("Cannot get by JNDI",e);
+            logger.error("Cannot get by JNDI", e);
         }
         return null;
     }
@@ -503,11 +504,11 @@ public class JCRStoreProvider {
         try {
             Class<? extends ObjectFactory> factoryClass = Class.forName(factory).asSubclass(ObjectFactory.class);
             ObjectFactory factory = (ObjectFactory) factoryClass.newInstance();
-            repo = (Repository) factory.getObjectInstance(new Reference(Repository.class.getName(), new StringRefAddr("url", url)),null,null,null);
+            repo = (Repository) factory.getObjectInstance(new Reference(Repository.class.getName(), new StringRefAddr("url", url)), null, null, null);
             logger.info("Repository " + getKey() + " acquired via RMI");
             return repo;
         } catch (Exception e) {
-            logger.error("Cannot get by RMI",e);
+            logger.error("Cannot get by RMI", e);
         }
         return null;
     }
@@ -516,7 +517,7 @@ public class JCRStoreProvider {
         Session s;
 
         if (credentials instanceof SimpleCredentials) {
-            String username = ((SimpleCredentials)credentials).getUserID();
+            String username = ((SimpleCredentials) credentials).getUserID();
 
             if ("shared".equals(authenticationType)) {
                 if (username.startsWith(" system ") || guestUser == null) {
@@ -524,7 +525,7 @@ public class JCRStoreProvider {
                 } else {
                     credentials = JahiaLoginModule.getGuestCredentials();
                 }
-                username = ((SimpleCredentials)credentials).getUserID();
+                username = ((SimpleCredentials) credentials).getUserID();
             }
 
             if (username.startsWith(" system ") && systemUser != null) {
@@ -541,11 +542,11 @@ public class JCRStoreProvider {
                 }
             } else if ("storedPasswords".equals(authenticationType)) {
                 JahiaUser user = userManagerService.lookupUser(username);
-                if (user.getProperty("storedUsername_"+getKey()) != null) {
-                    username = user.getProperty("storedUsername_"+getKey());
+                if (user.getProperty("storedUsername_" + getKey()) != null) {
+                    username = user.getProperty("storedUsername_" + getKey());
                 }
-                String pass = user.getProperty("storedPassword_"+getKey());
-                if (pass != null) {                    
+                String pass = user.getProperty("storedPassword_" + getKey());
+                if (pass != null) {
                     credentials = new SimpleCredentials(username, pass.toCharArray());
                 } else {
                     if (guestPassword != null) {
@@ -555,10 +556,10 @@ public class JCRStoreProvider {
                     }
                 }
             }
-            logger.debug("Login for "+getKey() + " as " + ((SimpleCredentials)credentials).getUserID());
+            logger.debug("Login for " + getKey() + " as " + ((SimpleCredentials) credentials).getUserID());
         }
 
-        s = getRepository().login(credentials,workspace);
+        s = getRepository().login(credentials, workspace);
 //        if (s instanceof XASession) {
 //            try {
 //                Context ctx = new InitialContext();
@@ -598,10 +599,10 @@ public class JCRStoreProvider {
 
     public JCRNodeWrapper getNodeWrapper(Node objectNode, JCRSessionWrapper session) throws RepositoryException {
         final JCRNodeWrapperImpl w = new JCRNodeWrapperImpl(objectNode, null, session, this);
-        if(w.checkValidity()) {
+        if (w.checkValidity()) {
             return service.decorate(w);
         } else {
-            throw new PathNotFoundException("This node doesn't exist in this language "+objectNode.getPath());
+            throw new PathNotFoundException("This node doesn't exist in this language " + objectNode.getPath());
         }
     }
 
@@ -610,7 +611,7 @@ public class JCRStoreProvider {
         if (objectNode.isNew() || w.checkValidity()) {
             return service.decorate(w);
         } else {
-            throw new PathNotFoundException("This node doesn't exist in this language "+objectNode.getPath());
+            throw new PathNotFoundException("This node doesn't exist in this language " + objectNode.getPath());
         }
     }
 
@@ -658,56 +659,56 @@ public class JCRStoreProvider {
         JCRSessionWrapper session = sessionFactory.getSystemSession(username, null);
         try {
             if (session.getWorkspace().getQueryManager() != null) {
-            Query q = session.getWorkspace().getQueryManager().createQuery("SELECT * FROM [jnt:usersFolder]", Query.JCR_SQL2);
-            QueryResult qr = q.execute();
-            NodeIterator ni = qr.getNodes();
-            try {
-                while (ni.hasNext()) {
-                    Node usersFolderNode = ni.nextNode();
-                    String options = "";
-                    if (usersFolderNode.hasProperty("j:usersFolderConfig")) {
-                        options = usersFolderNode.getProperty("j:usersFolderConfig").getString();
-                    }
+                Query q = session.getWorkspace().getQueryManager().createQuery("SELECT * FROM [jnt:usersFolder]", Query.JCR_SQL2);
+                QueryResult qr = q.execute();
+                NodeIterator ni = qr.getNodes();
+                try {
+                    while (ni.hasNext()) {
+                        Node usersFolderNode = ni.nextNode();
+                        String options = "";
+                        if (usersFolderNode.hasProperty("j:usersFolderConfig")) {
+                            options = usersFolderNode.getProperty("j:usersFolderConfig").getString();
+                        }
 
-                    Node f = JCRContentUtils.getPathFolder(usersFolderNode, username, options);
+                        Node f = JCRContentUtils.getPathFolder(usersFolderNode, username, options);
 
-                    try {
-                        f.getNode(username);
-                    } catch (PathNotFoundException e) {
-                        synchronized (this) {
-                            try {
-                                f.getNode(username);
-                            } catch (PathNotFoundException ee) {
+                        try {
+                            f.getNode(username);
+                        } catch (PathNotFoundException e) {
+                            synchronized (this) {
                                 try {
-                                    session.getWorkspace().getVersionManager().checkout(f.getPath());
-                                    Node userNode = f.addNode(username, Constants.JAHIANT_USER);
-                                    if (usersFolderNode.hasProperty("j:usersFolderSkeleton")) {
-                                        InputStream is = new FileInputStream(org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/" + usersFolderNode.getProperty("j:usersFolderSkeleton").getString());
-                                        try {
-                                            session.importXML(f.getPath()+"/"+username, is,ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
-                                        } finally {
-                                            IOUtils.closeQuietly(is);
+                                    f.getNode(username);
+                                } catch (PathNotFoundException ee) {
+                                    try {
+                                        session.getWorkspace().getVersionManager().checkout(f.getPath());
+                                        Node userNode = f.addNode(username, Constants.JAHIANT_USER);
+                                        if (usersFolderNode.hasProperty("j:usersFolderSkeleton")) {
+                                            InputStream is = new FileInputStream(org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/" + usersFolderNode.getProperty("j:usersFolderSkeleton").getString());
+                                            try {
+                                                session.importXML(f.getPath() + "/" + username, is, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
+                                            } finally {
+                                                IOUtils.closeQuietly(is);
+                                            }
                                         }
+
+                                        userNode.setProperty(JCRUser.J_EXTERNAL, true);
+                                        userNode.setProperty(JCRUser.J_EXTERNAL_SOURCE, providerName);
+                                        JCRNodeWrapperImpl.changePermissions(userNode, "u:" + username, "rw");
+
+                                        session.save();
+                                        session.getWorkspace().getVersionManager().checkin(f.getPath());
+                                        publicationService.publish(userNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
+                                                true);
+                                    } catch (RepositoryException e1) {
+                                        logger.error("Cannot save", e1);
                                     }
-
-                                    userNode.setProperty(JCRUser.J_EXTERNAL,true);
-                                    userNode.setProperty(JCRUser.J_EXTERNAL_SOURCE,providerName);
-                                    JCRNodeWrapperImpl.changePermissions(userNode, "u:"+username, "rw");
-
-                                    session.save();
-                                    session.getWorkspace().getVersionManager().checkin(f.getPath());
-                                    publicationService.publish(userNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
-                                            true);
-                                } catch (RepositoryException e1) {
-                                    logger.error("Cannot save", e1);
                                 }
                             }
                         }
                     }
+                } catch (IOException e) {
+                    logger.error(e.getMessage(), e);
                 }
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-            }
             }
         } finally {
             session.logout();
@@ -716,7 +717,7 @@ public class JCRStoreProvider {
 
     public JCRNodeWrapper getUserFolder(JahiaUser user) throws RepositoryException {
         String username = ISO9075.encode(user.getUsername());
-        String sql = "select * from [jnt:user] as user where user.[j:nodename]= '"+username+"'";
+        String sql = "select * from [jnt:user] as user where user.[j:nodename]= '" + username + "'";
 
         List<JCRNodeWrapper> results = queryFolders(sessionFactory.getCurrentUserSession(), sql);
         if (results.isEmpty()) {
@@ -727,11 +728,11 @@ public class JCRStoreProvider {
 
     public List<JCRNodeWrapper> getImportDropBoxes(String site, JahiaUser user) throws RepositoryException {
         String username = ISO9075.encode(user.getUsername());
-        String sql = "select imp.* from [jnt:importDropBox] as imp right outer join [jnt:user] as user on ischildnode(imp,user) where user.[j:nodename]= '"+username+"'";
+        String sql = "select imp.* from [jnt:importDropBox] as imp right outer join [jnt:user] as user on ischildnode(imp,user) where user.[j:nodename]= '" + username + "'";
 
         if (site != null) {
             site = ISO9075.encode(site);
-            sql = "select imp.* from jnt:importDropBox as imp right outer join [jnt:user] as user on ischildnode(imp,user) right outer join [jnt:virtualsite] as site on isdescendantnode(imp,site) where user.[j:nodename]= '"+username+ "' and site.[j:nodename] = '"+site+"'";
+            sql = "select imp.* from jnt:importDropBox as imp right outer join [jnt:user] as user on ischildnode(imp,user) right outer join [jnt:virtualsite] as site on isdescendantnode(imp,site) where user.[j:nodename]= '" + username + "' and site.[j:nodename] = '" + site + "'";
         }
 
         List<JCRNodeWrapper> results = queryFolders(sessionFactory.getCurrentUserSession(), sql);
@@ -743,7 +744,7 @@ public class JCRStoreProvider {
 
     public JCRNodeWrapper getSiteFolder(String site) throws RepositoryException {
         site = ISO9075.encode(site);
-        String xp = "select * from [jnt:virtualsite] as site where site.[j:nodename] = '"+site+"'";
+        String xp = "select * from [jnt:virtualsite] as site where site.[j:nodename] = '" + site + "'";
 
         final List<JCRNodeWrapper> list = queryFolders(sessionFactory.getCurrentUserSession(), xp);
         if (list.isEmpty()) {
@@ -795,29 +796,29 @@ public class JCRStoreProvider {
     public boolean isExportable() {
         return true;
     }
-    
-    private void dump (Node n) throws RepositoryException {
+
+    private void dump(Node n) throws RepositoryException {
         System.out.println(n.getPath());
-        PropertyIterator pit=n.getProperties();
+        PropertyIterator pit = n.getProperties();
         while (pit.hasNext()) {
-            Property p=pit.nextProperty();
-            System.out.print(p.getPath()+"=");
+            Property p = pit.nextProperty();
+            System.out.print(p.getPath() + "=");
             if (p.getDefinition().isMultiple()) {
                 Value[] values = p.getValues();
                 for (int i = 0; i < values.length; i++) {
                     Value value = values[i];
-                    System.out.print(value+",");
+                    System.out.print(value + ",");
                 }
                 System.out.println("");
             } else {
                 System.out.println(p.getValue());
             }
         }
-        NodeIterator nit=n.getNodes();
+        NodeIterator nit = n.getNodes();
         while (nit.hasNext()) {
-            Node cn=nit.nextNode();
+            Node cn = nit.nextNode();
             if (!cn.getName().startsWith("jcr:")) {
-                dump (cn);
+                dump(cn);
             }
         }
     }
@@ -825,7 +826,7 @@ public class JCRStoreProvider {
     public QueryManager getQueryManager(JCRSessionWrapper session) throws RepositoryException {
         return session.getProviderSession(JCRStoreProvider.this).getWorkspace().getQueryManager();
     }
-    
+
     public ValueFactory getValueFactory(JahiaUser user) {
         ValueFactory valueFactory = null;
         try {
@@ -903,6 +904,24 @@ public class JCRStoreProvider {
             lockingAvailable = Boolean.FALSE;
         }
         return lockingAvailable;
+    }
+
+    public boolean isSearchAvailable() {
+        if (searchAvailable != null) {
+            return searchAvailable;
+        }
+        Repository repository = getRepository();
+        Value[] queryLanguageValues = repository.getDescriptorValues(Repository.QUERY_LANGUAGES);
+        if (queryLanguageValues == null) {
+            searchAvailable = Boolean.FALSE;
+            return false;
+        }
+        if (queryLanguageValues.length == 0) {
+            searchAvailable = Boolean.FALSE;
+        } else {
+            searchAvailable = Boolean.TRUE;
+        }
+        return searchAvailable;
     }
 
 }

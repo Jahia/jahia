@@ -35,14 +35,17 @@ package org.jahia.ajax.gwt.client.widget.edit;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.widget.form.StoreFilterField;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
+import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.WidgetTreeGridCellRenderer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -105,15 +108,31 @@ public class ContentTypeTree extends LayoutContainer {
             treeGrid.setHeight(height);
         } else {
             treeGrid.setHeight("100%");
+            setHeight("100%");
         }
         treeGrid.setAutoExpandColumn("label");
         treeGrid.getTreeView().setRowHeight(rowHeight);
         treeGrid.getTreeView().setForceFit(true);
         treeGrid.getStyle().setNodeCloseIcon(null);
         treeGrid.getStyle().setNodeOpenIcon(null);
-        FitLayout vBoxLayout = new FitLayout();
+        Layout vBoxLayout = new VBoxLayout();
         setLayout(vBoxLayout);
+        
         setBorders(true);
+        
+		StoreFilterField<GWTJahiaNodeType> filter = new StoreFilterField<GWTJahiaNodeType>() {
+			@Override
+			protected boolean doSelect(Store<GWTJahiaNodeType> store, GWTJahiaNodeType parent,
+			        GWTJahiaNodeType record, String property, String filter) {
+				String name = record.getLabel();
+				name = name.toLowerCase();
+				return name.contains(filter.toLowerCase());
+			}
+		};
+		filter.bind(store);
+		filter.setWidth("100%");
+
+        add(filter);
         add(treeGrid);
         setWidth("100%");
     }

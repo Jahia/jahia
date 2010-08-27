@@ -408,7 +408,14 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 try {
+                    File xmlImportFile = new File(new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath(), moduleName), "import.xml");
+                    if (xmlImportFile.exists()) {
+                        xmlImportFile.delete();
+                    }
                     File importFile = new File(new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath(), moduleName), "import.zip");
+                    if (importFile.exists()) {
+                        importFile.delete();
+                    }
                     Map<String,Object> params = new HashMap<String, Object>();
                     params.put(ImportExportService.XSL_PATH,SettingsBean.getInstance().getJahiaEtcDiskPath()+"/repository/export/templatesCleanup.xsl");
 

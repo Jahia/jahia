@@ -31,11 +31,9 @@
 <c:if test="${!jcr:isNodeType(currentNode, 'jnt:blogContent')}">
     <c:set var="blogHome" value="${url.current}"/>
 </c:if>
-<div class="boxblog">
-        <div class="boxblogshadow boxblogpadding16 boxblogmarginbottom16">
-            <div class="boxblog-inner">
-                <div class="boxblog-inner-border"><!--start boxblog -->
+
 <div class="post">
+	<a class="postedit" href="${url.base}${currentResource.node.path}.blogEdit.html"><fmt:message key="blog.label.edit"/></a>
     <div class="post-date"><span>${userCreatedMonth}</span>${userCreatedDay}</div>
     <h2 class="post-title"><a href="${url.base}${currentNode.path}.html"><c:out value="${title.string}"/></a></h2>
 
@@ -55,7 +53,6 @@
              sql="select [jcr:uuid] from [jnt:post] as p  where isdescendantnode(p,['${currentNode.path}'])"/>
     <c:set var="numberOfPosts" value="${numberOfPostsQuery.rows.size}"/>
     <p class="post-info-links">
-        <a href="${url.base}${currentResource.node.path}.blogEdit.html"><fmt:message key="blog.label.edit"/></a>
         <c:if test="${numberOfPosts == 0}">
             <a class="comment_count" href="${url.current}#comments">0&nbsp;<fmt:message key="blog.label.comments"/></a>
         </c:if>
@@ -63,12 +60,6 @@
             <a class="comment_count" href="${url.current}#comments">${numberOfPosts}&nbsp;<fmt:message key="blog.label.comments"/></a>
         </c:if>
     </p>
-                    <div class="clear"></div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-    <!--stop boxblog -->
+ <div class="clear"></div>
 </div>
 

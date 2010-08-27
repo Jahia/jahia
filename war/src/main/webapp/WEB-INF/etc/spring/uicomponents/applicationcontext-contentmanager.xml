@@ -1104,7 +1104,6 @@
                                     <property name="layout" value="button"/>
                                     <property name="items">
                                         <list>
-                                            <ref bean="Toolbar.Item.NewFolder"/>
                                             <ref bean="Toolbar.Item.upload"/>
                                             <ref bean="Toolbar.Item.Download"/>
                                             <ref bean="Toolbar.Item.FilePreview"/>
@@ -1247,7 +1246,6 @@
                                     <property name="layout" value="button"/>
                                     <property name="items">
                                         <list>
-                                            <ref bean="Toolbar.Item.NewPortletFolder"/>
                                             <ref bean="Toolbar.Item.NewPortlet"/>
                                             <ref bean="Toolbar.Item.NewRss"/>
                                             <ref bean="Toolbar.Item.NewGadget"/>

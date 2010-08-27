@@ -39,7 +39,9 @@ import org.apache.commons.vfs.VFS;
 import org.apache.log4j.Logger;
 
 import javax.jcr.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -58,9 +60,43 @@ public class VFSRepositoryImpl implements Repository {
 
     private FileSystemManager manager;
 
-    private Map<String, Value> repositoryDescriptors = new HashMap<String, Value>();
+    private Map<String, Object> repositoryDescriptors = new HashMap<String, Object>();
 
     private void initDescriptors() {
+
+        repositoryDescriptors.put(Repository.SPEC_VERSION_DESC, new VFSValueImpl("2.0"));
+        repositoryDescriptors.put(Repository.SPEC_NAME_DESC, new VFSValueImpl("Content Repository for Java Technology API"));
+        repositoryDescriptors.put(Repository.REP_VENDOR_DESC, new VFSValueImpl("Jahia"));
+        repositoryDescriptors.put(Repository.REP_VENDOR_URL_DESC, new VFSValueImpl("http://www.jahia.org"));
+        repositoryDescriptors.put(Repository.REP_NAME_DESC, new VFSValueImpl("The Web Integration Software"));
+        repositoryDescriptors.put(Repository.REP_VERSION_DESC, new VFSValueImpl("1.0"));
+        repositoryDescriptors.put(Repository.WRITE_SUPPORTED, new VFSValueImpl(true));
+        repositoryDescriptors.put(Repository.IDENTIFIER_STABILITY, new VFSValueImpl(Repository.IDENTIFIER_STABILITY_SESSION_DURATION));
+        repositoryDescriptors.put(Repository.NODE_TYPE_MANAGEMENT_INHERITANCE, new VFSValueImpl(Repository.NODE_TYPE_MANAGEMENT_INHERITANCE_MINIMAL));
+        repositoryDescriptors.put(Repository.NODE_TYPE_MANAGEMENT_OVERRIDES_SUPPORTED, new VFSValueImpl(false));
+        repositoryDescriptors.put(Repository.NODE_TYPE_MANAGEMENT_PRIMARY_ITEM_NAME_SUPPORTED, new VFSValueImpl(false));
+        repositoryDescriptors.put(Repository.NODE_TYPE_MANAGEMENT_ORDERABLE_CHILD_NODES_SUPPORTED, new VFSValueImpl(false));
+        repositoryDescriptors.put(Repository.NODE_TYPE_MANAGEMENT_RESIDUAL_DEFINITIONS_SUPPORTED, new VFSValueImpl(false));
+        repositoryDescriptors.put(Repository.NODE_TYPE_MANAGEMENT_AUTOCREATED_DEFINITIONS_SUPPORTED, new VFSValueImpl(false));
+        repositoryDescriptors.put(Repository.NODE_TYPE_MANAGEMENT_SAME_NAME_SIBLINGS_SUPPORTED, new VFSValueImpl(false));
+        List<VFSValueImpl> propertyTypes = new ArrayList<VFSValueImpl>();
+        propertyTypes.add(new VFSValueImpl(PropertyType.BINARY));
+        propertyTypes.add(new VFSValueImpl(PropertyType.NAME));
+        propertyTypes.add(new VFSValueImpl(PropertyType.PATH));
+        repositoryDescriptors.put(Repository.NODE_TYPE_MANAGEMENT_PROPERTY_TYPES, propertyTypes.toArray(new VFSValueImpl[propertyTypes.size()]));
+        repositoryDescriptors.put(Repository.NODE_TYPE_MANAGEMENT_MULTIVALUED_PROPERTIES_SUPPORTED, new VFSValueImpl(false));
+        repositoryDescriptors.put(Repository.NODE_TYPE_MANAGEMENT_MULTIPLE_BINARY_PROPERTIES_SUPPORTED, new VFSValueImpl(false));
+        repositoryDescriptors.put(Repository.NODE_TYPE_MANAGEMENT_VALUE_CONSTRAINTS_SUPPORTED, new VFSValueImpl(false));
+        repositoryDescriptors.put(Repository.NODE_TYPE_MANAGEMENT_UPDATE_IN_USE_SUPORTED, new VFSValueImpl(false));
+        repositoryDescriptors.put(Repository.QUERY_LANGUAGES, new VFSValueImpl[0]);
+        repositoryDescriptors.put(Repository.QUERY_STORED_QUERIES_SUPPORTED, new VFSValueImpl(false));
+        repositoryDescriptors.put(Repository.QUERY_FULL_TEXT_SEARCH_SUPPORTED, new VFSValueImpl(false));
+        repositoryDescriptors.put(Repository.QUERY_JOINS, new VFSValueImpl(false));
+        repositoryDescriptors.put(Repository.LEVEL_1_SUPPORTED, new VFSValueImpl(true));
+        repositoryDescriptors.put(Repository.LEVEL_2_SUPPORTED, new VFSValueImpl(true));
+        repositoryDescriptors.put(Repository.QUERY_XPATH_POS_INDEX, new VFSValueImpl(false));
+        repositoryDescriptors.put(Repository.QUERY_XPATH_DOC_ORDER, new VFSValueImpl(false));
+
         repositoryDescriptors.put(Repository.OPTION_ACCESS_CONTROL_SUPPORTED, new VFSValueImpl(false));
         repositoryDescriptors.put(Repository.OPTION_ACTIVITIES_SUPPORTED, new VFSValueImpl(false));
         repositoryDescriptors.put(Repository.OPTION_BASELINES_SUPPORTED, new VFSValueImpl(false));
@@ -109,15 +145,14 @@ public class VFSRepositoryImpl implements Repository {
     }
 
     public String getDescriptor(String s) {
-        Value descriptorValue = repositoryDescriptors.get(s);
-        if (descriptorValue == null) {
+        Object descriptorObject = repositoryDescriptors.get(s);
+        if (descriptorObject == null) {
             return null;
         }
-        try {
-            return descriptorValue.getString();
-        } catch (RepositoryException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            return null;
+        if (descriptorObject instanceof Value) {
+            return ((Value) descriptorObject).toString();
+        } else {
+            throw new RuntimeException("Expected single-value value but found multi-valued property instead !");
         }
     }
 
@@ -154,10 +189,10 @@ public class VFSRepositoryImpl implements Repository {
     }
 
     public Value getDescriptorValue(String key) {
-        return repositoryDescriptors.get(key);
+        return (Value) repositoryDescriptors.get(key);
     }
 
     public Value[] getDescriptorValues(String key) {
-        return new Value[0];  //To change body of implemented methods use File | Settings | File Templates.
+        return (Value[]) repositoryDescriptors.get(key);
     }
 }

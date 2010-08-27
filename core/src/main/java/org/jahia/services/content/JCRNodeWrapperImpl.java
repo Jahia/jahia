@@ -1580,6 +1580,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         for (int i = 0; i < getDepth(); i++) {
             try {
                 ancestors.add(getAncestor(i));
+            } catch (PathNotFoundException nfe) {
             } catch (AccessDeniedException ade) {
                 return ancestors;
             }

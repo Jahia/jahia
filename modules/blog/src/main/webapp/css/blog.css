@@ -726,5 +726,66 @@ display:block
 #bodywrapper #formPost .post-tags {
 	margin:0 ;
 }
+/******************************************************************************
+*  Blog List
+******************************************************************************/
+
+#bodywrapper ul.bloglist  {
+	position:relative;
+	margin:0;
+	list-style:none;
+	padding:0
+}
+#bodywrapper .bloglist li {
+	padding:5px;
+	margin:0;
+	list-style:none;
+	background: url(img/blog/hr.png) repeat-x bottom left;
+}
+#bodywrapper .bloglist li p {
+	padding:0;
+}
+#bodywrapper .bloglist li:last-child {
+	background-image: none;
+}
+#bodywrapper span.bloglistinfo{
+	font-size:80%;
+	margin-left:0.2em;
+	font-weight:normal
+}
+#bodywrapper ul.bloglist li:hover{
+	background-color:#eaeaea
+}
+#bodywrapper ul.bloglist .bloglistinfo2 {
+	margin:0;
+	padding:0;
+	list-style: none;
+	line-height:1.2em;
+	font-size:0.9em;
+	font-weight:normal
+}
+#bodywrapper ul.bloglist a,
+#bodywrapper ul.bloglist a:link,
+#bodywrapper ul.bloglist a:visited {
+	text-decoration: none;
+	display:block
+}
+#bodywrapper ul.bloglist a:hover,
+#bodywrapper ul.bloglist a:active {
+	text-decoration:underline;
+}
+
+#bodywrapper a.atopblog {
+    background: url(img/blog/arrow.png ) no-repeat scroll 0.2em 0.3em;
+	padding-left:24px;
+}
+#bodywrapper a.atopblogcomments {
+    background: url(img/blog/comment.png ) no-repeat scroll 0.2em 0em;
+	padding-left:24px;
+}
+#bodywrapper a.atopblogcontents {
+    background: url(img/blog/post.png ) no-repeat scroll 0.2em 0em;
+	padding-left:24px;
+}
 
 

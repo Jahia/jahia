@@ -14,9 +14,10 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
+<template:addResources type="css" resources="blog.css"/>
 <query:definition var="result"
              statement="select * from [jnt:blogContent] as blogContent  where isdescendantnode(blogContent, ['${renderContext.mainResource.node.path}']) order by blogContent.[jcr:lastModified] desc"/>
 <c:set target="${moduleMap}" property="editable" value="false" />
 <c:set target="${moduleMap}" property="listQuery" value="${result}" />
 <c:set target="${moduleMap}" property="subNodesTemplate" value="blogList" />
-<c:set target="${moduleMap}" property="ulClass" value="topblogcontents" />
+<c:set target="${moduleMap}" property="ulClass" value="bloglist topblogcontents" />

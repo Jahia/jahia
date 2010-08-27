@@ -125,10 +125,9 @@ public class TemplateNodeFilter extends AbstractFilter {
             }
 
             JCRNodeWrapper templateNode = null;
-
             List<JCRItemWrapper> ancestors = current.getAncestors();
             ancestors.add(current);
-            for (int i = ancestors.size() -1 ; i >= 0 && template == null; i--) {
+            for (int i = ancestors.size() -1 ; i >= 0 && templateNode == null; i--) {
                 current = (JCRNodeWrapper) ancestors.get(i);
                 if (current.hasProperty("j:templateNode")) {
                     templateNode = (JCRNodeWrapper) current.getProperty("j:templateNode").getNode();
@@ -148,23 +147,22 @@ public class TemplateNodeFilter extends AbstractFilter {
                 }
                 if (template == null && current.isNodeType("jnt:template")) {
                     templateNode = current;
-                    break;
                 }
             }
-
-            templateNode = templateNode.getParent();
-            while (!(templateNode.isNodeType("jnt:templatesFolder"))) {
-                template = new Template(templateNode.hasProperty("j:template") ? templateNode.getProperty("j:template").getString() :
-                            "fullpage", templateNode, template);
+            if (templateNode != null) {
                 templateNode = templateNode.getParent();
-            }
-        } catch (ItemNotFoundException e) {
-            // default
-
-            try {
-                template = new Template("system", node.getSession().getNode("/systemTemplate"), null);
-            } catch (RepositoryException e1) {
-                logger.error("Cannot find default template", e);
+                while (!(templateNode.isNodeType("jnt:templatesFolder"))) {
+                    template = new Template(templateNode.hasProperty("j:template") ? templateNode.getProperty("j:template").getString() :
+                            "fullpage", templateNode, template);
+                    templateNode = templateNode.getParent();
+                }
+            } else {
+                // default
+                try {
+                    template = new Template("system", node.getSession().getNode("/systemTemplate"), null);
+                } catch (RepositoryException e) {
+                    logger.error("Cannot find default template", e);
+                }
             }
         } catch (RepositoryException e) {
             logger.error("Cannot find template", e);

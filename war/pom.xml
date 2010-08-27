@@ -90,7 +90,7 @@
                   <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>gwt-maven-plugin</artifactId>                       
-                        <version>1.2-SNAPSHOT</version>
+                        <version>1.2</version>
                         <configuration>
                             <localWorkers>5</localWorkers>
                             <noServer>true</noServer>
@@ -139,6 +139,7 @@
                             <webappDirectory>${project.build.directory}/jahia/gwt</webappDirectory>
                             <skip>${jahia.gwt.skip}</skip>
                             <module>${singleModuleName}</module>
+                            <style>DETAILED</style>
                         </configuration>
                         <executions>
                             <execution>

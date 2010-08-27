@@ -15,9 +15,11 @@
             <h3 class="teaser-title title"><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h3>
             <p> ${currentNode.properties.abstract.string}</p>
         </div>
-        <div class="more">
-            <span><a href="${url.base}${currentNode.properties.link.node.path}.html">Read more...</a></span>
-        </div>
+        <c:if test="${not empty currentNode.properties.link.node}">
+            <div class="more">
+                <span><a href="${url.base}${currentNode.properties.link.node.path}.html">Read more...</a></span>
+            </div>
+        </c:if>
     </div>
 </div>
 

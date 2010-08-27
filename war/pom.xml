@@ -130,7 +130,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>gwt-maven-plugin</artifactId>
-                        <version>1.2-SNAPSHOT</version>
+                        <version>1.2</version>
                         <configuration>
                             <localWorkers>5</localWorkers>
                             <noServer>true</noServer>

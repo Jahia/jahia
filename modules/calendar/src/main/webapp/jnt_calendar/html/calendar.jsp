@@ -35,7 +35,7 @@
         </c:otherwise>
     </c:choose>
 </c:forEach>
-<template:addResources type="inlinejavascript">
+<template:addResources type="inlinejavascript" key="${renderContext.mainResource.node.identifier}">
     $(document).ready(function() {
     // page is now ready, initialize the calendar...
     $('#calendar${currentNode.identifier}').fullCalendar({

@@ -526,6 +526,14 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <description>
+                key for managing uniqueness of inlinejavascript or inlinecss type.
+            </description>
+            <name>key</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>
     <tag>
         <description>Add a wrapper.

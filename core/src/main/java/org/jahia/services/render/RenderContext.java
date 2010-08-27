@@ -187,7 +187,11 @@ public class RenderContext {
     }
 
     public void addStaticAsset(String assetType,String asset, boolean insert) {
-        Set<String> assets = getStaticAssets(assetType);
+        addStaticAsset(assetType,asset,insert,"");
+    }
+    public void addStaticAsset(String assetType,String asset, boolean insert, String key) {
+        String type = assetType + key;
+        Set<String> assets = getStaticAssets(type);
         boolean isInlined = "inlinecss".equalsIgnoreCase(assetType) || "inlinejavascript".equalsIgnoreCase(assetType) ;
         String resourceFilename = "javascript".equalsIgnoreCase(assetType) ? StringUtils.substringAfterLast(asset, "/") : asset;
         if (isInlined || !resourceFileNames.contains(resourceFilename)) {
@@ -197,9 +201,14 @@ public class RenderContext {
                 my.addAll(assets);
                 assets = my;
             } else {
+                if(!"".equals(key)) {
+                    assets.clear();
+                    assets.add(asset);
+                } else {
                 assets.add(asset);
+                }
             }
-            staticAssets.put(assetType, assets);
+            staticAssets.put(type, assets);
             if (!isInlined) {
                 resourceFileNames.add(resourceFilename);
             }

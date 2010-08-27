@@ -205,9 +205,9 @@ public class TemplateNodeFilter extends AbstractFilter {
                 ok = !templateNode.hasProperty("j:templateKey");
             } else {
                 ok = templateNode.hasProperty("j:templateKey") && resource.getTemplate().equals(templateNode.getProperty("j:templateKey").getString());
-                if (ok) {
+                /*if (ok && !resource.getContextConfiguration().equals("page")) {
                     resource.setTemplate(null);
-                }
+                }*/
             }
         }
         if (ok) {

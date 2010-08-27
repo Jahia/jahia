@@ -60,7 +60,7 @@ public class AddResourcesTag extends AbstractJahiaTag {
     private String type;
     private String resources;
     private String title;
-
+    private String key;
     /**
      * Default processing of the end tag returning EVAL_PAGE.
      *
@@ -158,7 +158,12 @@ public class AddResourcesTag extends AbstractJahiaTag {
     @Override
     public int doAfterBody() throws JspException {
         if ("inlinecss".equals(type) || "inlinejavascript".equals(type)) {
+            if(key!=null) {
+                getRenderContext().addStaticAsset(type, getBodyContent().getString(), insert, key);
+            }
+            else {
             getRenderContext().addStaticAsset(type, getBodyContent().getString(), insert);
+            }
             getBodyContent().clearBody();
         }
         return super.doAfterBody();
@@ -187,4 +192,7 @@ public class AddResourcesTag extends AbstractJahiaTag {
         this.title = title;
     }
 
+    public void setKey(String key) {
+        this.key = key;
+    }
 }

@@ -3,91 +3,6 @@
     <skipIfNotSupported/>
     <programGroup defaultName="${product.name} ${product.version}" location="applications"/>
     
-<!-- Documentation -->
-    <shortcut
-        name="Jahia Readme"
-        subgroup="\Documentation"
-        description="Open the Jahia README file"
-        url="${jahia.war.target.path}/html/startup/readme.html"
-        programGroup="yes"
-        type="Link"
-        encoding="UTF-8">
-        <createForPack name="Apache Tomcat"/>
-    </shortcut>
-    <shortcut
-        name="Jahia Community Web Site"
-        subgroup="\Documentation"
-        description="Opens the Jahia Community Web site"
-        url="http://www.jahia.org/"
-        type="Link"
-        programGroup="yes"
-        encoding="UTF-8">
-    </shortcut>
-    <shortcut
-        name="Jahia Company Web Site"
-        subgroup="\Documentation"
-        description="Opens the Jahia Company Web site"
-        url="http://www.jahia.com/"
-        type="Link"
-        programGroup="yes"
-        encoding="UTF-8">
-    </shortcut>
-    <shortcut
-        name="Jahiapedia"
-        subgroup="\Documentation"
-        description="Opens the Jahiapedia page on the Jahia Community Web site"
-        url="http://www.jahia.org/cms/home/Jahiapedia"
-        type="Link"
-        programGroup="yes"
-        encoding="UTF-8">
-    </shortcut>
-    <shortcut
-        name="Issue Tracking"
-        subgroup="/Documentation"
-        description="Opens the Issue Tracking system"
-        url="http://jira.jahia.org/"
-        type="Link"
-        programGroup="yes"
-        encoding="UTF-8">
-    </shortcut>
-    
-<!-- Shortcuts -->
-    <shortcut
-        name="Jahia (plain)"
-        description="Open the Jahia welcome page (running on localhost)"
-        iconFile="$INSTALL_PATH/icons/jahia.png"
-        iconIndex="0"
-        url="http://localhost:8080${jahia.war.contextPath}"
-        type="Link"
-        programGroup="yes"
-        encoding="UTF-8">
-        <createForPack name="Apache Tomcat"/>
-    </shortcut>
-    <shortcut
-        name="Jahia"
-        subgroup="\Shortcuts (only when Jahia is running)"
-        description="Open the Jahia welcome page (running on localhost)"
-        iconFile="$INSTALL_PATH/icons/jahia.png"
-        iconIndex="0"
-        url="http://localhost:8080${jahia.war.contextPath}"
-        type="Link"
-        programGroup="yes"
-        encoding="UTF-8">
-        <createForPack name="Apache Tomcat"/>
-    </shortcut>
-    <shortcut
-        name="Jahia Administration"
-        subgroup="Shortcuts (only when Jahia is running)"
-        description="Open the Jahia Administration page (running on localhost)"
-        iconFile="$INSTALL_PATH/icons/jahia.png"
-        iconIndex="0"
-        url="http://localhost:8080${jahia.war.contextPath}/administration"
-        type="Link"
-        programGroup="yes"
-        encoding="UTF-8">
-        <createForPack name="Apache Tomcat"/>
-    </shortcut>
-
 <!-- Start/stop Tomcat -->    
     <shortcut
         name="Start Jahia"
@@ -145,4 +60,170 @@
         encoding="UTF-8">
     </shortcut>
 
+<!-- Shortcuts -->
+    <shortcut
+     name="Jahia (localhost)"
+     description="Open the Jahia welcome page (running on localhost)"
+     programGroup="yes"
+     desktop="no"
+     applications="no"
+     startMenu="no"
+     startup="no"
+     target="$INSTALL_PATH/bin/openUrl.sh"
+     iconFile="$INSTALL_PATH/icons/jahia.png"
+     iconIndex="0"
+     commandLine="http://localhost:8080${jahia.war.contextPath}"
+     workingDirectory="$INSTALL_PATH/"
+     type="Application"
+     encoding="UTF-8"
+     terminal="false"
+     url="http://localhost:8080${jahia.war.contextPath}"
+     KdeSubstUID="false"
+     initialState="normal"
+     categories=""
+     createForAll="false">
+     <createForPack name="Apache Tomcat"/>
+    </shortcut>
+     
+    <shortcut
+     name="Jahia Administration (localhost)"
+     description="Open the Jahia Administration page (running on localhost)"
+     programGroup="yes"
+     desktop="no"
+     applications="no"
+     startMenu="no"
+     startup="no"
+     target="$INSTALL_PATH/bin/openUrl.sh"
+     iconFile="$INSTALL_PATH/icons/jahia.png"
+     iconIndex="0"
+     commandLine="http://localhost:8080${jahia.war.contextPath}/administration"
+     workingDirectory="$INSTALL_PATH/"
+     type="Application"
+     encoding="UTF-8"
+     terminal="false"
+     url="http://localhost:8080${jahia.war.contextPath}/administration"
+     KdeSubstUID="false"
+     initialState="normal"
+     categories=""
+     createForAll="false">
+     <createForPack name="Apache Tomcat"/>
+    </shortcut>
+
+<!-- Documentation -->
+    <shortcut
+     name="Jahia Readme"
+     description="Open the Jahia README file"
+     programGroup="yes"
+     desktop="no"
+     applications="no"
+     startMenu="no"
+     startup="no"
+     target="$INSTALL_PATH/bin/openUrl.sh"
+     iconFile="$INSTALL_PATH/icons/jahia.png"
+     iconIndex="0"
+     commandLine="${jahia.war.target.path}/html/startup/readme.html"
+     workingDirectory="$INSTALL_PATH/docs"
+     type="Application"
+     encoding="UTF-8"
+     terminal="false"
+     url="file://$INSTALL_PATH/docs"
+     KdeSubstUID="false"
+     initialState="normal"
+     categories=""
+     createForAll="false">
+     <createForPack name="Apache Tomcat"/>
+    </shortcut>
+    <shortcut
+     name="Jahia Community Web Site"
+     description="Opens the Jahia Community Web site"
+     programGroup="yes"
+     desktop="no"
+     applications="no"
+     startMenu="no"
+     startup="no"
+     target="$INSTALL_PATH/bin/openUrl.sh"
+     iconFile="$INSTALL_PATH/icons/jahia.png"
+     iconIndex="0"
+     commandLine="http://www.jahia.org/"
+     workingDirectory="$INSTALL_PATH/docs"
+     type="Application"
+     encoding="UTF-8"
+     terminal="false"
+     url="http://www.jahia.org/"
+     KdeSubstUID="false"
+     initialState="normal"
+     categories=""
+     createForAll="false">
+     <createForPack name="Apache Tomcat"/>
+    </shortcut>
+    <shortcut
+     name="Jahia Company Web Site"
+     description="Opens the Jahia Company Web site"
+     programGroup="yes"
+     desktop="no"
+     applications="no"
+     startMenu="no"
+     startup="no"
+     target="$INSTALL_PATH/bin/openUrl.sh"
+     iconFile="$INSTALL_PATH/icons/jahia.png"
+     iconIndex="0"
+     commandLine="http://www.jahia.com/"
+     workingDirectory="$INSTALL_PATH/docs"
+     type="Application"
+     encoding="UTF-8"
+     terminal="false"
+     url="http://www.jahia.com/"
+     KdeSubstUID="false"
+     initialState="normal"
+     categories=""
+     createForAll="false">
+     <createForPack name="Apache Tomcat"/>
+    </shortcut>
+    <shortcut
+     name="Jahiapedia"
+     description="Opens the Jahiapedia page on the Jahia Community Web site"
+     programGroup="yes"
+     desktop="no"
+     applications="no"
+     startMenu="no"
+     startup="no"
+     target="$INSTALL_PATH/bin/openUrl.sh"
+     iconFile="$INSTALL_PATH/icons/jahia.png"
+     iconIndex="0"
+     commandLine="http://www.jahia.org/cms/home/Jahiapedia"
+     workingDirectory="$INSTALL_PATH/docs"
+     type="Application"
+     encoding="UTF-8"
+     terminal="false"
+     url="http://www.jahia.org/cms/home/Jahiapedia"
+     KdeSubstUID="false"
+     initialState="normal"
+     categories=""
+     createForAll="false">
+     <createForPack name="Apache Tomcat"/>
+    </shortcut>
+    <shortcut
+     name="Issue Tracking"
+     description="Opens the Issue Tracking system"
+     programGroup="yes"
+     desktop="no"
+     applications="no"
+     startMenu="no"
+     startup="no"
+     target="$INSTALL_PATH/bin/openUrl.sh"
+     iconFile="$INSTALL_PATH/icons/jahia.png"
+     iconIndex="0"
+     commandLine="http://jira.jahia.org/"
+     workingDirectory="$INSTALL_PATH/docs"
+     type="Application"
+     encoding="UTF-8"
+     terminal="false"
+     url="http://jira.jahia.org/"
+     KdeSubstUID="false"
+     initialState="normal"
+     categories=""
+     createForAll="false">
+     <createForPack name="Apache Tomcat"/>
+    </shortcut>
+     
 </shortcuts>

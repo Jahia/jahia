@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <antactions>
 
-	<pack name="Jahia Core">
-		<antcall order="afterpacks" buildresource="AntBuildFile" verbose="true" messageid="jahia.configuring">
+	<pack name="Jahia xCM Platform">
+		<antcall order="afterpacks" buildresource="AntBuildFile" verbose="true" messageid="jahia.configuring" logfile="$INSTALL_PATH/logs/install.log">
 			<property name="INSTALL_PATH" value="${INSTALL_PATH}"/>
 			<property name="jahia.war.target.path" value="${jahia.war.target.path}"/>
 			<property name="use.bundled.tomcat" value="${jahia.tomcat.pack.selected}"/>
+			<property name="server.type" value="${server.type}"/>
 			<target name="jahia-configure" />
-		</antcall>
-		<antcall order="afterpacks" buildresource="AntBuildFile" verbose="true" messageid="jahia.cleanup">
-			<property name="INSTALL_PATH" value="${INSTALL_PATH}"/>
-			<target name="cleanup" />
 		</antcall>
 	</pack>
 </antactions>

@@ -1,63 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <processing>
 	<logfiledir>$INSTALL_PATH/logs</logfiledir>
-    <job name="Configure Jahia">
-        <executeForPack name="Jahia Core"/>
-        <executefile name="$JAVA_HOME/bin/java">
-            <arg>-Dderby.system.home=${jahia.war.target.path}/WEB-INF/var/dbdata</arg>
-            <arg>-jar</arg>
-            <arg>$INSTALL_PATH/configurators.jar</arg>
-            <arg>$INSTALL_PATH/logs/install.properties</arg>
-        </executefile>
-    </job>
-    <job name="Prepare WAR" condition="!cnd.pack.tomcat">
-        <executeForPack name="Jahia Core"/>
-        <executefile name="$JAVA_HOME/bin/java">
-            <arg>-jar</arg>
-            <arg>$INSTALL_PATH/archivers.jar</arg>
-            <arg>-cm</arg>
-            <arg>$INSTALL_PATH/build</arg>
-            <arg>$INSTALL_PATH/ROOT.war</arg>
-            <arg>${server.type}</arg>
-        </executefile>
-    </job>
-    <job name="JBoss SAR" condition="cnd.server.type.jboss">
-        <executeForPack name="Jahia Core"/>
-        <executefile name="$JAVA_HOME/bin/java">
-            <arg>-jar</arg>
-            <arg>$INSTALL_PATH/archivers.jar</arg>
-            <arg>-cm</arg>
-            <arg>$INSTALL_PATH/jahia-jboss-config</arg>
-            <arg>$INSTALL_PATH/jahia-jboss-config.sar</arg>
-        </executefile>
-    </job>
-    
-    <job name="Cleanup">
-        <os family="windows" />
-        <executefile name="cmd">
-            <arg>/c</arg>
-            <arg>del</arg>
-            <arg>/q</arg>
-            <arg>$INSTALL_PATH\archivers.jar</arg>
-        </executefile>
-        <executefile name="cmd">
-            <arg>/c</arg>
-            <arg>del</arg>
-            <arg>/q</arg>
-            <arg>$INSTALL_PATH\configurators.jar</arg>
-        </executefile>
-    </job>
-    <job name="Cleanup">
-        <os family="unix" />
-        <os family="mac" />
-        <executefile name="rm">
-            <arg>$INSTALL_PATH/archivers.jar</arg>
-        </executefile>
-        <executefile name="rm">
-            <arg>$INSTALL_PATH/configurators.jar</arg>
-        </executefile>
-    </job>
-    
     <job name="Start Apache Tomcat" condition="cnd.launch.jahia">
         <executeForPack name="Apache Tomcat"/>
         <os family="windows" />
@@ -65,6 +8,7 @@
             <env>CATALINA_HOME=$INSTALL_PATH\tomcat</env>
         </executefile>
     </job>
+    <!--
     <job name="Start Apache Tomcat" condition="cnd.launch.jahia">
         <executeForPack name="Apache Tomcat"/>
         <os family="unix" />
@@ -79,6 +23,7 @@
         	<arg>...Apache Tomcat start initiated.</arg>
         </executefile>
     </job>
+    -->
     <job name="Show Readme" condition="cnd.view.readme">
         <executeForPack name="Apache Tomcat"/>
         <os family="windows" />

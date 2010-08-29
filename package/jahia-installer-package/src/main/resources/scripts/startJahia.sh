@@ -5,3 +5,4 @@ echo ---------------------------------------------------------------------------
 
 cd tomcat/bin
 ./startup.sh
+tail -f ../logs/catalina.out

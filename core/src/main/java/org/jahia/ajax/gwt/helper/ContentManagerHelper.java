@@ -678,7 +678,7 @@ public class ContentManagerHelper {
         try {
             node = currentUserSession.getNode(path);
             if (!node.isCheckedOut()) {
-                node.checkout();
+                currentUserSession.checkout(node);
             }
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
@@ -694,7 +694,7 @@ public class ContentManagerHelper {
             }
         }
         try {
-            node.save();
+            currentUserSession.save();
         } catch (RepositoryException e) {
             logger.error("error", e);
             throw new GWTJahiaServiceException("Could not save file " + node.getName());

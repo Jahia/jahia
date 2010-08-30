@@ -47,6 +47,8 @@ import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.Style;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Widget;
@@ -213,22 +215,21 @@ public class AclEditor {
                     String permValue = ace.getPermissions().get(perm);
                     CheckBox chb = new CheckBox();
                     chb.setTitle(columnName);
-                    chb.setChecked("GRANT".equals(permValue));
+                    chb.setValue("GRANT".equals(permValue));
                     chb.setEnabled(!readOnly);
-                    chb.addClickListener(new ClickListener() {
-                        public void onClick(Widget sender) {
+                    chb.addClickHandler(new ClickHandler() {
+                        public void onClick(ClickEvent sender) {
                             setDirty();
-                            boolean checked = ((CheckBox) sender).isChecked();
+                            boolean checked = ((CheckBox) sender.getSource()).getValue()!=null?((CheckBox) sender.getSource()).getValue():false;
                             ace.getPermissions().put(perm, checked ? "GRANT" : "DENY");
                             if (checked) {
                                 grid.getView().getRow(rowIndex);
                                 List<String> toCheck = acl.getPermissionsDependencies().get(perm);
                                 if (toCheck != null) {
                                     for (String s1 : toCheck) {
-                                        CheckBox checkBox = (CheckBox) grid.getView().getWidget(rowIndex,available.indexOf(s1) + 2);
-                                        if (!checkBox.isChecked()) {
-                                            checkBox.setChecked(true);
-                                            checkBox.onBrowserEvent(Event.getCurrentEvent());
+                                        CheckBox checkBox = (CheckBox) grid.getView().getWidget(rowIndex,available.indexOf(perm) + 2);
+                                        if (checkBox!=null && !checkBox.getValue()) {
+                                            checkBox.setValue(true,true);
                                         }
                                     }
                                 }
@@ -236,10 +237,9 @@ public class AclEditor {
                                 Set<String> toCheck = acl.getPermissionsDependencies().keySet();
                                 for (String s1 : toCheck) {
                                     if (acl.getPermissionsDependencies().get(s1).contains(perm)) {
-                                        CheckBox checkBox = (CheckBox) grid.getView().getWidget(rowIndex,available.indexOf(s1) + 2);
-                                        if (checkBox.isChecked()) {
-                                            checkBox.setChecked(false);
-                                            checkBox.onBrowserEvent(Event.getCurrentEvent());
+                                        CheckBox checkBox = (CheckBox) grid.getView().getWidget(rowIndex,available.indexOf(perm) + 2);
+                                        if (checkBox != null && checkBox.getValue()) {
+                                            checkBox.setValue(false,true);
                                         }
                                     }
                                 }

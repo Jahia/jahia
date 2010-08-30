@@ -39,6 +39,7 @@ import javax.jcr.nodetype.ItemDefinition;
 import javax.jcr.version.OnParentVersionAction;
 
 import org.jahia.bin.Jahia;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
@@ -176,7 +177,8 @@ public class ExtendedItemDefinition implements ItemDefinition {
     public String getLabel(Locale locale) {
         String label = labels.get(locale);
         if (label == null) {
-            label = new JahiaResourceBundle(getResourceBundleId(), locale, null, JahiaTemplatesRBLoader
+            JahiaTemplatesPackage aPackage = getDeclaringNodeType().getTemplatePackage();
+            label = new JahiaResourceBundle(getResourceBundleId(), locale, aPackage!=null ? aPackage.getName(): null, JahiaTemplatesRBLoader
                     .getInstance(Thread.currentThread().getContextClassLoader(), null)).getString(
                     getResourceBundleKey(), getName().replace(':', '_'));
             labels.put(locale, label);

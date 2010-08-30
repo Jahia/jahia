@@ -31,12 +31,12 @@
             - <fmt:formatDate value="${created.time}" type="date" dateStyle="medium"/>
         </p>
 		<p>
-	    	<label>Title: </label>
+	    	<label><fmt:message key="title"/> </label>
 			<input type="text" value="<c:out value='${title.string}'/>" name="jcr:title"/>
         </p>
 
         <div class="post-content">
-        	<label>Post: </label>
+        	<label><fmt:message key="blog.post"/> </label>
                 <textarea name="text" rows="10" cols="70" id="editContent">
                     ${fn:escapeXml(text.string)}
                 </textarea>

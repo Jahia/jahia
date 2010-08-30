@@ -5,11 +5,23 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <template:addResources type="css" resources="blog.css"/>
+<template:addResources type="javascript"
+                       resources="${url.context}/gwt/resources/${url.ckEditor}/ckeditor.js"/>
 
 <jcr:nodeProperty node="${renderContext.mainResource.node}" name="jcr:title" var="title"/>
 <jcr:nodeProperty node="${renderContext.mainResource.node}" name="text" var="text"/>
 <jcr:nodeProperty node="${renderContext.mainResource.node}" name="jcr:createdBy" var="createdBy"/>
 <jcr:nodeProperty node="${renderContext.mainResource.node}" name="jcr:created" var="created"/>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $.each(['editContent'], function(index, element) {
+            if ($('#' + element).length > 0) {
+                $('label[for="' + element + '"]').hide();
+                CKEDITOR.replace(element, { toolbar : 'User'});
+            }
+        });
+    });
+</script>
 
 <form id="formPost" method="post" action="${renderContext.mainResource.node.name}/" name="blogPost">
     <input type="hidden" name="nodeType" value="jnt:blogContent"/>
@@ -20,7 +32,7 @@
         - <fmt:formatDate value="${created.time}" type="date" dateStyle="medium"/>
     </p>
     <p>
-    	<label>Title: </label>
+    	<label><fmt:message key="title"/> </label>
         <input type="text" value="" name="jcr:title"/>
     </p>
     
@@ -32,7 +44,7 @@
     </ul>
     <div class="post-content">
         <p>
-        	<label>Post: </label>
+        	<label><fmt:message key="blog.post"/> </label>
         	<textarea name="text" rows="10" cols="70" id="editContent"></textarea>
         </p>
         <p>

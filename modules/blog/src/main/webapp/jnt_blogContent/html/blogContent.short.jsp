@@ -36,7 +36,7 @@
     <p class="post-info"><fmt:message key="by"/> <c:set var="fields" value="${currentNode.propertiesAsString}"/>
         <a href="${url.base}/users/${createdBy.string}.html">${createdBy.string}</a>
         - <fmt:formatDate value="${created.time}" type="date" dateStyle="medium"/>
-        <!-- <a href="#"><fmt:message key="category"/></a>    -->
+        <!-- <a href="#"><fmt:message key="blog.category"/></a>    -->
     </p>
     <ul class="post-tags">
         <jcr:nodeProperty node="${currentNode}" name="j:tags" var="assignedTags"/>
@@ -55,10 +55,10 @@
     <c:set var="numberOfPosts" value="${numberOfPostsQuery.rows.size}"/>
     <p class="post-info-links">
         <c:if test="${numberOfPosts == 0}">
-            <a class="comment_count" href="${url.base}${currentNode.path}.html#comments">0 <fmt:message key="comments"/></a>
+            <a class="comment_count" href="${url.base}${currentNode.path}.html#comments">0 <fmt:message key="blog.comments"/></a>
         </c:if>
         <c:if test="${numberOfPosts > 0}">
-            <a class="comment_count" href="${url.base}${currentNode.path}.html#comments">${numberOfPosts} <fmt:message key="comments"/></a>
+            <a class="comment_count" href="${url.base}${currentNode.path}.html#comments">${numberOfPosts} <fmt:message key="blog.comments"/></a>
         </c:if>
     </p>
     <!--stop post-->

@@ -419,7 +419,7 @@ public class ContentTest {
             String name = "testSearch" + System.currentTimeMillis() + ".txt";
             JCRNodeWrapper testFile = rootNode.uploadFile(name, is, mimeType);
             session.save();
-            nodes.add(testFile.getIdentifier());
+            // nodes.add(testFile.getIdentifier());
 
             // Do the query
             QueryManager qm = JCRSessionFactory.getInstance().getCurrentUserSession().getWorkspace().getQueryManager();
@@ -436,6 +436,10 @@ public class ContentTest {
                         testFile.getPath(), path);
             }
             assertEquals(providerRoot + " : Invalid number of results returned by query", 1, resultCount);
+
+            Node removeTestFile = session.getNodeByIdentifier(testFile.getIdentifier());
+            removeTestFile.remove();
+            session.save();
         } finally {
             session.logout();
         }

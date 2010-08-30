@@ -17,7 +17,7 @@
         </div>
         <c:if test="${not empty currentNode.properties.link.node}">
             <div class="more">
-                <span><a href="${url.base}${currentNode.properties.link.node.path}.html">Read more...</a></span>
+                <span><a href="${url.base}${currentNode.properties.link.node.path}.html"><fmt:message key="jnt_teaser.readMore"/></a></span>
             </div>
         </c:if>
     </div>

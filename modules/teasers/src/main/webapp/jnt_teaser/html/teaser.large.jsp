@@ -12,7 +12,7 @@
         <div class="box2-illustration" style="background-image:url(${image.node.url})"></div>
 
         <div class="box2-text">${currentNode.properties.abstract.string}</div>
-        <div class="box2-more"><a href="${url.base}${currentNode.properties.link.node.path}.html">Read more...</a></div>
+        <div class="box2-more"><a href="${url.base}${currentNode.properties.link.node.path}.html"><fmt:message key="jnt_teaser.readMore"/></a></div>
         <div class="box2-bottomright"></div>
         <div class="box2-bottomleft"></div>
         <div class="clear"> </div>

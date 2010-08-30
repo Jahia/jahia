@@ -188,7 +188,7 @@ public class CategoryTest extends TestCase {
 
     public void testCategoryChilds() throws Exception {
         Category rootCategory = Category.createCategory("firstRoot", null);
-        Category newCategory = Category.createCategory("rootChild", rootCategory);
+        Category.createCategory("rootChild", rootCategory);
         List<Category> childObjectKeys = rootCategory.getChildCategories();
         assertEquals(childObjectKeys.size(), 1);
         assertEquals(childObjectKeys.get(0).getKey(), "rootChild");

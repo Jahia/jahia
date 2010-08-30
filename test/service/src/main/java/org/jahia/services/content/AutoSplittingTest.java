@@ -32,19 +32,13 @@
 
 package org.jahia.services.content;
 
-import org.apache.commons.httpclient.HttpClient;
 import org.apache.log4j.Logger;
-import org.jahia.api.Constants;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
-import org.jahia.utils.LanguageCodeConverters;
 import org.junit.*;
 import static org.junit.Assert.*;
 
 import javax.jcr.RepositoryException;
 import java.util.Date;
-import java.util.Locale;
 
 /**
  * A unit test to validate the proper behavior of the auto-splitting algorithm when creating nodes through the API
@@ -59,12 +53,10 @@ public class AutoSplittingTest {
 
     private static Logger logger = Logger.getLogger(AutoSplittingTest.class);
 
-    private HttpClient client;
     private final static String TESTSITE_NAME = "findTestSite";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
     private final static int TEST_NODE_COUNT = 1000;
 
-    private static JahiaSite site;
     private static final String AUTO_SPLIT_CONFIG = "constant,testNodes;date,date,yyyy;date,date,MM;date,date,ss";
     private static final String AUTO_SPLIT_NODETYPE = "jnt:contentList";
 
@@ -74,7 +66,7 @@ public class AutoSplittingTest {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
-                        site = TestHelper.createSite(TESTSITE_NAME);
+                        TestHelper.createSite(TESTSITE_NAME);
                     } catch (Exception e) {
                         logger.error("Cannot create or publish site", e);
                     }
@@ -83,23 +75,6 @@ public class AutoSplittingTest {
                     return null;
                 }
             });
-
-            JCRPublicationService jcrService = ServicesRegistry.getInstance()
-                    .getJCRPublicationService();
-
-            String defaultLanguage = site.getDefaultLanguage();
-
-            Locale englishLocale = LanguageCodeConverters.languageCodeToLocale("en");
-            Locale frenchLocale = LanguageCodeConverters.languageCodeToLocale("fr");
-
-            JCRSessionWrapper englishEditSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, englishLocale, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
-            JCRSessionWrapper englishLiveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE, englishLocale, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
-            JCRNodeWrapper englishEditSiteRootNode = englishEditSession.getNode(SITECONTENT_ROOT_NODE);
-            JCRNodeWrapper englishLiveSiteRootNode = englishLiveSession.getNode(SITECONTENT_ROOT_NODE);
-            JCRNodeWrapper englishEditSiteHomeNode = (JCRNodeWrapper) englishEditSiteRootNode.getNode("home");
-
-            englishEditSession.save();
-
         } catch (Exception ex) {
             logger.warn("Exception during test setUp", ex);
         }

@@ -35,9 +35,6 @@ package org.jahia.services.content;
 import org.apache.commons.io.IOUtils;
 import org.apache.jackrabbit.JcrConstants;
 import org.apache.log4j.Logger;
-import org.jahia.bin.Jahia;
-import org.jahia.params.ProcessingContext;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -65,7 +62,6 @@ import static org.junit.Assert.*;
 @RunWith(Parameterized.class)
 public class ContentTest {
     private static final transient Logger logger = Logger.getLogger(ContentTest.class);
-    private static JahiaSite site;
     private final static String TESTSITE_NAME = "contentTestSite";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
 
@@ -84,10 +80,9 @@ public class ContentTest {
         return data;
     }
 
-    private static ProcessingContext ctx;
     private String providerRoot;
 
-    private static List<String> nodes = new ArrayList();
+    private static List<String> nodes = new ArrayList<String>();
 
     public ContentTest(String path) {
         this.providerRoot = path;
@@ -99,8 +94,7 @@ public class ContentTest {
 
     @BeforeClass
     public static void oneTimeSetup() throws Exception {
-        ctx = Jahia.getThreadParamBean();
-        site = TestHelper.createSite(TESTSITE_NAME);
+        TestHelper.createSite(TESTSITE_NAME);
     }
 
     @AfterClass
@@ -134,7 +128,7 @@ public class ContentTest {
 
             JCRNodeWrapper testCollection = rootNode.createCollection(name);
             session.save();
-            nodes.add(testCollection.getUUID());
+            nodes.add(testCollection.getIdentifier());
 
             assertTrue(providerRoot + " : Created folder is not a collection", testCollection.isCollection());
 

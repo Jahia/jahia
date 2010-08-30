@@ -33,10 +33,8 @@
 package org.jahia.services.i18n;
 
 import junit.framework.TestCase;
-import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
-import java.io.*;
 import java.util.*;
 
 /**

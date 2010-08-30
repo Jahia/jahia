@@ -34,11 +34,8 @@ package org.jahia.services.render.filter;
 
 import org.jahia.bin.Jahia;
 import org.jahia.params.ParamBean;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
-import org.jahia.utils.LanguageCodeConverters;
 
 import junit.framework.TestCase;
 

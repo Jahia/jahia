@@ -49,12 +49,10 @@ import javax.jcr.Session;
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
 import javax.jcr.nodetype.NodeType;
-import javax.jcr.retention.RetentionPolicy;
 
 import org.apache.jackrabbit.core.JackrabbitRepositoryStub;
 import org.apache.jackrabbit.core.NodeImpl;
 import org.apache.jackrabbit.core.SessionImpl;
-import org.apache.jackrabbit.core.retention.RetentionPolicyImpl;
 import org.apache.jackrabbit.test.NotExecutableException;
 import org.apache.jackrabbit.test.RepositoryStub;
 import org.apache.jackrabbit.test.RepositoryStubException;
@@ -204,15 +202,6 @@ public class JahiaJackrabbitRepositoryStub extends RepositoryStub {
         ValueFactory factory = node.getSession().getValueFactory();
         node.setProperty("path", factory.createValue("/", PropertyType.PATH));
         node.setProperty("multi", new String[] { "one", "two", "three" });
-    }
-
-    /**
-     * Creates a node with a RetentionPolicy
-     */
-    private void addRetentionTestData(Node node) throws RepositoryException {
-        RetentionPolicy rp = RetentionPolicyImpl.createRetentionPolicy("testRetentionPolicy",
-                node.getSession());
-        node.getSession().getRetentionManager().setRetentionPolicy(node.getPath(), rp);
     }
 
     /**

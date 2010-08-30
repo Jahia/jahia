@@ -33,6 +33,7 @@
 package org.jahia.services.render.filter.cache;
 
 import net.htmlparser.jericho.*;
+import net.sf.ehcache.*;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.BlockingCache;
 import net.sf.ehcache.constructs.blocking.LockTimeoutException;
@@ -157,7 +158,13 @@ public class AggregateCacheFilter extends AbstractFilter {
         if (servedFromCache.contains(key)) {
             return previousOut;
         }
-
+        if (key.contains("_mr_")) {
+            resource.getDependencies().add(renderContext.getMainResource().getNode());
+            if(script!=null && Boolean.valueOf(
+                    script.getTemplate().getProperties().getProperty("cache.mainResource.flushParent", "false"))) {
+                resource.getDependencies().add(renderContext.getMainResource().getNode().getParent());
+            }
+        }
         final boolean cacheable = !notCacheableFragment.contains(key);
         final BlockingCache cache = cacheProvider.getCache();
         boolean debugEnabled = logger.isDebugEnabled();
@@ -170,10 +177,11 @@ public class AggregateCacheFilter extends AbstractFilter {
             String cacheAttribute = (String) renderContext.getRequest().getAttribute("expiration");
             Long expiration = cacheAttribute != null ? Long.valueOf(cacheAttribute) : Long.valueOf(script!=null?
                     script.getTemplate().getProperties().getProperty("cache.expiration", "-1"):"-1");
+            final Cache dependenciesCache = cacheProvider.getDependenciesCache();
             Set<JCRNodeWrapper> depNodeWrappers = resource.getDependencies();
             for (JCRNodeWrapper nodeWrapper : depNodeWrappers) {
                 String path = nodeWrapper.getPath();
-                Element element1 = cacheProvider.getDependenciesCache().get(path);
+                Element element1 = dependenciesCache.get(path);
                 Set<String> dependencies;
                 if (element1 != null) {
                     dependencies = (Set<String>) element1.getValue();
@@ -181,7 +189,7 @@ public class AggregateCacheFilter extends AbstractFilter {
                     dependencies = new LinkedHashSet<String>();
                 }
                 dependencies.add(perUserKey);
-                cacheProvider.getDependenciesCache().put(new Element(path, dependencies));
+                dependenciesCache.put(new Element(path, dependencies));
             }
             // append cache:include tag
             String cachedRenderContent = ESI_INCLUDE_STOPTAG_REGEXP.matcher(previousOut).replaceAll("</esi:include>");

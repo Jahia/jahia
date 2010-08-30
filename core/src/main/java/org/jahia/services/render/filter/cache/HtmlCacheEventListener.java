@@ -157,11 +157,14 @@ public class HtmlCacheEventListener extends DefaultEventListener {
 
     private void flushDependenciesOfPath(Cache depCache, Set<String> flushed, String path) {
         if (logger.isDebugEnabled()) {
-            logger.debug("Flushing caches for path : " + path);
+            logger.debug("Flushing dependencies for path : " + path);
         }
         Element element = !flushed.contains(path) ? depCache.get(path) : null;
         if (element != null) {
             flushed.add(path);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Flushing path : " + path);
+            }
             cacheProvider.invalidate(path);
             depCache.remove(element.getKey());
         }

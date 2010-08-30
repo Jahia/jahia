@@ -32,6 +32,7 @@
 
 package org.jahia.services.render.filter.cache;
 
+import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.BlockingCache;
 import net.sf.ehcache.constructs.blocking.LockTimeoutException;
@@ -111,10 +112,18 @@ public class CacheFilter extends AbstractFilter {
                 chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.valueOf(
                     script.getTemplate().getProperties().getProperty("cache.mainResource", "false")));
             }
+            resource.getDependencies().add(resource.getNode());
             Map<String, Map<String, Integer>> templatesCacheExpiration = renderContext.getTemplatesCacheExpiration();
             boolean debugEnabled = logger.isDebugEnabled();
             boolean displayCacheInfo = Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
             String key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
+            if(key.contains("_mr_")) {
+                resource.getDependencies().add(renderContext.getMainResource().getNode());
+                if(script!=null && Boolean.valueOf(
+                    script.getTemplate().getProperties().getProperty("cache.mainResource.flushParent", "false"))) {
+                    resource.getDependencies().add(renderContext.getMainResource().getNode().getParent());
+                }
+            }
             String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername()).replaceAll("_mr_",renderContext.getMainResource().getNode().getPath()+renderContext.getMainResource().getTemplate());
             if (debugEnabled) {
                 logger.debug("Generating content for node : " + perUserKey);
@@ -128,6 +137,7 @@ public class CacheFilter extends AbstractFilter {
             String cacheAttribute = (String) renderContext.getRequest().getAttribute("expiration");
             Long expiration = cacheAttribute != null ? Long.valueOf(cacheAttribute) :
                     Long.valueOf(script!=null?script.getTemplate().getProperties().getProperty("cache.expiration", "-1"):"-1");
+            Cache dependenciesCache = cacheProvider.getDependenciesCache();
             Set<JCRNodeWrapper> depNodeWrappers = resource.getDependencies();
             for (JCRNodeWrapper nodeWrapper : depNodeWrappers) {
                 Long lowestExpiration = 0L;
@@ -139,7 +149,7 @@ public class CacheFilter extends AbstractFilter {
                     }
                     expiration = lowestExpiration;
                 }
-                Element element1 = cacheProvider.getDependenciesCache().get(path);
+                Element element1 = dependenciesCache.get(path);
                 Set<String> dependencies;
                 if (element1 != null) {
                     dependencies = (Set<String>) element1.getValue();
@@ -147,7 +157,7 @@ public class CacheFilter extends AbstractFilter {
                     dependencies = new LinkedHashSet<String>();
                 }
                 dependencies.add(perUserKey);
-                cacheProvider.getDependenciesCache().put(new Element(path, dependencies));
+                dependenciesCache.put(new Element(path, dependencies));
             }
             CacheEntry<String> cacheEntry = new CacheEntry<String>(previousOut);
             Element cachedElement = new Element(perUserKey, cacheEntry);

@@ -107,7 +107,10 @@ public class ModuleCacheProvider implements InitializingBean {
     public void invalidate(String nodePath) {
         Set<String> deps = (Set<String>) dependenciesCache.get(nodePath).getValue();
         for (String dep : deps) {
-            blockingCache.remove(dep);
+            boolean removed = blockingCache.remove(dep);
+            if(logger.isDebugEnabled() && ! removed) {
+                logger.debug("Failed to remove "+dep+" from cache");
+            }
             try {
                 blockingCache.remove(keyGenerator.replaceField(dep, "template", "hidden.load"));
                 blockingCache.remove(keyGenerator.replaceField(dep, "template", "hidden.header"));

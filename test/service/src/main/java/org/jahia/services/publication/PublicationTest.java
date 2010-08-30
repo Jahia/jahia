@@ -80,7 +80,7 @@ public class PublicationTest extends TestCase {
     private final static String TESTSITE_NAME = "jcrPublicationTest";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
     private final static String INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE = "English text";
-    private static final String INITIAL_ENGLISH_SHARED_TEXT_NODE_PROPERTY_VALUE = "English shared text";
+//    private static final String INITIAL_ENGLISH_SHARED_TEXT_NODE_PROPERTY_VALUE = "English shared text";
 
     protected void setUp() throws Exception {
         try {
@@ -156,7 +156,7 @@ public class PublicationTest extends TestCase {
 //// todo : cannot use a different user than current user, use the current user. plan a switch user in test framework
 ////            accessWasDenied = false;
 ////            try {
-////                jcrService.unpublish(stageNode.getPath(), languages);
+////                jcrService.unpublish(stageNode.getIdentifier(), languages);
 ////            } catch (AccessDeniedException e) {
 ////                accessWasDenied = true;
 ////            }
@@ -352,7 +352,7 @@ public class PublicationTest extends TestCase {
 //        addNodeAndDependands(pageNodeToPublish, languages,
 //                publishedDateForObjects);
 //
-//        jcrService.unpublish(pageNodeToPublish.getPath(), languages);
+//        jcrService.unpublish(pageNodeToPublish.getIdentifier(), languages);
 //
 //        JCRSessionWrapper liveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE);
 //
@@ -458,7 +458,7 @@ public class PublicationTest extends TestCase {
 //
 //        // Case 3 : not let's unpublish the node and test it's presence in the live workspace.
 //
-//        jcrService.unpublish(editTextNode1.getPath(), Collections.singleton(englishLiveSession.getLocale().toString()));
+//        jcrService.unpublish(editTextNode1.getIdentifier(), Collections.singleton(englishLiveSession.getLocale().toString()));
 //
 //        // englishLiveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
 //        testNodeNotInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/contentList1/contentList1_text1", "Text node 1 was unpublished, should not be available in the live workspace anymore !");
@@ -647,7 +647,7 @@ public class PublicationTest extends TestCase {
 //
 //        // Case 3 : now let's unpublish the node and test it's presence in the live workspace.
 //
-//        jcrService.unpublish(editSharedNode1.getPath(), Collections.singleton(englishLiveSession.getLocale().toString()));
+//        jcrService.unpublish(editSharedNode1.getIdentifier(), Collections.singleton(englishLiveSession.getLocale().toString()));
 //
 //        // englishLiveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
 //        testNodeNotInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/contentList1/shared_node_list1", "Shared Text node 1 was unpublished, should not be available in the live workspace anymore !");
@@ -849,7 +849,7 @@ public class PublicationTest extends TestCase {
 
         // Case 3 : now let's unpublish the node and test it's presence in the live workspace.
 
-        jcrService.unpublish(englishEditPage1Node.getPath(), languages);
+        jcrService.unpublish(englishEditPage1Node.getIdentifier(), languages);
         testNodeNotInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page1", "Page 1 should have been unpublished !");
         testNodeInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page1/page1_subpage1", "Sub Page 1 should not have been published");
         testNodeNotInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page1/page1_subpage2", "Sub Page 2 should not have been published");

@@ -34,10 +34,8 @@ package org.jahia.services.query;
 
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.test.TestHelper;
-import org.jahia.utils.LanguageCodeConverters;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -71,8 +69,7 @@ public class QueryModificationTest {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
-                        TestHelper.createSite(TESTSITE_NAME, "localhost", TestHelper.ACME_TEMPLATES,
-                                null);
+                        TestHelper.createSite(TESTSITE_NAME, "localhost", TestHelper.ACME_TEMPLATES);
                     } catch (Exception e) {
                         logger.error("Cannot create or publish site", e);
                     }
@@ -252,12 +249,11 @@ public class QueryModificationTest {
             if (queryManager != null) {
                 String query = "SELECT * FROM [jnt:news] as news INNER JOIN [jmix:tagged] AS tags ON news.[j.tags] = tags.[jcr:uuid] WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND LOCALNAME(tags)='test' ORDER BY news.[jcr:title]";
                 Query q = queryManager.createQuery(query, Query.JCR_SQL2);
-// TODO: uncomment when we deploy a Jackrabbit patch               
-//                assertEquals("SELECT news.*, tags.* FROM [jnt:news] AS news INNER JOIN [jmix:tagged] AS tags ON news.[j.tags] = tags.[jcr:uuid] WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND LOCALNAME(tags) = 'test' AND news.[jcr:language] = 'en' ORDER BY news.[jcr:title]", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
-//                
-//                query = "SELECT news.*, tags.* FROM [jnt:news] AS news INNER JOIN [jmix:tagged] AS tags ON news.[j.tags] = tags.[jcr:uuid] WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND LOCALNAME(tags) = 'test' AND news.[jcr:language] = 'en' ORDER BY news.[jcr:title]";
-//                q = queryManager.createQuery(query, Query.JCR_SQL2);
-//                assertEquals("SELECT news.*, tags.* FROM [jnt:news] AS news INNER JOIN [jmix:tagged] AS tags ON news.[j.tags] = tags.[jcr:uuid] WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND LOCALNAME(tags) = 'test' AND news.[jcr:language] = 'en' ORDER BY news.[jcr:title]", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());                
+                assertEquals("SELECT news.*, tags.* FROM [jnt:news] AS news INNER JOIN [jmix:tagged] AS tags ON news.[j.tags] = tags.[jcr:uuid] WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND LOCALNAME(tags) = 'test' AND news.[jcr:language] = 'en' ORDER BY news.[jcr:title]", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
+                
+                query = "SELECT news.*, tags.* FROM [jnt:news] AS news INNER JOIN [jmix:tagged] AS tags ON news.[j.tags] = tags.[jcr:uuid] WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND LOCALNAME(tags) = 'test' AND news.[jcr:language] = 'en' ORDER BY news.[jcr:title]";
+                q = queryManager.createQuery(query, Query.JCR_SQL2);
+                assertEquals("SELECT news.*, tags.* FROM [jnt:news] AS news INNER JOIN [jmix:tagged] AS tags ON news.[j.tags] = tags.[jcr:uuid] WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND LOCALNAME(tags) = 'test' AND news.[jcr:language] = 'en' ORDER BY news.[jcr:title]", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());                
             }
 
         } catch (Exception ex) {
@@ -277,12 +273,11 @@ public class QueryModificationTest {
             if (queryManager != null) {
                 String query = "select press.* from [jnt:press] as press left outer join [nt:file] as file on press.pdfVersion = file.[jcr:uuid] inner join [nt:resource] as filecontent on ischildnode(filecontent, file) where contains(filecontent.*, 'ACME') or contains(press.*, 'ACME') order by press.[date] desc";
                 Query q = queryManager.createQuery(query, Query.JCR_SQL2);
-// TODO: Uncomment, when we receive the Jackrabbit patch                
-//                assertEquals("SELECT press.* FROM [jnt:press] AS press LEFT OUTER JOIN [nt:file] AS file ON press.pdfVersion = file.[jcr:uuid] INNER JOIN [nt:resource] AS filecontent ON ISCHILDNODE(filecontent, file) WHERE (CONTAINS(filecontent.*, 'ACME') OR CONTAINS(press.*, 'ACME')) AND press.[jcr:language] = 'en' ORDER BY press.date DESC", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
-//                
-//                query = "SELECT press.* FROM [jnt:press] AS press LEFT OUTER JOIN [nt:file] AS file ON press.pdfVersion = file.[jcr:uuid] INNER JOIN [nt:resource] AS filecontent ON ISCHILDNODE(filecontent, file) WHERE (CONTAINS(filecontent.*, 'ACME') OR CONTAINS(press.*, 'ACME')) AND press.[jcr:language] = 'en' ORDER BY press.date DESC";
-//                q = queryManager.createQuery(query, Query.JCR_SQL2);
-//                assertEquals("SELECT press.* FROM [jnt:press] AS press LEFT OUTER JOIN [nt:file] AS file ON press.pdfVersion = file.[jcr:uuid] INNER JOIN [nt:resource] AS filecontent ON ISCHILDNODE(filecontent, file) WHERE (CONTAINS(filecontent.*, 'ACME') OR CONTAINS(press.*, 'ACME')) AND press.[jcr:language] = 'en' ORDER BY press.date DESC", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());                
+                assertEquals("SELECT press.* FROM [jnt:press] AS press LEFT OUTER JOIN [nt:file] AS file ON press.pdfVersion = file.[jcr:uuid] INNER JOIN [nt:resource] AS filecontent ON ISCHILDNODE(filecontent, file) WHERE (CONTAINS(filecontent.*, 'ACME') OR CONTAINS(press.*, 'ACME')) AND press.[jcr:language] = 'en' ORDER BY press.date DESC", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
+                
+                query = "SELECT press.* FROM [jnt:press] AS press LEFT OUTER JOIN [nt:file] AS file ON press.pdfVersion = file.[jcr:uuid] INNER JOIN [nt:resource] AS filecontent ON ISCHILDNODE(filecontent, file) WHERE (CONTAINS(filecontent.*, 'ACME') OR CONTAINS(press.*, 'ACME')) AND press.[jcr:language] = 'en' ORDER BY press.date DESC";
+                q = queryManager.createQuery(query, Query.JCR_SQL2);
+                assertEquals("SELECT press.* FROM [jnt:press] AS press LEFT OUTER JOIN [nt:file] AS file ON press.pdfVersion = file.[jcr:uuid] INNER JOIN [nt:resource] AS filecontent ON ISCHILDNODE(filecontent, file) WHERE (CONTAINS(filecontent.*, 'ACME') OR CONTAINS(press.*, 'ACME')) AND press.[jcr:language] = 'en' ORDER BY press.date DESC", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());                
             }
 
         } catch (Exception ex) {

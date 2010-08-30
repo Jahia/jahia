@@ -44,7 +44,6 @@ import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -70,16 +69,13 @@ public class FindPrincipalTest {
     private final static String TESTSITE_NAME = "findPrincipalTestSite";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
 
-    private JahiaSite site;
-
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
-                        TestHelper.createSite(TESTSITE_NAME, "localhost", TestHelper.ACME_TEMPLATES,
-                                null);
+                        TestHelper.createSite(TESTSITE_NAME, "localhost", TestHelper.ACME_TEMPLATES);
                     } catch (Exception e) {
                         logger.error("Cannot create or publish site", e);
                     }

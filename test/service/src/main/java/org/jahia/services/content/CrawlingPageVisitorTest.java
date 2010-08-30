@@ -114,7 +114,7 @@ public class CrawlingPageVisitorTest {
         try {
             conf = CrawlDBTestUtil.createConfiguration();
             fs = FileSystem.get(conf);
-            fs.delete(testdir);
+            fs.delete(testdir, true);
             urlPath = new Path(testdir, "urls");
             crawldbPath = new Path(testdir, "crawldb");
             segmentsPath = new Path(testdir, "segments");
@@ -134,7 +134,7 @@ public class CrawlingPageVisitorTest {
                 JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         try {
-                            TestHelper.createPrepackagedSite(ACMESITE_NAME, "localhost", TestHelper.ACME_TEMPLATES,
+                            TestHelper.createSite(ACMESITE_NAME, "localhost", TestHelper.ACME_TEMPLATES,
                                     SettingsBean.getInstance().getJahiaVarDiskPath()
                                             + "/prepackagedSites/webtemplates65.zip", "ACME.zip");
                             jcrService.publish(session.getRootNode().getNode(ACME_SITECONTENT_ROOT_NODE + "/home")

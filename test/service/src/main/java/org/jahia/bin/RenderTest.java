@@ -81,7 +81,7 @@ public class RenderTest extends TestCase {
         super.setUp();    //To change body of overridden methods use File | Settings | File Templates.
 
         try {
-            site = TestHelper.createSite(TESTSITE_NAME, "localhost"+System.currentTimeMillis(), TestHelper.INTRANET_TEMPLATES, null);
+            site = TestHelper.createSite(TESTSITE_NAME, "localhost"+System.currentTimeMillis(), TestHelper.INTRANET_TEMPLATES);
             assertNotNull(site);
         } catch (Exception ex) {
             logger.warn("Exception during test setUp", ex);

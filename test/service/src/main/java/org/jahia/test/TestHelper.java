@@ -38,6 +38,8 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.importexport.ImportAction;
+import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaAdminUser;
@@ -46,6 +48,7 @@ import org.jahia.exceptions.JahiaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
+import org.apache.axis.utils.StringUtils;
 import org.apache.commons.codec.binary.Base64;
 
 import javax.jcr.ItemExistsException;
@@ -66,6 +69,7 @@ import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
 import java.util.Set;
@@ -89,11 +93,11 @@ public class TestHelper {
     public static final String INTRANET_TEMPLATES = "templates-intranet";
 
     public static JahiaSite createSite(String name) throws Exception {
-        return createSite(name, "localhost"+System.currentTimeMillis(), ACME_TEMPLATES, null);
+        return createSite(name, "localhost"+System.currentTimeMillis(), ACME_TEMPLATES, null, null);
     }
     
     public static JahiaSite createSite(String name, Set<String> languages, Set<String> mandatoryLanguages, boolean mixLanguagesActive) throws Exception {
-        JahiaSite site = createSite(name, "localhost"+System.currentTimeMillis(), ACME_TEMPLATES, null);
+        JahiaSite site = createSite(name, "localhost"+System.currentTimeMillis(), ACME_TEMPLATES, null, null);
         JahiaSitesService service = ServicesRegistry.getInstance().getJahiaSitesService();
         if (!CollectionUtils.isEmpty(languages) && !languages.equals(site.getLanguages())) {
             site.setLanguages(languages);
@@ -108,8 +112,12 @@ public class TestHelper {
         return site;
     }
 
-    public static JahiaSite createSite(String name, String serverName, String templateSet, File importFile)
-            throws Exception {
+    public static JahiaSite createSite(String name, String serverName, String templateSet) throws Exception {
+        return createSite(name, serverName, templateSet, null, null);
+    }
+    
+    public static JahiaSite createSite(String name, String serverName, String templateSet,
+            String prepackedZIPFile, String siteZIPName) throws Exception {
 
         ProcessingContext ctx = Jahia.getThreadParamBean();
         JahiaUser admin = JahiaAdminUser.getAdminUser(0);
@@ -120,75 +128,75 @@ public class TestHelper {
         if (site != null) {
             service.removeSite(site);
         }
-
-        site = service.addSite(admin, name, serverName, name, name, ctx.getLocale(), templateSet,
-                               importFile == null ? "noImport" : "fileImport", importFile, null, false, false, null, ctx);
-
-        ctx.setSite(site);
-
-        return site;
-    }
-
-    public static JahiaSite createPrepackagedSite(String name,
-            String serverName, String templateSet, String prepackedZIPFile,
-            String siteZIPName) throws Exception {
-        JahiaSite site = null;
-        File tempFile = null;
-        try {
-            tempFile = extractSiteImportZip(prepackedZIPFile, siteZIPName);
-            site = TestHelper.createSite(name, serverName, templateSet,
-                    tempFile);
-        } finally {
-            if (tempFile != null) {
-                tempFile.delete();
-            }
-        }
-        return site;
-    }
-
-    private static File extractSiteImportZip(String prepackagedZIPFile,
-            String siteZIPName) {
         File siteZIPFile = null;
-        ZipInputStream zis = null;
-        OutputStream os = null;
+        File sharedZIPFile = null;
         try {
-            zis = new ZipInputStream(new FileInputStream(new File(
-                    prepackagedZIPFile)));
-            ZipEntry z = null;
-            while ((z = zis.getNextEntry()) != null) {
-                if (siteZIPName.equalsIgnoreCase(z.getName())) {
-                    siteZIPFile = File.createTempFile("import", ".zip");
-                    os = new FileOutputStream(siteZIPFile);
-                    byte[] buf = new byte[4096];
-                    int r;
-                    while ((r = zis.read(buf)) > 0) {
-                        os.write(buf, 0, r);
+            if (!StringUtils.isEmpty(prepackedZIPFile)) {
+                ZipInputStream zis = null;
+                OutputStream os = null;
+                try {
+                    zis = new ZipInputStream(new FileInputStream(new File(prepackedZIPFile)));
+                    ZipEntry z = null;
+                    while ((z = zis.getNextEntry()) != null) {
+                        if (siteZIPName.equalsIgnoreCase(z.getName())
+                                || "shared.zip".equals(z.getName())) {
+                            File zipFile = File.createTempFile("import", ".zip");
+                            os = new FileOutputStream(zipFile);
+                            byte[] buf = new byte[4096];
+                            int r;
+                            while ((r = zis.read(buf)) > 0) {
+                                os.write(buf, 0, r);
+                            }
+                            os.close();
+                            if ("shared.zip".equals(z.getName())) {
+                                sharedZIPFile = zipFile;
+                            } else {
+                                siteZIPFile = zipFile;
+                            }
+                        }
                     }
-                    break;
+                } catch (IOException e) {
+                    logger.error(e.getMessage(), e);
+                } finally {
+                    if (os != null) {
+                        try {
+                            os.close();
+                        } catch (IOException e) {
+                            logger.error(e.getMessage(), e);
+                        }
+                    }
+                    if (zis != null) {
+                        try {
+                            zis.close();
+                        } catch (IOException e) {
+                            logger.error(e.getMessage(), e);
+                        }
+                    }
                 }
             }
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
+            if (sharedZIPFile != null) {
+                try {
+                    ImportExportBaseService.getInstance().importSiteZip(sharedZIPFile,
+                            new ArrayList<ImportAction>(), null, null, null);
+                } catch (RepositoryException e) {
+                    logger.warn("shared.zip could not be imported", e);
+                }
+            }
+            site = service.addSite(admin, name, serverName, name, name, ctx.getLocale(),
+                    templateSet, siteZIPFile == null ? "noImport" : "fileImport", siteZIPFile,
+                    null, false, false, null, ctx);
+            ctx.setSite(site);
         } finally {
-            if (os != null) {
-                try {
-                    os.close();
-                } catch (IOException e) {
-                    logger.error(e.getMessage(), e);
-                }
+            if (sharedZIPFile != null) {
+                sharedZIPFile.delete();
             }
-            if (zis != null) {
-                try {
-                    zis.close();
-                } catch (IOException e) {
-                    logger.error(e.getMessage(), e);
-                }
+            if (siteZIPFile != null) {
+                siteZIPFile.delete();
             }
         }
 
-        return siteZIPFile;
+        return site;
     }
-
     
     public static void removeAllSites(JahiaSitesService service) throws JahiaException {
         final Iterator<JahiaSite> sites = service.getSites();

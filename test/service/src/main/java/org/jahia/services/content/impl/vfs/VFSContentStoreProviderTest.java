@@ -16,7 +16,6 @@ import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -40,7 +39,6 @@ public class VFSContentStoreProviderTest {
     private static Logger logger = Logger.getLogger(VFSContentStoreProviderTest.class);
     private static final String TESTSITE_NAME = "vfsContentProviderTest";
     private static final String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
-    private static JahiaSite site;
     private static File dynamicMountDir;
     private static File staticMountDir;
     private static final String STATIC_MOUNT_FILE_NAME = "staticMountDirectory";
@@ -53,10 +51,10 @@ public class VFSContentStoreProviderTest {
     public static void oneTimeSetUp()
             throws Exception {
         try {
-            site = (JahiaSite) JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<JahiaSite>() {
                 public JahiaSite doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
-                        return TestHelper.createSite(TESTSITE_NAME, "localhost", "templates-web", null);
+                        return TestHelper.createSite(TESTSITE_NAME, "localhost", "templates-web");
                     }
                     catch (Exception e) {
                         logger.error("Cannot create or publish site", e);

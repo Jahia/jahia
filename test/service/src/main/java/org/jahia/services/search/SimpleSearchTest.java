@@ -85,7 +85,7 @@ public class SimpleSearchTest {
                                 throws RepositoryException {
                             try {
                                 TestHelper
-                                        .createPrepackagedSite(
+                                        .createSite(
                                                 FIRST_TESTSITE_NAME,
                                                 "localhost",
                                                 TestHelper.ACME_TEMPLATES,
@@ -104,7 +104,7 @@ public class SimpleSearchTest {
                             }
                             try {
                                 TestHelper
-                                        .createPrepackagedSite(
+                                        .createSite(
                                                 SECOND_TESTSITE_NAME,
                                                 "127.0.0.1",
                                                 TestHelper.ACME_TEMPLATES,

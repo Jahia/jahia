@@ -183,7 +183,7 @@ public class LogReplayTest extends TestCase {
                     .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
             JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE,
                     LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
-            target = liveSession.getNode("/sites/jcrRPTest/home/target");
+            target = liveSession.getNode("/sites/jcrRPTest/home/target-user");
 
             JCRNodeWrapper liveSource = liveSession.getNodeByUUID(source.getIdentifier());
 
@@ -241,7 +241,7 @@ public class LogReplayTest extends TestCase {
                     Constants.LIVE_WORKSPACE,
                     LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
 
-            target = liveSession.getNode("/sites/jcrRPTest/home/target");
+            target = liveSession.getNode("/sites/jcrRPTest/home/target-user");
 
             JCRNodeWrapper liveSource = liveSession.getNodeByUUID(source.getIdentifier());
 
@@ -287,9 +287,9 @@ public class LogReplayTest extends TestCase {
         source.setProperty("jcr:title", "Source");
         JCRNodeWrapper page1 = source.addNode("page1", "jnt:page");
         page1.setProperty("jcr:title", "Page1");
-        JCRNodeWrapper page2 = source.addNode("page2", "jnt:page");
+        JCRNodeWrapper page2 = page1.addNode("page2", "jnt:page");
         page2.setProperty("jcr:title", "Page2");
-        JCRNodeWrapper page3 = source.addNode("page3", "jnt:page");
+        JCRNodeWrapper page3 = page2.addNode("page3", "jnt:page");
         page3.setProperty("jcr:title", "testLogMoveOfNode");
         JCRNodeWrapper target = node.addNode("target", "jnt:page");
         target.setProperty("jcr:title", "Target");        

@@ -218,12 +218,12 @@ public class LogGenerationTest extends TestCase {
                     removedProperties);
 
             assertTrue("New property j:firstname not in log",
-                    addedProperties.containsKey("/sites/jcrRPTest/home/source/j:firstName"));
+                    addedProperties.containsKey("/sites/jcrRPTest/home/source-user/j:firstName"));
             assertEquals("New property j:firstname value must be testAddNewPropertyAndUpdatePropertyLogGeneration",
                     "testAddNewPropertyAndUpdatePropertyLogGeneration",
-                    addedProperties.get("/sites/jcrRPTest/home/source/j:firstName"));
+                    addedProperties.get("/sites/jcrRPTest/home/source-user/j:firstName"));
             assertTrue("Existing property should have been updated",
-                    updatedProperties.containsKey("/sites/jcrRPTest/home/source/j:lastPublished"));
+                    updatedProperties.containsKey("/sites/jcrRPTest/home/source-user/j:lastPublished"));
         } finally {
             ServicesRegistry.getInstance().getJahiaUserManagerService().deleteUser(user1);
         }
@@ -278,7 +278,7 @@ public class LogGenerationTest extends TestCase {
                     updatedProperties, removedProperties);
 
             assertTrue("Removed property j:firstname not in log",
-                    removedProperties.contains("/sites/jcrRPTest/home/source/j:firstName"));
+                    removedProperties.contains("/sites/jcrRPTest/home/source-user/j:firstName"));
         } finally {
             ServicesRegistry.getInstance().getJahiaUserManagerService().deleteUser(user1);
         }        

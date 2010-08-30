@@ -176,7 +176,6 @@
                 </property>
             </bean>
         </property>
-        <property name="enableTextMenu" value="true"/>
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="false"/>
         <property name="displaySearchInFile" value="false"/>
@@ -283,7 +282,6 @@
                 </property>
             </bean>
         </property>
-        <property name="enableTextMenu" value="true"/>
         <property name="enableFileDoubleClick" value="false"/>
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="false"/>
@@ -378,7 +376,6 @@
                 </property>
             </bean>
         </property>
-        <property name="enableTextMenu" value="true"/>
         <property name="enableFileDoubleClick" value="false"/>
         <property name="displaySearchInPage" value="false"/>
         <property name="displaySearchInContent" value="false"/>
@@ -472,7 +469,6 @@
             </bean>
         </property>
         <property name="hideLeftPanel" value="true"/>
-        <property name="enableTextMenu" value="true"/>
         <property name="displaySearch" value="false"/>
         <property name="expandRoot" value="true"/>
         <property name="displaySearchInPage" value="false"/>
@@ -561,7 +557,6 @@
             </bean>
         </property>
         <property name="hideLeftPanel" value="true"/>
-        <property name="enableTextMenu" value="true"/>
         <property name="displaySearch" value="false"/>
         <property name="expandRoot" value="true"/>
         <property name="displaySearchInPage" value="false"/>
@@ -644,7 +639,6 @@
             </bean>
         </property>
         <property name="hideLeftPanel" value="true"/>
-        <property name="enableTextMenu" value="true"/>
         <property name="displaySearch" value="false"/>
         <property name="expandRoot" value="true"/>
         <property name="displaySearchInPage" value="false"/>
@@ -713,7 +707,6 @@
             </bean>
         </property>
         <property name="hideLeftPanel" value="true"/>
-        <property name="enableTextMenu" value="false"/>
         <property name="enableFileDoubleClick" value="false"/>
         <property name="expandRoot" value="true"/>
         <property name="displaySearchInPage" value="false"/>
@@ -754,7 +747,6 @@
     <bean id="contentmanager" parent="abstractmanager">
         <property name="nodeTypes" value="nt:base"/>
         <property name="folderTypes" value="nt:base"/>
-        <property name="enableTextMenu" value="true"/>
         <property name="toolbarSet">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
                 <property name="toolbars">
@@ -898,7 +890,6 @@
                 <value>jmix:navMenuItem</value>
             </list>
         </property>
-        <property name="enableTextMenu" value="true"/>
         <property name="toolbarSet">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
                 <property name="toolbars">
@@ -1006,7 +997,6 @@
         </property>
 
         <property name="hideLeftPanel" value="true"/>
-        <property name="enableTextMenu" value="true"/>
         <property name="displaySearch" value="false"/>
         <property name="expandRoot" value="true"/>
         <property name="displaySearchInPage" value="false"/>
@@ -1058,7 +1048,6 @@
         </property>
 
         <property name="hideLeftPanel" value="true"/>
-        <property name="enableTextMenu" value="true"/>
         <property name="displaySearch" value="false"/>
         <property name="expandRoot" value="true"/>
         <property name="displaySearchInPage" value="false"/>
@@ -1105,7 +1094,6 @@
             </list>
         </property>
 
-        <property name="enableTextMenu" value="false"/>
         <property name="toolbarSet">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
                 <property name="toolbars">
@@ -1183,7 +1171,6 @@
             </list>
         </property>
 
-        <property name="enableTextMenu" value="false"/>
         <property name="toolbarSet">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
                 <property name="toolbars">
@@ -1258,7 +1245,6 @@
             </list>
         </property>
 
-        <property name="enableTextMenu" value="false"/>
         <property name="toolbarSet">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
                 <property name="toolbars">
@@ -1325,7 +1311,6 @@
             </list>
         </property>
 
-        <property name="enableTextMenu" value="false"/>
         <property name="toolbarSet">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
                 <property name="toolbars">
@@ -1394,7 +1379,6 @@
             </list>
         </property>
 
-        <property name="enableTextMenu" value="false"/>
         <property name="toolbarSet">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
                 <property name="toolbars">
@@ -1456,7 +1440,6 @@
             </list>
         </property>
 
-        <property name="enableTextMenu" value="false"/>
         <property name="toolbarSet">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
                 <property name="toolbars">
@@ -1507,7 +1490,6 @@
     <bean id="categorypicker" parent="abstractmanager">
         <property name="nodeTypes" value="jnt:category"/>
         <property name="folderTypes" value="jnt:category"/>
-        <property name="enableTextMenu" value="false"/>
         <property name="enableFileDoubleClick" value="false"/>
         <property name="toolbarSet">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">

@@ -45,8 +45,6 @@ import java.util.ArrayList;
 
 public class GWTManagerConfiguration extends GWTConfiguration implements Serializable {
 
-    private boolean enableTextMenu;
-
     private List<GWTColumn> treeColumns;
     private List<String> treeColumnKeys;
 
@@ -111,10 +109,6 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
         return tabs;
     }
 
-    public void setTabs(List<String> tabs) {
-        this.tabs = tabs;
-    }
-
     public void addTab(String tab) {
         tabs.add(tab);
     }
@@ -161,14 +155,6 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
 
     public boolean isHideLeftPanel() {
         return hideLeftPanel;
-    }
-
-    public boolean isEnableTextMenu() {
-        return enableTextMenu;
-    }
-
-    public void setEnableTextMenu(boolean enableTextMenu) {
-        this.enableTextMenu = enableTextMenu;
     }
 
     public List<String> getFolderTypes() {

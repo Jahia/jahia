@@ -69,7 +69,6 @@ import java.util.Set;
  * @version 20 juin 2008 - 09:53:08
  */
 public class TableView extends TopRightComponent {
-    private LayoutContainer m_component;
     private Grid<GWTJahiaNode> m_grid;
     private ListStore<GWTJahiaNode> store;
     private ListLoader<ListLoadResult<GWTJahiaNode>> loader;
@@ -78,8 +77,6 @@ public class TableView extends TopRightComponent {
     private List<GWTJahiaNode> visibleSelection;
 
     public TableView(final GWTManagerConfiguration config) {
-        m_component = new LayoutContainer(new FitLayout());
-        m_component.setBorders(false);
 
         configuration = config;
 
@@ -185,9 +182,6 @@ public class TableView extends TopRightComponent {
                 }
             }
         });
-
-
-        m_component.add(m_grid);
     }
 
     public void selectNodes(List<GWTJahiaNode> nodes) {
@@ -225,11 +219,6 @@ public class TableView extends TopRightComponent {
             List<GWTJahiaNode> gwtJahiaNodes = (List<GWTJahiaNode>) content;
             store.add(gwtJahiaNodes);
             getLinker().onTableItemSelected();
-//            if (store.getSortState().getSortField() != null && store.getSortState().getSortDir() != null) {
-//                store.sort(store.getSortState().getSortField(), store.getSortState().getSortDir());
-//            } else {
-//                store.sort("date", Style.SortDir.DESC);
-//            }
         }
     }
 
@@ -251,7 +240,7 @@ public class TableView extends TopRightComponent {
     }
 
     public Component getComponent() {
-        return m_component;
+        return m_grid;
     }
 
     private class MyGridDropTarget extends GridDropTarget {

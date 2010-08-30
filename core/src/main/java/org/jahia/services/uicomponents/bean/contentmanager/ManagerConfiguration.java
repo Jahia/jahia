@@ -50,8 +50,6 @@ import java.util.List;
  */
 public class ManagerConfiguration implements Serializable {
 
-    private boolean enableTextMenu;
-
     private List<Column> treeColumns;
     private List<Column> tableColumns;
     private List<Repository> repositories;
@@ -130,14 +128,6 @@ public class ManagerConfiguration implements Serializable {
 
     public boolean isHideLeftPanel() {
         return hideLeftPanel;
-    }
-
-    public boolean isEnableTextMenu() {
-        return enableTextMenu;
-    }
-
-    public void setEnableTextMenu(boolean enableTextMenu) {
-        this.enableTextMenu = enableTextMenu;
     }
 
     public List<String> getFolderTypes() {

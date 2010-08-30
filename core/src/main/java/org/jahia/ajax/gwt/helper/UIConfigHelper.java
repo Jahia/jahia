@@ -297,7 +297,6 @@ public class UIConfigHelper {
                 //  set all properties
                 gwtConfig.setNodeTypes(config.getNodeTypes());
                 gwtConfig.setFolderTypes(config.getFolderTypes());
-                gwtConfig.setEnableTextMenu(config.isEnableTextMenu());
                 gwtConfig.setHideLeftPanel(config.isHideLeftPanel());
                 gwtConfig.setFilters(config.getFilters());
                 gwtConfig.setMimeTypes(config.getMimeTypes());

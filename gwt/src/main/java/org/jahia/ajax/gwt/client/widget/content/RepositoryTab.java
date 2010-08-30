@@ -92,7 +92,7 @@ public class RepositoryTab extends ContentPanel {
         factory.setNodeTypes(config.getFolderTypes());
         factory.setMimeTypes(config.getMimeTypes());
         factory.setFilters(config.getFilters());
-        factory.setFields(config.getTableColumnKeys());
+        factory.setFields(config.getTreeColumnKeys());
         factory.setSelectedPath(selectedPaths);
         factory.setSaveOpenPath(true);
         loader = factory.getLoader();

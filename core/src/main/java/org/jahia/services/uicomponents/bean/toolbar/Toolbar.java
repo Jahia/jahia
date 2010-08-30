@@ -49,7 +49,6 @@ public class Toolbar implements Serializable, BeanNameAware {
     private String name;
     private String titleKey;
     private String type;
-    private boolean displayed  = true;
     private boolean displayTitle = false;
     private List<Item> items = new ArrayList<Item>();
     private Visibility visibility;
@@ -82,14 +81,6 @@ public class Toolbar implements Serializable, BeanNameAware {
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    public boolean isDisplayed() {
-        return displayed;
-    }
-
-    public void setDisplayed(boolean displayed) {
-        this.displayed = displayed;
     }
 
     public boolean isDisplayTitle() {

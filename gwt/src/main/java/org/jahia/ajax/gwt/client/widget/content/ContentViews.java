@@ -34,6 +34,7 @@ package org.jahia.ajax.gwt.client.widget.content;
 
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionMenu;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
@@ -51,27 +52,24 @@ public class ContentViews extends TopRightComponent {
 
     private TableView tableView;
     private ThumbView thumbView;
-
     private ThumbView detailedThumbView;
 
-    private ContentPanel m_component;
+    private LayoutContainer m_component;
     private TopRightComponent current;
 
     private ActionMenu contextMenu;
 
     private GWTManagerConfiguration configuration;
 
-    private List<GWTJahiaNode> searchResults = null;
-
     public ContentViews(GWTManagerConfiguration config) {
         configuration = config;
         tableView = new TableView(config);
         thumbView = new ThumbView(config, false);
         detailedThumbView = new ThumbView(config, true);
-        m_component = new ContentPanel(new FitLayout());
-        m_component.setHeaderVisible(false);
+        m_component = new LayoutContainer(new FitLayout());
+//        m_component.setHeaderVisible(false);
         m_component.setBorders(false);
-        m_component.setBodyBorder(false);
+//        m_component.setBodyBorder(false);
 
 
         // set default view
@@ -111,11 +109,7 @@ public class ContentViews extends TopRightComponent {
             m_component.add(current.getComponent());
             m_component.layout();
 
-            if (searchResults == null) {
-                refresh();
-            } else {
-                current.setProcessedContent(searchResults);
-            }
+            refresh();
             newView.selectNodes(currentSelection);
 //            getLinker().handleNewSelection();
         }

@@ -175,8 +175,7 @@ public class JahiaSearchIndex extends SearchIndex {
         indexer.setSupportHighlighting(getSupportHighlighting());
         indexer.setIndexingConfiguration(getIndexingConfig());
         indexer.setIndexFormatVersion(indexFormatVersion);
-// TODO: uncommment when migrating to Jackrabbit 2.1.1        
-//        indexer.setMaxExtractLength(getMaxExtractLength());        
+        indexer.setMaxExtractLength(getMaxExtractLength());        
         indexer.setSupportSpellchecking(getSpellChecker() != null);
         Document doc = indexer.createDoc();
         mergeAggregatedNodeIndexes(node, doc, indexFormatVersion);

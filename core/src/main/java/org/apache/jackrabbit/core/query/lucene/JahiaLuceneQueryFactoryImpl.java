@@ -31,10 +31,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactoryImpl {
     public JahiaLuceneQueryFactoryImpl(SessionImpl session, SortComparatorSource scs, HierarchyManager hmgr,
                                        NamespaceMappings nsMappings, Analyzer analyzer, SynonymProvider synonymProvider,
                                        IndexFormatVersion version, Map<Name, Value> bindVariables) {
-        super(session, scs, hmgr, nsMappings, analyzer, synonymProvider, version
-// TODO: uncommment when migrating to Jackrabbit 2.1.1
-//                , bindVariables
-                );
+        super(session, scs, hmgr, nsMappings, analyzer, synonymProvider, version, bindVariables);
         this.session = session;
     }
 

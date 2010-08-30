@@ -39,7 +39,7 @@
     
     <pluto.version>2.0.2</pluto.version>
     <spring.version>2.5.6.SEC02</spring.version>
-    <jackrabbit.version>2.0.0</jackrabbit.version>
+    <jackrabbit.version>2.1.1</jackrabbit.version>
     <jackrabbit.patch.version>patch6</jackrabbit.patch.version>
     <lucene.version>2.4.1</lucene.version>
     <jbpm.version>4.3</jbpm.version>

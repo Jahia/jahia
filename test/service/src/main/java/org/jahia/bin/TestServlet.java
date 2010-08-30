@@ -127,18 +127,21 @@ public class TestServlet extends HttpServlet implements Controller, ServletConte
                     JUnitCore junitcore = new JUnitCore();
                     junitcore.addListener (new SurefireJUnitXMLResultFormatter(httpServletResponse.getOutputStream()));
                     List<Class> classes = getTestClasses(Class.forName(className), new ArrayList<Class>());
-                    junitcore.run(new FilterRequest(Request.classes(classes.toArray(new Class[classes.size()])), new Filter() {
+                    if (!classes.isEmpty()) {
+                        junitcore.run(new FilterRequest(Request.classes(classes
+                                .toArray(new Class[classes.size()])), new Filter() {
 
-                        @Override
-                        public boolean shouldRun(Description description) {
-                            return !ignoreTests.contains(description.getDisplayName());
-                        }
+                            @Override
+                            public boolean shouldRun(Description description) {
+                                return !ignoreTests.contains(description.getDisplayName());
+                            }
 
-                        @Override
-                        public String describe() {
-                            return "Filter out Jahia configured methods";
-                        }
-                    })); 
+                            @Override
+                            public String describe() {
+                                return "Filter out Jahia configured methods";
+                            }
+                        }));
+                    }
                 } catch (Exception e) {
                     logger.error("Error executing test", e);
                 }

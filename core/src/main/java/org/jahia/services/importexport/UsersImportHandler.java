@@ -32,7 +32,6 @@
 
 package org.jahia.services.importexport;
 
-import org.apache.log4j.Logger;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -55,7 +54,6 @@ import java.util.Properties;
  * To change this template use File | Settings | File Templates.
  */
 public class UsersImportHandler extends DefaultHandler {
-    private static Logger logger = Logger.getLogger(UsersImportHandler.class);
     private JahiaUserManagerService u;
     private JahiaGroupManagerService g;
     private JahiaSite site;

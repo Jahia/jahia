@@ -431,7 +431,7 @@ public class ManageSites extends AbstractAdministrationModule {
         request.getSession().setAttribute("siteAdminOption", siteAdmin);
         session.setAttribute("siteAdminOption", siteAdmin);
         String warningMsg = "";
-        boolean enforcePasswordPolicy = (request.getParameter(JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY) != null);
+//        boolean enforcePasswordPolicy = (request.getParameter(JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY) != null);
         session.setAttribute(CLASS_NAME + "defaultSite", defaultSite);
 
         // check license limitation again
@@ -1377,7 +1377,7 @@ public class ManageSites extends AbstractAdministrationModule {
 
         String warningMsg = "";
         boolean defaultSite = (request.getParameter("defaultSite") != null);
-        boolean enforcePasswordPolicy = (request.getParameter(JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY) != null);
+//        boolean enforcePasswordPolicy = (request.getParameter(JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY) != null);
 
         boolean versioningEnabled = (request.getParameter("versioningEnabled") != null);
         boolean stagingEnabled = (request.getParameter("stagingEnabled") != null);

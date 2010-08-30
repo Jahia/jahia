@@ -227,8 +227,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         bw.write("ExportDate = " + new SimpleDateFormat(ImportExportService.DATE_FORMAT).format(new Date()) + "\n");
         bw.flush();
 
-        DataWriter dw;
-
         for (Iterator<JahiaSite> iterator = sites.iterator(); iterator.hasNext();) {
             JahiaSite jahiaSite = iterator.next();
             anEntry = new ZipEntry(jahiaSite.getSiteKey() + ".zip");
@@ -299,7 +297,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         zout.putNextEntry(new ZipEntry(REPOSITORY_XML));
 
         OutputStream outputStream = zout;
-        final String xsl = (String) params.get(XSL_PATH);
+//        final String xsl = (String) params.get(XSL_PATH);
         exportNodes(rootNode, sortedNodes, outputStream, typesToIgnore, params);
         zout.closeEntry();
         exportNodesBinary(rootNode, sortedNodes, zout, typesToIgnore);
@@ -686,13 +684,11 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         String name = path.substring(path.lastIndexOf('/') + 1);
         try {
             JCRNodeWrapper parentDir = ensureDir(session, path.substring(0, path.lastIndexOf('/')), destSite);
-
+            if (parentDir == null) {
+                logger.warn("Cannot create folder " + path.lastIndexOf('/'));
+                return;
+            }
             if (!parentDir.hasNode(name)) {
-                if (parentDir == null) {
-                    logger.warn("Cannot create folder " + path.lastIndexOf('/'));
-                    return;
-                }
-
                 logger.debug("Add file to " + parentDir.getPath());
                 try {
                     JCRNodeWrapper res = parentDir.uploadFile(name, inputStream, type);

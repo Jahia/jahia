@@ -32,8 +32,6 @@
 
 package org.jahia.services.importexport;
 
-import org.jahia.content.ContentObject;
-import org.jahia.content.ObjectKey;
 import org.jahia.content.TreeOperationResult;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRContentUtils;
@@ -72,13 +70,6 @@ public class ImportJob extends BackgroundJob {
     public void executeJahiaJob(JobExecutionContext jobExecutionContext) throws Exception {
         JobDetail jobDetail = jobExecutionContext.getJobDetail();
         JobDataMap jobDataMap = jobDetail.getJobDataMap();
-
-        String contentType = (String) jobDataMap.get(CONTENT_TYPE);
-        ContentObject target = null;
-        String key = (String) jobDataMap.get(TARGET);
-        if (key != null) {
-            target = ContentObject.getContentObjectInstance(ObjectKey.getInstance(key));
-        }
 
         JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey((String) jobDataMap.get(JOB_SITEKEY));
 

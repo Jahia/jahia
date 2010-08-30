@@ -174,11 +174,9 @@ public class VersioningTest extends TestCase {
                 JCRNodeWrapper versionNode = null;
                 if (curVersionInfo.getCheckinDate() != null) {
                     versionNode = stagedSubPage.getFrozenVersionAsRegular(curVersionInfo.getCheckinDate().getTime());
-                } else {
-                    versionNode = stagedSubPage.getFrozenVersionAsRegular(curVersionInfo.getVersion().getCreated().getTime());
+                    validateVersionedNode(index, curVersionInfo, versionName, versionNode);
+                    index++;
                 }
-                validateVersionedNode(index, curVersionInfo, versionName, versionNode);
-                index++;
             }
             logger.debug("number of version: " + index);                                                        
             assertEquals(NUMBER_OF_VERSIONS, index);

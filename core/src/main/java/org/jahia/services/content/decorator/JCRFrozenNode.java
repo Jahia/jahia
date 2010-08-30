@@ -34,15 +34,10 @@ package org.jahia.services.content.decorator;
 
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
-import org.jahia.bin.Jahia;
-import org.jahia.data.files.JahiaFile;
-import org.jahia.data.files.JahiaFileField;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
-import java.util.Properties;
 
 /**
  * Created by IntelliJ IDEA.

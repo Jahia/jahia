@@ -353,9 +353,23 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
 
     @Override
     public List<JCRItemWrapper> getAncestors() throws RepositoryException {
-        // @todo to be implemented.
-        logger.warn("Method not (yet) implemented, defaulting to calling superclass method !");
-        return super.getAncestors();    //To change body of overridden methods use File | Settings | File Templates.
+        List<JCRItemWrapper> ancestors = new ArrayList<JCRItemWrapper>();
+        JCRPropertyWrapper property = getProperty("j:fullpath");
+        StringBuilder builder = new StringBuilder("/");
+        if(property!=null) {
+            String[] strings = property.getString().split("/");
+            for(int i=0;i<strings.length-1;i++) {
+                builder.append(strings[i]);
+                try {
+                    ancestors.add(getSession().getNode(builder.toString()));
+                } catch (PathNotFoundException nfe) {
+                } catch (AccessDeniedException ade) {
+                    return ancestors;
+                }
+                if(i>0)builder.append("/");
+            }
+        }
+        return ancestors;
     }
 
     @Override

@@ -179,17 +179,19 @@ public class RenderTest extends TestCase {
         List<VersionInfo> liveVersionInfos = ServicesRegistry.getInstance().getJCRVersionService().getVersionInfos(liveSession, subPagePublishedNode);
         int index = 0;
         for (VersionInfo curVersionInfo : liveVersionInfos) {
+            if (curVersionInfo.getCheckinDate() != null) {
             GetMethod versionGet = new GetMethod("http://localhost:8080"+Jahia.getContextPath()+"/cms/render/live/en" + subPagePublishedNode.getPath() + ".html?v=" + curVersionInfo.getCheckinDate().getTime().getTime());
             try {
                 int responseCode = client.executeMethod(versionGet);
                 assertEquals("Response code " + responseCode, 200, responseCode);
                 String responseBody = versionGet.getResponseBodyAsString();
-                // logger.debug("Response body=[" + responseBody + "]");
+                logger.debug("Response body=[" + responseBody + "]");
                 assertFalse("Couldn't find expected value (title" + Integer.toString(index)+") in response body", responseBody.indexOf("title" + Integer.toString(index)) < 0);
             } catch (IOException e) {
                 logger.error(e.getMessage(), e);
             }
             index++;
+            }
         }
         logger.debug("number of version: " + index);
         assertEquals(NUMBER_OF_VERSIONS, index);

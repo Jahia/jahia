@@ -17,4 +17,4 @@
 <%--@elvariable id="acl" type="java.lang.String"--%>
 <template:addResources type="css" resources="pagehit.css"/>
 
-<div class="pagehit-container"><p>Page vue : <span class="pagehit-number">${pageHits:getNumberOfHits(renderContext.mainResource.node)}</span> fois<p></div>
+<div class="pagehit-container"><p> <fmt:message key="jnt_pageHit.pageView"/> <span class="pagehit-number">${pageHits:getNumberOfHits(renderContext.mainResource.node)}</span> <fmt:message key="jnt_pageHit.times"/> <p></div>

@@ -57,6 +57,7 @@ import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -74,6 +75,7 @@ public class TableView extends TopRightComponent {
     private ListLoader<ListLoadResult<GWTJahiaNode>> loader;
     private GWTManagerConfiguration configuration;
     private List<GWTJahiaNode> selection;
+    private List<GWTJahiaNode> visibleSelection;
 
     public TableView(final GWTManagerConfiguration config) {
         m_component = new LayoutContainer(new FitLayout());
@@ -102,7 +104,13 @@ public class TableView extends TopRightComponent {
                     getLinker().loaded();
                 }
                 if (selection != null) {
-                    m_grid.getSelectionModel().setSelection(selection);
+                    visibleSelection = new ArrayList<GWTJahiaNode>(selection);
+                    visibleSelection.retainAll(store.getModels());
+                    if (visibleSelection.isEmpty()) {
+                        getLinker().onTableItemSelected();
+                    } else {
+                        m_grid.getSelectionModel().setSelection(visibleSelection);
+                    }
                 }
             }
         };
@@ -147,6 +155,7 @@ public class TableView extends TopRightComponent {
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
                 if (event.getSelection() != null && !event.getSelection().isEmpty() ) {
                     selection = event.getSelection();
+                    visibleSelection = event.getSelection();
                 }
                 getLinker().onTableItemSelected();
             }
@@ -229,7 +238,7 @@ public class TableView extends TopRightComponent {
     }
 
     public List<GWTJahiaNode> getSelection() {
-        List<GWTJahiaNode> elts = selection;
+        List<GWTJahiaNode> elts = visibleSelection;
         if (elts != null && elts.size() > 0) {
             return elts;
         } else {

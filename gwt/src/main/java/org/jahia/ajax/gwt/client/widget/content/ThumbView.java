@@ -49,6 +49,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.toolbar.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTColumn;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -68,10 +69,11 @@ public class ThumbView extends TopRightComponent {
     private ContentPanel m_component;
     private ListStore<GWTJahiaNode> store;
     private ThumbsListView view;
-    private SimpleComboBox<String> sort;
+    private ComboBox<ModelData> sort;
     private ToggleButton sortOrder ;
     private ListLoader<ListLoadResult<GWTJahiaNode>> loader;
     private List<GWTJahiaNode> selection;
+    private List<GWTJahiaNode> visibleSelection;
 
     private GWTManagerConfiguration configuration;
 
@@ -87,9 +89,6 @@ public class ThumbView extends TopRightComponent {
         if (GXT.isIE) {
             m_component.setHeight(400); // media gallery fix
         }
-
-        ToolBar bar = new ToolBar();
-        bar.add(new LabelToolItem(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.thumbFilter.label")));
 
         configuration = config;
 
@@ -114,7 +113,13 @@ public class ThumbView extends TopRightComponent {
                     getLinker().loaded();
                 }
                 if (selection != null) {
-                    view.getSelectionModel().setSelection(selection);
+                    visibleSelection = new ArrayList<GWTJahiaNode>(selection);
+                    visibleSelection.retainAll(store.getModels());
+                    if (visibleSelection.isEmpty()) {
+                        getLinker().onTableItemSelected();
+                    } else {
+                        view.getSelectionModel().setSelection(visibleSelection);
+                    }
                 }
             }
         };
@@ -146,30 +151,35 @@ public class ThumbView extends TopRightComponent {
 //                view.getSelectionModel().select(0);
             }
         };
-        field.setWidth(200);
+        field.setWidth(150);
         field.bind(store);
+
+        ToolBar bar = new ToolBar();
+        bar.add(new LabelToolItem(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.thumbFilter.label")));
 
         bar.add(field);
         bar.add(new SeparatorToolItem());
         bar.add(new LabelToolItem(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.thumbSort.label")));
 
         // please keep same order as in sort() method
-        List<String> sorts = new ArrayList<String>();
-        sorts.add(Messages.get("label.in"));
-//        if (config.isDisplaySize()) {
-            sorts.add(Messages.get("label.size"));
-//        }
-//        if (config.isDisplayDate()) {
-            sorts.add(Messages.get("label.lastModif"));
-//        }
+        ListStore<ModelData> sorts = new ListStore<ModelData>();
 
-        sort = new SimpleComboBox<String>();
+        for (GWTColumn column : configuration.getTableColumns()) {
+            if (column.isSortable()) {
+                ModelData d = new BaseModelData();
+                d.set("key", column.getKey());
+                d.set("title", column.getTitle());
+                sorts.add(d);
+            }
+        }
+
+        sort = new ComboBox<ModelData>();
+        sort.setDisplayField("title");
         sort.setTriggerAction(ComboBox.TriggerAction.ALL);
         sort.setEditable(false);
         sort.setForceSelection(true);
-        sort.setWidth(250);
-        sort.add(sorts);
-        sort.setSimpleValue(sorts.get(0));
+        sort.setStore(sorts);
+        sort.setValue(sorts.getAt(0));
         sort.addListener(Events.SelectionChange, new Listener<SelectionChangedEvent>() {
             public void handleEvent(SelectionChangedEvent be) {
                 sort();
@@ -194,6 +204,7 @@ public class ThumbView extends TopRightComponent {
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
                 if (event.getSelection() != null && !event.getSelection().isEmpty() ) {
                     selection = event.getSelection();
+                    visibleSelection = event.getSelection();
                 }
                 getLinker().onTableItemSelected();
             }
@@ -230,14 +241,8 @@ public class ThumbView extends TopRightComponent {
     }
 
     private void sort() {
-        int index = sort.getSelectedIndex();
-        if (index == 0) {
-            store.sort("name", sortOrder.isPressed() ? Style.SortDir.DESC : Style.SortDir.ASC);
-        } else if (index == 1) {
-            store.sort("size", sortOrder.isPressed() ? Style.SortDir.DESC : Style.SortDir.ASC);
-        } else if (index == 2) {
-            store.sort("date", sortOrder.isPressed() ? Style.SortDir.DESC : Style.SortDir.ASC);
-        }
+        ModelData col = sort.getValue();
+        store.sort((String) col.get("key"), sortOrder.isPressed() ? Style.SortDir.DESC : Style.SortDir.ASC);
     }
 
     public void setContextMenu(Menu menu) {
@@ -266,7 +271,7 @@ public class ThumbView extends TopRightComponent {
     }
 
     public List<GWTJahiaNode> getSelection() {
-        List<GWTJahiaNode> elts = selection;
+        List<GWTJahiaNode> elts = visibleSelection;
         if (elts != null && elts.size() > 0) {
             return elts;
         } else {

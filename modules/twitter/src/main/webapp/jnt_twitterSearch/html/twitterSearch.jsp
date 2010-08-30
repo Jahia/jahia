@@ -58,7 +58,7 @@
 <div id="myContentSearch">
     <div id="juitterSearch">
         <form action="" method="post" id="mySearch">
-            <p>Search Twitter: <input type="text" class="mySearch" value="Type a word and press enter"/></p>
+            <p><fmt:message key="jnt_twitterSearch"/>: <input type="text" class="mySearch" value="<fmt:message key='jnt_twitterSearch.typeAWordAndPressEnter'/>"/></p>
         </form>
         <div id="myContainerSearch">
         </div>

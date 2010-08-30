@@ -33,7 +33,7 @@
 
 <div id="myContentFeed">
     <div id="juitterFeed">
-        <p>Twitter Feed: ${currentNode.properties.userName.string}</p>
+        <p><fmt:message key="jnt_twitterFeed"/>: ${currentNode.properties.userName.string}</p>
         <div id="myContainerFeed">
         </div>
     </div>

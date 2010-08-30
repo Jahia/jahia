@@ -2,12 +2,12 @@
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
 [jnt:twitterFeed] > jmix:siteComponentContent
--userName (string)
--numberOfTweets (string, choicelist) = '15' indexed=no < '5', '10', '15', '20', '25', '30'
--timeUpdate (long) = 15
+- userName (string)
+- numberOfTweets (string, choicelist) = '15' indexed=no < '5', '10', '15', '20', '25', '30'
+- timeUpdate (long) = 15
 
 [jnt:twitterSearch] > jmix:siteComponentContent
--search (string)
--numberOfTweets (string, choicelist) = '15' indexed=no < '5', '10', '15', '20', '25', '30'
--timeUpdate (long) = 15
--lang (string, choicelist) indexed=no < 'en', 'fr'
+- search (string)
+- numberOfTweets (string, choicelist) = '15' indexed=no < '5', '10', '15', '20', '25', '30'
+- timeUpdate (long) = 15
+- lang (string, choicelist) indexed=no < 'en', 'fr'

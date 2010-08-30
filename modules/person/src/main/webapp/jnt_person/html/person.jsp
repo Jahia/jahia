@@ -38,9 +38,9 @@
         <div class="personAction">
 			<a class="personEnlarge" href="${picture.node.url}" rel="facebox"> <fmt:message key='FullSizePicture'/></a>
             <a class="personBiographiy" href="javascript:;" onclick="ShowHideLayer('${currentNode.identifier}');"><fmt:message
-                    key='jahia.person.biography'/></a>
+                    key='jnt_person.biography'/></a>
             <a class="personBiographiy" href="${url.base}${currentNode.path}.vcf"><fmt:message
-                    key='jahia.person.vcard'/></a>
+                    key='jnt_person.vcard'/></a>
         </div>
          <div id="collapseBox${currentNode.identifier}" class="collapsible" >
             <jcr:nodeProperty node="${currentNode}" name="biography"/>

@@ -15,4 +15,6 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="acl" type="java.lang.String"--%>
-${pageHits:getNumberOfHits(renderContext.mainResource.node)}
+<template:addResources type="css" resources="pagehit.css"/>
+
+<div class="pagehit-container"><p>Page vue : <span class="pagehit-number">${pageHits:getNumberOfHits(renderContext.mainResource.node)}</span> fois<p></div>

@@ -1,0 +1,24 @@
+.pagehit-container{
+	text-align:right;
+	color:#666
+}
+.pagehit-number{
+	-moz-border-radius: 5px; 
+	-webkit-border-radius: 5px; 
+	border-radius: 5px;
+	-moz-box-shadow: 0 1px 3px #ccc;
+	-webkit-box-shadow: 0 1px 3px #ccc;
+	box-shadow: 0 1px 3px #ccc;
+	background:url(img/overlay.png) repeat-x scroll 0 0 #91BD09;
+	border-color:-moz-use-text-color -moz-use-text-color #ccc;
+	border-style:none none solid;
+	border-width:0 0 1px;
+	color:#fff;
+	cursor:pointer;
+	display:inline-block;
+	padding:5px 10px;
+	position:relative;
+	text-decoration:none;
+	text-shadow:0 -1px 1px #666;
+	background-color:#91BD09;
+}

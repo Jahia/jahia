@@ -285,7 +285,7 @@
     <div class="paginationNavigation">
         <c:if test="${currentPage>1}">
             <a class="previousLink"
-               href="javascript:replace('${currentNode.UUID}-tasks','${url.current}?begin=${ (currentPage-2) * pageSize }&end=${ (currentPage-1)*pageSize-1}')">Previous</a>
+               href="javascript:replace('${currentNode.UUID}-tasks','${url.current}?begin=${ (currentPage-2) * pageSize }&end=${ (currentPage-1)*pageSize-1}')"><fmt:message key="jnt_userTask.previous"/></a>
         </c:if>
         <c:forEach begin="1" end="${nbPages}" var="i">
             <c:if test="${i != currentPage}">
@@ -299,7 +299,7 @@
 
         <c:if test="${currentPage<nbPages}">
             <a class="nextLink"
-               href="javascript:replace('${currentNode.UUID}-tasks','${url.current}?begin=${ currentPage * pageSize }&end=${ (currentPage+1)*pageSize-1}')">Next</a>
+               href="javascript:replace('${currentNode.UUID}-tasks','${url.current}?begin=${ currentPage * pageSize }&end=${ (currentPage+1)*pageSize-1}')"><fmt:message key="jnt_userTask.next"/> </a>
         </c:if>
     </div>
 

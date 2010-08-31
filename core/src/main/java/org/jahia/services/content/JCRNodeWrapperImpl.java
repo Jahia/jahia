@@ -1880,6 +1880,26 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return r;
     }
 
+    public List<Locale> getLockedLocales(String type) throws RepositoryException {
+        List<Locale> r = new ArrayList<Locale>();
+        NodeIterator ni = objectNode.getNodes("j:translation*");
+        while (ni.hasNext()) {
+            Node n = ni.nextNode();
+            if (n.isLocked() && n.hasProperty("j:lockTypes")) {
+                String l = (getSession().isSystem() ? " system " : getSession().getUserID()) + ":" + type;
+                Value[] v = n.getProperty("j:lockTypes").getValues();
+                for (Value value : v) {
+                    if (value.getString().equals(l)) {
+                        r.add(new Locale(n.getProperty("jcr:language").getString()));
+                        break;
+                    }
+                }
+
+            }
+        }
+        return r;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -1947,7 +1967,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             unlock(trans, type);
         }
 
-        if (!isNodeType(Constants.JAHIANT_TRANSLATION) && !getLockedLocales().isEmpty()) {
+        if (!isNodeType(Constants.JAHIANT_TRANSLATION) && !getLockedLocales(type).isEmpty()) {
             throw new LockException("Translations still locked");
         }
 

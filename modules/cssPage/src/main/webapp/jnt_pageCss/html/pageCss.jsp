@@ -188,7 +188,7 @@
 
                 <p>
                     <label class="left"
-                           for="h5Color"><fmt:message key="jnt_pageCss.h5color"/>/label>
+                           for="h5Color"><fmt:message key="jnt_pageCss.h5color"/></label>
                     <input class="myInput" id="h5Color" type="text" name="j:h5Color"
                            value="${props["j:h5Color"].string}" size="10">
                 </p>

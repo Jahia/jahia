@@ -116,18 +116,18 @@
 <tr>
     <td rowspan="2">
         <fieldset>
-            <legend><img src="${url.currentModule}/img/moins.gif"/>Titles</legend>
+            <legend><img src="${url.currentModule}/img/moins.gif"/><fmt:message key="jnt_pageCss.titles"/></legend>
             <div id="showTitles">
                 <p>
                     <label class="left"
-                           for="h1Color">h1 color: #</label>
+                           for="h1Color"><fmt:message key="jnt_pageCss.h1color"/></label>
                     <input class="myInput" id="h1Color" type="text" name="j:h1Color"
                            value="${props["j:h1Color"].string}" size="10">
                 </p>
 
                 <p>
                     <label class="left"
-                           for="h1FontFamily">h1 font-family</label>
+                           for="h1FontFamily"><fmt:message key="jnt_pageCss.h1FontFamily"/></label>
                     <select name="h1FontFamily" id="h1FontFamily">
                         <c:forEach items="${propDefs.h1FontFamily.valueConstraints}" var="valueOption">
                             <option value="${valueOption}" <c:if test='${valueOption eq props.h1FontFamily.string}'>selected</c:if>>${valueOption}</option>
@@ -137,14 +137,14 @@
 
                 <p>
                     <label class="left"
-                           for="h2Color">h2 color: #</label>
+                           for="h2Color"><fmt:message key="jnt_pageCss.h2color"/></label>
                     <input class="myInput" id="h2Color" type="text" name="j:h2Color"
                            value="${props["j:h2Color"].string}" size="10">
                 </p>
 
                 <p>
                     <label class="left"
-                           for="h2FontFamily">h2 font-family</label>
+                           for="h2FontFamily"><fmt:message key="jnt_pageCss.h2FontFamily"/></label>
                     <select name="h2FontFamily" id="h2FontFamily">
                         <c:forEach items="${propDefs.h2FontFamily.valueConstraints}" var="valueOption">
                             <option value="${valueOption}" <c:if test='${valueOption eq props.h2FontFamily.string}'>selected</c:if>>${valueOption}</option>
@@ -154,14 +154,14 @@
 
                 <p>
                     <label class="left"
-                           for="h3Color">h3 color: #</label>
+                           for="h3Color"><fmt:message key="jnt_pageCss.h3color"/></label>
                     <input class="myInput" id="h3Color" type="text" name="j:h3Color"
                            value="${props["j:h3Color"].string}" size="10">
                 </p>
 
                 <p>
                     <label class="left"
-                           for="h3FontFamily">h3 font-family</label>
+                           for="h3FontFamily"><fmt:message key="jnt_pageCss.h3FontFamily"/></label>
                     <select name="h3FontFamily" id="h3FontFamily">
                         <c:forEach items="${propDefs.h3FontFamily.valueConstraints}" var="valueOption">
                             <option value="${valueOption}" <c:if test='${valueOption eq props.h3FontFamily.string}'>selected</c:if>>${valueOption}</option>
@@ -171,14 +171,14 @@
 
                 <p>
                     <label class="left"
-                           for="h4Color">h4 color: #</label>
+                           for="h4Color"><fmt:message key="jnt_pageCss.h4color"/></label>
                     <input class="myInput" id="h4Color" type="text" name="j:h4Color"
                            value="${props["j:h4Color"].string}" size="10">
                 </p>
 
                 <p>
                     <label class="left"
-                           for="h4FontFamily">h4 font-family</label>
+                           for="h4FontFamily"><fmt:message key="jnt_pageCss.h4FontFamily"/></label>
                     <select name="h4FontFamily" id="h4FontFamily">
                         <c:forEach items="${propDefs.h4FontFamily.valueConstraints}" var="valueOption">
                             <option value="${valueOption}" <c:if test='${valueOption eq props.h4FontFamily.string}'>selected</c:if>>${valueOption}</option>
@@ -188,14 +188,14 @@
 
                 <p>
                     <label class="left"
-                           for="h5Color">h5 color: #</label>
+                           for="h5Color"><fmt:message key="jnt_pageCss.h5color"/>/label>
                     <input class="myInput" id="h5Color" type="text" name="j:h5Color"
                            value="${props["j:h5Color"].string}" size="10">
                 </p>
 
                 <p>
                     <label class="left"
-                           for="h5FontFamily">h5 font-family</label>
+                           for="h5FontFamily"><fmt:message key="jnt_pageCss.h5FontFamily"/></label>
                     <select name="h5FontFamily" id="h5FontFamily">
                         <c:forEach items="${propDefs.h5FontFamily.valueConstraints}" var="valueOption">
                             <option value="${valueOption}" <c:if test='${valueOption eq props.h5FontFamily.string}'>selected</c:if>>${valueOption}</option>
@@ -207,11 +207,11 @@
     </td>
     <td>
         <fieldset>
-            <legend><img src="${url.currentModule}/img/moins.gif"/>Body</legend>
+            <legend><img src="${url.currentModule}/img/moins.gif"/><fmt:message key="jnt_pageCss.body"/></legend>
             <div id="showBody">
                 <p>
                     <label class="left"
-                           for="backgroundColor">background-color: #</label>
+                           for="backgroundColor"><fmt:message key="jnt_pageCss.backgroundColor"/></label>
                     <input id="backgroundColor" type="text"
                            value="${currentNode.properties["j:backgroundColor"].string}" name="j:backgroundColor"
                            size="10">
@@ -219,7 +219,7 @@
 
                 <p>
                     <label class="left"
-                           for="bodyColor">color: #</label>
+                           for="bodyColor"><fmt:message key="jnt_pageCss.color"/> </label>
                     <input id="bodyColor" type="text" name="j:bodyColor"
                            value="${currentNode.properties["j:bodyColor"].string}" size="10">
                 </p>
@@ -227,7 +227,7 @@
 
                 <p>
                     <label class="left"
-                           for="fontFamily">font-family: </label>
+                           for="fontFamily"><fmt:message key="jnt_pageCss.fontfamily"/> </label>
                     <select name="fontFamily" id="fontFamily">
                         <c:forEach items="${propDefs.fontFamily.valueConstraints}" var="valueOption">
                             <option value="${valueOption}" <c:if test='${valueOption eq props.fontFamily.string}'>selected</c:if>>${valueOption}</option>
@@ -236,7 +236,7 @@
                 </p>
                 <p>
                     <label class="left"
-                           for="lineHeight">line-height: </label>
+                           for="lineHeight"><fmt:message key="jnt_pageCss.lineheight"/> </label>
                     <select name="lineHeight" id="lineHeight">
                         <c:forEach items="${propDefs.lineHeight.valueConstraints}" var="valueOption">
                             <option value="${valueOption}" <c:if test='${valueOption eq props.lineHeight.string}'>selected</c:if>>${valueOption}</option>
@@ -245,7 +245,7 @@
                 </p>
                 <p>
                     <label class="left"
-                           for="fontSize">font-size: </label>
+                           for="fontSize"><fmt:message key="jnt_pageCss.fontsize"/> </label>
                     <select name="fontSize" id="fontSize">
                         <c:forEach items="${propDefs.fontSize.valueConstraints}" var="valueOption">
                             <option value="${valueOption}" <c:if test='${valueOption eq props.fontSize.string}'>selected</c:if>>${valueOption}</option>
@@ -260,18 +260,18 @@
 <tr>
     <td>
         <fieldset>
-            <legend><img src="${url.currentModule}/img/moins.gif"/>Links</legend>
+            <legend><img src="${url.currentModule}/img/moins.gif"/><fmt:message key="jnt_pageCss.links"/></legend>
             <div id="showLinks">
                 <p>
                     <label class="left"
-                           for="aLinkVisitedColor">a, a:link, a:visited { color: #</label>
+                           for="aLinkVisitedColor"><fmt:message key="jnt_pageCss.linkVisited"/></label>
                     <input class="myInput" id="aLinkVisitedColor" type="text" name="j:aLinkVisitedColor"
                            value="${props["j:aLinkVisitedColor"].string}" size="10">
                 </p>
 
                 <p>
                     <label class="left"
-                           for="aHoverActiveColor">a:hover, a:active { color: #</label>
+                           for="aHoverActiveColor"><fmt:message key="jnt_pageCss.hoverActive"/></label>
                     <input class="myInput" id="aHoverActiveColor" type="text" name="j:aHoverActiveColor"
                            value="${props["j:aHoverActiveColor"].string}" size="10">
                 </p>
@@ -282,16 +282,16 @@
 <tr>
     <td>
         <fieldset>
-            <legend><img src="${url.currentModule}/img/moins.gif"/>Background
-                Images
+            <legend><img src="${url.currentModule}/img/moins.gif"/>
+                <fmt:message key="jnt_pageCss.backgroundImages"/>
             </legend>
             <div id="showBackGroundImages">
                 <input type="hidden" name="img1" id="myImg1"/>
 
                 <div id="fileMyImg1" jcr:id="myImg1">
                     <c:choose>
-                        <c:when test="${not empty imgResource1}"><span>change imgResource1</span></c:when>
-                        <c:when test="${empty imgResource1}"><span>add imgResource1</span></c:when>
+                        <c:when test="${not empty imgResource1}"><span><fmt:message key="jnt_pageCss.changeImg1"/></span></c:when>
+                        <c:when test="${empty imgResource1}"><span><fmt:message key="jnt_pageCss.addImg1"/></span></c:when>
                     </c:choose>
                 </div>
 
@@ -299,8 +299,8 @@
 
                 <div id="fileMyImg2" jcr:id="myImg2">
                     <c:choose>
-                        <c:when test="${not empty imgResource2}"><span>change imgResource2</span></c:when>
-                        <c:when test="${empty imgResource2}"><span>add imgResource2</span></c:when>
+                        <c:when test="${not empty imgResource2}"><span><fmt:message key="jnt_pageCss.changeImg2"/>2</span></c:when>
+                        <c:when test="${empty imgResource2}"><span><fmt:message key="jnt_pageCss.addImg2"/></span></c:when>
                     </c:choose>
                 </div>
                <%-- <form action="${url.base}${currentNode.path}" method="post">
@@ -314,19 +314,20 @@
     </td>
     <td>
         <fieldset>
-            <legend><img src="${url.currentModule}/img/moins.gif"/>Page colors
+            <legend><img src="${url.currentModule}/img/moins.gif"/>
+                <fmt:message key="jnt_pageCss.pageColors"/>
             </legend>
             <div id="showPageColors">
                 <p>
                     <label class="left"
-                           for="colorResource1">(colorResource1) background-color:</label>
+                           for="colorResource1"><fmt:message key="jnt_pageCss.colorResource1"/></label>
                     <input class="myInput" id="colorResource1" type="text" name="j:colorResource1"
                            value="${props["j:colorResource1"].string}" size="10">
                 </p>
 
                 <p>
                     <label class="left"
-                           for="colorResource2">(colorResource2) background-color:</label>
+                           for="colorResource2"><fmt:message key="jnt_pageCss.colorResource2"/></label>
                     <input class="myInput" id="colorResource2" type="text" name="j:colorResource2"
                            value="${props["j:colorResource2"].string}" size="10">
                 </p>

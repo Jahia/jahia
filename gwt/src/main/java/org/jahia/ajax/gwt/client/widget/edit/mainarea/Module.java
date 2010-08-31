@@ -92,6 +92,10 @@ public abstract class Module extends LayoutContainer {
 
     }
 
+    public void onRender() {
+
+    }
+
     public Module getParentModule() {
         return parentModule;
     }

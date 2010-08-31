@@ -42,6 +42,7 @@ import org.jahia.ajax.gwt.client.core.JahiaType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.util.templates.TemplatesDOMUtil;
 
 import java.util.*;
@@ -59,7 +60,7 @@ public class ModuleHelper {
     private static Map<String, Module> modulesById;
 
     private static Map<String, List<String>> children;
-    private static Map<String, GWTJahiaNodeType> nodeTypes;
+    private static Map<String, GWTJahiaNodeType> nodeTypes = new HashMap<String, GWTJahiaNodeType>();
     private static Map<String, List<String>> linkedContentInfo;
     private static Map<String, String> linkedContentInfoType;
 
@@ -79,7 +80,7 @@ public class ModuleHelper {
 
         List<Element> el = TemplatesDOMUtil.getAllJahiaTypedElementsRec(html.getElement());
 
-//        Set<String> allNodetypes = new HashSet<String>();
+        Set<String> allNodetypes = new HashSet<String>();
 
         for (Element divElement : el) {
             String jahiatype = DOM.getElementAttribute(divElement, JahiaType.JAHIA_TYPE);
@@ -108,7 +109,7 @@ public class ModuleHelper {
                     String mixinType = DOM.getElementAttribute(divElement, "mixinType");
                     module = new LinkerModule(id, path, property, mixinType, m);
                 }
-//                allNodetypes.addAll(Arrays.asList(nodetypes.split(" ")));
+                allNodetypes.addAll(Arrays.asList(nodetypes.split(" ")));
                 if (module != null) {
                     if (!modulesByPath.containsKey(path)) {
                         modulesByPath.put(path, new ArrayList<Module>());
@@ -129,6 +130,7 @@ public class ModuleHelper {
                 linkedContentInfoType.put(node, type);
             }
         }
+        setNodeTypes(allNodetypes);
 
         ArrayList<String> list = new ArrayList<String>();
         for (String s : modulesByPath.keySet()) {
@@ -158,18 +160,6 @@ public class ModuleHelper {
                                 Log.error("Unable to get node with publication info due to:", caught);
                             }
                         });
-//        JahiaContentDefinitionService.App.getInstance().getNodeTypes(new ArrayList<String>(allNodetypes), new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
-//            public void onSuccess(List<GWTJahiaNodeType> result) {
-//                nodeTypes = new HashMap<String, GWTJahiaNodeType>();
-//                for (GWTJahiaNodeType type : result) {
-//                    nodeTypes.put(type.getName(), type);
-//                }
-//            }
-//
-//            public void onApplicationFailure(Throwable caught) {
-//                Log.error("Unable to get nodetypes :",caught);
-//            }
-//        });
         Log.info("Parsing : " + (System.currentTimeMillis() - start));
     }
 
@@ -305,5 +295,28 @@ public class ModuleHelper {
 
     public static Map<String, String> getLinkedContentInfoType() {
         return linkedContentInfoType;
+    }
+
+    public static GWTJahiaNodeType getNodeType(String nodeType) {
+        return nodeTypes.get(nodeType);
+    }
+
+    public static void setNodeTypes(Set<String> allNodetypes) {
+        JahiaContentDefinitionService.App.getInstance().getNodeTypes(new ArrayList<String>(allNodetypes), new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
+            public void onSuccess(List<GWTJahiaNodeType> result) {
+                for (GWTJahiaNodeType type : result) {
+                    if (type != null) {
+                        ModuleHelper.nodeTypes.put(type.getName(), type);
+                    }
+                }
+                for (Module module : modules) {
+                    module.onRender();
+                }
+            }
+
+            public void onApplicationFailure(Throwable caught) {
+                Log.error("Unable to get nodetypes :",caught);
+            }
+        });
     }
 }

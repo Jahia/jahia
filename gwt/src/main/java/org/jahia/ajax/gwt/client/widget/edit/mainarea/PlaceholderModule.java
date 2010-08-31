@@ -46,6 +46,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
@@ -83,13 +84,14 @@ public class PlaceholderModule extends Module {
         panel.addStyleName("x-panel-placeholder");
 
 //        html = new HTML("<img src=\""+JahiaGWTParameters.getContextPath() + "/modules/default/images/add.png"+"\" /> Add new content here");
-        html = new HTML("Add : &nbsp;");
+        html = new HTML(Messages.get("label.add") + " : &nbsp;");
         panel.add(html);
         add(panel);
     }
 
     @Override
     public void onParsed() {
+/*
         DropTarget target = new ModuleDropTarget(this, EditModeDNDListener.PLACEHOLDER_TYPE);
         target.setOperation(DND.Operation.COPY);
         target.setFeedback(DND.Feedback.INSERT);
@@ -100,7 +102,7 @@ public class PlaceholderModule extends Module {
 //        HorizontalPanel buttonsPanel = new HorizontalPanel();
 //        buttonsPanel.setStyleName("listEditToolbar");
         for (String s : nodeTypesArray) {
-            Button button = new Button(s);
+            Button button = new Button(ModuleHelper.getNodeType(s)!= null ? ModuleHelper.getNodeType(s).getLabel():s);
             button.setStyleName("button-placeholder");
             button.addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent event) {
@@ -110,6 +112,7 @@ public class PlaceholderModule extends Module {
             panel.add(button);
         }
         }
+*/
 //        add(buttonsPanel);
 //        html.setHTML("Drop here : " + getParentModule().getNodeTypes());
 //        button.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -118,6 +121,31 @@ public class PlaceholderModule extends Module {
 //                ContentActions.showContentWizard(mainModule.getEditLinker(), parentModule.getNodeTypes());
 //            }
 //        });
+    }
+
+    public void onRender() {
+        DropTarget target = new ModuleDropTarget(this, EditModeDNDListener.PLACEHOLDER_TYPE);
+        target.setOperation(DND.Operation.COPY);
+        target.setFeedback(DND.Feedback.INSERT);
+
+        target.addDNDListener(mainModule.getEditLinker().getDndListener());
+        if (getParentModule() != null && getParentModule().getNodeTypes() != null) {
+        String[] nodeTypesArray = getParentModule().getNodeTypes().split(" ");
+//        HorizontalPanel buttonsPanel = new HorizontalPanel();
+//        buttonsPanel.setStyleName("listEditToolbar");
+        for (String s : nodeTypesArray) {
+            Button button = new Button(ModuleHelper.getNodeType(s)!= null ? ModuleHelper.getNodeType(s).getLabel():s);
+            button.setStyleName("button-placeholder");
+            button.addClickHandler(new ClickHandler() {
+                public void onClick(ClickEvent event) {
+                    ContentActions.showContentWizard(mainModule.getEditLinker(), parentModule.getNodeTypes(), getParentModule().getNode());
+                }
+            });
+            panel.add(button);
+            panel.layout();
+        }
+        }
+
     }
 
     public boolean isDraggable() {

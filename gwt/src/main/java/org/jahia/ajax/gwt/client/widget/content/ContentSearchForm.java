@@ -194,7 +194,7 @@ public class ContentSearchForm extends ContentPanel {
     private ContentPickerField createPageSelectorField() {
         ContentPickerField field = new ContentPickerField(null,
                 null, null, ManagerConfigurationFactory.PAGEPICKER, false);
-        field.setFieldLabel(Messages.get("label.pagePicker", "Pages"));
+        field.setFieldLabel(Messages.get("label.pagepicker", "Pages"));
         return field;
     }
 
@@ -205,7 +205,7 @@ public class ContentSearchForm extends ContentPanel {
      */
     private CheckBox createNameField() {
         CheckBox field = new CheckBox();
-        field.setFieldLabel(Messages.get("label_name", "Name & Metadata"));
+        field.setFieldLabel(Messages.get("label.name", "Name & Metadata"));
         field.setBoxLabel(field.getFieldLabel());
         field.setName("name");
         field.setValue(true);

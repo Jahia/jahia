@@ -35,7 +35,13 @@ package org.jahia.services.content;
 import org.apache.commons.io.IOUtils;
 import org.apache.jackrabbit.JcrConstants;
 import org.apache.log4j.Logger;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.ajax.gwt.helper.NavigationHelper;
+import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.test.TestHelper;
+import org.jahia.utils.LanguageCodeConverters;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -52,6 +58,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.text.DateFormat;
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -149,10 +156,15 @@ public class ContentTest {
             assertTrue(providerRoot + " : Created folder is not a collection", testCollection.isCollection());
 
             long creationDate = testCollection.getCreationDateAsDate().getTime();
-            assertTrue(providerRoot + " : Creation date invalid", creationDate < System.currentTimeMillis() && creationDate > System.currentTimeMillis() - 10000);
+            DateFormat dateFormat = DateFormat.getInstance();
+            assertTrue(providerRoot + " : Creation date invalid value=" + dateFormat.format(new Date(creationDate)) +
+                    " expected date in range from " + dateFormat.format(new Date(System.currentTimeMillis() - 10000)) +
+                    " to " + dateFormat.format(new Date(System.currentTimeMillis() + 10000)), creationDate < (System.currentTimeMillis() + 10000) && creationDate > System.currentTimeMillis() - 10000);
 
             long lastModifiedDate = testCollection.getLastModifiedAsDate().getTime();
-            assertTrue(providerRoot + " : Modification date invalid", lastModifiedDate < System.currentTimeMillis() && lastModifiedDate > System.currentTimeMillis() - 10000);
+            assertTrue(providerRoot + " : Modification date invalid value=" + dateFormat.format(new Date(lastModifiedDate)) +
+                    " expected date in range from " + dateFormat.format(new Date(System.currentTimeMillis() - 10000)) +
+                    " to " + dateFormat.format(new Date(System.currentTimeMillis() + 10000)), lastModifiedDate < (System.currentTimeMillis() + 1000) && lastModifiedDate > System.currentTimeMillis() - 10000);
 
             testCollection = session.getNode(providerRoot + "/" + name);
 
@@ -594,4 +606,67 @@ public class ContentTest {
 
         }
     }
+
+    @Test
+    public void testNavigation() throws RepositoryException, GWTJahiaServiceException {
+        final Map<String, JCRStoreProvider> mountPoints = JCRSessionFactory.getInstance().getMountPoints();
+
+        List<String> mountLocations = new ArrayList<String>();
+        for (String providerRoot : mountPoints.keySet()) {
+            if (providerRoot.startsWith("/mounts")) {
+                mountLocations.add(providerRoot);
+            }
+        }
+
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+        try {
+            JCRSiteNode siteNode = (JCRSiteNode) session.getNode(SITECONTENT_ROOT_NODE);
+            NavigationHelper navigationHelper = (NavigationHelper) SpringContextSingleton.getInstance().getContext().getBean("NavigationHelper");
+            Locale locale = LanguageCodeConverters.languageCodeToLocale("en");
+            List<String> paths = new ArrayList<String>();
+            paths.add("/mounts");
+            List<GWTJahiaNode> rootNodes = navigationHelper.retrieveRoot(paths, null, null, null, null,
+                    null, null, siteNode, session, locale);
+            List<String> nodeTypes = new ArrayList<String>();
+            nodeTypes.add("nt:file");
+            nodeTypes.add("nt:folder");
+            nodeTypes.add("jnt:mountPoints");
+            List<String> fields = new ArrayList<String>();
+            fields.add("providerKey");
+            fields.add("icon");
+            fields.add("name");
+            fields.add("locked");
+            fields.add("size");
+            fields.add("jcr:lastModified");
+            for (GWTJahiaNode rootNode : rootNodes) {
+                assertGWTJahiaNode(rootNode, "/mounts");
+                List<GWTJahiaNode> childNodes = navigationHelper.ls(rootNode, nodeTypes, new ArrayList<String>(), new ArrayList<String>(), fields, session);
+                assertEquals("Mounted providers in /mounts does not to correspond to expected amount", mountLocations.size(), childNodes.size());
+                for (GWTJahiaNode childNode : childNodes) {
+                    assertTrue("Path to mount location does not correspond ! Path=" + childNode.getPath(), mountLocations.contains(childNode.getPath()));
+                    assertGWTJahiaNode(childNode, "/mounts/" + childNode.getName());
+                    List<GWTJahiaNode> childChildNodes = navigationHelper.ls(childNode, nodeTypes, new ArrayList<String>(), new ArrayList<String>(), fields, session);
+                    for (GWTJahiaNode childChildNode : childChildNodes) {
+                        assertGWTJahiaNode(childChildNode, "/mounts/" + childNode.getName() + "/" + childChildNode.getName());
+                    }
+                }
+            }
+        } finally {
+            if (session != null) {
+                session.logout();
+            }
+
+        }
+    }
+
+    private void assertGWTJahiaNode(GWTJahiaNode jahiaGWTNode, String expectedPath) {
+        assertEquals("Expected path and actual GWT node path are not equal !", expectedPath, jahiaGWTNode.getPath());
+        int lastSlashPosInPath = jahiaGWTNode.getPath().lastIndexOf("/");
+        if (lastSlashPosInPath > -1)
+            assertEquals("Last part of path and name are not equal !", jahiaGWTNode.getPath().substring(lastSlashPosInPath + 1), jahiaGWTNode.getName());
+        else {
+            assertEquals("Last part of path and name are not equal !", jahiaGWTNode.getPath(), jahiaGWTNode.getName());
+        }
+    }
+
 }

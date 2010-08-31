@@ -213,7 +213,7 @@
             <div class="boxsocial-inner">
                 <div class="boxsocial-inner-border"><!--start boxsocial -->
                     <ul class="activitiesList">
-                        <li>Loading status...</li>
+                        <li><fmt:message key="userLoadingStatus"/></li>
                     </ul>
                 </div>
             </div>

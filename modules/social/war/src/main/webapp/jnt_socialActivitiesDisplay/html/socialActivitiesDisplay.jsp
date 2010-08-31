@@ -26,7 +26,7 @@
         </c:if>
         <social:get-activities var="activities" sourcePaths="${connections}" pathFilter="${bindedComponent.path}"/>
         <c:if test="${empty activities}">
-            No activities found.
+            <fmt:message key="message.noActivitiesFound"/>
         </c:if>
         <c:if test="${not empty activities}">
             <div class="boxsocial">

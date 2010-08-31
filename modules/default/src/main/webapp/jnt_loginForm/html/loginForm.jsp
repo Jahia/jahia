@@ -36,12 +36,12 @@
     </ui:isLoginError>
 
     <p>
-        <label class="left" for="username">Username: </label>
+        <label class="left" for="username"><fmt:message key="label.username"/></label>
         <input type="text" value="" tabindex="1" maxlength="250" name="username" id="username"/>
     </p>
 
     <p>
-        <label class="left" for="password">Password: </label>
+        <label class="left" for="password"><fmt:message key="label.password"/></label>
         <input type="password" tabindex="2" maxlength="250" name="password" id="password"/>
     </p>
 
@@ -60,5 +60,5 @@
 <c:if test="${renderContext.loggedIn}">
     <p>Logged as ${renderContext.user.username}</p>
     <p><a class="loginFormTopLogoutShortcuts"
-                                       href='${url.logout}'><span>logout</span></a></p>
+                                       href='${url.logout}'><span><fmt:message key="label.logout"/></span></a></p>
 </c:if>

@@ -93,7 +93,7 @@
                 </c:if>
             </c:forEach>
             <c:if test="${not notempty and renderContext.editMode}">
-	       <li>Empty nav bar</li>
+	       <li><fmt:message key="label.navbar.empty"/> </li>
 	       </c:if>
         </ul>
         <c:if test="${navMenuLevel > 1}">

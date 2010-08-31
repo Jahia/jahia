@@ -75,7 +75,7 @@
             onblur : 'ignore',
             submit : 'OK',
             cancel : 'Cancel',
-            tooltip : 'Click to edit'
+            tooltip : '<fmt:message key="label.clickToEdit"/>'
         });
         $(".visibilityEdit").editable(function (value, settings) {
             var submitId = $(this).attr('id').replace("_", ":");
@@ -92,7 +92,7 @@
             onblur : 'ignore',
             submit : 'OK',
             cancel : 'Cancel',
-            tooltip : 'Click to edit'
+            tooltip : '<fmt:message key="label.clickToEdit"/>'
         });
 
         $(".imageEdit").editable('${url.base}${currentNode.path}', {
@@ -100,7 +100,7 @@
             onblur : 'ignore',
             submit : 'OK',
             cancel : 'Cancel',
-            tooltip : 'Click to edit',
+            tooltip : '<fmt:message key="label.clickToEdit"/>',
             callback : function (data, status) {
                 uploadedImageCallback(data, status);
             }
@@ -129,7 +129,7 @@
             onblur : 'ignore',
             submit : 'OK',
             cancel : 'Cancel',
-            tooltip : 'Click to edit'
+            tooltip : '<fmt:message key="label.clickToEdit"/>'
         });
 
         $(".dateEdit").editable(function (value, settings) {
@@ -145,7 +145,7 @@
             onblur : 'ignore',
             submit : 'OK',
             cancel : 'Cancel',
-            tooltip : 'Click to edit'
+            tooltip : '<fmt:message key="label.clickToEdit"/>'
         });
 
         $(".genderEdit").editable(function (value, settings) {
@@ -161,7 +161,7 @@
             onblur : 'ignore',
             submit : 'OK',
             cancel : 'Cancel',
-            tooltip : 'Click to edit'
+            tooltip : '<fmt:message key="label.clickToEdit"/>'
         });
 
         $(".titleEdit").editable(function (value, settings) {
@@ -183,7 +183,7 @@
             onblur : 'ignore',
             submit : 'OK',
             cancel : 'Cancel',
-            tooltip : 'Click to edit'
+            tooltip : '<fmt:message key="label.clickToEdit"/>'
         });
 
     });
@@ -275,7 +275,7 @@
                                             onblur : 'ignore',
                                             submit : 'OK',
                                             cancel : 'Cancel',
-                                            tooltip : 'Click to edit'
+                                            tooltip : '<fmt:message key="label.clickToEdit"/>'
                                         });
                                     });
                                 </script>

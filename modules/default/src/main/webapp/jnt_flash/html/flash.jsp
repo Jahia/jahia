@@ -1,6 +1,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <jcr:nodeProperty node="${currentNode}" name="flashSource" var="flashSource"/>
 <jcr:nodeProperty node="${currentNode}" name="width" var="widthFlash"/>
@@ -25,7 +26,7 @@
 <template:addResources type="css" resources="flash.css"/>
 	    <div id="flashcontent${currentNode.UUID}">
             <div class="flashcontent"><!--START FLASH -->
-                <strong>You need to upgrade your Flash Player</strong><br />
+                <strong><fmt:message key="label.flashplayer.info"/></strong><br />
                 <a href="http://www.adobe.com/go/getflashplayer" target="_blank"><img src="${url.currentModule}/images/160x41_Get_Flash_Player.jpg" alt="get flash player" /></a>
 			</div>
 	    </div>

@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.jahia.org/tags/templateLib" prefix="template" %>
 <%@ taglib uri="http://www.jahia.org/tags/jcr" prefix="jcr" %>
-
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 
 <jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>
@@ -33,7 +33,7 @@
     <c:forEach items="${currentNode.nodes}" var="child">
         <c:if test="${jcr:isNodeType(child, 'jnt:members')}">
         <li>
-            <h3>Members</h3>
+            <h3><fmt:message key="label.members"/></h3>
             <ul>
             <c:forEach items="${child.nodes}" var="subchild">
                 <li>

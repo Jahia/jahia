@@ -1,5 +1,6 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib uri="http://www.jahia.org/tags/jcr" prefix="jcr" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <template:addResources type="css" resources="formmaincontent.css"/>
 <template:addResources type="javascript" resources="jquery.min.js,jquery.jeditable.js"/>
@@ -41,7 +42,7 @@
     <c:if test="${empty image}">
         <div class="imagefloat${currentNode.properties.align.string} file${currentNode.identifier}" jcr:id="image"
              jcr:url="${url.base}${currentNode.path}">
-            <span>click here to attach a file</span>
+            <span><fmt:message key="label.edit.attach.file"/></span>
         </div>
     </c:if>
    <div class="clear"></div>

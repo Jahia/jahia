@@ -39,7 +39,7 @@
 		<p>
         <div class="clear"></div>
         <div id="file${currentNode.identifier}jnt_mainContentImage">
-            <span>add a file (file will be uploaded in your files directory before submitting the form)</span>
+            <span><fmt:message key="label.edit.add.file"/> </span>
         </div>
         <script>
             $(document).ready(function() {

@@ -37,8 +37,7 @@
 
                 <h3>${child.name}</h3>
 
-                <p>A nice image, this text has to be replaced by metadata decription or another descriptive field if
-                    another type of content than images. ${currentNode.properties.abstract.string} </p>
+                <p> ${currentNode.properties.abstract.string} </p>
             </div>
         </c:if>
 
@@ -63,10 +62,10 @@
 
         <c:if test="${jcr:isNodeType(child, 'jnt:event')}">
             <div class="item">
-                From <span class="day"><fmt:formatDate pattern="dd" value="${child.properties.startDate.time}"/></span>
+                <fmt:message key="label.from"/> <span class="day"><fmt:formatDate pattern="dd" value="${child.properties.startDate.time}"/></span>
                 <span class="month"><fmt:formatDate pattern="MM" value="${child.properties.startDate.time}"/></span>
                 <span class="year"><fmt:formatDate pattern="yyyy" value="${child.properties.startDate.time}"/></span>
-                to
+                <fmt:message key="label.to"/>
                 <span class="day"><fmt:formatDate pattern="dd" value="${child.properties.endDate.time}"/></span>
                 <span class="month"><fmt:formatDate pattern="MM" value="${child.properties.endDate.time}"/></span>
                 <span class="year"><fmt:formatDate pattern="yyyy" value="${child.properties.endDate.time}"/></span>

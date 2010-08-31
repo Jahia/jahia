@@ -14,7 +14,7 @@
 <c:set var="mainTemplate" value="${currentNode.properties['j:userTemplate'].string}"/>
 <c:choose>
     <c:when test="${not empty inWrapper and inWrapper eq false}">
-        <div class="mainResourceArea<c:if test="${not empty currentNode.properties['j:mockupStyle']}"> ${currentNode.properties['j:mockupStyle'].string}</c:if>">
+        <div class="mainResourceArea <c:if test="${not empty currentNode.properties['j:mockupStyle']}">${currentNode.properties['j:mockupStyle'].string}</c:if>">
             <c:if test="${not empty currentNode.properties['j:userTemplate'].string}">
                 <div class="mainResourceTemplate">
                     <span>${currentNode.properties['j:userTemplate'].string}</span>

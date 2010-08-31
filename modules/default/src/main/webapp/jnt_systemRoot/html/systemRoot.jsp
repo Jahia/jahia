@@ -1,7 +1,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.jahia.org/tags/templateLib" prefix="template" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<h2>System root folder: <a href="${url.current}">${currentNode.name}</a></h2>
+<h2><fmt:message key="label.system.rootfolder"/> <a href="${url.current}">${currentNode.name}</a></h2>
 
 <ul>
     <c:set var="parent" value="${currentNode.parent}"/>

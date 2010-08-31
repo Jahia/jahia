@@ -72,7 +72,7 @@
 </script>
 <c:if test="${renderContext.user.name != 'guest'}">
     <form action="${url.base}${currentNode.path}" method="post">
-        <label>Add tags:</label>
+        <label><fmt:message key="label.add.tags"/></label>
         <input type="hidden" name="methodToCall" value="put"/>
         <input type="text" name="j:newTag" class="newTagInput" value=""/>
         <input type="submit" title="<fmt:message key='add'/>" value="<fmt:message key='add'/>" class="button"

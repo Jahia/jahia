@@ -26,9 +26,9 @@
         </c:if>
     </div>
     <div class="user-body">
-        <h4>${fn:escapeXml(person)}&nbsp;(logged as: ${currentNode.name})</h4>
+        <h4>${fn:escapeXml(person)}&nbsp;(<fmt:message key="label.loggedAs"/> ${currentNode.name})</h4>
         <p>
-            <span class="user-label">First name:</span>&nbsp;<input class="user-prop" type="text" name="j:firstName" value="${fn:escapeXml(fields['j:firstName'])}"/>
+            <span class="user-label"><fmt:message key="jnt_user.j_firstName"/> :</span>&nbsp;<input class="user-prop" type="text" name="j:firstName" value="${fn:escapeXml(fields['j:firstName'])}"/>
             <% /* TODO find a cleaner way to handle the boolean for public/private properties */ %>
             &nbsp;<input type="radio" id="j:firstNamePublicTrue" name="j:firstNamePublic" value="true"/>&nbsp;<label for="j:firstNamePublicTrue">public</label>
             &nbsp;<input type="radio" id="j:firstNamePublicFalse" name="j:firstNamePublic" value="false"/>&nbsp;<label for="j:firstNamePublicFalse">private</label>
@@ -38,13 +38,13 @@
                 document.getElementById("j:firstNamePublicFalse").checked=!firstNameIsPublic;
             </script>
         </p>
-        <p><span class="user-label">Last name:</span>&nbsp;<input class="user-prop" type="text" name="j:lastName" value="${fn:escapeXml(fields['j:lastName'])}"/>
-        <p><span class="user-label">Organization:</span>&nbsp;<input class="user-prop" type="text" name="j:organization" value="${fn:escapeXml(fields['j:organization'])}"/></p>
-        <p><span class="user-label">Function:</span>&nbsp;<input class="user-prop" type="text" name="j:function" value="${fn:escapeXml(fields['j:function'])}"/></p>
-        <p><span class="user-label">Phone:</span>&nbsp;<input class="user-prop" type="text" name="j:phoneNumber" value="${fn:escapeXml(fields['j:phoneNumber'])}"/></p>
-        <p><span class="user-label">Fax:</span>&nbsp;<input class="user-prop" type="text" name="j:faxNumber" value="${fn:escapeXml(fields['j:faxNumber'])}"/></p>
+        <p><span class="user-label"><fmt:message key="jnt_user.j_lastName"/>:</span>&nbsp;<input class="user-prop" type="text" name="j:lastName" value="${fn:escapeXml(fields['j:lastName'])}"/>
+        <p><span class="user-label"><fmt:message key="jnt_user.j_organization"/>:</span>&nbsp;<input class="user-prop" type="text" name="j:organization" value="${fn:escapeXml(fields['j:organization'])}"/></p>
+        <p><span class="user-label"><fmt:message key="jnt_user.j_function"/>:</span>&nbsp;<input class="user-prop" type="text" name="j:function" value="${fn:escapeXml(fields['j:function'])}"/></p>
+        <p><span class="user-label"><fmt:message key="jnt_user.j_phoneNumber"/>:</span>&nbsp;<input class="user-prop" type="text" name="j:phoneNumber" value="${fn:escapeXml(fields['j:phoneNumber'])}"/></p>
+        <p><span class="user-label"><fmt:message key="jnt_user.j_faxNumber"/>:</span>&nbsp;<input class="user-prop" type="text" name="j:faxNumber" value="${fn:escapeXml(fields['j:faxNumber'])}"/></p>
         <p>
-            <span class="user-label">Email:</span>&nbsp;<input class="user-prop" type="text" name="j:email" value="${fn:escapeXml(fields['j:email'])}"/>
+            <span class="user-label"><fmt:message key="jnt_user.j_email"/>:</span>&nbsp;<input class="user-prop" type="text" name="j:email" value="${fn:escapeXml(fields['j:email'])}"/>
             &nbsp;<input type="radio" id="j:emailPublicTrue" name="j:emailPublic" value="true"/>&nbsp;<label for="j:emailPublicTrue">public</label>
             &nbsp;<input type="radio" id="j:emailPublicFalse" name="j:emailPublic" value="false"/>&nbsp;<label for="j:emailPublicFalse">private</label>
             <script type="text/javascript">
@@ -53,13 +53,13 @@
                 document.getElementById("j:emailPublicFalse").checked=!emailIsPublic;
             </script>
         </p>
-        <p><span class="user-label">Skype:</span>&nbsp;<input class="user-prop" type="text" name="j:skypeID" value="${fn:escapeXml(fields['j:skypeID'])}"/></p>
-        <p><span class="user-label">Twitter:</span>&nbsp;<input class="user-prop" type="text" name="j:twitterID" value="${fn:escapeXml(fields['j:twitterID'])}"/></p>
-        <p><span class="user-label">LinkedIn:</span>&nbsp;<input class="user-prop" type="text" name="j:linkedinID" value="${fn:escapeXml(fields['j:linkedinID'])}"/></p>
-        <p><span class="user-label">About me:</span><textarea class="user-prop" name="j:about">${fields['j:about']}</textarea></p>
+        <p><span class="user-label"><fmt:message key="jnt_user.j_skypeID"/>:</span>&nbsp;<input class="user-prop" type="text" name="j:skypeID" value="${fn:escapeXml(fields['j:skypeID'])}"/></p>
+        <p><span class="user-label"><fmt:message key="jnt_user.j_twitterID"/>:</span>&nbsp;<input class="user-prop" type="text" name="j:twitterID" value="${fn:escapeXml(fields['j:twitterID'])}"/></p>
+        <p><span class="user-label"><fmt:message key="jnt_user.j_linkedinID"/>:</span>&nbsp;<input class="user-prop" type="text" name="j:linkedinID" value="${fn:escapeXml(fields['j:linkedinID'])}"/></p>
+        <p><span class="user-label"><fmt:message key="label.aboutMe"/>:</span><textarea class="user-prop" name="j:about">${fields['j:about']}</textarea></p>
     </div>
     <input type="submit" value="Update profile" class="button"/>
 </div>
 </form>
-<div><a href="${url.base}${currentNode.path}.html">Back to preview</a></div>
+<div><a href="${url.base}${currentNode.path}.html"><fmt:message key="label.backToPreview"/></a></div>
 </c:if>

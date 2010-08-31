@@ -40,7 +40,7 @@
             <span class="label"><fmt:message key='jnt_user.${fn:replace(key,":","_")}'/></span>
 
             <div class="edit" id="${fn:replace(key,":","_")}"><c:if
-                    test="${empty fields[key]}">Click here to edit</c:if><c:if
+                    test="${empty fields[key]}"><fmt:message key="label.clickToEdit"/></c:if><c:if
                     test="${!empty fields[key]}">${fields[key]}</c:if></div>
             <c:set var="pubKey" value="${key}Public"/>
             <span class="visibilityEdit" id="${fn:replace(key,":","_")}Public">
@@ -108,7 +108,7 @@
                     onblur : 'ignore',
                     submit : 'OK',
                     cancel : 'Cancel',
-                    tooltip : 'Click to edit'
+                    tooltip : '<fmt:message key="label.clickToEdit"/>'
                 });
             });
         </script>
@@ -119,9 +119,9 @@
     </c:forEach>
 </ul>
 <form class="FormNewPhone" action="" id="newPhone">
-    <input type="text" id="newPhoneNumber" size="20" value="Phone Number"/>
-    <input type="text" id="newPhoneType" size="20" value="Phone Type"/>
-    <input class="button" type="button" onclick="newPhone();" value="Add"/>
+    <input type="text" id="newPhoneNumber" size="20" value="<fmt:message key='jnt_user.j_phoneNumber'/>"/>
+    <input type="text" id="newPhoneType" size="20" value="<fmt:message key='jnt_user.j_phoneType'/>"/>
+    <input class="button" type="button" onclick="newPhone();" value="<fmt:message key='label.add'/>"/>
 </form>
 <ul class="user-profile-list twoCol" id="addressesList">
     <jcr:node var="addresses" path="${currentNode.path}/j:addresses"/>
@@ -153,7 +153,7 @@
                     onblur : 'ignore',
                     submit : 'OK',
                     cancel : 'Cancel',
-                    tooltip : 'Click to edit'
+                    tooltip : '<fmt:message key="label.clickToEdit"/>'
                 });
             });
         </script>
@@ -166,10 +166,10 @@
     </c:forEach>
 </ul>
 <form class="FormNewAddress" action="" id="newAddress">
-    <input type="text" id="newStreet" size="20" value="Street"/>
-    <input type="text" id="newZipCode" size="20" value="Zipcode"/>
-    <input type="text" id="newTown" size="20" value="Town"/>
-    <input class="button" type="button" onclick="addNewAddress();"value="Add"/>
+    <input type="text" id="newStreet" size="20" value="<fmt:message key='jnt_location.j_street'/>"/>
+    <input type="text" id="newZipCode" size="20" value="<fmt:message key='jnt_location.j_zipCode'/>"/>
+    <input type="text" id="newTown" size="20" value="<fmt:message key='jnt_location.j_town'/>"/>
+    <input class="button" type="button" onclick="addNewAddress();"value="<fmt:message key='label.add'/>"/>
 </form>
 <%--
 <div class="clear"></div>

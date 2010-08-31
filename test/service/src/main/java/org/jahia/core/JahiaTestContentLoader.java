@@ -15,6 +15,7 @@ import javax.jcr.nodetype.NodeType;
 
 import org.apache.jackrabbit.core.NodeImpl;
 import org.apache.jackrabbit.core.TestContentLoader;
+import org.jahia.services.content.JCRNodeWrapper;
 
 public class JahiaTestContentLoader extends TestContentLoader {
     
@@ -126,7 +127,8 @@ public class JahiaTestContentLoader extends TestContentLoader {
         transition.setProperty("to", "identity");
 
         Node lifecycle = getOrAddNode(node, "node");
-        ((NodeImpl) lifecycle).assignLifecyclePolicy(policy, "identity");
+        ((NodeImpl) ((JCRNodeWrapper) lifecycle).getRealNode()).assignLifecyclePolicy(
+                ((JCRNodeWrapper) policy).getRealNode(), "identity");        
     }
 
     private void addExportTestData(Node node) throws RepositoryException, IOException {

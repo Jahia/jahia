@@ -14,7 +14,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
 <template:include template="hidden.header"/>
-<c:if test="${not empty currentList}">
+<c:if test="${not empty moduleMap.currentList}">
     <ul>
         <c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}" end="${moduleMap.end}">
             <li>

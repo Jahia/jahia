@@ -71,7 +71,7 @@
                     <property name="nodeType" value="jnt:page"/>
                     <property name="tabs">
                         <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                            <value>createPage</value>
+                            <value>content</value>
                             <value>metadata</value>
                             <value>tags</value>
                             <value>categories</value>

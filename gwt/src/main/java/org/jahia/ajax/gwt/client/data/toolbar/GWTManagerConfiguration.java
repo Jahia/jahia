@@ -66,7 +66,8 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
     private boolean enableFileDoubleClick = true;
     private boolean useCheckboxForSelection = true;
 
-    private GWTJahiaToolbarSet toolbarSet;
+    private List<GWTJahiaToolbar> toolbars;
+    private GWTJahiaToolbar contextMenu;
 
     private boolean expandRoot = false;
 
@@ -213,12 +214,20 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
         this.enableFileDoubleClick = enableFileDoubleClick;
     }
 
-    public GWTJahiaToolbarSet getToolbarSet() {
-        return toolbarSet;
+    public List<GWTJahiaToolbar> getToolbars() {
+        return toolbars;
     }
 
-    public void setToolbarSet(GWTJahiaToolbarSet toolbarSet) {
-        this.toolbarSet = toolbarSet;
+    public void setToolbars(List<GWTJahiaToolbar> toolbars) {
+        this.toolbars = toolbars;
+    }
+
+    public GWTJahiaToolbar getContextMenu() {
+        return contextMenu;
+    }
+
+    public void setContextMenu(GWTJahiaToolbar contextMenu) {
+        this.contextMenu = contextMenu;
     }
 
     public boolean isUseCheckboxForSelection() {

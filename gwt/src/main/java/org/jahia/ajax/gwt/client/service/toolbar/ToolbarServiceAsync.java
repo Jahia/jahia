@@ -33,12 +33,8 @@
 package org.jahia.ajax.gwt.client.service.toolbar;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.jahia.ajax.gwt.client.data.GWTJahiaAjaxActionResult;
-import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarSet;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
 import org.jahia.ajax.gwt.client.data.toolbar.monitor.GWTJahiaStateInfo;
-
-import java.util.Map;
 
 /**
  * User: jahia
@@ -47,7 +43,7 @@ import java.util.Map;
  */
 public interface ToolbarServiceAsync {
 
-    public void getGWTToolbars(String toolbarGroup, AsyncCallback<GWTJahiaToolbarSet> async);
+    public void getGWTToolbars(String toolbarGroup, AsyncCallback<GWTJahiaToolbar> async);
 
     public void updateGWTJahiaStateInfo(GWTJahiaStateInfo gwtJahiaStateInfo, AsyncCallback<GWTJahiaStateInfo> async);
 

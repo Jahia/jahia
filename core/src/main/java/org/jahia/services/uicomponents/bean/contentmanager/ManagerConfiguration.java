@@ -34,8 +34,7 @@ package org.jahia.services.uicomponents.bean.contentmanager;
 
 import org.jahia.services.uicomponents.bean.editmode.Engine;
 import org.jahia.services.uicomponents.bean.editmode.EngineTab;
-import org.jahia.services.uicomponents.bean.toolbar.ToolbarSet;
-import org.springframework.beans.factory.BeanNameAware;
+import org.jahia.services.uicomponents.bean.toolbar.Toolbar;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -69,7 +68,8 @@ public class ManagerConfiguration implements Serializable {
     private List<Engine> createEngines;
     private List<Engine> editEngines;
 
-    private ToolbarSet toolbarSet;
+    private List<Toolbar> toolbars;
+    private Toolbar contextMenu;
 
 
     private boolean expandRoot = false;
@@ -178,12 +178,20 @@ public class ManagerConfiguration implements Serializable {
         this.enableFileDoubleClick = enableFileDoubleClick;
     }
 
-    public ToolbarSet getToolbarSet() {
-        return toolbarSet;
+    public List<Toolbar> getToolbars() {
+        return toolbars;
     }
 
-    public void setToolbarSet(ToolbarSet toolbarSet) {
-        this.toolbarSet = toolbarSet;
+    public void setToolbars(List<Toolbar> toolbars) {
+        this.toolbars = toolbars;
+    }
+
+    public Toolbar getContextMenu() {
+        return contextMenu;
+    }
+
+    public void setContextMenu(Toolbar contextMenu) {
+        this.contextMenu = contextMenu;
     }
 
     public boolean isUseCheckboxForSelection() {

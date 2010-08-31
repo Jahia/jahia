@@ -21,9 +21,11 @@
     <bean id="studiomode" class="org.jahia.services.uicomponents.bean.editmode.EditConfiguration">
         <property name="topToolbar">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="layout" value="button-label"/>
                 <property name="items">
                     <list>
-                        <bean id="Toolbar.ItemsGroup.SitesSwitcher" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                        <bean id="Toolbar.ItemsGroup.SitesSwitcher"
+                              class="org.jahia.services.uicomponents.bean.toolbar.Item">
                             <property name="actionItem">
                                 <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SiteSwitcherActionItem">
                                     <property name="root" value="/templateSets/*"/>
@@ -32,8 +34,8 @@
                             <property name="titleKey" value="label.templateSets"/>
                             <property name="visibility" value="$site/toolbar/site-switcher"/>
                         </bean>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-                            <property name="layout" value="menu"/>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+
                             <property name="titleKey" value="label.new"/>
                             <property name="icon" value="newAction"/>
                             <property name="items">
@@ -59,8 +61,34 @@
                         </bean>
                         <ref bean="Toolbar.ItemsGroup.LanguageSwitcher"/>
                         <ref bean="Toolbar.Item.Separator"/>
-                        <ref bean="Toolbar.ItemsGroup.EditStudioAction"/>
-                        <ref bean="Toolbar.Item.Separator"/>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey" value="label.edit"/>
+                            <property name="icon" value="editStudioAction"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.EditContent"/>
+                                    <ref bean="Toolbar.Item.Delete"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.EditSourceContent"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.Copy"/>
+                                    <ref bean="Toolbar.Item.Cut"/>
+                                    <ref bean="Toolbar.Item.Paste"/>
+                                    <ref bean="Toolbar.Item.PasteReference"/>
+                                    <ref bean="Toolbar.Item.ClipBoard"/>
+                                    <ref bean="Toolbar.Item.Translate"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.TemplateExport"/>
+                                    <ref bean="Toolbar.Item.Import"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.Lock"/>
+                                    <ref bean="Toolbar.Item.Unlock"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.OpenInContentManager"/>
+                                </list>
+                            </property>
+                            <property name="visibility" value="$site/toolbar/edit"/>
+                        </bean>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
                             <property name="actionItem">
                                 <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.GenerateWarActionItem"/>
@@ -68,27 +96,40 @@
                             <property name="titleKey" value="label.exportWar"/>
                             <property name="icon" value="templateExport"/>
                         </bean>
-                        <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.ItemsGroup.Managers"/>
-                        <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.ItemsGroup.User"/>
-                        <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Admin"/>
                     </list>
                 </property>
                 <property name="visibility" value="$site/actions/edit-mode"/>
-                <property name="contextMenu" value="true"/>
             </bean>
         </property>
         <property name="contextMenu">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
-                        <ref bean="Toolbar.ItemsGroup.EditStudioAction"/>
+                        <ref bean="Toolbar.Item.EditContent"/>
+                        <ref bean="Toolbar.Item.Delete"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.EditSourceContent"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                        <ref bean="Toolbar.Item.ClipBoard"/>
+                        <ref bean="Toolbar.Item.Translate"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.TemplateExport"/>
+                        <ref bean="Toolbar.Item.Import"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Lock"/>
+                        <ref bean="Toolbar.Item.Unlock"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.OpenInContentManager"/>
                     </list>
                 </property>
                 <property name="visibility" value="global/studio-mode"/>
-                <property name="contextMenu" value="true"/>
             </bean>
         </property>
 
@@ -166,11 +207,12 @@
     <bean id="editmode" class="org.jahia.services.uicomponents.bean.editmode.EditConfiguration">
         <property name="topToolbar">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="layout" value="button-label"/>
                 <property name="items">
                     <list>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup"
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu"
                               id="Toolbar.ItemsGroup.NewAction">
-                            <property name="layout" value="menu"/>
+
                             <property name="titleKey" value="label.new"/>
                             <property name="icon" value="newAction"/>
                             <property name="items">
@@ -182,39 +224,114 @@
                             <property name="visibility" value="$site/toolbar/new"/>
                         </bean>
                         <ref bean="Toolbar.Item.Live"/>
-                        <ref bean="Toolbar.ItemsGroup.Preview"/>
-                        <ref bean="Toolbar.Item.Separator"/>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+
+                            <property name="titleKey" value="label.preview"/>
+                            <property name="icon" value="preview"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.Preview"/>
+                                    <ref bean="Toolbar.Item.ShowCompareEngine"/>
+                                </list>
+                            </property>
+                            <property name="visibility" value="$site/toolbar/preview-mode"/>
+                        </bean>
                         <ref bean="Toolbar.ItemsGroup.LanguageSwitcher"/>
                         <ref bean="Toolbar.Item.Separator"/>
-                        <ref bean="Toolbar.Item.Separator"/>
-                        <ref bean="Toolbar.ItemsGroup.EditAction"/>
-                        <ref bean="Toolbar.Item.Separator"/>
-                        <ref bean="Toolbar.ItemsGroup.PublicationAction"/>
-                        <ref bean="Toolbar.ItemsGroup.WorkflowAction"/>
-                        <ref bean="Toolbar.Item.Separator"/>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey" value="label.edit"/>
+                            <property name="icon" value="editAction"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.EditContent"/>
+                                    <ref bean="Toolbar.Item.Delete"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.EditSourceContent"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.Copy"/>
+                                    <ref bean="Toolbar.Item.Cut"/>
+                                    <ref bean="Toolbar.Item.Paste"/>
+                                    <ref bean="Toolbar.Item.PasteReference"/>
+                                    <ref bean="Toolbar.Item.ClipBoard"/>
+                                    <ref bean="Toolbar.Item.Translate"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.Export"/>
+                                    <ref bean="Toolbar.Item.Import"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.Lock"/>
+                                    <ref bean="Toolbar.Item.Unlock"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.SaveAsPortalComponent"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.OpenInContentManager"/>
+                                </list>
+                            </property>
+                            <property name="visibility" value="$site/toolbar/edit"/>
+                        </bean>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey" value="label.publication"/>
+                            <property name="icon" value="publicationAction"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.Publish"/>
+                                    <ref bean="Toolbar.Item.PublishAll"/>
+                                    <ref bean="Toolbar.Item.Unpublish"/>
+                                    <ref bean="Toolbar.Item.ViewPublishStatus"/>
+                                    <ref bean="Toolbar.Item.PublicationManager"/>
+                                </list>
+                            </property>
+                            <property name="visibility" value="$site/toolbar/publication"/>
+                        </bean>
+
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+
+                            <property name="titleKey" value="label.workflow"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.WorkflowStatuswAction"/>
+                                    <ref bean="Toolbar.Item.WorkflowDashboard"/>
+                                    <ref bean="Toolbar.Item.WorkflowManager"/>
+                                </list>
+                            </property>
+                            <property name="visibility" value="$site/toolbar/workflow"/>
+                        </bean>
                         <ref bean="Toolbar.ItemsGroup.Managers"/>
-                        <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.ItemsGroup.User"/>
-                        <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Admin"/>
                         <ref bean="Toolbar.Item.Studio"/>
                     </list>
                 </property>
                 <property name="visibility" value="$site/actions/edit-mode"/>
-                <property name="contextMenu" value="true"/>
             </bean>
         </property>
         <property name="contextMenu">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
-                        <ref bean="Toolbar.ItemsGroup.EditAction"/>
+                        <ref bean="Toolbar.Item.EditContent"/>
+                        <ref bean="Toolbar.Item.Delete"/>
                         <ref bean="Toolbar.Item.Separator"/>
-                        <ref bean="Toolbar.ItemsGroup.PublicationAction"/>
+                        <ref bean="Toolbar.Item.EditSourceContent"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                        <ref bean="Toolbar.Item.ClipBoard"/>
+                        <ref bean="Toolbar.Item.Translate"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Export"/>
+                        <ref bean="Toolbar.Item.Import"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Lock"/>
+                        <ref bean="Toolbar.Item.Unlock"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.SaveAsPortalComponent"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.OpenInContentManager"/>
                     </list>
                 </property>
                 <property name="visibility" value="$site/actions/edit-mode"/>
-                <property name="contextMenu" value="true"/>
             </bean>
         </property>
 
@@ -319,7 +436,7 @@
             </bean>
         </property>
     </bean>
-    
+
     <!-- side tabs-->
     <bean id="sidePanelTab.templates" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
         <property name="key" value="templates"/>
@@ -330,7 +447,7 @@
                 <value>$site/templates</value>
             </list>
         </property>
-        <property name="folderTypes" >
+        <property name="folderTypes">
             <list>
                 <value>jnt:template</value>
                 <value>jnt:page</value>
@@ -381,7 +498,6 @@
                         <ref bean="Toolbar.Item.PasteReference"/>
                     </list>
                 </property>
-                <property name="contextMenu" value="true"/>
             </bean>
         </property>
         <property name="tableContextMenu">
@@ -392,7 +508,6 @@
                         <ref bean="Toolbar.Item.Delete"/>
                     </list>
                 </property>
-                <property name="contextMenu" value="true"/>
             </bean>
         </property>
         <property name="visibility" value="$site/selector/templates"/>
@@ -452,7 +567,6 @@
                         <ref bean="Toolbar.Item.PasteReference"/>
                     </list>
                 </property>
-                <property name="contextMenu" value="true"/>
             </bean>
         </property>
         <property name="visibility" value="$site/selector/sitemap"/>
@@ -509,7 +623,6 @@
                         <ref bean="Toolbar.Item.PasteReference"/>
                     </list>
                 </property>
-                <property name="contextMenu" value="true"/>
             </bean>
         </property>
         <property name="tableContextMenu">
@@ -525,7 +638,6 @@
                         <ref bean="Toolbar.Item.PasteReference"/>
                     </list>
                 </property>
-                <property name="contextMenu" value="true"/>
             </bean>
         </property>
         <property name="visibility" value="$site/selector/content"/>
@@ -557,13 +669,12 @@
                 <property name="items">
                     <list>
                         <ref bean="Toolbar.Item.NewFolder"/>
-                        <ref bean="Toolbar.Item.upload"/>
+                        <ref bean="Toolbar.Item.Upload"/>
                         <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Rename"/>
                         <ref bean="Toolbar.Item.Delete"/>
                     </list>
                 </property>
-                <property name="contextMenu" value="true"/>
             </bean>
         </property>
         <property name="tableContextMenu">
@@ -583,7 +694,6 @@
                         <ref bean="Toolbar.Item.Separator"/>
                     </list>
                 </property>
-                <property name="contextMenu" value="true"/>
             </bean>
         </property>
         <property name="visibility" value="$site/selector/files-and-images"/>
@@ -622,7 +732,6 @@
                         <ref bean="Toolbar.Item.PasteReference"/>
                     </list>
                 </property>
-                <property name="contextMenu" value="true"/>
             </bean>
         </property>
         <property name="tableContextMenu">
@@ -638,7 +747,6 @@
                         <ref bean="Toolbar.Item.PasteReference"/>
                     </list>
                 </property>
-                <property name="contextMenu" value="true"/>
             </bean>
         </property>
         <property name="visibility" value="$site/selector/portlets"/>
@@ -660,7 +768,8 @@
         <property name="icon" value="tab-lastcontent"/>
         <property name="params">
             <map>
-                <entry key="search" value="select * from [jnt:content] as content order by content.['jcr:lastModified'] desc"/>
+                <entry key="search"
+                       value="select * from [jnt:content] as content order by content.['jcr:lastModified'] desc"/>
                 <entry key="limit" value="100"/>
             </map>
         </property>
@@ -680,7 +789,6 @@
                         <ref bean="Toolbar.Item.PasteReference"/>
                     </list>
                 </property>
-                <property name="contextMenu" value="true"/>
             </bean>
         </property>
         <property name="tableContextMenu">
@@ -696,25 +804,18 @@
                         <ref bean="Toolbar.Item.PasteReference"/>
                     </list>
                 </property>
-                <property name="contextMenu" value="true"/>
             </bean>
         </property>
         <property name="visibility" value="$site/selector/latest"/>
     </bean>
-    
-    <bean id="compare-engine" class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
-        <property name="toolbars">
+
+    <bean id="compare-engine" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+        <property name="items">
             <list>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                    <property name="items">
-                        <list>
-                            <ref bean="Toolbar.Item.Publish"/>
-                            <ref bean="Toolbar.Item.PublishAll"/>
-                        </list>
-                    </property>
-                    <property name="visibility" value="$site/actions/edit-mode"/>
-                </bean>
+                <ref bean="Toolbar.Item.Publish"/>
+                <ref bean="Toolbar.Item.PublishAll"/>
             </list>
         </property>
+        <property name="visibility" value="$site/actions/edit-mode"/>
     </bean>
 </beans>

@@ -63,6 +63,7 @@ import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServic
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 import org.jahia.ajax.gwt.client.widget.edit.PublicationStatusGrid;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.WorkInProgressActionItem;
 import org.jahia.ajax.gwt.client.widget.workflow.WorkflowDashboardEngine;
 
 import java.util.ArrayList;
@@ -319,13 +320,16 @@ public class WorkflowActionDialog extends Window {
                 dialog.hide();
                 Info.display("Starting workflow",
                              "Starting workflow");
+                WorkInProgressActionItem.setStatus("Executing workflow ...");
                 contentManagement.startWorkflow(node.getPath(), wf, nodeProperties, new BaseAsyncCallback() {
                     public void onSuccess(Object result) {
                         Info.display("Workflow executed", "Workflow executed");
+                        WorkInProgressActionItem.setStatus(null);
                     }
 
                     public void onApplicationFailure(Throwable caught) {
                         Info.display("Workflow failed", "Workflow failed");
+                        WorkInProgressActionItem.setStatus(null);
                     }
                 });
             }
@@ -362,15 +366,18 @@ public class WorkflowActionDialog extends Window {
                     dialog.hide();
                     Info.display("Executing workflow",
                                  "Executing workflow");
+                    WorkInProgressActionItem.setStatus("Executing workflow ...");
                     contentManagement.assignAndCompleteTask(node.getPath(), action, outcome, nodeProperties,
                                                             new BaseAsyncCallback() {
                                                                 public void onSuccess(Object result) {
+                                                                    WorkInProgressActionItem.setStatus(null);
                                                                     Info.display("Workflow executed",
                                                                                  "Workflow executed");
                                                                     linker.refresh(Linker.REFRESH_MAIN);
                                                                 }
 
                                                                 public void onApplicationFailure(Throwable caught) {
+                                                                    WorkInProgressActionItem.setStatus(null);
                                                                     Info.display("Workflow failed", "Workflow failed");
                                                                 }
                                                             });
@@ -401,10 +408,12 @@ public class WorkflowActionDialog extends Window {
                 dialog.hide();
                 Info.display("Starting publication workflow",
                              "Starting publication workflow");
+                WorkInProgressActionItem.setStatus("Executing workflow ...");
                 JahiaContentManagementService.App.getInstance().publish(uuids, allSubTree, true, false,nodeProperties,language,
                                                                         new BaseAsyncCallback() {
                                                                             public void onApplicationFailure(
                                                                                     Throwable caught) {
+                                                                                WorkInProgressActionItem.setStatus(null);
                                                                                 Log.error("Cannot publish", caught);
                                                                                 com.google.gwt.user.client.Window.alert(
                                                                                         "Cannot publish " + caught.getMessage());
@@ -412,6 +421,7 @@ public class WorkflowActionDialog extends Window {
 
                                                                             public void onSuccess(Object result) {
                                                                                 Info.display("Publication workflow started", "Publication workflow started");
+                                                                                WorkInProgressActionItem.setStatus(null);
                                                                                 linker.refresh(Linker.REFRESH_ALL);
                                                                             }
                                                                         });

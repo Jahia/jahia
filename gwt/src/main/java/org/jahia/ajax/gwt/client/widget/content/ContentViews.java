@@ -33,10 +33,9 @@
 package org.jahia.ajax.gwt.client.widget.content;
 
 import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import org.jahia.ajax.gwt.client.widget.toolbar.ActionMenu;
+import org.jahia.ajax.gwt.client.widget.toolbar.ActionContextMenu;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
@@ -57,7 +56,7 @@ public class ContentViews extends TopRightComponent {
     private LayoutContainer m_component;
     private TopRightComponent current;
 
-    private ActionMenu contextMenu;
+    private ActionContextMenu contextMenu;
 
     private GWTManagerConfiguration configuration;
 
@@ -123,7 +122,7 @@ public class ContentViews extends TopRightComponent {
     }
 
     public void initContextMenu() {
-        contextMenu = new ActionMenu(configuration.getToolbarSet(),getLinker());
+        contextMenu = new ActionContextMenu(configuration.getContextMenu(),getLinker());
         current.setContextMenu(contextMenu);
     }
 

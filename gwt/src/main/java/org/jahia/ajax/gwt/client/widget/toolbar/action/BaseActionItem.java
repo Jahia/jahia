@@ -83,9 +83,6 @@ public abstract class BaseActionItem implements ActionItem {
         textToolitem = createNewToolItem();
         final GWTJahiaToolbarItem gwtJahiaToolbarItem = getGwtToolbarItem();
         int layout = gwtJahiaToolbarItem.getLayout();
-        if (layout == -1) {
-            layout = gwtJahiaToolbarItem.getParentItemsGroup().getLayout();
-        }
 
         // set properties that are specific to a ToggleToolItem
         if (textToolitem instanceof ToggleButton) {
@@ -99,16 +96,10 @@ public abstract class BaseActionItem implements ActionItem {
                     ((Button) textToolitem).setText(gwtJahiaToolbarItem.getTitle());
                 }
             }
-            if (layout == Constants.LAYOUT_BUTTON_LABEL) {
+            if (layout == Constants.LAYOUT_BUTTON_LABEL || layout == Constants.LAYOUT_BUTTON) {
                 if (gwtJahiaToolbarItem.getIcon() != null) {
                     ((Button) textToolitem).setIcon(ToolbarIconProvider.getInstance().getIcon(gwtJahiaToolbarItem.getIcon()));
                 }
-            }
-            if (layout == Constants.LAYOUT_BUTTON) {
-                if (gwtJahiaToolbarItem.getIcon() != null) {
-                    ((Button) textToolitem).setIcon(ToolbarIconProvider.getInstance().getIcon(gwtJahiaToolbarItem.getIcon()));
-                }
-                // toolbarItem.setHeight("30px");
             }
 
             // add listener
@@ -195,24 +186,9 @@ public abstract class BaseActionItem implements ActionItem {
     private MenuItem createMenuItem() {
         final MenuItem menuItem;
         final GWTJahiaToolbarItem toolbarItem = getGwtToolbarItem();
-        int layout = toolbarItem.getParentItemsGroup().getLayout();
-        if (layout == Constants.LAYOUT_ITEMSGROUP_MENU) {
-            menuItem = new MenuItem();
-            if (toolbarItem.getIcon() != null) {
-                menuItem.setIcon(ToolbarIconProvider.getInstance().getIcon(toolbarItem.getIcon()));
-            }
-        } else if (layout == Constants.LAYOUT_ITEMSGROUP_MENU_RADIO) {
-            menuItem = new CheckMenuItem();
-            ((CheckMenuItem) menuItem).setGroup(toolbarItem.getId());
-            ((CheckMenuItem) menuItem).setChecked(toolbarItem.isSelected());
-        } else if (layout == Constants.LAYOUT_ITEMSGROUP_MENU_CHECKBOX) {
-            menuItem = new CheckMenuItem();
-            ((CheckMenuItem) menuItem).setChecked(toolbarItem.isSelected());
-        } else {
-            menuItem = new MenuItem();
-            if (toolbarItem.getIcon() != null) {
-                menuItem.setIcon(ToolbarIconProvider.getInstance().getIcon(toolbarItem.getIcon()));
-            }
+        menuItem = new MenuItem();
+        if (toolbarItem.getIcon() != null) {
+            menuItem.setIcon(ToolbarIconProvider.getInstance().getIcon(toolbarItem.getIcon()));
         }
 
         // selection

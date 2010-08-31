@@ -47,36 +47,8 @@ import java.util.Locale;
  * Date: 7 avr. 2008
  * Time: 09:05:11
  */
-public class ItemsGroup extends Item implements Serializable, BeanNameAware {
-    private String layout;
-    private boolean separator;
+public class Menu extends Item implements Serializable, BeanNameAware {
     private List<Item> items = new ArrayList<Item>();
-    private ItemsResolver itemsResolver;
-    private boolean autoInsertSeparator = true;
-
-    public String getLayout() {
-        return layout;
-    }
-
-    public void setLayout(String layout) {
-        this.layout = layout;
-    }
-
-    public boolean isSeparator() {
-        return separator;
-    }
-
-    public void setSeparator(boolean separator) {
-        this.separator = separator;
-    }
-
-    public ItemsResolver getItemsResolver() {
-        return itemsResolver;
-    }
-
-    public void setItemsResolver(ItemsResolver itemsResolver) {
-        this.itemsResolver = itemsResolver;
-    }
 
     public List<Item> getItems() {
         return items;
@@ -86,31 +58,8 @@ public class ItemsGroup extends Item implements Serializable, BeanNameAware {
         this.items = items;
     }
 
-    public void addItem(Item item){
-        if(items == null){
-          items = new ArrayList<Item>();
-        }
-        items.add(item);
-    }
-
     public List<Item> getRealItems(JCRSiteNode site, JahiaUser user, Locale locale) {
-        if (itemsResolver != null) {
-            return itemsResolver.getItems(site, user, locale);
-        }
         return items;
     }
 
-    /**
-     * @return the autoInsertSeparator
-     */
-    public boolean isAutoInsertSeparator() {
-        return autoInsertSeparator;
-    }
-
-    /**
-     * @param autoInsertSeparator the autoInsertSeparator to set
-     */
-    public void setAutoInsertSeparator(boolean autoInsertSeparator) {
-        this.autoInsertSeparator = autoInsertSeparator;
-    }
 }

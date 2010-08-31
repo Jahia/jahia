@@ -42,10 +42,8 @@ import java.io.Serializable;
 public class GWTJahiaToolbar implements Serializable {
     private String name;
     private String title;
-    private String type;
     private boolean displayTitle;
-    private boolean contextMenu;
-    private List<GWTJahiaToolbarItemsGroup> gwtToolbarItemsGroups;
+    private List<GWTJahiaToolbarItem> gwtToolbarItems;
 
 
     public String getTitle() {
@@ -54,14 +52,6 @@ public class GWTJahiaToolbar implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public String getName() {
@@ -80,19 +70,12 @@ public class GWTJahiaToolbar implements Serializable {
         this.displayTitle = displayTitle;
     }
 
-    public List<GWTJahiaToolbarItemsGroup> getGwtToolbarItemsGroups() {
-        return gwtToolbarItemsGroups;
+    public List<GWTJahiaToolbarItem> getGwtToolbarItems() {
+        return gwtToolbarItems;
     }
 
-    public void setGwtToolbarItemsGroups(List<GWTJahiaToolbarItemsGroup> gwtToolbarItemsGroups) {
-        this.gwtToolbarItemsGroups = gwtToolbarItemsGroups;
+    public void setGwtToolbarItems(List<GWTJahiaToolbarItem> gwtToolbarItems) {
+        this.gwtToolbarItems = gwtToolbarItems;
     }
 
-    public boolean isContextMenu() {
-        return contextMenu;
-    }
-
-    public void setContextMenu(boolean contextMenu) {
-        this.contextMenu = contextMenu;
-    }
 }

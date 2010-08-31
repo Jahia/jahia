@@ -43,7 +43,7 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
-import org.jahia.ajax.gwt.client.widget.toolbar.ActionMenu;
+import org.jahia.ajax.gwt.client.widget.toolbar.ActionContextMenu;
 
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
@@ -95,7 +95,7 @@ public class SidePanelTabItem extends TabItem {
     protected final Menu createContextMenu(GWTJahiaToolbar toolbarBean, AbstractStoreSelectionModel<GWTJahiaNode> selectionModel) {
         if (toolbarBean != null) {
             final SidePanelLinker linker = new SidePanelLinker(selectionModel);
-            return new ActionMenu(toolbarBean, linker);
+            return new ActionContextMenu(toolbarBean, linker);
         }
         return null;
     }

@@ -5,31 +5,10 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
     <!-- fill: allows to 'push' itemsgroup after this one to the rigth -->
-    <bean id="Toolbar.ItemsGroup.Fill" class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-        <property name="items">
-            <list>
-                <ref bean="Toolbar.Item.Fill"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="Toolbar.ItemsGroup.License" class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-        <property name="layout" value="button-label"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="needAuthentication" value="true"/>
-            </bean>
-        </property>
-        <property name="items">
-            <list>
-                <ref bean="Toolbar.Item.License"/>
-            </list>
-        </property>
-    </bean>
 
     <!-- User-->
-    <bean id="Toolbar.ItemsGroup.User" class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-        <property name="layout" value="menu"/>
+    <bean id="Toolbar.ItemsGroup.User" class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+
         <property name="icon" value="user"/>
         <property name="visibility" value="$site/toolbar/user"/>
         <property name="titleKey" value="label.user"/>
@@ -42,42 +21,9 @@
         </property>
     </bean>
 
-    <!-- Session -->
-    <bean id="Toolbar.ItemsGroup.Session" class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-        <property name="layout" value="button-label"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="needAuthentication" value="true"/>
-            </bean>
-        </property>
-        <property name="titleKey" value="toolbar.itemgroups.sessionmanagement"/>
-        <property name="items">
-            <list>
-                <ref bean="Toolbar.Item.Logout"/>
-            </list>
-        </property>
-    </bean>
-
-    <!-- items that are visible only during the edit mode context-->
-    <bean id="Toolbar.ItemsGroup.Notification"
-          class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-        <property name="layout" value="button-label"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="needAuthentication" value="true"/>
-            </bean>
-        </property>
-        <property name="items">
-            <list>
-                <ref bean="Toolbar.Item.Notification"/>
-            </list>
-        </property>
-    </bean>
-
-
     <!-- tools-->
-    <bean id="Toolbar.ItemsGroup.Managers" class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-        <property name="layout" value="menu"/>
+    <bean id="Toolbar.ItemsGroup.Managers" class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
                 <property name="needAuthentication" value="true"/>
@@ -98,23 +44,6 @@
         </property>
     </bean>
 
-    <!-- sites-->
-    <bean id="Toolbar.ItemsGroup.Sites" class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-        <property name="layout" value="menu-radio"/>
-        <property name="titleKey" value="toolbar.itemgroups.sites"/>
-        <property name="icon" value="sites"/>
-        <property name="items">
-            <list>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-                    <property name="itemsResolver">
-                        <bean class="org.jahia.services.uicomponents.resolver.toolbar.impl.SitesItemsResolver"/>
-                    </property>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
-
     <!-- language switcher -->
     <bean id="Toolbar.ItemsGroup.LanguageSwitcher" class="org.jahia.services.uicomponents.bean.toolbar.Item">
         <property name="actionItem">
@@ -124,194 +53,8 @@
         <property name="visibility" value="$site/toolbar/language-switcher"/>
     </bean>
 
-    <bean id="Toolbar.ItemsGroup.Preview" class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-        <property name="layout" value="menu"/>
-        <property name="titleKey" value="label.preview"/>
-        <property name="icon" value="preview"/>
-        <property name="items">
-            <list>
-                <ref bean="Toolbar.Item.Preview"/>
-                <ref bean="Toolbar.Item.ShowCompareEngine"/>
-            </list>
-        </property>
-        <property name="visibility" value="$site/toolbar/preview-mode"/>
-    </bean>
-
-    <bean id="Toolbar.ItemsGroup.EditAction" class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-        <property name="layout" value="menu"/>
-        <property name="titleKey" value="label.edit"/>
-        <property name="icon" value="editAction"/>
-        <property name="items">
-            <list>
-                <ref bean="Toolbar.Item.EditContent"/>
-                <ref bean="Toolbar.Item.Delete"/>
-                <ref bean="Toolbar.Item.Separator"/>
-                <ref bean="Toolbar.Item.EditSourceContent"/>
-                <ref bean="Toolbar.Item.Separator"/>
-                <ref bean="Toolbar.Item.Copy"/>
-                <ref bean="Toolbar.Item.Cut"/>
-                <ref bean="Toolbar.Item.Paste"/>
-                <ref bean="Toolbar.Item.PasteReference"/>
-                <ref bean="Toolbar.Item.ClipBoard"/>
-                <ref bean="Toolbar.Item.Translate"/>
-                <ref bean="Toolbar.Item.Separator"/>
-                <ref bean="Toolbar.Item.Export"/>
-                <ref bean="Toolbar.Item.Import"/>
-                <ref bean="Toolbar.Item.Separator"/>
-                <ref bean="Toolbar.Item.Lock"/>
-                <ref bean="Toolbar.Item.Unlock"/>
-                <ref bean="Toolbar.Item.Separator"/>
-                <ref bean="Toolbar.Item.SaveAsPortalComponent"/>
-                <ref bean="Toolbar.Item.Separator"/>
-                <ref bean="Toolbar.Item.OpenInContentManager"/>
-            </list>
-        </property>
-        <property name="visibility" value="$site/toolbar/edit"/>
-    </bean>
-
-    <bean id="Toolbar.ItemsGroup.EditStudioAction"
-          class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-        <property name="layout" value="menu"/>
-        <property name="titleKey" value="label.edit"/>
-        <property name="icon" value="editStudioAction"/>
-        <property name="items">
-            <list>
-                <ref bean="Toolbar.Item.EditContent"/>
-                <ref bean="Toolbar.Item.Delete"/>
-                <ref bean="Toolbar.Item.Separator"/>
-                <ref bean="Toolbar.Item.EditSourceContent"/>
-                <ref bean="Toolbar.Item.Separator"/>
-                <ref bean="Toolbar.Item.Copy"/>
-                <ref bean="Toolbar.Item.Cut"/>
-                <ref bean="Toolbar.Item.Paste"/>
-                <ref bean="Toolbar.Item.PasteReference"/>
-                <ref bean="Toolbar.Item.ClipBoard"/>
-                <ref bean="Toolbar.Item.Translate"/>
-                <ref bean="Toolbar.Item.Separator"/>
-                <ref bean="Toolbar.Item.TemplateExport"/>
-                <ref bean="Toolbar.Item.Import"/>
-                <ref bean="Toolbar.Item.Separator"/>
-                <ref bean="Toolbar.Item.Lock"/>
-                <ref bean="Toolbar.Item.Unlock"/>
-                <ref bean="Toolbar.Item.Separator"/>
-                <ref bean="Toolbar.Item.OpenInContentManager"/>
-                <ref bean="Toolbar.Item.Separator"/>
-            </list>
-        </property>
-        <property name="visibility" value="$site/toolbar/edit"/>
-    </bean>
-
-
-    <bean id="Toolbar.ItemsGroup.PublicationAction"
-          class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-        <property name="layout" value="menu"/>
-        <property name="titleKey" value="label.publication"/>
-        <property name="icon" value="publicationAction"/>
-        <property name="items">
-            <list>
-                <ref bean="Toolbar.Item.Publish"/>
-                <ref bean="Toolbar.Item.PublishAll"/>
-                <ref bean="Toolbar.Item.Unpublish"/>
-                <ref bean="Toolbar.Item.ViewPublishStatus"/>
-                <ref bean="Toolbar.Item.PublicationManager"/>
-            </list>
-        </property>
-        <property name="visibility" value="$site/toolbar/publication"/>
-    </bean>
-
-    <bean id="Toolbar.ItemsGroup.ContentAction"
-          class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-        <property name="layout" value="button-label"/>
-        <property name="items">
-            <list>
-                <ref bean="Toolbar.Item.Delete"/>
-                <ref bean="Toolbar.Item.Copy"/>
-            </list>
-        </property>
-    </bean>
-
-
-    <!-- Content Manager item groups -->
-    <!-- drop-down menus -->
-
-    <bean id="Toolbar.ItemsGroup.Menu.Edit"
-          class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-        <property name="layout" value="menu"/>
-        <property name="titleKey" value="label.edit"/>
-        <property name="items">
-            <list>
-                <ref bean="Toolbar.Item.Rename"/>
-                <ref bean="Toolbar.Item.Delete"/>
-                <ref bean="Toolbar.Item.Separator"/>
-                <ref bean="Toolbar.Item.Copy"/>
-                <ref bean="Toolbar.Item.Cut"/>
-                <ref bean="Toolbar.Item.Paste"/>
-                <ref bean="Toolbar.Item.PasteReference"/>
-                <ref bean="Toolbar.Item.Separator"/>
-                <ref bean="Toolbar.Item.SaveAsPortalComponent"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="Toolbar.ItemsGroup.Menu.Remote"
-          class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-        <property name="layout" value="menu"/>
-        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.remoteMenu.label"/>
-        <property name="items">
-            <list>
-                <ref bean="Toolbar.Item.Mount"/>
-                <ref bean="Toolbar.Item.Unmount"/>
-            </list>
-        </property>
-        <property name="visibility">
-            <bean class="org.jahia.services.uicomponents.bean.contentmanager.RootUserVisibility"/>
-        </property>
-    </bean>
-    <bean id="Toolbar.ItemsGroup.Menu.Image"
-          class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-        <property name="layout" value="menu"/>
-        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.imageMenu.label"/>
-        <property name="items">
-            <list>
-                <ref bean="Toolbar.Item.Crop"/>
-                <ref bean="Toolbar.Item.Resize"/>
-                <ref bean="Toolbar.Item.Rotate"/>
-            </list>
-        </property>
-    </bean>
-    <bean id="Toolbar.ItemsGroup.Menu.View"
-          class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-        <property name="layout" value="menu"/>
-        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.viewMenu.label"/>
-        <property name="items">
-            <list>
-                <ref bean="Toolbar.Item.refresh"/>
-                <ref bean="Toolbar.Item.Separator"/>
-                <ref bean="Toolbar.Item.ListView"/>
-                <ref bean="Toolbar.Item.ThumbsView"/>
-                <ref bean="Toolbar.Item.Detailedview"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="Toolbar.ItemsGroup.WorkflowAction"
-          class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-        <property name="layout" value="menu"/>
-        <property name="titleKey" value="label.workflow"/>
-        <property name="items">
-            <list>
-                <ref bean="Toolbar.Item.WorkflowStatuswAction"/>
-                <ref bean="Toolbar.Item.WorkflowDashboard"/>
-                <ref bean="Toolbar.Item.WorkflowManager"/>
-            </list>
-        </property>
-        <property name="visibility" value="$site/toolbar/workflow"/>
-    </bean>
-    
     <bean id="Toolbar.ItemsGroup.Menu.GoogleDocs"
-          class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-        <property name="layout" value="menu"/>
-        <property name="contextMenu" value="false"/>
+          class="org.jahia.services.uicomponents.bean.toolbar.Menu">
         <property name="titleKey" value="label.googleDocs"/>
         <property name="items">
             <list>
@@ -356,7 +99,8 @@
                         <list>
                             <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                                 <property name="name" value="url"/>
-                                <property name="value" value="$context/cms/gconvert/$workspace$nodepathnoescape?exportFormat=pdf"/>
+                                <property name="value"
+                                          value="$context/cms/gconvert/$workspace$nodepathnoescape?exportFormat=pdf"/>
                             </bean>
                             <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                                 <property name="name" value="no-options"/>
@@ -383,8 +127,8 @@
 
     <!-- shortcut buttons -->
     <bean id="Toolbar.ItemsGroup.Shortcuts.Modify"
-          class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-        <property name="layout" value="button"/>
+          class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+
         <property name="items">
             <list>
                 <ref bean="Toolbar.Item.Rename"/>
@@ -393,8 +137,8 @@
         </property>
     </bean>
     <bean id="Toolbar.ItemsGroup.Shortcuts.Copy"
-          class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-        <property name="layout" value="button"/>
+          class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+
         <property name="items">
             <list>
                 <ref bean="Toolbar.Item.Copy"/>
@@ -405,11 +149,11 @@
         </property>
     </bean>
     <bean id="Toolbar.ItemsGroup.Shortcuts.Refresh"
-          class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-        <property name="layout" value="button"/>
+          class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+
         <property name="items">
             <list>
-                <ref bean="Toolbar.Item.refresh"/>
+                <ref bean="Toolbar.Item.Refresh"/>
             </list>
         </property>
     </bean>
@@ -588,7 +332,7 @@
         </property>
     </bean>
     -->
-    
+
     <!-- Administration -->
     <bean id="Toolbar.Item.Admin" class="org.jahia.services.uicomponents.bean.toolbar.Item">
         <property name="actionItem">
@@ -667,14 +411,16 @@
         </property>
     </bean>
 
-    <bean id="Toolbar.Item.OpenInContentManager" class="org.jahia.services.uicomponents.bean.toolbar.Item" parent="Toolbar.Item.ContentManager">
+    <bean id="Toolbar.Item.OpenInContentManager" class="org.jahia.services.uicomponents.bean.toolbar.Item"
+          parent="Toolbar.Item.ContentManager">
         <property name="titleKey" value="label.openInContentManager"/>
         <property name="icon" value="contentManager"/>
         <property name="properties">
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="url"/>
-                    <property name="value" value="$context/engines/manager.jsp?conf=contentmanager&amp;site=$siteuuid&amp;selectedPaths=$nodepath"/>
+                    <property name="value"
+                              value="$context/engines/manager.jsp?conf=contentmanager&amp;site=$siteuuid&amp;selectedPaths=$nodepath"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="width"/>
@@ -687,7 +433,7 @@
             </list>
         </property>
     </bean>
-    
+
     <!-- Portlet Manager -->
     <bean id="Toolbar.Item.PortletManager" class="org.jahia.services.uicomponents.bean.toolbar.Item">
         <property name="actionItem">
@@ -735,7 +481,8 @@
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="url"/>
-                    <property name="value" value="$context/engines/manager.jsp?conf=categorymanager&amp;site=$siteuuid"/>
+                    <property name="value"
+                              value="$context/engines/manager.jsp?conf=categorymanager&amp;site=$siteuuid"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="width"/>
@@ -794,7 +541,8 @@
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="url"/>
-                    <property name="value" value="$context/engines/manager.jsp?conf=remotepublicationmanager&amp;site=$siteuuid"/>
+                    <property name="value"
+                              value="$context/engines/manager.jsp?conf=remotepublicationmanager&amp;site=$siteuuid"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="width"/>
@@ -991,7 +739,7 @@
         <property name="icon" value="newCategory"/>
     </bean>
 
-    <bean id="Toolbar.Item.newTag" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.NewTag" class="org.jahia.services.uicomponents.bean.toolbar.Item">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewTagActionItem"/>
         </property>
@@ -1075,7 +823,8 @@
         <property name="icon" value="newPortlet"/>
     </bean>
 
-    <bean id="Toolbar.Item.NewPortletFolder" class="org.jahia.services.uicomponents.bean.toolbar.Item" parent="Toolbar.Item.NewFolder">
+    <bean id="Toolbar.Item.NewPortletFolder" class="org.jahia.services.uicomponents.bean.toolbar.Item"
+          parent="Toolbar.Item.NewFolder">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewPortletFolderActionItem"/>
         </property>
@@ -1169,7 +918,7 @@
         <property name="icon" value="filePreview"/>
     </bean>
 
-    <bean id="Toolbar.Item.refresh" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.Refresh" class="org.jahia.services.uicomponents.bean.toolbar.Item">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RefreshActionItem"/>
         </property>
@@ -1237,7 +986,7 @@
         <property name="icon" value="unmount"/>
     </bean>
 
-    <bean id="Toolbar.Item.upload" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.Upload" class="org.jahia.services.uicomponents.bean.toolbar.Item">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UploadActionItem"/>
         </property>
@@ -1298,7 +1047,8 @@
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="url"/>
-                    <property name="value" value="$context/engines/manager.jsp?conf=workflowmanager&amp;site=$siteuuid"/>
+                    <property name="value"
+                              value="$context/engines/manager.jsp?conf=workflowmanager&amp;site=$siteuuid"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="width"/>
@@ -1311,7 +1061,7 @@
             </list>
         </property>
     </bean>
-    
+
     <bean id="Toolbar.Item.WorkflowDashboard" class="org.jahia.services.uicomponents.bean.toolbar.Item">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.WorkflowDashboardActionItem"/>
@@ -1329,11 +1079,11 @@
     </bean>
     <!-- end of new content action buttons -->
 
-    <bean id="Toolbar.Item.Shortcuts.DeployPortlets" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.DeployPortlets" class="org.jahia.services.uicomponents.bean.toolbar.Item">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeployPortletDefinitionActionItem"/>
         </property>
-        <property name="layout" value="button"/>
+
         <property name="titleKey" value="label.deployNewPortlet"/>
         <property name="icon" value="add-application"/>
     </bean>
@@ -1345,5 +1095,5 @@
         <property name="titleKey" value="label.publicationmanager"/>
         <property name="icon" value="publicationManager"/>
     </bean>
-    
+
 </beans>

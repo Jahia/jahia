@@ -57,7 +57,7 @@ public class ContentToolbar extends TopBar {
     }
 
     private void createDynamicUi() {
-        ActionToolbarLayoutContainer toolbarContainer = new ActionToolbarLayoutContainer(configuration.getToolbarSet());
+        ActionToolbarLayoutContainer toolbarContainer = new ActionToolbarLayoutContainer(configuration.getToolbars());
         toolbarContainer.initWithLinker(getLinker());
         m_component = toolbarContainer;
     }

@@ -36,11 +36,9 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItemsGroup;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarSet;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.service.toolbar.ToolbarService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
@@ -56,23 +54,23 @@ import java.util.List;
 public class ActionToolbarLayoutContainer extends LayoutContainer {
     private List<ActionToolbar> actionToolbars = new ArrayList<ActionToolbar>();
     private Linker linker;
-    private String toolbarGroup;
-    private GWTJahiaToolbar toolbar;
-    private GWTJahiaToolbarSet toolbarSet;
+    private String toolbarName;
+    private List<GWTJahiaToolbar> toolbarSet;
 
-    public ActionToolbarLayoutContainer(String toolbarGroup) {
+    public ActionToolbarLayoutContainer(String toolbarName) {
         super();
-        this.toolbarGroup = toolbarGroup;
+        this.toolbarName = toolbarName;
         setLayout(new RowLayout());
     }
 
     public ActionToolbarLayoutContainer(GWTJahiaToolbar toolbar) {
         super();
-        this.toolbar = toolbar;
+        this.toolbarSet = new ArrayList<GWTJahiaToolbar>();
+        this.toolbarSet.add(toolbar);
         setLayout(new RowLayout());
     }
 
-    public ActionToolbarLayoutContainer(GWTJahiaToolbarSet toolbarSet) {
+    public ActionToolbarLayoutContainer(List<GWTJahiaToolbar> toolbarSet) {
         super();
         setLayout(new RowLayout());
         this.toolbarSet = toolbarSet;
@@ -83,11 +81,13 @@ public class ActionToolbarLayoutContainer extends LayoutContainer {
      */
     private void loadToolbars() {
         // load toolbars
-        ToolbarService.App.getInstance().getGWTToolbars(toolbarGroup, new BaseAsyncCallback<GWTJahiaToolbarSet>() {
-            public void onSuccess(GWTJahiaToolbarSet gwtJahiaToolbarSet) {
+        ToolbarService.App.getInstance().getGWTToolbars(toolbarName, new BaseAsyncCallback<GWTJahiaToolbar>() {
+            public void onSuccess(GWTJahiaToolbar gwtJahiaToolbar) {
                 long begin = System.currentTimeMillis();
-                if (gwtJahiaToolbarSet != null) {
-                    createToolbarUI(gwtJahiaToolbarSet);
+                if (gwtJahiaToolbar != null) {
+                    List<GWTJahiaToolbar> toolbarSet = new ArrayList<GWTJahiaToolbar>();
+                    toolbarSet.add(gwtJahiaToolbar);
+                    createToolbarUI(toolbarSet);
                 }
                 afterToolbarLoading();
                 long end = System.currentTimeMillis();
@@ -104,15 +104,13 @@ public class ActionToolbarLayoutContainer extends LayoutContainer {
     /**
      * Create Toolbar UI
      *
-     * @param gwtJahiaToolbarSet
      */
-    private void createToolbarUI(GWTJahiaToolbarSet gwtJahiaToolbarSet) {
-        final List<GWTJahiaToolbar> toolbarList = gwtJahiaToolbarSet.getToolbarList();
+    private void createToolbarUI(List<GWTJahiaToolbar> toolbarList) {
         if (toolbarList != null && !toolbarList.isEmpty()) {
             Log.debug(toolbarList.size() + " toolbar(s).");
             for (int i = 0; i < toolbarList.size(); i++) {
                 GWTJahiaToolbar gwtToolbar = toolbarList.get(i);
-                List<GWTJahiaToolbarItemsGroup> toolbarItemsGroups = gwtToolbar.getGwtToolbarItemsGroups();
+                List<GWTJahiaToolbarItem> toolbarItemsGroups = gwtToolbar.getGwtToolbarItems();
                 if (toolbarItemsGroups != null && !toolbarItemsGroups.isEmpty()) {
                     addActionToolbar(gwtToolbar, i==0);
                 }
@@ -170,11 +168,9 @@ public class ActionToolbarLayoutContainer extends LayoutContainer {
 
     public void initWithLinker(Linker linker) {
         this.linker = linker;
-        if (toolbar != null) {
-            addActionToolbar(toolbar, true);
-        } else if (toolbarSet != null) {
+        if (toolbarSet != null) {
             createToolbarUI(toolbarSet);
-        } else if (toolbarGroup != null) {
+        } else if (toolbarName != null) {
             loadToolbars();
         }
     }

@@ -46,29 +46,17 @@ import java.io.Serializable;
  * Time: 15:41:31
  */
 public class GWTJahiaToolbarItem implements Serializable {
-    private GWTJahiaToolbarItemsGroup parentItemsGroup;
     private String id;
-    private String type;
     private String icon;
     private String title;
     private boolean displayTitle;
     private String description;
-    private boolean disabled;
     private boolean selected;
-    private int layout = -1;
+    private int layout = 0;
     private List<String> processes;
     private Map<String, GWTJahiaProperty> properties = new HashMap<String, GWTJahiaProperty>();
-    private boolean contextMenu;
 
     private ActionItem actionItem;
-
-    public GWTJahiaToolbarItemsGroup getParentItemsGroup() {
-        return parentItemsGroup;
-    }
-
-    public void setParentItemsGroup(GWTJahiaToolbarItemsGroup parentItemsGroup) {
-        this.parentItemsGroup = parentItemsGroup;
-    }
 
     public String getId() {
         return id;
@@ -76,14 +64,6 @@ public class GWTJahiaToolbarItem implements Serializable {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public String getIcon() {
@@ -116,14 +96,6 @@ public class GWTJahiaToolbarItem implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public boolean isDisabled() {
-        return disabled;
-    }
-
-    public void setDisabled(boolean disabled) {
-        this.disabled = disabled;
     }
 
     public Map<String, GWTJahiaProperty> getProperties() {
@@ -172,11 +144,4 @@ public class GWTJahiaToolbarItem implements Serializable {
         this.processes = processes;
     }
 
-    public boolean isContextMenu() {
-        return contextMenu;
-    }
-
-    public void setContextMenu(boolean contextMenu) {
-        this.contextMenu = contextMenu;
-    }
 }

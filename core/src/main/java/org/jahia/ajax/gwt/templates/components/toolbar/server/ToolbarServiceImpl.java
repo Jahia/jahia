@@ -33,15 +33,12 @@
 package org.jahia.ajax.gwt.templates.components.toolbar.server;
 
 
-import org.jahia.ajax.gwt.client.data.GWTJahiaAjaxActionResult;
-import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarSet;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
 import org.jahia.ajax.gwt.client.data.toolbar.monitor.GWTJahiaStateInfo;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.toolbar.ToolbarService;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.helper.UIConfigHelper;
-import java.util.*;
 
 
 /**
@@ -63,7 +60,7 @@ public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarSer
      *
      * @return
      */
-    public GWTJahiaToolbarSet getGWTToolbars(String toolbarGroup) throws GWTJahiaServiceException {
+    public GWTJahiaToolbar getGWTToolbars(String toolbarGroup) throws GWTJahiaServiceException {
         return uiConfigHelper.getGWTToolbarSet(getSite(), getRemoteJahiaUser(), getLocale(),getUILocale(), getRequest(), toolbarGroup);
     }
 

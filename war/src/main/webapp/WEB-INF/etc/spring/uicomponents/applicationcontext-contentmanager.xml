@@ -18,7 +18,8 @@
     </bean>
 
 
-    <bean id="abstractmanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration" abstract="true">
+    <bean id="abstractmanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration"
+          abstract="true">
         <!-- edit engine -->
         <property name="editEngines">
             <list>
@@ -114,64 +115,110 @@
                 <value>jnt:mountPoint</value>
             </list>
         </property>
-        <property name="toolbarSet">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
-                <property name="toolbars">
+        <property name="toolbars">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
                     <list>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey"
+                                      value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
                             <property name="items">
                                 <list>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-                                        <property name="layout" value="menu"/>
-                                        <property name="titleKey"
-                                                  value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
-                                        <property name="items">
-                                            <list>
-                                                <ref bean="Toolbar.Item.NewFolder"/>
-                                                <ref bean="Toolbar.Item.upload"/>
-                                                <ref bean="Toolbar.Item.Download"/>
-                                                <ref bean="Toolbar.Item.FilePreview"/>
-                                                <ref bean="Toolbar.Item.Separator"/>
-                                                <ref bean="Toolbar.Item.Lock"/>
-                                                <ref bean="Toolbar.Item.Unlock"/>
-                                                <ref bean="Toolbar.Item.Separator"/>
-                                                <ref bean="Toolbar.Item.Zip"/>
-                                                <ref bean="Toolbar.Item.Unzip"/>
-                                            </list>
-                                        </property>
-                                    </bean>
-                                    <ref bean="Toolbar.ItemsGroup.Menu.Edit"/>
-                                    <ref bean="Toolbar.ItemsGroup.Menu.Remote"/>
-                                    <ref bean="Toolbar.ItemsGroup.Menu.Image"/>
-                                    <!--
-                                    <ref bean="Toolbar.ItemsGroup.Menu.GoogleDocs"/>
-                                    -->
-                                    <ref bean="Toolbar.ItemsGroup.Menu.View"/>
-                                </list>
-                            </property>
-                            <property name="contextMenu" value="true"/>
-                        </bean>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                            <property name="items">
-                                <list>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-                                        <property name="layout" value="button"/>
-                                        <property name="items">
-                                            <list>
-                                                <ref bean="Toolbar.Item.NewFolder"/>
-                                                <ref bean="Toolbar.Item.upload"/>
-                                                <ref bean="Toolbar.Item.Download"/>
-                                                <ref bean="Toolbar.Item.FilePreview"/>
-                                                <ref bean="Toolbar.Item.Webfolder"/>
-                                            </list>
-                                        </property>
-                                    </bean>
-                                    <ref bean="Toolbar.ItemsGroup.Shortcuts.Modify"/>
-                                    <ref bean="Toolbar.ItemsGroup.Shortcuts.Copy"/>
-                                    <ref bean="Toolbar.ItemsGroup.Shortcuts.Refresh"/>
+                                    <ref bean="Toolbar.Item.NewFolder"/>
+                                    <ref bean="Toolbar.Item.Upload"/>
+                                    <ref bean="Toolbar.Item.Download"/>
+                                    <ref bean="Toolbar.Item.FilePreview"/>
+                                    <ref bean="Toolbar.Item.Webfolder"/>
                                 </list>
                             </property>
                         </bean>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey" value="label.edit"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.Rename"/>
+                                    <ref bean="Toolbar.Item.Delete"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.Copy"/>
+                                    <ref bean="Toolbar.Item.Cut"/>
+                                    <ref bean="Toolbar.Item.Paste"/>
+                                    <ref bean="Toolbar.Item.PasteReference"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.SaveAsPortalComponent"/>
+                                </list>
+                            </property>
+                        </bean>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey"
+                                      value="org.jahia.engines.filemanager.Filemanager_Engine.remoteMenu.label"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.Mount"/>
+                                    <ref bean="Toolbar.Item.Unmount"/>
+                                </list>
+                            </property>
+                            <property name="visibility">
+                                <bean class="org.jahia.services.uicomponents.bean.contentmanager.RootUserVisibility"/>
+                            </property>
+                        </bean>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.imageMenu.label"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.Crop"/>
+                                    <ref bean="Toolbar.Item.Resize"/>
+                                    <ref bean="Toolbar.Item.Rotate"/>
+                                </list>
+                            </property>
+                        </bean>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey"
+                                      value="org.jahia.engines.filemanager.Filemanager_Engine.viewMenu.label"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.Refresh"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.ListView"/>
+                                    <ref bean="Toolbar.Item.ThumbsView"/>
+                                    <ref bean="Toolbar.Item.Detailedview"/>
+                                </list>
+                            </property>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="contextMenu">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.NewFolder"/>
+                        <ref bean="Toolbar.Item.Upload"/>
+                        <ref bean="Toolbar.Item.Download"/>
+                        <ref bean="Toolbar.Item.FilePreview"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Lock"/>
+                        <ref bean="Toolbar.Item.Unlock"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Zip"/>
+                        <ref bean="Toolbar.Item.Unzip"/>
+
+                        <ref bean="Toolbar.Item.Rename"/>
+                        <ref bean="Toolbar.Item.Delete"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.SaveAsPortalComponent"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Crop"/>
+                        <ref bean="Toolbar.Item.Resize"/>
+                        <ref bean="Toolbar.Item.Rotate"/>
+                        <!--
+                        <ref bean="Toolbar.ItemsGroup.Menu.GoogleDocs"/>
+                        -->
                     </list>
                 </property>
             </bean>
@@ -211,7 +258,8 @@
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
                 <bean class="org.jahia.services.uicomponents.bean.contentmanager.Column">
                     <property name="key" value="providerKey"/>
-                    <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.column.provider.label"/>
+                    <property name="titleKey"
+                              value="org.jahia.engines.filemanager.Filemanager_Engine.column.provider.label"/>
                     <property name="visibility">
                         <bean class="org.jahia.services.uicomponents.bean.contentmanager.ProviderKeyColumnVisibility">
                             <property name="jcrSessionFactory" ref="jcrSessionFactory"/>
@@ -232,52 +280,74 @@
     <bean id="portletmanager" parent="abstractmanager">
         <property name="nodeTypes" value="jnt:portlet"/>
         <property name="folderTypes" value="jnt:portletList"/>
-        <property name="toolbarSet">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
-                <property name="toolbars">
+        <property name="toolbars">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
                     <list>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+
+                            <property name="titleKey"
+                                      value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
                             <property name="items">
                                 <list>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-                                        <property name="layout" value="menu"/>
-                                        <property name="titleKey"
-                                                  value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
-                                        <property name="items">
-                                            <list>
-                                                <ref bean="Toolbar.Item.NewPortletFolder"/>
-                                                <ref bean="Toolbar.Item.NewPortlet"/>
-                                                <ref bean="Toolbar.Item.NewRss"/>
-                                                <ref bean="Toolbar.Item.NewGadget"/>
-                                            </list>
-                                        </property>
-                                    </bean>
-                                    <ref bean="Toolbar.ItemsGroup.Menu.Edit"/>
-                                    <ref bean="Toolbar.ItemsGroup.Menu.View"/>
+                                    <ref bean="Toolbar.Item.NewPortletFolder"/>
+                                    <ref bean="Toolbar.Item.NewPortlet"/>
+                                    <ref bean="Toolbar.Item.NewRss"/>
+                                    <ref bean="Toolbar.Item.NewGadget"/>
                                 </list>
                             </property>
                         </bean>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                            <property name="contextMenu" value="true"/>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey" value="label.edit"/>
                             <property name="items">
                                 <list>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-                                        <property name="layout" value="button"/>
-                                        <property name="items">
-                                            <list>
-                                                <ref bean="Toolbar.Item.NewPortletFolder"/>
-                                                <ref bean="Toolbar.Item.NewPortlet"/>
-                                                <ref bean="Toolbar.Item.NewRss"/>
-                                                <ref bean="Toolbar.Item.NewGadget"/>
-                                            </list>
-                                        </property>
-                                    </bean>
-                                    <ref bean="Toolbar.ItemsGroup.Shortcuts.Modify"/>
-                                    <ref bean="Toolbar.ItemsGroup.Shortcuts.Copy"/>
-                                    <ref bean="Toolbar.ItemsGroup.Shortcuts.Refresh"/>
+                                    <ref bean="Toolbar.Item.Rename"/>
+                                    <ref bean="Toolbar.Item.Delete"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.Copy"/>
+                                    <ref bean="Toolbar.Item.Cut"/>
+                                    <ref bean="Toolbar.Item.Paste"/>
+                                    <ref bean="Toolbar.Item.PasteReference"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.SaveAsPortalComponent"/>
                                 </list>
                             </property>
                         </bean>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey"
+                                      value="org.jahia.engines.filemanager.Filemanager_Engine.viewMenu.label"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.Refresh"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.ListView"/>
+                                    <ref bean="Toolbar.Item.ThumbsView"/>
+                                    <ref bean="Toolbar.Item.Detailedview"/>
+                                </list>
+                            </property>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="contextMenu">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.NewPortletFolder"/>
+                        <ref bean="Toolbar.Item.NewPortlet"/>
+                        <ref bean="Toolbar.Item.NewRss"/>
+                        <ref bean="Toolbar.Item.NewGadget"/>
+                        <ref bean="Toolbar.Item.Rename"/>
+                        <ref bean="Toolbar.Item.Delete"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.SaveAsPortalComponent"/>
+                        <ref bean="Toolbar.Item.Refresh"/>
                     </list>
                 </property>
             </bean>
@@ -293,7 +363,7 @@
         <property name="repositories">
             <list>
                 <ref bean="repository.websiteportlets"/>
-                <ref bean="repository.sharedfiles"/>
+                <ref bean="repository.sharedportlets"/>
                 <ref bean="repository.myportlets"/>
             </list>
         </property>
@@ -315,9 +385,9 @@
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
                 <value>name,*,label.name</value>
-<!--
-                <value>locked,60,label.lock</value>
--->
+                <!--
+                                <value>locked,60,label.lock</value>
+                -->
                 <value>jcr:lastModified,100</value>
             </list>
         </property>
@@ -327,51 +397,69 @@
     <bean id="categorymanager" parent="abstractmanager">
         <property name="nodeTypes" value="jnt:category"/>
         <property name="folderTypes" value="jnt:category"/>
-        <property name="toolbarSet">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
-                <property name="toolbars">
+        <property name="toolbars">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
                     <list>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+
+                            <property name="titleKey"
+                                      value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
                             <property name="items">
                                 <list>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-                                        <property name="layout" value="menu"/>
-                                        <property name="titleKey"
-                                                  value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
-                                        <property name="items">
-                                            <list>
-                                                <ref bean="Toolbar.Item.NewCategory"/>
-                                                <ref bean="Toolbar.Item.Separator"/>
-                                                <ref bean="Toolbar.Item.Export"/>
-                                                <ref bean="Toolbar.Item.Import"/>
-                                            </list>
-                                        </property>
-                                    </bean>
-                                    <ref bean="Toolbar.ItemsGroup.Menu.Edit"/>
-                                </list>
-                            </property>
-                            <property name="contextMenu" value="true"/>
-                        </bean>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                            <property name="items">
-                                <list>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-                                        <property name="layout" value="button"/>
-                                        <property name="items">
-                                            <list>
-                                                <ref bean="Toolbar.Item.NewCategory"/>
-                                                <ref bean="Toolbar.Item.Separator"/>
-                                                <ref bean="Toolbar.Item.Export"/>
-                                                <ref bean="Toolbar.Item.Import"/>
-                                            </list>
-                                        </property>
-                                    </bean>
-                                    <ref bean="Toolbar.ItemsGroup.Shortcuts.Modify"/>
-                                    <ref bean="Toolbar.ItemsGroup.Shortcuts.Copy"/>
-                                    <ref bean="Toolbar.ItemsGroup.Shortcuts.Refresh"/>
+                                    <ref bean="Toolbar.Item.NewCategory"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.Export"/>
+                                    <ref bean="Toolbar.Item.Import"/>
                                 </list>
                             </property>
                         </bean>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey" value="label.edit"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.Rename"/>
+                                    <ref bean="Toolbar.Item.Delete"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.Copy"/>
+                                    <ref bean="Toolbar.Item.Cut"/>
+                                    <ref bean="Toolbar.Item.Paste"/>
+                                    <ref bean="Toolbar.Item.PasteReference"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                </list>
+                            </property>
+                        </bean>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey"
+                                      value="org.jahia.engines.filemanager.Filemanager_Engine.viewMenu.label"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.Refresh"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.ListView"/>
+                                    <ref bean="Toolbar.Item.ThumbsView"/>
+                                    <ref bean="Toolbar.Item.Detailedview"/>
+                                </list>
+                            </property>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="contextMenu">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.NewCategory"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Export"/>
+                        <ref bean="Toolbar.Item.Import"/>
+                        <ref bean="Toolbar.Item.Rename"/>
+                        <ref bean="Toolbar.Item.Delete"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
                     </list>
                 </property>
             </bean>
@@ -408,9 +496,9 @@
                 <value>icon,40,empty</value>
                 <value>displayName,*,label.title</value>
                 <value>name,100,label.name</value>
-<!--
-                <value>locked,60,label.lock</value>
--->
+                <!--
+                                <value>locked,60,label.lock</value>
+                -->
             </list>
         </property>
     </bean>
@@ -419,51 +507,59 @@
     <bean id="tagmanager" parent="abstractmanager">
         <property name="nodeTypes" value="jnt:tag"/>
         <property name="folderTypes" value="jnt:tagList"/>
-        <property name="toolbarSet">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
-                <property name="toolbars">
+        <property name="toolbars">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
                     <list>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+
+                            <property name="titleKey"
+                                      value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
                             <property name="items">
                                 <list>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-                                        <property name="layout" value="button"/>
-                                        <property name="items">
-                                            <list>
-                                                <ref bean="Toolbar.Item.newTag"/>
-                                                <ref bean="Toolbar.Item.Separator"/>
-                                                <ref bean="Toolbar.Item.Export"/>
-                                                <ref bean="Toolbar.Item.Import"/>
-                                            </list>
-                                        </property>
-                                    </bean>
-                                    <ref bean="Toolbar.ItemsGroup.Shortcuts.Modify"/>
-                                    <ref bean="Toolbar.ItemsGroup.Shortcuts.Copy"/>
-                                    <ref bean="Toolbar.ItemsGroup.Shortcuts.Refresh"/>
+                                    <ref bean="Toolbar.Item.NewTag"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.Export"/>
+                                    <ref bean="Toolbar.Item.Import"/>
                                 </list>
                             </property>
                         </bean>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey" value="label.edit"/>
                             <property name="items">
                                 <list>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-                                        <property name="layout" value="menu"/>
-                                        <property name="titleKey"
-                                                  value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
-                                        <property name="items">
-                                            <list>
-                                                <ref bean="Toolbar.Item.newTag"/>
-                                                <ref bean="Toolbar.Item.Separator"/>
-                                                <ref bean="Toolbar.Item.Export"/>
-                                                <ref bean="Toolbar.Item.Import"/>
-                                            </list>
-                                        </property>
-                                    </bean>
-                                    <ref bean="Toolbar.ItemsGroup.Menu.Edit"/>
+                                    <ref bean="Toolbar.Item.Rename"/>
+                                    <ref bean="Toolbar.Item.Delete"/>
                                 </list>
                             </property>
-                            <property name="contextMenu" value="true"/>
                         </bean>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey"
+                                      value="org.jahia.engines.filemanager.Filemanager_Engine.viewMenu.label"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.Refresh"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.ListView"/>
+                                    <ref bean="Toolbar.Item.ThumbsView"/>
+                                    <ref bean="Toolbar.Item.Detailedview"/>
+                                </list>
+                            </property>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="contextMenu">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.NewTag"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Export"/>
+                        <ref bean="Toolbar.Item.Import"/>
+                        <ref bean="Toolbar.Item.Rename"/>
+                        <ref bean="Toolbar.Item.Delete"/>
                     </list>
                 </property>
             </bean>
@@ -499,9 +595,9 @@
                 <value>icon,40,empty</value>
                 <value>name,*,label.name</value>
                 <value>count,60</value>
-<!--
-                <value>locked,60,label.lock</value>
--->
+                <!--
+                                <value>locked,60,label.lock</value>
+                -->
             </list>
         </property>
 
@@ -511,47 +607,34 @@
     <bean id="remotepublicationmanager"
           parent="abstractmanager">
         <property name="nodeTypes" value="jnt:remotePublication"/>
-        <property name="toolbarSet">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
-                <property name="toolbars">
+        <property name="toolbars">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
                     <list>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey"
+                                      value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
                             <property name="items">
                                 <list>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-                                        <property name="layout" value="button"/>
-                                        <property name="items">
-                                            <list>
-                                                <ref bean="Toolbar.Item.NewRemotePublication"/>
-                                                <ref bean="Toolbar.Item.ExectuteRemotePublication"/>
-                                                <ref bean="Toolbar.Item.Rename"/>
-                                                <ref bean="Toolbar.Item.Delete"/>
-                                            </list>
-                                        </property>
-                                    </bean>
+                                    <ref bean="Toolbar.Item.NewRemotePublication"/>
+                                    <ref bean="Toolbar.Item.ExectuteRemotePublication"/>
+                                    <ref bean="Toolbar.Item.Rename"/>
+                                    <ref bean="Toolbar.Item.Delete"/>
                                 </list>
                             </property>
                         </bean>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                            <property name="items">
-                                <list>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-                                        <property name="layout" value="menu"/>
-                                        <property name="titleKey"
-                                                  value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
-                                        <property name="items">
-                                            <list>
-                                                <ref bean="Toolbar.Item.NewRemotePublication"/>
-                                                <ref bean="Toolbar.Item.ExectuteRemotePublication"/>
-                                                <ref bean="Toolbar.Item.Rename"/>
-                                                <ref bean="Toolbar.Item.Delete"/>
-                                            </list>
-                                        </property>
-                                    </bean>
-                                </list>
-                            </property>
-                            <property name="contextMenu" value="true"/>
-                        </bean>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="contextMenu">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.NewRemotePublication"/>
+                        <ref bean="Toolbar.Item.ExectuteRemotePublication"/>
+                        <ref bean="Toolbar.Item.Rename"/>
+                        <ref bean="Toolbar.Item.Delete"/>
                     </list>
                 </property>
             </bean>
@@ -592,120 +675,26 @@
 
     </bean>
 
-    <bean id="workflowmanager"
-          parent="abstractmanager">
-        <property name="nodeTypes" value="jnt:workflowRule"/>
-        <property name="toolbarSet">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
-                <property name="toolbars">
-                    <list>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                            <property name="items">
-                                <list>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-                                        <property name="layout" value="button"/>
-                                        <property name="items">
-                                            <list>
-                                                <ref bean="Toolbar.Item.NewWorkflowRule"/>
-                                                <ref bean="Toolbar.Item.Rename"/>
-                                                <ref bean="Toolbar.Item.Delete"/>
-                                            </list>
-                                        </property>
-                                    </bean>
-                                </list>
-                            </property>
-                        </bean>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                            <property name="items">
-                                <list>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-                                        <property name="layout" value="menu"/>
-                                        <property name="titleKey"
-                                                  value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
-                                        <property name="items">
-                                            <list>
-                                                <ref bean="Toolbar.Item.NewWorkflowRule"/>
-                                                <ref bean="Toolbar.Item.Rename"/>
-                                                <ref bean="Toolbar.Item.Delete"/>
-                                            </list>
-                                        </property>
-                                    </bean>
-                                </list>
-                            </property>
-                            <property name="contextMenu" value="true"/>
-                        </bean>
-                    </list>
-                </property>
-            </bean>
-        </property>
-        <property name="hideLeftPanel" value="true"/>
-        <property name="displaySearch" value="false"/>
-        <property name="expandRoot" value="true"/>
-        <property name="displaySearchInPage" value="false"/>
-        <property name="displaySearchInContent" value="false"/>
-        <property name="displaySearchInFile" value="false"/>
-        <property name="displaySearchInTag" value="false"/>
-        <property name="defaultView" value="list"/>
-
-        <!-- accordion panels-->
-        <property name="repositories">
-            <list>
-                <bean class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-                    <property name="key" value="workflowRepository"/>
-                    <property name="paths" value="/workflowrules"/>
-                </bean>
-            </list>
-        </property>
-        <!-- tabs -->
-        <property name="tabs">
-            <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                <value>content</value>
-                <value>rights</value>
-            </list>
-        </property>
-        <!-- table columns-->
-        <property name="tableColumns">
-            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
-                <value>index,23</value>
-                <value>name,200,label.name</value>
-                <value>j:node,200</value>
-                <value>j:nodeType,200</value>
-                <value>j:availableWorkflows,*</value>
-            </list>
-        </property>
-
-    </bean>
-
     <!-- portlet definition manager -->
     <bean id="portletdefinitionmanager"
           parent="abstractmanager">
 
         <property name="nodeTypes" value="jnt:portletDefinition"/>
-        <property name="toolbarSet">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
-                <property name="toolbars">
+        <property name="toolbars">
+            <list/>
+        </property>
+
+        <property name="contextMenu">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
                     <list>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                            <property name="items">
-                                <list>
-                                    <ref bean="Toolbar.Item.Shortcuts.DeployPortlets"/>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-                                        <property name="layout" value="button"/>
-                                        <property name="items">
-                                            <list>
-                                                <ref bean="Toolbar.Item.Delete"/>
-                                            </list>
-                                        </property>
-                                    </bean>
-                                    <ref bean="Toolbar.ItemsGroup.Shortcuts.Refresh"/>
-                                </list>
-                            </property>
-                            <property name="contextMenu" value="true"/>
-                        </bean>
+                        <ref bean="Toolbar.Item.DeployPortlets"/>
+                        <ref bean="Toolbar.Item.Delete"/>
                     </list>
                 </property>
             </bean>
         </property>
+
         <property name="hideLeftPanel" value="true"/>
         <property name="enableFileDoubleClick" value="false"/>
         <property name="expandRoot" value="true"/>
@@ -747,74 +736,107 @@
     <bean id="contentmanager" parent="abstractmanager">
         <property name="nodeTypes" value="nt:base"/>
         <property name="folderTypes" value="nt:base"/>
-        <property name="toolbarSet">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
-                <property name="toolbars">
+        <property name="toolbars">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
                     <list>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey"
+                                      value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
                             <property name="items">
                                 <list>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-                                        <property name="layout" value="menu"/>
-                                        <property name="titleKey"
-                                                  value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
-                                        <property name="items">
-                                            <list>
-                                                <ref bean="Toolbar.Item.NewFolder"/>
-                                                <ref bean="Toolbar.Item.NewContentList"/>
-                                                <ref bean="Toolbar.Item.NewContent"/>
-                                                <ref bean="Toolbar.Item.NewPage"/>
-                                                <ref bean="Toolbar.Item.NewPortlet"/>
-                                                <ref bean="Toolbar.Item.NewRss"/>
-                                                <ref bean="Toolbar.Item.NewGadget"/>
-                                                <ref bean="Toolbar.Item.upload"/>
-                                                <ref bean="Toolbar.Item.Download"/>
-                                                <ref bean="Toolbar.Item.Separator"/>
-                                                <ref bean="Toolbar.Item.Lock"/>
-                                                <ref bean="Toolbar.Item.Unlock"/>
-                                                <ref bean="Toolbar.Item.Separator"/>
-                                                <ref bean="Toolbar.Item.Zip"/>
-                                                <ref bean="Toolbar.Item.Unzip"/>
-                                                <ref bean="Toolbar.Item.Separator"/>
-                                                <ref bean="Toolbar.Item.Export"/>
-                                                <ref bean="Toolbar.Item.Import"/>
-                                            </list>
-                                        </property>
-                                    </bean>
-                                    <ref bean="Toolbar.ItemsGroup.Menu.Edit"/>
-                                    <ref bean="Toolbar.ItemsGroup.Menu.Remote"/>
-                                    <ref bean="Toolbar.ItemsGroup.Menu.Image"/>
-                                    <ref bean="Toolbar.ItemsGroup.Menu.View"/>
-                                </list>
-                            </property>
-                            <property name="contextMenu" value="true"/>
-                        </bean>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                            <property name="items">
-                                <list>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-                                        <property name="layout" value="button"/>
-                                        <property name="items">
-                                            <list>
-                                                <ref bean="Toolbar.Item.NewFolder"/>
-                                                <ref bean="Toolbar.Item.NewContentList"/>
-                                                <ref bean="Toolbar.Item.NewContent"/>
-                                                <ref bean="Toolbar.Item.NewPage"/>
-                                                <ref bean="Toolbar.Item.NewPortlet"/>
-                                                <ref bean="Toolbar.Item.NewRss"/>
-                                                <ref bean="Toolbar.Item.NewGadget"/>
-                                                <ref bean="Toolbar.Item.upload"/>
-                                                <ref bean="Toolbar.Item.Download"/>
-                                                <ref bean="Toolbar.Item.Webfolder"/>
-                                            </list>
-                                        </property>
-                                    </bean>
-                                    <ref bean="Toolbar.ItemsGroup.Shortcuts.Modify"/>
-                                    <ref bean="Toolbar.ItemsGroup.Shortcuts.Copy"/>
-                                    <ref bean="Toolbar.ItemsGroup.Shortcuts.Refresh"/>
+                                    <ref bean="Toolbar.Item.NewFolder"/>
+                                    <ref bean="Toolbar.Item.NewContentList"/>
+                                    <ref bean="Toolbar.Item.NewContent"/>
+                                    <ref bean="Toolbar.Item.NewPage"/>
+                                    <ref bean="Toolbar.Item.NewPortlet"/>
+                                    <ref bean="Toolbar.Item.NewRss"/>
+                                    <ref bean="Toolbar.Item.NewGadget"/>
+                                    <ref bean="Toolbar.Item.Upload"/>
+                                    <ref bean="Toolbar.Item.Download"/>
+                                    <ref bean="Toolbar.Item.Webfolder"/>
                                 </list>
                             </property>
                         </bean>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey" value="label.edit"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.Rename"/>
+                                    <ref bean="Toolbar.Item.Delete"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.Copy"/>
+                                    <ref bean="Toolbar.Item.Cut"/>
+                                    <ref bean="Toolbar.Item.Paste"/>
+                                    <ref bean="Toolbar.Item.PasteReference"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.SaveAsPortalComponent"/>
+                                </list>
+                            </property>
+                        </bean>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey"
+                                      value="org.jahia.engines.filemanager.Filemanager_Engine.viewMenu.label"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.Refresh"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.ListView"/>
+                                    <ref bean="Toolbar.Item.ThumbsView"/>
+                                    <ref bean="Toolbar.Item.Detailedview"/>
+                                </list>
+                            </property>
+                        </bean>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey"
+                                      value="org.jahia.engines.filemanager.Filemanager_Engine.remoteMenu.label"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.Mount"/>
+                                    <ref bean="Toolbar.Item.Unmount"/>
+                                </list>
+                            </property>
+                            <property name="visibility">
+                                <bean class="org.jahia.services.uicomponents.bean.contentmanager.RootUserVisibility"/>
+                            </property>
+                        </bean>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey"
+                                      value="org.jahia.engines.filemanager.Filemanager_Engine.imageMenu.label"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.Crop"/>
+                                    <ref bean="Toolbar.Item.Resize"/>
+                                    <ref bean="Toolbar.Item.Rotate"/>
+                                </list>
+                            </property>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="contextMenu">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.NewFolder"/>
+                        <ref bean="Toolbar.Item.NewContentList"/>
+                        <ref bean="Toolbar.Item.NewContent"/>
+                        <ref bean="Toolbar.Item.NewPage"/>
+                        <ref bean="Toolbar.Item.NewPortlet"/>
+                        <ref bean="Toolbar.Item.NewRss"/>
+                        <ref bean="Toolbar.Item.NewGadget"/>
+                        <ref bean="Toolbar.Item.Upload"/>
+                        <ref bean="Toolbar.Item.Download"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Lock"/>
+                        <ref bean="Toolbar.Item.Unlock"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Zip"/>
+                        <ref bean="Toolbar.Item.Unzip"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Export"/>
+                        <ref bean="Toolbar.Item.Import"/>
                     </list>
                 </property>
             </bean>
@@ -860,7 +882,8 @@
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
                 <bean class="org.jahia.services.uicomponents.bean.contentmanager.Column">
                     <property name="key" value="providerKey"/>
-                    <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.column.provider.label"/>
+                    <property name="titleKey"
+                              value="org.jahia.engines.filemanager.Filemanager_Engine.column.provider.label"/>
                     <property name="visibility">
                         <bean class="org.jahia.services.uicomponents.bean.contentmanager.ProviderKeyColumnVisibility">
                             <property name="jcrSessionFactory" ref="jcrSessionFactory"/>
@@ -890,48 +913,70 @@
                 <value>jmix:navMenuItem</value>
             </list>
         </property>
-        <property name="toolbarSet">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
-                <property name="toolbars">
+        <property name="toolbars">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
                     <list>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+
+                            <property name="titleKey"
+                                      value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
                             <property name="items">
                                 <list>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-                                        <property name="layout" value="button"/>
-                                        <property name="items">
-                                            <list>
-                                                <ref bean="Toolbar.Item.NewPage"/>
-                                            </list>
-                                        </property>
-                                    </bean>
-                                    <ref bean="Toolbar.ItemsGroup.Shortcuts.Modify"/>
-                                    <ref bean="Toolbar.ItemsGroup.Shortcuts.Copy"/>
-                                    <ref bean="Toolbar.ItemsGroup.Shortcuts.Refresh"/>
+                                    <ref bean="Toolbar.Item.NewPage"/>
                                 </list>
                             </property>
                         </bean>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey" value="label.edit"/>
                             <property name="items">
                                 <list>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-                                        <property name="layout" value="menu"/>
-                                        <property name="titleKey"
-                                                  value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
-                                        <property name="items">
-                                            <list>
-                                                <ref bean="Toolbar.Item.NewPage"/>
-                                                <ref bean="Toolbar.Item.Separator"/>
-                                                <ref bean="Toolbar.Item.Lock"/>
-                                                <ref bean="Toolbar.Item.Unlock"/>
-                                            </list>
-                                        </property>
-                                    </bean>
-                                    <ref bean="Toolbar.ItemsGroup.Menu.Edit"/>
+                                    <ref bean="Toolbar.Item.Rename"/>
+                                    <ref bean="Toolbar.Item.Delete"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.Copy"/>
+                                    <ref bean="Toolbar.Item.Cut"/>
+                                    <ref bean="Toolbar.Item.Paste"/>
+                                    <ref bean="Toolbar.Item.PasteReference"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.SaveAsPortalComponent"/>
                                 </list>
                             </property>
-                            <property name="contextMenu" value="true"/>
                         </bean>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey"
+                                      value="org.jahia.engines.filemanager.Filemanager_Engine.viewMenu.label"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.Refresh"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.ListView"/>
+                                    <ref bean="Toolbar.Item.ThumbsView"/>
+                                    <ref bean="Toolbar.Item.Detailedview"/>
+                                </list>
+                            </property>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="contextMenu">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.NewPage"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Lock"/>
+                        <ref bean="Toolbar.Item.Unlock"/>
+                        <ref bean="Toolbar.Item.Rename"/>
+                        <ref bean="Toolbar.Item.Delete"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.SaveAsPortalComponent"/>
                     </list>
                 </property>
             </bean>
@@ -985,15 +1030,12 @@
     <!-- role manager -->
     <bean id="rolesmanager" parent="abstractmanager">
         <property name="nodeTypes" value="jnt:role"/>
-        <property name="toolbarSet">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
-                <property name="toolbars">
-                    <list>
-                        <ref bean="org.jahia.toolbar.manager.roles.menu"/>
-                        <ref bean="org.jahia.toolbar.manager.roles.shortcuts"/>
-                    </list>
-                </property>
-            </bean>
+        <property name="toolbars">
+            <ref bean="org.jahia.toolbar.manager.roles.menu"/>
+        </property>
+
+        <property name="contextMenu">
+            <ref bean="org.jahia.toolbar.manager.roles.contextmenu"/>
         </property>
 
         <property name="hideLeftPanel" value="true"/>
@@ -1036,15 +1078,11 @@
     <!-- site role manager -->
     <bean id="siterolesmanager" parent="abstractmanager">
         <property name="nodeTypes" value="jnt:role"/>
-        <property name="toolbarSet">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
-                <property name="toolbars">
-                    <list>
-                        <ref bean="org.jahia.toolbar.manager.roles.menu"/>
-                        <ref bean="org.jahia.toolbar.manager.roles.shortcuts"/>
-                    </list>
-                </property>
-            </bean>
+        <property name="toolbars">
+            <ref bean="org.jahia.toolbar.manager.roles.menu"/>
+        </property>
+        <property name="contextMenu">
+            <ref bean="org.jahia.toolbar.manager.roles.contextmenu"/>
         </property>
 
         <property name="hideLeftPanel" value="true"/>
@@ -1082,7 +1120,7 @@
 
     <!-- filepicker -->
     <bean id="filepicker" parent="abstractmanager">
-        <property name="nodeTypes" >
+        <property name="nodeTypes">
             <list>
                 <value>nt:file</value>
             </list>
@@ -1094,36 +1132,70 @@
             </list>
         </property>
 
-        <property name="toolbarSet">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
-                <property name="toolbars">
-                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                        <property name="items">
-                            <list>
-                                <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-                                    <property name="layout" value="button"/>
-                                    <property name="items">
-                                        <list>
-                                            <ref bean="Toolbar.Item.NewFolder"/>
-                                            <ref bean="Toolbar.Item.upload"/>
-                                            <ref bean="Toolbar.Item.Download"/>
-                                            <ref bean="Toolbar.Item.FilePreview"/>
-                                            <ref bean="Toolbar.Item.Rename"/>
-                                            <ref bean="Toolbar.Item.Delete"/>
-                                            <ref bean="Toolbar.Item.Copy"/>
-                                            <ref bean="Toolbar.Item.Cut"/>
-                                            <ref bean="Toolbar.Item.Paste"/>
-                                            <ref bean="Toolbar.Item.PasteReference"/>
-                                            <ref bean="Toolbar.Item.Fill"/>
-                                            <ref bean="Toolbar.Item.ListView"/>
-                                            <ref bean="Toolbar.Item.ThumbsView"/>
-                                            <ref bean="Toolbar.Item.Detailedview"/>
-                                        </list>
-                                    </property>
-                                </bean>
-                            </list>
-                        </property>
-                    </bean>
+        <property name="toolbars">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.NewFolder"/>
+                        <ref bean="Toolbar.Item.Upload"/>
+                        <ref bean="Toolbar.Item.Download"/>
+                        <ref bean="Toolbar.Item.FilePreview"/>
+                        <ref bean="Toolbar.Item.Webfolder"/>
+                        <ref bean="Toolbar.Item.Rename"/>
+                        <ref bean="Toolbar.Item.Delete"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.SaveAsPortalComponent"/>
+                        <ref bean="Toolbar.Item.Mount"/>
+                        <ref bean="Toolbar.Item.Unmount"/>
+                        <ref bean="Toolbar.Item.Crop"/>
+                        <ref bean="Toolbar.Item.Resize"/>
+                        <ref bean="Toolbar.Item.Rotate"/>
+                        <ref bean="Toolbar.Item.Fill"/>
+                        <ref bean="Toolbar.Item.Refresh"/>
+                        <ref bean="Toolbar.Item.ListView"/>
+                        <ref bean="Toolbar.Item.ThumbsView"/>
+                        <ref bean="Toolbar.Item.Detailedview"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="contextMenu">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.NewFolder"/>
+                        <ref bean="Toolbar.Item.Upload"/>
+                        <ref bean="Toolbar.Item.Download"/>
+                        <ref bean="Toolbar.Item.FilePreview"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Lock"/>
+                        <ref bean="Toolbar.Item.Unlock"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Zip"/>
+                        <ref bean="Toolbar.Item.Unzip"/>
+
+                        <ref bean="Toolbar.Item.Rename"/>
+                        <ref bean="Toolbar.Item.Delete"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.SaveAsPortalComponent"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Crop"/>
+                        <ref bean="Toolbar.Item.Resize"/>
+                        <ref bean="Toolbar.Item.Rotate"/>
+                        <!--
+                        <ref bean="Toolbar.ItemsGroup.Menu.GoogleDocs"/>
+                        -->
+                    </list>
                 </property>
             </bean>
         </property>
@@ -1154,7 +1226,7 @@
 
 
     <bean id="imagepicker" parent="abstractmanager">
-        <property name="nodeTypes" >
+        <property name="nodeTypes">
             <list>
                 <value>nt:file</value>
             </list>
@@ -1171,38 +1243,70 @@
             </list>
         </property>
 
-        <property name="toolbarSet">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
-                <property name="toolbars">
-                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                        <property name="items">
-                            <list>
-                                <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-                                    <property name="layout" value="button"/>
-                                    <property name="items">
-                                        <list>
-                                            <ref bean="Toolbar.Item.upload"/>
-                                            <ref bean="Toolbar.Item.Download"/>
-                                            <ref bean="Toolbar.Item.FilePreview"/>
-                                            <ref bean="Toolbar.Item.Rename"/>
-                                            <ref bean="Toolbar.Item.Delete"/>
-                                            <ref bean="Toolbar.Item.Crop"/>
-                                            <ref bean="Toolbar.Item.Resize"/>
-                                            <ref bean="Toolbar.Item.Rotate"/>
-                                            <ref bean="Toolbar.Item.Copy"/>
-                                            <ref bean="Toolbar.Item.Cut"/>
-                                            <ref bean="Toolbar.Item.Paste"/>
-                                            <ref bean="Toolbar.Item.PasteReference"/>
-                                            <ref bean="Toolbar.Item.Fill"/>
-                                            <ref bean="Toolbar.Item.ListView"/>
-                                            <ref bean="Toolbar.Item.ThumbsView"/>
-                                            <ref bean="Toolbar.Item.Detailedview"/>
-                                        </list>
-                                    </property>
-                                </bean>
-                            </list>
-                        </property>
-                    </bean>
+        <property name="toolbars">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.NewFolder"/>
+                        <ref bean="Toolbar.Item.Upload"/>
+                        <ref bean="Toolbar.Item.Download"/>
+                        <ref bean="Toolbar.Item.FilePreview"/>
+                        <ref bean="Toolbar.Item.Webfolder"/>
+                        <ref bean="Toolbar.Item.Rename"/>
+                        <ref bean="Toolbar.Item.Delete"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.SaveAsPortalComponent"/>
+                        <ref bean="Toolbar.Item.Mount"/>
+                        <ref bean="Toolbar.Item.Unmount"/>
+                        <ref bean="Toolbar.Item.Crop"/>
+                        <ref bean="Toolbar.Item.Resize"/>
+                        <ref bean="Toolbar.Item.Rotate"/>
+                        <ref bean="Toolbar.Item.Fill"/>
+                        <ref bean="Toolbar.Item.Refresh"/>
+                        <ref bean="Toolbar.Item.ListView"/>
+                        <ref bean="Toolbar.Item.ThumbsView"/>
+                        <ref bean="Toolbar.Item.Detailedview"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="contextMenu">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.NewFolder"/>
+                        <ref bean="Toolbar.Item.Upload"/>
+                        <ref bean="Toolbar.Item.Download"/>
+                        <ref bean="Toolbar.Item.FilePreview"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Lock"/>
+                        <ref bean="Toolbar.Item.Unlock"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Zip"/>
+                        <ref bean="Toolbar.Item.Unzip"/>
+
+                        <ref bean="Toolbar.Item.Rename"/>
+                        <ref bean="Toolbar.Item.Delete"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.SaveAsPortalComponent"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Crop"/>
+                        <ref bean="Toolbar.Item.Resize"/>
+                        <ref bean="Toolbar.Item.Rotate"/>
+                        <!--
+                        <ref bean="Toolbar.ItemsGroup.Menu.GoogleDocs"/>
+                        -->
+                    </list>
                 </property>
             </bean>
         </property>
@@ -1233,7 +1337,7 @@
     </bean>
 
     <bean id="folderpicker" parent="abstractmanager">
-        <property name="nodeTypes" >
+        <property name="nodeTypes">
             <list>
                 <value>nt:folder</value>
             </list>
@@ -1245,33 +1349,54 @@
             </list>
         </property>
 
-        <property name="toolbarSet">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
-                <property name="toolbars">
-                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                        <property name="items">
-                            <list>
-                                <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-                                    <property name="layout" value="button"/>
-                                    <property name="items">
-                                        <list>
-                                            <ref bean="Toolbar.Item.NewFolder"/>
-                                            <ref bean="Toolbar.Item.Rename"/>
-                                            <ref bean="Toolbar.Item.Delete"/>
-                                            <ref bean="Toolbar.Item.Copy"/>
-                                            <ref bean="Toolbar.Item.Cut"/>
-                                            <ref bean="Toolbar.Item.Paste"/>
-                                            <ref bean="Toolbar.Item.PasteReference"/>
-                                            <ref bean="Toolbar.Item.Fill"/>
-                                            <ref bean="Toolbar.Item.ListView"/>
-                                            <ref bean="Toolbar.Item.ThumbsView"/>
-                                            <ref bean="Toolbar.Item.Detailedview"/>
-                                        </list>
-                                    </property>
-                                </bean>
-                            </list>
-                        </property>
-                    </bean>
+        <property name="toolbars">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.NewFolder"/>
+                        <ref bean="Toolbar.Item.Webfolder"/>
+                        <ref bean="Toolbar.Item.Rename"/>
+                        <ref bean="Toolbar.Item.Delete"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Mount"/>
+                        <ref bean="Toolbar.Item.Unmount"/>
+                        <ref bean="Toolbar.Item.Fill"/>
+                        <ref bean="Toolbar.Item.Refresh"/>
+                        <ref bean="Toolbar.Item.ListView"/>
+                        <ref bean="Toolbar.Item.ThumbsView"/>
+                        <ref bean="Toolbar.Item.Detailedview"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="contextMenu">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.NewFolder"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Lock"/>
+                        <ref bean="Toolbar.Item.Unlock"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Zip"/>
+                        <ref bean="Toolbar.Item.Unzip"/>
+
+                        <ref bean="Toolbar.Item.Rename"/>
+                        <ref bean="Toolbar.Item.Delete"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                        <!--
+                        <ref bean="Toolbar.ItemsGroup.Menu.GoogleDocs"/>
+                        -->
+                    </list>
                 </property>
             </bean>
         </property>
@@ -1300,7 +1425,7 @@
     </bean>
 
     <bean id="portletpicker" parent="abstractmanager">
-        <property name="nodeTypes" >
+        <property name="nodeTypes">
             <list>
                 <value>jnt:portlet</value>
             </list>
@@ -1311,35 +1436,45 @@
             </list>
         </property>
 
-        <property name="toolbarSet">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
-                <property name="toolbars">
-                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                        <property name="items">
-                            <list>
-                                <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-                                    <property name="layout" value="button"/>
-                                    <property name="items">
-                                        <list>
-                                            <ref bean="Toolbar.Item.NewPortlet"/>
-                                            <ref bean="Toolbar.Item.NewRss"/>
-                                            <ref bean="Toolbar.Item.NewGadget"/>
-                                            <ref bean="Toolbar.Item.Rename"/>
-                                            <ref bean="Toolbar.Item.Delete"/>
-                                            <ref bean="Toolbar.Item.Copy"/>
-                                            <ref bean="Toolbar.Item.Cut"/>
-                                            <ref bean="Toolbar.Item.Paste"/>
-                                            <ref bean="Toolbar.Item.PasteReference"/>
-                                            <ref bean="Toolbar.Item.Separator"/>
-                                            <ref bean="Toolbar.Item.ListView"/>
-                                            <ref bean="Toolbar.Item.ThumbsView"/>
-                                            <ref bean="Toolbar.Item.Detailedview"/>
-                                        </list>
-                                    </property>
-                                </bean>
-                            </list>
-                        </property>
-                    </bean>
+        <property name="toolbars">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.NewPortlet"/>
+                        <ref bean="Toolbar.Item.NewRss"/>
+                        <ref bean="Toolbar.Item.NewGadget"/>
+                        <ref bean="Toolbar.Item.Rename"/>
+                        <ref bean="Toolbar.Item.Delete"/>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                        <ref bean="Toolbar.Item.Fill"/>
+                        <ref bean="Toolbar.Item.ListView"/>
+                        <ref bean="Toolbar.Item.ThumbsView"/>
+                        <ref bean="Toolbar.Item.Detailedview"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="contextMenu">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.NewPortlet"/>
+                        <ref bean="Toolbar.Item.NewRss"/>
+                        <ref bean="Toolbar.Item.NewGadget"/>
+                        <ref bean="Toolbar.Item.Rename"/>
+                        <ref bean="Toolbar.Item.Delete"/>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                        <ref bean="Toolbar.Item.Fill"/>
+                        <ref bean="Toolbar.Item.ListView"/>
+                        <ref bean="Toolbar.Item.ThumbsView"/>
+                        <ref bean="Toolbar.Item.Detailedview"/>
+                    </list>
                 </property>
             </bean>
         </property>
@@ -1379,26 +1514,27 @@
             </list>
         </property>
 
-        <property name="toolbarSet">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
-                <property name="toolbars">
-                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                        <property name="items">
-                            <list>
-                                <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-                                    <property name="layout" value="button"/>
-                                    <property name="items">
-                                        <list>
-                                            <ref bean="Toolbar.Item.Copy"/>
-                                            <ref bean="Toolbar.Item.Cut"/>
-                                            <ref bean="Toolbar.Item.Paste"/>
-                                            <ref bean="Toolbar.Item.PasteReference"/>
-                                        </list>
-                                    </property>
-                                </bean>
-                            </list>
-                        </property>
-                    </bean>
+        <property name="toolbars">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="contextMenu">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                    </list>
                 </property>
             </bean>
         </property>
@@ -1424,8 +1560,8 @@
     </bean>
 
     <!-- Page picker -->
-    <bean  id="editorialpicker" parent="abstractmanager">
-        <property name="nodeTypes" >
+    <bean id="editorialpicker" parent="abstractmanager">
+        <property name="nodeTypes">
             <list>
                 <value>jnt:page</value>
                 <value>jmix:editorialContent</value>
@@ -1440,26 +1576,27 @@
             </list>
         </property>
 
-        <property name="toolbarSet">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
-                <property name="toolbars">
-                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                        <property name="items">
-                            <list>
-                                <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-                                    <property name="layout" value="button"/>
-                                    <property name="items">
-                                        <list>
-                                            <ref bean="Toolbar.Item.Copy"/>
-                                            <ref bean="Toolbar.Item.Cut"/>
-                                            <ref bean="Toolbar.Item.Paste"/>
-                                            <ref bean="Toolbar.Item.PasteReference"/>
-                                        </list>
-                                    </property>
-                                </bean>
-                            </list>
-                        </property>
-                    </bean>
+        <property name="toolbars">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="contextMenu">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                    </list>
                 </property>
             </bean>
         </property>
@@ -1491,28 +1628,33 @@
         <property name="nodeTypes" value="jnt:category"/>
         <property name="folderTypes" value="jnt:category"/>
         <property name="enableFileDoubleClick" value="false"/>
-        <property name="toolbarSet">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.ToolbarSet">
-                <property name="toolbars">
-                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                        <property name="items">
-                            <list>
-                                <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-                                    <property name="layout" value="button"/>
-                                    <property name="items">
-                                        <list>
-                                            <ref bean="Toolbar.Item.NewCategory"/>
-                                            <ref bean="Toolbar.Item.Separator"/>
-                                        </list>
-                                    </property>
-                                </bean>
-                                <ref bean="Toolbar.ItemsGroup.Shortcuts.Modify"/>
-                                <ref bean="Toolbar.ItemsGroup.Shortcuts.Copy"/>
-                                <ref bean="Toolbar.ItemsGroup.Shortcuts.Refresh"/>
-                            </list>
-                        </property>
-                        <property name="contextMenu" value="true"/>
-                    </bean>
+        <property name="toolbars">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.NewCategory"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Rename"/>
+                        <ref bean="Toolbar.Item.Delete"/>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="contextMenu">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.NewCategory"/>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <ref bean="Toolbar.Item.Rename"/>
+                        <ref bean="Toolbar.Item.Delete"/>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                    </list>
                 </property>
             </bean>
         </property>
@@ -1551,51 +1693,34 @@
 
     <!-- roles -->
 
+    <bean id="org.jahia.toolbar.manager.roles.contextmenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+        <property name="items">
+            <list>
+                <ref bean="Toolbar.Item.NewRole"/>
+                <ref bean="Toolbar.Item.Separator"/>
+                <ref bean="Toolbar.Item.Export"/>
+                <ref bean="Toolbar.Item.Import"/>
+                <ref bean="Toolbar.Item.Rename"/>
+                <ref bean="Toolbar.Item.Delete"/>
+            </list>
+        </property>
+    </bean>
     <bean id="org.jahia.toolbar.manager.roles.menu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
         <property name="items">
             <list>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-                    <property name="layout" value="menu"/>
-                    <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
-                    <property name="items">
-                        <list>
-                            <ref bean="Toolbar.Item.NewRole"/>
-                            <ref bean="Toolbar.Item.Separator"/>
-                            <ref bean="Toolbar.Item.Export"/>
-                            <ref bean="Toolbar.Item.Import"/>
-                        </list>
-                    </property>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-                    <property name="layout" value="menu"/>
-                    <property name="titleKey" value="label.edit"/>
-                    <property name="items">
-                        <list>
-                            <ref bean="Toolbar.Item.Rename"/>
-                            <ref bean="Toolbar.Item.Delete"/>
-                        </list>
-                    </property>
-                </bean>
-            </list>
-        </property>
-        <property name="contextMenu" value="true"/>
-    </bean>
-    <bean id="org.jahia.toolbar.manager.roles.shortcuts" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-        <property name="items">
-            <list>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.ItemsGroup">
-                    <property name="layout" value="button"/>
-                    <property name="items">
-                        <list>
-                            <ref bean="Toolbar.Item.NewRole"/>
-                            <ref bean="Toolbar.Item.Separator"/>
-                            <ref bean="Toolbar.Item.Export"/>
-                            <ref bean="Toolbar.Item.Import"/>
-                        </list>
-                    </property>
-                </bean>
-                <ref bean="Toolbar.ItemsGroup.Shortcuts.Modify"/>
-                <ref bean="Toolbar.ItemsGroup.Shortcuts.Refresh"/>
+                <ref bean="Toolbar.Item.NewRole"/>
+                <ref bean="Toolbar.Item.Separator"/>
+                <ref bean="Toolbar.Item.Export"/>
+                <ref bean="Toolbar.Item.Import"/>
+                <ref bean="Toolbar.Item.Rename"/>
+                <ref bean="Toolbar.Item.Delete"/>
+                <ref bean="Toolbar.Item.Separator"/>
+                <ref bean="Toolbar.Item.Copy"/>
+                <ref bean="Toolbar.Item.Cut"/>
+                <ref bean="Toolbar.Item.Paste"/>
+                <ref bean="Toolbar.Item.PasteReference"/>
+                <ref bean="Toolbar.Item.Separator"/>
+                <ref bean="Toolbar.Item.Refresh"/>
             </list>
         </property>
     </bean>
@@ -1605,80 +1730,93 @@
     <bean id="repository.global" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="globalRepository"/>
         <property name="paths" value="/"/>
-        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.repository.globalRepository.label"/>
+        <property name="titleKey"
+                  value="org.jahia.engines.filemanager.Filemanager_Engine.repository.globalRepository.label"/>
     </bean>
 
     <bean id="repository.sharedfiles" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="sharedRepository"/>
         <property name="paths" value="/shared/files"/>
-        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.repository.sharedRepository.label"/>
+        <property name="titleKey"
+                  value="org.jahia.engines.filemanager.Filemanager_Engine.repository.sharedRepository.label"/>
     </bean>
 
     <bean id="repository.myfiles" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="myRepository"/>
         <property name="paths" value="$user/files"/>
-        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.repository.myRepository.label"/>
+        <property name="titleKey"
+                  value="org.jahia.engines.filemanager.Filemanager_Engine.repository.myRepository.label"/>
     </bean>
 
     <bean id="repository.websitefiles" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="websiteRepository"/>
         <property name="paths" value="$site/files"/>
-        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.repository.websiteRepository.label"/>
+        <property name="titleKey"
+                  value="org.jahia.engines.filemanager.Filemanager_Engine.repository.websiteRepository.label"/>
     </bean>
 
     <bean id="repository.myexternalfiles" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="myExternalRepository"/>
         <property name="paths" value="/mounts"/>
-        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.repository.myExternalRepository.label"/>
+        <property name="titleKey"
+                  value="org.jahia.engines.filemanager.Filemanager_Engine.repository.myExternalRepository.label"/>
     </bean>
 
     <bean id="repository.sharedportlets" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="sharedPortletRepository"/>
         <property name="paths" value="/shared/portlets"/>
-        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.repository.sharedPortletRepository.label"/>
+        <property name="titleKey"
+                  value="org.jahia.engines.filemanager.Filemanager_Engine.repository.sharedPortletRepository.label"/>
     </bean>
 
     <bean id="repository.myportlets" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="myPortletRepository"/>
         <property name="paths" value="$user/portlets"/>
-        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.repository.myPortletRepository.label"/>
+        <property name="titleKey"
+                  value="org.jahia.engines.filemanager.Filemanager_Engine.repository.myPortletRepository.label"/>
     </bean>
 
     <bean id="repository.websiteportlets" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="websitePortletRepository"/>
         <property name="paths" value="$site/portlets"/>
-        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.repository.websitePortletRepository.label"/>
+        <property name="titleKey"
+                  value="org.jahia.engines.filemanager.Filemanager_Engine.repository.websitePortletRepository.label"/>
     </bean>
 
     <bean id="repository.sharedcontent" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="sharedContentRepository"/>
         <property name="paths" value="/shared/content"/>
-        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.repository.sharedRepository.label"/>
+        <property name="titleKey"
+                  value="org.jahia.engines.filemanager.Filemanager_Engine.repository.sharedRepository.label"/>
     </bean>
 
     <bean id="repository.mycontent" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="myContentRepository"/>
         <property name="paths" value="$user/content"/>
-        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.repository.myRepository.label"/>
+        <property name="titleKey"
+                  value="org.jahia.engines.filemanager.Filemanager_Engine.repository.myRepository.label"/>
     </bean>
 
 
     <bean id="repository.users" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="usersRepository"/>
         <property name="paths" value="/users"/>
-        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.repository.usersRepository.label"/>
+        <property name="titleKey"
+                  value="org.jahia.engines.filemanager.Filemanager_Engine.repository.usersRepository.label"/>
     </bean>
 
     <bean id="repository.category" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="categoryRepository"/>
         <property name="paths" value="/categories"/>
-        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.repository.categoryRepository.label"/>
+        <property name="titleKey"
+                  value="org.jahia.engines.filemanager.Filemanager_Engine.repository.categoryRepository.label"/>
     </bean>
 
     <bean id="repository.site" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="siteRepository"/>
         <property name="paths" value="/sites"/>
-        <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.repository.siteRepository.label"/>
+        <property name="titleKey"
+                  value="org.jahia.engines.filemanager.Filemanager_Engine.repository.siteRepository.label"/>
     </bean>
 
 </beans>

@@ -52,10 +52,7 @@ public class Toolbar implements Serializable, BeanNameAware {
     private boolean displayTitle = false;
     private List<Item> items = new ArrayList<Item>();
     private Visibility visibility;
-    private boolean contextMenu;
-
-
-
+    private String layout;
     public Toolbar() {
     }
 
@@ -108,12 +105,12 @@ public class Toolbar implements Serializable, BeanNameAware {
         this.visibility = visibility;
     }
 
-    public boolean isContextMenu() {
-        return contextMenu;
+    public String getLayout() {
+        return layout;
     }
 
-    public void setContextMenu(boolean contextMenu) {
-        this.contextMenu = contextMenu;
+    public void setLayout(String layout) {
+        this.layout = layout;
     }
 
     public void setBeanName(String name) {

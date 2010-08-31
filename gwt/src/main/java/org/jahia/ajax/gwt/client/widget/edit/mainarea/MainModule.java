@@ -43,7 +43,6 @@ import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -52,13 +51,12 @@ import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEnginePopupListener;
-import org.jahia.ajax.gwt.client.widget.toolbar.ActionMenu;
+import org.jahia.ajax.gwt.client.widget.toolbar.ActionContextMenu;
 
 import java.util.*;
 
@@ -71,7 +69,7 @@ public class MainModule extends Module {
     private static MainModule module;
     private String originalHtml;
     private EditLinker editLinker;
-    private ActionMenu contextMenu;
+    private ActionContextMenu contextMenu;
     private GWTEditConfiguration config;
 
     Map<Element, Module> m;
@@ -136,7 +134,7 @@ public class MainModule extends Module {
 
         if (config.getContextMenu() != null) {
             // contextMenu
-            contextMenu = new ActionMenu(config.getContextMenu(), editLinker) {
+            contextMenu = new ActionContextMenu(config.getContextMenu(), editLinker) {
                 @Override
                 public void beforeShow() {
                     makeSelected();

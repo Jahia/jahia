@@ -57,67 +57,58 @@ public class DeployTemplatesActionItem extends BaseActionItem {
 
     private transient List<GWTJahiaSite> sites;
 
-    public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
+    public void init(GWTJahiaToolbarItem gwtToolbarItem, final Linker linker) {
         super.init(gwtToolbarItem, linker);
+        setEnabled(false);
 
         JahiaService.App.getInstance().getAvailableSites(new BaseAsyncCallback<List<GWTJahiaSite>>() {
             public void onSuccess(List<GWTJahiaSite> result) {
                 sites = result;
+                final Menu menu = new Menu();
+
+                menu.removeAll();
+
+                if (sites != null) {
+                    for (GWTJahiaSite site : sites) {
+                        MenuItem item = new MenuItem(site.getSiteKey());
+                        item.setData("site", site);
+                        item.addSelectionListener(new SelectionListener<MenuEvent>() {
+                            @Override
+                            public void componentSelected(MenuEvent ce) {
+                                Info.display("Deploy Templates", "Your templates are being deployed...");
+                                GWTJahiaNode node = linker.getMainNode();
+                                GWTJahiaSite site = ce.getItem().getData("site");
+                                String nodePath = node.getPath();
+
+                                final String[] parts = nodePath.split("/");
+                                String destinationPath = "/sites/" + site.getSiteKey();
+                                nodePath = "/" + parts[1] + "/" + parts[2];
+                                Map<String, String> pathsToSyncronize = new LinkedHashMap<String, String>();
+                                pathsToSyncronize.put(nodePath, destinationPath);
+
+                                JahiaContentManagementService.App.getInstance()
+                                        .synchro(pathsToSyncronize, new BaseAsyncCallback() {
+                                            public void onApplicationFailure(Throwable caught) {
+                                                Info.display("Deploy Templates", "Error during your templates deployment");
+                                            }
+
+                                            public void onSuccess(Object result) {
+                                                Info.display("Deploy Templates", "Your templates deployment is successful");
+                                            }
+                                        });
+                            }
+                        });
+                        menu.add(item);
+                    }
+                }
+                setSubMenu(menu);
+                setEnabled(true);
             }
 
             public void onApplicationFailure(Throwable caught) {
 
             }
         });
-    }
-
-    private boolean ok = false;
-
-    public void handleNewLinkerSelection() {
-        if (!ok) {
-            final Menu menu = new Menu();
-
-            menu.removeAll();
-
-            if (sites != null) {
-                for (GWTJahiaSite site : sites) {
-                    MenuItem item = new MenuItem(site.getSiteKey());
-                    item.setData("site", site);
-                    item.addSelectionListener(new SelectionListener<MenuEvent>() {
-                        @Override
-                        public void componentSelected(MenuEvent ce) {
-                            Info.display("Deploy Templates", "Your templates are being deployed...");
-                            GWTJahiaNode node = linker.getMainNode();
-                            GWTJahiaSite site = ce.getItem().getData("site");
-                            String nodePath = node.getPath();
-
-                            final String[] parts = nodePath.split("/");
-                            String destinationPath = "/sites/" + site.getSiteKey();
-                            nodePath = "/" + parts[1] + "/" + parts[2];
-                            Map<String, String> pathsToSyncronize = new LinkedHashMap<String, String>();
-                            pathsToSyncronize.put(nodePath, destinationPath);
-
-                            JahiaContentManagementService.App.getInstance()
-                                    .synchro(pathsToSyncronize, new BaseAsyncCallback() {
-                                        public void onApplicationFailure(Throwable caught) {
-                                            Info.display("Deploy Templates", "Error during your templates deployment");
-                                        }
-
-                                        public void onSuccess(Object result) {
-                                            Info.display("Deploy Templates", "Your templates deployment is successful");
-                                        }
-                                    });
-                        }
-                    });
-                    menu.add(item);
-                }
-            }
-            setSubMenu(menu);
-
-            ok = true;
-        }
-
-        setEnabled(true);
     }
 
 }

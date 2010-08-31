@@ -40,32 +40,9 @@ import java.io.Serializable;
  * Date: 4 mars 2008
  * Time: 15:40:51
  */
-public class GWTJahiaToolbarItemsGroup implements Serializable {
-    private String id;
-    private String type;
+public class GWTJahiaToolbarMenu extends GWTJahiaToolbarItem implements Serializable {
     private String itemsGroupTitle;
-    private String icon;
-    private boolean needSeparator;
-    private int layout;
     private List<GWTJahiaToolbarItem> gwtToolbarItems;
-    private boolean contextMenu;
-    private boolean autoInsertSeparator = true;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 
     public String getItemsGroupTitle() {
         return itemsGroupTitle;
@@ -75,63 +52,12 @@ public class GWTJahiaToolbarItemsGroup implements Serializable {
         this.itemsGroupTitle = itemsGroupTitle;
     }
 
-    public int getLayout() {
-        return layout;
-    }
-
-    public String getIcon() {
-        return icon;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
-
-    public void setLayout(int layout) {
-        this.layout = layout;
-    }
-
-    public boolean isNeedSeparator() {
-        return needSeparator;
-    }
-
-    public void setNeedSeparator(boolean needSeparator) {
-        this.needSeparator = needSeparator;
-    }
-
     public List<GWTJahiaToolbarItem> getGwtToolbarItems() {
         return gwtToolbarItems;
     }
 
     public void setGwtToolbarItems(List<GWTJahiaToolbarItem> gwtToolbarItems) {
         this.gwtToolbarItems = gwtToolbarItems;
-
-        if (this.gwtToolbarItems != null) {
-            for (GWTJahiaToolbarItem gwtJahiaToolbarItem : this.gwtToolbarItems) {
-                gwtJahiaToolbarItem.setParentItemsGroup(this);
-            }
-        }
     }
 
-    public boolean isContextMenu() {
-        return contextMenu;
-    }
-
-    public void setContextMenu(boolean contextMenu) {
-        this.contextMenu = contextMenu;
-    }
-
-    /**
-     * @return the autoInsertSeparator
-     */
-    public boolean isAutoInsertSeparator() {
-        return autoInsertSeparator;
-    }
-
-    /**
-     * @param autoInsertSeparator the autoInsertSeparator to set
-     */
-    public void setAutoInsertSeparator(boolean autoInsertSeparator) {
-        this.autoInsertSeparator = autoInsertSeparator;
-    }
 }

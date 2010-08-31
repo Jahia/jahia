@@ -82,15 +82,14 @@ public class UIConfigHelper {
      *
      * @return
      */
-    public GWTJahiaToolbarSet getGWTToolbarSet(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, String toolbarGroup) throws GWTJahiaServiceException {
+    public GWTJahiaToolbar getGWTToolbarSet(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, String toolbarGroup) throws GWTJahiaServiceException {
         try {
             // there is no pref or toolbar are hided
             // get all tool bars
-            ToolbarSet toolbarSet = (ToolbarSet) SpringContextSingleton.getBean(toolbarGroup);
-            Visibility visibility = toolbarSet.getVisibility();
+            Toolbar toolbar = (Toolbar) SpringContextSingleton.getBean(toolbarGroup);
+            Visibility visibility = toolbar.getVisibility();
             if ((visibility != null && visibility.getRealValue(site, jahiaUser, locale, request)) || visibility == null) {
-                GWTJahiaToolbarSet gwtJahiaToolbarSet = createGWTToolbarSet(site, jahiaUser, locale, uiLocale, request, toolbarSet);
-                return gwtJahiaToolbarSet;
+                return createGWTToolbar(site, jahiaUser, locale, uiLocale, request, toolbar);
             } else {
                 logger.info("Toolbar are not visible.");
                 return null;
@@ -108,24 +107,24 @@ public class UIConfigHelper {
      * @param toolbarSet
      * @return
      */
-    public GWTJahiaToolbarSet createGWTToolbarSet(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, ToolbarSet toolbarSet) {
-        if (toolbarSet.getToolbars() == null || toolbarSet.getToolbars().isEmpty()) {
+    public List<GWTJahiaToolbar> createGWTToolbarSet(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, List<Toolbar> toolbarSet) {
+        if (toolbarSet == null || toolbarSet.isEmpty()) {
             logger.debug("toolbar set list is empty");
             return null;
         }
 
         // create  a gwtJahiaToolbarSet
-        GWTJahiaToolbarSet gwtJahiaToolbarSet = new GWTJahiaToolbarSet();
-        for (Toolbar toolbar : toolbarSet.getToolbars()) {
+        List<GWTJahiaToolbar> gwtJahiaToolbarSet = new ArrayList<GWTJahiaToolbar>();
+        for (Toolbar toolbar : toolbarSet) {
             // add only tool bar that the user can view
             Visibility visibility = toolbar.getVisibility();
             if ((visibility != null && visibility.getRealValue(site, jahiaUser, locale, request)) || visibility == null) {
                 GWTJahiaToolbar gwtToolbar = createGWTToolbar(site, jahiaUser, locale, uiLocale, request, toolbar);
                 // add toolbar only if not empty
-                if (gwtToolbar != null && gwtToolbar.getGwtToolbarItemsGroups() != null && !gwtToolbar.getGwtToolbarItemsGroups().isEmpty()) {
-                    gwtJahiaToolbarSet.addGWTToolbar(gwtToolbar);
+                if (gwtToolbar != null && gwtToolbar.getGwtToolbarItems() != null && !gwtToolbar.getGwtToolbarItems().isEmpty()) {
+                    gwtJahiaToolbarSet.add(gwtToolbar);
                 } else {
-                    logger.debug("[" + (gwtToolbar != null) + "," + (gwtToolbar.getGwtToolbarItemsGroups() != null) + "," + (!gwtToolbar.getGwtToolbarItemsGroups().isEmpty()) + "]" + " toolbar: " + toolbar.getName() + " has no items -->  not visible");
+                    logger.debug("[" + (gwtToolbar != null) + "," + (gwtToolbar.getGwtToolbarItems() != null) + "," + (!gwtToolbar.getGwtToolbarItems().isEmpty()) + "]" + " toolbar: " + toolbar.getName() + " has no items -->  not visible");
                 }
             } else {
                 logger.debug("toolbar: " + toolbar.getName() + ":  not visible");
@@ -233,43 +232,43 @@ public class UIConfigHelper {
         GWTJahiaToolbar gwtToolbar = new GWTJahiaToolbar();
         gwtToolbar.setName(toolbar.getName());
         gwtToolbar.setTitle(getResources(toolbar.getTitleKey(), uiLocale != null ? uiLocale : locale, site));
-        gwtToolbar.setType(toolbar.getType());
         gwtToolbar.setDisplayTitle(toolbar.isDisplayTitle());
-        gwtToolbar.setContextMenu(toolbar.isContextMenu());
 
         // load items-group
-        List<GWTJahiaToolbarItemsGroup> gwtToolbarItemsGroupList = new ArrayList<GWTJahiaToolbarItemsGroup>();
+        List<GWTJahiaToolbarItem> gwtToolbarItemsGroupList = new ArrayList<GWTJahiaToolbarItem>();
         int index = 0;
         for (Item item : toolbar.getItems()) {
-            ItemsGroup itemsGroup = null;
-            if (item instanceof ItemsGroup) {
-                itemsGroup = (ItemsGroup) item;
-            } else {
-                // create a single item group
-                itemsGroup = new ItemsGroup();
-                itemsGroup.addItem(item);
-                itemsGroup.setLayout("button-label");
-                itemsGroup.setVisibility(item.getVisibility());
-                itemsGroup.setAutoInsertSeparator(false);
-            }
-
             // add only itemsgroup that the user can view
-            Visibility visibility = itemsGroup.getVisibility();
+            Visibility visibility = item.getVisibility();
             if ((visibility != null && visibility.getRealValue(site, jahiaUser, locale, request)) || visibility == null) {
-                GWTJahiaToolbarItemsGroup gwtItemsGroup = createGWTItemsGroup(site, jahiaUser, locale, uiLocale, request, gwtToolbar.getName(), index, itemsGroup);
-
-                // add itemsGroup only if not empty
-                if (gwtItemsGroup != null && gwtItemsGroup.getGwtToolbarItems() != null && !gwtItemsGroup.getGwtToolbarItems().isEmpty()) {
-                    gwtToolbarItemsGroupList.add(gwtItemsGroup);
-
+                if (item instanceof Menu) {
+                    GWTJahiaToolbarMenu gwtMenu = createGWTItemsGroup(site, jahiaUser, locale, uiLocale, request, gwtToolbar.getName(), index, (Menu) item);
+                    // add itemsGroup only if not empty
+                    if (gwtMenu != null && gwtMenu.getGwtToolbarItems() != null && !gwtMenu.getGwtToolbarItems().isEmpty()) {
+                        gwtToolbarItemsGroupList.add(gwtMenu);
+                    }
+                } else {
+                    GWTJahiaToolbarItem gwtItem = createGWTItem(site, jahiaUser, locale, uiLocale, request, item);
+                    if (gwtItem != null) {
+                        gwtToolbarItemsGroupList.add(gwtItem);
+                    }
                 }
             } else {
-                logger.debug("toolbar[" + gwtToolbar.getName() + "] - itemsGroup [" + itemsGroup.getId() + "," + itemsGroup.getTitleKey() + "]  not visible");
+                logger.debug("toolbar[" + gwtToolbar.getName() + "] - itemsGroup [" + item.getId() + "," + item.getTitleKey() + "]  not visible");
             }
 
             index++;
         }
-        gwtToolbar.setGwtToolbarItemsGroups(gwtToolbarItemsGroupList);
+        gwtToolbar.setGwtToolbarItems(gwtToolbarItemsGroupList);
+        int barLayout = getLayoutAsInt(toolbar.getLayout());
+        if (barLayout == -1) {
+            barLayout = 0;
+        }
+        for (GWTJahiaToolbarItem gwtJahiaToolbarItem : gwtToolbarItemsGroupList) {
+            if (gwtJahiaToolbarItem.getLayout() == -1) {
+                gwtJahiaToolbarItem.setLayout(barLayout);
+            }
+        }
 
         return gwtToolbar;
     }
@@ -311,7 +310,8 @@ public class UIConfigHelper {
                 gwtConfig.setDisplaySearchInContent(config.isDisplaySearchInContent());
 
                 // set toolbar
-                gwtConfig.setToolbarSet(createGWTToolbarSet(site, jahiaUser, locale, uiLocale, request, config.getToolbarSet()));
+                gwtConfig.setToolbars(createGWTToolbarSet(site, jahiaUser, locale, uiLocale, request, config.getToolbars()));
+                gwtConfig.setContextMenu(createGWTToolbar(site, jahiaUser, locale, uiLocale, request, config.getContextMenu()));
 
                 // add table columns
                 for (Column item : config.getTableColumns()) {
@@ -398,12 +398,12 @@ public class UIConfigHelper {
      *
      * @param toolbarName
      * @param index
-     * @param itemsGroup
+     * @param menu
      * @return
      */
-    private GWTJahiaToolbarItemsGroup createGWTItemsGroup(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, String toolbarName, int index, ItemsGroup itemsGroup) {
+    private GWTJahiaToolbarMenu createGWTItemsGroup(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, String toolbarName, int index, Menu menu) {
         // don't add the items group if  has no items group
-        List<Item> list = itemsGroup.getRealItems(site, jahiaUser, locale);
+        List<Item> list = menu.getRealItems(site, jahiaUser, locale);
         if (list == null || list.isEmpty()) {
             logger.debug("toolbar[" + toolbarName + "] itemlist is empty");
             return null;
@@ -423,24 +423,18 @@ public class UIConfigHelper {
         }
 
         // creat items-group
-        GWTJahiaToolbarItemsGroup gwtToolbarItemsGroup = new GWTJahiaToolbarItemsGroup();
-        gwtToolbarItemsGroup.setContextMenu(itemsGroup.isContextMenu());
-        gwtToolbarItemsGroup.setId(toolbarName + "_" + index);
-        gwtToolbarItemsGroup.setType(itemsGroup.getId());
-        gwtToolbarItemsGroup.setLayout(getLayoutAsInt(itemsGroup.getLayout()));
-        gwtToolbarItemsGroup.setAutoInsertSeparator(itemsGroup.isAutoInsertSeparator());
+        GWTJahiaToolbarMenu gwtToolbarMenu = new GWTJahiaToolbarMenu();
+        gwtToolbarMenu.setId(toolbarName + "_" + index);
 
-        gwtToolbarItemsGroup.setNeedSeparator(itemsGroup.isSeparator());
-        gwtToolbarItemsGroup.setIcon(itemsGroup.getIcon());
-        if (itemsGroup.getTitleKey() != null) {
-            gwtToolbarItemsGroup.setItemsGroupTitle(getResources(itemsGroup.getTitleKey(), uiLocale != null ? uiLocale : locale, site));
+        gwtToolbarMenu.setIcon(menu.getIcon());
+        if (menu.getTitleKey() != null) {
+            gwtToolbarMenu.setItemsGroupTitle(getResources(menu.getTitleKey(), uiLocale != null ? uiLocale : locale, site));
         } else {
-            gwtToolbarItemsGroup.setItemsGroupTitle(itemsGroup.getTitle());
+            gwtToolbarMenu.setItemsGroupTitle(menu.getTitle());
         }
-        gwtToolbarItemsGroup.setGwtToolbarItems(gwtToolbarItemsList);
-        return gwtToolbarItemsGroup;
+        gwtToolbarMenu.setGwtToolbarItems(gwtToolbarItemsList);
+        return gwtToolbarMenu;
     }
-
 
     /**
      * Get layout as int
@@ -477,8 +471,8 @@ public class UIConfigHelper {
      * @param item
      */
     private void addToolbarItem(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, List<GWTJahiaToolbarItem> gwtToolbarItemsList, Item item) {
-        if (item instanceof ItemsGroup) {
-            for (Item subItem : ((ItemsGroup) item).getRealItems(site, jahiaUser, locale)) {
+        if (item instanceof Menu) {
+            for (Item subItem : ((Menu) item).getRealItems(site, jahiaUser, locale)) {
                 addToolbarItem(site, jahiaUser, locale, uiLocale, request, gwtToolbarItemsList, subItem);
             }
         } else {
@@ -508,14 +502,12 @@ public class UIConfigHelper {
     private GWTJahiaToolbarItem createGWTItem(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, Item item) {
         // GWTJahiaToolbarItem
         GWTJahiaToolbarItem gwtToolbarItem = new GWTJahiaToolbarItem();
-        gwtToolbarItem.setContextMenu(item.isContextMenu());
         gwtToolbarItem.setId(item.getId());
         if (item.getTitleKey() != null) {
             gwtToolbarItem.setTitle(getResources(item.getTitleKey(), uiLocale != null ? uiLocale : locale, site));
         } else {
             gwtToolbarItem.setTitle(item.getTitle());
         }
-        gwtToolbarItem.setType(item.getId());
         gwtToolbarItem.setDisplayTitle(item.isDisplayTitle());
         if (item.getDescriptionKey() != null) {
             gwtToolbarItem.setDescription(getResources(item.getDescriptionKey(), uiLocale != null ? uiLocale : locale, site));

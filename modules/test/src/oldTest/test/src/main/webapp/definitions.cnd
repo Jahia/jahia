@@ -214,8 +214,6 @@
 
 /* end of Newsletter*/
 
-[jnt:referenceTest] > jmix:queryContent
-
 [test_templates:choiceListItem] > jnt:content, mix:title, jmix:sandboxContent
 
 [test_templates:choiceList] > jnt:content, mix:title, jmix:sandboxContent

@@ -36,8 +36,12 @@ import org.jahia.services.content.decorator.JCRNodeDecorator;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 
+import javax.jcr.AccessDeniedException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.jcr.UnsupportedRepositoryOperationException;
+import javax.jcr.lock.Lock;
+import javax.jcr.lock.LockException;
 import javax.jcr.version.Version;
 import java.util.Calendar;
 
@@ -94,5 +98,16 @@ public class JCRVersion extends JCRNodeDecorator implements Version {
 
     public JCRVersion getLinearPredecessor() throws RepositoryException {
         return (JCRVersion) getProvider().getNodeWrapper(getRealNode().getLinearPredecessor(), (JCRSessionWrapper) getSession());
+    }
+
+    @Override
+    public Lock getLock()
+            throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException, RepositoryException {
+        throw new LockException("Version node are not locakble");
+    }
+
+    @Override
+    public void checkout() throws UnsupportedRepositoryOperationException, LockException, RepositoryException {
+        throw new UnsupportedRepositoryOperationException("Version node could not be checkout");
     }
 }

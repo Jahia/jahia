@@ -39,6 +39,8 @@ import org.jahia.services.content.VersionIteratorImpl;
 import org.jahia.services.content.NodeIteratorImpl;
 
 import javax.jcr.*;
+import javax.jcr.lock.Lock;
+import javax.jcr.lock.LockException;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionException;
 import javax.jcr.version.VersionHistory;
@@ -154,5 +156,11 @@ public class JCRVersionHistory extends JCRNodeDecorator implements VersionHistor
             l.add(getProvider().getNodeWrapper(vi.nextNode(), (JCRSessionWrapper) getSession()));
         }
         return new NodeIteratorImpl(l.iterator(), l.size());
+    }
+
+    @Override
+    public Lock getLock()
+            throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException, RepositoryException {
+        throw new LockException("VersionHistory node are not lockable");
     }
 }

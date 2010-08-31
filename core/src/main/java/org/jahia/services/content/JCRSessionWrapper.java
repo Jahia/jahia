@@ -714,7 +714,7 @@ public class JCRSessionWrapper implements Session {
      */
     public void checkout(Node node) throws UnsupportedRepositoryOperationException, LockException, RepositoryException {
         while (!node.isCheckedOut()) {
-            if (!node.isNodeType("mix:versionable")) {
+            if (!node.isNodeType("mix:versionable") && !node.isNodeType("mix:simpleVersionable")) {
                 node = node.getParent();
             } else {
                 String absPath = node.getPath();

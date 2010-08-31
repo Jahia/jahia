@@ -153,6 +153,9 @@ public class JCRValueWrapperImpl implements JCRValueWrapper {
 
     @Override
     public boolean equals(Object obj) {
-        return value.equals(obj);
+        if(obj instanceof JCRValueWrapperImpl) {
+            return value.equals(((JCRValueWrapperImpl)obj).value);
+        }
+        else return obj.getClass().equals(value.getClass()) && value.equals(obj);
     }
 }

@@ -35,7 +35,7 @@
 -.*(/[^/]+)/[^/]+\1/[^/]+\1/
 
 # limit the crawl to localhost:
-+^http://localhost
+#+^http://localhost
 
 # accept anything else (commented)
-#+.
++.

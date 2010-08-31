@@ -60,6 +60,10 @@
   <description>HTTP Basic Authentication</description>
 </property>
 
+<property>
+  <name>db.ignore.external.links</name>
+  <value>true</value>
+</property> 
 
 </configuration>
 

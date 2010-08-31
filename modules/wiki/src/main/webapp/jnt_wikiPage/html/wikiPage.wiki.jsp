@@ -153,24 +153,24 @@
         <!--stop grid_10-->
         <div class='grid_3'><!--start grid_3-->
             <img src="${url.currentModule}/images/jahia-apps-wiki.png" alt="jahia-apps-wiki"/>
-            <h4 class="boxwiki-title">Navigation</h4>
+            <h4 class="boxwiki-title"><fmt:message key="jnt_wiki.navigation"/></h4>
 
             <ul id="menuwiki">
-                <li class="menuwikitop"><a href="${url.base}${currentNode.parent.path}.html">Wiki Home</a></li>
-                <li class="menuwikitop"><a href="#">All wikis</a></li>
-                <li class="menuwikitop"><a href="#">Index of pages</a></li>
+                <li class="menuwikitop"><a href="${url.base}${currentNode.parent.path}.html"><fmt:message key="jnt_wiki.wikihome"/></a></li>
+                <li class="menuwikitop"><a href="#"><fmt:message key="jnt_wiki.allwikis"/></a></li>
+                <li class="menuwikitop"><a href="#"><fmt:message key="jnt_wiki.indexofpages"/></a></li>
             </ul>
             <div class="boxwiki">
                 <div class="boxwikigrey boxwikipadding16 boxwikimarginbottom16">
                     <div class="boxwiki-inner">
                         <div class="boxwiki-inner-border"><!--start boxwiki -->
-                            <h3 class="boxwikititleh3">Languages</h3>
+                            <h3 class="boxwikititleh3"><fmt:message key="jnt_wiki.languages"/></h3>
 
                             <ul class="listwiki">
-                                <li><a href="#">French</a></li>
-                                <li><a href="#">English</a></li>
-                                <li><a href="#">Chinese</a></li>
-                                <li><a href="#">indian</a></li>
+                                <li><a href="#"><fmt:message key="jnt_wiki.Languages.french"/></a></li>
+                                <li><a href="#"><fmt:message key="jnt_wiki.Languages.english"/></a></li>
+                                <li><a href="#"><fmt:message key="jnt_wiki.Languages.chinese"/></a></li>
+                                <li><a href="#"><fmt:message key="jnt_wiki.Languages.indian"/></a></li>
                             </ul>
 
                             <div class="clear"></div>
@@ -183,7 +183,7 @@
                 <div class="boxwikigrey boxwikipadding16 boxwikimarginbottom16">
                     <div class="boxwiki-inner">
                         <div class="boxwiki-inner-border"><!--start boxwiki -->
-                            <h3 class="boxwikititleh3">Create Page Summary</h3>
+                            <h3 class="boxwikititleh3"><fmt:message key="jnt_wiki.createPageSummary"/></h3>
 
 									<p>{{box cssClass="summary"}}<br />
 

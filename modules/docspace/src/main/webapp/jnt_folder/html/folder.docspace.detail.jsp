@@ -231,7 +231,7 @@
                 <input type="hidden" name="jcr:mixinTypes" value="jmix:pager"/>
                 <fieldset>
                     <legend><fmt:message key="docspace.label.subdocspace.creation"/></legend>
-                    <p id="login_error" style="display:none;">Please, enter data</p>
+                    <p id="login_error" style="display:none;"><fmt:message key="docspace.label.subdocspace.loginerror"/></p>
 
                     <p><label for="docspacetitle" class="left"><fmt:message key="docspace.label.title"/></label>
                         <input type="text" name="jcr:title" id="docspacetitle" class="field" value=""

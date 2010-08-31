@@ -44,13 +44,13 @@
                 <img class="floatleft" alt="user default icon" src="${url.currentModule}/css/img/version.png"/>
                 <c:choose>
                     <c:when test="${jcr:hasPermission(bindedComponent, 'write')}">
-                        <a href="${bindedComponent.url}?v=${version.name}">Version ${version.name}</a>
+                        <a href="${bindedComponent.url}?v=${version.name}"><fmt:message key="docspace.label.document.version"/> ${version.name}</a>
                     </c:when>
                     <c:when test="${publishedVersion}">
-                        <a href="${bindedComponent.url}">Version ${version.name}</a>
+                        <a href="${bindedComponent.url}"><fmt:message key="docspace.label.document.version"/> ${version.name}</a>
                     </c:when>
                     <c:otherwise>
-                        Version ${version.name}
+                        <fmt:message key="docspace.label.document.version"/> ${version.name}
                     </c:otherwise>
                 </c:choose>
                 <p class="docspacedate"><fmt:formatDate

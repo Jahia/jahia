@@ -36,6 +36,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.jackrabbit.JcrConstants;
 import org.apache.log4j.Logger;
 import org.jahia.test.TestHelper;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -99,6 +100,21 @@ public class ContentTest {
 
     @AfterClass
     public static void oneTimeTearDown() throws Exception {
+        try {
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+            if (session.nodeExists(SITECONTENT_ROOT_NODE)) {
+                TestHelper.deleteSite(TESTSITE_NAME);
+            }
+            session.save();
+
+            session.logout();
+        } catch (Exception ex) {
+            logger.warn("Exception during test tearDown", ex);
+        }
+    }
+
+    @After
+    public void tearDown() throws Exception {
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 for (String node : nodes) {
@@ -275,12 +291,16 @@ public class ContentTest {
             String name = "test" + System.currentTimeMillis() + ".txt";
             JCRNodeWrapper testFile = rootNode.uploadFile(name, is, mimeType);
             session.save();
-            nodes.add(testFile.getIdentifier());
+            String initialTestFileIdentifier = testFile.getIdentifier();
 
             final String newname = "renamed" + name;
             boolean result = false;
             try {
                 result = testFile.rename(newname);
+                String renamedTestFileIdentifier = testFile.getIdentifier();
+                if (!initialTestFileIdentifier.equals(renamedTestFileIdentifier)) {
+                    logger.warn("Test file identifier changed after rename, this is unfortunate but must be handled according to specification ! old value=" + initialTestFileIdentifier + " new value=" + renamedTestFileIdentifier);
+                }
 
                 assertTrue(providerRoot + " : rename returned false", result);
 
@@ -289,6 +309,9 @@ public class ContentTest {
                 } catch (RepositoryException e) {
                     fail(providerRoot + " : Renamed file not found");
                 }
+
+                testFile.remove();
+                session.save();
             } catch (UnsupportedRepositoryOperationException e) {
 
             }
@@ -316,11 +339,12 @@ public class ContentTest {
 
             String name = "test" + System.currentTimeMillis() + ".txt";
             JCRNodeWrapper testFile = rootNode.uploadFile(name, is, mimeType);
-            nodes.add(testFile.getIdentifier());
+            String initialTestFileIdentifier = testFile.getIdentifier();
+            // nodes.add(testFile.getIdentifier());
 
             final String collectionName = "foldertest" + System.currentTimeMillis();
             JCRNodeWrapper testCollection = rootNode.createCollection(collectionName);
-            nodes.add(testCollection.getIdentifier());
+            // nodes.add(testCollection.getIdentifier());
 
             session.save();
 
@@ -332,10 +356,19 @@ public class ContentTest {
 
 
             try {
-                session.getNode(providerRoot + "/" + collectionName);
+                session.getNode(providerRoot + "/" + collectionName + "/" + testFile.getName());
             } catch (RepositoryException e) {
                 fail(providerRoot + " : moved file not found");
             }
+
+            String renamedTestFileIdentifier = testFile.getIdentifier();
+            if (!initialTestFileIdentifier.equals(renamedTestFileIdentifier)) {
+                logger.warn("Test file identifier changed after rename, this is unfortunate but must be handled according to specification ! old value=" + initialTestFileIdentifier + " new value=" + renamedTestFileIdentifier);
+            }
+
+            testFile.remove();
+            testCollection.remove();
+            session.save();
 
         } finally {
             session.logout();

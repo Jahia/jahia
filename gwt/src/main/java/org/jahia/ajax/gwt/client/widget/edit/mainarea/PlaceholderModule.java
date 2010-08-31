@@ -123,7 +123,7 @@ public class PlaceholderModule extends Module {
 //        });
     }
 
-    public void onRender() {
+    public void onNodeTypesLoaded() {
         DropTarget target = new ModuleDropTarget(this, EditModeDNDListener.PLACEHOLDER_TYPE);
         target.setOperation(DND.Operation.COPY);
         target.setFeedback(DND.Feedback.INSERT);

@@ -310,7 +310,7 @@ public class ModuleHelper {
                     }
                 }
                 for (Module module : modules) {
-                    module.onRender();
+                    module.onNodeTypesLoaded();
                 }
             }
 

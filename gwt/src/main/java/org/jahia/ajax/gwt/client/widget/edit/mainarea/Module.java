@@ -92,7 +92,7 @@ public abstract class Module extends LayoutContainer {
 
     }
 
-    public void onRender() {
+    public void onNodeTypesLoaded() {
 
     }
 

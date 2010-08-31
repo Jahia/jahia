@@ -468,15 +468,15 @@ public class ContentTest {
 
             // Do the query
             QueryManager qm = JCRSessionFactory.getInstance().getCurrentUserSession().getWorkspace().getQueryManager();
-            Query query = qm.createQuery("select f.* from [jnt:file] as f inner join [nt:resource] as fc on ischildnode(fc, f) where contains(fc.*, '456bcd')",
+            Query query = qm.createQuery("select * from [jnt:file] as f where contains(f.[jcr:content], '456bcd')",
                     Query.JCR_SQL2);
             QueryResult queryResult = query.execute();
-            NodeIterator it = queryResult.getNodes();
+            RowIterator it = queryResult.getRows();
             int resultCount = 0;
             while (it.hasNext()) {
-                Node node = it.nextNode();
+                Row row = it.nextRow();
                 resultCount++;
-                String path = node.getPath();
+                String path = row.getValue(JcrConstants.JCR_PATH).getString();
                 assertEquals(providerRoot + " : Wrong file found ('" + path + "' instead of '" + testFile.getPath() + "')",
                         testFile.getPath(), path);
             }

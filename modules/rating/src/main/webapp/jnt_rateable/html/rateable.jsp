@@ -1,4 +1,5 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
@@ -105,21 +106,22 @@
         </div>
 
 
-        <div class="rating-R"><strong>Rate this:</strong> <span id="caption${id}"></span>
+        <div class="rating-R"><strong><fmt:message key="label.rateThis"/>:</strong> <span id="caption${id}"></span>
 
             <form id="rat${id}" action="${url.base}${bindedComponent.path}" method="post">
                 <select name="j:lastVote">
-                    <option value="1">Poor</option>
-                    <option value="2">Fair</option>
-                    <option value="3">Average</option>
-                    <option value="4">Good</option>
-                    <option value="5">Excellent</option>
+                    <option value="1"><fmt:message key="label.rateThis.poor"/></option>
+                    <option value="2"><fmt:message key="label.rateThis.fair"/></option>
+                    <option value="3"><fmt:message key="label.rateThis.average"/></option>
+                    <option value="4"><fmt:message key="label.rateThis.good"/></option>
+                    <option value="5"><fmt:message key="label.rateThis.excellent"/></option>
                 </select>
                 <input type="submit" value="Rate it!"/>
             </form>
         </div>
+    </div>
 
     </div>
 </c:if>
 
-<template:linker property="j:bindedComponent" />
+<template:linker property="j:bindedComponent"/>

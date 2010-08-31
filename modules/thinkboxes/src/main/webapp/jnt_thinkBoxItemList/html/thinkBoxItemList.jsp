@@ -13,16 +13,16 @@
 <c:set var="currentList" value="${result.nodes}" scope="request"/>
 <c:set var="listTotalSize" value="${functions:length(result.nodes)}" scope="request"/>
 
-Total elements: ${listTotalSize} 
+<fmt:message key="note.boxItemList.totalElements"/> : ${listTotalSize}
 <br /> 
 <c:if test="${listTotalSize == 0}">
-Pas de notes
+<fmt:message key="note.boxItemList.noNotes"/>
 </c:if>
 <c:if test="${listTotalSize > 0}">
 <ul>
     <c:forEach items="${result.nodes}" var="itemNode">
     	
-    <li><a href="${url.base}${itemNode.path}.html">${itemNode.properties['title'].string}</a> - updated on <fmt:formatDate value="${itemNode.properties['jcr:lastModified'].date.time}" dateStyle="short" type="both"/>.
+    <li><a href="${url.base}${itemNode.path}.html">${itemNode.properties['title'].string}</a> <fmt:message key="note.boxItemList.updatedOn"/> <fmt:formatDate value="${itemNode.properties['jcr:lastModified'].date.time}" dateStyle="short" type="both"/>.
     </li>
     	
     </c:forEach>

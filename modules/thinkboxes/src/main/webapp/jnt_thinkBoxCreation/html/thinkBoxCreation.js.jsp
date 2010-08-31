@@ -28,7 +28,7 @@ session.setAttribute("noteHTML", request.getParameter("noteHTML"));
 <div class="header">
 
           <div class="leftside logo-top"><img class="logo" src="${url.currentModule}/img/jahia-app-thinkbox-h50px.png" alt="thinkbox logo" /></div>
-          <div class="rightside infousers"><p>Hello, <a href="#">${renderContext.user.name} </a><br /></p>
+          <div class="rightside infousers"><p><fmt:message key="note.field.hello"/> <a href="#">${renderContext.user.name} </a><br /></p>
           </div>
 <div class="clear"></div></div>
 
@@ -39,16 +39,16 @@ session.setAttribute("noteHTML", request.getParameter("noteHTML"));
 						    <input type="hidden" name="redirectTo" value="${url.base}${currentNode.path}.js">
 
                <div style="float: left;">
-                <p><label for="url" ><!--fmt:message key='note.field.url'/-->URL: </label>
+                <p><label for="url" ><fmt:message key='note.field.url'/>: </label>
                 <input type="text" name="url" id="url" class="field" value="${sessionScope.url}" tabindex="4" />
                 </p>
-                <p><label for="title" ><!--fmt:message key='note.field.title'/-->Title: </label>
+                <p><label for="title" ><fmt:message key='note.field.title'/>: </label>
                 <input type="text" name="title" id="title" class="field" value="${sessionScope.title}" tabindex="5" />
                 </p>
-                <p><label for="tag" ><!--fmt:message key='note.field.tag'/-->Tags: </label>
+                <p><label for="tag" ><fmt:message key='note.field.tags'/>: </label>
                 <input type="text" name="j:newTag" id="tag" class="field" value="" tabindex="6" />
                 </p>
-               <p class="alert"><!--fmt:message key='note.field.tags.help'/-->Tags must be comma separated. ex: tag1,tag2,tag3</p>
+               <p class="alert"><fmt:message key='note.field.tags.help'/></p>
 
                </div>
 
@@ -56,16 +56,16 @@ session.setAttribute("noteHTML", request.getParameter("noteHTML"));
 
                <div style="margin-left: 10px; float: right;">
                 <p>
-                <label for="description" ><!--fmt:message key='note.field.description'/-->Description:</label>
+                <label for="description" ><fmt:message key='note.field.description'/>:</label>
                 <textarea name="description" id="description" class="field" cols="45" rows="5" tabindex="6"></textarea>
                 </p>
-                <a href="#" onclick="switchNote();return false;">Switch Note Format</a>
+                <a href="#" onclick="switchNote();return false;"><fmt:message key="note.field.switchNoteFormat"/></a>
                 <p id="pnotefalse">
-                <label for="description" ><!--fmt:message key='note.field.note'/-->Note Txt:</label>
+                <label for="description" ><fmt:message key='note.field.noteText'/>:</label>
                 <textarea name="note" id="notefalse" class="field" cols="45" rows="5" tabindex="6">${sessionScope.noteTXT}</textarea>
                 </p>
 								<p id="pnotetrue">
-                <label for="description" ><!--fmt:message key='note.field.note'/-->Note HTML:</label>
+                <label for="description" ><fmt:message key='note.field.noteHtml'/>:</label>
                 <textarea name="note" id="notetrue" class="field" cols="45" rows="5" tabindex="6">${sessionScope.noteHTML}</textarea>
                 </p>
                 <div class="divButton">
@@ -114,12 +114,12 @@ session.setAttribute("noteHTML", request.getParameter("noteHTML"));
 <div class="header">
 
           <div class="leftside logo-top"><img class="logo" src="${url.currentModule}/img/jahia-app-thinkbox-h50px.png" alt="thinkbox logo" /></div>
-          <div class="rightside infousers"><p>Hello, <a href="#">${renderContext.user.name} </a><br /></p>
+          <div class="rightside infousers"><p><fmt:message key="note.field.hello"/> <a href="#">${renderContext.user.name} </a><br /></p>
           </div>
 <div class="clear"></div></div>
 
 <div class="Form">
-Your note has been created.
+<fmt:message key="note.field.yourNote"/>
  </div>
 </div>
 </div>

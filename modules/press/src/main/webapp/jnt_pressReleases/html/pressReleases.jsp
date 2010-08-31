@@ -14,7 +14,7 @@
                 <div class="pressdatefrom">
 
                     <div><label><fmt:message key="date.from"/> :</label>
-                        date time selector here <%-- ui:dateTimeSelector cssClassName="dateSelection" fieldName="pressdatefrom"
+                        <fmt:message key="label.dateTimeSelector"/> <%-- ui:dateTimeSelector cssClassName="dateSelection" fieldName="pressdatefrom"
                                          value="${param.pressdatefrom}" --%>
                     </div>
                     <div class="clear"></div>
@@ -23,7 +23,7 @@
                 <div class="pressdateto">
 
                     <div><label><fmt:message key="date.to"/> :</label>
-                        date time selector here <%-- ui:dateTimeSelector cssClassName="dateSelection" fieldName="pressdateto"
+                        <fmt:message key="label.dateTimeSelector"/> <%-- ui:dateTimeSelector cssClassName="dateSelection" fieldName="pressdateto"
                                          value="${param.pressdateto}" --%>
                     </div>
                     <div class="clear"></div>

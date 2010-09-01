@@ -35,9 +35,11 @@ package org.jahia.services.content;
 import org.apache.commons.io.IOUtils;
 import org.apache.jackrabbit.JcrConstants;
 import org.apache.log4j.Logger;
+import org.jahia.ajax.gwt.client.data.GWTJahiaSearchQuery;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.helper.NavigationHelper;
+import org.jahia.ajax.gwt.helper.SearchHelper;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.test.TestHelper;
@@ -149,6 +151,8 @@ public class ContentTest {
 
             final String name = "test" + System.currentTimeMillis();
 
+            assertTrue("Root node should be writeable !", rootNode.isWriteable());
+
             JCRNodeWrapper testCollection = rootNode.createCollection(name);
             session.save();
             nodes.add(testCollection.getIdentifier());
@@ -185,6 +189,8 @@ public class ContentTest {
 
         try {
             JCRNodeWrapper rootNode = session.getNode(providerRoot);
+
+            assertTrue("Root node should be writeable !", rootNode.isWriteable());
 
             String value = "This is a test";
             String mimeType = "text/plain";
@@ -237,6 +243,7 @@ public class ContentTest {
 
         try {
             JCRNodeWrapper rootNode = session.getNode(providerRoot);
+            assertTrue("Root node should be writeable !", rootNode.isWriteable());
 
             final String name = "test" + System.currentTimeMillis();
 
@@ -294,6 +301,7 @@ public class ContentTest {
 
         try {
             JCRNodeWrapper rootNode = session.getNode(providerRoot);
+            assertTrue("Root node should be writeable !", rootNode.isWriteable());
 
             String value = "This is a test";
             String mimeType = "text/plain";
@@ -481,6 +489,28 @@ public class ContentTest {
                         testFile.getPath(), path);
             }
             assertEquals(providerRoot + " : Invalid number of results returned by query", 1, resultCount);
+
+            // now let's use our search service to do the same query.
+            GWTJahiaSearchQuery gwtJahiaSearchQuery = new GWTJahiaSearchQuery();
+            gwtJahiaSearchQuery.setQuery("456bcd");
+            gwtJahiaSearchQuery.setInContents(true);
+            gwtJahiaSearchQuery.setInTags(true);
+            gwtJahiaSearchQuery.setOriginSiteUuid(null);
+            gwtJahiaSearchQuery.setPages(null);
+            gwtJahiaSearchQuery.setLanguage(null);
+            List<String> list = new ArrayList<String>();
+            /*
+            if (defPicker.getValue() != null) {
+                list.add(defPicker.getValue().getName());
+                gwtJahiaSearchQuery.setNodeTypes(list);
+            }
+            */
+            SearchHelper searchHelper = (SearchHelper) SpringContextSingleton.getInstance().getContext().getBean("SearchHelper");
+            List<GWTJahiaNode> result = searchHelper.search(gwtJahiaSearchQuery, 0, 0, session);
+            assertEquals("Invalid number of results for query ", 1, result.size());
+            String path = result.iterator().next().getPath();
+            assertEquals(providerRoot + " : Wrong file found ('" + path + "' instead of '" + testFile.getPath() + "')",
+                    testFile.getPath(), path);
 
             Node removeTestFile = session.getNodeByIdentifier(testFile.getIdentifier());
             removeTestFile.remove();

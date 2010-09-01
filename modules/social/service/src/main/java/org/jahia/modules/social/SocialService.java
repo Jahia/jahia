@@ -62,7 +62,6 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaLDAPUser;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.usermanager.jcr.JCRUser;
@@ -459,13 +458,11 @@ public class SocialService {
             logger.error ("Couldn't lookup user with userKey [" + userKey + "]");
             return null;
         }
-        if (jahiaUser instanceof JahiaLDAPUser) {
-            jcrUser = jcrUserManager.lookupExternalUser(jahiaUser.getName());
-        } else if (jahiaUser instanceof JCRUser) {
+
+        if (jahiaUser instanceof JCRUser) {
             jcrUser = (JCRUser) jahiaUser;
         } else {
-            logger.error("Can't handle user of type " + jahiaUser.getClass().getName() + ", will not send a message users.");
-            return null;
+            jcrUser = jcrUserManager.lookupExternalUser(jahiaUser.getName());
         }
 
         return jcrUser;

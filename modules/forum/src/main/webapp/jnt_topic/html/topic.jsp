@@ -52,7 +52,7 @@
             <div class="clear"></div>
             <span class="forum-corners-bottom"><span></span></span>
         </div>
-        <template:module node="${currentNode}" template="newThreadForm"/>
+        <template:module template="newThreadForm"/>
         <div class="forum-actions">
             <div class="forum-pagination">
                 ${functions:length(currentNode.nodes)} <fmt:message key="threads"/>

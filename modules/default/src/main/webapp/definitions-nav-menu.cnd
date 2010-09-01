@@ -22,12 +22,6 @@
 [jnt:navMenuText] > jnt:text, jmix:navMenuItem
  + * (jmix:navMenuItem)
 
-[jnt:navMenuExternalLink] > jnt:externalLink, jmix:navMenuItem
- + * (jmix:navMenuItem)
-
-[jnt:navMenuNodeLink] > jnt:nodeLink, jmix:navMenuItem
- + * (jmix:navMenuItem)
-
 [jnt:navMenuQuery] > jnt:query, jmix:navMenuItem
 
 //---------------------------------------------------------

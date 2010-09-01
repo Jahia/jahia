@@ -271,9 +271,9 @@ public class LegacyImportHandler extends DefaultHandler {
 
                         // todo : add a link here ??
                     } else if (HTTP_WWW_JAHIA_ORG.equals(uri) && LINK.equals(localName)) {
-                        createInternalLink(page, title, uuid, attributes.getValue("jahia:reference"), "jnt:navMenuNodeLink");
+                        createInternalLink(page, title, uuid, attributes.getValue("jahia:reference"), "jnt:nodeLink");
                     } else if (HTTP_WWW_JAHIA_ORG.equals(uri) && localName.equals("url")) {
-                        createExternalLink(page, title, uuid, attributes.getValue("jahia:value"), "jnt:navMenuExternalLink");
+                        createExternalLink(page, title, uuid, attributes.getValue("jahia:value"), "jnt:externalLink");
                     }
 
                     break;

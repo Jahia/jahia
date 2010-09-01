@@ -364,10 +364,12 @@
  itemtype = layout
  - j:userTemplate (string, choicelist[templates=jnt:user,resourceBundle,image]) nofulltext
 
-[jmix:renderableArea] mixin
+[jmix:renderableList] mixin
+ - j:subNodesTemplate (string, choicelist[templates=subnodes,resourceBundle,image]) nofulltext
+
+[jmix:renderableArea] > jmix:renderableList mixin
  itemtype = layout
  - j:areaTemplate (string, choicelist[templates=jnt:contentList,resourceBundle,image]) nofulltext
- - j:subNodesTemplate (string, choicelist[templates=subnodes,resourceBundle,image]) nofulltext
 
 [jmix:renderableReference] mixin
  extends = jmix:nodeReference
@@ -470,13 +472,19 @@
  - j:node (weakreference,picker[type='image']) < jmix:image
  - j:alternateText (string)
 
+[jnt:nodeLinkImageReference] > jnt:imageReference, jmix:link
+ - j:linknode (weakreference) < jmix:droppableContent, jnt:page
+
+[jnt:externalLinkImageReference] > jnt:imageReference, jmix:link
+ - j:url (string)
+
 [jnt:contentReference] > jnt:content, jmix:nodeReference, jmix:editorialContent
  - j:node (weakreference) < jmix:droppableContent
 
-[jnt:nodeLink] > jnt:content, jmix:nodeReference, jmix:link
+[jnt:nodeLink] > jnt:content, jmix:nodeReference, jmix:link, jmix:navMenuItem
  - j:node (weakreference) < jmix:droppableContent, jnt:page
 
-[jnt:externalLink] > jnt:content, jmix:link
+[jnt:externalLink] > jnt:content, jmix:link, jmix:navMenuItem
  - j:url (string)
 
 [jnt:referenceInField] > nt:base
@@ -595,8 +603,6 @@
 [jnt:containerList] > nt:base,  jmix:basemetadata
  orderable
  + * (jnt:container) version
-
-[jnt:externalPageLink] > jnt:externalLink
 
 [jnt:layoutItem]  > nt:base, jmix:basemetadata
  - j:columnIndex (long)

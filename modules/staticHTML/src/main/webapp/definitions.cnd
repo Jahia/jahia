@@ -5,5 +5,3 @@
  - width (long) indexed=no
  - height (long) indexed=no
  - frameborder (long) = '0' indexed=no
-
-[jnt:htmlLink] > jnt:html, jmix:navMenuItem, jmix:link

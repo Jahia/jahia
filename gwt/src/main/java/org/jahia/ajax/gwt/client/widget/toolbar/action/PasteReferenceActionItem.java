@@ -67,8 +67,8 @@ public class PasteReferenceActionItem extends BaseActionItem  {
         if (CopyPasteEngine.getInstance().getCopiedPaths().size() == 1) {
         JahiaContentDefinitionService.App.getInstance().getNodeTypes(allowedRefs, new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
             public void onApplicationFailure(Throwable caught) {
-                Window.alert("Cannot retrieve node type 'jnt:navMenuNodeLink'. Cause: " + caught.getLocalizedMessage());
-                Log.error("Cannot retrieve node type 'jnt:navMenuNodeLink'. Cause: " + caught.getLocalizedMessage(), caught);
+                Window.alert("Cannot retrieve node type "+allowedRefs+". Cause: " + caught.getLocalizedMessage());
+                Log.error("Cannot retrieve node type "+allowedRefs+". Cause: " + caught.getLocalizedMessage(), caught);
             }
 
             public void onSuccess(List<GWTJahiaNodeType> result) {

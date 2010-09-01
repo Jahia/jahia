@@ -120,6 +120,11 @@
  - templateNode (weakreference) mandatory
  - buttonLabel (string)
 
+[jnt:linkList] > jnt:content, jmix:listContent, mix:title, jmix:list
+ orderable
+ + * (jmix:link) = jmix:link version
+
+
 [jnt:backToParentPage] > jnt:content, jmix:siteComponentContent, mix:title
 
 [jnt:relatedTagging] > jnt:content, jmix:list, mix:title, jmix:queryContent

@@ -121,8 +121,8 @@ public class EditModeDNDListener extends DNDListener {
                 final GWTJahiaNode selectedNode = nodes.get(0);
                 JahiaContentDefinitionService.App.getInstance().getNodeTypes((List<String>) e.getStatus().getData(EditModeDNDListener.TARGET_REFERENCE_TYPE), new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
                     public void onApplicationFailure(Throwable caught) {
-                        Window.alert("Cannot retrieve node type 'jnt:navMenuNodeLink'. Cause: " + caught.getLocalizedMessage());
-                        Log.error("Cannot retrieve node type 'jnt:navMenuNodeLink'. Cause: " + caught.getLocalizedMessage(), caught);
+                        Window.alert("Cannot retrieve node type. Cause: " + caught.getLocalizedMessage());
+                        Log.error("Cannot retrieve node type. Cause: " + caught.getLocalizedMessage(), caught);
                     }
 
                     public void onSuccess(List<GWTJahiaNodeType> result) {
@@ -200,8 +200,8 @@ public class EditModeDNDListener extends DNDListener {
                 JahiaContentDefinitionService.App.getInstance().getNodeTypes((List<String>) e.getStatus().getData(EditModeDNDListener.TARGET_REFERENCE_TYPE), new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
                     public void onApplicationFailure(Throwable caught) {
                         Window.alert(
-                                "Cannot retrieve node type 'jnt:navMenuNodeLink'. Cause: " + caught.getLocalizedMessage());
-                        Log.error("Cannot retrieve node type 'jnt:navMenuNodeLink'. Cause: " + caught.getLocalizedMessage(),
+                                "Cannot retrieve node type. Cause: " + caught.getLocalizedMessage());
+                        Log.error("Cannot retrieve node type. Cause: " + caught.getLocalizedMessage(),
                                 caught);
                     }
 

@@ -540,7 +540,7 @@
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
                             <property name="actionItem">
                                 <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
-                                    <property name="nodeTypes" value="jnt:navMenuNodeLink"/>
+                                    <property name="nodeTypes" value="jnt:nodeLink"/>
                                     <property name="parentTypes" value="jnt:page"/>
                                 </bean>
                             </property>
@@ -550,7 +550,7 @@
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
                             <property name="actionItem">
                                 <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
-                                    <property name="nodeTypes" value="jnt:navMenuExternalLink"/>
+                                    <property name="nodeTypes" value="jnt:externalLink"/>
                                     <property name="parentTypes" value="jnt:page"/>
                                 </bean>
                             </property>

@@ -89,5 +89,3 @@
 <c:if test="${renderContext.editMode && empty moduleMap.currentList}">
     <p><fmt:message key="search.results.no.results"/></p>
 </c:if>
-
-<c:if test="${! empty moduleMap.ulClass}"><ul class="${moduleMap.ulClass}"></c:if>

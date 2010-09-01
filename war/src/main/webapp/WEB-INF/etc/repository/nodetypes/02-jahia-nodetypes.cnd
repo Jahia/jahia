@@ -369,6 +369,7 @@
  - j:userTemplate (string, choicelist[templates=jnt:user,resourceBundle,image]) nofulltext
 
 [jmix:renderableList] mixin
+ itemtype = layout
  - j:subNodesTemplate (string, choicelist[templates=subnodes,resourceBundle,image]) nofulltext
 
 [jmix:renderableArea] > jmix:renderableList mixin

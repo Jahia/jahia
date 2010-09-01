@@ -19,5 +19,3 @@
              statement="select * from [jnt:post] as comments  where isdescendantnode(comments, ['${renderContext.mainResource.node.path}']) order by comments.[jcr:lastModified] desc"/>
 <c:set target="${moduleMap}" property="editable" value="false" />
 <c:set target="${moduleMap}" property="listQuery" value="${listQuery}" />
-<c:set target="${moduleMap}" property="subNodesTemplate" value="blogList" />
-<c:set target="${moduleMap}" property="ulClass" value="bloglist topblogcomments" />

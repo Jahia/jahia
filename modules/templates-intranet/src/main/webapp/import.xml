@@ -294,20 +294,20 @@
                 <col1 jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
                   <contentList j:skin="skins.box5" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
                     <new-blog templateNode="/templateSets/templates-intranet/templates/base/blog" buttonLabel="create" jcr:primaryType="jnt:pageFormCreation">
-                      <j:translation_en jcr:mixinTypes="mix:title" jcr:title="New Blog" jcr:primaryType="jnt:translation" jcr:language="en" />
+                      <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="New Blog" jcr:primaryType="jnt:translation" />
                     </new-blog>
                   </contentList>
-                  <topBlog j:skin="skins.box5style5" pageSize="10" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:topBlog">
-                      <j:translation_en jcr:language="en" jcr:title="Blog List" jcr:primaryType="jnt:translation" />
+                  <topBlog pageSize="10" j:skin="skins.box5style5" j:template="unordered" jcr:mixinTypes="jmix:cssClass jmix:renderable jmix:skinnable" jcr:primaryType="jnt:topBlog" j:className="bloglist topblog" j:subNodesTemplate="blogList">
+                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Blog List" jcr:primaryType="jnt:translation" />
                   </topBlog>
                   <list jcr:mixinTypes="jmix:renderable" j:template="twoColumns" jcr:primaryType="jnt:contentList">
-                    <j:translation_en jcr:mixinTypes="mix:title" jcr:title="list" jcr:primaryType="jnt:translation" jcr:language="en" />
-                      <topBlogContent pageSize="10" j:skin="skins.box5style3" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:topBlogContent">
-                        <j:translation_en jcr:language="en" jcr:title="Latest entries" jcr:primaryType="jnt:translation" />
-                      </topBlogContent>
-                      <topBlogComment pageSize="10" j:skin="skins.box5style3" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:topBlogComment">
-                        <j:translation_en jcr:language="en" jcr:title="Latest comments" jcr:primaryType="jnt:translation" />
-                      </topBlogComment>
+                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="list" jcr:primaryType="jnt:translation" />
+                    <topBlogContent pageSize="10" j:skin="skins.box5style3" j:template="unordered" jcr:mixinTypes="jmix:cssClass jmix:renderable jmix:skinnable" jcr:primaryType="jnt:topBlogContent" j:className="bloglist topblogcontents" j:subNodesTemplate="blogList">
+                      <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Latest entries" jcr:primaryType="jnt:translation" />
+                    </topBlogContent>
+                    <topBlogComment j:skin="skins.box5style3" pageSize="10" j:template="unordered" jcr:mixinTypes="jmix:cssClass jmix:renderable jmix:skinnable" jcr:primaryType="jnt:topBlogComment" j:className="bloglist topblogcomments" j:subNodesTemplate="blogList">
+                      <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Latest comments" jcr:primaryType="jnt:translation" />
+                    </topBlogComment>
                   </list>
                 </col1>
                 <col2 jcr:primaryType="jnt:contentList" />

@@ -594,7 +594,8 @@ public class ContentTest {
      */
     @Test
     public void testReferencing() throws RepositoryException, UnsupportedEncodingException {
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+        Locale locale = LanguageCodeConverters.languageCodeToLocale("en");
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(null, locale);
         try {
             JCRNodeWrapper siteNode = session.getNode(SITECONTENT_ROOT_NODE);
             if (!siteNode.isCheckedOut()) {

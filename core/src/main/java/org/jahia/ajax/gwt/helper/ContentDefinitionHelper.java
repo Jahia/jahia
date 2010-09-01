@@ -40,6 +40,7 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.services.content.ExternalReferenceValue;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRValueWrapper;
@@ -49,10 +50,7 @@ import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializer;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListValue;
 
-import javax.jcr.NodeIterator;
-import javax.jcr.PropertyType;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
+import javax.jcr.*;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeTypeIterator;
 import java.util.*;
@@ -443,10 +441,20 @@ public class ContentDefinitionHelper {
                 value = PathValue.valueOf(val.getString());
                 break;
             case GWTJahiaNodePropertyType.REFERENCE:
-                value = ReferenceValue.valueOf(val.getString());
+                try {
+                    value = ReferenceValue.valueOf(val.getString());
+                } catch (ValueFormatException vfe) {
+                    // this can happen in the case of a reference to an external repository which doesn't use UUIDs as identifiers
+                    value = new ExternalReferenceValue(val.getString(), PropertyType.REFERENCE);
+                }
                 break;
             case GWTJahiaNodePropertyType.WEAKREFERENCE:
-                value = WeakReferenceValue.valueOf(val.getString());
+                try {
+                    value = WeakReferenceValue.valueOf(val.getString());
+                } catch (ValueFormatException vfe) {
+                    // this can happen in the case of a reference to an external repository which doesn't use UUIDs as identifiers
+                    value = new ExternalReferenceValue(val.getString(), PropertyType.WEAKREFERENCE);
+                }
                 break;
             case GWTJahiaNodePropertyType.STRING:
                 value = new StringValue(val.getString());
@@ -519,9 +527,9 @@ public class ContentDefinitionHelper {
         for (ExtendedNodeType nodeType : allTypes) {
             Collection<ExtendedPropertyDefinition> c = nodeType.getPropertyDefinitionsAsMap().values();
             for (ExtendedPropertyDefinition definition : c) {
-                 if (definition.getSelector() == SelectorType.CHOICELIST && !definition.getSelectorOptions().isEmpty()) {
-                     items.add(definition);
-                 }
+                if (definition.getSelector() == SelectorType.CHOICELIST && !definition.getSelectorOptions().isEmpty()) {
+                    items.add(definition);
+                }
             }
         }
         return items;

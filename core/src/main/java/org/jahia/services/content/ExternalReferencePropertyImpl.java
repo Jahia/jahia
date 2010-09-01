@@ -31,44 +31,7 @@ public class ExternalReferencePropertyImpl implements Property {
         this.parentNode = parentNode;
         this.session = session;
         this.nodeIdentifier = nodeIdentifier;
-        this.value = new Value() {
-
-            public String getString() throws ValueFormatException, IllegalStateException, RepositoryException {
-                return nodeIdentifier;
-            }
-
-            public InputStream getStream() throws RepositoryException {
-                return null;
-            }
-
-            public Binary getBinary() throws RepositoryException {
-                return null;
-            }
-
-            public long getLong() throws ValueFormatException, RepositoryException {
-                return 0;
-            }
-
-            public double getDouble() throws ValueFormatException, RepositoryException {
-                return 0;
-            }
-
-            public BigDecimal getDecimal() throws ValueFormatException, RepositoryException {
-                return null;
-            }
-
-            public Calendar getDate() throws ValueFormatException, RepositoryException {
-                return null;
-            }
-
-            public boolean getBoolean() throws ValueFormatException, RepositoryException {
-                return false;
-            }
-
-            public int getType() {
-                return PropertyType.WEAKREFERENCE;
-            }
-        };
+        this.value = new ExternalReferenceValue(nodeIdentifier, PropertyType.WEAKREFERENCE);
         this.referencedNode = referencedNode;
     }
 
@@ -117,7 +80,7 @@ public class ExternalReferencePropertyImpl implements Property {
     }
 
     public String getString() throws ValueFormatException, RepositoryException {
-        return null;
+        return value.getString();
     }
 
     public InputStream getStream() throws ValueFormatException, RepositoryException {

@@ -474,6 +474,9 @@ public class ContentTest {
             session.save();
             // nodes.add(testFile.getIdentifier());
 
+            // now let's sleep a little to give time for Jackrabbit to index the file's content.
+            Thread.sleep(5000);
+
             // Do the query
             QueryManager qm = JCRSessionFactory.getInstance().getCurrentUserSession().getWorkspace().getQueryManager();
             Query query = qm.createQuery("select * from [jnt:file] as f where contains(f.[jcr:content], '456bcd')",
@@ -615,6 +618,11 @@ public class ContentTest {
 
             JCRNodeWrapper refNode = listNode.addNode("ref" + +System.currentTimeMillis(), "jnt:fileReference");
             refNode.setProperty("j:node", testFile);
+
+            session.save();
+
+            Value testFileValue = new ExternalReferenceValue(testFile.getIdentifier(), PropertyType.WEAKREFERENCE);
+            refNode.setProperty("j:node", testFileValue);
 
             session.save();
 

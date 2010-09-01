@@ -35,26 +35,27 @@ package org.jahia.services.content.impl.vfs;
 import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileType;
+import org.jahia.api.Constants;
 import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.Name;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.content.impl.vfs.PropertyIteratorImpl;
-import org.jahia.api.Constants;
 
 import javax.jcr.*;
-import javax.jcr.lock.LockException;
 import javax.jcr.lock.Lock;
+import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.NodeDefinition;
-import javax.jcr.version.VersionException;
+import javax.jcr.nodetype.NodeType;
 import javax.jcr.version.Version;
+import javax.jcr.version.VersionException;
 import javax.jcr.version.VersionHistory;
 import java.io.InputStream;
-import java.util.*;
 import java.math.BigDecimal;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -360,14 +361,14 @@ public class VFSNodeImpl extends VFSItemImpl implements Node {
         try {
             FileType fileType = fileObject.getType();
             if (fileType == FileType.FILE) {
-                return NodeTypeRegistry.getInstance().getNodeType(Constants.NT_FILE);
+                return NodeTypeRegistry.getInstance().getNodeType(Constants.JAHIANT_FILE);
             } else if (fileType == FileType.FOLDER) {
-                return NodeTypeRegistry.getInstance().getNodeType(Constants.NT_FOLDER);
+                return NodeTypeRegistry.getInstance().getNodeType(Constants.JAHIANT_FOLDER);
             }
         } catch (FileSystemException e) {
             throw new RepositoryException(e);
         }
-        return NodeTypeRegistry.getInstance().getNodeType(Constants.NT_FILE);
+        return NodeTypeRegistry.getInstance().getNodeType(Constants.JAHIANT_FILE);
     }
 
     public NodeType[] getMixinNodeTypes() throws RepositoryException {

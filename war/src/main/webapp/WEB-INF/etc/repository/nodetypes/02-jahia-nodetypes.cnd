@@ -498,8 +498,8 @@
  - j:bindedComponent (weakreference) hidden
 
 [jmix:externalReference] mixin
-- j:referenceNodeIdentifiers (string) multiple
-- j:referencePropertyNames (string) multiple
+- j:referenceNodeIdentifiers (string) multiple i18n
+- j:referencePropertyNames (string) multiple i18n
 
 //---------------------------------------------------------
 // Caches

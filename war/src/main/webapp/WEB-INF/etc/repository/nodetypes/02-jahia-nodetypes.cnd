@@ -314,6 +314,10 @@
 // Rendering
 //---------------------------------------------------------
 
+[jmix:cssClass] > jmix:templateMixin mixin
+ extends = jmix:list
+ itemtype = layout
+- j:className (string)
 
 [jmix:renderable] mixin
  extends = jnt:content, jnt:template

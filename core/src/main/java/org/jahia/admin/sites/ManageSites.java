@@ -512,7 +512,7 @@ public class ManageSites extends AbstractAdministrationModule {
             }
         } catch (JahiaException ex) {
             warningMsg = 
-                    getMessage("org.jahia.admin.warningMsg.processingRequestError.label");
+                    getMessage("label.error.processingRequestError");
             request.setAttribute("warningMsg", warningMsg);
             displayAdd(request, response, session);
         } finally {
@@ -967,7 +967,7 @@ public class ManageSites extends AbstractAdministrationModule {
                 sMgr.updateSite(site);
             } else {
                 warningMsg = 
-                        getMessage("org.jahia.admin.warningMsg.processingRequestError.label");
+                        getMessage("label.error.processingRequestError");
                 request.setAttribute("warningMsg", warningMsg);
 
                 if (currentSite != null) {
@@ -992,7 +992,7 @@ public class ManageSites extends AbstractAdministrationModule {
             logger.error("Error while adding site", ex);
 
             warningMsg = 
-                    getMessage("org.jahia.admin.warningMsg.processingRequestError.label");
+                    getMessage("label.error.processingRequestError");
             request.setAttribute("warningMsg", warningMsg);
             return false;
         }
@@ -1448,7 +1448,7 @@ public class ManageSites extends AbstractAdministrationModule {
         } catch (JahiaException ex) {
             logger.warn("Error while processing site edition", ex);
             warningMsg = 
-                    getMessage("org.jahia.admin.warningMsg.processingRequestError.label");
+                    getMessage("label.error.processingRequestError");
             request.setAttribute("warningMsg", warningMsg);
             displayEdit(request, response, session);
         }
@@ -1564,7 +1564,7 @@ public class ManageSites extends AbstractAdministrationModule {
         } catch (JahiaException ex) {
             logger.error("Error while processing site deletion", ex);
             String warningMsg = 
-                    getMessage("org.jahia.admin.warningMsg.processingRequestError.label");
+                    getMessage("label.error.processingRequestError");
             request.setAttribute("warningMsg", warningMsg);
             displayEdit(request, response, session);
         }
@@ -1652,7 +1652,7 @@ public class ManageSites extends AbstractAdministrationModule {
         } catch (JahiaException ex) {
             logger.error("Error while deleting multiple sites", ex);
             String warningMsg = 
-                    getMessage("org.jahia.admin.warningMsg.processingRequestError.label");
+                    getMessage("label.error.processingRequestError");
             request.setAttribute("warningMsg", warningMsg);
             displayEdit(request, response, session);
         }

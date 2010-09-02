@@ -1239,21 +1239,6 @@
 
         <!-- Database drivers -->
         <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>ojdbc5</artifactId>
-            <version>${driver.oracle.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>orai18n</artifactId>
-            <version>${driver.oracle.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>microsoft</groupId>
-            <artifactId>sqljdbc</artifactId>
-            <version>${driver.mssql.version}</version>
-        </dependency>
-        <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>${driver.mysql.version}</version>
@@ -1415,23 +1400,9 @@
                                         <include name="**/*.hbm.xml"/>
                                     </fileset>
                                 </schemaexport>
-                                <schemaexport properties="${basedir}/mssql.hibernate.properties"
-                                              quiet="yes" text="yes" drop="no" delimiter=";"
-                                              output="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/mssql/jahia-schema.sql">
-                                    <fileset dir="${project.build.directory}/xdoclet">
-                                        <include name="**/*.hbm.xml"/>
-                                    </fileset>
-                                </schemaexport>
                                 <schemaexport properties="${basedir}/mysql.hibernate.properties"
                                               quiet="yes" text="yes" drop="no" delimiter=";"
                                               output="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/mysql/jahia-schema.sql">
-                                    <fileset dir="${project.build.directory}/xdoclet">
-                                        <include name="**/*.hbm.xml"/>
-                                    </fileset>
-                                </schemaexport>
-                                <schemaexport properties="${basedir}/oracle.hibernate.properties"
-                                              quiet="yes" text="yes" drop="no" delimiter=";"
-                                              output="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/oracle/jahia-schema.sql">
                                     <fileset dir="${project.build.directory}/xdoclet">
                                         <include name="**/*.hbm.xml"/>
                                     </fileset>
@@ -1477,23 +1448,9 @@
                                         <include name="*.hbm.xml"/>
                                     </fileset>
                                 </schemaexport>
-                                <schemaexport properties="${basedir}/mssql.hibernate.properties"
-                                              quiet="yes" text="yes" drop="no" delimiter=";"
-                                              output="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/mssql/jbpm-schema.sql">
-                                    <fileset dir="${project.build.directory}/jbpm">
-                                        <include name="*.hbm.xml"/>
-                                    </fileset>
-                                </schemaexport>
                                 <schemaexport properties="${basedir}/mysql.hibernate.properties"
                                               quiet="yes" text="yes" drop="no" delimiter=";"
                                               output="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/mysql/jbpm-schema.sql">
-                                    <fileset dir="${project.build.directory}/jbpm">
-                                        <include name="*.hbm.xml"/>
-                                    </fileset>
-                                </schemaexport>
-                                <schemaexport properties="${basedir}/oracle.hibernate.properties"
-                                              quiet="yes" text="yes" drop="no" delimiter=";"
-                                              output="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/oracle/jbpm-schema.sql">
                                     <fileset dir="${project.build.directory}/jbpm">
                                         <include name="*.hbm.xml"/>
                                     </fileset>

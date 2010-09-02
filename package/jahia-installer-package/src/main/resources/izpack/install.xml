@@ -19,15 +19,11 @@
         <variable name="product.version" value="${jahia.package.version}"/>
         
         <!-- default values for DB driver -->
-        <variable name="def.db.driver.mssql" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
         <variable name="def.db.driver.mysql" value="com.mysql.jdbc.Driver"/>
-        <variable name="def.db.driver.oracle" value="oracle.jdbc.OracleDriver"/>
         <variable name="def.db.driver.postgresql" value="org.postgresql.Driver"/>
         <variable name="def.db.driver.derby" value="org.apache.derby.jdbc.ClientDriver"/>
 
-        <variable name="def.db.url.mssql" value="jdbc:sqlserver://localhost;databaseName=jahia"/>
         <variable name="def.db.url.mysql" value="jdbc:mysql://localhost/jahia?useUnicode=true&amp;characterEncoding=UTF-8&amp;useServerPrepStmts=false"/>
-        <variable name="def.db.url.oracle" value="jdbc:oracle:thin:@localhost:1521:jahia"/>
         <variable name="def.db.url.postgresql" value="jdbc:postgresql://localhost:5432/jahia"/>
         <variable name="def.db.url.derby" value="jdbc:derby://localhost:1527/jahia;create=true"/>
         
@@ -113,17 +109,9 @@
             <name>dbSettings.mode</name>
             <value>embedded</value>
         </condition>
-        <condition type="variable" id="cnd.db.dbms.mssql">
-            <name>dbSettings.dbms.type</name>
-            <value>mssql</value>
-        </condition>
         <condition type="variable" id="cnd.db.dbms.mysql">
             <name>dbSettings.dbms.type</name>
             <value>mysql</value>
-        </condition>
-        <condition type="variable" id="cnd.db.dbms.oracle">
-            <name>dbSettings.dbms.type</name>
-            <value>oracle</value>
         </condition>
         <condition type="variable" id="cnd.db.dbms.postgresql">
             <name>dbSettings.dbms.type</name>

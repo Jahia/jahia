@@ -118,8 +118,6 @@ public class JahiaUserManagerLDAPProvider extends JahiaUserManagerProvider {
         "username.attribute.map";
     private static String USE_CONNECTION_POOL = "users.ldap.connect.pool"; 
     
-    private static JahiaUserManagerLDAPProvider instance;
-
     private Properties ldapProperties = null;
 
     private List<String> searchWildCardAttributeList = null;
@@ -130,26 +128,6 @@ public class JahiaUserManagerLDAPProvider extends JahiaUserManagerProvider {
     //(-PredragV-) private JahiaGroupManagerDBService    groupService = null;
     private CacheService cacheService = null;
     private JCRUserManagerProvider jcrUserManagerProvider;
-
-// -------------------------- STATIC METHODS --------------------------
-
-    /**
-     * Create an new instance of the User Manager Service if the instance do not
-     * exist, or return the existing instance.
-     *
-     * @return Return the instance of the User Manager Service.
-     */
-    public static JahiaUserManagerLDAPProvider getInstance () {
-        if (instance == null) {
-            try {
-                instance = new JahiaUserManagerLDAPProvider();
-            } catch (JahiaException ex) {
-                logger.error(
-                    "Could not create an instance of the JahiaUserManagerLDAPProvider class");
-            }
-        }
-        return instance;
-    }
 
 // --------------------------- CONSTRUCTORS ---------------------------
 

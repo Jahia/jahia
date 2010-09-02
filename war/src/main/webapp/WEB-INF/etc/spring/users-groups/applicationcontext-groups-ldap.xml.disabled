@@ -3,7 +3,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-    <bean id="JahiaGroupManagerLDAPProvider" class="org.jahia.services.usermanager.JahiaGroupManagerLDAPProvider" parent="JahiaGroupManagerProvider" factory-method="getInstance">
+    <bean id="JahiaGroupManagerLDAPProvider" class="org.jahia.services.usermanager.JahiaGroupManagerLDAPProvider" parent="JahiaGroupManagerProvider">
         <property name="key" value="ldap"/>
         <property name="cacheService" ref="JahiaCacheService"/>
         <property name="defaultProvider" value="false"/>

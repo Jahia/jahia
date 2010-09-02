@@ -407,8 +407,7 @@ public class JahiaLDAPUser extends JahiaBasePrincipal implements JahiaUser {
 				// parameter
 				// forward to the ldap authN in case of there was a ldap
 				// password change from the last user's visit.
-				boolean loginResult = JahiaUserManagerLDAPProvider
-						.getInstance().login(mUserKey, password);
+				boolean loginResult = provider.login(mUserKey, password);
 				if (loginResult) {
 					/**
 					 * @todo here we must now update the properties of the user

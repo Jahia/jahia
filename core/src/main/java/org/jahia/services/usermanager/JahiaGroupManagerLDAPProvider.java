@@ -101,9 +101,6 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
     private static org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger (JahiaGroupManagerLDAPProvider.class);
 
-    /** the Group Manager unique instance */
-    private static JahiaGroupManagerLDAPProvider instance;
-
     private static String CONTEXT_FACTORY_PROP = "context.factory";
     private static String LDAP_URL_PROP = "url";
     private static String AUTHENTIFICATION_MODE_PROP = "authentification.mode";
@@ -151,23 +148,6 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
     private JahiaUserManagerService jahiaUserManagerService;
 
 // -------------------------- STATIC METHODS --------------------------
-
-    /**
-     * Return the unique instance of the Group Manager Service.
-     *
-     * @return the instance of the Group Manager Service.
-     */
-    public static JahiaGroupManagerLDAPProvider getInstance () {
-        if (instance == null) {
-            try {
-                instance = new JahiaGroupManagerLDAPProvider ();
-            } catch (JahiaException ex) {
-                logger.warn (
-                        "Could not create an instance of the JahiaGroupManagerLDAPProvider class");
-            }
-        }
-        return instance;
-    }
 
     private static boolean containsMembersRange(Attributes attrs,
             String membersAttribute) throws NamingException {

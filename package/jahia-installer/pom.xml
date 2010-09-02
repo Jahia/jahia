@@ -37,6 +37,7 @@
 
     <modules>
         <module>jahia-installer-lib</module>
+        <module>jahia-common-installer-package</module>
     </modules>
 
 </project>

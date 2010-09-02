@@ -47,6 +47,7 @@ import org.junit.internal.requests.FilterRequest;
 import org.junit.runner.Description;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Request;
+import org.junit.runner.Result;
 import org.junit.runner.manipulation.Filter;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.ModelAndView;
@@ -125,9 +126,15 @@ public class TestServlet extends HttpServlet implements Controller, ServletConte
                 String className = pathInfo.substring(pathInfo.lastIndexOf('/')+1);
                 try {
                     JUnitCore junitcore = new JUnitCore();
-                    junitcore.addListener (new SurefireJUnitXMLResultFormatter(httpServletResponse.getOutputStream()));
-                    List<Class> classes = getTestClasses(Class.forName(className), new ArrayList<Class>());
-                    if (!classes.isEmpty()) {
+                    SurefireJUnitXMLResultFormatter xmlResultFormatter = new SurefireJUnitXMLResultFormatter(httpServletResponse.getOutputStream());
+                    junitcore.addListener(xmlResultFormatter);
+                    Class testClass = Class.forName(className);
+                    List<Class> classes = getTestClasses(testClass, new ArrayList<Class>());
+                    if (classes.isEmpty()) {
+                        Description description = Description.createSuiteDescription(testClass);
+                        xmlResultFormatter.testRunStarted(description);
+                        xmlResultFormatter.testRunFinished(new Result());
+                    } else {
                         junitcore.run(new FilterRequest(Request.classes(classes
                                 .toArray(new Class[classes.size()])), new Filter() {
 

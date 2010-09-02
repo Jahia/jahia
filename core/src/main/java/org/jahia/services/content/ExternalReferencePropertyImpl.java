@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 import java.util.Calendar;
 
 /**
- * TODO Comment me
+ * A property implementation that point to external repository nodes.
  *
  * @author loom
  *         Date: Aug 25, 2010
@@ -20,14 +20,16 @@ import java.util.Calendar;
 public class ExternalReferencePropertyImpl implements Property {
 
     private String name;
+    private String path;
     private Node referencedNode;
     private Node parentNode;
     private Value value;
     private String nodeIdentifier;
     private Session session;
 
-    public ExternalReferencePropertyImpl(String name, Node parentNode, Session session, final String nodeIdentifier, Node referencedNode) {
+    public ExternalReferencePropertyImpl(String name, Node parentNode, Session session, final String nodeIdentifier, Node referencedNode) throws RepositoryException {
         this.name = name;
+        this.path = parentNode.getPath() + "/" + name;
         this.parentNode = parentNode;
         this.session = session;
         this.nodeIdentifier = nodeIdentifier;
@@ -140,7 +142,7 @@ public class ExternalReferencePropertyImpl implements Property {
     }
 
     public String getPath() throws RepositoryException {
-        return null;
+        return path;
     }
 
     public String getName() throws RepositoryException {

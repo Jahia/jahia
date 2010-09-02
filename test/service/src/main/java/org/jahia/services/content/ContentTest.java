@@ -37,6 +37,7 @@ import org.apache.jackrabbit.JcrConstants;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.GWTJahiaSearchQuery;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.helper.NavigationHelper;
 import org.jahia.ajax.gwt.helper.SearchHelper;
@@ -265,7 +266,7 @@ public class ContentTest {
                 String actual = testCollection.getProperty("jcr:description").getString();
                 assertEquals(providerRoot + " : getProperty() Property value is not the same", value, actual);
             } catch (PathNotFoundException e) {
-                fail("getProperty() cannot find property");
+                fail(providerRoot + " : getProperty() cannot find property");
             }
 
             assertEquals(providerRoot + " : getPropertyAsString() : Property value is not the same", value,
@@ -593,7 +594,7 @@ public class ContentTest {
      * @throws UnsupportedEncodingException
      */
     @Test
-    public void testReferencing() throws RepositoryException, UnsupportedEncodingException {
+    public void testReferencing() throws RepositoryException, UnsupportedEncodingException, GWTJahiaServiceException {
         Locale locale = LanguageCodeConverters.languageCodeToLocale("en");
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(null, locale);
         try {
@@ -622,21 +623,35 @@ public class ContentTest {
 
             session.save();
 
+            Property refProperty = refNode.getProperty("j:node");
+            assertNotNull("Referenced external node is not available !", refProperty.getNode());
+
             Value testFileValue = new ExternalReferenceValue(testFile.getIdentifier(), PropertyType.WEAKREFERENCE);
             refNode.setProperty("j:node", testFileValue);
 
             session.save();
 
+            refProperty = refNode.getProperty("j:node");
+            assertNotNull("Referenced external node is not available !", refProperty.getNode());
+
             PropertyIterator refPropertyIterator = testFile.getWeakReferences();
             int resultCount = 0;
             while (refPropertyIterator.hasNext()) {
                 resultCount++;
-                Property refProperty = refPropertyIterator.nextProperty();
+                refProperty = refPropertyIterator.nextProperty();
                 assertEquals("Reference property name is invalid !", "j:node", refProperty.getName());
                 assertNotNull("Reference node is null", refProperty.getNode());
                 assertEquals("Reference identifier is invalid !", testFile.getIdentifier(), refProperty.getNode().getIdentifier());
             }
             assertEquals("Invalid number of file references !", 1, resultCount);
+
+            NavigationHelper navigationHelper = (NavigationHelper) SpringContextSingleton.getInstance().getContext().getBean("NavigationHelper");
+            List<String> paths = new ArrayList<String>();
+            paths.add(testFile.getPath());
+            List<GWTJahiaNodeUsage> usages = navigationHelper.getUsages(paths, session);
+            assertEquals("Invalid number of file usages !", 1, usages.size());
+            GWTJahiaNodeUsage firstUsage = usages.iterator().next();
+            assertEquals("Expected path for node pointing to file is invalid !", refNode.getPath(), firstUsage.getPath());
 
         } finally {
             if (session != null) {

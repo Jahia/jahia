@@ -214,29 +214,6 @@ background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow.gif);
 .x-viewport-sitemanager .x-toolbar-first .x-btn-mc em.x-btn-arrow {
 background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow.gif);
 }
-/*Workflow Manager  */
-.x-viewport-workflowmanager .x-toolbar-first {
-	background:none !important;
-	background : #333333 url(../images/xtheme-jahia-andromeda/header/toolbar/workflowManagerMode-bg.png) no-repeat top right !important;
-	border-color:#333333!important;
-}
-.x-viewport-workflowmanager .x-toolbar-first button {
-	color:#fff !important;
-}	
-.x-viewport-workflowmanager .x-toolbar-first .x-btn-tl, .x-viewport-workflowmanager .x-toolbar-first .x-btn-tr, .x-viewport-workflowmanager .x-toolbar-first .x-btn-tc, .x-viewport-workflowmanager .x-toolbar-first .x-btn-ml, .x-viewport-workflowmanager .x-toolbar-first .x-btn-mr, .x-viewport-workflowmanager .x-toolbar-first .x-btn-mc, .x-viewport-workflowmanager .x-toolbar-first .x-btn-bl, .x-viewport-workflowmanager .x-toolbar-first .x-btn-br, .x-viewport-workflowmanager .x-toolbar-first .x-btn-bc{
-	background-image:url(../images/xtheme-jahia-andromeda/header/button/btn.png)!important;
-}
-.x-viewport-workflowmanager .x-toolbar-first .xtb-sep {
-	background-image:url(../images/xtheme-jahia-andromeda/header/grid/grid-split.gif) !important;
-}
-.x-viewport-workflowmanager .x-toolbar-first .x-btn-over button {
-    color:#000 !important;
-}
-.x-viewport-workflowmanager .x-toolbar-first .x-btn-mc em.x-btn-arrow {
-background-image:url(../images/xtheme-jahia-andromeda/header/button/arrow.gif);
-}
-/****************************************************************************/
-
 .x-panel {
     border-style: solid;
     border-color: #b7cbd8;

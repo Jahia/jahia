@@ -290,7 +290,6 @@
                                 <list>
                                     <ref bean="Toolbar.Item.WorkflowStatuswAction"/>
                                     <ref bean="Toolbar.Item.WorkflowDashboard"/>
-                                    <ref bean="Toolbar.Item.WorkflowManager"/>
                                 </list>
                             </property>
                             <property name="visibility" value="$site/toolbar/workflow"/>

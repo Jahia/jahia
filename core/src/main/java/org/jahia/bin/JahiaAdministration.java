@@ -708,12 +708,12 @@ public class JahiaAdministration extends HttpServlet {
                                 JahiaSite firstAdminSite = adminGrantedSites.get(0);
                                 entrySiteID = firstAdminSite.getID();
                             } else {
-                                String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.bin.JahiaConfigurationWizard.JahiaDisplayMessage.isntadministrator1.label",
+                                String dspMsg = JahiaResourceBundle.getJahiaInternalResource("label.isntadministrator1",
                                         request.getLocale());
                                 dspMsg += " ";
                                 dspMsg += jahiaLoginUsername;
                                 dspMsg += " ";
-                                dspMsg += JahiaResourceBundle.getJahiaInternalResource("org.jahia.bin.JahiaConfigurationWizard.JahiaDisplayMessage.isntadministrator2.label",
+                                dspMsg += JahiaResourceBundle.getJahiaInternalResource("label.isntadministrator2",
                                         request.getLocale());
                                 request.setAttribute(JahiaAdministration.CLASS_NAME + "jahiaDisplayMessage", dspMsg);
                                 logger.error("Login Error: User " + jahiaLoginUsername + " is not a system administrator.");

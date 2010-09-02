@@ -188,7 +188,9 @@ public class WorkflowActionDialog extends Window {
         contentManagement = JahiaContentManagementService.App.getInstance();
         contentDefinition = JahiaContentDefinitionService.App.getInstance();
         setModal(true);
-        setHeading("Start workflow [" + wf.getName() + "] for node: " + node.getDisplayName());
+        setHeading(Messages.get("label.workflowAction",
+                "Workflow action") + " [" + wf.getName() + "] " + Messages.get("label.for",
+                "for") + " node: " + node.getDisplayName());
         setWidth(800);
         setHeight(300);
         setFrame(true);
@@ -221,7 +223,9 @@ public class WorkflowActionDialog extends Window {
         contentManagement = JahiaContentManagementService.App.getInstance();
         contentDefinition = JahiaContentDefinitionService.App.getInstance();
         setModal(true);
-        setHeading("Start workflow [" + wf.getName() + "] for node: " + node.getDisplayName());
+        setHeading(Messages.get("label.workflowAction",
+                "Workflow action") + " [" + wf.getName() + "] " + Messages.get("label.for",
+                "for") + " node: " + node.getDisplayName());
         setWidth(800);
         setHeight(600);
         setFrame(true);
@@ -306,7 +310,7 @@ public class WorkflowActionDialog extends Window {
                                              final Window dialog, LayoutContainer panel, Linker linker) {
         HorizontalPanel horizontalPanel = new HorizontalPanel();
 
-        final Button button = new Button("Start Workflow : " + wf.getName());
+        final Button button = new Button(Messages.get("label.workflow.start", "Start Workflow:") + wf.getName());
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
@@ -395,7 +399,7 @@ public class WorkflowActionDialog extends Window {
                                        final boolean allSubTree, final Linker linker, final String language) {
         HorizontalPanel horizontalPanel = new HorizontalPanel();
 
-        final Button button = new Button(Messages.get("workflow.start.label", "Start Workflow:") + wf.getDisplayName());
+        final Button button = new Button(Messages.get("label.workflow.start", "Start Workflow:") + wf.getDisplayName());
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {

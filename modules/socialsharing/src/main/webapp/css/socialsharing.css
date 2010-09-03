@@ -1,0 +1,9 @@
+##bodywrapper .socialsharing
+{
+    list-style-type :none;
+}
+#bodywrapper .socialsharing li
+{
+     display:inline;
+     margin:5px;
+}

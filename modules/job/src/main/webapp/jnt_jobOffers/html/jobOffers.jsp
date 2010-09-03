@@ -12,7 +12,7 @@
         <fieldset>
             <legend><fmt:message key='jnt_jobOffers.search.form.label'/></legend>
             <p class="field jobsSearchKeyword">
-                <label for="jobsSearchKeyword"><fmt:message key='job.keywordSearch'/></label>
+                <label for="jobsSearchKeyword"><fmt:message key='label.keywordSearch'/></label>
                 <input type="text" name="jobsSearchKeyword" id="jobsSearchKeyword" class="field jobsSearchKeyword"
                        value="${param.jobsSearchKeyword}" tabindex="4"/>
             </p>
@@ -36,7 +36,7 @@
 <!--stop jobsSearchForm -->
 <jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>
 <c:set var="listTitle" value="${fn:escapeXml(title.string)}"/>
-<c:if test="${empty listTitle}"><c:set var="listTitle"><fmt:message key="jobList"/></c:set></c:if>
+<c:if test="${empty listTitle}"><c:set var="listTitle"><fmt:message key="label.joblist"/></c:set></c:if>
 
 <h3>${listTitle}</h3>
 
@@ -48,9 +48,9 @@
     </colgroup>
     <thead>
     <tr>
-        <th id="job" scope="col"><fmt:message key="web_templates_jobContainer.jobtitle"/></th>
-        <th id="location" scope="col"><fmt:message key="web_templates.location"/></th>
-        <th id="businessUnit" scope="col"><fmt:message key="web_templates_jobContainer.businessUnit"/></th>
+        <th id="job" scope="col"><fmt:message key="label.jobtitle"/></th>
+        <th id="location" scope="col"><fmt:message key="label.location"/></th>
+        <th id="businessUnit" scope="col"><fmt:message key="label.businessUnit"/></th>
     </tr>
     </thead>
     <tbody>

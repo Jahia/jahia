@@ -241,6 +241,7 @@
         <property name="tabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
                 <value>info</value>
+                <value>metadata</value>
                 <value>rights</value>
                 <value>usages</value>
                 <value>tags</value>

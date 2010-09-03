@@ -22,6 +22,10 @@
 <jcr:nodeProperty name="j:maxDepth" node="${currentNode}" var="maxDepth"/>
 <jcr:nodeProperty name="j:startLevel" node="${currentNode}" var="startLevel"/>
 <jcr:nodeProperty name="j:styleName" node="${currentNode}" var="styleName"/>
+<jcr:nodeProperty name="j:menuItemTemplate" node="${currentNode}" var="menuItemTemplate"/>
+<c:if test="${empty menuItemTemplate}">
+  <c:set var="menuItemTemplate" value="menuElement" />
+</c:if>
 <c:set var="current" value="${baseline.node}"/>
 <c:if test="${not empty currentResource.moduleParams.base}">
   <jcr:node var="current" uuid="${currentResource.moduleParams.base}" />
@@ -69,7 +73,7 @@
                                    scope="request"/>
                             <li class="${listItemCssClass}">
                                 <c:set var="statusNavMenu" value="${menuStatus}" scope="request"/>
-                                <template:module node="${menuItem}" template="hidden.menuElement" editable="false"/>
+                                <template:module node="${menuItem}" template="${menuItemTemplate}" editable="false"/>
                                     <%--<a href="">${menuItem.name}</a>--%>
                                 <c:if test="${hasChildren}">
                                     <template:include template="default">

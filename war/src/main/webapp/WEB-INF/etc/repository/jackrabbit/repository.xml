@@ -1,17 +1,24 @@
 <?xml version="1.0"?>
-<!DOCTYPE Repository PUBLIC "-//The Apache Software Foundation//DTD Jackrabbit 1.5//EN"
-                            "http://jackrabbit.apache.org/dtd/repository-1.5.dtd">
+<!DOCTYPE Repository PUBLIC "-//The Apache Software Foundation//DTD Jackrabbit 2.0//EN"
+                            "http://jackrabbit.apache.org/dtd/repository-2.0.dtd">
 <Repository>
 <!-- Example Repository Configuration File -->
+
+    <DataSources>
+        <DataSource name="jahiaDS">
+            <param name="driver" value="javax.naming.InitialContext"/>
+            <param name="url" value="java:comp/env/jdbc/jahia"/>
+            <param name="databaseType" value="@SCHEMA@"/>
+        </DataSource>
+    </DataSources>
+
     <!--
         virtual file system where the repository stores global state
         (e.g. registered namespaces, custom node types, etc.)
     -->
 
     <FileSystem class="@FILESYSTEM_CLASS@">
-        <param name="driver" value="javax.naming.InitialContext" />
-        <param name="schema" value="@SCHEMA@" />
-        <param name="url" value="java:comp/env/jdbc/jahia" />
+        <param name="dataSourceName" value="jahiaDS" />
         <param name="schemaObjectPrefix" value="jr_fsg_"/>
         <param name="schemaCheckEnabled" value="false"/>
     </FileSystem>
@@ -45,9 +52,7 @@
 
 
         <FileSystem class="@FILESYSTEM_CLASS@">
-            <param name="driver" value="javax.naming.InitialContext" />
-            <param name="schema" value="@SCHEMA@" />
-            <param name="url" value="java:comp/env/jdbc/jahia" />
+            <param name="dataSourceName" value="jahiaDS" />
             <param name="schemaObjectPrefix" value="jr_fs_${wsp.name}_"/>
             <param name="schemaCheckEnabled" value="false"/>
         </FileSystem>
@@ -56,9 +61,7 @@
         </PersistenceManager>
 	-->
         <PersistenceManager class="@PERSISTENCE_CLASS@">
-            <param name="driver" value="javax.naming.InitialContext" />
-            <param name="schema" value="@SCHEMA@" />
-            <param name="url" value="java:comp/env/jdbc/jahia" />
+            <param name="dataSourceName" value="jahiaDS" />
             <param name="schemaObjectPrefix" value="jr_${wsp.name}_"/>
             <param name="externalBLOBs" value="@EXTERNAL_BLOBS@"/>
             <param name="schemaCheckEnabled" value="false"/>
@@ -101,9 +104,7 @@
             persistence manager
         -->
         <FileSystem class="@FILESYSTEM_CLASS@">
-            <param name="driver" value="javax.naming.InitialContext" />
-            <param name="schema" value="@SCHEMA@" />
-            <param name="url" value="java:comp/env/jdbc/jahia" />
+            <param name="dataSourceName" value="jahiaDS" />
             <param name="schemaObjectPrefix" value="jr_fsv_"/>
             <param name="schemaCheckEnabled" value="false"/>
         </FileSystem>
@@ -115,9 +116,7 @@
             implementations.
         -->
 		<PersistenceManager class="@PERSISTENCE_CLASS@">
- 		  <param name="driver" value="javax.naming.InitialContext" />
- 		  <param name="schema" value="@SCHEMA@" />
- 		  <param name="url" value="java:comp/env/jdbc/jahia" />
+ 		  <param name="dataSourceName" value="jahiaDS" />
 		  <param name="schemaObjectPrefix" value="jr_v_"/>
 		  <param name="externalBLOBs" value="@EXTERNAL_BLOBS@"/>
           <param name="schemaCheckEnabled" value="false"/>

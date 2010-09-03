@@ -14,7 +14,7 @@ jahia.nested_transaction_allowed = false
 jahia.quartz.selectWithLockSQL = SELECT * FROM {0}LOCKS WHERE LOCK_NAME = ?
 jahia.quartz.jdbcDelegate = org.quartz.impl.jdbcjobstore.StdJDBCDelegate
 jahia.quartz.serializable = false
-jahia.jackrabbit.persistence = org.apache.jackrabbit.core.persistence.bundle.DerbyPersistenceManager
+jahia.jackrabbit.persistence = org.apache.jackrabbit.core.persistence.pool.DerbyPersistenceManager
 jahia.jackrabbit.filesystem = org.apache.jackrabbit.core.fs.db.DerbyFileSystem
 jahia.jackrabbit.journal = org.apache.jackrabbit.core.journal.DatabaseJournal
 jahia.jackrabbit.schema = default

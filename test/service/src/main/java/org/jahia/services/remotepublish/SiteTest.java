@@ -69,6 +69,11 @@ public class SiteTest extends TestCase {
     @Override
     protected void tearDown() throws Exception {
         try {
+            TestHelper.deleteSite("targetSite");
+        } catch (Exception ex) {
+            logger.warn("Exception during test tearDown", ex);
+        }        
+        try {
             TestHelper.deleteSite(TESTSITE_NAME);
             JCRSessionFactory.getInstance().closeAllSessions();
         } catch (Exception ex) {

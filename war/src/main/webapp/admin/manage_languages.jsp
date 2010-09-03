@@ -11,8 +11,8 @@
     <!--
 
     function sendForm() {
-    	    showWorkInProgress();
-            document.mainForm.submit();
+        showWorkInProgress();
+        document.mainForm.submit();
     }
 
     //-->
@@ -22,7 +22,7 @@
 
     <h2 class="edit"><fmt:message
             key="label.manageLanguages"/>: <% if (currentSite != null) { %><fmt:message
-            key="org.jahia.admin.site.label"/>&nbsp;<%=currentSite.getServerName() %>&nbsp;&nbsp;<%} %></h2>
+            key="org.jahia.admin.site.label"/>&nbsp;<%=currentSite.getTitle() %>&nbsp;&nbsp;<%} %></h2>
 </div>
 <div id="main">
     <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">

@@ -14,7 +14,7 @@
 
     <h2 class="edit"><fmt:message key="label.manageAnalytics"/>
         : <% if (currentSite != null) { %><fmt:message
-                key="org.jahia.admin.site.label"/>&nbsp;<%=currentSite.getServerName() %><%} %></h2>
+                key="org.jahia.admin.site.label"/>&nbsp;<%=currentSite.getTitle() %><%} %></h2>
 </div>
 
 <div id="main">
@@ -65,7 +65,7 @@
                                         </th>
                                     </tr>
                                     </thead>
-                                    <%
+                                        <%
                                         GoogleAnalyticsProfile googleAnalyticsProfile = currentSite.getGoogleAnalyticsProfil();
                                         String jahiaGAprofile= "ga";
                                          if (googleAnalyticsProfile !=null && googleAnalyticsProfile.isEnabled()) {
@@ -98,7 +98,7 @@
                                                     height="16" border="0"/></a>&nbsp;
                                         </td>
                                     </tr>
-                                    <%
+                                        <%
                                         }
                                     %>
                             </form>
@@ -169,14 +169,14 @@
                             <%
                                 }
                             %>
-                            </div>
-                            </div>
+                        </div>
                     </div>
+                </div>
             </td>
-         </tr>
-     </table>
+        </tr>
+    </table>
 
-                            <div id="actionBar">
+    <div id="actionBar">
                             <span class="dex-PushButton">
                               <span class="first-child">
                                 <a class="ico-back"
@@ -185,7 +185,7 @@
                               </span>
                             </span>
 
-                            </div>
-                        </div>
-                    </div>
-                    <%@include file="/admin/include/footer.inc" %>
+    </div>
+</div>
+</div>
+<%@include file="/admin/include/footer.inc" %>

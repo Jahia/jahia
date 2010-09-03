@@ -51,7 +51,7 @@
 
     <h2 class="edit"><fmt:message key="label.manageAnalytics"/>
         : <% if (currentSite != null) { %><fmt:message
-                key="org.jahia.admin.site.label"/>&nbsp;<%=currentSite.getServerName() %><%} %></h2>
+                key="org.jahia.admin.site.label"/>&nbsp;<%=currentSite.getTitle() %><%} %></h2>
 </div>
 <div id="main">
     <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">

@@ -38,7 +38,6 @@
                 <ref bean="Toolbar.Item.CategoryManager"/>
                 <ref bean="Toolbar.Item.TagManager"/>
                 <ref bean="Toolbar.Item.SiteManager"/>
-                <ref bean="Toolbar.Item.RemotePublicationManager"/>
             </list>
         </property>
     </bean>
@@ -512,36 +511,6 @@
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="url"/>
                     <property name="value" value="$context/engines/manager.jsp?conf=tagmanager&amp;site=$siteuuid"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="width"/>
-                    <property name="value" value="1020"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="height"/>
-                    <property name="value" value="730"/>
-                </bean>
-            </list>
-        </property>
-    </bean>
-    <!-- Remote publication Manager -->
-    <bean id="Toolbar.Item.RemotePublicationManager" class="org.jahia.services.uicomponents.bean.toolbar.Item">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
-        </property>
-        <property name="titleKey" value="label.remotepublicationmanager"/>
-        <property name="icon" value="remotePublicationManager"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="siteActionPermission" value="managers/remote-publication-manager"/>
-            </bean>
-        </property>
-        <property name="properties">
-            <list>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="url"/>
-                    <property name="value"
-                              value="$context/engines/manager.jsp?conf=remotepublicationmanager&amp;site=$siteuuid"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="width"/>

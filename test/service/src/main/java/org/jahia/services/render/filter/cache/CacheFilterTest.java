@@ -83,37 +83,45 @@ public class CacheFilterTest extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-        JahiaSite site = TestHelper.createSite("test");
-        paramBean = (ParamBean) Jahia.getThreadParamBean();
+        try {
+            JahiaSite site = TestHelper.createSite("test");
+            paramBean = (ParamBean) Jahia.getThreadParamBean();
 
-        paramBean.getSession(true).setAttribute(ParamBean.SESSION_SITE, site);
+            paramBean.getSession(true).setAttribute(ParamBean.SESSION_SITE, site);
 
-        /*
-        JahiaData jData = new JahiaData(paramBean, false);
-        paramBean.setAttribute(JahiaData.JAHIA_DATA, jData);
-        */
-        
-        session = JCRSessionFactory.getInstance().getCurrentUserSession();
-        this.site = (JCRSiteNode) session.getNode("/sites/"+site.getSiteKey());
+            /*
+            JahiaData jData = new JahiaData(paramBean, false);
+            paramBean.setAttribute(JahiaData.JAHIA_DATA, jData);
+            */
+            
+            session = JCRSessionFactory.getInstance().getCurrentUserSession();
+            this.site = (JCRSiteNode) session.getNode("/sites/"+site.getSiteKey());
 
-        JCRNodeWrapper shared = session.getNode("/shared");
-        if (shared.hasNode("testContent")) {
-            shared.getNode("testContent").remove();
+            JCRNodeWrapper shared = session.getNode("/shared");
+            if (shared.hasNode("testContent")) {
+                shared.getNode("testContent").remove();
+            }
+            if(shared.isVersioned()) session.checkout(shared);
+            node = shared.addNode("testContent", "jnt:folder");
+            node.addNode("testType", "jnt:tag");
+            node.addNode("testType2", "jnt:user");
+            node.addNode("testMixin", "jnt:content").addMixin("jmix:tagged");
+
+            session.save();
+        } catch (Exception e) {
+            logger.warn("Exception during test setUp", e);
         }
-        if(shared.isVersioned()) session.checkout(shared);
-        node = shared.addNode("testContent", "jnt:folder");
-        node.addNode("testType", "jnt:tag");
-        node.addNode("testType2", "jnt:user");
-        node.addNode("testMixin", "jnt:content").addMixin("jmix:tagged");
-
-        session.save();
     }
 
     @Override
     protected void tearDown() throws Exception {
-        TestHelper.deleteSite("test");
-        node.remove();
-        session.save();
+        try {
+            TestHelper.deleteSite("test");
+            node.remove();
+            session.save();
+        } catch (Exception e) {
+            logger.warn("Exception during test tearDown", e);
+        }
     }
 
     public void testCacheFilter() throws Exception {

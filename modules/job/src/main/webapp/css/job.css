@@ -95,9 +95,9 @@ font-weight:bold;
 #bodywrapper .jobsApplyForm fieldset{
 	border:none;
 }
-#bodywrapper input, #bodywrapper textarea {
-width:45%
+#bodywrapper .jobsApplyForm input, #bodywrapper .jobsApplyForm textarea {
+	width:45%
 }
 #bodywrapper .jobsApplyForm input.button {
-width:auto
+	width:auto
 }

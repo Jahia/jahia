@@ -220,12 +220,12 @@ public class PropertiesHelper {
                         for (ExtendedItemDefinition item : items) {
                             if (item.isNode()) {
                                 if (objectNode.hasNode(item.getName())) {
-                                    objectNode.checkout();
+                                    currentUserSession.checkout(objectNode);
                                     objectNode.getNode(item.getName()).remove();
                                 }
                             } else {
                                 if (objectNode.hasProperty(item.getName())) {
-                                    objectNode.checkout();
+                                    currentUserSession.checkout(objectNode);
                                     objectNode.getProperty(item.getName()).remove();
                                 }
                             }
@@ -236,7 +236,7 @@ public class PropertiesHelper {
                 }
                 for (String type : types) {
                     if (!objectNode.isNodeType(type)) {
-                        objectNode.checkout();
+                        currentUserSession.checkout(objectNode);
                         objectNode.addMixin(type);
                     }
                 }

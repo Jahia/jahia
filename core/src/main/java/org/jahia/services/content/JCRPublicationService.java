@@ -226,13 +226,14 @@ public class JCRPublicationService extends JahiaService {
             public Object doInJCR(final JCRSessionWrapper sourceSession) throws RepositoryException {
                 JCRTemplate.getInstance().doExecute(true, username, destinationWorkspace, new JCRCallback<Object>() {
                     public Object doInJCR(final JCRSessionWrapper destinationSession) throws RepositoryException {
+                        VersionManager versionManager = sourceSession.getWorkspace().getVersionManager();
                         for (PublicationInfo publicationInfo : publicationInfos) {
                             JCRNodeWrapper n = sourceSession.getNodeByUUID(publicationInfo.getRoot().getUuid());
-
+                            logger.info("Start publication for publication infos associated witht root node "+n.getPath());
                             for (ExtendedNodeType type : n.getMixinNodeTypes()) {
                                 if (type.getName().equals("jmix:publication")) {
-                                    if (!n.isCheckedOut()) {
-                                        n.checkout();
+                                    if (!versionManager.isCheckedOut(n.getPath())) {
+                                        versionManager.checkout(n.getPath());
                                     }
                                     n.removeMixin("jmix:publication");
                                     sourceSession.save();
@@ -303,20 +304,22 @@ public class JCRPublicationService extends JahiaService {
         for (String uuid : uuidsToPublish) {
             toPublish.add(sourceSession.getNodeByUUID(uuid));
         }
-
+        VersionManager sourceVersionManager = sourceSession.getWorkspace().getVersionManager();
+        VersionManager destinationVersionManager = destinationSession.getWorkspace().getVersionManager();
         if (destinationSession.getWorkspace().getName().equals(Constants.LIVE_WORKSPACE)) {
             for (JCRNodeWrapper jcrNodeWrapper : toPublish) {
+                logger.debug("Publishing node "+ jcrNodeWrapper.getPath());
                 if (!jcrNodeWrapper.hasProperty("j:published") ||
                         !jcrNodeWrapper.getProperty("j:published").getBoolean()) {
-                    if (!jcrNodeWrapper.isCheckedOut()) {
-                        jcrNodeWrapper.checkout();
+                    if (!sourceVersionManager.isCheckedOut(jcrNodeWrapper.getPath())) {
+                        sourceVersionManager.checkout(jcrNodeWrapper.getPath());
                     }
                     jcrNodeWrapper.setProperty("j:published", Boolean.TRUE);
                     try {
                         JCRNodeWrapper destNode = destinationSession
                                 .getNode(jcrNodeWrapper.getCorrespondingNodePath(destinationWorkspace));
-                        if (!destNode.isCheckedOut()) {
-                            destNode.checkout();
+                        if (!destinationVersionManager.isCheckedOut(destNode.getPath())) {
+                            destinationVersionManager.checkout(destNode.getPath());
                         }
                         destNode.setProperty("j:published", Boolean.TRUE);
                     } catch (ItemNotFoundException e) {
@@ -398,8 +401,9 @@ public class JCRPublicationService extends JahiaService {
         for (JCRNodeWrapper node : modified) {
             logger.debug("Setting last published : " + node.getPath());
 //            if (!sourceSession.getWorkspace().getName().equals(Constants.LIVE_WORKSPACE)) {
-            if (!node.isCheckedOut()) {
-                node.checkout();
+            VersionManager versionManager = node.getSession().getWorkspace().getVersionManager();
+            if (!versionManager.isCheckedOut(node.getPath())) {
+                versionManager.checkout(node.getPath());
             }
             node.setProperty("j:lastPublished", calendar);
             node.setProperty("j:lastPublishedBy", destinationSession.getUserID());
@@ -427,11 +431,11 @@ public class JCRPublicationService extends JahiaService {
                         .getNode(destinationPath); // Live node exists - merge live node from source space
 
                 // force conflict
-                destinationNode.checkout();
+                destinationVersionManager.checkout(destinationNode.getPath());
 
                 final String oldPath = handleSharedMove(sourceSession, node, node.getPath());
 
-                logger.info(
+                logger.debug(
                         "Merge node : " + path + " source v=" + node.getBaseVersion().getName() + " , dest node v=" +
                                 destinationSession.getNode(destinationPath).getBaseVersion().getName());
 
@@ -488,7 +492,7 @@ public class JCRPublicationService extends JahiaService {
                     }
                 }
 
-                logger.info("Merge node end : " + path + " source v=" +
+                logger.debug("Merge node end : " + path + " source v=" +
                         sourceSession.getNode(path).getBaseVersion().getName() + " , dest node v=" +
                         destinationSession.getNode(destinationPath).getBaseVersion().getName());
 
@@ -533,7 +537,7 @@ public class JCRPublicationService extends JahiaService {
         final String sourceNodePath =
                 sourceNode.getIndex() > 1 ? sourceNode.getPath() + "[" + sourceNode.getIndex() + "]" :
                         sourceNode.getPath();
-        logger.info("Cloning node : " + sourceNodePath);
+        logger.debug("Cloning node : " + sourceNodePath);
 
         final VersionManager destinationVersionManager = destinationSession.getWorkspace().getVersionManager();
 
@@ -574,7 +578,7 @@ public class JCRPublicationService extends JahiaService {
                             JCRNodeWrapper node = destinationSession.getNode(oldPath);
                             recurseCheckout(node, null, destinationVersionManager);
                             JCRNodeWrapper oldParent = node.getParent();
-                            oldParent.checkout();
+                            destinationVersionManager.checkout(oldParent.getPath());
                             node.remove();
                             node.getSession().save();
                         } catch (RepositoryException e) {
@@ -679,6 +683,7 @@ public class JCRPublicationService extends JahiaService {
             if (!node.isCheckedOut()) {
                 node.checkout();
             }
+            logger.debug("Set publication date "+c.getTime().toString()+" on node "+node.getPath());
             node.setProperty("j:lastPublished", c);
             node.setProperty("j:lastPublishedBy", userID);
         }
@@ -693,14 +698,16 @@ public class JCRPublicationService extends JahiaService {
 
     private void checkin(Session session, JCRNodeWrapper node, VersionManager versionManager, Calendar calendar)
             throws RepositoryException {
+        logger.debug("Checkin node "+node.getPath()+" in workspace "+session.getWorkspace().getName()+ " with current version "+versionManager.getBaseVersion(node.getPath()).getName());
         jcrVersionService.setNodeCheckinDate(node, calendar);
         session.save();
-        versionManager.checkin(node.getPath());
+        Version version = versionManager.checkin(node.getPath());
+        logger.debug("Checkin node "+node.getPath()+" in workspace "+session.getWorkspace().getName()+ " with new version "+version.getName()+ " base version is "+versionManager.getBaseVersion(node.getPath()).getName());
     }
 
     private void recurseCheckin(Session session, JCRNodeWrapper node, List<String> uuidsToPublish,
                                 VersionManager versionManager, Calendar calendar) throws RepositoryException {
-        if (node.isNodeType("mix:versionable") && node.isCheckedOut() && !node.hasProperty("jcr:mergeFailed")) {
+        if (node.isNodeType("mix:versionable") && versionManager.isCheckedOut(node.getPath()) && !node.hasProperty("jcr:mergeFailed")) {
             checkin(session, node, versionManager, calendar);
         }
         NodeIterator ni = node.getNodes();

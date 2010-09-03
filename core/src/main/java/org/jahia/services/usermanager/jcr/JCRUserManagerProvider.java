@@ -302,6 +302,10 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
      * @return Return a reference on a new created jahiaUser object.
      */
     public JCRUser lookupUser(final String name) {
+        if("".equals(name.trim())) {
+            logger.error("Should not be looking for empty name user");
+            return null;
+        }
         try {
             if (cache.containsKey(name)) {
                 JCRUser user = cache.get(name);

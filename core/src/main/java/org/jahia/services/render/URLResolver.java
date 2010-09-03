@@ -54,6 +54,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.decorator.JCRFrozenNodeAsRegular;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlManager;
@@ -317,7 +318,7 @@ public class URLResolver {
      * @throws RepositoryException
      */
     public Resource getResource() throws RepositoryException {
-        return resolveResource(getWorkspace(), getLocale(), getPath(), null);
+        return resolveResource(getWorkspace(), getLocale(), getPath(), null, null);
     }
 
     /**
@@ -329,19 +330,20 @@ public class URLResolver {
      *
      * @param versionDate
      *            The version date to get the resource of a versioned node, or the closest before this date
+     * @param versionLabel
      * @return The resource, if found
      * @throws PathNotFoundException
      *             if the resource cannot be resolved
      * @throws RepositoryException
      */
-    public Resource getResource(Date versionDate)
+    public Resource getResource(Date versionDate, String versionLabel)
             throws RepositoryException {
         return resolveResource(getWorkspace(), getLocale(), getPath(),
-                versionDate);
+                versionDate,versionLabel);
     }
 
     public Resource getResource(String path) throws RepositoryException {
-        return resolveResource(getWorkspace(), getLocale(), path, null);
+        return resolveResource(getWorkspace(), getLocale(), path, null, null);
     }
 
     /**
@@ -425,13 +427,14 @@ public class URLResolver {
      *            The path of the node, in the specified workspace
      * @param versionDate
      *            The version date to get the resource of a versioned node, or the closest before this date
+     * @param versionLabel
      * @return The resource, if found
      * @throws PathNotFoundException
      *             if the resource cannot be resolved
      * @throws RepositoryException
      */
-    protected Resource resolveResource(final String workspace,
-            final Locale locale, final String path, final Date versionDate)
+    protected Resource resolveResource(final String workspace, final Locale locale, final String path,
+                                       final Date versionDate, final String versionLabel)
             throws RepositoryException {
         if (logger.isDebugEnabled()) {
             logger.debug("Resolving resource for workspace '" + workspace
@@ -519,6 +522,18 @@ public class URLResolver {
                                                     + nodePath
                                                     + " and version "
                                                     + versionDate);
+                                }
+                            } else if(versionLabel!=null) {
+                                JCRNodeWrapper versionNode = node
+                                        .getFrozenVersionAsRegular(versionLabel);
+                                if (versionNode != null) {
+                                    node = versionNode;
+                                } else {
+                                    logger
+                                            .error("Error while retrieving node with path "
+                                                    + nodePath
+                                                    + " and version "
+                                                    + versionLabel);
                                 }
                             }
 

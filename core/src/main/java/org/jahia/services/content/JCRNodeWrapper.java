@@ -657,6 +657,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      */
     JCRNodeWrapper getFrozenVersionAsRegular(Date versionDate);
 
+    JCRNodeWrapper getFrozenVersionAsRegular(String versionLabel);
     /**
      * The <code>JCRStoreProvider</code> which returned the current node. 
      * @return the <code>JCRStoreProvider</code> for the current node 

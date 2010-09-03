@@ -204,6 +204,11 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         }
     }
 
+    protected String getVersionLabel(HttpServletRequest req) {
+        // we assume here that the date has been passed as milliseconds.
+        return req.getParameter("v");
+    }
+
     protected void doGet(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext,
                          Resource resource, long startTime) throws RepositoryException, RenderException, IOException {
         loggingService.startProfiler("MAIN");
@@ -338,7 +343,9 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         Action action;
         Resource resource = null;
         if (urlResolver.getPath().endsWith(".do")) {
-            resource = urlResolver.getResource(getVersionDate(req));
+            Date date = getVersionDate(req);
+            String versionLabel = getVersionLabel(req);
+            resource = urlResolver.getResource(date,versionLabel);
             renderContext.setMainResource(resource);
             JCRSiteNode site = resource.getNode().getResolveSite();
             renderContext.setSite(site);
@@ -633,10 +640,9 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     Resource resource;
 
                     Date date = getVersionDate(req);
-                    if(date!=null) {
-                        jcrSessionFactory.setVersionDate(date);
-                    }
-                    resource = urlResolver.getResource(date);
+                    String versionLabel = getVersionLabel(req);
+
+                    resource = urlResolver.getResource(date, versionLabel);                    
                     renderContext.setMainResource(resource);
                     JCRSiteNode site = resource.getNode().getResolveSite();
 

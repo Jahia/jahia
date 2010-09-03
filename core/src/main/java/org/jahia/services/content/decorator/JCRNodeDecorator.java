@@ -298,6 +298,10 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getFrozenVersionAsRegular(versionDate);
     }
 
+    public JCRNodeWrapper getFrozenVersionAsRegular(String versionLabel) {
+        return node.getFrozenVersionAsRegular(versionLabel);
+    }
+
     public JCRStoreProvider getJCRProvider() {
         return node.getJCRProvider();
     }

@@ -35,16 +35,14 @@ package org.jahia.services.workflow.jbpm.custom;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPublicationService;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.PublicationInfo;
+import org.jahia.services.content.*;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.workflow.WorkflowVariable;
 import org.jbpm.api.activity.ActivityExecution;
 import org.jbpm.api.activity.ExternalActivityBehaviour;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -65,10 +63,13 @@ public class Publish implements ExternalActivityBehaviour {
         JahiaUser user = userMgr.lookupUser(username);
         JahiaUser currentUser = sessionFactory.getCurrentUser();
         sessionFactory.setCurrentUser(user);
-
+        String label = "published_at_"+ new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(GregorianCalendar.getInstance().getTime());
         JCRPublicationService.getInstance().unlockForPublication(info, workspace, "process-"+execution.getProcessInstance().getId());
         JCRPublicationService.getInstance().publish(info, workspace, Constants.LIVE_WORKSPACE);
-
+        for (PublicationInfo publicationInfo : info) {
+            JCRVersionService.getInstance().addVersionLabel(publicationInfo.getAllUuids(),label,Constants.LIVE_WORKSPACE);
+            JCRVersionService.getInstance().addVersionLabel(publicationInfo.getAllUuids(),label,workspace);
+        }
         sessionFactory.setCurrentUser(currentUser);
         List<WorkflowVariable> workflowVariables = (List<WorkflowVariable>) execution.getVariable("endDate");
         if (workflowVariables.isEmpty()) {

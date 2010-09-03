@@ -2247,7 +2247,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public JCRNodeWrapper getFrozenVersion(String name) {
         try {
-            Version v = objectNode.getVersionHistory().getVersion(name);
+            Version v = getSession().getWorkspace().getVersionManager().getVersionHistory(getPath()).getVersion(name);
             Node frozen = v.getNode(Constants.JCR_FROZENNODE);
             return provider.getNodeWrapper(frozen, session);
         } catch (RepositoryException e) {
@@ -2267,9 +2267,38 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 return null;
             }
             Node frozen = v.getNode(Constants.JCR_FROZENNODE);
-            return new JCRFrozenNodeAsRegular(provider.getNodeWrapper(frozen, session), versionDate);
+            if(session.getVersionDate()==null)
+                session.setVersionDate(versionDate);
+            return new JCRFrozenNodeAsRegular(provider.getNodeWrapper(frozen, session), versionDate,getSession().getVersionLabel());
         } catch (UnsupportedRepositoryOperationException e) {
-            if (getSession().getVersionDate() == null) {
+            if (getSession().getVersionDate() == null && getSession().getVersionLabel()==null) {
+                logger.error("Error while retrieving frozen version", e);
+            }
+        } catch (RepositoryException e) {
+            logger.error("Error while retrieving frozen version", e);
+        }
+        return null;
+    }
+
+    public JCRNodeWrapper getFrozenVersionAsRegular(String versionLabel) {
+        try {
+            VersionHistory vh = objectNode.getSession().getWorkspace().getVersionManager().getVersionHistory(objectNode.getPath());
+            Version v = JCRVersionService.findVersionByLabel(vh, versionLabel);
+            if (v == null) {
+                return null;
+            }
+            Node frozen = v.getNode(Constants.JCR_FROZENNODE);
+            Date date = frozen.getProperty("j:checkinDate").getDate().getTime();
+            JCRFrozenNodeAsRegular frozenNodeAsRegular = new JCRFrozenNodeAsRegular(provider.getNodeWrapper(frozen,
+                                                                                                            session),
+                                                                                    date,versionLabel);
+            if(session.getVersionDate()==null)
+                session.setVersionDate(date);
+            if(session.getVersionLabel()==null)
+                session.setVersionLabel(versionLabel);
+            return frozenNodeAsRegular;
+        } catch (UnsupportedRepositoryOperationException e) {
+            if (getSession().getVersionDate() == null && getSession().getVersionLabel()==null) {
                 logger.error("Error while retrieving frozen version", e);
             }
         } catch (RepositoryException e) {

@@ -135,7 +135,7 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
                 combo.setForceSelection(true);
                 combo.setTriggerAction(ComboBox.TriggerAction.ALL);
                 for (GWTJahiaNodeVersion version : versions) {
-                    combo.add(version.getVersionNumber() + " (" +
+                    combo.add(version.getLabel() + " "+ version.getVersionNumber() + " (" +
                             DateTimeFormat.getFormat("d/MM/y hh:mm").format(version.getDate()) + ")");
                 }
                 final String s2 = "Always Latest Version";

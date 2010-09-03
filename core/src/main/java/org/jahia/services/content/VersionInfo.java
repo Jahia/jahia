@@ -84,7 +84,9 @@ public class VersionInfo implements Comparable {
         if (!(o instanceof VersionInfo)) return false;
 
         VersionInfo that = (VersionInfo) o;
-
+        if(comment!=null) {
+            return comment.equals(that.comment);
+        }
         if (checkinDate != null) {
             return checkinDate.equals(that.checkinDate);
         } else {
@@ -94,6 +96,9 @@ public class VersionInfo implements Comparable {
 
     @Override
     public int hashCode() {
+        if(comment!=null) {
+            return comment.hashCode();
+        }
         if (checkinDate != null) {
             return checkinDate.hashCode();
         } else {
@@ -108,8 +113,10 @@ public class VersionInfo implements Comparable {
         if (this.equals(that)) {
             return 0;
         }
-
-        if (checkinDate != null && that.checkinDate != null) {
+        if (comment != null && that.comment != null) {
+            return this.comment.compareTo(that.comment);
+        }
+        else if (checkinDate != null && that.checkinDate != null) {
             return this.checkinDate.compareTo(that.checkinDate);
         } else {
             try {

@@ -100,16 +100,18 @@ public class JCRSessionWrapper implements Session {
     private Map<String, String> pathMapping = new HashMap<String, String>();
 
     private boolean isSystem;
-    private final Date versionDate;
+    private Date versionDate;
 
     private Locale fallbackLocale;
+    private String versionLabel;
 
     public JCRSessionWrapper(JahiaUser user, Credentials credentials, boolean isSystem, String workspace, Locale locale,
-                             JCRSessionFactory sessionFactory, Locale fallbackLocale, Date versionDate) {
+                             JCRSessionFactory sessionFactory, Locale fallbackLocale) {
         this.user = user;
         this.credentials = credentials;
         this.isSystem = isSystem;
-        this.versionDate = versionDate;
+        this.versionDate = null;
+        this.versionLabel = null;
         if (workspace == null) {
             this.workspace = new JCRWorkspaceWrapper("default", this, sessionFactory);
         } else {
@@ -165,10 +167,12 @@ public class JCRSessionWrapper implements Session {
     public JCRNodeWrapper getNodeByUUID(String uuid) throws ItemNotFoundException, RepositoryException {
         return getNodeByUUID(uuid,true);
     }
+
     public JCRNodeWrapper getNodeByUUID(String uuid,boolean checkVersion) throws ItemNotFoundException, RepositoryException {
-        return getNodeByUUID(uuid,checkVersion,versionDate);
+        return getNodeByUUID(uuid,checkVersion,versionDate,versionLabel);
     }
-    public JCRNodeWrapper getNodeByUUID(String uuid,boolean checkVersion,Date versionDate) throws ItemNotFoundException, RepositoryException {
+
+    public JCRNodeWrapper getNodeByUUID(String uuid,boolean checkVersion,Date versionDate,String versionLabel) throws ItemNotFoundException, RepositoryException {
         for (JCRStoreProvider provider : sessionFactory.getProviderList()) {
             if (!provider.isInitialized()) {
                 logger.debug("Provider " + provider.getKey() + " / " + provider.getClass().getName() +
@@ -179,8 +183,12 @@ public class JCRSessionWrapper implements Session {
                 Session session = getProviderSession(provider);
                 Node n = session.getNodeByIdentifier(uuid);
                 JCRNodeWrapper wrapper = provider.getNodeWrapper(n, this);
-                if(versionDate!=null && checkVersion){
-                    JCRNodeWrapper versionAsRegular = wrapper.getFrozenVersionAsRegular(versionDate);
+                if(checkVersion){
+                    JCRNodeWrapper versionAsRegular = null;
+                    if(versionLabel!=null)
+                        versionAsRegular = wrapper.getFrozenVersionAsRegular(versionLabel);
+                    if(versionAsRegular == null && versionDate!=null)
+                        versionAsRegular = wrapper.getFrozenVersionAsRegular(versionDate);
                     if(versionAsRegular!=null)
                         wrapper = versionAsRegular;
                 }
@@ -240,11 +248,17 @@ public class JCRSessionWrapper implements Session {
                 Item item = getProviderSession(provider).getItem(provider.getRelativeRoot() + localPath);
                 if (item.isNode()) {
                     JCRNodeWrapper wrapper = provider.getNodeWrapper((Node) item, localPath, this);
-                    if(versionDate!=null && !(wrapper instanceof JCRFrozenNode)){
-                        JCRNodeWrapper versionAsRegular = wrapper.getFrozenVersionAsRegular(versionDate);
-                        if(versionAsRegular!=null)
+                    if (!(wrapper instanceof JCRFrozenNode)) {
+                        JCRNodeWrapper versionAsRegular = null;
+                        if (versionLabel != null) {
+                            versionAsRegular = wrapper.getFrozenVersionAsRegular(versionLabel);
+                        }
+                        if (versionAsRegular == null && versionDate != null) {
+                            versionAsRegular = wrapper.getFrozenVersionAsRegular(versionDate);
+                        } 
+                        if (versionAsRegular != null) {
                             wrapper = versionAsRegular;
-
+                        }
                     }
                     return wrapper;
                 } else {
@@ -751,4 +765,25 @@ public class JCRSessionWrapper implements Session {
     public Date getVersionDate() {
         return versionDate;
     }
+
+    public String getVersionLabel() {
+        return versionLabel;
+    }
+
+    public void setVersionDate(Date versionDate) {
+        if(this.versionDate==null) {
+            this.versionDate = versionDate;
+        } else {
+            throw new RuntimeException("Should not change versionDate on a session in same thread");
+        }
+    }
+
+    public void setVersionLabel(String versionLabel) {
+        if(this.versionLabel==null) {
+            this.versionLabel = versionLabel;
+        } else {
+            throw new RuntimeException("Should not change versionDate on a session in same thread");
+        }
+    }
+
 }

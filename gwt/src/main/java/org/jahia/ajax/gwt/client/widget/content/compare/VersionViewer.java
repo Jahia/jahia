@@ -118,7 +118,13 @@ public class VersionViewer extends ContentPanel {
             protected GWTJahiaNodeVersion prepareData(GWTJahiaNodeVersion model) {
                 super.prepareData(model);
                 if (model.getVersionNumber() != null) {
-                    model.set("displayField", Messages.get("label_version", "Version ") + DateTimeFormat.getFormat("d/MM/y hh:mm:ss").format(model.getCheckinDate()) + " (" + model.getVersionNumber() + ")");
+                    String value = Messages.get("label.version", "Version") + " ";
+                    if(model.getLabel()!=null && !"".equals(model.getLabel())) {                        
+                        String[] strings = model.getLabel().split("_at_");
+                        value = value + Messages.get("label.version.published","published at")+ " " +
+                                DateTimeFormat.getMediumDateTimeFormat().format(DateTimeFormat.getFormat("yyyy_MM_dd_HH_mm_ss").parse(strings[1]));
+                    }
+                    model.set("displayField", value);
                 } else {
                     if (currentMode == Constants.MODE_PREVIEW || currentMode == Constants.MODE_STAGING) {
                         model.set("displayField", Messages.get("label_staging_version", "Staging version"));
@@ -130,9 +136,6 @@ public class VersionViewer extends ContentPanel {
             }
         });
         versionComboBox.setDisplayField("displayField");
-
-        // ToDO: add a template to display more information about he version like the comment
-        //versionComboBox.setTemplate(getTemplate());
 
         // load version with pagination
         final ListStore<GWTJahiaNodeVersion> store;
@@ -268,7 +271,7 @@ public class VersionViewer extends ContentPanel {
                     }
                 });
             } else {
-                contentService.getNodeURL(version.getNode().getPath(), Long.toString(version.getCheckinDate().getTime()), workspace, locale, currentMode, new BaseAsyncCallback<String>() {
+                contentService.getNodeURL(version.getNode().getPath(), version.getLabel(), workspace, locale, currentMode, new BaseAsyncCallback<String>() {
                     public void onSuccess(String url) {
                         currentFrame = setUrl(url);
                         setHeading(url);

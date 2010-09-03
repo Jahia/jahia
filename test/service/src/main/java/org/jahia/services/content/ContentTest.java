@@ -41,6 +41,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.helper.NavigationHelper;
 import org.jahia.ajax.gwt.helper.SearchHelper;
+import org.jahia.api.Constants;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.test.TestHelper;
@@ -75,6 +76,9 @@ public class ContentTest {
     private static final transient Logger logger = Logger.getLogger(ContentTest.class);
     private final static String TESTSITE_NAME = "contentTestSite";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
+    private static final String SIMPLE_REFERENCE_PROPERTY_NAME = "test:simpleNode";
+    private static final String MULTIPLE_I18N_REFERENCE_PROPERTY_NAME = "test:multipleI18NNode";
+    private static final String TEST_EXTERNAL_REFERENCE_NODE_TYPE = "test:externalReference";
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
@@ -609,49 +613,110 @@ public class ContentTest {
 
             InputStream is = new ByteArrayInputStream(value.getBytes("UTF-8"));
 
-            String name = "test" + System.currentTimeMillis() + ".txt";
-            JCRNodeWrapper testFile = rootNode.uploadFile(name, is, mimeType);
-            nodes.add(testFile.getIdentifier());
+            String name1 = "test1_" + System.currentTimeMillis() + ".txt";
+            JCRNodeWrapper testFile1 = rootNode.uploadFile(name1, is, mimeType);
+            nodes.add(testFile1.getIdentifier());
+            String name2 = "test2_" + System.currentTimeMillis() + ".txt";
+            JCRNodeWrapper testFile2 = rootNode.uploadFile(name2, is, mimeType);
+            nodes.add(testFile2.getIdentifier());
 
             logger.debug("Create a new page");
             JCRNodeWrapper page = siteNode.addNode("page" + System.currentTimeMillis(), "jnt:page");
             logger.debug("Create a new list");
             JCRNodeWrapper listNode = page.addNode("list" + System.currentTimeMillis(), "jnt:contentList");
 
-            JCRNodeWrapper refNode = listNode.addNode("ref" + +System.currentTimeMillis(), "jnt:fileReference");
-            refNode.setProperty("j:node", testFile);
+            JCRNodeWrapper refNode = listNode.addNode("ref" + +System.currentTimeMillis(), TEST_EXTERNAL_REFERENCE_NODE_TYPE);
+            refNode.setProperty(SIMPLE_REFERENCE_PROPERTY_NAME, testFile1);
 
             session.save();
 
-            Property refProperty = refNode.getProperty("j:node");
-            assertNotNull("Referenced external node is not available !", refProperty.getNode());
+            Property refProperty = refNode.getProperty(SIMPLE_REFERENCE_PROPERTY_NAME);
+            assertNotNull(providerRoot + " : Referenced external node is not available !", refProperty.getNode());
 
-            Value testFileValue = new ExternalReferenceValue(testFile.getIdentifier(), PropertyType.WEAKREFERENCE);
-            refNode.setProperty("j:node", testFileValue);
+            Value testFileValue = new ExternalReferenceValue(testFile1.getIdentifier(), PropertyType.WEAKREFERENCE);
+            refNode.setProperty(SIMPLE_REFERENCE_PROPERTY_NAME, testFileValue);
 
             session.save();
 
-            refProperty = refNode.getProperty("j:node");
-            assertNotNull("Referenced external node is not available !", refProperty.getNode());
+            // now some global check to make sure implementation is complete.
 
-            PropertyIterator refPropertyIterator = testFile.getWeakReferences();
+            refProperty = refNode.getProperty(SIMPLE_REFERENCE_PROPERTY_NAME);
+            assertNotNull(providerRoot + " : Referenced external node is not available !", refProperty.getNode());
+
+            boolean hasRefProperty = refNode.hasProperty(SIMPLE_REFERENCE_PROPERTY_NAME);
+            assertTrue(providerRoot + " : hasProperty method is not returning expected true value for reference property", hasRefProperty);
+
+            PropertyIterator propertyIterator = refNode.getProperties();
+            Property foundReferenceProperty = null;
+            while (propertyIterator.hasNext()) {
+                Property property = propertyIterator.nextProperty();
+                if (SIMPLE_REFERENCE_PROPERTY_NAME.equals(property.getName())) {
+                    foundReferenceProperty = property;
+                }
+            }
+            assertNotNull(providerRoot + " : Didn't find reference property using the getProperties() call", foundReferenceProperty);
+            assertEquals(providerRoot + " : Identifier on property found with getProperties() call is not valid !", foundReferenceProperty.getNode().getIdentifier(), testFile1.getIdentifier());
+
+            PropertyIterator refPropertyIterator = testFile1.getWeakReferences();
             int resultCount = 0;
             while (refPropertyIterator.hasNext()) {
                 resultCount++;
                 refProperty = refPropertyIterator.nextProperty();
-                assertEquals("Reference property name is invalid !", "j:node", refProperty.getName());
-                assertNotNull("Reference node is null", refProperty.getNode());
-                assertEquals("Reference identifier is invalid !", testFile.getIdentifier(), refProperty.getNode().getIdentifier());
+                assertEquals(providerRoot + " : Reference property name is invalid !", SIMPLE_REFERENCE_PROPERTY_NAME, refProperty.getName());
+                assertNotNull(providerRoot + " : Reference node is null", refProperty.getNode());
+                assertEquals(providerRoot + " : Reference identifier is invalid !", testFile1.getIdentifier(), refProperty.getNode().getIdentifier());
             }
-            assertEquals("Invalid number of file references !", 1, resultCount);
+            assertEquals(providerRoot + " : Invalid number of file references !", 1, resultCount);
 
             NavigationHelper navigationHelper = (NavigationHelper) SpringContextSingleton.getInstance().getContext().getBean("NavigationHelper");
             List<String> paths = new ArrayList<String>();
-            paths.add(testFile.getPath());
+            paths.add(testFile1.getPath());
             List<GWTJahiaNodeUsage> usages = navigationHelper.getUsages(paths, session);
-            assertEquals("Invalid number of file usages !", 1, usages.size());
+            assertEquals(providerRoot + " : Invalid number of file usages !", 1, usages.size());
             GWTJahiaNodeUsage firstUsage = usages.iterator().next();
-            assertEquals("Expected path for node pointing to file is invalid !", refNode.getPath(), firstUsage.getPath());
+            assertEquals(providerRoot + " : Expected path for node pointing to file is invalid !", refNode.getPath(), firstUsage.getPath());
+
+            // now let's test property removal, to check if it works.
+            refProperty = refNode.getProperty(SIMPLE_REFERENCE_PROPERTY_NAME);
+            refProperty.remove();
+            session.save();
+
+            assertFalse(providerRoot + " : Property should no longer be present since it was removed !", refNode.hasProperty(SIMPLE_REFERENCE_PROPERTY_NAME));
+
+            refNode.setProperty(SIMPLE_REFERENCE_PROPERTY_NAME, testFile1);
+            ValueFactory valueFactory = session.getValueFactory();
+            Value[] multipleRefValues = new Value[]{valueFactory.createValue(testFile1), valueFactory.createValue(testFile2)};
+            refNode.setProperty(MULTIPLE_I18N_REFERENCE_PROPERTY_NAME, multipleRefValues);
+            session.save();
+
+            Value[] resultingMultipleRefValues = refNode.getProperty(MULTIPLE_I18N_REFERENCE_PROPERTY_NAME).getValues();
+            assertEquals(providerRoot + " : Read count of multiple reference values is not equal to set values", multipleRefValues.length, resultingMultipleRefValues.length);
+            assertArrayEquals(providerRoot + " : Read multiple reference values not equal to set values", multipleRefValues, resultingMultipleRefValues);
+
+            // now we remove one of the two references.
+            Value[] singleRefValues = new Value[]{valueFactory.createValue(testFile2)};
+            refNode.setProperty(MULTIPLE_I18N_REFERENCE_PROPERTY_NAME, singleRefValues);
+            session.save();
+
+            Value[] resultingSingleRefValues = refNode.getProperty(MULTIPLE_I18N_REFERENCE_PROPERTY_NAME).getValues();
+            assertEquals(providerRoot + " : Read count of single reference values is not equal to set values", singleRefValues.length, resultingSingleRefValues.length);
+            assertArrayEquals(providerRoot + " : Read single reference values not equal to set values", singleRefValues, resultingSingleRefValues);
+
+            // now let's remove everything and make sure that it looks ok.
+            Property singleRefProperty = refNode.getProperty(SIMPLE_REFERENCE_PROPERTY_NAME);
+            singleRefProperty.remove();
+            Property multipleI18NRefProperty = refNode.getProperty(MULTIPLE_I18N_REFERENCE_PROPERTY_NAME);
+            multipleI18NRefProperty.remove();
+            session.save();
+
+            paths.clear();
+            paths.add(testFile1.getPath());
+            paths.add(testFile2.getPath());
+            usages = navigationHelper.getUsages(paths, session);
+            assertEquals(providerRoot + " : Usages should be empty but they are not !" + usages, 0, usages.size());
+            assertFalse(providerRoot + " : single reference property should no longer exist !", refNode.hasProperty(SIMPLE_REFERENCE_PROPERTY_NAME));
+            assertFalse(providerRoot + " : multiple reference property should no longer exist !", refNode.hasProperty(MULTIPLE_I18N_REFERENCE_PROPERTY_NAME));
+            assertFalse(providerRoot + " : node should no longer have the jmix:externalReference node mixin node type", refNode.isNodeType(Constants.JAHIAMIX_EXTERNALREFERENCE));
 
         } finally {
             if (session != null) {

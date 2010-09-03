@@ -114,3 +114,7 @@
 [test:sameNameSibsFalseChildNodeDefinition] > nt:base
 - * (undefined) copy
 + * (nt:base) = test:sameNameSibsFalseChildNodeDefinition compute
+
+[test:externalReference] > nt:base
+- test:simpleNode (reference)
+- test:multipleI18NNode (reference) multiple i18n

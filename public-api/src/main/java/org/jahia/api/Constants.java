@@ -54,7 +54,7 @@ public class Constants {
     public static final String JCR_DATA = "jcr:data";
     public static final String JCR_DEFAULTPRIMARYTYPE = "jcr:defaultPrimaryType";
     public static final String JCR_DEFAULTVALUES = "jcr:defaultValues";
-    public static final String JCR_DESCRIPTION = "jcr:description";    
+    public static final String JCR_DESCRIPTION = "jcr:description";
     public static final String JCR_ENCODING = "jcr:encoding";
     public static final String JCR_FROZENMIXINTYPES = "jcr:frozenMixinTypes";
     public static final String JCR_FROZENNODE = "jcr:frozenNode";
@@ -65,7 +65,7 @@ public class Constants {
     public static final String JCR_ISMIXIN = "jcr:isMixin";
     public static final String JCR_LANGUAGE = "jcr:language";
     public static final String JCR_LASTMODIFIED = "jcr:lastModified";
-    public static final String JCR_LASTMODIFIEDBY = "jcr:lastModifiedBy";    
+    public static final String JCR_LASTMODIFIEDBY = "jcr:lastModifiedBy";
     public static final String JCR_LOCKISDEEP = "jcr:lockIsDeep";
     public static final String JCR_LOCKOWNER = "jcr:lockOwner";
     public static final String JCR_MANDATORY = "jcr:mandatory";
@@ -89,7 +89,7 @@ public class Constants {
     public static final String JCR_SUCCESSORS = "jcr:successors";
     public static final String JCR_SUPERTYPES = "jcr:supertypes";
     public static final String JCR_SYSTEM = "jcr:system";
-    public static final String JCR_TITLE = "jcr:title";    
+    public static final String JCR_TITLE = "jcr:title";
     public static final String JCR_UUID = "jcr:uuid";
     public static final String JCR_VALUECONSTRAINTS = "jcr:valueConstraints";
     public static final String JCR_VERSIONHISTORY = "jcr:versionHistory";
@@ -98,7 +98,7 @@ public class Constants {
     public static final String JCR_VERSIONABLEUUID = "jcr:versionableUuid";
     public static final String JCR_PATH = "jcr:path";
     public static final String JCR_SCORE = "jcr:score";
-    public static final String MIX_LANGUAGE = "mix:language";    
+    public static final String MIX_LANGUAGE = "mix:language";
     public static final String MIX_LOCKABLE = "mix:lockable";
     public static final String MIX_MIMETYPE = "mix:mimeType";
     public static final String MIX_REFERENCEABLE = "mix:referenceable";
@@ -138,12 +138,14 @@ public class Constants {
     public static final String JAHIAMIX_NODENAMEINFO = "jmix:nodenameInfo";
     public static final String JAHIAMIX_SHAREABLE = "jmix:shareable";
 
-    public final static String JAHIAMIX_IMAGE = "jmix:image" ;
+    public final static String JAHIAMIX_IMAGE = "jmix:image";
 
     public static final String JAHIAMIX_TAGGED = "jmix:tagged";
-    
-    public static final String JAHIANT_VIRTUALSITES_FOLDER = "jnt:virtualsitesFolder";    
-    
+
+    public static final String JAHIAMIX_EXTERNALREFERENCE = "jmix:externalReference";
+
+    public static final String JAHIANT_VIRTUALSITES_FOLDER = "jnt:virtualsitesFolder";
+
     public static final String JAHIANT_FOLDER = "jnt:folder";
     public static final String JAHIANT_FILE = "jnt:file";
     public static final String JAHIANT_RESOURCE = "jnt:resource";
@@ -159,7 +161,7 @@ public class Constants {
 
     public static final String JAHIANT_JAHIACONTENT = "jnt:jahiacontent";
     public static final String JAHIANT_PAGE = "jnt:page";
-    public static final String JAHIANT_CONTENT = "jnt:content";    
+    public static final String JAHIANT_CONTENT = "jnt:content";
     public static final String JAHIANT_CONTENTLIST = "jnt:contentList";
     public static final String JAHIANT_PAGE_LINK = "jmix:link";
     public static final String JAHIANT_NODE_LINK = "jnt:nodeLink";
@@ -173,11 +175,11 @@ public class Constants {
     public static final String JAHIANT_TASK = "jnt:task";
     public static final String JAHIANT_TASKS = "jnt:tasks";
     public static final String JAHIANT_MAINRESOURCE_DISPLAY = "jnt:mainResourceDisplay";
-    public static final String JAHIANT_MAINRESOURCE_AREA = "jnt:mainResourceArea";    
-    
+    public static final String JAHIANT_MAINRESOURCE_AREA = "jnt:mainResourceArea";
+
     public static final String LASTPUBLISHED = "j:lastPublished";
-    public static final String LASTPUBLISHEDBY = "j:lastPublishedBy";    
-    public static final String PUBLISHED = "j:published";    
+    public static final String LASTPUBLISHEDBY = "j:lastPublishedBy";
+    public static final String PUBLISHED = "j:published";
     public static final String CONTENT = "content";
     public static final String SYSTEM = "j:system";
     public static final String FILTERS = "j:filters";
@@ -188,11 +190,11 @@ public class Constants {
     public static final String NODENAME = "j:nodename";
     public static final String PROCESSID = "j:processId";
     public static final String URL = "j:url";
-    public static final String NODE = "j:node";    
+    public static final String NODE = "j:node";
     public static final String ALT = "j:alt";
     public static final String TARGET = "j:target";
     public static final String LOCKTOKEN = "j:locktoken";
-    public static final String LOCKTYPES = "j:lockTypes";    
+    public static final String LOCKTYPES = "j:lockTypes";
     public static final String AREA_NAME = "j:areaName";
 
     public static final String APPLY_ACL = "j:applyAcl";
@@ -227,6 +229,6 @@ public class Constants {
 
     public static final String REVISION_NUMBER = "j:revisionNumber";
     public static final String CHECKIN_DATE = "j:checkinDate";
-    
+
     public static final List<String> forbiddenPropertiesToCopy = Arrays.asList(PROCESSID);
 }

@@ -78,7 +78,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
         this.node = objectNode;
         this.property = property;
         this.name = name;
-        this.localPath = node.getPath()+"/"+name;
+        this.localPath = node.getPath() + "/" + name;
         this.def = def;
     }
 
@@ -180,7 +180,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
 
     public Value getValue() throws ValueFormatException, RepositoryException {
         Value value = JCRStoreService.getInstance().getInterceptorChain().afterGetValue(this, property.getValue());
-        value = new JCRValueWrapperImpl(value , getDefinition(), getSession());
+        value = new JCRValueWrapperImpl(value, getDefinition(), getSession());
         return value;
     }
 
@@ -190,7 +190,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
         Value[] wrappedValues = new Value[values.length];
         for (int i = 0; i < values.length; i++) {
             Value value = values[i];
-            wrappedValues[i] = new JCRValueWrapperImpl(value,getDefinition(), getSession());
+            wrappedValues[i] = new JCRValueWrapperImpl(value, getDefinition(), getSession());
         }
         return wrappedValues;
     }
@@ -249,8 +249,8 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
 
             default:
                 throw new ValueFormatException("Property value cannot be converted to a PATH, REFERENCE or WEAKREFERENCE");
-        }        
-      }
+        }
+    }
 
     public JCRNodeWrapper getReferencedNode() throws ValueFormatException, RepositoryException {
         return getNode();
@@ -269,7 +269,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
         Value pathValue = ValueHelper.convert(value, PropertyType.PATH, session.getValueFactory());
         String path = pathValue.getString();
         boolean absolute = StringUtils.startsWith(path, "/");
-        return (absolute) ? session.getProperty(path) : getParent().getProperty(path);        
+        return (absolute) ? session.getProperty(path) : getParent().getProperty(path);
     }
 
     public long getLength() throws ValueFormatException, RepositoryException {
@@ -289,10 +289,10 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
     }
 
     /**
-     * @deprecated use getNode instead
      * @return
      * @throws ValueFormatException
      * @throws RepositoryException
+     * @deprecated use getNode instead
      */
     public CategoryBean getCategory() throws ValueFormatException, RepositoryException {
         return ((JCRValueWrapperImpl) getValue()).getCategory();
@@ -303,7 +303,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
     }
 
     public JCRItemWrapper getAncestor(int i) throws ItemNotFoundException, AccessDeniedException, RepositoryException {
-        return provider.getItemWrapper(property.getAncestor(i),session);
+        return provider.getItemWrapper(property.getAncestor(i), session);
     }
 
     public JCRNodeWrapper getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {
@@ -336,7 +336,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
 
     /**
      * @deprecated As of JCR 2.0, {@link Session#save()} should
-     * be used instead.
+     *             be used instead.
      */
     public void save() throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException, ReferentialIntegrityException, VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
         property.save();
@@ -348,7 +348,11 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
 
     public void remove() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
         JCRStoreService.getInstance().getInterceptorChain().beforeRemove(node, name, def);
-        property.remove();
+        if (property instanceof ExternalReferencePropertyImpl) {
+            ((JCRNodeWrapperImpl) node).removeExternalReferenceProperty(name);
+        } else {
+            property.remove();
+        }
     }
 
     public boolean isMultiple() throws RepositoryException {

@@ -103,6 +103,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     private transient Map<String, String> propertiesAsString;
     private static final String REFERENCE_NODE_IDENTIFIERS_PROPERTYNAME = "j:referenceNodeIdentifiers";
     private static final String REFERENCE_PROPERTY_NAMES_PROPERTYNAME = "j:referencePropertyNames";
+    public static final String EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR = "___";
 
     protected JCRNodeWrapperImpl(Node objectNode, String path, JCRSessionWrapper session, JCRStoreProvider provider) {
         super(session, provider);
@@ -1175,14 +1176,19 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public JCRPropertyWrapper getProperty(String name) throws javax.jcr.PathNotFoundException, javax.jcr.RepositoryException {
-        final Locale locale = getSession().getLocale();
         ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
         if ((epd.getRequiredType() == PropertyType.WEAKREFERENCE) ||
                 (epd.getRequiredType() == PropertyType.REFERENCE)) {
-            if (isNodeType("jmix:externalReference")) {
+            if (isNodeType(Constants.JAHIAMIX_EXTERNALREFERENCE)) {
                 return retrieveExternalReferenceProperty(name, epd);
             }
         }
+        return internalGetProperty(name);
+    }
+
+    private JCRPropertyWrapper internalGetProperty(String name) throws RepositoryException {
+        final Locale locale = getSession().getLocale();
+        ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
         if (locale != null) {
             if (epd != null && epd.isInternationalized()) {
                 try {
@@ -1206,7 +1212,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         String foundNodeIdentifier = null;
         for (Value propertyReference : propertyReferences) {
             String curPropertyReference = propertyReference.getString();
-            String[] refParts = curPropertyReference.split("___");
+            String[] refParts = curPropertyReference.split(EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR);
             String curNodeIdentifier = refParts[0];
             String curPropertyName = refParts[1];
             if (curPropertyName.equals(name)) {
@@ -1490,12 +1496,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     private void internalSetExternalReferenceProperty(String name, String nodeIdentifier) throws RepositoryException {
-        // TODO does not yet work on i18n properties.
         // we are creating a reference to a node that is in another repository, we will use a special mixin for that.
         List<Value> nodeIdentifiers = null;
         List<Value> referenceProperties = null;
-        if (!isNodeType("jmix:externalReference")) {
-            addMixin("jmix:externalReference");
+        if (!isNodeType(Constants.JAHIAMIX_EXTERNALREFERENCE)) {
+            addMixin(Constants.JAHIAMIX_EXTERNALREFERENCE);
             nodeIdentifiers = new ArrayList<Value>();
             referenceProperties = new ArrayList<Value>();
         } else {
@@ -1521,11 +1526,82 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
         setProperty(REFERENCE_NODE_IDENTIFIERS_PROPERTYNAME, nodeIdentifiers.toArray(new Value[nodeIdentifiers.size()]));
 
-        Value newPropertyReferenceValue = getSession().getValueFactory().createValue(nodeIdentifier + "___" + name);
+        Value newPropertyReferenceValue = getSession().getValueFactory().createValue(nodeIdentifier + EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR + name);
         if (!referenceProperties.contains(newPropertyReferenceValue)) {
             referenceProperties.add(newPropertyReferenceValue);
         }
         setProperty(REFERENCE_PROPERTY_NAMES_PROPERTYNAME, referenceProperties.toArray(new Value[referenceProperties.size()]));
+    }
+
+    protected void removeExternalReferenceProperty(String name) throws ItemNotFoundException, RepositoryException {
+        if (!isNodeType(Constants.JAHIAMIX_EXTERNALREFERENCE)) {
+            // quick sanity check, but usually we will do this in this method's caller
+            return;
+        }
+        boolean mustRemoveMixin = false;
+        String externalReferenceId = findExternalReferenceIdFromPropertyName(name);
+        if (externalReferenceId == null) {
+            return;
+        }
+        Property nodeIdentifierProperty = getProperty(REFERENCE_NODE_IDENTIFIERS_PROPERTYNAME);
+        List<Value> identifiers = new ArrayList<Value>(Arrays.asList(nodeIdentifierProperty.getValues()));
+        if (identifiers.size() == 0) {
+            nodeIdentifierProperty.remove();
+            return;
+        }
+        Value externalReferenceIdValue = getSession().getValueFactory().createValue(externalReferenceId);
+        if (identifiers.contains(externalReferenceIdValue)) {
+            identifiers.remove(externalReferenceIdValue);
+        }
+        if (identifiers.size() > 0) {
+            setProperty(REFERENCE_NODE_IDENTIFIERS_PROPERTYNAME, identifiers.toArray(new Value[identifiers.size()]));
+        } else {
+            nodeIdentifierProperty.remove();
+            mustRemoveMixin = true;
+        }
+
+        Property referencePropertyNames = getProperty(REFERENCE_PROPERTY_NAMES_PROPERTYNAME);
+        List<Value> propertyNames = new ArrayList<Value>(Arrays.asList(referencePropertyNames.getValues()));
+        if (propertyNames.size() == 0) {
+            referencePropertyNames.remove();
+        }
+        Value externalReferencePropertyValue = getSession().getValueFactory().createValue(externalReferenceId + EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR + name);
+        if (propertyNames.contains(externalReferencePropertyValue)) {
+            propertyNames.remove(externalReferencePropertyValue);
+        }
+        if (propertyNames.size() > 0) {
+            setProperty(REFERENCE_NODE_IDENTIFIERS_PROPERTYNAME, propertyNames.toArray(new Value[propertyNames.size()]));
+        } else {
+            referencePropertyNames.remove();
+            mustRemoveMixin = true;
+        }
+
+        if (internalHasProperty(name)) {
+            Property property = internalGetProperty(name);
+            property.remove();
+        }
+
+        if (mustRemoveMixin) {
+            // as the node can have multiple reference properties, we only remove the mixin if all properties have
+            // been removed.
+            removeMixin(Constants.JAHIAMIX_EXTERNALREFERENCE);
+        }
+
+    }
+
+    private String findExternalReferenceIdFromPropertyName(String name) throws ItemNotFoundException, RepositoryException {
+        Property referenceProperty = getProperty(REFERENCE_PROPERTY_NAMES_PROPERTYNAME);
+        if (referenceProperty == null) {
+            throw new ItemNotFoundException("Couldn't find " + REFERENCE_PROPERTY_NAMES_PROPERTYNAME + " property on node " + getPath());
+        }
+        Value[] referencePropNames = referenceProperty.getValues();
+        for (Value referencePropName : referencePropNames) {
+            String[] referencePropNameParts = referencePropName.getString().split(EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR);
+            if (referencePropNameParts[1].equals(name)) {
+                return referencePropNameParts[0];
+            }
+        }
+        return null;
     }
 
     /**
@@ -1555,6 +1631,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public boolean hasProperty(String propertyName) throws RepositoryException {
+        return internalHasProperty(propertyName);
+    }
+
+    private boolean internalHasProperty(String propertyName) throws RepositoryException {
         boolean result = objectNode.hasProperty(propertyName);
         if (result) return true;
         final Locale locale = getSession().getLocale();
@@ -2996,7 +3076,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             String foundPropertyName = null;
             for (Value propertyReference : propertyReferences) {
                 String curPropertyReference = propertyReference.getString();
-                String[] refParts = curPropertyReference.split("___");
+                String[] refParts = curPropertyReference.split(EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR);
                 String curNodeIdentifier = refParts[0];
                 String curPropertyName = refParts[1];
                 if (curNodeIdentifier.equals(getIdentifier())) {

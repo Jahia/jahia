@@ -31,8 +31,8 @@
                 <a href="${url.contribute}"><fmt:message key="contribute"/></a>
             </li>
         </c:if>
-        <li class="shortcuts-print"><a href="base.wrapper.bodywrapper.jsp#"
-                                          onclick="javascript:window.print()">
+        <li class="shortcuts-print"><a href="#"
+                                          onclick="javascript:window.print(); return false">
             <fmt:message key="print"/></a>
         </li>
         <li class="shortcuts-typoincrease">

@@ -115,6 +115,6 @@
 - * (undefined) copy
 + * (nt:base) = test:sameNameSibsFalseChildNodeDefinition compute
 
-[test:externalReference] > nt:base
-- test:simpleNode (reference)
+[test:externalReference] > nt:base, jmix:droppableContent
+- test:simpleNode (reference)     
 - test:multipleI18NNode (reference) multiple i18n

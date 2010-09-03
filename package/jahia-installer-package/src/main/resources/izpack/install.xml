@@ -53,16 +53,12 @@
         <variable name="superUser.email" value="" condition="cnd.installation.type.express"/>
         
         <!-- DB drivers for standalone DBMSs -->
-        <variable name="dbSettings.connection.driver" value="${dbSettings.connection.driver.mssql}" condition="cnd.db.dbms.mssql" />
         <variable name="dbSettings.connection.driver" value="${dbSettings.connection.driver.mysql}" condition="cnd.db.dbms.mysql" />
-        <variable name="dbSettings.connection.driver" value="${dbSettings.connection.driver.oracle}" condition="cnd.db.dbms.oracle" />
         <variable name="dbSettings.connection.driver" value="${dbSettings.connection.driver.postgresql}" condition="cnd.db.dbms.postgresql" />
         <variable name="dbSettings.connection.driver" value="${dbSettings.connection.driver.derby}" condition="cnd.db.dbms.derby" />
 
         <!-- DB URLs for standalone DBMSs -->
-        <variable name="dbSettings.connection.url" value="${dbSettings.connection.url.mssql}" condition="cnd.db.dbms.mssql" />
         <variable name="dbSettings.connection.url" value="${dbSettings.connection.url.mysql}" condition="cnd.db.dbms.mysql" />
-        <variable name="dbSettings.connection.url" value="${dbSettings.connection.url.oracle}" condition="cnd.db.dbms.oracle" />
         <variable name="dbSettings.connection.url" value="${dbSettings.connection.url.postgresql}" condition="cnd.db.dbms.postgresql" />
         <variable name="dbSettings.connection.url" value="${dbSettings.connection.url.derby}" condition="cnd.db.dbms.derby" />
 

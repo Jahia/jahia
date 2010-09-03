@@ -47,9 +47,7 @@
         <field type="radio" variable="dbSettings.dbms.type" alight="left" conditionid="cnd.db.mode.standalone">
             <description align="left" txt="Choose your DBMS type" id="dbSettings.dbms.type"/>
             <spec>
-                <choice txt="Microsoft SQL Server" id="dbSettings.dbms.type.mssql" value="mssql"/>
                 <choice txt="MySQL 5.x" id="dbSettings.dbms.type.mysql" value="mysql" set="true"/>
-                <choice txt="Oracle 10g / 11g" id="dbSettings.dbms.type.oracle" value="oracle"/>
                 <choice txt="PostgreSQL 8.x" id="dbSettings.dbms.type.postgresql" value="postgresql"/>
                 <choice txt="Sun Java DB / Apache Derby (standalone)" id="dbSettings.dbms.type.derby" value="derby"/>
             </spec>
@@ -59,16 +57,7 @@
     <panel order="3">
         <field type="title" txt="Database connection settings" id="dbSettings.dbms.title"/>
         <!-- DB driver and URL fields are for each DB type due to value initialization problem (if the DB type is changed) -->
-        <!-- Microsoft SQL Server -->
-        <field type="text" align="left" variable="dbSettings.connection.driver.mssql" conditionid="cnd.db.dbms.mssql">
-            <spec txt="Database driver (*)" id="dbSettings.connection.driver" size="25" set="${def.db.driver.mssql}"/>
-            <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Database driver is a mandatory field" id="dbSettings.connection.driver.mandatory"/>
-        </field>
-        <field type="text" align="left" variable="dbSettings.connection.url.mssql" conditionid="cnd.db.dbms.mssql">
-            <spec txt="Database URL (*)" id="dbSettings.connection.url" size="25" set="${def.db.url.mssql}"/>
-            <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Database URL is a mandatory field" id="dbSettings.connection.url.mandatory"/>
-        </field>
-        
+
         <!-- MySQL -->
         <field type="text" align="left" variable="dbSettings.connection.driver.mysql" conditionid="cnd.db.dbms.mysql">
             <spec txt="Database driver (*)" id="dbSettings.connection.driver" size="25" set="${def.db.driver.mysql}"/>
@@ -79,16 +68,7 @@
             <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Database URL is a mandatory field" id="dbSettings.connection.url.mandatory"/>
         </field>
         
-        <!-- Oracle -->
-        <field type="text" align="left" variable="dbSettings.connection.driver.oracle" conditionid="cnd.db.dbms.oracle">
-            <spec txt="Database driver (*)" id="dbSettings.connection.driver" size="25" set="${def.db.driver.oracle}"/>
-            <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Database driver is a mandatory field" id="dbSettings.connection.driver.mandatory"/>
-        </field>
-        <field type="text" align="left" variable="dbSettings.connection.url.oracle" conditionid="cnd.db.dbms.oracle">
-            <spec txt="Database URL (*)" id="dbSettings.connection.url" size="25" set="${def.db.url.oracle}"/>
-            <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Database URL is a mandatory field" id="dbSettings.connection.url.mandatory"/>
-        </field>
-        
+
         <!-- PostgreSQL -->
         <field type="text" align="left" variable="dbSettings.connection.driver.postgresql" conditionid="cnd.db.dbms.postgresql">
             <spec txt="Database driver (*)" id="dbSettings.connection.driver" size="25" set="${def.db.driver.postgresql}"/>

@@ -95,7 +95,7 @@ public class SimpleSearchTest {
                                                 "ACME.zip");
                                 jcrService.publish(session.getNode(
                                         FIRST_SITECONTENT_ROOT_NODE + "/home")
-                                        .getPath(), Constants.EDIT_WORKSPACE,
+                                        .getIdentifier(), Constants.EDIT_WORKSPACE,
                                         Constants.LIVE_WORKSPACE, null, true);
                             } catch (Exception e) {
                                 logger
@@ -114,7 +114,7 @@ public class SimpleSearchTest {
                                                 "ACME.zip");
                                 jcrService.publish(session.getNode(
                                         SECOND_SITECONTENT_ROOT_NODE + "/home")
-                                        .getPath(), Constants.EDIT_WORKSPACE,
+                                        .getIdentifier(), Constants.EDIT_WORKSPACE,
                                         Constants.LIVE_WORKSPACE, null, true);
                             } catch (Exception e) {
                                 logger

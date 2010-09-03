@@ -432,7 +432,16 @@ public class JCRSessionWrapper implements Session {
     }
 
     public String[] getLockTokens() {
-        return tokens.toArray(new String[tokens.size()]);
+        List<String> allTokens = new ArrayList<String>(tokens);
+        for (Session session : sessions.values()) {
+            String[] tokens = session.getLockTokens();
+            for (String token : tokens) {
+                if (!allTokens.contains(token)) {
+                    allTokens.add(token);
+                }
+            }
+        }
+        return allTokens.toArray(new String[allTokens.size()]);
     }
 
     public void removeLockToken(String token) {

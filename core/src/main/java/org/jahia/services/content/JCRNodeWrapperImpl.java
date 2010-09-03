@@ -1947,7 +1947,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 }
 
                 public Node getNode() {
-                    return JCRNodeWrapperImpl.this;
+                    try {
+                        return getProvider().getNodeWrapper(lock.getNode(), getSession());
+                    } catch (RepositoryException e) {
+                        logger.warn("Can't get wrapper for node holding lock", e);
+                        return JCRNodeWrapperImpl.this;
+                    }
                 }
 
                 public String getLockToken() {

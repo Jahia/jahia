@@ -116,6 +116,7 @@
         <module>search</module>
         <module>seo</module>
         <module>social</module>
+		<module>socialsharing</module>
         <module>shindig</module>
         <module>sitemap</module>
         <module>skins</module>
@@ -131,6 +132,7 @@
         <module>topstories</module>
         <module>twitter</module>
         <module>userregistration</module>
+		<module>videostreaming</module>
         <module>wiki</module>
         <module>pageHit</module>
     </modules>

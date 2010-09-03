@@ -14,7 +14,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
 <c:if test="${not omitFormatting}"><div class="clear"></div></c:if>
-<c:if test="${not empty currentResource.moduleParams.paginationActive}">
+<c:if test="${not empty moduleMap.paginationActive}">
     <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.end"/>
 </c:if>
 <c:if test="${not omitFormatting}"></div></c:if>

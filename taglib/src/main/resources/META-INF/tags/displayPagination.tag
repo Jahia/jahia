@@ -27,7 +27,7 @@
     <c:if test="${not empty currentResource.moduleParams.displaySearchParams}">
         <c:set var="searchUrl"><search:searchUrl/></c:set>
     </c:if>
-    <c:set var="searchUrl" value="${searchUrl}"/>
+    <c:set var="searchUrl" value="${searchUrl}.ajax"/>
     <c:url value="${searchUrl}" context="/" var="basePaginationUrl"/>
     <c:set target="${moduleMap}" property="basePaginationUrl" value="${basePaginationUrl}"/>
     <div class="pagination"><!--start pagination-->

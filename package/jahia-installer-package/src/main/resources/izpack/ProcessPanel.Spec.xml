@@ -4,7 +4,9 @@
     <job name="Start Apache Tomcat" condition="cnd.launch.jahia">
         <executeForPack name="Apache Tomcat"/>
         <os family="windows" />
-        <executefile name="$INSTALL_PATH\tomcat\bin\startup.bat">
+        <executefile name="cmd">
+            <arg>/c</arg>
+            <arg>$INSTALL_PATH\tomcat\bin\startup.bat</arg>
             <env>CATALINA_HOME=$INSTALL_PATH\tomcat</env>
         </executefile>
     </job>

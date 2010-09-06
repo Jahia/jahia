@@ -228,8 +228,6 @@
     </native>
      -->
      
-    <jar src="../jahia-installer-package-${jahia.installers.version}.jar" stage="install"/>
-    
     <listeners>
     	<listener installer="ProgressBarInstallerListener"/>
         <listener installer="SummaryLoggerInstallerListener"/>

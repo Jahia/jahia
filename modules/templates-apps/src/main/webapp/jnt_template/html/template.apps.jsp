@@ -18,6 +18,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
 	<title>${renderContext.mainResource.node.properties['jcr:title'].string}</title>
+    <link rel="stylesheet" type="text/css" href="${url.currentModule}/css/print.css" media="print" />
  </head>
 
  <body>
@@ -52,7 +53,7 @@
         </div>
         <div class="clear"></div>
     </div>
-    <div id="footer" class="colorResource2 imgResource2">
+    <div id="footer" class="colorResource2 imgResource2 noprint">
         <div class="container container_16">
 			<div class="grid_16">
                  <template:area path="footer" nodeTypes="jnt:row" />

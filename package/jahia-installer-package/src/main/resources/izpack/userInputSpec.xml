@@ -120,8 +120,8 @@
         <field type="staticText" align="left" id="superUser.username" txt="Username: root"/>
         <field type="password" align="left" variable="superUser.password">
             <spec>
-                <pwd set="" size="15" txt="Password*" id="superUser.password"/>
-                <pwd set="" size="15" txt="Password confirmation*" id="superUser.passwordConfirm"/>
+                <pwd set="" size="15" txt="Password (*)" id="superUser.password"/>
+                <pwd set="" size="15" txt="Password confirmation (*)" id="superUser.passwordConfirm"/>
             </spec>
             <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Administrator password is a mandatory field" id="superUser.password.mandatory"/>
             <validator

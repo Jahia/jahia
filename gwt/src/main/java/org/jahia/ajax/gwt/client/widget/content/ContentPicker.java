@@ -48,7 +48,7 @@ import java.util.Map;
  *         Time: 17:55:07
  */
 public class ContentPicker extends TriPanelBrowserLayout {
-    private PickedContent pickedContent;
+    private PickedContentView pickedContent;
 
     public ContentPicker(Map<String, String> selectorOptions, final List<GWTJahiaNode> selectedNodes, List<String> filters, List<String> mimeTypes,
                          GWTManagerConfiguration config, boolean multiple) {
@@ -87,7 +87,7 @@ public class ContentPicker extends TriPanelBrowserLayout {
         contentViews.initContextMenu();
         linker.handleNewSelection();
 
-        pickedContent = (PickedContent) bottomComponents;
+        pickedContent = (PickedContentView) bottomComponents;
     }
 
     public List<GWTJahiaNode> getSelectedNodes() {

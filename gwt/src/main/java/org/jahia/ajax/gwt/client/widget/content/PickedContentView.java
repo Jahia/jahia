@@ -45,7 +45,7 @@ import com.extjs.gxt.ui.client.widget.grid.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
+import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.tripanel.BottomRightComponent;
@@ -60,7 +60,7 @@ import java.util.List;
  * Time: 9:58:29 AM
  * To change this template use File | Settings | File Templates.
  */
-public class PickedContentView extends BottomRightComponent implements PickedContent {
+public class PickedContentView extends BottomRightComponent {
     private GroupingStore<GWTJahiaNode> store;
     private Grid<GWTJahiaNode> m_grid;
     private GWTManagerConfiguration config;
@@ -302,10 +302,9 @@ public class PickedContentView extends BottomRightComponent implements PickedCon
     /**
      * return url od the selected content.
      *
-     * @param rewrite is true, the url is rewrited (ie.: for url that will be used in big text)
      * @return
      */
-    public List<String> getSelectedContentPath(final String jahiaContextPath, final String jahiaServletPath, final boolean rewrite) {
+    public List<String> getSelectedContentPath(final String jahiaContextPath, final String jahiaServletPath) {
         List<GWTJahiaNode> selectedContents = getSelectedContent();
         if (selectedContents == null) {
             return null;
@@ -314,7 +313,12 @@ public class PickedContentView extends BottomRightComponent implements PickedCon
         } else {
             List<String> pathes = new ArrayList<String>();
             for (GWTJahiaNode s : selectedContents) {
-                pathes.add(s.getUrl());
+                if (config.getNodeTypes().contains("nt:file")) {
+                    pathes.add(s.getUrl());
+                } else {
+                    String url = s.getPath() + ".html";
+                    pathes.add(URL.rewrite(jahiaContextPath,jahiaServletPath,url));
+                }
             }
             return pathes;
         }

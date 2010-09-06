@@ -58,7 +58,7 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
  *         Date: 27 ao�t 2008
  */
 public class ContentPickerViewport extends Viewport {
-    private PickedContent pickedContent;
+    private PickedContentView pickedContent;
     public static final int BUTTON_HEIGHT = 24;
 
 
@@ -76,7 +76,7 @@ public class ContentPickerViewport extends Viewport {
 
         add(picker);
 
-        pickedContent = (PickedContent) picker.getLinker().getBottomRightObject();
+        pickedContent = (PickedContentView) picker.getLinker().getBottomRightObject();
     }
 
     /**
@@ -94,7 +94,7 @@ public class ContentPickerViewport extends Viewport {
      * @return
      */
     public List<String> getSelectedNodePathes(final String jahiaContextPath,final String jahiaServletPath) {
-        return pickedContent.getSelectedContentPath(jahiaContextPath,jahiaServletPath,true);
+        return pickedContent.getSelectedContentPath(jahiaContextPath,jahiaServletPath);
     }
 
     /**

@@ -253,7 +253,7 @@ public class WorkflowHelper {
                     if (userKey != null) {
                         userName = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(userKey).getName();
                     }
-                    history.add(new GWTJahiaWorkflowHistoryTask(wfTask.getName(),
+                    history.add(new GWTJahiaWorkflowHistoryTask(null, wfTask.getName(),
                             wfTask.getDisplayName() + (wfTask.getDisplayOutcome() != null ? " : " + wfTask.getDisplayOutcome():""),
                             wfTask.getProcessId(), wfTask
                             .getProvider(), wfTask.isCompleted(), wfTask.getStartTime(), wfTask.getEndTime(), wfTask

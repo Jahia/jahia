@@ -66,7 +66,7 @@ public class GWTJahiaWorkflowHistoryProcess extends GWTJahiaWorkflowHistoryItem 
      */
     public GWTJahiaWorkflowHistoryProcess(String name, String displayName, String processId, String provider, String definitionKey, boolean finished, Date startDate, Date endDate, Long duration,
                                           String workflowStartUser) {
-        super(name, displayName, processId,provider, finished, startDate, endDate, duration);
+        super(processId, name, displayName, processId,provider, finished, startDate, endDate, duration);
         setWorkflowStartUser(workflowStartUser);
         setDefinitionKey(definitionKey);
     }

@@ -1045,7 +1045,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 GWTJahiaNode gwtJahiaNode =
                         navigation.getGWTJahiaNode(node, Arrays.asList(GWTJahiaNode.WORKFLOW_INFOS));
                 final GWTJahiaWorkflowHistoryTask t =
-                        new GWTJahiaWorkflowHistoryTask(task.getName(), task.getDisplayName(), task.getProcessId(),
+                        new GWTJahiaWorkflowHistoryTask(task.getId(), task.getName(), task.getDisplayName() , task.getProcessId(),
                                 task.getProvider(), false, task.getCreateTime(), null, null, null, null);
                 t.set("node", gwtJahiaNode);
                 t.set("language", locale.toString());

@@ -400,6 +400,7 @@
         </tr>
         <tr class="oddLine">
             <td colspan="2" align="right">
+        		<span style="float:left"><a href="https://tda.dev.java.net/tda.jnlp" title="Launch the current TDA 2.0 release from the browser (requires Java Webstart). Disclaimer: this is an external program from https://tda.dev.java.net/"><img src="<c:url value='/icons/tda.gif'/>" height="16" width="16" alt=" " align="top"/>Launch Thread Dump Analyzer</a></span>
                 <a href="?do=status&amp;sub=display&amp;threadDump=true&amp;timestamp=${timestamp}#memory"><img src="<c:url value='/icons/tab-workflow.png'/>" height="16" width="16" alt=" " align="top"/>Perform thread dump</a>
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <a href="?do=status&amp;sub=display&amp;gc=true&amp;timestamp=${timestamp}#memory"><img src="<c:url value='/icons/refresh.png'/>" height="16" width="16" alt=" " align="top"/>Run Garbage Collector</a>

@@ -196,7 +196,8 @@
         <panel classname="UserInputPanel" id="installType"/>
         <panel classname="PacksPanel" id="packsPanel" condition="cnd.installation.type.advanced"/>
         <panel classname="UserInputPanel" condition="cnd.installation.type.advanced+!cnd.pack.tomcat" id="serverType"/>
-        <panel classname="UserInputPanel" condition="cnd.installation.type.advanced" id="dbType"/>
+        <panel classname="UserInputPanel" condition="cnd.installation.type.advanced" id="dbMode"/>
+        <panel classname="UserInputPanel" condition="cnd.db.mode.standalone" id="dbType"/>
         <panel classname="UserInputPanel" condition="cnd.db.mode.standalone" id="dbSettings"/>
         <panel classname="UserInputPanel" id="superUser"/>
         <panel classname="UserInputPanel" condition="cnd.installation.type.advanced" id="mailSettings"/>
@@ -267,8 +268,8 @@
             <singlefile override="update" src="../artifacts/jahia/WEB-INF/lib/juel-api-2.1.2.jar" target="${jahia.war.target.path}/juel-api-2.1.2.jar" condition="cnd.server.type.was"/>
             <fileset dir="../artifacts/jahia-jboss-config" targetdir="$INSTALL_PATH/jahia-jboss-config" condition="cnd.server.type.jboss"/>
             <singlefile override="update" src="install.properties" target="$INSTALL_PATH/logs/install.properties"/>
-            <singlefile override="update" src="../dependency/configurators-${jahia.configurators.version}-standalone.jar" target="$INSTALL_PATH/configurators.jar"/>
-            <singlefile override="update" src="../dependency/archivers-${jahia.archivers.version}-standalone.jar" target="$INSTALL_PATH/archivers.jar"/>
+            <singlefile override="update" src="../dependency/configurators-standalone.jar" target="$INSTALL_PATH/configurators.jar"/>
+            <singlefile override="update" src="../dependency/archivers-standalone.jar" target="$INSTALL_PATH/archivers.jar"/>
             <singlefile override="update" src="../artifacts/shared-libraries-all.zip" target="$INSTALL_PATH/shared-libraries.zip" condition="!cnd.skip.shared.libs"/>
             <parsable targetfile="$INSTALL_PATH/logs/install.properties" type="javaprop"/>
             <parsable targetfile="$INSTALL_PATH/docs/Readme.URL"/>
@@ -322,6 +323,7 @@
          -->
     </packs>
 
+	<jar src="../dependency/jahia-installer-lib.jar" />
 	<jar src="../artifacts/ant.jar" />
 	<jar src="../artifacts/ant-launcher.jar" />
 	

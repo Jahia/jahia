@@ -39,12 +39,16 @@ import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRVersionService;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.version.Version;
+import javax.jcr.version.VersionManager;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.text.SimpleDateFormat;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -97,11 +101,14 @@ public class VersioningHelper {
     public void addNewVersionFile(JCRNodeWrapper node, String tmpName) throws GWTJahiaServiceException {
         try {
             if (node != null) {
+                JCRSessionWrapper session = node.getSession();
+                VersionManager versionManager = session.getWorkspace().getVersionManager();
                 if (!node.isVersioned()) {
                     node.versionFile();
-                    node.save();
+                    session.save();
+
                 }
-                node.checkout();
+                versionManager.checkpoint(node.getPath());
                 GWTFileManagerUploadServlet.Item item = GWTFileManagerUploadServlet.getItem(tmpName);
                 FileInputStream is = null;
                 try {
@@ -114,9 +121,10 @@ public class VersioningHelper {
                     item.dispose();
                 }
                 
-                node.save();
-                node.checkpoint();
-
+                session.save();
+                versionManager.checkin(node.getPath());
+                String label = "uploaded_at_"+ new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(GregorianCalendar.getInstance().getTime());
+                JCRVersionService.getInstance().addVersionLabel(node,label);
                 if (logger.isDebugEnabled()) {
                     logger.debug("Number of version: " + node.getVersions().size());
                 }

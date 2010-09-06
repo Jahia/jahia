@@ -119,10 +119,18 @@ public class VersionViewer extends ContentPanel {
                 super.prepareData(model);
                 if (model.getVersionNumber() != null) {
                     String value = Messages.get("label.version", "Version") + " ";
-                    if(model.getLabel()!=null && !"".equals(model.getLabel())) {                        
+                    if (model.getLabel() != null && !"".equals(model.getLabel())) {
                         String[] strings = model.getLabel().split("_at_");
-                        value = value + Messages.get("label.version.published","published at")+ " " +
-                                DateTimeFormat.getMediumDateTimeFormat().format(DateTimeFormat.getFormat("yyyy_MM_dd_HH_mm_ss").parse(strings[1]));
+                        if (strings.length == 2) {
+                            String s1;
+                            if (strings[0].contains("published")) {
+                                s1 = Messages.get("label.version.published", "published at");
+                            } else {
+                                s1 = Messages.get("label.version.uploaded", "uploaded at");
+                            }
+                            value = value + s1 + " " + DateTimeFormat.getMediumDateTimeFormat().format(
+                                    DateTimeFormat.getFormat("yyyy_MM_dd_HH_mm_ss").parse(strings[1]));
+                        }
                     }
                     model.set("displayField", value);
                 } else {

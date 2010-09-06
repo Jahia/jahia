@@ -135,8 +135,20 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
                 combo.setForceSelection(true);
                 combo.setTriggerAction(ComboBox.TriggerAction.ALL);
                 for (GWTJahiaNodeVersion version : versions) {
-                    combo.add(version.getLabel() + " "+ version.getVersionNumber() + " (" +
-                            DateTimeFormat.getFormat("d/MM/y hh:mm").format(version.getDate()) + ")");
+                    String value = Messages.get("label.version", "Version") + " ";
+                    if(version.getLabel()!=null && !"".equals(version.getLabel())) {                        
+                        String[] strings = version.getLabel().split("_at_");
+                        if(strings.length==2) {
+                            String s1;
+                            if(strings[0].contains("published"))
+                                s1 = Messages.get("label.version.published", "published at");
+                            else
+                                s1 = Messages.get("label.version.uploaded", "uploaded at");
+                            value = value + s1 + " " +
+                                DateTimeFormat.getMediumDateTimeFormat().format(DateTimeFormat.getFormat("yyyy_MM_dd_HH_mm_ss").parse(strings[1]));
+                        }
+                    }
+                    combo.add(value+" ("+version.getVersionNumber()+")");
                 }
                 final String s2 = "Always Latest Version";
                 combo.add(s2);

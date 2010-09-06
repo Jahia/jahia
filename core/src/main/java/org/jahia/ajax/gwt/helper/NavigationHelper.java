@@ -54,6 +54,7 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ConstraintsHelper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.render.URLGenerator;
 import org.jahia.utils.FileUtils;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
@@ -1164,28 +1165,32 @@ public class NavigationHelper {
     public List<GWTJahiaNodeVersion> getVersions(JCRNodeWrapper node) throws RepositoryException {
         List<GWTJahiaNodeVersion> versions = new ArrayList<GWTJahiaNodeVersion>();
         VersionHistory vh = node.getSession().getWorkspace().getVersionManager().getVersionHistory(node.getPath());
-        VersionIterator vi = vh.getAllVersions();
+        VersionIterator vi = vh.getAllVersions();        
         while (vi.hasNext()) {
             Version v = vi.nextVersion();
             if (!v.getName().equals("jcr:rootVersion")) {
 //                        JCRNodeWrapper orig = ((JCRVersionHistory) v.getContainingHistory()).getNode();
                 GWTJahiaNode n = getGWTJahiaNode(node);
-                n.setUrl(node.getUrl() + "?v=" + v.getName());
                 String[] versionLabels = vh.getVersionLabels(v);
-                StringBuilder comment = new StringBuilder();
                 if (versionLabels != null && versionLabels.length > 0) {
                     for (String string : versionLabels) {
-                        if (comment.length() > 0) {
-                            comment.append(",");
+                        if (node.isFile()) {
+                            n.setUrl(node.getUrl() + "?v=" + v.getCreated().getTime().getTime());
                         }
-                        comment.append(string);
+                        GWTJahiaNodeVersion jahiaNodeVersion = new GWTJahiaNodeVersion(v.getIdentifier(), v.getName(),
+                                                                                       v.getCreated().getTime(), null,
+                                                                                       string);
+                        jahiaNodeVersion.setNode(n);
+                        versions.add(jahiaNodeVersion);
                     }
+                } else if (node.isFile()) {
+                    // Display only non labelized version for files
+                    n.setUrl(node.getUrl() + "?v=" + v.getCreated().getTime().getTime());
+                    GWTJahiaNodeVersion jahiaNodeVersion =
+                        new GWTJahiaNodeVersion(v.getIdentifier(), v.getName(), v.getCreated().getTime(), null,"");
+                        jahiaNodeVersion.setNode(n);
+                        versions.add(jahiaNodeVersion);
                 }
-                GWTJahiaNodeVersion jahiaNodeVersion =
-                        new GWTJahiaNodeVersion(v.getIdentifier(), v.getName(), v.getCreated().getTime(), null,comment.toString());
-                jahiaNodeVersion.setNode(n);
-
-                versions.add(jahiaNodeVersion);
             }
         }
         return versions;

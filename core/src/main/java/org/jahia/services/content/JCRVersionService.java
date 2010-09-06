@@ -252,7 +252,9 @@ public class JCRVersionService extends JahiaService {
                                                                              NodeIterator iterator = nodeWrapper.getNodes();
                                                                              while (iterator.hasNext()) {
                                                                                  JCRNodeWrapper nodeWrapper1 = (JCRNodeWrapper) iterator.nextNode();
-                                                                                 addVersionLabel(nodeWrapper1, label);
+                                                                                 if(nodeWrapper1.isVersioned()) {
+                                                                                    addVersionLabel(nodeWrapper1, label);
+                                                                                 }
                                                                              }
                                                                          }
                                                                      }

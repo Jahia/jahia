@@ -112,6 +112,8 @@ public abstract class EditEngineTabItem extends AsyncTabItem {
                 tabs.add(new RolePrincipalsTabItem(nodeHolder));
             } else if (tab.equals("portlets")) {
                 tabs.add(new PortletsTabItem(nodeHolder));
+            } else if (tab.equals("versioning")) {
+                tabs.add(new VersioningTabItem(nodeHolder));
             }
         }
     }

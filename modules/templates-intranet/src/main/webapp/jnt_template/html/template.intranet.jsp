@@ -18,6 +18,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
 	<title>${renderContext.mainResource.node.properties['jcr:title'].string}</title>
+    <link rel="stylesheet" type="text/css" href="${url.currentModule}/css/print.css" media="print" />
  </head>
 
  <body>
@@ -45,7 +46,7 @@
         <div class="clear"></div>
     </div>
     <!--stop topheader-->
-    <div id="bottomheader"><!--start bottomheader-->
+    <div id="bottomheader" class="noprint"><!--start bottomheader-->
         <div class="container container_16">
             <div class="grid_10">
                 <div id="banner"><!--start banner-->
@@ -75,7 +76,7 @@
     <!--stop content-->
 
 
-    <div id="topfooter"><!--start topfooter-->
+    <div id="topfooter" class="noprint"><!--start topfooter-->
         <div class="container container_16"> <!--start container_16-->
 			<div class="grid_16">
             	<template:area path="topfooter" nodeTypes="jnt:row" />
@@ -83,7 +84,7 @@
         <div class="clear"></div></div> <!--stop container_16-->
     <div class="clear"></div></div><!--stop topfooter-->
 
-    <div id="bottomfooter"><!--start bottomfooter-->
+    <div id="bottomfooter" class="noprint"><!--start bottomfooter-->
         <div class="container container_16"> <!--start container_16-->
 			<div class="grid_16">
                  <template:area path="footer" nodeTypes="jnt:row" />

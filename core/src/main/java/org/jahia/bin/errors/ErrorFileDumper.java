@@ -269,7 +269,7 @@ public class ErrorFileDumper {
             strOut.println();
             strOut.println("Deadlock status:");
             threadMonitor = threadMonitor != null ? threadMonitor : new ThreadMonitor();
-            threadMonitor.findDeadlock(strOut);
+            strOut.print(threadMonitor.findDeadlock());
         }
         
         strOut.flush();

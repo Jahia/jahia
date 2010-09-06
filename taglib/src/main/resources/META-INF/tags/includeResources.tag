@@ -33,8 +33,12 @@
             <link rel="search" type="application/opensearchdescription+xml" href="${fn:escapeXml(resource)}" title="${fn:escapeXml(functions:default(renderContext.staticAssetOptions[resource].title, 'Jahia search'))}" />
         </c:when>
         <c:otherwise>
+            <c:set var="inline">
+            ${inline}
             ${resource}
+            </c:set>
         </c:otherwise>
     </c:choose>
     </c:forEach>
 </c:forEach>
+${inline}

@@ -78,7 +78,7 @@ public class AddResourcesTag extends AbstractJahiaTag {
 
     protected void addResources(RenderContext renderContext, JahiaTemplatesPackage aPackage, String type,
                               String resources) {
-        if ("inlinecss".equals(type) || "inlinejavascript".equals(type)) {
+        if (bodyContent != null) {
             return;
         }
         
@@ -157,12 +157,12 @@ public class AddResourcesTag extends AbstractJahiaTag {
 
     @Override
     public int doAfterBody() throws JspException {
-        if ("inlinecss".equals(type) || "inlinejavascript".equals(type)) {
+        if (bodyContent != null) {
             if(key!=null) {
-                getRenderContext().addStaticAsset(type, getBodyContent().getString(), insert, key);
+                getRenderContext().addStaticAsset("inline", getBodyContent().getString(), insert, key);
             }
             else {
-            getRenderContext().addStaticAsset(type, getBodyContent().getString(), insert);
+            getRenderContext().addStaticAsset("inline", getBodyContent().getString(), insert);
             }
             getBodyContent().clearBody();
         }

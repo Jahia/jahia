@@ -27,7 +27,7 @@
         });
 
         $('.timestamp').cuteTime({ refresh: 60000 });
-        
+
         $("#sendMessage").submit(function() {
             if ($("#messagesubject").val().length < 1) {
                 $("#login_error").show();
@@ -51,7 +51,7 @@
 
             return false;
         });
-        
+
         initActionDeleteLinks($("a.messageActionDelete"));
         initShowSendMessage($("a.messageActionReply"));
     }
@@ -61,12 +61,12 @@
             var msgId = $(this).attr('rel');
             if (confirm("<fmt:message key='message.removeSocialMessage.confirm'/>")) {
                 removeSocialMessage('${url.base}/${currentNode.path}', msgId,
-                    function() {
-                        $("#social-message-" + msgId).remove();
-                        if ($("div.social-message-detail div#social-message-detail-" + msgId).length > 0) {
-                     	  $(".social-message-detail").empty();
-                        }
-                    });
+                        function() {
+                            $("#social-message-" + msgId).remove();
+                            if ($("div.social-message-detail div#social-message-detail-" + msgId).length > 0) {
+                                $(".social-message-detail").empty();
+                            }
+                        });
             }
         });
     }
@@ -89,7 +89,7 @@
                 $('#destinationUserKey').val(userKey);
                 $('#messagesubject').val("<fmt:message key='label.replySubject'/>" + " " + info.substring(userKey.length + 1));
                 $('#messagebody').val('');
-            }, 
+            },
             'onClosed'           : function() {
                 $("#login_error").hide();
             }
@@ -102,8 +102,10 @@
     </c:if>
 </script>
 <c:if test="${renderContext.ajaxRequest}">
-    <template:addResources type="inlinejavascript">
-        tabCallback();
+    <template:addResources>
+        <script type="text/javascript">
+            tabCallback();
+        </script>
     </template:addResources>
 </c:if>
 
@@ -113,30 +115,30 @@
              sql="select * from [jnt:socialMessage] where isdescendantnode(['${currentNode.path}/messages/inbox']) order by [jcr:lastModified] desc"/>
 
     <h3 class="social-title-icon titleIcon"><fmt:message key="receivedMessages"/><img title="" alt=""
-                                                                                    src="${url.currentModule}/images/mailbox.png"/>
+                                                                                      src="${url.currentModule}/images/mailbox.png"/>
     </h3>
-<div class="boxsocial"><!--start boxsocial -->
-    <div class=" boxsocialmarginbottom16">
-        <div class="boxsocial-inner">
-            <div class="boxsocial-inner-border">
-                <ul class="userMessagesList">
-                    <c:forEach items="${receivedMessages.nodes}" var="userMessage">
-                        <li id="social-message-${userMessage.identifier}">
-                            <template:module path="${userMessage.path}" />
-                        </li>
-                    </c:forEach>
-                </ul>
-			</div>
-		</div>
-	</div>
-	<div class='clear'></div>
-</div>
+    <div class="boxsocial"><!--start boxsocial -->
+        <div class=" boxsocialmarginbottom16">
+            <div class="boxsocial-inner">
+                <div class="boxsocial-inner-border">
+                    <ul class="userMessagesList">
+                        <c:forEach items="${receivedMessages.nodes}" var="userMessage">
+                            <li id="social-message-${userMessage.identifier}">
+                                <template:module path="${userMessage.path}" />
+                            </li>
+                        </c:forEach>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class='clear'></div>
+    </div>
 
 </div><!--stop grid_18-->
 <div class='grid_8 omega'><!--start grid_8-->
 
     <div id="socialMessageDetail" class="social-message-detail">
-        
+
     </div>
 
     <div class='clear'></div>

@@ -419,17 +419,17 @@
         <attribute>
             <description>
             	Type of the resources (will define where to find (in css direcory for css, in javascript directory for javascript).
-            	If the type is inlineCss or inlineJavascript the content of the tag body will be used as the asset itself and
+            	If not set the content of the tag body will be used as the asset itself and
             	the resources attribute can be left empty. 
             </description>
             <name>type</name>
-            <required>true</required>
+            <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
             <description>
             	The list of resources they will be included in the define order.
-            	If the type is inlineCss or inlineJavascript the content of the tag body will be used as the asset itself and
+            	If the tag body is not empty, it will be used as the asset itself and
             	the resources attribute can be left empty. 
            	</description>
             <name>resources</name>
@@ -453,7 +453,7 @@
         </attribute>
         <attribute>
             <description>
-                key for managing uniqueness of inlinejavascript or inlinecss type.
+                key for managing uniqueness of inline type.
             </description>
             <name>key</name>
             <required>false</required>
@@ -648,7 +648,7 @@
 
     <tag-file>
     	<description>
-    		Includes external resources (CSS, JavaScript, inline CSS styles, inline JavaScript), which are required for current page
+    		Includes external resources (CSS, JavaScrip), which are required for current page
     		and were registered using addResources tag.
     	</description>
     	<name>includeResources</name>

@@ -22,18 +22,20 @@
 <c:set var="value" value="${functions:default(param[valueParamName], value)}"/>
 <c:if test="${empty requestScope['org.apache.jsp.tag.web.search.dateTag.included']}">
     <c:set var="org.apache.jsp.tag.web.search.dateTag.included" value="true" scope="request"/>
-	<template:addResources type="inlineJavaScript">
-        function searchDateTypeToggle(dateType, range) {
-            if (dateType.value == 'range' && range.style.display != 'none' || dateType.value != 'range' && range.style.display == 'none') {
-                return;
-            }
-            range.style.display = dateType.value == 'range' ? '' : 'none';
-            for (var i = 0; i < range.childNodes.length; i++) {
-                if (range.childNodes[i].nodeName.toLowerCase() == 'input') {
-                    range.childNodes[i].disabled = dateType.value != 'range';
+    <template:addResources>
+        <script type="text/javascript">
+            function searchDateTypeToggle(dateType, range) {
+                if (dateType.value == 'range' && range.style.display != 'none' || dateType.value != 'range' && range.style.display == 'none') {
+                    return;
+                }
+                range.style.display = dateType.value == 'range' ? '' : 'none';
+                for (var i = 0; i < range.childNodes.length; i++) {
+                    if (range.childNodes[i].nodeName.toLowerCase() == 'input') {
+                        range.childNodes[i].disabled = dateType.value != 'range';
+                    }
                 }
             }
-        }
+        </script>
     </template:addResources>
 </c:if>
 <c:if test="${display}">
@@ -49,14 +51,14 @@
             <fmt:message key="searchForm.date.lastSixMonths"/></option>
         <option value="range" ${value == 'range' ? 'selected="selected"' : ''}><fmt:message key="searchForm.date.range"/></option>
     </select><div ${value != 'range' ? 'style="display:none"' : ''} class="dateRange" id="range-${rangeId}">
-            <c:set var="valueParamName" value="${attributes.name}.from"/>
-            <fmt:message key="searchForm.date.from"/>:&nbsp;
-            <input type="text" name="${valueParamName}" id="${fn:replace(valueParamName, '.', '_')}" value="${functions:default(param[valueParamName], from)}"/>
-            <uiComponents:dateSelector fieldId="${fn:replace(valueParamName, '.', '_')}"/>
-            <c:set var="valueParamName" value="${attributes.name}.to"/>
-            <fmt:message key="searchForm.date.to"/>:&nbsp;
-            <input type="text" name="${valueParamName}" id="${fn:replace(valueParamName, '.', '_')}" value="${functions:default(param[valueParamName], to)}"/>
-            <uiComponents:dateSelector fieldId="${fn:replace(valueParamName, '.', '_')}"/>
-    </div>
+    <c:set var="valueParamName" value="${attributes.name}.from"/>
+    <fmt:message key="searchForm.date.from"/>:&nbsp;
+    <input type="text" name="${valueParamName}" id="${fn:replace(valueParamName, '.', '_')}" value="${functions:default(param[valueParamName], from)}"/>
+    <uiComponents:dateSelector fieldId="${fn:replace(valueParamName, '.', '_')}"/>
+    <c:set var="valueParamName" value="${attributes.name}.to"/>
+    <fmt:message key="searchForm.date.to"/>:&nbsp;
+    <input type="text" name="${valueParamName}" id="${fn:replace(valueParamName, '.', '_')}" value="${functions:default(param[valueParamName], to)}"/>
+    <uiComponents:dateSelector fieldId="${fn:replace(valueParamName, '.', '_')}"/>
+</div>
 </c:if>
 <c:if test="${!display}"><input type="hidden" name="${valueParamName}" value="${fn:escapeXml(value)}"/></c:if>

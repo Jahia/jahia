@@ -181,8 +181,10 @@
         <div class="listEditToolbar">
             <c:choose>
                 <c:when test="${not empty task.formResourceName}">
-                    <template:addResources type="inlineJavascript">
-                        animatedcollapse.addDiv('task${node.identifier}-${task.id}', 'fade=1,speed=100');
+                    <template:addResources>
+                        <script type="text/javascript">
+                            animatedcollapse.addDiv('task${node.identifier}-${task.id}', 'fade=1,speed=100');
+                        </script>
                     </template:addResources>
                     <input class="workflowaction" type="button" value="${task.name}"
                            onclick="animatedcollapse.toggle('task${node.identifier}-${task.id}');$('#taskrow${node.identifier}-${task.id}').toggleClass('hidden');"/>
@@ -194,8 +196,10 @@
                     </c:forEach>
                 </c:otherwise>
             </c:choose>
-            <template:addResources type="inlineJavascript">
-                animatedcollapse.addDiv('comments${node.identifier}-${task.id}', 'fade=1,speed=100');
+            <template:addResources>
+                <script type="text/javascript">
+                    animatedcollapse.addDiv('comments${node.identifier}-${task.id}', 'fade=1,speed=100');
+                </script>
             </template:addResources>
             <input class="workflowaction" type="button" value="<fmt:message key="jnt_task.comments"/>"
                    onclick="animatedcollapse.toggle('comments${node.identifier}-${task.id}');$('#commentsrow${node.identifier}-${task.id}').toggleClass('hidden');"/>
@@ -248,8 +252,8 @@
                 <textarea rows="10" cols="80" name="comment"></textarea>
                 <div class="divButton">
                     <button type="submit"><span class="icon-contribute icon-accept"></span><fmt:message
-                                                key="jnt_task.comments.add"/></button>
-                </div>           
+                            key="jnt_task.comments.add"/></button>
+                </div>
             </form>
             <script type="text/javascript">
                 var options${task.id} = {
@@ -275,8 +279,10 @@
 </tbody>
 </table>
 
-<template:addResources type="inlineJavascript">
-    animatedcollapse.init();
+<template:addResources>
+    <script type="text/javascript">
+        animatedcollapse.init();
+    </script>
 </template:addResources>
 <div class="pagination"><!--start pagination-->
 

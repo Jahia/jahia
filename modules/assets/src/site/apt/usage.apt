@@ -10,9 +10,8 @@ Usage
   
     * <<<javascript>>> - an external JavaScript resource, that will be included into
   
-    * <<<inlinecss>>> - inline CSS stylesheet
-  
-    * <<<inlinejavascript>>> - inline JavaScript code.
+    * <<<content in body of the tag>>> - inline body content of the tag
+
     
     []
   
@@ -31,11 +30,13 @@ Usage
   For inline resources the body of the <<<<template:addResources/>>>> tag is utilized: 
 
 +------------------------------------------------
-  <template:addResources type="inlineJavaScript">
+  <template:addResources>
     $(document).ready(function() { alert('document loaded'); });
   </template:addResources>
 
-  <template:addResources type="inlineCss">
+or
+
+  <template:addResources>
     div#fancy_div {
     background: #FFF;
     color: #000;

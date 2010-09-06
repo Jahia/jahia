@@ -105,7 +105,7 @@
                 $('#destinationUserKey').val(userKey);
                 $('#messagesubject').val('');
                 $('#messagebody').val('');
-            }, 
+            },
             'onClosed'           : function() {
                 $("#login_error").hide();
             }
@@ -134,7 +134,7 @@
                 "j:nodename": "{$q}*",
                 "j:firstName": "{$q}*",
                 "j:lastName": "{$q}*",
-                removeDuplicatePropValues : "true"                
+                removeDuplicatePropValues : "true"
             }
         });
         $("#searchUsersSubmit").click(function() {
@@ -160,25 +160,27 @@
             var connectionType = rel.substring(rel.indexOf(':') + 1);
             if (confirm("<fmt:message key='message.removeFriend.confirm'/>")) {
                 removeSocialConnection('${url.base}${currentNode.path}', fromUserId, toUserId, connectionType,
-                    function() {
-                	    $("#connection-to-" + toUserId).remove(); 
-                    });
+                        function() {
+                            $("#connection-to-" + toUserId).remove();
+                        });
             }
         });
 
         loadActivities('${url.base}${currentNode.path}');
-        
+
     }
 
-<c:if test="${not renderContext.ajaxRequest}">
+    <c:if test="${not renderContext.ajaxRequest}">
     $(document).ready(function() {
-        tabCallback();        
+        tabCallback();
     });
-</c:if>
+    </c:if>
 </script>
 <c:if test="${renderContext.ajaxRequest}">
-    <template:addResources type="inlinejavascript">
-        tabCallback();        
+    <template:addResources>
+        <script type="text/javascript">
+            tabCallback();
+        </script>
     </template:addResources>
 </c:if>
 
@@ -253,7 +255,7 @@
              sql="select * from [jnt:socialConnection] as uC where isdescendantnode(uC,['${currentNode.path}'])"/>
 
     <h3 class="social-title-icon titleIcon"><a href="#"><fmt:message key="friendsList"/></a><a href="#"><img title="" alt=""
-                                                                                    src="${url.currentModule}/images/friends.png"/></a>
+                                                                                                             src="${url.currentModule}/images/friends.png"/></a>
     </h3>
     <ul class="social-list">
         <c:forEach items="${socialConnections.nodes}" var="socialConnection">
@@ -262,7 +264,7 @@
                 <div class="thumbnail">
 
                     <a href="${url.base}${connectedToUser.path}.html"><img src="${url.currentModule}/images/friend.png"
-                                                                         alt="friend" border="0"/></a>
+                                                                           alt="friend" border="0"/></a>
                 </div>
                 <a class="social-list-remove removeFriendAction" title="<fmt:message key="removeFriend"/>" href="#"
                    rel="${socialConnection.properties['j:connectedFrom'].node.identifier}:${socialConnection.properties['j:connectedTo'].node.identifier}:${socialConnection.properties['j:type'].string}"><span><fmt:message

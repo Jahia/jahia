@@ -192,7 +192,7 @@ public class RenderContext {
     public void addStaticAsset(String assetType,String asset, boolean insert, String key) {
         String type = assetType + key;
         Set<String> assets = getStaticAssets(type);
-        boolean isInlined = "inlinecss".equalsIgnoreCase(assetType) || "inlinejavascript".equalsIgnoreCase(assetType) ;
+        boolean isInlined = "inline".equalsIgnoreCase(assetType);
         String resourceFilename = "javascript".equalsIgnoreCase(assetType) ? StringUtils.substringAfterLast(asset, "/") : asset;
         if (isInlined || !resourceFileNames.contains(resourceFilename)) {
             if (insert) {

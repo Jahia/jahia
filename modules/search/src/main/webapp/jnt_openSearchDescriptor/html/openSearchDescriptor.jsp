@@ -10,15 +10,17 @@
 <c:set var="title" value="${functions:default(currentNode.propertiesAsString['jcr:title'], '')}"/>
 <template:addResources type="opensearch" resources="${descriptorUrl}" title="${title}"/>
 <c:if test="${empty requestScope['org.jahia.modules.search.addOpenSearch']}">
-<template:addResources type="inlinejavascript">
-function addOpenSearch(provider) {
-  if ((typeof window.external == "object") && ((typeof window.external.AddSearchProvider == "unknown") || (typeof window.external.AddSearchProvider == "function"))) {
-    window.external.AddSearchProvider(provider);
-  } else {
-    alert("You will need a browser which supports OpenSearch to install this plugin.");
-  }
-}
-</template:addResources>
-<c:set var="org.jahia.modules.search.addOpenSearch" value="true" scope="request"/>
+    <template:addResources>
+        <script type="text/javascript">
+            function addOpenSearch(provider) {
+                if ((typeof window.external == "object") && ((typeof window.external.AddSearchProvider == "unknown") || (typeof window.external.AddSearchProvider == "function"))) {
+                    window.external.AddSearchProvider(provider);
+                } else {
+                    alert("You will need a browser which supports OpenSearch to install this plugin.");
+                }
+            }
+        </script>
+    </template:addResources>
+    <c:set var="org.jahia.modules.search.addOpenSearch" value="true" scope="request"/>
 </c:if>
 <a href="#opensearch" onclick="addOpenSearch('${descriptorUrl}'); return false;" title="${fn:escapeXml(title)}"><img src="${url.currentModule}/icons/jnt_openSearchDescriptor.png" height="16" width="16" alt=" "/>&nbsp;${fn:escapeXml(title)}</a>

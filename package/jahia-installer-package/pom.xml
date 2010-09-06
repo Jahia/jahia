@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.jahia.server</groupId>
         <artifactId>jahia-common-installer-package</artifactId>
-        <version>1.1</version>
+        <version>1.2</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jahia-installer-package</artifactId>
@@ -14,12 +14,10 @@
     <packaging>jar</packaging>
 
     <properties>
-        <jahia.archivers.version>2.2</jahia.archivers.version>
-        <jahia.configurators.version>2.3</jahia.configurators.version>
-        <jahia.deployers.version>2.1</jahia.deployers.version>       
         <jahia.package.name>jahia-war</jahia.package.name>
         <jahia.package.version>6.5-SNAPSHOT</jahia.package.version>
         <jahia.manifest.vendor.url>http://www.jahia.org</jahia.manifest.vendor.url>
+    	<jahia.manifest.vendor.email>info@jahia.org</jahia.manifest.vendor.email>
         <product.name>Jahia xCM Community Edition</product.name>
         <installer.filename>Jahia_xCM_CE_v${jahia.package.version}_r${buildNumber}</installer.filename>
         <jahia.tomcat.version>6.0.29</jahia.tomcat.version>

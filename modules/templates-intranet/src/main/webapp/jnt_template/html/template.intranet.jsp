@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
- "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -13,15 +13,15 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
- <head>
-	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-	<title>${renderContext.mainResource.node.properties['jcr:title'].string}</title>
+    <title>${renderContext.mainResource.node.properties['jcr:title'].string}</title>
     <link rel="stylesheet" type="text/css" href="${url.currentModule}/css/print.css" media="print" />
- </head>
+</head>
 
- <body>
+<body>
 
 <%@ include file="../../common/declarations.jspf" %>
 <jcr:nodeProperty var="theme" node="${renderContext.mainResource.node}" name="j:theme" inherited="true"/>
@@ -52,12 +52,12 @@
                 <div id="banner"><!--start banner-->
                     <template:area path="pagetitle"/>
                 </div>
-			<div class="clear"></div></div>
+                <div class="clear"></div></div>
             <div class="grid_6">
                 <div id="search-bar">
                     <template:area path="simpleSearch"/>
                 </div>
-			<div class="clear"></div></div>
+                <div class="clear"></div></div>
             <div class="grid_16">
                 <template:area path="topMenu"/>
             </div>
@@ -78,18 +78,18 @@
 
     <div id="topfooter" class="noprint"><!--start topfooter-->
         <div class="container container_16"> <!--start container_16-->
-			<div class="grid_16">
-            	<template:area path="topfooter" nodeTypes="jnt:row" />
-			<div class="clear"></div></div>
-        <div class="clear"></div></div> <!--stop container_16-->
-    <div class="clear"></div></div><!--stop topfooter-->
+            <div class="grid_16">
+                <template:area path="topfooter" nodeTypes="jnt:row" />
+                <div class="clear"></div></div>
+            <div class="clear"></div></div> <!--stop container_16-->
+        <div class="clear"></div></div><!--stop topfooter-->
 
     <div id="bottomfooter" class="noprint"><!--start bottomfooter-->
         <div class="container container_16"> <!--start container_16-->
-			<div class="grid_16">
-                 <template:area path="footer" nodeTypes="jnt:row" />
-			<div class="clear"></div></div>
-        <div class="clear"></div></div> <!--stop container_16-->
+            <div class="grid_16">
+                <template:area path="footer" nodeTypes="jnt:row" />
+                <div class="clear"></div></div>
+            <div class="clear"></div></div> <!--stop container_16-->
     </div>
     <!--stop bottomfooter-->
 
@@ -97,3 +97,5 @@
     <div class="clear"></div>
 </div>
 <!--stop bodywrapper-->
+</body>
+</html>

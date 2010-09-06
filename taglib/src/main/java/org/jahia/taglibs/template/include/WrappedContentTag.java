@@ -154,28 +154,4 @@ public class WrappedContentTag extends ModuleTag implements ParamParent {
             }
         }
     }
-
-    @Override protected void printModuleStart(String type, String path, String resolvedTemplate, String scriptInfo)
-            throws RepositoryException, IOException {
-
-        if (this.path.startsWith("/")) {
-            RenderContext context =
-                    (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
-            pageContext.getOut().print("<div jahiatype=\"linkedContentInfo\" linkedNode=\"" +
-                    context.getMainResource().getNode().getIdentifier() + "\"" + " node=\"" + node.getIdentifier() +
-                    "\" type=\"absolute\">");
-        }
-
-        super.printModuleStart(type, path, resolvedTemplate,
-                scriptInfo);    //To change body of overridden methods use File | Settings | File Templates.
-    }
-
-    @Override protected void printModuleEnd() throws IOException {
-        super.printModuleEnd();
-
-        if (path.startsWith("/")) {
-            pageContext.getOut().print("</div>");
-        }
-
-    }
 }

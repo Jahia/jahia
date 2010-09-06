@@ -84,13 +84,6 @@ public class TemplateNodeFilter extends AbstractFilter {
                         }
 
                         String output = RenderService.getInstance().render(wrapperResource, renderContext);
-                        if (renderContext.isEditMode()) {
-                            output = "<div jahiatype=\"linkedContentInfo\" linkedNode=\"" +
-                                    resource.getNode().getIdentifier() + "\"" +
-
-                                    " node=\"" + templateNode.getIdentifier() + "\" type=\"template\">" + output +
-                                    "</div>";
-                        }
 
                         renderContext.getRequest().setAttribute("previousTemplate", previousTemplate);
 

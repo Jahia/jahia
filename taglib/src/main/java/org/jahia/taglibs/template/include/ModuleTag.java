@@ -353,6 +353,38 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
     }
 
     protected void render(RenderContext renderContext, Resource resource) throws IOException {
+//        try {
+//
+//            if (!(this instanceof IncludeTag) && (resource.getNode().isLocked() || !resource.getNode().getLockedLocales().isEmpty())) {
+//            Node node = resource.getNode().getRealNode();
+//
+//            String out = node.getPath() + " shared : ";
+//            if (node.hasProperty("j:lockTypes")) {
+//                for (Value value : node.getProperty("j:lockTypes").getValues()) {
+//                    out += "<div style=\"color:red\" >" + value.getString() + "</div>";
+//                }
+//            }
+//            NodeIterator ni = node.getNodes("j:translation*");
+//            while (ni.hasNext()) {
+//                Node n = ni.nextNode();
+//                out += ", " + n.getProperty("jcr:language").getString() + " : ";
+//                if (n.isLocked()) {
+//                    if (n.hasProperty("j:lockTypes")) {
+//                        for (Value value : n.getProperty("j:lockTypes").getValues()) {
+//                            out += "<div style=\"color:red\" >" + value.getString() + "</div>";
+//                        }
+//                    }
+//                }
+//            }
+//
+//            pageContext.getOut().print("<div>"+out+"</div>");
+//            }
+//
+//        } catch (RepositoryException e) {
+//            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//        }
+
+
         try {
             final Integer level =
                     (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);

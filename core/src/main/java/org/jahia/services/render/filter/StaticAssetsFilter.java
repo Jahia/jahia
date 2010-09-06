@@ -34,11 +34,7 @@ package org.jahia.services.render.filter;
 
 import java.util.List;
 
-import net.htmlparser.jericho.Element;
-import net.htmlparser.jericho.EndTag;
-import net.htmlparser.jericho.HTMLElementName;
-import net.htmlparser.jericho.OutputDocument;
-import net.htmlparser.jericho.Source;
+import net.htmlparser.jericho.*;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -77,14 +73,33 @@ public class StaticAssetsFilter extends AbstractFilter {
                 }
             }
         } else {
-            final List<Element> elementList = source.getAllElements(HTMLElementName.HEAD);
-            for (Element element : elementList) {
-                final EndTag tag = element.getEndTag();
+            if (renderContext.isEditMode() && resource.getContextConfiguration().equals("page")) {
+                // Add static div for edit mode
+                List<Element> bodyElementList = source.getAllElements(HTMLElementName.BODY);
+                Element bodyElement = bodyElementList.get(bodyElementList.size()-1);
+                
+                EndTag bodyEndTag = bodyElement.getEndTag();
+                outputDocument.replace(bodyEndTag.getBegin(), bodyEndTag.getBegin() + 1,
+                        "</div><");
+
+                bodyElement = bodyElementList.get(0);
+
+                StartTag bodyStartTag = bodyElement.getStartTag();
+                outputDocument.replace(bodyStartTag.getEnd(), bodyStartTag.getEnd(),
+                        "\n" + "<div class=\"jahia-template-gxt editmode-gxt\" jahiatype=\"editmode\" id=\"editmode\"" +
+                                " config=\""+renderContext.getEditModeConfigName()+"\"" +
+                                " path=\""+resource.getNode().getPath()+"\" locale=\""+resource.getLocale()+"\"" +
+                                " template=\""+resource.getTemplate()+"\">");
+            }
+            List<Element> headElementList = source.getAllElements(HTMLElementName.HEAD);
+            for (Element element : headElementList) {
+                final EndTag headEndTag = element.getEndTag();
                 final String staticsAsset = service.render(new Resource(resource.getNode(), "html",
                         "html.statics.assets", Resource.CONFIGURATION_INCLUDE), renderContext);
-                outputDocument.replace(tag.getBegin(), tag.getBegin() + 1,
+                outputDocument.replace(headEndTag.getBegin(), headEndTag.getBegin() + 1,
                         "\n" + AggregateCacheFilter.removeEsiTags(staticsAsset) + "\n<");
             }
+
             out = outputDocument.toString();
          }
 

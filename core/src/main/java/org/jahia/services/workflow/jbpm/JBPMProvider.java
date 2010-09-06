@@ -45,6 +45,7 @@ import org.jbpm.api.*;
 import org.jbpm.api.activity.ActivityBehaviour;
 import org.jbpm.api.history.HistoryComment;
 import org.jbpm.api.history.HistoryProcessInstance;
+import org.jbpm.api.history.HistoryProcessInstanceQuery;
 import org.jbpm.api.history.HistoryTask;
 import org.jbpm.api.job.Job;
 import org.jbpm.api.task.Participation;
@@ -290,16 +291,8 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         for (String processId : processIds) {
             final ProcessInstance instance = executionService.findProcessInstanceById(processId);
             if (instance != null) {
-                final Workflow workflow = new Workflow(instance.getName(), instance.getId(), key);
-                final WorkflowDefinition definition = getWorkflowDefinitionById(instance.getProcessDefinitionId());
-                workflow.setDefinition(definition);
-                workflow.setAvailableActions(getAvailableActions(instance.getId()));
-                Job job = managementService.createJobQuery().timers().processInstanceId(processId).uniqueResult();
-                if (job != null) {
-                    workflow.setDuedate(job.getDuedate());
-                }
+                final Workflow workflow = convertToWorkflow(instance);
                 workflows.add(workflow);
-                workflow.setStartUser(executionService.getVariable(instance.getId(), "user").toString());
             }
         }
         return workflows;
@@ -317,6 +310,11 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
     public void signalProcess(String processId, String transitionName, String signalName, Map<String, Object> args) {
         final Execution in = executionService.findProcessInstanceById(processId).findActiveExecutionIn(transitionName);
         executionService.signalExecutionById(in.getId(), signalName, args);
+    }
+
+    public Workflow getWorkflow(String processId) {
+        ProcessInstance pi = executionService.findProcessInstanceById(processId);
+        return convertToWorkflow(pi);
     }
 
     public Set<WorkflowAction> getAvailableActions(String processId) {
@@ -356,6 +354,33 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
             availableActions.add(action);
         }
         return availableActions;
+    }
+
+    public List<Workflow> getWorkflowsForUser(JahiaUser user) {
+        List<Workflow> list = new ArrayList<Workflow>();
+        List<ProcessInstance> pi = executionService.createProcessInstanceQuery().list();
+        for (ProcessInstance processInstance : pi) {
+            String username = (String) executionService.getVariable(processInstance.getId(),"user");
+            if (username != null && user.getName().equals(username)) {
+                list.add(convertToWorkflow(processInstance));
+            }
+        }
+        return list;
+    }
+
+    private Workflow convertToWorkflow(ProcessInstance instance) {
+        final Workflow workflow = new Workflow(instance.getName(), instance.getId(), key);
+        final WorkflowDefinition definition = getWorkflowDefinitionById(instance.getProcessDefinitionId());
+        workflow.setDefinition(definition);
+        workflow.setAvailableActions(getAvailableActions(instance.getId()));
+        Job job = managementService.createJobQuery().timers().processInstanceId(instance.getId()).uniqueResult();
+        if (job != null) {
+            workflow.setDuedate(job.getDuedate());
+        }
+        workflow.setStartTime(historyService.createHistoryProcessInstanceQuery().processInstanceId(instance.getId()).orderAsc(HistoryProcessInstanceQuery.PROPERTY_STARTTIME).uniqueResult().getStartTime());
+        
+        workflow.setStartUser(executionService.getVariable(instance.getId(), "user").toString());
+        return workflow;
     }
 
     private WorkflowTask convertToWorkflowTask(Task task) {

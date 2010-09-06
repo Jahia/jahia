@@ -61,9 +61,13 @@ public interface WorkflowProvider {
 
     void signalProcess(String processId, String transitionName, String signalName, Map<String, Object> args);
 
+    Workflow getWorkflow(String processId);
+
     Set<WorkflowAction> getAvailableActions(String processId);
 
     List<WorkflowTask> getTasksForUser(JahiaUser user);
+
+    List<Workflow> getWorkflowsForUser(JahiaUser user);
 
     void assignTask(String taskId, JahiaUser user);
 

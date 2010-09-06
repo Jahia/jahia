@@ -44,6 +44,7 @@ import java.util.Set;
 public class Workflow extends WorkflowBase {
     private final String id;
     private String startUser;
+    private Date startTime;
     private Set<WorkflowAction> availableActions;
     private Date duedate = null;
 
@@ -54,6 +55,14 @@ public class Workflow extends WorkflowBase {
 
     public String getId() {
         return id;
+    }
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
     }
 
     public String getStartUser() {

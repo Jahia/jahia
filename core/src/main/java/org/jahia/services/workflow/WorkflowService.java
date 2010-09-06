@@ -508,6 +508,14 @@ public class WorkflowService {
         return workflowActions;
     }
 
+    public List<Workflow> getWorkflowsForUser(JahiaUser user, Locale locale) {
+        final List<Workflow> workflow = new LinkedList<Workflow>();
+        for (Map.Entry<String, WorkflowProvider> providerEntry : providers.entrySet()) {
+            workflow.addAll(providerEntry.getValue().getWorkflowsForUser(user));
+        }
+        return workflow;
+    }
+
     private void i18nOfWorkflowAction(Locale displayLocale, WorkflowAction workflowAction,
                                       WorkflowDefinition definition) {
         ResourceBundle resourceBundle = getResourceBundle(definition, displayLocale);
@@ -893,6 +901,10 @@ public class WorkflowService {
 //        return rulesList;
 //    }
 //
+
+    public Workflow getWorkflow(String provider, String id) {
+        return  lookupProvider(provider).getWorkflow(id);
+    }
 
     public WorkflowDefinition getWorkflowDefinition(String provider, String id, Locale locale) {
         final WorkflowDefinition definition = lookupProvider(provider).getWorkflowDefinitionByKey(id);

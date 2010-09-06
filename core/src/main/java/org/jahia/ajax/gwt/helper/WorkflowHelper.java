@@ -46,7 +46,6 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.PublicationInfo;
 import org.jahia.services.rbac.Role;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaPrincipal;
@@ -243,6 +242,10 @@ public class WorkflowHelper {
                 // read tasks of the process
                 List<HistoryWorkflowTask> tasks = service.getHistoryWorkflowTasks(historyItem.getProcessId(),
                         historyItem.getProvider(), locale);
+                Workflow wf = service.getWorkflow(historyItem.getProvider(), historyItem.getProcessId());
+                history.add(new GWTJahiaWorkflowHistoryProcess(wf.getName(), wf.getDisplayName(), wf.getId(), wf
+                        .getProvider(), wf.getDefinition().getKey(), false, wf.getStartTime(), null, null,
+                        wf.getStartUser()));
 
                 for (HistoryWorkflowTask wfTask : tasks) {
                     final String userKey = wfTask.getAssignee();

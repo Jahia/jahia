@@ -34,9 +34,11 @@ package org.jahia.ajax.gwt.client.widget.workflow;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.core.XTemplate;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Info;
+import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -111,26 +113,27 @@ public class WorkflowDashboardEngine extends Window {
                                     if (item instanceof GWTJahiaWorkflowHistoryTask) {
                                         GWTJahiaWorkflowHistoryTask task = (GWTJahiaWorkflowHistoryTask) item;
                                         if (task.getAssignee() != null && task.getAssignee().length() > 0) {
-                                            html.append("<p><b>"+task.getDisplayName()+ " started&nbsp;</b>")
+                                            html.append("<div class=\"x-grid3-cell x-grid3-cell-inner\">" +
+                                                    task.getDisplayName() + " started&nbsp;")
                                                     .append(DateTimeFormat.getMediumDateTimeFormat().format(
                                                             item.getStartDate()));
-                                            html.append("<b>&nbsp;by&nbsp;</b>").append(task.getAssignee());
+                                            html.append("&nbsp;by&nbsp;").append(task.getAssignee());
                                             if (task.getOutcome() != null) {
-                                                html.append("&nbsp;has&nbsp;").append(task.getOutcome())
-                                                        .append("");
+                                                html.append("&nbsp;has&nbsp;").append(task.getOutcome()).append("");
 //                                                html.append("&nbsp;at&nbsp;")
 //                                                        .append(DateTimeFormat.getMediumDateTimeFormat().format(
 //                                                                item.getEndDate())).append("");
                                             }
-                                            html.append("</p><br/>");
+                                            html.append("</div/>");
                                         }
                                     } else {
                                         GWTJahiaWorkflowHistoryProcess wf = (GWTJahiaWorkflowHistoryProcess) item;
-                                        html.append("<p><b>Workflow started&nbsp;</b>")
+                                        html.append(
+                                                "<div class=\"x-grid3-cell x-grid3-cell-inner\">Workflow started&nbsp;")
                                                 .append(DateTimeFormat.getMediumDateTimeFormat().format(
                                                         item.getStartDate()));
-                                        html.append("<b>&nbsp;by&nbsp;</b>").append(wf.getWorkflowStartUser());
-                                        html.append("</p><br/>");
+                                        html.append("&nbsp;by&nbsp;").append(wf.getWorkflowStartUser());
+                                        html.append("</div>");
                                     }
                                 }
                                 bodyElement.appendChild(new HTML(html.toString()).getElement());
@@ -176,67 +179,17 @@ public class WorkflowDashboardEngine extends Window {
         displayColumns.add(config);
 
         config = new ColumnConfig("startDate", Messages.get("label.workflow.taskStartTime"), 140);
-//        config.setSortable(true);
-//        config.setRenderer(new GridCellRenderer() {
-//            public Object render(ModelData model, String property, ColumnData config, int rowIndex, int colIndex,
-//                                 ListStore listStore, Grid grid) {
-//                final GWTJahiaNode node = (GWTJahiaNode) model;
-//                List<GWTJahiaWorkflowAction> actions = node.getWorkflowInfo().getAvailableActions();
-//                return new Label(DateTimeFormat.getMediumDateTimeFormat().format(actions.get(0).getCreateTime()));
-//            }
-//        });
+        config.setRenderer(new GridCellRenderer() {
+            public Object render(ModelData model, String property, ColumnData config, int rowIndex, int colIndex,
+                                 ListStore listStore, Grid grid) {
+                final GWTJahiaWorkflowHistoryTask node = (GWTJahiaWorkflowHistoryTask) model;
+                return new Label(DateTimeFormat.getMediumDateTimeFormat().format(node.getStartDate()));
+            }
+        });
         displayColumns.add(config);
 
-        config = new ColumnConfig("title", Messages.get("label.workflow.titleOfInstance"), 2000);
-//        config.setSortable(true);
-//        config.setRenderer(new GridCellRenderer() {
-//            public Object render(ModelData model, String property, ColumnData config, int rowIndex, int colIndex,
-//                                 ListStore listStore, Grid grid) {
-//                final GWTJahiaNode node = (GWTJahiaNode) model;
-//                List<GWTJahiaWorkflowAction> actions = node.getWorkflowInfo().getAvailableActions();
-//                final GWTJahiaWorkflowAction action = actions.get(0);
-//                Label label;
-//                if (action.getVariables().containsKey("jcr:title")) {
-//                    String s = action.getVariables().get("jcr:title").getValues().get(0).getString();
-//                    if (s == null || "".equals(s.trim())) {
-//                        s = action.getName();
-//                    }
-//                    label = new Label(s);
-//                } else {
-//                    label = new Label(action.getName());
-//                }
-//                return label;
-//            }
-//        });
+        config = new ColumnConfig("title", Messages.get("label.workflow.titleOfInstance"), 200);
         displayColumns.add(config);
-
-//        config = new ColumnConfig("dateOfLastComment", Messages.getResource("label.workflow.dateOfLastComment"), 150);
-//        config.setSortable(true);
-//        config.setRenderer(new GridCellRenderer() {
-//            public Object render(ModelData model, String property, ColumnData config, int rowIndex, int colIndex,
-//                                 ListStore listStore, Grid grid) {
-//                final GWTJahiaNode node = (GWTJahiaNode) model;
-//                List<GWTJahiaWorkflowAction> actions = node.getWorkflowInfo().getAvailableActions();
-//                GWTJahiaWorkflowAction action = actions.get(0);
-//                final Label label = new Label();
-//                contentManager.getTaskComments(action, new BaseAsyncCallback<List<GWTJahiaWorkflowTaskComment>>() {
-//                    /**
-//                     * Called when an asynchronous call completes successfully.
-//                     *
-//                     * @param result the return value of the remote produced call
-//                     */
-//                    public void onSuccess(List<GWTJahiaWorkflowTaskComment> result) {
-//                        if (result.size() > 0) {
-//                            label.setText(DateTimeFormat.getMediumDateTimeFormat().format(
-//                                    result.get(result.size() - 1).getTime()));
-//                        }
-//                    }
-//                });
-//                return label;
-//            }
-//        });
-//        displayColumns.add(config);
-
 
         contentStore = new ListStore<GWTJahiaWorkflowHistoryTask>();
         cm = new ColumnModel(displayColumns);
@@ -253,21 +206,22 @@ public class WorkflowDashboardEngine extends Window {
                     final Window window = new Window();
                     window.setScrollMode(Style.Scroll.AUTO);
                     window.setSize(800, 600);
-                    contentManager.getRenderedContent(node.getPath(), action.getWorkspace(), action.getLocale(), null,
-                            "gwt", null, false, null, new BaseAsyncCallback<GWTRenderResult>() {
+                    contentManager
+                            .getRenderedContent(node.getPath(), action.getWorkspace(), action.getLocale(), null, "gwt",
+                                    null, false, null, new BaseAsyncCallback<GWTRenderResult>() {
 
-                                public void onSuccess(GWTRenderResult result) {
-                                    HTML html = new HTML(result.getResult());
-                                    window.add(html);
-                                    window.layout(true);
-                                }
-                            });
+                                        public void onSuccess(GWTRenderResult result) {
+                                            HTML html = new HTML(result.getResult());
+                                            window.add(html);
+                                            window.layout(true);
+                                        }
+                                    });
                     window.show();
                 }
             }
         });
         grid.addPlugin(expander);
-       grid.setAutoExpandColumn("node.displayName");
+        grid.setAutoExpandColumn("node.displayName");
         grid.sinkEvents(Event.ONDBLCLICK);
         grid.addListener(Events.OnDoubleClick, new Listener<BaseEvent>() {
             public void handleEvent(BaseEvent baseEvent) {
@@ -275,7 +229,8 @@ public class WorkflowDashboardEngine extends Window {
 
                 final GWTJahiaNode node = (GWTJahiaNode) task.get("node");
 
-                for (GWTJahiaWorkflowAction action : node.getWorkflowInfos().get(task.get("language")).getAvailableActions()) {
+                for (GWTJahiaWorkflowAction action : node.getWorkflowInfos().get(task.get("language"))
+                        .getAvailableActions()) {
                     if (action.getName().equals(task.getName())) {
                         WorkflowActionDialog dialog = new WorkflowActionDialog(node, action, linker);
                         dialog.setWorkflowDashboard(WorkflowDashboardEngine.this);

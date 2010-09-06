@@ -40,10 +40,15 @@
         <field type="radio" variable="dbSettings.mode">
             <description align="left" txt="Choose your preferred database connection type" id="dbSettings.chooseMode"/>
             <spec>
-                <choice txt="Use a standalone DBMS" id="dbSettings.mode.standalone" value="standalone" revalidate="yes" set="true"/>
-                <choice txt="Use an embedded Sun Java DB / Apache Derby database engine" id="dbSettings.mode.embedded" value="embedded" revalidate="yes"/>
+                <choice txt="Use a standalone DBMS" id="dbSettings.mode.standalone" value="standalone" set="true"/>
+                <choice txt="Use an embedded Sun Java DB / Apache Derby database engine" id="dbSettings.mode.embedded" value="embedded"/>
             </spec>
         </field>
+    </panel>
+    
+    <panel order="3" topBuffer="0">
+        <field type="title" txt="Database connection settings" id="dbSettings.title"/>
+        <field type="space" />
         <field type="radio" variable="dbSettings.dbms.type" alight="left" conditionid="cnd.db.mode.standalone">
             <description align="left" txt="Choose your DBMS type" id="dbSettings.dbms.type"/>
             <spec>
@@ -54,7 +59,7 @@
         </field>
     </panel>
     
-    <panel order="3">
+    <panel order="4">
         <field type="title" txt="Database connection settings" id="dbSettings.dbms.title"/>
         <!-- DB driver and URL fields are for each DB type due to value initialization problem (if the DB type is changed) -->
 
@@ -104,7 +109,7 @@
         </field>
     </panel>
     
-    <panel order="4">
+    <panel order="5">
         <field type="title" txt="System administrator (root) settings" id="superUser.title"/>
         <!-- Allow changing the root username when we will support it
         <field type="text" align="left" variable="superUser.username">
@@ -112,11 +117,11 @@
             <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Administrator username is a mandatory field" id="superUser.username.mandatory"/>
         </field>
          -->
-        <field type="staticText" align="left" id="superUser.username"/>
+        <field type="staticText" align="left" id="superUser.username" txt="Username: root"/>
         <field type="password" align="left" variable="superUser.password">
             <spec>
-                <pwd set="" size="15" txt="Password" id="superUser.password"/>
-                <pwd set="" size="15" txt="Password confirmation" id="superUser.passwordConfirm"/>
+                <pwd set="" size="15" txt="Password*" id="superUser.password"/>
+                <pwd set="" size="15" txt="Password confirmation*" id="superUser.passwordConfirm"/>
             </spec>
             <validator class="com.izforge.izpack.util.NotEmptyValidator" txt="Administrator password is a mandatory field" id="superUser.password.mandatory"/>
             <validator
@@ -138,7 +143,7 @@
         <field type="staticText" align="left" txt="(*) - this field is required" id="common.requiredFieldHint"/>
     </panel>
     
-    <panel order="5">
+    <panel order="6">
         <field type="title" txt="Mail settings (optional)" id="mailSettings.title"/>
         <field type="staticText" txt="The settings below are optional. Leave them empty to disable E-Mail notification. Specifying them will enable the E-Mail notification feature." id="mailSettings.description"/>
         <field type="space"/>
@@ -152,10 +157,10 @@
             <spec txt="Mail from - sender" id="mailSettings.from" size="20"/>
         </field>
         <field type="space"/>
-        <field type="staticText" txt="" id="mailSettings.link" align="right"/>
+        <field type="staticText" txt="See http://jira.jahia.org/browse/JKB-20 for Mail server configuration options in Jahia 6.5" id="mailSettings.link" align="right"/>
     </panel>
 
-    <panel order="6">
+    <panel order="7">
         <field type="title" txt="Installation" id="afterInstall.title"/>
         <field type="staticText" txt="Installation successfull" id="afterInstall.description"/>
         <field type="check" variable="afterInstall.launchJahia" alight="left" conditionid="cnd.pack.tomcat">

@@ -34,10 +34,9 @@ package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.GridEvent;
-import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -76,6 +75,7 @@ public class VersioningTabItem extends EditEngineTabItem {
      */
     @Override
     public void create(final GWTJahiaLanguage locale) {
+        final VersioningTabItem tabItem = this;
         service.getVersions(engine.getNode().getPath(), new BaseAsyncCallback<List<GWTJahiaNodeVersion>>() {
             public void onSuccess(List<GWTJahiaNodeVersion> result) {
                 final ListStore<GWTJahiaNodeVersion> all = new ListStore<GWTJahiaNodeVersion>();
@@ -86,7 +86,7 @@ public class VersioningTabItem extends EditEngineTabItem {
                 column.setId("label");
                 column.setSortable(true);
                 column.setHeader("Name");
-                column.setWidth(200);
+                column.setWidth(100);
                 column.setRenderer(new GridCellRenderer() {
                     public Object render(ModelData model, String property, ColumnData config, int rowIndex,
                                          int colIndex, ListStore listStore, Grid grid) {
@@ -98,11 +98,15 @@ public class VersioningTabItem extends EditEngineTabItem {
                                 String s1;
                                 if (strings[0].contains("published")) {
                                     s1 = Messages.get("label.version.published", "published at");
-                                } else {
+                                } else if (strings[0].contains("uploaded")){
                                     s1 = Messages.get("label.version.uploaded", "uploaded at");
+                                } else {
+                                    s1 = strings[0];
                                 }
                                 value = value + s1 + " " + DateTimeFormat.getMediumDateTimeFormat().format(
                                         DateTimeFormat.getFormat("yyyy_MM_dd_HH_mm_ss").parse(strings[1]));
+                            } else {
+                                value = version.getLabel();
                             }
                         }
                         return value;
@@ -113,9 +117,32 @@ public class VersioningTabItem extends EditEngineTabItem {
                 column.setId("versionNumber");
                 column.setSortable(true);
                 column.setHeader("Version");
-                column.setWidth(200);
+                column.setWidth(50);
                 configs.add(column);
-
+                column = new ColumnConfig();
+                column.setSortable(false);
+                column.setHeader("Action");
+                column.setWidth(100);
+                column.setRenderer(new GridCellRenderer() {
+                    public Object render(ModelData model, String property, ColumnData config, int rowIndex,
+                                         int colIndex, ListStore listStore, Grid grid) {
+                        Button button = new Button(Messages.get("label.restore","Restore"));
+                        final GWTJahiaNodeVersion version = (GWTJahiaNodeVersion) model;
+                        button.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                            @Override
+                            public void componentSelected(ButtonEvent ce) {
+                                service.restoreNode(version, new BaseAsyncCallback() {
+                                    public void onSuccess(Object result) {
+                                        tabItem.removeAll();
+                                        create(locale);
+                                    }
+                                });
+                            }
+                        });
+                        return button;
+                    }
+                });
+                configs.add(column);
                 Grid<GWTJahiaNodeVersion> grid = new Grid<GWTJahiaNodeVersion>(all, new ColumnModel(configs));
                 grid.setAutoExpandColumn("label");
                 grid.addListener(Events.RowDoubleClick, new Listener<GridEvent>() {

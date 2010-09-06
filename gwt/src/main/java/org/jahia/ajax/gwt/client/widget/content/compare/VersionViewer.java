@@ -115,32 +115,36 @@ public class VersionViewer extends ContentPanel {
         // prepare data before rendering
         versionComboBox.setView(new ListView<GWTJahiaNodeVersion>() {
             @Override
-            protected GWTJahiaNodeVersion prepareData(GWTJahiaNodeVersion model) {
-                super.prepareData(model);
-                if (model.getVersionNumber() != null) {
+            protected GWTJahiaNodeVersion prepareData(GWTJahiaNodeVersion version) {
+                super.prepareData(version);
+                if (version.getVersionNumber() != null) {
                     String value = Messages.get("label.version", "Version") + " ";
-                    if (model.getLabel() != null && !"".equals(model.getLabel())) {
-                        String[] strings = model.getLabel().split("_at_");
+                    if (version.getLabel() != null && !"".equals(version.getLabel())) {
+                        String[] strings = version.getLabel().split("_at_");
                         if (strings.length == 2) {
                             String s1;
                             if (strings[0].contains("published")) {
                                 s1 = Messages.get("label.version.published", "published at");
-                            } else {
+                            } else if (strings[0].contains("uploaded")) {
                                 s1 = Messages.get("label.version.uploaded", "uploaded at");
+                            } else {
+                                s1 = strings[0];
                             }
                             value = value + s1 + " " + DateTimeFormat.getMediumDateTimeFormat().format(
                                     DateTimeFormat.getFormat("yyyy_MM_dd_HH_mm_ss").parse(strings[1]));
+                        } else {
+                            value = version.getLabel();
                         }
                     }
-                    model.set("displayField", value);
+                    version.set("displayField", value);
                 } else {
                     if (currentMode == Constants.MODE_PREVIEW || currentMode == Constants.MODE_STAGING) {
-                        model.set("displayField", Messages.get("label_staging_version", "Staging version"));
+                        version.set("displayField", Messages.get("label_staging_version", "Staging version"));
                     } else {
-                        model.set("displayField", Messages.get("label_live_version", "Live version"));
+                        version.set("displayField", Messages.get("label_live_version", "Live version"));
                     }
                 }
-                return model;
+                return version;
             }
         });
         versionComboBox.setDisplayField("displayField");
@@ -156,7 +160,8 @@ public class VersionViewer extends ContentPanel {
         };
 
         // paging loader
-        final PagingLoader<PagingLoadResult<GWTJahiaNodeVersion>> loader = new BasePagingLoader<PagingLoadResult<GWTJahiaNodeVersion>>(proxy);
+        final PagingLoader<PagingLoadResult<GWTJahiaNodeVersion>> loader = new BasePagingLoader<PagingLoadResult<GWTJahiaNodeVersion>>(
+                proxy);
         loader.addListener(Loader.BeforeLoad, new Listener<LoadEvent>() {
             public void handleEvent(LoadEvent be) {
                 be.<ModelData>getConfig().set("start", be.<ModelData>getConfig().get("offset"));
@@ -204,9 +209,25 @@ public class VersionViewer extends ContentPanel {
                 }
             });
 
+            final Button button = new Button(Messages.get("label.restore", "Restore"));
+            button.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                    final GWTJahiaNodeVersion version = (GWTJahiaNodeVersion) versionComboBox.getValue();
+                    contentService.restoreNode(version, new BaseAsyncCallback() {
+                        public void onSuccess(Object result) {
+                            versionComboBox.select(0);
+                            versionComboBox.reset();
+                            load(null);
+                        }
+                    });
+                }
+            });
+
             // add in the toolbar
             final ActionToolbarLayoutContainer headerToolBar = new ActionToolbarLayoutContainer("compare-engine") {
                 public void afterToolbarLoading() {
+                    insertItem(button, 0);
                     insertItem(hButton, 0);
                     insertItem(refresh, 0);
                     insertItem(versionComboBox, 0);
@@ -245,7 +266,8 @@ public class VersionViewer extends ContentPanel {
      * @param loadConfig
      * @param callback
      */
-    private void loadVersions(PagingLoadConfig loadConfig, AsyncCallback<PagingLoadResult<GWTJahiaNodeVersion>> callback) {
+    private void loadVersions(PagingLoadConfig loadConfig,
+                              AsyncCallback<PagingLoadResult<GWTJahiaNodeVersion>> callback) {
         int limit = 500;
         int offset = 0;
         if (loadConfig != null) {
@@ -265,33 +287,35 @@ public class VersionViewer extends ContentPanel {
             mask();
             if (version == null || (version.getVersionNumber() == null || version.getVersionNumber().length() == 0)) {
                 // version is not specified. Current.
-                contentService.getNodeURL(currentNode.getPath(), null, null, locale, currentMode, new BaseAsyncCallback<String>() {
-                    public void onSuccess(String url) {
-                        currentFrame = setUrl(url);
-                        setHeading(url);
+                contentService.getNodeURL(currentNode.getPath(), null, null, locale, currentMode,
+                                          new BaseAsyncCallback<String>() {
+                                              public void onSuccess(String url) {
+                                                  currentFrame = setUrl(url);
+                                                  setHeading(url);
 
-                        unmask();
-                    }
+                                                  unmask();
+                                              }
 
-                    public void onApplicationFailure(Throwable throwable) {
-                        Log.error("", throwable);
-                        unmask();
-                    }
-                });
+                                              public void onApplicationFailure(Throwable throwable) {
+                                                  Log.error("", throwable);
+                                                  unmask();
+                                              }
+                                          });
             } else {
-                contentService.getNodeURL(version.getNode().getPath(), version.getLabel(), workspace, locale, currentMode, new BaseAsyncCallback<String>() {
-                    public void onSuccess(String url) {
-                        currentFrame = setUrl(url);
-                        setHeading(url);
+                contentService.getNodeURL(version.getNode().getPath(), version.getLabel(), workspace, locale,
+                                          currentMode, new BaseAsyncCallback<String>() {
+                            public void onSuccess(String url) {
+                                currentFrame = setUrl(url);
+                                setHeading(url);
 
-                        unmask();
-                    }
+                                unmask();
+                            }
 
-                    public void onApplicationFailure(Throwable throwable) {
-                        Log.error("", throwable);
-                        unmask();
-                    }
-                });
+                            public void onApplicationFailure(Throwable throwable) {
+                                Log.error("", throwable);
+                                unmask();
+                            }
+                        });
             }
         }
     }

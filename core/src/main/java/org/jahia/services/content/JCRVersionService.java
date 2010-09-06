@@ -246,8 +246,10 @@ public class JCRVersionService extends JahiaService {
                                                                                  node.getPath());
                                                                          logger.debug(
                                                                                  "Add version label " + label + " on " + node.getPath() + " for version " + version.getName());
-                                                                         versionHistory.addVersionLabel(
+                                                                         if(nodeWrapper.isVersioned()){
+                                                                            versionHistory.addVersionLabel(
                                                                                  version.getName(), label, true);
+                                                                         }
                                                                          if (nodeWrapper.hasNodes()) {
                                                                              NodeIterator iterator = nodeWrapper.getNodes();
                                                                              while (iterator.hasNext()) {
@@ -272,18 +274,17 @@ public class JCRVersionService extends JahiaService {
                                                                      JCRNodeWrapper nodeWrapper = session.getNodeByUUID(
                                                                              node.getIdentifier());
                                                                      VersionManager versionManager = session.getWorkspace().getVersionManager();
-                                                                     String path = node.getPath();
+                                                                     String path = nodeWrapper.getPath();
                                                                      if (!versionManager.isCheckedOut(path)) {
                                                                          versionManager.checkout(path);
                                                                      }
                                                                      session.save();
                                                                      VersionHistory history = versionManager.getVersionHistory(
                                                                              path);
-                                                                     Version label1 = findVersionByLabel(history,
-                                                                                                         label);
+                                                                     Version label1 = findVersionByLabel(history, label);
                                                                      versionManager.restore(label1, true);
                                                                      nodeWrapper = session.getNodeByUUID(
-                                                                             node.getIdentifier());
+                                                                             nodeWrapper.getIdentifier());
                                                                      if (nodeWrapper.hasNodes()) {
                                                                          NodeIterator iterator = nodeWrapper.getNodes();
                                                                          while (iterator.hasNext()) {
@@ -361,14 +362,17 @@ public class JCRVersionService extends JahiaService {
                                                                                      nodeWrapper.getPath());
                                                                              logger.debug(
                                                                                      "Add version label " + label + " on " + nodeWrapper.getPath() + " for version " + version.getName());
-                                                                             versionHistory.addVersionLabel(
+                                                                             if(nodeWrapper.isVersioned()) {
+                                                                                versionHistory.addVersionLabel(
                                                                                      version.getName(), label, true);
+                                                                             }
                                                                              if (nodeWrapper.hasNodes()) {
                                                                                  NodeIterator iterator = nodeWrapper.getNodes();
                                                                                  while (iterator.hasNext()) {
                                                                                      JCRNodeWrapper nodeWrapper1 = (JCRNodeWrapper) iterator.nextNode();
-                                                                                     addVersionLabel(nodeWrapper1,
-                                                                                                     label);
+                                                                                     if(nodeWrapper.isVersioned()) {
+                                                                                        addVersionLabel(nodeWrapper1, label);
+                                                                                     }
                                                                                  }
                                                                              }
                                                                          }

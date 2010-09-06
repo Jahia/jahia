@@ -62,9 +62,14 @@ public class VersioningHelper {
     private static Logger logger = Logger.getLogger(VersioningHelper.class);
 
     private CacheService cacheService;
+    private JCRVersionService versionService;
 
     public void setCacheService(CacheService cacheService) {
         this.cacheService = cacheService;
+    }
+
+    public void setVersionService(JCRVersionService versionService) {
+        this.versionService = versionService;
     }
 
     /**
@@ -76,11 +81,10 @@ public class VersioningHelper {
     public void activateVersioning(List<String> pathes, JCRSessionWrapper currentUserSession) {
         for (String path : pathes) {
             try {
-                JCRSessionWrapper s = currentUserSession;
-                JCRNodeWrapper node = s.getNode(path);
+                JCRNodeWrapper node = currentUserSession.getNode(path);
                 if (!node.isVersioned()) {
                     node.versionFile();
-                    s.save();
+                    currentUserSession.save();
                 }
             } catch (Throwable e) {
                 logger.error(e, e);
@@ -106,7 +110,6 @@ public class VersioningHelper {
                 if (!node.isVersioned()) {
                     node.versionFile();
                     session.save();
-
                 }
                 versionManager.checkpoint(node.getPath());
                 GWTFileManagerUploadServlet.Item item = GWTFileManagerUploadServlet.getItem(tmpName);
@@ -124,7 +127,8 @@ public class VersioningHelper {
                 session.save();
                 versionManager.checkin(node.getPath());
                 String label = "uploaded_at_"+ new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(GregorianCalendar.getInstance().getTime());
-                JCRVersionService.getInstance().addVersionLabel(node,label);
+                versionService.addVersionLabel(node,label);
+                cacheService.getCache("WebdavCache").flush(true);
                 if (logger.isDebugEnabled()) {
                     logger.debug("Number of version: " + node.getVersions().size());
                 }
@@ -147,16 +151,27 @@ public class VersioningHelper {
      */
     public void restoreNode(String nodeUuid, String versionUuid, JCRSessionWrapper currentUserSession) {
         try {
-            JCRNodeWrapper node = (JCRNodeWrapper) currentUserSession.getNodeByUUID(nodeUuid);
+            JCRNodeWrapper node = currentUserSession.getNodeByUUID(nodeUuid);
             Version version = (Version) currentUserSession.getNodeByUUID(versionUuid);
-            node.checkout();
-            node.restore(version, true);
-            node.checkpoint();
+            VersionManager versionManager = currentUserSession.getWorkspace().getVersionManager();
+            versionManager.checkout(node.getPath());
+            versionManager.restore(version, true);
+            versionManager.checkin(node.getPath());
+            cacheService.getCache("WebdavCache").flush(true);
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
 
+    public void restoreVersionLabel(String nodeUuid, String versionLabel, JCRSessionWrapper currentUserSession) {
+        try {
+            JCRNodeWrapper node = currentUserSession.getNodeByUUID(nodeUuid);
+            versionService.restoreVersionLabel(node, versionLabel);
+            currentUserSession.save();
+            String label = "restored_at_"+ new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(GregorianCalendar.getInstance().getTime());
+            versionService.addVersionLabel(node,label);
             // fluch caches: Todo: flush only the nested cache
             cacheService.flushAllCaches();
-
-
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

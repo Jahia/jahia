@@ -78,6 +78,7 @@
 
     <bean name="VersioningHelper" class="org.jahia.ajax.gwt.helper.VersioningHelper" >
         <property name="cacheService" ref="JahiaCacheService"/>
+        <property name="versionService" ref="jcrVersionService"/>
     </bean>
 
     <bean name="ZipHelper" class="org.jahia.ajax.gwt.helper.ZipHelper" factory-method="getInstance" />

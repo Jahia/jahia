@@ -15,7 +15,6 @@
     <properties>
         <jahia.tomcat.version>6.0.29</jahia.tomcat.version>
         <jahia.jboss.version>4.2.3.GA</jahia.jboss.version>
-        <jahia.websphere.version>6.1.0.25</jahia.websphere.version>
     </properties>
     <profiles>
         <profile>
@@ -43,12 +42,6 @@
                   <module>jahia-qa-package</module>
                   <module>ear</module>
               </modules>
-        </profile>
-        <profile>
-            <id>websphere</id>
-            <modules>
-                <module>jahia-websphere-package</module>
-            </modules>
         </profile>
         <profile>
             <id>installer</id>

@@ -34,7 +34,6 @@
 
 package org.jahia.services.pages;
 
-import name.fraser.neil.plaintext.DiffMatchPatch;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.jahia.bin.Jahia;
 import org.jahia.data.fields.JahiaField;
@@ -74,6 +73,7 @@ import java.util.*;
  * @author Fulco Houkes
  * @author Serge Huber
  * @version 2.0
+ * @deprecated since 6.5
  */
 public class JahiaPage implements PageInfoInterface, ACLResourceInterface, Comparator<JahiaPage>, Serializable {
 

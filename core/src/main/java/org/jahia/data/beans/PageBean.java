@@ -59,6 +59,7 @@ import java.util.*;
  *
  * @author Serge Huber, Xavier Lawrence
  * @version $Id$
+ * @deprecated since 6.5
  */
 
 public class PageBean extends ContentBean {

@@ -1048,17 +1048,26 @@ public class JahiaAdministration extends HttpServlet {
         logger.debug("started");
         JahiaSite site = (JahiaSite) session.getAttribute(ProcessingContext.SESSION_SITE);
         JahiaUser user = (JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER);
+        
+        Locale forcedLocale = (Locale) session.getAttribute(ProcessingContext.SESSION_UI_LOCALE);
+        if (forcedLocale == null && JahiaUserManagerService.isGuest(user)) { 
+	        // resolve locale
+        	forcedLocale = resolveLocaleForGuest(request);
+        }
+        
         if (site == null) {
-            // This can occurs when all sites has been deleted ...
-            // create a fake site for JSP using taglibs
-            JahiaSite fakeSite = new JahiaSite(-1,
-                    "",
-                    "",
-                    "",
-                    "",
-                    new Properties(), null);
-            site = fakeSite;
-            session.setAttribute(ProcessingContext.SESSION_SITE, fakeSite);
+            site = ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite();
+            if (site == null) {
+	            // This can occurs when all sites has been deleted ...
+	            // create a fake site for JSP using taglibs
+	            site = new JahiaSite(-1,
+	                    "",
+	                    "",
+	                    "",
+	                    "",
+	                    new Properties(), null);
+            }
+            session.setAttribute(ProcessingContext.SESSION_SITE, site);
         }
         ContentPage contentPage = null;
 
@@ -1094,10 +1103,37 @@ public class JahiaAdministration extends HttpServlet {
 
         // Seem's that the Thread Param Bean is null when were in Admin ???? So we set it here
         Jahia.setThreadParamBean(jParams);
+        
+        if (forcedLocale != null) {
+        	session.setAttribute(ProcessingContext.SESSION_UI_LOCALE, forcedLocale);
+        	jParams.setUILocale(forcedLocale);
+        }
+        
         return jParams;
     }
 
-    /**
+    private static Locale resolveLocaleForGuest(HttpServletRequest request) {
+        List<Locale> availableBundleLocales = LanguageCodeConverters.getAvailableBundleLocales();
+        @SuppressWarnings("unchecked")
+        Enumeration<Locale> browserLocales = request.getLocales();
+        Locale resolvedLocale = availableBundleLocales != null && !availableBundleLocales.isEmpty() ? availableBundleLocales.get(0) : Locale.ENGLISH;
+        while (browserLocales != null && browserLocales.hasMoreElements()) {
+        	Locale candidate = browserLocales.nextElement();
+        	if (candidate != null) {
+        		if (availableBundleLocales.contains(candidate)) {
+        			resolvedLocale = candidate;
+        			break;
+        		} else if (StringUtils.isNotEmpty(candidate.getCountry()) && availableBundleLocales.contains(new Locale(candidate.getLanguage()))) {
+        			resolvedLocale = new Locale(candidate.getLanguage());
+        			break;
+        		} 
+        	}
+        }
+	    
+	    return resolvedLocale;
+    }
+
+	/**
      * Get all JahiaSite objects where the user has an access.
      *
      * @param user the user you want to get his access grantes sites list.

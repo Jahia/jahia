@@ -1,4 +1,5 @@
 <%@page import="java.util.Locale,
+					org.jahia.bin.Jahia,
                     org.jahia.params.ParamBean,
                     org.jahia.params.ProcessingContext,
                     org.jahia.services.sites.JahiaSite,
@@ -29,6 +30,8 @@
 
     //Boolean configJahia = (Boolean) request.getAttribute("configJahia");
     Integer daysLeft = (Integer) request.getAttribute("daysLeft");
+    pageContext.setAttribute("processingContext", Jahia.getThreadParamBean());
+    pageContext.setAttribute("theSite", theSite);
 %>
 <div class="dex-TabBar">
     <ul class="dex-TabBarItem-wrapper" style="width: 80%;">
@@ -64,7 +67,8 @@
             <div>
                 <div>
           <span class="tab-icon ico-studio">
-            <a href="<c:url value='/cms/studio/default/en/templateSets/templates-intranet/home.html'/>"><fmt:message key="org.jahia.admin.exitToStudio.label"/></a>
+          	<c:url var="studioUrl" value="/cms/studio/default/${processingContext.UILocale}/templateSets/templates-intranet/home.html"/>
+            <a href="${studioUrl}"><fmt:message key="org.jahia.admin.exitToStudio.label"/></a>
           </span>
                 </div>
             </div>
@@ -73,13 +77,14 @@
 
         <%
             if (theSite != null) {
-            String siteName = theSite.getTitle();;
+            String siteName = theSite.getTitle();
         %>
 
         <li class="dex-TabBarItem tabExit">
             <div>
                 <div>
-                    <span class="tab-icon ico-quit"><a href='<%=Jahia.getContextPath() + "/cms/edit/default/" + Jahia.getThreadParamBean().getLocale() + "/sites/" + theSite.getSiteKey() + "/home.html" %>'
+          			<c:url var="editUrl" value="/cms/edit/default/${theSite.defaultLanguage}/sites/${theSite.siteKey}/home.html"/>
+                    <span class="tab-icon ico-quit"><a href="${editUrl}"
                        title="<fmt:message key='org.jahia.admin.exit.label'/>" ><fmt:message key="org.jahia.admin.exit.label"/></a></span>
                 </div>
             </div>

@@ -193,6 +193,7 @@ public abstract class BaseActionItem implements ActionItem {
 
         // selection
         menuItem.setText(toolbarItem.getTitle());
+        menuItem.setToolTip(toolbarItem.getDescription());
         SelectionListener<MenuEvent> listener = getSelectListener();
         menuItem.addSelectionListener(listener);
         return menuItem;

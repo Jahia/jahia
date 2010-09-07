@@ -229,7 +229,7 @@ public class JCRPublicationService extends JahiaService {
                         VersionManager versionManager = sourceSession.getWorkspace().getVersionManager();
                         for (PublicationInfo publicationInfo : publicationInfos) {
                             JCRNodeWrapper n = sourceSession.getNodeByUUID(publicationInfo.getRoot().getUuid());
-                            logger.info("Start publication for publication infos associated witht root node "+n.getPath());
+                            logger.info("Start publication for publication infos associated with root node "+n.getPath());
                             for (ExtendedNodeType type : n.getMixinNodeTypes()) {
                                 if (type.getName().equals("jmix:publication")) {
                                     if (!versionManager.isCheckedOut(n.getPath())) {

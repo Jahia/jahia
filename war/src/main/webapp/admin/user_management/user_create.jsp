@@ -252,7 +252,7 @@
      </span>
      <span class="dex-PushButton">
         <span class="first-child">
-        <a class="ico-ok" href="javascript:document.mainForm.submit();"><fmt:message key="label.ok"/></a>
+        <a class="ico-ok" href="#ok" onclick="showWorkInProgress(); document.mainForm.submit(); return false;"><fmt:message key="label.ok"/></a>
         </span>
       </span>
 

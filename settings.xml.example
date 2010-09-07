@@ -47,73 +47,12 @@
        </properties>
      </profile>
      
-     <profile>
-       <!-- JBoss 4.2.x development -->
-       <id>andromeda-deployment-jboss42-dev</id>
-       <properties>
-         <jahia.deploy.targetServerType>jboss</jahia.deploy.targetServerType>
-         <jahia.deploy.targetServerVersion>4.2.x</jahia.deploy.targetServerVersion>
-         <jahia.deploy.targetServerDirectory>C:/rd/runtime/andromeda-jboss/jboss-4.2.3.GA</jahia.deploy.targetServerDirectory>
-         <jahia.deploy.war.dirName>jahia.war</jahia.deploy.war.dirName>
-         <jahia.deploy.war.contextPath>/jahia</jahia.deploy.war.contextPath>
-         <jahia.debug.address>socket:hostname=localhost,port=8000</jahia.debug.address>
-       </properties>
-     </profile>
-
-      <profile>
-        <!-- Websphere 6.1 development -->
-        <id>andromeda-deployment-websphere61-dev</id>
-        <properties>
-          <jahia.deploy.targetServerType>was</jahia.deploy.targetServerType>
-          <jahia.deploy.targetServerVersion>6.1.0.25</jahia.deploy.targetServerVersion>
-          <jahia.deploy.targetServerDirectory>/Users/loom/java/deployments/websphere</jahia.deploy.targetServerDirectory>
-          <jahia.deploy.war.dirName>jahia.war</jahia.deploy.war.dirName>
-          <jahia.deploy.war.contextPath></jahia.deploy.war.contextPath>
-          <jahia.debug.address>socket:hostname=localhost,port=8000</jahia.debug.address>
-        </properties>
-      </profile>
-
-      <profile>
-        <id>websphere</id>
-        <properties>
-          <jahia.deploy.websphere.server.host>127.0.0.1</jahia.deploy.websphere.server.host>
-          <jahia.deploy.websphere.server.username>root</jahia.deploy.websphere.server.username>
-          <jahia.deploy.websphere.server.password>password</jahia.deploy.websphere.server.password>
-          <jahia.deploy.websphere.server.stagingDir>/root/websphere/</jahia.deploy.websphere.server.stagingDir>
-          <jahia.deploy.websphere.server.installDir>/opt/IBM/WebSphere/AppServer/</jahia.deploy.websphere.server.installDir>
-          <jahia.deploy.websphere.server.profileDir>/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/</jahia.deploy.websphere.server.profileDir>
-          <jahia.deploy.websphere.server.name>server1</jahia.deploy.websphere.server.name>
-          <jahia.deploy.websphere.server.cell>localhostNode01Cell</jahia.deploy.websphere.server.cell>
-          <jahia.deploy.websphere.server.node>localhostNode01</jahia.deploy.websphere.server.node>
-          <jahia.deploy.websphere.server.authDataAlias>localhostNode01/Jahia DB Authentification</jahia.deploy.websphere.server.authDataAlias>
-
-          <jahia.configure.websphere.database.url>jdbc:oracle:thin:@127.0.0.1:1521:test</jahia.configure.websphere.database.url>
-          <jahia.configure.websphere.database.username>scott</jahia.configure.websphere.database.username>
-          <jahia.configure.websphere.database.password>tiger</jahia.configure.websphere.database.password>
-          <jahia.configure.websphere.database.type>oracle</jahia.configure.websphere.database.type>
-          <jahia.configure.websphere.database.overwrite>true</jahia.configure.websphere.database.overwrite>
-          <jahia.configure.websphere.database.storeFilesInDB>true</jahia.configure.websphere.database.storeFilesInDB>
-          <jahia.configure.websphere.localIp>127.0.0.1</jahia.configure.websphere.localIp>
-          <jahia.configure.websphere.localPort>9080</jahia.configure.websphere.localPort>
-        </properties>
-      </profile>
-
-
   </profiles>
   
   <activeProfiles>
     <activeProfile>andromeda-deployment-tomcat6-prod</activeProfile>
     <activeProfile>configure</activeProfile>
-    <!-- <activeProfile>jboss-deployment</activeProfile> -->
     <!-- <activeProfile>eclipse-integration</activeProfile> -->
-
-    <!--
-     Activating the configure-before-packaging profile will trigger
-     the jahia:configure goal to configure Jahia BEFORE building the
-     WAR and EAR files, this way you can build a configuration to be
-     deployed on JEE application servers.
-    -->
-    <!--activeProfile>configure-before-packaging</activeProfile-->
 
     <!--
       Activate the code-coverage plugin to generate the code

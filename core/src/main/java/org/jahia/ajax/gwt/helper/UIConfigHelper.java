@@ -403,7 +403,7 @@ public class UIConfigHelper {
      */
     private GWTJahiaToolbarMenu createGWTItemsGroup(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, String toolbarName, int index, Menu menu) {
         // don't add the items group if  has no items group
-        List<Item> list = menu.getRealItems(site, jahiaUser, locale);
+        List<Item> list = menu.getItems();
         if (list == null || list.isEmpty()) {
             logger.debug("toolbar[" + toolbarName + "] itemlist is empty");
             return null;
@@ -472,7 +472,7 @@ public class UIConfigHelper {
      */
     private void addToolbarItem(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, List<GWTJahiaToolbarItem> gwtToolbarItemsList, Item item) {
         if (item instanceof Menu) {
-            for (Item subItem : ((Menu) item).getRealItems(site, jahiaUser, locale)) {
+            for (Item subItem : ((Menu) item).getItems()) {
                 addToolbarItem(site, jahiaUser, locale, uiLocale, request, gwtToolbarItemsList, subItem);
             }
         } else {

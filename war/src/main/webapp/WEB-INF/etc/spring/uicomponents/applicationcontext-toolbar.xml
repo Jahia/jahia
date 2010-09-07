@@ -4,44 +4,6 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-    <!-- fill: allows to 'push' itemsgroup after this one to the rigth -->
-
-    <!-- User-->
-    <bean id="Toolbar.ItemsGroup.User" class="org.jahia.services.uicomponents.bean.toolbar.Menu">
-
-        <property name="icon" value="user"/>
-        <property name="visibility" value="$site/toolbar/user"/>
-        <property name="titleKey" value="label.user"/>
-        <property name="items">
-            <list>
-                <!--ref bean="Toolbar.Item.MySettings"/-->
-                <!-- ToDo : <ref bean="Toolbar.Item.myDashBoard"/-->
-                <ref bean="Toolbar.Item.Logout"/>
-            </list>
-        </property>
-    </bean>
-
-    <!-- tools-->
-    <bean id="Toolbar.ItemsGroup.Managers" class="org.jahia.services.uicomponents.bean.toolbar.Menu">
-
-        <property name="visibility">
-            <bean class="org.jahia.services.uicomponents.bean.Visibility">
-                <property name="needAuthentication" value="true"/>
-            </bean>
-        </property>
-        <property name="titleKey" value="label.managers"/>
-        <property name="items">
-            <list>
-                <ref bean="Toolbar.Item.FileManager"/>
-                <ref bean="Toolbar.Item.PortletManager"/>
-                <ref bean="Toolbar.Item.ContentManager"/>
-                <ref bean="Toolbar.Item.CategoryManager"/>
-                <ref bean="Toolbar.Item.TagManager"/>
-                <ref bean="Toolbar.Item.SiteManager"/>
-            </list>
-        </property>
-    </bean>
-
     <!-- language switcher -->
     <bean id="Toolbar.ItemsGroup.LanguageSwitcher" class="org.jahia.services.uicomponents.bean.toolbar.Item">
         <property name="actionItem">
@@ -123,42 +85,9 @@
     </bean>
 
 
-    <!-- shortcut buttons -->
-    <bean id="Toolbar.ItemsGroup.Shortcuts.Modify"
-          class="org.jahia.services.uicomponents.bean.toolbar.Menu">
-
-        <property name="items">
-            <list>
-                <ref bean="Toolbar.Item.Rename"/>
-                <ref bean="Toolbar.Item.Delete"/>
-            </list>
-        </property>
-    </bean>
-    <bean id="Toolbar.ItemsGroup.Shortcuts.Copy"
-          class="org.jahia.services.uicomponents.bean.toolbar.Menu">
-
-        <property name="items">
-            <list>
-                <ref bean="Toolbar.Item.Copy"/>
-                <ref bean="Toolbar.Item.Cut"/>
-                <ref bean="Toolbar.Item.Paste"/>
-                <ref bean="Toolbar.Item.PasteReference"/>
-            </list>
-        </property>
-    </bean>
-    <bean id="Toolbar.ItemsGroup.Shortcuts.Refresh"
-          class="org.jahia.services.uicomponents.bean.toolbar.Menu">
-
-        <property name="items">
-            <list>
-                <ref bean="Toolbar.Item.Refresh"/>
-            </list>
-        </property>
-    </bean>
-
     <!-- ////// items -->
 
-    <bean id="Toolbar.Item.WorkflowStatuswAction" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.WorkflowStatusAction" class="org.jahia.services.uicomponents.bean.toolbar.Item">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ViewWorkflowStatusActionItem"/>
         </property>

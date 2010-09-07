@@ -96,8 +96,34 @@
                             <property name="titleKey" value="label.exportWar"/>
                             <property name="icon" value="templateExport"/>
                         </bean>
-                        <ref bean="Toolbar.ItemsGroup.Managers"/>
-                        <ref bean="Toolbar.ItemsGroup.User"/>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="visibility">
+                                <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                                    <property name="needAuthentication" value="true"/>
+                                </bean>
+                            </property>
+                            <property name="titleKey" value="label.managers"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.FileManager"/>
+                                    <ref bean="Toolbar.Item.PortletManager"/>
+                                    <ref bean="Toolbar.Item.ContentManager"/>
+                                    <ref bean="Toolbar.Item.CategoryManager"/>
+                                    <ref bean="Toolbar.Item.TagManager"/>
+                                    <ref bean="Toolbar.Item.SiteManager"/>
+                                </list>
+                            </property>
+                        </bean>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="icon" value="user"/>
+                            <property name="visibility" value="$site/toolbar/user"/>
+                            <property name="titleKey" value="label.user"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.Logout"/>
+                                </list>
+                            </property>
+                        </bean>
                         <ref bean="Toolbar.Item.Admin"/>
                     </list>
                 </property>
@@ -288,14 +314,40 @@
                             <property name="titleKey" value="label.workflow"/>
                             <property name="items">
                                 <list>
-                                    <ref bean="Toolbar.Item.WorkflowStatuswAction"/>
+                                    <ref bean="Toolbar.Item.WorkflowStatusAction"/>
                                     <ref bean="Toolbar.Item.WorkflowDashboard"/>
                                 </list>
                             </property>
                             <property name="visibility" value="$site/toolbar/workflow"/>
                         </bean>
-                        <ref bean="Toolbar.ItemsGroup.Managers"/>
-                        <ref bean="Toolbar.ItemsGroup.User"/>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="visibility">
+                                <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                                    <property name="needAuthentication" value="true"/>
+                                </bean>
+                            </property>
+                            <property name="titleKey" value="label.managers"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.FileManager"/>
+                                    <ref bean="Toolbar.Item.PortletManager"/>
+                                    <ref bean="Toolbar.Item.ContentManager"/>
+                                    <ref bean="Toolbar.Item.CategoryManager"/>
+                                    <ref bean="Toolbar.Item.TagManager"/>
+                                    <ref bean="Toolbar.Item.SiteManager"/>
+                                </list>
+                            </property>
+                        </bean>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="icon" value="user"/>
+                            <property name="visibility" value="$site/toolbar/user"/>
+                            <property name="titleKey" value="label.user"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.Logout"/>
+                                </list>
+                            </property>
+                        </bean>
                         <ref bean="Toolbar.Item.Admin"/>
                         <ref bean="Toolbar.Item.Studio"/>
                     </list>

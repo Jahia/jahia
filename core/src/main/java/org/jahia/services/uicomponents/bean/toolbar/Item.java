@@ -153,4 +153,12 @@ public class Item implements Serializable, BeanNameAware {
     public void setLayout(String layout) {
         this.layout = layout;
     }
+
+    public void setParentMenu(Menu menu) {
+        menu.addItem(this);
+    }
+
+    public void setParentToolbar(Toolbar toolbar) {
+        toolbar.addItem(this);
+    }
 }

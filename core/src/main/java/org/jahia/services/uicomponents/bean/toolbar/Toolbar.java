@@ -96,6 +96,9 @@ public class Toolbar implements Serializable, BeanNameAware {
         this.items = items;
     }
 
+    public void addItem(Item item) {
+        this.items.add(item);
+    }
 
     public Visibility getVisibility() {
         return visibility;

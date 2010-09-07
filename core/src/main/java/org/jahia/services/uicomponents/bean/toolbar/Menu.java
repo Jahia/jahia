@@ -58,8 +58,7 @@ public class Menu extends Item implements Serializable, BeanNameAware {
         this.items = items;
     }
 
-    public List<Item> getRealItems(JCRSiteNode site, JahiaUser user, Locale locale) {
-        return items;
+    public void addItem(Item item) {
+        this.items.add(item);
     }
-
 }

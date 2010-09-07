@@ -24,18 +24,6 @@
                 </dependency>
             </dependencies>
         </profile>
-        <profile>
-            <id>jboss-deployment</id>
-            <activation>
-                <property>
-                    <name>jahia.deploy.targetServerType</name>
-                    <value>jboss</value>
-                </property>
-            </activation>
-            <properties>
-                <jahia.deploy.skip>true</jahia.deploy.skip>
-            </properties>
-        </profile>
     </profiles>
 
     <dependencies>

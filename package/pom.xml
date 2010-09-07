@@ -14,28 +14,8 @@
     <packaging>pom</packaging>
     <properties>
         <jahia.tomcat.version>6.0.29</jahia.tomcat.version>
-        <jahia.jboss.version>4.2.3.GA</jahia.jboss.version>
     </properties>
     <profiles>
-        <profile>
-            <id>jboss-deployment</id>
-            <activation>
-                <property>
-                    <name>jahia.deploy.targetServerType</name>
-                    <value>jboss</value>
-                </property>
-            </activation>
-            <modules>
-                <module>deployments</module>
-            </modules>
-        </profile>
-        <profile>
-              <id>qa-jboss</id>
-              <modules>
-                  <module>jahia-qa-package</module>
-                  <module>deployments</module>
-              </modules>
-        </profile>
         <profile>
               <id>qa-build</id>
               <modules>
@@ -47,7 +27,6 @@
             <id>installer</id>
             <modules>
                 <module>jahia-installer-package</module>
-                <module>deployments</module>
             </modules>
         </profile>
     </profiles>

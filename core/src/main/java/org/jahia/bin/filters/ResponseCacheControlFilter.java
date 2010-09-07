@@ -119,12 +119,10 @@ public class ResponseCacheControlFilter implements Filter, InitializingBean {
     }
 
     public static void setNoCacheHeaders(HttpServletResponse response) {
-        /*
-         * response .setHeader("Cache-Control",
-         * "no-cache, no-store, must-revalidate, proxy-revalidate, max-age=0");
-         */
-        response.setHeader("Pragma", "no-cache");
-        // response.setDateHeader("Expires", 295075800000L);
+		response.setHeader("Cache-Control",
+		        "no-cache, no-store, must-revalidate, proxy-revalidate, max-age=0");
+		response.setHeader("Pragma", "no-cache");
+		response.setDateHeader("Expires", 295075800000L);
     }
 
     public void setCachedResources(String cachedResources) {

@@ -390,6 +390,17 @@ public class JCRSessionWrapper implements Session {
         prefixToNs.put(prefix, uri);
         for (Session s : sessions.values()) {
             s.setNamespacePrefix(prefix, uri);
+            try {
+                NamespaceRegistry nsReg = s.getWorkspace().getNamespaceRegistry();
+                if (nsReg != null) {
+                    nsReg.registerNamespace(prefix, uri);
+                }
+            } catch (RepositoryException e) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Prefix/uri could not be registered in workspace's registry- "
+                            + prefix + "/" + uri, e);
+                }
+            }
         }
     }
 

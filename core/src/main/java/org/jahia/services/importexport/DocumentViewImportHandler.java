@@ -46,6 +46,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import com.google.common.collect.ImmutableSet;
+
 import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
@@ -118,6 +120,20 @@ public class DocumentViewImportHandler extends DefaultHandler {
         this.siteKey = siteKey;
     }
 
+    public void startPrefixMapping(String prefix, String uri)
+            throws SAXException {
+        try {
+            NamespaceRegistry nsRegistry = session.getWorkspace().getNamespaceRegistry();
+            Set<String> prefixes = ImmutableSet.of(nsRegistry.getPrefixes());
+            if (!prefixes.contains(prefix)) {
+                nsRegistry.registerNamespace(prefix, uri);
+                session.setNamespacePrefix(prefix, uri);
+            }
+        } catch (RepositoryException re) {
+            throw new SAXException(re);
+        }
+    }    
+    
     public void startElement(String namespaceURI, String localName, String qName, Attributes atts) throws SAXException {
         if (error > 0) {
             error++;
@@ -149,7 +165,6 @@ public class DocumentViewImportHandler extends DefaultHandler {
             String pt = atts.getValue(Constants.JCR_PRIMARYTYPE);
             if (Constants.JAHIANT_VIRTUALSITE.equals(pt) && siteKey != null) {
                 decodedQName = siteKey;
-                String newpath;
                 pathMapping.put(path + "/", "/sites/"+ siteKey + "/");
                 path = "/sites/"+ siteKey;
             }
@@ -162,7 +177,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
             try {
                 child = session.getNode(path);
                 if (child.isWriteable() && child.isVersioned() && !child.isCheckedOut()) {
-                    child.checkout();
+                    session.getWorkspace().getVersionManager().checkout(child.getPath());
                 }
 
             } catch (PathNotFoundException e) {
@@ -216,8 +231,21 @@ public class DocumentViewImportHandler extends DefaultHandler {
                                     } catch (ItemNotFoundException e) {
                                     }
                                 case ImportUUIDBehavior.IMPORT_UUID_COLLISION_REMOVE_EXISTING:
-                                case ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING:
+                                    try {
+                                        JCRNodeWrapper node = session.getNodeByUUID(uuid);
+                                        // make sure conflicting node is not importTargetNode or an ancestor thereof
+                                        if (nodes.peek().getPath().startsWith(node.getPath())) {
+                                            String msg = "cannot remove ancestor node";
+                                            logger.debug(msg);
+                                            throw new ConstraintViolationException(msg);
+                                        }
+                                        // remove conflicting
+                                        node.remove();
+                                    } catch (ItemNotFoundException e) {
+                                    }
                                     break;
+                                case ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING:
+                                    throw new UnsupportedOperationException();
 
                                 case ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW:
                                     uuid = null;
@@ -235,7 +263,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
                                 child.getFileContent().uploadFile(zis, mime);
                                 zis.close();
                             } else {
-                                child.setProperty(Constants.JCR_DATA, zis);
+                                child.setProperty(Constants.JCR_DATA, session.getValueFactory().createBinary(zis));
                                 child.setProperty(Constants.JCR_MIMETYPE, atts.getValue(Constants.JCR_MIMETYPE));
                                 child.setProperty(Constants.JCR_LASTMODIFIED, Calendar.getInstance());
                                 zis.close();
@@ -260,7 +288,6 @@ public class DocumentViewImportHandler extends DefaultHandler {
             } else {
                 nodes.push(child);
             }
-
         } catch (RepositoryException re) {
             logger.error("Cannot import " + pathes.pop(), re);
             error++;

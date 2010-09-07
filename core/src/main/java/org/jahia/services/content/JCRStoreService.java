@@ -40,6 +40,9 @@ import org.jahia.services.content.interceptor.PropertyInterceptor;
 import org.jahia.services.content.interceptor.InterceptorChain;
 import org.jahia.services.usermanager.JahiaUser;
 
+import com.google.common.collect.ImmutableSet;
+
+import javax.jcr.NamespaceRegistry;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Workspace;
@@ -48,6 +51,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * This is a Jahia service, which manages the delegation of JCR store related deployment
@@ -88,7 +92,15 @@ public class JCRStoreService extends JahiaService  {
 
     public void start() throws JahiaInitializationException {
         try {
-            NodeTypeRegistry.getInstance();
+            NamespaceRegistry nsRegistry = sessionFactory.getNamespaceRegistry();
+            NodeTypeRegistry ntRegistry = NodeTypeRegistry.getInstance();
+            Set<String> prefixes = ImmutableSet.of(nsRegistry.getPrefixes());
+            for (Map.Entry<String, String> namespaceEntry : ntRegistry.getNamespaces().entrySet()) {
+                if (!prefixes.contains(namespaceEntry.getKey())) {
+                    nsRegistry
+                            .registerNamespace(namespaceEntry.getKey(), namespaceEntry.getValue());
+                }
+            }
 
             initObservers(listeners);
         } catch (Exception e) {

@@ -32,7 +32,6 @@
 
 package org.jahia.ajax.gwt.client.widget.usergroup;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.data.BasePagingLoader;
@@ -56,6 +55,7 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
 import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
 import org.jahia.ajax.gwt.client.data.GWTJahiaSite;
 import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.JahiaService;
 import org.jahia.ajax.gwt.client.service.JahiaServiceAsync;
 import org.jahia.ajax.gwt.client.service.UserManagerService;
@@ -132,7 +132,7 @@ public class UserGroupSelect extends Window {
                 break;
         }
         ButtonBar buttons = new ButtonBar() ;
-        Button add = new Button("Add", new SelectionListener<ButtonEvent>() {
+        Button add = new Button(Messages.get("label.add", "Add"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 if (userGrid != null) {
                     target.addUsers(userGrid.getSelectionModel().getSelectedItems());
@@ -147,7 +147,7 @@ public class UserGroupSelect extends Window {
             }
         }) ;
         buttons.add(add) ;
-        Button cancel = new Button("Cancel", new SelectionListener<ButtonEvent>() {
+        Button cancel = new Button(Messages.get("label.cancel", "Cancel"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 hide();
             }
@@ -177,8 +177,8 @@ public class UserGroupSelect extends Window {
                 }
             }
         };
-        final BasePagingLoader loader = new BasePagingLoader<PagingLoadResult<GWTJahiaUser>>(proxy);
-        userSearchField = new SearchField("Search: ", false) {
+        final BasePagingLoader<PagingLoadResult<GWTJahiaUser>> loader = new BasePagingLoader<PagingLoadResult<GWTJahiaUser>>(proxy);
+        userSearchField = new SearchField(Messages.get("label.search", "Search: "), false) {
             public void onFieldValidation(String value) {
                 loader.load();
             }
@@ -200,11 +200,11 @@ public class UserGroupSelect extends Window {
         ListStore<GWTJahiaUser> store = new ListStore<GWTJahiaUser>(loader);
 
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
-        columns.add(new ColumnConfig("userName", "User name", 120));
-        columns.add(new ColumnConfig("lastname", "Last name", 140));
-        columns.add(new ColumnConfig("firstname", "First name", 140));
+        columns.add(new ColumnConfig("userName", Messages.get("label.username", "User name"), 120));
+        columns.add(new ColumnConfig("j:lastName", Messages.get("org.jahia.admin.lastName.label", "Last name"), 140));
+        columns.add(new ColumnConfig("j:firstName", Messages.get("org.jahia.admin.firstName.label", "First name"), 140));
 //        columns.add(new ColumnConfig("siteName", "Site name", 80));
-        columns.add(new ColumnConfig("provider", "Provider", 80));
+        columns.add(new ColumnConfig("provider", Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.column.provider.label", "Provider"), 80));
 //        columns.add(new ColumnConfig("email", "Email", 100));
 
         ColumnModel cm = new ColumnModel(columns);
@@ -230,7 +230,7 @@ public class UserGroupSelect extends Window {
         ContentPanel userPanel = new ContentPanel();
         userPanel.setButtonAlign(Style.HorizontalAlignment.CENTER);
         userPanel.setIconStyle("icon-table");
-        userPanel.setHeading("Select a user");
+        userPanel.setHeading(Messages.get("label.userSelect", "Select a user"));
         userPanel.setLayout(new FitLayout());
         userPanel.add(userGrid);
         userPanel.setSize(480, 350);
@@ -259,7 +259,7 @@ public class UserGroupSelect extends Window {
         };
         final BasePagingLoader loader = new BasePagingLoader<PagingLoadResult<GWTJahiaGroup>>(proxy);
 
-        groupSearchField = new SearchField("Search: ", false) {
+        groupSearchField = new SearchField(Messages.get("label.search", "Search: "), false) {
             public void onFieldValidation(String value) {
                 loader.load();
             }
@@ -366,7 +366,7 @@ public class UserGroupSelect extends Window {
         };
         final BasePagingLoader loader = new BasePagingLoader<PagingLoadResult<GWTJahiaRole>>(proxy);
 
-        roleSearchField = new SearchField("Search: ", false) {
+        roleSearchField = new SearchField(Messages.get("label.search", "Search: "), false) {
             public void onFieldValidation(String value) {
                 loader.load();
             }

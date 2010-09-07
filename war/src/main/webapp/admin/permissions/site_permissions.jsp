@@ -64,11 +64,13 @@
             <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><fmt:message key="label.backToMenu"/></a>
         </span>
     </span>
+    <%--
     <span class="dex-PushButton">
         <span class="first-child">
             <a class="ico-ok" href="javascript:saveContent();"><fmt:message key="org.jahia.admin.saveChanges.label"/></a>
         </span>
     </span>
+    --%>
 </div>
 </div>
 <%@include file="/admin/include/footer.inc" %>

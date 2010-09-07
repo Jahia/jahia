@@ -390,9 +390,7 @@ public class ManageUsers extends AbstractAdministrationModule {
 
             userMessage = getMessage("label.user");
             userMessage += " [" + username + "] ";
-            userMessage += getMessage("org.jahia.admin.userMessage.alreadyExist.label") + " ";
-            userMessage += getMessage("org.jahia.admin.userMessage.onAnotherSite.label") + ".";
-            userMessage += "&nbsp;<a href=\""+url+"\">" + getMessage("org.jahia.admin.userMessage.clickHereToRegister.label") + "</a>";
+            userMessage += getMessage("org.jahia.admin.userMessage.alreadyExist.label");
             return false;
         }
         JahiaPasswordPolicyService pwdPolicyService = ServicesRegistry.getInstance().getJahiaPasswordPolicyService();

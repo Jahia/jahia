@@ -57,10 +57,10 @@ public class Publish implements ExternalActivityBehaviour {
     public void execute(ActivityExecution execution) throws Exception {
         List<PublicationInfo> info = (List<PublicationInfo>) execution.getVariable("publicationInfos");
         String workspace = (String) execution.getVariable("workspace");
-        String username = (String) execution.getVariable("user");
+        String userKey = (String) execution.getVariable("user");
         JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
         final JahiaUserManagerService userMgr = ServicesRegistry.getInstance().getJahiaUserManagerService();
-        JahiaUser user = userMgr.lookupUser(username);
+        JahiaUser user = userMgr.lookupUserByKey(userKey);
         JahiaUser currentUser = sessionFactory.getCurrentUser();
         sessionFactory.setCurrentUser(user);
         String label = "published_at_"+ new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(GregorianCalendar.getInstance().getTime());

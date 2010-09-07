@@ -42,16 +42,7 @@ import java.util.Date;
  */
 public class HistoryWorkflowAction extends HistoryWorkflowBase {
 
-    /**
-     * Initializes an instance of this class.
-     * 
-     * @param processId the ID of the corresponding workflow process instance
-     * @param name the name of the item
-     * @param provider the provider key
-     */
-    public HistoryWorkflowAction(String processId, String name, String provider) {
-        super(processId, name, provider);
-    }
+    private String actionId;
 
     /**
      * Initializes an instance of this class.
@@ -59,12 +50,21 @@ public class HistoryWorkflowAction extends HistoryWorkflowBase {
      * @param processId the ID of the corresponding workflow process instance
      * @param name the name of the item
      * @param provider the provider key
+     * @param user
      * @param startTime the start point of the process instance
      * @param endTime the end point of the process instance or <code>null</code>
-     *            if it is not completed yet
      */
-    public HistoryWorkflowAction(String processId, String name, String provider, Date startTime, Date endTime) {
-        super(processId, name, provider, startTime, endTime);
+    public HistoryWorkflowAction(String actionId, String processId, String name, String provider, String user, Date startTime,
+                                 Date endTime) {
+        super(processId, name, provider, user, startTime, endTime);
+        this.actionId = actionId;
     }
 
+    public String getActionId() {
+        return actionId;
+    }
+
+    public void setActionId(String actionId) {
+        this.actionId = actionId;
+    }
 }

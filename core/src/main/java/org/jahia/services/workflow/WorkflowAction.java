@@ -39,7 +39,8 @@ package org.jahia.services.workflow;
  * @since : JAHIA 6.1
  *        Created : 2 févr. 2010
  */
-public class WorkflowAction extends WorkflowBase {    
+public class WorkflowAction extends WorkflowBase {
+    private WorkflowDefinition workflowDefinition;
 
     public WorkflowAction(String name, String provider) {
         super(name, provider);
@@ -65,4 +66,11 @@ public class WorkflowAction extends WorkflowBase {
         return getName().hashCode() ;
     }
 
+    public WorkflowDefinition getWorkflowDefinition() {
+        return workflowDefinition;
+    }
+
+    public void setWorkflowDefinition(WorkflowDefinition workflowDefinition) {
+        this.workflowDefinition = workflowDefinition;
+    }
 }

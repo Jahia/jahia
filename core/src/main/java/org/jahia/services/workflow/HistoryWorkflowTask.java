@@ -42,10 +42,6 @@ import java.util.Date;
  */
 public class HistoryWorkflowTask extends HistoryWorkflowAction {
 
-    private String assignee;
-
-    private boolean completed;
-
     private String outcome;
 
     private String displayOutcome;
@@ -56,24 +52,16 @@ public class HistoryWorkflowTask extends HistoryWorkflowAction {
      * @param processId the ID of the corresponding workflow process instance
      * @param name the name of the item
      * @param provider the provider key
+     * @param user
      * @param startTime the start point of the process instance
      * @param endTime the end point of the process instance or <code>null</code>
-     *            if it is not completed yet
+ *            if it is not completed yet
      * @param outcome the task outcome
-     * @param asignee the key of the user, which executed the task
      */
-    public HistoryWorkflowTask(String processId, String name, String provider, Date startTime, Date endTime,
-            String outcome, String asignee) {
-        super(processId, name, provider, startTime, endTime);
+    public HistoryWorkflowTask(String actionId, String processId, String name, String provider, String user, Date startTime,
+                               Date endTime, String outcome) {
+        super(actionId, processId, name, provider, user, startTime, endTime);
         this.outcome = outcome;
-        this.assignee = asignee;
-    }
-
-    /**
-     * @return the assignee
-     */
-    public String getAssignee() {
-        return assignee;
     }
 
     /**
@@ -87,36 +75,7 @@ public class HistoryWorkflowTask extends HistoryWorkflowAction {
         return displayOutcome;
     }
 
-    /**
-     * @return the completed
-     */
-    public boolean isCompleted() {
-        return completed;
-    }
-
-    /**
-     * @param assignee the assignee to set
-     */
-    public void setAssignee(String assignee) {
-        this.assignee = assignee;
-    }
-
-    /**
-     * @param completed the completed to set
-     */
-    public void setCompleted(boolean completed) {
-        this.completed = completed;
-    }
-
-    @Override
-    public void setEndTime(Date endTime) {
-        super.setEndTime(endTime);
-        if (endTime != null) {
-            completed = true;
-        }
-    }
-
-    /**
+     /**
      * @param outcome the outcome to set
      */
     public void setOutcome(String outcome) {

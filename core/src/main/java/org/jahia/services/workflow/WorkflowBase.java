@@ -45,11 +45,9 @@ public class WorkflowBase implements Serializable {
     
     private static final long serialVersionUID = -2880063315607195952L;
     
-    private final String name;
-
     private final String provider;
 
-    private WorkflowDefinition definition;
+    private final String name;
 
     protected String displayName;
 
@@ -81,14 +79,6 @@ public class WorkflowBase implements Serializable {
      */
     public String getProvider() {
         return provider;
-    }
-
-    public WorkflowDefinition getDefinition() {
-        return definition;
-    }
-
-    public void setDefinition(WorkflowDefinition definition) {
-        this.definition = definition;
     }
 
     public void setDisplayName(String displayName) {

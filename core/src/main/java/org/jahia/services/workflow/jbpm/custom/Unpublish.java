@@ -60,10 +60,10 @@ public class Unpublish implements ExternalActivityBehaviour {
         String workspace = (String) execution.getVariable("workspace");
         Locale locale = (Locale) execution.getVariable("locale");
 
-        String username = (String) execution.getVariable("user");
+        String userKey = (String) execution.getVariable("user");
         JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
         final JahiaUserManagerService userMgr = ServicesRegistry.getInstance().getJahiaUserManagerService();
-        JahiaUser user = userMgr.lookupUser(username);
+        JahiaUser user = userMgr.lookupUserByKey(userKey);
         JahiaUser currentUser = sessionFactory.getCurrentUser();
         sessionFactory.setCurrentUser(user);
         for (String id : ids) {

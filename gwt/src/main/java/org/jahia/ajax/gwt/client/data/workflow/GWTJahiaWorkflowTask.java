@@ -47,13 +47,13 @@ import java.util.Map;
  * Time: 4:07:38 PM
  * To change this template use File | Settings | File Templates.
  */
-public class GWTJahiaWorkflowAction extends BaseModelData implements Serializable {
+public class GWTJahiaWorkflowTask extends BaseModelData implements Serializable {
     private List<GWTJahiaWorkflowOutcome> outcomes;
     private List<GWTJahiaWorkflowTaskComment> taskComments;
     private Map<String, GWTJahiaNodeProperty> variables;
     private transient Map<String,Object> originalVariables;
 
-    public GWTJahiaWorkflowAction() {
+    public GWTJahiaWorkflowTask() {
     }
 
     public String getId() {

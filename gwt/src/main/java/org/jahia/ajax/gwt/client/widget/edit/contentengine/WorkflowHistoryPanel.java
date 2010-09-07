@@ -96,7 +96,14 @@ public class WorkflowHistoryPanel extends LayoutContainer {
         RpcProxy<List<GWTJahiaWorkflowHistoryItem>> proxy = new RpcProxy<List<GWTJahiaWorkflowHistoryItem>>() {
             @Override
             protected void load(Object loadConfig, AsyncCallback<List<GWTJahiaWorkflowHistoryItem>> callback) {
-                service.getWorkflowHistoryItems(nodeId, (GWTJahiaWorkflowHistoryItem) loadConfig, locale, callback);
+                if (loadConfig == null) {
+                    service.getWorkflowHistoryProcesses(nodeId, locale, callback);
+                } else if (loadConfig instanceof GWTJahiaWorkflowHistoryProcess) {
+                    final GWTJahiaWorkflowHistoryProcess process = (GWTJahiaWorkflowHistoryProcess) loadConfig;
+                    service.getWorkflowHistoryTasks(process.getProvider(), process.getProcessId(), locale, callback);
+                } else {
+                    callback.onSuccess(new ArrayList<GWTJahiaWorkflowHistoryItem>());
+                }
             }
         };
 
@@ -117,7 +124,7 @@ public class WorkflowHistoryPanel extends LayoutContainer {
         column.setRenderer(new TreeGridCellRenderer<GWTJahiaWorkflowHistoryItem>());
         config.add(column);
 
-        column = new ColumnConfig("assignee", Messages.get("label.user", "User"), 100);
+        column = new ColumnConfig("user", Messages.get("label.user", "User"), 100);
         config.add(column);
 
         column = new ColumnConfig("startDate", Messages.get("org.jahia.engines.processDisplay.tab.startdate", "Start date"), 100);

@@ -42,7 +42,7 @@
     <jackrabbit.version>2.1.1</jackrabbit.version>
     <jackrabbit.patch.version>patch8</jackrabbit.patch.version>
     <lucene.version>2.4.1</lucene.version>
-    <jbpm.version>4.3</jbpm.version>
+    <jbpm.version>4.4</jbpm.version>
     <hibernate.version>3.3.2.GA</hibernate.version>
     <apache.tika.version>0.7</apache.tika.version>
     <camel.version>2.4.0</camel.version>

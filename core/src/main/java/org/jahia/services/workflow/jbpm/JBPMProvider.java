@@ -43,16 +43,13 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.workflow.*;
 import org.jbpm.api.*;
 import org.jbpm.api.activity.ActivityBehaviour;
-import org.jbpm.api.history.HistoryComment;
-import org.jbpm.api.history.HistoryProcessInstance;
-import org.jbpm.api.history.HistoryProcessInstanceQuery;
-import org.jbpm.api.history.HistoryTask;
+import org.jbpm.api.history.*;
 import org.jbpm.api.job.Job;
 import org.jbpm.api.task.Participation;
 import org.jbpm.api.task.Task;
 import org.jbpm.jpdl.internal.activity.TaskActivity;
 import org.jbpm.jpdl.internal.model.JpdlProcessDefinition;
-import org.jbpm.pvm.internal.model.Activity;
+import org.jbpm.api.model.Activity;
 import org.jbpm.pvm.internal.model.ActivityImpl;
 import org.jbpm.pvm.internal.task.TaskDefinitionImpl;
 import org.jbpm.pvm.internal.wire.usercode.UserCodeActivityBehaviour;
@@ -299,8 +296,11 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
     }
 
     public String startProcess(String processKey, Map<String, Object> args) {
-        return executionService.startProcessInstanceByKey(processKey, args).getId();
+        String res = executionService.startProcessInstanceByKey(processKey, args).getId();
+        executionService.createVariable(res, "user", args.get("user"), true);
+        return res;
     }
+
 
     public void signalProcess(String processId, String transitionName, Map<String, Object> args) {
         final Execution in = executionService.findProcessInstanceById(processId).findActiveExecutionIn(transitionName);
@@ -360,8 +360,8 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         List<Workflow> list = new ArrayList<Workflow>();
         List<ProcessInstance> pi = executionService.createProcessInstanceQuery().list();
         for (ProcessInstance processInstance : pi) {
-            String username = (String) executionService.getVariable(processInstance.getId(),"user");
-            if (username != null && user.getName().equals(username)) {
+            String userkey = (String) executionService.getVariable(processInstance.getId(),"user");
+            if (userkey != null && user.getUserKey().equals(userkey)) {
                 list.add(convertToWorkflow(processInstance));
             }
         }
@@ -371,7 +371,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
     private Workflow convertToWorkflow(ProcessInstance instance) {
         final Workflow workflow = new Workflow(instance.getName(), instance.getId(), key);
         final WorkflowDefinition definition = getWorkflowDefinitionById(instance.getProcessDefinitionId());
-        workflow.setDefinition(definition);
+        workflow.setWorkflowDefinition(definition);
         workflow.setAvailableActions(getAvailableActions(instance.getId()));
         Job job = managementService.createJobQuery().timers().processInstanceId(instance.getId()).uniqueResult();
         if (job != null) {
@@ -436,7 +436,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         final ProcessInstance instance = executionService.findProcessInstanceById(task.getExecutionId());
         if (instance != null) {
             final WorkflowDefinition definition = getWorkflowDefinitionById(instance.getProcessDefinitionId());
-            action.setDefinition(definition);
+            action.setWorkflowDefinition(definition);
         }
         return action;
     }
@@ -575,9 +575,12 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
                     logger.warn("Cannot find process definition by ID " + jbpmHistoryItem.getProcessDefinitionId());
                 }
             }
+            final String startUser =
+                    (String) historyService.getVariable(jbpmHistoryItem.getProcessInstanceId(), "user");
+
             historyItems.add(new HistoryWorkflow(jbpmHistoryItem.getProcessInstanceId(),
                     def != null ? new WorkflowDefinition(def.getName(), def.getKey(), this.key) : null,
-                    jbpmHistoryItem.getKey(), getKey(), jbpmHistoryItem.getStartTime(), jbpmHistoryItem.getEndTime(),
+                    def != null ? def.getName() : null, getKey(), startUser, jbpmHistoryItem.getStartTime(), jbpmHistoryItem.getEndTime(),
                     jbpmHistoryItem.getEndActivityName()));
 
         }
@@ -608,10 +611,24 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
 
         for (HistoryTask jbpmHistoryTask : jbpmTasks) {
             final Task task = taskService.getTask(jbpmHistoryTask.getId());
+            String name = "";
+            if (task != null) {
+                name = task != null ? task.getName() : "";
+            } else {
+                // So nice !
+                List<HistoryActivityInstance> l = historyService.createHistoryActivityInstanceQuery().processInstanceId(jbpmHistoryTask.getExecutionId()).list();
+                for (HistoryActivityInstance activityInstance : l) {
+                    if (activityInstance.getStartTime().equals(jbpmHistoryTask.getCreateTime()) &&
+                            activityInstance.getEndTime() != null && activityInstance.getEndTime().equals(jbpmHistoryTask.getEndTime())) {
+                        name = activityInstance.getActivityName();
+                        break;
+                    }
+                }
+            }
             historyItems
-                    .add(new HistoryWorkflowTask(jbpmHistoryTask.getExecutionId(), (task != null ? task.getName() : ""),
-                            getKey(), jbpmHistoryTask.getCreateTime(), jbpmHistoryTask.getEndTime(),
-                            jbpmHistoryTask.getOutcome(), jbpmHistoryTask.getAssignee()));
+                    .add(new HistoryWorkflowTask(jbpmHistoryTask.getId(), jbpmHistoryTask.getExecutionId(), name,
+                            getKey(), jbpmHistoryTask.getAssignee(), jbpmHistoryTask.getCreateTime(), jbpmHistoryTask.getEndTime(),
+                            jbpmHistoryTask.getOutcome()));
         }
 
         return historyItems;

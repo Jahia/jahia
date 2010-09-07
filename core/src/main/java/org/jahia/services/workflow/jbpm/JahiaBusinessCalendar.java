@@ -63,4 +63,8 @@ public class JahiaBusinessCalendar implements BusinessCalendar {
             return dateTime.toDate();
         }
     }
+
+    public Date subtract(Date date, String duration) {
+        return null;
+    }
 }

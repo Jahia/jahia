@@ -43,24 +43,13 @@ public class HistoryWorkflow extends HistoryWorkflowBase {
 
     private String endActivityName;
 
-    private boolean finished;
-
-    /**
-     * Initializes an instance of this class.
-     * 
-     * @param id process instance ID
-     * @param name the name of the item
-     * @param provider the provider key
-     */
-    public HistoryWorkflow(String id, String name, String provider) {
-        super(id, name, provider);
-    }
+    private WorkflowDefinition workflowDefinition;
 
     /**
      * Initializes an instance of this class.
      * 
      * @param id workflow process instance ID
-     * @param definition process definition key
+     * @param workflowDefinition process definition key
      * @param name the name of the item
      * @param provider the provider key
      * @param startTime the start point of the process instance
@@ -68,9 +57,9 @@ public class HistoryWorkflow extends HistoryWorkflowBase {
      *            if it is not completed yet
      * @param endActivityName the name of the last activity
      */
-    public HistoryWorkflow(String id, WorkflowDefinition definition, String name, String provider, Date startTime, Date endTime, String endActivityName) {
-        super(id, name, provider, startTime, endTime);
-        setDefinition(definition);
+    public HistoryWorkflow(String id, WorkflowDefinition workflowDefinition, String name, String provider, String user, Date startTime, Date endTime, String endActivityName) {
+        super(id, name, provider, user, startTime, endTime);
+        setWorkflowDefinition(workflowDefinition);
         this.endActivityName = endActivityName;
     }
 
@@ -82,13 +71,11 @@ public class HistoryWorkflow extends HistoryWorkflowBase {
         return endActivityName;
     }
 
-    /**
-     * Returns <code>true</code> if this process instance is already completed.
-     * 
-     * @return <code>true</code> if this process instance is already completed
-     */
-    public boolean isFinished() {
-        return finished;
+    public WorkflowDefinition getWorkflowDefinition() {
+        return workflowDefinition;
     }
 
+    public void setWorkflowDefinition(WorkflowDefinition workflowDefinition) {
+        this.workflowDefinition = workflowDefinition;
+    }
 }

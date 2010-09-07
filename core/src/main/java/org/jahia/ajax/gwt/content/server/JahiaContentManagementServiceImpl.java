@@ -56,6 +56,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.workflow.*;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryItem;
+import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryProcess;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryTask;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
@@ -78,7 +79,6 @@ import org.jahia.services.googledocs.GoogleDocsService.GoogleDocsExportFormats;
 import org.jahia.services.googledocs.GoogleDocsServiceFactory;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.WorkflowTask;
-import org.jahia.services.workflow.WorkflowVariable;
 import org.jahia.tools.imageprocess.ImageProcess;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
@@ -1021,22 +1021,22 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         workflow.startWorkflow(path, workflowDefinition, retrieveCurrentSession(), properties);
     }
 
-    public void assignAndCompleteTask(String path, GWTJahiaWorkflowAction action, GWTJahiaWorkflowOutcome outcome,
+    public void assignAndCompleteTask(String path, GWTJahiaWorkflowTask task, GWTJahiaWorkflowOutcome outcome,
                                       List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException {
-        workflow.assignAndCompleteTask(path, action, outcome, retrieveCurrentSession(), properties);
+        workflow.assignAndCompleteTask(path, task, outcome, retrieveCurrentSession(), properties);
     }
 
-    public void addCommentToTask(GWTJahiaWorkflowAction action, String comment) {
-        workflow.addCommentToTask(action, comment);
+    public void addCommentToTask(GWTJahiaWorkflowTask task, String comment) {
+        workflow.addCommentToTask(task, comment);
     }
 
-    public List<GWTJahiaWorkflowTaskComment> getTaskComments(GWTJahiaWorkflowAction action) {
-        return workflow.getTaskComments(action);
+    public List<GWTJahiaWorkflowTaskComment> getTaskComments(GWTJahiaWorkflowTask task) {
+        return workflow.getTaskComments(task);
     }
 
-    public List<GWTJahiaWorkflowHistoryTask> getTasksForUser() throws GWTJahiaServiceException {
+    public List<GWTJahiaWorkflowTask> getTasksForUser() throws GWTJahiaServiceException {
         List<WorkflowTask> tasks = workflow.getAvailableTasksForUser(getUser(), null);
-        List<GWTJahiaWorkflowHistoryTask> nodes = new ArrayList<GWTJahiaWorkflowHistoryTask>(tasks.size());
+        List<GWTJahiaWorkflowTask> gwtTasks = new ArrayList<GWTJahiaWorkflowTask>(tasks.size());
         for (WorkflowTask task : tasks) {
             try {
                 final Locale locale = (Locale) task.getVariables().get("locale");
@@ -1044,21 +1044,14 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 JCRNodeWrapper node = session.getNodeByUUID((String) task.getVariables().get("nodeId"));
                 GWTJahiaNode gwtJahiaNode =
                         navigation.getGWTJahiaNode(node, Arrays.asList(GWTJahiaNode.WORKFLOW_INFOS));
-                final GWTJahiaWorkflowHistoryTask t =
-                        new GWTJahiaWorkflowHistoryTask(task.getId(), task.getName(), task.getDisplayName() , task.getProcessId(),
-                                task.getProvider(), false, task.getCreateTime(), null, null, null, null);
-                t.set("node", gwtJahiaNode);
-                t.set("language", locale.toString());
-                List<WorkflowVariable> value = (List<WorkflowVariable>) task.getVariables().get("jcr:title");
-                if (value != null && value.size() > 0) {
-                    t.set("title", value.get(0).getValue());
-                }
-                nodes.add(t);
+                final GWTJahiaWorkflowTask gwtTask = workflow.getGWTJahiaWorkflowTask(task);
+                gwtTask.set("node", gwtJahiaNode);
+                gwtTasks.add(gwtTask);
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
             }
         }
-        return nodes;
+        return gwtTasks;
     }
 
     /**
@@ -1370,10 +1363,15 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         this.analytics = analyticsHelper;
     }
 
-    public List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryItems(String nodeId,
-                                                                     GWTJahiaWorkflowHistoryItem historyItem,
+    public List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryProcesses(String nodeId,
                                                                      String locale) throws GWTJahiaServiceException {
-        return workflow.getWorkflowHistoryItems(nodeId, historyItem,
+        return workflow.getWorkflowHistoryProcesses(nodeId,
+                retrieveCurrentSession(LanguageCodeConverters.languageCodeToLocale(locale)), getUILocale());
+    }
+
+    public List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryTasks(String provider , String processId,
+                                                                     String locale) throws GWTJahiaServiceException {
+        return workflow.getWorkflowHistoryTasks(provider, processId,
                 retrieveCurrentSession(LanguageCodeConverters.languageCodeToLocale(locale)), getUILocale());
     }
 

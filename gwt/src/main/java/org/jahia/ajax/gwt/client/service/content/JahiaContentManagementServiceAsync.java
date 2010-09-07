@@ -34,7 +34,6 @@ package org.jahia.ajax.gwt.client.service.content;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.jahia.ajax.gwt.client.data.GWTJahiaCreateEngineInitBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaCreatePortletInitBean;
@@ -58,11 +57,12 @@ import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowAction;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowTask;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowOutcome;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowTaskComment;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryItem;
+import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryProcess;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryTask;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 
@@ -200,7 +200,7 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void startWorkflow(String path, GWTJahiaWorkflowDefinition workflowDefinition, List<GWTJahiaNodeProperty> properties, AsyncCallback async);
 
-    void assignAndCompleteTask(String path, GWTJahiaWorkflowAction action, GWTJahiaWorkflowOutcome outcome, List<GWTJahiaNodeProperty> properties, AsyncCallback async);
+    void assignAndCompleteTask(String path, GWTJahiaWorkflowTask task, GWTJahiaWorkflowOutcome outcome, List<GWTJahiaNodeProperty> properties, AsyncCallback async);
 
     /**
      * Publish the specified paths.
@@ -263,15 +263,16 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void generateWar(String moduleName, AsyncCallback<GWTJahiaNode> asyncCallback);
 
-    void addCommentToTask(GWTJahiaWorkflowAction action, String comment,
+    void addCommentToTask(GWTJahiaWorkflowTask task, String comment,
                           AsyncCallback asyncCallback);
 
-    void getTaskComments(GWTJahiaWorkflowAction action, AsyncCallback<List<GWTJahiaWorkflowTaskComment>> async);
+    void getTaskComments(GWTJahiaWorkflowTask task, AsyncCallback<List<GWTJahiaWorkflowTaskComment>> async);
 
-    void getWorkflowHistoryItems(String nodeId, GWTJahiaWorkflowHistoryItem historyItem, String locale,
-            AsyncCallback<List<GWTJahiaWorkflowHistoryItem>> callback);
+    public void getWorkflowHistoryProcesses(String nodeId, String locale, AsyncCallback<List<GWTJahiaWorkflowHistoryItem>> async);
 
-    void getTasksForUser(AsyncCallback<List<GWTJahiaWorkflowHistoryTask>> async);
+    public void getWorkflowHistoryTasks(String provider , String processId, String locale, AsyncCallback<List<GWTJahiaWorkflowHistoryItem>> async);
+
+    void getTasksForUser(AsyncCallback<List<GWTJahiaWorkflowTask>> async);
 
     void isValidSession(AsyncCallback<Integer> async)  throws GWTJahiaServiceException;
 

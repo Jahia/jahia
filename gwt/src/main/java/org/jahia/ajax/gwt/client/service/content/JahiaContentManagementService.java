@@ -34,7 +34,6 @@ package org.jahia.ajax.gwt.client.service.content;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.*;
@@ -54,11 +53,12 @@ import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowAction;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowTask;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowOutcome;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowTaskComment;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryItem;
+import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryProcess;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryTask;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.util.URL;
@@ -203,7 +203,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     public void startWorkflow(String path, GWTJahiaWorkflowDefinition workflowDefinition, List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException;
 
-    public void assignAndCompleteTask(String path, GWTJahiaWorkflowAction action, GWTJahiaWorkflowOutcome outcome, List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException;
+    public void assignAndCompleteTask(String path, GWTJahiaWorkflowTask task, GWTJahiaWorkflowOutcome outcome, List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException;
 
     /**
      * Publish the specified uuids.
@@ -258,13 +258,17 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     GWTJahiaNode generateWar(String moduleName) throws GWTJahiaServiceException;
 
-    void addCommentToTask(GWTJahiaWorkflowAction action, String comment);
+    void addCommentToTask(GWTJahiaWorkflowTask task, String comment);
 
-    List<GWTJahiaWorkflowTaskComment> getTaskComments(GWTJahiaWorkflowAction action);
+    List<GWTJahiaWorkflowTaskComment> getTaskComments(GWTJahiaWorkflowTask task);
 
-    List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryItems(String nodeId, GWTJahiaWorkflowHistoryItem historyItem, String locale) throws GWTJahiaServiceException;
+    public List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryProcesses(String nodeId,
+                                                                     String locale) throws GWTJahiaServiceException ;
 
-    List<GWTJahiaWorkflowHistoryTask>  getTasksForUser() throws GWTJahiaServiceException;
+    public List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryTasks(String provider , String processId,
+                                                                     String locale) throws GWTJahiaServiceException;
+
+    List<GWTJahiaWorkflowTask>  getTasksForUser() throws GWTJahiaServiceException;
 
     public Integer isValidSession()  throws GWTJahiaServiceException;
 

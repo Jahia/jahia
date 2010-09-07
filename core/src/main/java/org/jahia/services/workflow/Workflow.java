@@ -47,6 +47,7 @@ public class Workflow extends WorkflowBase {
     private Date startTime;
     private Set<WorkflowAction> availableActions;
     private Date duedate = null;
+    private WorkflowDefinition workflowDefinition;
 
     public Workflow(String name, String id, String provider) {
         super(name, provider);
@@ -87,5 +88,13 @@ public class Workflow extends WorkflowBase {
 
     public void setDuedate(Date duedate) {
         this.duedate = duedate;
+    }
+
+    public WorkflowDefinition getWorkflowDefinition() {
+        return workflowDefinition;
+    }
+
+    public void setWorkflowDefinition(WorkflowDefinition workflowDefinition) {
+        this.workflowDefinition = workflowDefinition;
     }
 }

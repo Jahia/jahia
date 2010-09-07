@@ -54,26 +54,28 @@ public class GWTJahiaWorkflowHistoryItem extends BaseTreeModel {
 
     /**
      * Initializes an instance of this class.
-     * 
+     *
      * @param id
      * @param name
      * @param displayName the display name for this item
      * @param processId the ID of the workflow process instance
      * @param provider the workflow provider key
      * @param finished is the workflow completed?
+     * @param user
      * @param startDate the start data of the process
      * @param endDate the end date of the process; is <code>null</code> in case
 *            the process is still running
      * @param duration the process duration
      */
     public GWTJahiaWorkflowHistoryItem(String id, String name, String displayName, String processId, String provider,
-                                       boolean finished, Date startDate, Date endDate, Long duration) {
+                                       boolean finished, String user, Date startDate, Date endDate, Long duration) {
         this();
         setName(name);
         setDisplayName(displayName);
         setProcessId(processId);
         setProvider(provider);
         setFinished(finished);
+        setUser(user);
         setStartDate(startDate);
         setEndDate(endDate);
         setDuration(duration);
@@ -122,6 +124,10 @@ public class GWTJahiaWorkflowHistoryItem extends BaseTreeModel {
      */
     public Date getStartDate() {
         return get("startDate");
+    }
+
+    public String getUser() {
+        return get("user");
     }
 
     /**
@@ -180,5 +186,9 @@ public class GWTJahiaWorkflowHistoryItem extends BaseTreeModel {
      */
     public void setStartDate(Date startDate) {
         set("startDate", startDate);
+    }
+
+    public void setUser(String user) {
+        set("user", user);
     }
 }

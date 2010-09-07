@@ -43,9 +43,13 @@ class HistoryWorkflowBase extends WorkflowBase {
 
     private Long duration;
 
-    private Date endTime;
+    private String user;
+
+    private boolean completed;
 
     private Date startTime;
+
+    private Date endTime;
 
     private String processId;
 
@@ -55,26 +59,15 @@ class HistoryWorkflowBase extends WorkflowBase {
      * @param processId the ID of the corresponding workflow process instance
      * @param name the name of the item
      * @param provider the provider key
-     */
-    public HistoryWorkflowBase(String processId, String name, String provider) {
-        super(name, provider);
-        this.processId = processId;
-    }
-
-    /**
-     * Initializes an instance of this class.
-     * 
-     * @param processId the ID of the corresponding workflow process instance
-     * @param name the name of the item
-     * @param provider the provider key
+     * @param user
      * @param startTime the start point of the process instance
      * @param endTime the end point of the process instance or <code>null</code>
-     *            if it is not completed yet
      */
-    public HistoryWorkflowBase(String processId, String name, String provider, Date startTime, Date endTime) {
+    public HistoryWorkflowBase(String processId, String name, String provider, String user, Date startTime, Date endTime) {
         super(name, provider);
         this.processId = processId;
         this.startTime = startTime;
+        this.user = user;
         setEndTime(endTime);
     }
 
@@ -106,6 +99,14 @@ class HistoryWorkflowBase extends WorkflowBase {
         return startTime;
     }
 
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
     /**
      * Returns an ID of the corresponding workflow process instance.
      * 
@@ -126,15 +127,6 @@ class HistoryWorkflowBase extends WorkflowBase {
         }
         this.endTime = endTime;
         this.duration = endTime.getTime() - startTime.getTime();
+        this.completed = true;
     }
-
-    /**
-     * Sets the start time for the workflow process instance.
-     * 
-     * @param startTime the startTime to set
-     */
-    public void setStartTime(Date startTime) {
-        this.startTime = startTime;
-    }
-
 }

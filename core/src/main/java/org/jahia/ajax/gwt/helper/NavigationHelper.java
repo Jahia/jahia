@@ -40,7 +40,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowAction;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowTask;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.api.Constants;
@@ -54,7 +54,6 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ConstraintsHelper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.render.URLGenerator;
 import org.jahia.utils.FileUtils;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
@@ -919,9 +918,9 @@ public class NavigationHelper {
                                 session.getWorkspace().getName(), locale);
                         GWTJahiaWorkflowInfo info = workflow.getWorkflowInfo(n.getPath(), localeSession, locale);
 
-                        for (GWTJahiaWorkflowAction action : info.getAvailableActions()) {
-                            if (action.getOriginalVariables().containsKey("publicationInfos")) {
-                                action.set("publicationInfos", publication.convert((List<PublicationInfo>) action.getOriginalVariables().get("publicationInfos"), session));
+                        for (GWTJahiaWorkflowTask task : info.getAvailableActions()) {
+                            if (task.getOriginalVariables().containsKey("publicationInfos")) {
+                                task.set("publicationInfos", publication.convert((List<PublicationInfo>) task.getOriginalVariables().get("publicationInfos"), session));
                             }
                         }
 

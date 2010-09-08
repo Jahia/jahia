@@ -7,21 +7,37 @@ CKEDITOR.plugins.add('acheck',
             commandName = 'acheck';
         editor.addCommand(commandName, 
             {
-		        exec : function()
-                {
-                    var theCode = '<html><body onLoad="document.accessform.submit();"> \n';
-                    theCode += '<h1>Submitting Code for Accessibility Checking.....</h1>\n';
-                    theCode += '<form action="http://achecker.ca/checker/index.php" name="accessform" method="post"> \n';
-                    theCode += '<input type="hidden" name="gid[]" value="8" /> \n';
-                    theCode += '<textarea name="validate_content">' + editor.getData() + '</textarea>\n';
-                    theCode += '<input type="submit" /></form> \n';  
-                    theCode += '</body></html> \n';
-                    accessWin = window.open('', 'accessWin',  '');
-                    accessWin.document.writeln(theCode);
-                    accessWin.document.close();
-                },
-                canUndo : false
-            });
+	        exec : function()
+            {
+			var form = document.createElement("form");
+			form.setAttribute("id", "acheckForm");
+			form.setAttribute("name", "acheckForm");
+			form.setAttribute("method", "POST");
+			form.setAttribute("action", "http://achecker.ca/checker/index.php");
+//			form.setAttribute("action", editor.config.contextPath + "/AChecker/checker/index.php");			
+			form.setAttribute("target", "ACheckAccessWin");
+
+            var inputField = document.createElement("input");              
+            inputField.setAttribute("name", "validate_content");
+            inputField.setAttribute("value", editor.getData());
+            form.appendChild(inputField);
+            var hiddenField = document.createElement("input");              
+			hiddenField.setAttribute("type", "hidden");
+            hiddenField.setAttribute("name", "gid[]");
+            hiddenField.setAttribute("value", "8");
+            form.appendChild(hiddenField);				
+            var submitButton = document.createElement("input");              				
+			submitButton.setAttribute("type", "submit");
+			submitButton.setAttribute("name", "acheckFormSubmit");
+			form.appendChild(submitButton);
+			
+            document.body.appendChild(form);
+            window.open('', 'MyACheckAccessWin', 'scrollbars=yes,menubar=no,height=800,width=1400,resizable=yes,toolbar=no,status=no');
+
+            $('#acheckForm').submit();
+            },
+            canUndo : false
+        });
         
         editor.ui.addButton('ACheck',
             {

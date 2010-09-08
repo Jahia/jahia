@@ -13,6 +13,12 @@
         <property name="visibility" value="$site/toolbar/language-switcher"/>
     </bean>
 
+    <bean id="Toolbar.Item.WorkInProgress" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.WorkInProgressActionItem"/>
+        </property>
+    </bean>
+    
     <bean id="Toolbar.ItemsGroup.Menu.GoogleDocs"
           class="org.jahia.services.uicomponents.bean.toolbar.Menu">
         <property name="titleKey" value="label.googleDocs"/>

@@ -53,6 +53,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.workflow.dialog.WorkflowActionDialog;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.WorkInProgressActionItem;
 
 import java.util.List;
 
@@ -142,22 +143,26 @@ class PublicationStatusWindow extends Window {
             }
             cancel.setEnabled(false);
             if (gwtJahiaWorkflowDefinition == null) {
-                mask(Messages.get("label.executing","Executing..."), "x-mask-loading");
+                hide();
+                Info.display("Publishing content",
+                        "Publishing content");
+                final String status = "Publishing content ...";
+                WorkInProgressActionItem.setStatus(status);
                 JahiaContentManagementService.App.getInstance()
                         .publish(uuids, allSubTree, false, false, null,null,
                                 new BaseAsyncCallback() {
                                     public void onApplicationFailure(Throwable caught) {
+                                        WorkInProgressActionItem.removeStatus(status);
+                                        Info.display("Cannot publish",
+                                                "Cannot publish");
                                         Log.error("Cannot publish", caught);
-                                        com.google.gwt.user.client.Window
-                                                .alert("Cannot publish " + caught.getMessage());
-                                        hide();
                                     }
 
                                     public void onSuccess(Object result) {
+                                        WorkInProgressActionItem.removeStatus(status);
                                         Info.display(Messages.get("message.content.published"),
                                                 Messages.get("message.content.published"));
                                         linker.refresh(Linker.REFRESH_ALL);
-                                        hide();
                                     }
                                 });
             } else {

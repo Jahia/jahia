@@ -108,6 +108,7 @@
                             </property>
                         </bean>
                         <ref bean="Toolbar.Item.Admin"/>
+                        <ref bean="Toolbar.Item.WorkInProgress"/>
                     </list>
                 </property>
                 <property name="visibility" value="$site/actions/edit-mode"/>
@@ -336,6 +337,7 @@
                         </bean>
                         <ref bean="Toolbar.Item.Admin"/>
                         <ref bean="Toolbar.Item.Studio"/>
+                        <ref bean="Toolbar.Item.WorkInProgress"/>
                     </list>
                 </property>
                 <property name="visibility" value="$site/actions/edit-mode"/>
@@ -389,6 +391,7 @@
                             <value>usages,$site/edit-mode/usages</value>
                             <value>publication,$site/edit-mode/publication</value>
                             <value>workflow,$site/edit-mode/workflow</value>
+                            <value>versioning</value>
                             <value>seo,$site/edit-mode/seo</value>
                             <ref bean="analyticsEngineTab"/>
                         </list>
@@ -408,6 +411,7 @@
                             <value>usages,$site/edit-mode/usages</value>
                             <value>publication,$site/edit-mode/publication</value>
                             <value>workflow,$site/edit-mode/workflow</value>
+                            <value>versioning</value>
                             <value>seo,$site/edit-mode/seo</value>
                             <ref bean="analyticsEngineTab"/>
                         </list>

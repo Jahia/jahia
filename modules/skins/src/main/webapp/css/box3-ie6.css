@@ -1,0 +1,7 @@
+
+#bodywrapper .box3-topleft,
+#bodywrapper .box3-topright,
+#bodywrapper .box3-bottomleft,
+#bodywrapper .box3-bottomright {
+	display:none;
+}

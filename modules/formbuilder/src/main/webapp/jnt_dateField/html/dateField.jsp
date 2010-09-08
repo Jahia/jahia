@@ -2,6 +2,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
 <%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
@@ -17,14 +18,14 @@
 <ui:dateSelector fieldId="${currentNode.name}"/>
 <c:if test="${renderContext.editMode}">
 <div class="formMarginLeft">
-    <p>List of validation element</p>
+    <p><fmt:message key="checkbox.listOfValidation"/></p>
     <ol>
     <c:forEach items="${jcr:getNodes(currentNode,'jnt:formElementValidation')}" var="formElement" varStatus="status">
         <li><template:module node="${formElement}" template="edit"/></li>
     </c:forEach>
     </ol>
         <div class="addvalidation">
-        <span>Add your validation elements here</span>
+        <span><fmt:message key="checkbox.addElements"/> </span>
         <template:module path="*"/>
     </div>
 </div>

@@ -30,7 +30,7 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
- package org.jahia.services.usermanager;
+package org.jahia.services.usermanager;
 
 import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.log4j.Logger;

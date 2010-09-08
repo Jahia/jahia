@@ -30,7 +30,7 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
- package org.jahia.params.valves;
+package org.jahia.params.valves;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;

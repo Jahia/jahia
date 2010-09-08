@@ -104,9 +104,10 @@
 
                 var id = $this.identify().attr('id');
                 var href = $this.attr('href');
+                var media = $this.attr('media');
                 if($this.attr('tagName')=='LINK'){
 					$('#'+id).remove();
-					$('head:first').append('<link id="'+id+'" href="'+href+'" type="text/css" rel="stylesheet" media="screen"/>');
+					$('head:first').append('<link id="'+id+'" href="'+href+'" type="text/css" rel="stylesheet" media="'+media+'"/>');
 					/*
                     $.get(getVoidUrl($this.attr('href')),[],function(css){
                         // IE needs remove and insert, no simple ajax load in container

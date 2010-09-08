@@ -90,11 +90,11 @@ public class OpenWindowActionItem extends BaseActionItem {
             } else {
                 wHeight = ",height=" + windowHeight.getValue();
             }
-            wOptions = "directories=no,scrollbars=yes,resizable=yes,status=no,location=no" + wWidth + wHeight;
+            wOptions = "scrollbars=yes,resizable=yes,status=no,location=no" + wWidth + wHeight;
         }
 
         String name = getPropertyValue(getGwtToolbarItem(), "target");
-        name = name != null ? name : getGwtToolbarItem().getTitle().replaceAll(" ", "_");
+        name = name != null ? name : getGwtToolbarItem().getTitle().replaceAll(" ", "_").replaceAll("-", "_");
         final String jsUrl = getPropertyValue(getGwtToolbarItem(), "js.url");
         if (jsUrl != null) {
             Window.open(JahiaGWTParameters.getParam(jsUrl), name, wOptions);

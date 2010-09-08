@@ -58,9 +58,10 @@ public class JCRObservationManager implements ObservationManager {
     public static final int NODE_RESTORE = 1 << 10;
     public static final int NODE_UPDATE = 1 << 11;
     public static final int NODE_MERGE = 1 << 12;
-    
+
     private static Logger logger = Logger.getLogger(JCRObservationManager.class);
 
+    private static ThreadLocal<Boolean> eventsDisabled = new ThreadLocal<Boolean>();
     private static ThreadLocal<JCRSessionWrapper> currentSession = new ThreadLocal<JCRSessionWrapper>();
     private static ThreadLocal<Map<JCRSessionWrapper, List<Event>>> events =
             new ThreadLocal<Map<JCRSessionWrapper, List<Event>>>();
@@ -172,6 +173,10 @@ public class JCRObservationManager implements ObservationManager {
         return null;
     }
 
+    public static void setEventsDisabled(Boolean eventsDisabled) {
+        JCRObservationManager.eventsDisabled.set(eventsDisabled);
+    }
+
     public static void addEvent(Event event) {
         try {
             if (!event.getPath().startsWith("/jcr:system")) {
@@ -226,7 +231,9 @@ public class JCRObservationManager implements ObservationManager {
 
     public static <X> X doWorkspaceWriteCall(JCRSessionWrapper session, int operationType, JCRCallback<X> callback)
             throws RepositoryException {
-        setCurrentSession(session);
+        if (!Boolean.TRUE.equals(eventsDisabled.get())) {
+            setCurrentSession(session);
+        }
         X res;
         try {
             res = callback.doInJCR(session);

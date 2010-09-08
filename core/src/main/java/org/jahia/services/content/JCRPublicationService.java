@@ -551,7 +551,7 @@ public class JCRPublicationService extends JahiaService {
                 }
             }
             JahiaAccessManager.setDeniedPaths(denied);
-
+            JCRObservationManager.setEventsDisabled(Boolean.TRUE);
             if (!destinationVersionManager.isCheckedOut(destinationParentPath)) {
                 destinationVersionManager.checkout(destinationParentPath);
             }
@@ -623,6 +623,7 @@ public class JCRPublicationService extends JahiaService {
             }
         } finally {
             JahiaAccessManager.setDeniedPaths(null);
+            JCRObservationManager.setEventsDisabled(null);
         }
         JCRNodeWrapper destinationNode =
                 destinationSession.getNode(sourceNode.getCorrespondingNodePath(destinationWorkspaceName));

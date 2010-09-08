@@ -139,7 +139,7 @@
 //---------------------------------------------------------
 
 [jmix:workflow] mixin
- - j:processId (string) multiple i18n nofulltext
+ - j:processId (string) multiple i18n nofulltext hidden
 
 [jnt:workflowRules] > nt:base orderable
  + * (jnt:workflowRule)

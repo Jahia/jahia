@@ -12,7 +12,7 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-
+<c:if test="${not omitFormatting && !inWrapper}"><div id="${currentNode.UUID}"></c:if>
 <template:include template="hidden.header"/>
 
 <c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}" end="${moduleMap.end}">
@@ -23,3 +23,5 @@
     <template:module path="*"/>
 </c:if>
 <template:include template="hidden.footer"/>
+
+<c:if test="${not omitFormatting && !inWrapper}"></div></c:if>

@@ -15,7 +15,7 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<c:if test="${not omitFormatting}"><div id="${currentNode.UUID}"></c:if>
+
 
     <c:choose>
         <c:when test="${not empty subNodesTemplate}">
@@ -85,7 +85,7 @@
     <c:if test="${not empty moduleMap.paginationActive}">
         <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.init"/>
     </c:if>
-
 <c:if test="${renderContext.editMode && empty moduleMap.currentList}">
     <p><fmt:message key="search.results.no.results"/></p>
 </c:if>
+

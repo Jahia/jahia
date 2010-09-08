@@ -98,6 +98,7 @@ public class ContentTypeTree extends LayoutContainer {
                     tableData.setWidth("100%");
                     panel.add(label, tableData);
                 }
+                if (!"".equals(gwtJahiaNodeType.getDescription())) { panel.setToolTip(gwtJahiaNodeType.getDescription()); }
                 panel.layout();
                 return panel;
             }

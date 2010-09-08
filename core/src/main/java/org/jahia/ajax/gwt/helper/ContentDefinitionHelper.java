@@ -49,6 +49,7 @@ import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializer;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListValue;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
@@ -122,8 +123,8 @@ public class ContentDefinitionHelper {
         GWTJahiaNodeType gwt = new GWTJahiaNodeType();
         gwt.setName(nodeType.getName());
         gwt.setMixin(nodeType.isMixin());
-        Locale loc = uiLocale;
-        String label = nodeType.getLabel(loc);
+        gwt.setDescription(nodeType.getDescription(uiLocale));
+        String label = nodeType.getLabel(uiLocale);
         gwt.setLabel(label);
 
         List<ExtendedItemDefinition> defs;

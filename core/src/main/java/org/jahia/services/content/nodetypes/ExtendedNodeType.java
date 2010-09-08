@@ -92,7 +92,7 @@ public class ExtendedNodeType implements NodeType {
     private List<ExtendedNodeType> mixinExtend = new ArrayList<ExtendedNodeType>();
 
     private Map<Locale, String> labels = new ConcurrentHashMap<Locale, String>(1);
-    
+    private Map<Locale, String> descriptions = new ConcurrentHashMap<Locale, String>(1);
     public ExtendedNodeType(NodeTypeRegistry registry, String systemId) {
         this.registry = registry;
         this.systemId = systemId;
@@ -780,6 +780,18 @@ public class ExtendedNodeType implements NodeType {
         return label;
     }
 
+    public String getDescription(Locale locale) {
+        String description = descriptions.get(locale);
+        if (description == null) {
+            String key = getName().replace(':', '_') + "_description";
+            String tpl = getTemplatePackage() != null ? getTemplatePackage().getName() : null;
+            description = new JahiaResourceBundle(getResourceBundleId(), locale, tpl, JahiaTemplatesRBLoader
+                    .getInstance(Thread.currentThread().getContextClassLoader(), tpl)).getString(key, "");
+            descriptions.put(locale, description);
+        }
+        return description;
+    }
+
     public NodeTypeDefinition getNodeTypeDefinition() {
         return new Definition();
     }
@@ -955,7 +967,7 @@ public class ExtendedNodeType implements NodeType {
     }
     
     /**
-     * @param name
+     * @param s
      * @throws ConstraintViolationException
      */
     private void checkRemoveItemConstraints(String s) throws ConstraintViolationException {
@@ -990,7 +1002,7 @@ public class ExtendedNodeType implements NodeType {
     }
 
     /**
-     * @param name
+     * @param propertyName
      * @throws ConstraintViolationException
      */
     private void checkRemovePropertyConstraints(String propertyName)

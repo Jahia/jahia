@@ -928,7 +928,7 @@
         <!-- accordion -->
         <property name="repositories">
             <list>
-                <ref bean="repository.site"/>
+                <ref bean="repository.sites"/>
             </list>
         </property>
 
@@ -1545,7 +1545,7 @@
         <!-- accordion panels-->
         <property name="repositories">
             <list>
-                <ref bean="repository.site"/>
+                <ref bean="repository.sites"/>
                 <ref bean="repository.sharedcontent"/>
                 <ref bean="repository.mycontent"/>
             </list>
@@ -1751,9 +1751,16 @@
 
     <bean id="repository.site" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="siteRepository"/>
-        <property name="paths" value="/sites"/>
+        <property name="paths" value="$site"/>
         <property name="titleKey"
                   value="org.jahia.engines.filemanager.Filemanager_Engine.repository.siteRepository.label"/>
+    </bean>
+
+    <bean id="repository.sites" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
+        <property name="key" value="sitesRepository"/>
+        <property name="paths" value="$sites"/>
+        <property name="titleKey"
+                  value="org.jahia.engines.filemanager.Filemanager_Engine.repository.sitesRepository.label"/>
     </bean>
 
 </beans>

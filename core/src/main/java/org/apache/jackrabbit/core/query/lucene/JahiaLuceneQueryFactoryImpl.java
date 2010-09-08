@@ -68,7 +68,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactoryImpl {
             or.add(q1, BooleanClause.Occur.SHOULD);
             or.add(q2, BooleanClause.Occur.SHOULD);
         } catch (PathNotFoundException e) {
-            logger.warn("Path given in query cannot be found: " + cn.getParentPath(), e);
+            logger.debug("Path given in query cannot be found: " + cn.getParentPath(), e);
         }
         return or;
     }
@@ -79,7 +79,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactoryImpl {
             query = new JackrabbitTermQuery(
                     new Term(JahiaNodeIndexer.ANCESTOR, session.getNode(dn.getAncestorPath()).getIdentifier()));
         } catch (PathNotFoundException e) {
-            logger.warn("Path given in query cannot be found: " + dn.getAncestorPath(), e);
+            logger.debug("Path given in query cannot be found: " + dn.getAncestorPath(), e);
         }        
         return query;
     }

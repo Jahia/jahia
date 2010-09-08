@@ -46,6 +46,7 @@ import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.workflow.WorkflowVariable;
 
 import javax.jcr.RepositoryException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -228,7 +229,9 @@ public class PublicationHelper {
         try {
             // todo : if workflow started on untranslated node, translation will be created and not added into the publish tree calculated here 
 
-            List<PublicationInfo> infos = publicationService.getPublicationInfos(uuids, languages, true, true, allSubTree, session.getWorkspace().getName(), Constants.LIVE_WORKSPACE);
+            final String workspaceName = session.getWorkspace().getName();
+            List<PublicationInfo> infos = publicationService.getPublicationInfos(uuids, languages, true, true, allSubTree,
+                    workspaceName, Constants.LIVE_WORKSPACE);
             if (workflow) {
                 Map<WorkflowDefinition, List<PublicationInfo>> m = new HashMap<WorkflowDefinition, List<PublicationInfo>>();
 
@@ -270,9 +273,14 @@ public class PublicationHelper {
                 }
             } else {
                 if (reverse) {
-                    publicationService.publish(infos, Constants.LIVE_WORKSPACE, session.getWorkspace().getName());
+                    publicationService.publish(infos, Constants.LIVE_WORKSPACE, workspaceName);
                 } else {
-                    publicationService.publish(infos, session.getWorkspace().getName(), Constants.LIVE_WORKSPACE);
+                    publicationService.publish(infos, workspaceName, Constants.LIVE_WORKSPACE);
+                    String label = "published_at_"+ new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(GregorianCalendar.getInstance().getTime());
+                    for (PublicationInfo publicationInfo : infos) {
+                        JCRVersionService.getInstance().addVersionLabel(publicationInfo.getAllUuids(),"live_"+label,Constants.LIVE_WORKSPACE);
+                        JCRVersionService.getInstance().addVersionLabel(publicationInfo.getAllUuids(),workspaceName+"_"+label,workspaceName);
+                    }
                 }
             }
         } catch (RepositoryException e) {

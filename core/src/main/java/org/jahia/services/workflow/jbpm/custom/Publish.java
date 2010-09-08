@@ -67,8 +67,8 @@ public class Publish implements ExternalActivityBehaviour {
         JCRPublicationService.getInstance().unlockForPublication(info, workspace, "process-"+execution.getProcessInstance().getId());
         JCRPublicationService.getInstance().publish(info, workspace, Constants.LIVE_WORKSPACE);
         for (PublicationInfo publicationInfo : info) {
-            JCRVersionService.getInstance().addVersionLabel(publicationInfo.getAllUuids(),label,Constants.LIVE_WORKSPACE);
-            JCRVersionService.getInstance().addVersionLabel(publicationInfo.getAllUuids(),label,workspace);
+            JCRVersionService.getInstance().addVersionLabel(publicationInfo.getAllUuids(),"live_"+label,Constants.LIVE_WORKSPACE);
+            JCRVersionService.getInstance().addVersionLabel(publicationInfo.getAllUuids(),workspace+"_"+label,workspace);
         }
         sessionFactory.setCurrentUser(currentUser);
         List<WorkflowVariable> workflowVariables = (List<WorkflowVariable>) execution.getVariable("endDate");

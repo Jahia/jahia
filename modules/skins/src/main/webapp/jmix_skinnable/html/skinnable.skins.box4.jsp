@@ -2,7 +2,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <template:addResources type="css" resources="box4.css"/>
-
+<template:addResources>
+<!--[if lte IE 6]><link rel="stylesheet" type="text/css" href="${url.currentModule}/css/box4-ie6.css" media="screen" /><![endif]-->
+</template:addResources>
 <jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>
 
 <div class="box4 ">

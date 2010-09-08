@@ -402,9 +402,9 @@ public class DocumentViewImportHandler extends DefaultHandler {
         } else {
             path = path.replace(":", "_");
         }
-
-        if (fileList.contains(path)) {
-            if (fileList.indexOf("/" + nextEntry) > fileList.indexOf(pathes.peek())) {
+        int fileIndex = fileList.indexOf(path);
+        if (fileIndex != -1) {
+            if (fileList.indexOf("/" + nextEntry) > fileIndex) {
                 zis.reallyClose();
                 zis = new NoCloseZipInputStream(new FileInputStream(archive));
             }

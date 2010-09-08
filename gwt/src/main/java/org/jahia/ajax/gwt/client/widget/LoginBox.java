@@ -90,6 +90,14 @@ public class LoginBox extends Window {
         username.setName("username");
         username.setFieldLabel(Messages.get("label.username", "Username"));
         username.setAllowBlank(false);
+        username.addKeyListener(new KeyListener() {
+            public void componentKeyPress(ComponentEvent event) {
+                if (event.getKeyCode() == 13) {
+                    lbWrongCredentials.setVisible(false);
+                    form.submit();
+                }
+            }
+        });
         form.add(username, formData);
 
         TextField<String> password = new TextField<String>();
@@ -97,6 +105,14 @@ public class LoginBox extends Window {
         password.setName("password");
         password.setFieldLabel(Messages.get("label.password", "Password"));
         password.setAllowBlank(false);
+        password.addKeyListener(new KeyListener() {
+            public void componentKeyPress(ComponentEvent event) {
+                if (event.getKeyCode() == 13) {
+                    lbWrongCredentials.setVisible(false);
+                    form.submit();
+                }
+            }
+        });
         form.add(password, formData);
 
 

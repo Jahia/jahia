@@ -489,7 +489,7 @@ public class WorkflowService {
                 newValues[i++] = value;
             }
         }
-        stageNode.setProperty(Constants.PROCESSID, values.toArray(new Value[values.size()]));
+        stageNode.setProperty(Constants.PROCESSID, newValues);
         stageNode.getSession().save();
     }
 

@@ -130,7 +130,7 @@ public class ExportActionItem extends BaseActionItem {
                 }
             });
             
-            panel.add(new Label(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.mount.disclaimer",
+            panel.add(new Label(Messages.get("mount.disclaimer",
             "Disclaimer") + ": " + Messages.get("label.googleDocs.export.disclaimer", "")));
 
             panel.setButtonAlign(HorizontalAlignment.CENTER);
@@ -150,7 +150,7 @@ public class ExportActionItem extends BaseActionItem {
 
     private static void export(Linker linker, GWTJahiaNode selection) {
         linker.loading(Messages
-                .get("org.jahia.engines.filemanager.Filemanager_Engine.statusbar.downloading.label"));
+                .get("statusbar.downloading.label"));
         new ExportWindow(selection).show();
         linker.loaded();
     }

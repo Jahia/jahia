@@ -195,7 +195,9 @@ public class JCRVersionService extends JahiaService {
             }
             if (logger.isDebugEnabled()) {
                 logger.debug(
-                        "Version " + v.getName() + " checkinDateAvailable=" + checkinDateAvailable + " checkinDate=" + checkinDate + " created=" + v.getCreated().getTime() + " properties:" + propertyString.toString());
+                        "Version " + v.getName() + " checkinDateAvailable=" + checkinDateAvailable + " checkinDate=" +
+                                checkinDate + " created=" + v.getCreated().getTime() + " properties:" +
+                                propertyString.toString());
             }
             lastVersion = v;
         }
@@ -221,111 +223,100 @@ public class JCRVersionService extends JahiaService {
                 Property checkinDateProperty = closestVersion.getFrozenNode().getProperty("j:checkinDate");
                 checkinDate = checkinDateProperty.getDate().getTime();
             }
-            logger.debug(
-                    "Resolved date " + versionDate + " for node title " + nodeTitle + " to closest version " + closestVersion.getName() + " createdTime=" + closestVersion.getCreated().getTime() + " checkinDate=" + checkinDate);
+            logger.debug("Resolved date " + versionDate + " for node title " + nodeTitle + " to closest version " +
+                    closestVersion.getName() + " createdTime=" + closestVersion.getCreated().getTime() +
+                    " checkinDate=" + checkinDate);
         }
         return closestVersion;
     }
 
     public void addVersionLabel(final JCRNodeWrapper node, final String label) throws RepositoryException {
         JCRTemplate.getInstance().doExecuteWithSystemSession(null, node.getSession().getWorkspace().getName(), null,
-                                                             new JCRCallback<Object>() {
-                                                                 public Object doInJCR(JCRSessionWrapper session)
-                                                                         throws RepositoryException {
-                                                                     JCRNodeWrapper nodeWrapper = session.getNodeByUUID(
-                                                                             node.getIdentifier());
-                                                                     VersionManager versionManager = session.getWorkspace().getVersionManager();
-                                                                     VersionHistory versionHistory = versionManager.getVersionHistory(
-                                                                             node.getPath());
-                                                                     if (versionManager.isCheckedOut(
-                                                                             nodeWrapper.getPath())) {
-                                                                         versionManager.checkin(nodeWrapper.getPath());
-                                                                     }
-                                                                     if (!versionHistory.hasVersionLabel(label)) {
-                                                                         Version version = versionManager.getBaseVersion(
-                                                                                 node.getPath());
-                                                                         logger.debug(
-                                                                                 "Add version label " + label + " on " + node.getPath() + " for version " + version.getName());
-                                                                         if(nodeWrapper.isVersioned()){
-                                                                            versionHistory.addVersionLabel(
-                                                                                 version.getName(), label, true);
-                                                                         }
-                                                                         if (nodeWrapper.hasNodes()) {
-                                                                             NodeIterator iterator = nodeWrapper.getNodes();
-                                                                             while (iterator.hasNext()) {
-                                                                                 JCRNodeWrapper nodeWrapper1 = (JCRNodeWrapper) iterator.nextNode();
-                                                                                 if(nodeWrapper1.isVersioned()) {
-                                                                                    addVersionLabel(nodeWrapper1, label);
-                                                                                 }
-                                                                             }
-                                                                         }
-                                                                     }
-                                                                     return null;
-                                                                 }
-                                                             });
+                new JCRCallback<Object>() {
+                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        JCRNodeWrapper nodeWrapper = session.getNodeByUUID(node.getIdentifier());
+                        VersionManager versionManager = session.getWorkspace().getVersionManager();
+                        VersionHistory versionHistory = versionManager.getVersionHistory(node.getPath());
+                        if (versionManager.isCheckedOut(nodeWrapper.getPath())) {
+                            versionManager.checkin(nodeWrapper.getPath());
+                        }
+                        if (!versionHistory.hasVersionLabel(label)) {
+                            Version version = versionManager.getBaseVersion(node.getPath());
+                            logger.debug("Add version label " + label + " on " + node.getPath() + " for version " +
+                                    version.getName());
+                            if (nodeWrapper.isVersioned()) {
+                                versionHistory.addVersionLabel(version.getName(), label, true);
+                            }
+                            if (nodeWrapper.hasNodes()) {
+                                NodeIterator iterator = nodeWrapper.getNodes();
+                                while (iterator.hasNext()) {
+                                    JCRNodeWrapper nodeWrapper1 = (JCRNodeWrapper) iterator.nextNode();
+                                    if (nodeWrapper1.isVersioned()) {
+                                        addVersionLabel(nodeWrapper1, label);
+                                    }
+                                }
+                            }
+                        }
+                        return null;
+                    }
+                });
 
     }
 
     public void restoreVersionLabel(final JCRNodeWrapper node, final String label) throws RepositoryException {
         JCRTemplate.getInstance().doExecuteWithSystemSession(null, node.getSession().getWorkspace().getName(), null,
-                                                             new JCRCallback<Object>() {
-                                                                 public Object doInJCR(JCRSessionWrapper session)
-                                                                         throws RepositoryException {
-                                                                     JCRNodeWrapper nodeWrapper = session.getNodeByUUID(
-                                                                             node.getIdentifier());
-                                                                     VersionManager versionManager = session.getWorkspace().getVersionManager();
-                                                                     String path = nodeWrapper.getPath();
-                                                                     if (!versionManager.isCheckedOut(path)) {
-                                                                         versionManager.checkout(path);
-                                                                     }
-                                                                     session.save();
-                                                                     VersionHistory history = versionManager.getVersionHistory(
-                                                                             path);
-                                                                     Version label1 = findVersionByLabel(history, label);
-                                                                     versionManager.restore(label1, true);
-                                                                     nodeWrapper = session.getNodeByUUID(
-                                                                             nodeWrapper.getIdentifier());
-                                                                     if (nodeWrapper.hasNodes()) {
-                                                                         NodeIterator iterator = nodeWrapper.getNodes();
-                                                                         while (iterator.hasNext()) {
-                                                                             JCRNodeWrapper nodeWrapper1 = (JCRNodeWrapper) iterator.nextNode();
-                                                                             restoreVersionLabel(nodeWrapper1, label);
-                                                                         }
-                                                                     }
-                                                                     return null;
-                                                                 }
-                                                             });
+                new JCRCallback<Object>() {
+                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        JCRNodeWrapper nodeWrapper = session.getNodeByUUID(node.getIdentifier());
+                        VersionManager versionManager = session.getWorkspace().getVersionManager();
+                        String path = nodeWrapper.getPath();
+                        if (!versionManager.isCheckedOut(path)) {
+                            versionManager.checkout(path);
+                        }
+                        session.save();
+                        VersionHistory history = versionManager.getVersionHistory(path);
+                        Version label1 = findVersionByLabel(history, label);
+                        versionManager.restore(label1, true);
+                        nodeWrapper = session.getNodeByUUID(nodeWrapper.getIdentifier());
+                        if (nodeWrapper.hasNodes()) {
+                            NodeIterator iterator = nodeWrapper.getNodes();
+                            while (iterator.hasNext()) {
+                                JCRNodeWrapper nodeWrapper1 = (JCRNodeWrapper) iterator.nextNode();
+                                restoreVersionLabel(nodeWrapper1, label);
+                            }
+                        }
+                        return null;
+                    }
+                });
     }
 
     public void restoreVersion(final JCRNodeWrapper node, final Version version) throws RepositoryException {
         JCRTemplate.getInstance().doExecuteWithSystemSession(null, node.getSession().getWorkspace().getName(), null,
-                                                             new JCRCallback<Object>() {
-                                                                 public Object doInJCR(JCRSessionWrapper session)
-                                                                         throws RepositoryException {
-                                                                     JCRNodeWrapper nodeWrapper = session.getNodeByUUID(
-                                                                             node.getIdentifier());
-                                                                     VersionManager versionManager = session.getWorkspace().getVersionManager();
-                                                                     String path = node.getPath();
-                                                                     String absPath = node.getParent().getPath();
-                                                                     if (!versionManager.isCheckedOut(absPath)) {
-                                                                         versionManager.checkout(absPath);
-                                                                     }
-                                                                     if (!versionManager.isCheckedOut(path)) {
-                                                                         versionManager.checkout(path);
-                                                                     }
-                                                                     nodeWrapper.remove();
-                                                                     session.save();
-                                                                     versionManager.restore(path, version, true);
-                                                                     /*if(node.hasNodes()) {
-                                                                         NodeIterator iterator = node.getNodes();
-                                                                         while (iterator.hasNext()) {
-                                                                             JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) iterator.nextNode();
-                                                                             restoreVersionLabel(session, nodeWrapper, label);
-                                                                         }
-                                                                     }*/
-                                                                     return null;
-                                                                 }
-                                                             });
+                new JCRCallback<Object>() {
+                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        JCRNodeWrapper nodeWrapper = session.getNodeByUUID(node.getIdentifier());
+                        VersionManager versionManager = session.getWorkspace().getVersionManager();
+                        String path = node.getPath();
+                        String absPath = node.getParent().getPath();
+                        if (!versionManager.isCheckedOut(absPath)) {
+                            versionManager.checkout(absPath);
+                        }
+                        if (!versionManager.isCheckedOut(path)) {
+                            versionManager.checkout(path);
+                        }
+                        nodeWrapper.remove();
+                        session.save();
+                        versionManager.restore(path, version, true);
+                        /*if(node.hasNodes()) {
+                            NodeIterator iterator = node.getNodes();
+                            while (iterator.hasNext()) {
+                                JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) iterator.nextNode();
+                                restoreVersionLabel(session, nodeWrapper, label);
+                            }
+                        }*/
+                        return null;
+                    }
+                });
     }
 
     public static Version findVersionByLabel(VersionHistory vh, String label) throws RepositoryException {
@@ -341,44 +332,37 @@ public class JCRVersionService extends JahiaService {
         return null;
     }
 
-    public void addVersionLabel(final List<String> allUuids, final String label,final String workspace) throws RepositoryException {
-        JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, null,
-                                                             new JCRCallback<Object>() {
-                                                                 public Object doInJCR(JCRSessionWrapper session)
-                                                                         throws RepositoryException {
-                                                                     VersionManager versionManager = session.getWorkspace().getVersionManager();
-                                                                     for (String allUuid : allUuids) {
-                                                                         JCRNodeWrapper nodeWrapper = session.getNodeByUUID(
-                                                                                 allUuid);
-                                                                         VersionHistory versionHistory = versionManager.getVersionHistory(
-                                                                                 nodeWrapper.getPath());
-                                                                         if (versionManager.isCheckedOut(
-                                                                                 nodeWrapper.getPath())) {
-                                                                             versionManager.checkin(
-                                                                                     nodeWrapper.getPath());
-                                                                         }
-                                                                         if (!versionHistory.hasVersionLabel(label)) {
-                                                                             Version version = versionManager.getBaseVersion(
-                                                                                     nodeWrapper.getPath());
-                                                                             logger.debug(
-                                                                                     "Add version label " + label + " on " + nodeWrapper.getPath() + " for version " + version.getName());
-                                                                             if(nodeWrapper.isVersioned()) {
-                                                                                versionHistory.addVersionLabel(
-                                                                                     version.getName(), label, true);
-                                                                             }
-                                                                             if (nodeWrapper.hasNodes()) {
-                                                                                 NodeIterator iterator = nodeWrapper.getNodes();
-                                                                                 while (iterator.hasNext()) {
-                                                                                     JCRNodeWrapper nodeWrapper1 = (JCRNodeWrapper) iterator.nextNode();
-                                                                                     if(nodeWrapper.isVersioned()) {
-                                                                                        addVersionLabel(nodeWrapper1, label);
-                                                                                     }
-                                                                                 }
-                                                                             }
-                                                                         }
-                                                                     }
-                                                                     return null;
-                                                                 }
-                                                             });
+    public void addVersionLabel(final List<String> allUuids, final String label, final String workspace)
+            throws RepositoryException {
+        JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, null, new JCRCallback<Object>() {
+            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                VersionManager versionManager = session.getWorkspace().getVersionManager();
+                for (String allUuid : allUuids) {
+                    JCRNodeWrapper nodeWrapper = session.getNodeByUUID(allUuid);
+                    VersionHistory versionHistory = versionManager.getVersionHistory(nodeWrapper.getPath());
+                    if (versionManager.isCheckedOut(nodeWrapper.getPath())) {
+                        versionManager.checkin(nodeWrapper.getPath());
+                    }
+                    if (!versionHistory.hasVersionLabel(label)) {
+                        Version version = versionManager.getBaseVersion(nodeWrapper.getPath());
+                        logger.debug("Add version label " + label + " on " + nodeWrapper.getPath() + " for version " +
+                                version.getName());
+                        if (nodeWrapper.isVersioned()) {
+                            versionHistory.addVersionLabel(version.getName(), label, true);
+                        }
+                        if (nodeWrapper.hasNodes()) {
+                            NodeIterator iterator = nodeWrapper.getNodes();
+                            while (iterator.hasNext()) {
+                                JCRNodeWrapper nodeWrapper1 = (JCRNodeWrapper) iterator.nextNode();
+                                if (nodeWrapper.isVersioned()) {
+                                    addVersionLabel(nodeWrapper1, label);
+                                }
+                            }
+                        }
+                    }
+                }
+                return null;
+            }
+        });
     }
 }

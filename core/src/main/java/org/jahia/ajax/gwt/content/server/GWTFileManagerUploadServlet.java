@@ -114,7 +114,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
             Locale locale = (Locale) request.getSession().getAttribute(ParamBean.SESSION_LOCALE);
             String locMsg = null;
             try {
-                String msg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.filemanager.Filemanager_Engine.fileSizeError.label", locale);
+                String msg = JahiaResourceBundle.getJahiaInternalResource("fileSizeError.label", locale);
                 locMsg = MessageFormat.format(msg,
                         Jahia.getSettings().getJahiaFileUploadMaxSize());
             } catch (Exception ex) {

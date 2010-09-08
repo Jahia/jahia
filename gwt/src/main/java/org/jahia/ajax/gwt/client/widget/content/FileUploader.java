@@ -130,7 +130,7 @@ public class FileUploader extends Window {
 
     public FileUploader(final Linker linker, final GWTJahiaNode location) {
         super();
-        setHeading(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.uploadFile.label"));
+        setHeading(Messages.get("uploadFile.label"));
         setSize(500, 200);
         setResizable(false);
 
@@ -160,7 +160,7 @@ public class FileUploader extends Window {
 
         // unzip parameter
         final CheckBox unzip = new CheckBox();
-        unzip.setFieldLabel(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.autoUnzip.label"));
+        unzip.setFieldLabel(Messages.get("autoUnzip.label"));
         unzip.setName("unzip");
 
         String parentPath = location.getPath();
@@ -176,7 +176,7 @@ public class FileUploader extends Window {
         form.add(unzip);
 
         final ToolBar toolBar = new ToolBar();
-        Button add = new Button(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.addFile.label"));
+        Button add = new Button(Messages.get("addFile.label"));
         add.setIconStyle("gwt-toolbar-icon-addFile");
         add.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
@@ -200,7 +200,7 @@ public class FileUploader extends Window {
                 } catch (Exception e) {
                     bar.reset();
                     bar.setVisible(false);
-                    com.google.gwt.user.client.Window.alert(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.checkUploads.label"));
+                    com.google.gwt.user.client.Window.alert(Messages.get("checkUploads.label"));
                 }
             }
         });
@@ -338,9 +338,9 @@ public class FileUploader extends Window {
         // 1= rename-to
         choose.add(Messages.get("label.rename", "Rename") + " auto");
         // 2 = overwrite
-        choose.add(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.confirm.overwrite.label", "Overwrite"));
+        choose.add(Messages.get("confirm.overwrite.label", "Overwrite"));
         // 4 = add new version
-        choose.add(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.confirm.addNewVersion.label","Add a new version"));
+        choose.add(Messages.get("confirm.addNewVersion.label","Add a new version"));
         choose.setHideLabel(true);
         choose.setValue(choose.getStore().getAt(1));
         choose.addListener(Events.SelectionChange, new Listener<SelectionChangedEvent>() {
@@ -356,7 +356,7 @@ public class FileUploader extends Window {
         });
 
         HorizontalPanel p = new HorizontalPanel();
-        final Label w = new Label(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.alreadyExists.label"));
+        final Label w = new Label(Messages.get("alreadyExists.label"));
         w.setStyleName("x-form-field");
         p.add(w);
         p.add(choose);

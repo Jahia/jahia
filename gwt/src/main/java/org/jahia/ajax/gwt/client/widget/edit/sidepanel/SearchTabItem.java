@@ -239,7 +239,7 @@ class SearchTabItem extends SidePanelTabItem {
     private ComboBox<GWTJahiaNodeType> createNodeSelector() {
         // create a definition for j:node
         final ComboBox<GWTJahiaNodeType> combo = new ComboBox<GWTJahiaNodeType>();
-        combo.setFieldLabel(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.nodes.label", "Node type"));
+        combo.setFieldLabel(Messages.get("nodes.label", "Node type"));
         combo.setStore(new ListStore<GWTJahiaNodeType>());
         combo.setDisplayField("label");
         combo.setValueField("name");

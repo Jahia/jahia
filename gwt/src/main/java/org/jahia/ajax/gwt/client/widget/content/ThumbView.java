@@ -155,11 +155,11 @@ public class ThumbView extends TopRightComponent {
         field.bind(store);
 
         ToolBar bar = new ToolBar();
-        bar.add(new LabelToolItem(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.thumbFilter.label")));
+        bar.add(new LabelToolItem(Messages.get("thumbFilter.label")));
 
         bar.add(field);
         bar.add(new SeparatorToolItem());
-        bar.add(new LabelToolItem(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.thumbSort.label")));
+        bar.add(new LabelToolItem(Messages.get("thumbSort.label")));
 
         // please keep same order as in sort() method
         ListStore<ModelData> sorts = new ListStore<ModelData>();
@@ -185,7 +185,7 @@ public class ThumbView extends TopRightComponent {
                 sort();
             }
         });
-        sortOrder = new ToggleButton(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.invertSort.label"));
+        sortOrder = new ToggleButton(Messages.get("invertSort.label"));
         sortOrder.addListener(Events.Select, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent componentEvent) {
                 sort();

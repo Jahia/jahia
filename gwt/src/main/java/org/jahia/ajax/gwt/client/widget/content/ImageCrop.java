@@ -152,12 +152,12 @@ public class ImageCrop extends Window {
         JahiaContentManagementService.App.getInstance().cropImage(path, targetName, top, left, width, height, force, new BaseAsyncCallback<Object>() {
             public void onApplicationFailure(Throwable throwable) {
                 if (throwable instanceof ExistingFileException) {
-                    if (com.google.gwt.user.client.Window.confirm(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.alreadyExists.label") + "\n" + Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.confirm.overwrite.label"))) {
+                    if (com.google.gwt.user.client.Window.confirm(Messages.get("alreadyExists.label") + "\n" + Messages.get("confirm.overwrite.label"))) {
                         cropImage(path, targetName, top, left, width, height, true);
                     }
                 } else {
-                    com.google.gwt.user.client.Window.alert(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.failure.crop.label") + "\n" + throwable.getLocalizedMessage());
-                    Log.error(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.failure.crop.label"), throwable);
+                    com.google.gwt.user.client.Window.alert(Messages.get("failure.crop.label") + "\n" + throwable.getLocalizedMessage());
+                    Log.error(Messages.get("failure.crop.label"), throwable);
                 }
             }
 

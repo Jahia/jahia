@@ -17,16 +17,6 @@ global RulesNotificationService notificationService
 global Logger logger
 global JCRStoreProvider provider
 
-/*
-rule "Test type"
-    when
-        A new node is created
-        - it is in /shared/test
-    then
-        Add the type jmix:test
-end
-*/
-
 rule "publish user (create)"
     when
        A new node is created

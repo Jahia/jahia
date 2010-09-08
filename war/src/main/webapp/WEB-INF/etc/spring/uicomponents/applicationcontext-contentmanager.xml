@@ -121,7 +121,7 @@
                     <list>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="titleKey"
-                                      value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
+                                      value="fileMenu.label"/>
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.NewFolder"/>
@@ -150,7 +150,7 @@
                         </bean>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="titleKey"
-                                      value="org.jahia.engines.filemanager.Filemanager_Engine.remoteMenu.label"/>
+                                      value="remoteMenu.label"/>
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.Mount"/>
@@ -162,7 +162,7 @@
                             </property>
                         </bean>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
-                            <property name="titleKey" value="org.jahia.engines.filemanager.Filemanager_Engine.imageMenu.label"/>
+                            <property name="titleKey" value="imageMenu.label"/>
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.Crop"/>
@@ -173,7 +173,7 @@
                         </bean>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="titleKey"
-                                      value="org.jahia.engines.filemanager.Filemanager_Engine.viewMenu.label"/>
+                                      value="viewMenu.label"/>
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.Refresh"/>
@@ -260,7 +260,7 @@
                 <bean class="org.jahia.services.uicomponents.bean.contentmanager.Column">
                     <property name="key" value="providerKey"/>
                     <property name="titleKey"
-                              value="org.jahia.engines.filemanager.Filemanager_Engine.column.provider.label"/>
+                              value="column.provider.label"/>
                     <property name="visibility">
                         <bean class="org.jahia.services.uicomponents.bean.contentmanager.ProviderKeyColumnVisibility">
                             <property name="jcrSessionFactory" ref="jcrSessionFactory"/>
@@ -288,7 +288,7 @@
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
 
                             <property name="titleKey"
-                                      value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
+                                      value="fileMenu.label"/>
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.NewPortletFolder"/>
@@ -316,7 +316,7 @@
                         </bean>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="titleKey"
-                                      value="org.jahia.engines.filemanager.Filemanager_Engine.viewMenu.label"/>
+                                      value="viewMenu.label"/>
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.Refresh"/>
@@ -405,7 +405,7 @@
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
 
                             <property name="titleKey"
-                                      value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
+                                      value="fileMenu.label"/>
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.NewCategory"/>
@@ -432,7 +432,7 @@
                         </bean>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="titleKey"
-                                      value="org.jahia.engines.filemanager.Filemanager_Engine.viewMenu.label"/>
+                                      value="viewMenu.label"/>
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.Refresh"/>
@@ -515,7 +515,7 @@
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
 
                             <property name="titleKey"
-                                      value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
+                                      value="fileMenu.label"/>
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.NewTag"/>
@@ -536,7 +536,7 @@
                         </bean>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="titleKey"
-                                      value="org.jahia.engines.filemanager.Filemanager_Engine.viewMenu.label"/>
+                                      value="viewMenu.label"/>
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.Refresh"/>
@@ -671,7 +671,7 @@
                     <list>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="titleKey"
-                                      value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
+                                      value="fileMenu.label"/>
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.NewFolder"/>
@@ -705,7 +705,7 @@
                         </bean>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="titleKey"
-                                      value="org.jahia.engines.filemanager.Filemanager_Engine.viewMenu.label"/>
+                                      value="viewMenu.label"/>
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.Refresh"/>
@@ -718,7 +718,7 @@
                         </bean>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="titleKey"
-                                      value="org.jahia.engines.filemanager.Filemanager_Engine.remoteMenu.label"/>
+                                      value="remoteMenu.label"/>
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.Mount"/>
@@ -731,7 +731,7 @@
                         </bean>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="titleKey"
-                                      value="org.jahia.engines.filemanager.Filemanager_Engine.imageMenu.label"/>
+                                      value="imageMenu.label"/>
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.Crop"/>
@@ -820,7 +820,7 @@
                 <bean class="org.jahia.services.uicomponents.bean.contentmanager.Column">
                     <property name="key" value="providerKey"/>
                     <property name="titleKey"
-                              value="org.jahia.engines.filemanager.Filemanager_Engine.column.provider.label"/>
+                              value="column.provider.label"/>
                     <property name="visibility">
                         <bean class="org.jahia.services.uicomponents.bean.contentmanager.ProviderKeyColumnVisibility">
                             <property name="jcrSessionFactory" ref="jcrSessionFactory"/>
@@ -857,7 +857,7 @@
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
 
                             <property name="titleKey"
-                                      value="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"/>
+                                      value="fileMenu.label"/>
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.NewPage"/>
@@ -882,7 +882,7 @@
                         </bean>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="titleKey"
-                                      value="org.jahia.engines.filemanager.Filemanager_Engine.viewMenu.label"/>
+                                      value="viewMenu.label"/>
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.Refresh"/>
@@ -1668,70 +1668,70 @@
         <property name="key" value="globalRepository"/>
         <property name="paths" value="/"/>
         <property name="titleKey"
-                  value="org.jahia.engines.filemanager.Filemanager_Engine.repository.globalRepository.label"/>
+                  value="repository.globalRepository.label"/>
     </bean>
 
     <bean id="repository.sharedfiles" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="sharedRepository"/>
         <property name="paths" value="/shared/files"/>
         <property name="titleKey"
-                  value="org.jahia.engines.filemanager.Filemanager_Engine.repository.sharedRepository.label"/>
+                  value="repository.sharedRepository.label"/>
     </bean>
 
     <bean id="repository.myfiles" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="myRepository"/>
         <property name="paths" value="$user/files"/>
         <property name="titleKey"
-                  value="org.jahia.engines.filemanager.Filemanager_Engine.repository.myRepository.label"/>
+                  value="repository.myRepository.label"/>
     </bean>
 
     <bean id="repository.websitefiles" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="websiteRepository"/>
         <property name="paths" value="$site/files"/>
         <property name="titleKey"
-                  value="org.jahia.engines.filemanager.Filemanager_Engine.repository.websiteRepository.label"/>
+                  value="repository.websiteRepository.label"/>
     </bean>
 
     <bean id="repository.myexternalfiles" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="myExternalRepository"/>
         <property name="paths" value="/mounts"/>
         <property name="titleKey"
-                  value="org.jahia.engines.filemanager.Filemanager_Engine.repository.myExternalRepository.label"/>
+                  value="repository.myExternalRepository.label"/>
     </bean>
 
     <bean id="repository.sharedportlets" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="sharedPortletRepository"/>
         <property name="paths" value="/shared/portlets"/>
         <property name="titleKey"
-                  value="org.jahia.engines.filemanager.Filemanager_Engine.repository.sharedPortletRepository.label"/>
+                  value="repository.sharedPortletRepository.label"/>
     </bean>
 
     <bean id="repository.myportlets" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="myPortletRepository"/>
         <property name="paths" value="$user/portlets"/>
         <property name="titleKey"
-                  value="org.jahia.engines.filemanager.Filemanager_Engine.repository.myPortletRepository.label"/>
+                  value="repository.myPortletRepository.label"/>
     </bean>
 
     <bean id="repository.websiteportlets" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="websitePortletRepository"/>
         <property name="paths" value="$site/portlets"/>
         <property name="titleKey"
-                  value="org.jahia.engines.filemanager.Filemanager_Engine.repository.websitePortletRepository.label"/>
+                  value="repository.websitePortletRepository.label"/>
     </bean>
 
     <bean id="repository.sharedcontent" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="sharedContentRepository"/>
         <property name="paths" value="/shared/content"/>
         <property name="titleKey"
-                  value="org.jahia.engines.filemanager.Filemanager_Engine.repository.sharedRepository.label"/>
+                  value="repository.sharedRepository.label"/>
     </bean>
 
     <bean id="repository.mycontent" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="myContentRepository"/>
         <property name="paths" value="$user/content"/>
         <property name="titleKey"
-                  value="org.jahia.engines.filemanager.Filemanager_Engine.repository.myRepository.label"/>
+                  value="repository.myRepository.label"/>
     </bean>
 
 
@@ -1739,28 +1739,28 @@
         <property name="key" value="usersRepository"/>
         <property name="paths" value="/users"/>
         <property name="titleKey"
-                  value="org.jahia.engines.filemanager.Filemanager_Engine.repository.usersRepository.label"/>
+                  value="repository.usersRepository.label"/>
     </bean>
 
     <bean id="repository.category" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="categoryRepository"/>
         <property name="paths" value="/categories"/>
         <property name="titleKey"
-                  value="org.jahia.engines.filemanager.Filemanager_Engine.repository.categoryRepository.label"/>
+                  value="repository.categoryRepository.label"/>
     </bean>
 
     <bean id="repository.site" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="siteRepository"/>
         <property name="paths" value="$site"/>
         <property name="titleKey"
-                  value="org.jahia.engines.filemanager.Filemanager_Engine.repository.siteRepository.label"/>
+                  value="repository.siteRepository.label"/>
     </bean>
 
     <bean id="repository.sites" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="sitesRepository"/>
         <property name="paths" value="$sites"/>
         <property name="titleKey"
-                  value="org.jahia.engines.filemanager.Filemanager_Engine.repository.sitesRepository.label"/>
+                  value="repository.sitesRepository.label"/>
     </bean>
 
 </beans>

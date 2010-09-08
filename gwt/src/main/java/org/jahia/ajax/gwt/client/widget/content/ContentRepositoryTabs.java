@@ -107,7 +107,7 @@ public class ContentRepositoryTabs extends LeftComponent {
         savedSearchPanel.setBodyBorder(false);
         savedSearchPanel.setBorders(false);
         savedSearchPanel.setScrollMode(Style.Scroll.NONE);
-        savedSearchPanel.setHeading(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.repository.savedSearch.label"));
+        savedSearchPanel.setHeading(Messages.get("repository.savedSearch.label"));
         savedSearchPanel.getHeader().setIconStyle("gwt-toolbar-icon-savedSearch");
         savedSearchPanel.getHeader().setBorders(false);
 

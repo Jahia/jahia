@@ -204,7 +204,7 @@ public class UserGroupSelect extends Window {
         columns.add(new ColumnConfig("j:lastName", Messages.get("org.jahia.admin.lastName.label", "Last name"), 140));
         columns.add(new ColumnConfig("j:firstName", Messages.get("org.jahia.admin.firstName.label", "First name"), 140));
 //        columns.add(new ColumnConfig("siteName", "Site name", 80));
-        columns.add(new ColumnConfig("provider", Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.column.provider.label", "Provider"), 80));
+        columns.add(new ColumnConfig("provider", Messages.get("column.provider.label", "Provider"), 80));
 //        columns.add(new ColumnConfig("email", "Email", 100));
 
         ColumnModel cm = new ColumnModel(columns);

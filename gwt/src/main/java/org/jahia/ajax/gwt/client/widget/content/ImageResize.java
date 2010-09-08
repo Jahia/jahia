@@ -82,19 +82,19 @@ public class ImageResize extends Window {
         final NumberField wf = new NumberField();
         wf.setName("width");
         wf.setValue(new Integer(w));
-        wf.setFieldLabel(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.width.label"));
+        wf.setFieldLabel(Messages.get("width.label"));
         form.add(wf);
 
         final NumberField hf = new NumberField();
         hf.setName("height");
         hf.setValue(new Integer(h));
-        hf.setFieldLabel(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.height.label"));
+        hf.setFieldLabel(Messages.get("height.label"));
         form.add(hf);
 
         final CheckBox keepRatio = new CheckBox();
         keepRatio.setName("ratio");
         keepRatio.setValue(true);
-        keepRatio.setFieldLabel(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.ratio.label"));
+        keepRatio.setFieldLabel(Messages.get("ratio.label"));
         form.add(keepRatio);
 
         hf.addListener(Events.KeyUp, new Listener<ComponentEvent>() {
@@ -148,12 +148,12 @@ public class ImageResize extends Window {
          JahiaContentManagementService.App.getInstance().resizeImage(path, targetName, width, height, force, new BaseAsyncCallback() {
              public void onApplicationFailure(Throwable throwable) {
                  if (throwable instanceof ExistingFileException) {
-                     if (com.google.gwt.user.client.Window.confirm(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.alreadyExists.label") + "\n" + Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.confirm.overwrite.label"))) {
+                     if (com.google.gwt.user.client.Window.confirm(Messages.get("alreadyExists.label") + "\n" + Messages.get("confirm.overwrite.label"))) {
                          resizeImage(path, targetName, width, height, true);
                      }
                 } else {
-                    com.google.gwt.user.client.Window.alert(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.failure.resize.label") + "\n" + throwable.getLocalizedMessage());
-                    Log.error(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.failure.resize.label"), throwable);
+                    com.google.gwt.user.client.Window.alert(Messages.get("failure.resize.label") + "\n" + throwable.getLocalizedMessage());
+                    Log.error(Messages.get("failure.resize.label"), throwable);
                 }
              }
 

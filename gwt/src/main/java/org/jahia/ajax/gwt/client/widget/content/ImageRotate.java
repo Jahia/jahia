@@ -115,12 +115,12 @@ public class ImageRotate extends Window {
          JahiaContentManagementService.App.getInstance().rotateImage(path, target, clockwise, force, new BaseAsyncCallback() {
              public void onApplicationFailure(Throwable throwable) {
                  if (throwable instanceof ExistingFileException) {
-                    if (com.google.gwt.user.client.Window.confirm(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.alreadyExists.label") + "\n"+ Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.confirm.overwrite.label"))) {
+                    if (com.google.gwt.user.client.Window.confirm(Messages.get("alreadyExists.label") + "\n"+ Messages.get("confirm.overwrite.label"))) {
                          rotateImage(path, target, clockwise, true);
                      }
                 } else {
-                    com.google.gwt.user.client.Window.alert(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.failure.rotate.label") + "\n" + throwable.getLocalizedMessage());
-                    Log.error(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.failure.rotate.label"), throwable);
+                    com.google.gwt.user.client.Window.alert(Messages.get("failure.rotate.label") + "\n" + throwable.getLocalizedMessage());
+                    Log.error(Messages.get("failure.rotate.label"), throwable);
                 }
              }
 

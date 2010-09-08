@@ -59,7 +59,7 @@ int stretcherToOpen   = 1;
                         &nbsp;&nbsp;&nbsp;&nbsp;
                         <input type="checkbox" name="properties" value="description" disabled>&nbsp;<fmt:message key="label.description"/> (LDAP)<br>
                         &nbsp;&nbsp;&nbsp;&nbsp;
-                        <input type="checkbox" name="properties" value="members" disabled>&nbsp;<fmt:message key="org.jahia.engines.users.SelectUG_Engine.members.label"/> (LDAP)<br>
+                        <input type="checkbox" name="properties" value="members" disabled>&nbsp;<fmt:message key="members.label"/> (LDAP)<br>
 
                     </td>
                 </tr>
@@ -83,7 +83,7 @@ int stretcherToOpen   = 1;
                         &nbsp;&nbsp;&nbsp;&nbsp;
                             <input type="checkbox" name="providers" value="<%=curProvider.getKey()%>" disabled
                                 <%if (providerList.size() <= 1) { %> checked <% } %>>
-                            <fmt:message key='<%= "org.jahia.engines.users.SelectUG_Engine.providers." + curProvider.getKey() + ".label"%>'/> (<%=curProvider.getKey()%>)<br>
+                            <fmt:message key='<%= "providers." + curProvider.getKey() + ".label"%>'/> (<%=curProvider.getKey()%>)<br>
 <%
                         }
 %>

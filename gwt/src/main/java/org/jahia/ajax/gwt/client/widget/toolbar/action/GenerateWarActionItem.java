@@ -31,7 +31,7 @@ public class GenerateWarActionItem extends BaseActionItem {
         JahiaContentManagementService.App.getInstance().generateWar(JahiaGWTParameters.getSiteKey(), new BaseAsyncCallback<GWTJahiaNode>() {
             public void onSuccess(GWTJahiaNode result) {
                 dl.removeAll();
-                HTML link = new HTML(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.downloadMessage.label") + "<br /><br /><a href=\"" + result.getUrl() + "\" target=\"_new\">" + result.getName() + "</a>");
+                HTML link = new HTML(Messages.get("downloadMessage.label") + "<br /><br /><a href=\"" + result.getUrl() + "\" target=\"_new\">" + result.getName() + "</a>");
                 dl.add(link);
                 dl.layout();
             }

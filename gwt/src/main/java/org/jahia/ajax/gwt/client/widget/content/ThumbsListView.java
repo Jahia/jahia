@@ -78,8 +78,8 @@ public class ThumbsListView extends ListView<GWTJahiaNode> {
             } else {
                 model.set("nodeImg", "<img src=\"" + model.getPreview() + "\" title=\"" + model.getName() + "\">");
             }
-            model.set("widthHTML", "<div><b>" + Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.width.label", "Width") + " </b>" + model.get("j:width") + " px</div>");
-            model.set("heightHTML", "<div><b>" + Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.height.label", "Height") + " </b>" + model.get("j:height") + " px</div>");
+            model.set("widthHTML", "<div><b>" + Messages.get("width.label", "Width") + " </b>" + model.get("j:width") + " px</div>");
+            model.set("heightHTML", "<div><b>" + Messages.get("height.label", "Height") + " </b>" + model.get("j:height") + " px</div>");
         } else if (model.getPreview() != null) {
             model.set("nodeImg", "<img src=\"" + model.getPreview() + "\" title=\"" + model.getName() + "\">");
         } else {

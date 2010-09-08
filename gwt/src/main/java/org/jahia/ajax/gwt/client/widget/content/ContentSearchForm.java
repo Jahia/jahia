@@ -90,7 +90,7 @@ public class ContentSearchForm extends ContentPanel {
         searchForm.setBorders(false);
         searchForm.setBodyBorder(false);
         searchField = new TextField<String>();
-        searchField.setFieldLabel(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.search.label"));
+        searchField.setFieldLabel(Messages.get("search.label"));
 
         final Button ok = new Button("", new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent e) {
@@ -105,7 +105,7 @@ public class ContentSearchForm extends ContentPanel {
             }
         });
         save.setIconStyle("gwt-toolbar-icon-saveAsSharedComponent");
-        save.setToolTip(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.saveSearch.label"));
+        save.setToolTip(Messages.get("saveSearch.label"));
 
         // main search field
         HorizontalPanel mainField = new HorizontalPanel();
@@ -268,7 +268,7 @@ public class ContentSearchForm extends ContentPanel {
      */
     private CheckBox createFileField() {
         CheckBox field = new CheckBox();
-        field.setFieldLabel(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label", "File"));
+        field.setFieldLabel(Messages.get("fileMenu.label", "File"));
         field.setBoxLabel(field.getFieldLabel());        
         field.setName("file");
         field.setValue(true);
@@ -356,7 +356,7 @@ public class ContentSearchForm extends ContentPanel {
     public void saveSearch() {
         GWTJahiaSearchQuery query = getCurrentQuery();
         if (query != null && query.getQuery().length() > 0) {
-            String name = Window.prompt(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.saveSearchName.label", "Please enter a name for this search"), JCRClientUtils.cleanUpFilename(query.getQuery()));
+            String name = Window.prompt(Messages.get("saveSearchName.label", "Please enter a name for this search"), JCRClientUtils.cleanUpFilename(query.getQuery()));
             if (name != null && name.length() > 0) {
                 name = JCRClientUtils.cleanUpFilename(name);
                 final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();

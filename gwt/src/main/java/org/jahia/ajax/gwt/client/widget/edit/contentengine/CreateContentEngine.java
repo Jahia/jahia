@@ -125,7 +125,7 @@ public class CreateContentEngine extends AbstractContentEngine {
 
         buttonBar.add(ok);
 
-        Button okAndNew = new Button(Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.properties.saveAndNew.label"));
+        Button okAndNew = new Button(Messages.get("properties.saveAndNew.label"));
         okAndNew.setHeight(BUTTON_HEIGHT);
         okAndNew.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
 

@@ -157,7 +157,7 @@ public class VersioningTabItem extends EditEngineTabItem {
                                 } else {
                                     if (el.getUrl() != null) {
                                         HTML link = new HTML(Messages.get(
-                                                "org.jahia.engines.filemanager.Filemanager_Engine.downloadMessage.label") + "<br /><br /><a href=\"" + el.getUrl() + "\" target=\"_new\">" + el.getName() + "</a>");
+                                                "downloadMessage.label") + "<br /><br /><a href=\"" + el.getUrl() + "\" target=\"_new\">" + el.getName() + "</a>");
                                         final com.extjs.gxt.ui.client.widget.Window dl = new com.extjs.gxt.ui.client.widget.Window();
                                         dl.setModal(true);
                                         dl.setHeading(Messages.get("label.download"));
@@ -168,7 +168,7 @@ public class VersioningTabItem extends EditEngineTabItem {
                                         dl.show();
                                     } else {
                                         Window.alert(Messages.get(
-                                                "org.jahia.engines.filemanager.Filemanager_Engine.failure.download.label"));
+                                                "failure.download.label"));
                                     }
                                 }
                             } else {

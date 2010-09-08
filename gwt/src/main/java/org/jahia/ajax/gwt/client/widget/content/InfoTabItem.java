@@ -103,10 +103,10 @@ public class InfoTabItem extends EditEngineTabItem {
                 }
                 if (selectedNode.isLocked() && selectedNode.getLockOwner() != null) {
                     flowPanel.add(new HTML(
-                            "<b>" + Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.info.lock.label") + ":</b> " + selectedNode.getLockOwner()));
+                            "<b>" + Messages.get("info.lock.label") + ":</b> " + selectedNode.getLockOwner()));
                 }
 
-                flowPanel.add(new HTML("<b>" + Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.nodes.label", "Types") + ":</b> " + selectedNode.getNodeTypes()));
+                flowPanel.add(new HTML("<b>" + Messages.get("nodes.label", "Types") + ":</b> " + selectedNode.getNodeTypes()));
                 flowPanel.add(new HTML("<b>" + Messages.get("org.jahia.jcr.edit.tags.tab", "Tags") + ":</b> " + selectedNode.getTags() != null ? selectedNode.getTags() : ""));
             } else {
                 int numberFiles = 0;
@@ -121,9 +121,9 @@ public class InfoTabItem extends EditEngineTabItem {
                         numberFolders++;
                     }
                 }
-                flowPanel.add(new HTML("<b>" + Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.info.nbFiles.label") + " :</b> " + numberFiles));
-                flowPanel.add(new HTML("<b>" + Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.info.nbFolders.label") + " :</b> " + numberFolders));
-                flowPanel.add(new HTML("<b>" + Messages.get("org.jahia.engines.filemanager.Filemanager_Engine.info.totalSize.label") + " :</b> " +
+                flowPanel.add(new HTML("<b>" + Messages.get("info.nbFiles.label") + " :</b> " + numberFiles));
+                flowPanel.add(new HTML("<b>" + Messages.get("info.nbFolders.label") + " :</b> " + numberFolders));
+                flowPanel.add(new HTML("<b>" + Messages.get("info.totalSize.label") + " :</b> " +
                         org.jahia.ajax.gwt.client.util.Formatter.getFormattedSize(size)));
             }
             g.setWidget(0, 1, flowPanel);

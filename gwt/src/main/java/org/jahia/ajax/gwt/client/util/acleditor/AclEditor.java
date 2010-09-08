@@ -88,9 +88,9 @@ public class AclEditor {
     private boolean readOnly = false;
     private List<String> available;
     private boolean displayInheritanceColumn = true;
-    private String addUsersLabel = getResource("org.jahia.engines.users.SelectUG_Engine.newUsers.label");
-    private String addGroupsLabel = getResource("org.jahia.engines.users.SelectUG_Engine.newGroups.label");
-    private String addRolesLabel = getResource("org.jahia.engines.users.SelectUG_Engine.newRoles.label");
+    private String addUsersLabel = getResource("newUsers.label");
+    private String addGroupsLabel = getResource("newGroups.label");
+    private String addRolesLabel = getResource("newRoles.label");
 
     public AclEditor(GWTJahiaNodeACL acl, String aclContext) {
         this.originalAcl = acl;
@@ -115,7 +115,7 @@ public class AclEditor {
 
     public String getAddUsersLabel() {
         if (addUsersLabel == null) {
-            return getResource("org.jahia.engines.users.SelectUG_Engine.newUsers.label");
+            return getResource("newUsers.label");
         }
         return addUsersLabel;
     }
@@ -126,14 +126,14 @@ public class AclEditor {
 
     public String getAddGroupsLabel() {
         if (addGroupsLabel == null) {
-            return getResource("org.jahia.engines.users.SelectUG_Engine.newGroups.label");
+            return getResource("newGroups.label");
         }
         return addGroupsLabel;
     }
 
     public String getAddRolesLabel() {
         if (addRolesLabel == null) {
-            return getResource("org.jahia.engines.users.SelectUG_Engine.newRoles.label");
+            return getResource("newRoles.label");
         }
         return addRolesLabel;
     }

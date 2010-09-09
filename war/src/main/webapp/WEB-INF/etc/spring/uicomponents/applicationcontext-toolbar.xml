@@ -4,13 +4,20 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-    <!-- language switcher -->
+    <!-- global language switcher -->
     <bean id="Toolbar.ItemsGroup.LanguageSwitcher" class="org.jahia.services.uicomponents.bean.toolbar.Item">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.LanguageSwitcherActionItem"/>
         </property>
         <property name="titleKey" value="label.languages"/>
         <property name="visibility" value="$site/toolbar/language-switcher"/>
+    </bean>
+
+    <!-- site language switcher -->
+    <bean id="Toolbar.ItemsGroup.SiteLanguageSwitcher" parent="Toolbar.ItemsGroup.LanguageSwitcher">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SiteLanguageSwitcherActionItem"/>
+        </property>
     </bean>
 
     <bean id="Toolbar.Item.WorkInProgress" class="org.jahia.services.uicomponents.bean.toolbar.Item">

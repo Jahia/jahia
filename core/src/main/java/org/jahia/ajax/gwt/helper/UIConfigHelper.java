@@ -39,6 +39,7 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.util.Constants;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.LanguageSwitcherActionItem;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.SiteLanguageSwitcherActionItem;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.decorator.JCRSiteNode;
@@ -531,26 +532,13 @@ public class UIConfigHelper {
         gwtToolbarItem.setProperties(pMap);
 
 
-//        if (item.getWorkflowAction() != null) {
-//            try {
-//                List<WorkflowDefinition> def = WorkflowService.getInstance().getWorkflowsForAction(item.getWorkflowAction());
-//                List<String> processes = new ArrayList<String>();
-//                for (WorkflowDefinition workflowDefinition : def) {
-//                    processes.add(workflowDefinition.getKey());
-//                }
-//                gwtToolbarItem.setProcesses(processes);
-//                // todo : use the role assigned to the action for bypassing workflow ?
-//                final WorkflowActionItem workflowActionItem = new WorkflowActionItem(processes, jahiaUser.isAdminMember(0), item.getActionItem());
-//                gwtToolbarItem.setMinIconStyle("gwt-toolbar-icon-workflow-start");
-//                gwtToolbarItem.setActionItem(workflowActionItem);
-//            } catch (RepositoryException e) {
-//                logger.error("Cannot get workflows", e);
-//            }
-//        } else {
             ActionItem actionItem = item.getActionItem();
-            if (actionItem instanceof LanguageSwitcherActionItem) {
+            if (actionItem instanceof SiteLanguageSwitcherActionItem) {
                 ((LanguageSwitcherActionItem) actionItem).setSelectedLang(languages.getCurrentLang(locale));
                 ((LanguageSwitcherActionItem) actionItem).setLanguages(languages.getLanguages(site, jahiaUser, locale));
+            } else if (actionItem instanceof LanguageSwitcherActionItem) {
+                ((LanguageSwitcherActionItem) actionItem).setSelectedLang(languages.getCurrentLang(locale));
+                ((LanguageSwitcherActionItem) actionItem).setLanguages(languages.getLanguages(null, null, locale));
             }
 
             gwtToolbarItem.setActionItem(actionItem);

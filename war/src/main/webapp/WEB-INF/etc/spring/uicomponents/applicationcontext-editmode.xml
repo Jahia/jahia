@@ -266,7 +266,7 @@
                             </property>
                             <property name="visibility" value="$site/toolbar/preview-mode"/>
                         </bean>
-                        <ref bean="Toolbar.ItemsGroup.LanguageSwitcher"/>
+                        <ref bean="Toolbar.ItemsGroup.SiteLanguageSwitcher"/>
                         <ref bean="Toolbar.Item.Separator"/>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="titleKey" value="label.edit"/>

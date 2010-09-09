@@ -98,7 +98,7 @@ public class PublicationStatusGrid extends Grid<GWTJahiaPublicationInfo> {
             }
         });
         setView(view);
-        setSelectionModel(new GridSelectionModel<GWTJahiaPublicationInfo>());
         reconfigure(store, cm);
+        setSelectionModel(new GridSelectionModel<GWTJahiaPublicationInfo>());
     }
 }

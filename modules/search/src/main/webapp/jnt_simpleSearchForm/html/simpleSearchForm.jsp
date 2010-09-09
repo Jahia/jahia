@@ -75,6 +75,6 @@
        	<s:term id="searchTerm" value="${startSearching}" searchIn="siteContent,tags" onfocus="if(this.value==this.defaultValue)this.value='';" onblur="if(this.value=='')this.value=this.defaultValue;" class="text-input"/>
        	<s:site value="${renderContext.site.name}" display="false"/>
        	<s:language value="${renderContext.mainResource.locale}" display="false" />
-    	<input class="searchsubmit" type="submit"  title="<fmt:message key='search.submit'/>"/>
+    	<input class="searchsubmit" type="submit"  title="<fmt:message key='search.submit'/>" value=""/>
 
 </s:form><br class="clear"/>

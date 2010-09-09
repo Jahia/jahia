@@ -519,7 +519,12 @@
     </bean>
 
     <!-- clip board-->
-    <bean id="Toolbar.Item.ClipBoard" class="org.jahia.services.uicomponents.bean.toolbar.Item"/>
+    <bean id="Toolbar.Item.ClipBoard" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ClipboardActionItem"/>
+        </property>
+        <property name="icon" value="clipboard"/>
+    </bean>
 
     <!-- Notification -->
     <bean id="Toolbar.Item.Notification" class="org.jahia.services.uicomponents.bean.toolbar.Item">

@@ -33,6 +33,7 @@
 package org.jahia.ajax.gwt.client.util.content;
 
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.ClipboardActionItem;
 
 import java.util.List;
 
@@ -66,14 +67,17 @@ public class CopyPasteEngine {
     public void setCopiedPaths(List<GWTJahiaNode> copiedPaths) {
         cut = false ;
         this.copiedPaths = copiedPaths;
+        ClipboardActionItem.setCopied(copiedPaths);
     }
 
     public void setCutPaths(List<GWTJahiaNode> cutPaths) {
         this.copiedPaths = cutPaths;
         cut = true ;
+        ClipboardActionItem.setCopied(cutPaths);
     }
 
     public void onPastedPath() {
+        ClipboardActionItem.removeCopied(copiedPaths);
         copiedPaths = null ;
         cut = false ;
     }

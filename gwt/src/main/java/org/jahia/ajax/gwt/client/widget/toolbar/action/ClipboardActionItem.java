@@ -32,8 +32,19 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import com.extjs.gxt.ui.client.event.MenuEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.Html;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
+import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
+import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.widget.Linker;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: jahia
@@ -42,12 +53,63 @@ import com.extjs.gxt.ui.client.widget.Html;
  */
 public class ClipboardActionItem extends BaseActionItem {
 
-    @Override
-    public Component createNewToolItem() {
-        return new Html("<div id='clipboard-display'/>");
+    private static ClipboardActionItem instance;
+
+    private transient List<List<GWTJahiaNode>> copiedStuff = new ArrayList<List<GWTJahiaNode>>();
+    private transient MenuItem clearAll;
+
+    @Override public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
+        super.init(gwtToolbarItem, linker);
+
+//        final Menu menu = new Menu();
+//        setSubMenu(menu);
+//
+//        clearAll = new MenuItem("Clear");
+//        clearAll.addSelectionListener(new SelectionListener<MenuEvent>() {
+//            public void componentSelected(MenuEvent ce) {
+//                copiedStuff.clear();
+//                menu.removeAll();
+//                menu.add(clearAll);
+//            }
+//        });
+//        menu.add(clearAll);
+//
+        instance = this;
     }
 
-    @Override
-    public void onComponentSelection() {
+    public static void removeCopied(List<GWTJahiaNode> copiedPath) {
+        instance.copiedStuff.remove(copiedPath);
+        refreshView();
+    }
+
+    public static void setCopied(List<GWTJahiaNode> copiedPath) {
+        instance.copiedStuff.add(0,copiedPath);
+        if (instance.copiedStuff.size() == 10) {
+            instance.copiedStuff.remove(9);
+        }
+        refreshView();
+    }
+
+    private static void refreshView() {
+        Button b = (Button) instance.getTextToolItem();
+        if (instance.copiedStuff.isEmpty()) {
+            b.setText(null);
+            b.setVisible(false);
+        } else {
+            final List<GWTJahiaNode> copiedNodes = instance.copiedStuff.get(0);
+            if (copiedNodes.size() > 1) {
+                b.setText(copiedNodes.size() + " "+Messages.get("label.items", " Items"));
+            } else {
+                b.setText(Messages.get("label.clipboard","Clipboard")+": "+copiedNodes.get(0).getDisplayName());
+            }
+            b.setVisible(true);
+        }
+    }
+
+
+    @Override public Component createNewToolItem() {
+        Button b = new Button();
+        b.setVisible(false);
+        return b;
     }
 }

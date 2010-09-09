@@ -5,7 +5,9 @@
 #bodywrapper #forum-body .forum-box{
 	background: #12A3EB url(img/bg_header.gif) repeat-x top left;
 	padding: 0 5px;
-	margin-bottom:10px
+	margin-bottom:10px;
+	clear:both;
+	width:100%;
 }
 #bodywrapper #forum-body span.forum-corners-top,
 #bodywrapper #forum-body span.forum-corners-bottom,
@@ -286,7 +288,9 @@ dd.lastpost span, ul.topiclist dd.searchby span, ul.topiclist dd.info span, ul.t
 	border-top-color:1px solid #FFFFFF;
 	padding:5px 0
 }
-
+#bodywrapper #forum-body li.row form {
+	display:none;
+}
 #bodywrapper #forum-body li.row:hover {
 	background-color:#F6F6F6;
 }
@@ -377,9 +381,16 @@ dd.lastpost span, ul.topiclist dd.searchby span, ul.topiclist dd.info span, ul.t
 #bodywrapper #forum-body #forum-Form  p.field{
 	margin-bottom:0.2em;
 }
-#bodywrapper #forum-body #forum-Form  textarea{
-	width:99%
+#bodywrapper #forum-body textarea, #bodywrapper #forum-body input{
+	width:98%
 }
+#bodywrapper #forum-body #forum-Form input.radio,
+#bodywrapper #forum-body #forum-Form input.checkbox,
+#bodywrapper #forum-body #forum-Form input.button,
+#bodywrapper #forum-body #forum-Form button {
+	width:auto;
+}
+
 #bodywrapper #forum-body #forum-Form fieldset{
 	border:none;
 	margin:0;

@@ -1214,13 +1214,6 @@ public class NavigationHelper {
                             versions.add(jahiaNodeVersion);
                         }
                     }
-                } else if (node.isFile()) {
-                    // Display only non labelized version for files
-                    n.setUrl(node.getUrl() + "?v=" + v.getCreated().getTime().getTime());
-                    GWTJahiaNodeVersion jahiaNodeVersion =
-                            new GWTJahiaNodeVersion(v.getIdentifier(), v.getName(), v.getCreated().getTime(), null, "");
-                    jahiaNodeVersion.setNode(n);
-                    versions.add(jahiaNodeVersion);
                 }
             }
         }

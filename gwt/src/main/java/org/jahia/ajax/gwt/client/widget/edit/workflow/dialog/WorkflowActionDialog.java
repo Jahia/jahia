@@ -317,7 +317,6 @@ public class WorkflowActionDialog extends Window {
             public void componentSelected(ButtonEvent buttonEvent) {
                 button.setEnabled(false);
                 List<GWTJahiaNodeProperty> nodeProperties = new ArrayList<GWTJahiaNodeProperty>();
-                dialog.mask(Messages.get("label.executing", "Executing..."), "x-mask-loading");
                 if (propertiesEditor != null) {
                     nodeProperties = propertiesEditor.getProperties();
                 }
@@ -364,7 +363,6 @@ public class WorkflowActionDialog extends Window {
                         allButton.setEnabled(false);
                     }
                     List<GWTJahiaNodeProperty> nodeProperties = new ArrayList<GWTJahiaNodeProperty>();
-                    dialog.mask(Messages.get("label.executing", "Executing..."), "x-mask-loading");
                     if (propertiesEditor != null) {
                         nodeProperties = propertiesEditor.getProperties();
                     }

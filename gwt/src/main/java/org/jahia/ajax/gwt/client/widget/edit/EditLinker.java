@@ -235,11 +235,12 @@ public class EditLinker implements Linker {
     }
 
     public void loaded() {
-        // todo:implements 
+        mainModule.unmask();
     }
 
     public void loading(String resource) {
-        // todo:implements
+        mainModule.mask(resource, "x-mask-loading");
+
     }
 
     public void setSelectPathAfterDataUpdate(String path) {

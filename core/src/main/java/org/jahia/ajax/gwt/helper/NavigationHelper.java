@@ -279,7 +279,7 @@ public class NavigationHelper {
             throws GWTJahiaServiceException {
         try {
             List<GWTJahiaNode> userNodes = new ArrayList<GWTJahiaNode>();
-            //todo replace useless reporitorykey by list of pathes
+
             logger.debug("open paths for getRoot : " + openPaths);
 
             for (String path : paths) {

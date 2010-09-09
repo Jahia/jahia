@@ -38,6 +38,7 @@ import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
@@ -163,14 +164,16 @@ public class EditActions {
 //                    uuids.addAll(ModuleHelper.getLinkedContentInfo().get(selectedNode.getUUID()));
 //                }
             }
-
+            linker.loading(Messages.get("label.gettingPublicationInfo","Getting publication information"));
             JahiaContentManagementService.App.getInstance()
                     .getPublicationInfo(uuids, allSubTree, new BaseAsyncCallback<List<GWTJahiaPublicationInfo>>() {
                         public void onSuccess(List<GWTJahiaPublicationInfo> result) {
+                            linker.loaded();
                             new PublicationStatusWindow(linker, uuids, result, allSubTree).show();
                         }
 
                         public void onApplicationFailure(Throwable caught) {
+                            linker.loaded();
                             com.google.gwt.user.client.Window.alert("Cannot get status: " + caught.getMessage());
                         }
                     });
@@ -214,14 +217,18 @@ public class EditActions {
             selectedNode = linker.getMainNode();
         }
         if (selectedNode != null) {
+            linker.loading(Messages.get("label.content.unpublishing", "Unpublishing"));
+
             JahiaContentManagementService.App.getInstance()
                     .unpublish(Arrays.asList(selectedNode.getPath()), new BaseAsyncCallback<Object>() {
                         public void onApplicationFailure(Throwable caught) {
+                            linker.loaded();
                             Log.error("Cannot publish", caught);
                             com.google.gwt.user.client.Window.alert("Cannot unpublish " + caught.getMessage());
                         }
 
                         public void onSuccess(Object result) {
+                            linker.loaded();
                             Info.display(Messages.get("label.content.unpublished"),
                                     Messages.get("label.content.unpublished"));
                             linker.refresh(EditLinker.REFRESH_ALL);

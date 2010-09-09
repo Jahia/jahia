@@ -59,6 +59,7 @@ import org.jahia.ajax.gwt.client.widget.edit.ContentTypeWindow;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.form.FormDeployPortletDefinition;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.ClipboardActionItem;
 
 import java.util.*;
 
@@ -79,7 +80,6 @@ public class ContentActions {
         final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
         if (selectedItems != null && selectedItems.size() > 0) {
             CopyPasteEngine.getInstance().setCopiedPaths(selectedItems);
-            linker.loaded();
             linker.select(null);
         }
     }
@@ -109,18 +109,15 @@ public class ContentActions {
                 Window.alert(s.toString());
             }
             if (!actualSelection.isEmpty()) {
-                linker.loading(Messages.get("statusbar.cutting.label"));
                 JahiaContentManagementService.App.getInstance().checkWriteable(JCRClientUtils.getPathesList(actualSelection), new BaseAsyncCallback() {
                     public void onApplicationFailure(Throwable throwable) {
                         Window.alert(Messages.get("failure.cut.label") + "\n" + throwable.getLocalizedMessage());
-                        linker.loaded();
                     }
 
                     public void onSuccess(Object o) {
                         CopyPasteEngine.getInstance().setCutPaths(actualSelection);
-                        linker.loaded();
                         linker.select(null);
-
+                        ClipboardActionItem.setCopied(actualSelection);
                     }
                 });
             }

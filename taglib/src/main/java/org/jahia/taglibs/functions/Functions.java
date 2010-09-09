@@ -56,17 +56,17 @@ import java.util.*;
  */
 public class Functions {
 
-    public static String attributes(Map<String, Object> attributes) {
-        StringBuilder out = new StringBuilder();
+	public static String attributes(Map<String, Object> attributes) {
+		StringBuilder out = new StringBuilder();
 
-        for (Map.Entry<String, Object> attr : attributes.entrySet()) {
-            out.append(attr.getKey()).append("=\"").append(
-                    attr.getValue() != null ? StringEscapeUtils.escapeXml(attr
-                            .getValue().toString()) : "").append("\" ");
-        }
+		for (Map.Entry<String, Object> attr : attributes.entrySet()) {
+			out.append(attr.getKey()).append("=\"")
+			        .append(attr.getValue() != null ? attr.getValue().toString() : "")
+			        .append("\" ");
+		}
 
-        return out.toString();
-    }
+		return out.toString();
+	}
 
     public static Object defaultValue(Object value, Object defaultValue) {
         return (value != null && (!(value instanceof String) || (((String) value)

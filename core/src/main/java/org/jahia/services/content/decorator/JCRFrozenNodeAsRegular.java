@@ -39,8 +39,10 @@ import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.importexport.ReferencesHelper;
 
 import javax.jcr.*;
+import javax.jcr.nodetype.NodeType;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.version.Version;
@@ -76,7 +78,7 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
         NodeIterator ni1 = node.getNodes();
         List<JCRNodeWrapper> childEntries = new ArrayList<JCRNodeWrapper>();
         while (ni1.hasNext()) {
-            Node child = (Node) ni1.next();
+            JCRNodeWrapper child = (JCRNodeWrapper) ni1.next();
             try {
                 if (child.isNodeType(Constants.NT_VERSIONEDCHILD)) {
                     VersionHistory vh = (VersionHistory) node.getSession().getNodeByIdentifier(child.getProperty(
@@ -94,8 +96,7 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
                         childEntries.add(frozenNodeAsRegular);
                     }
                 } else if (child.isNodeType(Constants.NT_FROZENNODE)) {
-                    childEntries.add(getSession().getNodeByUUID(child.getProperty(
-                            Constants.JCR_FROZENUUID).getString()));
+                    childEntries.add(new JCRFrozenNodeAsRegular(child, versionDate,versionLabel));
                 } else {
                     // skip
                 }
@@ -297,7 +298,11 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
                 return name;
             }
         } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
+            try {
+                return getSession().getNodeByUUID(node.getProperty(Constants.JCR_FROZENUUID).getString(),false).getName();
+            } catch (RepositoryException e1) {
+                logger.error(e1.getMessage(), e1);
+            }            
         }
         return null;
     }
@@ -499,5 +504,140 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
 
     public Date getVersionDate() {
         return versionDate;
+    }
+
+    public String getVersionLabel() {
+        return versionLabel;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean copy(String dest) throws RepositoryException {
+        return copy(dest, getName());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean copy(String dest, String name) throws RepositoryException {
+        JCRNodeWrapper node = (JCRNodeWrapper) getSession().getItem(dest);
+        copy(node, name, true);
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes) throws RepositoryException {
+        Map<String, List<String>> references = new HashMap<String, List<String>>();
+        boolean copy = copy(dest, name, allowsExternalSharedNodes, references);
+        ReferencesHelper.resolveCrossReferences(getSession(), references);
+        return copy;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, Map<String, List<String>> references) throws RepositoryException {
+        JCRNodeWrapper copy = null;
+        try {
+            copy = (JCRNodeWrapper) getSession()
+                    .getItem(dest.getPath() + "/" + name);
+            if (!copy.isCheckedOut()) {
+                getSession().checkout(copy);
+            }
+        } catch (PathNotFoundException ex) {
+            // node does not exist
+        }
+
+        final Map<String, String> uuidMapping = getSession().getUuidMapping();
+
+        if (copy == null || copy.getDefinition().allowsSameNameSiblings()) {
+            if (!dest.isCheckedOut() && dest.isVersioned()) {
+                getSession().checkout(dest);
+            }
+            String typeName = getPrimaryNodeTypeName();
+            copy = dest.addNode(name, typeName,getIdentifier(),getProperty("jcr:created").getDate(),
+                    getProperty("jcr:createdBy").getString(),getProperty("jcr:lastModified").getDate(),getProperty("jcr:lastModifiedBy").getString());
+        }
+
+        try {
+            NodeType[] mixin = getMixinNodeTypes();
+            for (NodeType aMixin : mixin) {
+                copy.addMixin(aMixin.getName());
+            }
+        } catch (RepositoryException e) {
+            logger.error("Error adding mixin types to copy", e);
+        }
+
+        if (copy != null) {
+            uuidMapping.put(getIdentifier(), copy.getIdentifier());
+            if (hasProperty("jcr:language")) {
+                copy.setProperty("jcr:language", getProperty("jcr:language").getString());
+            }
+            copyProperties(copy, references);
+        }
+
+        NodeIterator ni = getNodes();
+        while (ni.hasNext()) {
+            JCRNodeWrapper source = (JCRNodeWrapper) ni.next();
+            if (source.isNodeType("mix:shareable")) {
+                if (uuidMapping.containsKey(source.getIdentifier())) {
+                    // ugly save because to make node really shareable
+                    getSession().save();
+                    copy.clone(getSession().getNodeByUUID(uuidMapping.get(source.getIdentifier())), source.getName());
+                } else if (allowsExternalSharedNodes) {
+                    copy.clone(source, source.getName());
+                } else {
+                    source.copy(copy, source.getName(), allowsExternalSharedNodes, references);
+                }
+            } else {
+                source.copy(copy, source.getName(), allowsExternalSharedNodes, references);
+            }
+        }
+
+        return true;
+    }
+
+    public void copyProperties(JCRNodeWrapper destinationNode, Map<String, List<String>> references) throws RepositoryException {
+        PropertyIterator props = getProperties();
+
+        while (props.hasNext()) {
+            Property property = props.nextProperty();
+            try {
+                if (!Constants.forbiddenPropertiesToCopy.contains(property.getName())) {
+                    if (property.getType() == PropertyType.REFERENCE || property.getType() == PropertyType.WEAKREFERENCE) {
+                        if (property.getDefinition().isMultiple() && (property.isMultiple())) {
+                            Value[] values = property.getValues();
+                            for (Value value : values) {
+                                keepReference(destinationNode, references, property, value.getString());
+                            }
+                        } else {
+                            keepReference(destinationNode, references, property, property.getValue().getString());
+                        }
+                    }
+                    if (property.getDefinition().isMultiple() && (property.isMultiple())) {
+                        destinationNode.setProperty(property.getName(), property.getValues());
+                    } else {
+                        destinationNode.setProperty(property.getName(), property.getValue());
+                    }
+                }
+            } catch (Exception e) {
+                logger.warn("Unable to copy property '" + property.getName() + "'. Skipping.", e);
+            }
+        }
+    }
+
+    private void keepReference(JCRNodeWrapper destinationNode, Map<String, List<String>> references, Property property, String value) throws RepositoryException {
+        if (!references.containsKey(value)) {
+            references.put(value, new ArrayList<String>());
+        }
+        references.get(value).add(destinationNode.getIdentifier() + "/" + property.getName());
+    }
+
+    @Override
+    public String getIdentifier() throws RepositoryException {
+        return getProperty(Constants.JCR_FROZENUUID).getString();
     }
 }

@@ -37,8 +37,10 @@ import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaService;
+import org.jahia.services.content.decorator.JCRFrozenNodeAsRegular;
 
 import javax.jcr.*;
+import javax.jcr.nodetype.NodeType;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionIterator;
@@ -196,8 +198,8 @@ public class JCRVersionService extends JahiaService {
             if (logger.isDebugEnabled()) {
                 logger.debug(
                         "Version " + v.getName() + " checkinDateAvailable=" + checkinDateAvailable + " checkinDate=" +
-                                checkinDate + " created=" + v.getCreated().getTime() + " properties:" +
-                                propertyString.toString());
+                        checkinDate + " created=" + v.getCreated().getTime() + " properties:" +
+                        propertyString.toString());
             }
             lastVersion = v;
         }
@@ -224,8 +226,8 @@ public class JCRVersionService extends JahiaService {
                 checkinDate = checkinDateProperty.getDate().getTime();
             }
             logger.debug("Resolved date " + versionDate + " for node title " + nodeTitle + " to closest version " +
-                    closestVersion.getName() + " createdTime=" + closestVersion.getCreated().getTime() +
-                    " checkinDate=" + checkinDate);
+                         closestVersion.getName() + " createdTime=" + closestVersion.getCreated().getTime() +
+                         " checkinDate=" + checkinDate);
         }
         return closestVersion;
     }
@@ -243,7 +245,7 @@ public class JCRVersionService extends JahiaService {
                         if (!versionHistory.hasVersionLabel(label)) {
                             Version version = versionManager.getBaseVersion(node.getPath());
                             logger.debug("Add version label " + label + " on " + node.getPath() + " for version " +
-                                    version.getName());
+                                         version.getName());
                             if (nodeWrapper.isVersioned()) {
                                 versionHistory.addVersionLabel(version.getName(), label, true);
                             }
@@ -273,21 +275,102 @@ public class JCRVersionService extends JahiaService {
                         if (!versionManager.isCheckedOut(path)) {
                             versionManager.checkout(path);
                         }
+                        // Todo: first get frozen node for thislabel
+                        JCRNodeWrapper frozenVersionAsRegular = nodeWrapper.getFrozenVersionAsRegular(label);
+                        synchronizeNode(frozenVersionAsRegular, nodeWrapper, session, true);
                         session.save();
-                        VersionHistory history = versionManager.getVersionHistory(path);
-                        Version label1 = findVersionByLabel(history, label);
-                        versionManager.restore(label1, true);
-                        nodeWrapper = session.getNodeByUUID(nodeWrapper.getIdentifier());
-                        if (nodeWrapper.hasNodes()) {
-                            NodeIterator iterator = nodeWrapper.getNodes();
-                            while (iterator.hasNext()) {
-                                JCRNodeWrapper nodeWrapper1 = (JCRNodeWrapper) iterator.nextNode();
-                                restoreVersionLabel(nodeWrapper1, label);
-                            }
-                        }
                         return null;
                     }
                 });
+    }
+
+    private void synchronizeNode(final JCRNodeWrapper source, final JCRNodeWrapper destinationNode,
+                                 JCRSessionWrapper session, boolean doRemove)
+            throws RepositoryException {
+        session.checkout(destinationNode);
+
+        NodeType[] mixin = source.getMixinNodeTypes();
+        for (NodeType aMixin : mixin) {
+            destinationNode.addMixin(aMixin.getName());
+        }
+
+        if (source.hasProperty("jcr:language")) {
+            destinationNode.setProperty("jcr:language", source.getProperty("jcr:language").getString());
+        }
+
+        PropertyIterator props = source.getProperties();
+
+        List<String> names = new ArrayList<String>();
+        while (props.hasNext()) {
+            Property property = props.nextProperty();
+            String propertyName = property.getName();
+            try {
+                if (!Constants.forbiddenPropertiesToCopy.contains(propertyName)) {
+                    names.add(propertyName);
+                    if (property.getDefinition().isMultiple() && (property.isMultiple())) {
+                        destinationNode.setProperty(propertyName, property.getValues());
+                    } else {
+                        destinationNode.setProperty(propertyName, property.getValue());
+                    }
+                }
+            } catch (Exception e) {
+                logger.warn("Unable to copy property '" + propertyName + "'. Skipping.", e);
+            }
+        }
+
+        PropertyIterator pi = destinationNode.getProperties();
+        while (pi.hasNext()) {
+            JCRPropertyWrapper oldChild = (JCRPropertyWrapper) pi.next();
+            if (!oldChild.getDefinition().isProtected()) {
+                if (!names.contains(oldChild.getName())) {
+                    oldChild.remove();
+                }
+            }
+        }
+
+        mixin = destinationNode.getMixinNodeTypes();
+        for (NodeType aMixin : mixin) {
+            if (!source.isNodeType(aMixin.getName())) {
+                destinationNode.removeMixin(aMixin.getName());
+            }
+        }
+
+        NodeIterator ni = source.getNodes();
+        names.clear();
+        while (ni.hasNext()) {
+            JCRNodeWrapper child = (JCRNodeWrapper) ni.next();
+            names.add(child.getName());
+
+            if (destinationNode.hasNode(child.getName())) {
+                JCRNodeWrapper node = destinationNode.getNode(child.getName());
+                synchronizeNode(child, node, session, doRemove);
+            } else {
+                Version byLabel = findVersionByLabel((VersionHistory) child.getRealNode().getProperty(
+                        Constants.JCR_VERSIONHISTORY).getNode(), ((JCRFrozenNodeAsRegular) child).getVersionLabel());
+                session.save();
+                session.getWorkspace().getVersionManager().restore(child.getPath(),byLabel, false);
+                JCRNodeWrapper node = session.getNode(child.getPath(), false);
+                restoreVersionLabel(node, ((JCRFrozenNodeAsRegular) child).getVersionLabel());
+                //child.copy(destinationNode, child.getName(), false);
+            }
+        }
+        if (doRemove) {
+            ni = destinationNode.getNodes();
+            while (ni.hasNext()) {
+                JCRNodeWrapper oldChild = (JCRNodeWrapper) ni.next();
+                if (!names.contains(oldChild.getName())) {
+                    oldChild.remove();
+                }
+            }
+        }
+        if (destinationNode.getPrimaryNodeType().hasOrderableChildNodes()) {
+            Collections.reverse(names);
+            String previous = null;
+            for (String name : names) {
+                destinationNode.orderBefore(name, previous);
+                previous = name;
+            }
+        }
     }
 
     public void restoreVersion(final JCRNodeWrapper node, final Version version) throws RepositoryException {
@@ -346,7 +429,7 @@ public class JCRVersionService extends JahiaService {
                     if (!versionHistory.hasVersionLabel(label)) {
                         Version version = versionManager.getBaseVersion(nodeWrapper.getPath());
                         logger.debug("Add version label " + label + " on " + nodeWrapper.getPath() + " for version " +
-                                version.getName());
+                                     version.getName());
                         if (nodeWrapper.isVersioned()) {
                             versionHistory.addVersionLabel(version.getName(), label, true);
                         }

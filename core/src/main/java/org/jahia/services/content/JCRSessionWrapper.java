@@ -219,6 +219,9 @@ public class JCRSessionWrapper implements Session {
     }
 
     public JCRItemWrapper getItem(String path) throws PathNotFoundException, RepositoryException {
+        return getItem(path,true);
+    }
+    public JCRItemWrapper getItem(String path,boolean checkVersion) throws PathNotFoundException, RepositoryException {
         Map<String, JCRStoreProvider> dynamicMountPoints = sessionFactory.getDynamicMountPoints();
         for (Map.Entry<String, JCRStoreProvider> mp : dynamicMountPoints.entrySet()) {
             if (path.startsWith(mp.getKey() + "/")) {
@@ -248,6 +251,7 @@ public class JCRSessionWrapper implements Session {
                 Item item = getProviderSession(provider).getItem(provider.getRelativeRoot() + localPath);
                 if (item.isNode()) {
                     JCRNodeWrapper wrapper = provider.getNodeWrapper((Node) item, localPath, this);
+                    if(checkVersion) {
                     if (!(wrapper instanceof JCRFrozenNode)) {
                         JCRNodeWrapper versionAsRegular = null;
                         if (versionLabel != null) {
@@ -260,6 +264,7 @@ public class JCRSessionWrapper implements Session {
                             wrapper = versionAsRegular;
                         }
                     }
+                    }
                     return wrapper;
                 } else {
                     return provider.getPropertyWrapper((Property) item, this);
@@ -270,7 +275,10 @@ public class JCRSessionWrapper implements Session {
     }
 
     public JCRNodeWrapper getNode(String path) throws PathNotFoundException, RepositoryException {
-        JCRItemWrapper item = getItem(path);
+        return getNode(path, true);
+    }
+    public JCRNodeWrapper getNode(String path,boolean checkVersion) throws PathNotFoundException, RepositoryException {
+        JCRItemWrapper item = getItem(path,checkVersion);
         if (item.isNode()) {
             return (JCRNodeWrapper) item;
         } else {

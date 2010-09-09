@@ -33,17 +33,27 @@
 package org.jahia.services.versioning;
 
 import junit.framework.TestCase;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
+import org.jahia.bin.Jahia;
+import org.jahia.params.valves.LoginEngineAuthValveImpl;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
 
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
+import javax.jcr.version.VersionIterator;
+import javax.jcr.version.VersionManager;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -53,18 +63,37 @@ import java.util.*;
 public class VersioningTest extends TestCase {
     private static Logger logger = Logger.getLogger(VersioningTest.class);
     private JahiaSite site;
-    private final static String TESTSITE_NAME = "jcrVersioningTest";
+    private final static String TESTSITE_NAME = "jcrVersioningTest_" + System.currentTimeMillis();
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
     private static final String MAIN_CONTENT_TITLE = "Main content title update ";
     private static final String MAIN_CONTENT_BODY = "Main content body update ";
     private static int NUMBER_OF_VERSIONS = 20;
+    private HttpClient client;
 
     protected void setUp() throws Exception {
         try {
-            site = TestHelper.createSite(TESTSITE_NAME, "localhost"+System.currentTimeMillis(), TestHelper.INTRANET_TEMPLATES);
+            site = TestHelper.createSite(TESTSITE_NAME, "localhost" + System.currentTimeMillis(),
+                                         TestHelper.INTRANET_TEMPLATES);
             assertNotNull(site);
         } catch (Exception ex) {
             logger.warn("Exception during test setUp", ex);
+        }
+
+        // Create an instance of HttpClient.
+        client = new HttpClient();
+
+        // todo we should really insert content to test the find.
+
+        PostMethod loginMethod = new PostMethod("http://localhost:8080" + Jahia.getContextPath() + "/cms/login");
+        loginMethod.addParameter("username", "root");
+        loginMethod.addParameter("password", "root1234");
+        loginMethod.addParameter("redirectActive", "false");
+        // the next parameter is required to properly activate the valve check.
+        loginMethod.addParameter(LoginEngineAuthValveImpl.LOGIN_TAG_PARAMETER, "1");
+
+        int statusCode = client.executeMethod(loginMethod);
+        if (statusCode != HttpStatus.SC_OK) {
+            System.err.println("Method failed: " + loginMethod.getStatusLine());
         }
     }
 
@@ -78,8 +107,10 @@ public class VersioningTest extends TestCase {
         try {
             JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
 
-            JCRSessionWrapper editSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
-            JCRSessionWrapper liveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
+            JCRSessionWrapper editSession = jcrService.getSessionFactory().getCurrentUserSession(
+                    Constants.EDIT_WORKSPACE, Locale.ENGLISH);
+            JCRSessionWrapper liveSession = jcrService.getSessionFactory().getCurrentUserSession(
+                    Constants.LIVE_WORKSPACE, Locale.ENGLISH);
 
             JCRNodeWrapper stagedSubPage = createNodes(jcrService, editSession);
 
@@ -87,7 +118,8 @@ public class VersioningTest extends TestCase {
 
             // check number of versions
 
-            List<VersionInfo> editVersionInfos = ServicesRegistry.getInstance().getJCRVersionService().getVersionInfos(editSession, stagedSubPage);
+            List<VersionInfo> editVersionInfos = ServicesRegistry.getInstance().getJCRVersionService().getVersionInfos(
+                    editSession, stagedSubPage);
             int index = 0;
             for (VersionInfo curVersionInfo : editVersionInfos) {
                 String versionName = curVersionInfo.getVersion().getName();
@@ -95,7 +127,8 @@ public class VersioningTest extends TestCase {
                 if (curVersionInfo.getCheckinDate() != null) {
                     versionNode = stagedSubPage.getFrozenVersionAsRegular(curVersionInfo.getCheckinDate().getTime());
                 } else {
-                    versionNode = stagedSubPage.getFrozenVersionAsRegular(curVersionInfo.getVersion().getCreated().getTime());
+                    versionNode = stagedSubPage.getFrozenVersionAsRegular(
+                            curVersionInfo.getVersion().getCreated().getTime());
                 }
                 validateVersionedNode(index, curVersionInfo, versionName, versionNode);
                 index++;
@@ -106,18 +139,20 @@ public class VersioningTest extends TestCase {
 
             JCRNodeWrapper subPagePublishedNode = liveSession.getNode(stagedSubPage.getPath());
 
-            List<VersionInfo> liveVersionInfos = ServicesRegistry.getInstance().getJCRVersionService().getVersionInfos(liveSession, subPagePublishedNode);
+            List<VersionInfo> liveVersionInfos = ServicesRegistry.getInstance().getJCRVersionService().getVersionInfos(
+                    liveSession, subPagePublishedNode);
             index = 0;
             for (VersionInfo curVersionInfo : liveVersionInfos) {
                 String versionName = curVersionInfo.getVersion().getName();
                 JCRNodeWrapper versionNode = null;
-                if (curVersionInfo.getComment() != null && !"".equals(curVersionInfo.getComment()) && !curVersionInfo.getComment().contains(",")) {
+                if (curVersionInfo.getComment() != null && !"".equals(
+                        curVersionInfo.getComment()) && !curVersionInfo.getComment().contains(",")) {
                     versionNode = subPagePublishedNode.getFrozenVersionAsRegular(curVersionInfo.getComment());
                     validateVersionedNode(index, curVersionInfo, versionName, versionNode);
                     index++;
                 }
             }
-            logger.debug("number of version: " + index);                                                        
+            logger.debug("number of version: " + index);
             assertEquals(NUMBER_OF_VERSIONS, index);
 
 
@@ -130,14 +165,16 @@ public class VersioningTest extends TestCase {
     private JCRNodeWrapper createNodes(JCRPublicationService jcrService, JCRSessionWrapper editSession)
             throws RepositoryException {
         JCRVersionService jcrVersionService = ServicesRegistry.getInstance().getJCRVersionService();
-        JCRSessionWrapper liveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
+        JCRSessionWrapper liveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE,
+                                                                                             Locale.ENGLISH);
         JCRNodeWrapper stageRootNode = editSession.getNode(SITECONTENT_ROOT_NODE);
         Set<String> languagesStringSet = new LinkedHashSet<String>();
         languagesStringSet.add(Locale.ENGLISH.toString());
         Node versioningTestActivity = editSession.getWorkspace().getVersionManager().createActivity("versioningTest");
         Node previousActivity = editSession.getWorkspace().getVersionManager().setActivity(versioningTestActivity);
         if (previousActivity != null) {
-            logger.debug("Previous activity=" + previousActivity.getName() + " new activity=" + versioningTestActivity.getName());
+            logger.debug(
+                    "Previous activity=" + previousActivity.getName() + " new activity=" + versioningTestActivity.getName());
         } else {
             logger.debug("New activity=" + versioningTestActivity.getName());
         }
@@ -162,19 +199,21 @@ public class VersioningTest extends TestCase {
         editSession.save();
 
         // publish it
-        jcrService.publish(stageNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languagesStringSet, true);
-        String label = "published_at_"+ new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(GregorianCalendar.getInstance().getTime());
-        jcrVersionService.addVersionLabel(liveSession.getNodeByUUID(stageNode.getIdentifier()),label);
+        jcrService.publish(stageNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,
+                           languagesStringSet, true);
+        String label = "published_at_" + new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(
+                GregorianCalendar.getInstance().getTime());
+        jcrVersionService.addVersionLabel(liveSession.getNodeByUUID(stageNode.getIdentifier()), label);
         for (int i = 1; i < NUMBER_OF_VERSIONS; i++) {
 
             for (int j = 0; j < 2; j++) {
                 editSession.checkout(mainContent);
-                int updateNumber = (i-1)*2 + j+1;
+                int updateNumber = (i - 1) * 2 + j + 1;
                 mainContent.setProperty("jcr:title", MAIN_CONTENT_TITLE + updateNumber);
                 mainContent.setProperty("body", MAIN_CONTENT_BODY + updateNumber);
                 editSession.save();
-                jcrService.publish(mainContent.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languagesStringSet,
-                        true);
+                jcrService.publish(mainContent.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,
+                                   languagesStringSet, true);
             }
 
             editSession.checkout(stagedSubPage);
@@ -182,17 +221,19 @@ public class VersioningTest extends TestCase {
             editSession.save();
 
             // each time the node i published, a new version should be created
-            jcrService.publish(stagedSubPage.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languagesStringSet,
-                    false);
-            label = "published_at_"+ new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(GregorianCalendar.getInstance().getTime());
-            jcrVersionService.addVersionLabel(liveSession.getNodeByUUID(stagedSubPage.getIdentifier()),label);
+            jcrService.publish(stagedSubPage.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,
+                               languagesStringSet, false);
+            label = "published_at_" + new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(
+                    GregorianCalendar.getInstance().getTime());
+            jcrVersionService.addVersionLabel(liveSession.getNodeByUUID(stagedSubPage.getIdentifier()), label);
             editSession.checkout(stagedSubSubPage);
             stagedSubSubPage.setProperty("jcr:title", "subtitle" + i);
             editSession.save();
-            jcrService.publish(stagedSubSubPage.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languagesStringSet, 
-                    false);
-            label = "published_at_"+ new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(GregorianCalendar.getInstance().getTime());
-            jcrVersionService.addVersionLabel(liveSession.getNodeByUUID(stagedSubSubPage.getIdentifier()),label);
+            jcrService.publish(stagedSubSubPage.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,
+                               languagesStringSet, false);
+            label = "published_at_" + new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(
+                    GregorianCalendar.getInstance().getTime());
+            jcrVersionService.addVersionLabel(liveSession.getNodeByUUID(stagedSubSubPage.getIdentifier()), label);
         }
 
         // now let's do a little system versioning ourselves...
@@ -201,14 +242,15 @@ public class VersioningTest extends TestCase {
         return stagedSubPage;
     }
 
-    private void validateVersionedNode(int index, VersionInfo curVersionInfo, String versionName, JCRNodeWrapper versionNode) throws RepositoryException {
+    private void validateVersionedNode(int index, VersionInfo curVersionInfo, String versionName,
+                                       JCRNodeWrapper versionNode) throws RepositoryException {
         assertNotNull("Version node is null !!", versionNode);
         JCRPropertyWrapper property = versionNode.getProperty("jcr:title");
-        assertNotNull("Title property should not be null on versioned node",property);
+        assertNotNull("Title property should not be null on versioned node", property);
         String versionTitle = property.getString();
         String title = "title" + index;
 
-        if (logger.isDebugEnabled() && curVersionInfo!=null && versionName!=null) {
+        if (logger.isDebugEnabled() && curVersionInfo != null && versionName != null) {
             Calendar checkinCalendar = curVersionInfo.getCheckinDate();
             Date checkinDate = null;
             if (checkinCalendar != null) {
@@ -220,28 +262,38 @@ public class VersioningTest extends TestCase {
 
         assertEquals("Title does not match !", title, versionTitle);
         // let's check the version node's path
-        assertEquals("Versioned node path is invalid !", SITECONTENT_ROOT_NODE + "/home/home_subpage1", versionNode.getPath());
+        assertEquals("Versioned node path is invalid !", SITECONTENT_ROOT_NODE + "/home/home_subpage1",
+                     versionNode.getPath());
         // let's check the node type
-        assertEquals("Versioned node should be viewed as a node type jnt:page", "jnt:page", versionNode.getPrimaryNodeTypeName());
+        assertEquals("Versioned node should be viewed as a node type jnt:page", "jnt:page",
+                     versionNode.getPrimaryNodeTypeName());
         // let's check the mixin types
-        assertTrue("Versioned node should be viewed as a mixin node type jmix:basemetadata", versionNode.isNodeType("jmix:basemetadata"));
-        assertTrue("Versioned node should be viewed as a mixin node type jmix:nodenameInfo", versionNode.isNodeType("jmix:nodenameInfo"));
+        assertTrue("Versioned node should be viewed as a mixin node type jmix:basemetadata", versionNode.isNodeType(
+                "jmix:basemetadata"));
+        assertTrue("Versioned node should be viewed as a mixin node type jmix:nodenameInfo", versionNode.isNodeType(
+                "jmix:nodenameInfo"));
 
         // getNode check
-        assertEquals("Versioned node getNode() returns invalid node name", "home_subsubpage1", versionNode.getNode("home_subsubpage1").getName());
-        assertEquals("Versioned node getNode() returns invalid nodetype", "jnt:page", versionNode.getNode("home_subsubpage1").getPrimaryNodeType().getName());
-        assertEquals("Versioned node getNode(..) returns invalid node name", "home", versionNode.getNode("..").getName());
+        assertEquals("Versioned node getNode() returns invalid node name", "home_subsubpage1", versionNode.getNode(
+                "home_subsubpage1").getName());
+        assertEquals("Versioned node getNode() returns invalid nodetype", "jnt:page", versionNode.getNode(
+                "home_subsubpage1").getPrimaryNodeType().getName());
+        assertEquals("Versioned node getNode(..) returns invalid node name", "home", versionNode.getNode(
+                "..").getName());
 
         // now let's check the parent
         JCRNodeWrapper parentVersionNode = versionNode.getParent();
         assertEquals("Parent node name is not correct", "home", parentVersionNode.getName());
-        assertEquals("Parent node type is not of type jnt:page", "jnt:page", parentVersionNode.getPrimaryNodeTypeName());
+        assertEquals("Parent node type is not of type jnt:page", "jnt:page",
+                     parentVersionNode.getPrimaryNodeTypeName());
         assertEquals("Parent node path invalid", SITECONTENT_ROOT_NODE + "/home", parentVersionNode.getPath());
 
         // now let's check the child objects.
         JCRNodeWrapper mainContentNode = versionNode.getNode("pagecontent/row1/col1/mainContent");
-        assertEquals("Child node has incorrect value", MAIN_CONTENT_TITLE + (index*2), mainContentNode.getProperty("jcr:title").getString());
-        assertEquals("Child node has incorrect value", MAIN_CONTENT_BODY + (index*2), mainContentNode.getProperty("body").getString());
+        assertEquals("Child node has incorrect value", MAIN_CONTENT_TITLE + (index * 2), mainContentNode.getProperty(
+                "jcr:title").getString());
+        assertEquals("Child node has incorrect value", MAIN_CONTENT_BODY + (index * 2), mainContentNode.getProperty(
+                "body").getString());
 
     }
 
@@ -249,7 +301,8 @@ public class VersioningTest extends TestCase {
         try {
             JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
             JCRVersionService jcrVersionService = ServicesRegistry.getInstance().getJCRVersionService();
-            JCRSessionWrapper editSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
+            JCRSessionWrapper editSession = jcrService.getSessionFactory().getCurrentUserSession(
+                    Constants.EDIT_WORKSPACE, Locale.ENGLISH);
 
             JCRNodeWrapper stagedSubPage = createNodes(jcrService, editSession);
             String labeledTitle = stagedSubPage.getProperty("jcr:title").getString();
@@ -258,43 +311,293 @@ public class VersioningTest extends TestCase {
 
             VersionHistory history = editSession.getWorkspace().getVersionManager().getVersionHistory(
                     stagedSubPage.getPath());
-            assertTrue(stagedSubPage.getPath()+" should have a version labeled my_version",history.hasVersionLabel(
+            assertTrue(stagedSubPage.getPath() + " should have a version labeled my_version", history.hasVersionLabel(
                     label));
 
             Version versionByLabel = JCRVersionService.findVersionByLabel(history, label);
-            assertNotNull("We should have found a version associated to label "+label,versionByLabel);
+            assertNotNull("We should have found a version associated to label " + label, versionByLabel);
             Node node = versionByLabel.getFrozenNode();
             assertTrue("Labeled version should have a j:checkinDate property", node.hasProperty("j:checkinDate"));
 
             JCRNodeWrapper frozenVersionAsRegular = stagedSubPage.getFrozenVersionAsRegular(node.getProperty(
                     "j:checkinDate").getDate().getTime());
             Date createdDate = frozenVersionAsRegular.getProperty("jcr:created").getDate().getTime();
-            assertEquals("Label Version node title should be equal to current node title",labeledTitle,frozenVersionAsRegular.getProperty("jcr:title").getString());
+            assertEquals("Label Version node title should be equal to current node title", labeledTitle,
+                         frozenVersionAsRegular.getProperty("jcr:title").getString());
             editSession.checkout(stagedSubPage);
-            stagedSubPage.setProperty("jcr:title","my title");
+            stagedSubPage.setProperty("jcr:title", "my title");
             editSession.save();
             jcrService.publish(stagedSubPage.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
-                    false);
-            Version baseVersion = editSession.getWorkspace().getVersionManager().getBaseVersion(stagedSubPage.getPath());
+                               false);
+            Version baseVersion = editSession.getWorkspace().getVersionManager().getBaseVersion(
+                    stagedSubPage.getPath());
             assertEquals("Base version frozen node title and current node title should be equals",
-                         stagedSubPage.getProperty("jcr:title").getString(),
-                         stagedSubPage.getFrozenVersionAsRegular(baseVersion.getFrozenNode().getProperty("j:checkinDate").getDate().getTime()).getProperty("jcr:title").getString());
-            jcrVersionService.restoreVersionLabel(stagedSubPage,label);            
+                         stagedSubPage.getProperty("jcr:title").getString(), stagedSubPage.getFrozenVersionAsRegular(
+                            baseVersion.getFrozenNode().getProperty("j:checkinDate").getDate().getTime()).getProperty(
+                            "jcr:title").getString());
+            jcrVersionService.restoreVersionLabel(stagedSubPage, label);
             stagedSubPage = editSession.getNodeByUUID(stagedSubPage.getIdentifier());
-            assertEquals("Restored node created must match the one from labeled version",createdDate,stagedSubPage.getProperty("jcr:created").getDate().getTime());
-            assertEquals("Restored node label must match the one from labeled version",labeledTitle,stagedSubPage.getProperty("jcr:title").getString());
-            validateVersionedNode(NUMBER_OF_VERSIONS-1,null, null, stagedSubPage);
+            assertEquals("Restored node created must match the one from labeled version", createdDate,
+                         stagedSubPage.getProperty("jcr:created").getDate().getTime());
+            assertEquals("Restored node label must match the one from labeled version", labeledTitle,
+                         stagedSubPage.getProperty("jcr:title").getString());
+            validateVersionedNode(NUMBER_OF_VERSIONS - 1, null, null, stagedSubPage);
         } catch (Exception e) {
-            logger.error(e.getLocalizedMessage(),e);
+            logger.error(e.getLocalizedMessage(), e);
             throw e;
         }
     }
+
     @Override
     protected void tearDown() throws Exception {
+        PostMethod logoutMethod = new PostMethod("http://localhost:8080" + Jahia.getContextPath() + "/cms/logout");
+        logoutMethod.addParameter("redirectActive", "false");
+
+        int statusCode = client.executeMethod(logoutMethod);
+        if (statusCode != HttpStatus.SC_OK) {
+            System.err.println("Method failed: " + logoutMethod.getStatusLine());
+        }
+
+        logoutMethod.releaseConnection();
         try {
             TestHelper.deleteSite(TESTSITE_NAME);
         } catch (Exception ex) {
             logger.warn("Exception during test tearDown", ex);
+        }
+    }
+
+    public void testRestoreVersions() throws Exception {
+        try {
+            JCRPublicationService jcrPublicationService = ServicesRegistry.getInstance().getJCRPublicationService();
+            JCRVersionService jcrVersionService = ServicesRegistry.getInstance().getJCRVersionService();
+            JCRSessionWrapper editSession = jcrPublicationService.getSessionFactory().getCurrentUserSession(
+                    Constants.EDIT_WORKSPACE, Locale.ENGLISH);
+            JCRSessionWrapper liveSession = jcrPublicationService.getSessionFactory().getCurrentUserSession(
+                    Constants.LIVE_WORKSPACE, Locale.ENGLISH);
+            JCRNodeWrapper stageRootNode = editSession.getNode(SITECONTENT_ROOT_NODE);
+            // get home page
+            JCRNodeWrapper stageNode = stageRootNode.getNode("home");
+            String homeIdentifier = stageNode.getIdentifier();
+            editSession.checkout(stageNode);
+            JCRNodeWrapper subPageEditNode = stageNode.addNode("simple", "jnt:page");
+            String subPageEditNodeIdentifier = subPageEditNode.getIdentifier();
+            subPageEditNode.setProperty("jcr:title", "title0");
+            subPageEditNode.setProperty("j:templateNode", editSession.getNode(
+                    SITECONTENT_ROOT_NODE + "/templates/base/simple"));
+            editSession.save();
+            // Do this to create nodes associated to templates
+            GetMethod versionGet = new GetMethod(
+                    "http://localhost:8080" + Jahia.getContextPath() + "/cms/edit/default/en" + subPageEditNode.getPath() + ".html");
+            try {
+                int responseCode = client.executeMethod(versionGet);
+                assertEquals("Response code " + responseCode, 200, responseCode);
+                String responseBody = versionGet.getResponseBodyAsString();
+                logger.debug("Response body=[" + responseBody + "]");
+                assertFalse("Couldn't find expected value (title0) in response body", responseBody.indexOf(
+                        "title0") < 0);
+            } catch (IOException e) {
+                logger.error(e.getMessage(), e);
+            }
+            // First publication
+            String labelForFirstPublication = "published_at_" + new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(
+                    GregorianCalendar.getInstance().getTime());
+            publishAndLabelizedVersion(jcrPublicationService, jcrVersionService, homeIdentifier,
+                                       labelForFirstPublication);
+            JCRNodeWrapper subPageLiveNode = liveSession.getNodeByUUID(subPageEditNode.getIdentifier());
+            assertEquals("subPageLiveNode title should be title0", "title0", subPageLiveNode.getProperty(
+                    "jcr:title").getString());
+            logger.info("Versions after first publication (home and simple subpage)");
+            displayVersions(editSession, stageNode, liveSession);
+
+
+            // Close sessions
+            editSession.logout();
+            liveSession.logout();
+
+            // Reopen sessions
+            editSession = jcrPublicationService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE,
+                                                                                          Locale.ENGLISH);
+            liveSession = jcrPublicationService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE,
+                                                                                          Locale.ENGLISH);
+            // Remove Node
+            stageNode = editSession.getNodeByUUID(homeIdentifier);
+            subPageEditNode = editSession.getNodeByUUID(subPageEditNodeIdentifier);
+            editSession.checkout(subPageEditNode);
+            editSession.checkout(stageNode);
+            subPageEditNode.remove();
+            editSession.save();
+            //Second publication
+            String labelForSecondPublication = "published_at_" + new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(
+                    GregorianCalendar.getInstance().getTime());
+            logger.info("Versions before second publication (simple subpage removed)");
+            displayVersions(editSession, stageNode, liveSession);
+            publishAndLabelizedVersion(jcrPublicationService, jcrVersionService, homeIdentifier,
+                                       labelForSecondPublication);
+            try {
+                liveSession.getNodeByUUID(subPageEditNodeIdentifier);
+                fail("should not have found subPage node");
+            } catch (RepositoryException e) {
+                assertTrue(e instanceof ItemNotFoundException);
+            }
+            // Close sessions
+            // Close sessions
+            logger.info("Versions of deleted page after second publication (simple subpage removed)");
+            displayVersions(editSession, subPageEditNode, liveSession);
+            logger.info("Versions after second publication (simple subpage removed)");
+            displayVersions(editSession, stageNode, liveSession);
+            editSession.logout();
+            liveSession.logout();
+
+            // Reopen sessions
+            editSession = jcrPublicationService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE,
+                                                                                          Locale.ENGLISH);
+            liveSession = jcrPublicationService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE,
+                                                                                          Locale.ENGLISH);
+
+            // Make sure that node does not exist in edit
+            try {
+                editSession.getNodeByUUID(subPageEditNodeIdentifier);
+                fail("should not have found subPage node");
+            } catch (RepositoryException e) {
+                assertTrue(e instanceof ItemNotFoundException);
+            }
+            // Restore node
+            logger.info("Versions before restore of simple subpage");
+            displayVersions(editSession, stageNode, liveSession);
+            jcrVersionService.restoreVersionLabel(editSession.getNodeByUUID(homeIdentifier), Constants.EDIT_WORKSPACE+"_"+labelForFirstPublication);
+            subPageEditNode = editSession.getNodeByUUID(subPageEditNodeIdentifier);
+            assertEquals("title0", subPageEditNode.getProperty("jcr:title").getString());
+            // Third publication
+            String labelForThirdPublication = "published_at_" + new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(
+                    GregorianCalendar.getInstance().getTime());
+            logger.info("Versions before publication of restore of simple subpage");
+            displayVersions(editSession, stageNode, liveSession);
+            publishAndLabelizedVersion(jcrPublicationService, jcrVersionService, homeIdentifier,
+                                       labelForThirdPublication);
+            subPageLiveNode = liveSession.getNodeByUUID(subPageEditNode.getIdentifier());
+            assertEquals("subPageLiveNode title should be title0", "title0", subPageLiveNode.getProperty(
+                    "jcr:title").getString());
+            // Now add some content in page
+            // Close sessions
+            logger.info("Versions after third publication (simple subpage restored)");
+            displayVersions(editSession, stageNode, liveSession);
+            editSession.logout();
+            liveSession.logout();
+
+            // Reopen sessions
+            editSession = jcrPublicationService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE,
+                                                                                          Locale.ENGLISH);
+            liveSession = jcrPublicationService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE,
+                                                                                          Locale.ENGLISH);
+
+            subPageEditNode = editSession.getNodeByUUID(subPageEditNodeIdentifier);
+            editSession.checkout(subPageEditNode);
+            JCRNodeWrapper listAEditNode = subPageEditNode.getNode("listA");
+            editSession.checkout(listAEditNode);
+            JCRNodeWrapper mainContentEditMode = listAEditNode.addNode("maincontent", "jnt:mainContent");
+            String mainContentEditNodeIdentifier = mainContentEditMode.getIdentifier();
+            mainContentEditMode.setProperty("jcr:title", "maincontent");
+            mainContentEditMode.setProperty("body", "maincontent");
+            editSession.save();
+            String labelForFourthPublication = "published_at_" + new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(
+                    GregorianCalendar.getInstance().getTime());
+            publishAndLabelizedVersion(jcrPublicationService, jcrVersionService, homeIdentifier,
+                                       labelForFourthPublication);
+            JCRNodeWrapper mainContentLiveNode = liveSession.getNodeByIdentifier(mainContentEditNodeIdentifier);
+            assertEquals("Maincontent body", "maincontent", mainContentLiveNode.getProperty("body").getString());
+            assertEquals("Maincontent title", "maincontent", mainContentLiveNode.getProperty("jcr:title").getString());
+            // Close sessions
+            logger.info("Versions after fourth publication (simple subpage main content added)");
+            displayVersions(editSession, stageNode, liveSession);
+            editSession.logout();
+            liveSession.logout();
+
+            // Reopen sessions
+            editSession = jcrPublicationService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE,
+                                                                                          Locale.ENGLISH);
+            liveSession = jcrPublicationService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE,
+                                                                                          Locale.ENGLISH);
+
+            //Restore second publication
+            jcrVersionService.restoreVersionLabel(editSession.getNodeByUUID(homeIdentifier), Constants.EDIT_WORKSPACE+"_"+labelForSecondPublication);
+            try {
+                editSession.getNodeByUUID(mainContentEditNodeIdentifier);
+                fail("should not have found mainContent node");
+            } catch (RepositoryException e) {
+                assertTrue(e instanceof ItemNotFoundException);
+            }
+            String labelForFifthPublication = "published_at_" + new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(
+                    GregorianCalendar.getInstance().getTime());
+            publishAndLabelizedVersion(jcrPublicationService, jcrVersionService, homeIdentifier,
+                                       labelForFifthPublication);
+            logger.info("Versions after fifth publication (restore version from simple subpage removed)");
+            displayVersions(editSession, stageNode, liveSession);
+            try {
+                liveSession.getNodeByUUID(mainContentEditNodeIdentifier);
+                fail("should not have found mainContent node");
+            } catch (RepositoryException e) {
+                assertTrue(e instanceof ItemNotFoundException);
+            }
+        } catch (Exception e) {
+            logger.error(e.getLocalizedMessage(), e);
+            throw e;
+        }
+    }
+
+    private void displayVersions(JCRSessionWrapper editSession, JCRNodeWrapper subPageEditNode,
+                                 JCRSessionWrapper liveSession) throws RepositoryException {
+        // Display versions
+        VersionManager versionManager;
+        VersionHistory versionHistory;
+        versionManager = editSession.getWorkspace().getVersionManager();
+        logger.info("Versions of " + subPageEditNode.getPath() + " in edit ws :");
+        try {
+            logger.info("Base version in edit ws is : " + versionManager.getBaseVersion(
+                    subPageEditNode.getPath()).getName());
+            logger.info("Base version in live ws is : " + liveSession.getWorkspace().getVersionManager().getBaseVersion(
+                    subPageEditNode.getPath()).getName());
+        } catch (RepositoryException e) {
+            logger.debug(e.getMessage(), e);
+        }
+        try {
+            versionHistory = versionManager.getVersionHistory(subPageEditNode.getPath());
+            VersionIterator allVersions = versionHistory.getAllVersions();
+            while (allVersions.hasNext()) {
+                Version version = allVersions.nextVersion();
+                StringBuilder builder = new StringBuilder();
+
+                builder.append(version.getName());
+                String[] strings = versionHistory.getVersionLabels(version);
+                if (strings != null && strings.length > 0) {
+                    builder.append(" "+Arrays.deepToString(strings));
+                }
+                Version[] versions = version.getPredecessors();
+                for (Version version1 : versions) {
+                    builder.append(" <- ").append(version1.getName());
+                    strings = versionHistory.getVersionLabels(version1);
+                    if (strings != null && strings.length > 0) {
+                        builder.append(" "+Arrays.deepToString(strings));
+                    }
+                }
+                logger.info(builder.toString());
+            }
+        } catch (RepositoryException e) {
+            logger.debug(e.getMessage(), e);
+        }
+    }
+
+    private void publishAndLabelizedVersion(JCRPublicationService jcrPublicationService,
+                                            JCRVersionService jcrVersionService, String identifier,
+                                            String labelForForstPublication) throws RepositoryException {
+        Set<String> languagesStringSet = new LinkedHashSet<String>();
+        languagesStringSet.add(Locale.ENGLISH.toString());
+        List<PublicationInfo> infoList = jcrPublicationService.getPublicationInfo(identifier, languagesStringSet, true,
+                                                                                  true, true, Constants.EDIT_WORKSPACE,
+                                                                                  Constants.LIVE_WORKSPACE);
+        jcrPublicationService.publish(infoList, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
+        for (PublicationInfo info : infoList) {
+            jcrVersionService.addVersionLabel(info.getAllUuids(), Constants.EDIT_WORKSPACE+"_"+labelForForstPublication, Constants.EDIT_WORKSPACE);
+            jcrVersionService.addVersionLabel(info.getAllUuids(), Constants.LIVE_WORKSPACE+"_"+labelForForstPublication, Constants.LIVE_WORKSPACE);
         }
     }
 

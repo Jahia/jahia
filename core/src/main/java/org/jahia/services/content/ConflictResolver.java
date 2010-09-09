@@ -33,6 +33,7 @@
 package org.jahia.services.content;
 
 import org.apache.commons.collections.map.ListOrderedMap;
+import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.decorator.JCRVersion;
 import org.jahia.services.content.decorator.JCRVersionHistory;
@@ -56,7 +57,7 @@ public class ConflictResolver {
 
     private static List<String> ignore = Arrays.asList(Constants.JCR_UUID, Constants.JCR_PRIMARYTYPE, Constants.JCR_MIXINTYPES, Constants.JCR_FROZENUUID, Constants.JCR_FROZENPRIMARYTYPE, Constants.JCR_FROZENMIXINTYPES,
             Constants.JCR_CREATED, Constants.JCR_CREATEDBY, Constants.JCR_BASEVERSION, Constants.JCR_ISCHECKEDOUT, Constants.JCR_VERSIONHISTORY, Constants.JCR_PREDECESSORS, Constants.JCR_ACTIVITY, Constants.CHECKIN_DATE, Constants.LOCKTOKEN, Constants.LOCKTYPES, "jcr:lockOwner", "jcr:lockIsDeep");
-    
+    private static Logger logger = Logger.getLogger(ConflictResolver.class);
     // Constants.JCR_LASTMODIFIED, "jcr:lastModifiedBy",
     // "jcr:lastPublished", "jcr:lastPublishedBy", "j:published");
 
@@ -140,10 +141,11 @@ public class ConflictResolver {
                 sourceVersion = sourceVersion.getLinearPredecessor();
             } catch (NullPointerException e) {
                 sourceVersion = null;
-            }
+            }                
         }
-
+        logger.info("compare "+sourceNode.getPath()+" version : "+baseSourceVersion.getName()+" with "+sourceNode.getBaseVersion().getName());
         List<Diff> sourceDiff = compare(baseSourceVersion.getFrozenNode(), sourceNode);
+        logger.info("compare "+targetNode.getPath()+" version : "+baseTargetVersion.getName()+" with "+targetNode.getBaseVersion().getName());
         List<Diff> targetDiff = compare(baseTargetVersion.getFrozenNode(), targetNode);
 
         sourceDiff.removeAll(targetDiff);

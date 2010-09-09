@@ -341,7 +341,7 @@ public class JCRWorkspaceWrapper implements Workspace {
             logger.debug("Checkout "+absPath +" in "+getName());
             JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_CHECKOUT, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    JCRNodeWrapper node = session.getNode(absPath);
+                    JCRNodeWrapper node = session.getNode(absPath,false);
                     if (!node.getRealNode().isLocked() || session.isSystem()) {
                         versionManager.checkout(node.getRealNode().getPath());
                     }

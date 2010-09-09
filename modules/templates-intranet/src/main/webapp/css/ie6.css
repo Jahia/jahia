@@ -4,3 +4,12 @@
 #bodywrapper div.box-inner {
 	margin:-4px;
 }
+#bodywrapper div.intro{
+	width:99%
+}
+#bodywrapper .navigation {
+	position:relative;
+}
+#bodywrapper .navigation .navbar {
+	float: none;
+}

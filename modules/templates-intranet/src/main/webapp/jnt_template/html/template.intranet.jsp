@@ -31,6 +31,15 @@
     </c:forEach>
 </c:if>
 <template:addResources type="css" resources="960.css,01web.css,02mod.css,navigation.css,navigationN1-1.css,navigationN1-2.css,navigationN1-3.css,navigationN1-4.css,navigationN2-1.css,navigationN2-2.css" />
+<template:addResources>
+<!--[if IE]><link rel="stylesheet" type="text/css" href="${url.currentModule}/css/ie.css" media="screen" /><![endif]-->
+<!--[if lte IE 6]>
+<link rel="stylesheet" type="text/css" href="${url.currentModule}/css/ie6.css" media="screen" />
+    <style type="text/css">
+    body { behavior: url(${url.currentModule}/scripts/csshover3.htc); }
+    </style>
+<![endif]-->
+</template:addResources>
 <c:if test="${renderContext.editMode}">
     <template:addResources type="css" resources="edit.css" />
 </c:if>

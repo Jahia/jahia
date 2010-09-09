@@ -256,14 +256,14 @@
                 <exclude name="OpenJahia*"/>
             </fileset>
             <fileset dir="../artifacts/jahia" targetdir="${jahia.war.target.path}">
-                <exclude name="WEB-INF/lib/juel-api-2.1.2.jar"/>
+                <exclude name="WEB-INF/lib/juel-api-*.jar"/>
             </fileset>
             <fileset dir="../images" targetdir="$INSTALL_PATH/icons" override="update">
                 <include name="jahia.ico"/>
                 <include name="jahia.png"/>
             </fileset>
             <singlefile override="update" src="../scripts/openUrl.sh" target="$INSTALL_PATH/bin/openUrl.sh"/>
-            <singlefile override="update" src="../artifacts/jahia/WEB-INF/lib/juel-api-2.1.2.jar" target="${jahia.war.target.path}/juel-api-2.1.2.jar" condition="cnd.server.type.was"/>
+            <singlefile override="update" src="../artifacts/jahia/WEB-INF/lib/juel-api-2.2.1.jar" target="${jahia.war.target.path}/juel-api-2.2.1.jar" condition="cnd.server.type.was"/>
             <fileset dir="../artifacts/jahia-jboss-config" targetdir="$INSTALL_PATH/jahia-jboss-config" condition="cnd.server.type.jboss"/>
             <singlefile override="update" src="install.properties" target="$INSTALL_PATH/logs/install.properties"/>
             <singlefile override="update" src="../dependency/configurators-standalone.jar" target="$INSTALL_PATH/configurators.jar"/>

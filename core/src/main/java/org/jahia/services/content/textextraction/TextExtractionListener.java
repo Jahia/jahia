@@ -43,6 +43,7 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
+import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 
@@ -165,6 +166,8 @@ public class TextExtractionListener extends DefaultEventListener {
 
                             doHandle(p.getParent(), event, s);
                         }
+                    } catch (ConstraintViolationException e) {
+                        logger.debug(e.getMessage(), e);
                     } catch (PathNotFoundException e) {
                         logger.debug(e.getMessage(), e);
                     } catch (Exception e) {

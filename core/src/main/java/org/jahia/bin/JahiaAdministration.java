@@ -740,7 +740,8 @@ public class JahiaAdministration extends HttpServlet {
             }
             session.setAttribute(ProcessingContext.SESSION_USER, theUser);
             
-            request.getSession().setAttribute(ProcessingContext.SESSION_UI_LOCALE, UserPreferencesHelper.getPreferredLocale(theUser));
+            Locale sessionLocale = (Locale) session.getAttribute(ProcessingContext.SESSION_UI_LOCALE);
+            session.setAttribute(ProcessingContext.SESSION_UI_LOCALE, sessionLocale != null ? UserPreferencesHelper.getPreferredLocale(theUser, sessionLocale) : UserPreferencesHelper.getPreferredLocale(theUser));
             
             if (redirectTo == null) {
                 displayMenu(request, response, session);

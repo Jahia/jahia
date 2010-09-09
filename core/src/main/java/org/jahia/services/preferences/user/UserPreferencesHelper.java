@@ -225,15 +225,26 @@ public final class UserPreferencesHelper {
      *         the list of available locales
      */
     public static Locale getPreferredLocale(JahiaUser user) {
+        return getPreferredLocale(user, Locale.ENGLISH);
+    }
+
+    /**
+     * Returns the preferred locale of the specified user or the first one from
+     * the list of available locales.
+     * 
+     * @param user
+     *            the user to retrieve locale preferences
+     * @param fallback the fallback locale to return if no preferred locale is set for the user
+     * @return the preferred locale of the specified user or the first one from
+     *         the list of available locales
+     */
+    public static Locale getPreferredLocale(JahiaUser user, Locale fallback) {
         //String propValue = getPreference("preferredLanguage", user);
         String propValue = user != null ? user.getProperty("preferredLanguage") : null;
         Locale locale = propValue != null ? LanguageCodeConverters
                 .languageCodeToLocale(propValue) : null;
 
-        if (null == locale) {
-            locale = Locale.ENGLISH;
-        }
-        return locale;
+        return locale != null ? locale : fallback;
     }
 
     /**

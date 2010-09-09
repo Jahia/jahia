@@ -277,6 +277,9 @@ public class JCRVersionService extends JahiaService {
                         }
                         // Todo: first get frozen node for thislabel
                         JCRNodeWrapper frozenVersionAsRegular = nodeWrapper.getFrozenVersionAsRegular(label);
+                        if(frozenVersionAsRegular==null) {
+                            throw new RepositoryException("label version " + label + " could not be found on node "+nodeWrapper.getPath());
+                        }
                         synchronizeNode(frozenVersionAsRegular, nodeWrapper, session, true);
                         session.save();
                         return null;

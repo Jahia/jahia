@@ -187,7 +187,7 @@ public class EditContentEngine extends AbstractContentEngine {
                 initializersValues = result.getInitializersValues();
                 fillCurrentTab();
 
-                fillCurrentTab();
+//                fillCurrentTab();
                 ok.setEnabled(true);
             }
 

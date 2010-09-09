@@ -81,9 +81,9 @@ public class LanguageSwitcherActionItem extends BaseActionItem {
         mainComponent.getStore().add(gwtJahiaLanguages);
         mainComponent.setDisplayField("displayName");
         mainComponent.setTemplate(getLangSwitchingTemplate());
-        //mainComponent.setTypeAhead(true);
-        //mainComponent.setTriggerAction(ComboBox.TriggerAction.ALL);
-        //mainComponent.setForceSelection(true);
+        mainComponent.setTypeAhead(true);
+        mainComponent.setTriggerAction(ComboBox.TriggerAction.ALL);
+        mainComponent.setForceSelection(true);
         mainComponent.setEditable(false);
         mainComponent.setValue(selectedLang);
         mainComponent.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaLanguage>() {

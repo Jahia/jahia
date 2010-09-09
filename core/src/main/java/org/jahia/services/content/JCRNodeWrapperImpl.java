@@ -2288,7 +2288,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 return null;
             }
             Node frozen = v.getNode(Constants.JCR_FROZENNODE);
-            Date date = frozen.getProperty("j:checkinDate").getDate().getTime();
+            Date date = null;
+            if(frozen.hasProperty("j:checkinDate")) {
+                date = frozen.getProperty("j:checkinDate").getDate().getTime();
+            } else {
+                date = v.getCreated().getTime();
+            }
             JCRFrozenNodeAsRegular frozenNodeAsRegular = new JCRFrozenNodeAsRegular(provider.getNodeWrapper(frozen,
                                                                                                             session),
                                                                                     date,versionLabel);

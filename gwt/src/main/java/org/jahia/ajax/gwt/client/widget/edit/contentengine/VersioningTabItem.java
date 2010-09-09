@@ -101,7 +101,7 @@ public class VersioningTabItem extends EditEngineTabItem {
                                 } else if (strings[0].contains("uploaded")){
                                     s1 = Messages.get("label.version.uploaded", "uploaded at");
                                 } else {
-                                    s1 = strings[0];
+                                    s1 = Messages.get("label.version."+strings[0],strings[0]);
                                 }
                                 value = value + s1 + " " + DateTimeFormat.getMediumDateTimeFormat().format(
                                         DateTimeFormat.getFormat("yyyy_MM_dd_HH_mm_ss").parse(strings[1]));

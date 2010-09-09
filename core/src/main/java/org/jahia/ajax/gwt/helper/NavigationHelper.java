@@ -1203,14 +1203,16 @@ public class NavigationHelper {
                 String[] versionLabels = vh.getVersionLabels(v);
                 if (versionLabels != null && versionLabels.length > 0) {
                     for (String string : versionLabels) {
-                        if (node.isFile()) {
-                            n.setUrl(node.getUrl() + "?v=" + v.getCreated().getTime().getTime());
+                        if (!string.contains("published") || string.contains(
+                                node.getSession().getWorkspace().getName())) {
+                            if (node.isFile()) {
+                                n.setUrl(node.getUrl() + "?v=" + v.getCreated().getTime().getTime());
+                            }
+                            GWTJahiaNodeVersion jahiaNodeVersion = new GWTJahiaNodeVersion(v.getIdentifier(),
+                                    v.getName(), v.getCreated().getTime(), null, string);
+                            jahiaNodeVersion.setNode(n);
+                            versions.add(jahiaNodeVersion);
                         }
-                        GWTJahiaNodeVersion jahiaNodeVersion =
-                                new GWTJahiaNodeVersion(v.getIdentifier(), v.getName(), v.getCreated().getTime(), null,
-                                        string);
-                        jahiaNodeVersion.setNode(n);
-                        versions.add(jahiaNodeVersion);
                     }
                 } else if (node.isFile()) {
                     // Display only non labelized version for files

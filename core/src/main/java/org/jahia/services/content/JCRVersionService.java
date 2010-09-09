@@ -112,8 +112,10 @@ public class JCRVersionService extends JahiaService {
             String[] versionLabels = versionHistory.getVersionLabels(v);
             if (versionLabels != null && versionLabels.length > 0) {
                 for (String string : versionLabels) {
-                    VersionInfo versionInfo = new VersionInfo(v, checkinDate, string, 0);
-                    versionList.add(versionInfo);
+                    if(!string.contains("published") || string.contains(session.getWorkspace().getName())) {
+                        VersionInfo versionInfo = new VersionInfo(v, checkinDate, string, 0);
+                        versionList.add(versionInfo);
+                    }
                 }
             }
         }
@@ -374,35 +376,6 @@ public class JCRVersionService extends JahiaService {
                 previous = name;
             }
         }
-    }
-
-    public void restoreVersion(final JCRNodeWrapper node, final Version version) throws RepositoryException {
-        JCRTemplate.getInstance().doExecuteWithSystemSession(null, node.getSession().getWorkspace().getName(), null,
-                new JCRCallback<Object>() {
-                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        JCRNodeWrapper nodeWrapper = session.getNodeByUUID(node.getIdentifier());
-                        VersionManager versionManager = session.getWorkspace().getVersionManager();
-                        String path = node.getPath();
-                        String absPath = node.getParent().getPath();
-                        if (!versionManager.isCheckedOut(absPath)) {
-                            versionManager.checkout(absPath);
-                        }
-                        if (!versionManager.isCheckedOut(path)) {
-                            versionManager.checkout(path);
-                        }
-                        nodeWrapper.remove();
-                        session.save();
-                        versionManager.restore(path, version, true);
-                        /*if(node.hasNodes()) {
-                            NodeIterator iterator = node.getNodes();
-                            while (iterator.hasNext()) {
-                                JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) iterator.nextNode();
-                                restoreVersionLabel(session, nodeWrapper, label);
-                            }
-                        }*/
-                        return null;
-                    }
-                });
     }
 
     public static Version findVersionByLabel(VersionHistory vh, String label) throws RepositoryException {

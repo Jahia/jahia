@@ -43,6 +43,7 @@ import org.jahia.services.content.JCRVersionService;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.version.Version;
+import javax.jcr.version.VersionIterator;
 import javax.jcr.version.VersionManager;
 
 import java.io.FileInputStream;
@@ -111,7 +112,14 @@ public class VersioningHelper {
                     node.versionFile();
                     session.save();
                 }
-                versionManager.checkpoint(node.getPath());
+                VersionIterator allVersions = versionManager.getVersionHistory(node.getPath()).getAllVersions();
+                if(allVersions.getSize()==1) {
+                    // Frist version ever apart root version
+                    versionManager.checkin(node.getPath());
+                    String label = "uploaded_at_"+ new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(node.getProperty("jcr:created").getDate().getTime());
+                    versionService.addVersionLabel(node,label);
+                }
+                versionManager.checkout(node.getPath());
                 GWTFileManagerUploadServlet.Item item = GWTFileManagerUploadServlet.getItem(tmpName);
                 FileInputStream is = null;
                 try {
@@ -140,28 +148,7 @@ public class VersioningHelper {
             logger.error(e.getMessage(), e);
         }
 
-    }
-
-    /**
-     * Restore node version
-     *
-     * @param nodeUuid
-     * @param versionUuid
-     * @param currentUserSession
-     */
-    public void restoreNode(String nodeUuid, String versionUuid, JCRSessionWrapper currentUserSession) {
-        try {
-            JCRNodeWrapper node = currentUserSession.getNodeByUUID(nodeUuid);
-            Version version = (Version) currentUserSession.getNodeByUUID(versionUuid);
-            VersionManager versionManager = currentUserSession.getWorkspace().getVersionManager();
-            versionManager.checkout(node.getPath());
-            versionManager.restore(version, true);
-            versionManager.checkin(node.getPath());
-            cacheService.getCache("WebdavCache").flush(true);
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
-    }
+    }    
 
     public void restoreVersionLabel(String nodeUuid, String versionLabel, JCRSessionWrapper currentUserSession) {
         try {

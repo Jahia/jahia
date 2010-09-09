@@ -202,7 +202,7 @@
 [jnt:tag] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:publication
  - tags (reference) multiple hidden < jnt:tag
 
-[jnt:tagList] > nt:base, jmix:nodenameInfo, jmix:list, mix:versionable, jmix:publication
+[jnt:tagList] > nt:base, jmix:nodenameInfo, jmix:list, jmix:basemetadata, jmix:publication
  + * (jnt:tag) = jnt:tag
 
 //---------------------------------------------------------

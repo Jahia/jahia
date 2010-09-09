@@ -6,6 +6,7 @@
 <jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>
 
 <c:if test="${not empty title}">
+    <div class="clear"></div>
     <h4 class="box5-title box5-titlepurple">${title.string}</h4>
 </c:if>
 <div class="box5">

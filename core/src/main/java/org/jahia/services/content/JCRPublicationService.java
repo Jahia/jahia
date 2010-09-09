@@ -335,6 +335,7 @@ public class JCRPublicationService extends JahiaService {
 //            prunedSourcePath.add(node.getIdentifier());
 //        }
 
+        JCRObservationManager.setEventsDisabled(Boolean.TRUE);
         try {
             JCRNodeWrapper destNode = destinationSession.getNode(sourceNode.getPath());
 //            ArrayList<JCRNodeWrapper> pruneDestNodes = new ArrayList<JCRNodeWrapper>();
@@ -349,6 +350,8 @@ public class JCRPublicationService extends JahiaService {
         } catch (PathNotFoundException e) {
             cloneToDestinationWorkspace(toPublish.iterator().next(), uuidsToPublish, sourceNode.getSession(),
                     destinationSession, calendar);
+        } finally {
+            JCRObservationManager.setEventsDisabled(null);                 
         }
     }
 
@@ -551,7 +554,7 @@ public class JCRPublicationService extends JahiaService {
                 }
             }
             JahiaAccessManager.setDeniedPaths(denied);
-            JCRObservationManager.setEventsDisabled(Boolean.TRUE);
+
             if (!destinationVersionManager.isCheckedOut(destinationParentPath)) {
                 destinationVersionManager.checkout(destinationParentPath);
             }
@@ -623,7 +626,6 @@ public class JCRPublicationService extends JahiaService {
             }
         } finally {
             JahiaAccessManager.setDeniedPaths(null);
-            JCRObservationManager.setEventsDisabled(null);
         }
         JCRNodeWrapper destinationNode =
                 destinationSession.getNode(sourceNode.getCorrespondingNodePath(destinationWorkspaceName));

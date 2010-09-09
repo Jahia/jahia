@@ -414,7 +414,7 @@ public class ConflictResolver {
         }
 
         public boolean apply() throws RepositoryException {
-            if (!uuidsToPublish.contains(uuid) || targetNode.hasNode(newName)) {
+            if ((!uuidsToPublish.contains(uuid) && sourceNode.getNode(newName).isVersioned()) || targetNode.hasNode(newName)) {
                 return true;
             }
             targetNode.getSession().save();

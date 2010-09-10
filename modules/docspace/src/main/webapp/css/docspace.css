@@ -220,6 +220,7 @@ background:transparent url(img/docspace.png) no-repeat scroll 0 0;
 	font-weight:normal;
 	clear:both;
 	margin:0;
+	zoom:1;
 }
 /*boxdocspace title*/
 #bodywrapper h4.boxdocspace-title2 {
@@ -233,6 +234,7 @@ background:transparent url(img/docspace.png) no-repeat scroll 0 0;
 	font-weight:normal;
 	clear:both;
 	margin:0;
+	zoom:1;
 }
 /*Table actions*/
 #bodywrapper div.TableActions{

@@ -36,7 +36,10 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.form.*;
+import com.extjs.gxt.ui.client.widget.layout.FormLayout;
+
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -70,8 +73,7 @@ public class PropertiesEditor extends FormPanel {
     private ComboBox<GWTJahiaValueDisplayBean> templateField;
     private Set<String> templateTypes = new HashSet<String>();
     private FieldSet fieldSet = null;
-    private FieldSet commonFieldSet = null;
-    private FormPanel commonForm = null;
+    private ContentPanel commonFields = null;
     private FormPanel form = this;
     private static final int FIELD_SIZE = 620;
 
@@ -217,7 +219,7 @@ public class PropertiesEditor extends FormPanel {
 
             final GWTJahiaNodeProperty gwtJahiaNodeProperty = currentProperties.get(definition.getName());
             List<GWTJahiaValueDisplayBean> values = initializersValues != null ? initializersValues.get(definition.getDeclaringNodeType()+"."+definition.getName()) : null;
-            final Field field = FormFieldCreator.createField(definition, gwtJahiaNodeProperty, values);
+            final Field<?> field = FormFieldCreator.createField(definition, gwtJahiaNodeProperty, values);
             propertyDefinitions.put(gwtJahiaNodeProperty.getName(), definition);
             if (definition.getName().equals("j:template")) {
                 templateField = (ComboBox<GWTJahiaValueDisplayBean>) field;
@@ -331,22 +333,35 @@ public class PropertiesEditor extends FormPanel {
      *
      * @param field
      */
-    private void addCommonFieldSet(Field field) {
+    private void addCommonFieldSet(Field<?> field) {
         // field set
-        if (commonFieldSet == null) {
-            commonFieldSet = new FieldSet();
-            commonForm = new FormPanel();
-            commonForm.setHeaderVisible(false);
-            commonForm.setFrame(false);
-            commonForm.setBorders(false);
-            commonForm.setBodyBorder(false);
-            commonForm.setLabelAlign(LabelAlign.TOP);
-            commonForm.setFieldWidth(FIELD_SIZE);
-            commonForm.setLabelWidth(80);
-            commonFieldSet.add(commonForm);
+        if (commonFields == null) {
+            FieldSet commonFieldSet = new FieldSet();
+            FormLayout layout = new FormLayout(LabelAlign.TOP);
+            layout.setLabelWidth(80);
+            layout.setDefaultWidth(FIELD_SIZE);
+            
+            commonFields = new ContentPanel(layout);
+            commonFields.setHeaderVisible(false);
+            commonFields.setFrame(false);
+            commonFields.setBorders(false);
+            commonFields.setBodyBorder(false);
+            
+            commonFieldSet.add(commonFields);
             add(commonFieldSet);
+//            commonForm = new FormPanel();
+//            commonForm.setHeaderVisible(false);
+//            commonForm.setFrame(false);
+//            commonForm.setBorders(false);
+//            commonForm.setBodyBorder(false);
+//            commonForm.setLabelAlign(LabelAlign.TOP);
+//            commonForm.setFieldWidth(FIELD_SIZE);
+//            commonForm.setLabelWidth(80);
+//            commonFieldSet.add(commonForm);
+//            add(commonFieldSet);
+//          add(commonFieldSet);
         }
-        commonForm.add(field);
+        commonFields.add(field);
 
     }
 
@@ -425,7 +440,7 @@ public class PropertiesEditor extends FormPanel {
                     if ((definition.isHidden() && originalProperties.get(definition.getName()) != null) ||
                             (dataType != null && dataType.equals(definition.getDataType()))) {
                         if (!definition.isProtected()) {
-                            Field f = fields.get(definition.getName());
+                            Field<?> f = fields.get(definition.getName());
                             GWTJahiaNodeProperty prop = currentProperties.get(definition.getName());
                             if (f != null && (f.isDirty() || !modifiedOnly || f.getData("addedField") != null)) {
                                 Log.debug("Set value for " + prop.getName());
@@ -472,7 +487,7 @@ public class PropertiesEditor extends FormPanel {
      * @param itemDef the definition of the corresponding node/property
      * @return a list with property values, populated from the field value depending on its type
      */
-    public static List<GWTJahiaNodePropertyValue> getPropertyValues(Field fld, GWTJahiaItemDefinition itemDef) {
+    public static List<GWTJahiaNodePropertyValue> getPropertyValues(Field<?> fld, GWTJahiaItemDefinition itemDef) {
         List<GWTJahiaNodePropertyValue> values = new ArrayList<GWTJahiaNodePropertyValue>();
         if (itemDef.isNode()) {
             // case of a new link node

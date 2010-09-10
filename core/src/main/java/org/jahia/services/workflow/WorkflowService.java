@@ -324,7 +324,7 @@ public class WorkflowService {
     public List<Workflow> getActiveWorkflows(JCRNodeWrapper node, Locale locale) {
         List<Workflow> workflows = new ArrayList<Workflow>();
         try {
-            if (node.isNodeType("jmix:workflow") && node.hasProperty(Constants.PROCESSID)) {
+            if (node.isNodeType(Constants.JAHIAMIX_WORKFLOW) && node.hasProperty(Constants.PROCESSID)) {
                 addActiveWorkflows(workflows, node.getProperty(Constants.PROCESSID), locale);
             }
         } catch (RepositoryException e) {
@@ -342,7 +342,7 @@ public class WorkflowService {
     public Map<Locale, List<Workflow>> getActiveWorkflowsForAllLocales(JCRNodeWrapper node) {
         Map<Locale, List<Workflow>> workflowsByLocale = new HashMap<Locale, List<Workflow>>();
         try {
-            if (node.isNodeType("jmix:workflow")) {
+            if (node.isNodeType(Constants.JAHIAMIX_WORKFLOW)) {
                 NodeIterator ni = node.getNodes("j:translation*");
                 while (ni.hasNext()) {
                     Node n = ((JCRNodeWrapper) ni.next()).getRealNode();
@@ -463,8 +463,8 @@ public class WorkflowService {
     public synchronized void addProcessId(JCRNodeWrapper stageNode, String provider, String processId)
             throws RepositoryException {
         stageNode.checkout();
-        if (!stageNode.isNodeType("jmix:workflow")) {
-            stageNode.addMixin("jmix:workflow");
+        if (!stageNode.isNodeType(Constants.JAHIAMIX_WORKFLOW)) {
+            stageNode.addMixin(Constants.JAHIAMIX_WORKFLOW);
         }
         List<Value> values;
         if (stageNode.hasProperty(Constants.PROCESSID)) {
@@ -680,7 +680,7 @@ public class WorkflowService {
         List<HistoryWorkflow> history = new LinkedList<HistoryWorkflow>();
         try {
             Value[] values = null;
-            if (node.isNodeType("jmix:workflow") && node.hasProperty(Constants.PROCESSID)) {
+            if (node.isNodeType(Constants.JAHIAMIX_WORKFLOW) && node.hasProperty(Constants.PROCESSID)) {
                 values = node.getProperty(Constants.PROCESSID).getValues();
             }
             if (values != null) {
@@ -779,7 +779,7 @@ public class WorkflowService {
         List<Workflow> workflows = new ArrayList<Workflow>();
         try {
             final List<WorkflowDefinition> forAction = getWorkflowsForAction("publish", null);
-            if (node.isNodeType("jmix:workflow") && node.hasProperty(Constants.PROCESSID)) {
+            if (node.isNodeType(Constants.JAHIAMIX_WORKFLOW) && node.hasProperty(Constants.PROCESSID)) {
                 addActiveWorkflows(workflows, node.getProperty(Constants.PROCESSID), null);
             }
             for (Workflow workflow : workflows) {

@@ -200,33 +200,36 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
         if (parentAlreadyResolved) {
             return resolvedParentNode;
         }
-        JCRPropertyWrapper property = getProperty("j:fullpath");
-        if (property != null) {
-            String path = StringUtils.substringBeforeLast(property.getString(), "/");
-            if (!"".equals(path)) {
-                return getSession().getNode(path);
+        try {
+            JCRPropertyWrapper property = getProperty("j:fullpath");
+            if (property != null) {
+                String path = StringUtils.substringBeforeLast(property.getString(), "/");
+                if (!"".equals(path)) {
+                    return getSession().getNode(path);
+                }
+            }
+        } catch (RepositoryException e) {
+            JCRNodeWrapper parentNode = super.getParent();
+
+            if (parentNode.isNodeType(Constants.NT_FROZENNODE)) {
+                resolvedParentNode = new JCRFrozenNodeAsRegular(parentNode, versionDate, versionLabel);
+                parentAlreadyResolved = true;
+                return resolvedParentNode;
+            } else if (parentNode.isNodeType(Constants.NT_VERSION)) {
+                Version version = (Version) parentNode;
+                String frozenId = version.getFrozenNode().getProperty(Constants.JCR_FROZENUUID).getString();
+                JCRNodeWrapper regularNode = getSession().getNodeByUUID(frozenId, false);
+                if (regularNode != null) {
+                    resolvedParentNode = regularNode.getParent().getFrozenVersionAsRegular(
+                            versionLabel);
+                    parentAlreadyResolved = true;
+                    return resolvedParentNode;
+                }
             }
         }
         return null;
         /*
-        JCRNodeWrapper parentNode = super.getParent();
-
-        if (parentNode.isNodeType(Constants.NT_FROZENNODE)) {
-            resolvedParentNode = new JCRFrozenNodeAsRegular(parentNode, versionDate);
-            parentAlreadyResolved = true;
-            return resolvedParentNode;
-        } else if (parentNode.isNodeType(Constants.NT_VERSION)) {
-            JCRNodeWrapper closestVersionedChildNode = findClosestParentVersionedChildNode((Version)parentNode);
-            if (closestVersionedChildNode != null) {
-                resolvedParentNode = new JCRFrozenNodeAsRegular(closestVersionedChildNode.getParent(), versionDate);
-                parentAlreadyResolved = true;
-                return resolvedParentNode;
-            } else {
-                resolvedParentNode = findRegularParentNode();
-                parentAlreadyResolved = true;
-                return resolvedParentNode;
-            }
-        } else {
+         else {
             // this shouldn't happen, EVER !
             logger.error("Integrity error, found frozen node with a parent that is not a frozen node nor a version node ! Ignoring it !");
             return null;
@@ -237,7 +240,7 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
         // This can happen in the case that the parent is not versioned (yet), so we must search in the regular
         // workspace.
         String frozenUUID = getProperty(Constants.JCR_FROZENUUID).getString();
-        JCRNodeWrapper regularNode = getSession().getNodeByUUID(frozenUUID);
+        JCRNodeWrapper regularNode = getSession().getNodeByUUID(frozenUUID,false);
         if (regularNode != null) {
             return regularNode.getParent();
         } else {
@@ -425,25 +428,30 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
 
     @Override
     public String getPath() {
-        String currentPath = getName();
-        JCRNodeWrapper currentParent = null;
         try {
-            currentParent = getParent();
-            while (currentParent != null) {
-                currentPath = currentParent.getName() + "/" + currentPath;
-                try {
-                    currentParent = currentParent.getParent();
-                } catch (ItemNotFoundException infe) {
-                    currentParent = null;
-                }
-            }
-            if ((currentPath != null) && (!currentPath.startsWith("/"))) {
-                currentPath = "/" + currentPath;
-            }
+            JCRPropertyWrapper property = getProperty("j:fullpath");
+            return property.getString();
         } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
+            String currentPath = getName();
+            JCRNodeWrapper currentParent = null;
+            try {
+                currentParent = getParent();
+                while (currentParent != null) {
+                    currentPath = currentParent.getName() + "/" + currentPath;
+                    try {
+                        currentParent = currentParent.getParent();
+                    } catch (ItemNotFoundException infe) {
+                        currentParent = null;
+                    }
+                }
+                if ((currentPath != null) && (!currentPath.startsWith("/"))) {
+                    currentPath = "/" + currentPath;
+                }
+            } catch (RepositoryException ex) {
+                logger.error(e.getMessage(), ex);
+            }
+            return currentPath;
         }
-        return currentPath;
     }
 
     @Override

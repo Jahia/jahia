@@ -534,13 +534,12 @@ public class JCRPublicationService extends JahiaService {
                            JCRSessionWrapper destinationSession) throws RepositoryException {
         JCRNodeWrapper parent = sourceNode.getParent();
 //                destinationParentPath = parent.getCorrespondingNodePath(destinationWorkspaceName);
-
-        final String destinationWorkspaceName = destinationSession.getWorkspace().getName();
-        final String destinationParentPath = parent.getCorrespondingNodePath(destinationWorkspaceName);
         final String sourceNodePath =
                 sourceNode.getIndex() > 1 ? sourceNode.getPath() + "[" + sourceNode.getIndex() + "]" :
                         sourceNode.getPath();
-        logger.debug("Cloning node : " + sourceNodePath);
+        logger.debug("Cloning node : " + sourceNodePath + " parent path "+parent.getPath());
+        final String destinationWorkspaceName = destinationSession.getWorkspace().getName();
+        final String destinationParentPath = parent.getCorrespondingNodePath(destinationWorkspaceName);
 
         final VersionManager destinationVersionManager = destinationSession.getWorkspace().getVersionManager();
 

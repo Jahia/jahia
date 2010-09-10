@@ -221,7 +221,7 @@ public class JCRVersionService extends JahiaService {
                 }
             }
         }
-        if (logger.isDebugEnabled()) {
+        if (closestVersion!=null && logger.isDebugEnabled()) {
             Date checkinDate = null;
             if (closestVersion.getFrozenNode().hasProperty("j:checkinDate")) {
                 Property checkinDateProperty = closestVersion.getFrozenNode().getProperty("j:checkinDate");
@@ -242,6 +242,7 @@ public class JCRVersionService extends JahiaService {
                         VersionManager versionManager = session.getWorkspace().getVersionManager();
                         VersionHistory versionHistory = versionManager.getVersionHistory(node.getPath());
                         if (versionManager.isCheckedOut(nodeWrapper.getPath())) {
+                            logger.debug("Checkin node " + nodeWrapper.getPath());
                             versionManager.checkin(nodeWrapper.getPath());
                         }
                         if (!versionHistory.hasVersionLabel(label)) {
@@ -296,7 +297,10 @@ public class JCRVersionService extends JahiaService {
 
         NodeType[] mixin = source.getMixinNodeTypes();
         for (NodeType aMixin : mixin) {
-            destinationNode.addMixin(aMixin.getName());
+            if(!Constants.forbiddenMixinToCopy.contains(aMixin.getName())) {
+                logger.info("Adding mixin "+aMixin.getName()+" on node "+destinationNode.getPath());
+                destinationNode.addMixin(aMixin.getName());
+            }
         }
 
         if (source.hasProperty("jcr:language")) {
@@ -309,10 +313,13 @@ public class JCRVersionService extends JahiaService {
         while (props.hasNext()) {
             Property property = props.nextProperty();
             String propertyName = property.getName();
+            names.add(propertyName);
+            logger.info("Checking property for updating "+propertyName+" from source node "+destinationNode.getPath());
             try {
-                if (!Constants.forbiddenPropertiesToCopy.contains(propertyName)) {
-                    names.add(propertyName);
-                    if (property.getDefinition().isMultiple() && (property.isMultiple())) {
+                if (!property.getDefinition().isProtected() &&
+                    !Constants.forbiddenPropertiesToCopy.contains(propertyName)) {
+                    logger.info("Setting property "+propertyName+" on node "+destinationNode.getPath());
+                    if (property.getDefinition().isMultiple() && property.isMultiple()) {
                         destinationNode.setProperty(propertyName, property.getValues());
                     } else {
                         destinationNode.setProperty(propertyName, property.getValue());
@@ -326,8 +333,10 @@ public class JCRVersionService extends JahiaService {
         PropertyIterator pi = destinationNode.getProperties();
         while (pi.hasNext()) {
             JCRPropertyWrapper oldChild = (JCRPropertyWrapper) pi.next();
+            logger.info("Checking property for removal "+oldChild.getName()+" from destination node "+destinationNode.getPath());
             if (!oldChild.getDefinition().isProtected()) {
                 if (!names.contains(oldChild.getName())) {
+                    logger.info("Removing property "+oldChild.getName()+" on node "+destinationNode.getPath());
                     oldChild.remove();
                 }
             }
@@ -335,7 +344,9 @@ public class JCRVersionService extends JahiaService {
 
         mixin = destinationNode.getMixinNodeTypes();
         for (NodeType aMixin : mixin) {
-            if (!source.isNodeType(aMixin.getName())) {
+            if (!source.isNodeType(aMixin.getName()) &&
+                !Constants.forbiddenMixinToCopy.contains(aMixin.getName())) {
+                logger.info("Removing mixin "+aMixin.getName()+" on node "+destinationNode.getPath());
                 destinationNode.removeMixin(aMixin.getName());
             }
         }
@@ -364,6 +375,7 @@ public class JCRVersionService extends JahiaService {
             while (ni.hasNext()) {
                 JCRNodeWrapper oldChild = (JCRNodeWrapper) ni.next();
                 if (!names.contains(oldChild.getName())) {
+                    logger.info("Removing node "+oldChild.getName()+" on node "+destinationNode.getPath());
                     oldChild.remove();
                 }
             }
@@ -376,6 +388,7 @@ public class JCRVersionService extends JahiaService {
                 previous = name;
             }
         }
+        destinationNode.setProperty(Constants.JCR_LASTMODIFIED,GregorianCalendar.getInstance());
     }
 
     public static Version findVersionByLabel(VersionHistory vh, String label) throws RepositoryException {

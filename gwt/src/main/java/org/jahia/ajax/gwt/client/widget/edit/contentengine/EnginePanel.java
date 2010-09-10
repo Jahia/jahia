@@ -32,23 +32,23 @@
 
 package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.ModalPanel;
-import com.extjs.gxt.ui.client.widget.button.ButtonBar;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.user.client.Element;
-import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
+import com.extjs.gxt.ui.client.GXT;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.ModalPanel;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.user.client.Element;
+
 /**
- * Created by IntelliJ IDEA.
+ * Represents the edit engine panel.
  * User: toto
  * Date: Aug 2, 2010
  * Time: 4:04:33 PM
- * To change this template use File | Settings | File Templates.
  */
 public class EnginePanel extends ContentPanel implements EngineContainer {
-    private AbstractContentEngine engine;
+	
+    private EditLinker linker;
     private ModalPanel modalPanel;
 
     public EnginePanel() {
@@ -61,31 +61,41 @@ public class EnginePanel extends ContentPanel implements EngineContainer {
     }
 
     public void setEngine(AbstractContentEngine engine) {
-        this.engine = engine;
+        linker = (EditLinker) engine.getLinker();
         add(engine);
     }
 
     public void showEngine() {
+    	if (GXT.isIE) {
+	    	linker.getToolbar().mask();
+	    	linker.getSidePanel().mask();
+    	}
+    	
+    	linker.replaceMainAreaComponent(this);
+    }
 
-        ((EditLinker)engine.getLinker()).replaceMainAreaComponent(this);
-
+    public void closeEngine() {
+    	if (!GXT.isIE) {
+            ModalPanel.push(modalPanel);
+            modalPanel = null;
+    	} else {
+        	linker.getToolbar().unmask();
+        	linker.getSidePanel().unmask();
+    	}
+    	
+    	linker.restoreMainArea();
     }
 
     protected void onRender(Element parent, int pos) {
         super.onRender(parent, pos);
 
-        setZIndex(1040);
-        modalPanel = ModalPanel.pop();
-        modalPanel.setBlink(false);
-        modalPanel.show(this);
+        if (!GXT.isIE) {
+	        el().updateZIndex(0);
+	        modalPanel = ModalPanel.pop();
+	        modalPanel.setBlink(false);
+	        modalPanel.show(this);
+        }
 
-    }
-
-    public void closeEngine() {
-        ModalPanel.push(modalPanel);
-        modalPanel = null;
-
-        ((EditLinker)engine.getLinker()).restoreMainArea();
     }
 
 }

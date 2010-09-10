@@ -65,9 +65,10 @@ public class GWTJahiaWorkflowHistoryProcess extends GWTJahiaWorkflowHistoryItem 
      * @param workflowStartUser
      */
     public GWTJahiaWorkflowHistoryProcess(String name, String displayName, String processId, String provider, String definitionKey, boolean finished, Date startDate, Date endDate, Long duration,
-                                          String workflowStartUser) {
+                                          String workflowStartUser, String nodeId) {
         super(processId, name, displayName, processId,provider, finished, workflowStartUser, startDate, endDate, duration);
         setDefinitionKey(definitionKey);
+        setNodeId(nodeId);
     }
 
     public String getDefinitionKey() {
@@ -76,6 +77,14 @@ public class GWTJahiaWorkflowHistoryProcess extends GWTJahiaWorkflowHistoryItem 
 
     public void setDefinitionKey(String definitionKey) {
         set("definitionKey", definitionKey);
+    }
+
+    public String getNodeId() {
+        return get("nodeId");
+    }
+
+    public void setNodeId(String nodeId) {
+        set("nodeId", nodeId);
     }
 
 

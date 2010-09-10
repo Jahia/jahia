@@ -65,6 +65,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAs
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.edit.PublicationWorkflow;
 import org.jahia.ajax.gwt.client.widget.edit.workflow.dialog.WorkflowActionDialog;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 
@@ -236,11 +237,16 @@ public class PublicationManagerEngine extends Window {
                         infoList.addAll(jahiaNode.getFullPublicationInfos().get(language));
                     }
 
-                    WorkflowActionDialog workflowActionDialog = new WorkflowActionDialog(node,
-                                                                                         workflowDefinitionMap.get(
-                                                                                                 definition),
-                                                                                         identifiers, false, linker,
-                                                                                         language, infoList);
+                    // Start publication workflow
+                    WorkflowActionDialog workflowActionDialog = new WorkflowActionDialog(node, linker);
+                    workflowActionDialog.setCustom(new PublicationWorkflow(infoList, identifiers, false, language));
+                    workflowActionDialog.initStartWorkflowDialog(workflowDefinitionMap.get(definition));
+                    workflowActionDialog.show();
+//                    WorkflowActionDialog workflowActionDialog = new WorkflowActionDialog(node,
+//                                                                                         workflowDefinitionMap.get(
+//                                                                                                 definition),
+//                                                                                         identifiers, false, linker,
+//                                                                                         language, infoList);
                     workflowActionDialog.addWindowListener(new WindowListener() {
                         @Override
                         public void windowHide(WindowEvent we) {
@@ -326,7 +332,7 @@ public class PublicationManagerEngine extends Window {
             if (wfStatus) {
                 // is there a workflow started
                 GWTJahiaWorkflowInfo info = node.getWorkflowInfos().get(getDataIndex());
-                if (info.getAvailableActions().size() > 0) {
+                if (info.getActiveWorkflows().size() > 0) {
                     state = GWTJahiaPublicationInfo.LOCKED;
                 }
             }

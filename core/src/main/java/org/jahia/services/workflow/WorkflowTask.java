@@ -56,7 +56,6 @@ public class WorkflowTask extends WorkflowAction {
     private List<WorkflowParticipation> participations;
     private String formResourceName;
     private List<WorkflowTaskComment> taskComments;
-    private Map<String, Object> variables;
     private String processId;
     private List<String> displayOutcomes;
 
@@ -134,14 +133,6 @@ public class WorkflowTask extends WorkflowAction {
 
     public List<WorkflowTaskComment> getTaskComments() {
         return taskComments;
-    }
-
-    public void setVariables(Map<String, Object> variables) {
-        this.variables = variables;
-    }
-
-    public Map<String, Object> getVariables() {
-        return variables;
     }
 
     public void setProcessId(String processId) {

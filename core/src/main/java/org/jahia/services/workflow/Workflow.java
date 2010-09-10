@@ -33,6 +33,7 @@
 package org.jahia.services.workflow;
 
 import java.util.Date;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -48,6 +49,7 @@ public class Workflow extends WorkflowBase {
     private Set<WorkflowAction> availableActions;
     private Date duedate = null;
     private WorkflowDefinition workflowDefinition;
+    private Map<String, Object> variables;
 
     public Workflow(String name, String id, String provider) {
         super(name, provider);
@@ -96,5 +98,13 @@ public class Workflow extends WorkflowBase {
 
     public void setWorkflowDefinition(WorkflowDefinition workflowDefinition) {
         this.workflowDefinition = workflowDefinition;
+    }
+
+    public Map<String, Object> getVariables() {
+        return variables;
+    }
+
+    public void setVariables(Map<String, Object> variables) {
+        this.variables = variables;
     }
 }

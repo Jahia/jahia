@@ -45,8 +45,7 @@ import java.util.List;
  */
 public class GWTJahiaWorkflowInfo implements Serializable {
     private List<GWTJahiaWorkflowDefinition> possibleWorkflows;
-    private List<GWTJahiaWorkflowTask> availableTasks;
-    private Date duedate;
+    private List<GWTJahiaWorkflow> activeWorkflows;
     public GWTJahiaWorkflowInfo() {
     }
 
@@ -58,19 +57,11 @@ public class GWTJahiaWorkflowInfo implements Serializable {
         this.possibleWorkflows = possibleWorkflows;
     }
 
-    public List<GWTJahiaWorkflowTask> getAvailableActions() {
-        return availableTasks;
+    public List<GWTJahiaWorkflow> getActiveWorkflows() {
+        return activeWorkflows;
     }
 
-    public void setAvailableActions(List<GWTJahiaWorkflowTask> availableTasks) {
-        this.availableTasks = availableTasks;
-    }
-
-    public Date getDuedate() {
-        return duedate;
-    }
-
-    public void setDuedate(Date duedate) {
-        this.duedate = duedate;
+    public void setActiveWorkflows(List<GWTJahiaWorkflow> activeWorkflows) {
+        this.activeWorkflows = activeWorkflows;
     }
 }

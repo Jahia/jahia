@@ -679,25 +679,8 @@ public class WorkflowService {
     public List<HistoryWorkflow> getHistoryWorkflows(JCRNodeWrapper node, Locale locale) {
         List<HistoryWorkflow> history = new LinkedList<HistoryWorkflow>();
         try {
-            Value[] values = null;
-            if (node.isNodeType(Constants.JAHIAMIX_WORKFLOW) && node.hasProperty(Constants.PROCESSID)) {
-                values = node.getProperty(Constants.PROCESSID).getValues();
-            }
-            if (values != null) {
-                for (Map.Entry<String, WorkflowProvider> entry : providers.entrySet()) {
-                    final List<String> processIds = new LinkedList<String>();
-                    for (Value value : values) {
-                        String key = value.getString();
-                        String processId = StringUtils.substringAfter(key, ":");
-                        String providerKey = StringUtils.substringBefore(key, ":");
-                        if (providerKey.equals(entry.getKey())) {
-                            processIds.add(processId);
-                        }
-                    }
-                    if (!processIds.isEmpty()) {
-                        history.addAll(entry.getValue().getHistoryWorkflows(processIds));
-                    }
-                }
+            for (WorkflowProvider workflowProvider : providers.values()) {
+                history.addAll(workflowProvider.getHistoryWorkflowsForNode(node.getIdentifier()));
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

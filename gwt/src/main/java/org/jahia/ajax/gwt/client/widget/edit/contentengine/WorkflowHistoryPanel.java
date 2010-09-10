@@ -35,21 +35,24 @@ package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowTask;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryItem;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryProcess;
+import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryTask;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.Formatter;
 
-import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.data.BaseTreeLoader;
-import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.data.TreeLoader;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.TreeStore;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
@@ -59,9 +62,11 @@ import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
+import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.edit.workflow.dialog.WorkflowActionDialog;
+import org.jahia.ajax.gwt.client.widget.workflow.WorkflowDashboardEngine;
 
 /**
  * GWT panel that displays a list of workflow process and task history records.
@@ -70,26 +75,40 @@ import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
  */
 public class WorkflowHistoryPanel extends LayoutContainer {
 
+    private WorkflowDashboardEngine engine;
+    private boolean dashboard = false;
+
+    private Linker linker;
+
+    private String nodeId;
+    private String locale;
+
     /**
      * Initializes an instance of this class.
      * 
      * @param nodeId
      * @param locale
      */
-    public WorkflowHistoryPanel(String nodeId, String locale) {
+    public WorkflowHistoryPanel(final String nodeId, final String locale) {
         super(new FitLayout());
+
         this.nodeId = nodeId;
         this.locale = locale;
+        init();
     }
 
-    private String nodeId;
-    private String locale;
+    public WorkflowHistoryPanel(WorkflowDashboardEngine engine, Linker linker) {
+        super(new FitLayout());
 
-    @Override
-    protected void onRender(Element parent, int index) {
-        super.onRender(parent, index);
-        setHeight(610);
+        dashboard = true;
+        this.linker = linker;
+        this.engine = engine;
+        init();
+    }
 
+
+    private void init() {
+        setBorders(false);
         final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
 
         // data proxy
@@ -97,7 +116,11 @@ public class WorkflowHistoryPanel extends LayoutContainer {
             @Override
             protected void load(Object loadConfig, AsyncCallback<List<GWTJahiaWorkflowHistoryItem>> callback) {
                 if (loadConfig == null) {
-                    service.getWorkflowHistoryProcesses(nodeId, locale, callback);
+                    if (dashboard) {
+                        service.getWorkflowHistoryForUser(callback);
+                    } else {
+                        service.getWorkflowHistoryProcesses(nodeId, locale, callback);
+                    }
                 } else if (loadConfig instanceof GWTJahiaWorkflowHistoryProcess) {
                     final GWTJahiaWorkflowHistoryProcess process = (GWTJahiaWorkflowHistoryProcess) loadConfig;
                     service.getWorkflowHistoryTasks(process.getProvider(), process.getProcessId(), locale, callback);
@@ -130,7 +153,7 @@ public class WorkflowHistoryPanel extends LayoutContainer {
         column = new ColumnConfig("startDate", Messages.get("org.jahia.engines.processDisplay.tab.startdate", "Start date"), 100);
         column.setDateTimeFormat(Formatter.DEFAULT_DATETIME_FORMAT);
         config.add(column);
-
+        if (!dashboard) {
         column = new ColumnConfig("endDate", Messages.get("org.jahia.engines.processDisplay.tab.enddate", "End date"), 100);
         column.setDateTimeFormat(Formatter.DEFAULT_DATETIME_FORMAT);
         config.add(column);
@@ -160,17 +183,39 @@ public class WorkflowHistoryPanel extends LayoutContainer {
             }
         });
         config.add(column);
+        }
+        if (dashboard) {
+            column = new ColumnConfig("action", Messages.get("label.action", "Action"), 100);
+            column.setRenderer(new GridCellRenderer<GWTJahiaWorkflowHistoryItem>() {
+                public Object render(GWTJahiaWorkflowHistoryItem historyItem, String property, ColumnData config, int rowIndex,
+                        int colIndex, ListStore<GWTJahiaWorkflowHistoryItem> store, Grid<GWTJahiaWorkflowHistoryItem> grid) {
+                    if (historyItem instanceof GWTJahiaWorkflowHistoryTask) {
+                        final GWTJahiaWorkflowHistoryProcess parent = (GWTJahiaWorkflowHistoryProcess) ((TreeGrid) grid).getTreeStore().getParent(historyItem);
+                        for (final GWTJahiaWorkflowTask task : parent.getAvailableTasks()) {
+                            if (task.getId().equals(historyItem.getId())) {
+                                Button b = new Button("Execute");
+                                b.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                                    public void componentSelected(ButtonEvent ce) {
+                                        WorkflowActionDialog dialog = new WorkflowActionDialog((GWTJahiaNode) parent.get("node"), linker);
+                                        dialog.initExecuteActionDialog(task);
+                                        dialog.show();
+                                        engine.hide();
+                                    }
+                                });
+                                return b;
+                            }
+                        }
+                    }
+                    return "";
+                }
+            });
+
+            config.add(column);
+        }
 
         ColumnModel cm = new ColumnModel(config);
 
-        ContentPanel cp = new ContentPanel();
-        cp.setBodyBorder(false);
-        cp.setHeaderVisible(false);
-        cp.setButtonAlign(HorizontalAlignment.CENTER);
-        cp.setLayout(new FitLayout());
-        cp.setFrame(true);
-
-        TreeGrid<ModelData> tree = new TreeGrid<ModelData>(store, cm);
+        TreeGrid<GWTJahiaWorkflowHistoryItem> tree = new TreeGrid<GWTJahiaWorkflowHistoryItem>(store, cm);
         tree.setStateful(true);
         tree.setBorders(true);
         tree.getStyle().setNodeOpenIcon(StandardIconsProvider.STANDARD_ICONS.workflow());
@@ -178,9 +223,7 @@ public class WorkflowHistoryPanel extends LayoutContainer {
         tree.getStyle().setLeafIcon(StandardIconsProvider.STANDARD_ICONS.workflowTask());
         tree.setAutoExpandColumn("displayName");
         tree.setTrackMouseOver(false);
-        cp.add(tree);
-
-        add(cp);
+        add(tree);
     }
 
 }

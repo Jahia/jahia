@@ -53,10 +53,7 @@ import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowTask;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowOutcome;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowTaskComment;
+import org.jahia.ajax.gwt.client.data.workflow.*;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryItem;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryProcess;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryTask;
@@ -258,9 +255,9 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     GWTJahiaNode generateWar(String moduleName) throws GWTJahiaServiceException;
 
-    void addCommentToTask(GWTJahiaWorkflowTask task, String comment);
+    void addCommentToWorkflow(GWTJahiaWorkflow task, String comment);
 
-    List<GWTJahiaWorkflowTaskComment> getTaskComments(GWTJahiaWorkflowTask task);
+    List<GWTJahiaWorkflowTaskComment> getTaskComments(GWTJahiaWorkflow task);
 
     public List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryProcesses(String nodeId,
                                                                      String locale) throws GWTJahiaServiceException ;
@@ -268,7 +265,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
     public List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryTasks(String provider , String processId,
                                                                      String locale) throws GWTJahiaServiceException;
 
-    List<GWTJahiaWorkflowTask>  getTasksForUser() throws GWTJahiaServiceException;
+    List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryForUser() throws GWTJahiaServiceException;
 
     public Integer isValidSession()  throws GWTJahiaServiceException;
 

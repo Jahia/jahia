@@ -57,10 +57,7 @@ import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowTask;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowOutcome;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowTaskComment;
+import org.jahia.ajax.gwt.client.data.workflow.*;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryItem;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryProcess;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryTask;
@@ -263,16 +260,16 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void generateWar(String moduleName, AsyncCallback<GWTJahiaNode> asyncCallback);
 
-    void addCommentToTask(GWTJahiaWorkflowTask task, String comment,
+    void addCommentToWorkflow(GWTJahiaWorkflow task, String comment,
                           AsyncCallback asyncCallback);
 
-    void getTaskComments(GWTJahiaWorkflowTask task, AsyncCallback<List<GWTJahiaWorkflowTaskComment>> async);
+    void getTaskComments(GWTJahiaWorkflow task, AsyncCallback<List<GWTJahiaWorkflowTaskComment>> async);
 
     public void getWorkflowHistoryProcesses(String nodeId, String locale, AsyncCallback<List<GWTJahiaWorkflowHistoryItem>> async);
 
     public void getWorkflowHistoryTasks(String provider , String processId, String locale, AsyncCallback<List<GWTJahiaWorkflowHistoryItem>> async);
 
-    void getTasksForUser(AsyncCallback<List<GWTJahiaWorkflowTask>> async);
+    void getWorkflowHistoryForUser(AsyncCallback<List<GWTJahiaWorkflowHistoryItem>> async);
 
     void isValidSession(AsyncCallback<Integer> async)  throws GWTJahiaServiceException;
 

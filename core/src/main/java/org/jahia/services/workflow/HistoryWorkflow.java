@@ -45,6 +45,8 @@ public class HistoryWorkflow extends HistoryWorkflowBase {
 
     private WorkflowDefinition workflowDefinition;
 
+    private String nodeId;
+
     /**
      * Initializes an instance of this class.
      * 
@@ -57,9 +59,10 @@ public class HistoryWorkflow extends HistoryWorkflowBase {
      *            if it is not completed yet
      * @param endActivityName the name of the last activity
      */
-    public HistoryWorkflow(String id, WorkflowDefinition workflowDefinition, String name, String provider, String user, Date startTime, Date endTime, String endActivityName) {
+    public HistoryWorkflow(String id, WorkflowDefinition workflowDefinition, String name, String provider, String user, Date startTime, Date endTime, String endActivityName, String nodeId) {
         super(id, name, provider, user, startTime, endTime);
         setWorkflowDefinition(workflowDefinition);
+        setNodeId(nodeId);
         this.endActivityName = endActivityName;
     }
 
@@ -77,5 +80,13 @@ public class HistoryWorkflow extends HistoryWorkflowBase {
 
     public void setWorkflowDefinition(WorkflowDefinition workflowDefinition) {
         this.workflowDefinition = workflowDefinition;
+    }
+
+    public String getNodeId() {
+        return nodeId;
+    }
+
+    public void setNodeId(String nodeId) {
+        this.nodeId = nodeId;
     }
 }

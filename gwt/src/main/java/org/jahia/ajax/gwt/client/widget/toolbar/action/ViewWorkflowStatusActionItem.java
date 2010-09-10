@@ -101,16 +101,15 @@ public class ViewWorkflowStatusActionItem extends ViewStatusActionItem {
         for (Module module : list) {
             if (module.getNode() != null) {
                 GWTJahiaWorkflowInfo info = module.getNode().getWorkflowInfo();
-                if (info.getAvailableActions().size()>0) {
-                    String current = info.getAvailableActions().get(0).getName();
+                if (info.getActiveWorkflows().size()>0) {
+                    String current = info.getActiveWorkflows().get(0).getDefinition().getName();
                     allPublished = false;
                     addInfoLayer(module, "Workflow(s) started : "+current, "red", "red", left, top, right, bottom, removeListener, true,
                             "0.7");
-                }
-                else if (info.getDuedate()!=null) {
-                    allPublished = false;
-                    addInfoLayer(module, "Workflow(s) is waiting for timer.<br/>Will be triggered at : "+ DateTimeFormat.getMediumDateTimeFormat().format(info.getDuedate()), 
-                                 "red", "red", left, top, right, bottom, removeListener, true, "0.7");
+//                } else if (info.getDuedate()!=null) {
+//                    allPublished = false;
+//                    addInfoLayer(module, "Workflow(s) is waiting for timer.<br/>Will be triggered at : "+ DateTimeFormat.getMediumDateTimeFormat().format(info.getDuedate()),
+//                                 "red", "red", left, top, right, bottom, removeListener, true, "0.7");
                 }
             }
         }

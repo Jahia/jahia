@@ -33,8 +33,10 @@
 package org.jahia.ajax.gwt.client.data.workflow.history;
 
 import java.util.Date;
+import java.util.List;
 
 import com.extjs.gxt.ui.client.data.BaseTreeModel;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowTask;
 
 /**
  * Represents a history record with a workflow process instance.
@@ -44,6 +46,8 @@ import com.extjs.gxt.ui.client.data.BaseTreeModel;
 public class GWTJahiaWorkflowHistoryItem extends BaseTreeModel {
 
     private static final long serialVersionUID = 3266320499313875823L;
+
+    private List<GWTJahiaWorkflowTask> availableTasks;
 
     /**
      * Initializes an instance of this class.
@@ -86,6 +90,10 @@ public class GWTJahiaWorkflowHistoryItem extends BaseTreeModel {
         return get("id");
     }
 
+    public void setId(String id) {
+        set("id", id);
+    }
+
     /**
      * @return the duration
      */
@@ -93,13 +101,29 @@ public class GWTJahiaWorkflowHistoryItem extends BaseTreeModel {
         return get("duration");
     }
 
+    /**
+     * @param duration the duration to set
+     */
+    public void setDuration(Long duration) {
+        set("duration", duration);
+    }
+
     public String getDisplayName() {
         return get("displayName");
+    }
+
+    public void setDisplayName(String displayName) {
+        set("displayName", displayName);
     }
 
     public String getName() {
         return get("name");
     }
+
+    public void setName(String name) {
+        set("name", name);
+    }
+
 
     /**
      * @return the endDate
@@ -109,15 +133,38 @@ public class GWTJahiaWorkflowHistoryItem extends BaseTreeModel {
     }
 
     /**
+     * @param endDate the endDate to set
+     */
+    public void setEndDate(Date endDate) {
+        set("endDate", endDate);
+    }
+
+
+
+    /**
      * @return the processId
      */
     public String getProcessId() {
         return get("processId");
     }
 
+    /**
+     * @param processId the processId to set
+     */
+    public void setProcessId(String processId) {
+        set("processId", processId);
+    }
+
+
     public String getProvider() {
         return get("provider");
     }
+
+    public void setProvider(String provider) {
+        set("provider", provider);
+    }
+
+
 
     /**
      * @return the startDate
@@ -126,8 +173,20 @@ public class GWTJahiaWorkflowHistoryItem extends BaseTreeModel {
         return get("startDate");
     }
 
+    /**
+     * @param startDate the startDate to set
+     */
+    public void setStartDate(Date startDate) {
+        set("startDate", startDate);
+    }
+
+
     public String getUser() {
         return get("user");
+    }
+
+    public void setUser(String user) {
+        set("user", user);
     }
 
     /**
@@ -138,32 +197,6 @@ public class GWTJahiaWorkflowHistoryItem extends BaseTreeModel {
         return finished != null && finished;
     }
 
-    public void setId(String id) {
-        set("id", id);
-    }
-
-    public void setName(String name) {
-        set("name", name);
-    }
-
-    public void setDisplayName(String displayName) {
-        set("displayName", displayName);
-    }
-
-    /**
-     * @param duration the duration to set
-     */
-    public void setDuration(Long duration) {
-        set("duration", duration);
-    }
-
-    /**
-     * @param endDate the endDate to set
-     */
-    public void setEndDate(Date endDate) {
-        set("endDate", endDate);
-    }
-
     /**
      * @param finished the finished to set
      */
@@ -171,24 +204,11 @@ public class GWTJahiaWorkflowHistoryItem extends BaseTreeModel {
         set("finished", Boolean.valueOf(finished));
     }
 
-    /**
-     * @param processId the processId to set
-     */
-    public void setProcessId(String processId) {
-        set("processId", processId);
+    public List<GWTJahiaWorkflowTask> getAvailableTasks() {
+        return availableTasks;
     }
 
-    public void setProvider(String provider) {
-        set("provider", provider);
-    }
-    /**
-     * @param startDate the startDate to set
-     */
-    public void setStartDate(Date startDate) {
-        set("startDate", startDate);
-    }
-
-    public void setUser(String user) {
-        set("user", user);
+    public void setAvailableTasks(List<GWTJahiaWorkflowTask> availableTasks) {
+        this.availableTasks = availableTasks;
     }
 }

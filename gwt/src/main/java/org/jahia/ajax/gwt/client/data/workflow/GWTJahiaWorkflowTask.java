@@ -50,8 +50,6 @@ import java.util.Map;
 public class GWTJahiaWorkflowTask extends BaseModelData implements Serializable {
     private List<GWTJahiaWorkflowOutcome> outcomes;
     private List<GWTJahiaWorkflowTaskComment> taskComments;
-    private Map<String, GWTJahiaNodeProperty> variables;
-    private transient Map<String,Object> originalVariables;
 
     public GWTJahiaWorkflowTask() {
     }
@@ -104,44 +102,12 @@ public class GWTJahiaWorkflowTask extends BaseModelData implements Serializable 
         return get("formResourceName");
     }
 
-    public void setVariables(Map<String, GWTJahiaNodeProperty> variables) {
-        this.variables = variables;
-    }
-
-    public Map<String, GWTJahiaNodeProperty> getVariables() {
-        return variables;
-    }
-
-    public Map<String, Object> getOriginalVariables() {
-        return originalVariables;
-    }
-
-    public void setOriginalVariables(Map<String, Object> originalVariables) {
-        this.originalVariables = originalVariables;
-    }
-
     public void setCreateTime(Date createTime) {
         set("createTime",createTime);
     }
     
     public Date getCreateTime() {
         return get("createTime");
-    }
-
-    public void setLocale(String locale) {
-        set("locale",locale);
-    }
-
-    public String getLocale() {
-        return get("locale");
-    }
-
-    public void setWorkspace(String workspace) {
-        set("workspace",workspace);
-    }
-
-    public String getWorkspace() {
-        return get("workspace");
     }
 
     public void setProcessId(String processId) {

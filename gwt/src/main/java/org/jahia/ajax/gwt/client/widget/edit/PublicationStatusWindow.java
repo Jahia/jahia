@@ -167,7 +167,12 @@ class PublicationStatusWindow extends Window {
                                 });
             } else {
                 hide();
-                new WorkflowActionDialog(selectedNode, gwtJahiaWorkflowDefinition, uuids, allSubTree, linker,selectedNode.getLanguageCode(),infos).show();
+                // Start Publication workflow
+                WorkflowActionDialog wad = new WorkflowActionDialog(selectedNode, linker);
+                wad.setCustom(new PublicationWorkflow(infos, uuids, allSubTree, selectedNode.getLanguageCode()));
+                wad.initStartWorkflowDialog(gwtJahiaWorkflowDefinition);
+                wad.show();
+                
             }
         }
     }

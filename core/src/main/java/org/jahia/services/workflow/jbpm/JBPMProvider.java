@@ -51,6 +51,7 @@ import org.jbpm.jpdl.internal.activity.TaskActivity;
 import org.jbpm.jpdl.internal.model.JpdlProcessDefinition;
 import org.jbpm.api.model.Activity;
 import org.jbpm.pvm.internal.model.ActivityImpl;
+import org.jbpm.pvm.internal.svc.HistoryServiceImpl;
 import org.jbpm.pvm.internal.task.TaskDefinitionImpl;
 import org.jbpm.pvm.internal.wire.usercode.UserCodeActivityBehaviour;
 import org.springframework.beans.factory.InitializingBean;
@@ -298,6 +299,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
     public String startProcess(String processKey, Map<String, Object> args) {
         String res = executionService.startProcessInstanceByKey(processKey, args).getId();
         executionService.createVariable(res, "user", args.get("user"), true);
+        executionService.createVariable(res, "nodeId", args.get("nodeId"), true);
         return res;
     }
 
@@ -380,6 +382,10 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         workflow.setStartTime(historyService.createHistoryProcessInstanceQuery().processInstanceId(instance.getId()).orderAsc(HistoryProcessInstanceQuery.PROPERTY_STARTTIME).uniqueResult().getStartTime());
         
         workflow.setStartUser(executionService.getVariable(instance.getId(), "user").toString());
+
+        Set<String> variableNames = executionService.getVariableNames(instance.getId());
+        workflow.setVariables(executionService.getVariables(instance.getId(), variableNames));
+
         return workflow;
     }
 
@@ -431,8 +437,8 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         }
         action.setTaskComments(comments);
         // Get Tasks variables
-        Set<String> variableNames = taskService.getVariableNames(task.getId());
-        action.setVariables(taskService.getVariables(task.getId(), variableNames));
+//        Set<String> variableNames = taskService.getVariableNames(task.getId());
+//        action.setVariables(taskService.getVariables(task.getId(), variableNames));
         final ProcessInstance instance = executionService.findProcessInstanceById(task.getExecutionId());
         if (instance != null) {
             final WorkflowDefinition definition = getWorkflowDefinitionById(instance.getProcessDefinitionId());
@@ -536,6 +542,43 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         return "";
     }
 
+    public List<HistoryWorkflow> getHistoryWorkflowsForNode(String nodeId) {
+        HistoryProcessInstanceByVariableQuery q = new HistoryProcessInstanceByVariableQuery();
+        q.setCommandService(((HistoryServiceImpl) historyService).getCommandService());
+        q.variable("nodeId",nodeId);
+        List<HistoryProcessInstance> list = q.list();
+
+        List<HistoryWorkflow> historyItems = new LinkedList<HistoryWorkflow>();
+        Map<String, String> processDefIdToKeyMapping = new HashMap<String, String>(1);
+
+        for (HistoryProcessInstance jbpmHistoryItem : list) {
+            String processDefKey = processDefIdToKeyMapping.get(jbpmHistoryItem.getProcessDefinitionId());
+
+            ProcessDefinition def = null;
+            if (processDefKey == null) {
+                def = repositoryService.createProcessDefinitionQuery()
+                        .processDefinitionId(jbpmHistoryItem.getProcessDefinitionId()).uniqueResult();
+                if (def != null) {
+                    processDefKey = def.getKey();
+                    processDefIdToKeyMapping.put(jbpmHistoryItem.getProcessDefinitionId(), processDefKey);
+                } else {
+                    logger.warn("Cannot find process definition by ID " + jbpmHistoryItem.getProcessDefinitionId());
+                }
+            }
+            final String startUser =
+                    (String) historyService.getVariable(jbpmHistoryItem.getProcessInstanceId(), "user");
+
+            historyItems.add(new HistoryWorkflow(jbpmHistoryItem.getProcessInstanceId(),
+                    def != null ? new WorkflowDefinition(def.getName(), def.getKey(), this.key) : null,
+                    def != null ? def.getName() : null, getKey(), startUser, jbpmHistoryItem.getStartTime(), jbpmHistoryItem.getEndTime(),
+                    jbpmHistoryItem.getEndActivityName(), nodeId));
+
+        }
+
+        return historyItems;
+    }
+
+
     /**
      * Returns a list of process instance history records for the specified
      * process IDs. This method also returns "active" (i.e. not completed)
@@ -577,11 +620,13 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
             }
             final String startUser =
                     (String) historyService.getVariable(jbpmHistoryItem.getProcessInstanceId(), "user");
+            final String nodeId =
+                    (String) historyService.getVariable(jbpmHistoryItem.getProcessInstanceId(), "nodeId");
 
             historyItems.add(new HistoryWorkflow(jbpmHistoryItem.getProcessInstanceId(),
                     def != null ? new WorkflowDefinition(def.getName(), def.getKey(), this.key) : null,
                     def != null ? def.getName() : null, getKey(), startUser, jbpmHistoryItem.getStartTime(), jbpmHistoryItem.getEndTime(),
-                    jbpmHistoryItem.getEndActivityName()));
+                    jbpmHistoryItem.getEndActivityName(), nodeId));
 
         }
 

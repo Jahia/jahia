@@ -102,7 +102,10 @@ public class WorkflowActionItem extends BaseActionItem {
                             public void componentSelected(MenuEvent ce) {
                                 String formResourceName = wf.getFormResourceName();
                                 if (formResourceName!=null && !"".equals(formResourceName)) {
-                                    new WorkflowActionDialog(node, wf, linker).show();
+                                    // Start workflow
+                                    WorkflowActionDialog wad = new WorkflowActionDialog(node, linker);
+                                    wad.initStartWorkflowDialog(wf);
+                                    wad.show();
                                 } else {
                                     JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
                                     async.startWorkflow(node.getPath(), wf,new ArrayList<GWTJahiaNodeProperty>(), new BaseAsyncCallback() {

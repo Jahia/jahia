@@ -34,8 +34,6 @@ package org.jahia.ajax.gwt.client.util;
 
 import com.extjs.gxt.ui.client.GXT;
 
-import org.jahia.ajax.gwt.client.core.JavaScriptApi;
-import org.jahia.ajax.gwt.client.core.OnLoadHandler;
 import org.jahia.ajax.gwt.client.widget.WorkInProgress;
 
 /**
@@ -47,7 +45,5 @@ public class JahiaGWT {
     public static void init() {
         GXT.init();
         WorkInProgress.init();
-        JavaScriptApi.init();
-        OnLoadHandler.init();
     }
 }

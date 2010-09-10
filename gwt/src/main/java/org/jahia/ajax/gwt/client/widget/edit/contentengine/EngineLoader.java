@@ -41,6 +41,7 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Hover;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Selection;
+import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem.SidePanelLinker;
 
 import java.util.Map;
 
@@ -75,7 +76,7 @@ public class EngineLoader {
 
                 EngineContainer container;
 
-                if (linker instanceof EditLinker) {
+                if (linker instanceof EditLinker || linker instanceof SidePanelLinker) {
                     container = new EnginePanel();
                 } else {
                     container = new EngineWindow();

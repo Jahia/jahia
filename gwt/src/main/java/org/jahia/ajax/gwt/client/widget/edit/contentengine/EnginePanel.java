@@ -33,6 +33,7 @@
 package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem.SidePanelLinker;
 
 import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -61,7 +62,7 @@ public class EnginePanel extends ContentPanel implements EngineContainer {
     }
 
     public void setEngine(AbstractContentEngine engine) {
-        linker = (EditLinker) engine.getLinker();
+        linker = engine.getLinker() instanceof EditLinker ? (EditLinker) engine.getLinker() : ((SidePanelLinker) engine.getLinker()).getEditLinker();
         add(engine);
     }
 

@@ -24,6 +24,7 @@
 	width: 16px;
 	height: 15px;
 	display: block;
+	line-height:15px;
 	background: url(ui.stars.gif) no-repeat 0 0;
 }
 .ui-stars-star a {
@@ -60,6 +61,4 @@
 }
 .rating-R {
 	float: left;
-	margin-left: 1em;
-	width: 300px;
 }

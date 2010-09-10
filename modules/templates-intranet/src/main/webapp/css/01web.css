@@ -559,10 +559,12 @@ body {
 }
 #bodywrapper .itemImage img {
 	background-color:#e1e1e1;
+	display: block;
 	padding:9px;
 }
 #bodywrapper .itemImagewhite img{
 	background-color:#fff;
+	display: block;
 }
 /******************************************************************************
 *  Pagination

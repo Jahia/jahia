@@ -3,6 +3,7 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
@@ -16,8 +17,8 @@
  <head>
 	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
-	<title>${renderContext.mainResource.node.properties['jcr:title'].string}</title>
+	<c:set var="pageTitle" value="${renderContext.mainResource.node.propertiesAsString['jcr:title']}"/>
+	<title>${fn:escapeXml(not empty pageTitle ? pageTitle : renderContext.mainResource.node.name)}</title>
     <link rel="stylesheet" type="text/css" href="${url.currentModule}/css/print.css" media="print" />
  </head>
 

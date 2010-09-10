@@ -105,9 +105,7 @@
             </form>
         </div>
 
-
-        <div class="rating-R"><strong><fmt:message key="label.rateThis"/>:</strong> <span id="caption${id}"></span>
-
+		<div class="rating-R"><strong><fmt:message key="label.rateThis"/>:</strong> <span id="caption${id}"></span>
             <form id="rat${id}" action="${url.base}${bindedComponent.path}" method="post">
                 <select name="j:lastVote">
                     <option value="1"><fmt:message key="label.rateThis.poor"/></option>
@@ -119,8 +117,7 @@
                 <input type="submit" value="Rate it!"/>
             </form>
         </div>
-    </div>
-
+        
     </div>
 </c:if>
 

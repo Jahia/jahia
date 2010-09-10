@@ -100,7 +100,7 @@ public class SidePanelTabItem extends TabItem {
         return null;
     }
 
-    class SidePanelLinker implements Linker {
+    public class SidePanelLinker implements Linker {
 
         private AbstractStoreSelectionModel<GWTJahiaNode> selectionModel;
 
@@ -157,6 +157,10 @@ public class SidePanelTabItem extends TabItem {
 
         public GWTConfiguration getConfig() {
             return editLinker.getConfig();
+        }
+        
+        public EditLinker getEditLinker() {
+        	return editLinker;
         }
     }
 

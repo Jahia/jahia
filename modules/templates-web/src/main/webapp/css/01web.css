@@ -44,18 +44,22 @@ body {
 
 #bodywrapper .floatright {
 	float:right;
+	position:relative;
 	margin: 5px;
 }
 #bodywrapper .floatleft {
 	float:left;
+	position:relative;
 	margin: 5px;
 }
 
 #bodywrapper .leftside{
-	float:left
+	float:left;
+	position:relative;
 }
 #bodywrapper .rightside{
-	float: right
+	float: right;
+	position:relative;
 }
 #bodywrapper .clearMaringPadding{
 	padding:0;
@@ -602,10 +606,12 @@ body {
 ******************************************************************************/
 #bodywrapper div.thumbnail {
 	float:left;
+	position:relative;
 	margin-right:20px;
 }
 #bodywrapper div.thumbnailRight {
 	float:right;
+	position:relative;
 	margin-left:20px;
 }
 #bodywrapper div.thumbnail img {

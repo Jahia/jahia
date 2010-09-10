@@ -361,8 +361,14 @@ public class JCRVersionService extends JahiaService {
                 JCRNodeWrapper node = destinationNode.getNode(child.getName());
                 synchronizeNode(child, node, session, doRemove);
             } else {
-                Version byLabel = findVersionByLabel((VersionHistory) child.getRealNode().getProperty(
-                        Constants.JCR_VERSIONHISTORY).getNode(), ((JCRFrozenNodeAsRegular) child).getVersionLabel());
+                VersionHistory history;
+                try {
+                    history = (VersionHistory) child.getRealNode().getProperty(
+                            Constants.JCR_VERSIONHISTORY).getNode();
+                } catch (RepositoryException e){
+                    history = (VersionHistory) child.getRealNode().getParent().getParent();
+                }
+                Version byLabel = findVersionByLabel(history, ((JCRFrozenNodeAsRegular) child).getVersionLabel());
                 session.save();
                 session.getWorkspace().getVersionManager().restore(child.getPath(),byLabel, false);
                 JCRNodeWrapper node = session.getNode(child.getPath(), false);

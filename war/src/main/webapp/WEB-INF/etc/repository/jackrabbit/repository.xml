@@ -2,7 +2,6 @@
 <!DOCTYPE Repository PUBLIC "-//The Apache Software Foundation//DTD Jackrabbit 2.0//EN"
                             "http://jackrabbit.apache.org/dtd/repository-2.0.dtd">
 <Repository>
-<!-- Example Repository Configuration File -->
 
     <DataSources>
         <DataSource name="jahiaDS">
@@ -57,9 +56,6 @@
             <param name="schemaCheckEnabled" value="false"/>
         </FileSystem>
 
-<!--        <PersistenceManager class="org.apache.jackrabbit.core.persistence.xml.XMLPersistenceManager">
-        </PersistenceManager>
-	-->
         <PersistenceManager class="@PERSISTENCE_CLASS@">
             <param name="dataSourceName" value="jahiaDS" />
             <param name="schemaObjectPrefix" value="jr_${wsp.name}_"/>
@@ -130,7 +126,7 @@
         (/jcr:system tree, contains mainly versions)
     -->
     <SearchIndex class="org.apache.jackrabbit.core.query.lucene.JahiaSearchIndex">
-        <param name="path" value="${rep.home}/repository/index"/>
+        <param name="path" value="${rep.home}/index"/>
             <!-- setting textFilterClasses to empty value disables Jackrabbit document extraction -->
         <param name="textFilterClasses" value=""/>
         <param name="supportHighlighting" value="true"/>

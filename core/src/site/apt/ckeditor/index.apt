@@ -12,25 +12,25 @@ Core Module - CKEditor integration
   This is done by adding in the file <<</gwt/src/main/resources/org/jahia/ajax/gwt/JahiaGWT.gwt.xml>>> the following code:
   We use the version number (x.x.x) in the path of the editor directory.
 
--------------------------------------
++-------------------------------------
 <module>
     ...
     <script src="./ckeditor-x.x.x/ckeditor.js"/>
     ...
 </module>
--------------------------------------
++-------------------------------------
 
     The others files, coming with CKEditor distribution, are automatically located by ckeditor.js.
     However, these files are supposed to be in the same directory as ckeditor.js.
     As all GWT resources are in <<<.../gwt/resources>>> directory, a URL rewriting rule has been added:
 
---------------------------------------
++--------------------------------------
  <rule>
     <from>^(.*?)/gwt/(.*?)/ckeditor-x.x.x/(.*?)</from>
     <to last="true">$1/gwt/resources/ckeditor-x.x.x/$3</to>
     ...
 </rule>
---------------------------------------
++--------------------------------------
 
 
 * How is it integrated into GWT?
@@ -38,7 +38,7 @@ Core Module - CKEditor integration
   CKEditor object, defined in ckeditor.js, has been wrapped in a GWT component: <<<org.jahia.ajax.gwt.client.widget.ckeditor>>>.
   Basically, this component is a set of GWT native methods that allow to interact with the embedded CKEditor instance:
 
---------------------------------------
++--------------------------------------
 public class CKEditor extends Component {
 ...
 
@@ -66,23 +66,23 @@ public class CKEditor extends Component {
 
 ...
 }
---------------------------------------
++--------------------------------------
 
     To use the CKEditor as a GWT widget you can simply add the following code:
 
---------------------------------------
++--------------------------------------
 ...
 CKEditor ck = new CKEditor();
 ...
---------------------------------------
++--------------------------------------
 
     There is also a field wrapper, compatible with 'Form' component of GXT. It can be used thanks to the following code
 
---------------------------------------
++--------------------------------------
 ...
 Field fck = new CKEditorField();
 ...
---------------------------------------
++--------------------------------------
 
 * How the CKEditor instance is configured ?
 
@@ -95,7 +95,7 @@ Field fck = new CKEditorField();
   A new GWT module, <<<ContentPicker.gwt.xml>>>, allowing to display Jahia picker in a full page, has been added.
   The URL of 'stand alone' pickers are specified in the CKEditor configuration (<<<ckeditor_custom_config.js>>>):
 
---------------------------------------
++--------------------------------------
 ...
 CKEDITOR.editorConfig = function(config)
 {
@@ -108,7 +108,7 @@ CKEDITOR.editorConfig = function(config)
 ...
 };
 ...
---------------------------------------
++--------------------------------------
 
     The URL, coming from the link picker, is encoded and has the following patterns: <<</$\{servletPath\}/$\{contextPath\}/\{mode\}/\{lang\}/...>>>
 
@@ -116,8 +116,8 @@ CKEDITOR.editorConfig = function(config)
 
     Example:
     
---------------------------------------
++--------------------------------------
   /jahia/cms/{mode}/{lang}/content/sites/ACME/home/page1.html
---------------------------------------
++--------------------------------------
 
     The end-user can replace manually <<</\{mode\}/\{lang\}/>>>, remove it, or let Jahia handle these 'place holders'.

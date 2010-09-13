@@ -22,7 +22,7 @@ Core Module - HTML externalization
 
   The service is configured in WEB-INF/etc/spring/applicationcontext-notification.xml
      
--------------------------------------
++-------------------------------------
     <bean id="HtmlExternalizationService" class="org.jahia.services.notification.HtmlExternalizationService">
         <property name="urlTraverser"
             ref="org.jahia.services.render.filter.URLTraverser" />
@@ -34,7 +34,7 @@ Core Module - HTML externalization
         <property name="rewriteUrlsInCss" value="true"/>
         <property name="removeInlinedScripts" value="true"/>
     </bean>
--------------------------------------
++-------------------------------------
   
   httpClientService simply refers to the HttpClientService configured elsewhere in Jahia's XML spring configuration files.
   
@@ -46,6 +46,6 @@ Core Module - HTML externalization
   
   For now you can simply switch on the HTML externalization by appending the request query parameter externalize=true in an URL, e.g.
   
--------------------------------------
++-------------------------------------
     http://localhost:8080/cms/render/default/en/sites/mySite/home.html?externalize=true
--------------------------------------  
++-------------------------------------  

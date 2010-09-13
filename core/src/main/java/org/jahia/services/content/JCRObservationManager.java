@@ -212,6 +212,7 @@ public class JCRObservationManager implements ObservationManager {
             List<Event> list = map.get(session);
             for (EventConsumer consumer : listeners) {
                 if (consumer.session.getWorkspace().getName().equals(session.getWorkspace().getName())) {
+                    if (!Boolean.TRUE.equals(eventsDisabled.get()) || ((DefaultEventListener) consumer.listener).isAvailableDuringPublish()) {
                     List<Event> filteredEvents = new ArrayList<Event>();
                     for (Event event : list) {
                         if ((consumer.eventTypes & event.getType()) != 0) {
@@ -224,6 +225,7 @@ public class JCRObservationManager implements ObservationManager {
                     } catch (Exception e) {
                         logger.warn("Error processing event by listener. Cause: " + e.getMessage(), e);
                     }
+                    }
                 }
             }
         }
@@ -231,9 +233,7 @@ public class JCRObservationManager implements ObservationManager {
 
     public static <X> X doWorkspaceWriteCall(JCRSessionWrapper session, int operationType, JCRCallback<X> callback)
             throws RepositoryException {
-        if (!Boolean.TRUE.equals(eventsDisabled.get())) {
-            setCurrentSession(session);
-        }
+        setCurrentSession(session);
         X res;
         try {
             res = callback.doInJCR(session);

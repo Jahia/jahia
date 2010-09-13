@@ -155,6 +155,7 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
     }
 
     public void close() throws Exception {
+        securitySession.logout();
     }
 
     public void checkPermission(ItemId id, int permissions) throws AccessDeniedException, ItemNotFoundException, RepositoryException {

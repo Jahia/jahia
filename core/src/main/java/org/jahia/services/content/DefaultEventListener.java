@@ -51,6 +51,7 @@ public abstract class DefaultEventListener implements EventListener {
 
     protected Set<String> propertiesToIgnore;
     protected String workspace;
+    protected boolean availableDuringPublish = false;
 
     protected DefaultEventListener() {
         propertiesToIgnore = new HashSet<String>();
@@ -98,6 +99,14 @@ public abstract class DefaultEventListener implements EventListener {
     public abstract String getPath();
 
     public abstract String[] getNodeTypes();
+
+    public boolean isAvailableDuringPublish() {
+        return availableDuringPublish;
+    }
+
+    public void setAvailableDuringPublish(boolean availableDuringPublish) {
+        this.availableDuringPublish = availableDuringPublish;
+    }
 
     public String getWorkspace() {
         return workspace;

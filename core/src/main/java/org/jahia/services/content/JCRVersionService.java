@@ -370,6 +370,7 @@ public class JCRVersionService extends JahiaService {
                 }
                 Version byLabel = findVersionByLabel(history, ((JCRFrozenNodeAsRegular) child).getVersionLabel());
                 session.save();
+                logger.info("Restoring node "+child.getPath()+" on parent "+destinationNode.getPath());
                 session.getWorkspace().getVersionManager().restore(child.getPath(),byLabel, false);
                 JCRNodeWrapper node = session.getNode(child.getPath(), false);
                 restoreVersionLabel(node, ((JCRFrozenNodeAsRegular) child).getVersionLabel());

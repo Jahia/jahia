@@ -111,8 +111,9 @@ public class HtmlCacheEventListener extends DefaultEventListener {
                             DefaultCacheKeyGenerator generator = (DefaultCacheKeyGenerator) cacheKeyGenerator;
                             generator.flushUsersGroupsKey();
                         }
+                        flushParent = true;
                     }
-                    path = StringUtils.substringBeforeLast(path, "/j:translation");
+                    path = StringUtils.substringBeforeLast(StringUtils.substringBeforeLast(path, "/j:translation"), "/j:acl");
                     flushDependenciesOfPath(depCache, flushed, path);
                     flushSharedNode(depCache, flushed, path);
                     if (flushParent) {

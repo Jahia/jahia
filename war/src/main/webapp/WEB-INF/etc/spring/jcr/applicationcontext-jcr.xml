@@ -132,10 +132,13 @@
                                 </map>
                             </property>
                         </bean>
-                        <bean class="org.jahia.services.content.FilesCacheListener"/>
+                        <bean class="org.jahia.services.content.FilesCacheListener">
+                            <property name="availableDuringPublish" value="true"/>
+                        </bean>
                         <bean class="org.jahia.services.render.filter.cache.HtmlCacheEventListener">
                             <property name="cacheProvider" ref="ModuleCacheProvider"/>
                             <property name="jcrTemplate" ref="jcrTemplate"/>
+                            <property name="availableDuringPublish" value="true"/>
                         </bean>
                     </list>
                 </entry>

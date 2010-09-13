@@ -67,22 +67,22 @@ public class EnginePanel extends ContentPanel implements EngineContainer {
     }
 
     public void showEngine() {
-    	if (GXT.isIE) {
-	    	linker.getToolbar().mask();
-	    	linker.getSidePanel().mask();
-    	}
-    	
+//    	if (GXT.isIE) {
+//	    	linker.getToolbar().mask();
+//	    	linker.getSidePanel().mask();
+//    	}
+//    	
     	linker.replaceMainAreaComponent(this);
     }
 
     public void closeEngine() {
-    	if (!GXT.isIE) {
+//    	if (!GXT.isIE) {
             ModalPanel.push(modalPanel);
             modalPanel = null;
-    	} else {
-        	linker.getToolbar().unmask();
-        	linker.getSidePanel().unmask();
-    	}
+//    	} else {
+//        	linker.getToolbar().unmask();
+//        	linker.getSidePanel().unmask();
+//    	}
     	
     	linker.restoreMainArea();
     }
@@ -90,12 +90,12 @@ public class EnginePanel extends ContentPanel implements EngineContainer {
     protected void onRender(Element parent, int pos) {
         super.onRender(parent, pos);
 
-        if (!GXT.isIE) {
+//        if (!GXT.isIE) {
 	        el().updateZIndex(0);
 	        modalPanel = ModalPanel.pop();
 	        modalPanel.setBlink(false);
 	        modalPanel.show(this);
-        }
+//        }
 
     }
 

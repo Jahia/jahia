@@ -38,7 +38,6 @@ import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.content.nodetypes.SelectorType;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.ContextPlaceholdersReplacer;
@@ -67,7 +66,7 @@ import java.util.regex.Pattern;
  * jmix:referenceInField child nodes.
  *
  */
-public class URLInterceptor implements PropertyInterceptor, InitializingBean {
+public class URLInterceptor extends RichTextInterceptor implements InitializingBean {
 
     private static Logger logger = Logger.getLogger(URLInterceptor.class);
 
@@ -96,10 +95,6 @@ public class URLInterceptor implements PropertyInterceptor, InitializingBean {
     public URLInterceptor(HtmlTagAttributeTraverser urlTraverser) {
         super();
         this.urlTraverser = urlTraverser;
-    }
-
-    public boolean canApplyOnProperty(JCRNodeWrapper node, ExtendedPropertyDefinition definition) throws RepositoryException {
-        return definition.getRequiredType() == PropertyType.STRING && definition.getSelector() == SelectorType.RICHTEXT;
     }
 
     public void beforeRemove(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition) throws VersionException, LockException, ConstraintViolationException, RepositoryException {

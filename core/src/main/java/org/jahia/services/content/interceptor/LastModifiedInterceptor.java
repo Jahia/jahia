@@ -32,47 +32,27 @@
 
 package org.jahia.services.content.interceptor;
 
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+import javax.jcr.ValueFormatException;
+
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-
-import javax.jcr.*;
-import javax.jcr.lock.LockException;
-import javax.jcr.nodetype.ConstraintViolationException;
-import javax.jcr.version.VersionException;
-import java.util.Calendar;
-import java.util.Date;
 
 /**
  * Created by IntelliJ IDEA.
  * User: toto
  * Date: Aug 5, 2010
  * Time: 6:08:37 PM
- * To change this template use File | Settings | File Templates.
  */
-public class LastModifiedInterceptor implements PropertyInterceptor {
+public class LastModifiedInterceptor extends BaseInterceptor {
     public boolean canApplyOnProperty(JCRNodeWrapper node, ExtendedPropertyDefinition definition)
             throws RepositoryException {
         return definition.getDeclaringNodeType().getName().equals(Constants.MIX_LAST_MODIFIED) && node.getSession().getLocale() != null;
-    }
-
-    public void beforeRemove(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition)
-            throws VersionException, LockException, ConstraintViolationException, RepositoryException {
-    }
-
-    public Value beforeSetValue(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition,
-                                Value originalValue)
-            throws ValueFormatException, VersionException, LockException, ConstraintViolationException,
-            RepositoryException {
-        return originalValue;
-    }
-
-    public Value[] beforeSetValues(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition,
-                                   Value[] originalValues)
-            throws ValueFormatException, VersionException, LockException, ConstraintViolationException,
-            RepositoryException {
-        return originalValues;
     }
 
     public Value afterGetValue(JCRPropertyWrapper property, Value storedValue)
@@ -93,8 +73,4 @@ public class LastModifiedInterceptor implements PropertyInterceptor {
         return storedValue;
     }
 
-    public Value[] afterGetValues(JCRPropertyWrapper property, Value[] storedValues)
-            throws ValueFormatException, RepositoryException {
-        return storedValues;
-    }
 }

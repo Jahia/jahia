@@ -32,7 +32,6 @@
 
 package org.jahia.services.content.interceptor;
 
-import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -68,7 +67,6 @@ import java.util.List;
  * return v3
  */
 public class InterceptorChain {
-    private static Logger logger = Logger.getLogger(InterceptorChain.class);
 
     private List<PropertyInterceptor> interceptors = new ArrayList<PropertyInterceptor>();
     private List<PropertyInterceptor> revInterceptors;

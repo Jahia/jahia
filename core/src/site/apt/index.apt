@@ -14,3 +14,5 @@ Core Module
  * {{{./logging.html}Logging service customization}}
  
  * {{{./htmlexternalizer/description.html}HTML externalization}}
+
+ * {{{./htmlcleanup.html}HTML cleanup}} - removing "unwanted" HTML tags from rich text. 

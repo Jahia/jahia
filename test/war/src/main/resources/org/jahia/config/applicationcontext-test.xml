@@ -5,12 +5,13 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
        
     <bean name="testController" class="org.jahia.bin.TestServlet"/>
-
+    <bean name="testCreateSiteController" class="org.jahia.bin.TestCreateSiteServlet"/>
     <bean name="jahiaTestMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="urlMap">
             <map>
                 <entry key="/test" value-ref="testController"/>
                 <entry key="/test/**" value-ref="testController"/>
+                <entry key="/createsite" value-ref="testCreateSiteController"/>
             </map>
         </property>
     </bean>

@@ -78,7 +78,7 @@ public class HtmlFilteringInterceptor extends RichTextInterceptor {
 			}
         }
 		
-		if (filteredTags.isEmpty()) {
+		if (this.filteredTags.isEmpty()) {
 			logger.info("No HTML tag filtering configured. Interceptor will be disabled.");
 		} else {
 			logger.info("HTML tag filtering configured fo tags: " + filteredTags);

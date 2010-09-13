@@ -22,11 +22,13 @@ configToPermissionMapping.put("workflowmanager", "workflow-manager");
         </c:if>
         <%
     }
-%><utility:setBundle basename="JahiaInternalResources" useUILocale="true"/>
+%><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<utility:setBundle basename="JahiaInternalResources" useUILocale="true"/>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
     <title><fmt:message key="label.${param.conf}"/></title>
     <internal:gwtGenerateDictionary/>

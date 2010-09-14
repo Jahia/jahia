@@ -186,7 +186,7 @@ public class WorkflowServiceTest {
                    availableActions.size() > 0);
         assertFalse("Available actions should not match", availableActions.equals(newAvailableActions));
         assertTrue("Available action should match between service.getActiveWorkflows and getAvailableActions",
-                   newAvailableActions.equals(service.getAvailableActions(processId, PROVIDER)));
+                   newAvailableActions.equals(service.getAvailableActions(processId, PROVIDER, null)));
         service.deleteProcess(processId,PROVIDER);
     }
 
@@ -297,7 +297,7 @@ public class WorkflowServiceTest {
         assertTrue(service.getTasksForUser(johndoe, null).size() < forUser.size());
         assertFalse(service.getActiveWorkflows(stageNode, Locale.ENGLISH).equals(actionSet));
         // Assign john smoe to the next task
-        actionSet = service.getAvailableActions(processId, PROVIDER);
+        actionSet = service.getAvailableActions(processId, PROVIDER, null);
         service.assignTask(((WorkflowTask)actionSet.iterator().next()).getId(), PROVIDER, johnsmoe);
         // Rollback to previous task
         forUser = service.getTasksForUser(johnsmoe, Locale.ENGLISH);
@@ -310,22 +310,22 @@ public class WorkflowServiceTest {
         service.completeTask(workflowTask.getId(), workflowTask.getProvider(), "correction needed", emptyMap,
                              johnsmoe);
         assertTrue("Current Task should be finish correction as we have asked for corrections", service.getAvailableActions(
-                processId, PROVIDER).iterator().next().getName().equals("finish correction"));
+                processId, PROVIDER, null).iterator().next().getName().equals("finish correction"));
         // Assign john doe to task
-        service.assignTask(((WorkflowTask)service.getAvailableActions(processId, PROVIDER).iterator().next()).getId(),
+        service.assignTask(((WorkflowTask)service.getAvailableActions(processId, PROVIDER, null).iterator().next()).getId(),
                            PROVIDER, johndoe);
         // Complete task
         service.completeTask(service.getTasksForUser(johndoe, Locale.ENGLISH).get(0).getId(), PROVIDER, "finished", emptyMap,
                              johnsmoe);
         // Assign john smoe to the next task
-        service.assignTask(((WorkflowTask)service.getAvailableActions(processId, PROVIDER).iterator().next()).getId(),
+        service.assignTask(((WorkflowTask)service.getAvailableActions(processId, PROVIDER, null).iterator().next()).getId(),
                            PROVIDER, johnsmoe);
         // Complete Task with accept
         service.completeTask(service.getTasksForUser(johnsmoe, null).get(0).getId(), PROVIDER, "accept", emptyMap,
                              johnsmoe);
         // Verify we are at publish state
         assertTrue("Current Task should be final review as we have accepted the correction",
-                   service.getAvailableActions(processId, PROVIDER).iterator().next().getName().equals("final review"));
+                   service.getAvailableActions(processId, PROVIDER, null).iterator().next().getName().equals("final review"));
         service.deleteProcess(processId,PROVIDER);
     }
 

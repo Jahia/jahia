@@ -50,9 +50,6 @@ import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.client.Event;
 import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
 import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
 import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
@@ -77,9 +74,8 @@ public class AclEditor {
     private GWTJahiaNodeACL originalAcl;
     private final String context;
     private List<String> items;
-    private SaveButton saveButton;
     private RestoreButton restoreButton;
-    private Grid<ModelData> aclTable;
+    private Grid<ModelData> grid;
     private ListStore<ModelData> store;
     private boolean saved = false;
     private boolean canBreakInheritance = false;
@@ -96,7 +92,6 @@ public class AclEditor {
         this.originalAcl = acl;
         this.context = aclContext;
         this.acl = originalAcl.cloneObject();
-        saveButton = new SaveButton();
         restoreButton = new RestoreButton();
         reinitAcl();
     }
@@ -277,7 +272,7 @@ public class AclEditor {
 
         // column break in heritance
         if (displayInheritanceColumn) {
-            col = new ColumnConfig("inheritance", "", 100);
+            col = new ColumnConfig("inheritance", "", 200);
             col.setAlignment(Style.HorizontalAlignment.LEFT);
             col.setRenderer(new GridCellRenderer<ModelData>() {
                 public Object render(ModelData model, String property, ColumnData config, int rowIndex, int colIndex,
@@ -304,8 +299,11 @@ public class AclEditor {
 
         // create the table
         store = new ListStore<ModelData>();
-        aclTable = new Grid<ModelData>(store, new ColumnModel(columns));
-
+        grid = new Grid<ModelData>(store, new ColumnModel(columns));
+        final BufferView bufferView = new BufferView();
+        bufferView.setRowHeight(26);
+        grid.setAutoExpandColumn("principal");
+        grid.setView(bufferView);
 //        aclTable.setBulkRender(false);
         store.sort("name", Style.SortDir.ASC);
         items = new ArrayList<String>();
@@ -343,7 +341,7 @@ public class AclEditor {
         panel.setBorders(false);
         panel.setBodyBorder(false);
         panel.setHeaderVisible(false);
-        panel.add(aclTable);
+        panel.add(grid);
 
         final UserGroupAdder userGroupAdder = new UserGroupAdder() {
             public void addUsers(List<GWTJahiaUser> users) {
@@ -486,7 +484,6 @@ public class AclEditor {
             toolBar.add(breakinheritanceItem);
         }
         toolBar.add(new FillToolItem());
-        toolBar.add(saveButton);
         toolBar.add(restoreButton);
         panel.setTopComponent(toolBar);
 
@@ -565,13 +562,13 @@ public class AclEditor {
                 ace.getPermissions().putAll(ace.getInheritedPermissions());
                 int row = store.indexOf(item);
                 for (int i = 2; i < available.size() + 2; i++) {
-                    CheckBox chb = (CheckBox) aclTable.getView().getWidget(row,i);
-                    String perm = aclTable.getColumnModel().getColumn(i).getId();
+                    CheckBox chb = (CheckBox) grid.getView().getWidget(row,i);
+                    String perm = grid.getColumnModel().getColumn(i).getId();
                     String v = ace.getPermissions().get(perm);
                     chb.setChecked("GRANT".equals(v));
                 }
                 ace.setInherited(true);
-                LayoutContainer ctn = (LayoutContainer) aclTable.getView().getWidget(row,available.size() + 2);
+                LayoutContainer ctn = (LayoutContainer) grid.getView().getWidget(row,available.size() + 2);
                 ctn.removeAll();
                 ctn.add(buildInheritanceLabel(ace));
                 ctn.layout();
@@ -596,7 +593,6 @@ public class AclEditor {
      */
     private void reinitAcl() {
         this.saved = true;
-        saveButton.setEnabled(false);
         restoreButton.setEnabled(false);
 
         acl = originalAcl.cloneObject();
@@ -630,7 +626,6 @@ public class AclEditor {
      */
     public void setDirty() {
         this.saved = false;
-        saveButton.setEnabled(true);
         restoreButton.setEnabled(true);
     }
 
@@ -657,42 +652,6 @@ public class AclEditor {
             store.add(value);
             store.sort("principal", Style.SortDir.ASC);
         }
-    }
-
-    /**
-     * Get Save button
-     *
-     * @return
-     */
-    public SaveButton getSaveButton() {
-        return saveButton;
-    }
-
-    /**
-     * Set save button
-     *
-     * @param saveButton
-     */
-    public void setSaveButton(SaveButton saveButton) {
-        this.saveButton = saveButton;
-    }
-
-    /**
-     * Get restore button
-     *
-     * @return
-     */
-    public RestoreButton getRestoreButton() {
-        return restoreButton;
-    }
-
-    /**
-     * Set restore button
-     *
-     * @param restoreButton
-     */
-    public void setRestoreButton(RestoreButton restoreButton) {
-        this.restoreButton = restoreButton;
     }
 
     /**

@@ -228,16 +228,6 @@ public class EditContentEngine extends AbstractContentEngine {
             // node
             List<GWTJahiaNode> orderedChildrenNodes = null;
 
-            // general properties
-            final List<GWTJahiaNodeProperty> properties = new ArrayList<GWTJahiaNodeProperty>();
-
-            // general properties
-            final Map<String, List<GWTJahiaNodeProperty>> langCodeProperties =
-                    new HashMap<String, List<GWTJahiaNodeProperty>>();
-
-            // new acl
-            GWTJahiaNodeACL newNodeACL = null;
-
             for (TabItem item : tabs.getItems()) {
                 if (item instanceof PropertiesTabItem) {
                     PropertiesTabItem propertiesTabItem = (PropertiesTabItem) item;
@@ -252,13 +242,13 @@ public class EditContentEngine extends AbstractContentEngine {
                     // handle multilang
                     if (propertiesTabItem.isMultiLang()) {
                         // for now only contentTabItem  has multilang. properties
-                        langCodeProperties.putAll(propertiesTabItem.getLangPropertiesMap(true));
+                        changedI18NProperties.putAll(propertiesTabItem.getLangPropertiesMap(true));
                         if (pe != null) {
-                            properties.addAll(pe.getProperties(false, true, true));
+                            changedProperties.addAll(pe.getProperties(false, true, true));
                         }
                     } else {
                         if (pe != null) {
-                            properties.addAll(pe.getProperties(true, true, true));
+                            changedProperties.addAll(pe.getProperties(true, true, true));
                         }
                     }
 
@@ -289,19 +279,19 @@ public class EditContentEngine extends AbstractContentEngine {
                 }
                 // case of classification
                 else if (item instanceof CategoriesTabItem) {
-                    ((CategoriesTabItem) item).updateProperties(
-                            ((CategoriesTabItem) item).getCategoriesEditor(), properties, node.getNodeTypes());
+                    ((CategoriesTabItem) item).updateProperties(changedProperties, node.getNodeTypes());
                 } else if (item instanceof TagsTabItem) {
-                        ((TagsTabItem) item).updateProperties(
-                                ((TagsTabItem) item).getTagsEditor(), properties, node.getNodeTypes());
+                        ((TagsTabItem) item).updateProperties(changedProperties, node.getNodeTypes());
                 } else if (item instanceof SeoTabItem) {
                     ((SeoTabItem) item).doSave();
+                } else if (item instanceof WorkflowTabItem) {
+                    ((WorkflowTabItem) item).doSave();
                 }
             }
 
             // Ajax call to update values
             JahiaContentManagementService.App.getInstance()
-                    .saveNode(node, orderedChildrenNodes, newNodeACL, langCodeProperties, properties,
+                    .saveNode(node, orderedChildrenNodes, newNodeACL, changedI18NProperties, changedProperties,
                             new BaseAsyncCallback() {
                                 public void onApplicationFailure(Throwable throwable) {
                                     com.google.gwt.user.client.Window

@@ -52,7 +52,7 @@ public class GWTJahiaWorkflowDefinition extends BaseModelData implements Seriali
     }
 
     public void setId(String id) {
-        set("id",id);
+        set("id", id);
     }
 
     public String getProvider() {
@@ -60,7 +60,7 @@ public class GWTJahiaWorkflowDefinition extends BaseModelData implements Seriali
     }
 
     public void setProvider(String provider) {
-        set("provider",provider);
+        set("provider", provider);
     }
 
     public String getName() {
@@ -68,7 +68,7 @@ public class GWTJahiaWorkflowDefinition extends BaseModelData implements Seriali
     }
 
     public void setName(String name) {
-        set("name",name);
+        set("name", name);
     }
 
     public String getFormResourceName() {
@@ -78,22 +78,28 @@ public class GWTJahiaWorkflowDefinition extends BaseModelData implements Seriali
     public void setFormResourceName(String formResourceName) {
         set("formResourceName", formResourceName);
     }
-    
+
     @Override
     public String toString() {
         return getName();
     }
 
+
     @Override
     public boolean equals(Object o) {
-        return o!=null &&  (super.equals(o) || ((GWTJahiaWorkflowDefinition)o).getName().equals(getName()));  
+        return o != null && (super.equals(o) || ((GWTJahiaWorkflowDefinition) o).getName().equals(getName()));
+    }
+
+    @Override
+    public int hashCode() {
+        return getName().hashCode();
     }
 
     public void setDisplayName(String displayName) {
-        set("displayName",displayName);
+        set("displayName", displayName);
     }
 
-    public String getDisplayName(){
+    public String getDisplayName() {
         return get("displayName");
     }
 }

@@ -102,10 +102,6 @@ public class PortletModesCard extends PortletWizardCard {
         modeMappingEditor.setAclGroup(JCRClientUtils.MODES_ACL);
         modeMappingEditor.setAddUsersLabel(Messages.get("org.jahia.engines.PortletsManager.wizard.modes.adduser.label", "Add mode-user permission"));
         modeMappingEditor.setAddGroupsLabel(Messages.get("org.jahia.engines.PortletsManager.wizard.modes.addgroup.label", "Add mode-group permission"));
-        Button saveButton = modeMappingEditor.getSaveButton();
-        saveButton.setVisible(false);
-        Button restoreButton = modeMappingEditor.getRestoreButton();
-        restoreButton.setVisible(false);
     }
 
     @Override

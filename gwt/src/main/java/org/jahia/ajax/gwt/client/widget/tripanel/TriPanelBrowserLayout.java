@@ -53,7 +53,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 public class TriPanelBrowserLayout extends ContentPanel {
 
     protected ManagerLinker linker;
-    protected BorderLayoutData centerData = new BorderLayoutData(Style.LayoutRegion.SOUTH, 250);
+    protected BorderLayoutData centerData = new BorderLayoutData(Style.LayoutRegion.SOUTH, 320);
     protected BorderLayoutData northData = new BorderLayoutData(Style.LayoutRegion.CENTER);
     protected BorderLayoutData westData = new BorderLayoutData(Style.LayoutRegion.WEST, 350);
 

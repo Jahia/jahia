@@ -33,29 +33,21 @@
 package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.dnd.DND;
-import com.extjs.gxt.ui.client.dnd.GridDragSource;
-import com.extjs.gxt.ui.client.dnd.GridDropTarget;
-import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
-import com.extjs.gxt.ui.client.widget.layout.TableData;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
-import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowType;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
@@ -75,9 +67,13 @@ public class WorkflowTabItem extends EditEngineTabItem {
     private WorkflowHistoryPanel activePanel;
 
     private Map<String, WorkflowHistoryPanel> panelsByLanguage;
-    private GWTJahiaLanguage locale;
-    private ContentPanel aclPanel;
+    private LayoutContainer aclPanel;
     private final JahiaContentManagementServiceAsync service;
+
+    private GWTJahiaWorkflowDefinition previousSelection = null;
+    private AclEditor rightsEditor;
+    private Map<GWTJahiaWorkflowType, Map<GWTJahiaWorkflowDefinition,GWTJahiaNodeACL>> workflowRules;
+
 
     /**
      * Initializes an instance of this class.
@@ -93,7 +89,6 @@ public class WorkflowTabItem extends EditEngineTabItem {
 
     @Override
     public void create(GWTJahiaLanguage locale) {
-        this.locale = locale;
         if (engine.getNode() == null) {
             return;
         }
@@ -104,7 +99,10 @@ public class WorkflowTabItem extends EditEngineTabItem {
         if (container == null) {
             container = new LayoutContainer(new RowLayout());
         }
-        generateUI();
+        add(container);
+
+        setProcessed(true);
+
         WorkflowHistoryPanel next = getPanel(locale.getLanguage());
         if (activePanel != null) {
             if (activePanel != next) {
@@ -115,104 +113,101 @@ public class WorkflowTabItem extends EditEngineTabItem {
 
         activePanel = next;
 
-        layout();
-    }
-
-    private void generateUI() {
         service.getWorkflowRules(engine.getNode().getPath(),
-                                 new BaseAsyncCallback<Map<GWTJahiaWorkflowDefinition, GWTJahiaNodeACL>>() {
-                                     public void onSuccess(
-                                             final Map<GWTJahiaWorkflowDefinition, GWTJahiaNodeACL> result) {
-                                         HorizontalPanel horizontalPanel = new HorizontalPanel();
-                                         horizontalPanel.setTableWidth("100%");
-                                         ListStore<GWTJahiaWorkflowDefinition> states = new ListStore<GWTJahiaWorkflowDefinition>();
-                                         states.add(new LinkedList<GWTJahiaWorkflowDefinition>(result.keySet()));
+                new BaseAsyncCallback<Map<GWTJahiaWorkflowType,Map<GWTJahiaWorkflowDefinition,GWTJahiaNodeACL>>>() {
+                    public void onSuccess(final Map<GWTJahiaWorkflowType,Map<GWTJahiaWorkflowDefinition,GWTJahiaNodeACL>> result) {
+                        HorizontalPanel horizontalPanel = new HorizontalPanel();
+                        horizontalPanel.setTableWidth("100%");
+                        container.add(horizontalPanel);
 
-                                         final ComboBox<GWTJahiaWorkflowDefinition> combo = new ComboBox<GWTJahiaWorkflowDefinition>();
-                                         combo.setDisplayField("displayName");
-                                         combo.setWidth(400);
-                                         combo.setStore(states);
-                                         combo.setTypeAhead(true);
-                                         combo.setTriggerAction(ComboBox.TriggerAction.ALL);
-                                         combo.addSelectionChangedListener(
-                                                 new SelectionChangedListener<GWTJahiaWorkflowDefinition>() {
-                                                     @Override
-                                                     public void selectionChanged(
-                                                             SelectionChangedEvent<GWTJahiaWorkflowDefinition> gwtJahiaWorkflowDefinitionSelectionChangedEvent) {
-                                                         final GWTJahiaNodeACL gwtJahiaNodeACL = result.get(
-                                                                 gwtJahiaWorkflowDefinitionSelectionChangedEvent.getSelectedItem());
-                                                         displayACLEditor(gwtJahiaNodeACL, engine.getNode(),
-                                                                          combo.getSelection());
-                                                         layout();
-                                                     }
-                                                 });
-                                         combo.setValue(result.keySet().iterator().next());
-                                         TableData tableData = new TableData(Style.HorizontalAlignment.LEFT,
-                                                                             Style.VerticalAlignment.TOP);
-                                         tableData.setWidth("80%");
-                                         tableData.setPadding(2);
-                                         horizontalPanel.add(combo, tableData);
-                                         final Button button = new Button("Manage Workflows");
-                                         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                                             @Override
-                                             public void componentSelected(ButtonEvent buttonEvent) {
-                                                 button.disable();
-                                                 final WorkflowManager workflowManager = new WorkflowManager(
-                                                         engine.getNode(), result);
-                                                 workflowManager.addWindowListener(new WindowListener() {
-                                                     @Override
-                                                     public void windowHide(WindowEvent we) {
-                                                         super.windowHide(we);
-                                                         button.enable();
-                                                     }
-                                                 });
-                                                 workflowManager.show();
-                                             }
-                                         });
-                                         tableData = new TableData(Style.HorizontalAlignment.RIGHT,
-                                                                   Style.VerticalAlignment.TOP);
-                                         tableData.setWidth("20%");
-                                         tableData.setPadding(2);
-                                         horizontalPanel.add(button, tableData);
-                                         WorkflowTabItem.this.container.add(horizontalPanel, new RowData(1, 0.07));
-                                         final GWTJahiaNodeACL gwtJahiaNodeACL = result.values().iterator().next();
-                                         displayACLEditor(gwtJahiaNodeACL, engine.getNode(), combo.getSelection());
-                                         layout();
-                                     }
-                                 });
+                        final ListStore<GWTJahiaWorkflowType> types = new ListStore<GWTJahiaWorkflowType>();
+                        final ComboBox<GWTJahiaWorkflowType> typesCombo = new ComboBox<GWTJahiaWorkflowType>();
+                        typesCombo.setValueField("name");
+                        typesCombo.setDisplayField("displayName");
+                        typesCombo.setStore(types);
+                        typesCombo.setTypeAhead(true);
+                        typesCombo.setTriggerAction(ComboBox.TriggerAction.ALL);
+                        horizontalPanel.add(typesCombo);
 
-        add(this.container);
+                        final ListStore<GWTJahiaWorkflowDefinition> states = new ListStore<GWTJahiaWorkflowDefinition>();
+//                        states.add(new LinkedList<GWTJahiaWorkflowDefinition>(result.get(typesCombo.getSelectedText()).keySet()));
+                        final ComboBox<GWTJahiaWorkflowDefinition> combo = new ComboBox<GWTJahiaWorkflowDefinition>();
+
+                        workflowRules = result;
+
+                        typesCombo.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaWorkflowType>() {
+                            public void selectionChanged(SelectionChangedEvent<GWTJahiaWorkflowType> se) {
+                                states.removeAll();
+                                final Map<GWTJahiaWorkflowDefinition, GWTJahiaNodeACL> map =
+                                        workflowRules.get(se.getSelectedItem());
+                                states.add(new LinkedList<GWTJahiaWorkflowDefinition>(map.keySet()));
+                                states.sort("displayName", Style.SortDir.ASC);
+
+                                combo.setValue(null);
+                                for (GWTJahiaWorkflowDefinition definition : map.keySet()) {
+                                    if (Boolean.TRUE.equals(definition.get("active"))) {
+                                        combo.setValue(definition);
+                                        break;
+                                    }
+                                }
+                            }
+                        });
+
+                        combo.setDisplayField("displayName");
+                        combo.setWidth(400);
+                        combo.setStore(states);
+                        combo.setTypeAhead(true);
+                        combo.setTriggerAction(ComboBox.TriggerAction.ALL);
+                        combo.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaWorkflowDefinition>() {
+                            @Override
+                            public void selectionChanged(
+                                    SelectionChangedEvent<GWTJahiaWorkflowDefinition> event) {
+                                if (previousSelection != null && rightsEditor != null) {
+                                    workflowRules.get(typesCombo.getValue()).remove(previousSelection);
+                                    workflowRules.get(typesCombo.getValue()).put(previousSelection, rightsEditor.getAcl());
+                                }
+                                if (event.getSelectedItem() != null) {
+                                    if (previousSelection != null) {
+                                        previousSelection.set("active", Boolean.FALSE);
+                                    }
+                                    event.getSelectedItem().set("active", Boolean.TRUE);
+                                    GWTJahiaNodeACL gwtJahiaNodeACL =
+                                            workflowRules.get(typesCombo.getValue()).get(event.getSelectedItem());
+                                    displayACLEditor(gwtJahiaNodeACL, engine.getNode(), combo.getSelection());
+                                } else {
+                                    aclPanel.removeAll();
+                                }
+                                previousSelection = event.getSelectedItem();
+                                layout();
+                            }
+                        });
+
+                        types.add(new ArrayList<GWTJahiaWorkflowType>(workflowRules.keySet()));
+                        types.sort("displayName", Style.SortDir.ASC);
+                        typesCombo.setValue(types.getAt(0));
+                        horizontalPanel.add(combo);
+
+                        layout();
+                    }
+                });
+
     }
 
     private void displayACLEditor(final GWTJahiaNodeACL gwtJahiaNodeACL, final GWTJahiaNode node,
                                   final List<GWTJahiaWorkflowDefinition> selection) {
-        final AclEditor rightsEditor = new AclEditor(gwtJahiaNodeACL, node.getAclContext());
+        rightsEditor = new AclEditor(gwtJahiaNodeACL, node.getAclContext());
         rightsEditor.setAclGroup("tasks");
         if (aclPanel != null) {
             aclPanel.removeAll();
         }
         rightsEditor.setCanBreakInheritance(false);
         rightsEditor.setReadOnly(false);
-        Button saveButton = rightsEditor.getSaveButton();
-        saveButton.setVisible(true);
-        saveButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent buttonEvent) {
-                GWTJahiaNodeACL nodeACL = rightsEditor.getAcl();
-                service.updateWorkflowRulesACL(node.getPath(), selection.get(0), nodeACL,
-                                               new BaseAsyncCallback<Void>() {
-                                                   public void onSuccess(Void result) {
-                                                       create(locale);
-                                                   }
-                                               });
-            }
-        });
 
         if (aclPanel == null) {
-            aclPanel = new ContentPanel(new FitLayout());
+            aclPanel = new LayoutContainer(new FitLayout());
         }
         aclPanel.add(rightsEditor.renderNewAclPanel());
-        WorkflowTabItem.this.container.add(aclPanel, new RowData(1, 0.43));
+        container.add(aclPanel, new RowData(1, 0.43));
     }
 
     private WorkflowHistoryPanel getPanel(String locale) {
@@ -225,115 +220,34 @@ public class WorkflowTabItem extends EditEngineTabItem {
         return panel;
     }
 
-    private class WorkflowManager extends Window {
-        public WorkflowManager(final GWTJahiaNode node,
-                               final Map<GWTJahiaWorkflowDefinition, GWTJahiaNodeACL> currentWorkflows) {
-            setSize(600, 400);
-            setTitle("Workflow Manager");
-            setModal(true);
-            setClosable(false);
-            service.getWorkflows(new BaseAsyncCallback<List<GWTJahiaWorkflowDefinition>>() {
-                public void onSuccess(List<GWTJahiaWorkflowDefinition> result) {
-                    List<GWTJahiaWorkflowDefinition> definitions = new LinkedList<GWTJahiaWorkflowDefinition>();
-                    final Set<GWTJahiaWorkflowDefinition> set = currentWorkflows.keySet();
-                    for (GWTJahiaWorkflowDefinition definition : result) {
-                        for (GWTJahiaWorkflowDefinition workflowDefinition : set) {
-                            final List<GWTJahiaNodeACE> jahiaNodeACEList = currentWorkflows.get(
-                                    workflowDefinition).getAce();
-                            boolean asLocalAce = false;
-                            for (GWTJahiaNodeACE ace : jahiaNodeACEList) {
-                                if (!ace.isInherited()) {
-                                    asLocalAce = true;
-                                }
-                            }
-                            if (workflowDefinition.getName().equals(definition.getName()) && asLocalAce) {
-                                definition.set("active", true);
-                                break;
-                            } else {
-                                definition.set("active", false);
-                            }
-                        }
-                        definitions.add(definition);
-                    }
-                    final ListStore<GWTJahiaWorkflowDefinition> all = new ListStore<GWTJahiaWorkflowDefinition>();
-                    all.add(definitions);
-                    List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
-
-                    ColumnConfig column = new ColumnConfig();
-                    column.setId("displayName");
-                    column.setSortable(false);
-                    column.setHeader("Name");
-                    column.setWidth(200);
-                    configs.add(column);
-
-                    CheckColumnConfig checkColumn = new CheckColumnConfig("active", "Active?", 55);
-                    checkColumn.setSortable(false);
-                    CellEditor checkBoxEditor = new CellEditor(new CheckBox());
-                    checkColumn.setEditor(checkBoxEditor);
-                    configs.add(checkColumn);
-
-                    Grid<GWTJahiaWorkflowDefinition> grid = new Grid<GWTJahiaWorkflowDefinition>(all, new ColumnModel(
-                            configs));
-                    ContentPanel cp = new ContentPanel();
-                    cp.setBodyBorder(false);
-                    cp.setHeading("Workflows declared on this node (not inherited)");
-                    cp.setButtonAlign(Style.HorizontalAlignment.CENTER);
-                    cp.setLayout(new FitLayout());
-                    cp.setSize(600, 350);
-
-                    grid.setStyleAttribute("borderTop", "none");
-                    grid.setAutoExpandColumn("displayName");
-                    grid.setBorders(true);
-                    grid.setStripeRows(true);
-                    grid.addPlugin(checkColumn);
-                    cp.add(grid);
-
-                    cp.addButton(new Button("Reset", new SelectionListener<ButtonEvent>() {
-                        @Override
-                        public void componentSelected(ButtonEvent ce) {
-                            all.rejectChanges();
-                            hide();
-                        }
-                    }));
-
-                    cp.addButton(new Button("Save", new SelectionListener<ButtonEvent>() {
-                        @Override
-                        public void componentSelected(ButtonEvent ce) {
-                            all.commitChanges();
-                            final List<GWTJahiaWorkflowDefinition> definitions = all.getModels();
-                            List<GWTJahiaWorkflowDefinition> actives = new LinkedList<GWTJahiaWorkflowDefinition>();
-                            List<GWTJahiaWorkflowDefinition> unactives = new LinkedList<GWTJahiaWorkflowDefinition>();
-                            for (GWTJahiaWorkflowDefinition definition : definitions) {
-                                if ((Boolean) definition.get("active")) {
-                                    actives.add(definition);
-                                } else {
-                                    unactives.add(definition);
-                                }
-                            }
-                            service.updateWorkflowRules(node.getPath(), actives, unactives,
-                                                        new BaseAsyncCallback<Void>() {
-                                                            public void onSuccess(Void result) {
-                                                                container.removeAll();
-                                                                create(locale);
-                                                                hide();
-                                                            }
-                                                        });
-                        }
-                    }));
-
-                    new GridDragSource(grid);
-
-                    GridDropTarget target = new GridDropTarget(grid);
-                    target.setAllowSelfAsSource(true);
-                    target.setFeedback(DND.Feedback.INSERT);
-
-                    add(cp);
-                    layout();
-                    show();
+    public void doSave() {
+        Map<GWTJahiaWorkflowDefinition, GWTJahiaNodeACL>  activeWorkflows = new HashMap<GWTJahiaWorkflowDefinition, GWTJahiaNodeACL>();
+        if (workflowRules == null) {
+            return;
+        }
+        for (Map<GWTJahiaWorkflowDefinition, GWTJahiaNodeACL> map : workflowRules.values()) {
+            for (GWTJahiaWorkflowDefinition definition : map.keySet()) {
+                if (Boolean.TRUE.equals(definition.get("active"))) {
+                    activeWorkflows.put(definition, map.get(definition));
                 }
-            });
+            }
+        }
+        final Map<GWTJahiaWorkflowDefinition, GWTJahiaNodeACL> aclMap = activeWorkflows;
+
+        if (previousSelection != null && rightsEditor != null) {
+            aclMap.remove(previousSelection);
+            aclMap.put(previousSelection, rightsEditor.getAcl());
         }
 
 
+        if (aclMap.isEmpty()) {
+            engine.getNode().getNodeTypes().remove("jmix:worklfowRulesable");
+        } else {
+            if (!engine.getNode().getNodeTypes().contains("jmix:worklfowRulesable")) {
+                engine.getNode().getNodeTypes().add("jmix:worklfowRulesable");
+            }
+        }
+        engine.getNode().set("activeWorkflows", aclMap);
     }
+
 }

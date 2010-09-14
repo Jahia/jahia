@@ -49,7 +49,6 @@ import java.util.List;
  */
 public abstract class EditEngineTabItem extends AsyncTabItem {
     protected NodeHolder engine;
-    protected boolean toolbarEnabled;
 
     protected EditEngineTabItem(NodeHolder engine) {
         this.engine = engine;
@@ -72,10 +71,6 @@ public abstract class EditEngineTabItem extends AsyncTabItem {
 
     public boolean handleMultipleSelection() {
         return false;
-    }
-
-    public void setToolbarEnabled(boolean enabled) {
-        this.toolbarEnabled = enabled;
     }
 
     public static void addTabs(final List<String> tabsConfig, final TabPanel tabs, final NodeHolder nodeHolder) {

@@ -87,7 +87,7 @@ public class UserGroupSelect extends Window {
     private Grid<GWTJahiaUser> userGrid;
     private Grid<GWTJahiaGroup> groupGrid;
     private Grid<GWTJahiaRole> roleGrid;
-    private final String aclContext;
+    private String aclContext;
     private boolean singleSelectionMode;
 
     public UserGroupSelect (final UserGroupAdder target, int viewMode, String aclContext) {
@@ -131,7 +131,6 @@ public class UserGroupSelect extends Window {
                 add(getRolesPanel(target, async));
                 break;
         }
-        ButtonBar buttons = new ButtonBar() ;
         Button add = new Button(Messages.get("label.add", "Add"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 if (userGrid != null) {
@@ -146,15 +145,14 @@ public class UserGroupSelect extends Window {
                 hide();
             }
         }) ;
-        buttons.add(add) ;
+        addButton(add) ;
         Button cancel = new Button(Messages.get("label.cancel", "Cancel"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 hide();
             }
         });
-        buttons.add(cancel) ;        
+        addButton(cancel) ;
         setButtonAlign(Style.HorizontalAlignment.CENTER);
-        setTopComponent(buttons);
 
         show();
     }

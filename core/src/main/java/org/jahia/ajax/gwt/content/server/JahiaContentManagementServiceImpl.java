@@ -565,6 +565,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         if (node.get("vanityMappings") != null) {
             saveUrlMappings(node, langCodeProperties.keySet(), (List<GWTJahiaUrlMapping>) node.get("vanityMappings"));
         }
+        if (node.get("activeWorkflows") != null) {
+            workflow.updateWorkflowRules(node, (Map<GWTJahiaWorkflowDefinition, GWTJahiaNodeACL>) node.get("activeWorkflows"), retrieveCurrentSession());
+        }
     }
 
     /**
@@ -1484,26 +1487,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
     }
 
-    public Map<GWTJahiaWorkflowDefinition, GWTJahiaNodeACL> getWorkflowRules(String path)
+    public Map<GWTJahiaWorkflowType,Map<GWTJahiaWorkflowDefinition,GWTJahiaNodeACL>> getWorkflowRules(String path)
             throws GWTJahiaServiceException {
         JCRSessionWrapper sessionWrapper = retrieveCurrentSession();
         return workflow.getWorkflowRules(path, sessionWrapper, sessionWrapper.getLocale());
-    }
-
-    public List<GWTJahiaWorkflowDefinition> getWorkflows() throws GWTJahiaServiceException {
-        return workflow.getWorkflows(retrieveCurrentSession().getLocale());
-    }
-
-    public void updateWorkflowRules(String path, List<GWTJahiaWorkflowDefinition> actives,
-                                    List<GWTJahiaWorkflowDefinition> deleted) throws GWTJahiaServiceException {
-        workflow.updateWorkflowRules(path, actives, deleted, retrieveCurrentSession(),
-                retrieveCurrentSession().getLocale());
-    }
-
-    public void updateWorkflowRulesACL(String path, GWTJahiaWorkflowDefinition gwtJahiaWorkflowDefinition,
-                                       GWTJahiaNodeACL gwtJahiaNodeACL) throws GWTJahiaServiceException {
-        workflow.updateWorkflowRulesACL(path, gwtJahiaWorkflowDefinition, gwtJahiaNodeACL, retrieveCurrentSession(),
-                retrieveCurrentSession().getLocale());
     }
 
     public void setGoogleDocsExportFormats(GoogleDocsExportFormats googleDocsExportFormats) {

@@ -196,12 +196,7 @@ public class CreateContentEngine extends AbstractContentEngine {
 
     protected void save(final boolean closeAfterSave) {
         String nodeName = targetName;
-        final List<GWTJahiaNodeProperty> props = new ArrayList<GWTJahiaNodeProperty>();
-        final Map<String, List<GWTJahiaNodeProperty>> langCodeProperties = new HashMap<String, List<GWTJahiaNodeProperty>>();
         final List<String> mixin = new ArrayList<String>();
-
-        // new acl
-        GWTJahiaNodeACL newNodeACL = null;
 
         for (TabItem item : tabs.getItems()) {
             if (item instanceof PropertiesTabItem) {
@@ -216,13 +211,13 @@ public class CreateContentEngine extends AbstractContentEngine {
                 // handle multilang
                 if (propertiesTabItem.isMultiLang()) {
                     // for now only contentTabItem  has multilang. properties
-                    langCodeProperties.putAll(propertiesTabItem.getLangPropertiesMap(false));
+                    changedI18NProperties.putAll(propertiesTabItem.getLangPropertiesMap(false));
                     if (pe != null) {
-                        props.addAll(pe.getProperties(false, true, false));
+                        changedProperties.addAll(pe.getProperties(false, true, false));
                     }
                 } else {
                     if (pe != null) {
-                        props.addAll(pe.getProperties());
+                        changedProperties.addAll(pe.getProperties());
                     }
                 }
                 if (item instanceof ContentTabItem) {
@@ -237,13 +232,13 @@ public class CreateContentEngine extends AbstractContentEngine {
                     newNodeACL = acl.getAcl();
                 }
             } else if (item instanceof CategoriesTabItem) {
-                ((CategoriesTabItem) item).updateProperties(((CategoriesTabItem) item).getCategoriesEditor(), props, mixin);
+                ((CategoriesTabItem) item).updateProperties(changedProperties, mixin);
             } else if (item instanceof TagsTabItem) {
-                ((TagsTabItem) item).updateProperties(((TagsTabItem) item).getTagsEditor(), props, mixin);
+                ((TagsTabItem) item).updateProperties(changedProperties, mixin);
             }
         }
 
-        doSave(nodeName, props, langCodeProperties, mixin, newNodeACL, closeAfterSave);
+        doSave(nodeName, changedProperties, changedI18NProperties, mixin, newNodeACL, closeAfterSave);
     }
 
     protected void doSave(String nodeName, List<GWTJahiaNodeProperty> props, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<String> mixin, GWTJahiaNodeACL newNodeACL, final boolean closeAfterSave) {

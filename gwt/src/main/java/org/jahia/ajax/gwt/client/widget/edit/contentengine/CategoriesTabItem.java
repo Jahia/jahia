@@ -73,7 +73,7 @@ public class CategoriesTabItem extends EditEngineTabItem {
         return categoriesEditor;
     }
 
-    public void updateProperties(CategoriesEditor categoriesEditor, List<GWTJahiaNodeProperty> list, List<String> mixin) {
+    public void updateProperties(List<GWTJahiaNodeProperty> list, List<String> mixin) {
         if (categoriesEditor == null) {
             return;
         }

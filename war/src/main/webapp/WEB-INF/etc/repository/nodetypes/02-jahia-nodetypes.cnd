@@ -91,7 +91,7 @@
  - j:inherit (boolean)
 
 [jmix:accessControlled] mixin
- + j:acl (jnt:acl) mandatory autocreated
+ + j:acl (jnt:acl) = jnt:acl mandatory autocreated
 
 //---------------------------------------------------------
 // Role based access control
@@ -150,7 +150,7 @@
 
 
 [jmix:worklfowRulesable] mixin
-+ workflowrules (jnt:workflowRules) autocreated
++ workflowrules (jnt:workflowRules) = jnt:workflowRules autocreated
 //---------------------------------------------------------
 // Query
 //---------------------------------------------------------

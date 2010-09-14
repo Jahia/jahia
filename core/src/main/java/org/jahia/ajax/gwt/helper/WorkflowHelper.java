@@ -38,6 +38,7 @@ import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.workflow.*;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryItem;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryProcess;
@@ -52,6 +53,7 @@ import org.jahia.services.usermanager.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.*;
 
+import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import java.util.*;
 
@@ -339,70 +341,120 @@ public class WorkflowHelper {
         return gwtWorkflows;
     }
 
-    public Map<GWTJahiaWorkflowDefinition,GWTJahiaNodeACL> getWorkflowRules(String path, JCRSessionWrapper session,
+    public Map<GWTJahiaWorkflowType,Map<GWTJahiaWorkflowDefinition,GWTJahiaNodeACL>> getWorkflowRules(String path, JCRSessionWrapper session,
                                                                             Locale locale) throws GWTJahiaServiceException {
         try {
-            JCRNodeWrapper node = session.getNode(path);
-            Map<GWTJahiaWorkflowDefinition,GWTJahiaNodeACL> defAclMap = new HashMap<GWTJahiaWorkflowDefinition, GWTJahiaNodeACL>();
-            final Map<String, List<String[]>> map = service.getWorkflowRules(node, locale);
-            for (Map.Entry<String, List<String[]>> entry : map.entrySet()) {
-                try {
-                    String wf = entry.getKey();
-                    final WorkflowDefinition definition = service.getWorkflowDefinition(StringUtils.substringBefore(wf,
-                                                                                                                    ":"),
-                                                                                        StringUtils.substringAfter(wf,
-                                                                                                                   ":"),
-                                                                                        locale);
+            Map<String, String> rev = new HashMap<String, String>();
+            Map<GWTJahiaWorkflowType, Map<GWTJahiaWorkflowDefinition, GWTJahiaNodeACL>> result = new HashMap<GWTJahiaWorkflowType, Map<GWTJahiaWorkflowDefinition, GWTJahiaNodeACL>>();
+            Map<String, Map<GWTJahiaWorkflowDefinition, GWTJahiaNodeACL>> keyToMap = new HashMap<String, Map<GWTJahiaWorkflowDefinition, GWTJahiaNodeACL>>();
+
+            final Set<String> workflowTypes = service.getTypesOfWorkflow();
+            for (String workflowType : workflowTypes) {                
+                Map<GWTJahiaWorkflowDefinition, GWTJahiaNodeACL> definitions = new HashMap<GWTJahiaWorkflowDefinition, GWTJahiaNodeACL>();
+                List<WorkflowDefinition> workflowDefinitions = service.getWorkflowsForAction(workflowType,
+                                                                                                   locale);
+                for (WorkflowDefinition definition : workflowDefinitions) {
                     final GWTJahiaWorkflowDefinition workflowDefinition = getGWTJahiaWorkflowDefinition(definition);
-                    GWTJahiaNodeACL acl = new GWTJahiaNodeACL();
+                    GWTJahiaNodeACL acl = new GWTJahiaNodeACL(new ArrayList<GWTJahiaNodeACE>());
                     Map<String, List<String>> permissions = new HashMap<String, List<String>>();
                     permissions.put("tasks", new LinkedList<String>(definition.getTasks()));
                     acl.setAvailablePermissions(permissions);
-                    Map<String, GWTJahiaNodeACE> aces = new HashMap<String, GWTJahiaNodeACE>();
-                    for (String[] acesString : entry.getValue()) {
-                        String principal = acesString[3];
-                        GWTJahiaNodeACE ace;
-                        Map<String, String> perms;
-                        Map<String, String> inheritedPerms;
-                        if (!aces.containsKey(principal)) {
-                            ace = new GWTJahiaNodeACE();
-                            ace.setPrincipalType(principal.charAt(0));
-                            ace.setPrincipal(principal.substring(2));
-                            perms = new HashMap<String, String>();
-                            inheritedPerms = new HashMap<String, String>();
-                        } else {
-                            ace = aces.get(principal);
-                            perms = ace.getPermissions();
-                            inheritedPerms = ace.getInheritedPermissions();
-                        }
-                        String inheritedFrom = null;
-                        if (!path.equals(acesString[0])) {
-                            inheritedFrom = acesString[0];
-                            inheritedPerms.put(acesString[2], acesString[1]);
-                        } else {
-                            perms.put(acesString[2], acesString[1]);
-                        }
 
-                        ace.setInheritedFrom(inheritedFrom);
-                        ace.setInheritedPermissions(inheritedPerms);
-                        ace.setPermissions(perms);
-                        final boolean b = perms.isEmpty();
-                        ace.setInherited(b);
+                    definitions.put(workflowDefinition, acl);
+                    rev.put(definition.getKey(), workflowType);
+                }
+                GWTJahiaWorkflowType t = new GWTJahiaWorkflowType();
+                t.setDisplayName(workflowType);
+                t.setName(workflowType);
+                result.put(t, definitions);
+                keyToMap.put(workflowType, definitions);
+            }
 
-                        aces.put(principal, ace);
-                    }
-                    acl.setAce(new LinkedList<GWTJahiaNodeACE>(aces.values()));
-                    acl.setPermissionsDependencies(new HashMap<String, List<String>>());
-                    defAclMap.put(workflowDefinition, acl);
+            JCRNodeWrapper node = session.getNode(path);
+
+            // Get all inherited workflow permissions
+            Map<String, List<String[]>> map = service.getWorkflowRules(node.getParent(), locale);
+            for (Map.Entry<String, List<String[]>> entry : map.entrySet()) {
+                try {
+                    String wf = entry.getKey();
+                    final WorkflowDefinition definition = service.getWorkflowDefinition(StringUtils.substringBefore(wf,":"),
+                                                                                        StringUtils.substringAfter(wf,":"),
+                                                                                        locale);
+                    final GWTJahiaWorkflowDefinition workflowDefinition = getGWTJahiaWorkflowDefinition(definition);
+                    GWTJahiaNodeACL acl = initAcl(path, entry, definition, true);
+                    keyToMap.get(rev.get(definition.getKey())).remove(workflowDefinition);
+                    keyToMap.get(rev.get(definition.getKey())).put(workflowDefinition, acl);
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
                 }
             }
-            return defAclMap;
+
+            // Get local definitions
+            map = service.getWorkflowRules(node, locale);
+            for (Map.Entry<String, List<String[]>> entry : map.entrySet()) {
+                try {
+                    String wf = entry.getKey();
+                    final WorkflowDefinition definition = service.getWorkflowDefinition(StringUtils.substringBefore(wf,":"),
+                                                                                        StringUtils.substringAfter(wf,":"),
+                                                                                        locale);
+                    final GWTJahiaWorkflowDefinition workflowDefinition = getGWTJahiaWorkflowDefinition(definition);
+                    GWTJahiaNodeACL acl = initAcl(path, entry, definition, false);
+                    workflowDefinition.set("active", Boolean.TRUE);
+                    keyToMap.get(rev.get(definition.getKey())).remove(workflowDefinition);
+                    keyToMap.get(rev.get(definition.getKey())).put(workflowDefinition, acl);
+                } catch (Exception e) {
+                    logger.error(e.getMessage(), e);
+                }
+            }
+            return result;
         } catch (RepositoryException e) {
             e.printStackTrace();
             throw new GWTJahiaServiceException(e.getMessage());
         }
+    }
+
+    private GWTJahiaNodeACL initAcl(String path, Map.Entry<String, List<String[]>> entry, WorkflowDefinition definition,
+                                    boolean inherited) {
+        Map<String, List<String>> permissions = new HashMap<String, List<String>>();
+        permissions.put("tasks", new LinkedList<String>(definition.getTasks()));
+        GWTJahiaNodeACL acl = new GWTJahiaNodeACL();
+        acl.setAvailablePermissions(permissions);
+        Map<String, GWTJahiaNodeACE> aces = new HashMap<String, GWTJahiaNodeACE>();
+        for (String[] acesString : entry.getValue()) {
+            String principal = acesString[3];
+            GWTJahiaNodeACE ace;
+            Map<String, String> perms;
+            Map<String, String> inheritedPerms;
+            if (!aces.containsKey(principal)) {
+                ace = new GWTJahiaNodeACE();
+                ace.setPrincipalType(principal.charAt(0));
+                ace.setPrincipal(principal.substring(2));
+                perms = new HashMap<String, String>();
+                inheritedPerms = new HashMap<String, String>();
+            } else {
+                ace = aces.get(principal);
+                perms = ace.getPermissions();
+                inheritedPerms = ace.getInheritedPermissions();
+            }
+            String inheritedFrom = null;
+            if (inherited || !path.equals(acesString[0])) {
+                inheritedFrom = acesString[0];
+                inheritedPerms.put(acesString[2], acesString[1]);
+            } else {
+                perms.put(acesString[2], acesString[1]);
+            }
+
+            ace.setInheritedFrom(inheritedFrom);
+            ace.setInheritedPermissions(inheritedPerms);
+            ace.setPermissions(perms);
+            final boolean b = perms.isEmpty();
+            ace.setInherited(b);
+
+            aces.put(principal, ace);
+        }
+        acl.setAce(new LinkedList<GWTJahiaNodeACE>(aces.values()));
+        acl.setPermissionsDependencies(new HashMap<String, List<String>>());
+        return acl;
     }
 
     public List<GWTJahiaWorkflowDefinition> getWorkflows(Locale locale) throws GWTJahiaServiceException {
@@ -423,88 +475,41 @@ public class WorkflowHelper {
         }
     }
 
-    public void updateWorkflowRules(String path, List<GWTJahiaWorkflowDefinition> actives,
-                                    List<GWTJahiaWorkflowDefinition> deleted, JCRSessionWrapper session,
-                                    Locale locale) throws GWTJahiaServiceException {
+    public void updateWorkflowRules(GWTJahiaNode gwtNode, Map<GWTJahiaWorkflowDefinition, GWTJahiaNodeACL> actives, JCRSessionWrapper session) throws GWTJahiaServiceException {
         try {
-            JCRNodeWrapper node = session.getNode(path);
+            JCRNodeWrapper node = session.getNode(gwtNode.getPath());
             if(!node.isCheckedOut()) {
                 session.checkout(node);
             }
-            // If existing remove all unchecked nodes
-            if (node.hasNode(WorkflowService.WORKFLOWRULES_NODE_NAME)) {
-                JCRNodeWrapper wfRulesNode = node.getNode(WorkflowService.WORKFLOWRULES_NODE_NAME);
-                if(!wfRulesNode.isCheckedOut()) {
-                    session.checkout(wfRulesNode);
-                }
-                for (GWTJahiaWorkflowDefinition definition : deleted) {
-                    final String defKey = definition.getProvider() + "_" + definition.getId();
-                    if (wfRulesNode.hasNode(defKey)) {
-                        wfRulesNode.getNode(defKey).remove();
-                    }
-                }
-                if (actives == null || actives.isEmpty()) {
-                    // No more active definitions for this nodes
-                    wfRulesNode.remove();
-                    // Remove also associated workflows
-                    if (node.isNodeType("jmix:worklfowRulesable")) {
-                        node.removeMixin("jmix:worklfowRulesable");
-                    }
-                    if (node.isNodeType("jmix:publication")) {
-                        node.removeMixin("jmix:publication");
-                    }
-                }
-            }
-            if (actives != null && !actives.isEmpty()) {
-                // Add or let untouch existing node
+            if (!actives.isEmpty()) {
                 if (!node.isNodeType("jmix:worklfowRulesable")) {
                     node.addMixin("jmix:worklfowRulesable");
                 }
                 if (!node.isNodeType("jmix:publication")) {
                     node.addMixin("jmix:publication");
                 }
-                try {
-                    node = node.getNode(WorkflowService.WORKFLOWRULES_NODE_NAME);
-                    if(!node.isCheckedOut()) {
-                        session.checkout(node);
-                    }
-                } catch (RepositoryException e) {
-                    node = node.addNode(WorkflowService.WORKFLOWRULES_NODE_NAME, "jnt:workflowRules");
-                }
-                for (GWTJahiaWorkflowDefinition definition : actives) {
-                    final String defKey = definition.getProvider() + "_" + definition.getId();
-                    if (!node.hasNode(defKey)) {
-                        final JCRNodeWrapper wfRuleNode = node.addNode(defKey, "jnt:workflowRule");
-                        wfRuleNode.setProperty("j:workflow", definition.getProvider() + ":" + definition.getId());
-                    }
-                }
+                session.save();
             }
-            session.save();
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(e.getMessage());
-        }
-    }
-
-    public void updateWorkflowRulesACL(String path, GWTJahiaWorkflowDefinition workflowDefinition,
-                                       GWTJahiaNodeACL nodeACL, JCRSessionWrapper session, Locale locale)
-            throws GWTJahiaServiceException {
-        JCRNodeWrapper node = null;
-        try {
-            node = session.getNode(path);
-            updateWorkflowRules(path, Arrays.asList(workflowDefinition), new LinkedList<GWTJahiaWorkflowDefinition>(),
-                                session, locale);
-            // If existing remove all unchecked nodes
             if (node.hasNode(WorkflowService.WORKFLOWRULES_NODE_NAME)) {
-                node = node.getNode(WorkflowService.WORKFLOWRULES_NODE_NAME);
-                final String defKey = workflowDefinition.getProvider() + "_" + workflowDefinition.getId();
-                if (node.hasNode(defKey)) {
-                    node = node.getNode(defKey);
-                    if(!node.isCheckedOut()) {
-                        session.checkout(node);
+                JCRNodeWrapper wfRulesNode = node.getNode(WorkflowService.WORKFLOWRULES_NODE_NAME);
+                if(!wfRulesNode.isCheckedOut()) {
+                    session.checkout(wfRulesNode);
+                }
+                Set<String> activeKeys = new HashSet<String>();
+                for (GWTJahiaWorkflowDefinition definition : actives.keySet()) {
+                    final String defKey = definition.getProvider() + "_" + definition.getId();
+                    activeKeys.add(defKey);
+
+                    JCRNodeWrapper wfRuleNode;
+                    if (!wfRulesNode.hasNode(defKey)) {
+                        wfRuleNode = wfRulesNode.addNode(defKey, "jnt:workflowRule");
+                        wfRuleNode.setProperty("j:workflow", definition.getProvider() + ":" + definition.getId());
+                    } else {
+                        wfRuleNode = wfRulesNode.getNode(defKey);
                     }
+
                     // So we have our jnt:worklfowRule object let's manage the ACE now.
-                    List<GWTJahiaNodeACE> aces = nodeACL.getAce();
+                    List<GWTJahiaNodeACE> aces = actives.get(definition).getAce();
                     boolean asLocalAce = false;
                     for (GWTJahiaNodeACE ace : aces) {
                         String principal = ace.getPrincipal();
@@ -520,28 +525,47 @@ public class WorkflowHelper {
                                     denied.add(entry.getKey());
                                 }
                             }
-                            saveAce(node, ace, principal, granted, "GRANT");
-                            saveAce(node, ace, principal, denied, "DENY");
+                            saveAce(wfRuleNode, ace, principal, granted, "GRANT");
+                            saveAce(wfRuleNode, ace, principal, denied, "DENY");
                         } else {
                             String nodeName = "GRANT_" + ace.getPrincipalType() + "_" + principal;
                             JCRNodeWrapper aceNode;
-                            if (node.hasNode(nodeName)) {
-                                aceNode = node.getNode(nodeName);
+                            if (wfRuleNode.hasNode(nodeName)) {
+                                aceNode = wfRuleNode.getNode(nodeName);
                                 aceNode.remove();
                             }
                             nodeName = "DENY_" + ace.getPrincipalType() + "_" + principal;
-                            if (node.hasNode(nodeName)) {
-                                aceNode = node.getNode(nodeName);
+                            if (wfRuleNode.hasNode(nodeName)) {
+                                aceNode = wfRuleNode.getNode(nodeName);
                                 aceNode.remove();
                             }
                         }
                     }
                     if (!asLocalAce) {
-                        node.remove();
+                        wfRuleNode.remove();
                     }
                 }
-                session.save();
+                if (actives == null || actives.isEmpty()) {
+                    // No more active definitions for this nodes
+                    wfRulesNode.remove();
+                    // Remove also associated workflows
+                    if (node.isNodeType("jmix:worklfowRulesable")) {
+                        node.removeMixin("jmix:worklfowRulesable");
+                    }
+                    if (node.isNodeType("jmix:publication")) {
+                        node.removeMixin("jmix:publication");
+                    }
+                } else {
+                    NodeIterator ni = wfRulesNode.getNodes();
+                    while (ni.hasNext()) {
+                        JCRNodeWrapper rule = (JCRNodeWrapper) ni.next();
+                        if (!activeKeys.contains(rule.getName())) {
+                            rule.remove();
+                        }
+                    }
+                }
             }
+            session.save();
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());

@@ -117,42 +117,18 @@ public class WorkflowService {
     public List<WorkflowDefinition> getWorkflows(Locale locale) throws RepositoryException {
         List<WorkflowDefinition> workflowsByProvider = new ArrayList<WorkflowDefinition>();
         for (Map.Entry<String, WorkflowProvider> providerEntry : providers.entrySet()) {
-            workflowsByProvider.addAll(providerEntry.getValue().getAvailableWorkflows());
-        }
-        if (locale != null) {
-            for (WorkflowDefinition definition : workflowsByProvider) {
-                try {
-                    ResourceBundle resourceBundle = getResourceBundle(definition, locale);
-                    definition.setDisplayName(resourceBundle.getString("name"));
-                } catch (Exception e) {
-                    definition.setDisplayName(definition.getName());
-                }
-            }
+            workflowsByProvider.addAll(providerEntry.getValue().getAvailableWorkflows(locale));
         }
         return workflowsByProvider;
-    }
-
-    private ResourceBundle getResourceBundle(WorkflowDefinition definition, Locale locale) {
-        return ResourceBundle
-                .getBundle(this.getClass().getPackage().getName() + "." + definition.getKey().replaceAll(" ", ""),
-                        locale);
     }
 
     public List<WorkflowDefinition> getWorkflowsForAction(String actionName, Locale locale) throws RepositoryException {
         List<String> l = workflowTypes.get(actionName);
         List<WorkflowDefinition> workflowsByProvider = new ArrayList<WorkflowDefinition>();
         for (Map.Entry<String, WorkflowProvider> providerEntry : providers.entrySet()) {
-            List<WorkflowDefinition> defs = providerEntry.getValue().getAvailableWorkflows();
+            List<WorkflowDefinition> defs = providerEntry.getValue().getAvailableWorkflows(locale);
             for (WorkflowDefinition def : defs) {
                 if (l.contains(def.getKey())) {
-                    if (locale != null) {
-                        try {
-                            ResourceBundle resourceBundle = getResourceBundle(def, locale);
-                            def.setDisplayName(resourceBundle.getString("name"));
-                        } catch (Exception e) {
-                            def.setDisplayName(def.getName());
-                        }
-                    }
                     workflowsByProvider.add(def);
                 }
             }
@@ -214,15 +190,7 @@ public class WorkflowService {
                     String workflowDefinitionKey = StringUtils.substringAfter(wfName, ":");
                     String providerKey = StringUtils.substringBefore(wfName, ":");
                     WorkflowDefinition definition =
-                            lookupProvider(providerKey).getWorkflowDefinitionByKey(workflowDefinitionKey);
-                    if (locale != null) {
-                        try {
-                            ResourceBundle resourceBundle = getResourceBundle(definition, locale);
-                            definition.setDisplayName(resourceBundle.getString("name"));
-                        } catch (Exception e) {
-                            definition.setDisplayName(definition.getName());
-                        }
-                    }
+                            lookupProvider(providerKey).getWorkflowDefinitionByKey(workflowDefinitionKey, locale);
                     if (null == workflowsForAction || workflowsForAction.contains(definition)) {
                         List<String[]> l = rules.get(wfName);
                         for (String[] rule : l) {
@@ -373,22 +341,8 @@ public class WorkflowService {
                 }
             }
             if (!processIds.isEmpty()) {
-                List<Workflow> workflowsInformations = entry.getValue().getActiveWorkflowsInformations(processIds);
-                for (Workflow workflowsInformation : workflowsInformations) {
-                    if (locale != null) {
-                        final WorkflowDefinition definition = workflowsInformation.getWorkflowDefinition();
-                        try {
-                            ResourceBundle resourceBundle = getResourceBundle(definition, locale);
-                            definition.setDisplayName(resourceBundle.getString("name"));
-                            final Set<WorkflowAction> actionSet = workflowsInformation.getAvailableActions();
-                            for (WorkflowAction action : actionSet) {
-                                i18nOfWorkflowAction(locale, action, definition);
-                            }
-                        } catch (Exception e) {
-                            definition.setDisplayName(definition.getName());
-                        }
-                    }
-                }
+                List<Workflow> workflowsInformations = entry.getValue().getActiveWorkflowsInformations(processIds,
+                        locale);
                 workflows.addAll(workflowsInformations);
             }
         }
@@ -399,10 +353,11 @@ public class WorkflowService {
      *
      * @param processId the process we want to advance
      * @param provider  The provider executing the process
+     * @param locale
      * @return a set of actions per workflows per provider.
      */
-    public Set<WorkflowAction> getAvailableActions(String processId, String provider) {
-        return lookupProvider(provider).getAvailableActions(processId);
+    public Set<WorkflowAction> getAvailableActions(String processId, String provider, Locale locale) {
+        return lookupProvider(provider).getAvailableActions(processId, locale);
     }
 
     /**
@@ -449,7 +404,7 @@ public class WorkflowService {
         args.put("nodeIds", nodeIds);
         args.put("workspace", session.getWorkspace().getName());
         args.put("locale", session.getLocale());
-        args.put("workflow", lookupProvider(provider).getWorkflowDefinitionByKey(processKey));
+        args.put("workflow", lookupProvider(provider).getWorkflowDefinitionByKey(processKey, session.getLocale()));
         args.put("user", session.getUser() != null ? session.getUser().getUserKey() : null);
         final String processId = lookupProvider(provider).startProcess(processKey, args);
         if (logger.isDebugEnabled()) {
@@ -496,14 +451,11 @@ public class WorkflowService {
     public List<WorkflowTask> getTasksForUser(JahiaUser user, Locale locale) {
         final List<WorkflowTask> workflowActions = new LinkedList<WorkflowTask>();
         for (Map.Entry<String, WorkflowProvider> providerEntry : providers.entrySet()) {
-            workflowActions.addAll(providerEntry.getValue().getTasksForUser(user));
+            workflowActions.addAll(providerEntry.getValue().getTasksForUser(user, locale));
         }
         Locale displayLocale = locale;
         if (displayLocale == null) {
             displayLocale = UserPreferencesHelper.getPreferredLocale(user);
-        }
-        for (WorkflowTask workflowAction : workflowActions) {
-            i18nOfWorkflowAction(displayLocale, workflowAction, workflowAction.getWorkflowDefinition());
         }
         return workflowActions;
     }
@@ -511,35 +463,9 @@ public class WorkflowService {
     public List<Workflow> getWorkflowsForUser(JahiaUser user, Locale locale) {
         final List<Workflow> workflow = new LinkedList<Workflow>();
         for (Map.Entry<String, WorkflowProvider> providerEntry : providers.entrySet()) {
-            workflow.addAll(providerEntry.getValue().getWorkflowsForUser(user));
+            workflow.addAll(providerEntry.getValue().getWorkflowsForUser(user, locale));
         }
         return workflow;
-    }
-
-    private void i18nOfWorkflowAction(Locale displayLocale, WorkflowAction workflowAction,
-                                      WorkflowDefinition definition) {
-        ResourceBundle resourceBundle = getResourceBundle(definition, displayLocale);
-        workflowAction.setDisplayName(
-                resourceBundle.getString(workflowAction.getName().replaceAll(" ", ".").trim().toLowerCase()));
-        if (workflowAction instanceof WorkflowTask) {
-            WorkflowTask workflowTask = (WorkflowTask) workflowAction;
-            Set<String> outcomes = workflowTask.getOutcomes();
-            List<String> displayOutcomes = new LinkedList<String>();
-            for (String outcome : outcomes) {
-                String key = workflowAction.getName().replaceAll(" ", ".").trim().toLowerCase() + "." +
-                        outcome.replaceAll(" ", ".").trim().toLowerCase();
-                String s;
-                try {
-
-                    s = resourceBundle.getString(key);
-                } catch (Exception e) {
-                    logger.info("Missing ressource : " + key + " in " + resourceBundle);
-                    s = workflowAction.getName();
-                }
-                displayOutcomes.add(s);
-            }
-            workflowTask.setDisplayOutcomes(displayOutcomes);
-        }
     }
 
     public void assignTask(String taskId, String provider, JahiaUser user) {
@@ -639,31 +565,12 @@ public class WorkflowService {
     }
 
     public WorkflowTask getWorkflowTask(String taskId, String provider, Locale locale) {
-        WorkflowTask workflowTask = lookupProvider(provider).getWorkflowTask(taskId);
-        if (locale != null) {
-            ResourceBundle resourceBundle = getResourceBundle(workflowTask.getWorkflowDefinition(), locale);
-            Set<String> outcomes = workflowTask.getOutcomes();
-            List<String> displayOutcomes = new LinkedList<String>();
-            for (String outcome : outcomes) {
-                String s = resourceBundle.getString(
-                        workflowTask.getName().replaceAll(" ", ".").trim().toLowerCase() + "." +
-                                outcome.replaceAll(" ", ".").trim().toLowerCase());
-                displayOutcomes.add(s);
-            }
-            workflowTask.setDisplayOutcomes(displayOutcomes);
-        }
+        WorkflowTask workflowTask = lookupProvider(provider).getWorkflowTask(taskId, locale);
         return workflowTask;
     }
 
     public HistoryWorkflow getHistoryWorkflow(String id, String provider, Locale locale) {
-        HistoryWorkflow wf = providers.get(provider).getHistoryWorkflows(Collections.singletonList(id)).get(0);
-        try {
-            ResourceBundle resourceBundle = getResourceBundle(wf.getWorkflowDefinition(), locale);
-            wf.setDisplayName(resourceBundle.getString("name"));
-        } catch (Exception e) {
-            wf.setDisplayName(wf.getName());
-        }
-
+        HistoryWorkflow wf = providers.get(provider).getHistoryWorkflows(Collections.singletonList(id), locale).get(0);
         return wf;
     }
 
@@ -680,23 +587,11 @@ public class WorkflowService {
         List<HistoryWorkflow> history = new LinkedList<HistoryWorkflow>();
         try {
             for (WorkflowProvider workflowProvider : providers.values()) {
-                history.addAll(workflowProvider.getHistoryWorkflowsForNode(node.getIdentifier()));
+                history.addAll(workflowProvider.getHistoryWorkflowsForNode(node.getIdentifier(), locale));
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
-
-        if (locale != null) {
-            for (HistoryWorkflow definition : history) {
-                try {
-                    ResourceBundle resourceBundle = getResourceBundle(definition.getWorkflowDefinition(), locale);
-                    definition.setDisplayName(resourceBundle.getString("name"));
-                } catch (Exception e) {
-                    definition.setDisplayName(definition.getName());
-                }
-            }
-        }
-
         return history;
     }
 
@@ -711,35 +606,7 @@ public class WorkflowService {
      */
     public List<HistoryWorkflowTask> getHistoryWorkflowTasks(String workflowProcessId, String providerKey,
                                                              Locale locale) {
-        WorkflowDefinition def = getHistoryWorkflow(workflowProcessId, providerKey, locale).getWorkflowDefinition();
-        List<HistoryWorkflowTask> list = lookupProvider(providerKey).getHistoryWorkflowTasks(workflowProcessId);
-        if (locale != null) {
-            for (HistoryWorkflowTask task : list) {
-
-                ResourceBundle resourceBundle = getResourceBundle(def, locale);
-                try {
-                    task.setDisplayName(
-                            resourceBundle.getString(task.getName().replaceAll(" ", ".").trim().toLowerCase()));
-                } catch (Exception e) {
-                    task.setDisplayName(task.getName());
-                }
-
-                String outcome = task.getOutcome();
-                if (outcome != null) {
-                    String key = task.getName().replaceAll(" ", ".").trim().toLowerCase() + "." +
-                            outcome.replaceAll(" ", ".").trim().toLowerCase();
-                    String displayOutcome;
-                    try {
-                        displayOutcome = resourceBundle.getString(key);
-                    } catch (Exception e) {
-                        logger.info("Missing ressource : " + key + " in " + resourceBundle);
-                        displayOutcome = outcome;
-                    }
-
-                    task.setDisplayOutcome(displayOutcome);
-                }
-            }
-        }
+        List<HistoryWorkflowTask> list = lookupProvider(providerKey).getHistoryWorkflowTasks(workflowProcessId, locale);
         return list;
     }
 
@@ -780,7 +647,7 @@ public class WorkflowService {
             throws RepositoryException {
         String provider = StringUtils.substringBefore(wfName, ":");
         String wfKey = StringUtils.substringAfter(wfName, ":");
-        WorkflowDefinition definition = providers.get(provider).getWorkflowDefinitionByKey(wfKey);
+        WorkflowDefinition definition = providers.get(provider).getWorkflowDefinitionByKey(wfKey, null);
         addWorkflowRule(node, definition, task, principal);
     }
 
@@ -810,7 +677,7 @@ public class WorkflowService {
             throws RepositoryException {
         try {
             Map<String, List<String[]>> current = results;
-            List<String> foundTypes = new ArrayList<String>();
+            Map<String, String> foundTypes = new HashMap<String, String>();
             while (true) {
                 if (n.hasNode(WORKFLOWRULES_NODE_NAME)) {
                     Node wfRules = n.getNode(WORKFLOWRULES_NODE_NAME);
@@ -825,10 +692,10 @@ public class WorkflowService {
                                 wftype = entry.getKey();
                             }
                         }
-                        if (foundTypes.contains(wftype)) {
+                        if (foundTypes.containsKey(wftype) && !foundTypes.get(wftype).equals(wfName)) {
                             continue;
                         } else {
-                            foundTypes.add(wftype);
+                            foundTypes.put(wftype, wfName);
                         }
                         Map<String, List<String[]>> localResults = new HashMap<String, List<String[]>>();
                         if (!rule.hasNodes()) {
@@ -869,44 +736,12 @@ public class WorkflowService {
         }
     }
 
-
-//    public List<WorkflowRule> getWorkflowRules(final JCRNodeWrapper node, final JCRSessionWrapper session) throws RepositoryException {
-//        JCRNodeWrapper rules = null;
-//        JCRNodeWrapper nodeWrapper = node;
-//        while (rules==null) {
-//            try {
-//                rules = nodeWrapper.getNode("workflowrules");
-//            } catch (RepositoryException e) {
-//                nodeWrapper = nodeWrapper.getParent();
-//            }
-//        }
-//        List<JCRNodeWrapper> rulesList = new ArrayList<JCRNodeWrapper>();
-//        NodeIterator ni = rules.getNodes();
-//        while (ni.hasNext()) {
-//            JCRNodeWrapper rule = (JCRNodeWrapper) ni.next();
-//            WorkflowRule r = new WorkflowRule();
-//
-//            rulesList.add(rule);
-//        }
-//        return rulesList;
-//    }
-//
-
-    public Workflow getWorkflow(String provider, String id) {
-        return  lookupProvider(provider).getWorkflow(id);
+    public Workflow getWorkflow(String provider, String id, Locale locale) {
+        return  lookupProvider(provider).getWorkflow(id, locale);
     }
 
     public WorkflowDefinition getWorkflowDefinition(String provider, String id, Locale locale) {
-        final WorkflowDefinition definition = lookupProvider(provider).getWorkflowDefinitionByKey(id);
-        if (locale != null) {
-            try {
-                ResourceBundle resourceBundle = getResourceBundle(definition, locale);
-                definition.setDisplayName(resourceBundle.getString("name"));
-
-            } catch (Exception e) {
-                definition.setDisplayName(definition.getName());
-            }
-        }
+        final WorkflowDefinition definition = lookupProvider(provider).getWorkflowDefinitionByKey(id, locale);
         return definition;
     }
 

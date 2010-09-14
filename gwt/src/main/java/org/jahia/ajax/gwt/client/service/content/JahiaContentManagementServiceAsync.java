@@ -283,15 +283,7 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
     void initializeEditEngine(String nodePath, AsyncCallback<GWTJahiaEditEngineInitBean> async);
 
 
-    void getWorkflowRules(String path, AsyncCallback<Map<GWTJahiaWorkflowDefinition, GWTJahiaNodeACL>> async);
-
-    void getWorkflows(AsyncCallback<List<GWTJahiaWorkflowDefinition>> async);
-
-    void updateWorkflowRules(String path, List<GWTJahiaWorkflowDefinition> actives,
-                             List<GWTJahiaWorkflowDefinition> deleted, AsyncCallback<Void> async);
-
-    void updateWorkflowRulesACL(String path, GWTJahiaWorkflowDefinition gwtJahiaWorkflowDefinition,
-                                GWTJahiaNodeACL gwtJahiaNodeACL, AsyncCallback<Void> async);
+    void getWorkflowRules(String path, AsyncCallback<Map<GWTJahiaWorkflowType,Map<GWTJahiaWorkflowDefinition,GWTJahiaNodeACL>>> async);
 
     void getGoogleDocsExportFormats(String nodeIdentifier, AsyncCallback<List<String>> async);
     

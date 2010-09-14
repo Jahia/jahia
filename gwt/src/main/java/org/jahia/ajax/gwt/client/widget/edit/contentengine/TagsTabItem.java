@@ -71,7 +71,7 @@ public class TagsTabItem extends EditEngineTabItem {
         return tagsEditor;
     }
     
-    public void updateProperties(TagsEditor tagsEditor, List<GWTJahiaNodeProperty> list, List<String> mixin) {
+    public void updateProperties(List<GWTJahiaNodeProperty> list, List<String> mixin) {
         if (tagsEditor == null) {
             return;
         }

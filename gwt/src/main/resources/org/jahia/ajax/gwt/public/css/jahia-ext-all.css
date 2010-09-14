@@ -2400,7 +2400,6 @@ div.x-toolbar-no-items {
 
 .x-grid3-row td.x-grid3-cell,.x-grid3-summary-row td.x-grid3-cell {
   line-height: 14px;
-  vertical-align: top;
   padding-left: 1px;
   padding-right: 1px;
   -moz-outline: none;

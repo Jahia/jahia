@@ -101,11 +101,6 @@ public class PortletRoleCard extends PortletWizardCard {
         aclEditor.setAclGroup(JCRClientUtils.ROLES_ACL);
         aclEditor.setAddUsersLabel(Messages.get("org.jahia.engines.PortletsManager.wizard.roles.adduser.label", "Add rode-user permission"));
         aclEditor.setAddGroupsLabel(Messages.get("org.jahia.engines.PortletsManager.wizard.roles.addgroup.label", "Add rode-group permission"));
-        Button saveButton = aclEditor.getSaveButton();
-        saveButton.setVisible(false);
-
-        Button restoreButton = aclEditor.getRestoreButton();
-        restoreButton.setVisible(false);
     }
 
     @Override

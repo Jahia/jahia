@@ -93,11 +93,11 @@ public class RightsTabItem extends EditEngineTabItem {
                 } else {
                     rightsEditor.setReadOnly(!node.isWriteable() || node.isLocked());
                 }
-                Button saveButton = rightsEditor.getSaveButton();
-                if (toolbarEnabled) {
-                    saveButton.setVisible(true);
-                    saveButton.addSelectionListener(new SaveAclSelectionListener(engine.getNode()));
-                }
+//                Button saveButton = rightsEditor.getSaveButton();
+//                if (toolbarEnabled) {
+//                    saveButton.setVisible(true);
+//                    saveButton.addSelectionListener(new SaveAclSelectionListener(engine.getNode()));
+//                }
 
 
                 setLayout(new FitLayout());

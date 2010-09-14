@@ -178,46 +178,6 @@ public class PropertiesTabItem extends EditEngineTabItem {
 
             propertiesEditor.setVisible(true);
 
-            if (toolbarEnabled) {
-                ToolBar toolBar = new ToolBar();
-
-                propertiesEditor.add(toolBar);
-
-                Button item = new Button(Messages.get("label.save"));
-                item.setIconStyle("gwt-icons-save");
-                item.setEnabled(engine.getNode().isWriteable() && !engine.getNode().isLocked());
-                item.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                    public void componentSelected(ButtonEvent event) {
-                        final List<GWTJahiaNodeProperty> properties = new ArrayList<GWTJahiaNodeProperty>();
-                        final Map<String, List<GWTJahiaNodeProperty>> langCodeProperties = new HashMap<String, List<GWTJahiaNodeProperty>>();
-
-                        if (propertiesEditor != null) {
-                            //properties.addAll(pe.getProperties());
-                            for (GWTJahiaNode node : engine.getNodes()) {
-                                node.getNodeTypes().removeAll(propertiesEditor.getRemovedTypes());
-                                node.getNodeTypes().addAll(propertiesEditor.getAddedTypes());
-                                node.getNodeTypes().addAll(propertiesEditor.getTemplateTypes());
-                            }
-
-                            JahiaContentManagementService.App.getInstance().savePropertiesAndACL(engine.getNodes(), null,
-                                    getLangPropertiesMap(true),propertiesEditor.getProperties(), new BaseAsyncCallback() {
-                                        public void onApplicationFailure(Throwable throwable) {
-                                            Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
-                                            Log.error("failed", throwable);
-                                        }
-
-                                        public void onSuccess(Object o) {
-                                            Info.display("", "Properties saved");
-                                            //getLinker().refreshTable();
-                                        }
-                                    });
-                        }
-                    }
-                });
-                toolBar.add(new FillToolItem());
-                toolBar.add(item);
-            }
-
             layout();
         }
     }

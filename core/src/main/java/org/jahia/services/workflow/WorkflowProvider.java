@@ -36,6 +36,7 @@ import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -49,11 +50,11 @@ import java.util.Set;
 public interface WorkflowProvider {
     String getKey();
 
-    List<WorkflowDefinition> getAvailableWorkflows();
+    List<WorkflowDefinition> getAvailableWorkflows(Locale locale);
 
-    WorkflowDefinition getWorkflowDefinitionByKey(String key);
+    WorkflowDefinition getWorkflowDefinitionByKey(String key, Locale locale);
 
-    List<Workflow> getActiveWorkflowsInformations(List<String> processIds);
+    List<Workflow> getActiveWorkflowsInformations(List<String> processIds, Locale locale);
 
     String startProcess(String processKey, Map<String,Object> args);
 
@@ -61,13 +62,13 @@ public interface WorkflowProvider {
 
     void signalProcess(String processId, String transitionName, String signalName, Map<String, Object> args);
 
-    Workflow getWorkflow(String processId);
+    Workflow getWorkflow(String processId, Locale locale);
 
-    Set<WorkflowAction> getAvailableActions(String processId);
+    Set<WorkflowAction> getAvailableActions(String processId, Locale locale);
 
-    List<WorkflowTask> getTasksForUser(JahiaUser user);
+    List<WorkflowTask> getTasksForUser(JahiaUser user, Locale locale);
 
-    List<Workflow> getWorkflowsForUser(JahiaUser user);
+    List<Workflow> getWorkflowsForUser(JahiaUser user, Locale locale);
 
     void assignTask(String taskId, JahiaUser user);
 
@@ -81,9 +82,9 @@ public interface WorkflowProvider {
 
     void addComment(String taskId, String comment);
 
-    WorkflowTask getWorkflowTask(String taskId);
+    WorkflowTask getWorkflowTask(String taskId, Locale locale);
 
-    List<HistoryWorkflow> getHistoryWorkflowsForNode(String nodeId);
+    List<HistoryWorkflow> getHistoryWorkflowsForNode(String nodeId, Locale locale);
 
     /**
      * Returns a list of process instance history records for the specified
@@ -91,19 +92,21 @@ public interface WorkflowProvider {
      * workflow process instance.
      * 
      * @param processIds list of process IDs to retrieve history records for
+     * @param locale
      * @return a list of process instance history records for the specified
      *         process IDs
      */
-    List<HistoryWorkflow> getHistoryWorkflows(List<String> processIds);
+    List<HistoryWorkflow> getHistoryWorkflows(List<String> processIds, Locale locale);
 
     /**
      * Returns a list of history records for workflow tasks.
      * This method also returns not completed tasks.
      * 
      * @param processId the process instance ID
+     * @param locale
      * @return a list of history records for workflow tasks
      */
-    List<HistoryWorkflowTask> getHistoryWorkflowTasks(String processId);
+    List<HistoryWorkflowTask> getHistoryWorkflowTasks(String processId, Locale locale);
 
     void deleteProcess(String processId);
 }

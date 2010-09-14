@@ -43,10 +43,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Listener implementation used to update last modification date.
@@ -58,7 +55,7 @@ public class LastModifiedListener extends DefaultEventListener {
     private static Logger logger = Logger.getLogger(LastModifiedListener.class);
 
     public int getEventTypes() {
-        return Event.NODE_ADDED + Event.NODE_REMOVED + Event.PROPERTY_CHANGED + Event.PROPERTY_ADDED + Event.PROPERTY_REMOVED;
+        return Event.NODE_ADDED + Event.NODE_REMOVED + Event.PROPERTY_CHANGED + Event.PROPERTY_ADDED + Event.PROPERTY_REMOVED + Event.NODE_MOVED;
     }
 
     public String getPath() {
@@ -76,7 +73,7 @@ public class LastModifiedListener extends DefaultEventListener {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     Set<String> nodes = new HashSet<String>();
                     Set<String> addedNodes = new HashSet<String>();
-                    Calendar c = new GregorianCalendar();
+                    Calendar c = GregorianCalendar.getInstance();
                     while (eventIterator.hasNext()) {
                         Event event = eventIterator.nextEvent();
 
@@ -85,14 +82,15 @@ public class LastModifiedListener extends DefaultEventListener {
                         }
 
                         String path = event.getPath();
+                        if (path.startsWith("/jcr:system/")) {
+                            continue;
+                        }
                         if ((event.getType() & Event.PROPERTY_CHANGED + Event.PROPERTY_ADDED + Event.PROPERTY_REMOVED) != 0) {
                             if (propertiesToIgnore.contains(StringUtils.substringAfterLast(path, "/"))) {
                                 continue;
                             }
                         }
-                        if (path.startsWith("/jcr:system/")) {
-                            continue;
-                        }
+                        logger.debug("Receiving event for lastModified date for : " + path);
                         if (event.getType() == Event.NODE_ADDED) {
                             addedNodes.add(path);
                             if(!path.contains("j:translation")) {
@@ -105,13 +103,18 @@ public class LastModifiedListener extends DefaultEventListener {
                     }
                     nodes.removeAll(addedNodes);
                     if (!nodes.isEmpty() || !addedNodes.isEmpty()) {
+                        if(logger.isDebugEnabled()) {
+                            logger.debug("Updating lastModified date for existing nodes : "+
+                                         Arrays.deepToString(nodes.toArray(new String[nodes.size()])));
+                            logger.debug("Updating lastModified date for added nodes : "+
+                                         Arrays.deepToString(addedNodes.toArray(new String[addedNodes.size()])));
+                        }
                         for (String node : nodes) {
                             try {
                                 JCRNodeWrapper n = session.getNode(node);
                                 if (n.isNodeType(Constants.MIX_LAST_MODIFIED) && n.isCheckedOut()) {
                                     n.setProperty("jcr:lastModified",c);
                                     n.setProperty("jcr:lastModifiedBy",userId);
-                                    //handleTranslationNodes(n, c, userId);
                                 }
                             } catch (PathNotFoundException e) {
                                 // node has been removed
@@ -120,13 +123,12 @@ public class LastModifiedListener extends DefaultEventListener {
                         for (String addedNode : addedNodes) {
                             try {
                                 JCRNodeWrapper n = session.getNode(addedNode);
-                                if (!n.hasProperty("j:originWS") && n.isNodeType("jmix:originWS") && n.isCheckedOut()) {
+                                if (!n.hasProperty("j:originWS") && n.isNodeType("jmix:originWS")) {
                                     n.setProperty("j:originWS", workspace);
-                                    if (n.isNodeType(Constants.MIX_LAST_MODIFIED)) {
-                                        n.setProperty("jcr:lastModified",c);
-                                        n.setProperty("jcr:lastModifiedBy",userId);
-                                        //handleTranslationNodes(n, c, userId);
-                                    }
+                                }
+                                if (n.isNodeType(Constants.MIX_LAST_MODIFIED) && n.isCheckedOut()) {
+                                    n.setProperty("jcr:lastModified", c);
+                                    n.setProperty("jcr:lastModifiedBy", userId);
                                 }
                             } catch (PathNotFoundException e) {
                                 // node has been removed

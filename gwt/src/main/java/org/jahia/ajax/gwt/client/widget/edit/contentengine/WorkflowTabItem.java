@@ -70,6 +70,7 @@ public class WorkflowTabItem extends EditEngineTabItem {
     private LayoutContainer aclPanel;
     private final JahiaContentManagementServiceAsync service;
 
+    private GWTJahiaWorkflowType previousType = null;
     private GWTJahiaWorkflowDefinition previousSelection = null;
     private AclEditor rightsEditor;
     private Map<GWTJahiaWorkflowType, Map<GWTJahiaWorkflowDefinition,GWTJahiaNodeACL>> workflowRules;
@@ -122,6 +123,7 @@ public class WorkflowTabItem extends EditEngineTabItem {
 
                         final ListStore<GWTJahiaWorkflowType> types = new ListStore<GWTJahiaWorkflowType>();
                         final ComboBox<GWTJahiaWorkflowType> typesCombo = new ComboBox<GWTJahiaWorkflowType>();
+                        typesCombo.setForceSelection(true);
                         typesCombo.setValueField("name");
                         typesCombo.setDisplayField("displayName");
                         typesCombo.setStore(types);
@@ -137,22 +139,23 @@ public class WorkflowTabItem extends EditEngineTabItem {
 
                         typesCombo.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaWorkflowType>() {
                             public void selectionChanged(SelectionChangedEvent<GWTJahiaWorkflowType> se) {
+                                combo.setValue(null);
+                                combo.clearSelections();
                                 states.removeAll();
                                 final Map<GWTJahiaWorkflowDefinition, GWTJahiaNodeACL> map =
                                         workflowRules.get(se.getSelectedItem());
                                 states.add(new LinkedList<GWTJahiaWorkflowDefinition>(map.keySet()));
                                 states.sort("displayName", Style.SortDir.ASC);
 
-                                combo.setValue(null);
                                 for (GWTJahiaWorkflowDefinition definition : map.keySet()) {
                                     if (Boolean.TRUE.equals(definition.get("active"))) {
                                         combo.setValue(definition);
                                         break;
                                     }
-                                }
+                                }                                
                             }
                         });
-
+                        combo.setForceSelection(true);
                         combo.setDisplayField("displayName");
                         combo.setWidth(400);
                         combo.setStore(states);
@@ -163,8 +166,8 @@ public class WorkflowTabItem extends EditEngineTabItem {
                             public void selectionChanged(
                                     SelectionChangedEvent<GWTJahiaWorkflowDefinition> event) {
                                 if (previousSelection != null && rightsEditor != null) {
-                                    workflowRules.get(typesCombo.getValue()).remove(previousSelection);
-                                    workflowRules.get(typesCombo.getValue()).put(previousSelection, rightsEditor.getAcl());
+                                    workflowRules.get(previousType).remove(previousSelection);
+                                    workflowRules.get(previousType).put(previousSelection, rightsEditor.getAcl());
                                 }
                                 if (event.getSelectedItem() != null) {
                                     if (previousSelection != null) {
@@ -178,6 +181,7 @@ public class WorkflowTabItem extends EditEngineTabItem {
                                     aclPanel.removeAll();
                                 }
                                 previousSelection = event.getSelectedItem();
+                                previousType = typesCombo.getValue();
                                 layout();
                             }
                         });

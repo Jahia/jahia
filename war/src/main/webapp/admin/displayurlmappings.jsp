@@ -38,108 +38,108 @@
                     </div>
                     <div class="content-body">
                         <jcr:node var="siteNode" uuid="${theSite.uuid}"/>
-                        <jcr:sql var="vanities" sql="select * from [jnt:vanityUrl] as vanity where ISDESCENDANTNODE(vanity,'${siteNode.path}')"/>
+                        <jcr:sql var="vanities" sql="select * from [jnt:vanityUrl] as vanity where ISDESCENDANTNODE(vanity,'${siteNode.path}') order by vanity.[j:url]"/>
                         <pg:pager
                                 url="<%=url%>"
                                 items="${functions:length(vanities.nodes)}"
-                                maxPageItems="10"
-                                maxIndexPages="5"
+                                maxPageItems="15"
+                                maxIndexPages="15"
                                 export="currentPageNumber=pageNumber"
                                 >
                         <table class="evenOddTable" style="width: 100%;">
-						<tr><td colspan=5>
-                        <pg:index export="itemCount">
-                            <div class="pagination"><!--start pagination-->
-                                <div class="paginationNavigation">
-                                    <pg:prev ifnull="true">
-                                        <c:if test="${not empty pageUrl}"><a
-                                                href="${pageUrl}&do=urlmapping"><strong><fmt:message
-                                                key="label.previous"/>&nbsp;</strong></a></c:if>
-                                        <c:if test="${empty pageUrl}"><span><strong><fmt:message
-                                                key="label.previous"/>&nbsp;</strong></span></c:if>
-                                    </pg:prev>
-                                    <pg:pages>
-                                        <c:if test="${pageNumber != currentPageNumber}"><a
-                                                href="${pageUrl}&do=urlmapping">${pageNumber}&nbsp;</a></c:if>
-                                        <c:if test="${pageNumber == currentPageNumber}"><span>${pageNumber}&nbsp;</span></c:if>
-                                    </pg:pages>
-                                    <pg:next ifnull="true">
-                                        <c:if test="${not empty pageUrl}"><a
-                                                href="${pageUrl}&do=urlmapping"><strong>&nbsp;<fmt:message
-                                                key="label.next"/></strong></a></c:if>
-                                        <c:if test="${empty pageUrl}"><span><strong>&nbsp;<fmt:message
-                                                key="label.next"/></strong></span></c:if>
-                                    </pg:next>
-                                </div>
-                            </div>
-                            <!--stop pagination-->
-                        </pg:index>
-</td></tr>
+                            <tr><td colspan=5>
+                                <pg:index export="itemCount">
+                                    <div class="pagination"><!--start pagination-->
+                                        <div class="paginationNavigation">
+                                            <pg:prev ifnull="true">
+                                                <c:if test="${not empty pageUrl}"><a
+                                                        href="${pageUrl}&do=urlmapping"><strong><fmt:message
+                                                        key="label.previous"/>&nbsp;</strong></a></c:if>
+                                                <c:if test="${empty pageUrl}"><span><strong><fmt:message
+                                                        key="label.previous"/>&nbsp;</strong></span></c:if>
+                                            </pg:prev>
+                                            <pg:pages>
+                                                <c:if test="${pageNumber != currentPageNumber}"><a
+                                                        href="${pageUrl}&do=urlmapping">${pageNumber}&nbsp;</a></c:if>
+                                                <c:if test="${pageNumber == currentPageNumber}"><span>${pageNumber}&nbsp;</span></c:if>
+                                            </pg:pages>
+                                            <pg:next ifnull="true">
+                                                <c:if test="${not empty pageUrl}"><a
+                                                        href="${pageUrl}&do=urlmapping"><strong>&nbsp;<fmt:message
+                                                        key="label.next"/></strong></a></c:if>
+                                                <c:if test="${empty pageUrl}"><span><strong>&nbsp;<fmt:message
+                                                        key="label.next"/></strong></span></c:if>
+                                            </pg:next>
+                                        </div>
+                                    </div>
+                                    <!--stop pagination-->
+                                </pg:index>
+                            </td></tr>
                             <tr><th><b><fmt:message key='label.urlmapping.mapping'/></b></th><th><b><fmt:message key='label.page'/></b></th>
                                 <th><b><fmt:message key='label.urlmapping.lang'/></b></th><%/*th><b><fmt:message key='org.jahia.admin.urlmapping.site'/></b></th*/%>
                                 <th><b><fmt:message key='label.urlmapping.active'/></b></th><th><b><fmt:message key='label.urlmapping.default'/></b></th></tr>
-                            <%
+                                    <%
                                 int counter = 0;
                             %>
                             <c:forEach items="${vanities.nodes}" var="vanity">
-                                <pg:item>
+                            <pg:item>
                                     <%
                                         if(counter % 2 == 0) {
                                     %>
 
-                                    <tr class="evenLine">
-                                                <%}else{%>
-                                    <tr class="oddLine">
-                                        <%}
+                            <tr class="evenLine">
+                                        <%}else{%>
+                            <tr class="oddLine">
+                                <%}
 
-                                            counter ++;%>
-
-
-                                        <td><a href="" target="_blank">${vanity.properties["j:url"].string}</a></td>
-                                        <td><a href="" target="_blank">${vanity.parent.parent.path}</a></td>
-                                        <td>${vanity.properties["jcr:language"].string}</td>
-                                        <%/*td><=mapping.getSiteID()></td*/%>
-                                        <td>${vanity.properties["j:active"].string}</td>
-                                        <td>${vanity.properties["j:default"].string}</td>
+                                    counter ++;%>
 
 
-                                    </tr>
-                                </pg:item>
+                                <td><a href="<%=contextPath%>${vanity.properties["j:url"].string}.html" target="_blank">${vanity.properties["j:url"].string}</a></td>
+                                <td><a href="<%=contextPath%>/cms/edit/default/${theSite.defaultLanguage}${vanity.parent.parent.path}.html" target="_blank">${vanity.parent.parent.path}</a></td>
+                                <td>${vanity.properties["jcr:language"].string}</td>
+                                <%/*td><=mapping.getSiteID()></td*/%>
+                                <td>${vanity.properties["j:active"].string}</td>
+                                <td>${vanity.properties["j:default"].string}</td>
+
+
+                            </tr>
+                            </pg:item>
                             </c:forEach>
                     </div>
                 </div>
             </td>
         </tr>
         </tbody>
-	<tr><td colspan=5>
-    <pg:index export="itemCount">
-        <div class="pagination"><!--start pagination-->
-            <div class="paginationNavigation">
-                <pg:prev ifnull="true">
-                    <c:if test="${not empty pageUrl}"><a
-                            href="${pageUrl}&do=urlmapping"><strong><fmt:message
-                            key="label.previous"/>&nbsp;</strong></a></c:if>
-                    <c:if test="${empty pageUrl}"><span><strong><fmt:message
-                            key="label.previous"/>&nbsp;</strong></span></c:if>
-                </pg:prev>
-                <pg:pages>
-                    <c:if test="${pageNumber != currentPageNumber}"><a
-                            href="${pageUrl}&do=urlmapping">${pageNumber}&nbsp;</a></c:if>
-                    <c:if test="${pageNumber == currentPageNumber}"><span>${pageNumber}&nbsp;</span></c:if>
-                </pg:pages>
-                <pg:next ifnull="true">
-                    <c:if test="${not empty pageUrl}"><a
-                            href="${pageUrl}&do=urlmapping"><strong>&nbsp;<fmt:message
-                            key="label.next"/></strong></a></c:if>
-                    <c:if test="${empty pageUrl}"><span><strong>&nbsp;<fmt:message
-                            key="search.results.pagination.next"/></strong></span></c:if>
-                </pg:next>
-            </div>
-        </div>
-        <!--stop pagination-->
-    </pg:index>
-	</td></tr>
-	</table>
+        <tr><td colspan=5>
+            <pg:index export="itemCount">
+                <div class="pagination"><!--start pagination-->
+                    <div class="paginationNavigation">
+                        <pg:prev ifnull="true">
+                            <c:if test="${not empty pageUrl}"><a
+                                    href="${pageUrl}&do=urlmapping"><strong><fmt:message
+                                    key="label.previous"/>&nbsp;</strong></a></c:if>
+                            <c:if test="${empty pageUrl}"><span><strong><fmt:message
+                                    key="label.previous"/>&nbsp;</strong></span></c:if>
+                        </pg:prev>
+                        <pg:pages>
+                            <c:if test="${pageNumber != currentPageNumber}"><a
+                                    href="${pageUrl}&do=urlmapping">${pageNumber}&nbsp;</a></c:if>
+                            <c:if test="${pageNumber == currentPageNumber}"><span>${pageNumber}&nbsp;</span></c:if>
+                        </pg:pages>
+                        <pg:next ifnull="true">
+                            <c:if test="${not empty pageUrl}"><a
+                                    href="${pageUrl}&do=urlmapping"><strong>&nbsp;<fmt:message
+                                    key="label.next"/></strong></a></c:if>
+                            <c:if test="${empty pageUrl}"><span><strong>&nbsp;<fmt:message
+                                    key="label.next"/></strong></span></c:if>
+                        </pg:next>
+                    </div>
+                </div>
+                <!--stop pagination-->
+            </pg:index>
+        </td></tr>
+    </table>
     </pg:pager>
 </div>
 <div id="actionBar">

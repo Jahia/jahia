@@ -3084,11 +3084,13 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
             String path = getPath();
             if (path.startsWith("/sites/")) {
-                return (site = new JCRSiteNode(getSession().getNode(path.substring(0, path.indexOf('/', 7)))));
+                int index = path.indexOf('/', 7);
+                return (site = new JCRSiteNode(getSession().getNode(index==-1?path:path.substring(0, index))));
             }
 
             if (path.startsWith("/templateSets/")) {
-                return (site = new JCRSiteNode(getSession().getNode(path.substring(0, path.indexOf('/', 14)))));
+                int index = path.indexOf('/', 14);
+                return (site = new JCRSiteNode(getSession().getNode(index==-1?path:path.substring(0, index))));
             }
         } catch (ItemNotFoundException e) {
         }

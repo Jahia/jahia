@@ -149,7 +149,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware {
         logger.info("Mail message sent in " + (System.currentTimeMillis() - timer) + " ms");
     }
 
-    protected String getEndpointUri() {
+    public String getEndpointUri() {
         if (sendMailEndpointUri == null) {
             StringBuilder uri = new StringBuilder();
             if (!settings.getHost().startsWith("smtp://") || !settings.getHost().startsWith("smtps://")) {
@@ -260,13 +260,13 @@ public class MailServiceImpl extends MailService implements CamelContextAware {
         if (settingsBean.isMail_service_activated()) {
             MailSettingsValidationResult result = validateSettings(settings, false);
             if (result.isSuccess()) {
-                settings.setConfigugationValid(true);
+                settings.setConfigurationValid(true);
 
                 logger.info("Started Mail Service using following settings: mailhost=[" + settings.getSmtpHost()
                         + "] to=[" + settings.getTo() + "] from=[" + settings.getFrom() + "] notificationLevel=["
                         + settings.getNotificationLevel() + "]");
             } else {
-                settings.setConfigugationValid(false);
+                settings.setConfigurationValid(false);
                 logger.info("Mail settings are not set or invalid. Mail Service will be disabled");
             }
         } else {

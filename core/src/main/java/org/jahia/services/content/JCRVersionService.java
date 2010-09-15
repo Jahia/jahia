@@ -417,27 +417,31 @@ public class JCRVersionService extends JahiaService {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 VersionManager versionManager = session.getWorkspace().getVersionManager();
                 for (String allUuid : allUuids) {
-                    JCRNodeWrapper nodeWrapper = session.getNodeByUUID(allUuid);
-                    VersionHistory versionHistory = versionManager.getVersionHistory(nodeWrapper.getPath());
-                    if (versionManager.isCheckedOut(nodeWrapper.getPath())) {
-                        versionManager.checkin(nodeWrapper.getPath());
-                    }
-                    if (!versionHistory.hasVersionLabel(label)) {
-                        Version version = versionManager.getBaseVersion(nodeWrapper.getPath());
-                        logger.debug("Add version label " + label + " on " + nodeWrapper.getPath() + " for version " +
-                                     version.getName());
-                        if (nodeWrapper.isVersioned()) {
-                            versionHistory.addVersionLabel(version.getName(), label, true);
+                    try {
+                        JCRNodeWrapper nodeWrapper = session.getNodeByUUID(allUuid);
+                        VersionHistory versionHistory = versionManager.getVersionHistory(nodeWrapper.getPath());
+                        if (versionManager.isCheckedOut(nodeWrapper.getPath())) {
+                            versionManager.checkin(nodeWrapper.getPath());
                         }
-                        if (nodeWrapper.hasNodes()) {
-                            NodeIterator iterator = nodeWrapper.getNodes();
-                            while (iterator.hasNext()) {
-                                JCRNodeWrapper nodeWrapper1 = (JCRNodeWrapper) iterator.nextNode();
-                                if (nodeWrapper1.isVersioned()) {
-                                    addVersionLabel(nodeWrapper1, label);
+                        if (!versionHistory.hasVersionLabel(label)) {
+                            Version version = versionManager.getBaseVersion(nodeWrapper.getPath());
+                            logger.debug("Add version label " + label + " on " + nodeWrapper.getPath() + " for version " +
+                                         version.getName());
+                            if (nodeWrapper.isVersioned()) {
+                                versionHistory.addVersionLabel(version.getName(), label, true);
+                            }
+                            if (nodeWrapper.hasNodes()) {
+                                NodeIterator iterator = nodeWrapper.getNodes();
+                                while (iterator.hasNext()) {
+                                    JCRNodeWrapper nodeWrapper1 = (JCRNodeWrapper) iterator.nextNode();
+                                    if (nodeWrapper1.isVersioned()) {
+                                        addVersionLabel(nodeWrapper1, label);
+                                    }
                                 }
                             }
                         }
+                    } catch (RepositoryException e) {
+                        logger.debug(e.getMessage(), e);
                     }
                 }
                 return null;

@@ -176,7 +176,7 @@ public class MailSettings implements Serializable {
      * @param configugationValid
      *            the configugationValid to set
      */
-    public void setConfigugationValid(boolean configugationValid) {
+    public void setConfigurationValid(boolean configugationValid) {
         this.configugationValid = configugationValid;
     }
 

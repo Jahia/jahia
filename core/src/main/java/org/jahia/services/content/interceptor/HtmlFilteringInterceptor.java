@@ -44,8 +44,11 @@ import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.version.VersionException;
 
 import net.htmlparser.jericho.Element;
+import net.htmlparser.jericho.HTMLElements;
 import net.htmlparser.jericho.OutputDocument;
 import net.htmlparser.jericho.Source;
+import net.htmlparser.jericho.StartTag;
+import net.htmlparser.jericho.StartTagType;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -62,11 +65,62 @@ public class HtmlFilteringInterceptor extends RichTextInterceptor {
 
 	private static Logger logger = Logger.getLogger(HtmlFilteringInterceptor.class);
 
+	/**
+	 * Filters out configured "unwanted" HTML tags and returns the modified
+	 * content. If no modifications needs to be done, returns the original
+	 * content.
+	 * 
+	 * @param content
+	 *            the content to be modified
+	 * @param filteredTags
+	 *            the set of tags to be filtered out
+	 * @return filtered out content or the original one if no modifications
+	 *         needs to be done
+	 */
+	protected static String filterTags(String content, Set<String> filteredTags) {
+		if (filteredTags.isEmpty()) {
+			return content;
+		}
+
+		long timer = System.currentTimeMillis();
+		boolean modified = false;
+
+		Source src = new Source(content);
+		OutputDocument out = new OutputDocument(src);
+		for (String filteredTagName : filteredTags) {
+			boolean requiresEndTag = HTMLElements.getEndTagRequiredElementNames().contains(filteredTagName);
+			for (StartTag tag : src.getAllStartTags(filteredTagName)) {
+				Element element = null;
+				if (tag.getTagType() == StartTagType.NORMAL) {
+					if (requiresEndTag) {
+						element = tag.getElement();
+						if (element.getEndTag() == null) {
+							// no closing tag found -> skip
+							continue;
+						}
+					}
+
+					out.remove(element != null ? element : tag.getElement());
+					modified = true;
+				}
+			}
+		}
+		String result = modified ? out.toString() : content;
+
+		if (logger.isDebugEnabled()) {
+			logger.debug("Filter HTML tags took " + (System.currentTimeMillis() - timer) + " ms");
+		}
+
+		return result;
+	}
+
 	private Set<String> filteredTags = Collections.emptySet();
 
 	/**
 	 * Initializes an instance of this class.
-	 * @param filteredTags comma- or space-separated HTML tag names to be filtered out
+	 * 
+	 * @param filteredTags
+	 *            comma- or space-separated HTML tag names to be filtered out
 	 */
 	public HtmlFilteringInterceptor(String filteredTags) {
 		super();
@@ -76,8 +130,8 @@ public class HtmlFilteringInterceptor extends RichTextInterceptor {
 			if (toBeFiltered.length() > 0) {
 				this.filteredTags.add(toBeFiltered);
 			}
-        }
-		
+		}
+
 		if (this.filteredTags.isEmpty()) {
 			logger.info("No HTML tag filtering configured. Interceptor will be disabled.");
 		} else {
@@ -128,37 +182,6 @@ public class HtmlFilteringInterceptor extends RichTextInterceptor {
 		return modifiedValue;
 	}
 
-	/**
-	 * Filters out configured "unwanted" HTML tags and returns the modified
-	 * content. If no modifications needs to be done, returns the original
-	 * content.
-	 * 
-	 * @param content
-	 *            the content to be modified
-	 * @return filtered out content or the original one if no modifications
-	 *         needs to be done
-	 */
-	protected String filterTags(String content) {
-		long timer = System.currentTimeMillis();
-		boolean modified = false;
-		
-		Source src = new Source(content);
-		OutputDocument out = new OutputDocument(src);
-		for (String filteredTagName : filteredTags) {
-			for (Element element : src.getAllElements(filteredTagName)) {
-				out.remove(element);
-				modified = true;
-			}
-        }
-		String result = modified ? out.toString() : content;
-		
-		if (logger.isDebugEnabled()) {
-			logger.debug("Filter HTML tags took " + (System.currentTimeMillis() - timer) + " ms");
-		}
-		
-		return result;
-	}
-
 	@Override
 	public Value[] beforeSetValues(JCRNodeWrapper node, String name,
 	        ExtendedPropertyDefinition definition, Value[] originalValues)
@@ -171,6 +194,20 @@ public class HtmlFilteringInterceptor extends RichTextInterceptor {
 			res[i] = beforeSetValue(node, name, definition, originalValue);
 		}
 		return res;
+	}
+
+	/**
+	 * Filters out configured "unwanted" HTML tags and returns the modified
+	 * content. If no modifications needs to be done, returns the original
+	 * content.
+	 * 
+	 * @param content
+	 *            the content to be modified
+	 * @return filtered out content or the original one if no modifications
+	 *         needs to be done
+	 */
+	protected String filterTags(String content) {
+		return filterTags(content, filteredTags);
 	}
 
 }

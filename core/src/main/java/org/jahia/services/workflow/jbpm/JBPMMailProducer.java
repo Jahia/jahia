@@ -238,7 +238,7 @@ public class JBPMMailProducer extends MailProducerImpl {
             return bindingsMap.put(name, value);
         }
 
-        public void putAll(Map<? extends String, ? extends Object> toMerge) {
+        public void putAll(Map toMerge) {
             bindingsMap.putAll(toMerge);
         }
 

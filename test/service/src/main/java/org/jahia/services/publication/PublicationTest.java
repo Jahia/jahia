@@ -886,7 +886,7 @@ public class PublicationTest extends TestCase {
         englishEditSession.save();
         testChildOrdering(englishEditSiteHomeNode, Constants.EDIT_WORKSPACE, "page2", "page3", "page1");
         jcrService.publish(englishEditSiteHomeNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages,
-                false);
+                true);
         JCRNodeWrapper englishLiveSiteHomeNode = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home");
         testChildOrdering(englishLiveSiteHomeNode, Constants.LIVE_WORKSPACE, "page2", "page3", "page1");
 
@@ -899,8 +899,7 @@ public class PublicationTest extends TestCase {
         englishEditSession.move(editPage1.getPath(), SITECONTENT_ROOT_NODE + "/home/page2/page1");
         editPage2.orderBefore("page1", "contentList1");
         englishEditSession.save();
-        jcrService.publish(editPage2.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false);
-
+        jcrService.publish(englishEditSiteHomeNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, true);
         JCRNodeWrapper liveSiteHomeNode = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home");
         JCRNodeWrapper livePage2 = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home/page2");
         testChildOrdering(liveSiteHomeNode, Constants.LIVE_WORKSPACE, "page2", "page3");
@@ -919,7 +918,7 @@ public class PublicationTest extends TestCase {
         editPage1 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/page3/page1");
         editPage1.addNode("anotherList", "jnt:contentList");
         englishEditSession.save();
-        jcrService.publish(editPage3.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false);
+        jcrService.publish(englishEditSiteHomeNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, true);
 
         liveSiteHomeNode = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home");
         livePage2 = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home/page2");

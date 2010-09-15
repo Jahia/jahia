@@ -41,14 +41,21 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.*;
+import org.jahia.services.templates.TemplatePackageApplicationContextLoader.ContextInitializedEvent;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerProvider;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
+import org.springframework.web.context.ServletContextAware;
 
 import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
+import javax.servlet.ServletContext;
+
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -62,13 +69,15 @@ import java.util.*;
  * @since : JAHIA 6.1
  *        Created : 7 juil. 2009
  */
-public class JCRUserManagerProvider extends JahiaUserManagerProvider {
+public class JCRUserManagerProvider extends JahiaUserManagerProvider implements ServletContextAware, ApplicationListener {
+	private static final String ROOT_PWD_RESET_FILE = "WEB-INF/etc/config/root.pwd";
     private transient static Logger logger = Logger.getLogger(JCRUserManagerProvider.class);
     private transient JCRTemplate jcrTemplate;
     private static JCRUserManagerProvider mUserManagerService;
     private transient CacheService cacheService;
     private transient Cache<String, JCRUser> cache;
     private static transient Map<String, String> mappingOfProperties;
+    private ServletContext servletContext;
 
     static {
         mappingOfProperties = new HashMap<String, String>(3);
@@ -488,8 +497,43 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider {
         }
     }
 
-    public void stop() throws JahiaException {
+	private void checkRootUserPwd() {
+		try {
+			if (servletContext.getResource(ROOT_PWD_RESET_FILE) != null) {
+				InputStream is = servletContext.getResourceAsStream(ROOT_PWD_RESET_FILE);
+				try {
+					String newPwd = IOUtils.toString(is);
+					logger.info("Resetting root user password");
+					JCRUser root = new JCRUser(JCRUser.ROOT_USER_UUID, jcrTemplate);
+					root.setPassword(newPwd);
+					logger.info("New root user password set.");
+				} finally {
+					IOUtils.closeQuietly(is);
+					try {
+						new File(servletContext.getRealPath(ROOT_PWD_RESET_FILE)).delete();
+					} catch (Exception e) {
+						logger.warn("Unable to delete " + ROOT_PWD_RESET_FILE
+						        + " file after resetting root password", e);
+					}
+				}
+			}
+		} catch (Exception e) {
+			logger.warn(e.getMessage(), e);
+		}
+	}
+
+	public void stop() throws JahiaException {
         // do nothing
+    }
+
+	public void setServletContext(ServletContext servletContext) {
+		this.servletContext = servletContext;
+    }
+
+	public void onApplicationEvent(ApplicationEvent event) {
+        if (event instanceof ContextInitializedEvent) {
+        	checkRootUserPwd();
+        }
     }
 
 }

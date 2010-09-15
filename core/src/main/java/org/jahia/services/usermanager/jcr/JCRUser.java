@@ -60,7 +60,7 @@ import java.util.Properties;
  */
 public class JCRUser extends JahiaBasePrincipal implements JahiaUser, JCRPrincipal {
     private transient static Logger logger = Logger.getLogger(JCRUser.class);
-    private static final String ROOT_USER_UUID = "b32d306a-6c74-11de-b3ef-001e4fead50b";
+    protected static final String ROOT_USER_UUID = "b32d306a-6c74-11de-b3ef-001e4fead50b";
     private static final String PROVIDER_NAME = "jcr";
     private final String nodeUuid;
     private final JCRTemplate jcrTemplate;

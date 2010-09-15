@@ -108,7 +108,7 @@ public class JBPMMailProducer extends MailProducerImpl {
     @Override
     protected void fillRecipients(Execution execution, Message email) throws MessagingException {
         try {
-            String scriptToExecute = getTemplate().getTo().getAddresses();
+            String scriptToExecute = getTemplate().getTo().getUsers();
             String scriptResult = evaluateExpression(execution, scriptToExecute);
             email.addRecipient(Message.RecipientType.TO, new InternetAddress(scriptResult));
         } catch (ScriptException e) {

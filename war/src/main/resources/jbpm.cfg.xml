@@ -19,7 +19,7 @@
     <process-engine-context>
         <object class="org.jahia.services.workflow.jbpm.JahiaBusinessCalendar"/>
         <mail-template name="start-publication-template" language="velocity">
-            <to adresses="${user.getProperty('j:email')}"/>
+            <to users="${user.getProperty('j:email')}"/>
             <subject>${bundle.getString("workflow.start.mail.subject")} ${date.format("short","short",$submissionDate,$locale)} ${bundle.getString("mail.subject.by")} ${user.getUsername()};</subject>
             <text>${bundle.getString("workflow.start.mail.subject")} ${date.format("short","short",$submissionDate,$locale)} ${bundle.getString("mail.subject.by")} ${user.getUsername()};</text>
         </mail-template>

@@ -6,7 +6,7 @@
         <os family="windows" />
         <executefile name="cmd">
             <arg>/c</arg>
-            <arg>$INSTALL_PATH\tomcat\bin\startup.bat</arg>
+            <arg>$INSTALL_PATH\startJahia.bat</arg>
             <env>CATALINA_HOME=$INSTALL_PATH\tomcat</env>
         </executefile>
     </job>

@@ -5,4 +5,4 @@ rem Stopping Jahia Server
 rem ---------------------------------------------------------------------------
 
 cd %~dp0\tomcat\bin
-shutdown.bat
+call shutdown.bat

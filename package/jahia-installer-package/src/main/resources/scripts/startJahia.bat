@@ -5,4 +5,4 @@ echo Starting Jahia Server
 echo ---------------------------------------------------------------------------
 
 cd %~dp0\tomcat\bin
-startup.bat
+call startup.bat

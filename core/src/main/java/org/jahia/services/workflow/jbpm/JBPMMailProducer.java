@@ -69,7 +69,8 @@ import java.util.*;
  *        Created : 14 sept. 2010
  */
 public class JBPMMailProducer extends MailProducerImpl {
-    private transient static Logger logger = Logger.getLogger(JBPMMailProducer.class);
+    private static final long serialVersionUID = -5084848266010688683L;
+	private transient static Logger logger = Logger.getLogger(JBPMMailProducer.class);
     ScriptEngine scriptEngine;
     private Bindings bindings;
 
@@ -213,6 +214,7 @@ public class JBPMMailProducer extends MailProducerImpl {
         bindings.put("workspace", vars.get("workspace"));
         bindings.put("nodes", JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                @SuppressWarnings("unchecked")
                 List<String> stringList = (List<String>) vars.get("nodeIds");
                 List<JCRNodeWrapper> nodes = new LinkedList<JCRNodeWrapper>();
                 for (String s : stringList) {
@@ -224,63 +226,23 @@ public class JBPMMailProducer extends MailProducerImpl {
         return bindings;
     }
 
-    public class MyBindings implements Bindings {
+    public class MyBindings extends SimpleBindings {
         private final Environment environment;
-        private Map<String, Object> bindingsMap;
 
         public MyBindings(Environment environment) {
+        	super();
             this.environment = environment;
-            bindingsMap = new HashMap<String, Object>();
         }
 
-        public Object put(String name, Object value) {
-            return bindingsMap.put(name, value);
-        }
-
-        public void putAll(Map toMerge) {
-            bindingsMap.putAll(toMerge);
-        }
-
+        @Override
         public boolean containsKey(Object key) {
-            return get(key)!=null;
+            return super.containsKey(key) || environment.get((String) key) != null;
         }
 
+        @Override
         public Object get(Object key) {
-            if(bindingsMap.containsKey((String) key)) {
-                return bindingsMap.get(key);
-            }
-            return environment.get((String) key);
+            return super.containsKey(key) ? super.get(key) : environment.get((String) key);
         }
 
-        public Object remove(Object key) {
-            return null;
-        }
-
-        public int size() {
-            return 0;
-        }
-
-        public boolean isEmpty() {
-            return false;
-        }
-
-        public boolean containsValue(Object value) {
-            return false;
-        }
-
-        public void clear() {
-        }
-
-        public Set<String> keySet() {
-            return Collections.EMPTY_SET;
-        }
-
-        public Collection<Object> values() {
-            return Collections.EMPTY_SET;
-        }
-
-        public Set<Entry<String, Object>> entrySet() {
-            return Collections.EMPTY_SET;
-        }
     }
 }

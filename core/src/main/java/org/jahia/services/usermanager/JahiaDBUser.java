@@ -428,8 +428,7 @@ public class JahiaDBUser extends JahiaBasePrincipal implements JahiaUser {
     public String toString() {
         final StringBuffer output = new StringBuffer("Detail of user ["
                 + mUsername + "]\n");
-        output.append("  - ID [").append(Integer.toString(mID)).append("]");
-        output.append("  - password [").append(mPassword).append("]\n");
+        output.append("  - ID [").append(Integer.toString(mID)).append("]\n");
 
         if (mProperties != null) {
             output.append("  - properties :");

@@ -24,7 +24,7 @@
         </admin>
         <edit-mode jcr:primaryType="jnt:permissionGroup">
             <analytics jcr:primaryType="jnt:permission"/>
-            <classification jcr:primaryType="jnt:permission"/>
+            <categories jcr:primaryType="jnt:permission"/>
             <content jcr:primaryType="jnt:permission"/>
             <create-page jcr:primaryType="jnt:permission"/>
             <layout jcr:primaryType="jnt:permission"/>
@@ -34,6 +34,7 @@
             <publication jcr:primaryType="jnt:permission"/>
             <rights jcr:primaryType="jnt:permission"/>
             <seo jcr:primaryType="jnt:permission"/>
+            <tags jcr:primaryType="jnt:permission"/>
             <template jcr:primaryType="jnt:permission"/>
             <usages jcr:primaryType="jnt:permission"/>
             <workflow jcr:primaryType="jnt:permission"/>
@@ -87,13 +88,13 @@
         </j:acl>
         
         <editor jcr:primaryType="jnt:role"
-            j:assignedPermissions="actions/* edit-mode/classification edit-mode/content edit-mode/create-page edit-mode/list-management edit-mode/metadata edit-mode/options edit-mode/seo languages/* managers/file-manager managers/portlet-manager managers/site-manager selector/content selector/create selector/files-and-images selector/portlets selector/search selector/sitemap toolbar/edit toolbar/language-switcher toolbar/live-mode toolbar/new toolbar/preview-mode toolbar/publication toolbar/site-switcher toolbar/user toolbar/workflow wysiwyg-editor-toolbar/basic"/>
+            j:assignedPermissions="actions/* edit-mode/categories edit-mode/content edit-mode/create-page edit-mode/list-management edit-mode/metadata edit-mode/options edit-mode/seo edit-mode/tags languages/* managers/file-manager managers/portlet-manager managers/site-manager selector/content selector/create selector/files-and-images selector/portlets selector/search selector/sitemap toolbar/edit toolbar/language-switcher toolbar/live-mode toolbar/new toolbar/preview-mode toolbar/publication toolbar/site-switcher toolbar/user toolbar/workflow wysiwyg-editor-toolbar/basic"/>
             
         <editor-in-chief jcr:primaryType="jnt:role"
             j:assignedPermissions="actions/* edit-mode/* languages/* managers/category-manager managers/file-manager managers/portlet-manager managers/site-manager managers/tag-manager managers/workflow-manager selector/* toolbar/edit toolbar/language-switcher toolbar/live-mode toolbar/new toolbar/preview-mode toolbar/publication toolbar/site-switcher toolbar/user toolbar/workflow wysiwyg-editor-toolbar/*"/>
             
         <publisher jcr:primaryType="jnt:role"
-            j:assignedPermissions="actions/* edit-mode/classification edit-mode/content edit-mode/create-page edit-mode/list-management edit-mode/metadata edit-mode/publication edit-mode/template edit-mode/usages edit-mode/workflow languages/* managers/remote-publication-manager managers/site-manager managers/workflow-manager selector/context selector/latest selector/sitemap toolbar/edit toolbar/language-switcher toolbar/live-mode toolbar/preview-mode toolbar/publication toolbar/site-switcher toolbar/user toolbar/workflow wysiwyg-editor-toolbar/basic"/>
+            j:assignedPermissions="actions/* edit-mode/categories edit-mode/content edit-mode/create-page edit-mode/list-management edit-mode/metadata edit-mode/publication edit-mode/tags edit-mode/template edit-mode/usages edit-mode/workflow languages/* managers/remote-publication-manager managers/site-manager managers/workflow-manager selector/context selector/latest selector/sitemap toolbar/edit toolbar/language-switcher toolbar/live-mode toolbar/preview-mode toolbar/publication toolbar/site-switcher toolbar/user toolbar/workflow wysiwyg-editor-toolbar/basic"/>
             
         <seo-manager jcr:primaryType="jnt:role"
             j:assignedPermissions="actions/edit-mode edit-mode/analytics edit-mode/layout edit-mode/metadata edit-mode/seo edit-mode/usages languages/* managers/category-manager managers/site-manager managers/tag-manager selector/files-and-images selector/search selector/sitemap toolbar/edit toolbar/language-switcher toolbar/live-mode toolbar/preview-mode toolbar/publication toolbar/site-switcher toolbar/user toolbar/workflow wysiwyg-editor-toolbar/light"/>

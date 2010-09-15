@@ -919,48 +919,8 @@ public class JCRPublicationService extends JahiaService {
 
         if (includesReferences || includesSubnodes) {
             if (includesReferences) {
-                PropertyIterator pi = node.getProperties();
-                while (pi.hasNext()) {
-                    Property p = pi.nextProperty();
-                    PropertyDefinition definition = p.getDefinition();
-                    if (definition != null && (definition.getRequiredType() == PropertyType.REFERENCE ||
-                            definition.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) &&
-                            !p.getName().startsWith("jcr:")) {
-                        if (definition.isMultiple()) {
-                            Value[] vs = p.getValues();
-                            for (Value v : vs) {
-                                try {
-                                    JCRNodeWrapper ref = node.getSession().getNodeByUUID(v.getString());
-                                    if (!ref.isNodeType("jnt:page")) {
-                                        PublicationInfoNode n =
-                                                getPublicationInfo(ref, languages, includesReferences, includesSubnodes,
-                                                        false, sourceSession, destinationSession, infosMap, infos);
-                                        info.addReference(new PublicationInfo(n));
-                                    }
-                                } catch (ItemNotFoundException e) {
-                                    if (definition.getRequiredType() == PropertyType.REFERENCE) {
-                                        logger.warn("Cannot get reference " + v.getString());
-                                    } else {
-                                        logger.debug("Cannot get reference " + v.getString());
-                                    }
-
-                                }
-                            }
-                        } else {
-                            try {
-                                JCRNodeWrapper ref = (JCRNodeWrapper) p.getNode();
-                                if (!ref.isNodeType("jnt:page")) {
-                                    PublicationInfoNode n =
-                                            getPublicationInfo(ref, languages, includesReferences, includesSubnodes,
-                                                    false, sourceSession, destinationSession, infosMap, infos);
-                                    info.addReference(new PublicationInfo(n));
-                                }
-                            } catch (ItemNotFoundException e) {
-                                logger.warn("Cannot get reference " + p.getString());
-                            }
-                        }
-                    }
-                }
+                getReferences(node, languages, includesReferences, includesSubnodes, sourceSession, destinationSession,
+                        infosMap, infos, info);
             }
             NodeIterator ni = node.getNodes();
             while (ni.hasNext()) {
@@ -986,11 +946,61 @@ public class JCRPublicationService extends JahiaService {
                                 getPublicationInfo(n, languages, includesReferences, includesSubnodes, allsubtree,
                                         sourceSession, destinationSession, infosMap, infos);
                         info.addChild(child);
+                    } else {
+                        getReferences(n,languages, includesReferences, includesSubnodes, sourceSession, destinationSession, infosMap, infos, info);
                     }
                 }
             }
         }
         return info;
+    }
+
+    private void getReferences(JCRNodeWrapper node, Set<String> languages, boolean includesReferences,
+                               boolean includesSubnodes, JCRSessionWrapper sourceSession,
+                               JCRSessionWrapper destinationSession, Map<String, PublicationInfoNode> infosMap,
+                               List<PublicationInfo> infos, PublicationInfoNode info) throws RepositoryException {
+        PropertyIterator pi = node.getProperties();
+        while (pi.hasNext()) {
+            Property p = pi.nextProperty();
+            PropertyDefinition definition = p.getDefinition();
+            if (definition != null && (definition.getRequiredType() == PropertyType.REFERENCE ||
+                    definition.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) &&
+                    !p.getName().startsWith("jcr:")) {
+                if (definition.isMultiple()) {
+                    Value[] vs = p.getValues();
+                    for (Value v : vs) {
+                        try {
+                            JCRNodeWrapper ref = node.getSession().getNodeByUUID(v.getString());
+                            if (!ref.isNodeType("jnt:page")) {
+                                PublicationInfoNode n =
+                                        getPublicationInfo(ref, languages, includesReferences, includesSubnodes,
+                                                false, sourceSession, destinationSession, infosMap, infos);
+                                info.addReference(new PublicationInfo(n));
+                            }
+                        } catch (ItemNotFoundException e) {
+                            if (definition.getRequiredType() == PropertyType.REFERENCE) {
+                                logger.warn("Cannot get reference " + v.getString());
+                            } else {
+                                logger.debug("Cannot get reference " + v.getString());
+                            }
+
+                        }
+                    }
+                } else {
+                    try {
+                        JCRNodeWrapper ref = (JCRNodeWrapper) p.getNode();
+                        if (!ref.isNodeType("jnt:page")) {
+                            PublicationInfoNode n =
+                                    getPublicationInfo(ref, languages, includesReferences, includesSubnodes,
+                                            false, sourceSession, destinationSession, infosMap, infos);
+                            info.addReference(new PublicationInfo(n));
+                        }
+                    } catch (ItemNotFoundException e) {
+                        logger.warn("Cannot get reference " + p.getString());
+                    }
+                }
+            }
+        }
     }
 
     /**

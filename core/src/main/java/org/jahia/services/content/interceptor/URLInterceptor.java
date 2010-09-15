@@ -247,7 +247,7 @@ public class URLInterceptor extends RichTextInterceptor implements InitializingB
      * @throws ValueFormatException
      * @throws RepositoryException
      */
-    public Value afterGetValue(JCRPropertyWrapper property, Value storedValue) throws ValueFormatException, RepositoryException {
+    public Value afterGetValue(final JCRPropertyWrapper property, Value storedValue) throws ValueFormatException, RepositoryException {
         String content = storedValue.getString();
         if (content == null || !content.contains(DOC_CONTEXT_PLACEHOLDER) && !content.contains(CMS_CONTEXT_PLACEHOLDER)) {
             return storedValue;
@@ -279,7 +279,7 @@ public class URLInterceptor extends RichTextInterceptor implements InitializingB
                 public String visit(String value, RenderContext context, Resource resource) {
                     if (StringUtils.isNotEmpty(value)) {
                         try {
-                            value = replacePlaceholdersByRefs(value, refs);
+                            value = replacePlaceholdersByRefs(value, refs, property.getSession().getWorkspace().getName());
                         } catch (RepositoryException e) {
                             throw new RuntimeException(e);
                         }
@@ -423,7 +423,7 @@ public class URLInterceptor extends RichTextInterceptor implements InitializingB
     }
 
 
-    private String replacePlaceholdersByRefs(final String originalValue, final Map<Long, String> refs) throws RepositoryException {
+    private String replacePlaceholdersByRefs(final String originalValue, final Map<Long, String> refs, final String workspaceName) throws RepositoryException {
 
         String pathPart = originalValue;
         if (logger.isDebugEnabled()) {
@@ -472,8 +472,11 @@ public class URLInterceptor extends RichTextInterceptor implements InitializingB
                     value = originalValue.replace(path, nodePath + ext);
                     if (isCmsContext) {
                         value = value.replace(CMS_CONTEXT_PLACEHOLDER, cmsContext);
+                        value = value.replace("/"+session.getWorkspace().getName(),"/"+workspaceName);
                     } else {
-                        value = value.replace(DOC_CONTEXT_PLACEHOLDER, dmsContext);
+                        StringBuilder builder = new StringBuilder(dmsContext);
+                        builder.append(workspaceName).append(nodePath).append(ext);
+                        value = builder.toString();
                     }
                     if (logger.isDebugEnabled()) {
                         logger.debug("After replacePlaceholdersByRefs : "+value);

@@ -191,14 +191,14 @@ public class JBPMMailProducer extends MailProducerImpl {
             throws RepositoryException, ScriptException {
         ScriptContext scriptContext = scriptEngine.getContext();
         if (bindings == null) {
-            bindings = getBindings(execution, scriptContext);
+            bindings = getBindings(execution);
         }
         scriptContext.setWriter(new StringWriter());
         scriptEngine.eval(scriptToExecute, bindings);
         return scriptContext.getWriter().toString().trim();
     }
 
-    private Bindings getBindings(Execution execution, ScriptContext scriptContext) throws RepositoryException {
+    private Bindings getBindings(Execution execution) throws RepositoryException {
         EnvironmentImpl environment = EnvironmentImpl.getCurrent();
         final Bindings bindings = new MyBindings(environment);
         ResourceBundle resourceBundle = ResourceBundle.getBundle(
@@ -232,7 +232,6 @@ public class JBPMMailProducer extends MailProducerImpl {
             this.environment = environment;
             bindingsMap = new HashMap<String, Object>();
         }
-
 
         public Object put(String name, Object value) {
             return bindingsMap.put(name, value);

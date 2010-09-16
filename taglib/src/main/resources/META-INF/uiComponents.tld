@@ -385,26 +385,6 @@
             <type>int</type>
         </attribute>
     </tag>
-
-    <tag>
-        <description>Prints out the title of categories given by their keys.</description>
-        <name>displayCategoryTitle</name>
-        <tag-class>org.jahia.taglibs.template.category.DisplayCategoryTitleTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <name>categoryKeys</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>
-                Name of the page scope variable to expose the value.
-            </description>
-            <name>var</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
     
     <function>
         <description>Get the binded component node</description>

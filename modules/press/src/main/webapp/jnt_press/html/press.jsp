@@ -11,8 +11,7 @@
 <jcr:nodeProperty node="${currentNode}" name="j:defaultCategory" var="pressReleaseContainerCatKeys"/>
 <c:if test="${!empty pressReleaseContainerCatKeys }">
             <span class="pressRealeseCategory">
-                <fmt:message key='label.categories'/> : <ui:displayCategoryTitle
-                    categoryKeys="${pressReleaseContainerCatKeys}"/>
+                <fmt:message key='label.categories'/> : <jcr:node var="catNode" uuid="${pressReleaseContainerCatKeys}"/><jcr:nodeProperty node="${catNode}" name="jcr:title"/>
             </span>
 </c:if>
 <h4><a href="${url.base}${currentNode.path}.detail.html"><jcr:nodeProperty node="${currentNode}" name='jcr:title'/></a>

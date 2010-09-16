@@ -301,17 +301,20 @@ public class EditActions {
                                 i++;
                             }
                         }
+                        message+="<br/><br/>";
                         String n = "";
+                        message +=l.size() > 1 ? Messages.get("message.remove.multiple.usage",
+                                                                             "Those nodes are still used in:") : Messages.get(
+                                "message.remove.single.usage",
+                                "This node is still used by:");
                         for (GWTJahiaNodeUsage nodeUsage : result) {
-                            if (!"weakreference".equals(nodeUsage.getType())) {
-                                if (!nodeUsage.getNodeName().equals(n)) {
-                                    message += "<br><br>" + nodeUsage.getNodeName() + " " + Messages.get(
-                                            "label.remove.used", "is used in") + "<br>" + nodeUsage.getPageTitle();
-                                } else {
-                                    message += "<br>" + nodeUsage.getPageTitle();
-                                }
-                                n = nodeUsage.getNodeName();
+                            if (!nodeUsage.getNodeName().equals(n)) {
+                                message += "<br/><span style=\"font-style:italic;\">" + nodeUsage.getNodeTitle() + " " + Messages.get(
+                                        "label.remove.used", "is using this node in page(s)") + "<br/>" +nodeUsage.getPageTitle()+"</span>";
+                            } else {
+                                message += "<br/><span style=\"font-style:italic;\">" + nodeUsage.getPageTitle()+"</span>";
                             }
+                            n = nodeUsage.getNodeName();
                         }
                         MessageBox.confirm("", message, new Listener<MessageBoxEvent>() {
                             public void handleEvent(MessageBoxEvent be) {

@@ -303,10 +303,12 @@ public class EditActions {
                         }
                         message+="<br/><br/>";
                         String n = "";
-                        message +=l.size() > 1 ? Messages.get("message.remove.multiple.usage",
+                        if(result.size()>0) {
+                            message +=l.size() > 1 ? Messages.get("message.remove.multiple.usage",
                                                                              "Those nodes are still used in:") : Messages.get(
                                 "message.remove.single.usage",
                                 "This node is still used by:");
+                        }
                         for (GWTJahiaNodeUsage nodeUsage : result) {
                             if (!nodeUsage.getNodeName().equals(n)) {
                                 message += "<br/><span style=\"font-style:italic;\">" + nodeUsage.getNodeTitle() + " " + Messages.get(

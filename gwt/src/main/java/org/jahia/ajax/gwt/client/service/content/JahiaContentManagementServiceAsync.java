@@ -35,6 +35,7 @@ package org.jahia.ajax.gwt.client.service.content;
 import java.util.List;
 import java.util.Map;
 
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaCreateEngineInitBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaCreatePortletInitBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
@@ -288,5 +289,8 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
     void getGoogleDocsExportFormats(String nodeIdentifier, AsyncCallback<List<String>> async);
     
     void synchronizeWithGoogleDocs(String nodeIdentifier, AsyncCallback<Void> async);
-    
+
+    void flush(String path, AsyncCallback<Void> asyncCallback);
+
+    void flushAll(AsyncCallback<Void> asyncCallback);
 }

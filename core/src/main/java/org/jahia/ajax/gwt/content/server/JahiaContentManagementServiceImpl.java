@@ -119,7 +119,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     private int sessionPollingFrequency;
     private GoogleDocsExportFormats googleDocsExportFormats;
     private GoogleDocsServiceFactory googleDocsServiceFactory;
-
+    private CacheHelper cacheHelper;
 // --------------------- GETTER / SETTER METHODS ---------------------
 
     public void setGoogleDocsServiceFactory(GoogleDocsServiceFactory googleDocsServiceFactory) {
@@ -196,6 +196,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void setSessionPollingFrequency(int sessionPollingFrequency) {
         this.sessionPollingFrequency = sessionPollingFrequency;
+    }
+
+    public void setCacheHelper(CacheHelper cacheHelper) {
+        this.cacheHelper = cacheHelper;
     }
 
     // ------------------------ INTERFACE METHODS ------------------------
@@ -1574,5 +1578,13 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
 
         return gwtSourceNode;
+    }
+
+    public void flush(String path) {
+        cacheHelper.flush(path, true);
+    }
+
+    public void flushAll() {
+        cacheHelper.flushAll();
     }
 }

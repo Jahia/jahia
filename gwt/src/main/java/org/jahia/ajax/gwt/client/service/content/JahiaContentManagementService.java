@@ -283,7 +283,11 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
     
     void synchronizeWithGoogleDocs(String nodeIdentifier) throws GWTJahiaServiceException;
 
-	// -------------------------- INNER CLASSES --------------------------
+    void flush(String path);
+
+    void flushAll();
+
+    // -------------------------- INNER CLASSES --------------------------
 
     public static class App {
         private static JahiaContentManagementServiceAsync app = null;

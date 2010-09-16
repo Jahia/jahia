@@ -97,6 +97,17 @@
                         </bean>
                         <ref bean="studiomode.managers.menu"/>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey" value="label.cache"/>
+                            <property name="icon" value="publicationAction"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.Flush"/>
+                                    <ref bean="Toolbar.Item.FlushAll"/>
+                                </list>
+                            </property>
+                            <property name="visibility" value="$site/toolbar/cache"/>
+                        </bean>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="icon" value="user"/>
                             <property name="visibility" value="$site/toolbar/user"/>
                             <property name="titleKey" value="label.user"/>
@@ -323,6 +334,17 @@
                             <property name="visibility" value="$site/toolbar/workflow"/>
                         </bean>
                         <ref bean="editmode.managers.menu"/>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey" value="label.cache"/>
+                            <property name="icon" value="publicationAction"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.Flush"/>
+                                    <ref bean="Toolbar.Item.FlushAll"/>
+                                </list>
+                            </property>
+                            <property name="visibility" value="$site/toolbar/cache"/>
+                        </bean>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="icon" value="user"/>
                             <property name="visibility" value="$site/toolbar/user"/>

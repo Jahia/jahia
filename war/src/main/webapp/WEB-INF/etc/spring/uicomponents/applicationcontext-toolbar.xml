@@ -980,4 +980,20 @@
         <property name="icon" value="publicationManager"/>
     </bean>
 
+    <bean id="Toolbar.Item.Flush" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.FlushActionItem"/>
+        </property>
+        <property name="titleKey" value="label.cache.flush"/>
+        <property name="icon" value="publish"/>
+    </bean>
+
+    <bean id="Toolbar.Item.FlushAll" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.FlushAllActionItem"/>
+        </property>
+        <property name="titleKey" value="label.cache.flush.all"/>
+        <property name="icon" value="publish"/>
+    </bean>
+
 </beans>

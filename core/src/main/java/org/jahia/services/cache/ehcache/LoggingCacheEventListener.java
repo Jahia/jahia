@@ -100,6 +100,6 @@ public class LoggingCacheEventListener implements CacheEventListener {
         if (logger.isDebugEnabled()) {
             logger.debug("Event listener cloned.");
         }
-        return this.clone();
+        throw new CloneNotSupportedException();
     }
 }

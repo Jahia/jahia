@@ -353,4 +353,22 @@ public class EditActions {
             });
         }
     }
+
+    public static void flush(Linker linker) {
+        JahiaContentManagementService.App.getInstance().flush(linker.getSelectedNode().getPath(), new BaseAsyncCallback<Void>() {
+            public void onSuccess(Void result) {
+                Info.display(Messages.get("label.cache.flushed"),
+                                    Messages.get("label.cache.flushed"));
+            }
+        });
+    }
+
+    public static void flushAll() {
+        JahiaContentManagementService.App.getInstance().flushAll(new BaseAsyncCallback<Void>() {
+            public void onSuccess(Void result) {
+                Info.display(Messages.get("label.cache.flushed.all"),
+                                    Messages.get("label.cache.flushed.all"));
+            }
+        });
+    }
 }

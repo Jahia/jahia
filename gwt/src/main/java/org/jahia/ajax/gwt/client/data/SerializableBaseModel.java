@@ -13,6 +13,7 @@ public class SerializableBaseModel implements ModelData, Serializable {
 
     private Map<String, String> strings;
     private Map<String, Integer> integers;
+    private Map<String, Boolean> booleans;
 
     private transient Map<String, Serializable> properties;
 
@@ -25,6 +26,9 @@ public class SerializableBaseModel implements ModelData, Serializable {
         }
         if (integers != null && integers.containsKey(property)) {
             return (X) integers.get(property);
+        }
+        if (booleans != null && booleans.containsKey(property)) {
+            return (X) booleans.get(property);
         }
         if (properties != null) {
             return (X) properties.get(property);
@@ -51,6 +55,11 @@ public class SerializableBaseModel implements ModelData, Serializable {
                 returning.put(entry.getKey(), entry.getValue());
             }
         }
+        if (booleans != null) {
+            for (Map.Entry<String, Boolean> entry : booleans.entrySet()) {
+                returning.put(entry.getKey(), entry.getValue());
+            }
+        }
         return returning;
     }
 
@@ -67,6 +76,9 @@ public class SerializableBaseModel implements ModelData, Serializable {
         if (integers != null) {
             returning.addAll(integers.keySet());
         }
+        if (booleans != null) {
+            returning.addAll(booleans.keySet());
+        }
 
         return returning;
     }
@@ -78,6 +90,9 @@ public class SerializableBaseModel implements ModelData, Serializable {
         }
         if (integers != null && integers.containsKey(property)) {
             return (X) integers.remove(property);
+        }
+        if (booleans != null && booleans.containsKey(property)) {
+            return (X) booleans.remove(property);
         }
         if (properties != null) {
             return (X) properties.remove(property);
@@ -97,6 +112,11 @@ public class SerializableBaseModel implements ModelData, Serializable {
                 integers = new HashMap<String, Integer>();
             }
             return (X) integers.put(property, (Integer) value);
+        } else if (value instanceof Boolean) {
+            if (booleans == null) {
+                booleans = new HashMap<String, Boolean>();
+            }
+            return (X) booleans.put(property, (Boolean) value);
         }
         if (properties == null) {
             properties = new HashMap<String, Serializable>();

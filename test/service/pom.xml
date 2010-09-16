@@ -34,22 +34,49 @@
 
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<artifactId>jahia-test-parent</artifactId>
-		<groupId>org.jahia.server</groupId>
-		<version>6.5-SNAPSHOT</version>
-	</parent>
-	<groupId>org.jahia.server</groupId>
-	<artifactId>jahia-test-service</artifactId>
-	<name>Jahia Test Service Library</name>
-	<packaging>jar</packaging>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>jahia-test-parent</artifactId>
+        <groupId>org.jahia.server</groupId>
+        <version>6.5-SNAPSHOT</version>
+    </parent>
+    <groupId>org.jahia.server</groupId>
+    <artifactId>jahia-test-service</artifactId>
+    <name>Jahia Test Service Library</name>
+    <packaging>jar</packaging>
 
-	<description>This is a library that is used by the Jahia Test project.</description>
-
-	<profiles>
+    <description>This is a library that is used by the Jahia Test project.</description>
+    <repositories>
+        <repository>
+            <id>openqa.org</id>
+            <name>Openqa Release Repository</name>
+            <url>http://archiva.openqa.org/repository/releases</url>
+            <layout>default</layout>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+        <repository>
+            <id>openqa.org</id>
+            <name>Openqa Snapshot Repository</name>
+            <url>http://archiva.openqa.org/repository/snapshots</url>
+            <layout>default</layout>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+                <checksumPolicy>ignore</checksumPolicy>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+    </repositories>
+    <profiles>
         <profile>
             <id>excludeBeforeJDK16</id>
             <activation>
@@ -86,54 +113,59 @@
                     <groupId>org.apache.mahout.hadoop</groupId>
                     <artifactId>hadoop-core</artifactId>
                     <version>0.19.1</version>
-                </dependency> 
+                </dependency>
                 <!-- End of Nutch and its dependencies -->
             </dependencies>
-        </profile>           
-		<profile>
-			<id>eclipse-integration</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-eclipse-plugin</artifactId>
-						<configuration>
-							<wtpversion>1.5</wtpversion>
-							<additionalProjectnatures>
-								<projectnature>org.eclipse.wst.common.project.facet.core.nature</projectnature>
-								<projectnature>org.eclipse.wst.common.modulecore.ModuleCoreNature</projectnature>
-								<projectnature>org.eclipse.jem.workbench.JavaEMFNature</projectnature>
-							</additionalProjectnatures>
-							<additionalBuildcommands>
-								<buildCommand>
-									<name>org.eclipse.wst.common.project.facet.core.builder</name>
-									<arguments></arguments>
-								</buildCommand>
-								<buildCommand>
-									<name>org.eclipse.wst.validation.validationbuilder</name>
-									<arguments></arguments>
-								</buildCommand>
-							</additionalBuildcommands>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
+        </profile>
+        <profile>
+            <id>eclipse-integration</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-eclipse-plugin</artifactId>
+                        <configuration>
+                            <wtpversion>1.5</wtpversion>
+                            <additionalProjectnatures>
+                                <projectnature>org.eclipse.wst.common.project.facet.core.nature</projectnature>
+                                <projectnature>org.eclipse.wst.common.modulecore.ModuleCoreNature</projectnature>
+                                <projectnature>org.eclipse.jem.workbench.JavaEMFNature</projectnature>
+                            </additionalProjectnatures>
+                            <additionalBuildcommands>
+                                <buildCommand>
+                                    <name>org.eclipse.wst.common.project.facet.core.builder</name>
+                                    <arguments></arguments>
+                                </buildCommand>
+                                <buildCommand>
+                                    <name>org.eclipse.wst.validation.validationbuilder</name>
+                                    <arguments></arguments>
+                                </buildCommand>
+                            </additionalBuildcommands>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.jahia.server</groupId>
-			<artifactId>jahia-impl</artifactId>
-			<version>${jahia.package.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jahia.server</groupId>
-			<artifactId>jahia-gwt</artifactId>
-			<version>${jahia.package.version}</version>
-			<scope>provided</scope>
-		</dependency>
+    <dependencies>
+        <dependency>
+            <groupId>org.seleniumhq.selenium.client-drivers</groupId>
+            <artifactId>selenium-java-client-driver</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.server</groupId>
+            <artifactId>jahia-impl</artifactId>
+            <version>${jahia.package.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.server</groupId>
+            <artifactId>jahia-gwt</artifactId>
+            <version>${jahia.package.version}</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>javax.portlet</groupId>
             <artifactId>portlet-api</artifactId>
@@ -171,12 +203,12 @@
             <groupId>org.apache.jackrabbit</groupId>
             <artifactId>jackrabbit-jcr-tests</artifactId>
             <version>${jackrabbit.version}</version>
-        </dependency>        
+        </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-all</artifactId>
             <version>1.2</version>
-        </dependency>        
+        </dependency>
         <dependency>
             <groupId>org.jbpm.jbpm4</groupId>
             <artifactId>jbpm-test-base</artifactId>
@@ -195,24 +227,24 @@
                     <artifactId>cglib-full</artifactId>
                 </exclusion>
                 <exclusion>
-                	<artifactId>jbpm-api</artifactId>
-                	<groupId>org.jbpm.jbpm4</groupId>
+                    <artifactId>jbpm-api</artifactId>
+                    <groupId>org.jbpm.jbpm4</groupId>
                 </exclusion>
                 <exclusion>
-                	<artifactId>hibernate-core</artifactId>
-                	<groupId>org.hibernate</groupId>
+                    <artifactId>hibernate-core</artifactId>
+                    <groupId>org.hibernate</groupId>
                 </exclusion>
                 <exclusion>
-                	<artifactId>log4j</artifactId>
-                	<groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                    <groupId>log4j</groupId>
                 </exclusion>
                 <exclusion>
-                	<artifactId>cglib-nodep</artifactId>
-                	<groupId>cglib</groupId>
+                    <artifactId>cglib-nodep</artifactId>
+                    <groupId>cglib</groupId>
                 </exclusion>
                 <exclusion>
-                	<artifactId>jbpm-log</artifactId>
-                	<groupId>org.jbpm.jbpm4</groupId>
+                    <artifactId>jbpm-log</artifactId>
+                    <groupId>org.jbpm.jbpm4</groupId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -227,14 +259,14 @@
             <artifactId>junit-addons</artifactId>
             <version>1.4</version>
             <exclusions>
-            	<exclusion>
-            		<artifactId>xmlParserAPIs</artifactId>
-            		<groupId>xerces</groupId>
-            	</exclusion>
-            	<exclusion>
-            		<artifactId>xercesImpl</artifactId>
-            		<groupId>xerces</groupId>
-            	</exclusion>
+                <exclusion>
+                    <artifactId>xmlParserAPIs</artifactId>
+                    <groupId>xerces</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>xercesImpl</artifactId>
+                    <groupId>xerces</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -242,5 +274,5 @@
             <artifactId>xmlunit</artifactId>
             <version>1.3</version>
         </dependency>
-	</dependencies>
+    </dependencies>
 </project>

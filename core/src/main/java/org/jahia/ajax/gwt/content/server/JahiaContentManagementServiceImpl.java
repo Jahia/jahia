@@ -67,10 +67,7 @@ import org.jahia.bin.Jahia;
 import org.jahia.bin.googledocs.GoogleDocsEditor;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.analytics.GoogleAnalyticsProfile;
-import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.googledocs.GoogleDocsService;
@@ -1064,7 +1061,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             session = retrieveCurrentSession(LanguageCodeConverters.languageCodeToLocale(language));
             locale = language;
         }
-        publication.publish(uuids, Collections.singleton(locale), allSubTree, workflow, reverse, session, properties);
+        publication.publish(uuids, locale, allSubTree, workflow, reverse, session, properties);
     }
 
     /**

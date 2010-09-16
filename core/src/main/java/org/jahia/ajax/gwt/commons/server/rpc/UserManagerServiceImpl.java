@@ -77,7 +77,7 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
         this.sitesService = sitesService;
     }
 
-    public PagingLoadResult<GWTJahiaUser> searchUsers(String match, int offset, int limit, List<Integer> siteIds) {
+    public BasePagingLoadResult<GWTJahiaUser> searchUsers(String match, int offset, int limit, List<Integer> siteIds) {
         try {
             Properties criterias = new Properties();
             criterias.setProperty("*", match);
@@ -114,7 +114,7 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
         return null;
     }
 
-    public PagingLoadResult<GWTJahiaGroup> searchGroups(String match, int offset, int limit, List<Integer> siteIds) {
+    public BasePagingLoadResult<GWTJahiaGroup> searchGroups(String match, int offset, int limit, List<Integer> siteIds) {
         try {
             Properties criterias = new Properties();
             criterias.setProperty("groupname", match);
@@ -179,7 +179,7 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
         return new String[]{principalTextOption, pvh.getPrincipalValueOption(p)};
     }
 
-    public PagingLoadResult<GWTJahiaUser> searchUsersInContext(String match, int offset, int limit, String context) {
+    public BasePagingLoadResult<GWTJahiaUser> searchUsersInContext(String match, int offset, int limit, String context) {
         if (context != null) {
             List<Integer> list = new ArrayList<Integer>();;
 
@@ -207,7 +207,7 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
         return null;
     }
 
-    public PagingLoadResult<GWTJahiaGroup> searchGroupsInContext(String match, int offset, int limit, String context) {
+    public BasePagingLoadResult<GWTJahiaGroup> searchGroupsInContext(String match, int offset, int limit, String context) {
         if (context != null) {
             List<Integer> list = new ArrayList<Integer>();;
 

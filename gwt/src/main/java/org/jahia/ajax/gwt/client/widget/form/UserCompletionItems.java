@@ -32,10 +32,7 @@
 
 package org.jahia.ajax.gwt.client.widget.form;
 
-import com.extjs.gxt.ui.client.data.BasePagingLoader;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
-import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -67,9 +64,9 @@ public class UserCompletionItems implements CompletionItems {
         MessageBox alertMsg = new MessageBox();
         try {
             // data proxy
-            RpcProxy<PagingLoadResult<GWTJahiaUser>> proxy = new RpcProxy<PagingLoadResult<GWTJahiaUser>>() {
+            RpcProxy<BasePagingLoadResult<GWTJahiaUser>> proxy = new RpcProxy<BasePagingLoadResult<GWTJahiaUser>>() {
                 @Override
-                protected void load(Object pageLoaderResult, AsyncCallback<PagingLoadResult<GWTJahiaUser>> callback) {
+                protected void load(Object pageLoaderResult, AsyncCallback<BasePagingLoadResult<GWTJahiaUser>> callback) {
                      service.searchUsers(match, ((PagingLoadConfig) pageLoaderResult).getOffset(), ((PagingLoadConfig) pageLoaderResult).getLimit(), null, callback);
                 }
             };

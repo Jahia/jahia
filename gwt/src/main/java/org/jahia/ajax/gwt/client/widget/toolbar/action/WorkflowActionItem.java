@@ -77,83 +77,83 @@ public class WorkflowActionItem extends BaseActionItem {
 
     @Override
     public void handleNewLinkerSelection() {
-        Menu menu = new Menu();
-        final GWTJahiaNode node;
-
-        boolean isEnabled = false;
-
-        if (linker.getSelectedNode() != null) {
-            node = linker.getSelectedNode();
-        } else {
-            node = linker.getMainNode();
-        }
-        if (node != null) {
-            menu.removeAll();
-            GWTJahiaWorkflowInfo info = node.getWorkflowInfo();
-            List<GWTJahiaWorkflowDefinition> wfs = info.getPossibleWorkflows();
-            if (!node.isLanguageLocked(node.getLanguageCode()) && node.isWriteable()) {
-                for (final GWTJahiaWorkflowDefinition wf : wfs) {
-                    if (processes == null || processes.contains(wf.getId())) {
-                        isEnabled = true;
-                        MenuItem item = new MenuItem("Start new : " + wf.getName());
-                        item.setIconStyle("gwt-toolbar-icon-workflow-start");
-                        item.addSelectionListener(new SelectionListener<MenuEvent>() {
-                            @Override
-                            public void componentSelected(MenuEvent ce) {
-                                String formResourceName = wf.getFormResourceName();
-                                if (formResourceName!=null && !"".equals(formResourceName)) {
-                                    // Start workflow
-                                    WorkflowActionDialog wad = new WorkflowActionDialog(node, linker);
-                                    wad.initStartWorkflowDialog(wf);
-                                    wad.show();
-                                } else {
-                                    JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
-                                    async.startWorkflow(node.getPath(), wf,new ArrayList<GWTJahiaNodeProperty>(), new BaseAsyncCallback() {
-                                        public void onSuccess(Object result) {
-                                            Info.display("Workflow started", "Workflow started");
-                                            linker.refresh(Linker.REFRESH_ALL);
-                                        }
-
-                                        public void onApplicationFailure(Throwable caught) {
-                                            Info.display("Workflow not started", "Workflow not started");
-                                        }
-                                    });
-                                }
-                            }
-                        });
-                        menu.add(item);
-                        break;
-                    }
-                }
-                if (bypassWorkflow) {
-                    MenuItem item = new MenuItem(Messages.get("label.bypassWorkflow", "Bypass workflow"));
-                    item.setIconStyle("gwt-toolbar-icon-workflow-bypass");
-                    isEnabled = true;
-                    item.addSelectionListener(new SelectionListener<MenuEvent>() {
-                        @Override
-                        public void componentSelected(MenuEvent ce) {
-                            bypassActionItem.onComponentSelection();
-                        }
-                    });
-                    menu.add(item);
-                }
-            }
-        } else {
-            menu.removeAll();
-        }
-
-        if (isEnabled) {
-            setEnabled(true);
-        }
-        if (bypassActionItem != null) {
-            Log.info("handle wf: " + bypassActionItem.getClass().getName());
-            bypassActionItem.handleNewLinkerSelection();
-        }
-        if (!isEnabled) {
-            setEnabled(false);
-        }
-
-        setSubMenu(menu);
+//        Menu menu = new Menu();
+//        final GWTJahiaNode node;
+//
+//        boolean isEnabled = false;
+//
+//        if (linker.getSelectedNode() != null) {
+//            node = linker.getSelectedNode();
+//        } else {
+//            node = linker.getMainNode();
+//        }
+//        if (node != null) {
+//            menu.removeAll();
+//            GWTJahiaWorkflowInfo info = node.getWorkflowInfo();
+//            List<GWTJahiaWorkflowDefinition> wfs = info.getPossibleWorkflows();
+//            if (!node.isLanguageLocked(node.getLanguageCode()) && node.isWriteable()) {
+//                for (final GWTJahiaWorkflowDefinition wf : wfs) {
+//                    if (processes == null || processes.contains(wf.getId())) {
+//                        isEnabled = true;
+//                        MenuItem item = new MenuItem("Start new : " + wf.getName());
+//                        item.setIconStyle("gwt-toolbar-icon-workflow-start");
+//                        item.addSelectionListener(new SelectionListener<MenuEvent>() {
+//                            @Override
+//                            public void componentSelected(MenuEvent ce) {
+//                                String formResourceName = wf.getFormResourceName();
+//                                if (formResourceName!=null && !"".equals(formResourceName)) {
+//                                    // Start workflow
+//                                    WorkflowActionDialog wad = new WorkflowActionDialog(node, linker);
+//                                    wad.initStartWorkflowDialog(wf);
+//                                    wad.show();
+//                                } else {
+//                                    JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
+//                                    async.startWorkflow(node.getPath(), wf,new ArrayList<GWTJahiaNodeProperty>(), new BaseAsyncCallback() {
+//                                        public void onSuccess(Object result) {
+//                                            Info.display("Workflow started", "Workflow started");
+//                                            linker.refresh(Linker.REFRESH_ALL);
+//                                        }
+//
+//                                        public void onApplicationFailure(Throwable caught) {
+//                                            Info.display("Workflow not started", "Workflow not started");
+//                                        }
+//                                    });
+//                                }
+//                            }
+//                        });
+//                        menu.add(item);
+//                        break;
+//                    }
+//                }
+//                if (bypassWorkflow) {
+//                    MenuItem item = new MenuItem(Messages.get("label.bypassWorkflow", "Bypass workflow"));
+//                    item.setIconStyle("gwt-toolbar-icon-workflow-bypass");
+//                    isEnabled = true;
+//                    item.addSelectionListener(new SelectionListener<MenuEvent>() {
+//                        @Override
+//                        public void componentSelected(MenuEvent ce) {
+//                            bypassActionItem.onComponentSelection();
+//                        }
+//                    });
+//                    menu.add(item);
+//                }
+//            }
+//        } else {
+//            menu.removeAll();
+//        }
+//
+//        if (isEnabled) {
+//            setEnabled(true);
+//        }
+//        if (bypassActionItem != null) {
+//            Log.info("handle wf: " + bypassActionItem.getClass().getName());
+//            bypassActionItem.handleNewLinkerSelection();
+//        }
+//        if (!isEnabled) {
+//            setEnabled(false);
+//        }
+//
+//        setSubMenu(menu);
     }
 
     @Override

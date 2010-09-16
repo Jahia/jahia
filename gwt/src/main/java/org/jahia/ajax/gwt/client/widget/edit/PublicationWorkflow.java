@@ -8,17 +8,22 @@ import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.user.client.rpc.IsSerializable;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
+import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryProcess;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.workflow.dialog.CustomWorkflow;
 import org.jahia.ajax.gwt.client.widget.edit.workflow.dialog.WorkflowActionDialog;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.WorkInProgressActionItem;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +39,12 @@ public class PublicationWorkflow implements CustomWorkflow {
     private List<String> uuids;
     private boolean allSubTree;
     private String language;
+
+    private static final long serialVersionUID = -4916142720074054130L;
+
+
+    public PublicationWorkflow() {
+    }
 
     public PublicationWorkflow(List<GWTJahiaPublicationInfo> publicationInfos, List<String> uuids, boolean allSubTree,
                                String language) {
@@ -62,9 +73,9 @@ public class PublicationWorkflow implements CustomWorkflow {
 
         return tabs;
     }
-    
+
     public Button getStartWorkflowButton(final GWTJahiaWorkflowDefinition wf, final WorkflowActionDialog dialog) {
-        final Button button = new Button(Messages.get("label.workflow.start", "Start Workflow:") + wf.getDisplayName());
+        final Button button = new Button(Messages.get("label.workflow.start", "Start Workflow") +": "+ wf.getDisplayName());
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
@@ -74,19 +85,15 @@ public class PublicationWorkflow implements CustomWorkflow {
                     nodeProperties = dialog.getPropertiesEditor().getProperties();
                 }
                 dialog.hide();
-                Info.display("Starting publication workflow",
-                        "Starting publication workflow");
+                Info.display("Starting publication workflow", "Starting publication workflow");
                 final String status = "Executing workflow ...";
                 WorkInProgressActionItem.setStatus(status);
-                JahiaContentManagementService
-                        .App.getInstance().publish(uuids, allSubTree, true, false, nodeProperties, language,
-                        new BaseAsyncCallback() {
-                            public void onApplicationFailure(
-                                    Throwable caught) {
+                JahiaContentManagementService.App.getInstance()
+                        .publish(uuids, allSubTree, true, false, nodeProperties, language, new BaseAsyncCallback() {
+                            public void onApplicationFailure(Throwable caught) {
                                 WorkInProgressActionItem.removeStatus(status);
                                 Log.error("Cannot publish", caught);
-                                com.google.gwt.user.client.Window.alert(
-                                        "Cannot publish " + caught.getMessage());
+                                com.google.gwt.user.client.Window.alert("Cannot publish " + caught.getMessage());
                             }
 
                             public void onSuccess(Object result) {
@@ -99,4 +106,41 @@ public class PublicationWorkflow implements CustomWorkflow {
         });
         return button;
     }
+
+    public Button getBypassWorkflowButton(final GWTJahiaWorkflowDefinition wf, final WorkflowActionDialog dialog) {
+        final Button button = new Button(Messages.get("label.bypassWorkflow", "Bypass workflow"));
+
+        if (PermissionsUtils.isPermitted("edit-mode/publication", JahiaGWTParameters.getSiteKey())) {
+            button.addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                    dialog.hide();
+                    Info.display("Publishing content", "Publishing content");
+                    final String status = "Publishing content ...";
+                    WorkInProgressActionItem.setStatus(status);
+                    JahiaContentManagementService.App.getInstance()
+                            .publish(uuids, allSubTree, false, false, null, null, new BaseAsyncCallback() {
+                                public void onApplicationFailure(Throwable caught) {
+                                    WorkInProgressActionItem.removeStatus(status);
+                                    Info.display("Cannot publish", "Cannot publish");
+                                    Log.error("Cannot publish", caught);
+                                }
+
+                                public void onSuccess(Object result) {
+                                    WorkInProgressActionItem.removeStatus(status);
+                                    Info.display(Messages.get("message.content.published"),
+                                            Messages.get("message.content.published"));
+                                    dialog.getLinker().refresh(Linker.REFRESH_ALL);
+                                }
+                            });
+                }
+            });
+            return button;
+        } else {
+            return null;
+        }
+
+    }
+
 }

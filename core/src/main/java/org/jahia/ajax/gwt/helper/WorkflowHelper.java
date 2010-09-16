@@ -44,6 +44,7 @@ import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryIt
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryProcess;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryTask;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.ajax.gwt.client.widget.edit.workflow.dialog.CustomWorkflow;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -77,22 +78,23 @@ public class WorkflowHelper {
         try {
             GWTJahiaWorkflowInfo info = new GWTJahiaWorkflowInfo();
 
-            List<GWTJahiaWorkflowDefinition> gwtWorkflowDefinitions = new ArrayList<GWTJahiaWorkflowDefinition>();
+            Map<GWTJahiaWorkflowType, GWTJahiaWorkflowDefinition> gwtWorkflowDefinitions = new HashMap<GWTJahiaWorkflowType, GWTJahiaWorkflowDefinition>();
             info.setPossibleWorkflows(gwtWorkflowDefinitions);
             JCRNodeWrapper node = session.getNode(path);
 
-            List<WorkflowDefinition> wfs = service.getPossibleWorkflows(node, session.getUser(),locale);
-            for (WorkflowDefinition workflow : wfs) {
-                gwtWorkflowDefinitions.add(getGWTJahiaWorkflowDefinition(workflow));
+            Map<String, WorkflowDefinition> wfs = service.getPossibleWorkflows(node, session.getUser(),locale);
+            for (Map.Entry<String, WorkflowDefinition> entry : wfs.entrySet()) {
+                gwtWorkflowDefinitions.put(getGWTJahiaWorkflowType(entry.getKey()),getGWTJahiaWorkflowDefinition(entry.getValue()));
             }
 
-            List<GWTJahiaWorkflow> gwtWorkflows = new ArrayList<GWTJahiaWorkflow>();
+            Map<GWTJahiaWorkflowType, GWTJahiaWorkflow> gwtWorkflows = new HashMap<GWTJahiaWorkflowType, GWTJahiaWorkflow>();
             info.setActiveWorkflows(gwtWorkflows);
 
             List<Workflow> actives = service.getActiveWorkflows(node,locale);
             for (Workflow workflow : actives) {
                 GWTJahiaWorkflow gwtWf = getGWTJahiaWorkflow(workflow);
-                gwtWorkflows.add(gwtWf);
+
+                gwtWorkflows.put(getGWTJahiaWorkflowType(service.getWorkflowType(workflow.getWorkflowDefinition())),gwtWf);
                 for (WorkflowAction workflowAction : workflow.getAvailableActions()) {
                     if (workflowAction instanceof WorkflowTask) {
                         WorkflowTask workflowTask = (WorkflowTask) workflowAction;
@@ -146,7 +148,9 @@ public class WorkflowHelper {
         }
         gwtWf.setStartTime(wf.getStartTime());
         gwtWf.setVariables(properties);
-        gwtWf.setOriginalVariables(map);
+        if (map.get("customWorkflowInfo") != null) {
+            gwtWf.setCustomWorkflowInfo((CustomWorkflow) map.get("customWorkflowInfo"));
+        }
         gwtWf.setLocale(map.get("locale").toString());
         gwtWf.setWorkspace(map.get("workspace").toString());
         if(wf.getDuedate()!=null) {
@@ -178,7 +182,7 @@ public class WorkflowHelper {
         return task;
     }
 
-    private GWTJahiaWorkflowHistoryProcess getGWTJahiaHistoryWorkflow(HistoryWorkflow wf) {
+    private GWTJahiaWorkflowHistoryProcess getGWTJahiaHistoryProcess(HistoryWorkflow wf) {
         return new GWTJahiaWorkflowHistoryProcess(wf.getName(), wf.getDisplayName(), wf.getProcessId(), wf
                 .getProvider(), wf.getWorkflowDefinition().getKey(), wf.isCompleted(), wf.getStartTime(), wf.getEndTime(), wf.getDuration(),
                 getUsername(wf.getUser()), wf.getNodeId());
@@ -267,7 +271,7 @@ public class WorkflowHelper {
             List<HistoryWorkflow> workflows = service.getHistoryWorkflows(session.getNodeByIdentifier(nodeId),
                     locale);
             for (HistoryWorkflow wf : workflows) {
-                history.add(getGWTJahiaHistoryWorkflow(wf));
+                history.add(getGWTJahiaHistoryProcess(wf));
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -313,28 +317,31 @@ public class WorkflowHelper {
     public List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryForUser(JahiaUser user, Locale locale) throws GWTJahiaServiceException {
         List<GWTJahiaWorkflowHistoryItem> gwtWorkflows = new ArrayList<GWTJahiaWorkflowHistoryItem>();
 
-        Map<String, GWTJahiaWorkflowHistoryItem> gwtWorkflowsMap = new HashMap<String, GWTJahiaWorkflowHistoryItem>();
+        Map<String, GWTJahiaWorkflowHistoryProcess> gwtWorkflowsMap = new HashMap<String, GWTJahiaWorkflowHistoryProcess>();
 
         List<WorkflowTask> tasks = service.getTasksForUser(user, locale);
         for (WorkflowTask task : tasks) {
-            GWTJahiaWorkflowHistoryItem gwtWf = gwtWorkflowsMap.get(task.getProcessId());
-            if (gwtWf == null) {
-                gwtWf = getGWTJahiaHistoryWorkflow(service.getHistoryWorkflow(task.getProcessId(), task.getProvider(), locale));
-                gwtWf.setAvailableTasks(new ArrayList<GWTJahiaWorkflowTask>());
-                gwtWorkflowsMap.put(task.getProcessId(), gwtWf);
-                gwtWorkflows.add(gwtWf);
-                //
+            GWTJahiaWorkflowHistoryProcess gwtWfHistory = gwtWorkflowsMap.get(task.getProcessId());
+            if (gwtWfHistory == null) {
+                gwtWfHistory = getGWTJahiaHistoryProcess(service.getHistoryWorkflow(task.getProcessId(), task.getProvider(), locale));
+                gwtWfHistory.setAvailableTasks(new ArrayList<GWTJahiaWorkflowTask>());
+                gwtWorkflowsMap.put(task.getProcessId(), gwtWfHistory);
+                gwtWorkflows.add(gwtWfHistory);
+
+                final Workflow wf = WorkflowService.getInstance().getWorkflow(gwtWfHistory.getProvider(), gwtWfHistory.getProcessId(), locale);
+                gwtWfHistory.setRunningWorkflow(getGWTJahiaWorkflow(wf));
             }
-            gwtWf.getAvailableTasks().add(getGWTJahiaWorkflowTask(task));
+            gwtWfHistory.getAvailableTasks().add(getGWTJahiaWorkflowTask(task));
         }
 
         List<Workflow> workflows = service.getWorkflowsForUser(user, locale);
         for (Workflow wf : workflows) {
-            GWTJahiaWorkflowHistoryItem gwtWf = gwtWorkflowsMap.get(wf.getId());
-            if (gwtWf == null) {
-                gwtWf = getGWTJahiaHistoryWorkflow(service.getHistoryWorkflow(wf.getId(), wf.getProvider(), locale));
-                gwtWorkflowsMap.put(wf.getId(), gwtWf);
-                gwtWorkflows.add(gwtWf);
+            GWTJahiaWorkflowHistoryProcess gwtWfHistory = gwtWorkflowsMap.get(wf.getId());
+            if (gwtWfHistory == null) {
+                gwtWfHistory = getGWTJahiaHistoryProcess(service.getHistoryWorkflow(wf.getId(), wf.getProvider(), locale));
+                gwtWorkflowsMap.put(wf.getId(), gwtWfHistory);
+                gwtWorkflows.add(gwtWfHistory);
+                gwtWfHistory.setRunningWorkflow(getGWTJahiaWorkflow(wf));
             }
         }
 
@@ -363,9 +370,7 @@ public class WorkflowHelper {
                     definitions.put(workflowDefinition, acl);
                     rev.put(definition.getKey(), workflowType);
                 }
-                GWTJahiaWorkflowType t = new GWTJahiaWorkflowType();
-                t.setDisplayName(workflowType);
-                t.setName(workflowType);
+                GWTJahiaWorkflowType t = getGWTJahiaWorkflowType(workflowType);
                 result.put(t, definitions);
                 keyToMap.put(workflowType, definitions);
             }
@@ -411,6 +416,13 @@ public class WorkflowHelper {
             e.printStackTrace();
             throw new GWTJahiaServiceException(e.getMessage());
         }
+    }
+
+    private GWTJahiaWorkflowType getGWTJahiaWorkflowType(String workflowType) {
+        GWTJahiaWorkflowType t = new GWTJahiaWorkflowType();
+        t.setDisplayName(workflowType);
+        t.setName(workflowType);
+        return t;
     }
 
     private GWTJahiaNodeACL initAcl(String path, Map.Entry<String, List<String[]>> entry, WorkflowDefinition definition,

@@ -739,7 +739,7 @@ public class JCRPublicationService extends JahiaService {
      * Unpublish a node from live workspace.
      * Referenced Node will not be unpublished.
      *
-     * @param path      path of the node to unpublish
+     * @param uuid      uuid of the node to unpublish
      * @param languages
      * @throws javax.jcr.RepositoryException
      */

@@ -34,10 +34,7 @@ package org.jahia.ajax.gwt.client.widget.usergroup;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
-import com.extjs.gxt.ui.client.data.BasePagingLoader;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
-import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.*;
@@ -159,9 +156,9 @@ public class UserGroupSelect extends Window {
 
     private ContentPanel getUserPanel(final UserGroupAdder target, final UserManagerServiceAsync service) {
         // data proxy
-        RpcProxy<PagingLoadResult<GWTJahiaUser>> proxy = new RpcProxy<PagingLoadResult<GWTJahiaUser>>() {
+        RpcProxy<BasePagingLoadResult<GWTJahiaUser>> proxy = new RpcProxy<BasePagingLoadResult<GWTJahiaUser>>() {
             @Override
-            protected void load(Object pageLoaderConfig, AsyncCallback<PagingLoadResult<GWTJahiaUser>> callback) {
+            protected void load(Object pageLoaderConfig, AsyncCallback<BasePagingLoadResult<GWTJahiaUser>> callback) {
                 String context = aclContext;
                 if ("siteSelector".equals(aclContext)) {
                     context = "site:"+selectedSite;
@@ -240,9 +237,9 @@ public class UserGroupSelect extends Window {
 
     private ContentPanel getGroupsPanel(final UserGroupAdder target, final UserManagerServiceAsync service) {
         // data proxy
-        RpcProxy<PagingLoadResult<GWTJahiaGroup>> proxy = new RpcProxy<PagingLoadResult<GWTJahiaGroup>>() {
+        RpcProxy<BasePagingLoadResult<GWTJahiaGroup>> proxy = new RpcProxy<BasePagingLoadResult<GWTJahiaGroup>>() {
             @Override
-            protected void load(Object pageLoaderConfig, AsyncCallback<PagingLoadResult<GWTJahiaGroup>> callback) {
+            protected void load(Object pageLoaderConfig, AsyncCallback<BasePagingLoadResult<GWTJahiaGroup>> callback) {
                 String context = aclContext;
                 if ("siteSelector".equals(aclContext)) {
                     context = "site:"+selectedSite;

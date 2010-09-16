@@ -38,6 +38,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.ajax.gwt.client.widget.edit.PublicationWorkflow;
 import org.jahia.api.Constants;
 import org.jahia.services.content.*;
 import org.jahia.services.usermanager.JahiaUser;
@@ -224,13 +225,13 @@ public class PublicationHelper {
      * @param languages Set of languages to publish if null publish all languages
      * @param workflow  @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      */
-    public void publish(List<String> uuids, Set<String> languages, boolean allSubTree, boolean workflow, boolean reverse, JCRSessionWrapper session,
+    public void publish(List<String> uuids, String language, boolean allSubTree, boolean workflow, boolean reverse, JCRSessionWrapper session,
                         List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException {
         try {
             // todo : if workflow started on untranslated node, translation will be created and not added into the publish tree calculated here 
 
             final String workspaceName = session.getWorkspace().getName();
-            List<PublicationInfo> infos = publicationService.getPublicationInfos(uuids, languages, true, true, allSubTree,
+            List<PublicationInfo> infos = publicationService.getPublicationInfos(uuids, Collections.singleton(language), true, true, allSubTree,
                     workspaceName, Constants.LIVE_WORKSPACE);
             if (workflow) {
                 Map<WorkflowDefinition, List<PublicationInfo>> m = new HashMap<WorkflowDefinition, List<PublicationInfo>>();
@@ -266,6 +267,10 @@ public class PublicationHelper {
                 for (Map.Entry<WorkflowDefinition, List<PublicationInfo>> entry : m.entrySet()) {
                     List<String> ids = new ArrayList<String>();
                     map.put("publicationInfos", entry.getValue());
+
+                    List<GWTJahiaPublicationInfo> gwtInfos = convert(entry.getValue(),session);
+                    map.put("customWorkflowInfo", new PublicationWorkflow(gwtInfos, uuids, allSubTree, language));
+
                     for (PublicationInfo node : entry.getValue()) {
                         ids.add(node.getRoot().getUuid());
                     }

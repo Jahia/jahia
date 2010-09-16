@@ -59,6 +59,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowType;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
@@ -206,7 +207,7 @@ public class PublicationManagerEngine extends Window {
                                 Info.display("Worlfow",
                                              "Starting worflow for node " + node.getPath() + " in language " + language.getDisplayName());
                                 final GWTJahiaWorkflowDefinition definition = node.getWorkflowInfos().get(
-                                        language.getLanguage()).getPossibleWorkflows().get(0);
+                                        language.getLanguage()).getPossibleWorkflows().get(new GWTJahiaWorkflowType("publish"));
                                 Map<String, List<GWTJahiaNode>> map = workflowDefinitionMapMap.get(
                                         definition.getName());
                                 if (map == null) {
@@ -332,7 +333,7 @@ public class PublicationManagerEngine extends Window {
             if (wfStatus) {
                 // is there a workflow started
                 GWTJahiaWorkflowInfo info = node.getWorkflowInfos().get(getDataIndex());
-                if (info.getActiveWorkflows().size() > 0) {
+                if (info.getActiveWorkflows().get(new GWTJahiaWorkflowType("publish")) != null) {
                     state = GWTJahiaPublicationInfo.LOCKED;
                 }
             }

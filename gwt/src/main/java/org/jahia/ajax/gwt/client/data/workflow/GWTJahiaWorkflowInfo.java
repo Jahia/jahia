@@ -35,6 +35,7 @@ package org.jahia.ajax.gwt.client.data.workflow;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -44,24 +45,24 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class GWTJahiaWorkflowInfo implements Serializable {
-    private List<GWTJahiaWorkflowDefinition> possibleWorkflows;
-    private List<GWTJahiaWorkflow> activeWorkflows;
+    private Map<GWTJahiaWorkflowType, GWTJahiaWorkflowDefinition> possibleWorkflows;
+    private Map<GWTJahiaWorkflowType, GWTJahiaWorkflow> activeWorkflows;
     public GWTJahiaWorkflowInfo() {
     }
 
-    public List<GWTJahiaWorkflowDefinition> getPossibleWorkflows() {
+    public Map<GWTJahiaWorkflowType, GWTJahiaWorkflowDefinition> getPossibleWorkflows() {
         return possibleWorkflows;
     }
 
-    public void setPossibleWorkflows(List<GWTJahiaWorkflowDefinition> possibleWorkflows) {
+    public void setPossibleWorkflows(Map<GWTJahiaWorkflowType, GWTJahiaWorkflowDefinition> possibleWorkflows) {
         this.possibleWorkflows = possibleWorkflows;
     }
 
-    public List<GWTJahiaWorkflow> getActiveWorkflows() {
+    public Map<GWTJahiaWorkflowType, GWTJahiaWorkflow> getActiveWorkflows() {
         return activeWorkflows;
     }
 
-    public void setActiveWorkflows(List<GWTJahiaWorkflow> activeWorkflows) {
+    public void setActiveWorkflows(Map<GWTJahiaWorkflowType, GWTJahiaWorkflow> activeWorkflows) {
         this.activeWorkflows = activeWorkflows;
     }
 }

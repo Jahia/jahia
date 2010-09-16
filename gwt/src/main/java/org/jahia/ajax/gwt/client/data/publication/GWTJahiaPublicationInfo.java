@@ -32,10 +32,8 @@
 
 package org.jahia.ajax.gwt.client.data.publication;
 
-import com.extjs.gxt.ui.client.data.BaseModel;
-import com.extjs.gxt.ui.client.data.BaseTreeModel;
+import org.jahia.ajax.gwt.client.data.SerializableBaseModel;
 
-import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -45,7 +43,7 @@ import java.util.*;
  * Time: 12:00:28 PM
  * To change this template use File | Settings | File Templates.
  */
-public class GWTJahiaPublicationInfo extends BaseModel implements Serializable {
+public class GWTJahiaPublicationInfo extends SerializableBaseModel {
 
     public static final int PUBLISHED = 1;
     public static final int LOCKED = 2;

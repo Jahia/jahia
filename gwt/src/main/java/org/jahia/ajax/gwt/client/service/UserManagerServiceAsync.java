@@ -32,6 +32,7 @@
 
 package org.jahia.ajax.gwt.client.service;
 
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
@@ -48,13 +49,13 @@ import java.util.List;
  */
 public interface UserManagerServiceAsync {
 
-    void searchUsers (String match, int offset, int limit, List<Integer> siteIds, AsyncCallback<PagingLoadResult<GWTJahiaUser>> async);
+    void searchUsers (String match, int offset, int limit, List<Integer> siteIds, AsyncCallback<BasePagingLoadResult<GWTJahiaUser>> async);
 
-    void searchUsersInContext (String match, int offset, int limit, String context, AsyncCallback<PagingLoadResult<GWTJahiaUser>> async);
+    void searchUsersInContext (String match, int offset, int limit, String context, AsyncCallback<BasePagingLoadResult<GWTJahiaUser>> async);
 
-    void searchGroups(String match, int offset, int limit, List<Integer> siteIds, AsyncCallback<PagingLoadResult<GWTJahiaGroup>> async);
+    void searchGroups(String match, int offset, int limit, List<Integer> siteIds, AsyncCallback<BasePagingLoadResult<GWTJahiaGroup>> async);
 
-    void searchGroupsInContext (String match, int offset, int limit, String context, AsyncCallback<PagingLoadResult<GWTJahiaGroup>> async);
+    void searchGroupsInContext (String match, int offset, int limit, String context, AsyncCallback<BasePagingLoadResult<GWTJahiaGroup>> async);
 
     void getFormattedPrincipal(String userkey, char type, String[] textpattern, AsyncCallback<String[]> async);
 }

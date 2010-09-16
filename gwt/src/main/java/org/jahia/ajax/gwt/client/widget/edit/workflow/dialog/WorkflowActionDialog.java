@@ -130,15 +130,21 @@ public class WorkflowActionDialog extends Window {
                 "for") + " node: " + node.getDisplayName());
         initTabs(workflowDefinition.getFormResourceName());
         Button button = null;
+        Button bypassButton = null;
         if (custom != null) {
             button = custom.getStartWorkflowButton(workflowDefinition, this);
+            bypassButton = custom.getBypassWorkflowButton(workflowDefinition, this);
         }
         if (button == null) {
             button = generateStartWorkflowButton(workflowDefinition);
         }
+
         ButtonBar bar = new ButtonBar();
         bar.setAlignment(Style.HorizontalAlignment.CENTER);
         bar.add(button);
+        if (bypassButton != null) {
+            bar.add(bypassButton);
+        }
         setBottomComponent(bar);
     }
 

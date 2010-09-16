@@ -932,15 +932,6 @@ public class NavigationHelper {
                         JCRSessionWrapper localeSession =
                                 sessionFactory.getCurrentUserSession(session.getWorkspace().getName(), locale);
                         GWTJahiaWorkflowInfo info = workflow.getWorkflowInfo(n.getPath(), localeSession, locale);
-
-                        for (GWTJahiaWorkflow workflow : info.getActiveWorkflows()) {
-                            if (workflow.getOriginalVariables().containsKey("publicationInfos")) {
-                                workflow.set("publicationInfos", publication.convert(
-                                        (List<PublicationInfo>) workflow.getOriginalVariables().get("publicationInfos"),
-                                        session));
-                            }
-                        }
-
                         infoMap.put(code, info);
                     }
                     n.setWorkflowInfos(infoMap);

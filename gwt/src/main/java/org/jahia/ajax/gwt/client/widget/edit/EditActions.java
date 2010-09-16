@@ -45,6 +45,8 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowType;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
@@ -52,6 +54,7 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.compare.CompareEngine;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.contentengine.TranslateContentEngine;
+import org.jahia.ajax.gwt.client.widget.edit.workflow.dialog.WorkflowActionDialog;
 import org.jahia.ajax.gwt.client.widget.workflow.PublicationManagerEngine;
 import org.jahia.ajax.gwt.client.widget.workflow.WorkflowDashboardEngine;
 
@@ -169,7 +172,16 @@ public class EditActions {
                     .getPublicationInfo(uuids, allSubTree, new BaseAsyncCallback<List<GWTJahiaPublicationInfo>>() {
                         public void onSuccess(List<GWTJahiaPublicationInfo> result) {
                             linker.loaded();
-                            new PublicationStatusWindow(linker, uuids, result, allSubTree).show();
+                            final GWTJahiaNode selectedNode = linker.getSelectedNode();
+                            GWTJahiaWorkflowDefinition def = selectedNode.getWorkflowInfo().getPossibleWorkflows().get(new GWTJahiaWorkflowType("publish"));
+                            if (def != null) {
+                                WorkflowActionDialog wad = new WorkflowActionDialog(selectedNode, linker);
+                                wad.setCustom(new PublicationWorkflow(result, uuids, allSubTree, selectedNode.getLanguageCode()));
+                                wad.initStartWorkflowDialog(def);
+                                wad.show();
+                            } else {
+                                new PublicationStatusWindow(linker, uuids, result, allSubTree).show();
+                            }
                         }
 
                         public void onApplicationFailure(Throwable caught) {

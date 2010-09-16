@@ -102,7 +102,7 @@ public class ViewWorkflowStatusActionItem extends ViewStatusActionItem {
             if (module.getNode() != null) {
                 GWTJahiaWorkflowInfo info = module.getNode().getWorkflowInfo();
                 if (info.getActiveWorkflows().size()>0) {
-                    String current = info.getActiveWorkflows().get(0).getDefinition().getName();
+                    String current = info.getActiveWorkflows().values().iterator().next().getDefinition().getName();
                     allPublished = false;
                     addInfoLayer(module, "Workflow(s) started : "+current, "red", "red", left, top, right, bottom, removeListener, true,
                             "0.7");

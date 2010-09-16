@@ -4,9 +4,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean id="workflowService" class="org.jahia.services.workflow.WorkflowService" init-method="start" factory-method="getInstance">
-    	<property name="roleService" ref="org.jahia.services.rbac.jcr.RoleService"/>
-    	<property name="roleBasedAccessControlService" ref="org.jahia.services.rbac.jcr.RoleBasedAccessControlService"/>
-
         <property name="workflowTypes">
             <map>
                 <entry key="publish">

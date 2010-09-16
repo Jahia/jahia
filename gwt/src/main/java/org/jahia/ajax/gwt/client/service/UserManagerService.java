@@ -32,6 +32,7 @@
 
 package org.jahia.ajax.gwt.client.service;
 
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -77,13 +78,13 @@ public interface UserManagerService extends RemoteService  {
         }
     }
 
-    public PagingLoadResult<GWTJahiaUser> searchUsers (String match, int offset, int limit, List<Integer> siteIds);
+    public BasePagingLoadResult<GWTJahiaUser> searchUsers (String match, int offset, int limit, List<Integer> siteIds);
 
-    public PagingLoadResult<GWTJahiaGroup> searchGroups(String match, int offset, int limit, List<Integer> siteIds);
+    public BasePagingLoadResult<GWTJahiaGroup> searchGroups(String match, int offset, int limit, List<Integer> siteIds);
 
-    public PagingLoadResult<GWTJahiaUser> searchUsersInContext (String match, int offset, int limit, String context);
+    public BasePagingLoadResult<GWTJahiaUser> searchUsersInContext (String match, int offset, int limit, String context);
 
-    public PagingLoadResult<GWTJahiaGroup> searchGroupsInContext (String match, int offset, int limit, String context);
+    public BasePagingLoadResult<GWTJahiaGroup> searchGroupsInContext (String match, int offset, int limit, String context);
 
 
     public String[] getFormattedPrincipal(String key, char type, String[] textpattern);

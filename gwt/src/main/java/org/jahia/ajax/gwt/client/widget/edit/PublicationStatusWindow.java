@@ -34,25 +34,24 @@ package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.grid.*;
+import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.edit.workflow.dialog.WorkflowActionDialog;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.WorkInProgressActionItem;
 
 import java.util.List;
@@ -101,19 +100,13 @@ class PublicationStatusWindow extends Window {
         setButtonAlign(Style.HorizontalAlignment.CENTER);
 
 
-        ok = new Button(Messages.get("label.publish"));
         GWTJahiaNode selectedNode = linker.getSelectedNode();
         if (selectedNode == null) {
             selectedNode = linker.getMainNode();
         }
-        if (selectedNode.getWorkflowInfo().getPossibleWorkflows().get(0) != null) {
-            ok.addSelectionListener(new ButtonEventSelectionListener(uuids, selectedNode,
-                    selectedNode.getWorkflowInfo().getPossibleWorkflows().get(0),infos));
-            addButton(ok);
-        }
         if (PermissionsUtils.isPermitted("edit-mode/publication", JahiaGWTParameters.getSiteKey())) {
             noWorkflow = new Button(Messages.get("label.bypassWorkflow", "Bypass workflow"));
-            noWorkflow.addSelectionListener(new ButtonEventSelectionListener(uuids, null, null, null));
+            noWorkflow.addSelectionListener(new ButtonEventSelectionListener(uuids));
             addButton(noWorkflow);
         }
 
@@ -122,18 +115,10 @@ class PublicationStatusWindow extends Window {
 
     private class ButtonEventSelectionListener extends SelectionListener<ButtonEvent> {
         private List<String> uuids;
-        private final GWTJahiaNode selectedNode;
-        private final GWTJahiaWorkflowDefinition gwtJahiaWorkflowDefinition;
-        private final List<GWTJahiaPublicationInfo> infos;
         protected boolean workflow;
 
-        public ButtonEventSelectionListener(List<String> uuids, GWTJahiaNode selectedNode,
-                                            GWTJahiaWorkflowDefinition gwtJahiaWorkflowDefinition,
-                                            List<GWTJahiaPublicationInfo> infos) {
+        public ButtonEventSelectionListener(List<String> uuids) {
             this.uuids = uuids;
-            this.selectedNode = selectedNode;
-            this.gwtJahiaWorkflowDefinition = gwtJahiaWorkflowDefinition;
-            this.infos = infos;
         }
 
         public void componentSelected(ButtonEvent event) {
@@ -142,38 +127,25 @@ class PublicationStatusWindow extends Window {
                 noWorkflow.setEnabled(false);
             }
             cancel.setEnabled(false);
-            if (gwtJahiaWorkflowDefinition == null) {
-                hide();
-                Info.display("Publishing content",
-                        "Publishing content");
-                final String status = "Publishing content ...";
-                WorkInProgressActionItem.setStatus(status);
-                JahiaContentManagementService.App.getInstance()
-                        .publish(uuids, allSubTree, false, false, null,null,
-                                new BaseAsyncCallback() {
-                                    public void onApplicationFailure(Throwable caught) {
-                                        WorkInProgressActionItem.removeStatus(status);
-                                        Info.display("Cannot publish",
-                                                "Cannot publish");
-                                        Log.error("Cannot publish", caught);
-                                    }
+            hide();
+            Info.display("Publishing content", "Publishing content");
+            final String status = "Publishing content ...";
+            WorkInProgressActionItem.setStatus(status);
+            JahiaContentManagementService.App.getInstance()
+                    .publish(uuids, allSubTree, false, false, null, null, new BaseAsyncCallback() {
+                        public void onApplicationFailure(Throwable caught) {
+                            WorkInProgressActionItem.removeStatus(status);
+                            Info.display("Cannot publish", "Cannot publish");
+                            Log.error("Cannot publish", caught);
+                        }
 
-                                    public void onSuccess(Object result) {
-                                        WorkInProgressActionItem.removeStatus(status);
-                                        Info.display(Messages.get("message.content.published"),
-                                                Messages.get("message.content.published"));
-                                        linker.refresh(Linker.REFRESH_ALL);
-                                    }
-                                });
-            } else {
-                hide();
-                // Start Publication workflow
-                WorkflowActionDialog wad = new WorkflowActionDialog(selectedNode, linker);
-                wad.setCustom(new PublicationWorkflow(infos, uuids, allSubTree, selectedNode.getLanguageCode()));
-                wad.initStartWorkflowDialog(gwtJahiaWorkflowDefinition);
-                wad.show();
-                
-            }
+                        public void onSuccess(Object result) {
+                            WorkInProgressActionItem.removeStatus(status);
+                            Info.display(Messages.get("message.content.published"),
+                                    Messages.get("message.content.published"));
+                            linker.refresh(Linker.REFRESH_ALL);
+                        }
+                    });
         }
     }
 }

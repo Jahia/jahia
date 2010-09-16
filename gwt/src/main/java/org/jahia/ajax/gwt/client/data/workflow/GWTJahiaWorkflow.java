@@ -3,6 +3,7 @@ package org.jahia.ajax.gwt.client.data.workflow;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.widget.edit.workflow.dialog.CustomWorkflow;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -19,7 +20,7 @@ import java.util.Map;
 public class GWTJahiaWorkflow extends BaseModelData implements Serializable {
     private List<GWTJahiaWorkflowTask> availableTasks;
     private Map<String, GWTJahiaNodeProperty> variables;
-    private transient Map<String,Object> originalVariables;
+    private CustomWorkflow customWorkflowInfo;
 
     public GWTJahiaWorkflow() {
     }
@@ -64,14 +65,6 @@ public class GWTJahiaWorkflow extends BaseModelData implements Serializable {
         return variables;
     }
 
-    public Map<String, Object> getOriginalVariables() {
-        return originalVariables;
-    }
-
-    public void setOriginalVariables(Map<String, Object> originalVariables) {
-        this.originalVariables = originalVariables;
-    }
-
     public void setLocale(String locale) {
         set("locale",locale);
     }
@@ -96,5 +89,11 @@ public class GWTJahiaWorkflow extends BaseModelData implements Serializable {
         this.availableTasks = availableTasks;
     }
 
+    public CustomWorkflow getCustomWorkflowInfo() {
+        return customWorkflowInfo;
+    }
 
+    public void setCustomWorkflowInfo(CustomWorkflow customWorkflowInfo) {
+        this.customWorkflowInfo = customWorkflowInfo;
+    }
 }

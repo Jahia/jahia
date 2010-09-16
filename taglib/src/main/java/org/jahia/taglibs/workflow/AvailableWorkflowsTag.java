@@ -42,6 +42,7 @@ import org.jahia.taglibs.AbstractJahiaTag;
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -69,7 +70,7 @@ public class AvailableWorkflowsTag extends AbstractJahiaTag {
             if (workflowAction != null) {
                 defs = Collections.singletonList(WorkflowService.getInstance().getPossibleWorkflowForAction(node, getUser(),workflowAction,getUILocale()));
             } else {
-                defs = WorkflowService.getInstance().getPossibleWorkflows(node, getUser(),getUILocale());
+                defs = new ArrayList<WorkflowDefinition>(WorkflowService.getInstance().getPossibleWorkflows(node, getUser(),getUILocale()).values());
             }
         } catch (RepositoryException e) {
             logger.error("Could not retrieve workflows", e);

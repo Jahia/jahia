@@ -45,8 +45,6 @@ import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.rbac.RoleIdentity;
-import org.jahia.services.rbac.jcr.RoleBasedAccessControlService;
-import org.jahia.services.rbac.jcr.RoleService;
 import org.jahia.services.usermanager.*;
 import org.jahia.utils.LanguageCodeConverters;
 
@@ -68,9 +66,8 @@ public class WorkflowService {
     private static WorkflowService instance;
     public static final String CANDIDATE = "candidate";
     public static final String START_ROLE = "start";
-    private RoleService roleService;
-    private RoleBasedAccessControlService rbacService;
     private Map<String, List<String>> workflowTypes;
+    private Map<String, String> workflowTypeByDefinition;
     public static final String WORKFLOWRULES_NODE_NAME = "workflowrules";
 
     public static WorkflowService getInstance() {
@@ -80,12 +77,14 @@ public class WorkflowService {
         return instance;
     }
 
-    public void setRoleService(RoleService roleService) {
-        this.roleService = roleService;
-    }
-
     public void setWorkflowTypes(Map<String, List<String>> workflowTypes) {
         this.workflowTypes = workflowTypes;
+        this.workflowTypeByDefinition = new HashMap<String, String>();
+        for (Map.Entry<String, List<String>> entry : workflowTypes.entrySet()) {
+            for (String s : entry.getValue()) {
+                workflowTypeByDefinition.put(s, entry.getKey());
+            }
+        }
     }
 
     public Map<String, WorkflowProvider> getProviders() {
@@ -143,9 +142,14 @@ public class WorkflowService {
      * @param user
      * @return A list of available workflows per provider.
      */
-    public List<WorkflowDefinition> getPossibleWorkflows(final JCRNodeWrapper node, final JahiaUser user, Locale locale)
+    public Map<String, WorkflowDefinition> getPossibleWorkflows(final JCRNodeWrapper node, final JahiaUser user, Locale locale)
             throws RepositoryException {
-        return getPossibleWorkflows(node, user, null, locale);
+        List<WorkflowDefinition> l = getPossibleWorkflows(node, user, null, locale);
+        Map<String, WorkflowDefinition> res = new HashMap<String, WorkflowDefinition>();
+        for (WorkflowDefinition workflowDefinition : l) {
+            res.put(workflowTypeByDefinition.get(workflowDefinition.getKey()), workflowDefinition);
+        }
+        return res;
     }
 
     /**
@@ -175,50 +179,46 @@ public class WorkflowService {
     private List<WorkflowDefinition> getPossibleWorkflows(final JCRNodeWrapper node, final JahiaUser user,
                                                           final String action, final Locale locale)
             throws RepositoryException {
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<WorkflowDefinition>>() {
-            public List<WorkflowDefinition> doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                List<WorkflowDefinition> workflowsForAction = null;
-                if (action != null) {
-                    workflowsForAction = getWorkflowsForAction(action, locale);
-                }
-                final Set<WorkflowDefinition> workflows = new LinkedHashSet<WorkflowDefinition>();
+        List<WorkflowDefinition> workflowsForAction = null;
+        if (action != null) {
+            workflowsForAction = getWorkflowsForAction(action, locale);
+        }
+        final Set<WorkflowDefinition> workflows = new LinkedHashSet<WorkflowDefinition>();
 
-                JCRSiteNode site = node.getResolveSite();
+        JCRSiteNode site = node.getResolveSite();
 
-                Map<String, List<String[]>> rules = getWorkflowRules(node, null);
-                for (String wfName : rules.keySet()) {
-                    String workflowDefinitionKey = StringUtils.substringAfter(wfName, ":");
-                    String providerKey = StringUtils.substringBefore(wfName, ":");
-                    WorkflowDefinition definition =
-                            lookupProvider(providerKey).getWorkflowDefinitionByKey(workflowDefinitionKey, locale);
-                    if (null == workflowsForAction || workflowsForAction.contains(definition)) {
-                        List<String[]> l = rules.get(wfName);
-                        for (String[] rule : l) {
-                            String principal = rule[3];
-                            String type = rule[1];
-                            String privilege = rule[2];
-                            if ("GRANT".equals(type) && START_ROLE.equals(privilege)) {
-                                final String principalName = principal.substring(2);
-                                if (principal.charAt(0) == 'u') {
-                                    if (principalName.equals(user.getName())) {
-                                        workflows.add(definition);
-                                    }
-                                } else if (principal.charAt(0) == 'g') {
-                                    if (user.isMemberOfGroup(site.getID(), principalName)) {
-                                        workflows.add(definition);
-                                    }
-                                } else if (principal.charAt(0) == 'r') {
-                                    if (user.hasRole(new RoleIdentity(principalName, site.getSiteKey()))) {
-                                        workflows.add(definition);
-                                    }
-                                }
+        Map<String, List<String[]>> rules = getWorkflowRules(node, null);
+        for (String wfName : rules.keySet()) {
+            String workflowDefinitionKey = StringUtils.substringAfter(wfName, ":");
+            String providerKey = StringUtils.substringBefore(wfName, ":");
+            WorkflowDefinition definition =
+                    lookupProvider(providerKey).getWorkflowDefinitionByKey(workflowDefinitionKey, locale);
+            if (null == workflowsForAction || workflowsForAction.contains(definition)) {
+                List<String[]> l = rules.get(wfName);
+                for (String[] rule : l) {
+                    String principal = rule[3];
+                    String type = rule[1];
+                    String privilege = rule[2];
+                    if ("GRANT".equals(type) && START_ROLE.equals(privilege)) {
+                        final String principalName = principal.substring(2);
+                        if (principal.charAt(0) == 'u') {
+                            if (principalName.equals(user.getName())) {
+                                workflows.add(definition);
+                            }
+                        } else if (principal.charAt(0) == 'g') {
+                            if (user.isMemberOfGroup(site.getID(), principalName)) {
+                                workflows.add(definition);
+                            }
+                        } else if (principal.charAt(0) == 'r') {
+                            if (user.hasRole(new RoleIdentity(principalName, site.getSiteKey()))) {
+                                workflows.add(definition);
                             }
                         }
                     }
                 }
-                return new LinkedList<WorkflowDefinition>(workflows);
             }
-        });
+        }
+        return new LinkedList<WorkflowDefinition>(workflows);
     }
 
     public List<JahiaPrincipal> getAssignedRole(final JCRNodeWrapper node, final WorkflowDefinition definition,
@@ -547,19 +547,6 @@ public class WorkflowService {
         });
     }
 
-    public NodeIterator getAllWorkflowRules(JCRSessionWrapper session) throws RepositoryException {
-        JCRNodeWrapper rule = session.getNode("/workflowrules/");
-        if (rule != null) {
-            return rule.getNodes();
-        }
-        return null;
-
-    }
-
-    public void setRoleBasedAccessControlService(RoleBasedAccessControlService roleBasedAccessControlService) {
-        this.rbacService = roleBasedAccessControlService;
-    }
-
     public void addCommentToTask(String taskId, String provider, String comment) {
         lookupProvider(provider).addComment(taskId, comment);
     }
@@ -743,6 +730,10 @@ public class WorkflowService {
     public WorkflowDefinition getWorkflowDefinition(String provider, String id, Locale locale) {
         final WorkflowDefinition definition = lookupProvider(provider).getWorkflowDefinitionByKey(id, locale);
         return definition;
+    }
+
+    public String getWorkflowType(WorkflowDefinition def) {
+        return workflowTypeByDefinition.get(def.getKey());
     }
 
     public Set<String> getTypesOfWorkflow() {

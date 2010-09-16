@@ -32,6 +32,8 @@
 
 package org.jahia.ajax.gwt.client.data.workflow.history;
 
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflow;
+
 import java.util.Date;
 
 /**
@@ -87,6 +89,13 @@ public class GWTJahiaWorkflowHistoryProcess extends GWTJahiaWorkflowHistoryItem 
         set("nodeId", nodeId);
     }
 
+    public GWTJahiaWorkflow getRunningWorkflow() {
+        return get("workflow");
+    }
+
+    public void setRunningWorkflow(GWTJahiaWorkflow workflow) {
+        set("workflow", workflow);
+    }
 
 
 }

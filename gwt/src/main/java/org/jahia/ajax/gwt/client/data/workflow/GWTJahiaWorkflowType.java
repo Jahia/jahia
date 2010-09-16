@@ -16,6 +16,10 @@ public class GWTJahiaWorkflowType  extends BaseModelData implements Serializable
     public GWTJahiaWorkflowType() {
     }
 
+    public GWTJahiaWorkflowType(String name) {
+        setName(name);
+    }
+
     public String getName() {
         return get("name");
     }

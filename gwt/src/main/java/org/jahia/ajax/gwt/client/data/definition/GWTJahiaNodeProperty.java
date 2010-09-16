@@ -41,7 +41,7 @@ import java.util.ArrayList;
 /**
  * This is a bean to wrap a JCR node property, made from JCR 2.0 specs.
  */
-public class GWTJahiaNodeProperty extends BaseTreeModel implements Serializable {
+public class GWTJahiaNodeProperty implements Serializable {
 
     private boolean multiple;
     private String name;

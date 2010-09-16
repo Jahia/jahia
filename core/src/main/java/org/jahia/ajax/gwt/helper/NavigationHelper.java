@@ -491,7 +491,7 @@ public class NavigationHelper {
                 NodeIterator usages = node.getSharedSet();
                 while (usages.hasNext()) {
                     JCRNodeWrapper usage = (JCRNodeWrapper) usages.next();
-                    if (!usage.getPath().equals(node.getPath())) {
+                    if (!usage.getPath().equals(node.getPath()) && !usage.getPath().startsWith("/"+Constants.JCR_SYSTEM)) {
                         addUsage(result, usage, "shared");
                     }
                 }
@@ -507,11 +507,15 @@ public class NavigationHelper {
                         Value[] referenceValues = reference.getValues();
                         for (Value currentValue : referenceValues) {
                             JCRNodeWrapper refNode = currentUserSession.getNodeByUUID(currentValue.getString());
-                            addUsage(result, refNode, "reference");
+                            if(!refNode.getPath().startsWith("/"+Constants.JCR_SYSTEM)) {
+                                addUsage(result, refNode, "reference");
+                            }
                         }
                     } else {
                         JCRNodeWrapper refNode = (JCRNodeWrapper) reference.getNode();
-                        addUsage(result, refNode, "reference");
+                        if(!refNode.getPath().startsWith("/"+Constants.JCR_SYSTEM)) {
+                            addUsage(result, refNode, "reference");
+                        }
                     }
                 }
                 PropertyIterator wr = node.getWeakReferences();
@@ -521,12 +525,16 @@ public class NavigationHelper {
                         Value[] referenceValues = reference.getValues();
                         for (Value currentValue : referenceValues) {
                             JCRNodeWrapper refNode = currentUserSession.getNodeByUUID(currentValue.getString());
-                            addUsage(result, refNode, "weakreference");
+                            if(!refNode.getPath().startsWith("/"+Constants.JCR_SYSTEM)) {
+                                addUsage(result, refNode, "weakreference");
+                            }
                         }
                     } else {
                         if (!reference.getPath().startsWith("/referencesKeeper")) {
                             JCRNodeWrapper refNode = reference.getParent();
-                            addUsage(result, refNode, "weakreference");
+                            if(!refNode.getPath().startsWith("/"+Constants.JCR_SYSTEM)) {
+                                addUsage(result, refNode, "weakreference");
+                            }
                         }
                     }
                 }

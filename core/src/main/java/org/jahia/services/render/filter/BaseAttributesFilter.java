@@ -32,8 +32,6 @@
 
 package org.jahia.services.render.filter;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
@@ -41,8 +39,10 @@ import org.jahia.services.render.TemplateNotFoundException;
 import org.jahia.services.render.URLGenerator;
 import org.jahia.services.render.scripting.Script;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
- * Stores the required request parameters before evaluating the template and restores original after. 
+ * Stores the required request parameters before evaluating the template and restores original after.
  * User: toto
  * Date: Nov 26, 2009
  * Time: 3:28:13 PM
@@ -55,19 +55,30 @@ public class BaseAttributesFilter extends AbstractFilter {
 
         request.setAttribute("renderContext", context);
         try {
-		    final Script script = service.resolveScript(resource, context);
-		    chain.pushAttribute(request, "script", script);
-		    chain.pushAttribute(request, "scriptInfo", script.getTemplate().getInfo());
+            final Script script = service.resolveScript(resource, context);
+            chain.pushAttribute(request, "script", script);
+            chain.pushAttribute(request, "scriptInfo", script.getTemplate().getInfo());
         } catch (TemplateNotFoundException e) {
-            chain.pushAttribute(request, "script", null);
-		    chain.pushAttribute(request, "scriptInfo", null);
+            if (resource.getNode().getIdentifier().equals(context.getMainResource().getNode().getIdentifier())) {
+                try {
+                    final Script script = service.resolveScript(context.getMainResource(), context);
+                    chain.pushAttribute(request, "script", script);
+                    chain.pushAttribute(request, "scriptInfo", script.getTemplate().getInfo());
+                } catch (TemplateNotFoundException ex) {
+                    chain.pushAttribute(request, "script", null);
+                    chain.pushAttribute(request, "scriptInfo", null);
+                }
+            } else {
+                chain.pushAttribute(request, "script", null);
+                chain.pushAttribute(request, "scriptInfo", null);
+            }
         }
         chain.pushAttribute(request, "workspace", node.getSession().getWorkspace().getName());
         chain.pushAttribute(request, "currentResource", resource);
 
         if (!Resource.CONFIGURATION_INCLUDE.equals(resource.getContextConfiguration())) {
             chain.pushAttribute(request, "currentNode", node);
-            chain.pushAttribute(request, "url",new URLGenerator(context, resource));
+            chain.pushAttribute(request, "url", new URLGenerator(context, resource));
         }
 
         return null;

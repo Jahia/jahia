@@ -57,6 +57,7 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
     public static final int MANDATORY_LANGUAGE_VALID = 10;
     
     private Set<Integer> subnodesStatus = new HashSet<Integer>();
+    private Set<Integer> referencesStatus = new HashSet<Integer>();
 
     private List<GWTJahiaPublicationInfo> subnodes = new ArrayList<GWTJahiaPublicationInfo>();
 
@@ -107,6 +108,14 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
 
     public void setSubnodesStatus(Set<Integer> subnodesStatus) {
         this.subnodesStatus = subnodesStatus;
+    }
+
+    public Set<Integer> getReferencesStatus() {
+        return referencesStatus;
+    }
+
+    public void setReferencesStatus(Set<Integer> referencesStatus) {
+        this.referencesStatus = referencesStatus;
     }
 
     public Boolean isCanPublish() {

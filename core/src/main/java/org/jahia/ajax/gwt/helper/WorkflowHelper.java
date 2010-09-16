@@ -378,15 +378,14 @@ public class WorkflowHelper {
             JCRNodeWrapper node = session.getNode(path);
 
             // Get all inherited workflow permissions
-            Map<String, List<String[]>> map = service.getWorkflowRules(node.getParent(), locale);
-            for (Map.Entry<String, List<String[]>> entry : map.entrySet()) {
+            Collection<WorkflowRule> map = service.getWorkflowRules(node.getParent(), locale);
+            for (WorkflowRule rule : map) {
                 try {
-                    String wf = entry.getKey();
-                    final WorkflowDefinition definition = service.getWorkflowDefinition(StringUtils.substringBefore(wf,":"),
-                                                                                        StringUtils.substringAfter(wf,":"),
+                    final WorkflowDefinition definition = service.getWorkflowDefinition(rule.getProviderKey(),
+                                                                                        rule.getWorkflowDefinitionKey(),
                                                                                         locale);
                     final GWTJahiaWorkflowDefinition workflowDefinition = getGWTJahiaWorkflowDefinition(definition);
-                    GWTJahiaNodeACL acl = initAcl(path, entry, definition, true);
+                    GWTJahiaNodeACL acl = initAcl(path, rule, definition, true);
                     keyToMap.get(rev.get(definition.getKey())).remove(workflowDefinition);
                     keyToMap.get(rev.get(definition.getKey())).put(workflowDefinition, acl);
                 } catch (Exception e) {
@@ -396,14 +395,13 @@ public class WorkflowHelper {
 
             // Get local definitions
             map = service.getWorkflowRules(node, locale);
-            for (Map.Entry<String, List<String[]>> entry : map.entrySet()) {
+            for (WorkflowRule rule : map) {
                 try {
-                    String wf = entry.getKey();
-                    final WorkflowDefinition definition = service.getWorkflowDefinition(StringUtils.substringBefore(wf,":"),
-                                                                                        StringUtils.substringAfter(wf,":"),
+                    final WorkflowDefinition definition = service.getWorkflowDefinition(rule.getProviderKey(),
+                                                                                        rule.getWorkflowDefinitionKey(),
                                                                                         locale);
                     final GWTJahiaWorkflowDefinition workflowDefinition = getGWTJahiaWorkflowDefinition(definition);
-                    GWTJahiaNodeACL acl = initAcl(path, entry, definition, false);
+                    GWTJahiaNodeACL acl = initAcl(path, rule, definition, false);
                     workflowDefinition.set("active", Boolean.TRUE);
                     keyToMap.get(rev.get(definition.getKey())).remove(workflowDefinition);
                     keyToMap.get(rev.get(definition.getKey())).put(workflowDefinition, acl);
@@ -425,15 +423,15 @@ public class WorkflowHelper {
         return t;
     }
 
-    private GWTJahiaNodeACL initAcl(String path, Map.Entry<String, List<String[]>> entry, WorkflowDefinition definition,
+    private GWTJahiaNodeACL initAcl(String path, WorkflowRule entry, WorkflowDefinition definition,
                                     boolean inherited) {
         Map<String, List<String>> permissions = new HashMap<String, List<String>>();
         permissions.put("tasks", new LinkedList<String>(definition.getTasks()));
         GWTJahiaNodeACL acl = new GWTJahiaNodeACL();
         acl.setAvailablePermissions(permissions);
         Map<String, GWTJahiaNodeACE> aces = new HashMap<String, GWTJahiaNodeACE>();
-        for (String[] acesString : entry.getValue()) {
-            String principal = acesString[3];
+        for (WorkflowRule.Permission acesString : entry.getPermissions()) {
+            String principal = acesString.getPrincipal();
             GWTJahiaNodeACE ace;
             Map<String, String> perms;
             Map<String, String> inheritedPerms;
@@ -449,11 +447,11 @@ public class WorkflowHelper {
                 inheritedPerms = ace.getInheritedPermissions();
             }
             String inheritedFrom = null;
-            if (inherited || !path.equals(acesString[0])) {
-                inheritedFrom = acesString[0];
-                inheritedPerms.put(acesString[2], acesString[1]);
+            if (inherited || !path.equals(acesString.getPath())) {
+                inheritedFrom = acesString.getPath();
+                inheritedPerms.put(acesString.getName(), acesString.getType());
             } else {
-                perms.put(acesString[2], acesString[1]);
+                perms.put(acesString.getName(), acesString.getType());
             }
 
             ace.setInheritedFrom(inheritedFrom);

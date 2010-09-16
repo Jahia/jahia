@@ -63,9 +63,9 @@ public class PublicationWorkflow implements CustomWorkflow {
 
         GroupingStore<GWTJahiaPublicationInfo> store = new GroupingStore<GWTJahiaPublicationInfo>();
         for (GWTJahiaPublicationInfo info : publicationInfos) {
-            if (info.getStatus() > GWTJahiaPublicationInfo.PUBLISHED) {
+//            if (info.getStatus() > GWTJahiaPublicationInfo.PUBLISHED) {
                 store.add(info);
-            }
+//            }
         }
 
         PublicationStatusGrid g = new PublicationStatusGrid(store);

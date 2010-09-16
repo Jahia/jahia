@@ -42,7 +42,7 @@ import org.jahia.ajax.gwt.client.widget.edit.PublicationWorkflow;
 import org.jahia.api.Constants;
 import org.jahia.services.content.*;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.workflow.WorkflowDefinition;
+import org.jahia.services.workflow.WorkflowRule;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.workflow.WorkflowVariable;
 
@@ -82,11 +82,10 @@ public class PublicationHelper {
      */
     public GWTJahiaPublicationInfo getSimplePublicationInfo(String uuid, Set<String> languages, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         try {
-            PublicationInfo pubInfo = publicationService.getPublicationInfo(uuid, languages, false, true, false, currentUserSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE).get(0);
+            PublicationInfo pubInfo = publicationService.getPublicationInfo(uuid, languages, true, true, false, currentUserSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE).get(0);
             GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(pubInfo.getRoot().getPath(), pubInfo.getRoot().getStatus(), pubInfo.getRoot().isCanPublish());
             for (PublicationInfoNode sub : pubInfo.getRoot().getChildren()) {
                 if (sub.getPath().contains("/j:translation")) {
-                    String key = StringUtils.substringBeforeLast(sub.getPath(), "/j:translation");
                     if (sub.getStatus() > gwtInfo.getStatus()) {
                         gwtInfo.setStatus(sub.getStatus());
                     }
@@ -96,6 +95,9 @@ public class PublicationHelper {
                 }
             }
             gwtInfo.setSubnodesStatus(pubInfo.getTreeStatus());
+            for (PublicationInfo refInfo : pubInfo.getAllReferences()) {
+                gwtInfo.getReferencesStatus().addAll(refInfo.getTreeStatus());
+            }
             return gwtInfo;
         } catch (RepositoryException e) {
             logger.error("repository exception", e);
@@ -222,7 +224,7 @@ public class PublicationHelper {
      * Parent node must be published, or will be published if publishParent is true.
      *
      * @param uuids     list of uuids of the nodes to publish
-     * @param languages Set of languages to publish if null publish all languages
+     * @param language  language to publish if null publish all languages
      * @param workflow  @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      */
     public void publish(List<String> uuids, String language, boolean allSubTree, boolean workflow, boolean reverse, JCRSessionWrapper session,
@@ -234,7 +236,7 @@ public class PublicationHelper {
             List<PublicationInfo> infos = publicationService.getPublicationInfos(uuids, Collections.singleton(language), true, true, allSubTree,
                     workspaceName, Constants.LIVE_WORKSPACE);
             if (workflow) {
-                Map<WorkflowDefinition, List<PublicationInfo>> m = new HashMap<WorkflowDefinition, List<PublicationInfo>>();
+                Map<WorkflowRule, List<PublicationInfo>> m = new HashMap<WorkflowRule, List<PublicationInfo>>();
 
                 for (PublicationInfo info : infos) {
                     if (info.needPublication()) {
@@ -264,17 +266,23 @@ public class PublicationHelper {
                         }
                     }
                 }
-                for (Map.Entry<WorkflowDefinition, List<PublicationInfo>> entry : m.entrySet()) {
+                for (Map.Entry<WorkflowRule, List<PublicationInfo>> entry : m.entrySet()) {
                     List<String> ids = new ArrayList<String>();
-                    map.put("publicationInfos", entry.getValue());
-
-                    List<GWTJahiaPublicationInfo> gwtInfos = convert(entry.getValue(),session);
-                    map.put("customWorkflowInfo", new PublicationWorkflow(gwtInfos, uuids, allSubTree, language));
-
-                    for (PublicationInfo node : entry.getValue()) {
-                        ids.add(node.getRoot().getUuid());
+                    final List<PublicationInfo> localInfos = entry.getValue();
+                    boolean needed = false;
+                    for (PublicationInfo localInfo : localInfos) {
+                        needed |= localInfo.needPublication();
                     }
-                    workflowService.startProcess(ids,session,entry.getKey().getKey(), entry.getKey().getProvider(), map);
+                    if (needed) {
+                        map.put("publicationInfos", localInfos);
+                        List<GWTJahiaPublicationInfo> gwtInfos = convert(localInfos,session);
+                        map.put("customWorkflowInfo", new PublicationWorkflow(gwtInfos, uuids, allSubTree, language));
+
+                        for (PublicationInfo node : localInfos) {
+                            ids.add(node.getRoot().getUuid());
+                        }
+                        workflowService.startProcess(ids,session,entry.getKey().getWorkflowDefinitionKey(), entry.getKey().getProviderKey(), map);
+                    }
                 }
             } else {
                 if (reverse) {
@@ -294,17 +302,17 @@ public class PublicationHelper {
         }
     }
 
-    public boolean splitWorkflows(Map<WorkflowDefinition, List<PublicationInfo>> m, PublicationInfoNode node, WorkflowDefinition currentDef, JCRSessionWrapper session) throws RepositoryException {
+    public boolean splitWorkflows(Map<WorkflowRule, List<PublicationInfo>> m, PublicationInfoNode node, WorkflowRule currentDef, JCRSessionWrapper session) throws RepositoryException {
         JCRNodeWrapper n = session.getNodeByUUID(node.getUuid());
         boolean split = false;
 
         if (currentDef == null || n.hasNode("j:workflow")) {
-            WorkflowDefinition def = workflowService.getPossibleWorkflowForAction(n, session.getUser(), "publish",null);
-            if (def == null) {
+            WorkflowRule rule = workflowService.getWorkflowRuleForAction(n, session.getUser(), "publish", null);
+            if (rule == null) {
                 return false;
             } else {
-                if (!def.equals(currentDef)) {
-                    currentDef = def;
+                if (!rule.equals(currentDef)) {
+                    currentDef = rule;
                     if (!m.containsKey(currentDef)) {
                         m.put(currentDef, new ArrayList<PublicationInfo>());
                     }
@@ -324,7 +332,7 @@ public class PublicationHelper {
         List<PublicationInfo> refSplit = new ArrayList<PublicationInfo>();
         for (PublicationInfo publicationNode : node.getReferences()) {
             if (publicationNode.needPublication()) {
-                if (splitWorkflows(m, publicationNode.getRoot(), currentDef, session)) {
+                if (splitWorkflows(m, publicationNode.getRoot(), null, session)) {
                     refSplit.add(publicationNode);
                 }
             } else {
@@ -340,7 +348,7 @@ public class PublicationHelper {
      * Unpublish a node from live workspace.
      * Referenced Node will not be unpublished.
      *
-     * @param path      path of the node to unpublish
+     * @param uuid      path of the node to unpublish
      * @param languages Set of languages to unpublish if null unpublish all languages
      * @param user      the user for obtaining the jcr session
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException

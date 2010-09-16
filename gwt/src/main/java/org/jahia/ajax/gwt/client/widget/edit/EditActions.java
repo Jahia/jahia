@@ -172,15 +172,26 @@ public class EditActions {
                     .getPublicationInfo(uuids, allSubTree, new BaseAsyncCallback<List<GWTJahiaPublicationInfo>>() {
                         public void onSuccess(List<GWTJahiaPublicationInfo> result) {
                             linker.loaded();
-                            final GWTJahiaNode selectedNode = linker.getSelectedNode();
-                            GWTJahiaWorkflowDefinition def = selectedNode.getWorkflowInfo().getPossibleWorkflows().get(new GWTJahiaWorkflowType("publish"));
-                            if (def != null) {
-                                WorkflowActionDialog wad = new WorkflowActionDialog(selectedNode, linker);
-                                wad.setCustom(new PublicationWorkflow(result, uuids, allSubTree, selectedNode.getLanguageCode()));
-                                wad.initStartWorkflowDialog(def);
-                                wad.show();
+
+                            List<GWTJahiaPublicationInfo> filteredList = new ArrayList<GWTJahiaPublicationInfo>();
+                            for (GWTJahiaPublicationInfo info : result) {
+                                if (info.getStatus() > GWTJahiaPublicationInfo.PUBLISHED) {
+                                    filteredList.add(info);
+                                }
+                            }
+                            if (filteredList.isEmpty()) {
+                                MessageBox.info(Messages.get("label.publication","Publication"), Messages.get("label.nothingToPublish","Nothing to publish"), null);
                             } else {
-                                new PublicationStatusWindow(linker, uuids, result, allSubTree).show();
+                                final GWTJahiaNode selectedNode = linker.getSelectedNode();
+                                GWTJahiaWorkflowDefinition def = selectedNode.getWorkflowInfo().getPossibleWorkflows().get(new GWTJahiaWorkflowType("publish"));
+                                if (def != null) {
+                                    WorkflowActionDialog wad = new WorkflowActionDialog(selectedNode, linker);
+                                    wad.setCustom(new PublicationWorkflow(filteredList, uuids, allSubTree, selectedNode.getLanguageCode()));
+                                    wad.initStartWorkflowDialog(def);
+                                    wad.show();
+                                } else {
+                                    new PublicationStatusWindow(linker, uuids, filteredList, allSubTree).show();
+                                }
                             }
                         }
 

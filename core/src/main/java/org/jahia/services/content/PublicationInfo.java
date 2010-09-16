@@ -140,7 +140,16 @@ public class PublicationInfo implements Serializable {
 
     public boolean needPublication() {
         Set<Integer> treeStatus = getTreeStatus();
-        return !treeStatus.contains(PUBLISHED) || treeStatus.size() != 1;
+        if (!treeStatus.contains(PUBLISHED) || treeStatus.size() != 1) {
+            return true;
+        }
+        for (PublicationInfo info : getAllReferences()) {
+            final Set<Integer> subTreeStatus = info.getTreeStatus();
+            if (!subTreeStatus.contains(PUBLISHED) || subTreeStatus.size() != 1) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

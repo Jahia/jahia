@@ -42,6 +42,10 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.widget.edit.PublicationWorkflow;
 import org.jahia.ajax.gwt.client.widget.edit.workflow.dialog.WorkflowActionDialog;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Created by IntelliJ IDEA.
 * User: toto
@@ -90,8 +94,13 @@ public class PublishActionItem extends BaseActionItem {
             } else {
                 wf = null;
                 GWTJahiaPublicationInfo info = gwtJahiaNode.getPublicationInfo();
-                setEnabled(!gwtJahiaNode.isLanguageLocked(JahiaGWTParameters.getLanguage()) && info.isCanPublish() && (info.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.MODIFIED || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED ||
-                        info.getSubnodesStatus().contains(GWTJahiaPublicationInfo.NOT_PUBLISHED) || info.getSubnodesStatus().contains(GWTJahiaPublicationInfo.MODIFIED) || info.getSubnodesStatus().contains(GWTJahiaPublicationInfo.UNPUBLISHED)));
+
+                Set<Integer> status = new HashSet<Integer>(info.getSubnodesStatus());
+                status.addAll(info.getReferencesStatus());
+                status.add(info.getStatus());
+                
+                setEnabled(!gwtJahiaNode.isLanguageLocked(JahiaGWTParameters.getLanguage()) && info.isCanPublish() &&
+                        (status.contains(GWTJahiaPublicationInfo.NOT_PUBLISHED) || status.contains(GWTJahiaPublicationInfo.MODIFIED) || status.contains(GWTJahiaPublicationInfo.UNPUBLISHED)));
                 updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getName());
             }
         }

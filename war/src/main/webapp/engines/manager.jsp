@@ -40,7 +40,7 @@ configToPermissionMapping.put("workflowmanager", "workflow-manager");
         <script type="text/javascript" src="${pageContext.request.contextPath}/modules/assets/javascript/jquery.Jcrop.min.js"></script>
     </c:if>
 </head>
-<body>
+<body onload="window.focus()">
 <internal:contentManager conf="${param.conf}" selectedPaths="${param.selectedPaths}"/>
 </body>
 </html>

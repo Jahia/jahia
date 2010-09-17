@@ -49,6 +49,7 @@ import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsData;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsQuery;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
 import org.jahia.ajax.gwt.client.data.node.*;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
@@ -120,6 +121,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     private GoogleDocsExportFormats googleDocsExportFormats;
     private GoogleDocsServiceFactory googleDocsServiceFactory;
     private CacheHelper cacheHelper;
+    private SchedulerHelper schedulerHelper;
+
 // --------------------- GETTER / SETTER METHODS ---------------------
 
     public void setGoogleDocsServiceFactory(GoogleDocsServiceFactory googleDocsServiceFactory) {
@@ -200,6 +203,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void setCacheHelper(CacheHelper cacheHelper) {
         this.cacheHelper = cacheHelper;
+    }
+
+    public void setSchedulerHelper(SchedulerHelper schedulerHelper) {
+        this.schedulerHelper = schedulerHelper;
     }
 
     // ------------------------ INTERFACE METHODS ------------------------
@@ -1587,5 +1594,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void flushAll() {
         cacheHelper.flushAll();
+    }
+
+    public List<GWTJahiaJobDetail> getActiveJobs() throws GWTJahiaServiceException {
+        return schedulerHelper.getActiveJobs(getLocale());
     }
 }

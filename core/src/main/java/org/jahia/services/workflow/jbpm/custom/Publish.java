@@ -36,11 +36,12 @@ import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.workflow.WorkflowVariable;
 import org.jbpm.api.activity.ActivityExecution;
 import org.jbpm.api.activity.ExternalActivityBehaviour;
+import org.quartz.JobDataMap;
+import org.quartz.JobDetail;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -58,19 +59,17 @@ public class Publish implements ExternalActivityBehaviour {
         List<PublicationInfo> info = (List<PublicationInfo>) execution.getVariable("publicationInfos");
         String workspace = (String) execution.getVariable("workspace");
         String userKey = (String) execution.getVariable("user");
-        JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
-        final JahiaUserManagerService userMgr = ServicesRegistry.getInstance().getJahiaUserManagerService();
-        JahiaUser user = userMgr.lookupUserByKey(userKey);
-        JahiaUser currentUser = sessionFactory.getCurrentUser();
-        sessionFactory.setCurrentUser(user);
-        String label = "published_at_"+ new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(GregorianCalendar.getInstance().getTime());
-        JCRPublicationService.getInstance().unlockForPublication(info, workspace, "process-"+execution.getProcessInstance().getId());
-        JCRPublicationService.getInstance().publish(info, workspace, Constants.LIVE_WORKSPACE);
-        for (PublicationInfo publicationInfo : info) {
-            JCRVersionService.getInstance().addVersionLabel(publicationInfo.getAllUuids(),"live_"+label,Constants.LIVE_WORKSPACE);
-            JCRVersionService.getInstance().addVersionLabel(publicationInfo.getAllUuids(),workspace+"_"+label,workspace);
-        }
-        sessionFactory.setCurrentUser(currentUser);
+
+        JobDetail jobDetail = BackgroundJob.createJahiaJob("Publication", PublicationJob.class);
+        JobDataMap jobDataMap = jobDetail.getJobDataMap();
+        jobDataMap.put(BackgroundJob.JOB_TYPE, PublicationJob.PUBLICATION_TYPE);
+        jobDataMap.put(BackgroundJob.JOB_USERKEY, userKey);
+        jobDataMap.put(PublicationJob.PUBLICATION_INFOS, info);
+        jobDataMap.put(PublicationJob.SOURCE, workspace);
+        jobDataMap.put(PublicationJob.DESTINATION, Constants.LIVE_WORKSPACE);
+        jobDataMap.put(PublicationJob.LOCK, "process-"+execution.getProcessInstance().getId());
+
+        ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail);
         List<WorkflowVariable> workflowVariables = (List<WorkflowVariable>) execution.getVariable("endDate");
         if (workflowVariables.isEmpty()) {
             execution.take("to end");

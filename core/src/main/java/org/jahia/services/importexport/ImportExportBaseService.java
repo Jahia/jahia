@@ -453,7 +453,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         p.store(out, "");
     }
 
-    public void importSiteZip(File file, List<ImportAction> actions, ExtendedImportResult result, JahiaSite site, Map<Object, Object> infos) throws RepositoryException, IOException {
+    public void importSiteZip(File file, JahiaSite site, Map<Object, Object> infos) throws RepositoryException, IOException {
         CategoriesImportHandler categoriesImportHandler = new CategoriesImportHandler();
         UsersImportHandler usersImportHandler = new UsersImportHandler(site);
 

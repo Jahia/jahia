@@ -167,13 +167,11 @@ public interface ImportExportService {
      * zip file can contain all kind of legacy jahia import files or jcr import format.
      *
      * @param file Zip file
-     * @param actions Empty list where to store the executed import action
-     * @param result Empty result that will be filled with import result
      * @param site The new site where to import
      * @throws RepositoryException
      * @throws IOException
      */
-    void importSiteZip(File file, List<ImportAction> actions, ExtendedImportResult result, JahiaSite site, Map<Object, Object> infos) throws RepositoryException, IOException;
+    void importSiteZip(File file, JahiaSite site, Map<Object, Object> infos) throws RepositoryException, IOException;
 
     void importCategories(Category rootCategory, InputStream is);
 

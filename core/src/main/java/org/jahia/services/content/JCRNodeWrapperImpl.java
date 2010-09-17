@@ -1635,8 +1635,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     private boolean internalHasProperty(String propertyName) throws RepositoryException {
-        boolean result = objectNode.hasProperty(propertyName);
-        if (result) return true;
         final Locale locale = getSession().getLocale();
         if (locale != null && !propertyName.equals("jcr:language")) {
             try {
@@ -1651,7 +1649,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 return false;
             }
         }
-        return false;
+        return objectNode.hasProperty(propertyName);
     }
 
     /**

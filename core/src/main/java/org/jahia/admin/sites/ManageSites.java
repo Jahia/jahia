@@ -69,7 +69,6 @@ import org.jahia.security.license.LicenseActionChecker;
 import org.jahia.security.license.LicenseManager;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreService;
-import org.jahia.services.importexport.ImportAction;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.pwdpolicy.PolicyEnforcementResult;
@@ -2012,7 +2011,7 @@ public class ManageSites extends AbstractAdministrationModule {
                     if (infos.get("type").equals("files")) {
                         try {
                             ImportExportBaseService.getInstance()
-                                    .importSiteZip(file, new ArrayList<ImportAction>(), null, jParams.getSite(), infos);
+                                    .importSiteZip(file, jParams.getSite(), infos);
                         } catch (RepositoryException e) {
                             logger.error("Error when getting templates", e);
                         } finally {

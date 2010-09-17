@@ -47,7 +47,6 @@ import org.jahia.services.JahiaService;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.*;
-import org.jahia.services.importexport.ImportAction;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
@@ -399,7 +398,7 @@ public class Service extends JahiaService {
             File file = (File) infos.get("importFile");
             if (infos.get("type").equals("files")) {
                 try {
-                    ImportExportBaseService.getInstance().importSiteZip(file, new ArrayList<ImportAction>(), null, ctx.getSite(), infos);
+                    ImportExportBaseService.getInstance().importSiteZip(file, ctx.getSite(), infos);
                 } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);
                 }

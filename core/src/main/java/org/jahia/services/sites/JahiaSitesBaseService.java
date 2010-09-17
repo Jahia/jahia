@@ -47,8 +47,6 @@ import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.importexport.ExtendedImportResult;
-import org.jahia.services.importexport.ImportAction;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.ImportJob;
 import org.jahia.services.scheduler.BackgroundJob;
@@ -412,7 +410,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                     ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail);
                 } else {
                     try {
-                        ServicesRegistry.getInstance().getImportExportService().importSiteZip(initialZip, new ArrayList<ImportAction>(), new ExtendedImportResult(), jParams.getSite(), Collections.emptyMap());
+                        ServicesRegistry.getInstance().getImportExportService().importSiteZip(initialZip, jParams.getSite(), Collections.emptyMap());
                     } catch (RepositoryException e) {
                         logger.warn("Error importing site ZIP", e);
                     }

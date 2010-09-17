@@ -43,6 +43,7 @@ import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsData;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsQuery;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNewPortletInstance;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -286,6 +287,9 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
     void flush(String path);
 
     void flushAll();
+
+    List<GWTJahiaJobDetail> getActiveJobs() throws GWTJahiaServiceException;
+
 
     // -------------------------- INNER CLASSES --------------------------
 

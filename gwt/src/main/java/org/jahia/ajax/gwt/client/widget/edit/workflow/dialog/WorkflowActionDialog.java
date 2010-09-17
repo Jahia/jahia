@@ -299,9 +299,8 @@ public class WorkflowActionDialog extends Window {
                     nodeProperties = propertiesEditor.getProperties();
                 }
                 WorkflowActionDialog.this.hide();
-                Info.display("Starting workflow",
-                        "Starting workflow");
-                final String status = "Executing workflow ...";
+                final String status = Messages.get("label.workflow.task", "Executing workflow task");
+                Info.display(status, status);
                 WorkInProgressActionItem.setStatus(status);
                 contentManagement.startWorkflow(node.getPath(), wf, nodeProperties, new BaseAsyncCallback() {
                     public void onSuccess(Object result) {
@@ -336,9 +335,8 @@ public class WorkflowActionDialog extends Window {
                         nodeProperties = propertiesEditor.getProperties();
                     }
                     WorkflowActionDialog.this.hide();
-                    Info.display("Executing workflow",
-                            "Executing workflow");
-                    final String status = "Executing workflow ...";
+                    final String status = Messages.get("label.workflow.task", "Executing workflow task");
+                    Info.display(status, status);
                     WorkInProgressActionItem.setStatus(status);
                     contentManagement.assignAndCompleteTask(node.getPath(), task, outcome, nodeProperties,
                             new BaseAsyncCallback() {

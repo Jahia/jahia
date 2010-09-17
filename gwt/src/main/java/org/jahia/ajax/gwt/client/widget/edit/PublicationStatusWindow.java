@@ -128,8 +128,8 @@ class PublicationStatusWindow extends Window {
             }
             cancel.setEnabled(false);
             hide();
-            Info.display("Publishing content", "Publishing content");
-            final String status = "Publishing content ...";
+            final String status = Messages.get("label.publication.task", "Publishing content");
+            Info.display(status,status);
             WorkInProgressActionItem.setStatus(status);
             JahiaContentManagementService.App.getInstance()
                     .publish(uuids, allSubTree, false, false, null, null, new BaseAsyncCallback() {

@@ -91,7 +91,6 @@ public abstract class BackgroundJob implements StatefulJob {
     public static final String STATUS_INTERRUPTED = "interrupted";
 
     public static JobDetail createJahiaJob(String desc, Class<? extends BackgroundJob> jobClass) {
-        long now = System.currentTimeMillis();
         // jobdetail is non-volatile,durable,non-recoverable
         JobDetail jobDetail = new JobDetail("BackgroundJob-" + idGen.nextIdentifier(),
                 getGroupName(jobClass),
@@ -101,7 +100,7 @@ public abstract class BackgroundJob implements StatefulJob {
                 false);
         jobDetail.setDescription(desc);
         JobDataMap jobDataMap = new JobDataMap();
-        jobDataMap.putAsString(JOB_CREATED, now); //creation
+        jobDataMap.put(JOB_CREATED, new Date()); //creation
         final JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
         jobDataMap.put(JOB_USERKEY, sessionFactory.getCurrentUser().getUserKey());
         jobDataMap.put(JOB_CURRENT_LOCALE, sessionFactory.getCurrentLocale() != null ? sessionFactory

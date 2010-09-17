@@ -57,7 +57,8 @@
         <property name="uiConfig" ref="UiConfigHelper"/>
         <property name="analytics" ref="AnalyticsHelper"/>
         <property name="sessionPollingFrequency" value="300000"/>
-        <property name="cacheHelper" ref="cacheHelper"/>
+        <property name="cacheHelper" ref="CacheHelper"/>
+        <property name="schedulerHelper" ref="SchedulerHelper"/>
         <!--
         <property name="googleDocsExportFormats" ref="GoogleDocsExportFormats"/>
         <property name="googleDocsServiceFactory" ref="GoogleDocsServiceFactory"/>
@@ -82,9 +83,5 @@
         <property name="groupManagerService" ref="JahiaGroupManagerService"/>
         <property name="userManagerService" ref="JahiaUserManagerService"/>
         <property name="sitesService" ref="JahiaSitesService"/>
-    </bean>
-    <bean name="cacheHelper" class="org.jahia.ajax.gwt.helper.CacheHelper">
-        <property name="cacheFactory" ref="JahiaCacheService"/>
-        <property name="cacheProvider" ref="ModuleCacheProvider"/>
     </bean>
 </beans>

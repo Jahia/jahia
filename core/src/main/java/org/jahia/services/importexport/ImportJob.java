@@ -32,7 +32,6 @@
 
 package org.jahia.services.importexport;
 
-import org.jahia.content.TreeOperationResult;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -77,27 +76,16 @@ public class ImportJob extends BackgroundJob {
         JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getCurrentUserSession();
         JCRNodeWrapper f = session.getNode(uri);
 
-        List<ImportAction> actions = new ArrayList<ImportAction>();
-
-        ExtendedImportResult result = new ExtendedImportResult();
-
         if (f != null) {
             File file = JCRContentUtils.downloadFileContent(f, File.createTempFile("import", ".zip"));
             try {
-                ServicesRegistry.getInstance().getImportExportService().importSiteZip(file, actions, result, site, jobDataMap);
+                ServicesRegistry.getInstance().getImportExportService().importSiteZip(file, site, jobDataMap);
+                f.remove();
+                session.save();
             } finally {
                 file.delete();
             }
         }
-
-        if (jobDataMap.get(DELETE_FILE) != null) {
-            if (result.getStatus() == TreeOperationResult.COMPLETED_OPERATION_STATUS) {
-                f.remove();
-                session.save();
-            }
-        }
-        jobDataMap.put(ACTIONS, actions);
-        jobDataMap.put(RESULT, result);
     }
 }
 /**

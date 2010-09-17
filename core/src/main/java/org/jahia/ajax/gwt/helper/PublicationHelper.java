@@ -40,11 +40,16 @@ import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.widget.edit.PublicationWorkflow;
 import org.jahia.api.Constants;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
+import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.WorkflowRule;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.workflow.WorkflowVariable;
+import org.quartz.JobDataMap;
+import org.quartz.JobDetail;
 
 import javax.jcr.RepositoryException;
 import java.text.SimpleDateFormat;
@@ -286,17 +291,22 @@ public class PublicationHelper {
                 }
             } else {
                 if (reverse) {
-                    publicationService.publish(infos, Constants.LIVE_WORKSPACE, workspaceName);
+//                    publicationService.publish(infos, Constants.LIVE_WORKSPACE, workspaceName);
                 } else {
-                    publicationService.publish(infos, workspaceName, Constants.LIVE_WORKSPACE);
-                    String label = "published_at_"+ new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(GregorianCalendar.getInstance().getTime());
-                    for (PublicationInfo publicationInfo : infos) {
-                        JCRVersionService.getInstance().addVersionLabel(publicationInfo.getAllUuids(),"live_"+label,Constants.LIVE_WORKSPACE);
-                        JCRVersionService.getInstance().addVersionLabel(publicationInfo.getAllUuids(),workspaceName+"_"+label,workspaceName);
-                    }
+                    JobDetail jobDetail = BackgroundJob.createJahiaJob("Publication", PublicationJob.class);
+                    JobDataMap jobDataMap = jobDetail.getJobDataMap();
+                    jobDataMap.put(BackgroundJob.JOB_TYPE, PublicationJob.PUBLICATION_TYPE);
+                    jobDataMap.put(PublicationJob.PUBLICATION_INFOS, infos);
+                    jobDataMap.put(PublicationJob.SOURCE, workspaceName);
+                    jobDataMap.put(PublicationJob.DESTINATION, Constants.LIVE_WORKSPACE);
+
+                    ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail);
                 }
             }
         } catch (RepositoryException e) {
+            logger.error("repository exception", e);
+            throw new GWTJahiaServiceException(e.getMessage());
+        } catch (JahiaException e) {
             logger.error("repository exception", e);
             throw new GWTJahiaServiceException(e.getMessage());
         }

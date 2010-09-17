@@ -86,7 +86,7 @@ public class PublicationWorkflow implements CustomWorkflow {
                 }
                 dialog.hide();
                 Info.display("Starting publication workflow", "Starting publication workflow");
-                final String status = "Executing workflow ...";
+                final String status = Messages.get("label.workflow.task", "Executing workflow task");
                 WorkInProgressActionItem.setStatus(status);
                 JahiaContentManagementService.App.getInstance()
                         .publish(uuids, allSubTree, true, false, nodeProperties, language, new BaseAsyncCallback() {
@@ -116,8 +116,8 @@ public class PublicationWorkflow implements CustomWorkflow {
                 @Override
                 public void componentSelected(ButtonEvent ce) {
                     dialog.hide();
-                    Info.display("Publishing content", "Publishing content");
-                    final String status = "Publishing content ...";
+                    final String status = Messages.get("label.publication.task", "Publishing content");
+                    Info.display(status, status);
                     WorkInProgressActionItem.setStatus(status);
                     JahiaContentManagementService.App.getInstance()
                             .publish(uuids, allSubTree, false, false, null, null, new BaseAsyncCallback() {

@@ -38,7 +38,6 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.importexport.ImportAction;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
@@ -69,7 +68,6 @@ import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
 import java.util.Set;
@@ -176,8 +174,7 @@ public class TestHelper {
             }
             if (sharedZIPFile != null) {
                 try {
-                    ImportExportBaseService.getInstance().importSiteZip(sharedZIPFile,
-                            new ArrayList<ImportAction>(), null, null, null);
+                    ImportExportBaseService.getInstance().importSiteZip(sharedZIPFile, null, null);
                 } catch (RepositoryException e) {
                     logger.warn("shared.zip could not be imported", e);
                 }

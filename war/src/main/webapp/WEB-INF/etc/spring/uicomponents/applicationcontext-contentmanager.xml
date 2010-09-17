@@ -1147,6 +1147,7 @@
                 <ref bean="repository.websitefiles"/>
                 <ref bean="repository.sharedfiles"/>
                 <ref bean="repository.myexternalfiles"/>
+                <ref bean="repository.myfiles"/>
                 <ref bean="repository.users"/>
             </list>
         </property>
@@ -1259,6 +1260,7 @@
                 <ref bean="repository.websitefiles"/>
                 <ref bean="repository.sharedfiles"/>
                 <ref bean="repository.myexternalfiles"/>
+                <ref bean="repository.myfiles"/>
                 <ref bean="repository.users"/>
             </list>
         </property>
@@ -1348,6 +1350,7 @@
                 <ref bean="repository.websitefiles"/>
                 <ref bean="repository.sharedfiles"/>
                 <ref bean="repository.myexternalfiles"/>
+                <ref bean="repository.myfiles"/>
                 <ref bean="repository.users"/>
             </list>
         </property>

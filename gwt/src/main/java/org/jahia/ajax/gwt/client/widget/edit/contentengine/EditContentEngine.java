@@ -186,8 +186,6 @@ public class EditContentEngine extends AbstractContentEngine {
                 mixin = result.getMixin();
                 initializersValues = result.getInitializersValues();
                 fillCurrentTab();
-
-//                fillCurrentTab();
                 ok.setEnabled(true);
             }
 
@@ -205,12 +203,26 @@ public class EditContentEngine extends AbstractContentEngine {
     protected void onLanguageChange() {
         GWTJahiaGetPropertiesResult result = langCodeGWTJahiaGetPropertiesResultMap.get(getSelectedLanguageCode());
         if (result == null) {
+            for (TabItem item : tabs.getItems()) {
+                if (item instanceof PropertiesTabItem) {
+                    PropertiesTabItem propertiesTabItem = (PropertiesTabItem) item;
+                    changedI18NProperties.putAll(propertiesTabItem.getLangPropertiesMap(true));
+                    break;
+                }
+            }
             loadProperties();
         } else {
             node = result.getNode();
             nodeTypes = result.getNodeTypes();
             properties = result.getProperties();
             defaultLanguageBean = result.getCurrentLocale();
+            for (TabItem item : tabs.getItems()) {
+                if (item instanceof PropertiesTabItem) {
+                    PropertiesTabItem propertiesTabItem = (PropertiesTabItem) item;
+                    changedI18NProperties.putAll(propertiesTabItem.getLangPropertiesMap(true));
+                    break;
+                }
+            }
             fillCurrentTab();
         }
     }

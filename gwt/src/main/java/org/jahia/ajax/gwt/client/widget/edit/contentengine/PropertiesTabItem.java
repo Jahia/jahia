@@ -175,7 +175,17 @@ public class PropertiesTabItem extends EditEngineTabItem {
                     }
                 }
             }
-
+            
+            if (isMultiLang()) {
+                List<GWTJahiaNodeProperty> nodeProperties = propertiesEditor.getProperties(true, false, false, true);
+                for (GWTJahiaNodeProperty property : nodeProperties) {
+                    Map<String, Field<?>> fieldsMap = propertiesEditor.getFieldsMap();
+                    if (fieldsMap.containsKey(property.getName())) {
+                        FormFieldCreator.fillValue(fieldsMap.get(property.getName()),
+                                propertiesEditor.getGWTJahiaItemDefinition(property), property);
+                    }
+                }
+            }
             propertiesEditor.setVisible(true);
 
             layout();

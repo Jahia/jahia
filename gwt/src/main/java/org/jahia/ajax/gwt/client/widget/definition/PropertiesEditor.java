@@ -410,6 +410,9 @@ public class PropertiesEditor extends FormPanel {
      * @return
      */
     public List<GWTJahiaNodeProperty> getProperties(boolean includeI18N, boolean includeNonI18N, boolean modifiedOnly) {
+        return getProperties(includeI18N, includeNonI18N, modifiedOnly,false);
+    }
+    public List<GWTJahiaNodeProperty> getProperties(boolean includeI18N, boolean includeNonI18N, boolean modifiedOnly,boolean doNotCheckFieldsValues) {
         List<GWTJahiaNodeProperty> newProps = new ArrayList<GWTJahiaNodeProperty>();
 
         List<GWTJahiaNodeType> l = new ArrayList<GWTJahiaNodeType>(nodeTypes);
@@ -442,9 +445,11 @@ public class PropertiesEditor extends FormPanel {
                         if (!definition.isProtected()) {
                             Field<?> f = fields.get(definition.getName());
                             GWTJahiaNodeProperty prop = currentProperties.get(definition.getName());
-                            if (f != null && (f.isDirty() || !modifiedOnly || f.getData("addedField") != null)) {
+                            if (!doNotCheckFieldsValues && f != null && (f.isDirty() || !modifiedOnly || f.getData("addedField") != null)) {
                                 Log.debug("Set value for " + prop.getName());
                                 prop.setValues(getPropertyValues(f, definition));
+                                newProps.add(prop);
+                            } else {
                                 newProps.add(prop);
                             }
                         }

@@ -36,10 +36,16 @@ import org.apache.commons.lang.WordUtils;
 import org.apache.log4j.Logger;
 import org.apache.velocity.tools.generic.DateTool;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.content.*;
+import org.jahia.services.rbac.Role;
+import org.jahia.services.rbac.RoleIdentity;
+import org.jahia.services.rbac.jcr.RoleBasedAccessControlService;
+import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.usermanager.JahiaPrincipal;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.workflow.WorkflowDefinition;
+import org.jahia.services.workflow.WorkflowService;
 import org.jahia.settings.SettingsBean;
 import org.jbpm.api.Execution;
 import org.jbpm.api.JbpmException;
@@ -48,6 +54,7 @@ import org.jbpm.pvm.internal.email.impl.AttachmentTemplate;
 import org.jbpm.pvm.internal.email.impl.MailProducerImpl;
 import org.jbpm.pvm.internal.env.EnvironmentImpl;
 import org.jbpm.pvm.internal.model.ExecutionImpl;
+import org.jbpm.pvm.internal.task.TaskImpl;
 
 import javax.jcr.RepositoryException;
 import javax.mail.BodyPart;
@@ -59,6 +66,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMultipart;
 import javax.script.*;
 import java.io.StringWriter;
+import java.security.Principal;
 import java.util.*;
 
 /**
@@ -70,10 +78,9 @@ import java.util.*;
  */
 public class JBPMMailProducer extends MailProducerImpl {
     private static final long serialVersionUID = -5084848266010688683L;
-	private transient static Logger logger = Logger.getLogger(JBPMMailProducer.class);
+    private transient static Logger logger = Logger.getLogger(JBPMMailProducer.class);
     ScriptEngine scriptEngine;
     private Bindings bindings;
-
     public Collection<Message> produce(Execution execution) {
         try {
             ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
@@ -109,14 +116,76 @@ public class JBPMMailProducer extends MailProducerImpl {
     @Override
     protected void fillRecipients(Execution execution, Message email) throws MessagingException {
         try {
-            String scriptToExecute = getTemplate().getTo().getUsers();
-            String scriptResult = evaluateExpression(execution, scriptToExecute);
-            email.addRecipient(Message.RecipientType.TO, new InternetAddress(scriptResult));
+            ExecutionImpl exe = (ExecutionImpl) execution;
+            SortedSet<String> emails = new TreeSet<String>();
+            String s = getTemplate().getTo().getUsers();
+            if (!"".equals(s)) {
+                if ("assignable".equals(s)) {
+                    emails.addAll(getAssibnables(exe, s));
+                } else {
+                    emails.add(evaluateExpression(execution, s));
+                }
+
+                for (String m : emails) {
+                    if (!"".equals(m)) email.addRecipient(Message.RecipientType.TO, new InternetAddress(m));
+                }
+
+                emails.clear();
+            }
+            if (!"".equals(s)) {
+                s = getTemplate().getCc().getUsers();
+                if ("assignable".equals(s)) {
+                    emails.addAll(getAssibnables(exe, s));
+                } else {
+                    emails.add(evaluateExpression(execution, s));
+                }
+                for (String m : emails) {
+                    if (!"".equals(m)) email.addRecipient(Message.RecipientType.CC, new InternetAddress(m));
+                }
+            }
         } catch (ScriptException e) {
             logger.error(e.getMessage(), e);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
+    }
+
+    private SortedSet<String> getAssibnables(ExecutionImpl exe, String s) throws RepositoryException {
+        SortedSet<String> emails = new TreeSet<String>();
+        WorkflowDefinition def = (WorkflowDefinition) exe.getVariable("workflow");
+        String id = (String) exe.getVariable("nodeId");
+        JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(id);
+        List<JahiaPrincipal> principals = WorkflowService.getInstance().getAssignedRole(node, def, exe.getActivity().getDefaultOutgoingTransition().getDestination().getName());
+        for (JahiaPrincipal principal : principals) {
+            if (principal instanceof JahiaGroup) {
+                Collection<Principal> members = ((JahiaGroup)principal).getMembers();
+                for (Principal member : members) {
+                    if (member instanceof JahiaUser) {
+                        emails.add(((JahiaUser) member).getProperty("j:email"));
+                    }
+                }
+            } else if (principal instanceof JahiaUser) {
+                emails.add(((JahiaUser) principal).getProperty("j:email"));
+            } else if (principal instanceof RoleIdentity) {
+                List<JahiaPrincipal> lp = ((RoleBasedAccessControlService) SpringContextSingleton.getBean(RoleBasedAccessControlService.class
+                        .getName())).getPrincipalsInRole((RoleIdentity) principal);
+                for (Principal p : lp) {
+                    if (p instanceof JahiaUser) {
+                        emails.add(((JahiaUser) p).getProperty("j:email"));
+                    } else {
+                        if (p instanceof JahiaGroup) {
+                            Collection<Principal> members = ((JahiaGroup)p).getMembers();
+                            for (Principal member : members) {
+                                if (member instanceof JahiaUser) {
+                                    emails.add(((JahiaUser) member).getProperty("j:email"));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return emails;
     }
 
     /**
@@ -230,7 +299,7 @@ public class JBPMMailProducer extends MailProducerImpl {
         private final Environment environment;
 
         public MyBindings(Environment environment) {
-        	super();
+            super();
             this.environment = environment;
         }
 

@@ -18,6 +18,14 @@ global Logger logger
 global JCRStoreProvider provider
 ###############################################################################
 
+rule "publish tags"
+    when
+       A new node is created
+		- the node has the type jnt:tagList
+    then
+        Publish the node
+end
+
 rule "Tagging"
    when
        A property j:newTag has been set on a node

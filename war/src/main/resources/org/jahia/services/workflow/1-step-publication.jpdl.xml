@@ -22,22 +22,37 @@
     </mail>
     <task form="jnt:simpleTimebasedPublished" g="227,223,80,40" name="review">
         <assignment-handler class="org.jahia.services.workflow.jbpm.JBPMTaskAssignmentListener"/>
-        <notification class="org.jahia.services.workflow.jbpm.JBPMMailProducer">
-            <property name='template'>
-                <object method='getTemplate'>
-                    <factory>
-                        <ref type='org.jbpm.pvm.internal.email.impl.MailTemplateRegistry'/>
-                    </factory>
-                    <arg>
-                        <string value='start-publication-template'/>
-                    </arg>
-                </object>
-            </property>
-        </notification>
-        <transition g="-26,4" name="reject" to="unlock"/>
-        <transition g="-18,-17" name="accept" to="publication">
+        <transition g="-26,4" name="reject" to="alertReject"/>
+        <transition g="-18,-17" name="accept" to="alertPublish">
         </transition>
     </task>
+    <mail name="alertReject" class="org.jahia.services.workflow.jbpm.JBPMMailProducer">
+        <property name='template'>
+            <object method='getTemplate'>
+                <factory>
+                    <ref type='org.jbpm.pvm.internal.email.impl.MailTemplateRegistry'/>
+                </factory>
+                <arg>
+                    <string value='alert-reject-template'/>
+                </arg>
+            </object>
+        </property>
+        <transition to="unlock"/>
+    </mail>
+    <mail name="alertPublish" class="org.jahia.services.workflow.jbpm.JBPMMailProducer">
+        <property name='template'>
+            <object method='getTemplate'>
+                <factory>
+                    <ref type='org.jbpm.pvm.internal.email.impl.MailTemplateRegistry'/>
+                </factory>
+                <arg>
+                    <string value='alert-publish-template'/>
+                </arg>
+            </object>
+        </property>
+        <transition to="publication"/>
+    </mail>
+
     <custom class="org.jahia.services.workflow.jbpm.custom.Unlock" g="527,376,80,40" name="unlock">
         <transition to="end"/>
     </custom>

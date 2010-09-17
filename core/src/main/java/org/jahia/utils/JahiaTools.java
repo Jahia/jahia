@@ -41,35 +41,6 @@
 
 package org.jahia.utils;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.StringReader;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.jexl.Expression;
 import org.apache.commons.jexl.ExpressionFactory;
 import org.apache.commons.jexl.JexlContext;
@@ -77,10 +48,16 @@ import org.apache.commons.jexl.JexlHelper;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
-import org.jahia.data.fields.JahiaField;
 import org.jahia.params.ProcessingContext;
 import org.jahia.utils.i18n.ResourceBundleMarker;
 import org.jahia.utils.keygenerator.JahiaKeyGen;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
+import java.io.*;
+import java.net.URL;
+import java.util.*;
 
 
 /**
@@ -335,7 +312,7 @@ public class JahiaTools {
         if (str == null) {
             result = new String[]{};
         } else {
-            if(sep.equals(JahiaField.MULTIPLE_VALUES_SEP))
+            if(sep.equals("$$$"))
                 result=str.split("\\$\\$\\$");
             else
                 result = str.split(sep);

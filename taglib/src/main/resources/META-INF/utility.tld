@@ -89,17 +89,6 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
-    <tag>
-        <description>Displays the properties of the current page</description>
-        <name>displayPageProperties</name>
-        <tag-class>org.jahia.taglibs.utility.pageproperties.DisplayPagePropertiesTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <name>dateFormat</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
 
     <tag>
         <description>Utility date tag in order to add/subtract days, hours, etc. to an existing date

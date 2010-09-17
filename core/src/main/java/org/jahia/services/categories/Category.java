@@ -36,7 +36,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.jahia.bin.Jahia;
 import org.jahia.content.CategoryKey;
-import org.jahia.content.ContentObjectKey;
 import org.jahia.content.JahiaObject;
 import org.jahia.content.ObjectKey;
 import org.jahia.exceptions.JahiaException;

@@ -32,9 +32,9 @@
 
  package org.jahia.services.categories;
 
-import org.jahia.bin.Jahia;
-import org.jahia.content.*;
-import org.jahia.data.fields.JahiaField;
+import org.jahia.content.CategoryKey;
+import org.jahia.content.ObjectKey;
+import org.jahia.content.ObjectLink;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.cache.Cache;
@@ -216,24 +216,6 @@ public class CategoryServiceImpl extends CategoryService {
             ObjectLink.createLink(parentCategory.getObjectKey(), childKey,
                     CATEGORY_LINKTYPE, new HashMap<String, String>());
             lastModifCache.flush();
-        } else if (childKey instanceof ContentObjectKey) {
-            try {
-                ContentObject object = (ContentObject) ContentObject
-                        .getInstance(childKey);
-                JahiaField metadata = object.getMetadataAsJahiaField(
-                        "defaultCategory", Jahia.getThreadParamBean());
-                if (metadata != null) {
-                    String value = metadata.getValue();
-                    if (value.length() > 0) {
-                        value += JahiaField.MULTIPLE_VALUES_SEP;
-                    }
-                    value += parentCategory.getID();
-                    metadata.setValue(value);
-                    metadata.save(Jahia.getThreadParamBean());
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -252,32 +234,6 @@ public class CategoryServiceImpl extends CategoryService {
                 curLink.remove();
             }
             lastModifCache.flush();
-        } else if (childKey instanceof ContentObjectKey) {
-            try {
-                ContentObject object = (ContentObject) ContentObject
-                        .getInstance(childKey);
-                JahiaField metadata = object.getMetadataAsJahiaField(
-                        "defaultCategory", Jahia.getThreadParamBean());
-                if (metadata != null) {
-                    String value = metadata.getValue();
-                    String newValue = "";
-                    StringTokenizer st = new StringTokenizer(value,
-                            JahiaField.MULTIPLE_VALUES_SEP);
-                    while (st.hasMoreTokens()) {
-                        String key = st.nextToken();
-                        if (!key.equals(parentCategory.getKey())) {
-                            newValue += key + JahiaField.MULTIPLE_VALUES_SEP;
-                        }
-                    }
-                    if (newValue.length() > 0) {
-                        newValue = newValue.substring(newValue.length() - 3);
-                    }
-                    metadata.setValue(newValue);
-                    metadata.save(Jahia.getThreadParamBean());
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -294,27 +250,6 @@ public class CategoryServiceImpl extends CategoryService {
                 if (curCategory != null) {
                     categorySet.add(curCategory);
                 }
-            }
-        } else {
-            try {
-                ContentObject object = (ContentObject) ContentObject
-                        .getInstance(objectKey);
-                JahiaField metadata = object.getMetadataAsJahiaField(
-                        "defaultCategory", Jahia.getThreadParamBean());
-                if (metadata != null) {
-                    String value = metadata.getValue();
-                    StringTokenizer st = new StringTokenizer(value,
-                            JahiaField.MULTIPLE_VALUES_SEP);
-                    while (st.hasMoreTokens()) {
-                        String key = st.nextToken();
-                        List<Category> cat = getCategory(key);
-                        if (cat.size() > 0) {
-                            categorySet.add(cat.get(0));
-                        }
-                    }
-                }
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
             }
         }
         return categorySet;

@@ -37,24 +37,20 @@ import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.SourceFormatter;
 import net.htmlparser.jericho.StartTag;
 import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.client.data.*;
+import org.jahia.ajax.gwt.client.data.GWTJahiaPortletOutputBean;
+import org.jahia.ajax.gwt.client.data.GWTJahiaSite;
 import org.jahia.ajax.gwt.client.service.JahiaService;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
-import org.jahia.data.JahiaData;
-import org.jahia.data.beans.JahiaBean;
-import org.jahia.data.beans.PageBean;
-import org.jahia.data.beans.RequestBean;
-import org.jahia.data.beans.SiteBean;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.gui.GuiBean;
-import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.sites.JahiaSite;
 
 import javax.jcr.RepositoryException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 
 /**

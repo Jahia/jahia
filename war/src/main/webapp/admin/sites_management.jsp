@@ -1,14 +1,12 @@
 <%@include file="/admin/include/header.inc" %>
 <%@page import="org.jahia.bin.JahiaAdministration" %>
 <%@ page import="org.jahia.params.ProcessingContext" %>
-<%@ page import="org.jahia.services.pages.ContentPage" %>
 <%@page import="org.jahia.settings.SettingsBean" %>
 <%@ page import="java.util.Iterator" %>
 <%@ page import="java.text.DateFormat" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.Date" %>
 <%@page import="org.jahia.registries.ServicesRegistry" %>
-<%@page import="org.jahia.services.acl.JahiaBaseACL" %>
 <%@page import="org.jahia.services.rbac.PermissionIdentity"%>
 <%@ page import="org.jahia.security.license.LicenseActionChecker" %>
 <%@ page import="org.jahia.admin.sites.ManageSites" %>
@@ -157,7 +155,6 @@
                 int lineCounter = 0;
                 while (sitesList.hasNext()) {
                     site = (JahiaSite) sitesList.next();
-                    ContentPage homeContentPage = site.getHomeContentPage();
                     String lineClass = "oddLine";
                     if (lineCounter % 2 == 0) {
                         lineClass = "evenLine";

@@ -56,7 +56,6 @@ import org.jahia.services.sites.jcr.JCRSitesProvider;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.version.EntryLoadRequest;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 
@@ -348,23 +347,14 @@ public class JahiaSitesBaseService extends JahiaSitesService {
             jParams.setSiteID(site.getID());
             jParams.setSiteKey(site.getSiteKey());
             jParams.setCurrentLocale(selectedLocale);
-            if (selectedLocale != null) {
-                jParams.getEntryLoadRequest().setFirstLocale(selectedLocale.toString());
-            }
             if ("fileImport".equals(firstImport)) {
                 initialZip = fileImport;
                 initialZipName = fileImportName;
             }
 
                 // create the default homepage...
-                EntryLoadRequest saveRequest = new EntryLoadRequest(EntryLoadRequest.STAGED);
                 List<Locale> locales = new ArrayList<Locale>();
                 locales.add(selectedLocale);
-                saveRequest.setLocales(locales);
-                EntryLoadRequest savedEntryLoadRequest =
-                        jParams.getSubstituteEntryLoadRequest();
-                jParams.setSubstituteEntryLoadRequest(saveRequest);
-                jParams.setSubstituteEntryLoadRequest(savedEntryLoadRequest);
 
             if ("importRepositoryFile".equals(firstImport) || (initialZip != null && initialZip.exists() && !"noImport".equals(firstImport))) {
                 // enable admin group to admin the page

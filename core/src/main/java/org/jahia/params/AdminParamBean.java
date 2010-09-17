@@ -39,8 +39,6 @@
 
 package org.jahia.params;
 
-import java.util.Locale;
-
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -48,7 +46,6 @@ import javax.servlet.jsp.jstl.core.Config;
 import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 
 import org.jahia.exceptions.JahiaException;
-import org.jahia.services.pages.ContentPage;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
@@ -78,15 +75,7 @@ public final class AdminParamBean extends ParamBean {
      * @param JahiaUser the user
      * @param JahiaPage, the page can be null
      */
-    public AdminParamBean(HttpServletRequest request,
-                          HttpServletResponse response,
-                          ServletContext context,
-                          SettingsBean jSettings,
-                          long startTime,
-                          int httpMethod,
-                          JahiaSite site,
-                          JahiaUser user,
-                          ContentPage page)
+    public AdminParamBean(HttpServletRequest request, HttpServletResponse response, ServletContext context, long startTime, int httpMethod, JahiaSite site, JahiaUser user)
 
             throws JahiaException {
 

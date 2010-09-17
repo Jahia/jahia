@@ -43,7 +43,6 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.exceptions.JahiaTemplateServiceException;
 import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionFactory;
@@ -54,8 +53,6 @@ import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.filter.RenderFilter;
-import org.jahia.services.cache.Cache;
-import org.jahia.services.pages.JahiaPageTemplateBaseService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.TemplatePackageApplicationContextLoader.ContextInitializedEvent;
@@ -341,11 +338,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         templatePackageDeployer.stopWatchdog();
 
         templatePackageRegistry.reset();
-        Cache<?, ?> templateCache = ServicesRegistry.getInstance().getCacheService()
-                .getCache(JahiaPageTemplateBaseService.PAGE_TEMPLATE_CACHE);
-        if (templateCache != null) {
-            templateCache.flush();
-        }
 
         logger.info("... JahiaTemplateManagerService stopped successfully");
     }

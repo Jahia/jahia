@@ -39,8 +39,6 @@ import org.drools.FactException;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.api.Constants;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
-import org.jahia.content.ContentObject;
-import org.jahia.content.ContentObjectKey;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.params.ProcessingContext;
@@ -51,15 +49,12 @@ import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.*;
 import org.jahia.services.importexport.ImportAction;
 import org.jahia.services.importexport.ImportExportBaseService;
-import org.jahia.services.importexport.ImportJob;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.tags.TaggingService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.WorkflowService;
-import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.quartz.*;
 
@@ -138,38 +133,6 @@ public class Service extends JahiaService {
         StringTokenizer st = new StringTokenizer(name, "_");
 
         String type = st.nextToken();
-        if (type.equals("importInto")) {
-            try {
-                logger.info("Import file " + uri);
-                String destKey = st.nextToken() + "_" + st.nextToken();
-
-                ContentObject dest = ContentObject.getContentObjectInstance(ContentObjectKey.getInstance(destKey));
-                JahiaSite site = sitesService.getSite(dest.getSiteID());
-
-                Class<ImportJob> jobClass = ImportJob.class;
-
-                JobDetail jobDetail = BackgroundJob.createJahiaJob("Import content to " + destKey, jobClass);
-
-                JobDataMap jobDataMap;
-                jobDataMap = jobDetail.getJobDataMap();
-
-                jobDataMap.put(ImportJob.TARGET, destKey);
-                jobDataMap.put(ImportJob.JOB_SITEKEY, site.getSiteKey());
-                jobDataMap.put(BackgroundJob.JOB_DESTINATION_SITE, site.getID());
-                jobDataMap.put(ImportJob.URI, uri);
-                if (uri.toLowerCase().endsWith(".zip")) {
-                    jobDataMap.put("contentType", "application/zip");
-                } else {
-                    jobDataMap.put("contentType", "application/xml");
-                }
-                jobDataMap.put(BackgroundJob.JOB_TYPE, "import");
-                jobDataMap.put(ImportJob.DELETE_FILE, true);
-                schedulerService.scheduleJobNow(jobDetail);
-            } catch (Exception e) {
-                logger.error("Error during import of file " + uri, e);
-                cacheService.flushAllCaches();
-            }
-        }
         if (type.equals("siteImport")) {
             try {
                 logger.info("Import site " + uri);
@@ -216,9 +179,8 @@ public class Service extends JahiaService {
                                         }
                                     }
                                 }
-                                ProcessingContext ctx = new ProcessingContext(SettingsBean.getInstance(),
-                                        System.currentTimeMillis(), null,
-                                        user.getJahiaUser(), null,
+                                ProcessingContext ctx = new ProcessingContext(System.currentTimeMillis(), null,
+                                        user.getJahiaUser(),
                                         ProcessingContext.EDIT);
                                 sitesService.addSite(user.getJahiaUser(), infos.getProperty("sitetitle"), infos.getProperty(
                                         "siteservername"), infos.getProperty("sitekey"), infos.getProperty(
@@ -422,8 +384,8 @@ public class Service extends JahiaService {
         if (authorizedForServerPermissions) {
             doImportServerPermissions = true;
         }
-        ProcessingContext ctx = new ProcessingContext(SettingsBean.getInstance(), System.currentTimeMillis(), null,
-                user, null, ProcessingContext.EDIT);
+        ProcessingContext ctx = new ProcessingContext(System.currentTimeMillis(), null,
+                user, ProcessingContext.EDIT);
 
         for (Map<Object, Object> infos : importsInfos) {
             File file = (File) infos.get("importFile");

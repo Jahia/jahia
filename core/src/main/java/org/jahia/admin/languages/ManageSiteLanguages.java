@@ -40,11 +40,9 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.security.license.License;
-import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.utils.LanguageCodeConverters;
 
 import javax.servlet.ServletException;
@@ -241,7 +239,6 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
 
             session.removeAttribute("languagesToDelete");
             logger.debug("Really deleting languages...");
-            JahiaPage siteHomePage = site.getHomePage();
             Set languageCodeSet = new HashSet();
             Iterator languagesToDeleteEnum = languagesToDelete.iterator();
             List locales = new ArrayList();
@@ -250,16 +247,6 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
                 locales.add(LanguageCodeConverters.languageCodeToLocale(curSetting));
                 languageCodeSet.add(curSetting);
             }
-
-            //ProcessingContext jParams = jData.params();
-            EntryLoadRequest savedEntryLoadRequest = jParams.getSubstituteEntryLoadRequest();
-            EntryLoadRequest entryLoadRequest =
-                    new EntryLoadRequest(EntryLoadRequest.STAGING_WORKFLOW_STATE, 0, locales, true);
-            jParams.setSubstituteEntryLoadRequest(entryLoadRequest);
-
-            logger.debug("Now activating site in specified languages, activating the content marked for deletion...");
-
-            jParams.setSubstituteEntryLoadRequest(savedEntryLoadRequest);
 
         }
 

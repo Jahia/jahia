@@ -33,13 +33,11 @@
 package org.jahia.services.content;
 
 import org.jahia.api.Constants;
-import org.jahia.data.files.JahiaFileField;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.webdav.UsageEntry;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
@@ -568,7 +566,6 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * @param node The destination node
      * @param name The new name of the copied file node
      * @param allowsExternalSharedNodes
-     * @param templateToPage
      * @return true if action was successful, or false if not
      * @throws RepositoryException
      */

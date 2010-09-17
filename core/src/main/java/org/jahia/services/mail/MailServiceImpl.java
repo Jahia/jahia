@@ -57,7 +57,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
-import org.jahia.services.notification.templates.TemplateUtils;
+import org.jahia.services.templates.TemplateUtils;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
 /**

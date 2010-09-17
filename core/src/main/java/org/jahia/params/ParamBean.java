@@ -112,24 +112,6 @@
 
 package org.jahia.params;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URLDecoder;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.servlet.jsp.jstl.core.Config;
-
 import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.log4j.Logger;
 import org.apache.struts.Globals;
@@ -142,9 +124,19 @@ import org.jahia.services.applications.ServletIncludeRequestWrapper;
 import org.jahia.services.applications.ServletIncludeResponseWrapper;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.files.FileUpload;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.servlet.jsp.jstl.core.Config;
+import java.io.File;
+import java.io.IOException;
+import java.net.URLDecoder;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * This object contains most of the request context, including object such as the request and response objects, sessions, engines, contexts,
@@ -227,7 +219,6 @@ public class ParamBean extends ProcessingContext {
             setSiteKey(aSite.getSiteKey());
         }
 
-        setEntryLoadRequest(new EntryLoadRequest(EntryLoadRequest.STAGED));
 
         if (getRequest() != null) {
             final HttpSession session = getRequest().getSession();
@@ -327,23 +318,8 @@ public class ParamBean extends ProcessingContext {
 
             setEngineNameIfAvailable();
 
-            if (!isContentPageLoadedWhileTryingToFindSiteByPageID()) {
-                if (getSite() != null) {
-                    setContentPage(getSite().getHomeContentPage());
-                }
-            }
-
-            if (getContentPage() != null && getContentPage().getSiteID() != site.getID()) {
-                setContentPage(null);
-                setThePage(null);
-            }
-
             resolveUser();
             setUserAgent(resolveUserAgent());
-
-            if (getSite() != null) {
-                resolveLocales(getRequest().getSession(false));
-            }
 
             // last engine name
             setLastEngineName((String) getRequest().getSession(false).getAttribute(SESSION_LAST_ENGINE_NAME));
@@ -682,16 +658,6 @@ public class ParamBean extends ProcessingContext {
      */
     public String getContentType() {
         return getResponseWrapper().getContentType();
-    }
-
-    private void resolveLocales(final HttpSession session)
-            throws JahiaException {
-        resolveLocales();
-        // reset the Struts locale
-        session.setAttribute(Globals.LOCALE_KEY, currentLocale);
-        // reset the JSTL locale
-        Config.set(session, Config.FMT_LOCALE, currentLocale);
-
     }
 
     @SuppressWarnings("unchecked")

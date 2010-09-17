@@ -69,13 +69,6 @@ public abstract class ObjectKey implements
     static {
     	keyTypeInstances = new HashMap<String, ObjectKeyInterface>();
     	registerType(CategoryKey.CATEGORY_TYPE, CategoryKey.class);
-    	registerType(ContainerDefinitionKey.CONTAINER_TYPE, ContainerDefinitionKey.class);
-    	registerType(ContentFieldKey.FIELD_TYPE, ContentFieldKey.class);
-    	registerType(ContentMetadataKey.METADATA_TYPE, ContentMetadataKey.class);
-    	registerType(ContentPageKey.PAGE_TYPE, ContentPageKey.class);
-    	registerType(FieldDefinitionKey.FIELD_TYPE, FieldDefinitionKey.class);
-    	registerType(PageDefinitionKey.PAGE_TYPE, PageDefinitionKey.class);
-    	registerType(EntryPointObjectKey.ENTRY_POINT_TYPE, EntryPointObjectKey.class);
     }
 
     protected final String key;

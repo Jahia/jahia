@@ -32,22 +32,13 @@
 
 package org.jahia.data.beans;
 
-import org.jahia.content.ContentObject;
 import org.jahia.content.JahiaObject;
-import org.jahia.content.ObjectKey;
-import org.jahia.content.comparators.ObjectTypeDispatcherComparator;
-import org.jahia.data.fields.JahiaField;
-import org.jahia.data.fields.LoadFlags;
-import org.jahia.exceptions.JahiaException;
-import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.categories.Category;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.fields.ContentField;
-import org.jahia.services.pages.ContentPage;
-import org.jahia.services.pages.JahiaPage;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Properties;
+import java.util.Set;
 
 /**
  * <p>Title: A wrapper JavaBean compliant class that uses the current

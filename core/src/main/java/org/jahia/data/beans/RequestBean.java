@@ -145,10 +145,6 @@ public class RequestBean {
         return processingContext.getUser().isRoot();
     }
 
-    public boolean hasAdminAccess() {
-        return processingContext.getPage().checkAdminAccess(processingContext.getUser());
-    }
-
     public Locale getLocale() {
         return processingContext.getLocale();
     }

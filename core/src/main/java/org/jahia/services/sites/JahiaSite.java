@@ -45,13 +45,7 @@ package org.jahia.services.sites;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.acl.ACLResourceInterface;
-import org.jahia.services.acl.JahiaACLException;
-import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.analytics.GoogleAnalyticsProfile;
-import org.jahia.services.pages.ContentPage;
-import org.jahia.services.pages.JahiaPage;
-import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.utils.LanguageCodeConverters;
 
 import java.io.Serializable;
@@ -68,7 +62,7 @@ import static org.jahia.services.sites.SitesSettings.*;
  * @author Khue ng
  * @version 1.0
  */
-public class JahiaSite implements ACLResourceInterface, Serializable {
+public class JahiaSite implements Serializable {
 
     private static final long serialVersionUID = 5114861205251079794L;
 
@@ -100,8 +94,6 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
      * desc *
      */
     private String mDescr;
-
-    private JahiaBaseACL mACL;
 
     private Properties mSettings = new Properties();
 
@@ -191,24 +183,6 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
         return -1;
     }
 
-    /**
-     * @return
-     */
-    public JahiaPage getHomePage() {
-        return null;
-    }
-
-    /**
-     * @return
-     */
-    public JahiaPage getHomePage(EntryLoadRequest entryLoadRequest) {
-        return null;
-    }
-
-    public ContentPage getHomeContentPage() {
-        return null;
-    }
-
     public boolean isURLIntegrityCheckEnabled() {
         // we activate URL integrity checks by default if no setting was found.
         String value = getProperty(
@@ -263,29 +237,6 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
         mDescr = descr;
     }
 
-    /**
-     * Return the site's ACL object.
-     *
-     * @return Return the page's ACL.
-     */
-    public final JahiaBaseACL getACL() {
-        return mACL;
-    }
-
-    /**
-     * Return the ACL unique identification number.
-     *
-     * @return Return the ACL ID.
-     */
-    public final int getAclID() {
-        int id = 0;
-        try {
-            id = mACL.getID();
-        } catch (JahiaACLException ex) {
-            // This exception should not happen ... :)
-        }
-        return id;
-    }
 
 
     /**

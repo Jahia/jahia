@@ -13,7 +13,6 @@
     <bean id="jahiaVersionDAO" class="org.jahia.hibernate.dao.JahiaVersionDAO" parent="abstractGeneratorDAO"/>
     <bean id="jahiaInstalledPatchDAO" class="org.jahia.hibernate.dao.JahiaInstalledPatchDAO" parent="abstractGeneratorDAO"/>
     <bean id="jahiaPasswordPolicyDAO" class="org.jahia.hibernate.dao.JahiaPasswordPolicyDAO" parent="abstractGeneratorDAO" depends-on="jahiaIdentifierGenerator"/>
-    <bean id="jahiaSubscriptionDAO" class="org.jahia.hibernate.dao.SubscriptionDAO" parent="abstractGeneratorDAO" depends-on="jahiaIdentifierGenerator"/>
 
     <bean id="idGeneratorDAO" class="org.jahia.hibernate.dao.IDGeneratorDAO" init-method="start" destroy-method="stop">
         <property name="sessionFactory" ref="sessionFactory" />
@@ -35,7 +34,6 @@
                     <entry key="org.jahia.hibernate.model.JahiaVersion" value="jahia_version.install_number"/>
                     <entry key="org.jahia.hibernate.model.JahiaInstalledPatch"
                            value="jahia_installedpatch.install_number"/>
-                    <entry key="org.jahia.hibernate.model.SubscriptionData" value="jahia_subscriptions.id_jahia_subscriptions"/>
                 </map>
             </property>
     </bean>

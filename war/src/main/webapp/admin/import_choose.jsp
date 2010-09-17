@@ -1,7 +1,6 @@
 <%@include file="/admin/include/header.inc" %>
 <%@page import="org.jahia.bin.JahiaAdministration" %>
 <%@ page import="org.jahia.params.ProcessingContext" %>
-<%@ page import="org.jahia.services.pages.ContentPage" %>
 <%@ page import="java.text.DateFormat" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.io.File" %>

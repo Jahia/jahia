@@ -14,30 +14,6 @@
         </property>
     </bean>
 
-    <bean id="SubscriptionService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.notification.SubscriptionService" parent="jahiaServiceTemplate" factory-method="getInstance">
-                <property name="subscriptionManager" ref="org.jahia.hibernate.manager.SubscriptionManager"/>
-                <property name="mailService" ref="MailService"/>
-            </bean>
-        </property>
-    </bean>
-
-    <bean id="EmailNotificationEventHandlerTemplate" class="org.jahia.services.notification.EmailNotificationEventHandler" abstract="true">
-        <property name="mailService" ref="MailService"/>
-    </bean>
-
-    <bean id="NotificationService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.notification.NotificationService" parent="jahiaServiceTemplate" factory-method="getInstance">
-                <property name="subscriptionService" ref="SubscriptionService"/>
-                <property name="handlers">
-                    <list/>
-                </property>
-            </bean>
-        </property>
-    </bean>
-
     <bean id="HttpClient" class="org.apache.commons.httpclient.HttpClient" destroy-method="">
         <constructor-arg index="0">
             <bean

@@ -121,14 +121,10 @@ import org.jahia.exceptions.JahiaSiteNotFoundException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.security.license.LicenseActionChecker;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.fields.ContentField;
-import org.jahia.services.pages.ContentPage;
-import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 
@@ -222,10 +218,6 @@ public class ProcessingContext {
 
     protected Date cacheExpirationDate = null; // the date at which the current page cache will expire.
 
-    protected EntryLoadRequest entryLoadRequest = new EntryLoadRequest(EntryLoadRequest.CURRENT);
-
-    protected EntryLoadRequest substituteEntryLoadRequest = null;
-
     protected static Properties defaultParameterValues; // stores the default values for parameters.
 
     protected boolean useQueryStringParameterUrl = false;
@@ -285,61 +277,8 @@ public class ProcessingContext {
         Jahia.setThreadParamBean(this);
     }
 
-    /**
-     * This constructor is used by AdminProcessingContext to create a ProcessingContext with the minimum data requirement needed to work
-     * within JahiaAdministration Servlet Do not use this constructor within Jahia Servlet
-     *
-     * @param jSettings    the Jahia settings
-     * @param aStartTime   the start time in milliseconds
-     * @param aSite
-     * @param user
-     * @param aContentPage
-     * @throws JahiaSessionExpirationException
-     *                                    when the user session expired
-     * @throws JahiaSiteNotFoundException when the specified site could not be found
-     * @throws JahiaException             when a general internal exception occured
-     *                                    when the user session expired
-     * @throws JahiaSiteNotFoundException when the specified site could not be found
-     * @throws JahiaException             when a general internal exception occured
-     */
-    public ProcessingContext(final SettingsBean jSettings,
-                             final long aStartTime,
-                             final JahiaSite aSite,
-                             final JahiaUser user,
-                             final ContentPage aContentPage) throws JahiaException {
-        this(jSettings, aStartTime, aSite, user, aContentPage, new EntryLoadRequest(EntryLoadRequest.STAGED), NORMAL);
-    }
 
-    /**
-     * This constructor is used by AdminProcessingContext to create a ProcessingContext with the minimum data requirement needed to work
-     * within JahiaAdministration Servlet Do not use this constructor within Jahia Servlet
-     *
-     * @param jSettings    the Jahia settings
-     * @param aStartTime   the start time in milliseconds
-     * @param aSite
-     * @param user
-     * @param aContentPage
-     * @param operationMode operation mode
-     * @throws JahiaSessionExpirationException
-     *                                    when the user session expired
-     * @throws JahiaSiteNotFoundException when the specified site could not be found
-     * @throws JahiaException             when a general internal exception occured
-     */
-    public ProcessingContext(final SettingsBean jSettings,
-                             final long aStartTime,
-                             final JahiaSite aSite,
-                             final JahiaUser user,
-                             final ContentPage aContentPage, String operationMode) throws JahiaException {
-        this(jSettings, aStartTime, aSite, user, aContentPage, new EntryLoadRequest(EntryLoadRequest.STAGED), operationMode);
-    }
-
-    public ProcessingContext(final SettingsBean jSettings,
-                             final long aStartTime,
-                             final JahiaSite aSite,
-                             final JahiaUser user,
-                             final ContentPage aContentPage,
-                             final EntryLoadRequest loadRequest,
-                             final String operationMode)
+    public ProcessingContext(final long aStartTime, final JahiaSite aSite, final JahiaUser user, final String operationMode)
             throws JahiaException {
         Jahia.setThreadParamBean(this);
         // default vars
@@ -353,7 +292,6 @@ public class ProcessingContext {
             setSiteID(aSite.getID());
             setSiteKey(aSite.getSiteKey());
         }
-        entryLoadRequest = loadRequest;
 
         setSessionState(new BasicSessionState(Long.toString(System
                 .currentTimeMillis())));
@@ -361,11 +299,6 @@ public class ProcessingContext {
         setTheUser(user);
         if (getTheUser() == null) {
             setUserGuest();
-        }
-        if (aContentPage != null) {
-            setContentPage(aContentPage);
-            setThePage(aContentPage.getPage(getEntryLoadRequest(),
-                    getOperationMode(), getUser()));
         }
     }
 
@@ -468,7 +401,6 @@ public class ProcessingContext {
     public void setUser(final JahiaUser user) throws  JahiaException {
         setTheUser(user);
         flushLocaleListCache();
-        getEntryLoadRequest().setLocales(getLocales());
         setOperationMode(NORMAL);
     }
 
@@ -492,14 +424,6 @@ public class ProcessingContext {
 
     public String getOperationMode() {
         return getOpMode();
-    }
-
-    public ContentPage getContentPage() {
-        return null;
-    }
-
-    public JahiaPage getPage() {
-        return null;
     }
 
     public int getPageID() {
@@ -546,26 +470,6 @@ public class ProcessingContext {
         return site;
     }
 
-    public EntryLoadRequest getEntryLoadRequest() {
-        if (getSubstituteEntryLoadRequest() != null) {
-            return getSubstituteEntryLoadRequest();
-        } else {
-            return entryLoadRequest;
-        }
-    }
-
-    public void setEntryLoadRequest(final EntryLoadRequest anEntryLoadRequest) {
-        this.entryLoadRequest = anEntryLoadRequest;
-    }
-
-    public void setSubstituteEntryLoadRequest(
-            final EntryLoadRequest anEntryLoadRequest) {
-        this.substituteEntryLoadRequest = anEntryLoadRequest;
-    }
-
-    public void resetSubstituteEntryLoadRequest() {
-        this.setSubstituteEntryLoadRequest(null);
-    }
 
     public int getDiffVersionID() {
         return this.diffVersionID;
@@ -583,30 +487,6 @@ public class ProcessingContext {
     public void setOperationMode(final String newOperationMode)
             throws JahiaException {
         setOpMode(newOperationMode);
-        EntryLoadRequest newLoadRequest = new EntryLoadRequest(
-                EntryLoadRequest.ACTIVE_WORKFLOW_STATE, 0, getLocales());
-        // compute version info
-        if (this.getSiteID() != -1) {
-            if (((EDIT.equals(getOpMode())) || (PREVIEW.equals(getOpMode())) || (COMPARE.equals(getOpMode())))
-                    && (REGISTRY.getJahiaVersionService().isStagingEnabled(this.getSiteID()))) {
-                newLoadRequest = new EntryLoadRequest(
-                        EntryLoadRequest.STAGING_WORKFLOW_STATE,
-                        0,
-                        getLocales());
-                // this.cacheStatus = ProcessingContext.CACHE_OFF; deactivated because
-                // we can't see a reason to have this here.
-            }
-        }
-        if (COMPARE.equals(getOpMode())) {
-            newLoadRequest.setWithDeleted(true);
-            newLoadRequest.setWithMarkedForDeletion(true);
-        } else if (EDIT.equals(getOpMode())) {
-            newLoadRequest.setWithDeleted(false);
-            newLoadRequest.setWithMarkedForDeletion(false);
-        }
-        if (this.entryLoadRequest.getWorkflowState() > 0) {
-            this.entryLoadRequest = newLoadRequest;
-        }
     }
 
     // -------------------------------------------------------------------------
@@ -715,8 +595,7 @@ public class ProcessingContext {
         if (locales == null) {
             locales = new ArrayList<Locale>();
         }
-        if ((locales.size() == 1 && (locales.get(0)).toString().equals(
-                ContentField.SHARED_LANGUAGE))
+        if ((locales.size() == 1 && (locales.get(0)).toString().equals("shared"))
                 && this.getSite().getLanguages().isEmpty()) {
             // let's add the default locale as english a last resort locale
             // SettingsBean settings = org.jahia.settings.SettingsBean.getInstance();
@@ -743,14 +622,6 @@ public class ProcessingContext {
                 }
             }
             locales.add(currentLocale);
-        }
-        if (!locales.get(0).toString().equals(ContentField.SHARED_LANGUAGE)) {
-            locales.add(0, EntryLoadRequest.SHARED_LANG_LOCALE);
-        }
-        if (locales.isEmpty()
-                || !(locales.get(0)).toString().equals(
-                ContentField.SHARED_LANGUAGE)) {
-            locales.add(0, EntryLoadRequest.SHARED_LANG_LOCALE);
         }
         if (!isMixLanguageActive) {
             // we must now check the length of the locale list. It should
@@ -780,10 +651,6 @@ public class ProcessingContext {
         // reset the locales
         setLocaleList(null);
         getSessionState().setAttribute(SESSION_LOCALE, locale);
-        setEntryLoadRequest(new EntryLoadRequest(getEntryLoadRequest().getWorkflowState(), getEntryLoadRequest().getVersionID(),
-                getLocales(), getEntryLoadRequest().isWithMarkedForDeletion()));
-        resetSubstituteEntryLoadRequest();
-        setParameter(ProcessingContext.LANGUAGE_CODE, this.getCurrentLocale().toString());
     }
 
     /**
@@ -941,38 +808,6 @@ public class ProcessingContext {
     }
 
     // --------------------------------------------------------------------------
-
-    /**
-     * Change the page Used ind Logout_Engine.java
-     *
-     * @param page
-     */
-    public void changePage(final ContentPage page) throws JahiaException {
-        if (page == null)
-            return;
-        if (getContentPage() == null) {
-            setLastRequestedPageID(-1);
-            setNewPageRequest(true);
-        } else if (getContentPage().getID() != page.getID()) {
-            setLastRequestedPageID(getContentPage().getID());
-            setNewPageRequest(true);
-        }
-        setContentPage(page);
-        if (getContentPage().getJahiaID() != getSiteID()) {
-            setContentPage(getSite().getHomeContentPage());
-        }
-    }
-
-    /**
-     * Change the page
-     *
-     * @param pid
-     */
-    public void changePage(final int pid) throws JahiaException {
-        if (pid < 1)
-            return;
-        changePage(ContentPage.getPage(pid));
-    }
 
     public void flushLocaleListCache() {
         setLocaleList(null);
@@ -1312,162 +1147,6 @@ public class ProcessingContext {
     // MJ 29 May. 2001 : get http path from request instead of settings,
 
 
-    // -------------------------------------------------------------------------
-    // EV 20 Nov. 2000 : Original implementation
-    // FH 22 Jan. 2001 : Changed += operation on a String to a StringBuffer.
-    // MJ 29 May. 2001 : get http path from request instead of settings,
-    // MJ 24 Jul. 2001 : dirty hack to hide catalina bug in HttpServletResponse
-    // .encodeURL(String URL)
-    // (bug description : reference to response object is
-    // sometimes lost after intensive calls to this method)
-    // Affected version : Tomcat 4.0 beta 1
-
-    /**
-     * @param pageID
-     * @return
-     * @throws JahiaException
-     */
-    public String composePageUrl(final int pageID) throws JahiaException {
-        return composeUrl(null,null,
-                pageID, null, getLocale().toString(), null);
-    }
-
-    public String composePageUrl(final int pageID, final String languageCode)
-            throws JahiaException {
-        return composeUrl(null,null,
-                pageID, null, languageCode, null);
-    }
-
-    public String composePageUrl(ContentPage page, final String languageCode)
-            throws JahiaException {
-        return composeUrl(null,null,
-                page, null, languageCode, null);
-    }
-
-    public String composePageUrl(final String pageUrlKey,
-                                 final String languageCode) throws JahiaException {
-        return composeUrl(pageUrlKey, "", null, null, languageCode, null);
-    }
-
-    public String composePageUrl(final JahiaPage page) throws JahiaException {
-        return composeUrl(null,
-                null, page.getContentPage(),
-                null, this.getLocale().toString(), null);
-    }
-
-    private String composeUrl(final String pageUrlKey, final String pageUrl,
-            ContentPage aContentPage, final String pathParams,
-            final String languageCode, final String params)
-            throws JahiaException {
-        final StringBuffer theUrl = new StringBuffer();
-        theUrl.append(getJahiaCoreHttpPath());
-        theUrl.append(getEngineURLPart(CORE_ENGINE_NAME));
-        if (languageCode != null) {
-            theUrl.append(condAppendURL(LANGUAGE_CODE, languageCode));
-        }
-        if (pathParams != null) {
-            theUrl.append(pathParams);
-        }
-        theUrl.append(pageUrlKey);
-        theUrl.append(pageUrl);
-
-        appendParams(theUrl, params);
-        appendAnchor(theUrl);
-
-        try {
-            return encodeURL(theUrl.toString());
-        } catch (NullPointerException npe) {
-            return theUrl.toString();
-        }
-    }
-
-    private String composeUrl(final String pageUrlKey, final String pageUrl,
-            final int pageID, final String pathParams,
-            final String languageCode, final String params)
-            throws JahiaException {
-        return composeUrl(pageUrlKey, pageUrl, pageID > 0 ? ContentPage
-                .getPage(pageID) : null, pathParams, languageCode, params);
-    }
-
-    // -------------------------------------------------------------------------
-    // MJ 27 Feb. 2001 : Overloaded method without params besides engineName
-    // MJ 29 May. 2001 : get http path from request instead of settings,
-
-    /**
-     * composeEngineUrl MJ 27.02.2001
-     */
-    public String composeEngineUrl(final String theEngineName)
-            throws JahiaException {
-        return composeEngineUrl(theEngineName, null, null, 0);
-    }
-
-    // -------------------------------------------------------------------------
-    // EV 20 Nov. 2000 : Original implementation
-    // FH 22 Jan. 2001 : Changed += operation on a String to a StringBuffer.
-    // MJ 29 May. 2001 : get http path from request instead of settings,
-
-    /**
-     * composeEngineUrl EV 20.11.2000
-     */
-    public String composeEngineUrl(final String theEngineName,
-                                   final String params) throws JahiaException {
-        return composeEngineUrl(theEngineName, params, null, 0);
-    }
-
-    /**
-     * Supplementary version that allows us to add parameters in standard Jahia parameter form.
-     *
-     * @param theEngineName    the name of the engine for which to generate the URL
-     * @param extraJahiaParams additional /name/value parameter to insert in the url
-     * @param params           standard URL parameters in the form of a string that starts with ?
-     * @return String containing the generated URL.
-     * @throws JahiaException
-     */
-    public String composeEngineUrl(final String theEngineName,
-                                   final Properties extraJahiaParams, final String params)
-            throws JahiaException {
-        return composeEngineUrl(theEngineName, params, extraJahiaParams, 0);
-    }
-
-    /**
-     * composeEngineUrl NK compose an engine url with the field id information
-     */
-    public String composeEngineUrl(final String theEngineName,
-                                   final String params, final int aFieldID) throws JahiaException {
-        return composeEngineUrl(theEngineName, params, null, aFieldID);
-    }
-
-    /**
-     * composeEngineUrl
-     */
-    private String composeEngineUrl(final String theEngineName,
-                                    final String params, final Properties extraJahiaParams,
-                                    final int aFieldID) throws JahiaException {
-        final StringBuffer theUrl = new StringBuffer();
-        theUrl.append(getJahiaCoreHttpPath());
-
-        if (theEngineName != null) {
-            theUrl.append(getEngineURLPart(theEngineName));
-        }
-
-        if (extraJahiaParams != null) {
-            final Enumeration<?> propertyNames = extraJahiaParams.propertyNames();
-            while (propertyNames.hasMoreElements()) {
-                final String propertyName = (String)propertyNames.nextElement();
-                final String propertyValue = extraJahiaParams
-                        .getProperty(propertyName);
-                theUrl.append(condAppendURL(propertyName, propertyValue));
-            }
-        }
-
-        appendParams(theUrl, params);
-
-        appendAnchor(theUrl);
-
-        return encodeURL(theUrl.toString());
-    } // end composeEngineUrl
-
-    // @author Khue Nguyen
 
     /**
      * Supplementary version that allows us to add parameters in standard Jahia parameter form.
@@ -1857,20 +1536,7 @@ public class ProcessingContext {
         getSessionState().setAttribute(SESSION_LOCALE, getCurrentLocale());
 
         resolveUILocale();
-       
-        setEntryLoadRequest(new EntryLoadRequest(
-                EntryLoadRequest.ACTIVE_WORKFLOW_STATE, 0, getLocales()));
-        // compute version info
-        if (getSiteID() != -1) {
-            if ((EDIT.equals(getOpMode()) || PREVIEW.equals(getOpMode()) || COMPARE
-                    .equals(getOpMode()))
-                    && REGISTRY.getJahiaVersionService().isStagingEnabled(
-                    this.getSiteID())) {
-                setEntryLoadRequest(new EntryLoadRequest(
-                        EntryLoadRequest.STAGING_WORKFLOW_STATE, 0,
-                        getLocales(), true));
-            }
-        }
+
     }
     
     protected void resolveUILocale() throws JahiaException {
@@ -1998,16 +1664,6 @@ public class ProcessingContext {
         this.opMode = anOpMode;
     }
 
-    public JahiaPage getThePage() {
-        return null;
-    }
-
-    public void setThePage(final JahiaPage aPage) {
-    }
-
-    public void setContentPage(final ContentPage aContentPage) {
-    }
-
     public JahiaUser getTheUser() {
         return theUser;
     }
@@ -2062,10 +1718,6 @@ public class ProcessingContext {
 
     public void setEngineHasChanged(final boolean engineHasChangedFlag) {
         this.engineHasChanged = engineHasChangedFlag;
-    }
-
-    public EntryLoadRequest getSubstituteEntryLoadRequest() {
-        return substituteEntryLoadRequest;
     }
 
     public static Properties getDefaultParameterValues() {
@@ -2189,15 +1841,6 @@ public class ProcessingContext {
 
     protected void setSiteResolvedByServername(boolean siteResolvedByServername) {
         this.siteResolvedByServername = siteResolvedByServername;
-    }
-
-    /**
-     * Compose page URL for current page
-     * @return the url of the current page
-     * @throws JahiaException
-     */
-    public String composePageUrl() throws JahiaException {
-        return composePageUrl(getPageID());
     }
 
     public Locale getUILocale() {

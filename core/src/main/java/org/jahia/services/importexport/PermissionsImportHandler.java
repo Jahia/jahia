@@ -34,19 +34,14 @@
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.pages.ContentPage;
 import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaSiteUserManagerService;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;

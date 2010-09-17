@@ -19,12 +19,6 @@
       <property name="settingsBean" ref="settingsBean"/>
    </bean>
 
-    <bean id="JahiaPageService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.pages.JahiaPageBaseService" parent="jahiaServiceTemplate" factory-method="getInstance">
-            </bean>
-        </property>
-    </bean>
     <bean id="JahiaPreferencesService" class="org.jahia.services.preferences.JahiaPreferencesService" parent="jahiaServiceTemplate" factory-method="getInstance">
         <property name="cacheService" ref="JahiaCacheService" />
         <property name="jcrStoreService" ref="JCRStoreService" />
@@ -37,12 +31,6 @@
                 <entry key="bookmarks" value="jnt:bookmarkPreference"  />
             </map>
         </property>        
-    </bean>
-    <bean id="JahiaPageTemplateService" parent="proxyTemplate" >
-        <property name="target">
-            <bean class="org.jahia.services.pages.JahiaPageTemplateBaseService" parent="jahiaServiceTemplate" factory-method="getInstance">
-            </bean>
-        </property>
     </bean>
     <bean id="PortletDispatchingProvider" class="org.jahia.services.applications.pluto.PlutoDispatchingProvider" init-method="start" destroy-method="stop"/>
     <bean id="DispatchingService" parent="proxyTemplate">
@@ -163,10 +151,6 @@
     
     <bean id="TemplatePackageApplicationContextLoader" class="org.jahia.services.templates.TemplatePackageApplicationContextLoader">
     	<property name="contextConfigLocation" value="modules/**/META-INF/spring/*.xml"/>
-    </bean>
-
-    <bean id="JahiaFieldDefinitionsRegistry" class="org.jahia.registries.JahiaFieldDefinitionsRegistry" factory-method="getInstance" init-method="init">
-        <property name="cacheService" ref="JahiaCacheService" />
     </bean>
 
     <bean id="VersionService" class="org.jahia.version.VersionService" parent="jahiaServiceTemplate" factory-method="getInstance">

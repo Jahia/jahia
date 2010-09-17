@@ -32,9 +32,6 @@
 
 package org.jahia.services.importexport;
 
-import java.util.Collections;
-
-import org.jahia.content.ContentObjectKey;
 import org.jahia.services.scheduler.ProcessAction;
 
 /**
@@ -46,8 +43,8 @@ import org.jahia.services.scheduler.ProcessAction;
  */
 public class ImportAction extends ProcessAction {
 
-    public ImportAction(ContentObjectKey key, String lang, String action) {
-        super(key, Collections.singleton(lang), action);
+    public ImportAction() {
+        super();
     }
 
 }

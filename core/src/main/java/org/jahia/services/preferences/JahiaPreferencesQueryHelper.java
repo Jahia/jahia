@@ -32,10 +32,6 @@
 
 package org.jahia.services.preferences;
 
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.pages.ContentPage;
-import org.jahia.exceptions.JahiaException;
-
 import java.util.Map;
 import java.util.Iterator;
 import java.util.HashMap;

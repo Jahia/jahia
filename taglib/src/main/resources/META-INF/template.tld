@@ -10,40 +10,6 @@
     <short-name>template</short-name>
     <uri>http://www.jahia.org/tags/templateLib</uri>
     <tag>
-        <description>Generates a HTML meta tag to be placed in the head part of the template</description>
-        <name>meta</name>
-        <tag-class>org.jahia.taglibs.template.metadata.HTMLMetaTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <description>Sets the name of the meta tag</description>
-            <name>name</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>If the generated value should used a specific static value, this is the attribute to use in order to set it</description>
-            <name>value</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>
-                If the generated value should reflect a Jahia metadata, this is the place where to give the name of the Jahia
-                metadata we are interested in.
-            </description>
-            <name>metadata</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>Set to true if you only want the value as a String and not the encapsulating HTML meta tag and its attributes</description>
-            <name>valueOnly</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-    </tag>
-    <tag>
         <description>
             Tag is used to add parameters to the parent tag, that implements ParamParent, e.g. 'include' or 'module' tags
         </description>

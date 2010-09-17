@@ -72,13 +72,5 @@
             </bean>
         </property>
     </bean>
-
-    <bean id="org.jahia.hibernate.manager.SubscriptionManager" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.hibernate.manager.SubscriptionManager">
-                <property name="subscriptionDAO" ref="jahiaSubscriptionDAO" />
-            </bean>
-        </property>
-    </bean>
     
 </beans>

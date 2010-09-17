@@ -49,7 +49,6 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.gui.GuiBean;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
-import org.jahia.services.pages.JahiaPage;
 
 public class JahiaData {
 
@@ -102,13 +101,6 @@ public class JahiaData {
     public ProcessingContext getProcessingContext() {
         return jParams;
     }
-
-    /**
-     * returns the current page
-     */
-    public JahiaPage page() {
-        return jParams.getPage();
-    }   // for upward compatibility
 
     /**
      * returns an object allowing to retrieve paths and to draw links

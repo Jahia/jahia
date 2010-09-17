@@ -34,22 +34,14 @@ package org.jahia.ajax.gwt.helper;
 
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
-import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
-import org.jahia.exceptions.JahiaException;
-import org.jahia.hibernate.model.JahiaAcl;
-import org.jahia.hibernate.model.JahiaAclEntry;
-import org.jahia.services.acl.ACLResourceInterface;
-import org.jahia.services.acl.JahiaACLEntry;
-import org.jahia.services.acl.JahiaBaseACL;
-import org.jahia.services.acl.ParentACLFinder;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.utils.i18n.JahiaResourceBundle;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * User: toto
@@ -87,19 +79,6 @@ public class ACLHelper {
         ace.setInheritedPermissions(new HashMap<String,String>());
         ace.setInherited(false);
         return ace;
-    }
-
-    private Map<String, String> getPermissions(JahiaAclEntry e) {
-        Map<String, String> perms = new HashMap<String, String>();
-        if (e != null) {
-            if (e.getPermission(JahiaBaseACL.READ_RIGHTS) == JahiaAclEntry.ACL_YES) perms.put("read", "GRANT");
-            if (e.getPermission(JahiaBaseACL.READ_RIGHTS) == JahiaAclEntry.ACL_NO) perms.put("read", "DENY");
-            if (e.getPermission(JahiaBaseACL.WRITE_RIGHTS) == JahiaAclEntry.ACL_YES) perms.put("write", "GRANT");
-            if (e.getPermission(JahiaBaseACL.WRITE_RIGHTS) == JahiaAclEntry.ACL_NO) perms.put("write", "DENY");
-            if (e.getPermission(JahiaBaseACL.ADMIN_RIGHTS) == JahiaAclEntry.ACL_YES) perms.put("admin", "GRANT");
-            if (e.getPermission(JahiaBaseACL.ADMIN_RIGHTS) == JahiaAclEntry.ACL_NO) perms.put("admin", "DENY");
-        }
-        return perms;
     }
 
 

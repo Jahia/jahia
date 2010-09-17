@@ -230,28 +230,6 @@ public class WorkflowService {
         });
     }
 
-    private List<JCRNodeWrapper> getApplicableWorkflowRules(final JCRNodeWrapper node, final JCRSessionWrapper session)
-            throws RepositoryException {
-        JCRNodeWrapper rules = null;
-        JCRNodeWrapper nodeWrapper = node;
-        while (rules == null) {
-            try {
-                rules = nodeWrapper.getNode(WORKFLOWRULES_NODE_NAME);
-            } catch (RepositoryException e) {
-                nodeWrapper = nodeWrapper.getParent();
-            }
-        }
-        List<JCRNodeWrapper> rulesList = new ArrayList<JCRNodeWrapper>();
-        NodeIterator ni = rules.getNodes();
-        while (ni.hasNext()) {
-            JCRNodeWrapper rule = (JCRNodeWrapper) ni.next();
-//            if (!rule.hasProperty("j:nodeType") || node.isNodeType(rule.getProperty("j:nodeType").getString())) {
-            rulesList.add(rule);
-//            }
-        }
-        return rulesList;
-    }
-
     /**
      * This method list all currently active workflow for the specified node.
      *

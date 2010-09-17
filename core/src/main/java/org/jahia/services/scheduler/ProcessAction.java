@@ -32,8 +32,6 @@
 
 package org.jahia.services.scheduler;
 
-import org.jahia.content.ContentObjectKey;
-
 import java.io.Serializable;
 import java.util.Set;
 
@@ -45,28 +43,7 @@ import java.util.Set;
  * To change this template use File | Settings | File Templates.
  */
 public class ProcessAction implements Serializable {
-    private ContentObjectKey key;
-    private Set<String> langs;
-    private String action;
-
     public ProcessAction() {
     }
 
-    public ProcessAction(ContentObjectKey key, Set<String> langs, String action) {
-        this.key = key;
-        this.langs = langs;
-        this.action = action;
-    }
-
-    public ContentObjectKey getKey() {
-        return key;
-    }
-
-    public Set<String> getLangs() {
-        return langs;
-    }
-
-    public String getAction() {
-        return action;
-    }
 }

@@ -46,11 +46,8 @@ import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.JCRVersionService;
 import org.jahia.services.deamons.filewatcher.JahiaFileWatcherService;
 import org.jahia.services.fetchers.JahiaFetcherService;
-import org.jahia.services.fields.JahiaFieldService;
 import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.mail.MailService;
-import org.jahia.services.pages.JahiaPageService;
-import org.jahia.services.pages.JahiaPageTemplateService;
 import org.jahia.services.preferences.JahiaPreferencesService;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.query.QueryService;
@@ -62,7 +59,6 @@ import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaSiteUserManagerService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.services.version.JahiaVersionService;
 import org.jahia.settings.SettingsBean;
 import org.springframework.context.ApplicationContext;
 
@@ -86,22 +82,6 @@ public class ServicesRegistry {
      */
     private static ServicesRegistry theObject = new ServicesRegistry();
 
-
-    /**
-     * Jahia Page Services Name *
-     */
-    private static final String JAHIA_PAGE_SERVICE = "JahiaPageService";
-
-    /**
-     * Jahia Page Template Service name
-     */
-    private static final String JAHIA_PAGE_TEMPLATE_SERVICE =
-            "JahiaPageTemplateService";
-
-    /**
-     * Jahia Fields Service Name *
-     */
-    private static final String JAHIA_FIELD_SERVICE = "JahiaFieldService";
 
     /**
      * Jahia Application Dispatching Service Name *
@@ -224,30 +204,6 @@ public class ServicesRegistry {
 
 
     // @author NK 21.12.2000
-    /**
-     * method getJahiaPageService
-     */
-    public JahiaPageService getJahiaPageService() {
-        return (JahiaPageService) getService(JAHIA_PAGE_SERVICE);
-    }
-
-    // @author NK 21.12.2000
-    /**
-     * method getJahiaPageTemplateService
-     */
-    public JahiaPageTemplateService getJahiaPageTemplateService() {
-        return (JahiaPageTemplateService) getService(JAHIA_PAGE_TEMPLATE_SERVICE);
-    }
-
-    // @author NK 21.12.2000
-    /**
-     * method getJahiaFieldService
-     */
-    public JahiaFieldService getJahiaFieldService() {
-        return (JahiaFieldService) getService(JAHIA_FIELD_SERVICE);
-    }
-
-    // @author NK 21.12.2000
     public DispatchingService getApplicationsDispatchService() {
         return (DispatchingService) getService(
                 APPLICATIONS_DISPATCH_SERVICE);
@@ -301,13 +257,6 @@ public class ServicesRegistry {
      */
     public JahiaSiteUserManagerService getJahiaSiteUserManagerService() {
         return (JahiaSiteUserManagerService) getService(JAHIA_SITE_USER_MANAGER_SERVICE);
-    }
-
-    /**
-     * Return a reference to the version service
-     */
-    public JahiaVersionService getJahiaVersionService() {
-        return (JahiaVersionService) getService(JAHIA_VERSION_SERVICE);
     }
 
     /**

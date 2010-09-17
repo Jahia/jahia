@@ -71,9 +71,7 @@ public class TemplateCountValidator extends AbstractValidator {
             while( enumeration.hasNext() ){
                 aSite = (JahiaSite)enumeration.next();
 
-                nbItems = ServicesRegistry.getInstance().
-                                           getJahiaPageTemplateService().
-                                           getNbPageTemplates (aSite.getID());
+                nbItems = 0;
 
 
                 if (nbItems > maxTemplates) {
@@ -107,9 +105,7 @@ public class TemplateCountValidator extends AbstractValidator {
             while( enumeration.hasNext() ){
                 aSite = (JahiaSite)enumeration.next();
 
-                nbItems = ServicesRegistry.getInstance().
-                                           getJahiaPageTemplateService().
-                                           getNbPageTemplates (aSite.getID());
+                nbItems = 0;
                 if ((nbItems > maxTemplates) || (nbItems < minTemplates)) {
                     errorMessage = new ResourceMessage("org.jahia.security.license.TemplateCountValidator.templateCountNotInRange.label", new Integer(nbItems), new Integer(minTemplates), new Integer(maxTemplates), new Integer(aSite.getID()));
                     return false;

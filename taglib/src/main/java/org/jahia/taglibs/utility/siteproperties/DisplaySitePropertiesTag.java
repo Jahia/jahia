@@ -107,8 +107,7 @@ public class DisplaySitePropertiesTag extends AbstractJahiaTag {
             buff.append("<li class=\"creationDate\">");
             buff.append(i18n.getString("siteproperty.creationDate"));
             buff.append(": ");
-            final Date creationDate = theSite.getHomeContentPage().
-                    getMetadataAsDate(CoreMetadataConstant.CREATION_DATE, jParams);
+            final Date creationDate = null;
             if (creationDate != null) {
                 final SimpleDateFormat sdf;
                 if (dateFormat == null || dateFormat.length() == 0) {

@@ -59,13 +59,11 @@
 
 package org.jahia.bin;
 
-import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.struts.Globals;
-import org.jahia.admin.AdministrationModulesRegistry;
 import org.jahia.admin.AdministrationModule;
+import org.jahia.admin.AdministrationModulesRegistry;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.data.JahiaData;
 import org.jahia.data.beans.MenuItem;
@@ -76,13 +74,10 @@ import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.ServletURLGeneratorImpl;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.applications.ServletIncludeRequestWrapper;
-import org.jahia.services.applications.ServletIncludeResponseWrapper;
-import org.jahia.utils.LanguageCodeConverters;
-import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.security.license.LicenseManager;
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.pages.ContentPage;
+import org.jahia.services.applications.ServletIncludeRequestWrapper;
+import org.jahia.services.applications.ServletIncludeResponseWrapper;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.rbac.PermissionIdentity;
 import org.jahia.services.sites.JahiaSite;
@@ -92,6 +87,8 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -108,14 +105,9 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Properties;
+import java.util.*;
+
+import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 
 /**
@@ -1070,7 +1062,6 @@ public class JahiaAdministration extends HttpServlet {
             }
             session.setAttribute(ProcessingContext.SESSION_SITE, site);
         }
-        ContentPage contentPage = null;
 
         // start the chrono...
         long startTime = System.currentTimeMillis();
@@ -1087,17 +1078,13 @@ public class JahiaAdministration extends HttpServlet {
 
         AdminParamBean jParams = new AdminParamBean(request,
                 response,
-                context,
-                jSettings,
-                startTime,
+                context, startTime,
                 intRequestMethod,
                 site,
-                user,
-                contentPage);
+                user);
         jParams.setUrlGenerator(new ServletURLGeneratorImpl(request, response));
 
         JahiaData jData = new JahiaData(jParams, false);
-        jData.getProcessingContext().changePage(contentPage);
 
         request.setAttribute("org.jahia.data.JahiaData", jData);
         request.setAttribute("org.jahia.params.ParamBean", jData.getProcessingContext());

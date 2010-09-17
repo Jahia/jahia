@@ -314,20 +314,27 @@ public class EditActions {
                         }
                         message+="<br/><br/>";
                         String n = "";
-                        if(result.size()>0) {
+                        int size = result.size();
+                        if(size>0) {
                             message +=l.size() > 1 ? Messages.get("message.remove.multiple.usage",
                                                                              "Those nodes are still used in:") : Messages.get(
                                 "message.remove.single.usage",
                                 "This node is still used by:");
                         }
-                        for (GWTJahiaNodeUsage nodeUsage : result) {
+                        int i = 0;                        
+                        for (int j = 0; j < (size>4?4:size); j++) {
+                            GWTJahiaNodeUsage nodeUsage = result.get(j);
                             if (!nodeUsage.getNodeName().equals(n)) {
                                 message += "<br/><span style=\"font-style:italic;\">" + nodeUsage.getNodeTitle() + " " + Messages.get(
                                         "label.remove.used", "is using this node in page(s)") + "<br/>" +nodeUsage.getPageTitle()+"</span>";
+                                i++;
                             } else {
                                 message += "<br/><span style=\"font-style:italic;\">" + nodeUsage.getPageTitle()+"</span>";
                             }
                             n = nodeUsage.getNodeName();
+                        }
+                        if(i>4) {
+                            message+="<br/>.<br/>.<br/>.";
                         }
                         MessageBox.confirm("", message, new Listener<MessageBoxEvent>() {
                             public void handleEvent(MessageBoxEvent be) {

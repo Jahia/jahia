@@ -1125,7 +1125,6 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 								{
 									type : 'button',
 									id : 'browse',
-									filebrowser : 'Link:txtUrl',
 									style : 'float:right',
 									hidden : true,
 									filebrowser : 
@@ -1139,7 +1138,6 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 								{
 									type : 'button',
 									id : 'browseFiles',
-									filebrowser : 'Link:txtUrl',
 									style : 'float:left',
 									hidden : true,
 									filebrowser : 

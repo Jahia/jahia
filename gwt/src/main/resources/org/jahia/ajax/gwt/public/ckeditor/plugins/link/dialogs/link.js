@@ -518,7 +518,12 @@ CKEDITOR.dialog.add( 'link', function( editor )
 										id : 'browse',
 										style : 'float:right',
 										hidden : 'true',
-										filebrowser : 'info:url',
+										filebrowser :
+										{
+											action : 'Browse',
+											url : editor.config.filebrowserLinkBrowseUrl,
+											target : 'info:url'
+										},
 										label : editor.lang.common.browseServer + ' (' + (editor.lang.common.browseServerPages || 'Pages') + ')'
 									},
 									{

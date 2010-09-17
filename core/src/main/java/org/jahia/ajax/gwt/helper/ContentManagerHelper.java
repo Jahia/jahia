@@ -754,7 +754,10 @@ public class ContentManagerHelper {
                         }
                     }
                 } else {
-                    // already locked
+                    if (node.getLockOwner() != null && !node.getLockOwner().equals(user.getUsername())) {
+                        missedPaths.add(new StringBuilder(node.getName()).append(": locked by ")
+                                .append(node.getLockOwner()).toString());
+                    }
                 }
             } else {
                 if (locked) {

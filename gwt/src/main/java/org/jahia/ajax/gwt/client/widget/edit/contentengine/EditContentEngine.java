@@ -38,6 +38,7 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
@@ -53,10 +54,7 @@ import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Content editing widget.
@@ -71,7 +69,6 @@ public class EditContentEngine extends AbstractContentEngine {
     private String nodeName;
     private Map<String, GWTJahiaGetPropertiesResult> langCodeGWTJahiaGetPropertiesResultMap =
             new HashMap<String, GWTJahiaGetPropertiesResult>();
-
 
     /**
      * Initializes an instance of this class.
@@ -131,6 +128,12 @@ public class EditContentEngine extends AbstractContentEngine {
         cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
+                contentService.setLock(Arrays.asList(contentPath),false,new BaseAsyncCallback() {
+                    public void onSuccess(Object result) {
+                        String s = Messages.get("label.unlocked", "Nodes has been unlocked");
+                        Info.display(s,s);
+                    }
+                });
                 EditContentEngine.this.container.closeEngine();
             }
         });
@@ -169,7 +172,7 @@ public class EditContentEngine extends AbstractContentEngine {
      */
     private void loadEngine() {
 
-        contentService.initializeEditEngine(contentPath , new BaseAsyncCallback<GWTJahiaEditEngineInitBean>() {
+        contentService.initializeEditEngine(contentPath , true, new BaseAsyncCallback<GWTJahiaEditEngineInitBean>() {
             public void onSuccess(GWTJahiaEditEngineInitBean result) {
                 node = result.getNode();
                 nodeTypes = result.getNodeTypes();
@@ -191,6 +194,8 @@ public class EditContentEngine extends AbstractContentEngine {
 
             public void onApplicationFailure(Throwable throwable) {
                 Log.debug("Cannot get properties", throwable);
+                Info.display("",throwable.getLocalizedMessage());
+                EditContentEngine.this.container.closeEngine();
             }
 
         });
@@ -302,22 +307,20 @@ public class EditContentEngine extends AbstractContentEngine {
             }
 
             // Ajax call to update values
-            JahiaContentManagementService.App.getInstance()
-                    .saveNode(node, orderedChildrenNodes, newNodeACL, changedI18NProperties, changedProperties,
-                            new BaseAsyncCallback() {
-                                public void onApplicationFailure(Throwable throwable) {
-                                    com.google.gwt.user.client.Window
-                                            .alert(Messages.get("saved_prop_failed", "Properties save failed\n\n") +
-                                                    throwable.getLocalizedMessage());
-                                    Log.error("failed", throwable);
-                                }
+            JahiaContentManagementService.App.getInstance().saveNode(node, orderedChildrenNodes, newNodeACL,
+                    changedI18NProperties, changedProperties, new BaseAsyncCallback() {
+                        public void onApplicationFailure(Throwable throwable) {
+                            com.google.gwt.user.client.Window.alert(Messages.get("saved_prop_failed",
+                                    "Properties save failed\n\n") + throwable.getLocalizedMessage());
+                            Log.error("failed", throwable);
+                        }
 
-                                public void onSuccess(Object o) {
-                                    Info.display("", Messages.get("saved_prop", "Properties saved\n\n"));
-                                    EditContentEngine.this.container.closeEngine();
-                                    linker.refresh(Linker.REFRESH_MAIN);
-                                }
-                            });
+                        public void onSuccess(Object o) {
+                            Info.display("", Messages.get("saved_prop", "Properties saved\n\n"));
+                            EditContentEngine.this.container.closeEngine();
+                            linker.refresh(Linker.REFRESH_MAIN);
+                        }
+                    });
         }
 
     }

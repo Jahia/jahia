@@ -273,7 +273,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     GWTJahiaCreatePortletInitBean initializeCreatePortletEngine(String typeName, String parentPath) throws GWTJahiaServiceException;
 
-    GWTJahiaEditEngineInitBean initializeEditEngine(String nodePath) throws GWTJahiaServiceException;
+    GWTJahiaEditEngineInitBean initializeEditEngine(String nodePath, boolean tryToLockNode) throws GWTJahiaServiceException;
 
     public PagingLoadResult<GWTJahiaRole> searchRolesInContext(String search, int offset, int limit, String context) throws GWTJahiaServiceException;
 

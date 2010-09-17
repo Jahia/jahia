@@ -542,6 +542,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public void saveNode(GWTJahiaNode node, List<GWTJahiaNode> orderedChildrenNode, GWTJahiaNodeACL acl,
                          Map<String, List<GWTJahiaNodeProperty>> langCodeProperties,
                          List<GWTJahiaNodeProperty> sharedProperties) throws GWTJahiaServiceException {
+        setLock(Arrays.asList(node.getPath()),false);
         Iterator<String> langCode = langCodeProperties.keySet().iterator();
 
         // save shared properties
@@ -1445,11 +1446,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return portletInitBean;
     }
 
-    public GWTJahiaEditEngineInitBean initializeEditEngine(String nodepath) throws GWTJahiaServiceException {
+    public GWTJahiaEditEngineInitBean initializeEditEngine(String nodepath, boolean tryToLockNode) throws GWTJahiaServiceException {
         try {
             JCRSessionWrapper sessionWrapper = retrieveCurrentSession();
             JCRNodeWrapper nodeWrapper = sessionWrapper.getNode(nodepath);
-
+            if(tryToLockNode)
+            setLock(Arrays.asList(nodepath),true);
             // get node type
             final List<GWTJahiaNodeType> nodeTypes =
                     contentDefinition.getNodeTypes(nodeWrapper.getNodeTypes(), getUILocale());
@@ -1480,7 +1482,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             result.setInitializersValues(
                     contentDefinition.getInitializersValues(allTypes, nodeWrapper.getPrimaryNodeType(), nodeWrapper,
                             nodeWrapper.getParent(), getUILocale()));
-
             return result;
         } catch (RepositoryException e) {
             logger.error("Cannot get node", e);

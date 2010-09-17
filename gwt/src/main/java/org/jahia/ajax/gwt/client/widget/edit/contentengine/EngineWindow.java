@@ -32,21 +32,24 @@
 
 package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
+import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem.SidePanelLinker;
+import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
+
+import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 
 /**
- * Created by IntelliJ IDEA.
+ * The edit engine window widget.
  * User: toto
  * Date: Aug 2, 2010
  * Time: 3:55:13 PM
- * To change this template use File | Settings | File Templates.
  */
 public class EngineWindow extends Window implements EngineContainer {
-    private AbstractContentEngine engine;
 
     public EngineWindow() {
         setSize(750, 480);
@@ -65,7 +68,15 @@ public class EngineWindow extends Window implements EngineContainer {
 
     public void setEngine(AbstractContentEngine engine) {
         add(engine);
-        this.engine = engine;
+		if (!(engine.getLinker() instanceof ManagerLinker) && (GXT.isIE7 || GXT.isIE6)) {
+			EditLinker editLinker = engine.getLinker() instanceof EditLinker ? (EditLinker) engine
+			        .getLinker() : ((SidePanelLinker) engine.getLinker()).getEditLinker();
+			// resize to fit main module area
+			MainModule main = editLinker.getMainModule();
+			setSize(main.getOffsetWidth(), main.getOffsetHeight());
+			setPosition(main.getAbsoluteLeft(), main.getAbsoluteTop());
+			setBorders(false);
+		}
     }
 
     public void showEngine() {

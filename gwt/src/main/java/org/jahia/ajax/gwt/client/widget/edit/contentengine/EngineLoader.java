@@ -32,6 +32,7 @@
 
 package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 
+import com.extjs.gxt.ui.client.GXT;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -40,17 +41,15 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Hover;
-import org.jahia.ajax.gwt.client.widget.edit.mainarea.Selection;
 import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem.SidePanelLinker;
 
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
+ * Engine loader component.
  * User: toto
  * Date: Jul 2, 2010
  * Time: 7:36:04 PM
- * To change this template use File | Settings | File Templates.
  */
 public class EngineLoader {
     public static final int CREATE = 1;
@@ -72,20 +71,18 @@ public class EngineLoader {
             }
 
             public void onSuccess() {
-                AbstractContentEngine engine = null;
-
                 EngineContainer container;
 
-                if (linker instanceof EditLinker || linker instanceof SidePanelLinker) {
+                if (!(GXT.isIE7 || GXT.isIE6)  && (linker instanceof EditLinker || linker instanceof SidePanelLinker)) {
                     container = new EnginePanel();
                 } else {
                     container = new EngineWindow();
                 }
 
                 if (t == CREATE) {
-                    engine = new CreateContentEngine(linker, node, type, props, targetName, createInParentAndMoveBefore, container);
+                    new CreateContentEngine(linker, node, type, props, targetName, createInParentAndMoveBefore, container);
                 } else if (t == EDIT) {
-                    engine = new EditContentEngine(node, linker, container);
+                    new EditContentEngine(node, linker, container);
                 }
                 container.showEngine();
                 Hover.getInstance().removeAll();

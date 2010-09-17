@@ -32,6 +32,7 @@
 
 package org.jahia.ajax.gwt.client.widget.edit.contentengine;
 
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem.SidePanelLinker;
 
@@ -67,36 +68,26 @@ public class EnginePanel extends ContentPanel implements EngineContainer {
     }
 
     public void showEngine() {
-//    	if (GXT.isIE) {
-//	    	linker.getToolbar().mask();
-//	    	linker.getSidePanel().mask();
-//    	}
-//    	
     	linker.replaceMainAreaComponent(this);
     }
 
     public void closeEngine() {
-//    	if (!GXT.isIE) {
-            ModalPanel.push(modalPanel);
-            modalPanel = null;
-//    	} else {
-//        	linker.getToolbar().unmask();
-//        	linker.getSidePanel().unmask();
-//    	}
-    	
-    	linker.restoreMainArea();
+		ModalPanel.push(modalPanel);
+		modalPanel = null;
+
+		linker.restoreMainArea();
+		if (GXT.isIE) {
+			linker.refresh(Linker.REFRESH_MAIN);
+		}
     }
 
     protected void onRender(Element parent, int pos) {
         super.onRender(parent, pos);
-
-//        if (!GXT.isIE) {
-	        el().updateZIndex(0);
-	        modalPanel = ModalPanel.pop();
-	        modalPanel.setBlink(false);
-	        modalPanel.show(this);
-//        }
-
+        
+		el().updateZIndex(0);
+		modalPanel = ModalPanel.pop();
+		modalPanel.setBlink(false);
+		modalPanel.show(this);
     }
 
 }

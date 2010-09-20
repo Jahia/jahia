@@ -192,8 +192,8 @@ public class WorkflowTabItem extends EditEngineTabItem {
                         horizontalPanel.add(combo);
 
                         if (!engine.getNode().isWriteable() || engine.getNode().isLocked()) {
-                            combo.setEnabled(false);
-                            typesCombo.setEnabled(false);
+                            combo.setReadOnly(true);
+                            typesCombo.setReadOnly(true);
                         }
 
                         layout();

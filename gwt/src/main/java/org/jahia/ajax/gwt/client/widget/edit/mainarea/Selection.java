@@ -73,7 +73,7 @@ public class Selection extends LayoutContainer {
     }
 
     public void setMainModule(MainModule m) {
-        m.getScrollContainer().addScrollListener(new ScrollListener() {
+        m.getContainer().addScrollListener(new ScrollListener() {
             @Override
             public void widgetScrolled(ComponentEvent ce) {
                 if (currentContainer != null) {

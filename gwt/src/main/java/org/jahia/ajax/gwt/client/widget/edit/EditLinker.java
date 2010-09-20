@@ -261,7 +261,7 @@ public class EditLinker implements Linker {
         ContentPanel m;
         if (mainAreaComponent == null) {
             m = (ContentPanel) mainModule.getParent();
-            mainAreaVScrollPosition = mainModule.getScrollContainer().getVScrollPosition();
+            mainAreaVScrollPosition = mainModule.getContainer().getVScrollPosition();
             m.remove(mainModule);
         } else {
             m = (ContentPanel) mainAreaComponent.getParent();
@@ -278,6 +278,6 @@ public class EditLinker implements Linker {
         mainAreaComponent = null;
         m.add(mainModule, new BorderLayoutData(Style.LayoutRegion.CENTER));
         m.layout();
-        mainModule.getScrollContainer().setVScrollPosition(mainAreaVScrollPosition);
+        mainModule.getContainer().setVScrollPosition(mainAreaVScrollPosition);
     }
 }

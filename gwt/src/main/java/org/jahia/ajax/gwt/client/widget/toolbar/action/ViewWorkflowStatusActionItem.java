@@ -39,7 +39,6 @@ import com.extjs.gxt.ui.client.event.ScrollListener;
 import com.extjs.gxt.ui.client.util.Point;
 import com.extjs.gxt.ui.client.util.Size;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo;
 import org.jahia.ajax.gwt.client.widget.Linker;
@@ -119,7 +118,7 @@ public class ViewWorkflowStatusActionItem extends ViewStatusActionItem {
                     "0.7");
         }
 
-        ((EditLinker) linker).getMainModule().getScrollContainer().addScrollListener(new ScrollListener() {
+        ((EditLinker) linker).getMainModule().getContainer().addScrollListener(new ScrollListener() {
             @Override
             public void widgetScrolled(ComponentEvent ce) {
                 for (LayoutContainer infoLayer : containers.keySet()) {

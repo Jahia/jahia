@@ -136,7 +136,7 @@ public class ViewPublishStatusActionItem extends ViewStatusActionItem {
                     "0.7");
         }
 
-        ((EditLinker) linker).getMainModule().getScrollContainer().addScrollListener(new ScrollListener() {
+        ((EditLinker) linker).getMainModule().getContainer().addScrollListener(new ScrollListener() {
             @Override
             public void widgetScrolled(ComponentEvent ce) {
                 for (LayoutContainer infoLayer : containers.keySet()) {

@@ -40,7 +40,6 @@ import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaAdminUser;
-import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.test.SurefireJUnitXMLResultFormatter;
 import org.jahia.exceptions.JahiaException;
 import org.junit.internal.requests.FilterRequest;
@@ -109,7 +108,7 @@ public class TestServlet extends HttpServlet implements Controller, ServletConte
 
         try {
             ctx.setOperationMode(ParamBean.EDIT);            
-            ctx.setEntryLoadRequest(new EntryLoadRequest(EntryLoadRequest.STAGING_WORKFLOW_STATE, 0, ctx.getLocales()));
+//            ctx.setEntryLoadRequest(new EntryLoadRequest(EntryLoadRequest.STAGING_WORKFLOW_STATE, 0, ctx.getLocales()));
 
             JahiaUser admin = JahiaAdminUser.getAdminUser(0);
             JCRSessionFactory.getInstance().setCurrentUser(admin);

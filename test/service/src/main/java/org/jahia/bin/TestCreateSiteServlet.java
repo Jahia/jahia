@@ -13,7 +13,6 @@ import org.jahia.services.content.*;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaAdminUser;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.settings.SettingsBean;
 import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
@@ -61,8 +60,7 @@ public class TestCreateSiteServlet extends HttpServlet implements Controller, Se
 
         try {
             ctx.setOperationMode(ParamBean.EDIT);
-            ctx.setEntryLoadRequest(new EntryLoadRequest(EntryLoadRequest.STAGING_WORKFLOW_STATE, 0, ctx.getLocales()));
-
+//            ctx.setEntryLoadRequest(new EntryLoadRequest(EntryLoadRequest.STAGING_WORKFLOW_STATE, 0, ctx.getLocales()));
             JahiaUser admin = JahiaAdminUser.getAdminUser(0);
             JCRSessionFactory.getInstance().setCurrentUser(admin);
             ctx.setTheUser(admin);

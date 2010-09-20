@@ -69,7 +69,7 @@ public class LinkerSelectionContext {
     }
 
     public void refresh() {
-        mainSelection = mainNode != null;
+        mainSelection = mainNode != null && (selectedNodes == null || selectedNodes.size() == 0);
         parentWriteable = (mainSelection) ? (mainNode).isWriteable() && !mainNode.isLocked() : false;
         writeable = false;
         deleteable = false;
@@ -83,9 +83,6 @@ public class LinkerSelectionContext {
         tableSelection = false;
         mount = false;
         if (selectedNodes != null && selectedNodes.size() > 0) {
-            if (mainNode != null) {
-                mainSelection = true;
-            }
             if (!mainSelection) {
                 GWTJahiaNode parent = (GWTJahiaNode) selectedNodes.get(0).getParent();
                 if (parent != null) {

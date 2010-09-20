@@ -7,11 +7,11 @@
 <jcr:nodeProperty node="${currentNode}" name="j:alternateText" var="title"/>
 <c:set var="node" value="${reference.node}"/>
 <c:if test="${not empty node}">
-<c:url var="url" value="${node.url}" context="/"/>
+    <c:url var="urlNode" value="${node.url}" context="/"/>
 </c:if>
 <c:if test="${not empty target.string}"><c:set var="target"> target="${target.string}"</c:set></c:if>
 <c:set var="linknode" value="${linkreference.node}"/>
 <c:if test="${not empty linknode}">
-<c:url var="linkurl" value="${linknode.url}" context="/"/>
+    <c:url var="linkurl" value="${linknode.path}.html" context="${url.base}"/>
 </c:if>
-<a href="${linkurl}"${target}><img src="${url}" alt="${fn:escapeXml(not empty title.string ? title.string : currentNode.name)}" /></a>
+<a href="${linkurl}"${target}><img src="${urlNode}" alt="${fn:escapeXml(not empty title.string ? title.string : currentNode.name)}" /></a>

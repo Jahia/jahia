@@ -127,7 +127,7 @@ public class JBPMMailProducer extends MailProducerImpl {
                 }
 
                 for (String m : emails) {
-                    if (!"".equals(m)) email.addRecipient(Message.RecipientType.TO, new InternetAddress(m));
+                    if (m!=null && !"".equals(m)) email.addRecipient(Message.RecipientType.TO, new InternetAddress(m));
                 }
 
                 emails.clear();
@@ -140,7 +140,7 @@ public class JBPMMailProducer extends MailProducerImpl {
                     emails.add(evaluateExpression(execution, s));
                 }
                 for (String m : emails) {
-                    if (!"".equals(m)) email.addRecipient(Message.RecipientType.CC, new InternetAddress(m));
+                    if (m!=null && !"".equals(m)) email.addRecipient(Message.RecipientType.CC, new InternetAddress(m));
                 }
             }
         } catch (ScriptException e) {

@@ -312,7 +312,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     protected boolean canEdit(RenderContext renderContext) {
         return renderContext.isEditMode() && editable &&
-                !Boolean.TRUE.equals(renderContext.getRequest().getAttribute("inWrapper")) && (node == null || node.isWriteable());
+                !Boolean.TRUE.equals(renderContext.getRequest().getAttribute("inWrapper"));
     }
 
     protected void printModuleStart(String type, String path, String resolvedTemplate, String scriptInfo)

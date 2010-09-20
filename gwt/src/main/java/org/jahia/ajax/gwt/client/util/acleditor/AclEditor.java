@@ -301,7 +301,7 @@ public class AclEditor {
         store = new ListStore<ModelData>();
         grid = new Grid<ModelData>(store, new ColumnModel(columns));
         final BufferView bufferView = new BufferView();
-        bufferView.setRowHeight(25);
+        bufferView.setRowHeight(28);
         grid.setAutoExpandColumn("principal");
         grid.setView(bufferView);
 //        aclTable.setBulkRender(false);

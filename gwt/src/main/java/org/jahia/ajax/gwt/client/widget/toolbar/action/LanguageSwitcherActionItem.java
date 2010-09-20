@@ -34,6 +34,7 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import java.util.List;
 
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
@@ -44,6 +45,7 @@ import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 
 /**
  * Language switcher toolbar item for all possible languages. 
@@ -89,7 +91,11 @@ public class LanguageSwitcherActionItem extends BaseActionItem {
         mainComponent.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaLanguage>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaLanguage> event) {
-                ((EditLinker) linker).getMainModule().switchLanguage(event.getSelectedItem().getLanguage());
+                if (linker instanceof EditLinker) {
+                    ((EditLinker) linker).getMainModule().switchLanguage(event.getSelectedItem().getLanguage());
+                } else if (linker instanceof ManagerLinker) {
+                    ((ManagerLinker) linker).switchLanguage(event.getSelectedItem().getLanguage());
+                }
             }
         });
         setEnabled(true);

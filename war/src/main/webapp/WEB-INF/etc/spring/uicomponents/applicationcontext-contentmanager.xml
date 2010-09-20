@@ -443,6 +443,7 @@
                                 </list>
                             </property>
                         </bean>
+                        <ref bean="Toolbar.ItemsGroup.LanguageSwitcher"/>                        
                     </list>
                 </property>
             </bean>
@@ -482,6 +483,7 @@
         <property name="tabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
                 <value>info</value>
+                <value>content</value>
                 <value>rights</value>
                 <value>usages</value>
             </list>
@@ -740,6 +742,7 @@
                                 </list>
                             </property>
                         </bean>
+                        <ref bean="Toolbar.ItemsGroup.LanguageSwitcher"/>                        
                     </list>
                 </property>
             </bean>
@@ -830,7 +833,7 @@
                 </bean>
                 <value>index,23</value>
                 <value>icon,40,empty</value>
-                <value>name,240,label.name</value>
+                <value>displayName,240,label.title</value>
                 <value>locked,60,label.lock</value>
                 <value>size,140,label.size</value>
                 <value>mix:created.jcr:created,100</value>
@@ -1616,6 +1619,7 @@
         <property name="tabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
                 <value>info</value>
+                <value>content</value>
                 <value>rights</value>
                 <value>usages</value>
             </list>

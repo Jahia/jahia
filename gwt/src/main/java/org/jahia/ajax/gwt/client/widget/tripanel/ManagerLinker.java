@@ -34,9 +34,11 @@ package org.jahia.ajax.gwt.client.widget.tripanel;
 
 import com.extjs.gxt.ui.client.event.DNDListener;
 import com.extjs.gxt.ui.client.widget.Component;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerComponent;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
@@ -391,5 +393,12 @@ public class ManagerLinker implements Linker {
         return config;
     }
 
+    public void setLocale (String locale) {
+        JahiaGWTParameters.setLanguage(locale);
+    }
 
+    public void switchLanguage(String locale) {
+        setLocale(locale);
+        refresh();
+    }
 }

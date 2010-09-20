@@ -12,7 +12,9 @@ import javax.persistence.*;
  * To change this template use File | Settings | File Templates.
  */
 @Entity
-@Table (name = "jahia_pagehit")
+@Table(name = "jahia_pagehit",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"uuid"})}
+)
 public class PageHit {
 
     private transient static Logger logger = Logger.getLogger(PageHit.class);
@@ -22,11 +24,11 @@ public class PageHit {
     private String uuid;
 
 
-    public PageHit(){
+    public PageHit() {
 
     }
-    
-    public PageHit(Long hit, String path, String uuid){
+
+    public PageHit(Long hit, String path, String uuid) {
         this.hit = hit;
         this.path = path;
         this.uuid = uuid;
@@ -52,7 +54,7 @@ public class PageHit {
     }
 
     @Basic
-    public Long getHit(){
+    public Long getHit() {
         return hit;
     }
 

@@ -59,7 +59,6 @@ import java.util.List;
  * Time: 3:14:02 PM
  */
 public class GWTJahiaNodeTreeFactory {
-    private boolean init = true;
     protected String repository;
     protected List<String> paths;
     protected List<String> nodeTypes;
@@ -318,16 +317,6 @@ public class GWTJahiaNodeTreeFactory {
         public boolean hasChildren(GWTJahiaNode parent) {
             return parent.hasChildren();
         }
-
-        protected void onLoadSuccess(Object gwtJahiaNode, List<GWTJahiaNode> gwtJahiaNodes) {
-            super.onLoadSuccess(gwtJahiaNode, gwtJahiaNodes);
-            if (init) {
-                Log.debug("setting init to false");
-                init = false;
-            }
-
-        }
-
     }
 
     class GWTJahiaNodeTreeGrid extends TreeGrid<GWTJahiaNode> {
@@ -337,13 +326,16 @@ public class GWTJahiaNodeTreeFactory {
 
         protected void onDataChanged(TreeStoreEvent<GWTJahiaNode> mTreeStoreEvent) {
             super.onDataChanged(mTreeStoreEvent);
-            init = false;
-            GWTJahiaNode p = mTreeStoreEvent.getParent();
-            if (p == null) {
-                expandChildren(treeStore.getRootItems());
-            } else {
-                expandChildren(treeStore.getChildren(p));
-            }
+            final GWTJahiaNode p = mTreeStoreEvent.getParent();
+            DeferredCommand.addCommand(new Command() {
+                public void execute() {
+                    if (p == null) {
+                        expandChildren(treeStore.getRootItems());
+                    } else {
+                        expandChildren(treeStore.getChildren(p));
+                    }
+                }
+            });
         }
 
         private void expandChildren(List<GWTJahiaNode> children) {
@@ -367,13 +359,16 @@ public class GWTJahiaNodeTreeFactory {
 
         protected void onDataChanged(TreeStoreEvent<GWTJahiaNode> mTreeStoreEvent) {
             super.onDataChanged(mTreeStoreEvent);
-            init = false;
-            GWTJahiaNode p = mTreeStoreEvent.getParent();
-            if (p == null) {
-                expandChildren(store.getRootItems());
-            } else {
-                expandChildren(store.getChildren(p));
-            }
+            final GWTJahiaNode p = mTreeStoreEvent.getParent();
+            DeferredCommand.addCommand(new Command() {
+                public void execute() {
+                    if (p == null) {
+                        expandChildren(store.getRootItems());
+                    } else {
+                        expandChildren(store.getChildren(p));
+                    }
+                }
+            });
         }
 
         private void expandChildren(List<GWTJahiaNode> children) {

@@ -1897,11 +1897,15 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         addLockTypeValue(objectNode, l);
 
         if (session.getLocale() != null && !isNodeType(Constants.JAHIANT_TRANSLATION)) {
-            Node trans = getOrCreateI18N(session.getLocale());
-            if (!trans.isLocked()) {
-                lockNode(trans);
+            Node trans = null;
+            try {
+                trans = getI18N(session.getLocale());
+                if (!trans.isLocked()) {
+                    lockNode(trans);
+                }
+                addLockTypeValue(trans, l);
+            } catch (ItemNotFoundException e) {
             }
-            addLockTypeValue(trans, l);
         }
         objectNode.getSession().save();
         return true;

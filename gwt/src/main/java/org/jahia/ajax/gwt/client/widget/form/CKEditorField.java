@@ -55,6 +55,7 @@ public class CKEditorField extends Field<String> {
      * The wrapped widget.
      */
     protected CKEditor ckeditor;
+    protected Html html;
 
     private boolean resizeWidget;
 
@@ -63,31 +64,28 @@ public class CKEditorField extends Field<String> {
      */
     public CKEditorField() {
         ckeditor = new CKEditor(null);
+        html = new Html();
     }
 
     public CKEditorField(CKEditorConfig config) {
         ckeditor = new CKEditor(config);
+        html = new Html();
+    }
+
+    public Component getComponent() {
+        return readOnly ? html : ckeditor;
     }
 
     @Override
     public Element getElement() {
         // we need this because of lazy rendering
-        return ckeditor.getElement();
-    }
-
-    /**
-     * Returns the wrapped widget.
-     *
-     * @return the widget
-     */
-    public CKEditor getCKEditor() {
-        return ckeditor;
+        return getComponent().getElement();
     }
 
     @Override
     public boolean isAttached() {
-        if (ckeditor != null) {
-            return ckeditor.isAttached();
+        if (getComponent() != null) {
+            return getComponent().isAttached();
         }
         return false;
     }
@@ -112,7 +110,7 @@ public class CKEditorField extends Field<String> {
         super.onBrowserEvent(event);
 
         // Delegate events to the widget.
-        ckeditor.onBrowserEvent(event);
+        getComponent().onBrowserEvent(event);
     }
 
     /**
@@ -132,7 +130,7 @@ public class CKEditorField extends Field<String> {
 
     @Override
     protected void onAttach() {
-        ComponentHelper.doAttach(ckeditor);
+        ComponentHelper.doAttach(getComponent());
         DOM.setEventListener(getElement(), this);
         onLoad();
     }
@@ -147,20 +145,20 @@ public class CKEditorField extends Field<String> {
         try {
             onUnload();
         } finally {
-            ComponentHelper.doDetach(ckeditor);
+            ComponentHelper.doDetach(getComponent());
         }
     }
 
     @Override
     protected void onDisable() {
         super.onDisable();
-        ckeditor.disable();
+        getComponent().disable();
     }
 
     @Override
     protected void onEnable() {
         super.onEnable();
-        ckeditor.enable();
+        getComponent().enable();
     }
 
     @Override
@@ -170,10 +168,11 @@ public class CKEditorField extends Field<String> {
 
     @Override
     protected void onRender(Element target, int index) {
-        if (!ckeditor.isRendered()) {
-            ckeditor.render(target, index);
+        final Component component = getComponent();
+        if (!component.isRendered()) {
+            component.render(target, index);
         }
-        setElement(ckeditor.getElement(), target, index);
+        setElement(component.getElement(), target, index);
     }
 
 
@@ -184,23 +183,30 @@ public class CKEditorField extends Field<String> {
 
     @Override
     public void clear() {
-        ckeditor.clear();
+        if (!readOnly) {
+            ckeditor.clear();
+        }
         super.clear();
     }
 
     @Override
     public boolean isDirty() {
-        return ckeditor.isDirty();
+        return readOnly ? false : ckeditor.isDirty();
     }
 
     @Override
     public String getRawValue() {
-        return ckeditor.getData();
+        return readOnly ? html.getHtml() : ckeditor.getData();
     }
 
     @Override
     public void setRawValue(String html) {
-        ckeditor.setData(html);
+        if (readOnly) {
+            this.html.setHtml(html);
+        } else {
+            ckeditor.setData(html);
+        }
+
         super.setRawValue(html);
     }
 

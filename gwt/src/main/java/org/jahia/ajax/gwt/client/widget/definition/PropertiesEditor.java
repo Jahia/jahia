@@ -320,9 +320,8 @@ public class PropertiesEditor extends FormPanel {
                     checkbox.setHideLabel(true);
                     add(checkbox);
                 }
-                field.setEnabled(isWriteable);
                 if (!isWriteable) {
-                    field.addStyleName("readonly");
+                    field.setReadOnly(!isWriteable);
                 }
 
                 if (optional) {

@@ -165,6 +165,9 @@ public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
     }
 
     protected void onTwinTriggerClick(ComponentEvent ce) {
+        if (disabled || isReadOnly()) {
+            return;
+        }
         setValue(new ArrayList<GWTJahiaNode>());
     }
 

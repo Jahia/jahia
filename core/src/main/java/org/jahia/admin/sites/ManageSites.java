@@ -769,9 +769,6 @@ public class ManageSites extends AbstractAdministrationModule {
             warningMsg += 
                     getMessage("org.jahia.admin.userMessage.alreadyExist.label") +
                     " ";
-            warningMsg += 
-                    getMessage("org.jahia.admin.userMessage.onAnotherSite.label") +
-                    ".";
         } else if (adminUsername.length() == 0) {
             warningMsg = 
                     getMessage("org.jahia.admin.userMessage.specifyUserName.label");

@@ -2,7 +2,7 @@ scriptinfo request parameter
 
 If true, this parameter adds information about files in modules used to render content.
 
-To activate, add scriptinfo=true in the url parameters
+To activate, add moduleinfo=true in the url parameters
 
 It will add a span tag in source code (use class hidden) for each file used for render.
 

@@ -312,7 +312,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     protected boolean canEdit(RenderContext renderContext) {
         return renderContext.isEditMode() && editable &&
-                !Boolean.TRUE.equals(renderContext.getRequest().getAttribute("inWrapper"));
+                !Boolean.TRUE.equals(renderContext.getRequest().getAttribute("inWrapper")) && (node == null || node.isWriteable());
     }
 
     protected void printModuleStart(String type, String path, String resolvedTemplate, String scriptInfo)
@@ -450,8 +450,10 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         }
 
         if (canEdit(renderContext)) {
-            printModuleStart("placeholder", path, null, null);
-            printModuleEnd();
+            if (currentResource.getNode().isWriteable()) {
+                printModuleStart("placeholder", path, null, null);
+                printModuleEnd();
+            }
         }
     }
 

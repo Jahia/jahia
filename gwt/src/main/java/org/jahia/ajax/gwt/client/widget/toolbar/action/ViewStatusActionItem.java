@@ -80,6 +80,11 @@ public abstract class ViewStatusActionItem extends BaseActionItem {
     protected void addInfoLayer(Module module, String text, String color, String bgcolor, int left, int top, int right,
                                 int bottom, Listener<ComponentEvent> removeListener, boolean headerOnly,
                                 final String opacity) {
+    addInfoLayer(module, text, color, bgcolor, left, top, right, bottom, removeListener, headerOnly, opacity, 250);
+    }
+    protected void addInfoLayer(Module module, String text, String color, String bgcolor, int left, int top, int right,
+                                int bottom, Listener<ComponentEvent> removeListener, boolean headerOnly,
+                                final String opacity, int width) {
         LayoutContainer infoLayer = new LayoutContainer();
         RootPanel.get().add(infoLayer);
         infoLayer.el().makePositionable(true);
@@ -99,7 +104,7 @@ public abstract class ViewStatusActionItem extends BaseActionItem {
         box.setStyleAttribute("color", color);
         box.setStyleAttribute("font-weight", "bold");
         box.setStyleAttribute("text-align", "center");
-        box.setWidth(250);
+        box.setWidth(width);
         infoLayer.add(box);
         }
 

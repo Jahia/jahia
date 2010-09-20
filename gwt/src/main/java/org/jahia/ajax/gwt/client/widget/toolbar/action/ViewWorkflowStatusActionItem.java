@@ -39,7 +39,9 @@ import com.extjs.gxt.ui.client.event.ScrollListener;
 import com.extjs.gxt.ui.client.util.Point;
 import com.extjs.gxt.ui.client.util.Size;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.RootPanel;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflow;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
@@ -101,10 +103,16 @@ public class ViewWorkflowStatusActionItem extends ViewStatusActionItem {
             if (module.getNode() != null) {
                 GWTJahiaWorkflowInfo info = module.getNode().getWorkflowInfo();
                 if (info.getActiveWorkflows().size()>0) {
-                    String current = info.getActiveWorkflows().values().iterator().next().getDefinition().getName();
+                    GWTJahiaWorkflow workflow = info.getActiveWorkflows().values().iterator().next();
+                    String current = workflow.getDefinition().getName();
                     allPublished = false;
-                    addInfoLayer(module, "Workflow(s) started : "+current, "red", "red", left, top, right, bottom, removeListener, true,
-                            "0.7");
+                    if(workflow.getDuedate()!=null) {
+                        addInfoLayer(module, "Workflow :<br/>"+current+" is waiting on timer.<br/>Will be triggered at : "+ DateTimeFormat.getMediumDateTimeFormat().format(workflow.getDuedate()),
+                                 "red", "red", left, top, right, bottom, removeListener, true, "0.7", 300);
+                    } else {
+                        addInfoLayer(module, "Workflow :<br/>started "+current, "red", "red", left, top, right, bottom, removeListener, true,
+                            "0.7", 300);
+                    }
 //                } else if (info.getDuedate()!=null) {
 //                    allPublished = false;
 //                    addInfoLayer(module, "Workflow(s) is waiting for timer.<br/>Will be triggered at : "+ DateTimeFormat.getMediumDateTimeFormat().format(info.getDuedate()),
@@ -115,7 +123,7 @@ public class ViewWorkflowStatusActionItem extends ViewStatusActionItem {
 
         if (allPublished) {
             addInfoLayer(modules.iterator().next(), "No actual worflow(s) started", "black", "white", left,top,right,bottom,removeListener, false,
-                    "0.7");
+                    "0.7", 250);
         }
 
         ((EditLinker) linker).getMainModule().getContainer().addScrollListener(new ScrollListener() {

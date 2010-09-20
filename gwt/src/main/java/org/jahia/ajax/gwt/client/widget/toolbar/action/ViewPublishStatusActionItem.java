@@ -109,23 +109,23 @@ public class ViewPublishStatusActionItem extends ViewStatusActionItem {
                         lastUnpublished = module.getNode().getPath();
                         if (info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
                             addInfoLayer(module, ("Unpublished"), "black", "black", left, top, right, bottom, removeListener, false,
-                                    "0.7");
+                                    "0.7", 250);
                         } else {
                             addInfoLayer(module, "Never published", "black", "black", left, top, right, bottom, removeListener, false,
-                                    "0.7");
+                                    "0.7", 250);
                         }
                     } else if (info.getStatus() == GWTJahiaPublicationInfo.LOCKED) {
                         addInfoLayer(module, "Locked", "red", "red", left, top, right, bottom, removeListener, true,
-                                "0.7");
+                                "0.7", 250);
                     } else if (info.getStatus() == GWTJahiaPublicationInfo.MODIFIED) {
                         addInfoLayer(module, "Modified", "red", "red", left, top, right, bottom, removeListener, true,
-                                "0.7");
+                                "0.7", 250);
                     } else if (info.getStatus() == GWTJahiaPublicationInfo.LIVE_MODIFIED) {
                         addInfoLayer(module, "Modified in live", "blue", "blue", left, top, right, bottom, removeListener, true,
-                                "0.7");
+                                "0.7", 250);
                     } else if (info.getStatus() == GWTJahiaPublicationInfo.CONFLICT) {
                         addInfoLayer(module, "Conflict", "red", "red", left, top, right, bottom, removeListener, true,
-                                "0.7");
+                                "0.7", 250);
                     }
                 }
             }
@@ -133,7 +133,7 @@ public class ViewPublishStatusActionItem extends ViewStatusActionItem {
 
         if (allPublished) {
             addInfoLayer(modules.iterator().next(), "Everything published", "black", "white", left,top,right,bottom,removeListener, false,
-                    "0.7");
+                    "0.7", 250);
         }
 
         ((EditLinker) linker).getMainModule().getContainer().addScrollListener(new ScrollListener() {

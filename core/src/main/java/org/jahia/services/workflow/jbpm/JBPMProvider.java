@@ -390,7 +390,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         workflow.setAvailableActions(getAvailableActions(instance.getId(), locale));
         Job job = managementService.createJobQuery().timers().processInstanceId(instance.getId()).uniqueResult();
         if (job != null) {
-            workflow.setDuedate(job.getDuedate());
+            workflow.setDuedate(job.getDueDate());
         }
         workflow.setStartTime(historyService.createHistoryProcessInstanceQuery().processInstanceId(instance.getId()).orderAsc(HistoryProcessInstanceQuery.PROPERTY_STARTTIME).uniqueResult().getStartTime());
         
@@ -714,8 +714,14 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
 
     private void i18nOfWorkflowAction(Locale displayLocale, WorkflowAction workflowAction, final String definitionKey) {
         ResourceBundle resourceBundle = getResourceBundle(displayLocale, definitionKey);
-        workflowAction.setDisplayName(
-                resourceBundle.getString(workflowAction.getName().replaceAll(" ", ".").trim().toLowerCase()));
+        String rbActionName = workflowAction.getName();
+        try {
+            rbActionName = resourceBundle.getString(workflowAction.getName().replaceAll(" ",
+                    ".").trim().toLowerCase());
+        } catch (MissingResourceException e) {
+            logger.info("Missing ressource : " + key + " in " + resourceBundle);
+        }
+        workflowAction.setDisplayName(rbActionName);
         if (workflowAction instanceof WorkflowTask) {
             WorkflowTask workflowTask = (WorkflowTask) workflowAction;
             Set<String> outcomes = workflowTask.getOutcomes();

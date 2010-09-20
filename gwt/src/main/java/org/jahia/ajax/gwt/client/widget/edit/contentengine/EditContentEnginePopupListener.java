@@ -52,10 +52,6 @@ public class EditContentEnginePopupListener implements Listener<ComponentEvent> 
         if (!module.isSelectable()) {
             return;
         }
-        if (module.getNode().isLocked()) {
-            Info.display("Lock", "This module is currently locked");
-        } else {
-            EngineLoader.showEditEngine(editLinker, module.getNode());
-        }
+        EngineLoader.showEditEngine(editLinker, module.getNode());
     }
 }

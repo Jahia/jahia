@@ -228,15 +228,15 @@ public class UrlMappingEditor extends LayoutContainer {
         cp.setTopComponent(toolBar);
         cp.add(grid);
 
-        FieldSet fs = new FieldSet();
-        fs.setLayout(new FitLayout());
-        fs.setHeading(Messages.get("ece_seo_urlMapping", "URL mapping"));
-        fs.setCollapsible(true);
+//        FieldSet fs = new FieldSet();
+        setLayout(new FitLayout());
+//        fs.setHeading(Messages.get("ece_seo_urlMapping", "URL mapping"));
+//        fs.setCollapsible(true);
+//
+//        fs.add(cp);
 
-        fs.add(cp);
 
 
-
-        add(fs);
+        add(cp);
     }
 }

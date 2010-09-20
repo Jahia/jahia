@@ -191,6 +191,11 @@ public class WorkflowTabItem extends EditEngineTabItem {
                         typesCombo.setValue(types.getAt(0));
                         horizontalPanel.add(combo);
 
+                        if (!engine.getNode().isWriteable() || engine.getNode().isLocked()) {
+                            combo.setEnabled(false);
+                            typesCombo.setEnabled(false);
+                        }
+
                         layout();
                     }
                 });
@@ -205,7 +210,7 @@ public class WorkflowTabItem extends EditEngineTabItem {
             aclPanel.removeAll();
         }
         rightsEditor.setCanBreakInheritance(false);
-        rightsEditor.setReadOnly(false);
+        rightsEditor.setReadOnly(!engine.getNode().isWriteable() || engine.getNode().isLocked());
 
         if (aclPanel == null) {
             aclPanel = new LayoutContainer(new FitLayout());

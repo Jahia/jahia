@@ -98,13 +98,13 @@ public class VersioningTabItem extends EditEngineTabItem {
                                 String s1;
                                 if (strings[0].contains("published")) {
                                     s1 = Messages.get("label.version.published", "published at");
-                                } else if (strings[0].contains("uploaded")){
+                                } else if (strings[0].contains("uploaded")) {
                                     s1 = Messages.get("label.version.uploaded", "uploaded at");
                                 } else {
-                                    s1 = Messages.get("label.version."+strings[0],strings[0]);
+                                    s1 = Messages.get("label.version." + strings[0], strings[0]);
                                 }
-                                value = value + s1 + " " + DateTimeFormat.getMediumDateTimeFormat().format(
-                                        DateTimeFormat.getFormat("yyyy_MM_dd_HH_mm_ss").parse(strings[1]));
+                                value = value + s1 + " " + DateTimeFormat.getMediumDateTimeFormat()
+                                        .format(DateTimeFormat.getFormat("yyyy_MM_dd_HH_mm_ss").parse(strings[1]));
                             } else {
                                 value = version.getLabel();
                             }
@@ -119,29 +119,31 @@ public class VersioningTabItem extends EditEngineTabItem {
                 column.setHeader("Version");
                 column.setWidth(50);
                 configs.add(column);
-                column = new ColumnConfig();
-                column.setSortable(false);
-                column.setHeader("Action");
-                column.setWidth(100);
-                column.setRenderer(new GridCellRenderer() {
-                    public Object render(ModelData model, String property, ColumnData config, int rowIndex,
-                                         int colIndex, ListStore listStore, Grid grid) {
-                        Button button = new Button(Messages.get("label.restore","Restore"));
-                        final GWTJahiaNodeVersion version = (GWTJahiaNodeVersion) model;
-                        button.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                            @Override
-                            public void componentSelected(ButtonEvent ce) {
-                                service.restoreNode(version, new BaseAsyncCallback() {
-                                    public void onSuccess(Object result) {
-                                        tabItem.removeAll();
-                                        create(locale);
-                                    }
-                                });
-                            }
-                        });
-                        return button;
-                    }
-                });
+                if (engine.getNode().isWriteable() && !engine.getNode().isWriteable()) {
+                    column = new ColumnConfig();
+                    column.setSortable(false);
+                    column.setHeader("Action");
+                    column.setWidth(100);
+                    column.setRenderer(new GridCellRenderer() {
+                        public Object render(ModelData model, String property, ColumnData config, int rowIndex,
+                                             int colIndex, ListStore listStore, Grid grid) {
+                            Button button = new Button(Messages.get("label.restore", "Restore"));
+                            final GWTJahiaNodeVersion version = (GWTJahiaNodeVersion) model;
+                            button.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                                @Override
+                                public void componentSelected(ButtonEvent ce) {
+                                    service.restoreNode(version, new BaseAsyncCallback() {
+                                        public void onSuccess(Object result) {
+                                            tabItem.removeAll();
+                                            create(locale);
+                                        }
+                                    });
+                                }
+                            });
+                            return button;
+                        }
+                    });
+                }
                 configs.add(column);
                 Grid<GWTJahiaNodeVersion> grid = new Grid<GWTJahiaNodeVersion>(all, new ColumnModel(configs));
                 grid.setAutoExpandColumn("label");
@@ -156,9 +158,11 @@ public class VersioningTabItem extends EditEngineTabItem {
                                     ImagePopup.popImage(el);
                                 } else {
                                     if (el.getUrl() != null) {
-                                        HTML link = new HTML(Messages.get(
-                                                "downloadMessage.label") + "<br /><br /><a href=\"" + el.getUrl() + "\" target=\"_new\">" + el.getName() + "</a>");
-                                        final com.extjs.gxt.ui.client.widget.Window dl = new com.extjs.gxt.ui.client.widget.Window();
+                                        HTML link = new HTML(
+                                                Messages.get("downloadMessage.label") + "<br /><br /><a href=\"" +
+                                                        el.getUrl() + "\" target=\"_new\">" + el.getName() + "</a>");
+                                        final com.extjs.gxt.ui.client.widget.Window dl =
+                                                new com.extjs.gxt.ui.client.widget.Window();
                                         dl.setModal(true);
                                         dl.setHeading(Messages.get("label.download"));
                                         dl.setLayout(new FlowLayout());
@@ -167,18 +171,19 @@ public class VersioningTabItem extends EditEngineTabItem {
                                         dl.setHeight(120);
                                         dl.show();
                                     } else {
-                                        Window.alert(Messages.get(
-                                                "failure.download.label"));
+                                        Window.alert(Messages.get("failure.download.label"));
                                     }
                                 }
                             } else {
                                 service.getNodeURL(el.getPath(), version.getLabel(), "default", locale.getLanguage(),
-                                                   Constants.MODE_PREVIEW, new BaseAsyncCallback<String>() {
+                                        Constants.MODE_PREVIEW, new BaseAsyncCallback<String>() {
                                             public void onSuccess(String result) {
-                                                final com.extjs.gxt.ui.client.widget.Window dl = new com.extjs.gxt.ui.client.widget.Window();
+                                                final com.extjs.gxt.ui.client.widget.Window dl =
+                                                        new com.extjs.gxt.ui.client.widget.Window();
                                                 dl.setModal(true);
-                                                dl.setHeading(Messages.get("label.preview","Preview") + " " + Messages.get(
-                                                        "label.version", "version") + " " + version.getVersionNumber());
+                                                dl.setHeading(Messages.get("label.preview", "Preview") + " " +
+                                                        Messages.get("label.version", "version") + " " +
+                                                        version.getVersionNumber());
                                                 dl.setLayout(new FlowLayout());
                                                 dl.setScrollMode(Style.Scroll.AUTO);
                                                 dl.setUrl(result);

@@ -39,7 +39,6 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
-
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -77,7 +76,8 @@ public class PropertiesEditor extends FormPanel {
     private FormPanel form = this;
     private static final int FIELD_SIZE = 620;
 
-    public PropertiesEditor(List<GWTJahiaNodeType> nodeTypes, Map<String, GWTJahiaNodeProperty> properties, String datatype) {
+    public PropertiesEditor(List<GWTJahiaNodeType> nodeTypes, Map<String, GWTJahiaNodeProperty> properties,
+                            String datatype) {
         super();
         this.nodeTypes = nodeTypes;
         this.dataType = datatype;
@@ -218,7 +218,8 @@ public class PropertiesEditor extends FormPanel {
 
 
             final GWTJahiaNodeProperty gwtJahiaNodeProperty = currentProperties.get(definition.getName());
-            List<GWTJahiaValueDisplayBean> values = initializersValues != null ? initializersValues.get(definition.getDeclaringNodeType()+"."+definition.getName()) : null;
+            List<GWTJahiaValueDisplayBean> values = initializersValues != null ?
+                    initializersValues.get(definition.getDeclaringNodeType() + "." + definition.getName()) : null;
             final Field<?> field = FormFieldCreator.createField(definition, gwtJahiaNodeProperty, values);
             propertyDefinitions.put(gwtJahiaNodeProperty.getName(), definition);
             if (definition.getName().equals("j:template")) {
@@ -243,38 +244,44 @@ public class PropertiesEditor extends FormPanel {
                     fieldSet = new FieldSet();
                     fieldSet.setId(definition.getDeclaringNodeTypeLabel());
                     fieldSet.add(field);
-                    fieldSet.setCollapsible(true);
-                    if (optional && !isOrderingList) {
-                        fieldSet.setCheckboxToggle(true);
-                        if (nodeTypes.contains(nodeType)) {
-                            fieldSet.setExpanded(true);
-                        } else {
-                            fieldSet.setExpanded(false);
+                    if (isWriteable) {
+                        fieldSet.setCollapsible(true);
+                        if (!isOrderingList) {
+                            fieldSet.setCheckboxToggle(true);
+                            if (nodeTypes.contains(nodeType)) {
+                                fieldSet.setExpanded(true);
+                            } else {
+                                fieldSet.setExpanded(false);
+                            }
+                            fieldSet.addListener(Events.Collapse, new Listener<ComponentEvent>() {
+                                public void handleEvent(ComponentEvent componentEvent) {
+                                    removedTypes.add(definition.getDeclaringNodeType());
+                                    addedTypes.remove(definition.getDeclaringNodeType());
+                                    final FormPanel thisForm =
+                                            (FormPanel) ((FieldSet) ((FieldSetEvent) componentEvent).getBoxComponent())
+                                                    .getItem(0);
+                                    for (Component component : thisForm.getItems()) {
+                                        component.setData("addedField", null);
+                                    }
+                                }
+                            });
+                            fieldSet.addListener(Events.Expand, new Listener<ComponentEvent>() {
+                                public void handleEvent(ComponentEvent componentEvent) {
+                                    addedTypes.add(definition.getDeclaringNodeType());
+                                    removedTypes.remove(definition.getDeclaringNodeType());
+                                    final FormPanel thisForm =
+                                            (FormPanel) ((FieldSet) ((FieldSetEvent) componentEvent).getBoxComponent())
+                                                    .getItem(0);
+                                    for (Component component : thisForm.getItems()) {
+                                        component.setData("addedField", "true");
+                                    }
+                                }
+                            });
                         }
-                        fieldSet.addListener(Events.Collapse, new Listener<ComponentEvent>() {
-                            public void handleEvent(ComponentEvent componentEvent) {
-                                removedTypes.add(definition.getDeclaringNodeType());
-                                addedTypes.remove(definition.getDeclaringNodeType());
-                                final FormPanel thisForm =
-                                        (FormPanel) ((FieldSet) ((FieldSetEvent) componentEvent).getBoxComponent())
-                                                .getItem(0);
-                                for (Component component : thisForm.getItems()) {
-                                    component.setData("addedField", null);
-                                }
-                            }
-                        });
-                        fieldSet.addListener(Events.Expand, new Listener<ComponentEvent>() {
-                            public void handleEvent(ComponentEvent componentEvent) {
-                                addedTypes.add(definition.getDeclaringNodeType());
-                                removedTypes.remove(definition.getDeclaringNodeType());
-                                final FormPanel thisForm =
-                                        (FormPanel) ((FieldSet) ((FieldSetEvent) componentEvent).getBoxComponent())
-                                                .getItem(0);
-                                for (Component component : thisForm.getItems()) {
-                                    component.setData("addedField", "true");
-                                }
-                            }
-                        });
+                    } else {
+                        if (!nodeTypes.contains(nodeType)) {
+                            fieldSet.setVisible(false);
+                        }
                     }
                     fieldSet.setHeading(definition.getDeclaringNodeTypeLabel());
                     //fieldSet.setStyleAttribute("padding", "0");
@@ -340,13 +347,13 @@ public class PropertiesEditor extends FormPanel {
             FormLayout layout = new FormLayout(LabelAlign.TOP);
             layout.setLabelWidth(80);
             layout.setDefaultWidth(FIELD_SIZE);
-            
+
             commonFields = new ContentPanel(layout);
             commonFields.setHeaderVisible(false);
             commonFields.setFrame(false);
             commonFields.setBorders(false);
             commonFields.setBodyBorder(false);
-            
+
             commonFieldSet.add(commonFields);
             add(commonFieldSet);
 //            commonForm = new FormPanel();
@@ -410,9 +417,11 @@ public class PropertiesEditor extends FormPanel {
      * @return
      */
     public List<GWTJahiaNodeProperty> getProperties(boolean includeI18N, boolean includeNonI18N, boolean modifiedOnly) {
-        return getProperties(includeI18N, includeNonI18N, modifiedOnly,false);
+        return getProperties(includeI18N, includeNonI18N, modifiedOnly, false);
     }
-    public List<GWTJahiaNodeProperty> getProperties(boolean includeI18N, boolean includeNonI18N, boolean modifiedOnly,boolean doNotCheckFieldsValues) {
+
+    public List<GWTJahiaNodeProperty> getProperties(boolean includeI18N, boolean includeNonI18N, boolean modifiedOnly,
+                                                    boolean doNotCheckFieldsValues) {
         List<GWTJahiaNodeProperty> newProps = new ArrayList<GWTJahiaNodeProperty>();
 
         List<GWTJahiaNodeType> l = new ArrayList<GWTJahiaNodeType>(nodeTypes);
@@ -445,7 +454,8 @@ public class PropertiesEditor extends FormPanel {
                         if (!definition.isProtected()) {
                             Field<?> f = fields.get(definition.getName());
                             GWTJahiaNodeProperty prop = currentProperties.get(definition.getName());
-                            if (!doNotCheckFieldsValues && f != null && (f.isDirty() || !modifiedOnly || f.getData("addedField") != null)) {
+                            if (!doNotCheckFieldsValues && f != null &&
+                                    (f.isDirty() || !modifiedOnly || f.getData("addedField") != null)) {
                                 Log.debug("Set value for " + prop.getName());
                                 prop.setValues(getPropertyValues(f, definition));
                                 newProps.add(prop);

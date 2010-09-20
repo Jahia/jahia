@@ -80,7 +80,7 @@ public class EditContentEngine extends AbstractContentEngine {
         super(getEditConfig(node, (GWTEditConfiguration) linker.getConfig()), linker);
         contentPath = node.getPath();
         nodeName = node.getName();
-        heading = "Edit " + nodeName + " (" + node.getCurrentVersion() + ")";
+        heading = "Edit " + nodeName;
         loadEngine();
         init(engineContainer);
 
@@ -161,7 +161,6 @@ public class EditContentEngine extends AbstractContentEngine {
                 }
 
                 fillCurrentTab();
-                ok.setEnabled(true);
             }
         });
 
@@ -179,6 +178,11 @@ public class EditContentEngine extends AbstractContentEngine {
                 properties = result.getProperties();
                 defaultLanguageBean = result.getCurrentLocale();
 
+                if (node.isLocked()) {
+                    heading = heading + " [ locked by "+node.getLockOwner() + " ]";
+                    container.getPanel().setHeading(heading);
+                }
+                
                 // set selectedNode as processed
                 if (getSelectedLanguageCode() != null) {
                     langCodeGWTJahiaGetPropertiesResultMap.put(getSelectedLanguageCode(), result);
@@ -189,7 +193,9 @@ public class EditContentEngine extends AbstractContentEngine {
                 mixin = result.getMixin();
                 initializersValues = result.getInitializersValues();
                 fillCurrentTab();
-                ok.setEnabled(true);
+                if (node.isWriteable() && !node.isLocked()) {
+                    ok.setEnabled(true);
+                }
             }
 
             public void onApplicationFailure(Throwable throwable) {

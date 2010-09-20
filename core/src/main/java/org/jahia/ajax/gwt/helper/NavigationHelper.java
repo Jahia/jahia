@@ -752,7 +752,11 @@ public class NavigationHelper {
         n.setWriteable(node.isWriteable());
         n.setDeleteable(node.isWriteable());
         n.setLockable(node.isLockable());
-        n.setLocked(node.isLocked());
+        try {
+            n.setLocked(node.isLocked() && !node.getLockOwner().equals(node.getSession().getUser().getUsername()));
+        } catch (RepositoryException e) {
+            logger.error("Error when getting lock", e);
+        }
         n.setLockOwner(node.getLockOwner());
         n.setThumbnailsMap(new HashMap<String, String>());
         n.setVersioned(node.isVersioned());

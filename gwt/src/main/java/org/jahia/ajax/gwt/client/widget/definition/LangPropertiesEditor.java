@@ -169,7 +169,7 @@ public class LangPropertiesEditor extends LayoutContainer {
                 langPropertiesEditor = new PropertiesEditor(nodeTypes, properties, dataType);
                 langPropertiesEditor.setMixin(mixin);
                 langPropertiesEditor.setInitializersValues(initializersValues);
-                langPropertiesEditor.setWriteable(editable && node.isWriteable());
+                langPropertiesEditor.setWriteable(editable && node.isWriteable() && !node.isLocked());
                 langPropertiesEditor.setFieldSetGrouping(true);
                 langPropertiesEditor.setExcludedTypes(excludedTypes);
                 langPropertiesEditor.renderNewFormPanel();

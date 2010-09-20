@@ -222,7 +222,7 @@ public class WorkflowHistoryPanel extends LayoutContainer {
         tree.getStyle().setNodeCloseIcon(StandardIconsProvider.STANDARD_ICONS.workflow());
         tree.getStyle().setLeafIcon(StandardIconsProvider.STANDARD_ICONS.workflowTask());
         tree.setAutoExpandColumn("displayName");
-        tree.getTreeView().setRowHeight(26);
+        tree.getTreeView().setRowHeight(25);
         tree.setTrackMouseOver(false);
         add(tree);
     }

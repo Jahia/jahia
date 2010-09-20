@@ -304,7 +304,7 @@ public class EditContentEngine extends AbstractContentEngine {
                 else if (item instanceof CategoriesTabItem) {
                     ((CategoriesTabItem) item).updateProperties(changedProperties, node.getNodeTypes());
                 } else if (item instanceof TagsTabItem) {
-                        ((TagsTabItem) item).updateProperties(changedProperties, node.getNodeTypes());
+                        ((TagsTabItem) item).updateProperties(changedI18NProperties, node.getNodeTypes());
                 } else if (item instanceof SeoTabItem) {
                     ((SeoTabItem) item).doSave();
                 } else if (item instanceof WorkflowTabItem) {

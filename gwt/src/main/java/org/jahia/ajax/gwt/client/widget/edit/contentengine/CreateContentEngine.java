@@ -234,7 +234,7 @@ public class CreateContentEngine extends AbstractContentEngine {
             } else if (item instanceof CategoriesTabItem) {
                 ((CategoriesTabItem) item).updateProperties(changedProperties, mixin);
             } else if (item instanceof TagsTabItem) {
-                ((TagsTabItem) item).updateProperties(changedProperties, mixin);
+                ((TagsTabItem) item).updateProperties(changedI18NProperties, mixin);
             }
         }
 

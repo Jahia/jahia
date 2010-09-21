@@ -119,7 +119,7 @@ public class VersioningTabItem extends EditEngineTabItem {
                 column.setHeader("Version");
                 column.setWidth(50);
                 configs.add(column);
-                if (engine.getNode().isWriteable() && !engine.getNode().isWriteable()) {
+                if (engine.getNode().isWriteable() && !engine.getNode().isLocked()) {
                     column = new ColumnConfig();
                     column.setSortable(false);
                     column.setHeader("Action");
@@ -143,8 +143,8 @@ public class VersioningTabItem extends EditEngineTabItem {
                             return button;
                         }
                     });
+                    configs.add(column);
                 }
-                configs.add(column);
                 Grid<GWTJahiaNodeVersion> grid = new Grid<GWTJahiaNodeVersion>(all, new ColumnModel(configs));
                 grid.setAutoExpandColumn("label");
                 grid.addListener(Events.RowDoubleClick, new Listener<GridEvent>() {

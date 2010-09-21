@@ -1608,4 +1608,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public List<GWTJahiaJobDetail> getActiveJobs() throws GWTJahiaServiceException {
         return schedulerHelper.getActiveJobs(getLocale());
     }
+
+    public List<GWTJahiaJobDetail> getAllJobs() throws GWTJahiaServiceException {
+        return schedulerHelper.getAllJobs(getLocale());
+    }
+
 }

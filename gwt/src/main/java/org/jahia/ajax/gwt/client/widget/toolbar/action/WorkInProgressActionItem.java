@@ -2,16 +2,14 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
-import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.job.JobListWindow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,9 +31,11 @@ public class WorkInProgressActionItem extends BaseActionItem {
     private transient Timer timer;
 
 
-    @Override public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
+    @Override
+    public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
         super.init(gwtToolbarItem, linker);
         instance = this;
+        refreshStatus();
 
         timer = new Timer() {
             public void run() {
@@ -70,9 +70,9 @@ public class WorkInProgressActionItem extends BaseActionItem {
     private void refreshStatus() {
         Button b = (Button) getTextToolItem();
         if (statuses.isEmpty() && processes.isEmpty()) {
-            b.setText(null);
+            b.setText("View completed jobs");
             b.setIconStyle(null);
-            b.setEnabled(false);
+            b.setEnabled(true);
         } else if (statuses.size() == 1) {
             b.setIconStyle("x-status-busy");
             b.setText(statuses.get(0) + " ...");
@@ -83,14 +83,20 @@ public class WorkInProgressActionItem extends BaseActionItem {
             b.setEnabled(true);
         } else {
             b.setIconStyle("x-status-busy");
-            b.setText((statuses.size()+processes.size()) + " tasks running ...");
+            b.setText((statuses.size() + processes.size()) + " tasks running ...");
             b.setEnabled(true);
         }
     }
 
-    @Override public Component createNewToolItem() {
+    @Override
+    public Component createNewToolItem() {
         Button b = new Button();
         b.setEnabled(false);
         return b;
     }
+
+    public void onComponentSelection() {
+        JobListWindow.showJobListWindow(linker);
+    }
+
 }

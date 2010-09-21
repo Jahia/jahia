@@ -16,10 +16,13 @@ public class GWTJahiaJobDetail extends BaseModelData {
     public GWTJahiaJobDetail() {
     }
 
-    public GWTJahiaJobDetail(String name, String type, Date creationTime) {
+    public GWTJahiaJobDetail(String name, String type, Date creationTime, String description, String group, String jobClassName) {
         setName(name);
         setType(type);
         setCreationTime(creationTime);
+        setDescription(description);
+        setGroup(group);
+        setJobClassName(jobClassName);
     }
 
     public String getType() {
@@ -53,4 +56,29 @@ public class GWTJahiaJobDetail extends BaseModelData {
     public void setCreationTime(Date creationTime) {
         set("creationTime", creationTime);
     }
+
+    public String getDescription() {
+        return get("description");
+    }
+
+    public void setDescription(String description) {
+        set("description", description);
+    }
+
+    public String getGroup() {
+        return get("group");
+    }
+
+    public void setGroup(String group) {
+        set("group", group);
+    }
+
+    public String getJobClassName() {
+        return get("jobClassName");
+    }
+
+    public void setJobClassName(String jobClassName) {
+        set("jobClassName", jobClassName);
+    }
+
 }

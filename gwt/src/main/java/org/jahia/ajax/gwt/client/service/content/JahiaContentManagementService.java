@@ -32,40 +32,31 @@
 
 package org.jahia.ajax.gwt.client.service.content;
 
-import java.util.List;
-import java.util.Map;
-
+import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.*;
-import org.jahia.ajax.gwt.client.data.GWTJahiaCreatePortletInitBean;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsData;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsQuery;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNewPortletInstance;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaPortletDefinition;
+import org.jahia.ajax.gwt.client.data.node.*;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.workflow.*;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryItem;
-import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryProcess;
-import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryTask;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.util.URL;
 
-import com.extjs.gxt.ui.client.data.ListLoadResult;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.ServiceDefTarget;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Remote GWT service for content management tasks.
@@ -208,7 +199,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
      *
      * @param uuids the list of node uuids to publish, will not auto publish the parents
      */
-    public void publish(List<String> uuids, boolean allSubTree, boolean workflow, boolean reverse,List<GWTJahiaNodeProperty> properties,String language) throws GWTJahiaServiceException;
+    public void publish(List<String> uuids, boolean allSubTree, boolean workflow, boolean reverse, List<GWTJahiaNodeProperty> properties, String language) throws GWTJahiaServiceException;
 
     /**
      * Unpublish the specified path and its subnodes.
@@ -261,14 +252,14 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
     List<GWTJahiaWorkflowTaskComment> getTaskComments(GWTJahiaWorkflow task);
 
     public List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryProcesses(String nodeId,
-                                                                     String locale) throws GWTJahiaServiceException ;
+                                                                         String locale) throws GWTJahiaServiceException;
 
-    public List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryTasks(String provider , String processId,
+    public List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryTasks(String provider, String processId,
                                                                      String locale) throws GWTJahiaServiceException;
 
     List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryForUser() throws GWTJahiaServiceException;
 
-    public Integer isValidSession()  throws GWTJahiaServiceException;
+    public Integer isValidSession() throws GWTJahiaServiceException;
 
     GWTJahiaCreateEngineInitBean initializeCreateEngine(String typeName, String parentPath) throws GWTJahiaServiceException;
 
@@ -278,10 +269,10 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     public PagingLoadResult<GWTJahiaRole> searchRolesInContext(String search, int offset, int limit, String context) throws GWTJahiaServiceException;
 
-    public Map<GWTJahiaWorkflowType,Map<GWTJahiaWorkflowDefinition,GWTJahiaNodeACL>> getWorkflowRules(String path) throws GWTJahiaServiceException;
+    public Map<GWTJahiaWorkflowType, Map<GWTJahiaWorkflowDefinition, GWTJahiaNodeACL>> getWorkflowRules(String path) throws GWTJahiaServiceException;
 
     List<String> getGoogleDocsExportFormats(String nodeIdentifier) throws GWTJahiaServiceException;
-    
+
     void synchronizeWithGoogleDocs(String nodeIdentifier) throws GWTJahiaServiceException;
 
     void flush(String path);
@@ -290,6 +281,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     List<GWTJahiaJobDetail> getActiveJobs() throws GWTJahiaServiceException;
 
+    List<GWTJahiaJobDetail> getAllJobs() throws GWTJahiaServiceException;
 
     // -------------------------- INNER CLASSES --------------------------
 
@@ -315,7 +307,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
         }
 
         private static String createEntryPointUrl() {
-            return JahiaGWTParameters.getServiceEntryPoint() + "contentManager.gwt?lang=" + JahiaGWTParameters.getLanguage() + "&site=" + JahiaGWTParameters.getSiteUUID() + "&workspace="+JahiaGWTParameters.getWorkspace();
+            return JahiaGWTParameters.getServiceEntryPoint() + "contentManager.gwt?lang=" + JahiaGWTParameters.getLanguage() + "&site=" + JahiaGWTParameters.getSiteUUID() + "&workspace=" + JahiaGWTParameters.getWorkspace();
         }
     }
 

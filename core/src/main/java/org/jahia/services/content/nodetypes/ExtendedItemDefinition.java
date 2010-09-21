@@ -38,9 +38,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.jcr.nodetype.ItemDefinition;
 import javax.jcr.version.OnParentVersionAction;
 
-import org.jahia.bin.Jahia;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
 
@@ -205,5 +205,25 @@ public class ExtendedItemDefinition implements ItemDefinition {
 //        declaringNodeType.isNodeType("jmix:droppableContent") || declaringNodeType.isNodeType("jnt:container")
 //                 || declaringNodeType.isNodeType("jnt:content") || declaringNodeType.isNodeType("jmix:contentItem") || name.toString().equals("jcr:title") || name.toString().equals("jcr:language") || name.toString().equals("jcr:statement");
     }
+    
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        
+        if (obj != null && this.getClass() == obj.getClass()) {
+            final ExtendedItemDefinition castOther = (ExtendedItemDefinition) obj;
+            return new EqualsBuilder()
+                .append(this.getName(), castOther.getName())
+                .append(this.getDeclaringNodeType().getName(), castOther.getDeclaringNodeType().getName())                
+                .isEquals();
+        }
+        return false;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder()
+                .append(getName())
+                .append(getDeclaringNodeType().getName())                
+                .toHashCode();
+    }    
 
 }

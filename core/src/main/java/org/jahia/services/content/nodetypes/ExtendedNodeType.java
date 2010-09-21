@@ -32,6 +32,8 @@
 
 package org.jahia.services.content.nodetypes;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.jackrabbit.core.value.InternalValue;
 import org.apache.jackrabbit.spi.commons.nodetype.constraint.ValueConstraint;
 import org.apache.jackrabbit.spi.commons.value.QValueValue;
@@ -1018,41 +1020,6 @@ public class ExtendedNodeType implements NodeType {
         }
     }    
     
-    private ExtendedPropertyDefinition getMatchingPropDef(Collection<ExtendedPropertyDefinition> defs, int type) {
-        ExtendedPropertyDefinition match = null;
-        for (ExtendedPropertyDefinition pd : defs) {
-            int reqType = pd.getRequiredType();
-            // match type
-            if (reqType == PropertyType.UNDEFINED
-                    || type == PropertyType.UNDEFINED
-                    || reqType == type) {
-                if (match == null) {
-                    match = pd;
-                } else {
-                    // check if this definition is a better match than
-                    // the one we've already got
-                    if (match.getRequiredType() != pd.getRequiredType()) {
-                        if (match.getRequiredType() == PropertyType.UNDEFINED) {
-                            // found better match
-                            match = pd;
-                        }
-                    } else {
-                        if (match.isMultiple() && !pd.isMultiple()) {
-                            // found better match
-                            match = pd;
-                        }
-                    }
-                }
-                if (match.getRequiredType() != PropertyType.UNDEFINED
-                        && !match.isMultiple()) {
-                    // found best possible match, get outta here
-                    return match;
-                }
-            }
-        }
-        return match;
-    }    
-
     private ExtendedPropertyDefinition getMatchingPropDef(Collection<ExtendedPropertyDefinition> defs, int type,
             boolean multiValued) {
         ExtendedPropertyDefinition match = null;
@@ -1076,56 +1043,6 @@ public class ExtendedNodeType implements NodeType {
             }
         }
         return match;
-    }
-    
-    private ExtendedNodeDefinition getMatchingNodeDef(String name, String nodeTypeName)
-            throws NoSuchNodeTypeException, ConstraintViolationException {
-        ExtendedNodeType entTarget = null;
-        if (nodeTypeName != null) {
-            entTarget = NodeTypeRegistry.getInstance().getNodeType(nodeTypeName);
-        }
-
-        // try named node definitions first
-        ExtendedNodeDefinition def = getChildNodeDefinitionsAsMap().get(name);
-            if (def != null) {
-                String[] types = def.getRequiredPrimaryTypeNames();
-                // node definition with that name exists
-                if (entTarget != null && types != null) {
-                    // check 'required primary types' constraint
-                    if (includesNodeTypes(entTarget.getChildNodeDefinitionsAsMap().keySet(), types)) {
-                        // found named node definition
-                        return def;
-                    }
-                } else if (def.getDefaultPrimaryType() != null) {
-                    // found node definition with default node type
-                    return def;
-                }
-            }
-        
-
-        // no item with that name defined;
-        // try residual node definitions
-        Collection<ExtendedNodeDefinition> nda = getUnstructuredChildNodeDefinitions().values();
-        for (ExtendedNodeDefinition nd : nda) {
-            if (entTarget != null && nd.getRequiredPrimaryTypes() != null) {
-                // check 'required primary types' constraint
-                if (!includesNodeTypes(entTarget.getChildNodeDefinitionsAsMap().keySet(), nd.getRequiredPrimaryTypeNames())) {
-                    continue;
-                }
-                // found residual node definition
-                return nd;
-            } else {
-                // since no node type has been specified for the new node,
-                // it must be determined from the default node type;
-                if (nd.getDefaultPrimaryType() != null) {
-                    // found residual node definition with default node type
-                    return nd;
-                }
-            }
-        }
-
-        // no applicable definition found
-        throw new ConstraintViolationException("no matching child node definition found for " + name);
     }
     
     /**
@@ -1171,7 +1088,22 @@ public class ExtendedNodeType implements NodeType {
             }
         }
     }    
-    private boolean includesNodeTypes(Set<String> allNodeTypes, String[] nodeTypeNames) {
-        return allNodeTypes.containsAll(Arrays.asList(nodeTypeNames));
+    
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        
+        if (obj != null && this.getClass() == obj.getClass()) {
+            final ExtendedNodeType castOther = (ExtendedNodeType) obj;
+            return new EqualsBuilder()
+                .append(this.getName(), castOther.getName())
+                .isEquals();
+        }
+        return false;
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder()
+                .append(getName())
+                .toHashCode();
     }
 }

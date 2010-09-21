@@ -50,16 +50,12 @@ import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
-import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
@@ -109,9 +105,10 @@ public class CategoriesTabItem extends EditEngineTabItem {
      * @return
      */
     private TreeGrid<GWTJahiaNode> createCategoriedPickerPanel() {
-        GWTJahiaNodeTreeFactory treeGridFactory = new GWTJahiaNodeTreeFactory(Arrays.asList("/categories"), GWTJahiaNode.DEFAULT_REFERENCE_FIELDS);
+        GWTJahiaNodeTreeFactory treeGridFactory =
+                new GWTJahiaNodeTreeFactory(Arrays.asList("/categories"), GWTJahiaNode.DEFAULT_REFERENCE_FIELDS);
         treeGridFactory.setNodeTypes(JCRClientUtils.CATEGORY_NODETYPES);
-        ColumnConfig name = new ColumnConfig("name", "Name",500);
+        ColumnConfig name = new ColumnConfig("name", "Name", 500);
         name.setRenderer(new TreeGridCellRenderer<GWTJahiaNode>());
         name.setFixed(true);
         ColumnConfig action = new ColumnConfig("action", "Action", 100);
@@ -159,21 +156,15 @@ public class CategoriesTabItem extends EditEngineTabItem {
             @Override
             protected void load(Object o, final AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
                 if (node != null) {
-                    final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
-                    async.getProperties(node.getPath(), new BaseAsyncCallback<GWTJahiaGetPropertiesResult>() {
-                        public void onSuccess(GWTJahiaGetPropertiesResult result) {
-                            final GWTJahiaNodeProperty gwtJahiaNodeProperty = result.getProperties().get(
-                                    "j:defaultCategory");
-                            if (gwtJahiaNodeProperty != null) {
-                                final List<GWTJahiaNodePropertyValue> propertyValues = gwtJahiaNodeProperty.getValues();
-                                List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>(propertyValues.size());
-                                for (GWTJahiaNodePropertyValue propertyValue : propertyValues) {
-                                    nodes.add(propertyValue.getNode());
-                                }
-                                listAsyncCallback.onSuccess(nodes);
-                            }
+                    final GWTJahiaNodeProperty gwtJahiaNodeProperty = engine.getProperties().get("j:defaultCategory");
+                    if (gwtJahiaNodeProperty != null) {
+                        final List<GWTJahiaNodePropertyValue> propertyValues = gwtJahiaNodeProperty.getValues();
+                        List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>(propertyValues.size());
+                        for (GWTJahiaNodePropertyValue propertyValue : propertyValues) {
+                            nodes.add(propertyValue.getNode());
                         }
-                    });
+                        listAsyncCallback.onSuccess(nodes);
+                    }
                 }
             }
         });

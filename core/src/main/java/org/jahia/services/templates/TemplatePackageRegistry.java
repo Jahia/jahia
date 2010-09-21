@@ -70,7 +70,7 @@ class TemplatePackageRegistry implements CamelContextAware {
     private static CamelContext camelContext;
 
     public void setCamelContext(CamelContext camelContext) {
-        this.camelContext = camelContext;
+        TemplatePackageRegistry.camelContext = camelContext;
     }
 
     public CamelContext getCamelContext() {

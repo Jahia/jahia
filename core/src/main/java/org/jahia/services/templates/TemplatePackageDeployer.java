@@ -32,7 +32,6 @@
 
 package org.jahia.services.templates;
 
-import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
@@ -40,8 +39,8 @@ import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.services.content.rules.RulesListener;
 import org.jahia.services.importexport.ImportExportService;
-import org.jahia.services.render.FileSystemTemplate;
 import org.jahia.services.render.filter.cache.AggregateCacheFilter;
 import org.jahia.services.render.scripting.FileSystemScriptResolver;
 import org.jahia.settings.SettingsBean;
@@ -392,7 +391,7 @@ class TemplatePackageDeployer implements ServletContextAware {
     }
 
     private Map<String, JahiaTemplatesPackage> getOrderedPackages(List<JahiaTemplatesPackage> remaining) {
-        ListOrderedMap toDeploy = new ListOrderedMap();
+        LinkedHashMap<String, JahiaTemplatesPackage> toDeploy = new LinkedHashMap<String, JahiaTemplatesPackage>();
         while (!remaining.isEmpty()) {
             List<JahiaTemplatesPackage> newRemaining = new LinkedList<JahiaTemplatesPackage>();
             for (JahiaTemplatesPackage pack : remaining) {

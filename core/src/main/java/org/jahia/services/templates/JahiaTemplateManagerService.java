@@ -397,7 +397,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     public void regenerateImportFile(final String moduleName) throws RepositoryException {
-        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
+        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 try {
                     File xmlImportFile = new File(new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath(), moduleName), "import.xml");

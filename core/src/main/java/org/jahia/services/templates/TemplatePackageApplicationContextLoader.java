@@ -55,6 +55,8 @@ public class TemplatePackageApplicationContextLoader implements ServletContextAw
      * @author Sergiy Shyrkov
      */
     public static class ContextInitializedEvent extends ApplicationEvent {
+        private static final long serialVersionUID = -2367558261328740803L;
+
         public ContextInitializedEvent(Object source) {
             super(source);
         }

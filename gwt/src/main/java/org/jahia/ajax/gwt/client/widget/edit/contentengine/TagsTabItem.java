@@ -41,7 +41,6 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.TreeStore;
-import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
@@ -54,11 +53,9 @@ import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
-import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -111,7 +108,6 @@ public class TagsTabItem extends EditEngineTabItem {
             @Override
             protected void load(Object o, final AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
                 if (node != null) {
-                    mask("Loading");
                     final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
                     if (values.containsKey(locale.getLanguage())) {
                         final GWTJahiaNodeProperty gwtJahiaNodeProperty = values.get(locale.getLanguage());
@@ -120,30 +116,24 @@ public class TagsTabItem extends EditEngineTabItem {
                         for (GWTJahiaNodePropertyValue propertyValue : propertyValues) {
                             nodes.add(propertyValue.getNode());
                         }
-                        unmask();
                         listAsyncCallback.onSuccess(nodes);
                     } else {
-                        async.getProperties(node.getPath(), locale.getLanguage(), new BaseAsyncCallback<GWTJahiaGetPropertiesResult>() {
-                            public void onSuccess(GWTJahiaGetPropertiesResult result) {
-                                GWTJahiaNodeProperty gwtJahiaNodeProperty = result.getProperties().get("j:tags");
-                                if (gwtJahiaNodeProperty != null) {
-                                    final List<GWTJahiaNodePropertyValue> propertyValues = gwtJahiaNodeProperty.getValues();
-                                    List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>(propertyValues.size());
-                                    for (GWTJahiaNodePropertyValue propertyValue : propertyValues) {
-                                        nodes.add(propertyValue.getNode());
-                                    }
-                                    listAsyncCallback.onSuccess(nodes);
-                                } else {
-                                    gwtJahiaNodeProperty = new GWTJahiaNodeProperty();
-                                    gwtJahiaNodeProperty.setMultiple(true);
-                                    gwtJahiaNodeProperty.setValues(new ArrayList<GWTJahiaNodePropertyValue>());
-                                    gwtJahiaNodeProperty.setName("j:tags");
-                                    listAsyncCallback.onSuccess(new ArrayList<GWTJahiaNode>());
-                                }
-                                values.put(locale.getLanguage(), gwtJahiaNodeProperty);
-                                unmask();
+                        GWTJahiaNodeProperty gwtJahiaNodeProperty = engine.getProperties().get("j:tags");
+                        if (gwtJahiaNodeProperty != null) {
+                            final List<GWTJahiaNodePropertyValue> propertyValues = gwtJahiaNodeProperty.getValues();
+                            List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>(propertyValues.size());
+                            for (GWTJahiaNodePropertyValue propertyValue : propertyValues) {
+                                nodes.add(propertyValue.getNode());
                             }
-                        });
+                            listAsyncCallback.onSuccess(nodes);
+                        } else {
+                            gwtJahiaNodeProperty = new GWTJahiaNodeProperty();
+                            gwtJahiaNodeProperty.setMultiple(true);
+                            gwtJahiaNodeProperty.setValues(new ArrayList<GWTJahiaNodePropertyValue>());
+                            gwtJahiaNodeProperty.setName("j:tags");
+                            listAsyncCallback.onSuccess(new ArrayList<GWTJahiaNode>());
+                        }
+                        values.put(locale.getLanguage(), gwtJahiaNodeProperty);
                     }
                 }
             }

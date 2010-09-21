@@ -753,7 +753,18 @@ public class NavigationHelper {
         n.setDeleteable(node.isWriteable());
         n.setLockable(node.isLockable());
         try {
-            n.setLocked(node.isLocked() && !node.getLockOwner().equals(node.getSession().getUser().getUsername()));
+            boolean isLocked = node.isLocked() && !node.getLockOwner().equals(
+                    node.getSession().getUser().getUsername());
+            if(!isLocked && node.hasProperty(Constants.JAHIA_LOCKTYPES)) {
+                Value[] values = node.getProperty(Constants.JAHIA_LOCKTYPES).getValues();
+                for (Value value : values) {
+                    if(!value.getString().startsWith(node.getSession().getUser().getUsername())) {
+                        isLocked = true;
+                        break;
+                    }
+                }
+            }
+            n.setLocked(isLocked);
         } catch (RepositoryException e) {
             logger.error("Error when getting lock", e);
         }

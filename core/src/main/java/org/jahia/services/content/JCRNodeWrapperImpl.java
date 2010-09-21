@@ -1933,8 +1933,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (!objectNode.isCheckedOut()) {
             objectNode.checkout();
         }
-        if (objectNode.hasProperty("j:lockTypes")) {
-            Property property = objectNode.getProperty("j:lockTypes");
+        if (objectNode.hasProperty(Constants.JAHIA_LOCKTYPES)) {
+            Property property = objectNode.getProperty(Constants.JAHIA_LOCKTYPES);
             Value[] oldValues = property.getValues();
             for (Value value : oldValues) {
                 if (value.getString().equals(l)) {
@@ -1946,7 +1946,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             newValues[oldValues.length] = getSession().getValueFactory().createValue(l);
             property.setValue(newValues);
         } else {
-            objectNode.setProperty("j:lockTypes", new String[]{l});
+            objectNode.setProperty(Constants.JAHIA_LOCKTYPES, new String[]{l});
         }
     }
 
@@ -1990,9 +1990,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         NodeIterator ni = objectNode.getNodes("j:translation*");
         while (ni.hasNext()) {
             Node n = ni.nextNode();
-            if (n.isLocked() && n.hasProperty("j:lockTypes")) {
+            if (n.isLocked() && n.hasProperty(Constants.JAHIA_LOCKTYPES)) {
                 String l = (getSession().isSystem() ? " system " : getSession().getUserID()) + ":" + type;
-                Value[] v = n.getProperty("j:lockTypes").getValues();
+                Value[] v = n.getProperty(Constants.JAHIA_LOCKTYPES).getValues();
                 for (Value value : v) {
                     if (value.getString().equals(l)) {
                         r.add(new Locale(n.getProperty("jcr:language").getString()));
@@ -2089,7 +2089,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (hasProperty("j:locktoken")) {
             Property property = objectNode.getProperty("j:locktoken");
             String token = property.getString();
-            Value[] types = objectNode.getProperty("j:lockTypes").getValues();
+            Value[] types = objectNode.getProperty(Constants.JAHIA_LOCKTYPES).getValues();
             for (Value value : types) {
                 String owner = StringUtils.substringBefore(value.getString(), ":");
                 String currentType = StringUtils.substringAfter(value.getString(), ":");
@@ -2107,9 +2107,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                             objectNode.getSession().addLockToken(token);
                             objectNode.unlock();
                             property.remove();
-                            objectNode.getProperty("j:lockTypes").remove();
+                            objectNode.getProperty(Constants.JAHIA_LOCKTYPES).remove();
                         } else {
-                            objectNode.setProperty("j:lockTypes", valueList.values().toArray(new Value[valueList.size()]));
+                            objectNode.setProperty(Constants.JAHIA_LOCKTYPES, valueList.values().toArray(new Value[valueList.size()]));
                         }
                         getSession().save();
 

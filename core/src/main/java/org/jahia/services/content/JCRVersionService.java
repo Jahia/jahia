@@ -103,12 +103,7 @@ public class JCRVersionService extends JahiaService {
         while (versions.hasNext()) {
             Version v = versions.nextVersion();
             JCRNodeWrapper versionNode = node.getFrozenVersion(v.getName());
-            Calendar checkinDate = null;
-            if (versionNode.hasProperty("j:checkinDate")) {
-                checkinDate = versionNode.getProperty("j:checkinDate").getDate();
-            } else {
-                checkinDate = v.getCreated();
-            }
+            Calendar checkinDate = v.getCreated();
             String[] versionLabels = versionHistory.getVersionLabels(v);
             if (versionLabels != null && versionLabels.length > 0) {
                 for (String string : versionLabels) {
@@ -126,11 +121,11 @@ public class JCRVersionService extends JahiaService {
         if (!node.isNodeType("jmix:versionInfo")) {
             return null;
         }
-        if (node.hasProperty("j:checkinDate")) {
-            Calendar currentDate = node.getProperty("j:checkinDate").getDate();
-        }
+//        if (node.hasProperty("j:checkinDate")) {
+//            Calendar currentDate = node.getProperty("j:checkinDate").getDate();
+//        }
 
-        node.setProperty("j:checkinDate", checkinDate);
+//        node.setProperty("j:checkinDate", checkinDate);
         return checkinDate;
     }
 
@@ -182,21 +177,11 @@ public class JCRVersionService extends JahiaService {
             }
             Date checkinDate = null;
             boolean checkinDateAvailable = false;
-            if (frozenNode.hasProperty("j:checkinDate")) {
-                Property checkinDateProperty = frozenNode.getProperty("j:checkinDate");
-                checkinDate = checkinDateProperty.getDate().getTime();
-                checkinDateAvailable = true;
-                if (checkinDate.compareTo(versionDate) > 0) {
-                    closestVersion = lastVersion;
-                    break;
-                }
-            } else {
                 if (v.getCreated().getTime().compareTo(versionDate) > 0) {
                     // this can happen if we have a checkinDate, but try to resolve using the creation date.
                     closestVersion = lastVersion;
                     break;
                 }
-            }
             if (logger.isDebugEnabled()) {
                 logger.debug(
                         "Version " + v.getName() + " checkinDateAvailable=" + checkinDateAvailable + " checkinDate=" +
@@ -207,29 +192,13 @@ public class JCRVersionService extends JahiaService {
         }
         if (closestVersion == null && lastVersion != null) {
             // if we haven't found anything, maybe it's the last version that we should be using ?
-            Date checkinDate;
-            Node frozenNode = lastVersion.getFrozenNode();
-            if (frozenNode.hasProperty("j:checkinDate")) {
-                Property checkinDateProperty = frozenNode.getProperty("j:checkinDate");
-                checkinDate = checkinDateProperty.getDate().getTime();
-                if (checkinDate.compareTo(versionDate) <= 0) {
-                    closestVersion = lastVersion;
-                }
-            } else {
-                if (lastVersion.getCreated().getTime().compareTo(versionDate) <= 0) {
-                    closestVersion = lastVersion;
-                }
+            if (lastVersion.getCreated().getTime().compareTo(versionDate) <= 0) {
+                closestVersion = lastVersion;
             }
         }
         if (closestVersion!=null && logger.isDebugEnabled()) {
-            Date checkinDate = null;
-            if (closestVersion.getFrozenNode().hasProperty("j:checkinDate")) {
-                Property checkinDateProperty = closestVersion.getFrozenNode().getProperty("j:checkinDate");
-                checkinDate = checkinDateProperty.getDate().getTime();
-            }
             logger.debug("Resolved date " + versionDate + " for node title " + nodeTitle + " to closest version " +
-                         closestVersion.getName() + " createdTime=" + closestVersion.getCreated().getTime() +
-                         " checkinDate=" + checkinDate);
+                         closestVersion.getName() + " createdTime=" + closestVersion.getCreated().getTime());
         }
         return closestVersion;
     }

@@ -57,10 +57,7 @@ import org.jbpm.pvm.internal.model.ExecutionImpl;
 import org.jbpm.pvm.internal.task.TaskImpl;
 
 import javax.jcr.RepositoryException;
-import javax.mail.BodyPart;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
+import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMultipart;
@@ -92,7 +89,10 @@ public class JBPMMailProducer extends MailProducerImpl {
             fillRecipients(execution, email);
             fillSubject(execution, email);
             fillContent(execution, email);
+            Address[] addresses = email.getRecipients(Message.RecipientType.TO);
+            if(addresses!= null && addresses.length>0)
             return Collections.singleton(email);
+            else return Collections.emptyList();
         } catch (MessagingException e) {
             throw new JbpmException("failed to produce email message", e);
         }
@@ -127,7 +127,15 @@ public class JBPMMailProducer extends MailProducerImpl {
                 }
 
                 for (String m : emails) {
-                    if (m!=null && !"".equals(m)) email.addRecipient(Message.RecipientType.TO, new InternetAddress(m));
+                    if (m!=null && !"".equals(m)) {
+                        try {
+                            InternetAddress address = new InternetAddress(m);
+                            address.validate();
+                            email.addRecipient(Message.RecipientType.TO, address);
+                        } catch (MessagingException e) {
+                            logger.debug(e.getMessage(), e);
+                        }
+                    }
                 }
 
                 emails.clear();
@@ -140,7 +148,32 @@ public class JBPMMailProducer extends MailProducerImpl {
                     emails.add(evaluateExpression(execution, s));
                 }
                 for (String m : emails) {
-                    if (m!=null && !"".equals(m)) email.addRecipient(Message.RecipientType.CC, new InternetAddress(m));
+                    if (m!=null && !"".equals(m)) {
+                        try {
+                            InternetAddress address = new InternetAddress(m);
+                            address.validate();
+                            email.addRecipient(Message.RecipientType.CC, address);
+                        } catch (MessagingException e) {
+                            logger.debug(e.getMessage(), e);
+                        }
+                    }
+                }
+                s = getTemplate().getBcc().getUsers();
+                if ("assignable".equals(s)) {
+                    emails.addAll(getAssibnables(exe, s));
+                } else {
+                    emails.add(evaluateExpression(execution, s));
+                }
+                for (String m : emails) {
+                    if (m!=null && !"".equals(m)) {
+                        try {
+                            InternetAddress address = new InternetAddress(m);
+                            address.validate();
+                            email.addRecipient(Message.RecipientType.BCC, address);
+                        } catch (MessagingException e) {
+                            logger.debug(e.getMessage(), e);
+                        }
+                    }
                 }
             }
         } catch (ScriptException e) {
@@ -264,7 +297,9 @@ public class JBPMMailProducer extends MailProducerImpl {
             bindings = getBindings(execution);
         }
         scriptContext.setWriter(new StringWriter());
+        scriptContext.setErrorWriter(new StringWriter());
         scriptEngine.eval(scriptToExecute, bindings);
+        String error = scriptContext.getErrorWriter().toString();
         return scriptContext.getWriter().toString().trim();
     }
 
@@ -275,8 +310,12 @@ public class JBPMMailProducer extends MailProducerImpl {
                 "org.jahia.services.workflow." + ((ExecutionImpl) execution).getProcessDefinition().getKey());
         bindings.put("bundle", resourceBundle);
         final Map<String, Object> vars = ((ExecutionImpl) execution).getVariables();
-        bindings.put("user", ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(
-                (String) vars.get("user")));
+        JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(
+                (String) vars.get("user"));
+        if(jahiaUser.getProperty("j:email")!=null)
+        bindings.put("user", jahiaUser);
+        else
+        bindings.put("user", null);
         bindings.put("date", new DateTool());
         bindings.put("submissionDate", Calendar.getInstance());
         bindings.put("locale", vars.get("locale"));

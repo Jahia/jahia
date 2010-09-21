@@ -43,16 +43,14 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import javax.jcr.RepositoryException;
+import javax.mail.SendFailedException;
 import javax.script.Bindings;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-import org.apache.camel.CamelContext;
-import org.apache.camel.CamelContextAware;
-import org.apache.camel.Exchange;
-import org.apache.camel.Handler;
+import org.apache.camel.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -145,7 +143,11 @@ public class MailServiceImpl extends MailService implements CamelContextAware {
         if (logger.isDebugEnabled()) {
             logger.debug("Sending message: " + exchange);
         }
-        camelContext.createProducerTemplate().send(getEndpointUri(), exchange);
+        try {
+            camelContext.createProducerTemplate().send(getEndpointUri(), exchange);
+        } catch (RuntimeException e) {
+            logger.debug(e.getMessage(), e);
+        }
         logger.info("Mail message sent in " + (System.currentTimeMillis() - timer) + " ms");
     }
 

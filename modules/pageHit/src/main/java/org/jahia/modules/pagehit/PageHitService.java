@@ -66,16 +66,27 @@ public class PageHitService implements Processor, InitializingBean, CamelContext
         if (matcher.matches()) {
             final String path = matcher.group(5);
             final JCRTemplate tpl = JCRTemplate.getInstance();
-            JCRNodeWrapper node = tpl.doExecuteWithSystemSession(new JCRCallback<JCRNodeWrapper>() {
-                public JCRNodeWrapper doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    return session.getNode(path);
-                }
-            });
+            JCRNodeWrapper node;
+            try {
+                node = tpl.doExecuteWithSystemSession(new JCRCallback<JCRNodeWrapper>() {
+                    public JCRNodeWrapper doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        return session.getNode(path);
+                    }
+                });
+            } catch (RepositoryException e) {
+                // Node not found might be due to old logs so fail silently
+                return;
+            }
+            if(node==null) {
+                // stupid security check should not happen
+                logger.warn("Node not found in system but it has not thrown an exception strange");
+                return;
+            }
             final String uuid = node.getIdentifier();
             Session session = sessionFactoryBean.openSession();
-            Criteria criteria = session.createCriteria(PageHit.class);
-            criteria.add(Restrictions.eq("uuid", uuid));
             try {
+                Criteria criteria = session.createCriteria(PageHit.class);
+                criteria.add(Restrictions.eq("uuid", uuid));
 
                 PageHit pageHit = (PageHit) criteria.uniqueResult();
                 // Found update object

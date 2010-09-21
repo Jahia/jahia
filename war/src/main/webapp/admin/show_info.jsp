@@ -155,6 +155,15 @@ stretcherToOpen   = 0; %>
                   </tbody>
                 </table>
               </div>
+              <div class="content-body">
+                <table class="evenOddTable" border="0" cellpadding="5" cellspacing="0" width="100%">
+                    <tr>
+						<td>
+				<pre><%@include file="../LICENSE"%></pre>
+						</td>
+					</tr>
+				</table>
+			</div>
             </div>
             </td>
           </tr>

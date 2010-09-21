@@ -132,14 +132,14 @@
 
 [jmix:lockable] > mix:lockable mixin
  - j:locktoken (string) protected indexed=no hidden
- - j:lockTypes (string) multiple indexed=no hidden
+ - j:lockTypes (string) protected multiple indexed=no hidden
  
 //---------------------------------------------------------
 // Workflow
 //---------------------------------------------------------
 
 [jmix:workflow] mixin
- - j:processId (string) multiple i18n nofulltext hidden
+ - j:processId (string) protected multiple i18n nofulltext hidden
 
 [jnt:workflowRules] > nt:base orderable
  + * (jnt:workflowRule)
@@ -357,9 +357,9 @@
 [jnt:levelAbsoluteArea] > jnt:content, jmix:renderableArea, jmix:siteComponentContent, jmix:listRestrictions, jmix:mockupStyle
  - j:level (long)
 
-[jnt:currentUserDisplay] > nt:base, jmix:renderableUser, jmix:siteComponentContent, jmix:mockupStyle
+[jnt:currentUserDisplay] > jnt:content, jmix:renderableUser, jmix:siteComponentContent, jmix:mockupStyle
 
-[jnt:authorDisplay] > nt:base, jmix:renderableUser, jmix:siteComponentContent, jmix:mockupStyle
+[jnt:authorDisplay] > jnt:content, jmix:renderableUser, jmix:siteComponentContent, jmix:mockupStyle
 
 [jmix:renderableMainResource] mixin
  - j:mainResourceTemplate (string, choicelist[templates=mainresource,resourceBundle,image]) nofulltext

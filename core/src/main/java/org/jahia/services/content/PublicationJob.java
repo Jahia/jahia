@@ -6,6 +6,7 @@ import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 
+import javax.jcr.RepositoryException;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -35,8 +36,16 @@ public class PublicationJob extends BackgroundJob {
         }
         JCRPublicationService.getInstance().publish(info, source, destination);
         for (PublicationInfo publicationInfo : info) {
-            JCRVersionService.getInstance().addVersionLabel(publicationInfo.getAllUuids(),"live_"+label,Constants.LIVE_WORKSPACE);
-            JCRVersionService.getInstance().addVersionLabel(publicationInfo.getAllUuids(),source+"_"+label,source);
+            label(publicationInfo, source, label);
+        }
+    }
+
+    private void label(PublicationInfo publicationInfo, String source, String label) throws RepositoryException {
+        JCRVersionService.getInstance().addVersionLabel(publicationInfo.getAllUuids(),"live_"+label, Constants.LIVE_WORKSPACE);
+        JCRVersionService.getInstance().addVersionLabel(publicationInfo.getAllUuids(),source+"_"+label,source);
+        List<PublicationInfo> refs = publicationInfo.getAllReferences();
+        for (PublicationInfo ref : refs) {
+            label(ref, source, label);
         }
     }
 }

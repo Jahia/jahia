@@ -7,7 +7,7 @@ Area Management
 
 * How to define an area ?
 
-  An area is defined by a tag <<<\<tempalte:area\>>>>. This tag take a path as argument (in case you want to have
+  An area is defined by a tag <<<\<template:area\>>>>. This tag takes a path as argument (in case you want to have
   an absolute area pass an absolute path) that is relative to the current node.
 
   As an example we will see that in the grid template for pages we use the area tag to define the places where the user
@@ -40,7 +40,7 @@ Area Management
             <!--stop grid_${col.value}-->
         </c:otherwise>
     </c:choose>
-</c:forEach>                 
+</c:forEach>
 +------------------------------------
 
   This will render a page like that in edit mode :
@@ -53,10 +53,10 @@ Area Management
 * Sub areas
 
   User can dynamically define sub areas inside an area by dropping a content list in an area and then add content to
-  this sub area. The content in sub area could be manage as a whole by drag and dropping the sub area directly or as
+  this sub area. The content in sub area could be managed as a whole by drag and dropping the sub area directly or as
   a simple piece of content by moving it from one area to another one or sub area.
 
-[./images/area_filled.png]  
+[./images/area_filled.png]
 
 * Area type
 

@@ -79,7 +79,7 @@ public class JobListPanel extends LayoutContainer {
 
         List<ColumnConfig> config = new ArrayList<ColumnConfig>();
 
-        ColumnConfig column = new ColumnConfig("displayName", Messages.get("label.name", "Name"), 100);
+        ColumnConfig column = new ColumnConfig("name", Messages.get("label.name", "Name"), 100);
         column.setRenderer(new WidgetTreeGridCellRenderer<GWTJahiaJobDetail>() {
             @Override
             public Widget getWidget(GWTJahiaJobDetail historyItem, String property, ColumnData config,
@@ -106,7 +106,7 @@ public class JobListPanel extends LayoutContainer {
                     }
                 }
                 */
-                return new Label(historyItem.<String>get("displayName"));
+                return new Label(historyItem.<String>get("name"));
             }
         });
         config.add(column);
@@ -156,7 +156,7 @@ public class JobListPanel extends LayoutContainer {
         tree.getStyle().setNodeOpenIcon(StandardIconsProvider.STANDARD_ICONS.workflow());
         tree.getStyle().setNodeCloseIcon(StandardIconsProvider.STANDARD_ICONS.workflow());
         tree.getStyle().setLeafIcon(StandardIconsProvider.STANDARD_ICONS.workflowTask());
-        tree.setAutoExpandColumn("displayName");
+        tree.setAutoExpandColumn("name");
         tree.getTreeView().setRowHeight(25);
         tree.setTrackMouseOver(false);
         add(tree);

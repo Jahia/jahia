@@ -234,36 +234,37 @@ public class TagsTabItem extends EditEngineTabItem {
 
     public void updateProperties(Map<String,List<GWTJahiaNodeProperty>> list, List<String> mixin) {
         boolean noTag = true;
-        for (Map.Entry<String, GWTJahiaNodeProperty> entry : values.entrySet()) {
-            GWTJahiaNodeProperty tags = null;
+        if (values != null) {
+            for (Map.Entry<String, GWTJahiaNodeProperty> entry : values.entrySet()) {
+                GWTJahiaNodeProperty tags = null;
 
-            List<GWTJahiaNodeProperty> props = list.get(entry.getKey());
+                List<GWTJahiaNodeProperty> props = list.get(entry.getKey());
 
-            if (props != null) {
-                for (GWTJahiaNodeProperty property : props) {
-                    if (property.getName().equals("j:tags")) {
-                        tags = property;
+                if (props != null) {
+                    for (GWTJahiaNodeProperty property : props) {
+                        if (property.getName().equals("j:tags")) {
+                            tags = property;
+                        }
                     }
-                }
-            } else {
-                props = new ArrayList<GWTJahiaNodeProperty>();
-                list.put(entry.getKey(), props);
-            }
-            if (tags != null) {
-                if (entry.getValue().getValues().isEmpty()) {
-                    props.remove(tags);
                 } else {
-                    noTag = false;
-                    tags.setValues(entry.getValue().getValues());
+                    props = new ArrayList<GWTJahiaNodeProperty>();
+                    list.put(entry.getKey(), props);
                 }
-            } else {
-                if (!entry.getValue().getValues().isEmpty()) {
-                    props.add(entry.getValue());
-                    noTag = false;
+                if (tags != null) {
+                    if (entry.getValue().getValues().isEmpty()) {
+                        props.remove(tags);
+                    } else {
+                        noTag = false;
+                        tags.setValues(entry.getValue().getValues());
+                    }
+                } else {
+                    if (!entry.getValue().getValues().isEmpty()) {
+                        props.add(entry.getValue());
+                        noTag = false;
+                    }
                 }
             }
         }
-
         if (noTag) {
             mixin.remove("jmix:tagged");
         } else if (!mixin.contains("jmix:tagged")) {

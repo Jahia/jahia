@@ -153,6 +153,7 @@ public class PublicationHelper {
 
         Map<String, GWTJahiaPublicationInfo> gwtInfos = new HashMap<String, GWTJahiaPublicationInfo>();
         gwtInfos.put(node.getPath(), gwtInfo);
+        List<String> refUuids = new ArrayList<String>();
         for (PublicationInfoNode sub : node.getChildren()) {
             if (sub.getPath().contains("/j:translation")) {
                 String key = StringUtils.substringBeforeLast(sub.getPath(), "/j:translation");
@@ -165,12 +166,18 @@ public class PublicationHelper {
                         lastPub.setStatus(sub.getStatus());
                     }
                 }
+                for (PublicationInfo pi : sub.getReferences()) {
+                    if (!refUuids.contains(pi.getRoot().getUuid())) {
+                        refUuids.add(pi.getRoot().getUuid());
+                        all.addAll(convert(pi, "reference", currentUserSession));
+                    }
+                }
+
             } else if (sub.getPath().indexOf("/j:translation") == -1) {
                 GWTJahiaPublicationInfo lastPub = convert(all, mainTitle, sub, currentUserSession);
                 gwtInfos.put(lastPub.getPath(), lastPub);
             }
         }
-        List<String> refUuids = new ArrayList<String>();
         for (PublicationInfo pi : node.getReferences()) {
             if (!refUuids.contains(pi.getRoot().getUuid())) {
                 refUuids.add(pi.getRoot().getUuid());

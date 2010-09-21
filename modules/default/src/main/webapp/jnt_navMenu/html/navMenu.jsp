@@ -23,6 +23,9 @@
 <jcr:nodeProperty name="j:startLevel" node="${currentNode}" var="startLevel"/>
 <jcr:nodeProperty name="j:styleName" node="${currentNode}" var="styleName"/>
 <jcr:nodeProperty name="j:menuItemTemplate" node="${currentNode}" var="menuItemTemplate"/>
+<c:if test="${not empty menuItemTemplate}">
+    <c:set var="menuItemTemplate" value="${menuItemTemplate.string}" />
+</c:if>
 <c:if test="${empty menuItemTemplate}">
   <c:set var="menuItemTemplate" value="menuElement" />
 </c:if>

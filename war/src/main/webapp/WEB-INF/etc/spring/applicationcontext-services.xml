@@ -136,7 +136,7 @@
         <property name="settingsBean" ref="settingsBean" />
     </bean>
 
-   <bean id="JahiaTemplateManagerService" class="org.jahia.services.templates.JahiaTemplateManagerService" parent="jahiaServiceTemplate" depends-on="jackrabbit">
+   <bean id="JahiaTemplateManagerService" class="org.jahia.services.templates.JahiaTemplateManagerService" parent="jahiaServiceTemplate">
         <property name="templatePackageDeployer">
             <bean class="org.jahia.services.templates.TemplatePackageDeployer">
 		    	<property name="settingsBean" ref="settingsBean" />

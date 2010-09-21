@@ -112,9 +112,13 @@ public class FilesServlet extends HttpServlet {
         boolean valid = false;
         String v = req.getParameter("v");
         if (v != null) {
-            n = n.getFrozenVersionAsRegular(new Date(Long.valueOf(v)));
-            if (n != null) {
-                valid = true;
+            try {
+                n = n.getFrozenVersionAsRegular(new Date(Long.valueOf(v)));
+                if (n != null) {
+                    valid = true;
+                }
+            } catch (RepositoryException e) {
+                //
             }
         } else {
             valid = n.isFile();

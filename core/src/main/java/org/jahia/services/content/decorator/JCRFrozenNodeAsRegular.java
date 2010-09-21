@@ -35,6 +35,7 @@ package org.jahia.services.content.decorator;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ChildrenCollectorFilter;
 import org.jahia.api.Constants;
+import org.jahia.bin.Jahia;
 import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -491,17 +492,23 @@ public class JCRFrozenNodeAsRegular extends JCRFrozenNode {
 
     @Override
     public String getUrl() {
-        String frozenPrimaryType = getPropertyAsString("jcr:frozenPrimaryType");
-        if (frozenPrimaryType.equals(Constants.JAHIANT_FILE)) {
-            try {
-                if (versionDate != null) {
-                    return getProvider().getHttpPath() + "/" + getSession().getWorkspace().getName() + this.getPropertyAsString(
-                            "j:fullpath") + "?v=" + versionDate.getTime();
-                }
-            } catch (RepositoryException e) {
-                logger.error("Error while retrieving fullpath property", e);
-            }
 
+        try {
+            String frozenPrimaryType = getPropertyAsString("jcr:frozenPrimaryType");
+            if (frozenPrimaryType.equals(Constants.JAHIANT_FILE)) {
+                return getProvider().getHttpPath() + "/" + getSession().getWorkspace().getName() + getPath() + "?v=" + versionDate.getTime();
+            } else {
+                String path = JCRSessionFactory.getInstance().getCurrentServletPath();
+                if (path == null) {
+                    path = "/cms/render";
+                }
+                if ("/".equals(Jahia.getContextPath())) {
+                    return path + "/" + getSession().getWorkspace().getName() + "/" + getSession().getLocale() + getPath() + ".html?v=" + versionDate.getTime();
+                }
+                return Jahia.getContextPath() + path + "/" + getSession().getWorkspace().getName() + "/" + getSession().getLocale() + getPath() + ".html?v=" + versionDate.getTime();
+            }
+        } catch (RepositoryException e) {
+            logger.error("Cannot get session",e);
         }
         return super.getUrl();
     }

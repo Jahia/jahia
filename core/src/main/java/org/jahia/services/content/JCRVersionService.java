@@ -399,15 +399,15 @@ public class JCRVersionService extends JahiaService {
                             if (nodeWrapper.isVersioned()) {
                                 versionHistory.addVersionLabel(version.getName(), label, true);
                             }
-                            if (nodeWrapper.hasNodes()) {
-                                NodeIterator iterator = nodeWrapper.getNodes();
-                                while (iterator.hasNext()) {
-                                    JCRNodeWrapper nodeWrapper1 = (JCRNodeWrapper) iterator.nextNode();
-                                    if (nodeWrapper1.isVersioned()) {
-                                        addVersionLabel(nodeWrapper1, label);
-                                    }
-                                }
-                            }
+//                            if (nodeWrapper.hasNodes()) {
+//                                NodeIterator iterator = nodeWrapper.getNodes();
+//                                while (iterator.hasNext()) {
+//                                    JCRNodeWrapper nodeWrapper1 = (JCRNodeWrapper) iterator.nextNode();
+//                                    if (nodeWrapper1.isVersioned()) {
+//                                        addVersionLabel(nodeWrapper1, label);
+//                                    }
+//                                }
+//                            }
                         }
                     } catch (RepositoryException e) {
                         logger.debug(e.getMessage(), e);

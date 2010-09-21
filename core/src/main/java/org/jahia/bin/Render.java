@@ -208,7 +208,10 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
     protected String getVersionLabel(HttpServletRequest req) {
         // we assume here that the date has been passed as milliseconds.
-        return req.getParameter("v");
+        if (getVersionDate(req) == null) {
+            return req.getParameter("v");
+        }
+        return null;
     }
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext,

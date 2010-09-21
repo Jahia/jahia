@@ -48,6 +48,7 @@ import org.apache.commons.collections.map.CaseInsensitiveMap;
 import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.usermanager.JahiaUser;
@@ -160,6 +161,7 @@ public class RenderContext {
 
     public void setServletPath(String servletPath) {
         this.servletPath = servletPath;
+        JCRSessionFactory.getInstance().setCurrentServletPath(servletPath);
     }
 
     public boolean isContributionMode() {

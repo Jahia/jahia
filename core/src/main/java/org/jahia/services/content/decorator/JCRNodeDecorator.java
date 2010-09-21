@@ -294,11 +294,11 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getFrozenVersion(name);
     }
 
-    public JCRNodeWrapper getFrozenVersionAsRegular(Date versionDate) {
+    public JCRNodeWrapper getFrozenVersionAsRegular(Date versionDate)  throws RepositoryException {
         return node.getFrozenVersionAsRegular(versionDate);
     }
 
-    public JCRNodeWrapper getFrozenVersionAsRegular(String versionLabel) {
+    public JCRNodeWrapper getFrozenVersionAsRegular(String versionLabel) throws RepositoryException {
         return node.getFrozenVersionAsRegular(versionLabel);
     }
 

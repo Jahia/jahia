@@ -8,8 +8,8 @@
 <jcr:nodeProperty node="${currentNode}" name="j:target" var="target"/>
 <c:set var="node" value="${reference.node}"/>
 <c:if test="${not empty node}">
-<c:url var="link" value="${node.path}.html" context="${url.base}"/>
-<c:url var="link" value="${jcr:isNodeType(node, 'nt:file') ? node.url : link}" context="/"/>
+<%--<c:url var="link" value="${node.path}.html" context="${url.base}"/>--%>
+<c:url var="link" value="${node.url}" context="/"/>
 </c:if>
 <c:if test="${not empty target.string}"><c:set var="target"> target="${target.string}"</c:set></c:if>
 <c:if test="${not empty description.string}"><c:set var="linkTitle"> title="${fn:escapeXml(description.string)}"</c:set></c:if>

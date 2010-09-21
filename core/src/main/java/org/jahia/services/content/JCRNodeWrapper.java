@@ -652,9 +652,9 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * @param versionDate the date at which we should load the version, or the closest to this date before this date
      * @return the wrapped frozen version node
      */
-    JCRNodeWrapper getFrozenVersionAsRegular(Date versionDate);
+    JCRNodeWrapper getFrozenVersionAsRegular(Date versionDate) throws RepositoryException ;
 
-    JCRNodeWrapper getFrozenVersionAsRegular(String versionLabel);
+    JCRNodeWrapper getFrozenVersionAsRegular(String versionLabel) throws RepositoryException ;
     /**
      * The <code>JCRStoreProvider</code> which returned the current node. 
      * @return the <code>JCRStoreProvider</code> for the current node 

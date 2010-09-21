@@ -73,6 +73,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     private ThreadLocal<JahiaUser> currentUser = new ThreadLocal<JahiaUser>();
     private ThreadLocal<Locale> currentLocale = new ThreadLocal<Locale>();
     private ThreadLocal<JahiaUser> currentAliasedUser = new ThreadLocal<JahiaUser>();
+    private ThreadLocal<String> currentServletPath = new ThreadLocal<String>();
 
     private JCRSessionFactory() {
     }
@@ -410,6 +411,14 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
 
     public void setCurrentAliasedUser(JahiaUser user) {
         currentAliasedUser.set(user);
+    }
+
+    public String getCurrentServletPath() {
+        return currentServletPath.get();
+    }
+
+    public void setCurrentServletPath(String path) {
+        currentServletPath.set(path);
     }
 
 }

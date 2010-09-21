@@ -45,6 +45,7 @@ import org.apache.jackrabbit.spi.Path;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
+import org.jahia.bin.Jahia;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.*;
 import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
@@ -583,42 +584,42 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public String getAbsoluteUrl(ServletRequest request) {
-        if (objectNode != null) {
             return provider.getAbsoluteContextPath(request) + getUrl();
-        }
-        return "";
     }
 
     /**
      * {@inheritDoc}
      */
     public String getUrl() {
-        if (objectNode != null) {
+        if (isNodeType(Constants.JAHIANT_FILE)) {
             return provider.getHttpPath() + "/" + getSession().getWorkspace().getName() + getPath();
+        } else {
+            String path = JCRSessionFactory.getInstance().getCurrentServletPath();
+            if (path == null) {
+                path = "/cms/render";
+            }
+            if ("/".equals(Jahia.getContextPath())) {
+                return path + "/" + getSession().getWorkspace().getName() + "/" + getSession().getLocale() + getPath() + ".html";
+            }
+            return Jahia.getContextPath() + path + "/" + getSession().getWorkspace().getName() + "/" + getSession().getLocale() + getPath() + ".html";
         }
-        return "";
     }
 
     /**
      * {@inheritDoc}
      */
     public String getAbsoluteWebdavUrl(final HttpServletRequest request) {
-        if (objectNode != null) {
             return provider.getAbsoluteContextPath(request) + getWebdavUrl();
-        }
-        return "";
     }
 
     /**
      * {@inheritDoc}
      */
     public String getWebdavUrl() {
-        if (objectNode != null) {
-            try {
-                return provider.getWebdavPath() + objectNode.getPath();
-            } catch (RepositoryException e) {
-                logger.error("Cannot get file path", e);
-            }
+        try {
+            return provider.getWebdavPath() + objectNode.getPath();
+        } catch (RepositoryException e) {
+            logger.error("Cannot get file path", e);
         }
         return "";
     }
@@ -2261,12 +2262,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
-    public JCRNodeWrapper getFrozenVersionAsRegular(Date versionDate) {
+    public JCRNodeWrapper getFrozenVersionAsRegular(Date versionDate) throws RepositoryException {
         try {
             VersionHistory vh = objectNode.getSession().getWorkspace().getVersionManager().getVersionHistory(objectNode.getPath());
             Version v = JCRVersionService.findClosestVersion(vh, versionDate);
             if (v == null) {
-                return null;
+                throw new PathNotFoundException();
             }
             Node frozen = v.getNode(Constants.JCR_FROZENNODE);
             if(session.getVersionDate()==null)
@@ -2276,8 +2277,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             if (getSession().getVersionDate() == null && getSession().getVersionLabel()==null) {
                 logger.error("Error while retrieving frozen version", e);
             }
-        } catch (RepositoryException e) {
-            logger.error("Error while retrieving frozen version", e);
         }
         return null;
     }
@@ -2290,12 +2289,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 return null;
             }
             Node frozen = v.getNode(Constants.JCR_FROZENNODE);
-            Date date = null;
-            if(frozen.hasProperty("j:checkinDate")) {
-                date = frozen.getProperty("j:checkinDate").getDate().getTime();
-            } else {
-                date = v.getCreated().getTime();
-            }
+            Date date = v.getCreated().getTime();
             JCRFrozenNodeAsRegular frozenNodeAsRegular = new JCRFrozenNodeAsRegular(provider.getNodeWrapper(frozen,
                                                                                                             session),
                                                                                     date,versionLabel);

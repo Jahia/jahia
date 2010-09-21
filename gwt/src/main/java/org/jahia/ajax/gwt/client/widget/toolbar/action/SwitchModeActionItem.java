@@ -70,7 +70,8 @@ public class SwitchModeActionItem extends BaseActionItem {
                 modeAsInt = Constants.MODE_PREVIEW;
             }
         }
-        EditActions.switchMode(linker,modeAsInt);
+        final String urlParams = getPropertyValue(getGwtToolbarItem(), "urlParams");
+        EditActions.switchMode(linker,modeAsInt,urlParams);
     }
 
 }

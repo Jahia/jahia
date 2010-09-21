@@ -271,6 +271,7 @@
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.Preview"/>
+                                    <ref bean="Toolbar.Item.PreviewAsGuest"/>
                                     <ref bean="Toolbar.Item.ShowCompareEngine"/>
                                 </list>
                             </property>

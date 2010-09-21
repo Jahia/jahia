@@ -603,7 +603,16 @@ public class JCRStoreProvider {
         }
     }
 
-    public JCRNodeWrapper getNodeWrapper(Node objectNode, JCRSessionWrapper session) throws RepositoryException {
+    public JCRNodeWrapper getNodeWrapper(final Node objectNode, JCRSessionWrapper session) throws RepositoryException {
+        if (session.getUser() != null && sessionFactory.getCurrentAliasedUser() != null &&
+            !sessionFactory.getCurrentAliasedUser().equals(session.getUser())) {
+            JCRTemplate.getInstance().doExecuteWithUserSession(sessionFactory.getCurrentAliasedUser().getUsername(),
+                    session.getWorkspace().getName(), session.getLocale(), new JCRCallback<Object>() {
+                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            return session.getNodeByUUID(objectNode.getIdentifier());
+                        }
+                    });
+        }
         final JCRNodeWrapperImpl w = new JCRNodeWrapperImpl(objectNode, null, session, this);
         if (w.checkValidity()) {
             return service.decorate(w);
@@ -612,7 +621,16 @@ public class JCRStoreProvider {
         }
     }
 
-    public JCRNodeWrapper getNodeWrapper(Node objectNode, String path, JCRSessionWrapper session) throws RepositoryException {
+    public JCRNodeWrapper getNodeWrapper(final Node objectNode, String path, JCRSessionWrapper session) throws RepositoryException {
+        if (session.getUser() != null && sessionFactory.getCurrentAliasedUser() != null &&
+            !sessionFactory.getCurrentAliasedUser().equals(session.getUser())) {
+            JCRTemplate.getInstance().doExecuteWithUserSession(sessionFactory.getCurrentAliasedUser().getUsername(),
+                    session.getWorkspace().getName(), session.getLocale(), new JCRCallback<Object>() {
+                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            return session.getNodeByUUID(objectNode.getIdentifier());
+                        }
+                    });
+        }
         final JCRNodeWrapperImpl w = new JCRNodeWrapperImpl(objectNode, path, session, this);
         if (objectNode.isNew() || w.checkValidity()) {
             return service.decorate(w);

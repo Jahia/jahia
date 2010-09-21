@@ -73,15 +73,17 @@ public class EditActions {
      * Switch mode
      *
      * @param linker
+     * @param urlParams
      */
-    public static void switchMode(final Linker linker, final int mode) {
+    public static void switchMode(final Linker linker, final int mode, final String urlParams) {
         if (linker.getMainNode() != null) {
             String path = linker.getMainNode().getPath();
             String locale = JahiaGWTParameters.getLanguage();
             JahiaContentManagementService.App.getInstance()
                     .getNodeURL(path, null, null, locale, mode, new BaseAsyncCallback<String>() {
                         public void onSuccess(String url) {
-                            com.google.gwt.user.client.Window.open(url, "mode" + mode, "");
+                            String url1 = url + ((urlParams!=null) ? "?" + urlParams:"");
+                            com.google.gwt.user.client.Window.open(url1, "mode" + mode, "");
                         }
 
                     });

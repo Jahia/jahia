@@ -43,6 +43,7 @@ import org.jahia.exceptions.JahiaForbiddenAccessException;
 import org.jahia.exceptions.JahiaUnauthorizedException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -114,6 +115,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     public static final String TARGETNAME = "targetName";
     public static final String NORMALIZE_NODE_NAME = "normalizeNodeName";
     public static final String VERSION = "version";
+    public static final String ALIAS_USER = "alias";
 
     private static final List<String> REDIRECT_CODE_MOVED_PERMANENTLY = new ArrayList<String>(
             Arrays.asList(new String[] { String.valueOf(HttpServletResponse.SC_MOVED_PERMANENTLY) }));
@@ -626,7 +628,9 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             urlResolver.setRenderContext(renderContext);
             req.getSession().setAttribute(ParamBean.SESSION_LOCALE, urlResolver.getLocale());
             jcrSessionFactory.setCurrentLocale(urlResolver.getLocale());
-
+            if(renderContext.isPreviewMode() && req.getParameter(ALIAS_USER)!=null) {
+                jcrSessionFactory.setCurrentAliasedUser(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(req.getParameter(ALIAS_USER)));
+            }
             if (method.equals(METHOD_GET)) {
                 if (!StringUtils.isEmpty(urlResolver.getRedirectUrl())) {
                     Map<String, List<String>> parameters = new HashMap<String, List<String>>();

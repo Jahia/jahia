@@ -1,12 +1,16 @@
 package org.apache.jackrabbit.core;
 
 import org.apache.jackrabbit.core.config.WorkspaceConfig;
+import org.apache.jackrabbit.core.security.AccessManager;
+import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.apache.jackrabbit.core.security.authentication.AuthContext;
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.NamespaceException;
 import javax.jcr.RepositoryException;
 import javax.security.auth.Subject;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Jackrabbit XASession extension for jahia
@@ -14,7 +18,7 @@ import javax.security.auth.Subject;
  */
 public class JahiaSessionImpl extends XASessionImpl {
     private JahiaNodeTypeInstanceHandler myNtInstanceHandler;
-
+    private Map<String,Object> jahiaAttributes;
     public JahiaSessionImpl(RepositoryImpl rep, AuthContext loginContext, WorkspaceConfig wspConfig) throws AccessDeniedException, RepositoryException {
         super(rep, loginContext, wspConfig);
         init();
@@ -27,6 +31,7 @@ public class JahiaSessionImpl extends XASessionImpl {
 
     private void init() {
         myNtInstanceHandler = new JahiaNodeTypeInstanceHandler(userId);
+        jahiaAttributes = new HashMap<String, Object>();
     }
 
     @Override
@@ -53,5 +58,22 @@ public class JahiaSessionImpl extends XASessionImpl {
             throw new NamespaceException("Namespace not found: " + prefix, e);
         }
     }
-    
+
+    public void setJahiaAttributes(String attributeName,Object attributeValue) {
+        jahiaAttributes.put(attributeName,attributeValue);
+    }
+
+    /**
+     * Returns the <code>AccessManager</code> associated with this session.
+     *
+     * @return the <code>AccessManager</code> associated with this session
+     */
+    @Override
+    public AccessManager getAccessManager() {
+        JahiaAccessManager accessManager = (JahiaAccessManager) super.getAccessManager();
+        if(jahiaAttributes.containsKey("isAliasedUser") && (Boolean)jahiaAttributes.get("isAliasedUser")) {
+            accessManager.setAliased(true);
+        }
+        return accessManager;
+    }
 }

@@ -104,6 +104,8 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
 
     private static ThreadLocal<Collection<String>> deniedPathes = new ThreadLocal<Collection<String>>();
 
+    private boolean isAliased = false;
+
     public static void setDeniedPaths(Collection<String> denied) {
         JahiaAccessManager.deniedPathes.set(denied);
     }
@@ -427,7 +429,7 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
             workspace = privilege.substring(privilege.lastIndexOf('_')+1);
             privilege = privilege.substring(0,privilege.lastIndexOf('_'));
         }
-        if (!workspace.equals(workspaceName)) {
+        if (!isAliased && !workspace.equals(workspaceName)) {
             return false;
         }
         Integer foundPermission = permissions.get(privilege);
@@ -485,5 +487,9 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
 
     public static void setUserService(JahiaUserService service) {
         userservice = service;
+    }
+
+    public void setAliased(boolean aliased) {
+        isAliased = aliased;
     }
 }

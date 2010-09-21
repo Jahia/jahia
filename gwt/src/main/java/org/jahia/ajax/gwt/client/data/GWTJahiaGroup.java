@@ -103,4 +103,8 @@ public class GWTJahiaGroup extends BaseModelData implements GWTJahiaPrincipal {
         return get("provider");
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof GWTJahiaGroup && getGroupKey().equals(((GWTJahiaGroup)obj).getGroupKey());
+    }
 }

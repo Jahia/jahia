@@ -103,4 +103,9 @@ public class GWTJahiaUser extends GWTJahiaValueDisplayBean implements GWTJahiaPr
     public String getProvider(){
         return get("provider");
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof GWTJahiaUser && getUserKey().equals(((GWTJahiaUser)obj).getUserKey());
+    }
 }

@@ -87,7 +87,7 @@ public class InfoTabItem extends EditEngineTabItem {
                 }
                 String id = selectedNode.getUUID();
                 if (id != null) {
-                    flowPanel.add(new HTML("<b>" + Messages.get("fm_info_uuid", "ID") + ":</b> " + id));
+                    flowPanel.add(new HTML("<b>" + Messages.get("label.id", "ID") + ":</b> " + id));
                 }
                 if (selectedNode.isFile()) {
                     Long s = selectedNode.getSize();

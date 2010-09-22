@@ -3,16 +3,14 @@ package org.jahia.ajax.gwt.client.widget.job;
 import com.extjs.gxt.ui.client.data.BaseTreeLoader;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.data.TreeLoader;
-import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.TreeStore;
-import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.grid.*;
+import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
-import com.extjs.gxt.ui.client.widget.treegrid.WidgetTreeGridCellRenderer;
+import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Widget;
 import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -79,45 +77,25 @@ public class JobListPanel extends LayoutContainer {
 
         List<ColumnConfig> config = new ArrayList<ColumnConfig>();
 
-        ColumnConfig column = new ColumnConfig("name", Messages.get("label.name", "Name"), 100);
-        column.setRenderer(new WidgetTreeGridCellRenderer<GWTJahiaJobDetail>() {
-            @Override
-            public Widget getWidget(GWTJahiaJobDetail historyItem, String property, ColumnData config,
-                                    int rowIndex, int colIndex,
-                                    ListStore<GWTJahiaJobDetail> gwtJahiaWorkflowHistoryItemListStore,
-                                    Grid<GWTJahiaJobDetail> grid) {
-                /*
-                if (historyItem instanceof GWTJahiaWorkflowHistoryTask) {
-                    final GWTJahiaWorkflowHistoryProcess parent = (GWTJahiaWorkflowHistoryProcess) ((TreeGrid) grid).getTreeStore().getParent(historyItem);
-                    for (final GWTJahiaWorkflowTask task : parent.getAvailableTasks()) {
-                        if (task.getId().equals(historyItem.getId())) {
-                            Button b = new Button(historyItem.<String>get("displayName"));
-                            b.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                                public void componentSelected(ButtonEvent ce) {
-                                    WorkflowActionDialog dialog = new WorkflowActionDialog((GWTJahiaNode) parent.get("node"), linker);
-                                    dialog.setCustom(parent.getRunningWorkflow().getCustomWorkflowInfo());
-                                    dialog.initExecuteActionDialog(task);
-                                    dialog.show();
-                                    window.hide();
-                                }
-                            });
-                            return b;
-                        }
-                    }
-                }
-                */
-                return new Label(historyItem.<String>get("name"));
-            }
-        });
-        config.add(column);
-
-        column = new ColumnConfig("user", Messages.get("label.user", "User"), 100);
-        config.add(column);
-
-        column = new ColumnConfig("startDate", Messages.get("org.jahia.engines.processDisplay.tab.startdate", "Start date"), 100);
+        ColumnConfig column = new ColumnConfig("creationTime", Messages.get("org.jahia.engines.processDisplay.tab.startdate", "Start date"), 100);
+        column.setRenderer(new TreeGridCellRenderer<GWTJahiaJobDetail>());
         column.setDateTimeFormat(Formatter.DEFAULT_DATETIME_FORMAT);
         config.add(column);
 
+        column = new ColumnConfig("type", Messages.get("label.type", "Type"), 100);
+        config.add(column);
+
+        column = new ColumnConfig("description", Messages.get("label.description", "Description"), 100);
+        config.add(column);
+
+        /*
+        column = new ColumnConfig("name", Messages.get("label.name", "Name"), 100);
+        config.add(column);
+
+        column = new ColumnConfig("group", Messages.get("label.group", "Group"), 100);
+        config.add(column);
+
+        /*
         column = new ColumnConfig("endDate", Messages.get("org.jahia.engines.processDisplay.tab.enddate", "End date"), 100);
         column.setDateTimeFormat(Formatter.DEFAULT_DATETIME_FORMAT);
         config.add(column);
@@ -147,6 +125,7 @@ public class JobListPanel extends LayoutContainer {
             }
         });
         config.add(column);
+        */
 
         ColumnModel cm = new ColumnModel(config);
 
@@ -156,7 +135,7 @@ public class JobListPanel extends LayoutContainer {
         tree.getStyle().setNodeOpenIcon(StandardIconsProvider.STANDARD_ICONS.workflow());
         tree.getStyle().setNodeCloseIcon(StandardIconsProvider.STANDARD_ICONS.workflow());
         tree.getStyle().setLeafIcon(StandardIconsProvider.STANDARD_ICONS.workflowTask());
-        tree.setAutoExpandColumn("name");
+        tree.setAutoExpandColumn("description");
         tree.getTreeView().setRowHeight(25);
         tree.setTrackMouseOver(false);
         add(tree);

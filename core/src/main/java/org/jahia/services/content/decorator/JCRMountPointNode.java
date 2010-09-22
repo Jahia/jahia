@@ -58,7 +58,7 @@ public class JCRMountPointNode extends JCRNodeDecorator {
 
     }
 
-    public boolean checkValidity() {
+    public boolean checkMountPointValidity() {
         try {
             getRootNode();
             return true;

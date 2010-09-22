@@ -81,7 +81,7 @@ public class ContentHubHelper {
                             childNode = (JCRMountPointNode) mounts.addNode(name, "jnt:vfsMountPoint");
                             childNode.setProperty("j:root", root);
 
-                            boolean valid = childNode.checkValidity();
+                            boolean valid = childNode.checkMountPointValidity();
                             if (!valid) {
                                 childNode.remove();
                                 throw new RepositoryException("Invalid path");

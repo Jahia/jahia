@@ -97,7 +97,7 @@ public class UrlMappingEditor extends LayoutContainer {
         @Override
         protected void onMouseDown(GridEvent<ModelData> ge) {
             String cls = ge.getTarget().getClassName();
-            if (cls != null && cls.indexOf("x-grid3-cc-" + getId()) != -1 && cls.indexOf("disabled") == -1) {
+            if (cls != null && (cls.indexOf("x-grid3-cc-" + getId()) != -1 || cls.indexOf("singleselect-" + getId()) != -1) && cls.indexOf("disabled") == -1) {
                 ge.stopEvent();
                 int index = grid.getView().findRowIndex(ge.getTarget());
                 ModelData m = grid.getStore().getAt(index);
@@ -174,7 +174,9 @@ public class UrlMappingEditor extends LayoutContainer {
         configs.add(column);
 
         CheckColumnConfig defaultColumn = new SingleSelectionCheckColumnConfig("default", Messages.get("ece_seo_default", "Default"), 55);
-        defaultColumn.setEditor(new CellEditor(new CheckBox()));
+        CheckBox defaultEditorCB = new CheckBox();
+        defaultEditorCB.addInputStyleName("singleselect-default");
+        defaultColumn.setEditor(new CellEditor(defaultEditorCB));
         configs.add(defaultColumn);
 
         CheckColumnConfig activeColumn = new CheckColumnConfig("active", Messages.get("ece_seo_active", "Active"), 55);

@@ -40,6 +40,7 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheFactory;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRFileContent;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -101,28 +102,38 @@ public class FilesServlet extends HttpServlet {
         p = Text.unescape("/"+StringUtils.substringAfter(p,"/").replaceAll("___",":"));
 
         JCRNodeWrapper n;
+        String v = req.getParameter("v");
+        String l = req.getParameter("l");
         try {
-            n = JCRSessionFactory.getInstance().getCurrentUserSession(workspace).getNode(p);
+            final JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace);
+            if (v != null) {
+                session.setVersionDate(new Date(Long.valueOf(v)));
+            }
+            if (l != null) {
+                session.setVersionLabel(l);
+            }
+
+            n = session.getNode(p);
         } catch (RepositoryException e) {
             logger.error("Error accesing path : "+p+" for user "+(JahiaUser) req.getSession().getAttribute(ProcessingContext.SESSION_USER),e);
             res.sendError(HttpServletResponse.SC_NOT_FOUND,e.getLocalizedMessage());
             return;
         }
 
-        boolean valid = false;
-        String v = req.getParameter("v");
-        if (v != null) {
-            try {
-                n = n.getFrozenVersionAsRegular(new Date(Long.valueOf(v)));
-                if (n != null) {
-                    valid = true;
-                }
-            } catch (RepositoryException e) {
-                //
-            }
-        } else {
-            valid = n.isFile();
-        }
+        boolean valid = n.isFile();;
+//        String v = req.getParameter("v");
+//        if (v != null) {
+//            try {
+//                n = n.getFrozenVersionAsRegular(new Date(Long.valueOf(v)));
+//                if (n != null) {
+//                    valid = true;
+//                }
+//            } catch (RepositoryException e) {
+//                //
+//            }
+//        } else {
+//            valid = n.isFile();
+//        }
 
         if (valid) {
             // check presence of the 'If-Modified-Since' header
@@ -147,7 +158,7 @@ public class FilesServlet extends HttpServlet {
             InputStream is = null;
 
             if (contentLength < cacheThreshold) {
-                String cacheKey = workspace + ":" + p + ":" + (v==null ? "0" : v);
+                String cacheKey = workspace + ":" + p + ":" + (v==null ? "0" : v) + ":" + (l==null ? "" : l);
                 byte[] b = (byte[]) cache.get(cacheKey);
                 if (b == null) {
                     is = fileContent.downloadFile();

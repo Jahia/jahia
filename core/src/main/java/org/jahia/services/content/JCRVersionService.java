@@ -102,7 +102,6 @@ public class JCRVersionService extends JahiaService {
         Set<VersionInfo> versionList = new TreeSet<VersionInfo>();
         while (versions.hasNext()) {
             Version v = versions.nextVersion();
-            JCRNodeWrapper versionNode = node.getFrozenVersion(v.getName());
             Calendar checkinDate = v.getCreated();
             String[] versionLabels = versionHistory.getVersionLabels(v);
             if (versionLabels != null && versionLabels.length > 0) {
@@ -248,7 +247,9 @@ public class JCRVersionService extends JahiaService {
                             versionManager.checkout(path);
                         }
                         // Todo: first get frozen node for thislabel
-                        JCRNodeWrapper frozenVersionAsRegular = nodeWrapper.getFrozenVersionAsRegular(label);
+                        session.setVersionLabel(label);
+
+                        JCRNodeWrapper frozenVersionAsRegular = session.getNodeByUUID(node.getIdentifier());
                         if(frozenVersionAsRegular==null) {
                             throw new RepositoryException("label version " + label + " could not be found on node "+nodeWrapper.getPath());
                         }

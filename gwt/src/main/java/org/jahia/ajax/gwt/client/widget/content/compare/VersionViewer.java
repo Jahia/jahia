@@ -37,7 +37,9 @@ import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
+import com.extjs.gxt.ui.client.widget.Slider;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ToggleButton;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
@@ -58,6 +60,8 @@ import org.jahia.ajax.gwt.client.util.Constants;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbarLayoutContainer;
 
+import java.util.Date;
+
 /**
  * Created by IntelliJ IDEA.
  * User: ktlili
@@ -74,6 +78,7 @@ public class VersionViewer extends ContentPanel {
     private String workspace = "default";
     private Frame currentFrame;
     private ComboBox<GWTJahiaNodeVersion> versionComboBox;
+    private Slider slider;
 
     /**
      * Constructor
@@ -100,6 +105,33 @@ public class VersionViewer extends ContentPanel {
      */
     private void init() {
 
+        slider = new Slider() {
+            @Override protected String onFormatValue(int value) {
+                return DateTimeFormat.getMediumDateTimeFormat().format(new Date((long) value * 1000));
+            }
+        };
+        slider.setMinValue(1285142400);
+        slider.setMaxValue((int) (System.currentTimeMillis() / 1000));
+        slider.setWidth(600);
+        slider.addListener(Events.Change, new Listener<SliderEvent>() {
+            public void handleEvent(SliderEvent be) {
+                contentService
+                        .getNodeURL(currentNode.getPath(), new Date(((long)be.getNewValue())*1000), null, workspace, locale, currentMode,
+                                new BaseAsyncCallback<String>() {
+                                    public void onSuccess(String url) {
+                                        currentFrame = setUrl(url);
+                                        setHeading(url);
+
+                                        unmask();
+                                    }
+
+                                    public void onApplicationFailure(Throwable throwable) {
+                                        Log.error("", throwable);
+                                        unmask();
+                                    }
+                                });
+            }
+        });
 
         // combo box that allows to select the version
         versionComboBox = new ComboBox<GWTJahiaNodeVersion>();
@@ -128,10 +160,10 @@ public class VersionViewer extends ContentPanel {
                             } else if (strings[0].contains("uploaded")) {
                                 s1 = Messages.get("label.version.uploaded", "uploaded at");
                             } else {
-                                s1 = Messages.get("label.version."+strings[0],strings[0]);
+                                s1 = Messages.get("label.version." + strings[0], strings[0]);
                             }
-                            value = value + s1 + " " + DateTimeFormat.getMediumDateTimeFormat().format(
-                                    DateTimeFormat.getFormat("yyyy_MM_dd_HH_mm_ss").parse(strings[1]));
+                            value = value + s1 + " " + DateTimeFormat.getMediumDateTimeFormat()
+                                    .format(DateTimeFormat.getFormat("yyyy_MM_dd_HH_mm_ss").parse(strings[1]));
                         } else {
                             value = version.getLabel();
                         }
@@ -152,16 +184,17 @@ public class VersionViewer extends ContentPanel {
         // load version with pagination
         final ListStore<GWTJahiaNodeVersion> store;
 
-        final RpcProxy<PagingLoadResult<GWTJahiaNodeVersion>> proxy = new RpcProxy<PagingLoadResult<GWTJahiaNodeVersion>>() {
-            @Override
-            public void load(Object loadConfig, AsyncCallback<PagingLoadResult<GWTJahiaNodeVersion>> callback) {
-                loadVersions((PagingLoadConfig) loadConfig, callback);
-            }
-        };
+        final RpcProxy<PagingLoadResult<GWTJahiaNodeVersion>> proxy =
+                new RpcProxy<PagingLoadResult<GWTJahiaNodeVersion>>() {
+                    @Override
+                    public void load(Object loadConfig, AsyncCallback<PagingLoadResult<GWTJahiaNodeVersion>> callback) {
+                        loadVersions((PagingLoadConfig) loadConfig, callback);
+                    }
+                };
 
         // paging loader
-        final PagingLoader<PagingLoadResult<GWTJahiaNodeVersion>> loader = new BasePagingLoader<PagingLoadResult<GWTJahiaNodeVersion>>(
-                proxy);
+        final PagingLoader<PagingLoadResult<GWTJahiaNodeVersion>> loader =
+                new BasePagingLoader<PagingLoadResult<GWTJahiaNodeVersion>>(proxy);
         loader.addListener(Loader.BeforeLoad, new Listener<LoadEvent>() {
             public void handleEvent(LoadEvent be) {
                 be.<ModelData>getConfig().set("start", be.<ModelData>getConfig().get("offset"));
@@ -238,10 +271,15 @@ public class VersionViewer extends ContentPanel {
             setTopComponent(headerToolBar);
         } else {
             // case of th live mode
+            LayoutContainer ctn = new LayoutContainer();
             ToolBar headerToolBar = new ToolBar();
             headerToolBar.add(versionComboBox);
             headerToolBar.add(refresh);
-            setTopComponent(headerToolBar);
+            ctn.add(headerToolBar);
+            ToolBar slideTool = new ToolBar();
+            slideTool.add(slider);
+//            ctn.add(slideTool);
+            setTopComponent(ctn);
         }
 
 
@@ -267,7 +305,7 @@ public class VersionViewer extends ContentPanel {
      * @param callback
      */
     private void loadVersions(PagingLoadConfig loadConfig,
-                              AsyncCallback<PagingLoadResult<GWTJahiaNodeVersion>> callback) {
+                              final AsyncCallback<PagingLoadResult<GWTJahiaNodeVersion>> callback) {
         int limit = 500;
         int offset = 0;
         if (loadConfig != null) {
@@ -276,7 +314,6 @@ public class VersionViewer extends ContentPanel {
         }
 
         JahiaContentManagementService.App.getInstance().getVersions(currentNode, workspace, limit, offset, callback);
-
     }
 
     /**
@@ -287,23 +324,8 @@ public class VersionViewer extends ContentPanel {
             mask();
             if (version == null || (version.getVersionNumber() == null || version.getVersionNumber().length() == 0)) {
                 // version is not specified. Current.
-                contentService.getNodeURL(currentNode.getPath(), null, null, locale, currentMode,
-                                          new BaseAsyncCallback<String>() {
-                                              public void onSuccess(String url) {
-                                                  currentFrame = setUrl(url);
-                                                  setHeading(url);
-
-                                                  unmask();
-                                              }
-
-                                              public void onApplicationFailure(Throwable throwable) {
-                                                  Log.error("", throwable);
-                                                  unmask();
-                                              }
-                                          });
-            } else {
-                contentService.getNodeURL(version.getNode().getPath(), version.getLabel(), workspace, locale,
-                                          currentMode, new BaseAsyncCallback<String>() {
+                contentService.getNodeURL(currentNode.getPath(), null, null, null, locale, currentMode,
+                        new BaseAsyncCallback<String>() {
                             public void onSuccess(String url) {
                                 currentFrame = setUrl(url);
                                 setHeading(url);
@@ -316,6 +338,22 @@ public class VersionViewer extends ContentPanel {
                                 unmask();
                             }
                         });
+            } else {
+                contentService
+                        .getNodeURL(version.getNode().getPath(), version.getDate(), version.getLabel(), workspace, locale, currentMode,
+                                new BaseAsyncCallback<String>() {
+                                    public void onSuccess(String url) {
+                                        currentFrame = setUrl(url);
+                                        setHeading(url);
+
+                                        unmask();
+                                    }
+
+                                    public void onApplicationFailure(Throwable throwable) {
+                                        Log.error("", throwable);
+                                        unmask();
+                                    }
+                                });
             }
         }
     }

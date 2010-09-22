@@ -39,6 +39,7 @@ import org.apache.jackrabbit.util.ISO9075;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.services.content.decorator.JCRFrozenNodeAsRegular;
 import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.impl.jackrabbit.JackrabbitStoreProvider;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -613,7 +614,7 @@ public class JCRStoreProvider {
                         }
                     });
         }
-        final JCRNodeWrapperImpl w = new JCRNodeWrapperImpl(objectNode, null, session, this);
+        final JCRNodeWrapperImpl w = createWrapper(objectNode, null, session);
         if (w.checkValidity()) {
             return service.decorate(w);
         } else {
@@ -631,12 +632,25 @@ public class JCRStoreProvider {
                         }
                     });
         }
-        final JCRNodeWrapperImpl w = new JCRNodeWrapperImpl(objectNode, path, session, this);
+        final JCRNodeWrapperImpl w = createWrapper(objectNode, path, session);
         if (objectNode.isNew() || w.checkValidity()) {
             return service.decorate(w);
         } else {
             throw new PathNotFoundException("This node doesn't exist in this language " + objectNode.getPath());
         }
+    }
+
+    private JCRNodeWrapperImpl createWrapper(Node objectNode, String path, JCRSessionWrapper session) {
+        if (session.getVersionDate() != null || session.getVersionLabel() != null) {
+            try {
+                if (objectNode.isNodeType(Constants.NT_FROZENNODE)) {
+                    return new JCRFrozenNodeAsRegular(objectNode, path, session, this, session.getVersionDate(), session.getVersionLabel());
+                }
+            } catch (RepositoryException e) {
+                e.printStackTrace();
+            }
+        }
+        return new JCRNodeWrapperImpl(objectNode, path, session, this);
     }
 
     public JCRPropertyWrapper getPropertyWrapper(Property prop, JCRSessionWrapper session) throws RepositoryException {
@@ -654,11 +668,11 @@ public class JCRStoreProvider {
             jcrNode = getNodeWrapper(parent.getParent(), session);
             String name = prop.getName();
             ExtendedPropertyDefinition epd = jcrNode.getApplicablePropertyDefinition(name);
-            return new JCRPropertyWrapperImpl(new JCRNodeWrapperImpl(prop.getParent(), null, session, this), prop, session, this, epd, name);
+            return new JCRPropertyWrapperImpl(createWrapper(prop.getParent(), null, session), prop, session, this, epd, name);
         } else {
             jcrNode = getNodeWrapper(prop.getParent(), session);
             ExtendedPropertyDefinition epd = jcrNode.getApplicablePropertyDefinition(prop.getName());
-            return new JCRPropertyWrapperImpl(new JCRNodeWrapperImpl(prop.getParent(), null, session, this), prop, session, this, epd);
+            return new JCRPropertyWrapperImpl(createWrapper(prop.getParent(), null, session), prop, session, this, epd);
         }
     }
 

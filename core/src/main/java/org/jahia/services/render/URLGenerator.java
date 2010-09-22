@@ -189,28 +189,6 @@ public class URLGenerator {
         return studio;
     }
 
-    public String getLive(String versionNumber) {
-        if (versionNumber == null || versionNumber.length() == 0) {
-            return getLive();
-        }
-        return getLive() + "?v=" + versionNumber;
-    }
-
-    public String getEdit(String versionNumber) {
-        if (versionNumber == null || versionNumber.length() == 0) {
-            return getEdit();
-        }
-        return getEdit() + "?v=" + versionNumber;
-    }
-
-    public String getPreview(String versionNumber) {
-        if (versionNumber == null || versionNumber.length() == 0) {
-            return getPreview();
-        }
-        return getPreview() + "?v=" + versionNumber;
-    }
-
-
     public String getFind() {
         return find;
     }

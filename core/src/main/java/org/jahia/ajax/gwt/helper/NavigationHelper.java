@@ -40,9 +40,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflow;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowTask;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
@@ -1224,13 +1222,18 @@ public class NavigationHelper {
                                 n.setUrl(node.getUrl() + "?v=" + v.getCreated().getTime().getTime());
                             }
                             GWTJahiaNodeVersion jahiaNodeVersion = new GWTJahiaNodeVersion(v.getIdentifier(),
-                                    v.getName(), v.getCreated().getTime(), null, string);
+                                    v.getName(), v.getCreated().getTime(), string);
                             jahiaNodeVersion.setNode(n);
                             versions.add(jahiaNodeVersion);
                         }
                     }
                 }
             }
+            Collections.sort(versions, new Comparator<GWTJahiaNodeVersion>() {
+                public int compare(GWTJahiaNodeVersion o1, GWTJahiaNodeVersion o2) {
+                    return o1.getDate().compareTo(o2.getDate());
+                }
+            });
         }
         return versions;
     }
@@ -1249,8 +1252,7 @@ public class NavigationHelper {
             GWTJahiaNode n = getGWTJahiaNode(node);
             n.setUrl(node.getUrl() + "?v=" + versionInfo.getCheckinDate().getTime().getTime());
             GWTJahiaNodeVersion jahiaNodeVersion =
-                    new GWTJahiaNodeVersion(v.getIdentifier(), v.getName(), v.getCreated().getTime(),
-                            versionInfo.getCheckinDate().getTime(), versionInfo.getComment());
+                    new GWTJahiaNodeVersion(v.getIdentifier(), v.getName(), v.getCreated().getTime(), versionInfo.getComment());
             jahiaNodeVersion.setNode(n);
 
             versions.add(jahiaNodeVersion);

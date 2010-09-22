@@ -509,34 +509,9 @@ public class URLResolver {
                                     .getCurrentUserSession(workspace, locale);
                         }
                         try {
+                            userSession.setVersionDate(versionDate);
+                            userSession.setVersionLabel(versionLabel);
                             node = userSession.getNode(nodePath);
-                            // handle version number
-                            if (versionDate != null) {
-                                JCRNodeWrapper versionNode = node
-                                        .getFrozenVersionAsRegular(versionDate);
-                                if (versionNode != null) {
-                                    node = versionNode;
-                                } else {
-                                    logger
-                                            .error("Error while retrieving node with path "
-                                                    + nodePath
-                                                    + " and version "
-                                                    + versionDate);
-                                }
-                            } else if(versionLabel!=null) {
-                                JCRNodeWrapper versionNode = node
-                                        .getFrozenVersionAsRegular(versionLabel);
-                                if (versionNode != null) {
-                                    node = versionNode;
-                                } else {
-                                    logger
-                                            .error("Error while retrieving node with path "
-                                                    + nodePath
-                                                    + " and version "
-                                                    + versionLabel);
-                                }
-                            }
-
                         } catch (PathNotFoundException e) {
                             throw new AccessDeniedException(path);
                         }

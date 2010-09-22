@@ -995,22 +995,14 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public boolean isFile() {
-        try {
-            return objectNode.isNodeType(Constants.NT_FILE);
-        } catch (RepositoryException e) {
-            return false;
-        }
+        return isNodeType(Constants.NT_FILE);
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean isPortlet() {
-        try {
-            return objectNode.isNodeType(Constants.JAHIANT_PORTLET);
-        } catch (RepositoryException e) {
-            return false;
-        }
+        return isNodeType(Constants.JAHIANT_PORTLET);
     }
 
     /**
@@ -1135,7 +1127,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return ((i18NobjectNodes != null && i18NobjectNodes.containsKey(locale)) || objectNode.hasNode("j:translation_" + locale));
     }
 
-    private Node getI18N(Locale locale, boolean fallback) throws RepositoryException {
+    protected Node getI18N(Locale locale, boolean fallback) throws RepositoryException {
         //getSession().getLocale()
         if (i18NobjectNodes == null) {
             i18NobjectNodes = new HashMap<Locale, Node>();
@@ -2075,7 +2067,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
         if (session.getLocale() != null && !isNodeType(Constants.JAHIANT_TRANSLATION) && hasI18N(session.getLocale())) {
             Node trans = getI18N(session.getLocale(), false);
-            unlock(trans, type);
+            if (trans.isLocked()) {
+                unlock(trans, type);
+            }
         }
 
         if (!isNodeType(Constants.JAHIANT_TRANSLATION) && !getLockedLocales(type).isEmpty()) {
@@ -2087,11 +2081,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     private void unlock(final Node objectNode, String type) throws RepositoryException {
-        if (hasProperty("j:locktoken")) {
+        if (objectNode.hasProperty("j:locktoken")) {
             Property property = objectNode.getProperty("j:locktoken");
             String token = property.getString();
             Value[] types = objectNode.getProperty(Constants.JAHIA_LOCKTYPES).getValues();
             for (Value value : types) {
+                objectNode.getSession().addLockToken(token);
                 String owner = StringUtils.substringBefore(value.getString(), ":");
                 String currentType = StringUtils.substringAfter(value.getString(), ":");
                 if (currentType.equals(type)) {
@@ -2105,7 +2100,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                             objectNode.checkout();
                         }
                         if (valueList.isEmpty()) {
-                            objectNode.getSession().addLockToken(token);
                             objectNode.unlock();
                             property.remove();
                             objectNode.getProperty(Constants.JAHIA_LOCKTYPES).remove();
@@ -2243,69 +2237,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public List<VersionInfo> getVersionInfos() throws RepositoryException {
         return ServicesRegistry.getInstance().getJCRVersionService().getVersionInfos(session, this);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public JCRNodeWrapper getFrozenVersion(String name) {
-        try {
-            Version v = getSession().getWorkspace().getVersionManager().getVersionHistory(getPath()).getVersion(name);
-            Node frozen = v.getNode(Constants.JCR_FROZENNODE);
-            return provider.getNodeWrapper(frozen, session);
-        } catch (RepositoryException e) {
-            logger.error("Error while retrieving frozen version", e);
-        }
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public JCRNodeWrapper getFrozenVersionAsRegular(Date versionDate) throws RepositoryException {
-        try {
-            VersionHistory vh = objectNode.getSession().getWorkspace().getVersionManager().getVersionHistory(objectNode.getPath());
-            Version v = JCRVersionService.findClosestVersion(vh, versionDate);
-            if (v == null) {
-                throw new PathNotFoundException();
-            }
-            Node frozen = v.getNode(Constants.JCR_FROZENNODE);
-            if(session.getVersionDate()==null)
-                session.setVersionDate(versionDate);
-            return new JCRFrozenNodeAsRegular(provider.getNodeWrapper(frozen, session), versionDate,getSession().getVersionLabel());
-        } catch (UnsupportedRepositoryOperationException e) {
-            if (getSession().getVersionDate() == null && getSession().getVersionLabel()==null) {
-                logger.error("Error while retrieving frozen version", e);
-            }
-        }
-        return null;
-    }
-
-    public JCRNodeWrapper getFrozenVersionAsRegular(String versionLabel) {
-        try {
-            VersionHistory vh = objectNode.getSession().getWorkspace().getVersionManager().getVersionHistory(objectNode.getPath());
-            Version v = JCRVersionService.findVersionByLabel(vh, versionLabel);
-            if (v == null) {
-                return null;
-            }
-            Node frozen = v.getNode(Constants.JCR_FROZENNODE);
-            Date date = v.getCreated().getTime();
-            JCRFrozenNodeAsRegular frozenNodeAsRegular = new JCRFrozenNodeAsRegular(provider.getNodeWrapper(frozen,
-                                                                                                            session),
-                                                                                    date,versionLabel);
-            if(session.getVersionDate()==null)
-                session.setVersionDate(date);
-            if(session.getVersionLabel()==null)
-                session.setVersionLabel(versionLabel);
-            return frozenNodeAsRegular;
-        } catch (UnsupportedRepositoryOperationException e) {
-            if (getSession().getVersionDate() == null && getSession().getVersionLabel()==null) {
-                logger.error("Error while retrieving frozen version", e);
-            }
-        } catch (RepositoryException e) {
-            logger.error("Error while retrieving frozen version", e);
-        }
-        return null;
     }
 
     /**
@@ -3081,12 +3012,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             String path = getPath();
             if (path.startsWith("/sites/")) {
                 int index = path.indexOf('/', 7);
-                return (site = new JCRSiteNode(getSession().getNode(index==-1?path:path.substring(0, index))));
+                return (site = (JCRSiteNode) (getSession().getNode(index==-1?path:path.substring(0, index))));
             }
 
             if (path.startsWith("/templateSets/")) {
                 int index = path.indexOf('/', 14);
-                return (site = new JCRSiteNode(getSession().getNode(index==-1?path:path.substring(0, index))));
+                return (site = (JCRSiteNode) (getSession().getNode(index==-1?path:path.substring(0, index))));
             }
         } catch (ItemNotFoundException e) {
         }

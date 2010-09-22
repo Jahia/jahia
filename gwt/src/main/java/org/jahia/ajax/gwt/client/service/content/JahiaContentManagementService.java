@@ -55,6 +55,7 @@ import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryIt
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.util.URL;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -186,7 +187,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     public GWTRenderResult getRenderedContent(String path, String workspace, String locale, String template, String configuration, Map<String, String> contextParams, boolean editMode, String configName) throws GWTJahiaServiceException;
 
-    public String getNodeURL(String path, String version, String workspace, String locale, int mode) throws GWTJahiaServiceException;
+    public String getNodeURL(String path, Date versionDate, String versionLabel, String workspace, String locale, int mode) throws GWTJahiaServiceException;
 
     public void importContent(String parentPath, String fileKey) throws GWTJahiaServiceException;
 

@@ -38,7 +38,9 @@ import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.apache.jackrabbit.value.ValueFactoryImpl;
 import org.apache.log4j.Logger;
 import org.apache.xerces.jaxp.SAXParserFactoryImpl;
+import org.jahia.api.Constants;
 import org.jahia.services.content.decorator.JCRFrozenNode;
+import org.jahia.services.content.decorator.JCRFrozenNodeAsRegular;
 import org.jahia.services.importexport.DocumentViewExporter;
 import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.usermanager.JahiaUser;
@@ -53,7 +55,9 @@ import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.retention.RetentionManager;
 import javax.jcr.security.AccessControlManager;
+import javax.jcr.version.Version;
 import javax.jcr.version.VersionException;
+import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionManager;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -166,14 +170,11 @@ public class JCRSessionWrapper implements Session {
     }
 
     public JCRNodeWrapper getNodeByUUID(String uuid) throws ItemNotFoundException, RepositoryException {
-        return getNodeByUUID(uuid,true);
+        return getNodeByUUID(uuid, true);
     }
 
-    public JCRNodeWrapper getNodeByUUID(String uuid,boolean checkVersion) throws ItemNotFoundException, RepositoryException {
-        return getNodeByUUID(uuid,checkVersion,versionDate,versionLabel);
-    }
-
-    public JCRNodeWrapper getNodeByUUID(final String uuid, final boolean checkVersion, final Date versionDate, final String versionLabel) throws ItemNotFoundException, RepositoryException {
+    public JCRNodeWrapper getNodeByUUID(final String uuid, final boolean checkVersion)
+            throws ItemNotFoundException, RepositoryException {
         for (JCRStoreProvider provider : sessionFactory.getProviderList()) {
             if (!provider.isInitialized()) {
                 logger.debug("Provider " + provider.getKey() + " / " + provider.getClass().getName() +
@@ -182,30 +183,25 @@ public class JCRSessionWrapper implements Session {
             }
             try {
                 Session session = getProviderSession(provider);
-                if(session instanceof JahiaSessionImpl && getUser()!=null &&
-                   sessionFactory.getCurrentAliasedUser()!=null &&
-                   sessionFactory.getCurrentAliasedUser().equals(getUser())) {
-                   ((JahiaSessionImpl)session).setJahiaAttributes("isAliasedUser",Boolean.TRUE);
+                if (session instanceof JahiaSessionImpl && getUser() != null &&
+                        sessionFactory.getCurrentAliasedUser() != null &&
+                        sessionFactory.getCurrentAliasedUser().equals(getUser())) {
+                    ((JahiaSessionImpl) session).setJahiaAttributes("isAliasedUser", Boolean.TRUE);
                 }
                 Node n = session.getNodeByIdentifier(uuid);
                 JCRNodeWrapper wrapper = provider.getNodeWrapper(n, this);
-                if(getUser()!=null && sessionFactory.getCurrentAliasedUser()!=null && !sessionFactory.getCurrentAliasedUser().equals(getUser())) {
-                    JCRTemplate.getInstance().doExecuteWithUserSession(
-                            sessionFactory.getCurrentAliasedUser().getUsername(), session.getWorkspace().getName(),
-                            getLocale(), new JCRCallback<Object>() {
-                                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                                    return session.getNodeByUUID(uuid, checkVersion, versionDate, versionLabel);
-                                }
-                            });
+                if (getUser() != null && sessionFactory.getCurrentAliasedUser() != null &&
+                        !sessionFactory.getCurrentAliasedUser().equals(getUser())) {
+                    JCRTemplate.getInstance()
+                            .doExecuteWithUserSession(sessionFactory.getCurrentAliasedUser().getUsername(),
+                                    session.getWorkspace().getName(), getLocale(), new JCRCallback<Object>() {
+                                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                                            return session.getNodeByUUID(uuid, checkVersion);
+                                        }
+                                    });
                 }
-                if(checkVersion){
-                    JCRNodeWrapper versionAsRegular = null;
-                    if(versionLabel!=null)
-                        versionAsRegular = wrapper.getFrozenVersionAsRegular(versionLabel);
-                    if(versionAsRegular == null && versionDate!=null)
-                        versionAsRegular = wrapper.getFrozenVersionAsRegular(versionDate);
-                    if(versionAsRegular!=null)
-                        wrapper = versionAsRegular;
+                if (checkVersion  && (versionDate != null || versionLabel != null)) {
+                    wrapper = getFrozenVersionAsRegular(n, provider);
                 }
                 return wrapper;
             } catch (ItemNotFoundException ee) {
@@ -234,9 +230,11 @@ public class JCRSessionWrapper implements Session {
     }
 
     public JCRItemWrapper getItem(String path) throws PathNotFoundException, RepositoryException {
-        return getItem(path,true);
+        return getItem(path, true);
     }
-    public JCRItemWrapper getItem(String path, final boolean checkVersion) throws PathNotFoundException, RepositoryException {
+
+    public JCRItemWrapper getItem(String path, final boolean checkVersion)
+            throws PathNotFoundException, RepositoryException {
         Map<String, JCRStoreProvider> dynamicMountPoints = sessionFactory.getDynamicMountPoints();
         for (Map.Entry<String, JCRStoreProvider> mp : dynamicMountPoints.entrySet()) {
             if (path.startsWith(mp.getKey() + "/")) {
@@ -264,39 +262,29 @@ public class JCRSessionWrapper implements Session {
                 }
 //                Item item = getProviderSession(provider).getItem(localPath);
                 Session session = getProviderSession(provider);
-                if(session instanceof JahiaSessionImpl && getUser()!=null &&
-                   sessionFactory.getCurrentAliasedUser()!=null &&
-                   sessionFactory.getCurrentAliasedUser().equals(getUser())) {
-                   ((JahiaSessionImpl)session).setJahiaAttributes("isAliasedUser",Boolean.TRUE);
+                if (session instanceof JahiaSessionImpl && getUser() != null &&
+                        sessionFactory.getCurrentAliasedUser() != null &&
+                        sessionFactory.getCurrentAliasedUser().equals(getUser())) {
+                    ((JahiaSessionImpl) session).setJahiaAttributes("isAliasedUser", Boolean.TRUE);
                 }
                 Item item = session.getItem(provider.getRelativeRoot() + localPath);
                 if (item.isNode()) {
-                    JCRNodeWrapper wrapper = provider.getNodeWrapper((Node) item, localPath, this);
-                    if (getUser()!=null && sessionFactory.getCurrentAliasedUser() != null &&
-                        !sessionFactory.getCurrentAliasedUser().equals(getUser())) {
+                    final Node node = (Node) item;
+                    JCRNodeWrapper wrapper = provider.getNodeWrapper(node, localPath, this);
+                    if (getUser() != null && sessionFactory.getCurrentAliasedUser() != null &&
+                            !sessionFactory.getCurrentAliasedUser().equals(getUser())) {
                         final JCRNodeWrapper finalWrapper = wrapper;
-                        JCRTemplate.getInstance().doExecuteWithUserSession(
-                                sessionFactory.getCurrentAliasedUser().getUsername(), getWorkspace().getName(),
-                                getLocale(), new JCRCallback<Object>() {
-                                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                                        return session.getNodeByUUID(finalWrapper.getIdentifier(), checkVersion,
-                                                versionDate, versionLabel);
-                                    }
-                                });
+                        JCRTemplate.getInstance()
+                                .doExecuteWithUserSession(sessionFactory.getCurrentAliasedUser().getUsername(),
+                                        getWorkspace().getName(), getLocale(), new JCRCallback<Object>() {
+                                            public Object doInJCR(JCRSessionWrapper session)
+                                                    throws RepositoryException {
+                                                return session.getNodeByUUID(finalWrapper.getIdentifier(), checkVersion);
+                                            }
+                                        });
                     }
-                    if(checkVersion) {
-                    if (!(wrapper instanceof JCRFrozenNode)) {
-                        JCRNodeWrapper versionAsRegular = null;
-                        if (versionLabel != null) {
-                            versionAsRegular = wrapper.getFrozenVersionAsRegular(versionLabel);
-                        }
-                        if (versionAsRegular == null && versionDate != null) {
-                            versionAsRegular = wrapper.getFrozenVersionAsRegular(versionDate);
-                        } 
-                        if (versionAsRegular != null) {
-                            wrapper = versionAsRegular;
-                        }
-                    }
+                    if (checkVersion && (versionDate != null || versionLabel != null) && node.isNodeType("mix:versionable")) {
+                        wrapper = getFrozenVersionAsRegular(node, provider);
                     }
                     return wrapper;
                 } else {
@@ -310,8 +298,9 @@ public class JCRSessionWrapper implements Session {
     public JCRNodeWrapper getNode(String path) throws PathNotFoundException, RepositoryException {
         return getNode(path, true);
     }
-    public JCRNodeWrapper getNode(String path,boolean checkVersion) throws PathNotFoundException, RepositoryException {
-        JCRItemWrapper item = getItem(path,checkVersion);
+
+    public JCRNodeWrapper getNode(String path, boolean checkVersion) throws PathNotFoundException, RepositoryException {
+        JCRItemWrapper item = getItem(path, checkVersion);
         if (item.isNode()) {
             return (JCRNodeWrapper) item;
         } else {
@@ -438,8 +427,8 @@ public class JCRSessionWrapper implements Session {
                 }
             } catch (RepositoryException e) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Prefix/uri could not be registered in workspace's registry- "
-                            + prefix + "/" + uri, e);
+                    logger.debug("Prefix/uri could not be registered in workspace's registry- " + prefix + "/" + uri,
+                            e);
                 }
             }
         }
@@ -823,7 +812,7 @@ public class JCRSessionWrapper implements Session {
     }
 
     public void setVersionDate(Date versionDate) {
-        if(this.versionDate==null) {
+        if (this.versionDate == null) {
             this.versionDate = versionDate;
         } else {
             throw new RuntimeException("Should not change versionDate on a session in same thread");
@@ -831,11 +820,42 @@ public class JCRSessionWrapper implements Session {
     }
 
     public void setVersionLabel(String versionLabel) {
-        if(this.versionLabel==null) {
+        if (this.versionLabel == null) {
             this.versionLabel = versionLabel;
         } else {
             throw new RuntimeException("Should not change versionDate on a session in same thread");
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public JCRNodeWrapper getFrozenVersionAsRegular(Node objectNode, JCRStoreProvider provider) throws RepositoryException {
+        try {
+            VersionHistory vh =
+                    objectNode.getSession().getWorkspace().getVersionManager().getVersionHistory(objectNode.getPath());
+
+            Version v = null;
+            if (versionLabel != null) {
+                v = JCRVersionService.findVersionByLabel(vh, versionLabel);
+            }
+            if (v == null && versionDate != null) {
+                v = JCRVersionService.findClosestVersion(vh, versionDate);
+            }
+
+            if (v == null) {
+                throw new PathNotFoundException();
+            }
+
+            Node frozen = v.getNode(Constants.JCR_FROZENNODE);
+
+            return provider.getNodeWrapper(frozen, this);
+        } catch (UnsupportedRepositoryOperationException e) {
+            if (getVersionDate() == null && getVersionLabel() == null) {
+                logger.error("Error while retrieving frozen version", e);
+            }
+        }
+        return null;
     }
 
 }

@@ -1016,9 +1016,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                         getResponse(), retrieveCurrentSession());
     }
 
-    public String getNodeURL(String path, String version, String workspace, String locale, int mode)
+    public String getNodeURL(String path, Date versionDate, String versionLabel, String workspace, String locale, int mode)
             throws GWTJahiaServiceException {
-        return this.template.getNodeURL(path, version, mode, getRequest(), getResponse(),
+        return this.template.getNodeURL(path, versionDate, versionLabel, mode, getRequest(), getResponse(),
                 retrieveCurrentSession(workspace != null ? workspace : getWorkspace(),
                         locale != null ? LanguageCodeConverters.languageCodeToLocale(locale) : getLocale()));
     }

@@ -51,6 +51,7 @@ import org.jahia.ajax.gwt.client.data.workflow.*;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryItem;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -178,7 +179,7 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void getRenderedContent(String path, String workspace, String locale, String template, String configuration, Map<String, String> contextParams, boolean editMode, String configName, AsyncCallback<GWTRenderResult> async);
 
-    void getNodeURL(String path, String version, String workspace, String locale, int mode, AsyncCallback<String> async);
+    void getNodeURL(String path, Date versionDate, String versionLabel, String workspace, String locale, int mode, AsyncCallback<String> async);
 
     void importContent(String parentPath, String fileKey, AsyncCallback async);
 

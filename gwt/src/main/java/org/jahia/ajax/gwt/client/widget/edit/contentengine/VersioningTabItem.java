@@ -175,7 +175,7 @@ public class VersioningTabItem extends EditEngineTabItem {
                                     }
                                 }
                             } else {
-                                service.getNodeURL(el.getPath(), version.getLabel(), "default", locale.getLanguage(),
+                                service.getNodeURL(el.getPath(), version.getDate(), version.getLabel(), "default", locale.getLanguage(),
                                         Constants.MODE_PREVIEW, new BaseAsyncCallback<String>() {
                                             public void onSuccess(String result) {
                                                 final com.extjs.gxt.ui.client.widget.Window dl =

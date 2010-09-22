@@ -165,20 +165,7 @@ public class TemplateHelper {
      * @param currentUserSession
      * @return
      */
-    public String getNodeURL(String path, int mode, HttpServletRequest request, HttpServletResponse response,
-                             JCRSessionWrapper currentUserSession) {
-        return getNodeURL(path, null, mode, request, response, currentUserSession);
-    }
-
-    /**
-     * Get node url depending
-     *
-     * @param request
-     * @param response
-     * @param currentUserSession
-     * @return
-     */
-    public String getNodeURL(String path, String versionNumber, int mode, HttpServletRequest request,
+    public String getNodeURL(String path, Date versionDate, String versionLabel, int mode, HttpServletRequest request,
                              HttpServletResponse response, JCRSessionWrapper currentUserSession) {
         try {
             final JCRSessionWrapper session = currentUserSession;
@@ -198,13 +185,22 @@ public class TemplateHelper {
             renderContext.setMainResource(resource);
 
             final URLGenerator urlGenerator = new URLGenerator(renderContext, resource);
+            String url;
             if (mode == LIVE) {
-                return urlGenerator.getLive(versionNumber);
+                 url = urlGenerator.getLive();
             } else if (mode == PREVIEW) {
-                return urlGenerator.getPreview(versionNumber);
+                url = urlGenerator.getPreview();
             } else {
-                return urlGenerator.getEdit(versionNumber);
+                url = urlGenerator.getEdit();
             }
+            if (versionDate != null) {
+                url += "?v=" + (versionDate.getTime()) ;
+                if (versionLabel != null) {
+                    url += "&l="+versionLabel;
+                }
+            }
+
+            return url;
         } catch (RepositoryException e) {
             logger.error(e, e);
             return "";

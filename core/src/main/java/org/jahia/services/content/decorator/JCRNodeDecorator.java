@@ -290,18 +290,14 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getVersions();
     }
 
-    public JCRNodeWrapper getFrozenVersion(String name) {
-        return node.getFrozenVersion(name);
-    }
-
-    public JCRNodeWrapper getFrozenVersionAsRegular(Date versionDate)  throws RepositoryException {
-        return node.getFrozenVersionAsRegular(versionDate);
-    }
-
-    public JCRNodeWrapper getFrozenVersionAsRegular(String versionLabel) throws RepositoryException {
-        return node.getFrozenVersionAsRegular(versionLabel);
-    }
-
+    //    public JCRNodeWrapper getFrozenVersionAsRegular(Date versionDate)  throws RepositoryException {
+//        return node.getFrozenVersionAsRegular(versionDate);
+//    }
+//
+//    public JCRNodeWrapper getFrozenVersionAsRegular(String versionLabel) throws RepositoryException {
+//        return node.getFrozenVersionAsRegular(versionLabel);
+//    }
+//
     public JCRStoreProvider getJCRProvider() {
         return node.getJCRProvider();
     }

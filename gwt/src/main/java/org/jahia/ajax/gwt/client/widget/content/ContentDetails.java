@@ -253,7 +253,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
     }
 
     public boolean isMultipleSelection() {
-        return selectedNodes.size() > 1;
+        return selectedNodes != null && selectedNodes.size() > 1;
     }
 
     public Map<String, GWTJahiaNodeProperty> getProperties() {

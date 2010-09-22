@@ -58,6 +58,8 @@ public class ClipboardActionItem extends BaseActionItem {
     private transient List<List<GWTJahiaNode>> copiedStuff = new ArrayList<List<GWTJahiaNode>>();
     private transient MenuItem clearAll;
 
+    protected ClipboardActionItem() {}
+
     @Override public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
         super.init(gwtToolbarItem, linker);
 
@@ -83,6 +85,7 @@ public class ClipboardActionItem extends BaseActionItem {
     }
 
     public static void setCopied(List<GWTJahiaNode> copiedPath) {
+        if (instance == null) instance = new ClipboardActionItem();
         instance.copiedStuff.add(0,copiedPath);
         if (instance.copiedStuff.size() == 10) {
             instance.copiedStuff.remove(9);
@@ -91,18 +94,21 @@ public class ClipboardActionItem extends BaseActionItem {
     }
 
     private static void refreshView() {
-        Button b = (Button) instance.getTextToolItem();
-        if (instance.copiedStuff.isEmpty()) {
-            b.setText(null);
-            b.setVisible(false);
-        } else {
-            final List<GWTJahiaNode> copiedNodes = instance.copiedStuff.get(0);
-            if (copiedNodes.size() > 1) {
-                b.setText(copiedNodes.size() + " "+Messages.get("label.items", " Items"));
+        if (instance == null) instance = new ClipboardActionItem();
+        if (instance.linker != null ) {
+            Button b = (Button) instance.getTextToolItem();
+            if (instance.copiedStuff.isEmpty()) {
+                b.setText(null);
+                b.setVisible(false);
             } else {
-                b.setText(Messages.get("label.clipboard","Clipboard")+": "+copiedNodes.get(0).getDisplayName());
+                final List<GWTJahiaNode> copiedNodes = instance.copiedStuff.get(0);
+                if (copiedNodes.size() > 1) {
+                    b.setText(copiedNodes.size() + " "+Messages.get("label.items", " Items"));
+                } else {
+                    b.setText(Messages.get("label.clipboard","Clipboard")+": "+copiedNodes.get(0).getDisplayName());
+                }
+                b.setVisible(true);
             }
-            b.setVisible(true);
         }
     }
 

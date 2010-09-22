@@ -21,6 +21,7 @@
             <site-permissions jcr:primaryType="jnt:permission"/>
             <analytics jcr:primaryType="jnt:permission"/>
             <urlmapping jcr:primaryType="jnt:permission"/>            
+            <templates jcr:primaryType="jnt:permission"/>
         </admin>
         <edit-mode jcr:primaryType="jnt:permissionGroup">
             <analytics jcr:primaryType="jnt:permission"/>

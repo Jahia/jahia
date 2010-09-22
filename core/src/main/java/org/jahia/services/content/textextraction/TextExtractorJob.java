@@ -48,17 +48,17 @@ import org.quartz.JobExecutionContext;
  */
 public class TextExtractorJob extends BackgroundJob {
     public static final String EXTRACTION_TYPE = "textextraction";
-    static final String PATH = "path";
-    static final String PROVIDER = "provider";
-    static final String EXTRACTNODE_PATH = "extractnode-path";
+    public static final String JOB_PATH = "path";
+    public static final String JOB_PROVIDER = "provider";
+    public static final String JOB_EXTRACTNODE_PATH = "extractnode-path";
 
     private static Logger logger = Logger.getLogger(TextExtractorJob.class);
-    
+
     public void executeJahiaJob(JobExecutionContext jobExecutionContext) throws Exception {
         JobDataMap data = jobExecutionContext.getJobDetail().getJobDataMap();
-        String path = (String) data.get(PATH);
-        String providerPath = (String) data.get(PROVIDER);
-        String extractNodePath = (String) data.get(EXTRACTNODE_PATH);        
+        String path = (String) data.get(JOB_PATH);
+        String providerPath = (String) data.get(JOB_PROVIDER);
+        String extractNodePath = (String) data.get(JOB_EXTRACTNODE_PATH);
         JCRStoreProvider provider = JCRSessionFactory.getInstance().getProvider(providerPath);
 
         if (logger.isDebugEnabled()) {

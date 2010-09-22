@@ -32,43 +32,28 @@
 
 package org.jahia.services.content.textextraction;
 
-import java.io.IOException;
-import java.util.Calendar;
-import java.util.Locale;
-
-import javax.jcr.AccessDeniedException;
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.Property;
-import javax.jcr.PropertyType;
-import javax.jcr.RepositoryException;
-import javax.jcr.nodetype.ConstraintViolationException;
-import javax.jcr.observation.Event;
-import javax.jcr.observation.EventIterator;
-
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
-import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.params.ProcessingContext;
-import org.jahia.services.content.DefaultEventListener;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.*;
 import org.jahia.services.content.rules.ExtractionService;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 
+import javax.jcr.*;
+import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.observation.Event;
+import javax.jcr.observation.EventIterator;
+import java.io.IOException;
+import java.util.Calendar;
+
 /**
  * JCR event listener to trigger text extracting for binary content.
- * 
+ *
  * @author Thomas Draier
  * @author Sergiy Shyrkov
  */
@@ -135,7 +120,7 @@ public class TextExtractionListener extends DefaultEventListener {
     }
 
     public String[] getNodeTypes() {
-        return new String[] { Constants.JAHIANT_RESOURCE };
+        return new String[]{Constants.JAHIANT_RESOURCE};
     }
 
     public String getPath() {
@@ -185,8 +170,8 @@ public class TextExtractionListener extends DefaultEventListener {
         JobDetail jobDetail = BackgroundJob.createJahiaJob("Text extraction for " + fileNode.getName(),
                 TextExtractorJob.class);
         JobDataMap jobDataMap = jobDetail.getJobDataMap();
-        jobDataMap.put(TextExtractorJob.PROVIDER, fileNode.getProvider().getMountPoint());
-        jobDataMap.put(TextExtractorJob.PATH, fileNode.getPath());
+        jobDataMap.put(TextExtractorJob.JOB_PROVIDER, fileNode.getProvider().getMountPoint());
+        jobDataMap.put(TextExtractorJob.JOB_PATH, fileNode.getPath());
         jobDataMap.put(BackgroundJob.JOB_TYPE, TextExtractorJob.EXTRACTION_TYPE);
 
         if (logger.isDebugEnabled()) {

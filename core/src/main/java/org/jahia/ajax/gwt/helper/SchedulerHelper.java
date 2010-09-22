@@ -5,9 +5,14 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.content.PublicationInfo;
 import org.jahia.services.content.PublicationJob;
+import org.jahia.services.content.rules.ActionJob;
+import org.jahia.services.content.rules.RuleJob;
+import org.jahia.services.content.textextraction.TextExtractorJob;
+import org.jahia.services.importexport.ImportJob;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 
 import java.util.ArrayList;
@@ -36,17 +41,34 @@ public class SchedulerHelper {
     private List<GWTJahiaJobDetail> convertToGWTJobs(List<JobDetail> jobDetails, Locale locale) {
         List<GWTJahiaJobDetail> jobs = new ArrayList<GWTJahiaJobDetail>();
         for (JobDetail jobDetail : jobDetails) {
-            final String type = (String) jobDetail.getJobDataMap().get(BackgroundJob.JOB_TYPE);
-            final Date created = (Date) jobDetail.getJobDataMap().get(BackgroundJob.JOB_CREATED);
-            final String status = (String) jobDetail.getJobDataMap().get(BackgroundJob.JOB_STATUS);
-            final String user = (String) jobDetail.getJobDataMap().get(BackgroundJob.JOB_USERKEY);
-            final String message = (String) jobDetail.getJobDataMap().get(BackgroundJob.JOB_USERKEY);
+            JobDataMap jobDataMap = jobDetail.getJobDataMap();
+            final String type = jobDataMap.getString(BackgroundJob.JOB_TYPE);
+            final Date created = (Date) jobDataMap.get(BackgroundJob.JOB_CREATED);
+            final String status = jobDataMap.getString(BackgroundJob.JOB_STATUS);
+            final String user = jobDataMap.getString(BackgroundJob.JOB_USERKEY);
+            final String message = jobDataMap.getString(BackgroundJob.JOB_MESSAGE);
             final List<String> relatedPaths = new ArrayList<String>();
             if (PublicationJob.PUBLICATION_TYPE.equals(type)) {
-                List<PublicationInfo> publicationInfos = (List<PublicationInfo>) jobDetail.getJobDataMap().get(PublicationJob.PUBLICATION_INFOS);
+                List<PublicationInfo> publicationInfos = (List<PublicationInfo>) jobDataMap.get(PublicationJob.PUBLICATION_INFOS);
                 for (PublicationInfo publicationInfo : publicationInfos) {
                     relatedPaths.add(publicationInfo.getRoot().getPath());
                 }
+            } else if (ImportJob.IMPORT_TYPE.equals(type)) {
+                String uri = (String) jobDataMap.get(ImportJob.URI);
+                relatedPaths.add(uri);
+            } else if (ActionJob.ACTION_TYPE.equals(type)) {
+                String actionToExecute = jobDataMap.getString(ActionJob.JOB_ACTION_TO_EXECUTE);
+                String nodeUUID = jobDataMap.getString(ActionJob.JOB_NODE_UUID);
+            } else if (RuleJob.RULE_TYPE.equals(type)) {
+                String ruleToExecute = jobDataMap.getString(RuleJob.JOB_RULE_TO_EXECUTE);
+                String nodeUUID = jobDataMap.getString(RuleJob.JOB_NODE_UUID);
+                String workspace = jobDataMap.getString(RuleJob.JOB_WORKSPACE);
+            } else if (TextExtractorJob.EXTRACTION_TYPE.equals(type)) {
+                String path = jobDataMap.getString(TextExtractorJob.JOB_PATH);
+                String provider = jobDataMap.getString(TextExtractorJob.JOB_PROVIDER);
+                String extractNodePath = jobDataMap.getString(TextExtractorJob.JOB_EXTRACTNODE_PATH);
+                relatedPaths.add(path);
+                relatedPaths.add(extractNodePath);
             }
             GWTJahiaJobDetail job = new GWTJahiaJobDetail(jobDetail.getName(), type, created, user, jobDetail.getDescription(),
                     status, message, relatedPaths,

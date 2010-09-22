@@ -1,13 +1,16 @@
 package org.jahia.ajax.gwt.client.widget.job;
 
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BaseTreeLoader;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.data.TreeLoader;
 import com.extjs.gxt.ui.client.store.TreeStore;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -36,7 +39,7 @@ public class JobListPanel extends LayoutContainer {
     private Linker linker;
 
     public JobListPanel(JobListWindow window, Linker linker) {
-        super(new FitLayout());
+        super(new BorderLayout());
 
         this.linker = linker;
         this.window = window;
@@ -147,7 +150,20 @@ public class JobListPanel extends LayoutContainer {
         tree.setAutoExpandColumn("description");
         tree.getTreeView().setRowHeight(25);
         tree.setTrackMouseOver(false);
-        add(tree);
+        BorderLayoutData centerData = new BorderLayoutData(Style.LayoutRegion.CENTER);
+        add(tree, centerData);
+
+        ContentPanel detailPanel = new ContentPanel();
+        detailPanel.setBorders(true);
+        detailPanel.setBodyBorder(true);
+        detailPanel.setHeaderVisible(true);
+        detailPanel.setHeading(Messages.get("label.details", "Details"));
+
+        BorderLayoutData southData = new BorderLayoutData(Style.LayoutRegion.SOUTH, 200);
+        southData.setSplit(true);
+        southData.setCollapsible(true);
+        add(detailPanel, southData);
+
     }
 
 

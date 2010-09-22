@@ -45,16 +45,22 @@ import java.util.List;
 public class RuleJob extends BackgroundJob {
     private static transient Logger logger = Logger.getLogger(RuleJob.class);
 
+    public static final String RULE_TYPE = "rule";
+    public static final String JOB_NODE_UUID = "node";
+    public static final String JOB_RULE_TO_EXECUTE = "ruleToExecute";
+    public static final String JOB_WORKSPACE = "workspace";
+    public static final String JOB_USER = "user";
+
     @Override
     public void executeJahiaJob(JobExecutionContext jobExecutionContext) throws Exception {
         final JobDataMap map = jobExecutionContext.getJobDetail().getJobDataMap();
         AddedNodeFact wrapper = null;
         List<Object> list = new ArrayList<Object>();
         final JCRSessionWrapper jcrSessionWrapper = JCRSessionFactory.getInstance().getCurrentUserSession();
-        wrapper = new AddedNodeFact(jcrSessionWrapper.getNodeByUUID(map.getString("node")));
-        list.add(new JobRuleExecution(map.getString("ruleToExecute"), wrapper));
-        final RulesListener listener = RulesListener.getInstance(map.getString("workspace"));
-        listener.executeRules(list, listener.getGlobals(map.getString("user"), new ArrayList<Updateable>()));
+        wrapper = new AddedNodeFact(jcrSessionWrapper.getNodeByUUID(map.getString(JOB_NODE_UUID)));
+        list.add(new JobRuleExecution(map.getString(JOB_RULE_TO_EXECUTE), wrapper));
+        final RulesListener listener = RulesListener.getInstance(map.getString(JOB_WORKSPACE));
+        listener.executeRules(list, listener.getGlobals(map.getString(JOB_USER), new ArrayList<Updateable>()));
         jcrSessionWrapper.save();
     }
 }

@@ -67,9 +67,10 @@ import java.util.zip.ZipInputStream;
 
 /**
  * Helper class for accessing Jahia services in rules.
+ *
  * @author toto
- * Date: 8 janv. 2008
- * Time: 12:04:29
+ *         Date: 8 janv. 2008
+ *         Time: 12:04:29
  */
 public class Service extends JahiaService {
     private static Logger logger = Logger.getLogger(Service.class);
@@ -209,7 +210,7 @@ public class Service extends JahiaService {
         }
 
     }
-    
+
     public void importXML(final AddedNodeFact targetNode, final String path, KnowledgeHelper drools)
             throws RepositoryException {
         InputStream is = null;
@@ -478,7 +479,7 @@ public class Service extends JahiaService {
     }
 
     public void addNewTag(AddedNodeFact node, final String value, KnowledgeHelper drools) throws RepositoryException {
-        String siteKey = node.getPath().startsWith("/sites/")? StringUtils.substringBefore(node.getPath().substring(7),"/"):null;
+        String siteKey = node.getPath().startsWith("/sites/") ? StringUtils.substringBefore(node.getPath().substring(7), "/") : null;
         if (siteKey == null) {
             logger.warn("Current site cannot be detected. Skip adding new tag for the node " + node.getPath());
             return;
@@ -496,6 +497,8 @@ public class Service extends JahiaService {
         map.put("node", uuid);
         map.put("user", ((User) drools.getWorkingMemory().getGlobal("user")).getName());
         map.put("workspace", ((String) drools.getWorkingMemory().getGlobal("workspace")));
+        map.put(BackgroundJob.JOB_TYPE, RuleJob.RULE_TYPE);
+
         schedulerService.deleteJob(jobName, "RULES_JOBS");
         try {
             schedulerService.scheduleJob(jobDetail, getTrigger(node, propertyName, jobName));
@@ -513,6 +516,7 @@ public class Service extends JahiaService {
         map.put("actionToExecute", actionToExecute);
         map.put("node", uuid);
         map.put("workspace", ((String) drools.getWorkingMemory().getGlobal("workspace")));
+        map.put(BackgroundJob.JOB_TYPE, ActionJob.ACTION_TYPE);
         schedulerService.deleteJob(jobName, "ACTIONS_JOBS");
         try {
             schedulerService.scheduleJob(jobDetail, getTrigger(node, propertyName, jobName));
@@ -535,7 +539,7 @@ public class Service extends JahiaService {
         JCRAutoSplitUtils.applyAutoSplitRulesOnSubnodes(n.getNode());
     }
 
-    public void moveToSplitFolder(AddedNodeFact n, KnowledgeHelper drools) throws RepositoryException  {
+    public void moveToSplitFolder(AddedNodeFact n, KnowledgeHelper drools) throws RepositoryException {
         JCRNodeWrapper newNode = JCRAutoSplitUtils.applyAutoSplitRules(n.getNode());
         if (newNode != null) {
             drools.retract(n);
@@ -543,7 +547,7 @@ public class Service extends JahiaService {
         }
     }
 
-    public void enableAutoSplitting(AddedNodeFact n, String splitConfig, String splitFolderNodeType, KnowledgeHelper drools) throws RepositoryException  {
+    public void enableAutoSplitting(AddedNodeFact n, String splitConfig, String splitFolderNodeType, KnowledgeHelper drools) throws RepositoryException {
         JCRAutoSplitUtils.enableAutoSplitting(n.getNode(), splitConfig, splitFolderNodeType);
         Map<JCRNodeWrapper, JCRNodeWrapper> modifiedNodes = JCRAutoSplitUtils.applyAutoSplitRulesOnSubnodes(n.getNode());
         for (Map.Entry<JCRNodeWrapper, JCRNodeWrapper> modifiedNodeEntry : modifiedNodes.entrySet()) {
@@ -556,7 +560,7 @@ public class Service extends JahiaService {
         }
     }
 
-    public void publishNode(AddedNodeFact node,KnowledgeHelper drools) throws RepositoryException {
+    public void publishNode(AddedNodeFact node, KnowledgeHelper drools) throws RepositoryException {
         JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) node.getNode();
         final JCRSessionWrapper jcrSessionWrapper = nodeWrapper.getSession();
         jcrSessionWrapper.save();
@@ -565,19 +569,19 @@ public class Service extends JahiaService {
             languages = Collections.singleton(jcrSessionWrapper.getLocale().toString());
         }
         JCRPublicationService.getInstance().publish(nodeWrapper.getIdentifier(), jcrSessionWrapper.getWorkspace().getName(),
-                                                    Constants.LIVE_WORKSPACE,
-                                                    languages,
+                Constants.LIVE_WORKSPACE,
+                languages,
                 false);
     }
 
-    public void startWorkflowOnNode(AddedNodeFact node,String processKey, String provider,KnowledgeHelper drools) throws RepositoryException {
+    public void startWorkflowOnNode(AddedNodeFact node, String processKey, String provider, KnowledgeHelper drools) throws RepositoryException {
         JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) node.getNode();
         WorkflowService.getInstance().startProcess(nodeWrapper, processKey, provider, new HashMap<String, Object>());
     }
 
-    public void defineWorkflowRule(AddedNodeFact node, String wfName,String task,String role, KnowledgeHelper drools) {
+    public void defineWorkflowRule(AddedNodeFact node, String wfName, String task, String role, KnowledgeHelper drools) {
         try {
-            WorkflowService.getInstance().addWorkflowRule(node.getNode(), wfName, task,role);
+            WorkflowService.getInstance().addWorkflowRule(node.getNode(), wfName, task, role);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

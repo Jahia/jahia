@@ -47,14 +47,18 @@ import javax.jcr.RepositoryException;
 public class ActionJob extends BackgroundJob {
     private static transient Logger logger = Logger.getLogger(ActionJob.class);
 
+    public static final String ACTION_TYPE = "action";
+    public static final String JOB_NODE_UUID = "node";
+    public static final String JOB_ACTION_TO_EXECUTE = "actionToExecute";
+
     public void executeJahiaJob(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         try {
             final JobDataMap map = jobExecutionContext.getJobDetail().getJobDataMap();
             final JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
             final JCRSessionWrapper jcrSessionWrapper = sessionFactory.getCurrentUserSession();
-            JCRNodeWrapper node = jcrSessionWrapper.getNodeByUUID(map.getString("node"));
+            JCRNodeWrapper node = jcrSessionWrapper.getNodeByUUID(map.getString(JOB_NODE_UUID));
             final BackgroundAction action = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getBackgroundActions().get(
-                    map.getString("actionToExecute"));
+                    map.getString(JOB_ACTION_TO_EXECUTE));
             if (action != null) {
                 BackgroundAction backgroundAction = (BackgroundAction) action;
                 backgroundAction.executeBackgroundAction(node);

@@ -48,6 +48,16 @@
         document.main.submit();
     }
 
+    function sendExportSitesForm() {
+        if (document.main.sitebox.length) {
+             for (var i = 0; i < document.main.sitebox.length; i++) {
+                 document.main.sitebox[i].checked = true;
+             }
+         }
+         document.main.action = '<%=request.getContextPath() + Export.getExportServletPath()%>/default/sites_' + '<%= "export_" + new SimpleDateFormat("yyyy-MM-dd-HH-mm").format(new Date()) + ".zip"%>';
+        document.main.submit();
+    }
+
 
     function sendDeleteForm(selectedSite) {
         selectSite(selectedSite);
@@ -95,9 +105,7 @@
                     </span>
                     <span class="dex-PushButton">
                       <span class="first-child">
-                        <a class="ico-export"
-                           href='<%=jParams.composeSiteUrl() + "/engineName/export/jahia.zip?exportformat=all" %>'
-                           alt="<fmt:message key="org.jahia.admin.site.ManageSites.exportall.label"/>"><fmt:message key="org.jahia.admin.site.ManageSites.exportall.label"/></a>
+                        <a class="ico-export" href="javascript:sendExportSitesForm()" alt="<fmt:message key="org.jahia.admin.site.ManageSites.exportall.label"/>"><fmt:message key="org.jahia.admin.site.ManageSites.exportall.label"/></a>
                       </span>
                     </span>
                     <span class="dex-PushButton">
@@ -196,18 +204,18 @@
                             alt="<fmt:message key='label.edit'/>"
                             title="<fmt:message key='label.edit'/>" width="16"
                             height="16" border="0" style="cursor: pointer;"/></a>&nbsp;<a href="#delete"
-                                                                 onclick="sendDeleteForm('<%=site.getSiteKey()%>'); return false;"
-                                                                 title="<fmt:message key='label.delete'/>"><img
+                                                                                          onclick="sendDeleteForm('<%=site.getSiteKey()%>'); return false;"
+                                                                                          title="<fmt:message key='label.delete'/>"><img
                         src="<%=URL%>images/icons/admin/adromeda/delete.png"
                         alt="<fmt:message key='label.delete'/>"
                         title="<fmt:message key='label.delete'/>" width="16"
                         height="16" border="0" style="cursor: pointer;"/></a>&nbsp;
-                        <a href="#export" onclick="sendExportForm('<%=site.getSiteKey()%>'); return false;"
-                             title="<fmt:message key='label.export'/>"><img
-                        src="<%=URL%>images/icons/admin/adromeda/export1.png"
-                        alt="<fmt:message key='label.export'/>"
-                        title="<fmt:message key='label.export'/>"
-                        width="16" height="16" border="0" style="cursor: pointer;"/></a>
+                    <a href="#export" onclick="sendExportForm('<%=site.getSiteKey()%>'); return false;"
+                       title="<fmt:message key='label.export'/>"><img
+                            src="<%=URL%>images/icons/admin/adromeda/export1.png"
+                            alt="<fmt:message key='label.export'/>"
+                            title="<fmt:message key='label.export'/>"
+                            width="16" height="16" border="0" style="cursor: pointer;"/></a>
                 </td>
             </tr>
             <%
@@ -289,7 +297,7 @@
                     </td>
 
                     <td>
-                        <% if (jParams.getUser().isPermitted(new PermissionIdentity("import", "actions", site.getSiteKey())) 
+                        <% if (jParams.getUser().isPermitted(new PermissionIdentity("import", "actions", site.getSiteKey()))
                                 && LicenseActionChecker.isAuthorizedByLicense("org.jahia.actions.sites.*.engines.importexport.ManageImport", 0)) { %>
                                             <span class="dex-PushButton">
                                               <span class="first-child">

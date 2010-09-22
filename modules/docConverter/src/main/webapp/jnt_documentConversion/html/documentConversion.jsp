@@ -81,8 +81,8 @@
                         </div>
                         <div class="imagefloatleft">
                             <div class="itemImage itemImageLeft"><span class="icon_large ${functions:fileExtension(lastNode.properties.originDocName.string)}_large"></span></div>
-                            <div class="itemImageConverterArrow itemImageLeft"><a href="#"><img alt=""
-                                                                                                src="${url.currentModule}/img/convert.png"/></a>
+                            <div class="itemImageConverterArrow itemImageLeft">
+                            	<img alt="" src="${url.currentModule}/img/convert.png"/>
                             </div>
                             <div class="itemImage itemImageLeft"><span class="icon_large ${functions:fileExtension(lastNode.name)}_large"></span></div>
                         </div>

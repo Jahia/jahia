@@ -85,7 +85,16 @@ public class JobListPanel extends LayoutContainer {
         column = new ColumnConfig("type", Messages.get("label.type", "Type"), 100);
         config.add(column);
 
+        column = new ColumnConfig("user", Messages.get("label.user", "User"), 100);
+        config.add(column);
+
         column = new ColumnConfig("description", Messages.get("label.description", "Description"), 100);
+        config.add(column);
+
+        column = new ColumnConfig("status", Messages.get("label.status", "Status"), 100);
+        config.add(column);
+
+        column = new ColumnConfig("message", Messages.get("label.message", "Message"), 100);
         config.add(column);
 
         /*

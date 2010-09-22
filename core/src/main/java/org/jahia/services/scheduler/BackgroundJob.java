@@ -30,7 +30,7 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
- package org.jahia.services.scheduler;
+package org.jahia.services.scheduler;
 
 import org.apache.commons.id.IdentifierGenerator;
 import org.apache.commons.id.IdentifierGeneratorFactory;
@@ -78,6 +78,7 @@ public abstract class BackgroundJob implements StatefulJob {
     public static final String JOB_DESTINATION_SITE = "sitedest";
     public static final String JOB_LOCKS = "locks";
     public static final String JOB_TITLE = "title";
+    public static final String JOB_MESSAGE = "message";
 
     public static final String ACTIONS = "actions";
     public static final String RESULT = "result";
@@ -112,7 +113,7 @@ public abstract class BackgroundJob implements StatefulJob {
 
     public static String getGroupName(Class<? extends BackgroundJob> c) {
         String name = c.getName();
-        return name.substring(name.lastIndexOf('.')+1);
+        return name.substring(name.lastIndexOf('.') + 1);
     }
 
     public static int getMaxExecutionTime() {
@@ -132,14 +133,14 @@ public abstract class BackgroundJob implements StatefulJob {
             sessionFactory.setCurrentLocale(LanguageCodeConverters.languageCodeToLocale((String) data.get(JOB_CURRENT_LOCALE)));
             executeJahiaJob(jobExecutionContext);
             status = data.getString(BackgroundJob.JOB_STATUS);
-            if ( !(BackgroundJob.STATUS_ABORTED.equals(status) ||
+            if (!(BackgroundJob.STATUS_ABORTED.equals(status) ||
                     BackgroundJob.STATUS_FAILED.equals(status) ||
-                    BackgroundJob.STATUS_INTERRUPTED.equals(status)) ){
+                    BackgroundJob.STATUS_INTERRUPTED.equals(status))) {
                 status = STATUS_SUCCESSFUL;
             }
         } catch (Exception e) {
             logger.error("Cannot execute job", e);
-            data.put("message", e.toString());
+            data.put(JOB_MESSAGE, e.toString());
             throw new JobExecutionException(e);
         } finally {
 
@@ -147,16 +148,16 @@ public abstract class BackgroundJob implements StatefulJob {
             JahiaBatchingClusterCacheHibernateProvider.syncClusterNow();
 
             data.putAsString(JOB_END, System.currentTimeMillis());
-            int duration=(int)((Long.parseLong((String)data.get(JOB_END))-Long.parseLong((String)data.get(JOB_BEGIN)))/1000);
+            int duration = (int) ((Long.parseLong((String) data.get(JOB_END)) - Long.parseLong((String) data.get(JOB_BEGIN))) / 1000);
             data.putAsString(JOB_DURATION, duration);//duration
 
-            String t=(String)data.get(JOB_TYPE);
-            logger.info("Background job (of type "+t+") ended with status "+status+" executed in " + duration + "s");
+            String t = (String) data.get(JOB_TYPE);
+            logger.info("Background job (of type " + t + ") ended with status " + status + " executed in " + duration + "s");
 
             Date nextFireTime = jobExecutionContext.getNextFireTime();
             try {
                 // Look for other triggers for next fire time
-                Trigger[] trigs = jobExecutionContext.getScheduler().getTriggersOfJob(jobDetail.getName(),jobDetail.getGroup()) ;
+                Trigger[] trigs = jobExecutionContext.getScheduler().getTriggersOfJob(jobDetail.getName(), jobDetail.getGroup());
                 for (int i = 0; i < trigs.length; i++) {
                     Trigger trig = trigs[i];
                     Date thisTriggerNextFireTime = trig.getNextFireTime();
@@ -165,7 +166,7 @@ public abstract class BackgroundJob implements StatefulJob {
                     }
                 }
             } catch (SchedulerException e) {
-                logger.error("Cannot get triggers for job",e);
+                logger.error("Cannot get triggers for job", e);
             }
 
             if (status == STATUS_FAILED) {
@@ -173,12 +174,12 @@ public abstract class BackgroundJob implements StatefulJob {
                     boolean ramScheduler = this instanceof RamJob;
                     ServicesRegistry.getInstance().getSchedulerService().unscheduleJob(jobDetail, ramScheduler);
                 } catch (JahiaException e) {
-                    logger.error("Cannot unschedule job",e);
+                    logger.error("Cannot unschedule job", e);
                 }
             } else {
                 if (nextFireTime != null) {
                     status = STATUS_POOLED;
-                    data.putAsString(JOB_SCHEDULED,nextFireTime.getTime());
+                    data.putAsString(JOB_SCHEDULED, nextFireTime.getTime());
                 }
             }
             data.put(JOB_STATUS, status);

@@ -44,11 +44,18 @@ import java.io.Serializable;
 public class GWTJahiaServiceException extends Exception implements Serializable {
 
     public GWTJahiaServiceException() {
-        super() ;
+        super();
     }
 
     public GWTJahiaServiceException(String message) {
-        super(message) ;
+        super(message);
     }
 
+    public GWTJahiaServiceException(Throwable cause) {
+        super(cause);
+    }
+
+    public GWTJahiaServiceException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

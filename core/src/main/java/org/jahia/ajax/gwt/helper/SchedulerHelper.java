@@ -3,6 +3,8 @@ package org.jahia.ajax.gwt.helper;
 import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.services.content.PublicationInfo;
+import org.jahia.services.content.PublicationJob;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.utils.i18n.JahiaResourceBundle;
@@ -31,40 +33,46 @@ public class SchedulerHelper {
         this.scheduler = scheduler;
     }
 
-    public List<GWTJahiaJobDetail> getActiveJobs(Locale locale) throws GWTJahiaServiceException {
+    private List<GWTJahiaJobDetail> convertToGWTJobs(List<JobDetail> jobDetails, Locale locale) {
         List<GWTJahiaJobDetail> jobs = new ArrayList<GWTJahiaJobDetail>();
-        try {
-            List<JobDetail> l = scheduler.getAllActiveJobsDetails();
-            for (JobDetail jobDetail : l) {
-                final String type = (String) jobDetail.getJobDataMap().get(BackgroundJob.JOB_TYPE);
-                final Date created = (Date) jobDetail.getJobDataMap().get(BackgroundJob.JOB_CREATED);
-                GWTJahiaJobDetail job = new GWTJahiaJobDetail(jobDetail.getName(), type, created, jobDetail.getDescription(), jobDetail.getGroup(), jobDetail.getJobClass().getName());
-                job.setLabel(JahiaResourceBundle.getJahiaInternalResource("label." + type + ".task", locale));
-                jobs.add(job);
-
+        for (JobDetail jobDetail : jobDetails) {
+            final String type = (String) jobDetail.getJobDataMap().get(BackgroundJob.JOB_TYPE);
+            final Date created = (Date) jobDetail.getJobDataMap().get(BackgroundJob.JOB_CREATED);
+            final String status = (String) jobDetail.getJobDataMap().get(BackgroundJob.JOB_STATUS);
+            final String user = (String) jobDetail.getJobDataMap().get(BackgroundJob.JOB_USERKEY);
+            final String message = (String) jobDetail.getJobDataMap().get(BackgroundJob.JOB_USERKEY);
+            final List<String> relatedPaths = new ArrayList<String>();
+            if (PublicationJob.PUBLICATION_TYPE.equals(type)) {
+                List<PublicationInfo> publicationInfos = (List<PublicationInfo>) jobDetail.getJobDataMap().get(PublicationJob.PUBLICATION_INFOS);
+                for (PublicationInfo publicationInfo : publicationInfos) {
+                    relatedPaths.add(publicationInfo.getRoot().getPath());
+                }
             }
-        } catch (JahiaException e) {
-            throw new GWTJahiaServiceException();
+            GWTJahiaJobDetail job = new GWTJahiaJobDetail(jobDetail.getName(), type, created, user, jobDetail.getDescription(),
+                    status, message, relatedPaths,
+                    jobDetail.getGroup(), jobDetail.getJobClass().getName());
+            job.setLabel(JahiaResourceBundle.getJahiaInternalResource("label." + type + ".task", locale));
+            jobs.add(job);
         }
         return jobs;
     }
 
+    public List<GWTJahiaJobDetail> getActiveJobs(Locale locale) throws GWTJahiaServiceException {
+        try {
+            List<JobDetail> l = scheduler.getAllActiveJobsDetails();
+            return convertToGWTJobs(l, locale);
+        } catch (JahiaException e) {
+            throw new GWTJahiaServiceException("Error retrieving active jobs", e);
+        }
+    }
+
     public List<GWTJahiaJobDetail> getAllJobs(Locale locale) throws GWTJahiaServiceException {
-        List<GWTJahiaJobDetail> jobs = new ArrayList<GWTJahiaJobDetail>();
         try {
             List<JobDetail> l = scheduler.getAllJobsDetails();
-            for (JobDetail jobDetail : l) {
-                final String type = (String) jobDetail.getJobDataMap().get(BackgroundJob.JOB_TYPE);
-                final Date created = (Date) jobDetail.getJobDataMap().get(BackgroundJob.JOB_CREATED);
-                GWTJahiaJobDetail job = new GWTJahiaJobDetail(jobDetail.getName(), type, created, jobDetail.getDescription(), jobDetail.getGroup(), jobDetail.getJobClass().getName());
-                job.setLabel(JahiaResourceBundle.getJahiaInternalResource("label." + type + ".task", locale));
-                jobs.add(job);
-
-            }
+            return convertToGWTJobs(l, locale);
         } catch (JahiaException e) {
             throw new GWTJahiaServiceException();
         }
-        return jobs;
 
     }
 }

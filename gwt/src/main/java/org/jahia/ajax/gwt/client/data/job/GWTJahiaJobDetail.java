@@ -3,6 +3,7 @@ package org.jahia.ajax.gwt.client.data.job;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,11 +17,15 @@ public class GWTJahiaJobDetail extends BaseModelData {
     public GWTJahiaJobDetail() {
     }
 
-    public GWTJahiaJobDetail(String name, String type, Date creationTime, String description, String group, String jobClassName) {
+    public GWTJahiaJobDetail(String name, String type, Date creationTime, String user, String description, String status, String message, List<String> relatedPaths, String group, String jobClassName) {
         setName(name);
         setType(type);
         setCreationTime(creationTime);
+        setUser(user);
         setDescription(description);
+        setStatus(status);
+        setMessage(message);
+        setRelatedPaths(relatedPaths);
         setGroup(group);
         setJobClassName(jobClassName);
     }
@@ -49,10 +54,6 @@ public class GWTJahiaJobDetail extends BaseModelData {
         set("name", name);
     }
 
-    public Date getStartTime() {
-        return get("startTime");
-    }
-
     public void setCreationTime(Date creationTime) {
         set("creationTime", creationTime);
     }
@@ -63,6 +64,38 @@ public class GWTJahiaJobDetail extends BaseModelData {
 
     public void setDescription(String description) {
         set("description", description);
+    }
+
+    public String getUser() {
+        return get("user");
+    }
+
+    public void setUser(String user) {
+        set("user", user);
+    }
+
+    public String getStatus() {
+        return get("status");
+    }
+
+    public void setStatus(String status) {
+        set("status", status);
+    }
+
+    public String getMessage() {
+        return get("message");
+    }
+
+    public void setMessage(String message) {
+        set("message", message);
+    }
+
+    public List<String> getRelatedPaths() {
+        return get("relatedPaths");
+    }
+
+    public void setRelatedPaths(List<String> relatedPaths) {
+        set("relatedPaths", relatedPaths);
     }
 
     public String getGroup() {

@@ -80,7 +80,10 @@
 							<a href="${currentNode.url}" title="${i18nDownload}&nbsp;${fn:escapeXml(currentNode.name)}"><span class="icon_large ${functions:fileIcon(currentNode.name)}_large"></span></a>
                         </div>
                         <c:if test="${currentNode.fileContent.contentType != 'application/pdf'}">
-                        <div class="itemImage itemImageLeft"
+                        <div class="itemImageConverterArrow itemImageLeft"><a href="#"><img alt=""
+                                                                                            src="${url.currentModule}/images/convert.png"/></a>
+                        </div>
+                        <div class="itemImage itemImageLeft">
                             <a href="<c:url value='${currentNode.path}.pdf' context='${url.convert}'/>" title="${i18nDownload}&nbsp;<fmt:message key='docspace.label.asPdf'/>"><span class="icon_large pdf_large"></span></a>
                         </div>
                         </c:if>

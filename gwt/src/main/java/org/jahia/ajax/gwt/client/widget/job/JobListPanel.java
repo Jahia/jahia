@@ -13,7 +13,10 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
+import com.extjs.gxt.ui.client.widget.treegrid.TreeGridSelectionModel;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Grid;
 import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -100,18 +103,17 @@ public class JobListPanel extends LayoutContainer {
         column = new ColumnConfig("message", Messages.get("label.message", "Message"), 100);
         config.add(column);
 
-        /*
-        column = new ColumnConfig("name", Messages.get("label.name", "Name"), 100);
-        config.add(column);
-
         column = new ColumnConfig("group", Messages.get("label.group", "Group"), 100);
         config.add(column);
 
-        /*
+        column = new ColumnConfig("name", Messages.get("label.name", "Name"), 100);
+        config.add(column);
+
         column = new ColumnConfig("endDate", Messages.get("org.jahia.engines.processDisplay.tab.enddate", "End date"), 100);
         column.setDateTimeFormat(Formatter.DEFAULT_DATETIME_FORMAT);
         config.add(column);
 
+        /*
         column = new ColumnConfig("duration", Messages.get("org.jahia.engines.processDisplay.column.duration", "Duration"), 100);
         column.setRenderer(new GridCellRenderer<GWTJahiaJobDetail>() {
             public Object render(GWTJahiaJobDetail historyItem, String property, ColumnData config, int rowIndex,
@@ -150,6 +152,12 @@ public class JobListPanel extends LayoutContainer {
         tree.setAutoExpandColumn("description");
         tree.getTreeView().setRowHeight(25);
         tree.setTrackMouseOver(false);
+        tree.setSelectionModel(new TreeGridSelectionModel<GWTJahiaJobDetail>() {
+            @Override
+            protected void onSelectChange(GWTJahiaJobDetail model, boolean select) {
+                super.onSelectChange(model, select);
+            }
+        });
         BorderLayoutData centerData = new BorderLayoutData(Style.LayoutRegion.CENTER);
         add(tree, centerData);
 
@@ -158,6 +166,7 @@ public class JobListPanel extends LayoutContainer {
         detailPanel.setBodyBorder(true);
         detailPanel.setHeaderVisible(true);
         detailPanel.setHeading(Messages.get("label.details", "Details"));
+        detailPanel.add(createDetails());
 
         BorderLayoutData southData = new BorderLayoutData(Style.LayoutRegion.SOUTH, 200);
         southData.setSplit(true);
@@ -166,5 +175,77 @@ public class JobListPanel extends LayoutContainer {
 
     }
 
+    public FlowPanel createDetails() {
+        FlowPanel infoPanel;
+        infoPanel = new FlowPanel();
+        infoPanel.addStyleName("infoPane");
+        add(infoPanel);
+
+        Grid g = new Grid(1, 2);
+        g.setCellSpacing(10);
+        FlowPanel flowPanel = new FlowPanel();
+
+        /*
+        if (!engine.isMultipleSelection()) {
+            final GWTJahiaNode selectedNode = engine.getNode();
+
+            String preview = selectedNode.getPreview();
+            if (preview != null) {
+                g.setWidget(0, 0, new Image(preview));
+            }
+            String name = selectedNode.getName();
+            if (name != null) {
+                flowPanel.add(new HTML("<b>" + Messages.get("label.name") + ":</b> " + name));
+            }
+            String path = selectedNode.getPath();
+            if (path != null) {
+                flowPanel.add(new HTML("<b>" + Messages.get("label.path") + ":</b> " + path));
+            }
+            String id = selectedNode.getUUID();
+            if (id != null) {
+                flowPanel.add(new HTML("<b>" + Messages.get("label.id", "ID") + ":</b> " + id));
+            }
+            if (selectedNode.isFile()) {
+                Long s = selectedNode.getSize();
+                if (s != null) {
+                    flowPanel.add(new HTML("<b>" + Messages.get("label.size") + ":</b> " +
+                            Formatter.getFormattedSize(s.longValue()) + " (" + s.toString() + " bytes)"));
+                }
+            }
+            Date date = selectedNode.get("jcr:lastModified");
+            if (date != null) {
+                flowPanel.add(new HTML("<b>" + Messages.get("label.lastModif") + ":</b> " +
+                        org.jahia.ajax.gwt.client.util.Formatter.getFormattedDate(date, "d/MM/y")));
+            }
+            if (selectedNode.isLocked() && selectedNode.getLockOwner() != null) {
+                flowPanel.add(new HTML(
+                        "<b>" + Messages.get("info.lock.label") + ":</b> " + selectedNode.getLockOwner()));
+            }
+
+            flowPanel.add(new HTML("<b>" + Messages.get("nodes.label", "Types") + ":</b> " + selectedNode.getNodeTypes()));
+            flowPanel.add(new HTML("<b>" + Messages.get("org.jahia.jcr.edit.tags.tab", "Tags") + ":</b> " + selectedNode.getTags() != null ? selectedNode.getTags() : ""));
+        } else {
+            int numberFiles = 0;
+            int numberFolders = 0;
+            long size = 0;
+
+            for (GWTJahiaNode selectedNode : engine.getNodes()) {
+                if (selectedNode.isFile()) {
+                    numberFiles++;
+                    size += selectedNode.getSize();
+                } else {
+                    numberFolders++;
+                }
+            }
+            flowPanel.add(new HTML("<b>" + Messages.get("info.nbFiles.label") + " :</b> " + numberFiles));
+            flowPanel.add(new HTML("<b>" + Messages.get("info.nbFolders.label") + " :</b> " + numberFolders));
+            flowPanel.add(new HTML("<b>" + Messages.get("info.totalSize.label") + " :</b> " +
+                    org.jahia.ajax.gwt.client.util.Formatter.getFormattedSize(size)));
+        }
+        */
+        g.setWidget(0, 1, flowPanel);
+        infoPanel.add(g);
+        return flowPanel;
+    }
 
 }

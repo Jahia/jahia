@@ -47,15 +47,18 @@ public class SchedulerHelper {
             final String status = jobDataMap.getString(BackgroundJob.JOB_STATUS);
             final String user = jobDataMap.getString(BackgroundJob.JOB_USERKEY);
             final String message = jobDataMap.getString(BackgroundJob.JOB_MESSAGE);
+            String description = jobDetail.getDescription();
             final List<String> relatedPaths = new ArrayList<String>();
             if (PublicationJob.PUBLICATION_TYPE.equals(type)) {
                 List<PublicationInfo> publicationInfos = (List<PublicationInfo>) jobDataMap.get(PublicationJob.PUBLICATION_INFOS);
                 for (PublicationInfo publicationInfo : publicationInfos) {
                     relatedPaths.add(publicationInfo.getRoot().getPath());
+                    description += " " + publicationInfo.getRoot().getPath();
                 }
             } else if (ImportJob.IMPORT_TYPE.equals(type)) {
                 String uri = (String) jobDataMap.get(ImportJob.URI);
                 relatedPaths.add(uri);
+                description += " " + uri;
             } else if (ActionJob.ACTION_TYPE.equals(type)) {
                 String actionToExecute = jobDataMap.getString(ActionJob.JOB_ACTION_TO_EXECUTE);
                 String nodeUUID = jobDataMap.getString(ActionJob.JOB_NODE_UUID);
@@ -70,7 +73,7 @@ public class SchedulerHelper {
                 relatedPaths.add(path);
                 relatedPaths.add(extractNodePath);
             }
-            GWTJahiaJobDetail job = new GWTJahiaJobDetail(jobDetail.getName(), type, created, user, jobDetail.getDescription(),
+            GWTJahiaJobDetail job = new GWTJahiaJobDetail(jobDetail.getName(), type, created, user, description,
                     status, message, relatedPaths,
                     jobDetail.getGroup(), jobDetail.getJobClass().getName());
             job.setLabel(JahiaResourceBundle.getJahiaInternalResource("label." + type + ".task", locale));

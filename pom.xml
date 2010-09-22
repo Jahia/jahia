@@ -1,77 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
-  <artifactId>jahia-root</artifactId>
-  <name>Jahia Project Root</name>
-  <groupId>org.jahia.server</groupId>
-  <version>6.5-SNAPSHOT</version>
-  <packaging>pom</packaging>
-  <inceptionYear>2004</inceptionYear>
-  <!-- 
-  <licenses>
-      <license>
-        <name>GNU General Public License</name>
-        <url>http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt</url>
-        <distribution>repo</distribution>
-        <comments>Jahia Community Edition is licensed under the terms of the GNU General Public License v2</comments>
-      </license>
-  </licenses>
-   -->
-  <organization>
-    <name>Jahia Solutions Group SA</name>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>jahia-root</artifactId>
+    <name>Jahia Project Root</name>
+    <groupId>org.jahia.server</groupId>
+    <version>6.5-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <inceptionYear>2004</inceptionYear>
+    <!--
+   <licenses>
+       <license>
+         <name>GNU General Public License</name>
+         <url>http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt</url>
+         <distribution>repo</distribution>
+         <comments>Jahia Community Edition is licensed under the terms of the GNU General Public License v2</comments>
+       </license>
+   </licenses>
+    -->
+    <organization>
+        <name>Jahia Solutions Group SA</name>
+        <url>http://www.jahia.org</url>
+    </organization>
+    <!--logo>/images/jahia.gif</logo-->
+    <description>Jahia Full Package</description>
     <url>http://www.jahia.org</url>
-  </organization>
-  <!--logo>/images/jahia.gif</logo-->
-  <description>Jahia Full Package</description>
-  <url>http://www.jahia.org</url>
-  <properties>
-    <jahia.package.version>6.5-SNAPSHOT</jahia.package.version>
-    <jahia.project.structure.version>2</jahia.project.structure.version>
-    <jahia.archivers.version>2.2</jahia.archivers.version>
-    <jahia.configurators.version>2.4</jahia.configurators.version>
-    <jahia.deployers.version>2.1</jahia.deployers.version>
+    <properties>
+        <jahia.package.version>6.5-SNAPSHOT</jahia.package.version>
+        <jahia.project.structure.version>2</jahia.project.structure.version>
+        <jahia.archivers.version>2.2</jahia.archivers.version>
+        <jahia.configurators.version>2.4</jahia.configurators.version>
+        <jahia.deployers.version>2.1</jahia.deployers.version>
 
-    <jahia.war.classifier></jahia.war.classifier>
-    
-    <pluto.version>2.0.2</pluto.version>
-    <spring.version>2.5.6.SEC02</spring.version>
-    <jackrabbit.version>2.1.1</jackrabbit.version>
-    <jackrabbit.patch.version>patch9</jackrabbit.patch.version>
-    <lucene.version>2.4.1</lucene.version>
-    <jbpm.version>4.4</jbpm.version>
-    <hibernate.version>3.3.2.GA</hibernate.version>
-    <apache.tika.version>0.7</apache.tika.version>
-    <camel.version>2.4.0</camel.version>
-    <gwt.version>2.0.4</gwt.version>
-    <clover.version>2.6.3</clover.version>
-      
-    <driver.derby.version>10.6.1.0</driver.derby.version>
-    <driver.mysql.version>5.1.13</driver.mysql.version>
-    <driver.postgresql.version>8.4-701.jdbc3</driver.postgresql.version>
+        <jahia.war.classifier></jahia.war.classifier>
 
-    <!-- MANIFEST.MF information -->
-    <jahia.manifest.vendor.name>Jahia Solutions Group SA</jahia.manifest.vendor.name>
-    <jahia.manifest.vendor.id>org.jahia</jahia.manifest.vendor.id>
-    <jahia.manifest.vendor.url>http://www.jahia.org</jahia.manifest.vendor.url>
-    <jahia.manifest.vendor.email>info@jahia.org</jahia.manifest.vendor.email>
-  </properties>
+        <pluto.version>2.0.2</pluto.version>
+        <spring.version>2.5.6.SEC02</spring.version>
+        <jackrabbit.version>2.1.1</jackrabbit.version>
+        <jackrabbit.patch.version>patch9</jackrabbit.patch.version>
+        <lucene.version>2.4.1</lucene.version>
+        <jbpm.version>4.4</jbpm.version>
+        <hibernate.version>3.3.2.GA</hibernate.version>
+        <apache.tika.version>0.7</apache.tika.version>
+        <camel.version>2.4.0</camel.version>
+        <gwt.version>2.0.4</gwt.version>
+        <clover.version>2.6.3</clover.version>
 
-  <scm>
-    <connection>scm:svn:http://10.8.37.111/svn/jahia/trunk/</connection>
-    <developerConnection>scm:svn:http://10.8.37.111/svn/jahia/trunk/</developerConnection>
-    <url>http://10.8.37.111/svn/jahia/trunk</url>
-  </scm>
-  <developers>
-  		<developer>
-  			<name>Anna Afshar</name>
-  			<email>anna.afshar@jahia.com</email>
+        <driver.derby.version>10.6.1.0</driver.derby.version>
+        <driver.mysql.version>5.1.13</driver.mysql.version>
+        <driver.postgresql.version>8.4-701.jdbc3</driver.postgresql.version>
+
+        <!-- MANIFEST.MF information -->
+        <jahia.manifest.vendor.name>Jahia Solutions Group SA</jahia.manifest.vendor.name>
+        <jahia.manifest.vendor.id>org.jahia</jahia.manifest.vendor.id>
+        <jahia.manifest.vendor.url>http://www.jahia.org</jahia.manifest.vendor.url>
+        <jahia.manifest.vendor.email>info@jahia.org</jahia.manifest.vendor.email>
+    </properties>
+
+    <scm>
+        <connection>scm:svn:http://10.8.37.111/svn/jahia/trunk/</connection>
+        <developerConnection>scm:svn:http://10.8.37.111/svn/jahia/trunk/</developerConnection>
+        <url>http://10.8.37.111/svn/jahia/trunk</url>
+    </scm>
+    <developers>
+        <developer>
+            <name>Anna Afshar</name>
+            <email>anna.afshar@jahia.com</email>
             <organization>Jahia Solutions Group SA</organization>
             <organizationUrl>http://www.jahia.org/</organizationUrl>
-  		</developer>
+        </developer>
         <developer>
             <name>Benjamin Papež</name>
             <email>benjamin.papez@jahia.com</email>
@@ -171,89 +171,89 @@
             <organization>ELCA Informatique SA</organization>
             <organizationUrl>http://www.elca.ch/</organizationUrl>
         </developer>
-  </developers>
-  <issueManagement>
-      <system>Jira</system>
-      <url>http://jira.jahia.org/</url>
-  </issueManagement>       
-  <repositories>
-    <repository>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <id>jahiaRepository</id>
-      <name>Jahia's Maven Repository</name>
-      <url>http://maven.jahia.org/maven2</url>
-    </repository>
-  </repositories>
+    </developers>
+    <issueManagement>
+        <system>Jira</system>
+        <url>http://jira.jahia.org/</url>
+    </issueManagement>
+    <repositories>
+        <repository>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>jahiaRepository</id>
+            <name>Jahia's Maven Repository</name>
+            <url>http://maven.jahia.org/maven2</url>
+        </repository>
+    </repositories>
 
-  <pluginRepositories>
-    <pluginRepository>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <id>jahiaRepository</id>
-      <name>Jahia's Maven Repository</name>
-      <url>http://maven.jahia.org/maven2</url>
-    </pluginRepository>
-  </pluginRepositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>jahiaRepository</id>
+            <name>Jahia's Maven Repository</name>
+            <url>http://maven.jahia.org/maven2</url>
+        </pluginRepository>
+    </pluginRepositories>
 
     <profiles>
 
-      <profile>
-          <id>code-coverage</id>
-          <build>
-              <plugins>
-                  <plugin>
-                      <groupId>com.atlassian.maven.plugins</groupId>
-                      <artifactId>maven-clover2-plugin</artifactId>
-                      <version>${clover.version}</version>
-                      <configuration>
-                          <generateHistorical>false</generateHistorical>
-                          <targetPercentage>7%</targetPercentage>
-                          <!--<generateXml>true</generateXml>-->
-                          <generatePdf>true</generatePdf>
-                          <!--
-                          <cloverDatabase>/foo/bar</cloverDatabase>
-                          <cloverMergeDatabase>/foo/bar</cloverMergeDatabase>
-                          -->
-                          <excludes>
-                              <exclude>**/org/jahia/ajax/gwt/client/**/*.java</exclude>
-                              <exclude>**/org/jahia/ajax/gwt/module/**/*.java</exclude>
-                              <exclude>**/org/jahia/ajax/gwt/template/**/*.java</exclude>
-                              <exclude>org/jahia/ajax/gwt/client/**/*.java</exclude>
-                              <exclude>org/jahia/ajax/gwt/module/**/*.java</exclude>
-                              <exclude>org/jahia/ajax/gwt/template/**/*.java</exclude>
-                          </excludes>
-                      </configuration>
-                      <executions>
-                          <execution>
-                              <id>clover-prepare</id>
-                              <phase>generate-sources</phase>
-                              <goals>
-                                  <goal>setup</goal>
-                              </goals>
-                          </execution>
-                          <execution>
-                              <id>clover-report</id>
-                              <phase>verify</phase>
-                              <goals>
-                                  <goal>aggregate</goal>
-                                  <!--goal>save-history</goal-->
-                                  <goal>clover</goal>
-                              </goals>
-                          </execution>
-                      </executions>
-                  </plugin>
-              </plugins>
-          </build>
-      </profile>
+        <profile>
+            <id>code-coverage</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.atlassian.maven.plugins</groupId>
+                        <artifactId>maven-clover2-plugin</artifactId>
+                        <version>${clover.version}</version>
+                        <configuration>
+                            <generateHistorical>false</generateHistorical>
+                            <targetPercentage>7%</targetPercentage>
+                            <!--<generateXml>true</generateXml>-->
+                            <generatePdf>true</generatePdf>
+                            <!--
+                            <cloverDatabase>/foo/bar</cloverDatabase>
+                            <cloverMergeDatabase>/foo/bar</cloverMergeDatabase>
+                            -->
+                            <excludes>
+                                <exclude>**/org/jahia/ajax/gwt/client/**/*.java</exclude>
+                                <exclude>**/org/jahia/ajax/gwt/module/**/*.java</exclude>
+                                <exclude>**/org/jahia/ajax/gwt/template/**/*.java</exclude>
+                                <exclude>org/jahia/ajax/gwt/client/**/*.java</exclude>
+                                <exclude>org/jahia/ajax/gwt/module/**/*.java</exclude>
+                                <exclude>org/jahia/ajax/gwt/template/**/*.java</exclude>
+                            </excludes>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>clover-prepare</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>setup</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>clover-report</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>aggregate</goal>
+                                    <!--goal>save-history</goal-->
+                                    <goal>clover</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
 
         <profile>
             <id>license</id>
@@ -316,6 +316,22 @@
             <modules>
                 <module>package</module>
             </modules>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
         <profile>
             <id>installer</id>
@@ -325,14 +341,14 @@
         </profile>
         <profile>
             <id>jahia-test</id>
-        	<activation>
-        		<property>
-        			<name>jahia.run.tests</name>
-        			<value>true</value>
-        		</property>
-        	</activation>
+            <activation>
+                <property>
+                    <name>jahia.run.tests</name>
+                    <value>true</value>
+                </property>
+            </activation>
             <properties>
-				<jahia.war.classifier>test</jahia.war.classifier>            
+                <jahia.war.classifier>test</jahia.war.classifier>
             </properties>
             <modules>
                 <module>test</module>
@@ -346,17 +362,17 @@
         </profile>
     </profiles>
 
-  <modules>
-    <module>public-api</module>
-    <module>bridges</module>
-    <module>taglib</module>
-    <module>jackrabbit-ext</module>
-    <module>core</module>
-    <module>gwt</module>
-    <module>modules</module>
-    <module>prepackagedSites</module>
-    <module>war</module>
-  </modules>
+    <modules>
+        <module>public-api</module>
+        <module>bridges</module>
+        <module>taglib</module>
+        <module>jackrabbit-ext</module>
+        <module>core</module>
+        <module>gwt</module>
+        <module>modules</module>
+        <module>prepackagedSites</module>
+        <module>war</module>
+    </modules>
 
     <distributionManagement>
         <repository>
@@ -370,94 +386,94 @@
     </distributionManagement>
 
 
-  <build>
-    <pluginManagement>
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>2.1.1</version>
+                </plugin>
+                <!-- Due to a bug in the Maven WAR plugin version 2.1-alpha-2 (http://jira.codehaus.org/browse/MWAR-169), we
+     need to force the version of the plugin to version 2.1-beta-1 -->
+                <plugin>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>2.1-beta-1</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
-                <artifactId>maven-site-plugin</artifactId>
-                <version>2.1.1</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>enforce-versions</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>2.1</version>
+                                </requireMavenVersion>
+                                <requireJavaVersion>
+                                    <version>1.5</version>
+                                </requireJavaVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
-            <!-- Due to a bug in the Maven WAR plugin version 2.1-alpha-2 (http://jira.codehaus.org/browse/MWAR-169), we
- need to force the version of the plugin to version 2.1-beta-1 -->
             <plugin>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>2.1-beta-1</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                    <verbose>true</verbose>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>1.0-beta-3</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <doCheck>false</doCheck>
+                    <doUpdate>false</doUpdate>
+                    <useLastCommittedRevision>true</useLastCommittedRevision>
+                    <getRevisionOnlyOnce>true</getRevisionOnlyOnce>
+                    <revisionOnScmFailure>00000</revisionOnScmFailure>
+                    <!-- seems this doesn't work well yet, but maybe in a new future ?
+                   <providerImplementations>
+                     <svn>javasvn</svn>
+                   </providerImplementations>
+                    -->
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.1.2</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
-    </pluginManagement>
-    <plugins>
-	<plugin>
-		<groupId>org.apache.maven.plugins</groupId>
-		<artifactId>maven-enforcer-plugin</artifactId>
-		<executions>
-			<execution>
-				<id>enforce-versions</id>
-				<goals>
-					<goal>enforce</goal>
-				</goals>
-				<configuration>
-					<rules>
-						<requireMavenVersion>
-							<version>2.1</version>
-						</requireMavenVersion>
-						<requireJavaVersion>
-							<version>1.5</version>
-						</requireJavaVersion>
-					</rules>
-				</configuration>
-			</execution>
-		</executions>
-	</plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
-          <verbose>true</verbose>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>buildnumber-maven-plugin</artifactId>
-        <version>1.0-beta-3</version>
-        <executions>
-          <execution>
-            <phase>validate</phase>
-            <goals>
-              <goal>create</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <doCheck>false</doCheck>
-          <doUpdate>false</doUpdate>
-          <useLastCommittedRevision>true</useLastCommittedRevision>
-          <getRevisionOnlyOnce>true</getRevisionOnlyOnce>
-          <revisionOnScmFailure>00000</revisionOnScmFailure>
-          <!-- seems this doesn't work well yet, but maybe in a new future ?
-          <providerImplementations>
-            <svn>javasvn</svn>
-          </providerImplementations>
-           -->
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <version>2.1.2</version>
-        <executions>
-          <execution>
-            <id>attach-sources</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>jar-no-fork</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
+    </build>
     <reporting>
         <plugins>
             <plugin>

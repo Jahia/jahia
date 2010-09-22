@@ -68,8 +68,6 @@
     <![endif]-->
 
     <script type="text/javascript" src="<%=contextPath%>/javascript/jahia.js"></script>
-    <script type="text/javascript" src="<%=contextPath%>/javascript/actionlauncher.js"></script>
-    
 
     <script type="text/javascript">
         function showWorkInProgress() {

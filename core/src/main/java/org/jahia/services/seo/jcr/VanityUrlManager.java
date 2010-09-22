@@ -398,11 +398,10 @@ public class VanityUrlManager {
             vanityUrlMappingsNode = contentNode.getNode(VANITYURLMAPPINGS_NODE);            
         } else {
             vanityUrlMappingsNode = contentNode.getNode(VANITYURLMAPPINGS_NODE);
-            int index = 1; // index for Node.getNode() is starting with 1 (XPath compatibility)
             
             // first we get all existing mappings and find the old default mappings per language 
             for (NodeIterator it = vanityUrlMappingsNode.getNodes(); it
-                    .hasNext(); index++) {
+                    .hasNext(); ) {
                 JCRNodeWrapper currentNode = (JCRNodeWrapper) it.next();
                 String language = currentNode.getPropertyAsString(JCR_LANGUAGE);
                 if (updatedLocales.contains(language)) {
@@ -417,7 +416,7 @@ public class VanityUrlManager {
                     existingMappings.get(language).put(currentNode.getName(), vanityUrl);
                     if (currentNode.getProperty(PROPERTY_DEFAULT).getBoolean()) {
                         oldDefaultMappings.put(language, new DefaultKeyValue(
-                                index, vanityUrl));
+                                currentNode.getName(), vanityUrl));
                     }
                 }
             }

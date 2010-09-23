@@ -338,6 +338,7 @@ public class EditActions {
                         if(i>4) {
                             message+="<br/>.<br/>.<br/>.";
                         }
+                        message+=Messages.get("message.remove.warning","<br/><span style=\"font-style:bold;color:red;text-decoration:blink;\">Warning: this will erase the content definitively from the repository<br/>So it will not be displayed anymore anywere</span>");                        
                         MessageBox.confirm("", message, new Listener<MessageBoxEvent>() {
                             public void handleEvent(MessageBoxEvent be) {
                                 if (be.getButtonClicked().getText().equalsIgnoreCase(Dialog.YES)) {

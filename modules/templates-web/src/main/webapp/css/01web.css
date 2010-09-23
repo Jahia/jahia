@@ -452,6 +452,21 @@ body {
 	vertical-align: bottom;
 }
 /******************************************************************************
+*  Float Right Links List ordered or unordered 
+******************************************************************************/
+#bodywrapper ul.FloatRightList {
+	text-align:right;
+	list-style:none;
+	margin:0;
+	padding:0;
+}
+#bodywrapper .FloatRightList li {
+	list-style:none;
+	padding-left:1em;
+	display:inline;
+	line-height:125%
+}
+/******************************************************************************
 *  Images
 ******************************************************************************/
 #bodywrapper .imagefloatright {

@@ -19,17 +19,17 @@ img,body,html{border:0;}
 * Body and GWT .x-border-layout-ct BG
 ******************************************************************************/
 .gwt-body-edit {
-	background-color:#7b7b7b;
+	background-color:#fff;
 }
 body {
-	background-color:#7b7b7b;
-	color:#333;
+	background-color:#fff;
+	color:#444;
 	margin:0;
 	padding:0;
-	font-family: Georgia,Times,'Times New Roman',serif;
+	font-family: Arial, Helvetica, sans-serif;
 	line-height:normal;
 	font-size:80%;
-	line-height:160%;
+	line-height:1.6em;
 }
 #bodywrapper {
 }
@@ -80,9 +80,9 @@ body {
 *  Topheader
 ******************************************************************************/
 #bodywrapper #topheader{
-	background-color:#7b7b7b;
-	border-bottom:1px solid #e7e2de;
-	padding-top:10px;
+	background-color:#fff;
+	border-bottom:1px solid #b9ddfa;
+	padding:10px 0;
 	position:relative;
 	z-index:900;
 	width:100%;
@@ -93,24 +93,23 @@ body {
 #bodywrapper #topheader a:link,
 #bodywrapper #topheader a:visited
 {
-	color:#e7e2de;
+	color:#747474;
 	text-decoration:none;
 }
 #bodywrapper #topheader a:hover,
 #bodywrapper #topheader a:active {
-	color:#e7e2de;
+	color:#747474;
 	text-decoration:underline;
 }
 #bodywrapper #search-bar {
-	float:right;
-	margin:20px 0 7px;
+	margin:10px 0 7px;
 	position:relative;
 }
 /******************************************************************************
 *  Bottom Header
 ******************************************************************************/
 #bodywrapper #bottomheader{
-	background:#dad0c7 url(img/bottomheader-bg.png) repeat-x bottom left;
+	background:#e3f0f9 url(img/bottomheader-bg.png) repeat-x bottom left;
 	padding-top:10px;
 	position:relative;
 	z-index:800;
@@ -121,10 +120,10 @@ body {
 ******************************************************************************/
 
 #bodywrapper ul.breadcrumb  {
-	margin:1em 0;
+	margin:0.2em 0;
 	padding:0;
 	list-style:none;
-	color:#666;
+	color:#747474;
 	text-transform:uppercase;
 	font-size:85%;
 }
@@ -142,12 +141,12 @@ body {
 	padding:0 1em 0 0;
 	margin:0;
 	background: url(img/breadcrumb-separator.png) no-repeat 100% 50% ;
-	color:#666;
+	color:#747474;
 	text-decoration:none;
 }
 #bodywrapper ul.breadcrumb a:hover,
 #bodywrapper ul.breadcrumb a:active {
-	color:#666;
+	color:#747474;
 	text-decoration:underline;
 }
 /******************************************************************************
@@ -179,7 +178,7 @@ body {
 *  content
 ******************************************************************************/
 #bodywrapper #content{
-	background-color:#eaeaea;
+	background-color:#fff;
 	padding-top:20px;
 	padding-bottom:20px;
 	position:relative;
@@ -190,8 +189,8 @@ body {
 *  topfooter
 ******************************************************************************/
 #bodywrapper #topfooter{
-	border-top:1px solid #b9a99b;
-	background-color:#dad0c7;
+	border-top:1px solid #DDDDDD;
+	background-color:#f6f6f6;
 	position:relative;
 	z-index:600;
 	width:100%;
@@ -201,12 +200,12 @@ body {
 *  bottomfooter
 ******************************************************************************/
 #bodywrapper #bottomfooter{
-	border-top:1px solid #666666;
-	background-color:#7b7b7b;
+	border-top:1px solid #DDDDDD;
+	background-color:#fff;
 	position:relative;
 	z-index:500;
 	width:100%;
-	padding-top:10px;
+	padding:10px 0;
 }
 #bodywrapper #bottomfooter p {
 	font-size:0.85em;
@@ -239,7 +238,7 @@ body {
 
 }
 #bodywrapper .navigationN2 li{
-	margin:0;
+	margin:0;	
 	padding:0;
 	background: none;
 	line-height:2.2em;
@@ -269,7 +268,7 @@ body {
 #bodywrapper .navigationN2 .level_1 a:visited {
 	padding:0 2px 0 20px;
 	background: url(img/bg-navigationN2.png) no-repeat 10px 50%;
-	border-bottom:1px solid #ccc;
+	border-bottom:1px solid #b9ddfa;
 	margin:1px 0;
 }
 #bodywrapper .navigationN2 .level_1 a:hover,
@@ -402,18 +401,19 @@ body {
 #bodywrapper h2.pageTitle {
 	margin:0;
 	padding:0;
-	color:#666;
+	color:#007DC3;
 	font-weight:normal;
-	font-size:2.2em;
+	font-size:1.7em;
 	line-height:normal;
 	padding:0 0 0.5em 0;
 	background:none;
-	text-shadow: 0 1px 1px #b4a79c;
-	font-family: BorisBlackBloxx, Arial, Helvetica, sans-serif;
+	text-shadow: 0 1px 1px #b9ddfa;
+	font-family: Arial, Helvetica, sans-serif;
 	text-transform:uppercase
 }
 #bodywrapper h2 {
-	font-weight:normal;
+	font-weight:normal; 
+	color:#007DC3;
 	font-size:2em;
 	padding-bottom:20px;
 	margin-bottom:10px;
@@ -441,7 +441,7 @@ body {
 }
 #bodywrapper fieldset {
 	padding:0.5em;
-	border:1px solid #ccc;
+	border:1px solid #b9ddfa;
 	margin:0.5em 0;
 }
 #bodywrapper legend {
@@ -449,7 +449,7 @@ body {
 	color:#333;
 	padding:0 0.5em;
 	background:#3297cb url(img/contactformlegend.png) repeat-x bottom left;
-	border:1px solid #ccc;
+	border:1px solid #b9ddfa;
 	display:inline;
 	color:#fff;
 	font-weight:bold;
@@ -462,16 +462,16 @@ body {
 	margin : 18px 0;
 }
 #bodywrapper blockquote {
-	background:#E0E0E0 url(img/blockquote.png) no-repeat top left;
-	border:1px solid #A5A5A5;
+	background:#e3eff9 url(img/blockquote.png) no-repeat top left;
+	border:1px solid #b9ddfa;
 	font-style:italic;
 	margin-bottom:15px;
 	margin-top:20px;
 	padding:20px;
 }
 #bodywrapper pre {
-	background-color:#E0E0E0;
-	border-left:4px solid #A5A5A5;
+	background-color:#e3eff9;
+	border-left:4px solid #b9ddfa;
 	font-family:Courier,"Courier New",monospace;
 	font-size:100%;
 	overflow:auto;
@@ -481,7 +481,7 @@ body {
 	line-height:100%
 }
 #bodywrapper code, #bodywrapper .code {
-	background-color:#E0E0E0;
+	background-color:#eaeaea;
 	font-family:Courier,"Courier New",monospace;
 	font-weight:normal;
 	padding-right:0.5em;
@@ -503,11 +503,11 @@ body {
 #bodywrapper select,
 #bodywrapper textarea {
 	background-color:transparent;
-	background:#f6f6f6 url(img/input_bg.png) repeat-x top left;
-	border:1px solid #ccc;
-	color:#666;
+	background:#fff url(img/input_bg.png) repeat-x top left;
+	border:1px solid #B9DDFA;
+	color:#747474;
 	padding:4px 5px;
-	background-color:#f6f6f6;
+	background-color:#fff;
 	
 }
 #bodywrapper label{
@@ -521,7 +521,7 @@ body {
 	vertical-align: bottom;
 }
 /******************************************************************************
-*  Float Right Links List ordered or unordered 
+*  Float Right List for ordered or unordered links list
 ******************************************************************************/
 #bodywrapper ul.FloatRightList {
 	text-align:right;
@@ -555,7 +555,7 @@ body {
 }
 #bodywrapper .itemImage {
 	background-color:#F4F4F4;
-	border:1px solid #CCC;
+	border:1px solid #b9ddfa;
 	position:relative;
 	padding:1px;
 	margin-bottom:10px;
@@ -588,10 +588,10 @@ body {
 	height:1%;
 	overflow:hidden;
 	text-transform:uppercase;
-	border: 1px solid #ccc;
+	border: 1px solid #b9ddfa;
 	padding:0.5em 0.5em;
 	margin:0.5em 0;
-	background:#e1e1e1  url(img/1px-white.png) repeat-x top left;
+	background:#e3eff9 url(img/1px-white.png) repeat-x top left;
 }
 #bodywrapper .paginationPosition {
 	float:left;
@@ -634,7 +634,7 @@ body {
 	height:1%;
 	overflow:hidden;
 	text-transform:uppercase;
-	border: 1px solid #ccc;
+	border: 1px solid #b9ddfa;
 	padding:0.5em 0.5em;
 	margin:0.5em 0;
 	background:#e1e1e1  url(img/1px-white.png) repeat-x top left;
@@ -654,7 +654,7 @@ body {
 #bodywrapper .alphabeticalNavigation a:active {
 		height:28px;
 		line-height:28px;
-		border:1px solid #ccc;
+		border:1px solid #b9ddfa;
 		background:#eaeaea;
 		padding:6px 10px;
 		text-decoration:none;
@@ -666,7 +666,7 @@ body {
 #bodywrapper .alphabeticalNavigation a.current{
 		height:28px;
 		line-height:28px;
-		border:1px solid #ccc;
+		border:1px solid #b9ddfa;
 		background:#333;
 		color:#fff;
 		padding:6px 10px;
@@ -821,7 +821,7 @@ body {
 #bodywrapper .table th {
     color: #333;
 	white-space:nowrap;
-	background-color:#CCCCCC;
+	background-color:#b9ddfa;
 	padding:5px;
 }
 #bodywrapper .table td
@@ -830,9 +830,9 @@ body {
 	padding:5px;
 }
 #bodywrapper .table tr:hover{
-	background-color:#ccc
+	background-color:#b9ddfa
 }
-#bodywrapper .table .odd td{background-color:#eaeaea}
+#bodywrapper .table .odd td{background-color:#e3eff9}
 #bodywrapper .table .even td{ background-color:#fff}
 #bodywrapper .col1{}
 #bodywrapper .col2{}
@@ -887,7 +887,7 @@ body {
 }
 #bodywrapper .idTabs li a span {
 	background:transparent url(img/tab-right.png) no-repeat scroll 100% 0;
-	color:#cccccc;
+	color:#b9ddfa;
 	cursor:pointer;
 	display:inline;
 	float:left;
@@ -911,8 +911,8 @@ body {
 	margin:10px 0;
 	line-height:130%;
 	padding: 10px;
-	background-color:#eaeaea;
-	border:1px solid #ccc;
+	background-color:#e3eff9;
+	border:1px solid #b9ddfa;
 	list-style:none;
 }
 

@@ -142,7 +142,7 @@ shortcuts
 	bottom:0;
 	position:absolute;
 	right:0;
-	color:#fff;
+	color:#747474;
 	margin:0;
 }
 #bodywrapper #shortcuts h3:hover {
@@ -151,12 +151,12 @@ shortcuts
 #bodywrapper #shortcuts h3 a,
 #bodywrapper #shortcuts h3 a:link,
 #bodywrapper #shortcuts h3 a:visited {
-	color:#fff
+	color:#747474
 }
 #bodywrapper #shortcuts h3 a:hover,
 #bodywrapper #shortcuts h3 a:active{
 	text-decoration:none;
-	color:#fff
+	color:#747474
 }
 
 #bodywrapper #shortcuts ul {
@@ -180,14 +180,14 @@ shortcuts
 	padding:5px 5px 5px 10px;
 }
 #bodywrapper #shortcuts li a {
-	color: #333;
+	color: #747474;
 }
 #bodywrapper #shortcuts li a:hover {
 	color: #3366cc;
 	text-decoration:none
 }
 #bodywrapper .shortcuts-inline li.shortcuts-login {
-background-color:#333333;
+	background-color:#747474;
 }
 /******************************************************************************
 Search form top

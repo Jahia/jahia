@@ -39,8 +39,6 @@ import org.apache.jackrabbit.value.ValueFactoryImpl;
 import org.apache.log4j.Logger;
 import org.apache.xerces.jaxp.SAXParserFactoryImpl;
 import org.jahia.api.Constants;
-import org.jahia.services.content.decorator.JCRFrozenNode;
-import org.jahia.services.content.decorator.JCRFrozenNodeAsRegular;
 import org.jahia.services.importexport.DocumentViewExporter;
 import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.usermanager.JahiaUser;
@@ -130,7 +128,7 @@ public class JCRSessionWrapper implements Session {
 
     public JCRNodeWrapper getRootNode() throws RepositoryException {
         JCRStoreProvider provider = sessionFactory.getProvider("/");
-        return provider.getNodeWrapper(getProviderSession(provider).getRootNode(), "/", this);
+        return provider.getNodeWrapper(getProviderSession(provider).getRootNode(), "/", null, this);
     }
 
     public Repository getRepository() {
@@ -242,7 +240,7 @@ public class JCRSessionWrapper implements Session {
                 JCRStoreProvider provider = mp.getValue();
                 Item item = getProviderSession(provider).getItem(provider.getRelativeRoot() + localPath);
                 if (item.isNode()) {
-                    return provider.getNodeWrapper((Node) item, localPath, this);
+                    return provider.getNodeWrapper((Node) item, localPath, null, this);
                 } else {
                     return provider.getPropertyWrapper((Property) item, this);
                 }
@@ -270,7 +268,7 @@ public class JCRSessionWrapper implements Session {
                 Item item = session.getItem(provider.getRelativeRoot() + localPath);
                 if (item.isNode()) {
                     final Node node = (Node) item;
-                    JCRNodeWrapper wrapper = provider.getNodeWrapper(node, localPath, this);
+                    JCRNodeWrapper wrapper = provider.getNodeWrapper(node, localPath, null, this);
                     if (getUser() != null && sessionFactory.getCurrentAliasedUser() != null &&
                             !sessionFactory.getCurrentAliasedUser().equals(getUser())) {
                         final JCRNodeWrapper finalWrapper = wrapper;
@@ -823,9 +821,12 @@ public class JCRSessionWrapper implements Session {
 
     public void setVersionLabel(String versionLabel) {
         if (this.versionLabel == null) {
+            if (versionLabel != null && !versionLabel.startsWith(getWorkspace().getName())) {
+                throw new RuntimeException("Cannot use label "+versionLabel + " in workspace "+getWorkspace().getName());
+            }
             this.versionLabel = versionLabel;
         } else {
-            throw new RuntimeException("Should not change versionDate on a session in same thread");
+            throw new RuntimeException("Should not change versionLabel on a session in same thread");
         }
     }
 

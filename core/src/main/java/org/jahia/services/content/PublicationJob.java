@@ -41,8 +41,7 @@ public class PublicationJob extends BackgroundJob {
     }
 
     private void label(PublicationInfo publicationInfo, String source, String label) throws RepositoryException {
-        JCRVersionService.getInstance().addVersionLabel(publicationInfo.getAllUuids(),"live_"+label, Constants.LIVE_WORKSPACE);
-        JCRVersionService.getInstance().addVersionLabel(publicationInfo.getAllUuids(),source+"_"+label,source);
+        JCRVersionService.getInstance().addVersionLabel(publicationInfo.getAllUuids(),label, Constants.LIVE_WORKSPACE);
         List<PublicationInfo> refs = publicationInfo.getAllReferences();
         for (PublicationInfo ref : refs) {
             label(ref, source, label);

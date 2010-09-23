@@ -614,7 +614,7 @@ public class JCRStoreProvider {
                         }
                     });
         }
-        final JCRNodeWrapperImpl w = createWrapper(objectNode, null, session);
+        final JCRNodeWrapperImpl w = createWrapper(objectNode, null, null, session);
         if (w.checkValidity()) {
             return service.decorate(w);
         } else {
@@ -622,7 +622,7 @@ public class JCRStoreProvider {
         }
     }
 
-    public JCRNodeWrapper getNodeWrapper(final Node objectNode, String path, JCRSessionWrapper session) throws RepositoryException {
+    public JCRNodeWrapper getNodeWrapper(final Node objectNode, String path, JCRNodeWrapper parent, JCRSessionWrapper session) throws RepositoryException {
         if (session.getUser() != null && sessionFactory.getCurrentAliasedUser() != null &&
             !sessionFactory.getCurrentAliasedUser().equals(session.getUser())) {
             JCRTemplate.getInstance().doExecuteWithUserSession(sessionFactory.getCurrentAliasedUser().getUsername(),
@@ -632,7 +632,7 @@ public class JCRStoreProvider {
                         }
                     });
         }
-        final JCRNodeWrapperImpl w = createWrapper(objectNode, path, session);
+        final JCRNodeWrapperImpl w = createWrapper(objectNode, path, parent, session);
         if (objectNode.isNew() || w.checkValidity()) {
             return service.decorate(w);
         } else {
@@ -640,17 +640,17 @@ public class JCRStoreProvider {
         }
     }
 
-    private JCRNodeWrapperImpl createWrapper(Node objectNode, String path, JCRSessionWrapper session) {
+    private JCRNodeWrapperImpl createWrapper(Node objectNode, String path, JCRNodeWrapper parent, JCRSessionWrapper session) {
         if (session.getVersionDate() != null || session.getVersionLabel() != null) {
             try {
                 if (objectNode.isNodeType(Constants.NT_FROZENNODE)) {
-                    return new JCRFrozenNodeAsRegular(objectNode, path, session, this, session.getVersionDate(), session.getVersionLabel());
+                    return new JCRFrozenNodeAsRegular(objectNode, path, parent, session, this, session.getVersionDate(), session.getVersionLabel());
                 }
             } catch (RepositoryException e) {
                 e.printStackTrace();
             }
         }
-        return new JCRNodeWrapperImpl(objectNode, path, session, this);
+        return new JCRNodeWrapperImpl(objectNode, path, parent, session, this);
     }
 
     public JCRPropertyWrapper getPropertyWrapper(Property prop, JCRSessionWrapper session) throws RepositoryException {
@@ -668,11 +668,11 @@ public class JCRStoreProvider {
             jcrNode = getNodeWrapper(parent.getParent(), session);
             String name = prop.getName();
             ExtendedPropertyDefinition epd = jcrNode.getApplicablePropertyDefinition(name);
-            return new JCRPropertyWrapperImpl(createWrapper(prop.getParent(), null, session), prop, session, this, epd, name);
+            return new JCRPropertyWrapperImpl(createWrapper(prop.getParent(), null, null, session), prop, session, this, epd, name);
         } else {
             jcrNode = getNodeWrapper(prop.getParent(), session);
             ExtendedPropertyDefinition epd = jcrNode.getApplicablePropertyDefinition(prop.getName());
-            return new JCRPropertyWrapperImpl(createWrapper(prop.getParent(), null, session), prop, session, this, epd);
+            return new JCRPropertyWrapperImpl(createWrapper(prop.getParent(), null, null, session), prop, session, this, epd);
         }
     }
 

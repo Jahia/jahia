@@ -146,6 +146,10 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
         }
     }
 
+    public void close() {
+        fillData(selectedNodes);
+    }
+
     public void fillData(Object selectedItem) {
         clear();
 

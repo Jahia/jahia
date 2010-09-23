@@ -87,6 +87,16 @@ public class EditContentEngine extends AbstractContentEngine {
         //setTopComponent(toolBar);
     }
 
+    public void close() {
+        contentService.setLock(Arrays.asList(contentPath),false,new BaseAsyncCallback() {
+            public void onSuccess(Object result) {
+                String s = Messages.get("label.unlocked", "Nodes has been unlocked");
+                Info.display(s,s);
+            }
+        });
+        container.closeEngine();
+    }
+
     public static GWTEngine getEditConfig(GWTJahiaNode node, GWTEditConfiguration config) {
         for (GWTEngine engine : config.getEditEngines()) {
             if (node.getNodeTypes().contains(engine.getNodeType()) ||
@@ -128,13 +138,7 @@ public class EditContentEngine extends AbstractContentEngine {
         cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                contentService.setLock(Arrays.asList(contentPath),false,new BaseAsyncCallback() {
-                    public void onSuccess(Object result) {
-                        String s = Messages.get("label.unlocked", "Nodes has been unlocked");
-                        Info.display(s,s);
-                    }
-                });
-                EditContentEngine.this.container.closeEngine();
+                close();
             }
         });
         buttonBar.add(cancel);

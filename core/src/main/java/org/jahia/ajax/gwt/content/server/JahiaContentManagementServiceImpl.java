@@ -990,11 +990,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
     }
 
-    public void restoreNode(GWTJahiaNodeVersion gwtJahiaNodeVersion) throws GWTJahiaServiceException {
+    public void restoreNode(GWTJahiaNodeVersion gwtJahiaNodeVersion, boolean allSubTree) throws GWTJahiaServiceException {
         String nodeUuid = gwtJahiaNodeVersion.getNode().getUUID();
         String versionUuid = gwtJahiaNodeVersion.getUUID();
         // restore by label
-        versioning.restoreVersionLabel(nodeUuid, gwtJahiaNodeVersion.getLabel(), retrieveCurrentSession());
+        versioning.restoreVersionLabel(nodeUuid, gwtJahiaNodeVersion.getDate(), gwtJahiaNodeVersion.getLabel(), allSubTree,
+                retrieveCurrentSession());
     }
 
     public void uploadedFile(String location, String tmpName, int operation, String newName)

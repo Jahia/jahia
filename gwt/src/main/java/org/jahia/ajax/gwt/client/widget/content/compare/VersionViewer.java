@@ -247,7 +247,7 @@ public class VersionViewer extends ContentPanel {
                 @Override
                 public void componentSelected(ButtonEvent ce) {
                     final GWTJahiaNodeVersion version = (GWTJahiaNodeVersion) versionComboBox.getValue();
-                    contentService.restoreNode(version, new BaseAsyncCallback() {
+                    contentService.restoreNode(version, false, new BaseAsyncCallback() {
                         public void onSuccess(Object result) {
                             versionComboBox.select(0);
                             versionComboBox.reset();

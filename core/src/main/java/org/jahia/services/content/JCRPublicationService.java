@@ -626,8 +626,12 @@ public class JCRPublicationService extends JahiaService {
         } finally {
             JahiaAccessManager.setDeniedPaths(null);
         }
-        JCRNodeWrapper destinationNode =
-                destinationSession.getNode(sourceNode.getCorrespondingNodePath(destinationWorkspaceName));
+        JCRNodeWrapper destinationNode = null;
+        try {
+            destinationNode = destinationSession.getNode(sourceNode.getCorrespondingNodePath(destinationWorkspaceName));
+        } catch (RepositoryException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
         if (uuidsToPublish != null && sourceNode.getNodes().hasNext()) {
             NodeIterator it = sourceNode.getNodes();
             while (it.hasNext()) {

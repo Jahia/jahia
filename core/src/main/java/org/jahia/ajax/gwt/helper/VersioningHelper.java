@@ -42,13 +42,13 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRVersionService;
 
 import javax.jcr.RepositoryException;
-import javax.jcr.version.Version;
 import javax.jcr.version.VersionIterator;
 import javax.jcr.version.VersionManager;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -150,10 +150,11 @@ public class VersioningHelper {
 
     }    
 
-    public void restoreVersionLabel(String nodeUuid, String versionLabel, JCRSessionWrapper currentUserSession) {
+    public void restoreVersionLabel(String nodeUuid, Date versionDate, String versionLabel, boolean allSubTree,
+                                    JCRSessionWrapper currentUserSession) {
         try {
             JCRNodeWrapper node = currentUserSession.getNodeByUUID(nodeUuid);
-            versionService.restoreVersionLabel(node, versionLabel);
+            versionService.restoreVersionLabel(node, versionDate, versionLabel, allSubTree);
             currentUserSession.save();
             String label = "restored_at_"+ new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(GregorianCalendar.getInstance().getTime());
             versionService.addVersionLabel(node,label);

@@ -86,6 +86,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     protected Node objectNode = null;
     protected JCRFileContent fileContent = null;
     protected JCRSiteNode site = null;
+    protected boolean parentAlreadyResolved = false;
+    protected JCRNodeWrapper resolvedParentNode = null;
+
     protected Map<Locale, Node> i18NobjectNodes = null;
 
     protected static String[] defaultPerms = {Constants.JCR_READ_RIGHTS_LIVE, Constants.JCR_READ_RIGHTS, Constants.JCR_WRITE_RIGHTS, Constants.JCR_MODIFYACCESSCONTROL_RIGHTS, Constants.JCR_WRITE_RIGHTS_LIVE};
@@ -106,7 +109,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     private static final String REFERENCE_PROPERTY_NAMES_PROPERTYNAME = "j:referencePropertyNames";
     public static final String EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR = "___";
 
-    protected JCRNodeWrapperImpl(Node objectNode, String path, JCRSessionWrapper session, JCRStoreProvider provider) {
+    protected JCRNodeWrapperImpl(Node objectNode, String path, JCRNodeWrapper parent, JCRSessionWrapper session, JCRStoreProvider provider) {
         super(session, provider);
         this.objectNode = objectNode;
         setItem(objectNode);
@@ -118,6 +121,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
             }
+        }
+        if (parent != null) {
+            parentAlreadyResolved = true;
+            resolvedParentNode = parent;
         }
     }
 
@@ -132,6 +139,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public JCRNodeWrapper getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {
+        if (parentAlreadyResolved) {
+            return resolvedParentNode;
+        }
+
         if (localPath.equals("/") || localPath.equals(provider.getRelativeRoot())) {
             if (provider.getMountPoint().equals("/")) {
                 throw new ItemNotFoundException();
@@ -497,7 +508,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public JCRNodeWrapper addNode(String name) throws RepositoryException {
         Node n = objectNode.addNode(name);
-        return provider.getNodeWrapper(n, buildSubnodePath(name), session);
+        return provider.getNodeWrapper(n, buildSubnodePath(name), this, session);
     }
 
     private String buildSubnodePath(String name) {
@@ -513,7 +524,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public JCRNodeWrapper addNode(String name, String type) throws RepositoryException {
         Node n = objectNode.addNode(name, type);
-        return provider.getNodeWrapper(n, buildSubnodePath(name), session);
+        return provider.getNodeWrapper(n, buildSubnodePath(name), this, session);
     }
 
     public JCRNodeWrapper addNode(String name, String type, String identifier, Calendar created, String createdBy, Calendar lastModified, String lastModifiedBy) throws ItemExistsException, PathNotFoundException, NoSuchNodeTypeException, LockException, VersionException, ConstraintViolationException, RepositoryException {
@@ -536,7 +547,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                                 jahiaTypeName.getLocalName());
                     }
                     Node child = ((NodeImpl) objectNode).addNode(qname, typeName, org.apache.jackrabbit.core.id.NodeId.valueOf(identifier));
-                    return provider.getNodeWrapper(child, buildSubnodePath(name), session);
+                    return provider.getNodeWrapper(child, buildSubnodePath(name), this, session);
                 } else {
                     return addNode(name, type);
                 }
@@ -725,7 +736,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                         JCRStoreProvider storeProvider = entry.getValue();
                         String root = storeProvider.getRelativeRoot();
                         final Node node = session.getProviderSession(storeProvider).getNode(root.length() == 0 ? "/" : root);
-                        list.add(storeProvider.getNodeWrapper(node, "/", session));
+                        list.add(storeProvider.getNodeWrapper(node, "/", this, session));
                     }
                 }
             }
@@ -737,7 +748,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             Node node = ni.nextNode();
             if (session.getLocale() == null || !node.getName().startsWith("j:translation_")) {
                 try {
-                    JCRNodeWrapper child = provider.getNodeWrapper(node, buildSubnodePath(node.getName()), session);
+                    JCRNodeWrapper child = provider.getNodeWrapper(node, buildSubnodePath(node.getName()), this, session);
                     list.add(child);
                 } catch (ItemNotFoundException e) {
                     if (logger.isDebugEnabled())
@@ -762,7 +773,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             if (mountPoints.containsKey(getPath() + "/" + name)) {
                 JCRStoreProvider storeProvider = mountPoints.get(getPath() + "/" + name);
                 final Node node = session.getProviderSession(storeProvider).getNode(storeProvider.getRelativeRoot());
-                list.add(storeProvider.getNodeWrapper(node, "/", session));
+                list.add(storeProvider.getNodeWrapper(node, "/", this, session));
             }
         }
 
@@ -770,7 +781,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
         while (ni.hasNext()) {
             Node node = ni.nextNode();
-            JCRNodeWrapper child = provider.getNodeWrapper(node, buildSubnodePath(node.getName()), session);
+            JCRNodeWrapper child = provider.getNodeWrapper(node, buildSubnodePath(node.getName()), this, session);
             list.add(child);
         }
 
@@ -782,7 +793,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public JCRNodeWrapper getNode(String s) throws PathNotFoundException, RepositoryException {
         if (objectNode.hasNode(s)) {
-            return provider.getNodeWrapper(objectNode.getNode(s), buildSubnodePath(s), session);
+            return provider.getNodeWrapper(objectNode.getNode(s), buildSubnodePath(s), this, session);
         }
         List<JCRNodeWrapper> c = getChildren();
         for (JCRNodeWrapper jcrNodeWrapper : c) {
@@ -2899,7 +2910,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             NodeImpl node = (NodeImpl) getRealNode();
 
             try {
-                return provider.getNodeWrapper(node.clone((NodeImpl) sharedNode.getRealNode(), jrname), buildSubnodePath(name), session);
+                return provider.getNodeWrapper(node.clone((NodeImpl) sharedNode.getRealNode(), jrname), buildSubnodePath(name),
+                        this, session);
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
             }

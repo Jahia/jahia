@@ -44,6 +44,7 @@ import org.jahia.services.content.nodetypes.OnConflictAction;
 import javax.jcr.*;
 import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionIterator;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -455,8 +456,13 @@ public class ConflictResolver {
             if ((!uuidsToPublish.contains(uuid) && sourceNode.getNode(newName).isVersioned()) || targetNode.hasNode(newName)) {
                 return true;
             }
+
+            JCRNodeWrapper targetNode = getParentTarget(ConflictResolver.this.targetNode, newName);
+            JCRNodeWrapper sourceNode = getParentTarget(ConflictResolver.this.sourceNode, newName);
+            String newNameParsed = getTargetName(newName);
+
             targetNode.getSession().save();
-            JCRPublicationService.getInstance().doClone(sourceNode.getNode(newName), uuidsToPublish, sourceNode.getSession(), targetNode.getSession());
+            JCRPublicationService.getInstance().doClone(sourceNode.getNode(newNameParsed), uuidsToPublish, sourceNode.getSession(), targetNode.getSession());
             return true;
         }
 
@@ -502,8 +508,22 @@ public class ConflictResolver {
 //            if (prunedTargetPath.contains(targetNode.getPath() + "/" + oldName)) {
 //                return true;
 //            }
-            targetNode.getNode(oldName).remove();
+
+            final JCRNodeWrapper node = targetNode.getNode(oldName);
+            addRemovedLabel(node, node.getSession().getWorkspace().getName() + "_removed_at_"+new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(new Date()));
+            node.remove();
             return true;
+        }
+
+        private void addRemovedLabel(JCRNodeWrapper node, final String label) throws RepositoryException {
+            if (node.isVersioned()) {
+                node.getVersionHistory().addVersionLabel(node.getBaseVersion().getName(), label, false);
+            }
+            NodeIterator ni = node.getNodes();
+            while (ni.hasNext()) {
+                JCRNodeWrapper child = (JCRNodeWrapper) ni.next();
+                addRemovedLabel(child, label);
+            }
         }
 
         @Override

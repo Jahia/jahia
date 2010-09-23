@@ -182,7 +182,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     public PagingLoadResult<GWTJahiaNodeVersion> getVersions(GWTJahiaNode node, String workspace, int limit, int offset) throws GWTJahiaServiceException;
 
-    public void restoreNode(GWTJahiaNodeVersion gwtJahiaNodeVersion) throws GWTJahiaServiceException;
+    public void restoreNode(GWTJahiaNodeVersion gwtJahiaNodeVersion, boolean allSubTree) throws GWTJahiaServiceException;
 
     public void uploadedFile(String location, String tmpName, int operation, String newName) throws GWTJahiaServiceException;
 

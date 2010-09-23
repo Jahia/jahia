@@ -51,6 +51,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.Constants;
 import org.jahia.ajax.gwt.client.widget.content.ImagePopup;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -132,10 +133,13 @@ public class VersioningTabItem extends EditEngineTabItem {
                             button.addSelectionListener(new SelectionListener<ButtonEvent>() {
                                 @Override
                                 public void componentSelected(ButtonEvent ce) {
-                                    service.restoreNode(version, new BaseAsyncCallback() {
+                                    mask(Messages.get("label.restoring","Restoring")+"...", "x-mask-loading");
+                                    service.restoreNode(version, false, new BaseAsyncCallback() {
                                         public void onSuccess(Object result) {
                                             tabItem.removeAll();
                                             create(locale);
+                                            engine.getLinker().refresh(EditLinker.REFRESH_MAIN + EditLinker.REFRESH_PAGES);
+                                            engine.close();
                                         }
                                     });
                                 }

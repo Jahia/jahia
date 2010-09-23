@@ -103,6 +103,10 @@ public class CreateContentEngine extends AbstractContentEngine {
         init(engineContainer);
     }
 
+    public void close() {
+        container.closeEngine();
+    }
+
     public static GWTEngine getCreateConfig(GWTJahiaNodeType type, GWTConfiguration config) {
         for (GWTEngine engine : config.getCreateEngines()) {
             if (type.getName().equals(engine.getNodeType()) || type.getSuperTypes().contains(engine.getNodeType())) {
@@ -138,7 +142,7 @@ public class CreateContentEngine extends AbstractContentEngine {
         cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                CreateContentEngine.this.container.closeEngine();
+                close();
             }
         });
         buttonBar.add(cancel);

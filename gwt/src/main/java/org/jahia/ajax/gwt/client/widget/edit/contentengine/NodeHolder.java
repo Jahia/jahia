@@ -36,6 +36,7 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.widget.Linker;
 
 import java.util.List;
 import java.util.Map;
@@ -65,4 +66,8 @@ public interface NodeHolder {
     boolean isMultipleSelection();
 
     Map<String, GWTJahiaNodeProperty> getProperties();
+
+    Linker getLinker();
+
+    void close();
 }

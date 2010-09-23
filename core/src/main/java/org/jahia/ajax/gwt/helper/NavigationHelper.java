@@ -1216,8 +1216,10 @@ public class NavigationHelper {
                 String[] versionLabels = vh.getVersionLabels(v);
                 if (versionLabels != null && versionLabels.length > 0) {
                     for (String string : versionLabels) {
-                        if (!string.contains("published") || string.contains(
-                                node.getSession().getWorkspace().getName())) {
+//                        if (!string.contains("published")
+//                                ||
+//                                string.contains(node.getSession().getWorkspace().getName())
+//                                ) {
                             if (node.isFile()) {
                                 n.setUrl(node.getUrl() + "?v=" + v.getCreated().getTime().getTime());
                             }
@@ -1225,7 +1227,7 @@ public class NavigationHelper {
                                     v.getName(), v.getCreated().getTime(), string);
                             jahiaNodeVersion.setNode(n);
                             versions.add(jahiaNodeVersion);
-                        }
+//                        }
                     }
                 }
             }

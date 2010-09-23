@@ -94,6 +94,7 @@ public class JobListPanel extends LayoutContainer {
         config.add(column);
 
         column = new ColumnConfig("user", Messages.get("label.user", "User"), 100);
+        column.setHidden(true);
         config.add(column);
 
         column = new ColumnConfig("description", Messages.get("label.description", "Description"), 100);
@@ -103,16 +104,15 @@ public class JobListPanel extends LayoutContainer {
         config.add(column);
 
         column = new ColumnConfig("message", Messages.get("label.message", "Message"), 100);
+        column.setHidden(true);
         config.add(column);
 
         column = new ColumnConfig("group", Messages.get("label.group", "Group"), 100);
+        column.setHidden(true);
         config.add(column);
 
         column = new ColumnConfig("name", Messages.get("label.name", "Name"), 100);
-        config.add(column);
-
-        column = new ColumnConfig("endDate", Messages.get("org.jahia.engines.processDisplay.tab.enddate", "End date"), 100);
-        column.setDateTimeFormat(Formatter.DEFAULT_DATETIME_FORMAT);
+        column.setHidden(true);
         config.add(column);
 
         /*
@@ -214,6 +214,18 @@ public class JobListPanel extends LayoutContainer {
 
     }
 
+    public void addDetail(String labelKey, String labelDefaultValue, Object value) {
+        if (value != null) {
+            if (value instanceof String) {
+                detailsPanel.add(new HTML("<b>" + Messages.get(labelKey, labelDefaultValue) + ":</b> " + value));
+            } else if (value instanceof Date) {
+                detailsPanel.add(new HTML("<b>" + Messages.get(labelKey, labelDefaultValue) + ":</b> " + org.jahia.ajax.gwt.client.util.Formatter.getFormattedDate((Date) value)));
+            } else {
+                detailsPanel.add(new HTML("<b>" + Messages.get(labelKey, labelDefaultValue) + ":</b> " + value.toString()));
+            }
+        }
+    }
+
     public void updateDetails() {
 
         if (detailsPanel == null) {
@@ -229,41 +241,29 @@ public class JobListPanel extends LayoutContainer {
         if (selectedItems.size() == 1) {
             GWTJahiaJobDetail jobDetail = selectedItems.get(0);
 
-            String description = jobDetail.getDescription();
-            if (description != null) {
-                detailsPanel.add(new HTML("<b>" + Messages.get("label.description") + ":</b> " + description));
-            }
+            addDetail("label.description", "Description", jobDetail.getDescription());
+            addDetail("label.status", "Status", jobDetail.getStatus());
             StringBuffer paths = new StringBuffer();
             for (String path : jobDetail.getRelatedPaths()) {
                 paths.append(path);
                 paths.append(" ");
             }
-            detailsPanel.add(new HTML("<b>" + Messages.get("label.paths") + ":</b> " + paths));
-            String id = jobDetail.getName();
-            if (id != null) {
-                detailsPanel.add(new HTML("<b>" + Messages.get("label.id", "ID") + ":</b> " + id));
-            }
-            /*
-            if (jobDetail.isFile()) {
-                Long s = jobDetail.getSize();
-                if (s != null) {
-                    detailPanel.add(new HTML("<b>" + Messages.get("label.size") + ":</b> " +
-                            Formatter.getFormattedSize(s.longValue()) + " (" + s.toString() + " bytes)"));
-                }
-            }
-            */
-            Date date = jobDetail.getCreationTime();
-            if (date != null) {
-                detailsPanel.add(new HTML("<b>" + Messages.get("label.lastModif") + ":</b> " +
-                        org.jahia.ajax.gwt.client.util.Formatter.getFormattedDate(date, "d/MM/y")));
-            }
+            addDetail("label.relatedPaths", "Related paths", paths.toString());
+            addDetail("label.name", "Name", jobDetail.getName());
+            addDetail("label.creationTime", "Creation time", jobDetail.getCreationTime());
+            addDetail("label.user", "User key", jobDetail.getUser());
+            addDetail("label.jobType", "Job type", jobDetail.getType());
+            addDetail("label.group", "Group", jobDetail.getGroup());
+            addDetail("label.jobLabel", "Job label", jobDetail.getLabel());
+            addDetail("label.className", "Job class", jobDetail.getJobClassName());
+            addDetail("label.message", "Message", jobDetail.getMessage());
         } else {
-            int numberFiles = 0;
+            int nbJobs = 0;
 
             for (GWTJahiaJobDetail jobDetail : selectedItems) {
-                numberFiles++;
+                nbJobs++;
             }
-            detailsPanel.add(new HTML("<b>" + Messages.get("info.nbFiles.label") + " :</b> " + numberFiles));
+            detailsPanel.add(new HTML("<b>" + Messages.get("label.selectedJobCount", "Number of selected jobs") + " :</b> " + nbJobs));
         }
         detailsPanel.layout();
 

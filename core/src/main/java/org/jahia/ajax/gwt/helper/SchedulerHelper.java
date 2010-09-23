@@ -51,9 +51,8 @@ public class SchedulerHelper {
             final List<String> relatedPaths = new ArrayList<String>();
             if (PublicationJob.PUBLICATION_TYPE.equals(type)) {
                 List<PublicationInfo> publicationInfos = (List<PublicationInfo>) jobDataMap.get(PublicationJob.PUBLICATION_INFOS);
-                for (PublicationInfo publicationInfo : publicationInfos) {
-                    relatedPaths.add(publicationInfo.getRoot().getPath());
-                    description += " " + publicationInfo.getRoot().getPath();
+                if (publicationInfos != null && publicationInfos.size() > 0) {
+                    description += " " + publicationInfos.get(0).getRoot().getPath();
                 }
             } else if (ImportJob.IMPORT_TYPE.equals(type)) {
                 String uri = (String) jobDataMap.get(ImportJob.URI);

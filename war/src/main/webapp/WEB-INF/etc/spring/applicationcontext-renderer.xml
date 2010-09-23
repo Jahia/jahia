@@ -78,7 +78,43 @@
                         <bean class="org.jahia.services.render.filter.BaseAttributesFilter" >
                             <property name="priority" value="15" />
                         </bean>
-
+                        <bean class="org.jahia.services.render.filter.URLSystemAttributesAppenderFilter" >
+                            <property name="priority" value="20" />
+                            <property name="applyOnConfigurations" value="page"/>
+                            <property name="applyOnTemplateTypes" value="html,edit"/>
+                            <property name="skipOnAJaxRequest" value="true"/>
+                            <property name="attributesToKeep">
+                                <list>
+                                    <value type="java.lang.String">v</value>
+                                    <value type="java.lang.String">l</value>
+                                    <value type="java.lang.String">alias</value>
+                                </list>
+                            </property>
+                            <property name="tagsToCheck">
+                                <map>
+                                    <entry key="a">
+                                        <set>
+                                            <value type="java.lang.String">href</value>
+                                        </set>
+                                    </entry>
+                                    <entry key="embed">
+                                        <set>
+                                            <value type="java.lang.String">src</value>
+                                        </set>
+                                    </entry>
+                                    <entry key="img">
+                                        <set>
+                                            <value type="java.lang.String">src</value>
+                                        </set>
+                                    </entry>
+                                    <entry key="param">
+                                        <set>
+                                            <value type="java.lang.String">value</value>
+                                        </set>
+                                    </entry>
+                                </map>
+                            </property>
+                        </bean>
                         <bean class="org.jahia.services.render.filter.URLFilter" >
                         	<constructor-arg ref="org.jahia.services.render.filter.URLTraverser"/>
                             <property name="priority" value="21" />

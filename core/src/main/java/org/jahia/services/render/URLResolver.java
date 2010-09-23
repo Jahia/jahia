@@ -54,7 +54,6 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
-import org.jahia.services.content.decorator.JCRFrozenNodeAsRegular;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlManager;
@@ -111,8 +110,21 @@ public class URLResolver {
      * resolving URLs of incoming requests.
      *
      * @param urlPathInfo  the path info (usually obtained with @link javax.servlet.http.HttpServletRequest.getPathInfo())
+     * @param serverName  the server name (usually obtained with @link javax.servlet.http.HttpServletRequest.getServerName()) 
      */
     public URLResolver(String urlPathInfo, String serverName) {
+        this(urlPathInfo, serverName, null);
+    }
+    
+    /**
+     * Initializes an instance of this class. This constructor is mainly used when
+     * resolving URLs of incoming requests.
+     *
+     * @param urlPathInfo  the path info (usually obtained with @link javax.servlet.http.HttpServletRequest.getPathInfo())
+     * @param serverName  the server name (usually obtained with @link javax.servlet.http.HttpServletRequest.getServerName())
+     * @param request  the current HTTP servlet request object 
+     */    
+    public URLResolver(String urlPathInfo, String serverName, HttpServletRequest request) {
         super();
         this.urlPathInfo = urlPathInfo;
         servletPart = StringUtils.substring(getUrlPathInfo(), 1,
@@ -128,7 +140,11 @@ public class URLResolver {
                             .getVanityUrlForWorkspaceAndLocale(getNode(),
                                     workspace, locale);
                     if (defaultVanityUrl != null && defaultVanityUrl.isActive()) {
-                        setRedirectUrl(defaultVanityUrl.getUrl());
+                        if (request == null || StringUtils.isEmpty(request.getQueryString())) {
+                            setRedirectUrl(defaultVanityUrl.getUrl());
+                        } else {
+                            setRedirectUrl(defaultVanityUrl.getUrl() + "?" + request.getQueryString());                            
+                        }
                     }
                 } catch (PathNotFoundException e) {
                     logger.debug("Path not found : " + urlPathInfo);

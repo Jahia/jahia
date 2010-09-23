@@ -603,7 +603,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         try {
             final HttpSession session = req.getSession();
 
-            URLResolver urlResolver = new URLResolver(req.getPathInfo(), req.getServerName());
+            URLResolver urlResolver = new URLResolver(req.getPathInfo(), req.getServerName(), req);
 
             // check permission
             if (!hasAccess(jcrSessionFactory.getCurrentUser(), urlResolver.getSiteKey())) {

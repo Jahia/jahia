@@ -90,30 +90,7 @@
                                     <value type="java.lang.String">alias</value>
                                 </list>
                             </property>
-                            <property name="tagsToCheck">
-                                <map>
-                                    <entry key="a">
-                                        <set>
-                                            <value type="java.lang.String">href</value>
-                                        </set>
-                                    </entry>
-                                    <entry key="embed">
-                                        <set>
-                                            <value type="java.lang.String">src</value>
-                                        </set>
-                                    </entry>
-                                    <entry key="img">
-                                        <set>
-                                            <value type="java.lang.String">src</value>
-                                        </set>
-                                    </entry>
-                                    <entry key="param">
-                                        <set>
-                                            <value type="java.lang.String">value</value>
-                                        </set>
-                                    </entry>
-                                </map>
-                            </property>
+                            <property name="traverser" ref="org.jahia.services.render.filter.URLTraverser"/>
                         </bean>
                         <bean class="org.jahia.services.render.filter.URLFilter" >
                         	<constructor-arg ref="org.jahia.services.render.filter.URLTraverser"/>

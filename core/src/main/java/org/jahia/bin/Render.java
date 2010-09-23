@@ -627,7 +627,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             urlResolver.setRenderContext(renderContext);
             req.getSession().setAttribute(ParamBean.SESSION_LOCALE, urlResolver.getLocale());
             jcrSessionFactory.setCurrentLocale(urlResolver.getLocale());
-            if(renderContext.isPreviewMode() && req.getParameter(ALIAS_USER)!=null) {
+            if(renderContext.isPreviewMode() && req.getParameter(ALIAS_USER)!=null && !JahiaUserManagerService.isGuest(jcrSessionFactory.getCurrentUser())) {
                 jcrSessionFactory.setCurrentAliasedUser(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(req.getParameter(ALIAS_USER)));
             }
             if (method.equals(METHOD_GET)) {

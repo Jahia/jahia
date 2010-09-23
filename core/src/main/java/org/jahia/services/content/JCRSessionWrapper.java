@@ -562,7 +562,9 @@ public class JCRSessionWrapper implements Session {
         return user;
     }
 
-
+    public JahiaUser getAliasedUser() {
+        return sessionFactory.getCurrentAliasedUser();
+    }
     /**
      * Generates a document view export using a {@link org.apache.jackrabbit.commons.xml.DocumentViewExporter}
      * instance.

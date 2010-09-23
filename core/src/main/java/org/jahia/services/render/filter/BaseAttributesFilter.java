@@ -75,7 +75,8 @@ public class BaseAttributesFilter extends AbstractFilter {
         }
         chain.pushAttribute(request, "workspace", node.getSession().getWorkspace().getName());
         chain.pushAttribute(request, "currentResource", resource);
-
+        chain.pushAttribute(request, "currentUser", context.getMainResource().getNode().getSession().getUser());
+        chain.pushAttribute(request, "currentAliasUser", context.getMainResource().getNode().getSession().getAliasedUser());
         if (!Resource.CONFIGURATION_INCLUDE.equals(resource.getContextConfiguration())) {
             chain.pushAttribute(request, "currentNode", node);
             chain.pushAttribute(request, "url", new URLGenerator(context, resource));

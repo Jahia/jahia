@@ -28,66 +28,70 @@
 <template:addResources type="javascript" resources="contributedefault.js"/>
 <template:addResources type="javascript" resources="i18n/contributedefault-${renderContext.mainResource.locale}.js"/>
 <template:addResources type="javascript" resources="animatedcollapse.js"/>
-<template:include templateType="html" template="hidden.header"/>
-<c:set var="animatedTasks" value=""/>
-<c:set var="animatedWFs" value=""/>
+<div id="${currentNode.UUID}">
+    <template:include templateType="html" template="hidden.header"/>
+    <c:set var="animatedTasks" value=""/>
+    <c:set var="animatedWFs" value=""/>
 
-        <c:set var="inSite" value="true"/>
-        <c:forEach items="${moduleMap.currentList}" var="child" begin="${moduleMap.begin}" end="${moduleMap.end}" varStatus="status">
+    <c:set var="inSite" value="true"/>
+    <c:forEach items="${moduleMap.currentList}" var="child" begin="${moduleMap.begin}" end="${moduleMap.end}"
+               varStatus="status">
         <%-- only editorial contents are contribuable --%>
-            <c:if test="${functions:isNodeType(child,'jmix:editorialContent')}">
-                <%@include file="edit.jspf" %>
-                <%@include file="workflow.jspf" %>
-                <div id="edit-${child.identifier}">
-                    <template:module templateType="html" node="${child}"/>
-                </div>
-                <hr/>
-            </c:if>
-        </c:forEach>
-        <div class="clear"></div>
-        <c:if test="${moduleMap.editable and renderContext.editMode}">
-            <template:module path="*"/>
-        </c:if>
-        <template:include templateType="html" template="hidden.footer"/>
-
-
-<c:if test="${not renderContext.ajaxRequest}">
-    <%-- include add nodes forms --%>
-    <c:choose>
-        <c:when test="${empty restrictions}">
-            <jcr:nodeProperty node="${currentNode}" name="j:contributeTypes" var="types"/>
-        </c:when>
-        <c:otherwise>
-            <c:set var="type" value="${restrictions}"/>
-        </c:otherwise>
-    </c:choose>
-    <h3 class="titleaddnewcontent">
-        <img title="" alt="" src="${url.currentModule}/images/add.png"/><fmt:message key="label.add.new.content"/>
-    </h3>
-    <script language="JavaScript">
-        <c:forEach items="${types}" var="type" varStatus="status">
-        animatedcollapse.addDiv('add${currentNode.identifier}-${status.index}', 'fade=1,speed=700,group=newContent');
-        </c:forEach>
-        animatedcollapse.init();
-    </script>
-    <c:if test="${types != null}">
-        <div class="listEditToolbar">
-            <c:forEach items="${types}" var="type" varStatus="status">
-                <jcr:nodeType name="${type.string}" var="nodeType"/>
-                <button onclick="animatedcollapse.toggle('add${currentNode.identifier}-${status.index}');"><span
-                        class="icon-contribute icon-add"></span>${jcr:label(nodeType, renderContext.mainResourceLocale)}
-                </button>
-            </c:forEach>
-        </div>
-
-        <c:forEach items="${types}" var="type" varStatus="status">
-            <div style="display:none;" id="add${currentNode.identifier}-${status.index}">
-                <template:module node="${currentNode}" templateType="edit" template="add">
-                    <template:param name="resourceNodeType" value="${type.string}"/>
-                    <template:param name="currentListURL" value="${url.current}.ajax"/>
-                </template:module>
+        <c:if test="${functions:isNodeType(child,'jmix:editorialContent')}">
+            <%@include file="edit.jspf" %>
+            <%@include file="workflow.jspf" %>
+            <div id="edit-${child.identifier}">
+                <template:module templateType="html" node="${child}"/>
             </div>
-        </c:forEach>
-
+            <hr/>
+        </c:if>
+    </c:forEach>
+    <div class="clear"></div>
+    <c:if test="${moduleMap.editable and renderContext.editMode}">
+        <template:module path="*"/>
     </c:if>
-</c:if>
+    <template:include templateType="html" template="hidden.footer"/>
+
+
+    <c:if test="${not renderContext.ajaxRequest}">
+        <%-- include add nodes forms --%>
+        <c:choose>
+            <c:when test="${empty restrictions}">
+                <jcr:nodeProperty node="${currentNode}" name="j:contributeTypes" var="types"/>
+            </c:when>
+            <c:otherwise>
+                <c:set var="type" value="${restrictions}"/>
+            </c:otherwise>
+        </c:choose>
+        <h3 class="titleaddnewcontent">
+            <img title="" alt="" src="${url.currentModule}/images/add.png"/><fmt:message key="label.add.new.content"/>
+        </h3>
+        <script language="JavaScript">
+            <c:forEach items="${types}" var="type" varStatus="status">
+            animatedcollapse.addDiv('add${currentNode.identifier}-${status.index}',
+                    'fade=1,speed=700,group=newContent');
+            </c:forEach>
+            animatedcollapse.init();
+        </script>
+        <c:if test="${types != null}">
+            <div class="listEditToolbar">
+                <c:forEach items="${types}" var="type" varStatus="status">
+                    <jcr:nodeType name="${type.string}" var="nodeType"/>
+                    <button onclick="animatedcollapse.toggle('add${currentNode.identifier}-${status.index}');"><span
+                            class="icon-contribute icon-add"></span>${jcr:label(nodeType, renderContext.mainResourceLocale)}
+                    </button>
+                </c:forEach>
+            </div>
+
+            <c:forEach items="${types}" var="type" varStatus="status">
+                <div style="display:none;" id="add${currentNode.identifier}-${status.index}">
+                    <template:module node="${currentNode}" templateType="edit" template="add">
+                        <template:param name="resourceNodeType" value="${type.string}"/>
+                        <template:param name="currentListURL" value="${url.current}.ajax"/>
+                    </template:module>
+                </div>
+            </c:forEach>
+
+        </c:if>
+    </c:if>
+</div>

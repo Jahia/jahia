@@ -32,6 +32,7 @@
 
 package org.jahia.ajax.gwt.client.service.content;
 
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -286,6 +287,6 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void getActiveJobs(AsyncCallback<List<GWTJahiaJobDetail>> async);
 
-    void getAllJobs(AsyncCallback<List<GWTJahiaJobDetail>> async);
+    void getJobs(int offset, int limit, String sortField, String sortDir, AsyncCallback<BasePagingLoadResult<GWTJahiaJobDetail>> async);
 
 }

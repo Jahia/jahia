@@ -32,6 +32,7 @@
 
 package org.jahia.ajax.gwt.client.service.content;
 
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.core.client.GWT;
@@ -282,7 +283,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     List<GWTJahiaJobDetail> getActiveJobs() throws GWTJahiaServiceException;
 
-    List<GWTJahiaJobDetail> getAllJobs() throws GWTJahiaServiceException;
+    BasePagingLoadResult<GWTJahiaJobDetail> getJobs(int offset, int limit, String sortField, String sortDir) throws GWTJahiaServiceException;
 
     // -------------------------- INNER CLASSES --------------------------
 

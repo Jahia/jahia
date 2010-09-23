@@ -70,7 +70,7 @@ public class WorkInProgressActionItem extends BaseActionItem {
     private void refreshStatus() {
         Button b = (Button) getTextToolItem();
         if (statuses.isEmpty() && processes.isEmpty()) {
-            b.setText("View completed jobs");
+            b.setText("Background jobs");
             b.setIconStyle(null);
             b.setEnabled(true);
         } else if (statuses.size() == 1) {

@@ -1609,8 +1609,13 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return schedulerHelper.getActiveJobs(getLocale());
     }
 
-    public List<GWTJahiaJobDetail> getAllJobs() throws GWTJahiaServiceException {
-        return schedulerHelper.getAllJobs(getLocale());
+    public BasePagingLoadResult<GWTJahiaJobDetail> getJobs(int offset, int limit, String sortField, String sortDir) throws GWTJahiaServiceException {
+        // todo Proper pagination support would imply that we only load the job details that were requested. Also sorting is not at all supported for the moment. 
+        List<GWTJahiaJobDetail> jobList = schedulerHelper.getAllJobs(getLocale());
+        int size = jobList.size();
+        jobList = new ArrayList<GWTJahiaJobDetail>(jobList.subList(offset, Math.min(size, offset + limit)));
+        BasePagingLoadResult pagingLoadResult = new BasePagingLoadResult(jobList, offset, size);
+        return pagingLoadResult;
     }
 
 }

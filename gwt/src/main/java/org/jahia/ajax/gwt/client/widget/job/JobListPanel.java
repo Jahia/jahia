@@ -1,32 +1,31 @@
 package org.jahia.ajax.gwt.client.widget.job;
 
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.BaseTreeLoader;
-import com.extjs.gxt.ui.client.data.RpcProxy;
-import com.extjs.gxt.ui.client.data.TreeLoader;
-import com.extjs.gxt.ui.client.store.TreeStore;
+import com.extjs.gxt.ui.client.data.*;
+import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
+import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
-import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
-import com.extjs.gxt.ui.client.widget.treegrid.TreeGridSelectionModel;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.Formatter;
-import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -38,8 +37,11 @@ import java.util.List;
 public class JobListPanel extends LayoutContainer {
 
     private JobListWindow window;
+    private ContentPanel detailsPanel;
 
     private Linker linker;
+
+    private List<GWTJahiaJobDetail> selectedItems = null;
 
     public JobListPanel(JobListWindow window, Linker linker) {
         super(new BorderLayout());
@@ -54,37 +56,37 @@ public class JobListPanel extends LayoutContainer {
         final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
 
         // data proxy
-        RpcProxy<List<GWTJahiaJobDetail>> proxy = new RpcProxy<List<GWTJahiaJobDetail>>() {
+        RpcProxy<BasePagingLoadResult<GWTJahiaJobDetail>> proxy = new RpcProxy<BasePagingLoadResult<GWTJahiaJobDetail>>() {
             @Override
-            protected void load(Object loadConfig, AsyncCallback<List<GWTJahiaJobDetail>> callback) {
+            protected void load(Object loadConfig, AsyncCallback<BasePagingLoadResult<GWTJahiaJobDetail>> callback) {
                 if (loadConfig == null) {
-                    service.getAllJobs(callback);
-                    /*
-                } else if (loadConfig instanceof GWTJahiaWorkflowHistoryProcess) {
-                    final GWTJahiaWorkflowHistoryProcess process = (GWTJahiaWorkflowHistoryProcess) loadConfig;
-                    service.getWorkflowHistoryTasks(process.getProvider(), process.getProcessId(), locale, callback);
-                    */
+                    service.getJobs(0, Integer.MAX_VALUE, null, null, callback);
+                } else if (loadConfig instanceof BasePagingLoadConfig) {
+                    BasePagingLoadConfig pagingLoadConfig = (BasePagingLoadConfig) loadConfig;
+                    int limit = pagingLoadConfig.getLimit();
+                    int offset = pagingLoadConfig.getOffset();
+                    Style.SortDir sortDir = pagingLoadConfig.getSortDir();
+                    String sortField = pagingLoadConfig.getSortField();
+                    service.getJobs(offset, limit, sortField, sortDir.name(), callback);
                 } else {
-                    callback.onSuccess(new ArrayList<GWTJahiaJobDetail>());
+                    callback.onSuccess(new BasePagingLoadResult<GWTJahiaJobDetail>(new ArrayList<GWTJahiaJobDetail>()));
                 }
             }
         };
 
         // tree loader
-        final TreeLoader<GWTJahiaJobDetail> loader = new BaseTreeLoader<GWTJahiaJobDetail>(proxy) {
-            @Override
-            public boolean hasChildren(GWTJahiaJobDetail parent) {
-                return false;
-            }
-        };
+        final PagingLoader<BasePagingLoadResult<ModelData>> loader = new BasePagingLoader<BasePagingLoadResult<ModelData>>(proxy);
+        loader.setRemoteSort(true);
 
         // trees store
-        final TreeStore<GWTJahiaJobDetail> store = new TreeStore<GWTJahiaJobDetail>(loader);
+        final ListStore<GWTJahiaJobDetail> store = new ListStore<GWTJahiaJobDetail>(loader);
+
+        final PagingToolBar toolBar = new PagingToolBar(50);
+        toolBar.bind(loader);
 
         List<ColumnConfig> config = new ArrayList<ColumnConfig>();
 
         ColumnConfig column = new ColumnConfig("creationTime", Messages.get("org.jahia.engines.processDisplay.tab.startdate", "Start date"), 100);
-        column.setRenderer(new TreeGridCellRenderer<GWTJahiaJobDetail>());
         column.setDateTimeFormat(Formatter.DEFAULT_DATETIME_FORMAT);
         config.add(column);
 
@@ -143,30 +145,67 @@ public class JobListPanel extends LayoutContainer {
 
         ColumnModel cm = new ColumnModel(config);
 
-        TreeGrid<GWTJahiaJobDetail> tree = new TreeGrid<GWTJahiaJobDetail>(store, cm);
-        tree.setStateful(true);
-        tree.setBorders(true);
-        tree.getStyle().setNodeOpenIcon(StandardIconsProvider.STANDARD_ICONS.workflow());
-        tree.getStyle().setNodeCloseIcon(StandardIconsProvider.STANDARD_ICONS.workflow());
-        tree.getStyle().setLeafIcon(StandardIconsProvider.STANDARD_ICONS.workflowTask());
-        tree.setAutoExpandColumn("description");
-        tree.getTreeView().setRowHeight(25);
-        tree.setTrackMouseOver(false);
-        tree.setSelectionModel(new TreeGridSelectionModel<GWTJahiaJobDetail>() {
-            @Override
-            protected void onSelectChange(GWTJahiaJobDetail model, boolean select) {
-                super.onSelectChange(model, select);
+        final Grid<GWTJahiaJobDetail> grid = new Grid<GWTJahiaJobDetail>(store, cm);
+        grid.setBorders(true);
+        grid.setAutoExpandColumn("description");
+        grid.setTrackMouseOver(false);
+        grid.setStateId("jobPagingGrid");
+        grid.setStateful(true);
+        grid.addListener(Events.Attach, new Listener<GridEvent<GWTJahiaJobDetail>>() {
+            public void handleEvent(GridEvent<GWTJahiaJobDetail> be) {
+                PagingLoadConfig config = new BasePagingLoadConfig();
+                config.setOffset(0);
+                config.setLimit(50);
+
+                Map<String, Object> state = grid.getState();
+                if (state.containsKey("offset")) {
+                    int offset = (Integer) state.get("offset");
+                    int limit = (Integer) state.get("limit");
+                    config.setOffset(offset);
+                    config.setLimit(limit);
+                }
+                if (state.containsKey("sortField")) {
+                    config.setSortField((String) state.get("sortField"));
+                    config.setSortDir(Style.SortDir.valueOf((String) state.get("sortDir")));
+                }
+                loader.load(config);
             }
         });
+        grid.setLoadMask(true);
+        grid.setBorders(true);
+        grid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaJobDetail>() {
+
+            @Override
+            public void selectionChanged(SelectionChangedEvent<GWTJahiaJobDetail> gwtJahiaJobDetailSelectionChangedEvent) {
+                selectedItems = gwtJahiaJobDetailSelectionChangedEvent.getSelection();
+                updateDetails();
+            }
+        });
+
+        ContentPanel panel = new ContentPanel();
+        panel.setFrame(true);
+        panel.setCollapsible(false);
+        panel.setAnimCollapse(false);
+        // panel.setIcon(Resources.ICONS.table());
+        // panel.setHeading("");
+        panel.setHeaderVisible(false);
+        panel.setLayout(new FitLayout());
+        panel.add(grid);
+        panel.setSize(600, 350);
+        panel.setBottomComponent(toolBar);
+        grid.getAriaSupport().setLabelledBy(panel.getId());
+        add(panel);
+
         BorderLayoutData centerData = new BorderLayoutData(Style.LayoutRegion.CENTER);
-        add(tree, centerData);
+        add(panel, centerData);
 
         ContentPanel detailPanel = new ContentPanel();
         detailPanel.setBorders(true);
         detailPanel.setBodyBorder(true);
         detailPanel.setHeaderVisible(true);
         detailPanel.setHeading(Messages.get("label.details", "Details"));
-        detailPanel.add(createDetails());
+        detailPanel.setScrollMode(Style.Scroll.AUTOY);
+        detailsPanel = detailPanel;
 
         BorderLayoutData southData = new BorderLayoutData(Style.LayoutRegion.SOUTH, 200);
         southData.setSplit(true);
@@ -175,77 +214,59 @@ public class JobListPanel extends LayoutContainer {
 
     }
 
-    public FlowPanel createDetails() {
-        FlowPanel infoPanel;
-        infoPanel = new FlowPanel();
-        infoPanel.addStyleName("infoPane");
-        add(infoPanel);
+    public void updateDetails() {
 
-        Grid g = new Grid(1, 2);
-        g.setCellSpacing(10);
-        FlowPanel flowPanel = new FlowPanel();
+        if (detailsPanel == null) {
+            // maybe we clicked before it was created properly ?
+            return;
+        }
 
-        /*
-        if (!engine.isMultipleSelection()) {
-            final GWTJahiaNode selectedNode = engine.getNode();
+        if (selectedItems == null || selectedItems.size() == 0) {
+            return;
+        }
 
-            String preview = selectedNode.getPreview();
-            if (preview != null) {
-                g.setWidget(0, 0, new Image(preview));
+        detailsPanel.removeAll();
+        if (selectedItems.size() == 1) {
+            GWTJahiaJobDetail jobDetail = selectedItems.get(0);
+
+            String description = jobDetail.getDescription();
+            if (description != null) {
+                detailsPanel.add(new HTML("<b>" + Messages.get("label.description") + ":</b> " + description));
             }
-            String name = selectedNode.getName();
-            if (name != null) {
-                flowPanel.add(new HTML("<b>" + Messages.get("label.name") + ":</b> " + name));
+            StringBuffer paths = new StringBuffer();
+            for (String path : jobDetail.getRelatedPaths()) {
+                paths.append(path);
+                paths.append(" ");
             }
-            String path = selectedNode.getPath();
-            if (path != null) {
-                flowPanel.add(new HTML("<b>" + Messages.get("label.path") + ":</b> " + path));
-            }
-            String id = selectedNode.getUUID();
+            detailsPanel.add(new HTML("<b>" + Messages.get("label.paths") + ":</b> " + paths));
+            String id = jobDetail.getName();
             if (id != null) {
-                flowPanel.add(new HTML("<b>" + Messages.get("label.id", "ID") + ":</b> " + id));
+                detailsPanel.add(new HTML("<b>" + Messages.get("label.id", "ID") + ":</b> " + id));
             }
-            if (selectedNode.isFile()) {
-                Long s = selectedNode.getSize();
+            /*
+            if (jobDetail.isFile()) {
+                Long s = jobDetail.getSize();
                 if (s != null) {
-                    flowPanel.add(new HTML("<b>" + Messages.get("label.size") + ":</b> " +
+                    detailPanel.add(new HTML("<b>" + Messages.get("label.size") + ":</b> " +
                             Formatter.getFormattedSize(s.longValue()) + " (" + s.toString() + " bytes)"));
                 }
             }
-            Date date = selectedNode.get("jcr:lastModified");
+            */
+            Date date = jobDetail.getCreationTime();
             if (date != null) {
-                flowPanel.add(new HTML("<b>" + Messages.get("label.lastModif") + ":</b> " +
+                detailsPanel.add(new HTML("<b>" + Messages.get("label.lastModif") + ":</b> " +
                         org.jahia.ajax.gwt.client.util.Formatter.getFormattedDate(date, "d/MM/y")));
             }
-            if (selectedNode.isLocked() && selectedNode.getLockOwner() != null) {
-                flowPanel.add(new HTML(
-                        "<b>" + Messages.get("info.lock.label") + ":</b> " + selectedNode.getLockOwner()));
-            }
-
-            flowPanel.add(new HTML("<b>" + Messages.get("nodes.label", "Types") + ":</b> " + selectedNode.getNodeTypes()));
-            flowPanel.add(new HTML("<b>" + Messages.get("org.jahia.jcr.edit.tags.tab", "Tags") + ":</b> " + selectedNode.getTags() != null ? selectedNode.getTags() : ""));
         } else {
             int numberFiles = 0;
-            int numberFolders = 0;
-            long size = 0;
 
-            for (GWTJahiaNode selectedNode : engine.getNodes()) {
-                if (selectedNode.isFile()) {
-                    numberFiles++;
-                    size += selectedNode.getSize();
-                } else {
-                    numberFolders++;
-                }
+            for (GWTJahiaJobDetail jobDetail : selectedItems) {
+                numberFiles++;
             }
-            flowPanel.add(new HTML("<b>" + Messages.get("info.nbFiles.label") + " :</b> " + numberFiles));
-            flowPanel.add(new HTML("<b>" + Messages.get("info.nbFolders.label") + " :</b> " + numberFolders));
-            flowPanel.add(new HTML("<b>" + Messages.get("info.totalSize.label") + " :</b> " +
-                    org.jahia.ajax.gwt.client.util.Formatter.getFormattedSize(size)));
+            detailsPanel.add(new HTML("<b>" + Messages.get("info.nbFiles.label") + " :</b> " + numberFiles));
         }
-        */
-        g.setWidget(0, 1, flowPanel);
-        infoPanel.add(g);
-        return flowPanel;
+        detailsPanel.layout();
+
     }
 
 }

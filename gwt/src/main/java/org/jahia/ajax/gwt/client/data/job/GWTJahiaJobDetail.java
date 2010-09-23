@@ -2,6 +2,7 @@ package org.jahia.ajax.gwt.client.data.job;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
  * Time: 2:13:35 PM
  * To change this template use File | Settings | File Templates.
  */
-public class GWTJahiaJobDetail extends BaseModelData {
+public class GWTJahiaJobDetail extends BaseModelData implements Serializable {
 
     public GWTJahiaJobDetail() {
     }
@@ -52,6 +53,10 @@ public class GWTJahiaJobDetail extends BaseModelData {
 
     public void setName(String name) {
         set("name", name);
+    }
+
+    public Date getCreationTime() {
+        return get("creationTime");
     }
 
     public void setCreationTime(Date creationTime) {

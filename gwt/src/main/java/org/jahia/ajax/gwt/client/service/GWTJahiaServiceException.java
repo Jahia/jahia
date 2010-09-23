@@ -32,6 +32,8 @@
 
 package org.jahia.ajax.gwt.client.service;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 import java.io.Serializable;
 
 /**
@@ -41,7 +43,7 @@ import java.io.Serializable;
  * Time: 16:01:21
  * To change this template use File | Settings | File Templates.
  */
-public class GWTJahiaServiceException extends Exception implements Serializable {
+public class GWTJahiaServiceException extends Exception implements Serializable, IsSerializable {
 
     public GWTJahiaServiceException() {
         super();

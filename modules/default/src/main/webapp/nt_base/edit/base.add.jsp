@@ -77,7 +77,7 @@
                     <p class="field">
                         <c:choose>
                             <c:when test="${(propertyDefinition.requiredType == jcrPropertyTypes.REFERENCE || propertyDefinition.requiredType == jcrPropertyTypes.WEAKREFERENCE)}">
-                                <c:if test="${propertyDefinition.selector eq selectorType.FILEUPLOAD or propertyDefinition.selector eq selectorType.FILEPICKER}">
+                                <c:if test="${propertyDefinition.selector eq selectorType.FILEUPLOAD or propertyDefinition.selector eq selectorType.CONTENTPICKER}">
                                     <%@include file="formelements/file.jsp" %>
                                 </c:if>
                                 <c:if test="${propertyDefinition.selector eq selectorType.CHOICELIST}">

@@ -32,7 +32,6 @@
  */
 package org.jahia.services.render.filter;
 
-import net.htmlparser.jericho.*;
 import org.apache.log4j.Logger;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
@@ -52,27 +51,19 @@ import java.util.Set;
 public class URLSystemAttributesAppenderFilter extends AbstractFilter {
     private transient static Logger logger = Logger.getLogger(URLSystemAttributesAppenderFilter.class);
     private List<String> attributesToKeep;
-    private Map<String, Set<String>> tagsToCheck;
+    private HtmlTagAttributeTraverser traverser;
 
     public void setAttributesToKeep(List<String> attributesToKeep) {
         this.attributesToKeep = attributesToKeep;
     }
 
     @Override
-    public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
+    public String execute(String previousOut, final RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception {
         if (!Collections.disjoint(attributesToKeep, renderContext.getRequest().getParameterMap().keySet())) {
-            Source source = new Source(previousOut);
-            OutputDocument document = new OutputDocument(source);
-            for (Map.Entry<String, Set<String>> entry : tagsToCheck.entrySet()) {
-                List<StartTag> tags = source.getAllStartTags(entry.getKey());
-                for (StartTag tag : tags) {
-                    Attributes attributes = tag.getAttributes();
-                    for (String attributeName : entry.getValue()) {
-                        Attribute attribute = attributes.get(attributeName);
-                        if (attribute != null) {
-                            String value = attribute.getValue();
-                            String oldValue = value;
+            previousOut = traverser.traverse(previousOut, renderContext, resource,
+                    new HtmlTagAttributeTraverser.HtmlTagAttributeVisitor() {
+                        public String visit(String value, RenderContext context, Resource resource) {
                             String separateChar;
                             if (value.contains("?")) {
                                 separateChar = "&";
@@ -80,7 +71,8 @@ public class URLSystemAttributesAppenderFilter extends AbstractFilter {
                                 separateChar = "?";
                             }
                             for (String s : attributesToKeep) {
-                                if (!value.contains(s + "=") && value.startsWith(renderContext.getURLGenerator().getContext())) {
+                                if (!value.contains(s + "=") && value.startsWith(
+                                        renderContext.getURLGenerator().getContext())) {
                                     String parameter = renderContext.getRequest().getParameter(s);
                                     if (parameter != null) {
                                         value += separateChar + s + "=" + parameter;
@@ -88,19 +80,14 @@ public class URLSystemAttributesAppenderFilter extends AbstractFilter {
                                     }
                                 }
                             }
-                            if (!oldValue.equals(value)) {
-                                document.replace(attribute.getValueSegment(), value);
-                            }
+                            return value;
                         }
-                    }
-                }
-            }
-            return document.toString();
+                    });
         }
         return previousOut;
     }
 
-    public void setTagsToCheck(Map<String, Set<String>> tagsToCheck) {
-        this.tagsToCheck = tagsToCheck;
+    public void setTraverser(HtmlTagAttributeTraverser traverser) {
+        this.traverser = traverser;
     }
 }

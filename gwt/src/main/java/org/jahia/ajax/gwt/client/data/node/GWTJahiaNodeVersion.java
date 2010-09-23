@@ -49,14 +49,11 @@ public class GWTJahiaNodeVersion extends BaseModel {
     public GWTJahiaNodeVersion() {
     }
 
-    public GWTJahiaNodeVersion(String uuid, String version, Date date, Date checkinDate,String label) {
+    public GWTJahiaNodeVersion(String uuid, String version, Date date, String label) {
         setUUID(uuid);
         setVersionNumber(version);
         setDate(date);
-        if (checkinDate != null) {
-            setCheckinDate(checkinDate);
-        }
-        if(label!=null){
+        if (label != null) {
             setLabel(label);
         }
     }
@@ -75,14 +72,6 @@ public class GWTJahiaNodeVersion extends BaseModel {
 
     public void setDate(Date date) {
         set("date", date);
-    }
-
-    public Date getCheckinDate() {
-        return get("checkinDate");
-    }
-
-    public void setCheckinDate(Date checkinDate) {
-        set("checkinDate", checkinDate);
     }
 
     public GWTJahiaNode getNode() {

@@ -79,6 +79,7 @@ public class AvailableTasksTag extends AbstractJahiaTag {
                                     (principal instanceof JahiaUser && ((JahiaUser) principal).getUserKey().equals(getUser().getUserKey())) ||
                                     (principal instanceof Role && (getUser().hasRole((Role) principal)))) {
                                     tasks.add(workflowTask);
+                                    break;
                                 }
                             }
                         }

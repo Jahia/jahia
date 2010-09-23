@@ -450,8 +450,8 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         }
         action.setTaskComments(comments);
         // Get Tasks variables
-//        Set<String> variableNames = taskService.getVariableNames(task.getId());
-//        action.setVariables(taskService.getVariables(task.getId(), variableNames));
+        Set<String> variableNames = taskService.getVariableNames(task.getId());
+        action.setVariables(taskService.getVariables(task.getId(), variableNames));
         final ProcessInstance instance = executionService.findProcessInstanceById(task.getExecutionId());
         if (instance != null) {
             final WorkflowDefinition definition = getWorkflowDefinitionById(instance.getProcessDefinitionId(), locale);

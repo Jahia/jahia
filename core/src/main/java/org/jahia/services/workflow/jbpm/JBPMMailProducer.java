@@ -38,7 +38,6 @@ import org.apache.velocity.tools.generic.DateTool;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
-import org.jahia.services.rbac.Role;
 import org.jahia.services.rbac.RoleIdentity;
 import org.jahia.services.rbac.jcr.RoleBasedAccessControlService;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -50,11 +49,11 @@ import org.jahia.settings.SettingsBean;
 import org.jbpm.api.Execution;
 import org.jbpm.api.JbpmException;
 import org.jbpm.api.cmd.Environment;
+import org.jbpm.pvm.internal.email.impl.AddressTemplate;
 import org.jbpm.pvm.internal.email.impl.AttachmentTemplate;
 import org.jbpm.pvm.internal.email.impl.MailProducerImpl;
 import org.jbpm.pvm.internal.env.EnvironmentImpl;
 import org.jbpm.pvm.internal.model.ExecutionImpl;
-import org.jbpm.pvm.internal.task.TaskImpl;
 
 import javax.jcr.RepositoryException;
 import javax.mail.*;
@@ -78,6 +77,7 @@ public class JBPMMailProducer extends MailProducerImpl {
     private transient static Logger logger = Logger.getLogger(JBPMMailProducer.class);
     ScriptEngine scriptEngine;
     private Bindings bindings;
+
     public Collection<Message> produce(Execution execution) {
         try {
             ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
@@ -90,9 +90,11 @@ public class JBPMMailProducer extends MailProducerImpl {
             fillSubject(execution, email);
             fillContent(execution, email);
             Address[] addresses = email.getRecipients(Message.RecipientType.TO);
-            if(addresses!= null && addresses.length>0)
-            return Collections.singleton(email);
-            else return Collections.emptyList();
+            if (addresses != null && addresses.length > 0) {
+                return Collections.singleton(email);
+            } else {
+                return Collections.emptyList();
+            }
         } catch (MessagingException e) {
             throw new JbpmException("failed to produce email message", e);
         }
@@ -118,60 +120,70 @@ public class JBPMMailProducer extends MailProducerImpl {
         try {
             ExecutionImpl exe = (ExecutionImpl) execution;
             SortedSet<String> emails = new TreeSet<String>();
-            String s = getTemplate().getTo().getUsers();
-            if (!"".equals(s)) {
-                if ("assignable".equals(s)) {
-                    emails.addAll(getAssibnables(exe, s));
-                } else {
-                    emails.add(evaluateExpression(execution, s));
-                }
+            AddressTemplate addressTemplate = getTemplate().getTo();
+            String s = "";
+            if (addressTemplate != null) {
+                s = addressTemplate.getUsers();
+                if (!"".equals(s)) {
+                    if ("assignable".equals(s)) {
+                        emails.addAll(getAssibnables(exe, s));
+                    } else {
+                        emails.add(evaluateExpression(execution, s));
+                    }
 
-                for (String m : emails) {
-                    if (m!=null && !"".equals(m)) {
-                        try {
-                            InternetAddress address = new InternetAddress(m);
-                            address.validate();
-                            email.addRecipient(Message.RecipientType.TO, address);
-                        } catch (MessagingException e) {
-                            logger.debug(e.getMessage(), e);
+                    for (String m : emails) {
+                        if (m != null && !"".equals(m)) {
+                            try {
+                                InternetAddress address = new InternetAddress(m);
+                                address.validate();
+                                email.addRecipient(Message.RecipientType.TO, address);
+                            } catch (MessagingException e) {
+                                logger.debug(e.getMessage(), e);
+                            }
                         }
                     }
-                }
 
-                emails.clear();
+                    emails.clear();
+                }
             }
             if (!"".equals(s)) {
-                s = getTemplate().getCc().getUsers();
-                if ("assignable".equals(s)) {
-                    emails.addAll(getAssibnables(exe, s));
-                } else {
-                    emails.add(evaluateExpression(execution, s));
-                }
-                for (String m : emails) {
-                    if (m!=null && !"".equals(m)) {
-                        try {
-                            InternetAddress address = new InternetAddress(m);
-                            address.validate();
-                            email.addRecipient(Message.RecipientType.CC, address);
-                        } catch (MessagingException e) {
-                            logger.debug(e.getMessage(), e);
+                addressTemplate = getTemplate().getCc();
+                if (addressTemplate != null) {
+                    s = addressTemplate.getUsers();
+                    if ("assignable".equals(s)) {
+                        emails.addAll(getAssibnables(exe, s));
+                    } else {
+                        emails.add(evaluateExpression(execution, s));
+                    }
+                    for (String m : emails) {
+                        if (m != null && !"".equals(m)) {
+                            try {
+                                InternetAddress address = new InternetAddress(m);
+                                address.validate();
+                                email.addRecipient(Message.RecipientType.CC, address);
+                            } catch (MessagingException e) {
+                                logger.debug(e.getMessage(), e);
+                            }
                         }
                     }
                 }
-                s = getTemplate().getBcc().getUsers();
-                if ("assignable".equals(s)) {
-                    emails.addAll(getAssibnables(exe, s));
-                } else {
-                    emails.add(evaluateExpression(execution, s));
-                }
-                for (String m : emails) {
-                    if (m!=null && !"".equals(m)) {
-                        try {
-                            InternetAddress address = new InternetAddress(m);
-                            address.validate();
-                            email.addRecipient(Message.RecipientType.BCC, address);
-                        } catch (MessagingException e) {
-                            logger.debug(e.getMessage(), e);
+                addressTemplate = getTemplate().getBcc();
+                if (addressTemplate != null) {
+                    s = addressTemplate.getUsers();
+                    if ("assignable".equals(s)) {
+                        emails.addAll(getAssibnables(exe, s));
+                    } else {
+                        emails.add(evaluateExpression(execution, s));
+                    }
+                    for (String m : emails) {
+                        if (m != null && !"".equals(m)) {
+                            try {
+                                InternetAddress address = new InternetAddress(m);
+                                address.validate();
+                                email.addRecipient(Message.RecipientType.BCC, address);
+                            } catch (MessagingException e) {
+                                logger.debug(e.getMessage(), e);
+                            }
                         }
                     }
                 }
@@ -188,10 +200,11 @@ public class JBPMMailProducer extends MailProducerImpl {
         WorkflowDefinition def = (WorkflowDefinition) exe.getVariable("workflow");
         String id = (String) exe.getVariable("nodeId");
         JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNodeByUUID(id);
-        List<JahiaPrincipal> principals = WorkflowService.getInstance().getAssignedRole(node, def, exe.getActivity().getDefaultOutgoingTransition().getDestination().getName());
+        List<JahiaPrincipal> principals = WorkflowService.getInstance().getAssignedRole(node, def,
+                exe.getActivity().getDefaultOutgoingTransition().getDestination().getName());
         for (JahiaPrincipal principal : principals) {
             if (principal instanceof JahiaGroup) {
-                Collection<Principal> members = ((JahiaGroup)principal).getMembers();
+                Collection<Principal> members = ((JahiaGroup) principal).getMembers();
                 for (Principal member : members) {
                     if (member instanceof JahiaUser) {
                         emails.add(((JahiaUser) member).getProperty("j:email"));
@@ -200,14 +213,14 @@ public class JBPMMailProducer extends MailProducerImpl {
             } else if (principal instanceof JahiaUser) {
                 emails.add(((JahiaUser) principal).getProperty("j:email"));
             } else if (principal instanceof RoleIdentity) {
-                List<JahiaPrincipal> lp = ((RoleBasedAccessControlService) SpringContextSingleton.getBean(RoleBasedAccessControlService.class
-                        .getName())).getPrincipalsInRole((RoleIdentity) principal);
+                List<JahiaPrincipal> lp = ((RoleBasedAccessControlService) SpringContextSingleton.getBean(
+                        RoleBasedAccessControlService.class.getName())).getPrincipalsInRole((RoleIdentity) principal);
                 for (Principal p : lp) {
                     if (p instanceof JahiaUser) {
                         emails.add(((JahiaUser) p).getProperty("j:email"));
                     } else {
                         if (p instanceof JahiaGroup) {
-                            Collection<Principal> members = ((JahiaGroup)p).getMembers();
+                            Collection<Principal> members = ((JahiaGroup) p).getMembers();
                             for (Principal member : members) {
                                 if (member instanceof JahiaUser) {
                                     emails.add(((JahiaUser) member).getProperty("j:email"));
@@ -312,18 +325,18 @@ public class JBPMMailProducer extends MailProducerImpl {
         final Map<String, Object> vars = ((ExecutionImpl) execution).getVariables();
         JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(
                 (String) vars.get("user"));
-        if(jahiaUser.getProperty("j:email")!=null)
-        bindings.put("user", jahiaUser);
-        else
-        bindings.put("user", null);
+        if (jahiaUser.getProperty("j:email") != null) {
+            bindings.put("user", jahiaUser);
+        } else {
+            bindings.put("user", null);
+        }
         bindings.put("date", new DateTool());
         bindings.put("submissionDate", Calendar.getInstance());
         bindings.put("locale", vars.get("locale"));
         bindings.put("workspace", vars.get("workspace"));
         bindings.put("nodes", JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                @SuppressWarnings("unchecked")
-                List<String> stringList = (List<String>) vars.get("nodeIds");
+                @SuppressWarnings("unchecked") List<String> stringList = (List<String>) vars.get("nodeIds");
                 List<JCRNodeWrapper> nodes = new LinkedList<JCRNodeWrapper>();
                 for (String s : stringList) {
                     nodes.add(session.getNodeByUUID(s));

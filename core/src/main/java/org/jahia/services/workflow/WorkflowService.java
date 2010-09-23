@@ -565,7 +565,7 @@ public class WorkflowService {
         try {
             final List<WorkflowDefinition> forAction = getWorkflowsForAction("publish", null);
             if (node.isNodeType(Constants.JAHIAMIX_WORKFLOW) && node.hasProperty(Constants.PROCESSID)) {
-                addActiveWorkflows(workflows, node.getProperty(Constants.PROCESSID), null);
+                addActiveWorkflows(workflows, node.getProperty(Constants.PROCESSID), node.getSession().getLocale());
             }
             for (Workflow workflow : workflows) {
                 if (forAction.contains(workflow.getWorkflowDefinition())) {
@@ -582,7 +582,7 @@ public class WorkflowService {
             throws RepositoryException {
         String provider = StringUtils.substringBefore(wfName, ":");
         String wfKey = StringUtils.substringAfter(wfName, ":");
-        WorkflowDefinition definition = providers.get(provider).getWorkflowDefinitionByKey(wfKey, null);
+        WorkflowDefinition definition = providers.get(provider).getWorkflowDefinitionByKey(wfKey, node.getSession().getLocale());
         addWorkflowRule(node, definition, task, principal);
     }
 

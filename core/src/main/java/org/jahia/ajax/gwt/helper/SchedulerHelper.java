@@ -47,6 +47,10 @@ public class SchedulerHelper {
             final String status = jobDataMap.getString(BackgroundJob.JOB_STATUS);
             final String user = jobDataMap.getString(BackgroundJob.JOB_USERKEY);
             final String message = jobDataMap.getString(BackgroundJob.JOB_MESSAGE);
+            final Long beginTime = Long.parseLong(jobDataMap.getString(BackgroundJob.JOB_BEGIN));
+            final Long endTime = Long.parseLong(jobDataMap.getString(BackgroundJob.JOB_END));
+            final Integer durationInSeconds = Integer.parseInt(jobDataMap.getString(BackgroundJob.JOB_DURATION));
+            final String jobLocale = jobDataMap.getString(BackgroundJob.JOB_CURRENT_LOCALE);
             String description = jobDetail.getDescription();
             final List<String> relatedPaths = new ArrayList<String>();
             if (PublicationJob.PUBLICATION_TYPE.equals(type)) {
@@ -74,7 +78,7 @@ public class SchedulerHelper {
             }
             GWTJahiaJobDetail job = new GWTJahiaJobDetail(jobDetail.getName(), type, created, user, description,
                     status, message, relatedPaths,
-                    jobDetail.getGroup(), jobDetail.getJobClass().getName());
+                    jobDetail.getGroup(), jobDetail.getJobClass().getName(), beginTime, endTime, durationInSeconds, jobLocale);
             job.setLabel(JahiaResourceBundle.getJahiaInternalResource("label." + type + ".task", locale));
             jobs.add(job);
         }

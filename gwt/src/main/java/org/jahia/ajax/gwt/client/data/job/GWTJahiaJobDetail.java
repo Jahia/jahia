@@ -18,7 +18,20 @@ public class GWTJahiaJobDetail extends BaseModelData implements Serializable {
     public GWTJahiaJobDetail() {
     }
 
-    public GWTJahiaJobDetail(String name, String type, Date creationTime, String user, String description, String status, String message, List<String> relatedPaths, String group, String jobClassName) {
+    public GWTJahiaJobDetail(String name,
+                             String type,
+                             Date creationTime,
+                             String user,
+                             String description,
+                             String status,
+                             String message,
+                             List<String> relatedPaths,
+                             String group,
+                             String jobClassName,
+                             Long beginTime,
+                             Long endTime,
+                             Integer durationInSeconds,
+                             String locale) {
         setName(name);
         setType(type);
         setCreationTime(creationTime);
@@ -29,6 +42,10 @@ public class GWTJahiaJobDetail extends BaseModelData implements Serializable {
         setRelatedPaths(relatedPaths);
         setGroup(group);
         setJobClassName(jobClassName);
+        setBeginTime(beginTime);
+        setEndTime(endTime);
+        setDurationInSeconds(durationInSeconds);
+        setLocale(locale);
     }
 
     public String getType() {
@@ -117,6 +134,38 @@ public class GWTJahiaJobDetail extends BaseModelData implements Serializable {
 
     public void setJobClassName(String jobClassName) {
         set("jobClassName", jobClassName);
+    }
+
+    public Long getBeginTime() {
+        return get("beginTime");
+    }
+
+    public void setBeginTime(Long beginTime) {
+        set("beginTime", beginTime);
+    }
+
+    public Long getEndTime() {
+        return get("endTime");
+    }
+
+    public void setEndTime(Long endTime) {
+        set("endTime", endTime);
+    }
+
+    public Integer getDurationInSeconds() {
+        return get("durationInSeconds");
+    }
+
+    public void setDurationInSeconds(Integer durationInSeconds) {
+        set("durationInSeconds", durationInSeconds);
+    }
+
+    public String getLocale() {
+        return get("locale");
+    }
+
+    public void setLocale(String locale) {
+        set("locale", locale);
     }
 
 }

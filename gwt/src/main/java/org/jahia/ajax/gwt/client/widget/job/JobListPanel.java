@@ -93,14 +93,17 @@ public class JobListPanel extends LayoutContainer {
         column = new ColumnConfig("type", Messages.get("label.type", "Type"), 100);
         config.add(column);
 
-        column = new ColumnConfig("user", Messages.get("label.user", "User"), 100);
-        column.setHidden(true);
-        config.add(column);
-
         column = new ColumnConfig("description", Messages.get("label.description", "Description"), 100);
         config.add(column);
 
         column = new ColumnConfig("status", Messages.get("label.status", "Status"), 100);
+        config.add(column);
+
+        column = new ColumnConfig("durationInSeconds", Messages.get("label.duration", "Duration (s)"), 100);
+        config.add(column);
+
+        column = new ColumnConfig("user", Messages.get("label.user", "User"), 100);
+        column.setHidden(true);
         config.add(column);
 
         column = new ColumnConfig("message", Messages.get("label.message", "Message"), 100);
@@ -257,6 +260,10 @@ public class JobListPanel extends LayoutContainer {
             addDetail("label.jobLabel", "Job label", jobDetail.getLabel());
             addDetail("label.className", "Job class", jobDetail.getJobClassName());
             addDetail("label.message", "Message", jobDetail.getMessage());
+            addDetail("label.beginTime", "Start time", jobDetail.getBeginTime());
+            addDetail("label.endTime", "End time", jobDetail.getEndTime());
+            addDetail("label.durationInSeconds", "Duration (seconds)", jobDetail.getDurationInSeconds());
+            addDetail("label.locale", "Locale code", jobDetail.getLocale());
         } else {
             int nbJobs = 0;
 

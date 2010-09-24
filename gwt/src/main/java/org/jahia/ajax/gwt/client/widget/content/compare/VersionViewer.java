@@ -37,9 +37,7 @@ import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
-import com.extjs.gxt.ui.client.widget.Slider;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ToggleButton;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
@@ -56,11 +54,8 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
-import org.jahia.ajax.gwt.client.util.Constants;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbarLayoutContainer;
-
-import java.util.Date;
 
 /**
  * Created by IntelliJ IDEA.
@@ -73,30 +68,28 @@ public class VersionViewer extends ContentPanel {
     private GWTJahiaNode currentNode;
     private Linker linker = null;
     private String locale;
-    private int currentMode = Constants.MODE_LIVE;
     private static JahiaContentManagementServiceAsync contentService = JahiaContentManagementService.App.getInstance();
     private String workspace = "default";
     private Frame currentFrame;
     private ComboBox<GWTJahiaNodeVersion> versionComboBox;
-    private Slider slider;
+//    private Slider slider;
+    private boolean addButtons;
+    private Button restoreButton;
 
     /**
      * Constructor
      *
      * @param node
-     * @param mode
      * @param linker
+     * @param addButtons
      */
-    public VersionViewer(GWTJahiaNode node, int mode, String locale, Linker linker) {
+    public VersionViewer(GWTJahiaNode node, String locale, Linker linker, String workspace, boolean addButtons) {
         super();
         this.linker = linker;
         this.currentNode = node;
-        this.currentMode = mode;
+        this.workspace = workspace;
         this.locale = locale;
-        this.workspace = "default";
-        if (currentMode == Constants.MODE_LIVE) {
-            workspace = "live";
-        }
+        this.addButtons = addButtons;
         init();
     }
 
@@ -105,43 +98,44 @@ public class VersionViewer extends ContentPanel {
      */
     private void init() {
 
-        slider = new Slider() {
-            @Override protected String onFormatValue(int value) {
-                return DateTimeFormat.getMediumDateTimeFormat().format(new Date((long) value * 1000));
-            }
-        };
-        slider.setMinValue(1285142400);
-        slider.setMaxValue((int) (System.currentTimeMillis() / 1000));
-        slider.setWidth(600);
-        slider.addListener(Events.Change, new Listener<SliderEvent>() {
-            public void handleEvent(SliderEvent be) {
-                contentService
-                        .getNodeURL(currentNode.getPath(), new Date(((long)be.getNewValue())*1000), null, workspace, locale, currentMode,
-                                new BaseAsyncCallback<String>() {
-                                    public void onSuccess(String url) {
-                                        currentFrame = setUrl(url);
-                                        setHeading(url);
-
-                                        unmask();
-                                    }
-
-                                    public void onApplicationFailure(Throwable throwable) {
-                                        Log.error("", throwable);
-                                        unmask();
-                                    }
-                                });
-            }
-        });
+//        slider = new Slider() {
+//            @Override protected String onFormatValue(int value) {
+//                return DateTimeFormat.getMediumDateTimeFormat().format(new Date((long) value * 1000));
+//            }
+//        };
+//        slider.setMinValue(1285142400);
+//        slider.setMaxValue((int) (System.currentTimeMillis() / 1000));
+//        slider.setWidth(600);
+//        slider.addListener(Events.Change, new Listener<SliderEvent>() {
+//            public void handleEvent(SliderEvent be) {
+//                contentService
+//                        .getNodeURL(currentNode.getPath(), new Date(((long)be.getNewValue())*1000), null, workspace, locale,
+//                                new BaseAsyncCallback<String>() {
+//                                    public void onSuccess(String url) {
+//                                        currentFrame = setUrl(url);
+//                                        setHeading(url);
+//
+//                                        unmask();
+//                                    }
+//
+//                                    public void onApplicationFailure(Throwable throwable) {
+//                                        Log.error("", throwable);
+//                                        unmask();
+//                                    }
+//                                });
+//            }
+//        });
 
         // combo box that allows to select the version
         versionComboBox = new ComboBox<GWTJahiaNodeVersion>();
         versionComboBox.setForceSelection(true);
         versionComboBox.setWidth(400);
         versionComboBox.setEditable(false);
-        if (currentMode == Constants.MODE_PREVIEW || currentMode == Constants.MODE_STAGING) {
-            versionComboBox.setEmptyText(Messages.get("label_staging_version ", "Staging version "));
-        } else {
+//        if (currentMode == Constants.MODE_PREVIEW || currentMode == Constants.MODE_STAGING) {
+        if ("live".equals(workspace)) {
             versionComboBox.setEmptyText(Messages.get("label_live_version ", "Live version "));
+        } else {
+            versionComboBox.setEmptyText(Messages.get("label_staging_version ", "Staging version "));
         }
 
         // prepare data before rendering
@@ -170,10 +164,10 @@ public class VersionViewer extends ContentPanel {
                     }
                     version.set("displayField", value);
                 } else {
-                    if (currentMode == Constants.MODE_PREVIEW || currentMode == Constants.MODE_STAGING) {
-                        version.set("displayField", Messages.get("label_staging_version", "Staging version"));
-                    } else {
+                    if ("live".equals(version.getWorkspace())) {
                         version.set("displayField", Messages.get("label_live_version", "Live version"));
+                    } else {
+                        version.set("displayField", Messages.get("label_staging_version", "Staging version"));
                     }
                 }
                 return version;
@@ -216,6 +210,9 @@ public class VersionViewer extends ContentPanel {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNodeVersion> event) {
                 refresh();
+                if (event.getSelectedItem().getLabel() != null) {
+                    restoreButton.setEnabled(true);
+                }
             }
         });
 
@@ -228,7 +225,7 @@ public class VersionViewer extends ContentPanel {
             }
         });
         // case of preview or edit: no version
-        if (currentMode == Constants.MODE_PREVIEW || currentMode == Constants.MODE_STAGING) {
+        if (addButtons) {
             final ToggleButton hButton = new ToggleButton("Highligthing");
             hButton.setIconStyle("gwt-diff");
             hButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -242,13 +239,16 @@ public class VersionViewer extends ContentPanel {
                 }
             });
 
-            final Button button = new Button(Messages.get("label.restore", "Restore"));
-            button.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            restoreButton = new Button(Messages.get("label.restore", "Restore"));
+            restoreButton.setEnabled(false);
+            restoreButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
                 @Override
                 public void componentSelected(ButtonEvent ce) {
+                    mask(Messages.get("label.restoring","Restoring")+"...", "x-mask-loading");
                     final GWTJahiaNodeVersion version = (GWTJahiaNodeVersion) versionComboBox.getValue();
                     contentService.restoreNode(version, false, new BaseAsyncCallback() {
                         public void onSuccess(Object result) {
+                            unmask();
                             versionComboBox.select(0);
                             versionComboBox.reset();
                             load(null);
@@ -260,7 +260,7 @@ public class VersionViewer extends ContentPanel {
             // add in the toolbar
             final ActionToolbarLayoutContainer headerToolBar = new ActionToolbarLayoutContainer("compare-engine") {
                 public void afterToolbarLoading() {
-                    insertItem(button, 0);
+                    insertItem(restoreButton, 0);
                     insertItem(hButton, 0);
                     insertItem(refresh, 0);
                     insertItem(versionComboBox, 0);
@@ -271,15 +271,17 @@ public class VersionViewer extends ContentPanel {
             setTopComponent(headerToolBar);
         } else {
             // case of th live mode
-            LayoutContainer ctn = new LayoutContainer();
+//            LayoutContainer ctn = new LayoutContainer();
             ToolBar headerToolBar = new ToolBar();
             headerToolBar.add(versionComboBox);
             headerToolBar.add(refresh);
-            ctn.add(headerToolBar);
-            ToolBar slideTool = new ToolBar();
-            slideTool.add(slider);
-//            ctn.add(slideTool);
-            setTopComponent(ctn);
+            setTopComponent(headerToolBar);
+//
+//            ctn.add(headerToolBar);
+//            ToolBar slideTool = new ToolBar();
+//            slideTool.add(slider);
+////            ctn.add(slideTool);
+//            setTopComponent(ctn);
         }
 
 
@@ -313,7 +315,7 @@ public class VersionViewer extends ContentPanel {
             offset = loadConfig.getOffset();
         }
 
-        JahiaContentManagementService.App.getInstance().getVersions(currentNode, workspace, limit, offset, callback);
+        JahiaContentManagementService.App.getInstance().getVersions(currentNode, limit, offset, callback);
     }
 
     /**
@@ -321,39 +323,31 @@ public class VersionViewer extends ContentPanel {
      */
     private void load(GWTJahiaNodeVersion version) {
         if (currentNode != null) {
-            mask();
             if (version == null || (version.getVersionNumber() == null || version.getVersionNumber().length() == 0)) {
-                // version is not specified. Current.
-                contentService.getNodeURL(currentNode.getPath(), null, null, null, locale, currentMode,
-                        new BaseAsyncCallback<String>() {
-                            public void onSuccess(String url) {
-                                currentFrame = setUrl(url);
-                                setHeading(url);
+                if (version != null) {
+                    currentFrame = setUrl(version.getUrl());
+                    setHeading(version.getUrl());
+                } else {
+                    mask();
+                    // version is not specified. Current.
+                    contentService.getNodeURL(currentNode.getPath(), null, null, workspace, locale,
+                            new BaseAsyncCallback<String>() {
+                                public void onSuccess(String url) {
+                                    currentFrame = setUrl(url);
+                                    setHeading(url);
 
-                                unmask();
-                            }
+                                    unmask();
+                                }
 
-                            public void onApplicationFailure(Throwable throwable) {
-                                Log.error("", throwable);
-                                unmask();
-                            }
-                        });
+                                public void onApplicationFailure(Throwable throwable) {
+                                    Log.error("", throwable);
+                                    unmask();
+                                }
+                            });
+                }
             } else {
-                contentService
-                        .getNodeURL(version.getNode().getPath(), version.getDate(), version.getLabel(), workspace, locale, currentMode,
-                                new BaseAsyncCallback<String>() {
-                                    public void onSuccess(String url) {
-                                        currentFrame = setUrl(url);
-                                        setHeading(url);
-
-                                        unmask();
-                                    }
-
-                                    public void onApplicationFailure(Throwable throwable) {
-                                        Log.error("", throwable);
-                                        unmask();
-                                    }
-                                });
+                currentFrame = setUrl(version.getUrl());
+                setHeading(version.getUrl());
             }
         }
     }

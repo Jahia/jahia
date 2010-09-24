@@ -36,8 +36,6 @@ import org.apache.log4j.Logger;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.version.Version;
-import java.util.Calendar;
-import java.util.Date;
 
 /**
  * Contains version info for end-users.
@@ -51,14 +49,12 @@ public class VersionInfo implements Comparable {
     private static transient Logger logger = Logger.getLogger(VersionInfo.class);
 
     private Version version;
-    private Calendar checkinDate = null;
-    private String comment;
+    private String label;
     private int depth;
 
-    public VersionInfo(Version version, Calendar checkinDate, String comment, int depth) {
+    public VersionInfo(Version version, String label, int depth) {
         this.version = version;
-        this.checkinDate = checkinDate;
-        this.comment = comment;
+        this.label = label;
         this.depth = depth;
     }
 
@@ -66,16 +62,12 @@ public class VersionInfo implements Comparable {
         return version;
     }
 
-    public String getComment() {
-        return comment;
+    public String getLabel() {
+        return label;
     }
 
     public int getDepth() {
         return depth;
-    }
-
-    public Calendar getCheckinDate() {
-        return checkinDate;
     }
 
     @Override
@@ -84,26 +76,19 @@ public class VersionInfo implements Comparable {
         if (!(o instanceof VersionInfo)) return false;
 
         VersionInfo that = (VersionInfo) o;
-        if(comment!=null) {
-            return comment.equals(that.comment);
+        if(label !=null) {
+            return label.equals(that.label);
         }
-        if (checkinDate != null) {
-            return checkinDate.equals(that.checkinDate);
-        } else {
-            return version.equals(that.version);
-        }
+
+        return version.equals(that.version);
     }
 
     @Override
     public int hashCode() {
-        if(comment!=null) {
-            return comment.hashCode();
+        if(label !=null) {
+            return label.hashCode();
         }
-        if (checkinDate != null) {
-            return checkinDate.hashCode();
-        } else {
-            return 31*version.hashCode();
-        }
+        return 31*version.hashCode();
     }
 
     public int compareTo(Object o) {
@@ -113,18 +98,14 @@ public class VersionInfo implements Comparable {
         if (this.equals(that)) {
             return 0;
         }
-        if (comment != null && that.comment != null) {
-            return this.comment.compareTo(that.comment);
+        if (label != null && that.label != null) {
+            return this.label.compareTo(that.label);
         }
-        else if (checkinDate != null && that.checkinDate != null) {
-            return this.checkinDate.compareTo(that.checkinDate);
-        } else {
-            try {
-                return this.version.getCreated().compareTo(that.version.getCreated());
-            } catch (RepositoryException re) {
-                logger.error("Error while comparing versions ", re);
-                return 0;
-            }
+        try {
+            return this.version.getCreated().compareTo(that.version.getCreated());
+        } catch (RepositoryException re) {
+            logger.error("Error while comparing versions ", re);
+            return 0;
         }
     }
 }

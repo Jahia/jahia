@@ -44,6 +44,7 @@ import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
+import org.jahia.bin.Render;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
@@ -62,8 +63,6 @@ import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.version.Version;
-import javax.jcr.version.VersionHistory;
-import javax.jcr.version.VersionIterator;
 import javax.servlet.http.HttpServletRequest;
 import java.net.MalformedURLException;
 import java.util.*;
@@ -1191,53 +1190,7 @@ public class NavigationHelper {
      * @return
      */
     public List<GWTJahiaNodeVersion> getVersions(final JCRNodeWrapper node) throws RepositoryException {
-        List<GWTJahiaNodeVersion> versions = new ArrayList<GWTJahiaNodeVersion>();
-        VersionHistory vh = node.getSession().getWorkspace().getVersionManager().getVersionHistory(node.getPath());
-        VersionIterator vi = vh.getAllVersions();
-
-//        String base = node.getBaseVersion().getName();
-//        String liveBase = (String) JCRTemplate.getInstance()
-//                .doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, new JCRCallback() {
-//                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-//                        try {
-//                            return session.getWorkspace().getVersionManager()
-//                                    .getBaseVersion(node.getCorrespondingNodePath(Constants.LIVE_WORKSPACE)).getName();
-//                        } catch (RepositoryException e) {
-//                            return "";
-//                        }
-//                    }
-//                });
-
-        while (vi.hasNext()) {
-            Version v = vi.nextVersion();
-            if (!v.getName().equals("jcr:rootVersion")) {
-//                        JCRNodeWrapper orig = ((JCRVersionHistory) v.getContainingHistory()).getNode();
-                GWTJahiaNode n = getGWTJahiaNode(node);
-                String[] versionLabels = vh.getVersionLabels(v);
-                if (versionLabels != null && versionLabels.length > 0) {
-                    for (String string : versionLabels) {
-//                        if (!string.contains("published")
-//                                ||
-//                                string.contains(node.getSession().getWorkspace().getName())
-//                                ) {
-                            if (node.isFile()) {
-                                n.setUrl(node.getUrl() + "?v=" + v.getCreated().getTime().getTime());
-                            }
-                            GWTJahiaNodeVersion jahiaNodeVersion = new GWTJahiaNodeVersion(v.getIdentifier(),
-                                    v.getName(), v.getCreated().getTime(), string);
-                            jahiaNodeVersion.setNode(n);
-                            versions.add(jahiaNodeVersion);
-//                        }
-                    }
-                }
-            }
-            Collections.sort(versions, new Comparator<GWTJahiaNodeVersion>() {
-                public int compare(GWTJahiaNodeVersion o1, GWTJahiaNodeVersion o2) {
-                    return o1.getDate().compareTo(o2.getDate());
-                }
-            });
-        }
-        return versions;
+        return getVersions(node, false);
     }
 
     /**
@@ -1246,18 +1199,22 @@ public class NavigationHelper {
      * @param node
      * @return
      */
-    public List<GWTJahiaNodeVersion> getPublishedVersions(JCRNodeWrapper node) throws RepositoryException {
+    public List<GWTJahiaNodeVersion> getVersions(JCRNodeWrapper node, boolean publishedOnly) throws RepositoryException {
         List<GWTJahiaNodeVersion> versions = new ArrayList<GWTJahiaNodeVersion>();
         List<VersionInfo> versionInfos = jcrVersionService.getVersionInfos(node.getSession(), node);
         for (VersionInfo versionInfo : versionInfos) {
-            Version v = versionInfo.getVersion();
-            GWTJahiaNode n = getGWTJahiaNode(node);
-            n.setUrl(node.getUrl() + "?v=" + versionInfo.getCheckinDate().getTime().getTime());
-            GWTJahiaNodeVersion jahiaNodeVersion =
-                    new GWTJahiaNodeVersion(v.getIdentifier(), v.getName(), v.getCreated().getTime(), versionInfo.getComment());
-            jahiaNodeVersion.setNode(n);
-
-            versions.add(jahiaNodeVersion);
+            if (!publishedOnly || versionInfo.getLabel().startsWith("live_")) {
+                Version v = versionInfo.getVersion();
+                GWTJahiaNode n = getGWTJahiaNode(node);
+                final String workspace = StringUtils.substringBefore(versionInfo.getLabel(), "_");
+                GWTJahiaNodeVersion jahiaNodeVersion =
+                        new GWTJahiaNodeVersion(v.getIdentifier(), v.getName(), v.getCreated().getTime(), versionInfo.getLabel(),
+                                workspace, n);
+                String url = getNodeURL(node.getPath(), versionInfo.getVersion().getCreated().getTime(), versionInfo.getLabel(),
+                        workspace, node.getSession().getLocale());
+                jahiaNodeVersion.setUrl(url);
+                versions.add(jahiaNodeVersion);
+            }
         }
         return versions;
     }
@@ -1362,5 +1319,25 @@ public class NavigationHelper {
         }
     }
 
+    /**
+     * Get node url depending
+     *
+     * @param workspace
+     * @param locale
+     * @return
+     */
+    public String getNodeURL(String path, Date versionDate, String versionLabel, final String workspace,
+                             final Locale locale) {
+        String url = Jahia.getContextPath() + Render.getRenderServletPath() + "/" + workspace + "/" + locale;
+        url += path + ".html";
+        if (versionDate != null) {
+            url += "?v=" + (versionDate.getTime()) ;
+            if (versionLabel != null) {
+                url += "&l="+versionLabel;
+            }
+        }
+
+        return url;
+    }
 
 }

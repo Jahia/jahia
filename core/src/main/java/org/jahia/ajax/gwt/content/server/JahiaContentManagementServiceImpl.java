@@ -970,16 +970,20 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
     }
 
-    public PagingLoadResult<GWTJahiaNodeVersion> getVersions(GWTJahiaNode node, String workspace, int limit, int offset)
+    public PagingLoadResult<GWTJahiaNodeVersion> getVersions(GWTJahiaNode node, int limit, int offset)
             throws GWTJahiaServiceException {
         try {
-            List<GWTJahiaNodeVersion> result = navigation.getPublishedVersions(
-                    JCRSessionFactory.getInstance().getCurrentUserSession(workspace).getNode(node.getPath()));
+            List<GWTJahiaNodeVersion> result = navigation.getVersions(
+                    JCRSessionFactory.getInstance().getCurrentUserSession(getWorkspace(), getLocale()).getNode(node.getPath()), true);
 
             // add current workspace version
-            final GWTJahiaNodeVersion currentWorkspaceVersion = new GWTJahiaNodeVersion();
-            currentWorkspaceVersion.setNode(node);
-            result.add(0, currentWorkspaceVersion);
+            final GWTJahiaNodeVersion liveVersion = new GWTJahiaNodeVersion("live", node);
+            result.add(0, liveVersion);
+            liveVersion.setUrl(navigation.getNodeURL(node.getPath(), null,null, "live", getLocale()));
+
+            final GWTJahiaNodeVersion defaultVersion = new GWTJahiaNodeVersion("default", node);
+            result.add(0, defaultVersion);
+            defaultVersion.setUrl(navigation.getNodeURL(node.getPath(), null,null, "default", getLocale()));
 
             // get sublist: Todo Find a better way
             int size = result.size();
@@ -1017,11 +1021,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                         getResponse(), retrieveCurrentSession());
     }
 
-    public String getNodeURL(String path, Date versionDate, String versionLabel, String workspace, String locale, int mode)
+    public String getNodeURL(String path, Date versionDate, String versionLabel, String workspace, String locale)
             throws GWTJahiaServiceException {
-        return this.template.getNodeURL(path, versionDate, versionLabel, mode, getRequest(), getResponse(),
-                retrieveCurrentSession(workspace != null ? workspace : getWorkspace(),
-                        locale != null ? LanguageCodeConverters.languageCodeToLocale(locale) : getLocale()));
+        final JCRSessionWrapper session = retrieveCurrentSession(workspace != null ? workspace : getWorkspace(),
+                locale != null ? LanguageCodeConverters.languageCodeToLocale(locale) : getLocale());
+        return this.navigation.getNodeURL(path, versionDate, versionLabel, session.getWorkspace().getName(),
+                session.getLocale());
     }
 
     public void importContent(String parentPath, String fileKey) throws GWTJahiaServiceException {

@@ -180,7 +180,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     public List<GWTJahiaNodeVersion> getVersions(String path) throws GWTJahiaServiceException;
 
-    public PagingLoadResult<GWTJahiaNodeVersion> getVersions(GWTJahiaNode node, String workspace, int limit, int offset) throws GWTJahiaServiceException;
+    public PagingLoadResult<GWTJahiaNodeVersion> getVersions(GWTJahiaNode node, int limit, int offset) throws GWTJahiaServiceException;
 
     public void restoreNode(GWTJahiaNodeVersion gwtJahiaNodeVersion, boolean allSubTree) throws GWTJahiaServiceException;
 
@@ -188,7 +188,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     public GWTRenderResult getRenderedContent(String path, String workspace, String locale, String template, String configuration, Map<String, String> contextParams, boolean editMode, String configName) throws GWTJahiaServiceException;
 
-    public String getNodeURL(String path, Date versionDate, String versionLabel, String workspace, String locale, int mode) throws GWTJahiaServiceException;
+    public String getNodeURL(String path, Date versionDate, String versionLabel, String workspace, String locale) throws GWTJahiaServiceException;
 
     public void importContent(String parentPath, String fileKey) throws GWTJahiaServiceException;
 

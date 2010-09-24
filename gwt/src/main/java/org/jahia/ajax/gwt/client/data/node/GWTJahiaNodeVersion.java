@@ -49,13 +49,18 @@ public class GWTJahiaNodeVersion extends BaseModel {
     public GWTJahiaNodeVersion() {
     }
 
-    public GWTJahiaNodeVersion(String uuid, String version, Date date, String label) {
+    public GWTJahiaNodeVersion(String uuid, String version, Date date, String label, String workspace, GWTJahiaNode node) {
         setUUID(uuid);
         setVersionNumber(version);
         setDate(date);
-        if (label != null) {
-            setLabel(label);
-        }
+        setLabel(label);
+        setNode(node);
+        setWorkspace(workspace);
+    }
+
+    public GWTJahiaNodeVersion(String workspace, GWTJahiaNode node) {
+        setWorkspace(workspace);
+        setNode(node);
     }
 
     public String getVersionNumber() {
@@ -104,5 +109,21 @@ public class GWTJahiaNodeVersion extends BaseModel {
 
     public void setLabel(String label) {
         set("label", label);
+    }
+
+    public String getWorkspace() {
+        return get("workspace");
+    }
+
+    public void setWorkspace(String workspace) {
+        set("workspace", workspace);
+    }
+
+    public String getUrl() {
+        return get("url");
+    }
+
+    public void setUrl(String url) {
+        set("url", url);
     }
 }

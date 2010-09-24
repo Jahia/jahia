@@ -34,6 +34,7 @@ package org.jahia.ajax.gwt.helper;
 
 import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.api.Constants;
 import org.jahia.bin.Edit;
 import org.jahia.bin.Render;
 import org.jahia.bin.Studio;
@@ -157,57 +158,7 @@ public class TemplateHelper {
         return templatesPath;
     }
 
-    /**
-     * Get node url depending
-     *
-     * @param request
-     * @param response
-     * @param currentUserSession
-     * @return
-     */
-    public String getNodeURL(String path, Date versionDate, String versionLabel, int mode, HttpServletRequest request,
-                             HttpServletResponse response, JCRSessionWrapper currentUserSession) {
-        try {
-            final JCRSessionWrapper session = currentUserSession;
-            final JCRNodeWrapper node = session.getNode(path);
-            final Resource resource = new Resource(node, "html", null, Resource.CONFIGURATION_PAGE);
-            request.setAttribute("mode", "edit");
-            final RenderContext renderContext = new RenderContext(request, response, currentUserSession.getUser());
-
-            JCRSiteNode site = node.getResolveSite();
-            renderContext.setSite(site);
-
-            if (mode == EDIT) {
-                renderContext.setEditMode(true);
-            } else {
-                renderContext.setEditMode(false);
-            }
-            renderContext.setMainResource(resource);
-
-            final URLGenerator urlGenerator = new URLGenerator(renderContext, resource);
-            String url;
-            if (mode == LIVE) {
-                 url = urlGenerator.getLive();
-            } else if (mode == PREVIEW) {
-                url = urlGenerator.getPreview();
-            } else {
-                url = urlGenerator.getEdit();
-            }
-            if (versionDate != null) {
-                url += "?v=" + (versionDate.getTime()) ;
-                if (versionLabel != null) {
-                    url += "&l="+versionLabel;
-                }
-            }
-
-            return url;
-        } catch (RepositoryException e) {
-            logger.error(e, e);
-            return "";
-        }
-    }
-
-    /**
+        /**
      * Get template set
      *
      * @param node

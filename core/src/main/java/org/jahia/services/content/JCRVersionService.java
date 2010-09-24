@@ -33,7 +33,7 @@
 package org.jahia.services.content;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.core.version.InternalVersion;
+import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
@@ -95,7 +95,7 @@ public class JCRVersionService extends JahiaService {
      */
     public List<VersionInfo> getVersionInfos(Session session, JCRNodeWrapper node) throws RepositoryException {
         VersionHistory versionHistory = session.getWorkspace().getVersionManager().getVersionHistory(node.getPath());
-        boolean live = session.getWorkspace().getName().equals(Constants.LIVE_WORKSPACE);
+
         VersionIterator versions = versionHistory.getAllVersions();
         if (versions.hasNext()) {
             Version v = versions.nextVersion();
@@ -104,14 +104,11 @@ public class JCRVersionService extends JahiaService {
         Set<VersionInfo> versionList = new TreeSet<VersionInfo>();
         while (versions.hasNext()) {
             Version v = versions.nextVersion();
-            Calendar checkinDate = v.getCreated();
             String[] versionLabels = versionHistory.getVersionLabels(v);
             if (versionLabels != null && versionLabels.length > 0) {
                 for (String string : versionLabels) {
-                    if(!string.contains("published") || string.contains(session.getWorkspace().getName())) {
-                        VersionInfo versionInfo = new VersionInfo(v, checkinDate, string, 0);
-                        versionList.add(versionInfo);
-                    }
+                    VersionInfo versionInfo = new VersionInfo(v, string, 0);
+                    versionList.add(versionInfo);
                 }
             }
         }
@@ -332,9 +329,11 @@ public class JCRVersionService extends JahiaService {
             destinationNodes.put(n.getIdentifier(), n);
         }
 
+        names.clear();
         ni = frozenNode.getNodes();
         while (ni.hasNext()) {
             JCRNodeWrapper child = (JCRNodeWrapper) ni.next();
+            names.add(child.getName());
             if (destinationNodes.containsKey(child.getIdentifier())) {
                 JCRNodeWrapper node = destinationNodes.remove(child.getIdentifier());
                 synchronizeNode(child, node, session, allSubTree);
@@ -370,14 +369,14 @@ public class JCRVersionService extends JahiaService {
             }
         }
 
-//        if (destinationNode.getPrimaryNodeType().hasOrderableChildNodes()) {
-//            Collections.reverse(names);
-//            String previous = null;
-//            for (String name : names) {
-//                destinationNode.orderBefore(name, previous);
-//                previous = name;
-//            }
-//        }
+        if (destinationNode.getPrimaryNodeType().hasOrderableChildNodes()) {
+            Collections.reverse(names);
+            String previous = null;
+            for (String name : names) {
+                destinationNode.orderBefore(name, previous);
+                previous = name;
+            }
+        }
         destinationNode.setProperty(Constants.JCR_LASTMODIFIED,GregorianCalendar.getInstance());
     }
 

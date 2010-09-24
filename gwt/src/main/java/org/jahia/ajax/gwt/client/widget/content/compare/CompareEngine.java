@@ -41,7 +41,6 @@ import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.util.Constants;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
@@ -59,8 +58,8 @@ public class CompareEngine extends Window {
     private String locale;
 
     //private LayoutContainer mainComponent;
-    private VersionViewer liveVersion;
-    private VersionViewer stagingVersion;
+    private VersionViewer leftPanel;
+    private VersionViewer rightPanel;
     protected ButtonBar buttonBar;
 
 
@@ -96,22 +95,22 @@ public class CompareEngine extends Window {
         panel.setHeaderVisible(false);
 
         //live version
-        liveVersion = new VersionViewer(node, Constants.MODE_LIVE, linker.getSelectedNode().getLanguageCode(), linker);
-        liveVersion.setSize(650, 750);
+        leftPanel = new VersionViewer(node, linker.getSelectedNode().getLanguageCode(), linker, "live", false);
+        leftPanel.setSize(650, 750);
         BorderLayoutData liveLayoutData = new BorderLayoutData(Style.LayoutRegion.WEST, 650);
         liveLayoutData.setCollapsible(true);
-        add(liveVersion, liveLayoutData);
+        add(leftPanel, liveLayoutData);
 
         // staging version
-        stagingVersion = new VersionViewer(node, Constants.MODE_PREVIEW, linker.getSelectedNode().getLanguageCode(), linker){
+        rightPanel = new VersionViewer(node, linker.getSelectedNode().getLanguageCode(), linker, "default", true){
             @Override
             public String getCompareWith() {
-                return liveVersion.getInnerHTML();
+                return leftPanel.getInnerHTML();
             }
         };
-        stagingVersion.setSize(650, 750);
+        rightPanel.setSize(650, 750);
         BorderLayoutData stagingLayoutData = new BorderLayoutData(Style.LayoutRegion.CENTER, 650);
-        add(stagingVersion, stagingLayoutData);
+        add(rightPanel, stagingLayoutData);
 
         LayoutContainer buttonsPanel = new LayoutContainer();
         buttonsPanel.setBorders(false);

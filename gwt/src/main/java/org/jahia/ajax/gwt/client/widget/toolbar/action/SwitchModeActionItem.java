@@ -46,8 +46,8 @@ import org.jahia.ajax.gwt.client.widget.edit.EditActions;
 public class SwitchModeActionItem extends BaseActionItem {
 
     public void handleNewLinkerSelection() {
-        final String mode = getPropertyValue(getGwtToolbarItem(), "mode");
-        if (mode.equalsIgnoreCase("live")) {
+        final String workspace = getPropertyValue(getGwtToolbarItem(), "workspace");
+        if (workspace.equalsIgnoreCase("live")) {
             if (linker.getMainNode().getPublicationInfo().getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED
                     || linker.getMainNode().getPublicationInfo().getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
                 setEnabled(false);
@@ -59,19 +59,9 @@ public class SwitchModeActionItem extends BaseActionItem {
 
     @Override
     public void onComponentSelection() {
-        final String mode = getPropertyValue(getGwtToolbarItem(), "mode");
-        int modeAsInt = Constants.MODE_STAGING;
-        if (mode != null) {
-            if (mode.equalsIgnoreCase("live")) {
-                modeAsInt = Constants.MODE_LIVE;
-            } else if (mode.equalsIgnoreCase("edit")) {
-                modeAsInt = Constants.MODE_STAGING;
-            } else if (mode.equalsIgnoreCase("preview")) {
-                modeAsInt = Constants.MODE_PREVIEW;
-            }
-        }
+        final String workspace = getPropertyValue(getGwtToolbarItem(), "workspace");
         final String urlParams = getPropertyValue(getGwtToolbarItem(), "urlParams");
-        EditActions.switchMode(linker,modeAsInt,urlParams);
+        EditActions.switchMode(linker,workspace,urlParams);
     }
 
 }

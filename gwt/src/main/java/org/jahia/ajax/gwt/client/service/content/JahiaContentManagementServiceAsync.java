@@ -172,7 +172,7 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void getVersions(String path, AsyncCallback<List<GWTJahiaNodeVersion>> async);
 
-    void getVersions(GWTJahiaNode node, String workspace, int limit, int offset, AsyncCallback<PagingLoadResult<GWTJahiaNodeVersion>> async);
+    void getVersions(GWTJahiaNode node, int limit, int offset, AsyncCallback<PagingLoadResult<GWTJahiaNodeVersion>> async);
 
     void restoreNode(GWTJahiaNodeVersion gwtJahiaNodeVersion, boolean allSubTree, AsyncCallback async);
 
@@ -180,7 +180,7 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void getRenderedContent(String path, String workspace, String locale, String template, String configuration, Map<String, String> contextParams, boolean editMode, String configName, AsyncCallback<GWTRenderResult> async);
 
-    void getNodeURL(String path, Date versionDate, String versionLabel, String workspace, String locale, int mode, AsyncCallback<String> async);
+    void getNodeURL(String path, Date versionDate, String versionLabel, String workspace, String locale, AsyncCallback<String> async);
 
     void importContent(String parentPath, String fileKey, AsyncCallback async);
 

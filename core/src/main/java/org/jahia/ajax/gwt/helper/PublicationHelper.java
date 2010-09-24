@@ -52,7 +52,6 @@ import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 
 import javax.jcr.RepositoryException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -235,9 +234,9 @@ public class PublicationHelper {
      * Referenced nodes will also be published.
      * Parent node must be published, or will be published if publishParent is true.
      *
-     * @param uuids     list of uuids of the nodes to publish
-     * @param language  language to publish if null publish all languages
-     * @param workflow  @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
+     * @param uuids    list of uuids of the nodes to publish
+     * @param language language to publish if null publish all languages
+     * @param workflow @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      */
     public void publish(List<String> uuids, String language, boolean allSubTree, boolean workflow, boolean reverse, JCRSessionWrapper session,
                         List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException {
@@ -287,22 +286,21 @@ public class PublicationHelper {
                     }
                     if (needed) {
                         map.put("publicationInfos", localInfos);
-                        List<GWTJahiaPublicationInfo> gwtInfos = convert(localInfos,session);
+                        List<GWTJahiaPublicationInfo> gwtInfos = convert(localInfos, session);
                         map.put("customWorkflowInfo", new PublicationWorkflow(gwtInfos, uuids, allSubTree, language));
 
                         for (PublicationInfo node : localInfos) {
                             ids.add(node.getRoot().getUuid());
                         }
-                        workflowService.startProcess(ids,session,entry.getKey().getWorkflowDefinitionKey(), entry.getKey().getProviderKey(), map);
+                        workflowService.startProcess(ids, session, entry.getKey().getWorkflowDefinitionKey(), entry.getKey().getProviderKey(), map);
                     }
                 }
             } else {
                 if (reverse) {
 //                    publicationService.publish(infos, Constants.LIVE_WORKSPACE, workspaceName);
                 } else {
-                    JobDetail jobDetail = BackgroundJob.createJahiaJob("Publication", PublicationJob.class);
+                    JobDetail jobDetail = BackgroundJob.createJahiaJob("Publication", PublicationJob.class, PublicationJob.PUBLICATION_TYPE);
                     JobDataMap jobDataMap = jobDetail.getJobDataMap();
-                    jobDataMap.put(BackgroundJob.JOB_TYPE, PublicationJob.PUBLICATION_TYPE);
                     jobDataMap.put(PublicationJob.PUBLICATION_INFOS, infos);
                     jobDataMap.put(PublicationJob.SOURCE, workspaceName);
                     jobDataMap.put(PublicationJob.DESTINATION, Constants.LIVE_WORKSPACE);

@@ -39,8 +39,8 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -71,14 +71,20 @@ public class ContentImport extends Window {
         form.setFrame(false);
         form.setHeaderVisible(false);
         form.setBorders(false);
+        form.setLabelWidth(200);
 
         final FileUploadField field = new FileUploadField("import");
         field.setFieldLabel(Messages.get("label.import"));
         form.add(field);
 
+        final CheckBox checkbox = new CheckBox();
+        checkbox.setFieldLabel(Messages.get("label.scheduleAsBackgroundJob", "Schedule as background job"));
+        checkbox.setValue(true);
+        form.add(checkbox);
+
         Button submit = new Button(Messages.get("label.ok"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
-                doImport(n.getPath(), field.getValue());
+                doImport(n.getPath(), field.getValue(), checkbox.getValue());
             }
         });
 
@@ -95,9 +101,9 @@ public class ContentImport extends Window {
         add(form);
     }
 
-    public void doImport(String path, Object value) {
+    public void doImport(String path, Object value, Boolean asynchronously) {
         Log.debug(path + " " + value);
-        JahiaContentManagementService.App.getInstance().importContent(path, value.toString(), new BaseAsyncCallback() {
+        JahiaContentManagementService.App.getInstance().importContent(path, value.toString(), asynchronously, new BaseAsyncCallback() {
 
             public void onApplicationFailure(Throwable caught) {
                 com.google.gwt.user.client.Window.alert(Messages.get("fm_fail") + "\n" + caught.getLocalizedMessage());

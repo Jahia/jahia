@@ -35,7 +35,8 @@ package org.jahia.services.workflow.jbpm.custom;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.*;
+import org.jahia.services.content.PublicationInfo;
+import org.jahia.services.content.PublicationJob;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.workflow.WorkflowVariable;
 import org.jbpm.api.activity.ActivityExecution;
@@ -43,8 +44,8 @@ import org.jbpm.api.activity.ExternalActivityBehaviour;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Publish custom activity for jBPM workflow
@@ -60,14 +61,13 @@ public class Publish implements ExternalActivityBehaviour {
         String workspace = (String) execution.getVariable("workspace");
         String userKey = (String) execution.getVariable("user");
 
-        JobDetail jobDetail = BackgroundJob.createJahiaJob("Publication", PublicationJob.class);
+        JobDetail jobDetail = BackgroundJob.createJahiaJob("Publication", PublicationJob.class, PublicationJob.PUBLICATION_TYPE);
         JobDataMap jobDataMap = jobDetail.getJobDataMap();
-        jobDataMap.put(BackgroundJob.JOB_TYPE, PublicationJob.PUBLICATION_TYPE);
         jobDataMap.put(BackgroundJob.JOB_USERKEY, userKey);
         jobDataMap.put(PublicationJob.PUBLICATION_INFOS, info);
         jobDataMap.put(PublicationJob.SOURCE, workspace);
         jobDataMap.put(PublicationJob.DESTINATION, Constants.LIVE_WORKSPACE);
-        jobDataMap.put(PublicationJob.LOCK, "process-"+execution.getProcessInstance().getId());
+        jobDataMap.put(PublicationJob.LOCK, "process-" + execution.getProcessInstance().getId());
 
         ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail);
         List<WorkflowVariable> workflowVariables = (List<WorkflowVariable>) execution.getVariable("endDate");

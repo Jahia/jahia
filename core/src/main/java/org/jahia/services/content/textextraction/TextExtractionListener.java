@@ -168,11 +168,10 @@ public class TextExtractionListener extends DefaultEventListener {
 
     protected void scheduleBackgroundExtraction(JCRNodeWrapper fileNode, String user) throws JahiaException {
         JobDetail jobDetail = BackgroundJob.createJahiaJob("Text extraction for " + fileNode.getName(),
-                TextExtractorJob.class);
+                TextExtractorJob.class, TextExtractorJob.EXTRACTION_TYPE);
         JobDataMap jobDataMap = jobDetail.getJobDataMap();
         jobDataMap.put(TextExtractorJob.JOB_PROVIDER, fileNode.getProvider().getMountPoint());
         jobDataMap.put(TextExtractorJob.JOB_PATH, fileNode.getPath());
-        jobDataMap.put(BackgroundJob.JOB_TYPE, TextExtractorJob.EXTRACTION_TYPE);
 
         if (logger.isDebugEnabled()) {
             logger.debug("Scheduling text extraction background job for file " + fileNode.getPath());

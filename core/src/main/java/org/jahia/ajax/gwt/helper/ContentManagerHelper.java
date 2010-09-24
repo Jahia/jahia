@@ -32,6 +32,7 @@
 
 package org.jahia.ajax.gwt.helper;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.tika.io.IOUtils;
@@ -47,21 +48,20 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.importexport.ImportExportBaseService;
-import org.jahia.services.importexport.ImportExportService;
+import org.jahia.services.importexport.ImportJob;
 import org.jahia.services.importexport.ReferencesHelper;
+import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.i18n.JahiaResourceBundle;
-import org.jdom.JDOMException;
-import org.xml.sax.SAXException;
+import org.quartz.JobDataMap;
+import org.quartz.JobDetail;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
 import java.io.*;
 import java.util.*;
-import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -589,23 +589,24 @@ public class ContentManagerHelper {
         }
     }
 
-    public void importContent(String parentPath, String fileKey) throws GWTJahiaServiceException {
-        GWTFileManagerUploadServlet.Item item = GWTFileManagerUploadServlet.getItem(fileKey);
+    public void importContent(String parentPath, String fileKey, boolean asynchronously) throws GWTJahiaServiceException {
         try {
-            if ("application/zip".equals(item.getContentType())) {
-                try {
-                    importExport.importZip(parentPath, item.getFile(), false);
-                } finally {
-                    item.dispose();
-                }
-            } else if ("application/xml".equals(item.getContentType()) || "text/xml".equals(item.getContentType())) {
-                FileInputStream is = item.getStream();
-                try {
-                    importExport.importXML(parentPath, is, false);
-                } finally {
-                    IOUtils.closeQuietly(is);
-                    item.dispose();
-                }
+            if (!asynchronously) {
+                ImportJob.importContent(parentPath, fileKey);
+            } else {
+                // let's schedule an import job.
+                GWTFileManagerUploadServlet.Item item = GWTFileManagerUploadServlet.getItem(fileKey);
+
+                JobDetail jobDetail = BackgroundJob.createJahiaJob("Import file " + FilenameUtils.getName(item.getOriginalFileName()), ImportJob.class, ImportJob.IMPORT_TYPE);
+                JobDataMap jobDataMap;
+                jobDataMap = jobDetail.getJobDataMap();
+
+                jobDataMap.put(ImportJob.DESTINATION_PARENT_PATH, parentPath);
+                jobDataMap.put(ImportJob.FILE_KEY, fileKey);
+                jobDataMap.put(ImportJob.FILENAME, FilenameUtils.getName(item.getOriginalFileName()));
+
+                ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail);
+
             }
         } catch (Exception e) {
             logger.error("Error when importing", e);
@@ -1014,7 +1015,7 @@ public class ContentManagerHelper {
             try {
                 is = new FileInputStream(path);
                 JCRNodeWrapper templateSet = session.getNode("/templateSets").addNode(key, "jnt:virtualsite");
-                templateSet.setProperty("j:installedModules",new Value[] {session.getValueFactory().createValue(key)});
+                templateSet.setProperty("j:installedModules", new Value[]{session.getValueFactory().createValue(key)});
                 session.importXML("/templateSets/" + key, is, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
                 session.save();
                 ServicesRegistry.getInstance().getJahiaTemplateManagerService().createModule(key);
@@ -1026,18 +1027,18 @@ public class ContentManagerHelper {
         }
         return null;
     }
-    
+
     public GWTJahiaNode generateWar(String moduleName, JCRSessionWrapper session) {
         try {
             ServicesRegistry.getInstance().getJahiaTemplateManagerService().regenerateImportFile(moduleName);
-            File f = File.createTempFile("templateSet",".war");
+            File f = File.createTempFile("templateSet", ".war");
             File templateDir = new File(SettingsBean.getInstance().getJahiaTemplatesDiskPath(), moduleName);
 
             ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(f));
             zip(templateDir, templateDir, zos);
             zos.close();
 
-            JCRNodeWrapper privateFolder = session.getNode("/users/"+session.getUser().getName()+"/files/private");
+            JCRNodeWrapper privateFolder = session.getNode("/users/" + session.getUser().getName() + "/files/private");
 
             if (!privateFolder.hasNode("templates-sets")) {
                 if (!privateFolder.isCheckedOut()) {
@@ -1068,7 +1069,7 @@ public class ContentManagerHelper {
         File[] files = dir.listFiles();
         for (File file : files) {
             if (file.isFile()) {
-                ZipEntry ze = new ZipEntry(file.getPath().substring(rootDir.getPath().length()+1));
+                ZipEntry ze = new ZipEntry(file.getPath().substring(rootDir.getPath().length() + 1));
                 zos.putNextEntry(ze);
                 final FileInputStream input = new FileInputStream(file);
                 IOUtils.copy(input, zos);
@@ -1076,7 +1077,7 @@ public class ContentManagerHelper {
             }
 
             if (file.isDirectory()) {
-                ZipEntry ze = new ZipEntry(file.getPath().substring(rootDir.getPath().length()+1)+"/");
+                ZipEntry ze = new ZipEntry(file.getPath().substring(rootDir.getPath().length() + 1) + "/");
                 zos.putNextEntry(ze);
                 zip(file, rootDir, zos);
             }

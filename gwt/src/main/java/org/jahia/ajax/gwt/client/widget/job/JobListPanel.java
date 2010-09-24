@@ -28,11 +28,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
+ * Panel that displays a list of background jobs, future, current and past, along with a split -view to display details on a selected job.
+ * In the future this UI might also include actions such as deleting a job, etc...
+ * <p/>
  * User: loom
  * Date: Sep 21, 2010
  * Time: 12:28:42 PM
- * To change this template use File | Settings | File Templates.
+ * todo : check for user name to display only our jobs (or if root all jobs), purge jobs UI, etc...
  */
 public class JobListPanel extends LayoutContainer {
 
@@ -229,6 +231,17 @@ public class JobListPanel extends LayoutContainer {
         }
     }
 
+    public void addTimeDetail(String labelKey, String labelDefaultValue, Object value) {
+        if (value == null) {
+            addDetail(labelKey, labelDefaultValue, value);
+        } else if (value instanceof Long) {
+            Date date = new Date((Long) value);
+            addDetail(labelKey, labelDefaultValue, date);
+        } else {
+            addDetail(labelKey, labelDefaultValue, value);
+        }
+    }
+
     public void updateDetails() {
 
         if (detailsPanel == null) {
@@ -260,8 +273,8 @@ public class JobListPanel extends LayoutContainer {
             addDetail("label.jobLabel", "Job label", jobDetail.getLabel());
             addDetail("label.className", "Job class", jobDetail.getJobClassName());
             addDetail("label.message", "Message", jobDetail.getMessage());
-            addDetail("label.beginTime", "Start time", jobDetail.getBeginTime());
-            addDetail("label.endTime", "End time", jobDetail.getEndTime());
+            addTimeDetail("label.beginTime", "Start time", jobDetail.getBeginTime());
+            addTimeDetail("label.endTime", "End time", jobDetail.getEndTime());
             addDetail("label.durationInSeconds", "Duration (seconds)", jobDetail.getDurationInSeconds());
             addDetail("label.locale", "Locale code", jobDetail.getLocale());
         } else {

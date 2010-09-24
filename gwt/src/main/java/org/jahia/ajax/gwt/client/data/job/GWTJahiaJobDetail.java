@@ -13,7 +13,7 @@ import java.util.List;
  * Time: 2:13:35 PM
  * To change this template use File | Settings | File Templates.
  */
-public class GWTJahiaJobDetail extends BaseModelData implements Serializable {
+public class GWTJahiaJobDetail extends BaseModelData implements Serializable, Comparable {
 
     public GWTJahiaJobDetail() {
     }
@@ -31,7 +31,8 @@ public class GWTJahiaJobDetail extends BaseModelData implements Serializable {
                              Long beginTime,
                              Long endTime,
                              Integer durationInSeconds,
-                             String locale) {
+                             String locale,
+                             String fileName) {
         setName(name);
         setType(type);
         setCreationTime(creationTime);
@@ -46,6 +47,7 @@ public class GWTJahiaJobDetail extends BaseModelData implements Serializable {
         setEndTime(endTime);
         setDurationInSeconds(durationInSeconds);
         setLocale(locale);
+        setFileName(fileName);
     }
 
     public String getType() {
@@ -168,4 +170,15 @@ public class GWTJahiaJobDetail extends BaseModelData implements Serializable {
         set("locale", locale);
     }
 
+    public String getFileName() {
+        return get("fileName");
+    }
+
+    public void setFileName(String fileName) {
+        set("fileName", fileName);
+    }
+
+    public int compareTo(Object o) {
+        return getCreationTime().compareTo(((GWTJahiaJobDetail) o).getCreationTime());
+    }
 }

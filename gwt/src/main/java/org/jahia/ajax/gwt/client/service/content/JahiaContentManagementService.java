@@ -190,7 +190,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     public String getNodeURL(String path, Date versionDate, String versionLabel, String workspace, String locale) throws GWTJahiaServiceException;
 
-    public void importContent(String parentPath, String fileKey) throws GWTJahiaServiceException;
+    public void importContent(String parentPath, String fileKey, Boolean asynchronously) throws GWTJahiaServiceException;
 
     public void startWorkflow(String path, GWTJahiaWorkflowDefinition workflowDefinition, List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException;
 

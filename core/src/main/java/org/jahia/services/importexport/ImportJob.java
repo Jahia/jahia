@@ -32,6 +32,10 @@
 
 package org.jahia.services.importexport;
 
+import org.apache.log4j.Logger;
+import org.apache.tika.io.IOUtils;
+import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -43,8 +47,7 @@ import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.FileInputStream;
 
 /**
  * Created by IntelliJ IDEA.
@@ -54,12 +57,17 @@ import java.util.List;
  * @version $Id$
  */
 public class ImportJob extends BackgroundJob {
+
+    private final static Logger logger = Logger.getLogger(ImportJob.class);
+
     public static final String IMPORT_TYPE = "import";
 
     public static final String TARGET = "target";
     public static final String CONTENT_TYPE = "contentType";
     public static final String PUBLISH_ALL_AT_END = "publishAllAtEnd";
     public static final String URI = "uri";
+    public static final String FILE_KEY = "fileKey";
+    public static final String DESTINATION_PARENT_PATH = "destParentPath";
     public static final String FILENAME = "filename";
     public static final String DELETE_FILE = "delete";
     public static final String ORIGINATING_JAHIA_RELEASE = "originatingJahiaRelease";
@@ -73,20 +81,54 @@ public class ImportJob extends BackgroundJob {
         JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey((String) jobDataMap.get(JOB_SITEKEY));
 
         String uri = (String) jobDataMap.get(URI);
-        JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getCurrentUserSession();
-        JCRNodeWrapper f = session.getNode(uri);
+        if (uri != null) {
+            // we are in the case of a site import
+            JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getCurrentUserSession();
+            JCRNodeWrapper f = session.getNode(uri);
 
-        if (f != null) {
-            File file = JCRContentUtils.downloadFileContent(f, File.createTempFile("import", ".zip"));
-            try {
-                ServicesRegistry.getInstance().getImportExportService().importSiteZip(file, site, jobDataMap);
-                f.remove();
-                session.save();
-            } finally {
-                file.delete();
+            if (f != null) {
+                File file = JCRContentUtils.downloadFileContent(f, File.createTempFile("import", ".zip"));
+                try {
+                    ServicesRegistry.getInstance().getImportExportService().importSiteZip(file, site, jobDataMap);
+                    f.remove();
+                    session.save();
+                } finally {
+                    file.delete();
+                }
             }
+        } else {
+            // we are in the case of a regular content import.
+            String destinationParentPath = (String) jobDataMap.get(DESTINATION_PARENT_PATH);
+            String fileKey = (String) jobDataMap.get(FILE_KEY);
+            importContent(destinationParentPath, fileKey);
         }
     }
+
+    public static void importContent(String parentPath, String fileKey) throws Exception {
+        ImportExportService importExport = ServicesRegistry.getInstance().getImportExportService();
+        GWTFileManagerUploadServlet.Item item = GWTFileManagerUploadServlet.getItem(fileKey);
+        try {
+            if ("application/zip".equals(item.getContentType())) {
+                try {
+                    importExport.importZip(parentPath, item.getFile(), false);
+                } finally {
+                    item.dispose();
+                }
+            } else if ("application/xml".equals(item.getContentType()) || "text/xml".equals(item.getContentType())) {
+                FileInputStream is = item.getStream();
+                try {
+                    importExport.importXML(parentPath, is, false);
+                } finally {
+                    IOUtils.closeQuietly(is);
+                    item.dispose();
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Error when importing", e);
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+    }
+
 }
 /**
  *$Log $

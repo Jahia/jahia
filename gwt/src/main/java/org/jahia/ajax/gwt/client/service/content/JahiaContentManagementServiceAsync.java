@@ -182,7 +182,7 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void getNodeURL(String path, Date versionDate, String versionLabel, String workspace, String locale, AsyncCallback<String> async);
 
-    void importContent(String parentPath, String fileKey, AsyncCallback async);
+    void importContent(String parentPath, String fileKey, Boolean asynchronously, AsyncCallback async);
 
     void startWorkflow(String path, GWTJahiaWorkflowDefinition workflowDefinition, List<GWTJahiaNodeProperty> properties, AsyncCallback async);
 

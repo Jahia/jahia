@@ -77,7 +77,9 @@ public class JahiaSitesBaseService extends JahiaSitesService {
     public static final String SITE_CACHE_BYID = "JahiaSiteByIDCache";
     public static final String SITE_CACHE_BYNAME = "JahiaSiteByNameCache";
     public static final String SITE_CACHE_BYKEY = "JahiaSiteByKeyCache";
-    /** The cache in memory */
+    /**
+     * The cache in memory
+     */
     private Cache<Comparable<?>, JahiaSite> siteCacheByID = null;
     private Cache<String, Serializable> siteCacheByName = null;
     private Cache<String, JahiaSite> siteCacheByKey = null;
@@ -110,7 +112,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
      *
      * @throws JahiaException
      */
-    protected JahiaSitesBaseService () throws JahiaException {
+    protected JahiaSitesBaseService() throws JahiaException {
     }
 
 
@@ -118,13 +120,12 @@ public class JahiaSitesBaseService extends JahiaSitesService {
      * Retrieves the unique instance of this singleton class.
      *
      * @return the unique instance of this class
-     *
      * @throws JahiaException
      */
-    public static synchronized JahiaSitesBaseService getInstance ()
+    public static synchronized JahiaSitesBaseService getInstance()
             throws JahiaException {
         if (instance == null) {
-            instance = new JahiaSitesBaseService ();
+            instance = new JahiaSitesBaseService();
         }
         return instance;
     }
@@ -134,11 +135,10 @@ public class JahiaSitesBaseService extends JahiaSitesService {
      * return the list of all sites
      *
      * @return Iterator an Iterator of JahiaSite bean
-     *
      * @todo this only returns the entries that are in the cache !! If the
      * cache was flushed in the meantime, this method is FALSE !
      */
-    public Iterator<JahiaSite> getSites () throws JahiaException {
+    public Iterator<JahiaSite> getSites() throws JahiaException {
         return new ArrayList<JahiaSite>(siteProvider.getSites()).iterator();
     }
 
@@ -150,13 +150,13 @@ public class JahiaSitesBaseService extends JahiaSitesService {
         siteCacheByKey = cacheService.createCacheInstance(SITE_CACHE_BYKEY);
     }
 
-    public void stop() {}
+    public void stop() {
+    }
 
     /**
      * return a site bean looking at it id
      *
      * @param id the JahiaSite id
-     *
      * @return JahiaSite the JahiaSite bean
      */
     public JahiaSite getSite(int id) throws JahiaException {
@@ -183,15 +183,13 @@ public class JahiaSitesBaseService extends JahiaSitesService {
         }
         siteCacheByKey.put(site.getSiteKey(), site);
     }
-    
+
     /**
-	 * return a site bean looking at it key
-	 * 
-	 * @param siteKey
-	 *            the site key
-	 * 
-	 * @return JahiaSite the JahiaSite bean
-	 */
+     * return a site bean looking at it key
+     *
+     * @param siteKey the site key
+     * @return JahiaSite the JahiaSite bean
+     */
     public JahiaSite getSiteByKey(String siteKey) throws JahiaException {
         if (siteKey == null) {
             return null;
@@ -204,25 +202,21 @@ public class JahiaSitesBaseService extends JahiaSitesService {
         if (site != null) {
             addToCache(site);
         } else {
-            siteCacheByKey.put(siteKey,null);
+            siteCacheByKey.put(siteKey, null);
         }
 
         return site;
     }
 
     /**
-	 * Find a site by it's server name value
-	 * 
-	 * @param serverName
-	 *            the server name to look for
-	 * 
-	 * @return if found, returns the site with the corresponding serverName, or
-	 *         the first one if there are multiple, or null if there are none.
-	 * 
-	 * @throws JahiaException
-	 *             thrown if there was a problem communicating with the
-	 *             database.
-	 */
+     * Find a site by it's server name value
+     *
+     * @param serverName the server name to look for
+     * @return if found, returns the site with the corresponding serverName, or
+     *         the first one if there are multiple, or null if there are none.
+     * @throws JahiaException thrown if there was a problem communicating with the
+     *                        database.
+     */
     public JahiaSite getSiteByServerName(String serverName)
             throws JahiaException {
         if (serverName == null) {
@@ -231,7 +225,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
         Object cachedObj = siteCacheByName.get(serverName);
 
         if (cachedObj != null) {
-            return cachedObj.equals("") ? null : (JahiaSite)cachedObj;
+            return cachedObj.equals("") ? null : (JahiaSite) cachedObj;
         }
 
         // the site was not found in the cache, try to load it from the
@@ -250,11 +244,11 @@ public class JahiaSitesBaseService extends JahiaSitesService {
 
     // --------------------------------------------------------------------------
     // FH 10 May 2001 Cache storing improvments for performance issues.
+
     /**
      * return a site looking at it's name
      *
      * @param name the site name
-     *
      * @return JahiaSite the JahiaSite bean or null
      */
     public JahiaSite getSite(String name) throws JahiaException {
@@ -263,23 +257,21 @@ public class JahiaSitesBaseService extends JahiaSitesService {
 
 
     // --------------------------------------------------------------------------
+
     /**
-	 * Add a new site only if there is no other site with same server name
-	 * 
-	 *
-	 * @return boolean false if there is another site using same server name
-	 */
+     * Add a new site only if there is no other site with same server name
+     *
+     * @return boolean false if there is another site using same server name
+     */
 
 //    public synchronized boolean addSite (JahiaSite site)
 //            throws JahiaException {
 //
-
     public JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
                              Locale selectedLocale,
                              String selectTmplSet, String firstImport, File fileImport, String fileImportName,
-                             Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease, ProcessingContext jParams) throws JahiaException, IOException
-    {
-        JahiaSite site = new JahiaSite(-1,title,serverName,siteKey, descr,null, null);
+                             Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease, ProcessingContext jParams) throws JahiaException, IOException {
+        JahiaSite site = new JahiaSite(-1, title, serverName, siteKey, descr, null, null);
 
         if (selectTmplSet != null) {
             site.setTemplatePackageName(selectTmplSet);
@@ -290,7 +282,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
         site.setMandatoryLanguages(site.getLanguages());
         site.setMixLanguagesActive(false);
         // check there is no site with same server name before adding
-        if (getSiteByKey (site.getSiteKey ()) == null) {
+        if (getSiteByKey(site.getSiteKey()) == null) {
             siteProvider.addSite(site, site.getSiteKey(), site.getTemplatePackageName(), site.getTitle(),
                     site.getDescr(), site.getServerName(), site.getDefaultLanguage(), site.isMixLanguagesActive(), site.getLanguages(),
                     site.getMandatoryLanguages());
@@ -303,7 +295,6 @@ public class JahiaSitesBaseService extends JahiaSitesService {
         } else {
             throw new IOException("site already exists");
         }
-
 
 
         // continue if the site is added correctly...
@@ -319,12 +310,12 @@ public class JahiaSitesBaseService extends JahiaSitesService {
             site.setMixLanguagesActive(false);
 
             // create default groups...
-            JahiaGroup usersGroup = jgms.lookupGroup(0,JahiaGroupManagerService.USERS_GROUPNAME);
+            JahiaGroup usersGroup = jgms.lookupGroup(0, JahiaGroupManagerService.USERS_GROUPNAME);
             if (usersGroup == null) {
                 usersGroup = jgms.createGroup(0, JahiaGroupManagerService.USERS_GROUPNAME, null, false);
             }
 
-            JahiaGroup guestGroup = jgms.lookupGroup(0,JahiaGroupManagerService.GUEST_GROUPNAME);
+            JahiaGroup guestGroup = jgms.lookupGroup(0, JahiaGroupManagerService.GUEST_GROUPNAME);
             if (guestGroup == null) {
                 guestGroup = jgms.createGroup(0, JahiaGroupManagerService.GUEST_GROUPNAME, null, false);
             }
@@ -350,9 +341,9 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                 initialZipName = fileImportName;
             }
 
-                // create the default homepage...
-                List<Locale> locales = new ArrayList<Locale>();
-                locales.add(selectedLocale);
+            // create the default homepage...
+            List<Locale> locales = new ArrayList<Locale>();
+            locales.add(selectedLocale);
 
             if ("importRepositoryFile".equals(firstImport) || (initialZip != null && initialZip.exists() && !"noImport".equals(firstImport))) {
                 // enable admin group to admin the page
@@ -373,13 +364,13 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                         }
                     }
 
-                    JobDetail jobDetail = BackgroundJob.createJahiaJob("Initial import for site "+site.getSiteKey(), ImportJob.class);
+                    JobDetail jobDetail = BackgroundJob.createJahiaJob("Initial import for site " + site.getSiteKey(), ImportJob.class, ImportJob.JOB_TYPE);
                     JobDataMap jobDataMap;
                     jobDataMap = jobDetail.getJobDataMap();
 
                     if ("importRepositoryFile".equals(firstImport)) {
                         jobDataMap.put(ImportJob.URI, fileImportName);
-                        jobDataMap.put(ImportJob.FILENAME, fileImportName.substring(fileImportName.lastIndexOf('/')+1));
+                        jobDataMap.put(ImportJob.FILENAME, fileImportName.substring(fileImportName.lastIndexOf('/') + 1));
                     } else {
                         String dateOfExport = ImportExportBaseService.DATE_FORMAT.format(new Date());
                         String uploadname = "initialImport_" + dateOfExport.replaceAll(":", "-") + ".zip";
@@ -391,9 +382,9 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                                     "application/zip");
                             importFolder.save();
                         } catch (RepositoryException e) {
-                            logger.error("cannot upload file",e);
+                            logger.error("cannot upload file", e);
                         }
-                        jobDataMap.put(ImportJob.URI, importFolder.getPath()+"/"+uploadname);
+                        jobDataMap.put(ImportJob.URI, importFolder.getPath() + "/" + uploadname);
                         if (initialZipName == null) {
                             initialZipName = initialZip.getName();
                         }
@@ -402,7 +393,6 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                     jobDataMap.put(ImportJob.JOB_SITEKEY, site.getSiteKey());
                     jobDataMap.put(ImportJob.CONTENT_TYPE, "application/zip");
                     jobDataMap.put(BackgroundJob.JOB_DESTINATION_SITE, site.getID());
-                    jobDataMap.put(BackgroundJob.JOB_TYPE,ImportJob.IMPORT_TYPE);
                     jobDataMap.put(ImportJob.DELETE_FILE, Boolean.TRUE);
                     jobDataMap.put(ImportJob.COPY_TO_JCR, Boolean.TRUE);
                     jobDataMap.put(ImportJob.ORIGINATING_JAHIA_RELEASE, originatingJahiaRelease);
@@ -422,7 +412,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                     if (!nodeWrapper.hasNode("home")) {
                         session.checkout(nodeWrapper);
                         JCRNodeWrapper page = nodeWrapper.addNode("home", "jnt:page");
-                        page.setProperty("jcr:title","Welcome to " + site.getServerName());
+                        page.setProperty("jcr:title", "Welcome to " + site.getServerName());
                         session.save();
                     }
                 } catch (RepositoryException e) {
@@ -445,7 +435,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
      *
      * @param site the JahiaSite bean
      */
-    public synchronized void removeSite (JahiaSite site) throws JahiaException {
+    public synchronized void removeSite(JahiaSite site) throws JahiaException {
         JahiaGroupManagerService groupManagerService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
         List<String> groups = groupManagerService.getGroupList(site.getID());
         for (String group : groups) {
@@ -453,7 +443,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
         }
         siteProvider.deleteSite(site.getSiteKey());
 
-        siteCacheByID.remove (new Integer (site.getID ()));
+        siteCacheByID.remove(new Integer(site.getID()));
         siteCacheByName.remove(site.getServerName());
         siteCacheByKey.remove(site.getSiteKey());
 
@@ -465,7 +455,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
      *
      * @param site the site bean object
      */
-    public synchronized void updateSite (JahiaSite site) throws JahiaException {
+    public synchronized void updateSite(JahiaSite site) throws JahiaException {
 //        JahiaSitesPersistance.getInstance ().dbUpdateSite (site);
 //        JahiaSite defaultSite = this.getDefaultSite();
         //todo update jahia site name/description
@@ -479,9 +469,10 @@ public class JahiaSitesBaseService extends JahiaSitesService {
 
     // javadocs automaticaly imported from the JahiaSitesService class.
     //
-    public int getNbSites ()
+
+    public int getNbSites()
             throws JahiaException {
-        return siteProvider.getNbSites ();
+        return siteProvider.getNbSites();
     }
 
     public JahiaSite getDefaultSite() {

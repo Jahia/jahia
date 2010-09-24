@@ -491,13 +491,12 @@ public class Service extends JahiaService {
             throws JahiaException, RepositoryException {
         final String uuid = node.getNode().getIdentifier();
         final String jobName = "RULE_JOB_" + uuid + ruleToExecute;
-        final JobDetail jobDetail = BackgroundJob.createJahiaJob(jobName, RuleJob.class);
+        final JobDetail jobDetail = BackgroundJob.createJahiaJob(jobName, RuleJob.class, RuleJob.RULE_TYPE);
         final JobDataMap map = jobDetail.getJobDataMap();
-        map.put("ruleToExecute", ruleToExecute);
-        map.put("node", uuid);
-        map.put("user", ((User) drools.getWorkingMemory().getGlobal("user")).getName());
-        map.put("workspace", ((String) drools.getWorkingMemory().getGlobal("workspace")));
-        map.put(BackgroundJob.JOB_TYPE, RuleJob.RULE_TYPE);
+        map.put(RuleJob.JOB_RULE_TO_EXECUTE, ruleToExecute);
+        map.put(RuleJob.JOB_NODE_UUID, uuid);
+        map.put(RuleJob.JOB_USER, ((User) drools.getWorkingMemory().getGlobal("user")).getName());
+        map.put(RuleJob.JOB_WORKSPACE, ((String) drools.getWorkingMemory().getGlobal("workspace")));
 
         schedulerService.deleteJob(jobName, "RULES_JOBS");
         try {
@@ -511,12 +510,11 @@ public class Service extends JahiaService {
             throws JahiaException, RepositoryException {
         final String uuid = node.getNode().getIdentifier();
         final String jobName = "ACTION_JOB_" + uuid + actionToExecute;
-        final JobDetail jobDetail = BackgroundJob.createJahiaJob(jobName, ActionJob.class);
+        final JobDetail jobDetail = BackgroundJob.createJahiaJob(jobName, ActionJob.class, ActionJob.ACTION_TYPE);
         final JobDataMap map = jobDetail.getJobDataMap();
-        map.put("actionToExecute", actionToExecute);
-        map.put("node", uuid);
+        map.put(ActionJob.JOB_ACTION_TO_EXECUTE, actionToExecute);
+        map.put(ActionJob.JOB_NODE_UUID, uuid);
         map.put("workspace", ((String) drools.getWorkingMemory().getGlobal("workspace")));
-        map.put(BackgroundJob.JOB_TYPE, ActionJob.ACTION_TYPE);
         schedulerService.deleteJob(jobName, "ACTIONS_JOBS");
         try {
             schedulerService.scheduleJob(jobDetail, getTrigger(node, propertyName, jobName));

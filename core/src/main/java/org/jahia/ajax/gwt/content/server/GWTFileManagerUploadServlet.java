@@ -52,12 +52,7 @@ import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSessionEvent;
-import javax.servlet.http.HttpSessionListener;
-
+import javax.servlet.http.*;
 import java.io.*;
 import java.text.MessageFormat;
 import java.util.*;
@@ -159,7 +154,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
                                 IOUtils.closeQuietly(os);
                                 IOUtils.closeQuietly(is);
                             }
-                            asyncItems.put(f.getName(), new Item(item.getContentType(), item.getSize(), f, request.getSession().getId()));
+                            asyncItems.put(f.getName(), new Item(item.getName(), item.getContentType(), item.getSize(), f, request.getSession().getId()));
 
                             printWriter.write("EXISTS: " + item.getFieldName() + " " + f.getName() + " " + filename + "\n");
                             break;
@@ -205,7 +200,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
                 }
                 printWriter.write("<div id=\"uploaded\" key=\"" + f.getName() + "\" name=\"" + fileItem.getName() + "\"></div>\n");
                 printWriter.write("</body></html>");
-                asyncItems.put(f.getName(), new Item(fileItem.getContentType(), fileItem.getSize(), f, request.getSession().getId()));
+                asyncItems.put(f.getName(), new Item(fileItem.getName(), fileItem.getContentType(), fileItem.getSize(), f, request.getSession().getId()));
             }
         }
     }
@@ -269,14 +264,20 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
         private long length;
         private File file;
         private String sessionId;
+        private String originalFileName;
 
-        Item(String contentType, long length, final File file, String sessionId) throws FileNotFoundException {
+        Item(String originalFileName, String contentType, long length, final File file, String sessionId) throws FileNotFoundException {
+            this.originalFileName = originalFileName;
             this.contentType = contentType;
             this.length = length;
             this.file = file;
             this.sessionId = sessionId;
         }
-        
+
+        public String getOriginalFileName() {
+            return originalFileName;
+        }
+
         public FileInputStream getStream() throws FileNotFoundException {
             return new FileInputStream(file);
         }
@@ -292,7 +293,11 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
         public File getFile() {
             return file;
         }
-        
+
+        public String getSessionId() {
+            return sessionId;
+        }
+
         /**
          * Deletes the corresponding file and cleans up its reference.
          */
@@ -300,7 +305,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
             if (file != null) {
                 asyncItems.remove(file.getName());
                 FileUtils.deleteQuietly(file);
-            } 
+            }
         }
     }
 

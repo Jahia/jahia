@@ -979,11 +979,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             // add current workspace version
             final GWTJahiaNodeVersion liveVersion = new GWTJahiaNodeVersion("live", node);
             result.add(0, liveVersion);
-            liveVersion.setUrl(navigation.getNodeURL(node.getPath(), null,null, "live", getLocale()));
+            liveVersion.setUrl(navigation.getNodeURL(node.getPath(), null, null, "live", getLocale()));
 
             final GWTJahiaNodeVersion defaultVersion = new GWTJahiaNodeVersion("default", node);
             result.add(0, defaultVersion);
-            defaultVersion.setUrl(navigation.getNodeURL(node.getPath(), null,null, "default", getLocale()));
+            defaultVersion.setUrl(navigation.getNodeURL(node.getPath(), null, null, "default", getLocale()));
 
             // get sublist: Todo Find a better way
             int size = result.size();
@@ -1029,8 +1029,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 session.getLocale());
     }
 
-    public void importContent(String parentPath, String fileKey) throws GWTJahiaServiceException {
-        contentManager.importContent(parentPath, fileKey);
+    public void importContent(String parentPath, String fileKey, Boolean asynchronously) throws GWTJahiaServiceException {
+        contentManager.importContent(parentPath, fileKey, asynchronously);
     }
 
     public void startWorkflow(String path, GWTJahiaWorkflowDefinition workflowDefinition,

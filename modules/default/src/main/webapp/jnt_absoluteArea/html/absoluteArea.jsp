@@ -43,8 +43,15 @@
                 </c:if>
             </c:forEach>
         </c:if>
+        <c:if test="${empty currentNode.properties['j:basenode'].node.path}">
+            <c:set var="path" value="${renderContext.site.path}/home"/>
+        </c:if>
+        <c:if test="${!empty currentNode.properties['j:basenode'].node.path}">
+            <c:set var="path" value="${currentNode.properties['j:basenode'].node.path}"/>
+        </c:if>
+
         <template:wrappedContent template="${currentNode.properties['j:referenceTemplate'].string}"
-                                 path="${currentNode.properties['j:basenode'].node.path}/${currentNode.name}"
+                                 path="${path}/${currentNode.name}"
                                  nodeTypes="${nodeTypes}">
             <c:if test="${not empty currentNode.properties['j:subNodesTemplate'].string}">
                 <template:param name="subNodesTemplate" value="${currentNode.properties['j:subNodesTemplate'].string}"/>

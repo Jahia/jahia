@@ -166,6 +166,11 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
             findNode(renderContext, currentResource);
 
+            String resourceNodeType = null;
+            if (parameters.containsKey("resourceNodeType")) {
+                resourceNodeType = URLDecoder.decode(parameters.get("resourceNodeType"), "UTF-8");
+            }
+
             if (node != null) {
                 Integer currentLevel =
                         (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
@@ -193,7 +198,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                         }
                         while (st.hasMoreTokens()) {
                             String tok = st.nextToken();
-                            if (displayedNode.isNodeType(tok)) {
+                            if (displayedNode.isNodeType(tok) || tok.equals(resourceNodeType)) {
                                 found = true;
                                 break;
                             }
@@ -219,10 +224,9 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                             URLDecoder.decode(param.getValue(), charset));
                 }
 
-                if (parameters.containsKey("resourceNodeType")) {
+                if (resourceNodeType != null) {
                     try {
-                        resource.setResourceNodeType(NodeTypeRegistry.getInstance().getNodeType(
-                                URLDecoder.decode(parameters.get("resourceNodeType"), "UTF-8")));
+                        resource.setResourceNodeType(NodeTypeRegistry.getInstance().getNodeType(resourceNodeType));
                     } catch (NoSuchNodeTypeException e) {
                         throw new JspException(e);
                     }

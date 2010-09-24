@@ -80,11 +80,6 @@ public abstract class ViewStatusActionItem extends BaseActionItem {
     protected void addInfoLayer(Module module, String text, String color, String bgcolor, int left, int top, int right,
                                 int bottom, Listener<ComponentEvent> removeListener, boolean headerOnly,
                                 final String opacity) {
-    addInfoLayer(module, text, color, bgcolor, left, top, right, bottom, removeListener, headerOnly, opacity, 250);
-    }
-    protected void addInfoLayer(Module module, String text, String color, String bgcolor, int left, int top, int right,
-                                int bottom, Listener<ComponentEvent> removeListener, boolean headerOnly,
-                                final String opacity, int width) {
         LayoutContainer infoLayer = new LayoutContainer();
         RootPanel.get().add(infoLayer);
         infoLayer.el().makePositionable(true);
@@ -98,14 +93,15 @@ public abstract class ViewStatusActionItem extends BaseActionItem {
 
         infoLayer.setLayout(new CenterLayout());
         if (text != null) {
-        HtmlContainer box = new HtmlContainer(text);
-        box.addStyleName("x-view-item");
-        box.setStyleAttribute("background-color", "white");
-        box.setStyleAttribute("color", color);
-        box.setStyleAttribute("font-weight", "bold");
-        box.setStyleAttribute("text-align", "center");
-        box.setWidth(width);
-        infoLayer.add(box);
+            HtmlContainer box = new HtmlContainer(text);
+            box.addStyleName("x-view-item");
+            box.setStyleAttribute("background-color", "white");
+            box.setStyleAttribute("color", color);
+            box.setStyleAttribute("font-weight", "bold");
+            box.setStyleAttribute("text-align", "center");
+            box.setWidth(250);
+            box.setStyleAttribute("white-space", "normal");
+            infoLayer.add(box);
         }
 
         infoLayer.setBorders(true);
@@ -134,14 +130,14 @@ public abstract class ViewStatusActionItem extends BaseActionItem {
             h = Math.max(0, h - (top - y));
             y = top;
         }
-        if (y+h > bottom) {
+        if (y + h > bottom) {
             h = bottom - y;
         }
         if (x < left) {
             w = Math.max(0, w - (left - x));
             x = left;
         }
-        if (x+w > right) {
+        if (x + w > right) {
             w = right - x;
         }
 
@@ -154,7 +150,7 @@ public abstract class ViewStatusActionItem extends BaseActionItem {
                 infoLayer.show();
             }
         }
-        infoLayer.setPosition(x,y);
-        infoLayer.setSize(w,h);
+        infoLayer.setPosition(x, y);
+        infoLayer.setSize(w, h);
     }
 }

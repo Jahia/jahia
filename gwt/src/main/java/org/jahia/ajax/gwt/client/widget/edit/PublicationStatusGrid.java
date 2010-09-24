@@ -34,6 +34,7 @@ package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
@@ -67,7 +68,11 @@ public class PublicationStatusGrid extends Grid<GWTJahiaPublicationInfo> {
             public Object render(GWTJahiaPublicationInfo model, String property, ColumnData config, int rowIndex,
                                  int colIndex, ListStore listStore, Grid grid) {
                 final String label = PublicationManagerEngine.statusToLabel.get(model.getStatus());
-                return Messages.get("label.publication." + label, label);
+                String status =  Messages.get("label.publication." + label, label);
+                if (model.getStatus() == GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE) {
+                    return "<span style='color:red'>"+status+"</span>";
+                }
+                return status;
             }
         });
         configs.add(column);

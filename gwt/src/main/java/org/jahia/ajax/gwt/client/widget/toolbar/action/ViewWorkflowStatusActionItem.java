@@ -108,10 +108,10 @@ public class ViewWorkflowStatusActionItem extends ViewStatusActionItem {
                     allPublished = false;
                     if(workflow.getDuedate()!=null) {
                         addInfoLayer(module, "Workflow :<br/>"+current+" is waiting on timer.<br/>Will be triggered at : "+ DateTimeFormat.getMediumDateTimeFormat().format(workflow.getDuedate()),
-                                 "red", "red", left, top, right, bottom, removeListener, true, "0.7", 300);
+                                 "red", "red", left, top, right, bottom, removeListener, true, "0.7");
                     } else {
                         addInfoLayer(module, "Workflow :<br/>started "+current, "red", "red", left, top, right, bottom, removeListener, true,
-                            "0.7", 300);
+                            "0.7");
                     }
 //                } else if (info.getDuedate()!=null) {
 //                    allPublished = false;
@@ -123,7 +123,7 @@ public class ViewWorkflowStatusActionItem extends ViewStatusActionItem {
 
         if (allPublished) {
             addInfoLayer(modules.iterator().next(), "No actual worflow(s) started", "black", "white", left,top,right,bottom,removeListener, false,
-                    "0.7", 250);
+                    "0.7");
         }
 
         ((EditLinker) linker).getMainModule().getContainer().addScrollListener(new ScrollListener() {

@@ -41,10 +41,12 @@ import com.extjs.gxt.ui.client.util.Size;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
+import org.jahia.ajax.gwt.client.widget.workflow.PublicationManagerEngine;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,27 +107,37 @@ public class ViewPublishStatusActionItem extends ViewStatusActionItem {
                     if (lastUnpublished != null && module.getNode().getPath().startsWith(lastUnpublished)) {
                         continue;
                     }
+
+                    final String label = PublicationManagerEngine.statusToLabel.get(info.getStatus());
+                    String status = Messages.get("label.publication." + label, label);
+
                     if (info.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
                         lastUnpublished = module.getNode().getPath();
                         if (info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
-                            addInfoLayer(module, ("Unpublished"), "black", "black", left, top, right, bottom, removeListener, false,
-                                    "0.7", 250);
+                            addInfoLayer(module, status, "black", "black", left, top, right, bottom, removeListener, false,
+                                    "0.7");
                         } else {
-                            addInfoLayer(module, "Never published", "black", "black", left, top, right, bottom, removeListener, false,
-                                    "0.7", 250);
+                            addInfoLayer(module, status, "black", "black", left, top, right, bottom, removeListener, false,
+                                    "0.7");
                         }
                     } else if (info.getStatus() == GWTJahiaPublicationInfo.LOCKED) {
-                        addInfoLayer(module, "Locked", "red", "red", left, top, right, bottom, removeListener, true,
-                                "0.7", 250);
+                        addInfoLayer(module, status, "red", "red", left, top, right, bottom, removeListener, true,
+                                "0.7");
                     } else if (info.getStatus() == GWTJahiaPublicationInfo.MODIFIED) {
-                        addInfoLayer(module, "Modified", "red", "red", left, top, right, bottom, removeListener, true,
-                                "0.7", 250);
+                        addInfoLayer(module, status, "red", "red", left, top, right, bottom, removeListener, true,
+                                "0.7");
                     } else if (info.getStatus() == GWTJahiaPublicationInfo.LIVE_MODIFIED) {
-                        addInfoLayer(module, "Modified in live", "blue", "blue", left, top, right, bottom, removeListener, true,
-                                "0.7", 250);
+                        addInfoLayer(module, status, "blue", "blue", left, top, right, bottom, removeListener, true,
+                                "0.7");
                     } else if (info.getStatus() == GWTJahiaPublicationInfo.CONFLICT) {
-                        addInfoLayer(module, "Conflict", "red", "red", left, top, right, bottom, removeListener, true,
-                                "0.7", 250);
+                        addInfoLayer(module, status, "red", "red", left, top, right, bottom, removeListener, true,
+                                "0.7");
+                    } else if (info.getStatus() == GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE) {
+                        addInfoLayer(module, status, "red", "red", left, top, right, bottom, removeListener, true,
+                                "0.7");
+                    } else if (info.getStatus() == GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_VALID) {
+                        addInfoLayer(module, status, "red", "red", left, top, right, bottom, removeListener, true,
+                                "0.7");
                     }
                 }
             }
@@ -133,7 +145,7 @@ public class ViewPublishStatusActionItem extends ViewStatusActionItem {
 
         if (allPublished) {
             addInfoLayer(modules.iterator().next(), "Everything published", "black", "white", left,top,right,bottom,removeListener, false,
-                    "0.7", 250);
+                    "0.7");
         }
 
         ((EditLinker) linker).getMainModule().getContainer().addScrollListener(new ScrollListener() {

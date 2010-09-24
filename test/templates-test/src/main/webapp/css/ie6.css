@@ -1,0 +1,27 @@
+#bodywrapper .image {width:1%}
+#bodywrapper div.boxshadow div.box-inner {margin:0px;border-top:none;border-left:none}
+#bodywrapper h4.title {height:1%}
+#bodywrapper .author {height:1%;}
+
+#bodywrapper .arrow-white-shadow-left {left:-16px;}
+#bodywrapper  ul.idTabs {display:inline-block}
+
+#bodywrapper ul.tasks li *,
+#bodywrapper ul.wikicompare li *{
+	position:relative 
+}
+#bodywrapper div.box-outer {
+	margin:4px
+}
+#bodywrapper div.box-inner {
+	margin:-4px;
+}
+#bodywrapper div.intro{
+	width:99%
+}
+#bodywrapper .navigation {
+	position:relative;
+}
+#bodywrapper .navigation .navbar {
+	float: none;
+}

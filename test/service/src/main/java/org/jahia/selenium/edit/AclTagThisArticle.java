@@ -25,7 +25,7 @@ public class AclTagThisArticle extends SeleneseTestCase {
          try {
             final JahiaSite mySite = ServicesRegistry.getInstance().getJahiaSitesService().getSite("localhostTest");
             if (mySite == null) {
-                site = TestHelper.createSite(TESTSITE_NAME, "localhostTest", TestHelper.INTRANET_TEMPLATES);
+                site = TestHelper.createSite(TESTSITE_NAME, "localhostTest", TestHelper.TEST_TEMPLATES);
                 assertNotNull(site);
             } else {
                 logger.warn("can't create mySite for running tests, because already exist...");
@@ -39,7 +39,7 @@ public class AclTagThisArticle extends SeleneseTestCase {
 
      public void tearDown() throws Exception {
        try {
-            TestHelper.deleteSite(TESTSITE_NAME);
+           // TestHelper.deleteSite(TESTSITE_NAME);
         } catch (Exception e) {
             logger.warn("Exception during test tearDown", e);
         }
@@ -171,6 +171,12 @@ public class AclTagThisArticle extends SeleneseTestCase {
                 new Wait("wait") {
                     public boolean until() {
                         return selenium.isElementPresent("gwt-uid-45");
+                    }
+                };
+            }else {
+                new Wait("wait") {
+                    public boolean until() {
+                        return selenium.isTextPresent("web-designer");
                     }
                 };
             }

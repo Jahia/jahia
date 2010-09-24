@@ -60,7 +60,7 @@
                 <jcr:nodeProperty node="${currentNode}" name="j:contributeTypes" var="types"/>
             </c:when>
             <c:otherwise>
-                <c:set var="type" value="${restrictions}"/>
+                <c:set var="types" value="${restrictions}"/>
             </c:otherwise>
         </c:choose>
         <h3 class="titleaddnewcontent">

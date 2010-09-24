@@ -15,6 +15,7 @@ public class CreateUsersTest extends SeleneseTestCase {
     private final String passWord = "password";
     private final String login_username = "root";
     private final String login_password = "root1234";
+    private final int numberOfUsers = 20;
 
     public void setUp() throws Exception {
         setUp("http://localhost:8080/jahia", "*firefox");
@@ -51,7 +52,7 @@ public class CreateUsersTest extends SeleneseTestCase {
             }
         };
         selenium.click("link=Manage users");
-        for (int i = 1; i < 200; i++) {
+        for (int i = 1; i < numberOfUsers; i++) {
             final String userName = this.userName + i;
             String passWord = this.passWord + i;
             new Wait("wait") {

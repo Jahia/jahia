@@ -1,43 +1,15 @@
-/******************************************************************************
-* Box teaser
-******************************************************************************/
 
-#bodywrapper .boxteaser {
-	background:#eaeaea url(img/mod/boxteaser-bg.png) no-repeat top right;
-}
-/******************************************************************************
-* forum
-******************************************************************************/
-#bodywrapper #forum-body span.forum-corners-bottom span {
-	background-image: none;
-	background-position: 100% 100%;
-}
-#bodywrapper #forum-body span.forum-corners-top {
-	background-image: url("img/mod/corners_left.png");
-}
-
-#bodywrapper #forum-body span.forum-corners-top span {
-	background-image: url("img/mod/corners_right.png");
-}
-
-#bodywrapper #forum-body span.forum-corners-bottom {
-	background-image: url("img/mod/corners_left.png");
-}
-
-#bodywrapper #forum-body span.forum-corners-bottom span {
-	background-image: url("img/mod/corners_right.png");
-}
 /* box style 1 
 ----------------------------------------*/
 #bodywrapper #forum-body .forum-box-style1 {
 	background: none;
-	background-color:#dbd1c8
+	background-color:#e3eff9
 }
 /* box style 2 
 ----------------------------------------*/
 #bodywrapper #forum-body .forum-box-style2 {
 	background: none;
-	background-color:#d4d4d4
+	background-color:#f6f6f6
 }
 /******************************************************************************
 * forum-actions
@@ -71,7 +43,7 @@
 * forum row 
 ******************************************************************************/
 #bodywrapper #forum-body li.row:hover {
-	background-color:#ede2d8;
+	background-color:#b9ddfa;
 }
 /******************************************************************************
 * Portal

@@ -30,16 +30,12 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
- package org.jahia.services.scheduler;
+package org.jahia.services.scheduler;
 
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.JahiaService;
 import org.jahia.services.usermanager.JahiaUser;
-import org.quartz.JobDetail;
-import org.quartz.JobExecutionContext;
-import org.quartz.SchedulerException;
-import org.quartz.Trigger;
-import org.quartz.Scheduler;
+import org.quartz.*;
 
 import java.util.List;
 
@@ -90,7 +86,7 @@ public abstract class SchedulerService extends JahiaService {
      * @param groupName
      * @throws JahiaException
      */
-    public abstract void deleteJob(String jobName, String groupName)
+    public abstract boolean deleteJob(String jobName, String groupName)
             throws JahiaException;
 
     public abstract JobDetail getJobDetail(String jobName, String groupName)
@@ -125,8 +121,8 @@ public abstract class SchedulerService extends JahiaService {
     /**
      * A convenient method to Get a list of scheduled and queued jobdetails.<br>
      *
-     * @param user      the current jahia user
-     * @param groupname (could be empty or null)
+     * @param user         the current jahia user
+     * @param groupname    (could be empty or null)
      * @param ramScheduler if true, use the ram scheduler
      * @return a list of jobdetails available for this user
      * @throws JahiaException
@@ -164,12 +160,14 @@ public abstract class SchedulerService extends JahiaService {
 
     /**
      * to get the last time where a job was executed
+     *
      * @return time as long
      */
     public abstract long getLastJobCompletedTime();
 
-     /**
+    /**
      * to get the last executed job detail
+     *
      * @return time as long
      */
     public abstract JobDetail getLastCompletedJobDetail();

@@ -1624,4 +1624,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return pagingLoadResult;
     }
 
+    public Boolean deleteJob(String jobName, String groupName) throws GWTJahiaServiceException {
+        return schedulerHelper.deleteJob(jobName, groupName);
+    }
 }

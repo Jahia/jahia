@@ -1,20 +1,22 @@
 package org.jahia.ajax.gwt.client.widget.job;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -81,10 +83,11 @@ public class JobListPanel extends LayoutContainer {
         loader.setRemoteSort(true);
 
         // trees store
-        final ListStore<GWTJahiaJobDetail> store = new ListStore<GWTJahiaJobDetail>(loader);
+        final GroupingStore<GWTJahiaJobDetail> store = new GroupingStore<GWTJahiaJobDetail>(loader);
+        store.groupBy("status");
 
-        final PagingToolBar toolBar = new PagingToolBar(50);
-        toolBar.bind(loader);
+        final PagingToolBar pagingToolBar = new PagingToolBar(50);
+        pagingToolBar.bind(loader);
 
         List<ColumnConfig> config = new ArrayList<ColumnConfig>();
 
@@ -148,10 +151,22 @@ public class JobListPanel extends LayoutContainer {
         config.add(column);
         */
 
-        ColumnModel cm = new ColumnModel(config);
+        final ColumnModel cm = new ColumnModel(config);
+
+        GroupingView view = new GroupingView();
+        view.setShowGroupedColumn(false);
+        view.setForceFit(true);
+        view.setGroupRenderer(new GridGroupRenderer() {
+            public String render(GroupColumnData data) {
+                String f = cm.getColumnById(data.field).getHeader();
+                String l = data.models.size() == 1 ? "Item" : "Items";
+                return f + ": " + data.group + " (" + data.models.size() + " " + l + ")";
+            }
+        });
 
         final Grid<GWTJahiaJobDetail> grid = new Grid<GWTJahiaJobDetail>(store, cm);
         grid.setBorders(true);
+        grid.setView(view);
         grid.setAutoExpandColumn("description");
         grid.setTrackMouseOver(false);
         grid.setStateId("jobPagingGrid");
@@ -187,22 +202,46 @@ public class JobListPanel extends LayoutContainer {
             }
         });
 
-        ContentPanel panel = new ContentPanel();
-        panel.setFrame(true);
-        panel.setCollapsible(false);
-        panel.setAnimCollapse(false);
+        ToolBar topToolBar = new ToolBar();
+        Button deleteButton = new Button();
+        deleteButton.setText(Messages.get("label.delete", "Delete"));
+        deleteButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                for (GWTJahiaJobDetail jobDetail : selectedItems) {
+                    service.deleteJob(jobDetail.getName(), jobDetail.getGroup(), new BaseAsyncCallback<Boolean>() {
+
+                        public void onApplicationFailure(Throwable caught) {
+                            com.google.gwt.user.client.Window.alert(Messages.get("fm_fail") + "\n" + caught.getLocalizedMessage());
+                            Log.error(Messages.get("fm_fail"), caught);
+                        }
+
+                        public void onSuccess(Boolean result) {
+                        }
+                    });
+                }
+            }
+        });
+        topToolBar.add(deleteButton);
+
+        ContentPanel listPanel = new ContentPanel();
+        listPanel.setFrame(true);
+        listPanel.setCollapsible(false);
+        listPanel.setAnimCollapse(false);
         // panel.setIcon(Resources.ICONS.table());
         // panel.setHeading("");
-        panel.setHeaderVisible(false);
-        panel.setLayout(new FitLayout());
-        panel.add(grid);
-        panel.setSize(600, 350);
-        panel.setBottomComponent(toolBar);
-        grid.getAriaSupport().setLabelledBy(panel.getId());
-        add(panel);
+        listPanel.setHeaderVisible(false);
+        listPanel.setLayout(new FitLayout());
+        listPanel.add(grid);
+        listPanel.setSize(600, 350);
+        listPanel.setBottomComponent(pagingToolBar);
+        listPanel.setTopComponent(topToolBar);
+        grid.getAriaSupport().setLabelledBy(listPanel.getId());
+        add(listPanel);
 
         BorderLayoutData centerData = new BorderLayoutData(Style.LayoutRegion.CENTER);
-        add(panel, centerData);
+        add(listPanel, centerData);
 
         ContentPanel detailPanel = new ContentPanel();
         detailPanel.setBorders(true);
@@ -265,6 +304,7 @@ public class JobListPanel extends LayoutContainer {
                 paths.append(" ");
             }
             addDetail("label.relatedPaths", "Related paths", paths.toString());
+            addDetail("label.fileName", "File name", jobDetail.getFileName());
             addDetail("label.name", "Name", jobDetail.getName());
             addDetail("label.creationTime", "Creation time", jobDetail.getCreationTime());
             addDetail("label.user", "User key", jobDetail.getUser());

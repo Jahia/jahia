@@ -285,6 +285,8 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     BasePagingLoadResult<GWTJahiaJobDetail> getJobs(int offset, int limit, String sortField, String sortDir) throws GWTJahiaServiceException;
 
+    Boolean deleteJob(String jobName, String groupName) throws GWTJahiaServiceException;
+
     // -------------------------- INNER CLASSES --------------------------
 
     public static class App {

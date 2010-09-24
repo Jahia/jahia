@@ -123,8 +123,16 @@ public class SchedulerHelper {
             });
             return gwtJobList;
         } catch (JahiaException e) {
-            throw new GWTJahiaServiceException();
+            throw new GWTJahiaServiceException(e.getMessage());
         }
 
+    }
+
+    public Boolean deleteJob(String jobName, String groupName) throws GWTJahiaServiceException {
+        try {
+            return scheduler.deleteJob(jobName, groupName);
+        } catch (JahiaException e) {
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
     }
 }

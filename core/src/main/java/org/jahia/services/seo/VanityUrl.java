@@ -70,7 +70,7 @@ public class VanityUrl {
      */
     public VanityUrl(String url, String site, String language) {
         super();
-        this.url = StringUtils.startsWith(url, "/") ? url : '/' + url;
+        this.url = StringUtils.stripEnd(StringUtils.startsWith(url, "/") ? url : '/' + url, "/");
         this.site = site;
         this.language = language;
     }

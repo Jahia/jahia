@@ -44,20 +44,20 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
-import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.EditorEvent;
 import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.Record;
+import com.extjs.gxt.ui.client.store.Record.RecordUpdate;
+import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.store.StoreEvent;
+import com.extjs.gxt.ui.client.store.StoreListener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
-import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.CheckColumnConfig;
@@ -71,7 +71,6 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 
 /**
@@ -80,42 +79,7 @@ import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
  * @author Sergiy Shyrkov
  */
 public class UrlMappingEditor extends LayoutContainer {
-  private GWTJahiaNode node ;
-    private static class SingleSelectionCheckColumnConfig extends CheckColumnConfig {
-
-        /**
-         * Initializes an instance of this class.
-         * 
-         * @param id
-         * @param name
-         * @param width
-         */
-        SingleSelectionCheckColumnConfig(String id, String name, int width) {
-            super(id, name, width);
-        }
-
-        @Override
-        protected void onMouseDown(GridEvent<ModelData> ge) {
-            String cls = ge.getTarget().getClassName();
-            if (cls != null && (cls.indexOf("x-grid3-cc-" + getId()) != -1 || cls.indexOf("singleselect-" + getId()) != -1) && cls.indexOf("disabled") == -1) {
-                ge.stopEvent();
-                int index = grid.getView().findRowIndex(ge.getTarget());
-                ModelData m = grid.getStore().getAt(index);
-                Record r = grid.getStore().getRecord(m);
-                boolean b = (Boolean) m.get(getDataIndex());
-                if (!b) {
-                    for (ModelData data : grid.getStore().getModels()) {
-                        GWTJahiaUrlMapping mapping = (GWTJahiaUrlMapping) data;
-                        if (mapping.isDefault()) {
-                            grid.getStore().getRecord(mapping).set(getDataIndex(), Boolean.FALSE);
-                        }
-                    }
-                }
-                r.set(getDataIndex(), !b);
-            }
-        }
-
-    }
+    private GWTJahiaNode node;
 
     private GWTJahiaLanguage locale;
 
@@ -132,13 +96,12 @@ public class UrlMappingEditor extends LayoutContainer {
         this.node = node;
         setBorders(false);
         store = new ListStore<GWTJahiaUrlMapping>();
-
         JahiaContentManagementService.App.getInstance().getUrlMappings(node, locale.getLanguage(),
                 new BaseAsyncCallback<List<GWTJahiaUrlMapping>>() {
                     public void onApplicationFailure(Throwable throwable) {
-                        com.google.gwt.user.client.Window.alert(Messages.get("ece_seo_load_url_mappings_failed",
-                                "Loading URL mapping failed\n\n")
-                                + throwable.getLocalizedMessage());
+                        com.google.gwt.user.client.Window.alert(Messages.getWithArgs("failure.load.urlmappings.label",
+                                "Loading URL mapping failed\n\n{0}", new Object[]{
+                                throwable.getLocalizedMessage()}));
                         Log.error("failed", throwable);
                     }
 
@@ -163,6 +126,9 @@ public class UrlMappingEditor extends LayoutContainer {
         column.setHeader(Messages.get("label_url", "URL"));
         TextField<String> text = new TextField<String>();
         text.setAllowBlank(false);
+        text.setRegex("^/?(?!.*/{2,})[a-zA-Z_0-9\\-\\./]+$");
+        text.setMaxLength(250);
+        text.getMessages().setRegexText(Messages.get("failure.invalid.urlmapping.label", "The vanity URL can only contain letters, digits, dots (.), dashes (-) and no consecutive slashes (/)"));
         CellEditor ce = new CellEditor(text);
         ce.addListener(Events.BeforeComplete, new Listener<EditorEvent>() {
             public void handleEvent(EditorEvent be) {
@@ -173,13 +139,11 @@ public class UrlMappingEditor extends LayoutContainer {
         column.setEditor(ce);
         configs.add(column);
 
-        CheckColumnConfig defaultColumn = new SingleSelectionCheckColumnConfig("default", Messages.get("ece_seo_default", "Default"), 55);
-        CheckBox defaultEditorCB = new CheckBox();
-        defaultEditorCB.addInputStyleName("singleselect-default");
-        defaultColumn.setEditor(new CellEditor(defaultEditorCB));
+        final CheckColumnConfig defaultColumn = new CheckColumnConfig("default", Messages.get("label.urlmapping.default", "Default"), 55);
+        defaultColumn.setEditor(new CellEditor(new CheckBox()));
         configs.add(defaultColumn);
 
-        CheckColumnConfig activeColumn = new CheckColumnConfig("active", Messages.get("ece_seo_active", "Active"), 55);
+        CheckColumnConfig activeColumn = new CheckColumnConfig("active", Messages.get("label.urlmapping.active", "Active"), 55);
         activeColumn.setEditor(new CellEditor(new CheckBox()));
         configs.add(activeColumn);
 
@@ -210,6 +174,25 @@ public class UrlMappingEditor extends LayoutContainer {
         grid.addPlugin(activeColumn);
         grid.addPlugin(re);
 
+        store.addStoreListener(new StoreListener<GWTJahiaUrlMapping>() {
+            @Override
+            public void storeUpdate(StoreEvent<GWTJahiaUrlMapping> se) {
+                super.storeUpdate(se);
+                if (se.getOperation() == RecordUpdate.EDIT && se.getModel().isDefault()) {
+                    clearOtherDefaults(se.getModel(), se.getStore());
+                }
+            }
+
+            private void clearOtherDefaults(GWTJahiaUrlMapping model, Store<? extends GWTJahiaUrlMapping> store) {
+                for (GWTJahiaUrlMapping data : store.getModels()) {
+                    if (data.isDefault() && !data.equals(model)) {
+                        grid.getStore().getRecord(data).set(defaultColumn.getDataIndex(), Boolean.FALSE);
+                    }
+                }
+            }
+
+        });        
+        
         ToolBar toolBar = new ToolBar();
         Button add = new Button(Messages.get("label.add", "Add"), new SelectionListener<ButtonEvent>() {
             @Override

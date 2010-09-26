@@ -39,14 +39,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Represents a dedicated tab for configuring URL mapping for content objects

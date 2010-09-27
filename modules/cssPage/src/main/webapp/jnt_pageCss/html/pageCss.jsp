@@ -16,6 +16,7 @@
 <template:addResources type="javascript" resources="jquery.jeditable.ajaxupload.js"/>
 <template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
 <template:addResources type="javascript" resources="jquery-ui-1.7.3.custom.min.js"/>
+<template:addResources type="css" resources="cssPage.css"/>
 <c:set var="myDiese" value="#"/>  <%-- var for inligne Css color --%>
 <jcr:nodeProperty node="${currentNode}" name="img1" var="imgResource1"/>
 <jcr:nodeProperty node="${currentNode}" name="img2" var="imgResource2"/>
@@ -105,18 +106,20 @@
 <a href="#changeCssForm" id="showChangeCss"><img src="${url.currentModule}/img/cssIcone.png"/></a>
 
 <div id="changeCssForm" style="display: none;">
-<form class="formPageCss" id="myForm" action="${url.base}${currentNode.path}" method="post">
+<form class="formCssPage" id="myForm" action="${url.base}${currentNode.path}" method="post">
 <input type="hidden" name="nodeType" value="jnt:pageCss"/>
 <input type="hidden" name="redirectTo" value="${url.base}${renderContext.mainResource.node.path}"/>
 <input type="hidden" name="newNodeOutputFormat" value="html"/>
 <c:set var="props" value="${currentNode.properties}"/>
 <jcr:nodeType name="jnt:pageCss" var="pageCsstype"/>
 <c:set var="propDefs" value="${pageCsstype.declaredPropertyDefinitionsAsMap}"/>
-<table>
+
+<h3 class="boxCssPage-title">Change Css Form</h3>
+<table class="changeCssFormTable">
 <tr>
-    <td rowspan="2">
+    <td valign="top">
         <fieldset>
-            <legend><img src="${url.currentModule}/img/moins.gif"/><fmt:message key="jnt_pageCss.titles"/></legend>
+            <legend><fmt:message key="jnt_pageCss.titles"/></legend>
             <div id="showTitles">
                 <p>
                     <label class="left"
@@ -124,7 +127,6 @@
                     <input class="myInput" id="h1Color" type="text" name="j:h1Color"
                            value="${props["j:h1Color"].string}" size="10">
                 </p>
-
                 <p>
                     <label class="left"
                            for="h1FontFamily"><fmt:message key="jnt_pageCss.h1FontFamily"/></label>
@@ -204,10 +206,33 @@
                 </p>
             </div>
         </fieldset>
-    </td>
-    <td>
+
+</td>
+<td valign="top">
+        
+		<fieldset>
+            <legend>
+                <fmt:message key="jnt_pageCss.pageColors"/>
+            </legend>
+            <div id="showPageColors">
+                <p>
+                    <label class="left"
+                           for="colorResource1"><fmt:message key="jnt_pageCss.colorResource1"/></label>
+                    <input class="myInput" id="colorResource1" type="text" name="j:colorResource1"
+                           value="${props["j:colorResource1"].string}" size="10">
+                </p>
+
+                <p>
+                    <label class="left"
+                           for="colorResource2"><fmt:message key="jnt_pageCss.colorResource2"/></label>
+                    <input class="myInput" id="colorResource2" type="text" name="j:colorResource2"
+                           value="${props["j:colorResource2"].string}" size="10">
+                </p>
+            </div>
+        </fieldset>
+        
         <fieldset>
-            <legend><img src="${url.currentModule}/img/moins.gif"/><fmt:message key="jnt_pageCss.body"/></legend>
+            <legend><fmt:message key="jnt_pageCss.body"/></legend>
             <div id="showBody">
                 <p>
                     <label class="left"
@@ -255,12 +280,9 @@
             </div>
 
         </fieldset>
-    </td>
-</tr>
-<tr>
-    <td>
+
         <fieldset>
-            <legend><img src="${url.currentModule}/img/moins.gif"/><fmt:message key="jnt_pageCss.links"/></legend>
+            <legend><fmt:message key="jnt_pageCss.links"/></legend>
             <div id="showLinks">
                 <p>
                     <label class="left"
@@ -277,12 +299,9 @@
                 </p>
             </div>
         </fieldset>
-    </td>
-</tr>
-<tr>
-    <td>
+
         <fieldset>
-            <legend><img src="${url.currentModule}/img/moins.gif"/>
+            <legend>
                 <fmt:message key="jnt_pageCss.backgroundImages"/>
             </legend>
             <div id="showBackGroundImages">
@@ -312,31 +331,9 @@
             </div>
         </fieldset>
     </td>
-    <td>
-        <fieldset>
-            <legend><img src="${url.currentModule}/img/moins.gif"/>
-                <fmt:message key="jnt_pageCss.pageColors"/>
-            </legend>
-            <div id="showPageColors">
-                <p>
-                    <label class="left"
-                           for="colorResource1"><fmt:message key="jnt_pageCss.colorResource1"/></label>
-                    <input class="myInput" id="colorResource1" type="text" name="j:colorResource1"
-                           value="${props["j:colorResource1"].string}" size="10">
-                </p>
-
-                <p>
-                    <label class="left"
-                           for="colorResource2"><fmt:message key="jnt_pageCss.colorResource2"/></label>
-                    <input class="myInput" id="colorResource2" type="text" name="j:colorResource2"
-                           value="${props["j:colorResource2"].string}" size="10">
-                </p>
-            </div>
-        </fieldset>
-    </td>
 </tr>
 <tr>
-    <td colspan="2">
+    <td colspan="2" align="center">
         <input type="reset" value="Reset" class="button" tabindex="3"/>
         <input type="submit" value="Submit" class="button" tabindex="4"/>
     </td>

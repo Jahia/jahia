@@ -1,0 +1,70 @@
+/******************************************************************************
+*  Create changeCssForm Pop up
+******************************************************************************/
+/*Pop up*/
+.changeCssFormTable td{
+	padding:10px;
+}
+#changeCssForm {
+	width: 500px; 
+	height: 400px;
+	overflow:auto;
+	background-color: #eaeaea;
+}
+
+#bodywrapper #changeCssForm {
+	display: none;
+}
+/*Form Title Pop up*/
+#changeCssForm h3.boxCssPage-title {
+	background:#666666 url(img/boxCssPage-h3title.png) repeat-x top right;
+	border:1px solid #666666;
+	color:#fff;
+	font-size:1.3em;
+	margin-left:0;
+	padding:5px;
+	text-align:center;
+	font-weight:normal;
+	clear:both;
+	margin:0;
+}
+/*Form Docspace Pop up*/
+#changeCssForm .formCssPage {
+	margin:10px
+}
+#changeCssForm .formCssPage legend {
+	font-size:1.4em;
+	line-height:1.6em;
+}
+#changeCssForm .formCssPage fieldset {
+	border:none;
+	margin-bottom:1em;
+}
+
+#changeCssForm .formCssPage input,
+#changeCssForm .formCssPage select,
+#changeCssForm .formCssPage textarea {
+	width:97%
+}
+#changeCssForm .formCssPage p{
+	clear:both;
+	margin:0.5em 0;
+	padding:0px
+}
+#changeCssForm .formCssPage .formMarginLeft{ 
+	margin:0.5em 0 0.5em 0;
+	padding:0;
+}
+#changeCssForm .formCssPage label.left,
+#changeCssForm .formCssPage label {
+	display:block;
+	font-weight:bold;
+	
+}
+#changeCssForm .formCssPage input.radio,
+#changeCssForm .formCssPage input.checkbox,
+#changeCssForm .formCssPage input.button,
+#changeCssForm .formCssPage button {
+	width:auto;
+}
+

@@ -680,26 +680,7 @@
         </property>
         <property name="titleKey" value="label.createTag"/>
         <property name="icon" value="newTag"/>
-    </bean>
-
-    <bean id="Toolbar.Item.NewRemotePublication" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewRemotePublicationActionItem"/>
-        </property>
-        <property name="titleKey" value="label.createRemotePublication"/>
-        <property name="icon" value="newRemotePublication"/>
-    </bean>
-
-    <bean id="Toolbar.Item.ExectuteRemotePublication"
-          class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ExecuteActionItem">
-                <property name="action" value="remotepublish"/>
-            </bean>
-        </property>
-        <property name="titleKey" value="label.executeRemotePublication"/>
-        <property name="icon" value="executeRemotePublication"/>
-    </bean>
+    </bean>    
 
     <bean id="Toolbar.Item.NewWorkflowRule" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">

@@ -32,8 +32,11 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
+import org.jahia.ajax.gwt.client.widget.content.FileUploader;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -44,7 +47,16 @@ import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
  */
 public class UploadActionItem extends BaseActionItem {
     public void onComponentSelection() {
-        ContentActions.upload(linker);
+        GWTJahiaNode m = (GWTJahiaNode) linker.getMainNode();
+        if (m == null) {
+            final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
+            if (selectedItems != null && selectedItems.size() == 1) {
+                m = selectedItems.get(0);
+            }
+        }
+        if (m != null && !m.isFile()) {
+            new FileUploader(linker, m);
+        }
     }
 
     public void handleNewLinkerSelection() {

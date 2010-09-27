@@ -71,7 +71,7 @@ public class CommonEntryPoint implements EntryPoint {
                     getContentManagementService().isValidSession(new BaseAsyncCallback<Integer>() {
                         public void onSuccess(Integer val) {
                             if (val > 0) {
-                               scheduleRepeating(val);
+                               schedule(val);
                             } else if (val == 0) {
                                cancel();
                                handleSessionExpired(this);

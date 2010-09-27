@@ -53,7 +53,6 @@ import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
-import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 
 import java.util.ArrayList;
 import java.util.HashSet;

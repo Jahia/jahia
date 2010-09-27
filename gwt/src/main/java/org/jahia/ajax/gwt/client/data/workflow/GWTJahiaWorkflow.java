@@ -3,7 +3,7 @@ package org.jahia.ajax.gwt.client.data.workflow;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.widget.edit.workflow.dialog.CustomWorkflow;
+import org.jahia.ajax.gwt.client.widget.workflow.CustomWorkflow;
 
 import java.io.Serializable;
 import java.util.Date;

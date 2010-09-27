@@ -36,7 +36,7 @@ import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.edit.contentengine.WorkflowHistoryPanel;
+import org.jahia.ajax.gwt.client.widget.contentengine.WorkflowHistoryPanel;
 
 /**
  * Created by IntelliJ IDEA.

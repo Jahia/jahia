@@ -32,8 +32,10 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.RunAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.widget.edit.EditActions;
+import org.jahia.ajax.gwt.client.widget.contentengine.TranslateContentEngine;
 
 /**
  * Created by IntelliJ IDEA.
@@ -44,7 +46,16 @@ import org.jahia.ajax.gwt.client.widget.edit.EditActions;
  */
 public class TranslateActionItem extends BaseActionItem {
     public void onComponentSelection() {
-        EditActions.showTranslateEngine(linker);
+        GWT.runAsync(new RunAsyncCallback()  {
+            public void onFailure(Throwable reason) {
+            }
+
+            public void onSuccess() {
+                if (linker.getMainNode() != null) {
+                    new TranslateContentEngine(linker.getSelectedNode(), linker).show();
+                }
+            }
+        });
     }
 
     public void handleNewLinkerSelection() {

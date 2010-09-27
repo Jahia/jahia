@@ -31,12 +31,8 @@
  */
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.widget.edit.EditActions;
-import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
+import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 
 /**
  * Created by IntelliJ IDEA.
@@ -47,7 +43,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 */
 public class PublishAllActionItem extends BaseActionItem {
     public void onComponentSelection() {
-        EditActions.publish(linker, true);
+        ContentActions.publish(linker, true);
     }
 
     public void handleNewLinkerSelection() {

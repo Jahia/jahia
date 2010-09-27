@@ -40,6 +40,7 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.Style;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
+import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
 
 /**
  * Created by IntelliJ IDEA.

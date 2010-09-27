@@ -55,7 +55,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
-import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEnginePopupListener;
+import org.jahia.ajax.gwt.client.widget.contentengine.EditContentEnginePopupListener;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionContextMenu;
 
 import java.util.*;

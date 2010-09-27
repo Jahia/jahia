@@ -50,7 +50,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.widget.edit.ModuleSelectionListener;
-import org.jahia.ajax.gwt.client.widget.edit.contentengine.EngineLoader;
+import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 
 import java.util.ArrayList;
 import java.util.Arrays;

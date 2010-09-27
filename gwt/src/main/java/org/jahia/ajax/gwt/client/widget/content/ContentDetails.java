@@ -53,9 +53,8 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
-import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
-import org.jahia.ajax.gwt.client.widget.edit.contentengine.*;
+import org.jahia.ajax.gwt.client.widget.contentengine.*;
 import org.jahia.ajax.gwt.client.widget.tripanel.BottomRightComponent;
 
 import java.util.ArrayList;

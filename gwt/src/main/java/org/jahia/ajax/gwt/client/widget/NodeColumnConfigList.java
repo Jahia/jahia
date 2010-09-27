@@ -48,14 +48,13 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
-import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTColumn;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.form.CalendarField;
-import org.jahia.ajax.gwt.client.widget.workflow.PublicationManagerEngine;
+import org.jahia.ajax.gwt.client.widget.publication.PublicationManagerEngine;
 
 import java.util.ArrayList;
 import java.util.Date;

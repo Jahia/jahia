@@ -32,7 +32,7 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import org.jahia.ajax.gwt.client.widget.edit.EditActions;
+import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 
 /**
  * Action item used to open the edit engine for the original content source.
@@ -44,8 +44,10 @@ public class EditSourceContentActionItem extends BaseActionItem {
 	private static final long serialVersionUID = -2912157212228173779L;
 
 	public void onComponentSelection() {
-		EditActions.editSource(linker);
-	}
+        if (linker.getMainNode() != null) {
+            EngineLoader.showEditEngine(linker, linker.getSelectedNode().getReferencedNode());
+        }
+    }
 
 	public void handleNewLinkerSelection() {
 		setEnabled(linker.getSelectionContext().isWriteable() && linker.getSelectedNode() != null

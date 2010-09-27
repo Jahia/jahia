@@ -62,20 +62,6 @@ public class ClipboardActionItem extends BaseActionItem {
 
     @Override public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
         super.init(gwtToolbarItem, linker);
-
-//        final Menu menu = new Menu();
-//        setSubMenu(menu);
-//
-//        clearAll = new MenuItem("Clear");
-//        clearAll.addSelectionListener(new SelectionListener<MenuEvent>() {
-//            public void componentSelected(MenuEvent ce) {
-//                copiedStuff.clear();
-//                menu.removeAll();
-//                menu.add(clearAll);
-//            }
-//        });
-//        menu.add(clearAll);
-//
         instance = this;
     }
 

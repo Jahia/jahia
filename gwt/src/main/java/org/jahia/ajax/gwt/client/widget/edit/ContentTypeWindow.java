@@ -47,8 +47,8 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEngine;
-import org.jahia.ajax.gwt.client.widget.edit.contentengine.EngineLoader;
+import org.jahia.ajax.gwt.client.widget.contentengine.EditContentEngine;
+import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 
 import java.util.HashMap;
 import java.util.List;

@@ -32,8 +32,13 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.widget.edit.EditActions;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.widget.publication.PublicationManagerEngine;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -45,7 +50,14 @@ import org.jahia.ajax.gwt.client.widget.edit.EditActions;
 public class PublicationManagerActionItem extends BaseActionItem{
 
     public void onComponentSelection() {
-        EditActions.showPublicationManager(linker);
+        if (linker.getMainNode() != null) {
+            JahiaContentManagementService
+                    .App.getInstance().getSiteLanguages(new BaseAsyncCallback<List<GWTJahiaLanguage>>() {
+                public void onSuccess(List<GWTJahiaLanguage> result) {
+                    new PublicationManagerEngine(linker,result).show();
+                }
+            });
+        }
     }
 
     public void handleNewLinkerSelection() {

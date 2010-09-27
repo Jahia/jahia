@@ -44,7 +44,7 @@ import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryIt
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryProcess;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryTask;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.ajax.gwt.client.widget.edit.workflow.dialog.CustomWorkflow;
+import org.jahia.ajax.gwt.client.widget.workflow.CustomWorkflow;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;

@@ -31,12 +31,19 @@
  */
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
+import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.widget.Info;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.widget.edit.EditActions;
+import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+
+import java.util.Arrays;
 
 /**
  * Created by IntelliJ IDEA.
@@ -47,7 +54,29 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 */
 public class UnpublishActionItem extends BaseActionItem {
     public void onComponentSelection() {
-        EditActions.unpublish(linker);
+        GWTJahiaNode selectedNode = linker.getSelectedNode();
+        if (selectedNode == null) {
+            selectedNode = linker.getMainNode();
+        }
+        if (selectedNode != null) {
+            linker.loading(Messages.get("label.content.unpublishing", "Unpublishing"));
+
+            JahiaContentManagementService.App.getInstance()
+                    .unpublish(Arrays.asList(selectedNode.getPath()), new BaseAsyncCallback<Object>() {
+                        public void onApplicationFailure(Throwable caught) {
+                            linker.loaded();
+                            Log.error("Cannot publish", caught);
+                            com.google.gwt.user.client.Window.alert("Cannot unpublish " + caught.getMessage());
+                        }
+
+                        public void onSuccess(Object result) {
+                            linker.loaded();
+                            Info.display(Messages.get("label.content.unpublished"),
+                                    Messages.get("label.content.unpublished"));
+                            linker.refresh(EditLinker.REFRESH_ALL);
+                        }
+                    });
+        }
     }
 
     /**

@@ -23,12 +23,6 @@ public class JobListWindow extends Window {
         init();
     }
 
-    public static void showJobListWindow(Linker linker) {
-        if (linker.getMainNode() != null) {
-            new JobListWindow(linker).show();
-        }
-    }
-
     private void init() {
         setHeading(Messages.get("label.joblist", "Background Job List"));
         setLayout(new FitLayout());

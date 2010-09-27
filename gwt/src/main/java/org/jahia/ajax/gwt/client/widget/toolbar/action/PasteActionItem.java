@@ -32,10 +32,15 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import com.google.gwt.user.client.Window;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
+import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
-import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 import java.util.List;
@@ -48,7 +53,42 @@ import java.util.List;
 */
 public class PasteActionItem extends BaseActionItem {
     public void onComponentSelection() {
-        ContentActions.paste(linker);
+        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
+        GWTJahiaNode m = null;
+        if (selectedItems != null && selectedItems.size() == 1) {
+            m = selectedItems.get(0);
+        }
+        if (m == null) {
+            m = linker.getMainNode();
+        }
+        if (m != null && !m.isFile()) {
+            linker.loading(Messages.get("statusbar.pasting.label"));
+            final CopyPasteEngine copyPasteEngine = CopyPasteEngine.getInstance();
+            JahiaContentManagementService
+                    .App.getInstance().paste(JCRClientUtils.getPathesList(copyPasteEngine.getCopiedPaths()), m.getPath(), null, copyPasteEngine.isCut(), new BaseAsyncCallback() {
+                public void onApplicationFailure(Throwable throwable) {
+                    Window.alert(Messages.get("failure.paste.label") + "\n" + throwable.getLocalizedMessage());
+                    linker.loaded();
+                }
+
+                public void onSuccess(Object o) {
+                    boolean refresh = false;
+                    for (GWTJahiaNode n : copyPasteEngine.getCopiedPaths()) {
+                        if (!n.isFile()) {
+                            refresh = true;
+                            break;
+                        }
+                    }
+                    copyPasteEngine.onPastedPath();
+                    linker.loaded();
+                    if (refresh) {
+                        linker.refresh(EditLinker.REFRESH_ALL);
+                    } else {
+                        linker.refresh(Linker.REFRESH_MAIN);
+                    }
+                }
+            });
+        }
     }
 
     public void handleNewLinkerSelection() {

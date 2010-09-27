@@ -31,8 +31,18 @@
  */
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
-import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.widget.Dialog;
+import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.HTML;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -43,7 +53,39 @@ import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 */
 public class WebfolderActionItem extends BaseActionItem {
     public void onComponentSelection() {
-        ContentActions.openWebFolder(linker);
+        List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
+        final GWTJahiaNode selection;
+        if (selectedItems == null || selectedItems.size() > 1 || (selectedItems.size() == 1 && selectedItems.get(0).isFile())) {
+            selection = (GWTJahiaNode) linker.getMainNode();
+        } else {
+            selection = selectedItems.get(0);
+        }
+        if (selection != null && !selection.isFile().booleanValue()) {
+            linker.loading(Messages.get("statusbar.webfoldering.label"));
+            JahiaContentManagementService
+                    .App.getInstance().getAbsolutePath(selection.getPath(), new BaseAsyncCallback<String>() {
+                public void onApplicationFailure(Throwable t) {
+                    Window.alert(Messages.get("failure.webfolder.label") + "\n" + t.getLocalizedMessage());
+                    linker.loaded();
+                }
+
+                public void onSuccess(String url) {
+                    if (url != null) {
+                        HTML link = new HTML(Messages.get("webFolderMessage.label") + "<br /><br /><a target=\"_new\" folder=\"" + url + "\" style=\"behavior:url(#default#AnchorClick)\">" + selection.getName() + "</a>");
+                        final Dialog dl = new Dialog();
+                        dl.setModal(true);
+                        dl.setHeading(Messages.get("label.openIEFolder"));
+                        dl.setHideOnButtonClick(true);
+                        dl.setLayout(new FlowLayout());
+                        dl.setScrollMode(Style.Scroll.AUTO);
+                        dl.add(link);
+                        dl.setHeight(150);
+                        linker.loaded();
+                        dl.show();
+                    }
+                }
+            });
+        }
     }
 
     public void handleNewLinkerSelection(){

@@ -31,8 +31,13 @@
  */
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.RunAsyncCallback;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
-import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
+import org.jahia.ajax.gwt.client.widget.content.ImageRotate;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -43,7 +48,20 @@ import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 */
 public class RotateActionItem extends BaseActionItem   {
     public void onComponentSelection() {
-        ContentActions.rotateImage(linker);
+        GWT.runAsync(new RunAsyncCallback()  {
+            public void onFailure(Throwable reason) {
+            }
+
+            public void onSuccess() {
+                final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
+                if (selectedItems != null && selectedItems.size() == 1) {
+                    final GWTJahiaNode selectedNode = selectedItems.get(0);
+                    if (selectedNode != null) {
+                        new ImageRotate(linker, selectedNode).show();
+                    }
+                }
+            }
+        });
     }
 
     public void handleNewLinkerSelection() {

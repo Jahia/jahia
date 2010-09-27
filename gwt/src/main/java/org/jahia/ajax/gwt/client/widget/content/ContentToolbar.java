@@ -35,7 +35,6 @@ package org.jahia.ajax.gwt.client.widget.content;
 import com.extjs.gxt.ui.client.widget.Component;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbarLayoutContainer;
-import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopBar;
 
 /**

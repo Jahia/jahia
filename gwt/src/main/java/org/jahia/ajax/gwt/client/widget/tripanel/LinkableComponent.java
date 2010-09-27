@@ -33,7 +33,7 @@
 package org.jahia.ajax.gwt.client.widget.tripanel;
 
 import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.menu.Menu;
+import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
 
 /**
  * This class represents a part of the universal tree browser. Its purpose is to define

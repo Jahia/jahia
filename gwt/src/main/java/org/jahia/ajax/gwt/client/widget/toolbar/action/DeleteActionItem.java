@@ -32,11 +32,24 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
+import com.extjs.gxt.ui.client.widget.Dialog;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
-import org.jahia.ajax.gwt.client.widget.edit.EditActions;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
+import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -54,7 +67,105 @@ public class DeleteActionItem extends BaseActionItem {
             }
 
             public void onSuccess() {
-                EditActions.delete(linker);
+                if (linker.getSelectedNodes() != null && !linker.getSelectedNodes().isEmpty()) {
+                    // Usages
+                    final List<String> l = new ArrayList<String>();
+                    for (GWTJahiaNode node : linker.getSelectedNodes()) {
+                        l.add(node.getPath());
+                    }
+                    final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
+                    async.getUsages(l, new BaseAsyncCallback<List<GWTJahiaNodeUsage>>() {
+                        public void onSuccess(List<GWTJahiaNodeUsage> result) {
+                            if (l.size() == 1 && linker.getSelectedNode().isReference()) {
+                                List<String> paths = new ArrayList<String>();
+                                for (GWTJahiaNode node : linker.getSelectedNodes()) {
+                                    paths.add(node.getPath());
+                                }
+                                async.deletePaths(paths, new BaseAsyncCallback<Object>() {
+                                    public void onApplicationFailure(Throwable throwable) {
+                                        Log.error(throwable.getMessage(), throwable);
+                                        MessageBox.alert("", throwable.getMessage(), null);
+                                    }
+
+                                    public void onSuccess(Object o) {
+                                        linker.refresh(EditLinker.REFRESH_ALL);
+                                        linker.select(null);
+                                    }
+                                });
+                            } else {
+                                String message = l.size() > 1 ? Messages.getWithArgs("message.remove.multiple.confirm",
+                                                                                     "Do you really want to remove the {0} selected resources?",
+                                                                                     new String[]{String.valueOf(
+                                                                                             l.size())}) : Messages.getWithArgs(
+                                        "message.remove.single.confirm",
+                                        "Do you really want to remove the selected resource {0}?",
+                                        new String[]{linker.getSelectedNodes().get(0).getName()});
+                                if (l.size() > 1) {
+                                    message += "<br/><br/>";
+                                    int i = 0;
+                                    for (GWTJahiaNode node : linker.getSelectedNodes()) {
+                                        if (i > 4) {
+                                            message += "<br/>...";
+                                            break;
+                                        }
+                                        message += "<br/>" + node.getName();
+                                        i++;
+                                    }
+                                }
+                                message+="<br/><br/>";
+                                String n = "";
+                                int size = result.size();
+                                if(size>0) {
+                                    message +=l.size() > 1 ? Messages.get("message.remove.multiple.usage",
+                                                                                     "Those nodes are still used in:") : Messages.get(
+                                        "message.remove.single.usage",
+                                        "This node is still used by:");
+                                }
+                                int i = 0;
+                                for (int j = 0; j < (size>4?4:size); j++) {
+                                    GWTJahiaNodeUsage nodeUsage = result.get(j);
+                                    if (!nodeUsage.getNodeName().equals(n)) {
+                                        message += "<br/><span style=\"font-style:italic;\">" + nodeUsage.getNodeTitle() + " " + Messages.get(
+                                                "label.remove.used", "is using this node in page(s)") + "<br/>" +nodeUsage.getPageTitle()+"</span>";
+                                        i++;
+                                    } else {
+                                        message += "<br/><span style=\"font-style:italic;\">" + nodeUsage.getPageTitle()+"</span>";
+                                    }
+                                    n = nodeUsage.getNodeName();
+                                }
+                                if(i>4) {
+                                    message+="<br/>.<br/>.<br/>.";
+                                }
+                                message+=Messages.get("message.remove.warning","<br/><span style=\"font-style:bold;color:red;text-decoration:blink;\">Warning: this will erase the content definitively from the repository<br/>So it will not be displayed anymore anywere</span>");
+                                MessageBox.confirm("", message, new Listener<MessageBoxEvent>() {
+                                    public void handleEvent(MessageBoxEvent be) {
+                                        if (be.getButtonClicked().getText().equalsIgnoreCase(Dialog.YES)) {
+                                            List<String> paths = new ArrayList<String>();
+                                            for (GWTJahiaNode node : linker.getSelectedNodes()) {
+                                                paths.add(node.getPath());
+                                            }
+                                            async.deletePaths(paths, new BaseAsyncCallback<Object>() {
+                                                public void onApplicationFailure(Throwable throwable) {
+                                                    Log.error(throwable.getMessage(), throwable);
+                                                    MessageBox.alert("", throwable.getMessage(), null);
+                                                }
+
+                                                public void onSuccess(Object o) {
+                                                    linker.refresh(EditLinker.REFRESH_ALL);
+                                                    linker.select(null);
+                                                }
+                                            });
+                                        }
+                                    }
+                                });
+                            }
+                        }
+
+                        public void onApplicationFailure(Throwable caught) {
+                            com.google.gwt.user.client.Window.alert("Cannot get status: " + caught.getMessage());
+                        }
+                    });
+                }
             }
         });
     }

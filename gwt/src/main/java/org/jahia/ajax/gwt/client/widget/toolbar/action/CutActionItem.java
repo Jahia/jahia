@@ -32,8 +32,17 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import com.google.gwt.user.client.Window;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
+import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
-import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -44,7 +53,38 @@ import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 */
 public class CutActionItem extends BaseActionItem  {
     public void onComponentSelection() {
-        ContentActions.cut(linker);
+        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
+        if (selectedItems != null && selectedItems.size() > 0) {
+            final List<GWTJahiaNode> actualSelection = new ArrayList<GWTJahiaNode>();
+            final List<GWTJahiaNode> lockedFiles = new ArrayList<GWTJahiaNode>();
+            for (GWTJahiaNode node : selectedItems) {
+                if (node.isLocked()) {
+                    lockedFiles.add(node);
+                } else {
+                    actualSelection.add(node);
+                }
+            }
+            if (!lockedFiles.isEmpty()) {
+                StringBuilder s = new StringBuilder(Messages.get("warning.lock.label"));
+                for (GWTJahiaNode node : lockedFiles) {
+                    s.append("\n").append(node.getName());
+                }
+                Window.alert(s.toString());
+            }
+            if (!actualSelection.isEmpty()) {
+                JahiaContentManagementService.App.getInstance().checkWriteable(JCRClientUtils.getPathesList(actualSelection), new BaseAsyncCallback() {
+                    public void onApplicationFailure(Throwable throwable) {
+                        Window.alert(Messages.get("failure.cut.label") + "\n" + throwable.getLocalizedMessage());
+                    }
+
+                    public void onSuccess(Object o) {
+                        CopyPasteEngine.getInstance().setCutPaths(actualSelection);
+                        linker.select(null);
+                        ClipboardActionItem.setCopied(actualSelection);
+                    }
+                });
+            }
+        }
     }
 
     public void handleNewLinkerSelection() {

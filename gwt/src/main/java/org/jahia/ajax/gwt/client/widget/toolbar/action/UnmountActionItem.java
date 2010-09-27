@@ -32,8 +32,16 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
+import com.google.gwt.user.client.Window;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -44,7 +52,28 @@ import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 */
 public class UnmountActionItem extends BaseActionItem  {
     public void onComponentSelection() {
-        ContentActions.unmountFolder(linker);
+        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
+        if (selectedItems != null && selectedItems.size() == 1) {
+            GWTJahiaNode selection = selectedItems.get(0);
+            if (selection.isLocked()) {
+                Window.alert(Messages.get("failure.unmountLock1.label") + " " + selection.getName() + Messages.get("failure.unmountLock2.label") + " " + selection.getLockOwner());
+            } else if (Window.confirm(Messages.get("confirm.unmount.label") + " " + selection.getName() + " ?")) {
+                linker.loading(Messages.get("statusbar.unmounting.label"));
+                List<String> selectedPaths = new ArrayList<String>(1);
+                selectedPaths.add(selection.getPath());
+                JahiaContentManagementService.App.getInstance().deletePaths(selectedPaths, new BaseAsyncCallback() {
+                    public void onApplicationFailure(Throwable throwable) {
+                        Window.alert(Messages.get("failure.unmount.label") + "\n" + throwable.getLocalizedMessage());
+                        linker.loaded();
+                    }
+
+                    public void onSuccess(Object o) {
+                        linker.loaded();
+                        linker.refresh(Linker.REFRESH_FOLDERS);
+                    }
+                });
+            }
+        }
     }
 
     public void handleNewLinkerSelection() {

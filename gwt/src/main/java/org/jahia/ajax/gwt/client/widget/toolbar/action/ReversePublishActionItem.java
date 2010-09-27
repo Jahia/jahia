@@ -36,8 +36,8 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
+import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.edit.EditActions;
 
 /**
  * Created by IntelliJ IDEA.
@@ -48,7 +48,7 @@ import org.jahia.ajax.gwt.client.widget.edit.EditActions;
 */
 public class ReversePublishActionItem extends BaseActionItem implements IsSerializable {
     public void onComponentSelection() {
-        EditActions.reversePublish(linker); 
+        ContentActions.reversePublish(linker);
     }
 
     /**

@@ -40,8 +40,8 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.Formatter;
-import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditEngineTabItem;
-import org.jahia.ajax.gwt.client.widget.edit.contentengine.NodeHolder;
+import org.jahia.ajax.gwt.client.widget.contentengine.EditEngineTabItem;
+import org.jahia.ajax.gwt.client.widget.contentengine.NodeHolder;
 
 import java.util.Date;
 

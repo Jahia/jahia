@@ -31,8 +31,11 @@
  */
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
-import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
+import org.jahia.ajax.gwt.client.widget.content.ImagePopup;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -43,7 +46,13 @@ import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 */
 public class PreviewActionItem extends BaseActionItem  {
     public void onComponentSelection() {
-        ContentActions.preview(linker);
+        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
+        if (selectedItems != null && selectedItems.size() == 1) {
+            final GWTJahiaNode selection = selectedItems.get(0);
+            if (selection != null && selection.isFile().booleanValue()) {
+                ImagePopup.popImage(selection);
+            }
+        }
     }
 
     public void handleNewLinkerSelection() {

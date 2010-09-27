@@ -32,8 +32,12 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
+import org.jahia.ajax.gwt.client.widget.content.ContentExportTemplate;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -44,7 +48,21 @@ import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 */
 public class ExportTemplateActionItem extends BaseActionItem    {
     public void onComponentSelection() {
-        ContentActions.exportTemplateContent(linker);
+        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
+
+        if (linker instanceof EditLinker) {
+            new ContentExportTemplate(linker, ((EditLinker) linker).getSidePanel().getRootTemplate()).show();
+        } else if (selectedItems != null && selectedItems.size() == 1) {
+            GWTJahiaNode selectedNode = selectedItems.get(0);
+            if (selectedNode != null) {
+                new ContentExportTemplate(linker, selectedNode).show();
+            }
+        } else {
+            GWTJahiaNode selectedNode = linker.getMainNode();
+            if (selectedNode != null) {
+                new ContentExportTemplate(linker, selectedNode).show();
+            }
+        }
     }
 
     public void handleNewLinkerSelection() {

@@ -34,15 +34,13 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflow;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowType;
-import org.jahia.ajax.gwt.client.widget.edit.EditActions;
+import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
-import org.jahia.ajax.gwt.client.widget.edit.PublicationWorkflow;
-import org.jahia.ajax.gwt.client.widget.edit.workflow.dialog.WorkflowActionDialog;
+import org.jahia.ajax.gwt.client.widget.workflow.WorkflowActionDialog;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -59,7 +57,7 @@ public class PublishActionItem extends BaseActionItem {
 
     public void onComponentSelection() {
         if (wf == null) {
-            EditActions.publish(linker, false);
+            ContentActions.publish(linker, false);
         } else  {
             WorkflowActionDialog dialog = new WorkflowActionDialog(gwtJahiaNode, linker);
             dialog.setCustom(wf.getCustomWorkflowInfo());

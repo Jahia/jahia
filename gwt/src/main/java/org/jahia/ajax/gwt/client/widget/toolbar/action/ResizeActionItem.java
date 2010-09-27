@@ -32,8 +32,13 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.RunAsyncCallback;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
+import org.jahia.ajax.gwt.client.widget.content.ImageResize;
+
+import java.util.List;
 
 /**
  * Item for "resize image" action.
@@ -43,7 +48,20 @@ import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
  */
 public class ResizeActionItem extends BaseActionItem   {
     public void onComponentSelection() {
-        ContentActions.resizeImage(linker);
+        GWT.runAsync(new RunAsyncCallback()  {
+            public void onFailure(Throwable reason) {
+            }
+
+            public void onSuccess() {
+                final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
+                if (selectedItems != null && selectedItems.size() == 1) {
+                    final GWTJahiaNode selectedNode = selectedItems.get(0);
+                    if (selectedNode != null) {
+                        new ImageResize(linker, selectedNode).show();
+                    }
+                }
+            }
+        });
     }
 
     public void handleNewLinkerSelection() {

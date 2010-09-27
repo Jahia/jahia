@@ -46,7 +46,7 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
-import org.jahia.ajax.gwt.client.widget.workflow.PublicationManagerEngine;
+import org.jahia.ajax.gwt.client.widget.publication.PublicationManagerEngine;
 
 import java.util.ArrayList;
 import java.util.List;

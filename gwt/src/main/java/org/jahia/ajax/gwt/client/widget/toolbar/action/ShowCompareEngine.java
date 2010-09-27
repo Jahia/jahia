@@ -32,10 +32,11 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
-import org.jahia.ajax.gwt.client.widget.edit.EditActions;
+import org.jahia.ajax.gwt.client.widget.content.compare.CompareEngine;
 
 /**
  * Created by IntelliJ IDEA.
@@ -54,7 +55,11 @@ public class ShowCompareEngine extends BaseActionItem {
 
     @Override
     public void onComponentSelection() {
-        EditActions.showCompare(linker);
+        if (linker.getSelectedNode() != null) {
+            String locale = JahiaGWTParameters.getUILanguage();
+            new CompareEngine(linker.getSelectedNode(), locale, linker).show();
+        }
+
     }
 
     @Override

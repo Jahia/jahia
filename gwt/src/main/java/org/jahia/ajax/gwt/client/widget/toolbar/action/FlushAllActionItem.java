@@ -32,10 +32,12 @@
  */
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import com.extjs.gxt.ui.client.widget.Info;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
+import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.edit.EditActions;
 
 /**
  * Created by IntelliJ IDEA.
@@ -46,7 +48,12 @@ import org.jahia.ajax.gwt.client.widget.edit.EditActions;
  */
 public class FlushAllActionItem extends BaseActionItem {
     public void onComponentSelection() {
-        EditActions.flushAll();
+        JahiaContentManagementService.App.getInstance().flushAll(new BaseAsyncCallback<Void>() {
+            public void onSuccess(Void result) {
+                Info.display(Messages.get("label.cache.flushed.all"),
+                                    Messages.get("label.cache.flushed.all"));
+            }
+        });
     }
 
     /**

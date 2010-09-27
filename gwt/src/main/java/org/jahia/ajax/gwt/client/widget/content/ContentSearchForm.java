@@ -57,7 +57,6 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
-import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
 
 import java.util.List;
 

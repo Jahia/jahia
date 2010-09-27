@@ -31,10 +31,17 @@
  */
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
-import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
+import org.jahia.ajax.gwt.client.widget.form.FormDeployPortletDefinition;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -50,7 +57,35 @@ public class DeployPortletDefinitionActionItem extends BaseActionItem {
             }
 
             public void onSuccess() {
-                ContentActions.showDeployPortletForm(linker);
+                GWTJahiaNode parent = (GWTJahiaNode) linker.getMainNode();
+                if (parent == null) {
+                    final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
+                    if (selectedItems != null && selectedItems.size() == 1) {
+                        parent = selectedItems.get(0);
+                    }
+                }
+                if (parent != null && !parent.isFile()) {
+                    final com.extjs.gxt.ui.client.widget.Window w = new com.extjs.gxt.ui.client.widget.Window();
+                    w.setHeading(Messages.get("label.deployNewPortlet", "New portlets"));
+                    w.setModal(true);
+                    w.setResizable(false);
+                    w.setBodyBorder(false);
+                    w.setLayout(new FillLayout());
+                    w.setWidth(600);
+                    w.add(new FormDeployPortletDefinition() {
+                        @Override
+                        public void closeParent() {
+                            w.hide();
+                        }
+                        @Override
+                        public void refreshParent() {
+                            linker.refresh(Linker.REFRESH_ALL);
+                        }
+                    });
+                    w.setScrollMode(Style.Scroll.AUTO);
+                    w.layout();
+                    w.show();
+                }
             }
         });
 

@@ -32,8 +32,18 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import com.google.gwt.user.client.Window;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -44,8 +54,60 @@ import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 */
 public class ZipActionItem extends BaseActionItem  {
     public void onComponentSelection() {
-        ContentActions.zip(linker);
+        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
+        final GWTJahiaNode parentItem = (GWTJahiaNode) linker.getMainNode();
+        if (parentItem != null && selectedItems != null && selectedItems.size() > 0) {
+            final GWTJahiaNode selection = selectedItems.get(0);
+            if (selection != null) {
+                linker.loading(Messages.get("statusbar.zipping.label"));
+                String defaultArchName;
+                if (selectedItems.size() == 1) {
+                    defaultArchName = selection.getName() + ".zip";
+                } else {
+                    defaultArchName = "archive.zip";
+                }
+                final String archName = Window.prompt(Messages.get("confirm.archiveName.label"), defaultArchName);
+                if (archName != null && archName.length() > 0) {
+                    JahiaContentManagementService
+                            .App.getInstance().checkExistence(parentItem.getPath() + "/" + archName, new BaseAsyncCallback<Boolean>() {
+                        public void onApplicationFailure(Throwable throwable) {
+                            if (throwable instanceof ExistingFileException) {
+                                if (Window.confirm(Messages.get("alreadyExists.label") + "\n" + Messages.get("confirm.overwrite.label"))) {
+                                    forceZip(selectedItems, archName, linker);
+                                }
+                            } else {
+                                Window.alert(Messages.get("failure.zip.label") + "\n" + throwable.getLocalizedMessage());
+                                linker.loaded();
+                            }
+                        }
+
+                        public void onSuccess(Boolean aBoolean) {
+                            forceZip(selectedItems, archName, linker);
+                        }
+                    });
+                }
+            }
+        }
     }
+
+    private static void forceZip(final List<GWTJahiaNode> selectedItems, final String archName, final Linker linker) {
+        List<String> selectedPaths = new ArrayList<String>(selectedItems.size());
+        for (GWTJahiaNode node : selectedItems) {
+            selectedPaths.add(node.getPath());
+        }
+        JahiaContentManagementService.App.getInstance().zip(selectedPaths, archName, new BaseAsyncCallback() {
+            public void onApplicationFailure(Throwable throwable) {
+                Window.alert(Messages.get("failure.zip.label") + "\n" + throwable.getLocalizedMessage());
+                linker.loaded();
+            }
+
+            public void onSuccess(Object o) {
+                linker.loaded();
+                linker.refresh(Linker.REFRESH_MAIN);
+            }
+        });
+    }
+
 
     public void handleNewLinkerSelection(){
         LinkerSelectionContext lh = linker.getSelectionContext();

@@ -32,7 +32,10 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -43,7 +46,11 @@ import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 */
 public class CopyActionItem extends BaseActionItem{
     public void onComponentSelection() {
-        ContentActions.copy(linker);
+        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
+        if (selectedItems != null && selectedItems.size() > 0) {
+            CopyPasteEngine.getInstance().setCopiedPaths(selectedItems);
+            linker.select(null);
+        }
     }
 
     public void handleNewLinkerSelection() {

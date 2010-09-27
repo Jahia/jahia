@@ -32,8 +32,16 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
+import com.google.gwt.user.client.Window;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -44,7 +52,27 @@ import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 */
 public class UnzipActionItem extends BaseActionItem {
     public void onComponentSelection() {
-        ContentActions.unzip(linker);
+        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
+        if (selectedItems != null && selectedItems.size() > 0) {
+            linker.loading(Messages.get("statusbar.unzipping.label"));
+            List<String> selectedPaths = new ArrayList<String>(selectedItems.size());
+            for (GWTJahiaNode node : selectedItems) {
+                if (node.getName().endsWith(".zip") || node.getName().endsWith(".ZIP")) {
+                    selectedPaths.add(node.getPath());
+                }
+            }
+            JahiaContentManagementService.App.getInstance().unzip(selectedPaths, new BaseAsyncCallback() {
+                public void onApplicationFailure(Throwable throwable) {
+                    Window.alert(Messages.get("failure.unzip.label") + "\n" + throwable.getLocalizedMessage());
+                    linker.loaded();
+                }
+
+                public void onSuccess(Object o) {
+                    linker.loaded();
+                    linker.refresh(EditLinker.REFRESH_ALL);
+                }
+            });
+        }
     }
 
     public void handleNewLinkerSelection(){

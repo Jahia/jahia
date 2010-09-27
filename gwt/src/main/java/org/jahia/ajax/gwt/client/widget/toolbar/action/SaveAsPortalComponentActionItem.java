@@ -32,8 +32,13 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
+import com.extjs.gxt.ui.client.widget.Info;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
+
+import java.util.Arrays;
 
 /**
  * Toolbar action item to save the current node as a reusable component.
@@ -45,7 +50,19 @@ public class SaveAsPortalComponentActionItem extends BaseActionItem {
     private static final long serialVersionUID = -3579254325077395142L;
 
     public void onComponentSelection() {
-        ContentActions.saveAsPortalComponent(linker);
+        final GWTJahiaNode target = linker.getSelectedNode();
+        if (target != null) {
+            JahiaContentManagementService
+                    .App.getInstance().pasteReferences(Arrays.asList(target.getPath()), "/shared/portalComponents", null, new BaseAsyncCallback() {
+                public void onApplicationFailure(Throwable caught) {
+                    Info.display("Portal Components", "Error while making your component available for users in their portal page.");
+                }
+
+                public void onSuccess(Object result) {
+                    Info.display("Portal Components", "Your components is now available for users in their portal page.");
+                }
+            });
+        }
     }
 
     public void handleNewLinkerSelection() {

@@ -32,9 +32,10 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
-import org.jahia.ajax.gwt.client.util.Constants;
-import org.jahia.ajax.gwt.client.widget.edit.EditActions;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 
 /**
  * Created by IntelliJ IDEA.
@@ -61,7 +62,19 @@ public class SwitchModeActionItem extends BaseActionItem {
     public void onComponentSelection() {
         final String workspace = getPropertyValue(getGwtToolbarItem(), "workspace");
         final String urlParams = getPropertyValue(getGwtToolbarItem(), "urlParams");
-        EditActions.switchMode(linker,workspace,urlParams);
+        if (linker.getMainNode() != null) {
+            String path = linker.getMainNode().getPath();
+            String locale = JahiaGWTParameters.getLanguage();
+            JahiaContentManagementService.App.getInstance()
+                    .getNodeURL(path, null, null, workspace, locale, new BaseAsyncCallback<String>() {
+                        public void onSuccess(String url) {
+                            String url1 = url + ((urlParams !=null) ? "?" + urlParams :"");
+                            com.google.gwt.user.client.Window.open(url1, "mode"+ workspace, "");
+                        }
+
+                    });
+        }
+
     }
 
 }

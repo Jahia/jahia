@@ -34,7 +34,6 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import java.util.List;
 
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
@@ -45,7 +44,7 @@ import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
+import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
 
 /**
  * Language switcher toolbar item for all possible languages. 

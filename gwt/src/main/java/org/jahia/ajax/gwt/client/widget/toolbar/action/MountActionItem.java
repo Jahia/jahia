@@ -31,7 +31,7 @@
  */
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
+import org.jahia.ajax.gwt.client.widget.content.Mounter;
 
 /**
  * Created by IntelliJ IDEA.
@@ -41,7 +41,7 @@ import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 */
 public class MountActionItem extends BaseActionItem {
     public void onComponentSelection() {
-        ContentActions.mountFolder(linker);
+        new Mounter(linker);
     }
 
     public void handleNewLinkerSelection() {

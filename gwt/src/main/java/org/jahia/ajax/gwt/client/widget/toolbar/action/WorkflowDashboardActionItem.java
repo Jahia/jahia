@@ -33,7 +33,7 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.widget.edit.EditActions;
+import org.jahia.ajax.gwt.client.widget.workflow.WorkflowDashboardEngine;
 
 /**
  * Created by IntelliJ IDEA.
@@ -45,7 +45,9 @@ import org.jahia.ajax.gwt.client.widget.edit.EditActions;
 public class WorkflowDashboardActionItem extends BaseActionItem{
 
     public void onComponentSelection() {
-        EditActions.showWorkflowDashboard(linker);
+        if (linker.getMainNode() != null) {
+            new WorkflowDashboardEngine(linker).show();
+        }
     }
 
     public void handleNewLinkerSelection() {

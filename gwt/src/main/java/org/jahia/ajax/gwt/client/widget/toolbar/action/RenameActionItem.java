@@ -32,8 +32,16 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
+import com.google.gwt.user.client.Window;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -43,7 +51,39 @@ import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 */
 public class RenameActionItem extends BaseActionItem   {
     public void onComponentSelection() {
-        ContentActions.rename(linker);
+        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
+        if (selectedItems != null && selectedItems.size() == 1) {
+            final GWTJahiaNode selection = selectedItems.get(0);
+            if (selection != null) {
+                if (selection.isLocked()) {
+                    Window.alert(selection.getName() + " is locked");
+                    return;
+                }
+                linker.loading(Messages.get("statusbar.renaming.label"));
+                String newName = Window.prompt(Messages.get("confirm.newName.label") + " " + selection.getName(), selection.getName());
+                if (newName != null && newName.length() > 0 && !newName.equals(selection.getName())) {
+                    final boolean folder = !selection.isFile();
+                    JahiaContentManagementService
+                            .App.getInstance().rename(selection.getPath(), newName, new BaseAsyncCallback() {
+                        public void onApplicationFailure(Throwable throwable) {
+                            Window.alert(Messages.get("failure.rename.label") + "\n" + throwable.getLocalizedMessage());
+                            linker.loaded();
+                        }
+
+                        public void onSuccess(Object o) {
+                            linker.loaded();
+                            if (folder) {
+                                linker.refresh(EditLinker.REFRESH_ALL);
+                            } else {
+                                linker.refresh(Linker.REFRESH_MAIN);
+                            }
+                        }
+                    });
+                } else {
+                    linker.loaded();
+                }
+            }
+        }
     }
 
     public void handleNewLinkerSelection() {

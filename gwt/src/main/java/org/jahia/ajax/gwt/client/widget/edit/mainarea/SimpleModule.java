@@ -46,7 +46,7 @@ import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
-import org.jahia.ajax.gwt.client.widget.edit.contentengine.EditContentEnginePopupListener;
+import org.jahia.ajax.gwt.client.widget.contentengine.EditContentEnginePopupListener;
 
 /**
  * Created by IntelliJ IDEA.

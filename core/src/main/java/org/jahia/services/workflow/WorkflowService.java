@@ -385,14 +385,13 @@ public class WorkflowService {
         stageNode.checkout();
         List<Value> values =
                 new ArrayList<Value>(Arrays.asList(stageNode.getProperty(Constants.PROCESSID).getValues()));
-        Value[] newValues = new Value[values.size() - 1];
-        int i = 0;
+        List<Value> newValues = new ArrayList<Value>();
         for (Value value : values) {
             if (!value.getString().equals(provider + ":" + processId)) {
-                newValues[i++] = value;
+                newValues.add(value);
             }
         }
-        stageNode.setProperty(Constants.PROCESSID, newValues);
+        stageNode.setProperty(Constants.PROCESSID, newValues.toArray(new Value[newValues.size()]));
         stageNode.getSession().save();
     }
 

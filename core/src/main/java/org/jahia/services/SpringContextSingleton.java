@@ -59,7 +59,11 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
      * @return an instance of the requested bean
      */
     public static Object getBean(String beanId) {
-        return getInstance().getContext().getBean(beanId);
+        try {
+            return getInstance().getContext().getBean(beanId);
+        } catch (BeansException e) {
+            return getInstance().getModuleContext().getBean(beanId);
+        }
     }
 
     public static SpringContextSingleton getInstance() {

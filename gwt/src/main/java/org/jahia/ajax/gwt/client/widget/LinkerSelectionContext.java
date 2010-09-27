@@ -130,9 +130,10 @@ public class LinkerSelectionContext {
         for (GWTJahiaNode node : multipleSelection) {
             writeable &= node.isWriteable();
             if (node.getParent() != null) {
-                parentWriteable &= ((GWTJahiaNode) node.getParent()).isWriteable();
-            } else {
-                parentWriteable = false;
+                if (parent == null) {
+                    parentWriteable = ((GWTJahiaNode) node.getParent()).isWriteable();
+                    parent = ((GWTJahiaNode) node.getParent());
+                }
             }
             lockable &= node.isLockable();
             locked &= node.isLocked();
@@ -164,6 +165,10 @@ public class LinkerSelectionContext {
 
     public List<GWTJahiaNode> getMultipleSelection() {
         return multipleSelection;
+    }
+
+    public GWTJahiaNode getParent() {
+        return parent;
     }
 
     public boolean isPasteAllowed() {

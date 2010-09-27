@@ -48,6 +48,6 @@ public class NewContentListActionItem extends BaseActionItem {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.getSingleSelection() != null && lh.isWriteable());
+        setEnabled(lh.getSingleSelection() != null && lh.isWriteable() && lh.getSingleSelection().getNodeTypes().contains("jnt:contentList"));
     }
 }

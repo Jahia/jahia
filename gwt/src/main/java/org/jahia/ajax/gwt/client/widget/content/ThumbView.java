@@ -64,21 +64,15 @@ import java.util.ArrayList;
  * User: rfelden
  * Date: 9 sept. 2008 - 17:49:57
  */
-public class ThumbView extends TopRightComponent {
+public class ThumbView extends AbstractView {
 
     private ContentPanel m_component;
-    private ListStore<GWTJahiaNode> store;
     private ThumbsListView view;
     private ComboBox<ModelData> sort;
     private ToggleButton sortOrder ;
-    private ListLoader<ListLoadResult<GWTJahiaNode>> loader;
-    private List<GWTJahiaNode> selection;
-    private List<GWTJahiaNode> visibleSelection;
-
-    private GWTManagerConfiguration configuration;
 
     public ThumbView(final GWTManagerConfiguration config, boolean detailed) {
-        configuration = config;
+        super(config);
 
         m_component = new ContentPanel(new FitLayout());
         m_component.setHeaderVisible(false);
@@ -90,54 +84,6 @@ public class ThumbView extends TopRightComponent {
             m_component.setHeight(400); // media gallery fix
         }
 
-        configuration = config;
-
-        // data proxy
-        RpcProxy<ListLoadResult<GWTJahiaNode>> privateProxy = new RpcProxy<ListLoadResult<GWTJahiaNode>>() {
-            @Override
-            protected void load(Object gwtJahiaFolder, AsyncCallback<ListLoadResult<GWTJahiaNode>> listAsyncCallback) {
-                Log.debug("retrieving children with type " + configuration.getNodeTypes() + " of " +
-                        ((GWTJahiaNode) gwtJahiaFolder).getPath());
-                JahiaContentManagementService.App.getInstance().lsLoad((GWTJahiaNode) gwtJahiaFolder,
-                        configuration.getAllNodeTypes(),
-                        configuration.getMimeTypes(), configuration.getFilters(), configuration.getTableColumnKeys(),
-                        false, listAsyncCallback);
-            }
-        };
-
-        loader = new BaseListLoader<ListLoadResult<GWTJahiaNode>>(privateProxy) {
-            @Override
-            protected void onLoadSuccess(Object gwtJahiaNode, ListLoadResult<GWTJahiaNode> gwtJahiaNodeListLoadResult) {
-                super.onLoadSuccess(gwtJahiaNode, gwtJahiaNodeListLoadResult);
-                if (getLinker() != null) {
-                    getLinker().loaded();
-                }
-                if (selection != null) {
-                    visibleSelection = new ArrayList<GWTJahiaNode>(selection);
-                    visibleSelection.retainAll(store.getModels());
-                    if (visibleSelection.isEmpty()) {
-                        getLinker().onTableItemSelected();
-                    } else {
-                        view.getSelectionModel().setSelection(visibleSelection);
-                    }
-                }
-            }
-        };
-        store = new ListStore<GWTJahiaNode>(loader) {
-            protected void onBeforeLoad(LoadEvent e) {
-                if (getLinker() != null) {
-                    getLinker().loading("listing directory content...");
-                }
-                super.onBeforeLoad(e);
-            }
-
-            @Override
-            protected void onLoadException(LoadEvent loadEvent) {
-                super.onLoadException(loadEvent);
-                Log.error("Error listing directory content ", loadEvent.exception);
-            }
-        };
-//
         StoreFilterField<GWTJahiaNode> field = new StoreFilterField<GWTJahiaNode>() {
             @Override
             protected boolean doSelect(Store<GWTJahiaNode> store, GWTJahiaNode parent, GWTJahiaNode record, String property, String filter) {
@@ -164,7 +110,7 @@ public class ThumbView extends TopRightComponent {
         // please keep same order as in sort() method
         ListStore<ModelData> sorts = new ListStore<ModelData>();
 
-        for (GWTColumn column : configuration.getTableColumns()) {
+        for (GWTColumn column : config.getTableColumns()) {
             if (column.isSortable()) {
                 ModelData d = new BaseModelData();
                 d.set("key", column.getKey());
@@ -200,15 +146,7 @@ public class ThumbView extends TopRightComponent {
         view = new ThumbsListView(detailed);
         view.setStore(store);
 
-        view.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
-            public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
-                if (event.getSelection() != null && !event.getSelection().isEmpty() ) {
-                    selection = event.getSelection();
-                    visibleSelection = event.getSelection();
-                }
-                getLinker().onTableItemSelected();
-            }
-        });
+        selectionModel = view.getSelectionModel();
         view.addListener(Events.DoubleClick, new Listener<ListViewEvent>() {
             public void handleEvent(ListViewEvent event) {
                 List<GWTJahiaNode> selection = (List<GWTJahiaNode>) getLinker().getTableSelection();

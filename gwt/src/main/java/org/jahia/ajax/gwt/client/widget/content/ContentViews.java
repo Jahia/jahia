@@ -59,8 +59,6 @@ public class ContentViews extends TopRightComponent {
     private LayoutContainer m_component;
     private TopRightComponent current;
 
-    private ActionContextMenu contextMenu;
-
     private GWTManagerConfiguration configuration;
 
     public ContentViews(GWTManagerConfiguration config) {

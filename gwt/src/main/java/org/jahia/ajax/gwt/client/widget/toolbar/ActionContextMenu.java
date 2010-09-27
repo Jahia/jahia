@@ -59,7 +59,7 @@ public class ActionContextMenu extends ActionToolbarMenu {
         super(linker);
         this.toolbar = toolbar;
         this.actionItems = new ArrayList<ActionItem>();
-        // createMenu(toolbar);
+        createMenu(toolbar);
 
         // add listener on BedoreShow Event
         addListener(Events.BeforeShow, new Listener<MenuEvent>() {
@@ -67,15 +67,6 @@ public class ActionContextMenu extends ActionToolbarMenu {
                 beforeShow();
             }
         });
-    }
-
-    @Override
-    protected void onRender(Element target, int index) {
-        super.onRender(target, index);
-        if(toolbar != null){
-           createMenu(toolbar);
-        }
-        
     }
 
     /**

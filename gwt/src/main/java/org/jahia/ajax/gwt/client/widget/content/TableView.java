@@ -38,13 +38,11 @@ import com.extjs.gxt.ui.client.core.El;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.dnd.*;
 import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Rectangle;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
@@ -52,9 +50,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
-import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -65,64 +61,12 @@ import java.util.Set;
  * @author rfelden
  * @version 20 juin 2008 - 09:53:08
  */
-public class TableView extends TopRightComponent {
+public class TableView extends AbstractView {
     private Grid<GWTJahiaNode> m_grid;
-    private ListStore<GWTJahiaNode> store;
-    private ListLoader<ListLoadResult<GWTJahiaNode>> loader;
-    private GWTManagerConfiguration configuration;
-    private List<GWTJahiaNode> selection;
-    private List<GWTJahiaNode> visibleSelection;
 
     public TableView(final GWTManagerConfiguration config) {
+        super(config);
 
-        configuration = config;
-
-        // data proxy
-        RpcProxy<ListLoadResult<GWTJahiaNode>> privateProxy = new RpcProxy<ListLoadResult<GWTJahiaNode>>() {
-            @Override
-            protected void load(Object gwtJahiaFolder, AsyncCallback<ListLoadResult<GWTJahiaNode>> listAsyncCallback) {
-                Log.debug("retrieving children with type " + configuration.getNodeTypes() + " of " +
-                        ((GWTJahiaNode) gwtJahiaFolder).getPath());
-                JahiaContentManagementService.App.getInstance().lsLoad((GWTJahiaNode) gwtJahiaFolder,
-                        configuration.getAllNodeTypes(),
-                        configuration.getMimeTypes(), configuration.getFilters(), configuration.getTableColumnKeys(),
-                        false, listAsyncCallback);
-            }
-        };
-
-        loader = new BaseListLoader<ListLoadResult<GWTJahiaNode>>(privateProxy) {
-            @Override
-            protected void onLoadSuccess(Object gwtJahiaNode, ListLoadResult<GWTJahiaNode> gwtJahiaNodeListLoadResult) {
-                super.onLoadSuccess(gwtJahiaNode, gwtJahiaNodeListLoadResult);
-                if (getLinker() != null) {
-                    getLinker().loaded();
-                }
-                if (selection != null) {
-                    visibleSelection = new ArrayList<GWTJahiaNode>(selection);
-                    visibleSelection.retainAll(store.getModels());
-                    if (visibleSelection.isEmpty()) {
-                        getLinker().onTableItemSelected();
-                    } else {
-                        m_grid.getSelectionModel().setSelection(visibleSelection);
-                    }
-                }
-            }
-        };
-        store = new ListStore<GWTJahiaNode>(loader) {
-            protected void onBeforeLoad(LoadEvent e) {
-                if (getLinker() != null) {
-                    getLinker().loading("listing directory content...");
-                }
-                super.onBeforeLoad(e);
-            }
-
-            @Override
-            protected void onLoadException(LoadEvent loadEvent) {
-                super.onLoadException(loadEvent);
-                Log.error("Error listing directory content ", loadEvent.exception);
-            }
-        };
-//        store.setStoreSorter(new FileStoreSorter());
         NodeColumnConfigList columns = new NodeColumnConfigList(configuration.getTableColumns());
         columns.init();
         CheckBoxSelectionModel<GWTJahiaNode> checkboxSelectionModel = null;
@@ -141,23 +85,12 @@ public class TableView extends TopRightComponent {
             m_grid.setSelectionModel(checkboxSelectionModel);
             m_grid.addPlugin(checkboxSelectionModel);
         }
-        m_grid.getSelectionModel().setSelectionMode(Style.SelectionMode.MULTI);
-
-
-        // on selection change listener
-        m_grid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
-            public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
-                if (event.getSelection() != null && !event.getSelection().isEmpty() ) {
-                    selection = event.getSelection();
-                    visibleSelection = event.getSelection();
-                }
-                getLinker().onTableItemSelected();
-            }
-        });
+        selectionModel = m_grid.getSelectionModel();
+        selectionModel.setSelectionMode(Style.SelectionMode.MULTI);
 
         m_grid.addListener(Events.RowDoubleClick, new Listener<GridEvent>() {
             public void handleEvent(GridEvent event) {
-                List<GWTJahiaNode> sel = m_grid.getSelectionModel().getSelectedItems();
+                List<GWTJahiaNode> sel = selectionModel.getSelectedItems();
                 if (sel != null && sel.size() == 1) {
                     GWTJahiaNode el = sel.get(0);
                     if (el.isFile()) {
@@ -179,6 +112,7 @@ public class TableView extends TopRightComponent {
                 }
             }
         });
+
     }
 
     public void selectNodes(List<GWTJahiaNode> nodes) {

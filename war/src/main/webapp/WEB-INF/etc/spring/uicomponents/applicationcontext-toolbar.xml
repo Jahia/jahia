@@ -5,7 +5,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
     <!-- global language switcher -->
-    <bean id="Toolbar.ItemsGroup.LanguageSwitcher" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.ItemsGroup.LanguageSwitcher" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.LanguageSwitcherActionItem"/>
         </property>
@@ -20,7 +20,7 @@
         </property>
     </bean>
 
-    <bean id="Toolbar.Item.WorkInProgress" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.WorkInProgress" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.WorkInProgressActionItem"/>
         </property>
@@ -31,7 +31,7 @@
         <property name="titleKey" value="label.googleDocs"/>
         <property name="items">
             <list>
-                <bean id="Toolbar.Item.GoogleDocs.View" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                <bean id="Toolbar.Item.GoogleDocs.View" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
                     <property name="actionItem">
                         <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem$OpenWindowForSingleFileActionItem"/>
                     </property>
@@ -54,7 +54,7 @@
                         </list>
                     </property>
                 </bean>
-                <bean id="Toolbar.Item.GoogleDocs.Edit" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                <bean id="Toolbar.Item.GoogleDocs.Edit" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
                     <property name="actionItem">
                         <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.googledocs.EditActionItem"/>
                     </property>
@@ -62,7 +62,7 @@
                     <property name="icon" value="editAction"/>
                 </bean>
                 <ref bean="Toolbar.Item.Separator"/>
-                <bean id="Toolbar.Item.GoogleDocs.ExportPdf" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                <bean id="Toolbar.Item.GoogleDocs.ExportPdf" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
                     <property name="actionItem">
                         <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem$OpenWindowForSingleFileActionItem"/>
                     </property>
@@ -86,7 +86,7 @@
                         </list>
                     </property>
                 </bean>
-                <bean id="Toolbar.Item.GoogleDocs.Export" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                <bean id="Toolbar.Item.GoogleDocs.Export" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
                     <property name="actionItem">
                         <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.googledocs.ExportActionItem"/>
                     </property>
@@ -100,7 +100,7 @@
 
     <!-- ////// items -->
 
-    <bean id="Toolbar.Item.WorkflowStatusAction" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.WorkflowStatusAction" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ViewWorkflowStatusActionItem"/>
         </property>
@@ -110,7 +110,7 @@
 
 
     <!-- show compare mode-->
-    <bean id="Toolbar.Item.ShowCompareEngine" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.ShowCompareEngine" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="titleKey" value="label.compare"/>
         <property name="icon" value="showCompareEngine"/>
         <property name="actionItem">
@@ -119,7 +119,7 @@
     </bean>
 
     <!-- InfoPanel item-->
-    <bean id="Toolbar.Item.InfoPanel" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.InfoPanel" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.InfoActionItem"/>
         </property>
@@ -134,21 +134,21 @@
     </bean>
 
     <!-- Separator item-->
-    <bean id="Toolbar.Item.Separator" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.Separator" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SeparatorActionItem"/>
         </property>
     </bean>
 
     <!-- fill item-->
-    <bean id="Toolbar.Item.Fill" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.Fill" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.FillActionItem"/>
         </property>
     </bean>
 
     <!-- License information -->
-    <bean id="Toolbar.Item.License" class="org.jahia.services.uicomponents.bean.toolbar.Item"
+    <bean id="Toolbar.Item.License" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
           parent="Toolbar.Item.InfoPanel">
         <property name="titleKey" value=""/>
         <property name="visibility">
@@ -167,7 +167,7 @@
     </bean>
 
     <!-- Connected user -->
-    <bean id="Toolbar.Item.User" class="org.jahia.services.uicomponents.bean.toolbar.Item"
+    <bean id="Toolbar.Item.User" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
           parent="Toolbar.Item.InfoPanel">
         <property name="titleKey" value="label.user"/>
         <property name="icon" value="user"/>
@@ -187,7 +187,7 @@
     </bean>
 
     <!-- Live-->
-    <bean id="Toolbar.Item.Live" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.Live" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchModeActionItem"/>
         </property>
@@ -207,7 +207,7 @@
 
 
     <!-- Preview-->
-    <bean id="Toolbar.Item.Preview" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.Preview" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchModeActionItem"/>
         </property>
@@ -223,7 +223,7 @@
         </property>
     </bean>
 
-    <bean id="Toolbar.Item.PreviewAsGuest" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.PreviewAsGuest" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchModeActionItem"/>
         </property>
@@ -243,7 +243,7 @@
         </property>
     </bean>
 
-    <bean id="Toolbar.Item.Studio" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.Studio" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
         </property>
@@ -271,7 +271,7 @@
 
     <!-- My settings-->
     <!--
-    <bean id="Toolbar.Item.MySettings" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.MySettings" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RedirectWindowActionItem"/>
         </property>
@@ -294,7 +294,7 @@
     -->
 
     <!-- Administration -->
-    <bean id="Toolbar.Item.Admin" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.Admin" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RedirectWindowActionItem"/>
         </property>
@@ -312,7 +312,7 @@
     </bean>
 
     <!-- File Manager -->
-    <bean id="Toolbar.Item.FileManager" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.FileManager" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
         </property>
@@ -342,7 +342,7 @@
     </bean>
 
     <!-- Content Manager -->
-    <bean id="Toolbar.Item.ContentManager" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.ContentManager" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
         </property>
@@ -371,7 +371,7 @@
         </property>
     </bean>
 
-    <bean id="Toolbar.Item.OpenInContentManager" class="org.jahia.services.uicomponents.bean.toolbar.Item"
+    <bean id="Toolbar.Item.OpenInContentManager" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
           parent="Toolbar.Item.ContentManager">
         <property name="titleKey" value="label.openInContentManager"/>
         <property name="icon" value="contentManager"/>
@@ -395,7 +395,7 @@
     </bean>
 
     <!-- Portlet Manager -->
-    <bean id="Toolbar.Item.PortletManager" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.PortletManager" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
         </property>
@@ -426,7 +426,7 @@
     </bean>
 
     <!-- Category Manager -->
-    <bean id="Toolbar.Item.CategoryManager" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.CategoryManager" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
         </property>
@@ -457,7 +457,7 @@
     </bean>
 
     <!-- Tag Manager -->
-    <bean id="Toolbar.Item.TagManager" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.TagManager" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
         </property>
@@ -487,7 +487,7 @@
     </bean>
 
     <!-- Stie Manager -->
-    <bean id="Toolbar.Item.SiteManager" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.SiteManager" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
         </property>
@@ -517,7 +517,7 @@
     </bean>
 
     <!-- Logout -->
-    <bean id="Toolbar.Item.Logout" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.Logout" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RedirectWindowActionItem"/>
         </property>
@@ -539,7 +539,7 @@
     </bean>
 
     <!-- clip board-->
-    <bean id="Toolbar.Item.ClipBoard" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.ClipBoard" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ClipboardActionItem"/>
         </property>
@@ -547,7 +547,7 @@
     </bean>
 
     <!-- Notification -->
-    <bean id="Toolbar.Item.Notification" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.Notification" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NotificationActionItem"/>
         </property>
@@ -556,7 +556,7 @@
 
 
     <!-- new edit mode buttons: create -->
-    <bean id="Toolbar.Item.NewPage" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.NewPage" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
                 <property name="nodeTypes" value="jnt:page"/>
@@ -569,7 +569,7 @@
 
 
     <!-- new edit mode buttons: publish -->
-    <bean id="Toolbar.Item.Publish" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.Publish" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem"/>
         </property>
@@ -578,7 +578,7 @@
         <!--<property name="workflowAction" value="publish"/>-->
     </bean>
 
-    <bean id="Toolbar.Item.PublishAll" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.PublishAll" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishAllActionItem"/>
         </property>
@@ -586,7 +586,7 @@
         <property name="icon" value="publishAll"/>
     </bean>
 
-    <bean id="Toolbar.Item.ReversePublish" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.ReversePublish" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ReversePublishActionItem"/>
         </property>
@@ -595,7 +595,7 @@
     </bean>
 
     <!-- new edit mode buttons: unpublish -->
-    <bean id="Toolbar.Item.Unpublish" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.Unpublish" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UnpublishActionItem"/>
         </property>
@@ -604,7 +604,7 @@
         <!--<property name="workflowAction" value="unpublish"/>-->
     </bean>
 
-    <bean id="Toolbar.Item.ViewPublishStatus" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.ViewPublishStatus" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ViewPublishStatusActionItem"/>
         </property>
@@ -613,7 +613,7 @@
     </bean>
 
     <!-- new edit mode buttons: lock -->
-    <bean id="Toolbar.Item.Lock" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.Lock" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.LockActionItem"/>
         </property>
@@ -622,7 +622,7 @@
     </bean>
 
     <!-- new edit mode buttons: unlock -->
-    <bean id="Toolbar.Item.Unlock" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.Unlock" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UnlockActionItem"/>
         </property>
@@ -631,7 +631,7 @@
     </bean>
 
     <!-- new edit mode buttons: edit -->
-    <bean id="Toolbar.Item.EditContent" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.EditContent" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.EditContentActionItem"/>
         </property>
@@ -639,7 +639,7 @@
         <property name="icon" value="editContent"/>
 
     </bean>
-    <bean id="Toolbar.Item.EditSourceContent" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.EditSourceContent" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.EditSourceContentActionItem"/>
         </property>
@@ -649,7 +649,7 @@
     </bean>
 
     <!-- new edit mode buttons: delete -->
-    <bean id="Toolbar.Item.Delete" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.Delete" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeleteActionItem"/>
         </property>
@@ -658,7 +658,7 @@
     </bean>
 
     <!-- new content action buttons  -->
-    <bean id="Toolbar.Item.Copy" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.Copy" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.CopyActionItem"/>
         </property>
@@ -666,7 +666,7 @@
         <property name="icon" value="copy"/>
     </bean>
 
-    <bean id="Toolbar.Item.NewCategory" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.NewCategory" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewCategoryActionItem"/>
         </property>
@@ -674,7 +674,7 @@
         <property name="icon" value="newCategory"/>
     </bean>
 
-    <bean id="Toolbar.Item.NewTag" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.NewTag" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewTagActionItem"/>
         </property>
@@ -682,7 +682,7 @@
         <property name="icon" value="newTag"/>
     </bean>
 
-    <bean id="Toolbar.Item.NewRemotePublication" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.NewRemotePublication" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewRemotePublicationActionItem"/>
         </property>
@@ -691,7 +691,7 @@
     </bean>
 
     <bean id="Toolbar.Item.ExectuteRemotePublication"
-          class="org.jahia.services.uicomponents.bean.toolbar.Item">
+          class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ExecuteActionItem">
                 <property name="action" value="remotepublish"/>
@@ -701,7 +701,7 @@
         <property name="icon" value="executeRemotePublication"/>
     </bean>
 
-    <bean id="Toolbar.Item.NewWorkflowRule" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.NewWorkflowRule" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewWorkflowRule"/>
         </property>
@@ -710,7 +710,7 @@
     </bean>
 
 
-    <bean id="Toolbar.Item.NewRole" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.NewRole" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewRoleActionItem"/>
         </property>
@@ -718,7 +718,7 @@
         <property name="icon" value="newRole"/>
     </bean>
 
-    <bean id="Toolbar.Item.NewContentList" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.NewContentList" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentListActionItem"/>
         </property>
@@ -726,7 +726,7 @@
         <property name="icon" value="newContentList"/>
     </bean>
 
-    <bean id="Toolbar.Item.NewContent" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.NewContent" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem"/>
         </property>
@@ -734,7 +734,7 @@
         <property name="icon" value="newContent"/>
     </bean>
 
-    <bean id="Toolbar.Item.NewFolder" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.NewFolder" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewFolderActionItem"/>
         </property>
@@ -742,7 +742,7 @@
         <property name="icon" value="newFolder"/>
     </bean>
 
-    <bean id="Toolbar.Item.NewGadget" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.NewGadget" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewGadgetActionItem"/>
         </property>
@@ -750,7 +750,7 @@
         <property name="icon" value="newGadget"/>
     </bean>
 
-    <bean id="Toolbar.Item.NewPortlet" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.NewPortlet" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewPortletActionItem"/>
         </property>
@@ -758,14 +758,14 @@
         <property name="icon" value="newPortlet"/>
     </bean>
 
-    <bean id="Toolbar.Item.NewPortletFolder" class="org.jahia.services.uicomponents.bean.toolbar.Item"
+    <bean id="Toolbar.Item.NewPortletFolder" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype"
           parent="Toolbar.Item.NewFolder">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewPortletFolderActionItem"/>
         </property>
     </bean>
 
-    <bean id="Toolbar.Item.NewRss" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.NewRss" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewRssActionItem"/>
         </property>
@@ -773,7 +773,7 @@
         <property name="icon" value="newRss"/>
     </bean>
 
-    <bean id="Toolbar.Item.Crop" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.Crop" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.CropActionItem"/>
         </property>
@@ -781,7 +781,7 @@
         <property name="icon" value="crop"/>
     </bean>
 
-    <bean id="Toolbar.Item.Cut" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.Cut" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.CutActionItem"/>
         </property>
@@ -789,7 +789,7 @@
         <property name="icon" value="cut"/>
     </bean>
 
-    <bean id="Toolbar.Item.Download" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.Download" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DownloadActionItem"/>
         </property>
@@ -797,7 +797,7 @@
         <property name="icon" value="download"/>
     </bean>
 
-    <bean id="Toolbar.Item.Export" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.Export" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ExportActionItem"/>
         </property>
@@ -805,7 +805,7 @@
         <property name="icon" value="export"/>
     </bean>
 
-    <bean id="Toolbar.Item.Import" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.Import" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ImportActionItem"/>
         </property>
@@ -813,7 +813,7 @@
         <property name="icon" value="import"/>
     </bean>
 
-    <bean id="Toolbar.Item.Mount" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.Mount" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.MountActionItem"/>
         </property>
@@ -821,7 +821,7 @@
         <property name="icon" value="mount"/>
     </bean>
 
-    <bean id="Toolbar.Item.Paste" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.Paste" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PasteActionItem"/>
         </property>
@@ -829,7 +829,7 @@
         <property name="icon" value="paste"/>
     </bean>
 
-    <bean id="Toolbar.Item.PasteReference" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.PasteReference" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PasteReferenceActionItem"/>
         </property>
@@ -837,7 +837,7 @@
         <property name="icon" value="pasteReference"/>
     </bean>
 
-    <bean id="Toolbar.Item.SaveAsPortalComponent" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.SaveAsPortalComponent" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SaveAsPortalComponentActionItem"/>
         </property>
@@ -845,7 +845,7 @@
         <property name="icon" value="saveAsPortalComponent"/>
     </bean>
 
-    <bean id="Toolbar.Item.FilePreview" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.FilePreview" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PreviewActionItem"/>
         </property>
@@ -853,7 +853,7 @@
         <property name="icon" value="filePreview"/>
     </bean>
 
-    <bean id="Toolbar.Item.Refresh" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.Refresh" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RefreshActionItem"/>
         </property>
@@ -861,7 +861,7 @@
         <property name="icon" value="refresh"/>
     </bean>
 
-    <bean id="Toolbar.Item.ListView" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.ListView" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchViewActionItem">
                 <property name="view" value="list"/>
@@ -870,7 +870,7 @@
         <property name="titleKey" value="label.list"/>
         <property name="icon" value="listView"/>
     </bean>
-    <bean id="Toolbar.Item.ThumbsView" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.ThumbsView" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchViewActionItem">
                 <property name="view" value="thumbs"/>
@@ -879,7 +879,7 @@
         <property name="titleKey" value="label.thumbs"/>
         <property name="icon" value="thumbsView"/>
     </bean>
-    <bean id="Toolbar.Item.Detailedview" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.Detailedview" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchViewActionItem">
                 <property name="view" value="detailed"/>
@@ -889,7 +889,7 @@
         <property name="icon" value="detailedView"/>
     </bean>
 
-    <bean id="Toolbar.Item.Rename" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.Rename" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RenameActionItem"/>
         </property>
@@ -897,7 +897,7 @@
         <property name="icon" value="rename"/>
     </bean>
 
-    <bean id="Toolbar.Item.Resize" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.Resize" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ResizeActionItem"/>
         </property>
@@ -905,7 +905,7 @@
         <property name="icon" value="resize"/>
     </bean>
 
-    <bean id="Toolbar.Item.Rotate" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.Rotate" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RotateActionItem"/>
         </property>
@@ -913,7 +913,7 @@
         <property name="icon" value="rotate"/>
     </bean>
 
-    <bean id="Toolbar.Item.Unmount" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.Unmount" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UnmountActionItem"/>
         </property>
@@ -921,7 +921,7 @@
         <property name="icon" value="unmount"/>
     </bean>
 
-    <bean id="Toolbar.Item.Upload" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.Upload" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UploadActionItem"/>
         </property>
@@ -929,7 +929,7 @@
         <property name="icon" value="upload"/>
     </bean>
 
-    <bean id="Toolbar.Item.Unzip" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.Unzip" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UnzipActionItem"/>
         </property>
@@ -937,7 +937,7 @@
         <property name="icon" value="unzip"/>
     </bean>
 
-    <bean id="Toolbar.Item.Webfolder" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.Webfolder" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.WebfolderActionItem"/>
         </property>
@@ -950,7 +950,7 @@
         </property>
     </bean>
 
-    <bean id="Toolbar.Item.Zip" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.Zip" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ZipActionItem"/>
         </property>
@@ -958,7 +958,7 @@
         <property name="icon" value="zip"/>
     </bean>
 
-    <bean id="Toolbar.Item.Translate" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.Translate" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.TranslateActionItem"/>
         </property>
@@ -966,7 +966,7 @@
         <property name="icon" value="translate"/>
     </bean>
 
-    <bean id="Toolbar.Item.WorkflowDashboard" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.WorkflowDashboard" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.WorkflowDashboardActionItem"/>
         </property>
@@ -974,7 +974,7 @@
         <property name="icon" value="workflowDashboard"/>
     </bean>
 
-    <bean id="Toolbar.Item.TemplateExport" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.TemplateExport" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ExportTemplateActionItem"/>
         </property>
@@ -983,7 +983,7 @@
     </bean>
     <!-- end of new content action buttons -->
 
-    <bean id="Toolbar.Item.DeployPortlets" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.DeployPortlets" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeployPortletDefinitionActionItem"/>
         </property>
@@ -992,7 +992,7 @@
         <property name="icon" value="add-application"/>
     </bean>
 
-    <bean id="Toolbar.Item.PublicationManager" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.PublicationManager" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublicationManagerActionItem"/>
         </property>
@@ -1000,7 +1000,7 @@
         <property name="icon" value="publicationManager"/>
     </bean>
 
-    <bean id="Toolbar.Item.Flush" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.Flush" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.FlushActionItem"/>
         </property>
@@ -1008,7 +1008,7 @@
         <property name="icon" value="publish"/>
     </bean>
 
-    <bean id="Toolbar.Item.FlushAll" class="org.jahia.services.uicomponents.bean.toolbar.Item">
+    <bean id="Toolbar.Item.FlushAll" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.FlushAllActionItem"/>
         </property>

@@ -73,7 +73,6 @@ public class ActionContextMenu extends ActionToolbarMenu {
      * Override this method to provide a custom "beforeShow" behaviour
      */
     public void beforeShow() {
-        linker.syncSelectionContext();
         checkLinkerSelection();
     }
 

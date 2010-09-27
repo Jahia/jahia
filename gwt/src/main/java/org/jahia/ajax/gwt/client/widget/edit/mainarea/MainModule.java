@@ -146,7 +146,7 @@ public class MainModule extends Module {
 
             addListener(Events.ContextMenu, new Listener<ComponentEvent>() {
                 public void handleEvent(ComponentEvent be) {
-                    editLinker.getSelectionContext().setContextMenu(LinkerSelectionContext.MAIN_AREA_CONTEXT_MENU);
+                    editLinker.getSelectionContext().refresh(LinkerSelectionContext.MAIN_AREA_CONTEXT_MENU);
                 }
             });
         }

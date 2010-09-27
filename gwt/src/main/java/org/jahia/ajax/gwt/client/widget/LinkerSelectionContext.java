@@ -45,6 +45,7 @@ import java.util.List;
  * Time: 3:38:07 PM
  */
 public class LinkerSelectionContext {
+    public static final int NO_CONTEXT_MENU = 0;
     public static final int CONTENT_VIEWS_CONTEXT_MENU = 1;
     public static final int REPOSITORY_TABS_CONTEXT_MENU = 2;
     public static final int MAIN_AREA_CONTEXT_MENU = 3;
@@ -67,10 +68,6 @@ public class LinkerSelectionContext {
     private boolean zip;
     private boolean image;
 
-    private int contextMenu;
-
-
-
     public void setMainNode(GWTJahiaNode selectedTreeNode) {
         this.mainNode = selectedTreeNode;
     }
@@ -79,11 +76,11 @@ public class LinkerSelectionContext {
         this.selectedNodes = selectedNodes;
     }
 
-    public void setContextMenu(int contextMenu) {
-        this.contextMenu = contextMenu;
+    public void refresh() {
+        refresh(NO_CONTEXT_MENU);
     }
 
-    public void refresh() {
+    public void refresh(int contextMenu) {
         switch (contextMenu) {
             case CONTENT_VIEWS_CONTEXT_MENU:
                 multipleSelection = selectedNodes;

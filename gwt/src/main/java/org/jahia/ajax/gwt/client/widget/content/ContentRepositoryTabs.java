@@ -198,7 +198,7 @@ public class ContentRepositoryTabs extends LeftComponent {
 
         m_component.addListener(Events.ContextMenu, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
-                getLinker().getSelectionContext().setContextMenu(LinkerSelectionContext.REPOSITORY_TABS_CONTEXT_MENU);
+                getLinker().getSelectionContext().refresh(LinkerSelectionContext.REPOSITORY_TABS_CONTEXT_MENU);
             }
         });
     }

@@ -85,7 +85,7 @@ public class ContentViews extends TopRightComponent {
 
         m_component.addListener(Events.ContextMenu, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
-                getLinker().getSelectionContext().setContextMenu(LinkerSelectionContext.CONTENT_VIEWS_CONTEXT_MENU);
+                getLinker().getSelectionContext().refresh(LinkerSelectionContext.CONTENT_VIEWS_CONTEXT_MENU);
             }
         });
 

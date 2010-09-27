@@ -53,15 +53,8 @@ import java.util.List;
 */
 public class PasteActionItem extends BaseActionItem {
     public void onComponentSelection() {
-        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
-        GWTJahiaNode m = null;
-        if (selectedItems != null && selectedItems.size() == 1) {
-            m = selectedItems.get(0);
-        }
-        if (m == null) {
-            m = linker.getMainNode();
-        }
-        if (m != null && !m.isFile()) {
+        GWTJahiaNode m = linker.getSelectionContext().getSingleSelection();
+        if (m != null) {
             linker.loading(Messages.get("statusbar.pasting.label"));
             final CopyPasteEngine copyPasteEngine = CopyPasteEngine.getInstance();
             JahiaContentManagementService
@@ -93,8 +86,7 @@ public class PasteActionItem extends BaseActionItem {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        boolean b = lh.isMainSelection() && lh.isParentWriteable() && lh.isPasteAllowed() ||
-                lh.isTableSelection() && lh.isWriteable() && lh.isPasteAllowed();
+        boolean b = lh.getSingleSelection() != null && lh.isWriteable() && lh.isPasteAllowed();
 
         if (linker instanceof EditLinker) {
             b = b && checkNodeType(CopyPasteEngine.getInstance().getCopiedPaths(), ((EditLinker)linker).getSelectedModule().getNodeTypes());

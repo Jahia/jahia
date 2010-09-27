@@ -67,43 +67,42 @@ public class DeleteActionItem extends BaseActionItem {
             }
 
             public void onSuccess() {
-                if (linker.getSelectedNodes() != null && !linker.getSelectedNodes().isEmpty()) {
+                final LinkerSelectionContext lh = linker.getSelectionContext();
+                if (!lh.getMultipleSelection().isEmpty()) {
                     // Usages
                     final List<String> l = new ArrayList<String>();
-                    for (GWTJahiaNode node : linker.getSelectedNodes()) {
+                    for (GWTJahiaNode node : lh.getMultipleSelection()) {
                         l.add(node.getPath());
                     }
-                    final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
-                    async.getUsages(l, new BaseAsyncCallback<List<GWTJahiaNodeUsage>>() {
-                        public void onSuccess(List<GWTJahiaNodeUsage> result) {
-                            if (l.size() == 1 && linker.getSelectedNode().isReference()) {
-                                List<String> paths = new ArrayList<String>();
-                                for (GWTJahiaNode node : linker.getSelectedNodes()) {
-                                    paths.add(node.getPath());
-                                }
-                                async.deletePaths(paths, new BaseAsyncCallback<Object>() {
-                                    public void onApplicationFailure(Throwable throwable) {
-                                        Log.error(throwable.getMessage(), throwable);
-                                        MessageBox.alert("", throwable.getMessage(), null);
-                                    }
 
-                                    public void onSuccess(Object o) {
-                                        linker.refresh(EditLinker.REFRESH_ALL);
-                                        linker.select(null);
-                                    }
-                                });
-                            } else {
+                    final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
+
+                    if (lh.getSingleSelection() != null && lh.getSingleSelection().isReference()) {
+                        async.deletePaths(l, new BaseAsyncCallback<Object>() {
+                            public void onApplicationFailure(Throwable throwable) {
+                                Log.error(throwable.getMessage(), throwable);
+                                MessageBox.alert("", throwable.getMessage(), null);
+                            }
+
+                            public void onSuccess(Object o) {
+                                linker.refresh(EditLinker.REFRESH_ALL);
+                                linker.select(null);
+                            }
+                        });
+                    } else {
+                        async.getUsages(l, new BaseAsyncCallback<List<GWTJahiaNodeUsage>>() {
+                            public void onSuccess(List<GWTJahiaNodeUsage> result) {
                                 String message = l.size() > 1 ? Messages.getWithArgs("message.remove.multiple.confirm",
-                                                                                     "Do you really want to remove the {0} selected resources?",
-                                                                                     new String[]{String.valueOf(
-                                                                                             l.size())}) : Messages.getWithArgs(
+                                        "Do you really want to remove the {0} selected resources?",
+                                        new String[]{String.valueOf(
+                                                l.size())}) : Messages.getWithArgs(
                                         "message.remove.single.confirm",
                                         "Do you really want to remove the selected resource {0}?",
-                                        new String[]{linker.getSelectedNodes().get(0).getName()});
+                                        new String[]{lh.getSingleSelection().getName()});
                                 if (l.size() > 1) {
                                     message += "<br/><br/>";
                                     int i = 0;
-                                    for (GWTJahiaNode node : linker.getSelectedNodes()) {
+                                    for (GWTJahiaNode node : lh.getMultipleSelection()) {
                                         if (i > 4) {
                                             message += "<br/>...";
                                             break;
@@ -117,9 +116,9 @@ public class DeleteActionItem extends BaseActionItem {
                                 int size = result.size();
                                 if(size>0) {
                                     message +=l.size() > 1 ? Messages.get("message.remove.multiple.usage",
-                                                                                     "Those nodes are still used in:") : Messages.get(
-                                        "message.remove.single.usage",
-                                        "This node is still used by:");
+                                            "Those nodes are still used in:") : Messages.get(
+                                            "message.remove.single.usage",
+                                            "This node is still used by:");
                                 }
                                 int i = 0;
                                 for (int j = 0; j < (size>4?4:size); j++) {
@@ -140,11 +139,7 @@ public class DeleteActionItem extends BaseActionItem {
                                 MessageBox.confirm("", message, new Listener<MessageBoxEvent>() {
                                     public void handleEvent(MessageBoxEvent be) {
                                         if (be.getButtonClicked().getText().equalsIgnoreCase(Dialog.YES)) {
-                                            List<String> paths = new ArrayList<String>();
-                                            for (GWTJahiaNode node : linker.getSelectedNodes()) {
-                                                paths.add(node.getPath());
-                                            }
-                                            async.deletePaths(paths, new BaseAsyncCallback<Object>() {
+                                            async.deletePaths(l, new BaseAsyncCallback<Object>() {
                                                 public void onApplicationFailure(Throwable throwable) {
                                                     Log.error(throwable.getMessage(), throwable);
                                                     MessageBox.alert("", throwable.getMessage(), null);
@@ -158,13 +153,14 @@ public class DeleteActionItem extends BaseActionItem {
                                         }
                                     }
                                 });
-                            }
-                        }
 
-                        public void onApplicationFailure(Throwable caught) {
-                            com.google.gwt.user.client.Window.alert("Cannot get status: " + caught.getMessage());
-                        }
-                    });
+                            }
+
+                            public void onApplicationFailure(Throwable caught) {
+                                com.google.gwt.user.client.Window.alert("Cannot get status: " + caught.getMessage());
+                            }
+                        });
+                    }
                 }
             }
         });
@@ -172,6 +168,6 @@ public class DeleteActionItem extends BaseActionItem {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.isTableSelection() && lh.isWriteable());
+        setEnabled(lh.getMultipleSelection().size() > 0 && lh.isWriteable());
     }
 }

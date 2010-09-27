@@ -32,8 +32,10 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
+import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 
 /**
  * Created by IntelliJ IDEA.
@@ -43,11 +45,11 @@ import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 */
 public class EditContentActionItem extends BaseActionItem {
     public void onComponentSelection() {
-        ContentActions.edit(linker);
+        EngineLoader.showEditEngine(linker, linker.getSelectionContext().getSingleSelection());
     }
 
     public void handleNewLinkerSelection() {
-        LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.isWriteable());
+        final GWTJahiaNode singleSelection = linker.getSelectionContext().getSingleSelection();
+        setEnabled(singleSelection != null && linker.getSelectionContext().isWriteable());
     }
 }

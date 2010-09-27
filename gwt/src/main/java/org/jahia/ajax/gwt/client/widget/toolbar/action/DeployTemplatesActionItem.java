@@ -76,7 +76,7 @@ public class DeployTemplatesActionItem extends BaseActionItem {
                             @Override
                             public void componentSelected(MenuEvent ce) {
                                 Info.display("Deploy Templates", "Your templates are being deployed...");
-                                GWTJahiaNode node = linker.getMainNode();
+                                GWTJahiaNode node = linker.getSelectionContext().getMainNode();
                                 GWTJahiaSite site = ce.getItem().getData("site");
                                 String nodePath = node.getPath();
 

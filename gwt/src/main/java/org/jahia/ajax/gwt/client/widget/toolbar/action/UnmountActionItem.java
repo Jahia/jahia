@@ -52,9 +52,8 @@ import java.util.List;
 */
 public class UnmountActionItem extends BaseActionItem  {
     public void onComponentSelection() {
-        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
-        if (selectedItems != null && selectedItems.size() == 1) {
-            GWTJahiaNode selection = selectedItems.get(0);
+        GWTJahiaNode selection = linker.getSelectionContext().getSingleSelection();
+        if (selection != null) {
             if (selection.isLocked()) {
                 Window.alert(Messages.get("failure.unmountLock1.label") + " " + selection.getName() + Messages.get("failure.unmountLock2.label") + " " + selection.getLockOwner());
             } else if (Window.confirm(Messages.get("confirm.unmount.label") + " " + selection.getName() + " ?")) {
@@ -78,6 +77,6 @@ public class UnmountActionItem extends BaseActionItem  {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.isTableSelection() && lh.isWriteable() && lh.mount);
+        setEnabled(lh.getSingleSelection() != null && (lh.getSingleSelection().getNodeTypes().contains("jnt:mountPoint")  || lh.getSingleSelection().getInheritedNodeTypes().contains("jnt:mountPoint")));
     }
 }

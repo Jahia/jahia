@@ -35,6 +35,7 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.contentengine.TranslateContentEngine;
 
 /**
@@ -51,18 +52,17 @@ public class TranslateActionItem extends BaseActionItem {
             }
 
             public void onSuccess() {
-                if (linker.getMainNode() != null) {
-                    new TranslateContentEngine(linker.getSelectedNode(), linker).show();
+                LinkerSelectionContext lh = linker.getSelectionContext();
+                if (lh.getSingleSelection() != null) {
+                    new TranslateContentEngine(lh.getSingleSelection(), linker).show();
                 }
             }
         });
     }
 
     public void handleNewLinkerSelection() {
-        final GWTJahiaNode gwtJahiaNode = linker.getSelectedNode();
-        if (gwtJahiaNode != null) {
-            setEnabled(gwtJahiaNode.isWriteable());
-        }
+        LinkerSelectionContext lh = linker.getSelectionContext();
+        setEnabled(lh.getSingleSelection() != null && lh.isWriteable());
     }
 }
 

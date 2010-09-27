@@ -41,53 +41,50 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
-import java.util.List;
-
 /**
  * Created by IntelliJ IDEA.
-* User: toto
-* Date: Sep 25, 2009
-* Time: 6:57:51 PM
-*/
-public class RenameActionItem extends BaseActionItem   {
+ * User: toto
+ * Date: Sep 25, 2009
+ * Time: 6:57:51 PM
+ */
+public class RenameActionItem extends BaseActionItem {
     public void onComponentSelection() {
-        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
-        if (selectedItems != null && selectedItems.size() == 1) {
-            final GWTJahiaNode selection = selectedItems.get(0);
-            if (selection != null) {
-                if (selection.isLocked()) {
-                    Window.alert(selection.getName() + " is locked");
-                    return;
-                }
-                linker.loading(Messages.get("statusbar.renaming.label"));
-                String newName = Window.prompt(Messages.get("confirm.newName.label") + " " + selection.getName(), selection.getName());
-                if (newName != null && newName.length() > 0 && !newName.equals(selection.getName())) {
-                    final boolean folder = !selection.isFile();
-                    JahiaContentManagementService
-                            .App.getInstance().rename(selection.getPath(), newName, new BaseAsyncCallback() {
-                        public void onApplicationFailure(Throwable throwable) {
-                            Window.alert(Messages.get("failure.rename.label") + "\n" + throwable.getLocalizedMessage());
-                            linker.loaded();
-                        }
-
-                        public void onSuccess(Object o) {
-                            linker.loaded();
-                            if (folder) {
-                                linker.refresh(EditLinker.REFRESH_ALL);
-                            } else {
-                                linker.refresh(Linker.REFRESH_MAIN);
+        final GWTJahiaNode selection = linker.getSelectionContext().getSingleSelection();
+        if (selection != null) {
+            if (selection.isLocked()) {
+                Window.alert(selection.getName() + " is locked");
+                return;
+            }
+            linker.loading(Messages.get("statusbar.renaming.label"));
+            String newName = Window.prompt(Messages.get("confirm.newName.label") + " " + selection.getName(),
+                    selection.getName());
+            if (newName != null && newName.length() > 0 && !newName.equals(selection.getName())) {
+                final boolean folder = !selection.isFile();
+                JahiaContentManagementService.App.getInstance()
+                        .rename(selection.getPath(), newName, new BaseAsyncCallback() {
+                            public void onApplicationFailure(Throwable throwable) {
+                                Window.alert(
+                                        Messages.get("failure.rename.label") + "\n" + throwable.getLocalizedMessage());
+                                linker.loaded();
                             }
-                        }
-                    });
-                } else {
-                    linker.loaded();
-                }
+
+                            public void onSuccess(Object o) {
+                                linker.loaded();
+                                if (folder) {
+                                    linker.refresh(EditLinker.REFRESH_ALL);
+                                } else {
+                                    linker.refresh(Linker.REFRESH_MAIN);
+                                }
+                            }
+                        });
+            } else {
+                linker.loaded();
             }
         }
     }
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled((lh.isMainSelection() || lh.isTableSelection()) && lh.isWriteable() && (lh.isSingleFile() || lh.isSingleFolder()));
+        setEnabled(lh.getSingleSelection() != null && lh.isWriteable());
     }
 }

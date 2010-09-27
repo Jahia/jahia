@@ -38,14 +38,12 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
-import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerComponent;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.tripanel.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -321,20 +319,6 @@ public class ManagerLinker implements Linker {
         m_topRightComponent.setSelectPathAfterDataUpdate(path);
     }
 
-    public GWTJahiaNode getMainNode() {
-        return (GWTJahiaNode) getTreeSelection();
-    }
-
-    public GWTJahiaNode getSelectedNode() {
-        Object node = getTableSelection();
-        if (node == null) {
-            node = getTreeSelection();
-        } else {
-            node = ((List<GWTJahiaNode>) node).get(0);
-        }
-        return (GWTJahiaNode) node;
-    }
-
     public void refresh() {
         refreshAll();
         // refresh also extra components
@@ -375,16 +359,6 @@ public class ManagerLinker implements Linker {
         }
     }
 
-    public List<GWTJahiaNode> getSelectedNodes() {
-        List<GWTJahiaNode> list = null;
-        if ( getTableSelection() != null) {
-            list = (List<GWTJahiaNode>) getTableSelection();
-        } else if (getTreeSelection() != null) {
-            list = Arrays.asList((GWTJahiaNode) getTreeSelection());
-        }
-        return list;
-    }
-
     public LinkerSelectionContext getSelectionContext() {
         return selectionContext;
     }
@@ -393,7 +367,11 @@ public class ManagerLinker implements Linker {
         if (getTreeSelection() instanceof GWTJahiaNode) {
             selectionContext.setMainNode((GWTJahiaNode) getTreeSelection());
         }
-        selectionContext.setSelectedNodes(getSelectedNodes());
+        List<GWTJahiaNode> list = null;
+        if ( getTableSelection() != null) {
+            list = (List<GWTJahiaNode>) getTableSelection();
+        }
+        selectionContext.setSelectedNodes(list);
         selectionContext.refresh();
     }
 

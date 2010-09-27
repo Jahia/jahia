@@ -51,7 +51,7 @@ public class ExecuteActionItem extends BaseActionItem {
     private String action;
 
     public void onComponentSelection() {
-        final List<GWTJahiaNode> gwtJahiaNodes = linker.getSelectedNodes();
+        final List<GWTJahiaNode> gwtJahiaNodes = linker.getSelectionContext().getMultipleSelection();
         for (GWTJahiaNode gwtJahiaNode : gwtJahiaNodes) {
             String baseURL = org.jahia.ajax.gwt.client.util.URL.getAbsoluteURL(JahiaGWTParameters.getContextPath() + "/cms/render");
             String localURL = baseURL + "/default/" + JahiaGWTParameters.getLanguage() + gwtJahiaNode.getPath();
@@ -82,7 +82,7 @@ public class ExecuteActionItem extends BaseActionItem {
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
 
-        setEnabled(lh.isTableSelection() || lh.isMainSelection());
+        setEnabled(lh.getMultipleSelection().size() > 0);
     }
 
     public void setAction(String action) {

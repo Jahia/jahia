@@ -34,6 +34,7 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 
@@ -49,8 +50,9 @@ public class SwitchModeActionItem extends BaseActionItem {
     public void handleNewLinkerSelection() {
         final String workspace = getPropertyValue(getGwtToolbarItem(), "workspace");
         if (workspace.equalsIgnoreCase("live")) {
-            if (linker.getMainNode().getPublicationInfo().getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED
-                    || linker.getMainNode().getPublicationInfo().getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
+            final GWTJahiaNode node = linker.getSelectionContext().getMainNode();
+            if (node.getPublicationInfo().getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED
+                    || node.getPublicationInfo().getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
                 setEnabled(false);
             } else {
                 setEnabled(true);
@@ -62,8 +64,9 @@ public class SwitchModeActionItem extends BaseActionItem {
     public void onComponentSelection() {
         final String workspace = getPropertyValue(getGwtToolbarItem(), "workspace");
         final String urlParams = getPropertyValue(getGwtToolbarItem(), "urlParams");
-        if (linker.getMainNode() != null) {
-            String path = linker.getMainNode().getPath();
+        final GWTJahiaNode node = linker.getSelectionContext().getMainNode();
+        if (node != null) {
+            String path = node.getPath();
             String locale = JahiaGWTParameters.getLanguage();
             JahiaContentManagementService.App.getInstance()
                     .getNodeURL(path, null, null, workspace, locale, new BaseAsyncCallback<String>() {

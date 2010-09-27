@@ -96,9 +96,7 @@ public class WorkInProgressActionItem extends BaseActionItem {
     }
 
     public void onComponentSelection() {
-        if (linker.getMainNode() != null) {
-            new JobListWindow(linker).show();
-        }
+        new JobListWindow(linker).show();
     }
 
 }

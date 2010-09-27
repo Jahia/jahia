@@ -37,6 +37,7 @@ import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTRepository;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
+import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.tripanel.LeftComponent;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -195,6 +196,11 @@ public class ContentRepositoryTabs extends LeftComponent {
 
         savedSearchPanel.addListener(Events.Expand, accordionListener);
 
+        m_component.addListener(Events.ContextMenu, new Listener<ComponentEvent>() {
+            public void handleEvent(ComponentEvent be) {
+                getLinker().getSelectionContext().setContextMenu(LinkerSelectionContext.REPOSITORY_TABS_CONTEXT_MENU);
+            }
+        });
     }
 
     /**

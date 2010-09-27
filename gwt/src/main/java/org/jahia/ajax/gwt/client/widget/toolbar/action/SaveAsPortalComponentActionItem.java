@@ -50,7 +50,8 @@ public class SaveAsPortalComponentActionItem extends BaseActionItem {
     private static final long serialVersionUID = -3579254325077395142L;
 
     public void onComponentSelection() {
-        final GWTJahiaNode target = linker.getSelectedNode();
+        LinkerSelectionContext lh = linker.getSelectionContext();
+        GWTJahiaNode target = lh.getSingleSelection();
         if (target != null) {
             JahiaContentManagementService
                     .App.getInstance().pasteReferences(Arrays.asList(target.getPath()), "/shared/portalComponents", null, new BaseAsyncCallback() {
@@ -67,7 +68,7 @@ public class SaveAsPortalComponentActionItem extends BaseActionItem {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.isTableSelection() && lh.getSelectedNodes().size() == 1);
+        setEnabled(lh.getSingleSelection() != null);
     }
 
 }

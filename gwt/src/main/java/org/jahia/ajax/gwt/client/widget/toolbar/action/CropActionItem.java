@@ -54,20 +54,14 @@ public class CropActionItem extends BaseActionItem {
             }
 
             public void onSuccess() {
-                final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
-                if (selectedItems != null && selectedItems.size() == 1) {
-                    final GWTJahiaNode selectedNode = selectedItems.get(0);
-                    if (selectedNode != null) {
-                        new ImageCrop(linker, selectedNode).show();
-                    }
-                }
+                new ImageCrop(linker, linker.getSelectionContext().getSingleSelection()).show();
             }
         });
     }
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.isTableSelection() && lh.isParentWriteable() && lh.isSingleFile() && lh.isImage());
+        setEnabled(lh.getSingleSelection() != null && lh.isParentWriteable() && lh.isFile() && lh.isImage());
     }
 
 

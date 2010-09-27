@@ -54,10 +54,7 @@ import java.util.Arrays;
 */
 public class UnpublishActionItem extends BaseActionItem {
     public void onComponentSelection() {
-        GWTJahiaNode selectedNode = linker.getSelectedNode();
-        if (selectedNode == null) {
-            selectedNode = linker.getMainNode();
-        }
+        GWTJahiaNode selectedNode = linker.getSelectionContext().getSingleSelection();
         if (selectedNode != null) {
             linker.loading(Messages.get("label.content.unpublishing", "Unpublishing"));
 
@@ -92,10 +89,7 @@ public class UnpublishActionItem extends BaseActionItem {
     }
 
     public void handleNewLinkerSelection() {
-        GWTJahiaNode gwtJahiaNode = linker.getSelectedNode();
-        if (gwtJahiaNode == null) {
-            gwtJahiaNode = linker.getMainNode();
-        }
+        GWTJahiaNode gwtJahiaNode = linker.getSelectionContext().getSingleSelection();
         if (gwtJahiaNode != null) {
             GWTJahiaPublicationInfo info = gwtJahiaNode.getPublicationInfo();
             setEnabled(!gwtJahiaNode.isLanguageLocked(JahiaGWTParameters.getLanguage()) && info.isCanPublish() && (info.getStatus() == GWTJahiaPublicationInfo.PUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.MODIFIED));

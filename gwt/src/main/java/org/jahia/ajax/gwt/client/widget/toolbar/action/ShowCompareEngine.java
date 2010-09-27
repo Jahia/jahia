@@ -55,9 +55,10 @@ public class ShowCompareEngine extends BaseActionItem {
 
     @Override
     public void onComponentSelection() {
-        if (linker.getSelectedNode() != null) {
+        LinkerSelectionContext lh = linker.getSelectionContext();
+        if (lh.getSingleSelection() != null) {
             String locale = JahiaGWTParameters.getUILanguage();
-            new CompareEngine(linker.getSelectedNode(), locale, linker).show();
+            new CompareEngine(lh.getSingleSelection(), locale, linker).show();
         }
 
     }
@@ -65,6 +66,6 @@ public class ShowCompareEngine extends BaseActionItem {
     @Override
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh != null);
+        setEnabled(lh.getSingleSelection() != null);
     }
 }

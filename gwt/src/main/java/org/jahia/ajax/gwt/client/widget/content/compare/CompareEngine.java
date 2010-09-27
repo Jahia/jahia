@@ -95,14 +95,14 @@ public class CompareEngine extends Window {
         panel.setHeaderVisible(false);
 
         //live version
-        leftPanel = new VersionViewer(node, linker.getSelectedNode().getLanguageCode(), linker, "live", false);
+        leftPanel = new VersionViewer(node, linker.getSelectionContext().getSingleSelection().getLanguageCode(), linker, "live", false);
         leftPanel.setSize(650, 750);
         BorderLayoutData liveLayoutData = new BorderLayoutData(Style.LayoutRegion.WEST, 650);
         liveLayoutData.setCollapsible(true);
         add(leftPanel, liveLayoutData);
 
         // staging version
-        rightPanel = new VersionViewer(node, linker.getSelectedNode().getLanguageCode(), linker, "default", true){
+        rightPanel = new VersionViewer(node, linker.getSelectionContext().getSingleSelection().getLanguageCode(), linker, "default", true){
             @Override
             public String getCompareWith() {
                 return leftPanel.getInnerHTML();

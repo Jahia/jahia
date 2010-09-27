@@ -57,7 +57,7 @@ public class RedirectWindowActionItem extends BaseActionItem {
             Map preferences = getGwtToolbarItem().getProperties();
             final GWTJahiaProperty windowUrl = (GWTJahiaProperty) preferences.get(Constants.URL);
             if (windowUrl != null && windowUrl.getValue() != null) {
-                Window.Location.assign(URL.replacePlaceholders(linker, windowUrl.getValue()));
+                Window.Location.assign(URL.replacePlaceholders(windowUrl.getValue(), linker.getSelectionContext().getSingleSelection()));
             }
         }
     }

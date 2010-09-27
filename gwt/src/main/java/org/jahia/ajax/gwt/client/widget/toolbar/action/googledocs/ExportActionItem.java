@@ -40,7 +40,6 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.FileIconsImageBundle;
-import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.BaseActionItem;
 
@@ -148,28 +147,16 @@ public class ExportActionItem extends BaseActionItem {
 
     private static final long serialVersionUID = 7067456022471038421L;
 
-    private static void export(Linker linker, GWTJahiaNode selection) {
-        linker.loading(Messages
-                .get("statusbar.downloading.label"));
-        new ExportWindow(selection).show();
-        linker.loaded();
-    }
-
     @Override
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.isTableSelection() && lh.isSingleFile());
+        setEnabled(lh.getSingleSelection() != null);
     }
 
     @Override
     public void onComponentSelection() {
-        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
-        if (selectedItems != null && selectedItems.size() == 1) {
-            final GWTJahiaNode selection = selectedItems.get(0);
-            if (selection != null && selection.isFile()) {
-                export(linker, selection);
-            }
-        }
+        LinkerSelectionContext lh = linker.getSelectionContext();
+        new ExportWindow(lh.getSingleSelection()).show();
     }
 
 }

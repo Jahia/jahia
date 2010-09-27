@@ -53,21 +53,16 @@ public class ResizeActionItem extends BaseActionItem   {
             }
 
             public void onSuccess() {
-                final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
-                if (selectedItems != null && selectedItems.size() == 1) {
-                    final GWTJahiaNode selectedNode = selectedItems.get(0);
-                    if (selectedNode != null) {
-                        new ImageResize(linker, selectedNode).show();
-                    }
-                }
+                new ImageResize(linker, linker.getSelectionContext().getSingleSelection()).show();
             }
         });
     }
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.isTableSelection() && lh.isParentWriteable() && lh.isSingleFile() && lh.isImage()
-                && lh.getSelectedNodes().get(0).get("j:height") != null
-                && lh.getSelectedNodes().get(0).get("j:width") != null);
+
+        setEnabled(lh.getSingleSelection() != null && lh.isParentWriteable() && lh.isFile() && lh.isImage()
+                && lh.getSingleSelection().get("j:height") != null
+                && lh.getSingleSelection().get("j:width") != null);
     }
 }

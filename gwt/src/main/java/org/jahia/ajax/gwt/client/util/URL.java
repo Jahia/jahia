@@ -36,6 +36,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
 /**
@@ -176,7 +177,7 @@ public class URL {
 
 }-*/;
 
-    public static String replacePlaceholders(Linker linker, String value) {
+    public static String replacePlaceholders(String value, final GWTJahiaNode selectedNode) {
         if (value.contains("$context")) {
             value = value.replace("$context", JahiaGWTParameters.getContextPath());
         }
@@ -186,11 +187,11 @@ public class URL {
         if (value.contains("$lang")) {
             value = value.replace("$lang", JahiaGWTParameters.getLanguage());
         }
-        if (linker.getSelectedNode() != null && value.contains("$nodepathnoescape")) {
-            value = value.replace("$nodepathnoescape", linker.getSelectedNode().getPath());
+        if (selectedNode != null && value.contains("$nodepathnoescape")) {
+            value = value.replace("$nodepathnoescape", selectedNode.getPath());
         }
-        if (linker.getSelectedNode() != null && value.contains("$nodepath")) {
-            value = value.replace("$nodepath", com.google.gwt.http.client.URL.encodeComponent(linker.getSelectedNode().getPath()));
+        if (selectedNode != null && value.contains("$nodepath")) {
+            value = value.replace("$nodepath", com.google.gwt.http.client.URL.encodeComponent(selectedNode.getPath()));
         }
         if (value.contains("$workspace")) {
             value = value.replace("$workspace", JahiaGWTParameters.getWorkspace());

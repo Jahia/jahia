@@ -52,12 +52,6 @@ public interface Linker {
     public final static int REFRESH_WORKFLOW = 4;
     public final static int REFRESH_FOLDERS = 8;
 
-    public GWTJahiaNode getMainNode();
-
-    public GWTJahiaNode getSelectedNode();
-
-    public List<GWTJahiaNode> getSelectedNodes();
-
     public void loaded();
 
     public void loading(String resource);

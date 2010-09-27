@@ -46,23 +46,12 @@ import java.util.List;
 */
 public class ExportActionItem extends BaseActionItem    {
     public void onComponentSelection() {
-        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
-        if (selectedItems != null && selectedItems.size() == 1) {
-            GWTJahiaNode selectedNode = selectedItems.get(0);
-            if (selectedNode != null) {
-                new ContentExport(linker, selectedNode).show();
-            }
-        } else {
-            GWTJahiaNode selectedNode = linker.getMainNode();
-            if (selectedNode != null) {
-                new ContentExport(linker, selectedNode).show();
-            }
-        }
+        LinkerSelectionContext lh = linker.getSelectionContext();
+        new ContentExport(linker, lh.getSingleSelection()).show();
     }
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-
-        setEnabled(lh.isTableSelection() || lh.isMainSelection());
+        setEnabled(lh.getSingleSelection() != null);
     }
 }

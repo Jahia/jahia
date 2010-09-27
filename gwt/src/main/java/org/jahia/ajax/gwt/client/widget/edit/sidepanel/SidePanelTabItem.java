@@ -113,18 +113,6 @@ public class SidePanelTabItem extends TabItem {
             select(null);
         }
 
-        public GWTJahiaNode getMainNode() {
-            return selectionModel.getSelectedItem();
-        }
-
-        public GWTJahiaNode getSelectedNode() {
-            return selectionModel.getSelectedItem();
-        }
-
-        public List<GWTJahiaNode> getSelectedNodes() {
-            return selectionModel.getSelectedItems();
-        }
-
         public LinkerSelectionContext getSelectionContext() {
             return ctx;
         }

@@ -53,14 +53,8 @@ import java.util.List;
 */
 public class WebfolderActionItem extends BaseActionItem {
     public void onComponentSelection() {
-        List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
-        final GWTJahiaNode selection;
-        if (selectedItems == null || selectedItems.size() > 1 || (selectedItems.size() == 1 && selectedItems.get(0).isFile())) {
-            selection = (GWTJahiaNode) linker.getMainNode();
-        } else {
-            selection = selectedItems.get(0);
-        }
-        if (selection != null && !selection.isFile().booleanValue()) {
+        final GWTJahiaNode selection = linker.getSelectionContext().getSingleSelection();
+        if (selection != null && !selection.isFile()) {
             linker.loading(Messages.get("statusbar.webfoldering.label"));
             JahiaContentManagementService
                     .App.getInstance().getAbsolutePath(selection.getPath(), new BaseAsyncCallback<String>() {
@@ -90,6 +84,6 @@ public class WebfolderActionItem extends BaseActionItem {
 
     public void handleNewLinkerSelection(){
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.isMainSelection() || lh.isTableSelection() && lh.isSingleFolder());
+        setEnabled(lh.getSingleSelection() != null);
     }
 }

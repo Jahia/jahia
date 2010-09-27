@@ -32,9 +32,13 @@
 
 package org.jahia.ajax.gwt.client.widget.content;
 
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionContextMenu;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
@@ -69,7 +73,6 @@ public class ContentViews extends TopRightComponent {
         m_component.setBorders(false);
 //        m_component.setBodyBorder(false);
 
-
         // set default view
         if ("list".equals(config.getDefaultView())) {
             current = tableView;
@@ -81,6 +84,12 @@ public class ContentViews extends TopRightComponent {
             current = tableView;
         }
         m_component.add(current.getComponent());
+
+        m_component.addListener(Events.ContextMenu, new Listener<ComponentEvent>() {
+            public void handleEvent(ComponentEvent be) {
+                getLinker().getSelectionContext().setContextMenu(LinkerSelectionContext.CONTENT_VIEWS_CONTEXT_MENU);
+            }
+        });
 
     }
 

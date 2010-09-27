@@ -54,9 +54,8 @@ import java.util.List;
 */
 public class ZipActionItem extends BaseActionItem  {
     public void onComponentSelection() {
-        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
-        final GWTJahiaNode parentItem = (GWTJahiaNode) linker.getMainNode();
-        if (parentItem != null && selectedItems != null && selectedItems.size() > 0) {
+        final List<GWTJahiaNode> selectedItems = linker.getSelectionContext().getMultipleSelection();
+        if (selectedItems != null && selectedItems.size() > 0) {
             final GWTJahiaNode selection = selectedItems.get(0);
             if (selection != null) {
                 linker.loading(Messages.get("statusbar.zipping.label"));
@@ -68,8 +67,9 @@ public class ZipActionItem extends BaseActionItem  {
                 }
                 final String archName = Window.prompt(Messages.get("confirm.archiveName.label"), defaultArchName);
                 if (archName != null && archName.length() > 0) {
+                    final String parentPath = selection.getPath().substring(0, selection.getPath().lastIndexOf('/'));
                     JahiaContentManagementService
-                            .App.getInstance().checkExistence(parentItem.getPath() + "/" + archName, new BaseAsyncCallback<Boolean>() {
+                            .App.getInstance().checkExistence(parentPath + "/" + archName, new BaseAsyncCallback<Boolean>() {
                         public void onApplicationFailure(Throwable throwable) {
                             if (throwable instanceof ExistingFileException) {
                                 if (Window.confirm(Messages.get("alreadyExists.label") + "\n" + Messages.get("confirm.overwrite.label"))) {
@@ -111,6 +111,6 @@ public class ZipActionItem extends BaseActionItem  {
 
     public void handleNewLinkerSelection(){
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.isTableSelection() && lh.isParentWriteable());
+        setEnabled(lh.getMultipleSelection().size() > 0 && lh.isParentWriteable());
     }
 }

@@ -36,7 +36,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
-import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
 /**
@@ -48,7 +47,22 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 */
 public class ReversePublishActionItem extends BaseActionItem implements IsSerializable {
     public void onComponentSelection() {
-        ContentActions.reversePublish(linker);
+        GWTJahiaNode selectedNode = linker.getSelectionContext().getSingleSelection();
+
+        if (selectedNode != null) {
+
+//            JahiaContentManagementService.App.getInstance().publish(Arrays.asList(selectedNode.getUUID()), false, "", false, true, new BaseAsyncCallback() {
+//                public void onApplicationFailure(Throwable caught) {
+//                    Log.error("Cannot publish", caught);
+//                    com.google.gwt.user.client.Window.alert("Cannot publish " + caught.getMessage());
+//                }
+//
+//                public void onSuccess(Object result) {
+//                    Info.display(Messages.getResource("message.content.published"), Messages.getResource("message.content.published"));
+//                    linker.refresh(EditLinker.REFRESH_ALL);
+//                }
+//            });
+        }
     }
 
     /**
@@ -64,10 +78,8 @@ public class ReversePublishActionItem extends BaseActionItem implements IsSerial
     }
 
     public void handleNewLinkerSelection() {
-        GWTJahiaNode gwtJahiaNode = linker.getSelectedNode();
-        if (gwtJahiaNode == null) {
-            gwtJahiaNode = linker.getMainNode();
-        }
+        GWTJahiaNode gwtJahiaNode = linker.getSelectionContext().getSingleSelection();
+
         if (gwtJahiaNode != null) {
             GWTJahiaPublicationInfo info = gwtJahiaNode.getPublicationInfo();
 //            setEnabled(info.getStatus() == GWTJahiaPublicationInfo.LIVE_MODIFIED || info.getSubnodesStatus().contains(GWTJahiaPublicationInfo.LIVE_MODIFIED));

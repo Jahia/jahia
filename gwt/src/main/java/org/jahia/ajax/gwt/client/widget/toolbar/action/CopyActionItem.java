@@ -46,7 +46,7 @@ import java.util.List;
 */
 public class CopyActionItem extends BaseActionItem{
     public void onComponentSelection() {
-        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
+        final List<GWTJahiaNode> selectedItems = linker.getSelectionContext().getMultipleSelection();
         if (selectedItems != null && selectedItems.size() > 0) {
             CopyPasteEngine.getInstance().setCopiedPaths(selectedItems);
             linker.select(null);
@@ -54,6 +54,6 @@ public class CopyActionItem extends BaseActionItem{
     }
 
     public void handleNewLinkerSelection() {
-        setEnabled(linker.getSelectionContext().isTableSelection());
+        setEnabled(linker.getSelectionContext().getMultipleSelection().size() > 0);
     }
 }

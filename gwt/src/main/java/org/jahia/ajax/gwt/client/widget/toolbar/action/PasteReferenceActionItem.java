@@ -77,11 +77,11 @@ public class PasteReferenceActionItem extends BaseActionItem  {
                 props.put("jcr:title", new GWTJahiaNodeProperty("jcr:title", new GWTJahiaNodePropertyValue(copiedNode.getDisplayName(), GWTJahiaNodePropertyType.STRING)));
                 props.put("j:node", new GWTJahiaNodeProperty("j:node", new GWTJahiaNodePropertyValue(copiedNode, GWTJahiaNodePropertyType.WEAKREFERENCE)));
                 if (result.size() == 1) {
-                    EngineLoader.showCreateEngine(linker, linker.getSelectedNode(), result.get(0), props, copiedNode.getName(), false);
+                    EngineLoader.showCreateEngine(linker, linker.getSelectionContext().getSingleSelection(), result.get(0), props, copiedNode.getName(), false);
                 } else {
                     Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> m = new HashMap<GWTJahiaNodeType, List<GWTJahiaNodeType>>();
                     m.put(null, result);
-                    new ContentTypeWindow(linker, linker.getSelectedNode(), m, props, copiedNode.getName(), false).show();
+                    new ContentTypeWindow(linker, linker.getSelectionContext().getSingleSelection(), m, props, copiedNode.getName(), false).show();
                 }
             }
         });
@@ -92,15 +92,14 @@ public class PasteReferenceActionItem extends BaseActionItem  {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        boolean b = lh.isMainSelection() && lh.isParentWriteable() && lh.isPasteAllowed() ||
-                lh.isTableSelection() && lh.isWriteable() && lh.isPasteAllowed();
+        boolean b = lh.getSingleSelection() != null && lh.isWriteable() && lh.isPasteAllowed();
 
         String refTypes;
         if (linker instanceof EditLinker && b) {
             final Module module = ((EditLinker) linker).getSelectedModule();
             refTypes = module.getReferenceTypes();
         } else {
-            refTypes = linker.getSelectedNode().get("referenceTypes");
+            refTypes = lh.getSingleSelection().get("referenceTypes");
         }
         if (refTypes != null && refTypes.length() > 0) {
             String[] refs = refTypes.split(" ");

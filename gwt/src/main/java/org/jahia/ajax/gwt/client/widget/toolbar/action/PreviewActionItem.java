@@ -46,17 +46,12 @@ import java.util.List;
 */
 public class PreviewActionItem extends BaseActionItem  {
     public void onComponentSelection() {
-        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
-        if (selectedItems != null && selectedItems.size() == 1) {
-            final GWTJahiaNode selection = selectedItems.get(0);
-            if (selection != null && selection.isFile().booleanValue()) {
-                ImagePopup.popImage(selection);
-            }
-        }
+        LinkerSelectionContext lh = linker.getSelectionContext();
+        ImagePopup.popImage(lh.getSingleSelection());
     }
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.isTableSelection() && lh.isSingleFile() && lh.isImage());
+        setEnabled(lh.getSingleSelection() != null && lh.isFile() && lh.isImage());
     }
 }

@@ -54,7 +54,7 @@ public class OpenWindowActionItem extends BaseActionItem {
         @Override
         public void handleNewLinkerSelection() {
             LinkerSelectionContext lh = linker.getSelectionContext();
-            setEnabled(lh.isTableSelection() && lh.isSingleFile());
+            setEnabled(lh.getSingleSelection() != null);
         }
     } 
 
@@ -99,7 +99,7 @@ public class OpenWindowActionItem extends BaseActionItem {
         if (jsUrl != null) {
             Window.open(JahiaGWTParameters.getParam(jsUrl), name, wOptions);
         } else if (windowUrl != null && windowUrl.getValue() != null) {
-            String value = URL.replacePlaceholders(linker, windowUrl.getValue());
+            String value = URL.replacePlaceholders(windowUrl.getValue(), linker.getSelectionContext().getSingleSelection());
             Window.open(value, name, wOptions);
         }
     }

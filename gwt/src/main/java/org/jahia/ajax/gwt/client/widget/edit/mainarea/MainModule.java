@@ -54,6 +54,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.contentengine.EditContentEnginePopupListener;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionContextMenu;
@@ -142,6 +143,12 @@ public class MainModule extends Module {
                 }
             };
             setContextMenu(contextMenu);
+
+            addListener(Events.ContextMenu, new Listener<ComponentEvent>() {
+                public void handleEvent(ComponentEvent be) {
+                    editLinker.getSelectionContext().setContextMenu(LinkerSelectionContext.MAIN_AREA_CONTEXT_MENU);
+                }
+            });
         }
 
     }

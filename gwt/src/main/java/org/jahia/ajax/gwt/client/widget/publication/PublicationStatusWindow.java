@@ -98,11 +98,6 @@ public class PublicationStatusWindow extends Window {
 
         setButtonAlign(Style.HorizontalAlignment.CENTER);
 
-
-        GWTJahiaNode selectedNode = linker.getSelectedNode();
-        if (selectedNode == null) {
-            selectedNode = linker.getMainNode();
-        }
         if (PermissionsUtils.isPermitted("edit-mode/publication", JahiaGWTParameters.getSiteKey())) {
             noWorkflow = new Button(Messages.get("label.bypassWorkflow", "Bypass workflow"));
             noWorkflow.addSelectionListener(new ButtonEventSelectionListener(uuids));

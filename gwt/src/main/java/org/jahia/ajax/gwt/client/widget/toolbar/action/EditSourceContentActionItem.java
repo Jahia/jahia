@@ -32,6 +32,7 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 
 /**
@@ -44,13 +45,11 @@ public class EditSourceContentActionItem extends BaseActionItem {
 	private static final long serialVersionUID = -2912157212228173779L;
 
 	public void onComponentSelection() {
-        if (linker.getMainNode() != null) {
-            EngineLoader.showEditEngine(linker, linker.getSelectedNode().getReferencedNode());
-        }
+        EngineLoader.showEditEngine(linker, linker.getSelectionContext().getSingleSelection().getReferencedNode());
     }
 
 	public void handleNewLinkerSelection() {
-		setEnabled(linker.getSelectionContext().isWriteable() && linker.getSelectedNode() != null
-		        && linker.getSelectedNode().isReference());
+        final GWTJahiaNode singleSelection = linker.getSelectionContext().getSingleSelection();
+        setEnabled(singleSelection != null && linker.getSelectionContext().isWriteable() && singleSelection.isReference());
 	}
 }

@@ -45,16 +45,10 @@ import org.jahia.ajax.gwt.client.widget.workflow.WorkflowDashboardEngine;
 public class WorkflowDashboardActionItem extends BaseActionItem{
 
     public void onComponentSelection() {
-        if (linker.getMainNode() != null) {
-            new WorkflowDashboardEngine(linker).show();
-        }
+        new WorkflowDashboardEngine(linker).show();
     }
 
     public void handleNewLinkerSelection() {
-        final GWTJahiaNode gwtJahiaNode = linker.getSelectedNode();
-        if (gwtJahiaNode != null) {
-            setEnabled(gwtJahiaNode.isWriteable());
-        }
     }
 
 }

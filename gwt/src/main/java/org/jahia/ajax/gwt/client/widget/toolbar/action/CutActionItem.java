@@ -53,7 +53,7 @@ import java.util.List;
 */
 public class CutActionItem extends BaseActionItem  {
     public void onComponentSelection() {
-        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
+        final List<GWTJahiaNode> selectedItems = linker.getSelectionContext().getMultipleSelection();
         if (selectedItems != null && selectedItems.size() > 0) {
             final List<GWTJahiaNode> actualSelection = new ArrayList<GWTJahiaNode>();
             final List<GWTJahiaNode> lockedFiles = new ArrayList<GWTJahiaNode>();
@@ -89,6 +89,6 @@ public class CutActionItem extends BaseActionItem  {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.isTableSelection() && lh.isWriteable());
+        setEnabled(lh.getMultipleSelection().size() > 0 && lh.isWriteable());
     }
 }

@@ -86,11 +86,6 @@ public class EditLinker implements Linker {
         registerLinker();
     }
 
-
-    public ActionToolbarLayoutContainer getToolbar() {
-        return toolbar;
-    }
-
     public SidePanel getSidePanel() {
         return sidePanel;
     }
@@ -120,29 +115,6 @@ public class EditLinker implements Linker {
         return selectedModule;
     }
 
-    public GWTJahiaNode getSidePanelSelectedNode() {
-        return sidePanelSelectedNode;
-    }
-
-    public void onDisplayGridSelection(GWTJahiaNode node) {
-        sidePanelSelectedNode = node;
-        handleNewSidePanelSelection();
-    }
-
-    public void onBrowseTreeSelection(GWTJahiaNode node) {
-        sidePanelSelectedNode = node;
-        handleNewSidePanelSelection();
-    }
-
-    public void onCreateGridSelection(GWTJahiaNodeType selected) {
-        sidePanelSelectedNode = null;
-        handleNewSidePanelSelection();
-    }
-
-    public ModuleSelectionListener getSelectionListener() {
-        return selectionListener;
-    }
-
     public void setSelectionListener(ModuleSelectionListener selectionListener) {
         this.selectionListener = selectionListener;
     }
@@ -165,13 +137,6 @@ public class EditLinker implements Linker {
         sidePanel.refresh(flag);
 //        syncSelectionContext();
 //        toolbar.handleNewLinkerSelection();
-    }
-
-    public GWTJahiaNode getSelectedNode() {
-        if (getSelectedModule() != null) {
-            return getSelectedModule().getNode();
-        }
-        return null;
     }
 
     public void handleNewModuleSelection() {
@@ -222,18 +187,6 @@ public class EditLinker implements Linker {
         }
     }
 
-    public GWTJahiaNode getMainNode() {
-        return getMainModule().getNode();
-    }
-
-    public List<GWTJahiaNode> getSelectedNodes() {
-        List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
-        if (getSelectedNode() != null) {
-            nodes.add(getSelectedNode());
-        }
-        return nodes;
-    }
-
     public void loaded() {
         mainModule.unmask();
     }
@@ -252,8 +205,12 @@ public class EditLinker implements Linker {
     }
 
     public void syncSelectionContext() {
-        selectionContext.setMainNode(getMainNode());
-        selectionContext.setSelectedNodes(getSelectedNodes());
+        selectionContext.setMainNode(getMainModule().getNode());
+        List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
+        if (getSelectedModule() != null && getSelectedModule().getNode() != null) {
+            nodes.add(getSelectedModule().getNode());
+        }
+        selectionContext.setSelectedNodes(nodes);
         selectionContext.refresh();
     }
 

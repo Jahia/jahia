@@ -118,7 +118,7 @@ public class PublicationManagerEngine extends Window {
                                            "jmix:worklfowRulesable"));
         factory.setFields(Arrays.asList(GWTJahiaNode.NAME, GWTJahiaNode.DISPLAY_NAME, GWTJahiaNode.PUBLICATION_INFOS,
                                         GWTJahiaNode.WORKFLOW_INFOS));
-        factory.setSelectedPath(linker.getMainNode().getPath());
+        factory.setSelectedPath(linker.getSelectionContext().getMainNode().getPath());
         factory.setSaveOpenPath(true);
         loader = factory.getLoader();
         store = factory.getStore();

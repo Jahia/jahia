@@ -36,6 +36,7 @@ import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.publication.PublicationManagerEngine;
 
 import java.util.List;
@@ -50,7 +51,7 @@ import java.util.List;
 public class PublicationManagerActionItem extends BaseActionItem{
 
     public void onComponentSelection() {
-        if (linker.getMainNode() != null) {
+        if (linker.getSelectionContext().getSingleSelection() != null) {
             JahiaContentManagementService
                     .App.getInstance().getSiteLanguages(new BaseAsyncCallback<List<GWTJahiaLanguage>>() {
                 public void onSuccess(List<GWTJahiaLanguage> result) {
@@ -61,10 +62,8 @@ public class PublicationManagerActionItem extends BaseActionItem{
     }
 
     public void handleNewLinkerSelection() {
-        final GWTJahiaNode gwtJahiaNode = linker.getSelectedNode();
-        if (gwtJahiaNode != null) {
-            setEnabled(gwtJahiaNode.isWriteable());
-        }
+        LinkerSelectionContext lh = linker.getSelectionContext();
+        setEnabled(lh.getSingleSelection() != null && lh.isWriteable());
     }
 
 }

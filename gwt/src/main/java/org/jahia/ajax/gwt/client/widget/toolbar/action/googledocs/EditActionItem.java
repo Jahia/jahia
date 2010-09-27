@@ -157,19 +157,14 @@ public class EditActionItem extends BaseActionItem {
 
     @Override
     public void handleNewLinkerSelection() {
-        LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.isTableSelection() && lh.isSingleFile());
+        final LinkerSelectionContext lh = linker.getSelectionContext();
+        final GWTJahiaNode singleSelection = lh.getSingleSelection();
+        setEnabled(singleSelection != null && lh.isWriteable() && lh.isFile());
     }
 
     @Override
     public void onComponentSelection() {
-        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
-        if (selectedItems != null && selectedItems.size() == 1) {
-            final GWTJahiaNode selection = selectedItems.get(0);
-            if (selection != null && selection.isFile()) {
-                edit(linker, selection);
-            }
-        }
+        edit(linker, linker.getSelectionContext().getSingleSelection());
     }
 
 }

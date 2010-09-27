@@ -50,7 +50,7 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 public class FlushActionItem extends BaseActionItem {
     public void onComponentSelection() {
         JahiaContentManagementService
-                .App.getInstance().flush(linker.getSelectedNode().getPath(), new BaseAsyncCallback<Void>() {
+                .App.getInstance().flush(linker.getSelectionContext().getSingleSelection().getPath(), new BaseAsyncCallback<Void>() {
             public void onSuccess(Void result) {
                 Info.display(Messages.get("label.cache.flushed"),
                                     Messages.get("label.cache.flushed"));
@@ -71,10 +71,7 @@ public class FlushActionItem extends BaseActionItem {
     }
 
     public void handleNewLinkerSelection() {
-        GWTJahiaNode gwtJahiaNode = linker.getSelectedNode();
-        if (gwtJahiaNode == null) {
-            gwtJahiaNode = linker.getMainNode();
-        }
+        GWTJahiaNode gwtJahiaNode = linker.getSelectionContext().getSingleSelection();
         if (gwtJahiaNode != null) {
             updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getName());
         }

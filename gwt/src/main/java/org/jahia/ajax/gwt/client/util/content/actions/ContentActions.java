@@ -76,15 +76,8 @@ public class ContentActions {
      * @param linker
      */
     public static void pasteReference(final Linker linker) {
-        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
-        GWTJahiaNode m = null;
-        if (selectedItems != null && selectedItems.size() == 1) {
-            m = selectedItems.get(0);
-        }
-        if (m == null) {
-            m = linker.getMainNode();
-        }
-        if (m != null && !m.isFile()) {
+        GWTJahiaNode m = linker.getSelectionContext().getSingleSelection();
+        if (m != null) {
             linker.loading(Messages.get("statusbar.pastingref.label"));
             final CopyPasteEngine copyPasteEngine = CopyPasteEngine.getInstance();
             JahiaContentManagementService.App.getInstance().pasteReferences(JCRClientUtils.getPathesList(copyPasteEngine.getCopiedPaths()), m.getPath(), null, new BaseAsyncCallback() {
@@ -153,9 +146,8 @@ public class ContentActions {
      * @param linker
      */
     public static void download(final Linker linker) {
-        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
-        if (selectedItems != null && selectedItems.size() == 1) {
-            final GWTJahiaNode selection = selectedItems.get(0);
+        final GWTJahiaNode selection = linker.getSelectionContext().getSingleSelection();
+        if (selection != null) {
             download(linker, selection, selection.getUrl());
         }
     }
@@ -168,7 +160,7 @@ public class ContentActions {
      * @param url
      */
     public static void download(Linker linker, GWTJahiaNode selection, String url) {
-        if (selection != null && selection.isFile().booleanValue()) {
+        if (selection != null && selection.isFile()) {
             linker.loading(Messages.get("statusbar.downloading.label"));
             if (url != null) {
                 HTML link = new HTML(Messages.get("downloadMessage.label") + "<br /><br /><a href=\"" + url + "\" target=\"_new\">" + selection.getName() + "</a>");
@@ -193,14 +185,8 @@ public class ContentActions {
      * @param linker
      */
     public static void createFolder(final Linker linker) {
-        GWTJahiaNode parent = linker.getMainNode();
-        if (parent == null) {
-            final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
-            if (selectedItems != null && selectedItems.size() == 1) {
-                parent = selectedItems.get(0);
-            }
-        }
-        if (parent != null && !parent.isFile()) {
+        GWTJahiaNode parent = linker.getSelectionContext().getSingleSelection();
+        if (parent != null) {
             String newFolder = Window.prompt(Messages.get("newDirName.label"), "untitled");
             if (newFolder != null && newFolder.length() > 0) {
                 linker.loading(Messages.get("statusbar.newfoldering.label"));
@@ -227,14 +213,8 @@ public class ContentActions {
      * @param nodeType
      */
     public static void createNode(final Linker linker, final String windowHeaer, final String nodeType) {
-        GWTJahiaNode parent = linker.getMainNode();
-        if (parent == null) {
-            final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
-            if (selectedItems != null && selectedItems.size() == 1) {
-                parent = selectedItems.get(0);
-            }
-        }
-        if (parent != null && !parent.isFile()) {
+        GWTJahiaNode parent = linker.getSelectionContext().getSingleSelection();
+        if (parent != null) {
             String nodeName = Window.prompt(windowHeaer, "untitled");
             if (nodeName != null && nodeName.length() > 0) {
                 linker.loading(Messages.get("statusbar.newfoldering.label"));
@@ -259,14 +239,8 @@ public class ContentActions {
      * @param linker
      */
     public static void showPortletWizard(final Linker linker) {
-        GWTJahiaNode parent = (GWTJahiaNode) linker.getMainNode();
-        if (parent == null) {
-            final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
-            if (selectedItems != null && selectedItems.size() == 1) {
-                parent = selectedItems.get(0);
-            }
-        }
-        if (parent != null && !parent.isFile()) {
+        GWTJahiaNode parent = linker.getSelectionContext().getSingleSelection();
+        if (parent != null) {
             PortletWizardWindow window = new PortletWizardWindow(linker, parent);
             window.show();
         }
@@ -284,17 +258,7 @@ public class ContentActions {
      * @param nodeTypes
      */
     public static void showContentWizard(final Linker linker, final String nodeTypes) {
-        GWTJahiaNode parent = linker.getSelectedNode();
-        if (parent == null) {
-            parent = linker.getMainNode();
-        }
-        if (parent == null) {
-            final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
-            if (selectedItems != null && selectedItems.size() == 1) {
-                parent = selectedItems.get(0);
-            }
-        }
-        showContentWizard(linker, nodeTypes, parent);
+        showContentWizard(linker, nodeTypes, linker.getSelectionContext().getSingleSelection());
     }
 
     public static void showContentWizard(final Linker linker, final String nodeTypes, final GWTJahiaNode parent) {
@@ -323,7 +287,7 @@ public class ContentActions {
     }
 
     public static void lock(boolean lock, final Linker linker) {
-        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
+        final List<GWTJahiaNode> selectedItems = linker.getSelectionContext().getMultipleSelection();
         if (selectedItems != null && selectedItems.size() > 0) {
             List<String> selectedPaths = new ArrayList<String>(selectedItems.size());
             List<String> lockedBySystem = new LinkedList<String>();
@@ -369,97 +333,4 @@ public class ContentActions {
         }
     }
 
-    /**
-     * Display edit content window
-     *
-     * @param linker
-     */
-    public static void edit(Linker linker) {
-        if (linker.getMainNode() != null) {
-            EngineLoader.showEditEngine(linker, linker.getSelectedNode());
-        }
-    }
-
-    /**
-     * Publish selected content
-     *
-     * @param linker
-     * @param allSubTree
-     */
-    public static void publish(final Linker linker, final boolean allSubTree) {
-        List<GWTJahiaNode> selectedNodes = linker.getSelectedNodes();
-        if (selectedNodes.isEmpty()) {
-            selectedNodes = new ArrayList<GWTJahiaNode>();
-            selectedNodes.add(linker.getMainNode());
-        }
-        if (!selectedNodes.isEmpty()) {
-            final List<String> uuids = new ArrayList<String>();
-            for (GWTJahiaNode selectedNode : selectedNodes) {
-                uuids.add(selectedNode.getUUID());
-//                if (ModuleHelper.getLinkedContentInfo().containsKey(selectedNode.getUUID())) {
-//                    uuids.addAll(ModuleHelper.getLinkedContentInfo().get(selectedNode.getUUID()));
-//                }
-            }
-            linker.loading(Messages.get("label.gettingPublicationInfo","Getting publication information"));
-            JahiaContentManagementService.App.getInstance()
-                    .getPublicationInfo(uuids, allSubTree, new BaseAsyncCallback<List<GWTJahiaPublicationInfo>>() {
-                        public void onSuccess(List<GWTJahiaPublicationInfo> result) {
-                            linker.loaded();
-
-                            List<GWTJahiaPublicationInfo> filteredList = new ArrayList<GWTJahiaPublicationInfo>();
-                            for (GWTJahiaPublicationInfo info : result) {
-                                if (info.getStatus() > GWTJahiaPublicationInfo.PUBLISHED) {
-                                    filteredList.add(info);
-                                }
-                            }
-                            if (filteredList.isEmpty()) {
-                                MessageBox.info(Messages.get("label.publication","Publication"), Messages.get("label.nothingToPublish","Nothing to publish"), null);
-                            } else {
-                                final GWTJahiaNode selectedNode = linker.getSelectedNode();
-                                GWTJahiaWorkflowDefinition
-                                        def = selectedNode.getWorkflowInfo().getPossibleWorkflows().get(new GWTJahiaWorkflowType("publish"));
-                                if (def != null) {
-                                    WorkflowActionDialog wad = new WorkflowActionDialog(selectedNode, linker);
-                                    wad.setCustom(new PublicationWorkflow(filteredList, uuids, allSubTree, selectedNode.getLanguageCode()));
-                                    wad.initStartWorkflowDialog(def);
-                                    wad.show();
-                                } else {
-                                    new PublicationStatusWindow(linker, uuids, filteredList, allSubTree).show();
-                                }
-                            }
-                        }
-
-                        public void onApplicationFailure(Throwable caught) {
-                            linker.loaded();
-                            Window.alert("Cannot get status: " + caught.getMessage());
-                        }
-                    });
-        }
-    }
-
-    /**
-     * Publish selected content
-     *
-     * @param linker
-     */
-    public static void reversePublish(final Linker linker) {
-        GWTJahiaNode selectedNode = linker.getSelectedNode();
-        if (selectedNode == null) {
-            selectedNode = linker.getMainNode();
-        }
-        if (selectedNode != null) {
-
-//            JahiaContentManagementService.App.getInstance().publish(Arrays.asList(selectedNode.getUUID()), false, "", false, true, new BaseAsyncCallback() {
-//                public void onApplicationFailure(Throwable caught) {
-//                    Log.error("Cannot publish", caught);
-//                    com.google.gwt.user.client.Window.alert("Cannot publish " + caught.getMessage());
-//                }
-//
-//                public void onSuccess(Object result) {
-//                    Info.display(Messages.getResource("message.content.published"), Messages.getResource("message.content.published"));
-//                    linker.refresh(EditLinker.REFRESH_ALL);
-//                }
-//            });
-        }
-    }
 }

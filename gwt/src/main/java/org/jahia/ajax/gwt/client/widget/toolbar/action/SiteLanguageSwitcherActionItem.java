@@ -37,6 +37,7 @@ import java.util.List;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
@@ -53,9 +54,10 @@ public class SiteLanguageSwitcherActionItem extends LanguageSwitcherActionItem {
 	@Override
 	public void handleNewLinkerSelection() {
 		super.handleNewLinkerSelection();
-		if (linker.getMainNode() != null
-		        && !linker.getMainNode().getSiteUUID().equalsIgnoreCase(siteKey)) {
-			siteKey = linker.getMainNode().getSiteUUID();
+        final GWTJahiaNode node = linker.getSelectionContext().getMainNode();
+        if (node != null
+		        && !node.getSiteUUID().equalsIgnoreCase(siteKey)) {
+			siteKey = node.getSiteUUID();
 			JahiaContentManagementService.App.getInstance().getSiteLanguages(
 			        new BaseAsyncCallback<List<GWTJahiaLanguage>>() {
 				        public void onSuccess(List<GWTJahiaLanguage> languages) {

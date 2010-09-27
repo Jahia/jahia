@@ -31,8 +31,14 @@
  */
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.widget.Linker;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -41,16 +47,15 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 * Time: 6:58:56 PM
 * To change this template use File | Settings | File Templates.
 */
-public class PublishAllActionItem extends BaseActionItem {
-    public void onComponentSelection() {
-        ContentActions.publish(linker, true);
+public class PublishAllActionItem extends PublishActionItem {
+
+    public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
+        allSubTree = true;
+        super.init(gwtToolbarItem, linker);
     }
 
     public void handleNewLinkerSelection() {
-        GWTJahiaNode gwtJahiaNode = linker.getSelectedNode();
-        if (gwtJahiaNode == null) {
-            gwtJahiaNode = linker.getMainNode();
-        }
+        gwtJahiaNode = linker.getSelectionContext().getSingleSelection();
         if (gwtJahiaNode != null) {
             updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getName());
         }

@@ -48,6 +48,6 @@ public class NewFolderActionItem extends BaseActionItem {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.isMainSelection() && lh.isParentWriteable() || lh.isTableSelection() && lh.isSingleFolder() && lh.isWriteable());
+        setEnabled(lh.getSingleSelection() != null && lh.isWriteable() && lh.getSingleSelection().getNodeTypes().contains("jnt:folder"));
     }
 }

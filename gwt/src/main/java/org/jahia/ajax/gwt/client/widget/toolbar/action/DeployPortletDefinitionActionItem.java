@@ -57,14 +57,9 @@ public class DeployPortletDefinitionActionItem extends BaseActionItem {
             }
 
             public void onSuccess() {
-                GWTJahiaNode parent = (GWTJahiaNode) linker.getMainNode();
-                if (parent == null) {
-                    final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
-                    if (selectedItems != null && selectedItems.size() == 1) {
-                        parent = selectedItems.get(0);
-                    }
-                }
-                if (parent != null && !parent.isFile()) {
+                LinkerSelectionContext lh = linker.getSelectionContext();
+                GWTJahiaNode parent = lh.getSingleSelection();
+                if (parent != null) {
                     final com.extjs.gxt.ui.client.widget.Window w = new com.extjs.gxt.ui.client.widget.Window();
                     w.setHeading(Messages.get("label.deployNewPortlet", "New portlets"));
                     w.setModal(true);
@@ -93,6 +88,6 @@ public class DeployPortletDefinitionActionItem extends BaseActionItem {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.isMainSelection() && lh.isParentWriteable() || lh.isTableSelection() && lh.isSingleFolder() && lh.isWriteable());
+        setEnabled(lh.getSingleSelection() != null && lh.isWriteable());
     }
 }

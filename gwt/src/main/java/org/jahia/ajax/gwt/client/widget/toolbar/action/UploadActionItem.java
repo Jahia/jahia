@@ -47,21 +47,13 @@ import java.util.List;
  */
 public class UploadActionItem extends BaseActionItem {
     public void onComponentSelection() {
-        GWTJahiaNode m = (GWTJahiaNode) linker.getMainNode();
-        if (m == null) {
-            final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
-            if (selectedItems != null && selectedItems.size() == 1) {
-                m = selectedItems.get(0);
-            }
-        }
-        if (m != null && !m.isFile()) {
-            new FileUploader(linker, m);
-        }
+        LinkerSelectionContext lh = linker.getSelectionContext();
+        new FileUploader(linker, lh.getSingleSelection());
     }
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
 
-        setEnabled(lh.isMainSelection() && lh.isParentWriteable() || lh.isTableSelection() && lh.isSingleFolder() && lh.isWriteable());
+        setEnabled(lh.getSingleSelection() != null && lh.isWriteable() && lh.getSingleSelection().getNodeTypes().contains("jnt:folder"));
     }
 }

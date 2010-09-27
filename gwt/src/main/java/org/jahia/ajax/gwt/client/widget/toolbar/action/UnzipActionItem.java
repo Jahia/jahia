@@ -52,7 +52,7 @@ import java.util.List;
 */
 public class UnzipActionItem extends BaseActionItem {
     public void onComponentSelection() {
-        final List<GWTJahiaNode> selectedItems = linker.getSelectedNodes();
+        final List<GWTJahiaNode> selectedItems = linker.getSelectionContext().getMultipleSelection();
         if (selectedItems != null && selectedItems.size() > 0) {
             linker.loading(Messages.get("statusbar.unzipping.label"));
             List<String> selectedPaths = new ArrayList<String>(selectedItems.size());
@@ -78,6 +78,6 @@ public class UnzipActionItem extends BaseActionItem {
     public void handleNewLinkerSelection(){
         LinkerSelectionContext lh = linker.getSelectionContext();
 
-        setEnabled(lh.isTableSelection() && lh.isParentWriteable() && lh.isSingleFile() && lh.isZip());
+        setEnabled(lh.getMultipleSelection().size() > 0 && lh.isParentWriteable() && lh.isFile() && lh.isZip());
     }
 }

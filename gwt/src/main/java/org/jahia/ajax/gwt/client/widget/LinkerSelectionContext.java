@@ -35,6 +35,8 @@ package org.jahia.ajax.gwt.client.widget;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -43,21 +45,30 @@ import java.util.List;
  * Time: 3:38:07 PM
  */
 public class LinkerSelectionContext {
+    public static final int CONTENT_VIEWS_CONTEXT_MENU = 1;
+    public static final int REPOSITORY_TABS_CONTEXT_MENU = 2;
+    public static final int MAIN_AREA_CONTEXT_MENU = 3;
+
     private GWTJahiaNode mainNode;
     private List<GWTJahiaNode> selectedNodes;
-    private boolean mainSelection;
-    private boolean tableSelection;
-    private boolean writeable;
-    private boolean deleteable;
-    private boolean parentWriteable;
-    private boolean singleFile;
-    private boolean singleFolder;
+
+    private GWTJahiaNode singleSelection;
+    private List<GWTJahiaNode> multipleSelection;
+    private GWTJahiaNode parent;
+
     private boolean pasteAllowed;
+
+    private boolean writeable;
+    private boolean parentWriteable;
     private boolean lockable;
     private boolean locked;
+
+    private boolean file;
     private boolean zip;
     private boolean image;
-    public boolean mount;
+
+    private int contextMenu;
+
 
 
     public void setMainNode(GWTJahiaNode selectedTreeNode) {
@@ -68,99 +79,103 @@ public class LinkerSelectionContext {
         this.selectedNodes = selectedNodes;
     }
 
+    public void setContextMenu(int contextMenu) {
+        this.contextMenu = contextMenu;
+    }
+
     public void refresh() {
-        mainSelection = mainNode != null && (selectedNodes == null || selectedNodes.size() == 0);
-        parentWriteable = (mainSelection) ? (mainNode).isWriteable() && !mainNode.isLocked() : false;
-        writeable = false;
-        deleteable = false;
-        lockable = false;
-        locked = false;
-        singleFile = false;
-        singleFolder = false;
-        pasteAllowed = mainSelection ? CopyPasteEngine.getInstance().canCopyTo(mainNode) : false;
-        zip = false;
-        image = false;
-        tableSelection = false;
-        mount = false;
-        if (selectedNodes != null && selectedNodes.size() > 0) {
-            if (!mainSelection) {
-                GWTJahiaNode parent = (GWTJahiaNode) selectedNodes.get(0).getParent();
-                if (parent != null) {
-                    parentWriteable = parent.isWriteable();
-                }
-            }
-            tableSelection = true;
-            writeable = true;
-            deleteable = true;
-            lockable = true;
-            locked = true;
-            for (GWTJahiaNode gwtJahiaNode : selectedNodes) {
-                writeable &= gwtJahiaNode.isWriteable();
-                deleteable &= gwtJahiaNode.isDeleteable() && !gwtJahiaNode.isLocked();
-                lockable &= gwtJahiaNode.isLockable();
-                locked &= gwtJahiaNode.isLocked();
-            }
-            if (selectedNodes.size() == 1) {
-                singleFile = selectedNodes.get(0).isFile();
-                singleFolder = !singleFile;
-            }
-            if (singleFolder) {
-                mount = selectedNodes.get(0).getInheritedNodeTypes().contains("jnt:mountPoint") || selectedNodes.get(0).getNodeTypes().contains("jnt:mountPoint");
-            }
-            if (!mainSelection) {
-                if (singleFolder) {
-                    pasteAllowed = CopyPasteEngine.getInstance().canCopyTo((selectedNodes).get(0));
+        switch (contextMenu) {
+            case CONTENT_VIEWS_CONTEXT_MENU:
+                multipleSelection = selectedNodes;
+                if (selectedNodes != null && selectedNodes.size() == 1) {
+                    singleSelection = selectedNodes.get(0);
                 } else {
-                    pasteAllowed = CopyPasteEngine.getInstance().canCopyTo((GWTJahiaNode) (selectedNodes).get(0).getParent());
+                    singleSelection = null;
                 }
-            }
-            int extIndex = selectedNodes.get(0).getName().lastIndexOf(".");
-            if (extIndex > 0 && selectedNodes.get(0).getName().substring(extIndex).equalsIgnoreCase(".zip")) {
-                zip = true;
-            }
-            image = selectedNodes.get(0).getNodeTypes().contains("jmix:image");
+                break;
+            case REPOSITORY_TABS_CONTEXT_MENU:
+                multipleSelection = new ArrayList<GWTJahiaNode>();
+                if (mainNode != null) {
+                    multipleSelection.add(mainNode);
+                }
+                singleSelection = mainNode;
+                break;
+            case MAIN_AREA_CONTEXT_MENU:
+            default:
+                if (selectedNodes != null) {
+                    multipleSelection = selectedNodes;
+                    if (selectedNodes.size() == 1) {
+                        singleSelection = selectedNodes.get(0);
+                    } else {
+                        singleSelection = null;
+                    }
+                } else {
+                    multipleSelection = new ArrayList<GWTJahiaNode>();
+                    if (mainNode != null) {
+                        multipleSelection.add(mainNode);
+                    }
+                    singleSelection = mainNode;
+                }
         }
 
+
+        writeable = true;
+        parentWriteable = true;
+        lockable = true;
+        locked = true;
+        file = true;
+        zip = true;
+        image = true;
+
+        for (GWTJahiaNode node : multipleSelection) {
+            writeable &= node.isWriteable();
+            if (node.getParent() != null) {
+                parentWriteable &= ((GWTJahiaNode) node.getParent()).isWriteable();
+            } else {
+                parentWriteable = false;
+            }
+            lockable &= node.isLockable();
+            locked &= node.isLocked();
+
+            file &= node.isFile();
+
+            int extIndex = node.getName().lastIndexOf(".");
+            if (extIndex <= 0 || !node.getName().substring(extIndex).equalsIgnoreCase(".zip")) {
+                zip = false;
+            }
+
+            image = node.getNodeTypes().contains("jmix:image");
+        }
+
+        if (singleSelection != null) {
+            pasteAllowed = CopyPasteEngine.getInstance().canCopyTo(singleSelection);
+        } else {
+            pasteAllowed = false;
+        }
     }
 
     public GWTJahiaNode getMainNode() {
         return mainNode;
     }
 
-    public List<GWTJahiaNode> getSelectedNodes() {
-        return selectedNodes;
+    public GWTJahiaNode getSingleSelection() {
+        return singleSelection;
     }
 
-    public boolean isMainSelection() {
-        return mainSelection;
+    public List<GWTJahiaNode> getMultipleSelection() {
+        return multipleSelection;
     }
 
-    public boolean isTableSelection() {
-        return tableSelection;
+    public boolean isPasteAllowed() {
+        return pasteAllowed;
     }
 
     public boolean isWriteable() {
         return writeable;
     }
 
-    public boolean isDeleteable() {
-        return deleteable;
-    }
-
     public boolean isParentWriteable() {
         return parentWriteable;
-    }
-
-    public boolean isSingleFile() {
-        return singleFile;
-    }
-
-    public boolean isSingleFolder() {
-        return singleFolder;
-    }
-
-    public boolean isPasteAllowed() {
-        return pasteAllowed;
     }
 
     public boolean isLockable() {
@@ -171,15 +186,15 @@ public class LinkerSelectionContext {
         return locked;
     }
 
+    public boolean isFile() {
+        return file;
+    }
+
     public boolean isZip() {
         return zip;
     }
 
     public boolean isImage() {
         return image;
-    }
-
-    public boolean isMount() {
-        return mount;
     }
 }

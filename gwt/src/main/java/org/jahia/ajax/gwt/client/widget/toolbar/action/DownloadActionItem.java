@@ -44,11 +44,12 @@ import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 */
 public class DownloadActionItem extends BaseActionItem   {
     public void onComponentSelection() {
-        ContentActions.download(linker);
+        LinkerSelectionContext lh = linker.getSelectionContext();
+        ContentActions.download(linker, lh.getSingleSelection(), lh.getSingleSelection().getUrl());
     }
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.isTableSelection() && lh.isSingleFile());
+        setEnabled(lh.getSingleSelection() != null && lh.isFile());
     }
 }

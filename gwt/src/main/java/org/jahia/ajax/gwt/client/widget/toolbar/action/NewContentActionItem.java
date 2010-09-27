@@ -93,10 +93,7 @@ public class NewContentActionItem extends BaseActionItem  {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        GWTJahiaNode n = linker.getSelectedNode();
-        if (n == null) {
-            n = linker.getMainNode();
-        }
+        GWTJahiaNode n = lh.getSingleSelection();
         if (n != null) {
             boolean isValidParent = false;
             for (String s : parentTypesAsList) {
@@ -105,7 +102,7 @@ public class NewContentActionItem extends BaseActionItem  {
                     break;
                 }
             }
-            setEnabled(isValidParent && lh.isMainSelection() && lh.isParentWriteable() || isValidParent && lh.isTableSelection() && lh.isSingleFolder() && lh.isWriteable());
+            setEnabled(isValidParent && lh.isWriteable());
         } else {
             setEnabled(false);
         }

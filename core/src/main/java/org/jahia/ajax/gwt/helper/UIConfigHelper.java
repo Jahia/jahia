@@ -124,8 +124,6 @@ public class UIConfigHelper {
                 // add toolbar only if not empty
                 if (gwtToolbar != null && gwtToolbar.getGwtToolbarItems() != null && !gwtToolbar.getGwtToolbarItems().isEmpty()) {
                     gwtJahiaToolbarSet.add(gwtToolbar);
-                } else {
-                    logger.debug("[" + (gwtToolbar != null) + "," + (gwtToolbar.getGwtToolbarItems() != null) + "," + (!gwtToolbar.getGwtToolbarItems().isEmpty()) + "]" + " toolbar: " + toolbar.getName() + " has no items -->  not visible");
                 }
             } else {
                 logger.debug("toolbar: " + toolbar.getName() + ":  not visible");

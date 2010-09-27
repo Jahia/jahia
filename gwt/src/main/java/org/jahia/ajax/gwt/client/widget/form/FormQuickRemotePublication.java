@@ -98,7 +98,7 @@ public abstract class FormQuickRemotePublication extends FormPanel {
                 if (s.startsWith("http") && s.contains("://") && !s.endsWith("/")) {
                     return null;
                 } else {
-                    return "Remote URL should match format: http(s)://www.targetsite.com/cms";
+                    return Messages.get("remotepublication.target.site.error","Remote URL should match format: http(s)://www.targetsite.com/cms (avoid / at the end)");
                 }
             }
         });
@@ -136,7 +136,7 @@ public abstract class FormQuickRemotePublication extends FormPanel {
         add(remotePassword);
 
         final ContentPickerField localPath = new ContentPickerField(null, null, null,
-                ManagerConfigurationFactory.PAGEPICKER, false);
+                ManagerConfigurationFactory.SITEPICKER, false);
         localPath.setName("node");
         localPath.setFieldLabel(Messages.get("node", "Node"));
         add(localPath);
@@ -187,7 +187,7 @@ public abstract class FormQuickRemotePublication extends FormPanel {
                                         new BaseAsyncCallback<GWTJahiaNode>() {
                                             public void onSuccess(GWTJahiaNode gwtJahiaNode) {
                                                 if (getParent() instanceof Window) {
-                                                    ((Window) getParent()).close();
+                                                    ((Window) getParent()).hide();
                                                 }
                                                 onRemotePublicationCreated();
                                             }

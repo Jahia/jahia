@@ -46,6 +46,6 @@ public class ManagerConfigurationFactory {
     public static final String PAGEPICKER = "pagepicker";
     public static final String EDITORIALCONTENTPICKER = "editorialpicker";
     public static final String CATEGORYPICKER = "categorypicker";
-
+    public static final String SITEPICKER = "sitepicker";
 
 }

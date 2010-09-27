@@ -344,77 +344,135 @@
 </table>
 </form>
 </div>
-<style type="text/css">
-    body {
-        background-color: ${myDiese}${currentNode.properties["j:backgroundColor"].string};
-        color: ${myDiese}${currentNode.properties["j:bodyColor"].string};
-        font-family: ${currentNode.properties.fontFamily.string};
-        line-height: ${currentNode.properties.lineHeight.string};
-        font-size: ${currentNode.properties.fontSize.string};
-    }
 
-        /******************************************************************************
-        *  General
-        ******************************************************************************/
-    #bodywrapper a,
-    #bodywrapper a:link,
-    #bodywrapper a:visited {
-        color: ${myDiese}${currentNode.properties["j:aLinkVisitedColor"].string};
-    }
+<template:addResources>
+	<style type="text/css">
+	
+<c:if test="${!empty currentNode.properties['j:backgroundColor'].string || !empty currentNode.properties['j:bodyColor'].string || !empty currentNode.properties['fontFamily'].string || !empty currentNode.properties['lineHeight'].string || !empty currentNode.properties['fontSize'].string  }">
+            /******************************************************************************
+            *  General
+            ******************************************************************************/ 
+	body {
+		<c:if test="${!empty currentNode.properties['j:backgroundColor'].string}">			
+					background-color: ${myDiese}${currentNode.properties["j:backgroundColor"].string};
+		</c:if>
+		<c:if test="${!empty currentNode.properties['j:bodyColor'].string}">
+				color: ${myDiese}${currentNode.properties["j:bodyColor"].string};
+		</c:if>
+		<c:if test="${!empty currentNode.properties['fontFamily'].string}">
+				font-family: ${currentNode.properties.fontFamily.string};
+		</c:if>
+		<c:if test="${!empty currentNode.properties['lineHeight'].string}">
+				line-height: ${currentNode.properties.lineHeight.string};
+		</c:if>
+		<c:if test="${!empty currentNode.properties['fontSize'].string}">
+				font-size: ${currentNode.properties.fontSize.string};
+		</c:if>
+	}
+</c:if>    
+            /******************************************************************************
+            *  General
+            ******************************************************************************/  
 
-    #bodywrapper a:hover,
-    #bodywrapper a:active {
-        color: ${myDiese}${currentNode.properties["j:aHoveActiveColor"].string};
-    }
+<c:if test="${!empty currentNode.properties['j:aLinkVisitedColor'].string}">
+			#bodywrapper a,
+			#bodywrapper a:link,
+			#bodywrapper a:visited {
+				 color: ${myDiese}${currentNode.properties["j:aLinkVisitedColor"].string};   
+			}
+</c:if>
 
-        /******************************************************************************
-        *  Titles
-        ******************************************************************************/
-    #bodywrapper h1 {
-        color: ${myDiese}${currentNode.properties["j:h1Color"].string};
-        font-family: ${currentNode.properties.h1FontFamily.string};
-    }
+<c:if test="${!empty currentNode.properties['j:aHoveActiveColor'].string}">
+        #bodywrapper a:hover,
+        #bodywrapper a:active {
+            color: ${myDiese}${currentNode.properties["j:aHoveActiveColor"].string};
+        }
+</c:if>    
+            /******************************************************************************
+            *  Titles
+            ******************************************************************************/
+<c:if test="${!empty currentNode.properties['j:h1Color'].string || !empty currentNode.properties['h1FontFamily'].string}">
+	#bodywrapper h1 {
+		<c:if test="${!empty currentNode.properties['j:h1Color'].string}">	
+				color: ${myDiese}${currentNode.properties["j:h1Color"].string};
+		</c:if>
+		<c:if test="${!empty currentNode.properties['h1FontFamily'].string}">
+				font-family: ${currentNode.properties.h1FontFamily.string};
+			
+		</c:if>
+	}
+</c:if>  
 
-    #bodywrapper h2 {
-        color: ${myDiese}${currentNode.properties["j:h2Color"].string};
-        font-family: ${currentNode.properties.h2FontFamily.string};
-    }
-
-    #bodywrapper h3 {
-        color: ${myDiese}${currentNode.properties["j:h3Color"].string};
-        font-family: ${currentNode.properties.h3FontFamily.string};
-    }
-
-    #bodywrapper h4 {
-        color: ${myDiese}${currentNode.properties["j:h4Color"].string};
-        font-family: ${currentNode.properties.h4FontFamily.string};
-    }
-
-    #bodywrapper h5 {
-        color: ${myDiese}${currentNode.properties["j:h5Color"].string};
-        font-family: ${currentNode.properties.h5FontFamily.string};
-    }
-
-        /******************************************************************************
-        *  Page colors
-        ******************************************************************************/
-    #bodywrapper .colorResource1 {
-        background-color: ${myDiese}${currentNode.properties["j:colorResource1"].string} !important;
-    }
-
-    #bodywrapper .colorResource2 {
-        background-color: ${myDiese}${currentNode.properties["j:colorResource2"].string} !important;
-    }
-
-        /******************************************************************************
-        *  Background images
-        ******************************************************************************/
-    #bodywrapper .imgResource1 {
-        background-image: url('${imgResource1.node.url}');
-    }
-
-    #bodywrapper .imgResource2 {
-        background-image: url('${imgResource2.node.url}');
-    }
-</style>
+<c:if test="${!empty currentNode.properties['j:h2Color'].string || !empty currentNode.properties['h2FontFamily'].string}">
+	#bodywrapper h2 {
+		<c:if test="${!empty currentNode.properties['j:h2Color'].string}">	
+				color: ${myDiese}${currentNode.properties["j:h2Color"].string};
+		</c:if>
+		<c:if test="${!empty currentNode.properties['h2FontFamily'].string}">
+				font-family: ${currentNode.properties.h2FontFamily.string};
+			
+		</c:if>
+	}
+</c:if> 
+<c:if test="${!empty currentNode.properties['j:h3Color'].string || !empty currentNode.properties['h3FontFamily'].string}">
+	#bodywrapper h3 {
+		<c:if test="${!empty currentNode.properties['j:h3Color'].string}">	
+				color: ${myDiese}${currentNode.properties["j:h3Color"].string};
+		</c:if>
+		<c:if test="${!empty currentNode.properties['h3FontFamily'].string}">
+				font-family: ${currentNode.properties.h3FontFamily.string};
+			
+		</c:if>
+	}
+</c:if>
+<c:if test="${!empty currentNode.properties['j:h4Color'].string || !empty currentNode.properties['h4FontFamily'].string}">
+	#bodywrapper h4 {
+		<c:if test="${!empty currentNode.properties['j:h4Color'].string}">	
+				color: ${myDiese}${currentNode.properties["j:h4Color"].string};
+		</c:if>
+		<c:if test="${!empty currentNode.properties['h4FontFamily'].string}">
+				font-family: ${currentNode.properties.h4FontFamily.string};
+			
+		</c:if>
+	}
+</c:if>
+<c:if test="${!empty currentNode.properties['j:h5Color'].string || !empty currentNode.properties['h5FontFamily'].string}">
+	#bodywrapper h5 {
+		<c:if test="${!empty currentNode.properties['j:h5Color'].string}">	
+				color: ${myDiese}${currentNode.properties["j:h5Color"].string};
+		</c:if>
+		<c:if test="${!empty currentNode.properties['h5FontFamily'].string}">
+				font-family: ${currentNode.properties.h5FontFamily.string};
+			
+		</c:if>
+	}
+</c:if> 
+            /******************************************************************************
+            *  Page colors
+            ******************************************************************************/
+<c:if test="${!empty currentNode.properties['j:colorResource1'].string}">			
+        #bodywrapper .colorResource1 {
+            background-color: ${myDiese}${currentNode.properties["j:colorResource1"].string} !important;
+        }
+</c:if>
+<c:if test="${!empty currentNode.properties['j:colorResource2'].string}">
+        #bodywrapper .colorResource2 {
+            background-color: ${myDiese}${currentNode.properties["j:colorResource2"].string} !important;
+        }
+</c:if>    
+            /******************************************************************************
+            *  Background images
+            ******************************************************************************/
+<c:if test="${!empty currentNode.properties['j:imgResource1'].string}">			
+        #bodywrapper .imgResource1 {
+            background-image: url('${imgResource1.node.url}');
+        }
+</c:if> 
+<c:if test="${!empty currentNode.properties['j:imgResource2'].string}">		
+        #bodywrapper .imgResource2 {
+            background-image: url('${imgResource2.node.url}');
+        }
+</c:if> 
+    </style>
+</template:addResources>
 

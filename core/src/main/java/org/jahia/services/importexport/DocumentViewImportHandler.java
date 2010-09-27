@@ -361,9 +361,11 @@ public class DocumentViewImportHandler extends DefaultHandler {
                     if (attrValue.length() > 0) {
                         String[] values = attrValue.split(" ");
                         for (String value : values) {
-                            String rootPath = nodes.get(0).getPath();
-                            if (!"/".equals(rootPath)) {
-                                value = rootPath + value;
+                            for (Map.Entry<String, String> entry : pathMapping.entrySet()) {
+                                if (value.startsWith(entry.getKey())) {
+                                    value = entry.getValue() + StringUtils.substringAfter(value, entry.getKey());
+                                    break;
+                                }
                             }
                             if (!references.containsKey(value)) {
                                 references.put(value, new ArrayList<String>());

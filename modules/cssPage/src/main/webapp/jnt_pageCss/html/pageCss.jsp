@@ -460,12 +460,12 @@
             /******************************************************************************
             *  Background images
             ******************************************************************************/
-<c:if test="${!empty currentNode.properties['j:imgResource1'].string}">			
+<c:if test="${!empty imgResource1.node.url}">			
         #bodywrapper .imgResource1 {
             background-image: url('${imgResource1.node.url}');
         }
 </c:if> 
-<c:if test="${!empty currentNode.properties['j:imgResource2'].string}">		
+<c:if test="${!empty imgResource2.node.url}">					
         #bodywrapper .imgResource2 {
             background-image: url('${imgResource2.node.url}');
         }

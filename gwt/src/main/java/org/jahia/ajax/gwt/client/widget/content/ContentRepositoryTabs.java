@@ -36,7 +36,6 @@ import com.extjs.gxt.ui.client.widget.*;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTRepository;
-import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.tripanel.LeftComponent;
 import org.jahia.ajax.gwt.client.widget.tripanel.ManagerLinker;
@@ -186,7 +185,7 @@ public class ContentRepositoryTabs extends LeftComponent {
         browseComponent.add(savedSearchPanel);
         browseTabITem.setLayout(new FitLayout());
         browseTabITem.add(browseComponent);
-        
+
         m_component.add(browseTabITem);
 
         createSearchPanel();
@@ -305,19 +304,6 @@ public class ContentRepositoryTabs extends LeftComponent {
         queryList.add(queryItem);
         if (expandSearchPanel) {
             savedSearchPanel.setExpanded(true);
-        }
-    }
-
-    public void deselectOnFreeSearch() {
-        if (savedSearchPanel.isExpanded()) {
-            queryList.getSelectionModel().deselectAll();
-        } else {
-            for (RepositoryTab tab : repositories) {
-                if (tab.isExpanded()) {
-                    tab.deselectOnFreeSearch();
-                    return;
-                }
-            }
         }
     }
 

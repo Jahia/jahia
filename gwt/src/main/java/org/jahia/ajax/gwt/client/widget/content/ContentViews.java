@@ -103,8 +103,6 @@ public class ContentViews extends TopRightComponent {
             clearTable();
             m_component.removeAll();
             current = newView;
-            current.setContextMenu(contextMenu);
-            //current.initWithLinker(getLinker());
             m_component.add(current.getComponent());
             m_component.layout();
 
@@ -119,11 +117,6 @@ public class ContentViews extends TopRightComponent {
         tableView.initWithLinker(linker);
         thumbView.initWithLinker(linker);
         detailedThumbView.initWithLinker(linker);
-    }
-
-    public void initContextMenu() {
-        contextMenu = new ActionContextMenu(configuration.getContextMenu(),getLinker());
-        current.setContextMenu(contextMenu);
     }
 
     public void setContent(Object root) {

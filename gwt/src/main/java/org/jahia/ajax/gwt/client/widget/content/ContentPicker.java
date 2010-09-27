@@ -33,6 +33,7 @@
 package org.jahia.ajax.gwt.client.widget.content;
 
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
+import org.jahia.ajax.gwt.client.widget.toolbar.ActionContextMenu;
 import org.jahia.ajax.gwt.client.widget.tripanel.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
@@ -84,7 +85,7 @@ public class ContentPicker extends TriPanelBrowserLayout {
 
         // linker initializations
         linker.registerComponents(tree, contentViews, bottomComponents, toolbar, null);
-        contentViews.initContextMenu();
+        setContextMenu(new ActionContextMenu(config.getContextMenu(),linker));
         linker.handleNewSelection();
 
         pickedContent = (PickedContentView) bottomComponents;

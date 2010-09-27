@@ -332,7 +332,7 @@ public class GWTJahiaNodeTreeFactory {
                     if (p == null) {
                         expandChildren(treeStore.getRootItems());
                     } else {
-                        expandChildren(treeStore.getChildren(p));
+                        if (treeStore.getChildren(p) != null) { expandChildren(treeStore.getChildren(p)); }
                     }
                 }
             });

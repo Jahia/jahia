@@ -72,11 +72,4 @@ public abstract class LinkableComponent {
      */
     public abstract Component getComponent() ;
 
-    /**
-     * Initialize the context m�enu if defined into subclass. If not, do nothing.
-     */
-    public void initContextMenu() {}
-
-    public void setContextMenu(Menu menu) {}
-
 }

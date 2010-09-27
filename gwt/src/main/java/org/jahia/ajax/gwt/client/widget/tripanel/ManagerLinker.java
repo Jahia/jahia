@@ -44,6 +44,7 @@ import org.jahia.ajax.gwt.client.widget.LinkerComponent;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -67,7 +68,7 @@ public class ManagerLinker implements Linker {
     private GWTManagerConfiguration config;
 
     public ManagerLinker(GWTManagerConfiguration configuration) {
-    this.config = configuration;
+        this.config = configuration;
     }
 
     /**
@@ -374,7 +375,13 @@ public class ManagerLinker implements Linker {
     }
 
     public List<GWTJahiaNode> getSelectedNodes() {
-        return (List<GWTJahiaNode>) getTableSelection();
+        List<GWTJahiaNode> list = null;
+        if ( getTableSelection() != null) {
+            list = (List<GWTJahiaNode>) getTableSelection();
+        } else if (getTreeSelection() != null) {
+            list = Arrays.asList((GWTJahiaNode) getTreeSelection());
+        }
+        return list;
     }
 
     public LinkerSelectionContext getSelectionContext() {

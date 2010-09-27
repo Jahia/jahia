@@ -48,6 +48,6 @@ public class RenameActionItem extends BaseActionItem   {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.isTableSelection() && lh.isWriteable() && (lh.isSingleFile() || lh.isSingleFolder()));
+        setEnabled((lh.isMainSelection() || lh.isTableSelection()) && lh.isWriteable() && (lh.isSingleFile() || lh.isSingleFolder()));
     }
 }

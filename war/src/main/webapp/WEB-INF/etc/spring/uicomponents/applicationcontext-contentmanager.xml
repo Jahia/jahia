@@ -1563,7 +1563,7 @@
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
                 <value>icon,40,empty</value>
-                <value>name,*,label.name</value>
+                <value>displayName,*,label.title</value>
             </list>
         </property>
     </bean>

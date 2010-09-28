@@ -60,6 +60,12 @@
         <c:set target="${colMap}" property="col2" value="4"/>
         <c:set target="${colMap}" property="col3" value="4"/>
     </c:when>
+	<c:when test="${column.string == '4col4444'}">
+        <c:set target="${colMap}" property="col1" value="4"/>
+        <c:set target="${colMap}" property="col2" value="4"/>
+        <c:set target="${colMap}" property="col3" value="4"/>
+        <c:set target="${colMap}" property="col4" value="4"/>
+    </c:when>
     <c:otherwise>
         <c:set target="${colMap}" property="col1" value="10"/>
         <c:set target="${colMap}" property="col2" value="6"/>

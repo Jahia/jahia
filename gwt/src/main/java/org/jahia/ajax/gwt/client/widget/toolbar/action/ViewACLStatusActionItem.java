@@ -36,10 +36,8 @@ import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.util.Rectangle;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.RootPanel;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflow;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo;
+import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 
@@ -52,7 +50,7 @@ import java.util.List;
  * Time: 6:59:01 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ViewWorkflowStatusActionItem extends ViewStatusActionItem {
+public class ViewACLStatusActionItem extends ViewStatusActionItem {
 
     @Override
     public void viewStatus(List<Module> moduleList, Rectangle rect, final Linker linker) {
@@ -65,31 +63,12 @@ public class ViewWorkflowStatusActionItem extends ViewStatusActionItem {
             }
         };
 
-        String lastUnpublished = null;
-        boolean allPublished = true;
         for (Module module : moduleList) {
             if (module.getNode() != null) {
-                GWTJahiaWorkflowInfo info = module.getNode().getWorkflowInfo();
-                if (info.getActiveWorkflows().size()>0) {
-                    GWTJahiaWorkflow workflow = info.getActiveWorkflows().values().iterator().next();
-                    String current = workflow.getDefinition().getName();
-                    allPublished = false;
-                    if(workflow.getDuedate()!=null) {
-                        addInfoLayer(module, "Workflow :<br/>"+current+" is waiting on timer.<br/>Will be triggered at : "+ DateTimeFormat.getMediumDateTimeFormat().format(workflow.getDuedate()),
-                                 "red", "red", null, rect, removeListener, true, "0.7");
-                    } else {
-                        addInfoLayer(module, "Workflow :<br/>started "+current, "red", "red",
-                                null, rect, removeListener, true,
-                            "0.7");
-                    }
+                if (module.getNode().isHasAcl()) {
+                    addInfoLayer(module, null,null,null, ToolbarIconProvider.getInstance().getIcon("editAction").createImage().getUrl(), rect, removeListener,true, "1");
                 }
             }
-        }
-
-        if (allPublished) {
-            addInfoLayer(moduleList.iterator().next(), "No actual worflow(s) started", "black", "white",
-                    null, rect,removeListener, false,
-                    "0.7");
         }
     }
 

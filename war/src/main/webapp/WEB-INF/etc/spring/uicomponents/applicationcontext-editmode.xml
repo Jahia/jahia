@@ -328,6 +328,7 @@
                             <property name="titleKey" value="label.workflow"/>
                             <property name="items">
                                 <list>
+                                    <ref bean="Toolbar.Item.ViewACLStatusAction"/>
                                     <ref bean="Toolbar.Item.WorkflowStatusAction"/>
                                     <ref bean="Toolbar.Item.WorkflowDashboard"/>
                                 </list>

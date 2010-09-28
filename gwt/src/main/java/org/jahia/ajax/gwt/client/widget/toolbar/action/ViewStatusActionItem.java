@@ -36,9 +36,11 @@ import com.extjs.gxt.ui.client.core.El;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.ScrollListener;
 import com.extjs.gxt.ui.client.util.Point;
+import com.extjs.gxt.ui.client.util.Rectangle;
+import com.extjs.gxt.ui.client.util.Size;
 import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.HtmlContainer;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.ToggleButton;
@@ -46,11 +48,12 @@ import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -60,11 +63,41 @@ import java.util.Map;
  *        Created : 9 févr. 2010
  */
 public abstract class ViewStatusActionItem extends BaseActionItem {
-    protected transient Map<LayoutContainer, El> containers = new HashMap<LayoutContainer, El>();
+    protected transient Set<InfoLayer> containers = new HashSet<InfoLayer>();
     protected transient ToggleButton button;
 
     public void onComponentSelection() {
-        viewStatus(linker);
+        if (!containers.isEmpty()) {
+            removeAll();
+            return;
+        }
+        List<Module> modules = ModuleHelper.getModules();
+        List<Module> list = new ArrayList<Module>();
+        for (Module m : modules) {
+            if (!m.getPath().endsWith("*")) {
+                list.add(m);
+            }
+        }
+
+        final Module mainModule = modules.iterator().next();
+        Point p = mainModule.getContainer().getPosition(false);
+        Size s = mainModule.getContainer().getSize();
+
+        final Rectangle rect = new Rectangle(p.x, p.y, s.width, s.height);
+        viewStatus(list, rect, linker);
+
+        ((EditLinker) linker).getMainModule().getContainer().addScrollListener(new ScrollListener() {
+            @Override
+            public void widgetScrolled(ComponentEvent ce) {
+                for (InfoLayer infoLayer : containers) {
+                    if (!infoLayer.isHeader) {
+                        position(infoLayer, rect);
+                    }
+                }
+                super.widgetScrolled(ce);
+            }
+        });
+
     }
 
     public void handleNewLinkerSelection() {
@@ -75,82 +108,119 @@ public abstract class ViewStatusActionItem extends BaseActionItem {
         return button;
     }
 
-    public abstract void viewStatus(Linker linker);
+    public abstract void viewStatus(List<Module> moduleList, Rectangle rect, Linker linker);
 
-    protected void addInfoLayer(Module module, String text, String color, String bgcolor, int left, int top, int right,
-                                int bottom, Listener<ComponentEvent> removeListener, boolean headerOnly,
-                                final String opacity) {
-        LayoutContainer infoLayer = new LayoutContainer();
-        RootPanel.get().add(infoLayer);
-        infoLayer.el().makePositionable(true);
-        infoLayer.setZIndex(1010);
+    protected void addInfoLayer(Module module, String text, String textColor, String bgcolor, final String bgimage,
+                                Rectangle rect, Listener<ComponentEvent> removeListener, boolean headerOnly, final String opacity) {
+        LayoutContainer layoutContainer = new LayoutContainer();
+        RootPanel.get().add(layoutContainer);
+        layoutContainer.el().makePositionable(true);
+        layoutContainer.setZIndex(1010);
         LayoutContainer container = module.getContainer();
         El el = container.el();
-
-        if (headerOnly && container instanceof ContentPanel) {
-            el = ((ContentPanel) container).getHeader().el();
+        final boolean header = headerOnly && module instanceof MainModule;
+        if (header) {
+            el = module.getHeader().el();
         }
 
-        infoLayer.setLayout(new CenterLayout());
+        layoutContainer.setLayout(new CenterLayout());
         if (text != null) {
             HtmlContainer box = new HtmlContainer(text);
             box.addStyleName("x-view-item");
             box.setStyleAttribute("background-color", "white");
-            box.setStyleAttribute("color", color);
+            box.setStyleAttribute("color", textColor);
             box.setStyleAttribute("font-weight", "bold");
             box.setStyleAttribute("text-align", "center");
             box.setWidth(250);
             box.setStyleAttribute("white-space", "normal");
-            infoLayer.add(box);
+            layoutContainer.add(box);
+        }
+        if (bgimage != null) {
+            layoutContainer.setStyleAttribute("background-image", "url('"+bgimage+"')");
+        }
+        if (bgcolor != null) {
+            layoutContainer.setStyleAttribute("background-color", bgcolor);
         }
 
-        infoLayer.setBorders(true);
-        infoLayer.setStyleAttribute("background-color", bgcolor);
-        infoLayer.setStyleAttribute("opacity", opacity);
-        if (module instanceof MainModule) {
-            position(infoLayer, el, top, bottom, left, right);
-        } else {
-            position(infoLayer, el, 0, bottom, left, right);
-        }
+        layoutContainer.setBorders(true);
+        layoutContainer.setStyleAttribute("opacity", opacity);
 
-        infoLayer.show();
-        containers.put(infoLayer, el);
-        infoLayer.sinkEvents(Event.ONCLICK);
-        infoLayer.addListener(Events.OnClick, removeListener);
+        final InfoLayer infoLayer = new InfoLayer(layoutContainer, el, header, bgimage != null);
+
+        position(infoLayer, rect);
+
+        layoutContainer.show();
+        containers.add(infoLayer);
+        layoutContainer.sinkEvents(Event.ONCLICK);
+        layoutContainer.addListener(Events.OnClick, removeListener);
     }
 
-    protected void position(LayoutContainer infoLayer, El el, int top, int bottom, int left, int right) {
-        Point xy = el.getXY();
+    protected void position(InfoLayer infoLayer, Rectangle rect) {
+        Point xy = infoLayer.el.getXY();
         int x = xy.x;
         int y = xy.y;
-        int w = el.getWidth();
-        int h = el.getHeight();
+        int w = infoLayer.el.getWidth();
+        int h = infoLayer.el.getHeight();
 
-        if (y < top) {
-            h = Math.max(0, h - (top - y));
-            y = top;
+        if (infoLayer.isImage) {
+            x = x+w-18;
+            w = 18;
+            h = 18;
+            if (infoLayer.isHeader) {
+                x -= 30;
+                y += 4;
+            }
         }
-        if (y + h > bottom) {
-            h = bottom - y;
+        
+        if (!infoLayer.isHeader) {
+            if (y < rect.y) {
+                h = Math.max(0, h - (rect.y - y));
+                y = rect.y;
+            }
+            if (y + h > rect.y + rect.height) {
+                h = rect.y + rect.height - y;
+            }
         }
-        if (x < left) {
-            w = Math.max(0, w - (left - x));
-            x = left;
+        if (x < rect.x) {
+            w = Math.max(0, w - (rect.x - x));
+            x = rect.x;
         }
-        if (x + w > right) {
-            w = right - x;
+        if (x + w > rect.x + rect.width) {
+            w = rect.x + rect.width - x;
         }
 
         if (h <= 0 || w <= 0) {
-            if (infoLayer.isVisible()) {
-                infoLayer.hide();
+            if (infoLayer.layoutContainer.isVisible()) {
+                infoLayer.layoutContainer.hide();
             }
         } else {
-            if (!infoLayer.isVisible()) {
-                infoLayer.show();
+            if (!infoLayer.layoutContainer.isVisible()) {
+                infoLayer.layoutContainer.show();
             }
         }
-        infoLayer.setPosition(x, y);
-        infoLayer.setSize(w, h);
+        infoLayer.layoutContainer.setPosition(x, y);
+        infoLayer.layoutContainer.setSize(w, h);
     }
+
+    protected void removeAll() {
+        for (InfoLayer ctn : containers) {
+            RootPanel.get().remove(ctn.layoutContainer);
+        }
+        containers.clear();
+    }
+
+    class InfoLayer {
+        LayoutContainer layoutContainer;
+        El el;
+        boolean isHeader;
+        boolean isImage;
+
+        InfoLayer(LayoutContainer layoutContainer, El el, boolean header, boolean image) {
+            this.layoutContainer = layoutContainer;
+            this.el = el;
+            isHeader = header;
+            isImage = image;
+        }
+    }
+
 }

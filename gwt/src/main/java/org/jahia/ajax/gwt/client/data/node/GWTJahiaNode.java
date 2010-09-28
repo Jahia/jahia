@@ -57,6 +57,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     public static final String LOCKABLE = "lockable";
     public static final String WRITEABLE = "writeable";
     public static final String DELETEABLE = "deleteable";
+    public static final String ACL = "hasACL";
     public static final String UUID = "uuid";
     public static final String DISPLAY_NAME = "displayName";
     public static final String FILE = "file";
@@ -552,5 +553,13 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
 	public void setReference(boolean reference) {
     	this.reference = reference;
+    }
+
+    public void setHasAcl(Boolean deleteable) {
+        set(ACL, deleteable);
+    }
+
+    public Boolean isHasAcl() {
+        return get(ACL);
     }
 }

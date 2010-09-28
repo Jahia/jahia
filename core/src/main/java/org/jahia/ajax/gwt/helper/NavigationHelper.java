@@ -750,6 +750,11 @@ public class NavigationHelper {
         n.setDeleteable(node.isWriteable());
         n.setLockable(node.isLockable());
         try {
+            n.setHasAcl(node.hasNode("j:acl"));
+        } catch (RepositoryException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        try {
             boolean isLocked = node.isLocked() && !node.getLockOwner().equals(
                     node.getSession().getUser().getUsername());
             if(!isLocked && node.hasProperty(Constants.JAHIA_LOCKTYPES)) {

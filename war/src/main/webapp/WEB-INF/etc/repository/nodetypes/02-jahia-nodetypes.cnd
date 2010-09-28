@@ -335,7 +335,7 @@
 [jnt:template] > nt:base, jmix:nodenameInfo, jmix:basemetadata
  + * (jnt:content)
 
-[jnt:masterTemplate] > jnt:template
+[jnt:masterTemplate] > jnt:template, jmix:publication
  + * (jnt:template)
  + * (jnt:derivedTemplate)
 
@@ -405,7 +405,7 @@
  - j:mandatoryLanguages (string) multiple nofulltext
  - j:defaultLanguage (string) nofulltext
  - j:mixLanguage (boolean) = false
- - j:sourceTemplate (weakreference) hidden
+ - j:templatesSet (string) hidden
  + users (nt:base) = nt:base
  + * (nt:base)
 
@@ -536,7 +536,7 @@
 [jnt:templateSets] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:list
  + * (jnt:virtualsite)
 
-[jnt:templatesFolder] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:list
+[jnt:templatesFolder] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:list, jmix:publication
  + * (jnt:template)
 
 [jmix:autoSplitFolders] mixin extends = jnt:contentList

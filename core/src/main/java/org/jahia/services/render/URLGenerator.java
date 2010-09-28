@@ -128,18 +128,17 @@ public class URLGenerator {
         ckeditor = SettingsBean.getInstance().getJahiaCkEditorDiskPath();
         if (context.getSite() != null && context.isEditMode()) {
             try {
-                if (context.getSite().hasProperty("j:sourceTemplate")) {
-                    studio += "/" + context.getSite().getProperty("j:sourceTemplate").getNode().getName() + "/";
-                    if (resource.getNode().isNodeType("jnt:page") && resource.getNode().hasProperty(
-                            "j:sourceTemplate")) {
+                if (context.getSite().hasProperty("j:templatesSet")) {
+                    studio += "/" + context.getSite().getProperty("j:templatesSet").getString();
+                    if (resource.getNode().hasProperty("j:templateNode")) {
                         try {
-                            studio += "templates/" + resource.getNode().getProperty(
-                                    "j:sourceTemplate").getNode().getName() + ".html";
+                            studio += StringUtils.substringAfter(resource.getNode().getProperty("j:templateNode").getNode().getPath(), context.getSite().getPath());
+                            studio += ".html";
                         } catch (RepositoryException e) {
-                            studio += "home.html";
+                            studio += "/home.html";
                         }
                     } else {
-                        studio += "home.html";
+                        studio += "/home.html";
                     }
                 }
             } catch (RepositoryException e) {

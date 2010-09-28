@@ -76,6 +76,7 @@ public class StaticAssetsFilter extends AbstractFilter {
             if (renderContext.isEditMode() && resource.getContextConfiguration().equals("page")) {
                 // Add static div for edit mode
                 List<Element> bodyElementList = source.getAllElements(HTMLElementName.BODY);
+                if (bodyElementList.size() > 0) {
                 Element bodyElement = bodyElementList.get(bodyElementList.size()-1);
                 
                 EndTag bodyEndTag = bodyElement.getEndTag();
@@ -90,6 +91,7 @@ public class StaticAssetsFilter extends AbstractFilter {
                                 " config=\""+renderContext.getEditModeConfigName()+"\"" +
                                 " path=\""+resource.getNode().getPath()+"\" locale=\""+resource.getLocale()+"\"" +
                                 " template=\""+resource.getTemplate()+"\">");
+                }
             }
             List<Element> headElementList = source.getAllElements(HTMLElementName.HEAD);
             for (Element element : headElementList) {

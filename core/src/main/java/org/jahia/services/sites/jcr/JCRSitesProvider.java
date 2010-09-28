@@ -36,6 +36,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.analytics.GoogleAnalyticsProfile;
 import org.jahia.services.content.*;
@@ -265,7 +266,7 @@ public class JCRSitesProvider {
                                     siteNode.setProperty("j:languages", languages.toArray(new String[languages.size()]));
                                     siteNode.setProperty("j:mandatoryLanguages", mandatoryLanguages.toArray(new String[mandatoryLanguages
                                             .size()]));
-                                    siteNode.setProperty("j:sourceTemplate", defaultSite);
+                                    siteNode.setProperty("j:templatesSet", templatePackage);
                                     session.save();
 //                                    JCRPublicationService.getInstance().publish(siteNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
 //                                            false);
@@ -375,7 +376,11 @@ public class JCRSitesProvider {
         JahiaSite site = new JahiaSite(siteId, node.getProperty("j:title").getString(), node.getProperty("j:serverName").getString(),
                 node.getName(), node.getProperty("j:description").getString(), props, node.getPath());
         Value[] s = node.getProperty("j:installedModules").getValues();
-        site.setTemplatePackageName(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageByFileName(s[0].getString()).getName());
+        final JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService()
+                .getTemplatePackageByFileName(s[0].getString());
+        if (aPackage != null) {
+            site.setTemplatePackageName(aPackage.getName());
+        }
         site.setMixLanguagesActive(node.getProperty("j:mixLanguage").getBoolean());
         site.setDefaultLanguage(node.getProperty("j:defaultLanguage").getString());
         Value[] languages = node.getProperty("j:languages").getValues();

@@ -345,7 +345,8 @@
 <template:addResources>
 	<style type="text/css">
 	
-<c:if test="${!empty currentNode.properties['j:backgroundColor'].string || !empty currentNode.properties['j:bodyColor'].string || !empty currentNode.properties['fontFamily'].string || !empty currentNode.properties['lineHeight'].string || !empty currentNode.properties['fontSize'].string  }">
+<c:if test="${!empty currentNode.properties['j:backgroundColor'].string || !empty currentNode.properties['j:bodyColor'].string || !empty currentNode.properties['fontFamily'].string || !empty currentNode.properties['lineHeight'].string || !empty currentNode.properties['fontSize'].string
+    || currentNode.properties['fontFamily'].string != ' ' || currentNode.properties['lineHeight'].string != ' ' || currentNode.properties['fontSize'].string != ' ' }">
             /******************************************************************************
             *  General
             ******************************************************************************/ 
@@ -356,13 +357,13 @@
 		<c:if test="${!empty currentNode.properties['j:bodyColor'].string}">
 				color: ${myDiese}${currentNode.properties["j:bodyColor"].string};
 		</c:if>
-		<c:if test="${!empty currentNode.properties['fontFamily'].string}">
+		<c:if test="${!empty currentNode.properties['fontFamily'].string || currentNode.properties['fontFamily'].string != ' '}">
 				font-family: ${currentNode.properties.fontFamily.string};
 		</c:if>
-		<c:if test="${!empty currentNode.properties['lineHeight'].string}">
+		<c:if test="${!empty currentNode.properties['lineHeight'].string || currentNode.properties['lineHeight'].string != ' '}">
 				line-height: ${currentNode.properties.lineHeight.string};
 		</c:if>
-		<c:if test="${!empty currentNode.properties['fontSize'].string}">
+		<c:if test="${!empty currentNode.properties['fontSize'].string || currentNode.properties['fontSize'].string != ' '}">
 				font-size: ${currentNode.properties.fontSize.string};
 		</c:if>
 	}
@@ -388,57 +389,57 @@
             /******************************************************************************
             *  Titles
             ******************************************************************************/
-<c:if test="${!empty currentNode.properties['j:h1Color'].string || !empty currentNode.properties['h1FontFamily'].string}">
+<c:if test="${!empty currentNode.properties['j:h1Color'].string || !empty currentNode.properties['h1FontFamily'].string || currentNode.properties['h1FontFamily'].string != 0}">
 	#bodywrapper h1 {
 		<c:if test="${!empty currentNode.properties['j:h1Color'].string}">	
 				color: ${myDiese}${currentNode.properties["j:h1Color"].string};
 		</c:if>
-		<c:if test="${!empty currentNode.properties['h1FontFamily'].string}">
+		<c:if test="${!empty currentNode.properties['h1FontFamily'].string || currentNode.properties['h1FontFamily'].string != 0}">
 				font-family: ${currentNode.properties.h1FontFamily.string};
 			
 		</c:if>
 	}
 </c:if>  
 
-<c:if test="${!empty currentNode.properties['j:h2Color'].string || !empty currentNode.properties['h2FontFamily'].string}">
+<c:if test="${!empty currentNode.properties['j:h2Color'].string || !empty currentNode.properties['h2FontFamily'].string || currentNode.properties['h2FontFamily'].string != 0}">
 	#bodywrapper h2 {
 		<c:if test="${!empty currentNode.properties['j:h2Color'].string}">	
 				color: ${myDiese}${currentNode.properties["j:h2Color"].string};
 		</c:if>
-		<c:if test="${!empty currentNode.properties['h2FontFamily'].string}">
+		<c:if test="${!empty currentNode.properties['h2FontFamily'].string || currentNode.properties['h2FontFamily'].string != 0}">
 				font-family: ${currentNode.properties.h2FontFamily.string};
 			
 		</c:if>
 	}
 </c:if> 
-<c:if test="${!empty currentNode.properties['j:h3Color'].string || !empty currentNode.properties['h3FontFamily'].string}">
+<c:if test="${!empty currentNode.properties['j:h3Color'].string || !empty currentNode.properties['h3FontFamily'].string || currentNode.properties['h3FontFamily'].string != 0}">
 	#bodywrapper h3 {
 		<c:if test="${!empty currentNode.properties['j:h3Color'].string}">	
 				color: ${myDiese}${currentNode.properties["j:h3Color"].string};
 		</c:if>
-		<c:if test="${!empty currentNode.properties['h3FontFamily'].string}">
+		<c:if test="${!empty currentNode.properties['h3FontFamily'].string || currentNode.properties['h3FontFamily'].string != 0}">
 				font-family: ${currentNode.properties.h3FontFamily.string};
 			
 		</c:if>
 	}
 </c:if>
-<c:if test="${!empty currentNode.properties['j:h4Color'].string || !empty currentNode.properties['h4FontFamily'].string}">
+<c:if test="${!empty currentNode.properties['j:h4Color'].string || !empty currentNode.properties['h4FontFamily'].string || currentNode.properties['h4FontFamily'].string != 0}">
 	#bodywrapper h4 {
 		<c:if test="${!empty currentNode.properties['j:h4Color'].string}">	
 				color: ${myDiese}${currentNode.properties["j:h4Color"].string};
 		</c:if>
-		<c:if test="${!empty currentNode.properties['h4FontFamily'].string}">
+		<c:if test="${!empty currentNode.properties['h4FontFamily'].string || currentNode.properties['h4FontFamily'].string != 0}">
 				font-family: ${currentNode.properties.h4FontFamily.string};
 			
 		</c:if>
 	}
 </c:if>
-<c:if test="${!empty currentNode.properties['j:h5Color'].string || !empty currentNode.properties['h5FontFamily'].string}">
+<c:if test="${!empty currentNode.properties['j:h5Color'].string || !empty currentNode.properties['h5FontFamily'].string || currentNode.properties['h5FontFamily'].string != 0 }">
 	#bodywrapper h5 {
 		<c:if test="${!empty currentNode.properties['j:h5Color'].string}">	
 				color: ${myDiese}${currentNode.properties["j:h5Color"].string};
 		</c:if>
-		<c:if test="${!empty currentNode.properties['h5FontFamily'].string}">
+		<c:if test="${!empty currentNode.properties['h5FontFamily'].string || currentNode.properties['h5FontFamily'].string != 0 }">
 				font-family: ${currentNode.properties.h5FontFamily.string};
 			
 		</c:if>

@@ -491,7 +491,7 @@ public class Service extends JahiaService {
             throws JahiaException, RepositoryException {
         final String uuid = node.getNode().getIdentifier();
         final String jobName = "RULE_JOB_" + uuid + ruleToExecute;
-        final JobDetail jobDetail = BackgroundJob.createJahiaJob(jobName, RuleJob.class, RuleJob.RULE_TYPE);
+        final JobDetail jobDetail = BackgroundJob.createJahiaJob(jobName, RuleJob.class);
         final JobDataMap map = jobDetail.getJobDataMap();
         map.put(RuleJob.JOB_RULE_TO_EXECUTE, ruleToExecute);
         map.put(RuleJob.JOB_NODE_UUID, uuid);
@@ -510,7 +510,7 @@ public class Service extends JahiaService {
             throws JahiaException, RepositoryException {
         final String uuid = node.getNode().getIdentifier();
         final String jobName = "ACTION_JOB_" + uuid + actionToExecute;
-        final JobDetail jobDetail = BackgroundJob.createJahiaJob(jobName, ActionJob.class, ActionJob.ACTION_TYPE);
+        final JobDetail jobDetail = BackgroundJob.createJahiaJob(jobName, ActionJob.class);
         final JobDataMap map = jobDetail.getJobDataMap();
         map.put(ActionJob.JOB_ACTION_TO_EXECUTE, actionToExecute);
         map.put(ActionJob.JOB_NODE_UUID, uuid);

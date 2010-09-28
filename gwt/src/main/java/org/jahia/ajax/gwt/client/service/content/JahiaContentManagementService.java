@@ -287,6 +287,8 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     Boolean deleteJob(String jobName, String groupName) throws GWTJahiaServiceException;
 
+    List<String> getAllJobGroupNames() throws GWTJahiaServiceException;
+
     // -------------------------- INNER CLASSES --------------------------
 
     public static class App {

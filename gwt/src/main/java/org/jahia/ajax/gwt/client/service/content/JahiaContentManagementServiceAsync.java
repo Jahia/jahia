@@ -290,4 +290,7 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
     void getJobs(int offset, int limit, String sortField, String sortDir, AsyncCallback<BasePagingLoadResult<GWTJahiaJobDetail>> async);
 
     void deleteJob(String jobName, String groupName, AsyncCallback<Boolean> async);
+
+    void getAllJobGroupNames(AsyncCallback<List<String>> async);
+
 }

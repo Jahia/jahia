@@ -7,6 +7,7 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.job.JobListWindow;
@@ -70,7 +71,7 @@ public class WorkInProgressActionItem extends BaseActionItem {
     private void refreshStatus() {
         Button b = (Button) getTextToolItem();
         if (statuses.isEmpty() && processes.isEmpty()) {
-            b.setText("Background jobs");
+            b.setText(Messages.get("label.backgroundJobs", "Background jobs"));
             b.setIconStyle(null);
             b.setEnabled(true);
         } else if (statuses.size() == 1) {

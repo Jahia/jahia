@@ -597,7 +597,7 @@ public class ContentManagerHelper {
                 // let's schedule an import job.
                 GWTFileManagerUploadServlet.Item item = GWTFileManagerUploadServlet.getItem(fileKey);
 
-                JobDetail jobDetail = BackgroundJob.createJahiaJob("Import file " + FilenameUtils.getName(item.getOriginalFileName()), ImportJob.class, ImportJob.IMPORT_TYPE);
+                JobDetail jobDetail = BackgroundJob.createJahiaJob("Import file " + FilenameUtils.getName(item.getOriginalFileName()), ImportJob.class);
                 JobDataMap jobDataMap;
                 jobDataMap = jobDetail.getJobDataMap();
 

@@ -24,7 +24,7 @@ public class JobListWindow extends Window {
     }
 
     private void init() {
-        setHeading(Messages.get("label.joblist", "Background Job List"));
+        setHeading(Messages.get("label.jobList", "Background Job List"));
         setLayout(new FitLayout());
         setSize(800, 600);
 

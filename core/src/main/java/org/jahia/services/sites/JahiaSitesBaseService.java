@@ -364,7 +364,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                         }
                     }
 
-                    JobDetail jobDetail = BackgroundJob.createJahiaJob("Initial import for site " + site.getSiteKey(), ImportJob.class, ImportJob.JOB_TYPE);
+                    JobDetail jobDetail = BackgroundJob.createJahiaJob("Initial import for site " + site.getSiteKey(), ImportJob.class);
                     JobDataMap jobDataMap;
                     jobDataMap = jobDetail.getJobDataMap();
 

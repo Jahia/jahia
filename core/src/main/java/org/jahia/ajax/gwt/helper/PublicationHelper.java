@@ -299,7 +299,7 @@ public class PublicationHelper {
                 if (reverse) {
 //                    publicationService.publish(infos, Constants.LIVE_WORKSPACE, workspaceName);
                 } else {
-                    JobDetail jobDetail = BackgroundJob.createJahiaJob("Publication", PublicationJob.class, PublicationJob.PUBLICATION_TYPE);
+                    JobDetail jobDetail = BackgroundJob.createJahiaJob("Publication", PublicationJob.class);
                     JobDataMap jobDataMap = jobDetail.getJobDataMap();
                     jobDataMap.put(PublicationJob.PUBLICATION_INFOS, infos);
                     jobDataMap.put(PublicationJob.SOURCE, workspaceName);

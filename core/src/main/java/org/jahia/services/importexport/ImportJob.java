@@ -60,8 +60,6 @@ public class ImportJob extends BackgroundJob {
 
     private final static Logger logger = Logger.getLogger(ImportJob.class);
 
-    public static final String IMPORT_TYPE = "import";
-
     public static final String TARGET = "target";
     public static final String CONTENT_TYPE = "contentType";
     public static final String PUBLISH_ALL_AT_END = "publishAllAtEnd";

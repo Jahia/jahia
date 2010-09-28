@@ -19,7 +19,6 @@ public class GWTJahiaJobDetail extends BaseModelData implements Serializable, Co
     }
 
     public GWTJahiaJobDetail(String name,
-                             String type,
                              Date creationTime,
                              String user,
                              String description,
@@ -34,7 +33,6 @@ public class GWTJahiaJobDetail extends BaseModelData implements Serializable, Co
                              String locale,
                              String fileName) {
         setName(name);
-        setType(type);
         setCreationTime(creationTime);
         setUser(user);
         setDescription(description);
@@ -48,14 +46,6 @@ public class GWTJahiaJobDetail extends BaseModelData implements Serializable, Co
         setDurationInSeconds(durationInSeconds);
         setLocale(locale);
         setFileName(fileName);
-    }
-
-    public String getType() {
-        return get("type");
-    }
-
-    public void setType(String type) {
-        set("type", type);
     }
 
     public String getLabel() {

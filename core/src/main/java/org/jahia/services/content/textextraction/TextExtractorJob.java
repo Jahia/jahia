@@ -47,7 +47,6 @@ import org.quartz.JobExecutionContext;
  * Time: 13:58:32
  */
 public class TextExtractorJob extends BackgroundJob {
-    public static final String EXTRACTION_TYPE = "textextraction";
     public static final String JOB_PATH = "path";
     public static final String JOB_PROVIDER = "provider";
     public static final String JOB_EXTRACTNODE_PATH = "extractnode-path";

@@ -1629,4 +1629,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         JCRSessionWrapper sessionWrapper = retrieveCurrentSession();
         return schedulerHelper.deleteJob(jobName, groupName);
     }
+
+    public List<String> getAllJobGroupNames() throws GWTJahiaServiceException {
+        return schedulerHelper.getAllJobGroupNames();
+    }
 }

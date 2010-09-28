@@ -109,8 +109,13 @@ public class JobListPanel extends LayoutContainer {
         column.setSortable(false);
         config.add(column);
 
-        column = new ColumnConfig("type", Messages.get("label.type", "Type"), 100);
+        column = new ColumnConfig("group", Messages.get("label.group", "Group"), 100);
         column.setSortable(false);
+        column.setRenderer(new GridCellRenderer<GWTJahiaJobDetail>() {
+            public Object render(GWTJahiaJobDetail jobDetail, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GWTJahiaJobDetail> gwtJahiaJobDetailListStore, Grid<GWTJahiaJobDetail> gwtJahiaJobDetailGrid) {
+                return new Label(Messages.get("label." + jobDetail.getGroup() + ".task", jobDetail.getGroup()));
+            }
+        });
         config.add(column);
 
         column = new ColumnConfig("description", Messages.get("label.description", "Description"), 100);
@@ -159,11 +164,6 @@ public class JobListPanel extends LayoutContainer {
         config.add(column);
 
         column = new ColumnConfig("message", Messages.get("label.message", "Message"), 100);
-        column.setSortable(false);
-        column.setHidden(true);
-        config.add(column);
-
-        column = new ColumnConfig("group", Messages.get("label.group", "Group"), 100);
         column.setSortable(false);
         column.setHidden(true);
         config.add(column);
@@ -248,10 +248,18 @@ public class JobListPanel extends LayoutContainer {
         topToolBar.add(new SeparatorToolItem());
 
         Button filterButton = new Button(Messages.get("label.typeFilter", "Type filter"));
-        Menu filterMenu = new Menu();
-        CheckMenuItem textExtractionTypeActivated = new CheckMenuItem(Messages.get("label.textExtraction", "Text extraction"));
-        textExtractionTypeActivated.setChecked(false);
-        filterMenu.add(textExtractionTypeActivated);
+        final Menu filterMenu = new Menu();
+        service.getAllJobGroupNames(new BaseAsyncCallback<List<String>>() {
+
+            public void onSuccess(List<String> groupNames) {
+                //To change body of implemented methods use File | Settings | File Templates.
+                for (String groupName : groupNames) {
+                    CheckMenuItem groupActivated = new CheckMenuItem(Messages.get("label." + groupName + ".task", groupName));
+                    groupActivated.setChecked(false);
+                    filterMenu.add(groupActivated);
+                }
+            }
+        });
         filterButton.setMenu(filterMenu);
         topToolBar.add(filterButton);
 
@@ -277,7 +285,7 @@ public class JobListPanel extends LayoutContainer {
         topToolBar.add(autoRefreshCheckBox);
 
         final TextBox refreshIntervalTextBox = new TextBox();
-        refreshIntervalTextBox.setWidth("4em");
+        refreshIntervalTextBox.setWidth("3em");
         refreshIntervalTextBox.setText(Integer.toString(autoRefreshInterval));
         refreshIntervalTextBox.addChangeHandler(new ChangeHandler() {
 
@@ -460,7 +468,6 @@ public class JobListPanel extends LayoutContainer {
             addDetail("label.name", "Name", jobDetail.getName());
             addDetail("label.creationTime", "Creation time", jobDetail.getCreationTime());
             addDetail("label.user", "User key", jobDetail.getUser());
-            addDetail("label.jobType", "Job type", jobDetail.getType());
             addDetail("label.group", "Group", jobDetail.getGroup());
             // addDetail("label.jobLabel", "Job label", jobDetail.getLabel());
             // addDetail("label.className", "Job class", jobDetail.getJobClassName());

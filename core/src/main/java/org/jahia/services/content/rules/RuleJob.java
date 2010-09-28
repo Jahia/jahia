@@ -45,7 +45,6 @@ import java.util.List;
 public class RuleJob extends BackgroundJob {
     private static transient Logger logger = Logger.getLogger(RuleJob.class);
 
-    public static final String RULE_TYPE = "rule";
     public static final String JOB_NODE_UUID = "node";
     public static final String JOB_RULE_TO_EXECUTE = "ruleToExecute";
     public static final String JOB_WORKSPACE = "workspace";

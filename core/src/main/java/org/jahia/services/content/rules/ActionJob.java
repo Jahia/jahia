@@ -47,7 +47,6 @@ import javax.jcr.RepositoryException;
 public class ActionJob extends BackgroundJob {
     private static transient Logger logger = Logger.getLogger(ActionJob.class);
 
-    public static final String ACTION_TYPE = "action";
     public static final String JOB_NODE_UUID = "node";
     public static final String JOB_ACTION_TO_EXECUTE = "actionToExecute";
 

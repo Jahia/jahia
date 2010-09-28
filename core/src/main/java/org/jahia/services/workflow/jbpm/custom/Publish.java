@@ -61,7 +61,7 @@ public class Publish implements ExternalActivityBehaviour {
         String workspace = (String) execution.getVariable("workspace");
         String userKey = (String) execution.getVariable("user");
 
-        JobDetail jobDetail = BackgroundJob.createJahiaJob("Publication", PublicationJob.class, PublicationJob.PUBLICATION_TYPE);
+        JobDetail jobDetail = BackgroundJob.createJahiaJob("Publication", PublicationJob.class);
         JobDataMap jobDataMap = jobDetail.getJobDataMap();
         jobDataMap.put(BackgroundJob.JOB_USERKEY, userKey);
         jobDataMap.put(PublicationJob.PUBLICATION_INFOS, info);

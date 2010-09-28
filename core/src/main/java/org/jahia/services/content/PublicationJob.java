@@ -15,7 +15,6 @@ import java.util.List;
  * Publication job
  */
 public class PublicationJob extends BackgroundJob {
-    public static final String PUBLICATION_TYPE = "publication";
     public static final String PUBLICATION_INFOS = "publicationInfos";
     public static final String SOURCE = "source";
     public static final String DESTINATION = "destination";
@@ -30,7 +29,7 @@ public class PublicationJob extends BackgroundJob {
         String destination = (String) jobDataMap.get(DESTINATION);
         String lock = (String) jobDataMap.get(LOCK);
 
-        String label = "published_at_"+ new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(GregorianCalendar.getInstance().getTime());
+        String label = "published_at_" + new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(GregorianCalendar.getInstance().getTime());
         if (lock != null) {
             JCRPublicationService.getInstance().unlockForPublication(info, source, lock);
         }
@@ -41,7 +40,7 @@ public class PublicationJob extends BackgroundJob {
     }
 
     private void label(PublicationInfo publicationInfo, String source, String label) throws RepositoryException {
-        JCRVersionService.getInstance().addVersionLabel(publicationInfo.getAllUuids(),label, Constants.LIVE_WORKSPACE);
+        JCRVersionService.getInstance().addVersionLabel(publicationInfo.getAllUuids(), label, Constants.LIVE_WORKSPACE);
         List<PublicationInfo> refs = publicationInfo.getAllReferences();
         for (PublicationInfo ref : refs) {
             label(ref, source, label);

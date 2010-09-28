@@ -16,6 +16,7 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
+import org.quartz.SchedulerException;
 
 import java.util.*;
 
@@ -55,7 +56,6 @@ public class SchedulerHelper {
         List<GWTJahiaJobDetail> jobs = new ArrayList<GWTJahiaJobDetail>();
         for (JobDetail jobDetail : jobDetails) {
             JobDataMap jobDataMap = jobDetail.getJobDataMap();
-            final String type = jobDataMap.getString(BackgroundJob.JOB_TYPE);
             final Date created = (Date) jobDataMap.get(BackgroundJob.JOB_CREATED);
             final String status = jobDataMap.getString(BackgroundJob.JOB_STATUS);
             final String user = jobDataMap.getString(BackgroundJob.JOB_USERKEY);
@@ -76,12 +76,12 @@ public class SchedulerHelper {
             String description = jobDetail.getDescription();
             final List<String> relatedPaths = new ArrayList<String>();
             String fileName = jobDataMap.getString(ImportJob.FILENAME);
-            if (PublicationJob.PUBLICATION_TYPE.equals(type)) {
+            if (BackgroundJob.getGroupName(PublicationJob.class).equals(jobDetail.getGroup())) {
                 List<PublicationInfo> publicationInfos = (List<PublicationInfo>) jobDataMap.get(PublicationJob.PUBLICATION_INFOS);
                 if (publicationInfos != null && publicationInfos.size() > 0) {
                     description += " " + publicationInfos.get(0).getRoot().getPath();
                 }
-            } else if (ImportJob.IMPORT_TYPE.equals(type)) {
+            } else if (BackgroundJob.getGroupName(ImportJob.class).equals(jobDetail.getGroup())) {
                 String uri = (String) jobDataMap.get(ImportJob.URI);
                 if (uri != null) {
                     relatedPaths.add(uri);
@@ -90,14 +90,14 @@ public class SchedulerHelper {
                     String destinationParentPath = jobDataMap.getString(ImportJob.DESTINATION_PARENT_PATH);
                     relatedPaths.add(destinationParentPath);
                 }
-            } else if (ActionJob.ACTION_TYPE.equals(type)) {
+            } else if (BackgroundJob.getGroupName(ActionJob.class).equals(jobDetail.getGroup())) {
                 String actionToExecute = jobDataMap.getString(ActionJob.JOB_ACTION_TO_EXECUTE);
                 String nodeUUID = jobDataMap.getString(ActionJob.JOB_NODE_UUID);
-            } else if (RuleJob.RULE_TYPE.equals(type)) {
+            } else if (BackgroundJob.getGroupName(RuleJob.class).equals(jobDetail.getGroup())) {
                 String ruleToExecute = jobDataMap.getString(RuleJob.JOB_RULE_TO_EXECUTE);
                 String nodeUUID = jobDataMap.getString(RuleJob.JOB_NODE_UUID);
                 String workspace = jobDataMap.getString(RuleJob.JOB_WORKSPACE);
-            } else if (TextExtractorJob.EXTRACTION_TYPE.equals(type)) {
+            } else if (BackgroundJob.getGroupName(TextExtractorJob.class).equals(jobDetail.getGroup())) {
                 continue;
                 /*
                 String path = jobDataMap.getString(TextExtractorJob.JOB_PATH);
@@ -107,10 +107,10 @@ public class SchedulerHelper {
                 relatedPaths.add(extractNodePath);
                 */
             }
-            GWTJahiaJobDetail job = new GWTJahiaJobDetail(jobDetail.getName(), type, created, user, description,
+            GWTJahiaJobDetail job = new GWTJahiaJobDetail(jobDetail.getName(), created, user, description,
                     status, message, relatedPaths,
                     jobDetail.getGroup(), jobDetail.getJobClass().getName(), beginTime, endTime, durationInSeconds, jobLocale, fileName);
-            job.setLabel(JahiaResourceBundle.getJahiaInternalResource("label." + type + ".task", locale));
+            job.setLabel(JahiaResourceBundle.getJahiaInternalResource("label." + jobDetail.getGroup() + ".task", locale));
             jobs.add(job);
         }
         return jobs;
@@ -146,6 +146,14 @@ public class SchedulerHelper {
         try {
             return scheduler.deleteJob(jobName, groupName);
         } catch (JahiaException e) {
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+    }
+
+    public List<String> getAllJobGroupNames() throws GWTJahiaServiceException {
+        try {
+            return Arrays.asList(scheduler.getScheduler().getJobGroupNames());
+        } catch (SchedulerException e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }

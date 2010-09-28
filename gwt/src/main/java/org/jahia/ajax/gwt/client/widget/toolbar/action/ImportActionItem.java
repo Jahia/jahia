@@ -47,7 +47,7 @@ import java.util.List;
 */
 public class ImportActionItem extends BaseActionItem {
     public void onComponentSelection() {
-        new ContentImport(linker, linker.getSelectionContext().getSingleSelection());
+        new ContentImport(linker, linker.getSelectionContext().getSingleSelection()).show();
     }
 
     public void handleNewLinkerSelection() {

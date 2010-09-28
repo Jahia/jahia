@@ -68,7 +68,7 @@ public class SchedulerServiceImpl extends SchedulerService implements ClusterLis
 
     private ClusterService clusterService;
 
-    private static final String[] JOBTYPES = {"import", "copypaste", "pickercopy", "workflow", "picked", "propagate1", "propagate2", "production"};
+    // private static final String[] JOBTYPES = {"import", "copypaste", "pickercopy", "workflow", "picked", "propagate1", "propagate2", "production"};
     //last job's time
     public long lastJobCompletedTime = 0;
     private JobDetail lastCompletedJobDetail = null;
@@ -708,7 +708,7 @@ public class SchedulerServiceImpl extends SchedulerService implements ClusterLis
      * @throws org.jahia.exceptions.JahiaException
      *          sthg bad happened
      */
-    private void loadData() throws JahiaException {
+    private void loadData() throws JahiaException, SchedulerException {
 
 
         String[] process = getJobNames(Scheduler.DEFAULT_GROUP);
@@ -733,24 +733,25 @@ public class SchedulerServiceImpl extends SchedulerService implements ClusterLis
         if (p.size() == 0) return;
 
         //init vars
+        String[] groupNames = scheduler.getJobGroupNames();
         Map<String, List<JobDetail>> types = new HashMap<String, List<JobDetail>>();
-        typeAverages = new int[JOBTYPES.length][3];
+        groupAverages = new int[groupNames.length][3];
         //set at 0
-        for (int i = 0; i < JOBTYPES.length; i++) {
+        for (int i = 0; i < groupNames.length; i++) {
             for (int j = 0; j < 3; j++) {
-                typeAverages[i][j] = 0;
+                groupAverages[i][j] = 0;
             }
         }
         //compute average durations
-        // here looping all types
+        // here looping all groups
 
-        for (int tcount = 0; tcount < JOBTYPES.length; tcount++) {
-            String type = JOBTYPES[tcount];
+        for (int i = 0; i < groupNames.length; i++) {
+            String groupName = groupNames[i];
             if (logger.isDebugEnabled()) {
-                logger.debug("computing " + type + " process....");
+                logger.debug("computing " + groupName + " process....");
             }
-            List<JobDetail> l = getProcessByType(p, type);
-            types.put(type, l);
+            List<JobDetail> l = getAllJobsDetails(groupName);
+            types.put(groupName, l);
 
 
             int count = 1;
@@ -764,15 +765,15 @@ public class SchedulerServiceImpl extends SchedulerService implements ClusterLis
                 if (logger.isDebugEnabled()) {
                     logger.debug("duration found:" + duration);
                 }
-                if (typeAverages[tcount][0] == 0) typeAverages[tcount][0] = duration;
-                if (duration < typeAverages[tcount][0]) typeAverages[tcount][0] = duration; //best time
-                else if (duration > typeAverages[tcount][2]) typeAverages[tcount][2] = duration; //worse time
+                if (groupAverages[i][0] == 0) groupAverages[i][0] = duration;
+                if (duration < groupAverages[i][0]) groupAverages[i][0] = duration; //best time
+                else if (duration > groupAverages[i][2]) groupAverages[i][2] = duration; //worse time
                 //average
-                typeAverages[tcount][1] = (typeAverages[tcount][1] / count) + (duration / count);//ignoring decimal
+                groupAverages[i][1] = (groupAverages[i][1] / count) + (duration / count);//ignoring decimal
                 count++;
             }
             if (logger.isDebugEnabled()) {
-                logger.debug(type + " averages:" + typeAverages[tcount][0] + "/" + typeAverages[tcount][1] + "/" + typeAverages[tcount][2]);
+                logger.debug(groupName + " averages:" + groupAverages[i][0] + "/" + groupAverages[i][1] + "/" + groupAverages[i][2]);
             }
         }
     }
@@ -780,48 +781,28 @@ public class SchedulerServiceImpl extends SchedulerService implements ClusterLis
     /**
      * to get an average time depending of types of jobs
      *
-     * @param type the type
+     * @param groupName the group name for which to retrieve the average times
      * @return average time
      */
-    public int[] getAverageTimesByType(String type) {
+    public int[] getAverageTimesByGroup(String groupName) throws SchedulerException {
         try {
             loadData();
         } catch (JahiaException e) {
             logger.error("Error while loading data", e);
         }
         int t = 0;
-        for (int i = 0; i < JOBTYPES.length; i++) {
-            if (JOBTYPES[i].equalsIgnoreCase(type)) t = i;
+        String[] groupNames = scheduler.getJobGroupNames();
+        for (int i = 0; i < groupNames.length; i++) {
+            if (groupNames[i].equalsIgnoreCase(groupName)) t = i;
         }
 
         int[] r;
         r = new int[3];
-        //System.arraycopy(typeAverages[t], 0, r, 0, 3);
+        //System.arraycopy(groupAverages[t], 0, r, 0, 3);
         for (int i = 0; i < 3; i++) {
-            r[i] = typeAverages[t][i];
+            r[i] = groupAverages[t][i];
         }
         return r;
-    }
-
-    /**
-     * filter process list by type
-     *
-     * @param process the process
-     * @param type    the type
-     * @return a list
-     */
-    private List<JobDetail> getProcessByType(List process, String type) {
-        List<JobDetail> v = new ArrayList<JobDetail>();
-        for (Iterator it = process.iterator(); it.hasNext();) {
-            JobDetail jd = (JobDetail) it.next();
-            JobDataMap data = jd.getJobDataMap();
-            if (data.get(BackgroundJob.JOB_TYPE) != null
-                    && data.get(BackgroundJob.JOB_TYPE).equals(type)) {
-                v.add(jd);
-            }
-        }
-        return v;
-
     }
 
     /**
@@ -867,7 +848,7 @@ public class SchedulerServiceImpl extends SchedulerService implements ClusterLis
         return adminsites;
     }
 
-    private int[][] typeAverages;//in-memory process averages
+    private int[][] groupAverages;//in-memory process averages
 
     public void messageReceived(ClusterMessage message) {
         Object o = message.getObject();

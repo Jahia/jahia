@@ -154,8 +154,6 @@ public abstract class SchedulerService extends JahiaService {
 
     public abstract String[] getSchedulerInfos(JahiaUser user) throws JahiaException;
 
-    public abstract int[] getAverageTimesByType(String type);
-
     public abstract Scheduler getScheduler();
 
     /**

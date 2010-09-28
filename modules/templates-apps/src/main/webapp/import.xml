@@ -3,7 +3,7 @@
     <templates-apps xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" jcr:mixinTypes="jmix:hasTemplateNode jmix:sitemap jmix:accessControlled" jcr:primaryType="jnt:virtualsite" changefreq="monthly" j:installedModules="templates-apps" j:templateNode="/templateSets/templates-apps/templates/base" priority="0.5">
       <contents jcr:primaryType="jnt:contentList">
         <site_components jcr:primaryType="jnt:contentList">
-          <login-to-jahia jcr:mixinTypes="jmix:shareable" jcr:primaryType="jnt:loginForm">
+          <login-to-jahia jcr:primaryType="jnt:loginForm">
             <j:translation_en jcr:title="Login to Jahia" jcr:language="en" jcr:primaryType="jnt:translation"/>
           </login-to-jahia>
         </site_components>

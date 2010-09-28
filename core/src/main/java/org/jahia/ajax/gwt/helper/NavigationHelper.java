@@ -238,7 +238,7 @@ public class NavigationHelper {
 
         // there are filters, but not a file
         if (!node.isFile()) {
-            return false;
+            return true;
         }
 
         // do filter

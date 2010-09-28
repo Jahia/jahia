@@ -89,6 +89,10 @@ public class WorkflowActionDialog extends Window {
 
 
     public WorkflowActionDialog(final GWTJahiaNode node, final Linker linker) {
+       this(node, null, linker);
+    }
+
+    public WorkflowActionDialog(final GWTJahiaNode node, final GWTJahiaWorkflow workflow, final Linker linker) {
         contentManagement = JahiaContentManagementService.App.getInstance();
         contentDefinition = JahiaContentDefinitionService.App.getInstance();
         this.node = node;
@@ -104,7 +108,7 @@ public class WorkflowActionDialog extends Window {
         add(tabPanel);
 
         actionTab = new TabItem();
-
+        this.workflow = workflow;
     }
 
     public void setCustom(CustomWorkflow custom) {

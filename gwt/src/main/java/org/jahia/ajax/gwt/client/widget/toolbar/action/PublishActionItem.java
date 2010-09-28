@@ -114,7 +114,7 @@ public class PublishActionItem extends BaseActionItem {
                         });
             }
         } else {
-            WorkflowActionDialog dialog = new WorkflowActionDialog(gwtJahiaNode, linker);
+            WorkflowActionDialog dialog = new WorkflowActionDialog(gwtJahiaNode, wf, linker);
             dialog.setCustom(wf.getCustomWorkflowInfo());
             dialog.initExecuteActionDialog(wf.getAvailableTasks().get(0));
             dialog.show();

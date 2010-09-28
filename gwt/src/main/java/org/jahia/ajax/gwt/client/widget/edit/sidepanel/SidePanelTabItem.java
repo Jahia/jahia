@@ -34,6 +34,8 @@ package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
 import java.util.List;
 
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
@@ -110,6 +112,13 @@ public class SidePanelTabItem extends TabItem {
             super();
             this.selectionModel = selectionModel;
             ctx = new LinkerSelectionContext();
+
+            selectionModel.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
+                public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
+                    syncSelectionContext();
+                }
+            });
+
             select(null);
         }
 
@@ -130,7 +139,6 @@ public class SidePanelTabItem extends TabItem {
         }
 
         public void select(Object o) {
-            syncSelectionContext();
         }
 
         public void syncSelectionContext() {

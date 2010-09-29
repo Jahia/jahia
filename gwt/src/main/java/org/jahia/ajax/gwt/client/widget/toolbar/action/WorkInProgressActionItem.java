@@ -46,7 +46,7 @@ public class WorkInProgressActionItem extends BaseActionItem {
                             processes = result;
                             refreshStatus();
                         }
-                        schedule(1000);
+                        schedule(5000);
                     }
 
                     public void onFailure(Throwable caught) {

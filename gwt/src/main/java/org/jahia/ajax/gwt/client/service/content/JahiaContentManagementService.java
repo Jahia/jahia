@@ -283,7 +283,20 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     List<GWTJahiaJobDetail> getActiveJobs() throws GWTJahiaServiceException;
 
-    BasePagingLoadResult<GWTJahiaJobDetail> getJobs(int offset, int limit, String sortField, String sortDir) throws GWTJahiaServiceException;
+    /**
+     * Retrieve job list using pagination and sorting if supported. Also can take an optional groupName list for
+     * filtering.
+     *
+     * @param offset     the offset for pagination
+     * @param limit      the limit for pagination (the size of the page)
+     * @param sortField  the field on which to sort
+     * @param sortDir    the direction in which to sort
+     * @param groupNames normally this should be passed as a Set, but it seems that GWT has trouble serializing a
+     *                   Set, so we use a list instead.
+     * @return a Pagination-ready list of job details
+     * @throws GWTJahiaServiceException
+     */
+    BasePagingLoadResult<GWTJahiaJobDetail> getJobs(int offset, int limit, String sortField, String sortDir, List<String> groupNames) throws GWTJahiaServiceException;
 
     Boolean deleteJob(String jobName, String groupName) throws GWTJahiaServiceException;
 

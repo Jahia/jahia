@@ -43,7 +43,7 @@ import java.util.Map;
  * User: loom
  * Date: Sep 21, 2010
  * Time: 12:28:42 PM
- * todo : confirm delete dialog, integrate role to see all jobs, type filter UI, improved back-end pagination handling
+ * todo : improved back-end pagination handling
  */
 public class JobListPanel extends LayoutContainer {
 
@@ -59,6 +59,7 @@ public class JobListPanel extends LayoutContainer {
     private static final String STATUS_EXECUTING = "executing";
     private int autoRefreshInterval = 60;
     private boolean autoRefreshActivated = false;
+    private List<String> activeGroupNames = null;
 
     public JobListPanel(JobListWindow window, Linker linker) {
         super(new BorderLayout());
@@ -70,6 +71,12 @@ public class JobListPanel extends LayoutContainer {
 
     private void init() {
         setBorders(false);
+        activeGroupNames = new ArrayList<String>();
+        activeGroupNames.add("ActionJob");
+        activeGroupNames.add("PublicationJob");
+        activeGroupNames.add("ImportJob");
+        activeGroupNames.add("SitemapJob");
+        activeGroupNames.add("RuleJob");
         final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
 
         // data proxy
@@ -77,14 +84,14 @@ public class JobListPanel extends LayoutContainer {
             @Override
             protected void load(Object loadConfig, AsyncCallback<BasePagingLoadResult<GWTJahiaJobDetail>> callback) {
                 if (loadConfig == null) {
-                    service.getJobs(0, Integer.MAX_VALUE, null, null, callback);
+                    service.getJobs(0, Integer.MAX_VALUE, null, null, activeGroupNames, callback);
                 } else if (loadConfig instanceof BasePagingLoadConfig) {
                     BasePagingLoadConfig pagingLoadConfig = (BasePagingLoadConfig) loadConfig;
                     int limit = pagingLoadConfig.getLimit();
                     int offset = pagingLoadConfig.getOffset();
                     Style.SortDir sortDir = pagingLoadConfig.getSortDir();
                     String sortField = pagingLoadConfig.getSortField();
-                    service.getJobs(offset, limit, sortField, sortDir.name(), callback);
+                    service.getJobs(offset, limit, sortField, sortDir.name(), activeGroupNames, callback);
                 } else {
                     callback.onSuccess(new BasePagingLoadResult<GWTJahiaJobDetail>(new ArrayList<GWTJahiaJobDetail>()));
                 }
@@ -254,8 +261,28 @@ public class JobListPanel extends LayoutContainer {
             public void onSuccess(List<String> groupNames) {
                 //To change body of implemented methods use File | Settings | File Templates.
                 for (String groupName : groupNames) {
-                    CheckMenuItem groupActivated = new CheckMenuItem(Messages.get("label." + groupName + ".task", groupName));
-                    groupActivated.setChecked(false);
+                    final CheckMenuItem groupActivated = new CheckMenuItem(Messages.get("label." + groupName + ".task", groupName));
+                    groupActivated.setStateId(groupName);
+                    if (activeGroupNames.contains(groupName)) {
+                        groupActivated.setChecked(true);
+                    } else {
+                        groupActivated.setChecked(false);
+                    }
+                    groupActivated.addListener(Events.CheckChange, new Listener<MenuEvent>() {
+
+                        public void handleEvent(MenuEvent be) {
+                            //To change body of implemented methods use File | Settings | File Templates.
+                            String groupName = groupActivated.getStateId();
+                            if (groupActivated.isChecked()) {
+                                if (!activeGroupNames.contains(groupName)) {
+                                    activeGroupNames.add(groupName);
+                                }
+                            } else {
+                                activeGroupNames.remove(groupName);
+                            }
+                            pagingToolBar.refresh();
+                        }
+                    });
                     filterMenu.add(groupActivated);
                 }
             }

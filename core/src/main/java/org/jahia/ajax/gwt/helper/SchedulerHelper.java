@@ -98,14 +98,11 @@ public class SchedulerHelper {
                 String nodeUUID = jobDataMap.getString(RuleJob.JOB_NODE_UUID);
                 String workspace = jobDataMap.getString(RuleJob.JOB_WORKSPACE);
             } else if (BackgroundJob.getGroupName(TextExtractorJob.class).equals(jobDetail.getGroup())) {
-                continue;
-                /*
                 String path = jobDataMap.getString(TextExtractorJob.JOB_PATH);
                 String provider = jobDataMap.getString(TextExtractorJob.JOB_PROVIDER);
                 String extractNodePath = jobDataMap.getString(TextExtractorJob.JOB_EXTRACTNODE_PATH);
                 relatedPaths.add(path);
                 relatedPaths.add(extractNodePath);
-                */
             }
             GWTJahiaJobDetail job = new GWTJahiaJobDetail(jobDetail.getName(), created, user, description,
                     status, message, relatedPaths,
@@ -125,10 +122,18 @@ public class SchedulerHelper {
         }
     }
 
-    public List<GWTJahiaJobDetail> getAllJobs(Locale locale, JahiaUser jahiaUser) throws GWTJahiaServiceException {
+    public List<GWTJahiaJobDetail> getAllJobs(Locale locale, JahiaUser jahiaUser, Set<String> groupNames) throws GWTJahiaServiceException {
         try {
-            List<JobDetail> l = scheduler.getAllJobsDetails();
-            List<GWTJahiaJobDetail> gwtJobList = convertToGWTJobs(l, locale, jahiaUser);
+            List<JobDetail> jobDetails = null;
+            if (groupNames == null) {
+                jobDetails = scheduler.getAllJobsDetails();
+            } else {
+                jobDetails = new ArrayList<JobDetail>();
+                for (String groupName : groupNames) {
+                    jobDetails.addAll(scheduler.getAllJobsDetails(groupName));
+                }
+            }
+            List<GWTJahiaJobDetail> gwtJobList = convertToGWTJobs(jobDetails, locale, jahiaUser);
             // do an inverse sort.
             Collections.sort(gwtJobList, new Comparator<GWTJahiaJobDetail>() {
                 public int compare(GWTJahiaJobDetail o1, GWTJahiaJobDetail o2) {

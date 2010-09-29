@@ -5,11 +5,12 @@
     <bean id="sitemapCronTrigger" class="org.quartz.CronTrigger">
         <property name="name" value="SitemapCronTrigger"/>
         <!-- Will start the process at 4 a.m -->
-        <property name="cronExpression" value="0 0 4 * * ?" />
+        <property name="cronExpression" value="0 0 4 * * ?"/>
     </bean>
     <bean id="sitemapJobDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
         <!-- This job will call searchEnginesUrl+urlEncoded(sitesUrl+/sitemap.xml)-->
         <!-- As an example here it will call http://www.google.com/webmasters/tools/ping?sitemap=http%3A%2F%2Ftata.mondomaine.com%2Fsitemap.xml -->
+        <property name="group" value="SitemapJob"/>
         <property name="jobClass" value="org.jahia.modules.sitemap.SitemapJob"/>
         <property name="jobDataAsMap">
             <map>

@@ -49,9 +49,18 @@ import javax.servlet.jsp.tagext.TagSupport;
 public class AddDependencyTag extends TagSupport {
     private transient static Logger logger = Logger.getLogger(AddDependencyTag.class);
     protected JCRNodeWrapper node;
+    protected String stringDependency;
 
     public void setNode(JCRNodeWrapper node) {
         this.node = node;
+    }
+
+    public void setUuid(String uuid) {
+        this.stringDependency = uuid;
+    }
+
+    public void setPath(String path) {
+        this.stringDependency = path;
     }
 
     /**
@@ -65,7 +74,9 @@ public class AddDependencyTag extends TagSupport {
     public int doEndTag() throws JspException {
         Resource resource = (Resource) pageContext.getRequest().getAttribute("currentResource");
         if (node != null) {
-            resource.getDependencies().add(node);
+            resource.getDependencies().add(node.getPath());
+        } else if (stringDependency != null) {
+            resource.getDependencies().add(stringDependency);
         }
         node = null;
         return super.doEndTag();    //To change body of overridden methods use File | Settings | File Templates.

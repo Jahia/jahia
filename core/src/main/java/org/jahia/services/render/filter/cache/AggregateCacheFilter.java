@@ -152,17 +152,17 @@ public class AggregateCacheFilter extends AbstractFilter {
             chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.valueOf(
                     script.getTemplate().getProperties().getProperty("cache.mainResource", "false")));
         }
-        resource.getDependencies().add(resource.getNode());
+        resource.getDependencies().add(resource.getNode().getPath());
         String key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
         Set<String> servedFromCache = (Set<String>) renderContext.getRequest().getAttribute("servedFromCache");
         if (servedFromCache.contains(key)) {
             return previousOut;
         }
         if (key.contains("_mr_")) {
-            resource.getDependencies().add(renderContext.getMainResource().getNode());
+            resource.getDependencies().add(renderContext.getMainResource().getNode().getPath());
             if(script!=null && Boolean.valueOf(
                     script.getTemplate().getProperties().getProperty("cache.mainResource.flushParent", "false"))) {
-                resource.getDependencies().add(renderContext.getMainResource().getNode().getParent());
+                resource.getDependencies().add(renderContext.getMainResource().getNode().getParent().getPath());
             }
         }
         final boolean cacheable = !notCacheableFragment.contains(key);
@@ -178,9 +178,9 @@ public class AggregateCacheFilter extends AbstractFilter {
             Long expiration = cacheAttribute != null ? Long.valueOf(cacheAttribute) : Long.valueOf(script!=null?
                     script.getTemplate().getProperties().getProperty("cache.expiration", "-1"):"-1");
             final Cache dependenciesCache = cacheProvider.getDependenciesCache();
-            Set<JCRNodeWrapper> depNodeWrappers = resource.getDependencies();
-            for (JCRNodeWrapper nodeWrapper : depNodeWrappers) {
-                String path = nodeWrapper.getPath();
+            Set<String> depNodeWrappers = resource.getDependencies();
+            for (String path : depNodeWrappers) {
+
                 Element element1 = dependenciesCache.get(path);
                 Set<String> dependencies;
                 if (element1 != null) {
@@ -243,8 +243,8 @@ public class AggregateCacheFilter extends AbstractFilter {
             if (debugEnabled) {
                 logger.debug("Store in cache content of node with key: " + perUserKey);
                 StringBuilder stringBuilder = new StringBuilder();
-                for (JCRNodeWrapper nodeWrapper : depNodeWrappers) {
-                    stringBuilder.append(nodeWrapper.getPath()).append("\n");
+                for (String path : depNodeWrappers) {
+                    stringBuilder.append(path).append("\n");
                 }
                 logger.debug("Dependencies of " + perUserKey + " : \n" + stringBuilder.toString());
             }

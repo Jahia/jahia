@@ -112,16 +112,16 @@ public class CacheFilter extends AbstractFilter {
                 chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.valueOf(
                     script.getTemplate().getProperties().getProperty("cache.mainResource", "false")));
             }
-            resource.getDependencies().add(resource.getNode());
+            resource.getDependencies().add(resource.getNode().getPath());
             Map<String, Map<String, Integer>> templatesCacheExpiration = renderContext.getTemplatesCacheExpiration();
             boolean debugEnabled = logger.isDebugEnabled();
             boolean displayCacheInfo = Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
             String key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
             if(key.contains("_mr_")) {
-                resource.getDependencies().add(renderContext.getMainResource().getNode());
+                resource.getDependencies().add(renderContext.getMainResource().getNode().getPath());
                 if(script!=null && Boolean.valueOf(
                     script.getTemplate().getProperties().getProperty("cache.mainResource.flushParent", "false"))) {
-                    resource.getDependencies().add(renderContext.getMainResource().getNode().getParent());
+                    resource.getDependencies().add(renderContext.getMainResource().getNode().getParent().getPath());
                 }
             }
             String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername()).replaceAll("_mr_",renderContext.getMainResource().getNode().getPath()+renderContext.getMainResource().getTemplate());
@@ -138,10 +138,9 @@ public class CacheFilter extends AbstractFilter {
             Long expiration = cacheAttribute != null ? Long.valueOf(cacheAttribute) :
                     Long.valueOf(script!=null?script.getTemplate().getProperties().getProperty("cache.expiration", "-1"):"-1");
             Cache dependenciesCache = cacheProvider.getDependenciesCache();
-            Set<JCRNodeWrapper> depNodeWrappers = resource.getDependencies();
-            for (JCRNodeWrapper nodeWrapper : depNodeWrappers) {
+            Set<String> depNodeWrappers = resource.getDependencies();
+            for (String path : depNodeWrappers) {
                 Long lowestExpiration = 0L;
-                String path = nodeWrapper.getPath();
                 Map<String, Integer> cachesExpiration = templatesCacheExpiration.get(path);
                 if (cachesExpiration != null) {
                     for (long cacheExpiration : cachesExpiration.values()) {
@@ -198,8 +197,8 @@ public class CacheFilter extends AbstractFilter {
             if (debugEnabled) {
                 logger.debug("Store in cache content of node with key: " + perUserKey);
                 StringBuilder stringBuilder = new StringBuilder();
-                for (JCRNodeWrapper nodeWrapper : depNodeWrappers) {
-                    stringBuilder.append(nodeWrapper.getPath()).append("\n");
+                for (String nodeWrapper : depNodeWrappers) {
+                    stringBuilder.append(nodeWrapper).append("\n");
                 }
                 logger.debug("Dependencies of " + perUserKey + " : \n" + stringBuilder.toString());
             }

@@ -115,10 +115,20 @@ public class HtmlCacheEventListener extends DefaultEventListener {
                     }
                     path = StringUtils.substringBeforeLast(StringUtils.substringBeforeLast(path, "/j:translation"), "/j:acl");
                     flushDependenciesOfPath(depCache, flushed, path);
+                    try {
+                        flushDependenciesOfPath(depCache, flushed,((JCREventIterator)events).getSession().getNode(path).getIdentifier());
+                    } catch (PathNotFoundException e) {
+                        //
+                    }
                     flushSharedNode(depCache, flushed, path);
                     if (flushParent) {
                         path = StringUtils.substringBeforeLast(path, "/");
                         flushDependenciesOfPath(depCache, flushed, path);
+                        try {
+                            flushDependenciesOfPath(depCache, flushed,((JCREventIterator)events).getSession().getNode(path).getIdentifier());
+                        } catch (PathNotFoundException e) {
+                            //
+                        }
                         flushSharedNode(depCache, flushed, path);
                     }
                 }

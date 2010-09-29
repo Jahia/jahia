@@ -15,6 +15,7 @@
             <h3 class="teaser-title title"><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h3>
             <p> ${currentNode.properties.abstract.string}</p>
         </div>
+        <template:addDependency uuid="${currentNode.properties.link.string}"/>
         <c:if test="${not empty currentNode.properties.link.node}">
             <div class="more">
                 <span><a href="${url.base}${currentNode.properties.link.node.path}.html"><fmt:message key="jnt_teaser.readMore"/></a></span>

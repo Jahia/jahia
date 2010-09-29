@@ -61,7 +61,7 @@ public class Resource {
     private String contextConfiguration;
     private Stack<String> wrappers;
 
-    private Set<JCRNodeWrapper> dependencies;
+    private Set<String> dependencies;
     private List<String> missingResources;
 
     private List<Option> options;
@@ -81,8 +81,8 @@ public class Resource {
         this.templateType = templateType;
         this.template = template;
         this.contextConfiguration = contextConfiguration;
-        dependencies = new LinkedHashSet<JCRNodeWrapper>();
-        dependencies.add(node);
+        dependencies = new LinkedHashSet<String>();
+        dependencies.add(node.getPath());
 
         missingResources = new ArrayList<String>();
         wrappers = new Stack<String>();
@@ -161,7 +161,7 @@ public class Resource {
         return template;
     }
 
-    public Set<JCRNodeWrapper> getDependencies() {
+    public Set<String> getDependencies() {
         return dependencies;
     }
 

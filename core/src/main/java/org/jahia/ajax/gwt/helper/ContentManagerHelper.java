@@ -473,6 +473,7 @@ public class ContentManagerHelper {
                                    boolean reference) throws RepositoryException, JahiaException {
         if (cut) {
             node.checkout();
+            node.getParent().checkout();
             targetNode.checkout();
             targetNode.getSession().move(node.getPath(), targetNode.getPath() + "/" + name);
         } else if (reference) {

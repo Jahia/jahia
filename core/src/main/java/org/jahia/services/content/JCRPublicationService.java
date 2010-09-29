@@ -595,8 +595,10 @@ public class JCRPublicationService extends JahiaService {
                     recurseCheckout(destinationSession.getNode(correspondingNodePath), null,
                             destinationVersionManager); // node and sub nodes
 
-                    destinationSession.getWorkspace()
-                            .clone(sourceSession.getWorkspace().getName(), sourceNodePath, destinationPath, true);
+                    destinationSession.move(correspondingNodePath, destinationPath);
+                    destinationSession.save();
+//                    destinationSession.getWorkspace()
+//                            .clone(sourceSession.getWorkspace().getName(), sourceNodePath, destinationPath, true);
 //                    destinationVersionManager.checkin(destinationParentPath);
                 }
             } catch (ItemNotFoundException e) {

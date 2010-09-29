@@ -208,7 +208,13 @@ public class ConflictResolver {
 
             // Removed nodes
             for (String s : removed) {
-                diffs.add(new ChildRemovedDiff(s,addPath(basePath, (String) uuids1.get(s))));
+                try {
+                    sourceNode.getSession().getNodeByUUID(s);
+                    // Item has been moved
+                } catch (ItemNotFoundException e) {
+                    diffs.add(new ChildRemovedDiff(s,addPath(basePath, (String) uuids1.get(s))));
+                }
+
             }
 
             // Added nodes

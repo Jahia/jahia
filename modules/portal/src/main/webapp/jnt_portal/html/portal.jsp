@@ -20,7 +20,7 @@
             data["target"] = "${currentNode.path}/column1";
             data["newName"] = newName;
             $.post("${url.base}${currentNode.path}/column1.clone.do", data, function(data) {
-                alert("widget has been added to your portal page");
+                alert("<fmt:message key='label.portal.widget.add'/>");
             });
         }
         function addRSSWidget() {
@@ -29,25 +29,27 @@
             data["url"] = $("#feedUrl").val();
             data["nbEntries"] = $("#nbFeeds").val();
             $.post("${url.base}${currentNode.path}/column1/*", data, function(data) {
-                alert("rss widget has been added to your portal page");
+                alert("<fmt:message key='label.portal.rss.add'/>");
             });
         }
     </script>
 </template:addResources>
 <script type="text/javascript">
-    $(document).ready(function(){
-        $(".btn-slide").click(function(){
+    $(document).ready(function() {
+        $(".btn-slide").click(function() {
             $(document).ready(function() {
-                $.get('${url.base}${currentNode.path}.select.html.ajax',null,function(data) {
+                $.get('${url.base}${currentNode.path}.select.html.ajax', null, function(data) {
                     $("#selectWidgetsArea").html(data);
                 });
             });
             $("#panel").slideToggle("slow");
-            $(this).toggleClass("active"); return false;
+            $(this).toggleClass("active");
+            return false;
 
         });
     });
-</script><!--refresh needed on class="btn-slide active" window.location='${url.base}${currentNode.path}.html';-->
+</script>
+<!--refresh needed on class="btn-slide active" window.location='${url.base}${currentNode.path}.html';-->
 
 <c:if test="${!renderContext.editMode}">
 
@@ -58,20 +60,25 @@
 
     <p class="slide"><a href="#" class="btn-slide">Add Widget</a></p>
 
-
-
-
+    <div id="columns">
+        <c:forEach var="column" begin="1" end="${currentNode.properties.columns.string}">
+            <ul id="column${column}" class="column">
+                <template:area path="column${column}" template="portal"/>
+            </ul>
+        </c:forEach>
+    </div>
+    <script type="text/javascript">
+        iNettuts.addWidgetControls();
+        iNettuts.makeSortable();
+    </script>
 </c:if>
 
-<div id="columns">
-    <c:forEach var="column" begin="1" end="${currentNode.properties.columns.string}">
-        <ul id="column${column}" class="column">
-            <template:area path="column${column}" template="portal" />
-        </ul>
-    </c:forEach>
-</div>
-<script type="text/javascript">
-    iNettuts.addWidgetControls();
-    iNettuts.makeSortable();
-</script>
-
+<c:if test="${renderContext.editMode}">
+    <div id="columns">
+        <c:forEach var="column" begin="1" end="${currentNode.properties.columns.string}">
+            <ul id="column${column}" class="column">
+                <li class="widget color-box"><fmt:message key="label.portal.column"/>&nbsp;${column}</li>
+            </ul>
+        </c:forEach>
+    </div>
+</c:if>

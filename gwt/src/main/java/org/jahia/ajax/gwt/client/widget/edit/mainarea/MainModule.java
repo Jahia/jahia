@@ -43,6 +43,7 @@ import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -52,11 +53,13 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.contentengine.EditContentEnginePopupListener;
+import org.jahia.ajax.gwt.client.widget.edit.InfoLayers;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionContextMenu;
 
 import java.util.*;
@@ -72,6 +75,9 @@ public class MainModule extends Module {
     private EditLinker editLinker;
     private ActionContextMenu contextMenu;
     private GWTEditConfiguration config;
+
+    private InfoLayers infoLayers = new InfoLayers();
+    private Map<String, Boolean> activeLayers = new HashMap();
 
     Map<Element, Module> m;
     protected LayoutContainer scrollContainer;
@@ -151,6 +157,7 @@ public class MainModule extends Module {
             });
         }
 
+        infoLayers.initWithLinker(linker);
     }
 
     /**
@@ -182,6 +189,8 @@ public class MainModule extends Module {
 
                                 Selection.getInstance().hide();
                                 Hover.getInstance().removeAll();
+                                infoLayers.removeAll();
+                                
                                 display(result.getResult());
 
                                 scrollContainer.setVScrollPosition(i);
@@ -380,6 +389,39 @@ public class MainModule extends Module {
     public void handleNewSidePanelSelection(GWTJahiaNode node) {
 
     }
+
+    public void setInfoLayer(String key, boolean value) {
+        if (value) {
+            activeLayers.put(key, value);
+        } else {
+            activeLayers.remove(key);
+        }
+        refreshInfoLayer();
+    }
+
+    public void refreshInfoLayer() {
+        infoLayers.removeAll();
+        if (!activeLayers.isEmpty()) {
+            infoLayers.setMainModule(this);
+
+            List<Module> modules = ModuleHelper.getModules();
+
+            for (Module m : modules) {
+                if (!m.getPath().endsWith("*")) {
+                    if (m.getNode() != null) {
+                        List<AbstractImagePrototype> images = new ArrayList<AbstractImagePrototype>();
+                        if (activeLayers.containsKey("acl") && m.getNode().isHasAcl()) {
+                            images.add(ToolbarIconProvider.getInstance().getIcon("viewACLStatus"));
+                        }
+                        if (!images.isEmpty()) {
+                            infoLayers.addInfoLayer(m, images, null,true, "1");
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 
     public boolean isDraggable() {
         return false;

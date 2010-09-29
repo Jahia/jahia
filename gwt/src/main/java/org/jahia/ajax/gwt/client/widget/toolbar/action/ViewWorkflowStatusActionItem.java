@@ -34,13 +34,9 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.util.Rectangle;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflow;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo;
-import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 
 import java.util.List;
@@ -55,15 +51,8 @@ import java.util.List;
 public class ViewWorkflowStatusActionItem extends ViewStatusActionItem {
 
     @Override
-    public void viewStatus(List<Module> moduleList, Rectangle rect, final Linker linker) {
-        Listener<ComponentEvent> removeListener = new Listener<ComponentEvent>() {
-            public void handleEvent(ComponentEvent ce) {
-                removeAll();
-                if (button != null) {
-                    button.toggle(false);
-                }
-            }
-        };
+    public void viewStatus(List<Module> moduleList) {
+        Listener<ComponentEvent> removeListener = createRemoveListener();
 
         String lastUnpublished = null;
         boolean allPublished = true;
@@ -75,11 +64,10 @@ public class ViewWorkflowStatusActionItem extends ViewStatusActionItem {
                     String current = workflow.getDefinition().getName();
                     allPublished = false;
                     if(workflow.getDuedate()!=null) {
-                        addInfoLayer(module, "Workflow :<br/>"+current+" is waiting on timer.<br/>Will be triggered at : "+ DateTimeFormat.getMediumDateTimeFormat().format(workflow.getDuedate()),
-                                 "red", "red", null, rect, removeListener, true, "0.7");
+                        infoLayers.addInfoLayer(module, "Workflow :<br/>"+current+" is waiting on timer.<br/>Will be triggered at : "+ DateTimeFormat.getMediumDateTimeFormat().format(workflow.getDuedate()),
+                                 "red", "red", removeListener, true, "0.7");
                     } else {
-                        addInfoLayer(module, "Workflow :<br/>started "+current, "red", "red",
-                                null, rect, removeListener, true,
+                        infoLayers.addInfoLayer(module, "Workflow :<br/>started "+current, "red", "red", removeListener, true,
                             "0.7");
                     }
                 }
@@ -87,8 +75,8 @@ public class ViewWorkflowStatusActionItem extends ViewStatusActionItem {
         }
 
         if (allPublished) {
-            addInfoLayer(moduleList.iterator().next(), "No actual worflow(s) started", "black", "white",
-                    null, rect,removeListener, false,
+            infoLayers.addInfoLayer(moduleList.iterator().next(), "No actual worflow(s) started", "black", "white",
+                    removeListener, false,
                     "0.7");
         }
     }

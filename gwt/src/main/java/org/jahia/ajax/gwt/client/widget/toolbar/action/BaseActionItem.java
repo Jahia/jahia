@@ -39,7 +39,6 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ToggleButton;
-import com.extjs.gxt.ui.client.widget.menu.CheckMenuItem;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
@@ -124,6 +123,7 @@ public abstract class BaseActionItem implements ActionItem {
             return menuItem;
         }
         menuItem = createMenuItem();
+        initMenuItem(menuItem);
         return menuItem;
 
     }
@@ -134,7 +134,22 @@ public abstract class BaseActionItem implements ActionItem {
             return contextMenuItem;
         }
         contextMenuItem = createMenuItem();
+        initMenuItem(contextMenuItem);
         return contextMenuItem;
+    }
+
+    private void initMenuItem(final MenuItem menuItem) {
+        GWTJahiaToolbarItem toolbarItem = getGwtToolbarItem();
+
+        if (toolbarItem.getIcon() != null) {
+            menuItem.setIcon(ToolbarIconProvider.getInstance().getIcon(toolbarItem.getIcon()));
+        }
+
+        // selection
+        menuItem.setText(toolbarItem.getTitle());
+        menuItem.setToolTip(toolbarItem.getDescription());
+        SelectionListener<MenuEvent> listener = getSelectListener();
+        menuItem.addSelectionListener(listener);
     }
 
     public void setSubMenu(Menu menu) {
@@ -178,27 +193,6 @@ public abstract class BaseActionItem implements ActionItem {
         this.contextMenuItem = contextMenuItem;
     }
 
-    /**
-     * Create a menuItem
-     *
-     * @return
-     */
-    private MenuItem createMenuItem() {
-        final MenuItem menuItem;
-        final GWTJahiaToolbarItem toolbarItem = getGwtToolbarItem();
-        menuItem = new MenuItem();
-        if (toolbarItem.getIcon() != null) {
-            menuItem.setIcon(ToolbarIconProvider.getInstance().getIcon(toolbarItem.getIcon()));
-        }
-
-        // selection
-        menuItem.setText(toolbarItem.getTitle());
-        menuItem.setToolTip(toolbarItem.getDescription());
-        SelectionListener<MenuEvent> listener = getSelectListener();
-        menuItem.addSelectionListener(listener);
-        return menuItem;
-    }
-
     public void setEnabled(boolean enabled) {
         if (isTextToolItem()) {
             Formatter.setButtonEnabled(getTextToolItem(), enabled);
@@ -235,6 +229,14 @@ public abstract class BaseActionItem implements ActionItem {
         return new Button();
     }
 
+    /**
+     * Create a menuItem
+     *
+     * @return
+     */
+    public MenuItem createMenuItem() {
+        return new MenuItem();
+    }
 
     /**
      * Get the corresponding gwt item

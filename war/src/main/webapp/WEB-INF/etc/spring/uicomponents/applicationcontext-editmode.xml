@@ -250,29 +250,29 @@
                 <property name="layout" value="button-label"/>
                 <property name="items">
                     <list>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu"
-                              id="Toolbar.ItemsGroup.NewAction">
+                        <!--<bean class="org.jahia.services.uicomponents.bean.toolbar.Menu"-->
+                              <!--id="Toolbar.ItemsGroup.NewAction">-->
 
-                            <property name="titleKey" value="label.new"/>
-                            <property name="icon" value="newAction"/>
-                            <property name="items">
-                                <list>
-                                    <ref bean="Toolbar.Item.NewPage"/>
-                                    <ref bean="Toolbar.Item.NewContent"/>
-                                </list>
-                            </property>
-                            <property name="visibility" value="$site/toolbar/new"/>
-                        </bean>
+                            <!--<property name="titleKey" value="label.new"/>-->
+                            <!--<property name="icon" value="newAction"/>-->
+                            <!--<property name="items">-->
+                                <!--<list>-->
+                                    <!--<ref bean="Toolbar.Item.NewPage"/>-->
+                                    <!--<ref bean="Toolbar.Item.NewContent"/>-->
+                                <!--</list>-->
+                            <!--</property>-->
+                            <!--<property name="visibility" value="$site/toolbar/new"/>-->
+                        <!--</bean>-->
                         <ref bean="Toolbar.Item.Live"/>
+                        <ref bean="Toolbar.Item.Preview"/>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
-
-                            <property name="titleKey" value="label.preview"/>
+                            <property name="titleKey" value="label.view"/>
                             <property name="icon" value="preview"/>
                             <property name="items">
                                 <list>
-                                    <ref bean="Toolbar.Item.Preview"/>
                                     <ref bean="Toolbar.Item.PreviewAsGuest"/>
                                     <ref bean="Toolbar.Item.ShowCompareEngine"/>
+                                    <ref bean="Toolbar.Item.ViewACLStatus"/>                                    
                                 </list>
                             </property>
                             <property name="visibility" value="$site/toolbar/preview-mode"/>
@@ -328,7 +328,6 @@
                             <property name="titleKey" value="label.workflow"/>
                             <property name="items">
                                 <list>
-                                    <ref bean="Toolbar.Item.ViewACLStatusAction"/>
                                     <ref bean="Toolbar.Item.WorkflowStatusAction"/>
                                     <ref bean="Toolbar.Item.WorkflowDashboard"/>
                                 </list>

@@ -100,12 +100,12 @@
 
     <!-- ////// items -->
 
-    <bean id="Toolbar.Item.ViewACLStatusAction" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+    <bean id="Toolbar.Item.ViewACLStatus" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ViewACLStatusActionItem"/>
         </property>
         <property name="title" value="Show ACL Status"/>
-        <property name="icon" value="viewACLStatusAction"/>
+        <property name="icon" value="viewACLStatus"/>
     </bean>
 
     <bean id="Toolbar.Item.WorkflowStatusAction" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">

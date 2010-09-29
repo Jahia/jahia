@@ -154,6 +154,7 @@ public class ModuleHelper {
                                     }
                                 }
                                 m.getEditLinker().handleNewModuleSelection();
+                                m.refreshInfoLayer();
                             }
 
                             public void onApplicationFailure(Throwable caught) {

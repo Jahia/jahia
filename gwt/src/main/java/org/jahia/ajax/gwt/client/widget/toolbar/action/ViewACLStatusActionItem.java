@@ -34,13 +34,18 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.util.Rectangle;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.google.gwt.user.client.ui.RootPanel;
+import com.extjs.gxt.ui.client.event.MenuEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.menu.CheckMenuItem;
+import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
-import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -50,26 +55,14 @@ import java.util.List;
  * Time: 6:59:01 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ViewACLStatusActionItem extends ViewStatusActionItem {
+public class ViewACLStatusActionItem extends BaseActionItem {
 
-    @Override
-    public void viewStatus(List<Module> moduleList, Rectangle rect, final Linker linker) {
-        Listener<ComponentEvent> removeListener = new Listener<ComponentEvent>() {
-            public void handleEvent(ComponentEvent ce) {
-                removeAll();
-                if (button != null) {
-                    button.toggle(false);
-                }
-            }
-        };
+    @Override public MenuItem createMenuItem() {
+        return new CheckMenuItem();
+    }
 
-        for (Module module : moduleList) {
-            if (module.getNode() != null) {
-                if (module.getNode().isHasAcl()) {
-                    addInfoLayer(module, null,null,null, ToolbarIconProvider.getInstance().getIcon("editAction").createImage().getUrl(), rect, removeListener,true, "1");
-                }
-            }
-        }
+    @Override public void onComponentSelection() {
+        ((EditLinker)linker).getMainModule().setInfoLayer("acl", ((CheckMenuItem)getMenuItem()).isChecked());
     }
 
 }

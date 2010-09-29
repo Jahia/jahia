@@ -34,10 +34,8 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.util.Rectangle;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 import org.jahia.ajax.gwt.client.widget.publication.PublicationManagerEngine;
 
@@ -53,15 +51,8 @@ import java.util.List;
 public class ViewPublishStatusActionItem extends ViewStatusActionItem {
 
     @Override
-    public void viewStatus(List<Module> moduleList, Rectangle rect, final Linker linker) {
-        Listener<ComponentEvent> removeListener = new Listener<ComponentEvent>() {
-            public void handleEvent(ComponentEvent ce) {
-                removeAll();
-                if (button != null) {
-                    button.toggle(false);
-                }
-            }
-        };
+    public void viewStatus(List<Module> moduleList) {
+        Listener<ComponentEvent> removeListener = createRemoveListener();
 
         String lastUnpublished = null;
         boolean allPublished = true;
@@ -80,29 +71,29 @@ public class ViewPublishStatusActionItem extends ViewStatusActionItem {
                     if (info.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
                         lastUnpublished = module.getNode().getPath();
                         if (info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
-                            addInfoLayer(module, status, "black", "black", null, rect, removeListener, false,
+                            infoLayers.addInfoLayer(module, status, "black", "black", removeListener, false,
                                     "0.7");
                         } else {
-                            addInfoLayer(module, status, "black", "black", null, rect, removeListener, false,
+                            infoLayers.addInfoLayer(module, status, "black", "black", removeListener, false,
                                     "0.7");
                         }
                     } else if (info.getStatus() == GWTJahiaPublicationInfo.LOCKED) {
-                        addInfoLayer(module, status, "red", "red", null, rect, removeListener, true,
+                        infoLayers.addInfoLayer(module, status, "red", "red", removeListener, true,
                                 "0.7");
                     } else if (info.getStatus() == GWTJahiaPublicationInfo.MODIFIED) {
-                        addInfoLayer(module, status, "red", "red", null, rect, removeListener, true,
+                        infoLayers.addInfoLayer(module, status, "red", "red", removeListener, true,
                                 "0.7");
                     } else if (info.getStatus() == GWTJahiaPublicationInfo.LIVE_MODIFIED) {
-                        addInfoLayer(module, status, "blue", "blue", null, rect, removeListener, true,
+                        infoLayers.addInfoLayer(module, status, "blue", "blue", removeListener, true,
                                 "0.7");
                     } else if (info.getStatus() == GWTJahiaPublicationInfo.CONFLICT) {
-                        addInfoLayer(module, status, "red", "red", null, rect, removeListener, true,
+                        infoLayers.addInfoLayer(module, status, "red", "red", removeListener, true,
                                 "0.7");
                     } else if (info.getStatus() == GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE) {
-                        addInfoLayer(module, status, "red", "red", null, rect, removeListener, true,
+                        infoLayers.addInfoLayer(module, status, "red", "red", removeListener, true,
                                 "0.7");
                     } else if (info.getStatus() == GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_VALID) {
-                        addInfoLayer(module, status, "red", "red", null, rect, removeListener, true,
+                        infoLayers.addInfoLayer(module, status, "red", "red", removeListener, true,
                                 "0.7");
                     }
                 }
@@ -110,8 +101,8 @@ public class ViewPublishStatusActionItem extends ViewStatusActionItem {
         }
 
         if (allPublished) {
-            addInfoLayer(moduleList.iterator().next(), "Everything published", "black", "white",
-                    null, rect,removeListener, false,
+            infoLayers.addInfoLayer(moduleList.iterator().next(), "Everything published", "black", "white",
+                    removeListener, false,
                     "0.7");
         }
 

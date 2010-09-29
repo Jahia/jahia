@@ -497,49 +497,25 @@ public class NavigationHelper {
             }
 
             try {
-                PropertyIterator r = node.getReferences();
-                while (r.hasNext()) {
-                    JCRPropertyWrapper reference = (JCRPropertyWrapper) r.next();
-                    if (reference.isMultiple()) {
-                        Value[] referenceValues = reference.getValues();
-                        for (Value currentValue : referenceValues) {
-                            JCRNodeWrapper refNode = currentUserSession.getNodeByUUID(currentValue.getString());
-                            if(!refNode.getPath().startsWith("/"+Constants.JCR_SYSTEM)) {
-                                addUsage(result, refNode, "reference");
-                            }
-                        }
-                    } else {
-                        JCRNodeWrapper refNode = (JCRNodeWrapper) reference.getNode();
-                        if(!refNode.getPath().startsWith("/"+Constants.JCR_SYSTEM)) {
-                            addUsage(result, refNode, "reference");
-                        }
-                    }
-                }
-                PropertyIterator wr = node.getWeakReferences();
-                while (wr.hasNext()) {
-                    JCRPropertyWrapper reference = (JCRPropertyWrapper) wr.next();
-                    if (reference.isMultiple()) {
-                        Value[] referenceValues = reference.getValues();
-                        for (Value currentValue : referenceValues) {
-                            JCRNodeWrapper refNode = currentUserSession.getNodeByUUID(currentValue.getString());
-                            if(!refNode.getPath().startsWith("/"+Constants.JCR_SYSTEM)) {
-                                addUsage(result, refNode, "weakreference");
-                            }
-                        }
-                    } else {
-                        if (!reference.getPath().startsWith("/referencesKeeper")) {
-                            JCRNodeWrapper refNode = reference.getParent();
-                            if(!refNode.getPath().startsWith("/"+Constants.JCR_SYSTEM)) {
-                                addUsage(result, refNode, "weakreference");
-                            }
-                        }
-                    }
-                }
+                fillUsages(result, node.getReferences());
+                fillUsages(result, node.getWeakReferences());
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
             }
         }
         return result;
+    }
+
+    private void fillUsages(List<GWTJahiaNodeUsage> result, PropertyIterator r) throws RepositoryException {
+        while (r.hasNext()) {
+            JCRPropertyWrapper reference = (JCRPropertyWrapper) r.next();
+            if (!reference.getPath().startsWith("/referencesKeeper")) {
+                JCRNodeWrapper refNode = reference.getParent();
+                if (!refNode.getPath().startsWith("/" + Constants.JCR_SYSTEM)) {
+                    addUsage(result, refNode, "reference");
+                }
+            }
+        }
     }
 
     private void addUsage(List<GWTJahiaNodeUsage> result, JCRNodeWrapper refNode, String type)

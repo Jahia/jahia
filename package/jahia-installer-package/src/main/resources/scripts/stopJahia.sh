@@ -4,4 +4,4 @@ echo Stopping Jahia Server
 echo ---------------------------------------------------------------------------
 
 cd tomcat/bin
-./shutdown.sh
+./shutdown.sh 30 -force

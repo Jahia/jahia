@@ -13,9 +13,6 @@
 
 <template:addResources type="css" resources="loginForm.css"/>
 
-<c:if test="${renderContext.editMode}">
-    <legend> Login form : ${currentNode.properties['jcr:title'].string}</legend>
-</c:if>
 <c:if test="${!renderContext.loggedIn}">
 
 <script type="text/javascript">

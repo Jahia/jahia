@@ -49,6 +49,7 @@
                 </col1>
                 <col2 jcr:primaryType="jnt:contentList">
                   <simple-search j:node="/templateSets/templates-web/contents/site_components/simple-search" jcr:primaryType="jnt:contentReference" />
+                  <loginForm jcr:primaryType="jnt:loginForm" j:displayRememberMeButton="true" j:displayLoginButton="true" />
                   <listB jcr:primaryType="jnt:mainResourceArea" />
                 </col2>
               </row>

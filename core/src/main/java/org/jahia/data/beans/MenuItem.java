@@ -32,6 +32,8 @@
 
 package org.jahia.data.beans;
 
+import javax.servlet.jsp.jstl.fmt.LocalizationContext;
+
 
 /**
  * Represents a menu item in the Jahia Administration.
@@ -53,6 +55,7 @@ public class MenuItem {
     private String name;
 
     private boolean selected;
+    private final LocalizationContext localizationContext;
 
     private String tooltip;
 
@@ -84,6 +87,10 @@ public class MenuItem {
      */
     public MenuItem(String name, boolean enabled, String label, String link,
             String icon, String iconSmall, String tooltip, boolean selected) {
+        this(name, enabled, label, link, icon, iconSmall, tooltip, selected,null);
+    }
+    public MenuItem(String name, boolean enabled, String label, String link,
+            String icon, String iconSmall, String tooltip, boolean selected, LocalizationContext localizationContext) {
         super();
         this.name = name;
         this.enabled = enabled;
@@ -93,7 +100,9 @@ public class MenuItem {
         this.iconSmall = iconSmall;
         this.tooltip = tooltip;
         this.selected = selected;
+        this.localizationContext = localizationContext;
     }
+
 
     public String getIcon() {
         return icon;
@@ -135,4 +144,7 @@ public class MenuItem {
         this.iconSmall = iconSmall;
     }
 
+    public LocalizationContext getLocalizationContext() {
+        return localizationContext;
+    }
 }

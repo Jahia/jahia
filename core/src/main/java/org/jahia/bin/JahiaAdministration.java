@@ -560,7 +560,7 @@ public class JahiaAdministration extends HttpServlet {
             menuItems.add(new MenuItem(module.getName(), actionUrl != null
                     && module.isEnabled(user, ctx.getSiteKey()), module
                     .getLabel(), actionUrl, module.getIcon(), module.getIconSmall(), module
-                    .getTooltip(), module.isSelected(ctx)));
+                    .getTooltip(), module.isSelected(ctx),module.getLocalizationContext()));
         }
 
         return menuItems;

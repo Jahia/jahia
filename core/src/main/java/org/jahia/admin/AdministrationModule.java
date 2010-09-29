@@ -37,6 +37,7 @@ import org.jahia.services.usermanager.JahiaUser;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 
 /**
  * Definition of the Jahia Administration module item.
@@ -92,4 +93,5 @@ public interface AdministrationModule {
      */
     public int getRank();
 
+    public LocalizationContext getLocalizationContext();
 }

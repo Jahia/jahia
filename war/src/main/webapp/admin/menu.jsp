@@ -121,6 +121,9 @@
                                         <c:set var="iconUrlDisabled"><%=URL%>images/icons/admin/adromeda/${item.icon}_grey.png</c:set>
                                     </c:if>
                                     <fmt:message key="${item.label}" var="label"/>
+                                    <c:if test="${fn:contains(label, '???')}">
+                                        <fmt:message key="${item.label}" var="label" bundle="${item.localizationContext}"/>
+                                    </c:if>
                                     <c:set var="label" value="${fn:contains(label, '???') ? item.label : label}"/>
                                     <c:if test="${item.enabled}">
                     <span class="dex-PushButton-big">

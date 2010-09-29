@@ -10,6 +10,9 @@
     <c:forEach items="${param.mode == 'server' ? administrationServerModules : administrationSiteModules}" var="item">
         <li class="item">
             <fmt:message key="${item.label}" var="label"/>
+            <c:if test="${fn:contains(label, '???')}">
+                <fmt:message key="${item.label}" var="label" bundle="${item.localizationContext}"/>
+            </c:if>
             <c:set var="label" value="${fn:contains(label, '???') ? item.label : label}"/>
             <c:if test="${not empty item.iconSmall}" var="smallIconAvailable">
                 <c:if test="${fn:contains(item.iconSmall, '/') || fn:contains(item.iconSmall, '.')}" var="externalIcon">

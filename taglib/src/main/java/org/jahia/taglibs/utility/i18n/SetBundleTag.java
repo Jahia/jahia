@@ -62,13 +62,14 @@ public class SetBundleTag extends AbstractJahiaTag {
     private String var;
     private int scope = PageContext.PAGE_SCOPE;
     private boolean useUiLocale = false;
-
+    private String templateName;
     @Override
     protected void resetState() {
         basename = null;
         useUiLocale = false;
         scope = PageContext.PAGE_SCOPE;
         var = null;
+        templateName = null;
         super.resetState();
     }
 
@@ -92,7 +93,7 @@ public class SetBundleTag extends AbstractJahiaTag {
             ResourceBundle resourceBundle = null;
             try {
                 resourceBundle = new JahiaResourceBundle(basename,
-                        locale,
+                        locale,templateName!=null?templateName:
                         context != null && context.getSite() != null && context.getSite().getSession().isLive() ? context
                                 .getSite().getTemplatePackageName() : null);
             } catch (RepositoryException e) {
@@ -124,5 +125,9 @@ public class SetBundleTag extends AbstractJahiaTag {
     
     public void setUseUILocale(String useUILocale) {
         this.useUiLocale = Boolean.parseBoolean(useUILocale);
+    }
+
+    public void setTemplateName(String templateName) {
+        this.templateName = templateName;
     }
 }

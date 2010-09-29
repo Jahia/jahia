@@ -269,7 +269,12 @@
             <name>useUILocale</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-        </attribute>        
+        </attribute>
+        <attribute>
+            <name>templateName</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>
 
     <tag>

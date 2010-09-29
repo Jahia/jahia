@@ -41,6 +41,8 @@ import org.jahia.services.rbac.PermissionIdentity;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
+import javax.servlet.jsp.jstl.fmt.LocalizationContext;
+
 /**
  * Base implementation of the Jahia administration module.
  * 
@@ -223,5 +225,9 @@ public abstract class AbstractAdministrationModule implements AdministrationModu
     
     public static String getMessage(String key) {
         return JahiaResourceBundle.getJahiaInternalResource(key, Jahia.getThreadParamBean().getUILocale());
+    }
+
+    public LocalizationContext getLocalizationContext() {
+        return new LocalizationContext(new JahiaResourceBundle(JahiaResourceBundle.JAHIA_INTERNAL_RESOURCES,Jahia.getThreadParamBean().getUILocale()));
     }
 }

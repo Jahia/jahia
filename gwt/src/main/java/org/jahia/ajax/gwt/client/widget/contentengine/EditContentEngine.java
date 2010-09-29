@@ -77,7 +77,6 @@ public class EditContentEngine extends AbstractContentEngine {
         super(getEditConfig(node, (GWTEditConfiguration) linker.getConfig()), linker);
         contentPath = node.getPath();
         nodeName = node.getName();
-        heading = "Edit " + nodeName;
         loadEngine();
         init(engineContainer);
 
@@ -178,9 +177,14 @@ public class EditContentEngine extends AbstractContentEngine {
                 nodeTypes = result.getNodeTypes();
                 properties = result.getProperties();
                 defaultLanguageBean = result.getCurrentLocale();
-
+                if(!node.isWriteable()) {
+                    heading = Messages.getWithArgs("label.edit.engine.heading.read.only","Read {0}",new String[]{nodeName});
+                    container.getPanel().setHeading(heading);
+                } else {
+                    heading = Messages.getWithArgs("label.edit.engine.heading.edit","Edit {0}",new String[]{nodeName});
+                }
                 if (node.isLocked()) {
-                    heading = heading + " [ locked by "+node.getLockOwner() + " ]";
+                    heading = heading + Messages.getWithArgs("label.edit.engine.heading.locked.by","[ locked by {0} ]",new String[]{node.getLockOwner()});
                     container.getPanel().setHeading(heading);
                 }
                 

@@ -101,6 +101,9 @@ public class ContentTabItem extends PropertiesTabItem {
         if (engine.isExistingNode()) {
             name.setValue(engine.getNode().getName());
             setData("NodeName", engine.getNode().getName());
+            if(!engine.getNode().isWriteable()) {
+                name.setReadOnly(true);
+            }
         } else {
             name.setValue("Automatically Created (you can type your name here if you want)");
         }

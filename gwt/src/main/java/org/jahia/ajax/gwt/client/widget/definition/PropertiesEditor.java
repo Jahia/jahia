@@ -236,6 +236,9 @@ public class PropertiesEditor extends FormPanel {
             }
 
             if (field != null) {
+                if (!isWriteable) {
+                    field.setReadOnly(true);
+                }
                 if (optional && fieldSetGrouping &&
                         (fieldSet == null || !fieldSet.getId().equals(definition.getDeclaringNodeTypeLabel()))) {
                     setPadding(0);
@@ -319,9 +322,6 @@ public class PropertiesEditor extends FormPanel {
                     });
                     checkbox.setHideLabel(true);
                     add(checkbox);
-                }
-                if (!isWriteable) {
-                    field.setReadOnly(!isWriteable);
                 }
 
                 if (optional) {

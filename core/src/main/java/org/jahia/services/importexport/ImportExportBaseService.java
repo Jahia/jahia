@@ -49,6 +49,7 @@ import org.jahia.services.JahiaService;
 import org.jahia.services.categories.Category;
 import org.jahia.services.categories.CategoryService;
 import org.jahia.services.content.*;
+import org.jahia.services.content.nodetypes.JahiaCndReaderLegacy;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.JahiaCndReader;
 import org.jahia.services.content.nodetypes.ParseException;
@@ -105,6 +106,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     private JCRStoreService jcrStoreService;
     private CategoryService categoryService;
     private static FileCleaningTracker fileCleaningTracker = new FileCleaningTracker();
+    private boolean legacyImport = false;
 
     public static ImportExportBaseService getInstance() {
         if (instance == null) {
@@ -268,7 +270,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         Set<JCRNodeWrapper> nodes = Collections.singleton(session.getNode("/sites/"+
                 site.getSiteKey()));
         exportNodesWithBinaries(session.getRootNode(), nodes, zout, new HashSet<String>(),
-                    params);
+                params);
         zout.finish();
     }
 
@@ -500,11 +502,11 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     String name = zipentry.getName();
                     if (name.equals(REPOSITORY_XML)) {
                         DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(session, null, file, fileList, (site != null ? site.getSiteKey(): null));
-    
+
                         documentViewImportHandler.setReferences(references);
                         documentViewImportHandler.setNoRoot(true);
                         documentViewImportHandler.setResolveReferenceAtEnd(false);
-    
+
                         handleImport(zis, documentViewImportHandler);
                         session.save();
                         break;
@@ -522,12 +524,19 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         NodeTypeRegistry reg = null;
         DefinitionsMapping mapping = null;
+        // Check if it is an 5.x or 6.1 import :
+        for (Map.Entry<String, Long> entry : sizes.entrySet()) {
+            if (entry.getKey().startsWith("export_")) {
+                legacyImport = true;
+                break;
+            }
+        }
 
         // Import additional files - site.properties, old cateogries.xml , sitepermissions.xml
         // and eventual plain file from 5.x imports
         if (!sizes.containsKey(REPOSITORY_XML) || sizes.containsKey(SITE_PROPERTIES) ||
                 sizes.containsKey(CATEGORIES_XML)|| sizes.containsKey(SITE_PERMISSIONS_XML) ||
-                sizes.containsKey(DEFINITIONS_CND)|| sizes.containsKey(DEFINITIONS_MAP)                
+                sizes.containsKey(DEFINITIONS_CND)|| sizes.containsKey(DEFINITIONS_MAP)
                 ) {
             zis = new NoCloseZipInputStream(new FileInputStream(file));
             try {
@@ -558,17 +567,21 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         importSitePermissions(site, zis);
                     } else if (name.equals(DEFINITIONS_CND)) {
                         reg = new NodeTypeRegistry(false);
-    
                         try {
-                            JahiaCndReader r = new JahiaCndReader(new InputStreamReader(zis, "UTF-8"),zipentry.getName(), file.getName(), reg);
-                            r.parse();
+                            if (legacyImport) {
+                                JahiaCndReaderLegacy r = new JahiaCndReaderLegacy(new InputStreamReader(zis, "UTF-8"),zipentry.getName(), file.getName(), reg);
+                                r.parse();
+                            } else {
+                                JahiaCndReader r = new JahiaCndReader(new InputStreamReader(zis, "UTF-8"),zipentry.getName(), file.getName(), reg);
+                                r.parse();
+                            }
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
                     } else if (name.equals(DEFINITIONS_MAP)) {
                         mapping = new DefinitionsMapping();
                         mapping.load(zis);
-    
+
                     }
                     zis.closeEntry();
                 }
@@ -578,45 +591,42 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         }
 
         // Import legacy content from 5.x and 6.x
-        for (Map.Entry<String, Long> entry : sizes.entrySet()) {
-            if (entry.getKey().startsWith("export_")) {
-                // Old import
-                JCRNodeWrapper siteFolder = jcrStoreService.getSessionFactory().getCurrentUserSession().getNode("/sites/" + site.getSiteKey());
+        if (legacyImport) {
+            // Old import
+            JCRNodeWrapper siteFolder = jcrStoreService.getSessionFactory().getCurrentUserSession().getNode("/sites/" + site.getSiteKey());
 
-                zis = new NoCloseZipInputStream(new FileInputStream(file));
-                try {
-                    while (true) {
-                        ZipEntry zipentry = zis.getNextEntry();
-                        if (zipentry == null) break;
-                        String name = zipentry.getName();
-                        if (name.equals(FILESACL_XML)) {
-                            importFilesAcl(site, zis);
-                        } else if (name.startsWith("export")) {
-                            String languageCode;
-                            if (name.indexOf("_") != -1) {
-                                languageCode = name.substring(7, name.lastIndexOf("."));
-                            } else {
-                                languageCode = site.getLanguagesAsLocales().iterator().next().toString();
-                            }
-                            zipentry.getSize();
-    
-                            LegacyImportHandler importHandler = new LegacyImportHandler(session,
-                                    siteFolder, reg, mapping, LanguageCodeConverters
-                                            .languageCodeToLocale(languageCode),
-                                    infos != null ? (String)infos.get("originatingJahiaRelease")
-                                            : null);
-                            importHandler.setReferences(references);
-                            handleImport(zis, importHandler);
-                            siteFolder.getSession().save();
+            zis = new NoCloseZipInputStream(new FileInputStream(file));
+            try {
+                while (true) {
+                    ZipEntry zipentry = zis.getNextEntry();
+                    if (zipentry == null) break;
+                    String name = zipentry.getName();
+                    if (name.equals(FILESACL_XML)) {
+                        importFilesAcl(site, zis);
+                    } else if (name.startsWith("export")) {
+                        String languageCode;
+                        if (name.indexOf("_") != -1) {
+                            languageCode = name.substring(7, name.lastIndexOf("."));
+                        } else {
+                            languageCode = site.getLanguagesAsLocales().iterator().next().toString();
                         }
-                        zis.closeEntry();
-                    }
-                } finally {
-                    zis.reallyClose();
-                }
+                        zipentry.getSize();
 
-                break;
+                        LegacyImportHandler importHandler = new LegacyImportHandler(session,
+                                siteFolder, reg, mapping, LanguageCodeConverters
+                                        .languageCodeToLocale(languageCode),
+                                infos != null ? (String)infos.get("originatingJahiaRelease")
+                                        : null);
+                        importHandler.setReferences(references);
+                        handleImport(zis, importHandler);
+                        siteFolder.getSession().save();
+                    }
+                    zis.closeEntry();
+                }
+            } finally {
+                zis.reallyClose();
             }
+
         }
 
         categoriesImportHandler.setUuidProps(catProps);

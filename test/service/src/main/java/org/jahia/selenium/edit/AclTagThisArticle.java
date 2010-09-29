@@ -20,9 +20,10 @@ public class AclTagThisArticle extends SeleneseTestCase {
     public int tags = 10;
     private JahiaSite site;
     private final static String TESTSITE_NAME = "mySite";
+    private final static String TEST_SPEED = "500";  //speed between selenium commands
 
     public void setUp() throws Exception {
-         try {
+        try {
             final JahiaSite mySite = ServicesRegistry.getInstance().getJahiaSitesService().getSite("localhostTest");
             if (mySite == null) {
                 site = TestHelper.createSite(TESTSITE_NAME, "localhostTest", TestHelper.TEST_TEMPLATES);
@@ -37,15 +38,16 @@ public class AclTagThisArticle extends SeleneseTestCase {
         setUp("http://localhost:8080/jahia", "*firefox");
     }
 
-     public void tearDown() throws Exception {
-       try {
-           // TestHelper.deleteSite(TESTSITE_NAME);
+    public void tearDown() throws Exception {
+        try {
+            // TestHelper.deleteSite(TESTSITE_NAME);
         } catch (Exception e) {
             logger.warn("Exception during test tearDown", e);
         }
     }
 
     public void test() throws InterruptedException {
+        selenium.setSpeed(TEST_SPEED);
         try {
             selenium.open("/jahia/cms/edit/default/en/sites/mySite/home.html");
         } catch (Exception e) {
@@ -173,7 +175,7 @@ public class AclTagThisArticle extends SeleneseTestCase {
                         return selenium.isElementPresent("gwt-uid-45");
                     }
                 };
-            }else {
+            } else {
                 new Wait("wait") {
                     public boolean until() {
                         return selenium.isTextPresent("web-designer");
@@ -183,6 +185,7 @@ public class AclTagThisArticle extends SeleneseTestCase {
             //déselect or select all acl
             ids = selenium.getEval(getAllCheckBoxAcl()).split(",");
             for (String id : ids) {
+                selenium.setSpeed("100");
                 if (i == 0) {
                     //deselect
                     if (selenium.isChecked(id)) {
@@ -197,6 +200,7 @@ public class AclTagThisArticle extends SeleneseTestCase {
                     //restore
                 }
             }
+            selenium.setSpeed(TEST_SPEED);
             //save
             ids = selenium.getEval(saveButton()).split(",");
             selenium.click("//div[@id='" + ids[0] + "']/table/tbody/tr/td[1]/table/tbody/tr/td[1]/table");
@@ -235,6 +239,7 @@ public class AclTagThisArticle extends SeleneseTestCase {
     public void addTags(int i) {
         final String[] addTag = selenium.getEval(getAddTagButton()).split(",");
         for (int j = 0; j < i; j++) {
+            selenium.setSpeed("200");
             String Tag = "Tag" + j;
             new Wait("wait") {
                 public boolean until() {
@@ -250,6 +255,7 @@ public class AclTagThisArticle extends SeleneseTestCase {
             selenium.click(addTag[3]);
             Tag = "Tag";
         }
+        selenium.setSpeed(TEST_SPEED);
     }
 
     public String getAllCheckBoxAcl() {

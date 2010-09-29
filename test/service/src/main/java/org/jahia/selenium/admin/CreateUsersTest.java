@@ -16,6 +16,7 @@ public class CreateUsersTest extends SeleneseTestCase {
     private final String login_username = "root";
     private final String login_password = "root1234";
     private final int numberOfUsers = 20;
+    private final static String TEST_SPEED = "500";
 
     public void setUp() throws Exception {
         setUp("http://localhost:8080/jahia", "*firefox");
@@ -26,6 +27,7 @@ public class CreateUsersTest extends SeleneseTestCase {
     }
 
     public void test() throws InterruptedException {
+        selenium.setSpeed(TEST_SPEED); //speed between selenium commands
         selenium.open("/jahia/administration");
         new Wait("Couldn't find the login page!") {
             public boolean until() {

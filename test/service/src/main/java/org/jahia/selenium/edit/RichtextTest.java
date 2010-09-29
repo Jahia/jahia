@@ -9,11 +9,11 @@ import org.jahia.test.TestHelper;
 
 /* YOU NEED A SERVER SELENIUM UP ON YOUR SYSTEM */
 public class RichtextTest extends SeleneseTestCase {
-
     private static Logger logger = Logger.getLogger(RichtextTest.class);
     private String[] ids;
     private JahiaSite site;
     private final static String TESTSITE_NAME = "mySite";
+    private final static String TEST_SPEED = "500"; //speed between selenium commands
     private final static int numberOfNodes = 10;
 
     /*  protected DefaultSelenium createSeleniumClient(String url) throws Exception {
@@ -46,6 +46,7 @@ public class RichtextTest extends SeleneseTestCase {
     }
 
     public void test() throws Exception {
+        selenium.setSpeed(TEST_SPEED);  //speed between selenium commands
         try {
             selenium.open("/jahia/cms/edit/default/en/sites/mySite/home.html");
         } catch (Exception e) {
@@ -72,7 +73,7 @@ public class RichtextTest extends SeleneseTestCase {
                     public boolean until() {
                         return selenium.isTextPresent("Any content");
                     }
-                };
+            };
             while(!selenium.isTextPresent("Editorial content")){
                 ids = selenium.getEval(GwtButtons()).split(",");
                 selenium.click(ids[1]);

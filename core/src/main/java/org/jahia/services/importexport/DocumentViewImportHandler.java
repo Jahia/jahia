@@ -329,6 +329,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
                 // nodeType = attrValue; // ?
             } else if (attrName.equals("j:share")) {
             } else if (attrName.equals(Constants.JCR_MIXINTYPES)) {
+            } else if (attrName.equals(Constants.SITEID)) {
             } else if (attrName.equals(Constants.JCR_UUID)) {
                 uuidMapping.put(attrValue, child.getIdentifier());
             } else if (attrName.equals(Constants.JCR_CREATED)) {
@@ -380,9 +381,9 @@ public class DocumentViewImportHandler extends DefaultHandler {
                         for (int j = 0; j < s.length; j++) {
                             v[j] = child.getRealNode().getSession().getValueFactory().createValue(s[j]);
                         }
-                        child.setProperty(attrName, v);
+                        child.getRealNode().setProperty(attrName, v);
                     } else {
-                        child.setProperty(attrName, attrValue);
+                        child.getRealNode().setProperty(attrName, attrValue);
                     }
                 }
             }

@@ -192,9 +192,9 @@ public class DocumentViewExporter {
                     exportedShareable.put(node.getIdentifier(), node.getPath());
                 }                
             }
-            PropertyIterator propsIterator = node.getProperties();
+            PropertyIterator propsIterator = node.getRealNode().getProperties();
             while (propsIterator.hasNext()) {
-                JCRPropertyWrapper property = (JCRPropertyWrapper) propsIterator.nextProperty();
+                Property property = propsIterator.nextProperty();
                 if ((property.getType() != PropertyType.BINARY || !skipBinary) && !excluded.contains(property.getName())) {
                     String key = property.getName();
                     String prefix = null;

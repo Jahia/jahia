@@ -304,7 +304,8 @@ public class PickedContentView extends BottomRightComponent {
      *
      * @return
      */
-    public List<String> getSelectedContentPath(final String jahiaContextPath, final String jahiaServletPath) {
+    public List<String> getSelectedContentPath(final String jahiaContextPath, final String jahiaServletPath,
+                                               String filesServletPath) {
         List<GWTJahiaNode> selectedContents = getSelectedContent();
         if (selectedContents == null) {
             return null;
@@ -314,10 +315,9 @@ public class PickedContentView extends BottomRightComponent {
             List<String> pathes = new ArrayList<String>();
             for (GWTJahiaNode s : selectedContents) {
                 if (config.getNodeTypes().contains("nt:file")) {
-                    pathes.add(s.getUrl());
+                    pathes.add(jahiaContextPath + filesServletPath + "/{workspace}" + s.getPath());
                 } else {
-                    String url = s.getPath() + ".html";
-                    pathes.add(URL.rewrite(jahiaContextPath,jahiaServletPath,url));
+                    pathes.add(jahiaContextPath + jahiaServletPath+ "/{mode}/{lang}" + s.getPath() + ".html");
                 }
             }
             return pathes;

@@ -15,6 +15,6 @@
 		<internal:gwtImport module="org.jahia.ajax.gwt.module.contentpicker.ContentPicker" />
 	</head>
 	<body>
-        <internal:contentPicker conf='${config}' mimeTypes='${param["mime"]}' jahiaServletPath='/cms' jahiaContextPath='${pageContext.request.contextPath}'  callback='${param["CKEditorFuncNum"]}'/>    
+        <internal:contentPicker conf='${config}' mimeTypes='${param["mime"]}' jahiaServletPath='/cms' filesServletPath="/files" jahiaContextPath='${pageContext.request.contextPath}'  callback='${param["CKEditorFuncNum"]}'/>    
 	</body>
 </html>

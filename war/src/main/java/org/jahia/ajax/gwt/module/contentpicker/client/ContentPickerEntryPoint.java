@@ -79,6 +79,7 @@ public class ContentPickerEntryPoint extends CommonEntryPoint {
         if (panel != null) {
             final String jahiaContextPath = DOM.getElementAttribute(panel.getElement(), "jahiaContextPath");
             final String jahiaServletPath = DOM.getElementAttribute(panel.getElement(), "jahiaServletPath");
+            final String filesServletPath = DOM.getElementAttribute(panel.getElement(), "filesServletPath");
             final String selectionLabel = DOM.getElementAttribute(panel.getElement(), "selectionLabel");
             final Map<String, String> selectorOptions = new HashMap<String, String>();
             final List<GWTJahiaNode> selectedNodes = ContentHelper.getSelectedContentNodesFromHTML();
@@ -94,7 +95,8 @@ public class ContentPickerEntryPoint extends CommonEntryPoint {
             JahiaContentManagementService.App.getInstance().getManagerConfiguration(conf, new BaseAsyncCallback<GWTManagerConfiguration>() {
                 public void onSuccess(GWTManagerConfiguration config) {
                     PermissionsUtils.loadPermissions(config.getPermissions());
-                    panel.add(new ContentPickerViewport(jahiaContextPath, jahiaServletPath, selectionLabel,
+                    panel.add(new ContentPickerViewport(jahiaContextPath, jahiaServletPath, filesServletPath,
+                            selectionLabel,
                             selectorOptions, selectedNodes, filters, mimeTypes, config, multiple, callback));
                 }
 

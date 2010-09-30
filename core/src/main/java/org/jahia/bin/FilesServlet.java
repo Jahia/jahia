@@ -56,6 +56,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLDecoder;
 import java.util.Date;
 
 /**
@@ -100,6 +101,11 @@ public class FilesServlet extends HttpServlet {
         }
         String workspace = StringUtils.substringBefore(p,"/");
         p = Text.unescape("/"+StringUtils.substringAfter(p,"/").replaceAll("___",":"));
+
+        if (URLDecoder.decode(workspace, "UTF-8").equals("{workspace}")) {
+            // Hack for CK Editor links
+            workspace = "default";
+        }
 
         JCRNodeWrapper n;
         String v = req.getParameter("v");

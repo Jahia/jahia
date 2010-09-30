@@ -62,8 +62,8 @@ public class ContentPickerViewport extends Viewport {
     public static final int BUTTON_HEIGHT = 24;
 
 
-    public ContentPickerViewport(final String jahiaContextPath, final String jahiaServletPath, final String selectionLabel,
-                                 final Map<String, String> selectorOptions, final List<GWTJahiaNode> selectedNodes,
+    public ContentPickerViewport(final String jahiaContextPath, final String jahiaServletPath, String filesServletPath,
+                                 final String selectionLabel, final Map<String, String> selectorOptions, final List<GWTJahiaNode> selectedNodes,
                                  final List<String> filters, final List<String> mimeTypes, final GWTManagerConfiguration config,
                                  final boolean multiple, String callback) {
         setLayout(new FitLayout());
@@ -71,7 +71,7 @@ public class ContentPickerViewport extends Viewport {
                 new ContentPicker(selectorOptions, selectedNodes, filters, mimeTypes, config, multiple);
 
         // buttom component
-        final Component bar = initButtonBar(jahiaContextPath,jahiaServletPath,callback);
+        final Component bar = initButtonBar(jahiaContextPath,jahiaServletPath, filesServletPath, callback);
         picker.setBottomComponent(bar);
 
         add(picker);
@@ -93,8 +93,9 @@ public class ContentPickerViewport extends Viewport {
      *
      * @return
      */
-    public List<String> getSelectedNodePathes(final String jahiaContextPath,final String jahiaServletPath) {
-        return pickedContent.getSelectedContentPath(jahiaContextPath,jahiaServletPath);
+    public List<String> getSelectedNodePathes(final String jahiaContextPath, final String jahiaServletPath,
+                                              final String filesServletPath) {
+        return pickedContent.getSelectedContentPath(jahiaContextPath,jahiaServletPath, filesServletPath);
     }
 
     /**
@@ -102,7 +103,8 @@ public class ContentPickerViewport extends Viewport {
      *
      * @return
      */
-    private Component initButtonBar(final String jahiaContextPath,final String jahiaServletPath, final String callback) {
+    private Component initButtonBar(final String jahiaContextPath, final String jahiaServletPath,
+                                    final String filesServletPath, final String callback) {
         LayoutContainer buttonsPanel = new LayoutContainer();
         buttonsPanel.setBorders(false);
 
@@ -115,7 +117,7 @@ public class ContentPickerViewport extends Viewport {
         ok.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                List<String> selectedNode = getSelectedNodePathes(jahiaContextPath,jahiaServletPath);
+                List<String> selectedNode = getSelectedNodePathes(jahiaContextPath,jahiaServletPath, filesServletPath);
                 if (selectedNode != null && !selectedNode.isEmpty()) {
                     callback(callback, selectedNode.get(0));
                     WindowUtil.close();

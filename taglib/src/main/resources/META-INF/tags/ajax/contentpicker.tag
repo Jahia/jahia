@@ -13,6 +13,7 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ attribute name="jahiaServletPath" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
 <%@ attribute name="jahiaContextPath" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
+<%@ attribute name="filesServletPath" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
 <%@ attribute name="rootPath" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
 <%@ attribute name="startPath" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
 <%@ attribute name="filters" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
@@ -70,7 +71,8 @@ while (selectedNodeIter.hasNext()) {
     var sAutoSelectParent = '${autoSelectParent}';
 
 </script>
-<template:gwtJahiaModule id="contentpicker" jahiaType="contentpicker"  jahiaServletPath="${fn:escapeXml(jahiaServletPath)}" jahiaContextPath="${fn:escapeXml(jahiaContextPath)}" rootPath="<%=rootPath%>"
+<template:gwtJahiaModule id="contentpicker" jahiaType="contentpicker"  jahiaServletPath="${fn:escapeXml(jahiaServletPath)}"
+                         jahiaContextPath="${fn:escapeXml(jahiaContextPath)}" filesServletPath="${fn:escapeXml(filesServletPath)}"  rootPath="<%=rootPath%>"
                          startPath="<%=startPath%>"
                          filters="<%=filters%>"
                          mimeTypes="${fn:escapeXml(mimeTypes)}" callback="${fn:escapeXml(callback)}" config="${fn:escapeXml(conf)}"

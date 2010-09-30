@@ -48,9 +48,11 @@ import org.jahia.services.render.filter.HtmlTagAttributeTraverser.HtmlTagAttribu
 public class ContextPlaceholdersReplacer implements HtmlTagAttributeVisitor {
 
     public static String CURRENT_CONTEXT_PLACEHOLDER = "{mode}";
+    public static String WORKSPACE_PLACEHOLDER = "{workspace}";
     public static String LANG_PLACEHOLDER = "{lang}";
     
     private static Pattern CTX_PATTERN = Pattern.compile(CURRENT_CONTEXT_PLACEHOLDER, Pattern.LITERAL);
+    private static Pattern WORKSPACE_PATTERN = Pattern.compile(WORKSPACE_PLACEHOLDER, Pattern.LITERAL);
     private static Pattern LANG_PATTERN = Pattern.compile(LANG_PLACEHOLDER, Pattern.LITERAL);
     
     public String visit(String value, RenderContext context, Resource resource) {
@@ -65,6 +67,7 @@ public class ContextPlaceholdersReplacer implements HtmlTagAttributeVisitor {
             }
             value = LANG_PATTERN.matcher(
                     CTX_PATTERN.matcher(value).replaceAll(contextPath+"/"+resource.getWorkspace())).replaceAll(resource.getLocale().toString());
+            value = WORKSPACE_PATTERN.matcher(value).replaceAll(resource.getWorkspace());
         }
         
         return value;

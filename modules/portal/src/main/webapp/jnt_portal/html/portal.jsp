@@ -11,7 +11,8 @@
         var baseUrl = '${url.base}';
     </script>
 </template:addResources>
-<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,inettuts.js"/>
+<template:addResources type="javascript"
+                       resources="jquery.min.js,jquery-ui.min.js,inettuts.js,ajaxreplace.js"/>
 <template:addResources>
     <script type="text/javascript">
         function addWidget(source, newName) {
@@ -20,7 +21,7 @@
             data["target"] = "${currentNode.path}/column1";
             data["newName"] = newName;
             $.post("${url.base}${currentNode.path}/column1.clone.do", data, function(data) {
-                alert("<fmt:message key='label.portal.widget.add'/>");
+                window.location.reload();
             });
         }
         function addRSSWidget() {
@@ -29,7 +30,7 @@
             data["url"] = $("#feedUrl").val();
             data["nbEntries"] = $("#nbFeeds").val();
             $.post("${url.base}${currentNode.path}/column1/*", data, function(data) {
-                alert("<fmt:message key='label.portal.rss.add'/>");
+                window.location.reload();
             });
         }
     </script>
@@ -59,26 +60,17 @@
 
 
     <p class="slide"><a href="#" class="btn-slide">Add Widget</a></p>
-
-    <div id="columns">
-        <c:forEach var="column" begin="1" end="${currentNode.properties.columns.string}">
-            <ul id="column${column}" class="column">
-                <template:area path="column${column}" template="portal"/>
-            </ul>
-        </c:forEach>
-    </div>
+</c:if>
+<div id="columns">
+    <c:forEach var="column" begin="1" end="${currentNode.properties.columns.string}">
+        <ul id="column${column}" class="column">
+            <template:area path="column${column}" template="portal"/>
+        </ul>
+    </c:forEach>
+</div>
+<c:if test="${!renderContext.editMode}">
     <script type="text/javascript">
         iNettuts.addWidgetControls();
         iNettuts.makeSortable();
     </script>
-</c:if>
-
-<c:if test="${renderContext.editMode}">
-    <div id="columns">
-        <c:forEach var="column" begin="1" end="${currentNode.properties.columns.string}">
-            <ul id="column${column}" class="column">
-                <li class="widget color-box"><fmt:message key="label.portal.column"/>&nbsp;${column}</li>
-            </ul>
-        </c:forEach>
-    </div>
 </c:if>

@@ -117,48 +117,51 @@
         </tbody>
     </table>
     <template:include templateType="html" template="hidden.footer"/>
+</div>
 
+
+<c:if test="${not renderContext.ajaxRequest}">
     <div class="addcontent">
-
-
-        <c:if test="${not renderContext.ajaxRequest}">
             <%-- include add nodes forms --%>
-            <jcr:nodeProperty node="${currentNode}" name="j:allowedTypes" var="types"/>
-            <h3 class="titleaddnewcontent">
-                <img title="" alt="" src="${url.currentModule}/images/add.png"/><fmt:message
-                    key="label.add.new.content"/>
-            </h3>
-            <script language="JavaScript">
+        <jcr:nodeProperty node="${currentNode}" name="j:allowedTypes" var="types"/>
+        <h3 class="titleaddnewcontent">
+            <img title="" alt="" src="${url.currentModule}/images/add.png"/><fmt:message
+                key="label.add.new.content"/>
+        </h3>
+        <script language="JavaScript">
+            <c:forEach items="${types}" var="type" varStatus="status">
+            animatedcollapse.addDiv('add${currentNode.identifier}-${status.index}',
+                    'fade=1,speed=700,group=newContent');
+            </c:forEach>
+            animatedcollapse.init();
+        </script>
+        <c:if test="${types != null}">
+            <div class="listEditToolbar">
                 <c:forEach items="${types}" var="type" varStatus="status">
-                animatedcollapse.addDiv('add${currentNode.identifier}-${status.index}',
-                        'fade=1,speed=700,group=newContent');
+                    <jcr:nodeType name="${type.string}" var="nodeType"/>
+                    <button onclick="animatedcollapse.toggle('add${currentNode.identifier}-${status.index}');"><span
+                            class="icon-contribute icon-add"></span>${jcr:label(nodeType, renderContext.mainResourceLocale)}
+                    </button>
                 </c:forEach>
-                animatedcollapse.init();
-            </script>
-            <c:if test="${types != null}">
-                <div class="listEditToolbar">
-                    <c:forEach items="${types}" var="type" varStatus="status">
-                        <jcr:nodeType name="${type.string}" var="nodeType"/>
-                        <button onclick="animatedcollapse.toggle('add${currentNode.identifier}-${status.index}');"><span
-                                class="icon-contribute icon-add"></span>${jcr:label(nodeType, renderContext.mainResourceLocale)}
-                        </button>
-                    </c:forEach>
+            </div>
+
+            <c:forEach items="${types}" var="type" varStatus="status">
+                <div style="display:none;" id="add${currentNode.identifier}-${status.index}"
+                     class="addContentContributeDiv">
+                    <template:module node="${currentNode}" templateType="edit" template="add">
+                        <template:param name="resourceNodeType" value="${type.string}"/>
+                        <template:param name="currentListURL" value="${url.current}"/>
+                        <template:param name="addContentCallbackJS"
+                                        value="$('.addContentContributeDiv').each(function(index,value){animatedcollapse.addDiv($(this).attr('id'), 'fade=1,speed=700,group=tasks');});animatedcollapse.reinit();"/>
+                    </template:module>
                 </div>
+            </c:forEach>
 
-                <c:forEach items="${types}" var="type" varStatus="status">
-                    <div style="display:none;" id="add${currentNode.identifier}-${status.index}">
-                        <template:module node="${currentNode}" templateType="edit" template="add">
-                            <template:param name="resourceNodeType" value="${type.string}"/>
-                            <template:param name="currentListURL" value="${url.current}"/>
-                        </template:module>
-                    </div>
-                </c:forEach>
-
-            </c:if>
         </c:if>
+    </div>
+</c:if>
 
-        <c:if test="${jcr:getParentOfType(currentNode, 'jnt:page') eq null && !jcr:isNodeType(currentNode,'jnt:page')}">
+<c:if test="${jcr:getParentOfType(currentNode, 'jnt:page') eq null && !jcr:isNodeType(currentNode,'jnt:page')}">
     </div>
 
-    </c:if>
-</div>
+</c:if>

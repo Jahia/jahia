@@ -36,7 +36,10 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 
@@ -46,6 +49,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.servlet.jsp.PageContext;
 import java.io.IOException;
+import java.util.Set;
 
 /**
  * Handler for the &lt;template:module/&gt; tag, used to render content objects.
@@ -85,6 +89,8 @@ public class WrappedContentTag extends ModuleTag implements ParamParent {
                             nodeWrapper.checkout();
                         }
                         node = nodeWrapper.addNode(path, areaType);
+                        if(mainResource!=null)
+                        applyContributeModeOptions(mainResource.getNode());
                     }
                 } else {
                     // Absolute area
@@ -94,6 +100,8 @@ public class WrappedContentTag extends ModuleTag implements ParamParent {
                             parent.checkout();
                         }
                         node = parent.addNode(StringUtils.substringAfterLast(path, "/"), areaType);
+                        if(mainResource!=null)
+                        applyContributeModeOptions(mainResource.getNode());
                     }
                 }
                 NodeIterator ni = mainResource.getNode().getNodes();
@@ -107,6 +115,25 @@ public class WrappedContentTag extends ModuleTag implements ParamParent {
             super.missingResource(renderContext, resource);
         } catch (RepositoryException e) {
             logger.error("Cannot create area", e);
+        }
+    }
+
+    private void applyContributeModeOptions(JCRNodeWrapper nodeWrapper) throws RepositoryException {
+        if (nodeWrapper.isNodeType("jmix:contributeMode")) {
+            ExtendedNodeType nodeType = NodeTypeRegistry.getInstance().getNodeType(
+                    "jmix:contributeMode");
+            Set<String> propertyNameSet = nodeType.getPropertyDefinitionsAsMap().keySet();
+            node.addMixin("jmix:contributeMode");
+            for (String propertyName : propertyNameSet) {
+                if (nodeWrapper.hasProperty(propertyName)) {
+                    JCRPropertyWrapper property = nodeWrapper.getProperty(propertyName);
+                    if (!property.isMultiple()) {
+                        node.setProperty(propertyName, property.getValue());
+                    } else {
+                        node.setProperty(propertyName, property.getValues());
+                    }
+                }
+            }
         }
     }
 

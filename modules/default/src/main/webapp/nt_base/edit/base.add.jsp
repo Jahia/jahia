@@ -170,7 +170,7 @@
                     jreplace('${currentResource.moduleParams.workflowTaskFormCallbackId}', '${currentResource.moduleParams.workflowTaskFormCallbackURL}',null, "${currentResource.moduleParams.workflowTaskFormCallbackJS};$('#${jsNodeName}${scriptTypeName}').ajaxForm(options${jsNodeName}${scriptTypeName});");
                 </c:when>
                 <c:otherwise>
-                    jreplace('${currentNode.identifier}', '${currentResource.moduleParams.currentListURL}',null, "$('#${jsNodeName}${scriptTypeName}').ajaxForm(options${jsNodeName}${scriptTypeName});");
+                    jreplace('${currentNode.identifier}', '${currentResource.moduleParams.currentListURL}',null, "${currentResource.moduleParams.addContentCallbackJS};$('#${jsNodeName}${scriptTypeName}').ajaxForm(options${jsNodeName}${scriptTypeName});");
                 </c:otherwise>
                 </c:choose>
                     $.each(richTextEditors, function(key, value) {

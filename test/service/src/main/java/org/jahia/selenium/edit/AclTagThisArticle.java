@@ -16,11 +16,10 @@ import org.jahia.test.TestHelper;
  */
 public class AclTagThisArticle extends SeleneseTestCase {
     private static Logger logger = Logger.getLogger(AclTagThisArticle.class);
-    public String[] ids;
     public int tags = 10;
     private JahiaSite site;
     private final static String TESTSITE_NAME = "mySite";
-    private final static String TEST_SPEED = "500";  //speed between selenium commands
+    private final static String TEST_SPEED = "800";  //speed between selenium commands
 
     public void setUp() throws Exception {
         try {
@@ -40,6 +39,7 @@ public class AclTagThisArticle extends SeleneseTestCase {
 
     public void tearDown() throws Exception {
         try {
+            selenium.stop();
             // TestHelper.deleteSite(TESTSITE_NAME);
         } catch (Exception e) {
             logger.warn("Exception during test tearDown", e);
@@ -77,35 +77,26 @@ public class AclTagThisArticle extends SeleneseTestCase {
         //click on "Any content"
         new Wait("wait") {
             public boolean until() {
-                return selenium.isTextPresent("Area : listA");
+                return selenium.isElementPresent("//div[@path='/sites/mySite/home/listA']/div/div[2]/div/div/div/div/table/tbody/tr/td[2]/button");
             }
         };
-        ids = selenium.getEval(AnyContentButtons()).split(",");
-        final String[] finalButtonIds = ids;
-        new Wait("wait") {
-            public boolean until() {
-                return selenium.isElementPresent(finalButtonIds[1]);
-            }
-        };
-        selenium.click(ids[1]);
+        selenium.click("//div[@path='/sites/mySite/home/listA']/div/div[2]/div/div/div/div/table/tbody/tr/td[2]/button");
 
         //doubleClick on "Editorial content"
         new Wait("wait") {
             public boolean until() {
-                return selenium.isTextPresent("Editorial content");
+                return selenium.isElementPresent("//img[@src='/jahia/modules/default/icons/jmix_editorialContent.png']");
             }
         };
-        ids = selenium.getEval(TreeNodes()).split(",");
-        selenium.doubleClick(ids[5]);
+        selenium.doubleClick("//img[@src='/jahia/modules/default/icons/jmix_editorialContent.png']");
 
         //doubleClick on "Article"
         new Wait("wait") {
             public boolean until() {
-                return selenium.isTextPresent("Article");
+                return selenium.isElementPresent("//img[@src='/jahia/modules/article/icons/jnt_article.png']");
             }
         };
-        ids = selenium.getEval(TreeNodes()).split(",");
-        selenium.doubleClick(ids[6]);
+        selenium.doubleClick("//img[@src='/jahia/modules/article/icons/jnt_article.png']");
 
         //fill Title
         new Wait("wait") {
@@ -113,27 +104,23 @@ public class AclTagThisArticle extends SeleneseTestCase {
                 return selenium.isTextPresent("Title");
             }
         };
-        ids = selenium.getEval(TitleInput()).split(",");
-        selenium.type(ids[0], "Acl Article Test");
+        selenium.type("//input[@name='jcr:title']", "Acl Article Test");
 
         //click on "source"
         new Wait("wait") {
             public boolean until() {
-                return selenium.isTextPresent("Source");
+                return selenium.isElementPresent("//span[@class='cke_label']");
             }
         };
-        ids = selenium.getEval(sourceButton()).split(",");
-        selenium.waitForCondition("selenium.browserbot.getCurrentWindow().document.getElementById('" + ids[0] + "')", "10000");
-        selenium.click(ids[0]);
+        selenium.click("//span[@class='cke_label']");
 
         //Fill in source content
         new Wait("wait") {
             public boolean until() {
-                return selenium.isTextPresent("Source");
+                return selenium.isElementPresent("//textarea[@class='cke_source cke_enable_context_menu']");
             }
         };
-        ids = selenium.getEval(sourceContent()).split(",");
-        selenium.type("//td[@id='" + ids[0] + "']/textarea", "Acl Article body test");
+        selenium.type("//textarea[@class='cke_source cke_enable_context_menu']", "Acl Article body test");
 
         //click on "Save"
         new Wait("wait") {
@@ -141,8 +128,7 @@ public class AclTagThisArticle extends SeleneseTestCase {
                 return selenium.isTextPresent("Save");
             }
         };
-        ids = selenium.getEval(saveButton()).split(",");
-        selenium.click("//div[@id='" + ids[0] + "']/table/tbody/tr/td[1]/table/tbody/tr/td[1]/table");
+        selenium.click("//div[@class=' x-small-editor x-panel-btns-center x-panel-fbar x-component x-toolbar-layout-ct']/table/tbody/tr/td[1]/table/tbody/tr/td[1]/table");
     }
 
     public void AclThisArticle() {
@@ -150,18 +136,11 @@ public class AclTagThisArticle extends SeleneseTestCase {
             // wait article pop in the page, on double click on it
             new Wait("wait") {
                 public boolean until() {
-                    return selenium.isTextPresent("Acl Article body test");
+                    return selenium.isElementPresent("j:newTag");
                 }
             };
-            new Wait("wait") {
-                public boolean until() {
-                    return selenium.isTextPresent("Add tags");
-                }
-            };
-            while (!selenium.isTextPresent("Edit acl-article-test")) {
-                selenium.mouseOver("j:newTag"); //tips in order to click on a element in edit mode.
-                selenium.doubleClick("j:newTag");
-            }
+            selenium.mouseOver("j:newTag"); //tips in order to click on a element in edit mode.
+            selenium.doubleClick("j:newTag");
             //click on Rights
             new Wait("wait") {
                 public boolean until() {
@@ -169,21 +148,8 @@ public class AclTagThisArticle extends SeleneseTestCase {
                 }
             };
             selenium.click("link=Rights");
-            if (i == 0) {
-                new Wait("wait") {
-                    public boolean until() {
-                        return selenium.isElementPresent("gwt-uid-45");
-                    }
-                };
-            } else {
-                new Wait("wait") {
-                    public boolean until() {
-                        return selenium.isTextPresent("web-designer");
-                    }
-                };
-            }
             //déselect or select all acl
-            ids = selenium.getEval(getAllCheckBoxAcl()).split(",");
+            String[] ids = selenium.getEval(getAllCheckBoxAcl()).split(",");
             for (String id : ids) {
                 selenium.setSpeed("100");
                 if (i == 0) {
@@ -202,8 +168,7 @@ public class AclTagThisArticle extends SeleneseTestCase {
             }
             selenium.setSpeed(TEST_SPEED);
             //save
-            ids = selenium.getEval(saveButton()).split(",");
-            selenium.click("//div[@id='" + ids[0] + "']/table/tbody/tr/td[1]/table/tbody/tr/td[1]/table");
+            selenium.click("//div[@class=' x-small-editor x-panel-btns-center x-panel-fbar x-component x-toolbar-layout-ct']/table/tbody/tr/td[1]/table/tbody/tr/td[1]/table");
         }
     }
 
@@ -219,10 +184,8 @@ public class AclTagThisArticle extends SeleneseTestCase {
                 return selenium.isTextPresent("Add tags");
             }
         };
-        while (!selenium.isTextPresent("Edit acl-article-test")) {
-            selenium.mouseOver("j:newTag"); //tips in order to click on a element in edit mode.
-            selenium.doubleClick("j:newTag");
-        }
+        selenium.mouseOver("j:newTag"); //tips in order to click on a element in edit mode.
+        selenium.doubleClick("j:newTag");
 
         //click on Tags
         new Wait("wait") {
@@ -232,27 +195,20 @@ public class AclTagThisArticle extends SeleneseTestCase {
         };
         selenium.click("link=Tags");
         addTags(numberOfTags);
-        ids = selenium.getEval(saveButton()).split(",");
-        selenium.click("//div[@id='" + ids[0] + "']/table/tbody/tr/td[1]/table/tbody/tr/td[1]/table");
+        selenium.click("//div[@class=' x-small-editor x-panel-btns-center x-panel-fbar x-component x-toolbar-layout-ct']/table/tbody/tr/td[1]/table/tbody/tr/td[1]/table");
     }
 
     public void addTags(int i) {
-        final String[] addTag = selenium.getEval(getAddTagButton()).split(",");
         for (int j = 0; j < i; j++) {
             selenium.setSpeed("200");
             String Tag = "Tag" + j;
-            new Wait("wait") {
-                public boolean until() {
-                    return selenium.isTextPresent("Add Tag:");
-                }
-            };
             selenium.type("tagName", Tag);
             new Wait("wait") {
                 public boolean until() {
-                    return selenium.isElementPresent(addTag[3]);
+                    return selenium.isElementPresent("//table[@class='x-toolbar-right-ct']/tbody/tr/td[1]/table/tbody/tr/td[3]/table/tbody");
                 }
             };
-            selenium.click(addTag[3]);
+            selenium.click("//table[@class='x-toolbar-right-ct']/tbody/tr/td[1]/table/tbody/tr/td[3]/table/tbody");
             Tag = "Tag";
         }
         selenium.setSpeed(TEST_SPEED);
@@ -266,119 +222,6 @@ public class AclTagThisArticle extends SeleneseTestCase {
         script += "for(var i=0; i<buttons.length; i++) {";
         script += "if(buttons[i].id !=null" +
                 "&& buttons[i].getAttribute('type') == 'checkbox') {";
-        script += "buttonId[cnt]=buttons[i].id;" +
-                "cnt ++;" +
-                "}" +
-                "}";
-        script += "buttonId.toString();";
-        return script;
-    }
-
-    public String getAddTagButton() {
-        String script = "var buttonId = new Array();";
-        script += "var cnt = 0;";
-        script += "var buttons = new Array();";
-        script += "buttons = window.document.getElementsByTagName('table');";
-        script += "for(var i=0; i<buttons.length; i++) {";
-        script += "if(buttons[i].id !=null" +
-                "&& buttons[i].getAttribute('class') == ' x-btn x-component x-btn-noicon') {";
-        script += "buttonId[cnt]=buttons[i].id;" +
-                "cnt ++;" +
-                "}" +
-                "}";
-        script += "buttonId.toString();";
-        return script;
-    }
-
-    public String AnyContentButtons() {
-        String script = "var buttonId = new Array();";
-        script += "var cnt = 0;";
-        script += "var buttons = new Array();";
-        script += "buttons = window.document.getElementsByTagName('button');";
-        script += "for(var i=0; i<buttons.length; i++) {";
-        script += "if(buttons[i].id !=null" +
-                "&& buttons[i].getAttribute('class') == 'button-placeholder x-component') {";
-        script += "buttonId[cnt]=buttons[i].id;" +
-                "cnt ++;" +
-                "}" +
-                "}";
-        script += "buttonId.toString();";
-        return script;
-    }
-
-    public String TreeNodes() {
-        String script = "var buttonId = new Array();";
-        script += "var cnt = 0;";
-        script += "var buttons = new Array();";
-        script += "buttons = window.document.getElementsByTagName('div');";
-        script += "for(var i=0; i<buttons.length; i++) {";
-        script += "if(buttons[i].id !=null" +
-                "&& buttons[i].getAttribute('class') == 'x-tree3-node') {";
-        script += "buttonId[cnt]=buttons[i].id;" +
-                "cnt ++;" +
-                "}" +
-                "}";
-        script += "buttonId.toString();";
-        return script;
-    }
-
-    public String TitleInput() {
-        String script = "var buttonId = new Array();";
-        script += "var cnt = 0;";
-        script += "var buttons = new Array();";
-        script += "buttons = window.document.getElementsByTagName('input');";
-        script += "for(var i=0; i<buttons.length; i++) {";
-        script += "if(buttons[i].id !=null" +
-                "&& buttons[i].getAttribute('name') == 'jcr:title') {";
-        script += "buttonId[cnt]=buttons[i].id;" +
-                "cnt ++;" +
-                "}" +
-                "}";
-        script += "buttonId.toString();";
-        return script;
-    }
-
-    public String saveButton() {
-
-        String script = "var buttonId = new Array();";
-        script += "var cnt = 0;";
-        script += "var buttons = new Array();";
-        script += "buttons = window.document.getElementsByTagName('div');";
-        script += "for(var i=0; i<buttons.length; i++) {";
-        script += "if(buttons[i].id !=null" +
-                "&& buttons[i].getAttribute('class') == ' x-small-editor x-panel-btns-center x-panel-fbar x-component x-toolbar-layout-ct') {";
-        script += "buttonId[cnt]=buttons[i].id;" +
-                "cnt ++;" +
-                "}" +
-                "}";
-        script += "buttonId.toString();";
-        return script;
-    }
-
-    public String sourceButton() {
-        String script = "var buttonId = new Array();";
-        script += "var cnt = 0;";
-        script += "var buttons = new Array();";
-        script += "buttons = window.document.getElementsByTagName('span');";
-        script += "for(var i=0; i<buttons.length; i++) {";
-        script += "if(buttons[i].id !=null" +
-                "&& buttons[i].getAttribute('class') == 'cke_label') {";
-        script += "buttonId[cnt]=buttons[i].id;" +
-                "cnt ++;" +
-                "}" +
-                "}";
-        script += "buttonId.toString();";
-        return script;
-    }
-
-    public String sourceContent() {
-        String script = "var buttonId = new Array();";
-        script += "var cnt = 0;";
-        script += "var buttons = new Array();";
-        script += "buttons = window.document.getElementsByTagName('td');";
-        script += "for(var i=0; i<buttons.length; i++) {";
-        script += "if(buttons[i].id !=null" +
-                "&& buttons[i].getAttribute('class') == 'cke_contents') {";
         script += "buttonId[cnt]=buttons[i].id;" +
                 "cnt ++;" +
                 "}" +

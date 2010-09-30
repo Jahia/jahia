@@ -261,37 +261,20 @@ public class FileUploader extends Window {
                             final List<Field[]> list2 = new ArrayList<Field[]>(exists);
                             exists.clear();
                             removeAll();
+                            List<String[]> uploadeds = new ArrayList<String[]>();
                             for (final Field[] exist : list) {
                                 final String tmpName = (String) exist[0].getValue();
                                 // selected index correspond to the action: ie. 3=versioning
                                 final int operation = ((SimpleComboBox) exist[1]).getSelectedIndex();
                                 final String key = exist[1].getName();
                                 final String newName = (String) exist[2].getValue();
-                                JahiaContentManagementService.App.getInstance().uploadedFile(location.getPath(), tmpName, operation, newName, new BaseAsyncCallback() {
-                                    public void onApplicationFailure(Throwable caught) {
-                                        addExistingToForm(exists, key, tmpName, newName);
-                                        end(exist);
-                                    }
-
-                                    public void onSuccess(Object result) {
-                                        end(exist);
-                                    }
-
-                                    private void end(Field[] exist) {
-                                        list2.remove(exist);
-                                        if (list2.isEmpty()) {
-                                            if (exists.isEmpty()) {
-                                                endUpload(unzip, linker);
-                                            } else {
-                                                submit.setEnabled(true);
-                                                layout();
-                                            }
-                                        }
-                                    }
-
-
-                                });
+                                uploadeds.add(new String[] { location.getPath(), tmpName, Integer.toString(operation), newName });
                             }
+                            JahiaContentManagementService.App.getInstance().uploadedFile(uploadeds, new BaseAsyncCallback() {
+                                public void onSuccess(Object result) {
+                                    endUpload(unzip, linker);
+                                }
+                            });
                         }
                     });
 

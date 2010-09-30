@@ -51,6 +51,7 @@ import org.jahia.services.content.JCRVersionService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
@@ -96,13 +97,13 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
                 } else if ("asyncupload".equals(item.getFieldName())) {
                     String name = item.getName();
                     if (name.trim().length() > 0) {
-                        uploads.put(extractFileName(name), item);
+                        uploads.put(extractFileName(name, uploads), item);
                     }
                     type = "async";
                 } else if (!item.isFormField() && item.getFieldName().startsWith("uploadedFile")) {
                     String name = item.getName();
                     if (name.trim().length() > 0) {
-                        uploads.put(extractFileName(name), item);
+                        uploads.put(extractFileName(name, uploads), item);
                     }
                     type = "sync";
                 }
@@ -207,14 +208,38 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
         }
     }
 
-    private String extractFileName(String rawFileName) {
+    private String extractFileName(String rawFileName, Map<String, FileItem> uploads) {
+        String basename;
         if (rawFileName.indexOf("\\") >= 0) {
-            return rawFileName.substring(rawFileName.lastIndexOf("\\") + 1);
+            basename = rawFileName.substring(rawFileName.lastIndexOf("\\") + 1);
         } else if (rawFileName.indexOf("/") >= 0) {
-            return rawFileName.substring(rawFileName.lastIndexOf("/") + 1);
+            basename = rawFileName.substring(rawFileName.lastIndexOf("/") + 1);
         } else {
-            return rawFileName;
+            basename = rawFileName;
         }
+
+        int i = 1;
+        String name = basename;
+        int dot = basename.lastIndexOf('.');
+        String ext = "";
+        if (dot > 0) {
+            ext = basename.substring(dot);
+            basename = basename.substring(0, dot);
+        }
+        int und = basename.lastIndexOf('-');
+        if (und > -1 && basename.substring(und + 1).matches("[0-9]+")) {
+            basename = basename.substring(0, und);
+        }
+
+        do {
+            if (!uploads.containsKey(name)) {
+                break;
+            } else {
+                name = basename + "-" + (i++) + ext;
+            }
+        } while (true);
+
+        return name;
     }
 
     private int writeToDisk(JahiaUser user, FileItem item, String location, String filename) throws IOException {

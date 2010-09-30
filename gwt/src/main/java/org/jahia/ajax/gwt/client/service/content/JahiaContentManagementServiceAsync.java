@@ -176,7 +176,7 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void restoreNode(GWTJahiaNodeVersion gwtJahiaNodeVersion, boolean allSubTree, AsyncCallback async);
 
-    void uploadedFile(String location, String tmpName, int operation, String newName, AsyncCallback async);
+    void uploadedFile(List<String[]> uploadeds, AsyncCallback async);
 
     void getRenderedContent(String path, String workspace, String locale, String template, String configuration, Map<String, String> contextParams, boolean editMode, String configName, AsyncCallback<GWTRenderResult> async);
 

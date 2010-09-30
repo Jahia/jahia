@@ -1003,9 +1003,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 retrieveCurrentSession());
     }
 
-    public void uploadedFile(String location, String tmpName, int operation, String newName)
+    public void uploadedFile(List<String[]> uploadeds)
             throws GWTJahiaServiceException {
-        contentManager.uploadedFile(location, tmpName, operation, newName, retrieveCurrentSession());
+        for (String[] uploaded : uploadeds) {
+            contentManager.uploadedFile(uploaded[0], uploaded[1],Integer.parseInt(uploaded[2]),uploaded[3], retrieveCurrentSession());
+        }
     }
 
     public GWTRenderResult getRenderedContent(String path, String workspace, String locale, String template,

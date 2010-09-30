@@ -8,7 +8,7 @@
 
 <jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>
 <div>
-    <img src="${pageContext.request.contextPath}/engines/images/types/gwt/large/icon-user-group.png" alt=" " style="float: left" />
+    <img src="${pageContext.request.contextPath}/icons/jnt_groupsFolder_large.png" alt=" " style="float: left" />
     <h2>
     <c:if test="${not empty title}">
         ${title.string}&nbsp(${currentNode.name})
@@ -44,10 +44,10 @@
                     %>
                     <div>
                         <c:if test="${jcr:isNodeType(member, 'jnt:group')}" var="isGroup">
-                            <img src="${pageContext.request.contextPath}/engines/images/types/gwt/large/icon-user-group.png" alt=" " style="float: left" />
+                            <img src="${pageContext.request.contextPath}/icons/jnt_groupsFolder_large.png" alt=" " style="float: left" />
                         </c:if>
                         <c:if test="${!isGroup}">
-                            <img src="${pageContext.request.contextPath}/engines/images/types/gwt/large/icon-user.png" alt=" " style="float: left" />
+                            <img src="${pageContext.request.contextPath}/icons/jnt_user_large.png" alt=" " style="float: left" />
                         </c:if>
                         <jcr:nodeProperty node="${member}" name="jcr:title" var="title"/>
                         <a href="${url.base}${member.path}.html"><strong>

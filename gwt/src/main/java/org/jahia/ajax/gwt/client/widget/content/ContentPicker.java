@@ -85,15 +85,11 @@ public class ContentPicker extends TriPanelBrowserLayout {
 
         // linker initializations
         linker.registerComponents(tree, contentViews, bottomComponents, toolbar, null);
-
-        final ActionContextMenu actionContextMenu = new ActionContextMenu(config.getContextMenu(), linker);
-
-        if (tree != null) {
+        if (config.getContextMenu() != null) {
+            final ActionContextMenu actionContextMenu = new ActionContextMenu(config.getContextMenu(), linker);
             tree.getComponent().setContextMenu(actionContextMenu);
+            contentViews.getComponent().setContextMenu(actionContextMenu);
         }
-
-        contentViews.getComponent().setContextMenu(actionContextMenu);
-
         linker.handleNewSelection();
 
         pickedContent = (PickedContentView) bottomComponents;

@@ -52,12 +52,9 @@ import java.util.List;
  * Time: 5:05:34 PM
  */
 public class ActionContextMenu extends ActionToolbarMenu {
-    private GWTJahiaToolbar toolbar;
-
 
     public ActionContextMenu(final GWTJahiaToolbar toolbar, final Linker linker) {
         super(linker);
-        this.toolbar = toolbar;
         this.actionItems = new ArrayList<ActionItem>();
         createMenu(toolbar);
 

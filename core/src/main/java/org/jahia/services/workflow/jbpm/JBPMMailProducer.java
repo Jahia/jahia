@@ -98,7 +98,7 @@ public class JBPMMailProducer extends MailProducerImpl {
                     return Collections.emptyList();
                 }
             } catch (MessagingException e) {
-                throw new JbpmException("failed to produce email message", e);
+                logger.error(e.getMessage(),e);
             }
         }
         return Collections.emptyList();

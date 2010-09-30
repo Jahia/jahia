@@ -327,9 +327,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException
      */
     public GWTJahiaNode getTagNode(String tagName, boolean create) throws GWTJahiaServiceException {
-        GWTJahiaNode tagNode = navigation.getTagNode(tagName, getSite());
+        final String s = tagName.trim();
+        GWTJahiaNode tagNode = navigation.getTagNode(s, getSite());
         if (tagNode == null && create) {
-            return createNode(navigation.getTagsNode(getSite()).getPath(), tagName, "jnt:tag", null, null,
+            return createNode(navigation.getTagsNode(getSite()).getPath(), s, "jnt:tag", null, null,
                     new ArrayList<GWTJahiaNodeProperty>());
         } else {
             return tagNode;

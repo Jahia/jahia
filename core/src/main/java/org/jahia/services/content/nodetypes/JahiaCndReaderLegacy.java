@@ -123,7 +123,7 @@ public class JahiaCndReaderLegacy {
     /**
      * the underlying LexerLegacy
      */
-    protected LexerLegacy LexerLegacy;
+    protected LexerLegacy lexer;
 
     /**
      * the current token
@@ -141,7 +141,7 @@ public class JahiaCndReaderLegacy {
         this.systemId = systemId;
         this.registry = registry;
         this.filename = filename;
-        LexerLegacy = new LexerLegacy(r, filename);
+        lexer = new LexerLegacy(r, filename);
     }
 
     /**
@@ -183,6 +183,14 @@ public class JahiaCndReaderLegacy {
                 }
             }
         }
+        for (ExtendedNodeType type : nodeTypesList) {
+            try {
+                type.validate();
+            } catch (NoSuchNodeTypeException e) {
+                throw new ParseException("Cannot validate supertypes for : "+type.getName(),e,0,0,filename);
+            }
+        }
+
     }
 
     /**
@@ -200,14 +208,14 @@ public class JahiaCndReaderLegacy {
 
         nextToken();
         if (!currentTokenEquals('=')) {
-            LexerLegacy.fail("Missing = in namespace decl.");
+            lexer.fail("Missing = in namespace decl.");
         }
 
         nextToken();
         String uri = currentToken;
         nextToken();
         if (!currentTokenEquals('>')) {
-            LexerLegacy.fail("Missing > in namespace decl.");
+            lexer.fail("Missing > in namespace decl.");
         }
 
         registry.getNamespaces().put(prefix, uri);
@@ -224,14 +232,14 @@ public class JahiaCndReaderLegacy {
      */
     private void doNodeTypeName(ExtendedNodeType ntd) throws ParseException,IOException {
         if (!currentTokenEquals(LexerLegacy.BEGIN_NODE_TYPE_NAME)) {
-            LexerLegacy.fail("Missing '" + LexerLegacy.BEGIN_NODE_TYPE_NAME + "' delimiter for beginning of node type name");
+            lexer.fail("Unexpected token '" + currentToken +"'");
         }
         nextToken();
         Name name = parseName(currentToken);
         ntd.setName(name);
         nextToken();
         if (!currentTokenEquals(LexerLegacy.END_NODE_TYPE_NAME)) {
-            LexerLegacy.fail("Missing '" + LexerLegacy.END_NODE_TYPE_NAME + "' delimiter for end of node type name, found " + currentToken);
+            lexer.fail("Missing '" + LexerLegacy.END_NODE_TYPE_NAME + "' delimiter for end of node type name, found " + currentToken);
         }
         nextToken();
 
@@ -299,7 +307,7 @@ public class JahiaCndReaderLegacy {
                 ntd.setValidator(currentToken);
                 nextToken();
             } else {
-                LexerLegacy.fail("Invalid validator");
+                lexer.fail("Invalid validator");
             }
         }
     }
@@ -564,7 +572,7 @@ public class JahiaCndReaderLegacy {
             } else if (currentTokenEquals(LexerLegacy.UNDEFINED)) {
                 pdi.setRequiredType(PropertyType.UNDEFINED);
             } else {
-                LexerLegacy.fail("Unknown type '" + currentToken + "' specified");
+                lexer.fail("Unknown type '" + currentToken + "' specified");
             }
             nextToken();
             if (currentTokenEquals(LexerLegacy.END_TYPE)) {
@@ -573,7 +581,7 @@ public class JahiaCndReaderLegacy {
                 nextToken();
                 doPropertySelector(pdi);
             } else {
-                LexerLegacy.fail("Missing '" + LexerLegacy.END_TYPE + "' delimiter for end of property type");
+                lexer.fail("Missing '" + LexerLegacy.END_TYPE + "' delimiter for end of property type");
             }
         } else {
             doPropertySelector(pdi);
@@ -606,7 +614,7 @@ public class JahiaCndReaderLegacy {
         } else if (currentTokenEquals(LexerLegacy.PORTLET)) {
             pdi.setSelector(SelectorTypeLegacy.PORTLET);
         } else {
-            LexerLegacy.fail("Unknown type '" + currentToken + "' specified");
+            lexer.fail("Unknown type '" + currentToken + "' specified");
         }
         nextToken();
         if (currentTokenEquals(LexerLegacy.BEGIN_NODE_TYPE_NAME)) {
@@ -615,7 +623,7 @@ public class JahiaCndReaderLegacy {
         if (currentTokenEquals(LexerLegacy.END_TYPE)) {
             nextToken();
         } else{
-            LexerLegacy.fail("Missing '" + LexerLegacy.END_TYPE + "' delimiter for end of property type");
+            lexer.fail("Missing '" + LexerLegacy.END_TYPE + "' delimiter for end of property type");
         }
     }
 
@@ -653,10 +661,10 @@ public class JahiaCndReaderLegacy {
                     } else if (currentTokenEquals(LexerLegacy.UNTOKENIZED)) {
                         pdi.setIndex(ExtendedPropertyDefinition.INDEXED_UNTOKENIZED);
                     } else {
-                        LexerLegacy.fail("Invalid value for indexed [ no | tokenized | untokenized ] "+currentToken);
+                        lexer.fail("Invalid value for indexed [ no | tokenized | untokenized ] "+currentToken);
                     }
                 } else {
-                    LexerLegacy.fail("Invalid value for indexed " + currentToken);
+                    lexer.fail("Invalid value for indexed " + currentToken);
                 }
             } else if (currentTokenEquals(LexerLegacy.SCOREBOOST)) {
                 nextToken();
@@ -665,10 +673,10 @@ public class JahiaCndReaderLegacy {
                     try {
                         pdi.setScoreboost(Double.parseDouble(currentToken));
                     } catch (NumberFormatException e) {
-                        LexerLegacy.fail("Invalid value for score boost "+currentToken);
+                        lexer.fail("Invalid value for score boost "+currentToken);
                     }
                 } else {
-                    LexerLegacy.fail("Invalid value for score boost " + currentToken);
+                    lexer.fail("Invalid value for score boost " + currentToken);
                 }
             } else if (currentTokenEquals(LexerLegacy.ANALYZER)) {
                 nextToken();
@@ -676,7 +684,7 @@ public class JahiaCndReaderLegacy {
                     nextToken();
                     pdi.setAnalyzer(currentToken);
                 } else {
-                    LexerLegacy.fail("Invalid value for tokenizer " + currentToken);
+                    lexer.fail("Invalid value for tokenizer " + currentToken);
                 }
 
             } else if (currentTokenEquals(LexerLegacy.SORTABLE)) {
@@ -788,7 +796,7 @@ public class JahiaCndReaderLegacy {
         if (!currentTokenEquals(LexerLegacy.BEGIN_TYPE)) {
             return;
         }
-        if (ndi.getRequiredPrimaryTypes() == null) {
+        if (ndi.getRequiredPrimaryTypeNames() == null) {
             List<String> types = new ArrayList<String>();
             do {
                 nextToken();
@@ -802,7 +810,7 @@ public class JahiaCndReaderLegacy {
             if (currentTokenEquals(LexerLegacy.END_TYPE)) {
                 nextToken();
             } else{
-                LexerLegacy.fail("Missing '" + LexerLegacy.END_TYPE + "' delimiter for end of child node type");
+                lexer.fail("Missing '" + LexerLegacy.END_TYPE + "' delimiter for end of child node type");
             }
             ndi.setRequiredPrimaryTypes(types.toArray(new String[types.size()]));
         } else {
@@ -815,7 +823,7 @@ public class JahiaCndReaderLegacy {
         if (currentTokenEquals(LexerLegacy.PAGE)) {
             ndi.setSelector(SelectorTypeLegacy.PAGE);
         } else {
-            LexerLegacy.fail("Unknown type '" + currentToken + "' specified");
+            lexer.fail("Unknown type '" + currentToken + "' specified");
         }
         nextToken();
         if (currentTokenEquals(LexerLegacy.BEGIN_NODE_TYPE_NAME)) {
@@ -824,7 +832,7 @@ public class JahiaCndReaderLegacy {
         if (currentTokenEquals(LexerLegacy.END_TYPE)) {
             nextToken();
         } else{
-            LexerLegacy.fail("Missing '" + LexerLegacy.END_TYPE + "' delimiter for end of property type");
+            lexer.fail("Missing '" + LexerLegacy.END_TYPE + "' delimiter for end of property type");
         }
     }
 
@@ -888,7 +896,7 @@ public class JahiaCndReaderLegacy {
                     nextToken();
                     ndi.setWorkflow(currentToken);
                 } else {
-                    LexerLegacy.fail("Invalid value for workflow " + currentToken);
+                    lexer.fail("Invalid value for workflow " + currentToken);
                 }
             }
             nextToken();
@@ -912,7 +920,7 @@ public class JahiaCndReaderLegacy {
                     try {
                         registry.getNodeType(s);
                     } catch (NoSuchNodeTypeException e) {
-                        LexerLegacy.fail("Cannot find type : "+s);
+                        lexer.fail("Cannot find type : "+s);
                     }
                 }
             }
@@ -922,7 +930,7 @@ public class JahiaCndReaderLegacy {
                 break;
             }
             if (!currentTokenEquals(LexerLegacy.LIST_DELIMITER)) {
-                LexerLegacy.fail("Missing '" + LexerLegacy.END_NODE_TYPE_NAME + "' delimiter");
+                lexer.fail("Missing '" + LexerLegacy.END_NODE_TYPE_NAME + "' delimiter");
             }
             nextToken();
         }
@@ -936,7 +944,7 @@ public class JahiaCndReaderLegacy {
      * @throws ParseException if the LexerLegacy fails to get the next token.
      */
     protected void nextToken() throws ParseException {
-        currentToken = LexerLegacy.getNextToken();
+        currentToken = lexer.getNextToken();
     }
 
     /**

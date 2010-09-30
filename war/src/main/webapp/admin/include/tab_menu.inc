@@ -8,8 +8,8 @@
                     org.jahia.services.usermanager.JahiaUser,
                     org.jahia.registries.ServicesRegistry,
                     org.jahia.utils.LanguageCodeConverters,
-                    org.jahia.services.preferences.user.UserPreferencesHelper" 
-%>
+                    org.jahia.services.preferences.user.UserPreferencesHelper"
+        %>
 <%
     JahiaSitesService siteService = ServicesRegistry.getInstance().getJahiaSitesService();
     JahiaSite theSite = (JahiaSite) session.getAttribute(ProcessingContext.SESSION_SITE);
@@ -23,7 +23,7 @@
             theSite = siteService.getSite(siteID.intValue());
         }
     }
-        
+
     if (theSite == null && siteService.getNbSites() > 0) {
         theSite = siteService.getDefaultSite();
     }
@@ -35,7 +35,7 @@
     pageContext.setAttribute("theSite", theSite);
 %>
 <div class="dex-TabBar">
-    <ul class="dex-TabBarItem-wrapper" style="width: 80%;">
+    <ul class="dex-TabBarItem-wrapper" style="width: 78%;">
         <li class="dex-TabBarFirst">
             <div>
                 &nbsp;
@@ -51,7 +51,7 @@
             </div>
         </li>
         <% if (theSite != null) {
-            String siteName = theSite.getTitle().substring(0,theSite.getTitle().length() > 25?25:theSite.getTitle().length());
+            String siteName = theSite.getTitle().substring(0,theSite.getTitle().length() > 18?18:theSite.getTitle().length());
         %>
         <li class="dex-TabBarItem<% if (stretcherToOpen == 1) { %>-selected<% } %>">
             <div>
@@ -78,15 +78,15 @@
 
         <%
             if (theSite != null) {
-            String siteName = theSite.getTitle();
+                String siteName = theSite.getTitle();
         %>
 
         <li class="dex-TabBarItem tabExit">
             <div>
                 <div>
-          			<c:url var="editUrl" value="/cms/edit/default/${theSite.defaultLanguage}/sites/${theSite.siteKey}/home.html"/>
+                    <c:url var="editUrl" value="/cms/edit/default/${theSite.defaultLanguage}/sites/${theSite.siteKey}/home.html"/>
                     <span class="tab-icon ico-quit"><a href="${editUrl}"
-                       title="<fmt:message key='org.jahia.admin.exit.label'/>" ><fmt:message key="org.jahia.admin.exit.label"/></a></span>
+                                                       title="<fmt:message key='org.jahia.admin.exit.label'/>" ><fmt:message key="org.jahia.admin.exit.label"/></a></span>
                 </div>
             </div>
         </li>
@@ -97,15 +97,15 @@
             </div>
         </li>
     </ul>
-    <ul class="dex-langbar-wrapper" style="width: 20%;">
+    <ul class="dex-langbar-wrapper" style="width: 22%;">
         <li>
             <c:url value="/cms/logout" var="logoutUrl">
                 <c:param name="redirect" value="${pageContext.request.contextPath}/administration"/>
             </c:url>
             <span style="margin-right: 10px"><a href="${logoutUrl}"><img src="${pageContext.request.contextPath}/css/images/andromeda/logout.png" alt=" " height="16" width="16" align="top"/>&nbsp;<fmt:message key="label.logout"/></a></span>
             <%
-            Locale sessionLocale = (Locale) session.getAttribute(ProcessingContext.SESSION_UI_LOCALE);
-            String userLocale = sessionLocale != null ? UserPreferencesHelper.getPreferredLocale((JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER), sessionLocale).toString() : UserPreferencesHelper.getPreferredLocale((JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER)).toString();
+                Locale sessionLocale = (Locale) session.getAttribute(ProcessingContext.SESSION_UI_LOCALE);
+                String userLocale = sessionLocale != null ? UserPreferencesHelper.getPreferredLocale((JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER), sessionLocale).toString() : UserPreferencesHelper.getPreferredLocale((JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER)).toString();
             %>
             <script type="text/javascript">
                 function doSwitchLanguage(lang) {
@@ -119,12 +119,12 @@
                 }
             </script>
             <select name="preferredLanguage" onchange="doSwitchLanguage(this.value)">
-            <%
-                for (Locale theLocale : LanguageCodeConverters.getAvailableBundleLocalesSorted()) {%>
-            <option value="<%=theLocale.toString() %>"
-                    <% if (theLocale.toString().equals(userLocale)) { %>selected="selected"<% } %>><%= theLocale.getDisplayName(theLocale) %>
-            </option>
-            <% } %>
+                <%
+                    for (Locale theLocale : LanguageCodeConverters.getAvailableBundleLocalesSorted()) {%>
+                <option value="<%=theLocale.toString() %>"
+                        <% if (theLocale.toString().equals(userLocale)) { %>selected="selected"<% } %>><%= theLocale.getDisplayName(theLocale) %>
+                </option>
+                <% } %>
             </select>
         </li>
     </ul>

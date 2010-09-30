@@ -118,8 +118,8 @@
                             </property>
                         </bean>
                         <ref bean="Toolbar.Item.Admin"/>
-                        <ref bean="Toolbar.Item.ClipBoard"/>
                         <ref bean="Toolbar.Item.WorkInProgress"/>
+                        <ref bean="Toolbar.Item.ClipBoard"/>
                     </list>
                 </property>
                 <property name="visibility" value="$site/actions/edit-mode"/>
@@ -358,8 +358,8 @@
                         </bean>
                         <ref bean="Toolbar.Item.Admin"/>
                         <ref bean="Toolbar.Item.Studio"/>
-                        <ref bean="Toolbar.Item.ClipBoard"/>
                         <ref bean="Toolbar.Item.WorkInProgress"/>
+                        <ref bean="Toolbar.Item.ClipBoard"/>
                     </list>
                 </property>
                 <property name="visibility" value="$site/actions/edit-mode"/>

@@ -32,18 +32,6 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action.googledocs;
 
-import java.util.List;
-
-import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.util.icons.FileIconsImageBundle;
-import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
-import org.jahia.ajax.gwt.client.widget.toolbar.action.BaseActionItem;
-
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.ButtonScale;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -54,17 +42,19 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.button.ToggleButton;
-import com.extjs.gxt.ui.client.widget.form.AdapterField;
 import com.extjs.gxt.ui.client.widget.layout.FlowData;
-import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.Anchor;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
+import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.BaseActionItem;
 
 /**
  * Action item to handle document editing via Google Docs.
@@ -108,8 +98,7 @@ public class EditActionItem extends BaseActionItem {
             final String msgStart = Messages.get("label.googleDocs.edit.start", "Start editing");
             final String msgStop = Messages.get("label.googleDocs.edit.stop", "Stop editing");
 
-            final ToggleButton btnEdit = new ToggleButton(msgStart, FileIconsImageBundle.Provider.getInstance()
-                    .googleDocsLarge());
+            final ToggleButton btnEdit = new ToggleButton(msgStart, StandardIconsProvider.STANDARD_ICONS.googleDocsLarge());
             btnEdit.setScale(ButtonScale.LARGE);
             btnEdit.addSelectionListener(new SelectionListener<ButtonEvent>() {
                 @Override

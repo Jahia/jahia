@@ -143,7 +143,6 @@ public class ContentRepositoryTabs extends LeftComponent {
                 }
             }
         });
-        removeQuery.setIconStyle("label.remove");
 
         final MenuItem renameQuery = new MenuItem(Messages.get("label.rename"), new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent event) {
@@ -153,7 +152,6 @@ public class ContentRepositoryTabs extends LeftComponent {
                 }
             }
         });
-        removeQuery.setIconStyle("label.rename");
 
         queryMenu.addListener(Events.BeforeShow, new Listener<MenuEvent>() {
             public void handleEvent(MenuEvent baseEvent) {

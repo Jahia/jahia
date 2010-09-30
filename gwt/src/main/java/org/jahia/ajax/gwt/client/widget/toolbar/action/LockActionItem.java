@@ -31,6 +31,8 @@
  */
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -56,23 +58,5 @@ public class LockActionItem extends BaseActionItem   {
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
         setEnabled(lh.getMultipleSelection().size() > 0 && lh.isLockable() && lh.isWriteable() && !lh.isLocked());
-    }
-
-    public void setLocked(boolean locked) {
-        this.locked = locked;
-        String style = "gwt-toolbar-icon-lock";
-        if(!locked){
-           style = "gwt-toolbar-icon-unlock";
-        }
-        Component component = getTextToolItem();
-        if (component instanceof Button) {
-            ((Button) component).setIconStyle(style);
-        }
-        if (isMenuItem()) {
-            getMenuItem().setIconStyle(style);
-        }
-        if (isContextMenuItem()) {
-            getContextMenuItem().setIconStyle(style);
-        }
     }
 }

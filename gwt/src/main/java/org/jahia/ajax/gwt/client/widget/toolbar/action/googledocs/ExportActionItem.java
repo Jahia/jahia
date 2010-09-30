@@ -39,7 +39,7 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.util.icons.FileIconsImageBundle;
+import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.BaseActionItem;
 
@@ -110,7 +110,7 @@ public class ExportActionItem extends BaseActionItem {
                 public void onSuccess(List<String> result) {
                     panel.unmask();
                     for (final String format : result) {
-                        Button btn = new Button(Messages.get("label.googleDocs.export.format." + format, format), FileIconsImageBundle.Provider.get(format));
+                        Button btn = new Button(Messages.get("label.googleDocs.export.format." + format, format), ContentModelIconProvider.getInstance().getIcon("jnt_file_"+format, false,false));
                         btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
                             @Override
                             public void componentSelected(ButtonEvent ce) {

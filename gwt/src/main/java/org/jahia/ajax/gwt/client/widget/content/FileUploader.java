@@ -54,6 +54,7 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
 import java.util.ArrayList;
@@ -90,7 +91,7 @@ public class FileUploader extends Window {
                     }
                 }
             });
-            remove.setIconStyle("gwt-icons-delete");
+            remove.setIcon(StandardIconsProvider.STANDARD_ICONS.minusRound());
             remove.setToolTip(Messages.get("label.remove"));
             if (uploads.size() == 0) {
                 remove.setVisible(false);
@@ -177,7 +178,7 @@ public class FileUploader extends Window {
 
         final ToolBar toolBar = new ToolBar();
         Button add = new Button(Messages.get("addFile.label"));
-        add.setIconStyle("gwt-toolbar-icon-addFile");
+        add.setIcon(StandardIconsProvider.STANDARD_ICONS.plusRound());
         add.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 addUploadField();

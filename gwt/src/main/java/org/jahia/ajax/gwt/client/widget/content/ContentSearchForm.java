@@ -57,6 +57,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 
 import java.util.List;
 
@@ -96,14 +97,14 @@ public class ContentSearchForm extends ContentPanel {
                 doSearch();
             }
         });
-        ok.setIconStyle("gwt-toolbar-icon-savedSearch");
+        ok.setIcon(StandardIconsProvider.STANDARD_ICONS.search());
 
         final Button save = new Button("", new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent e) {
                 saveSearch();
             }
         });
-        save.setIconStyle("gwt-toolbar-icon-saveAsSharedComponent");
+        save.setIconStyle("gwt-toolbar-icon-savedSearch");
         save.setToolTip(Messages.get("saveSearch.label"));
 
         // main search field

@@ -48,6 +48,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 
 import java.util.ArrayList;
@@ -141,7 +142,7 @@ public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
                                 w.hide();
                             }
                         });
-                        ok.setIconStyle("gwt-icons-save");
+                        ok.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
                         bar.add(ok);
 
                         final Button cancel =
@@ -150,7 +151,7 @@ public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
                                         w.hide();
                                     }
                                 });
-                        cancel.setIconStyle("gwt-icons-cancel");
+                        cancel.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonCancel());
 
                         bar.add(cancel);
                         w.add(contentPicker);

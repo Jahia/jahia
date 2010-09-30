@@ -42,9 +42,6 @@ public interface StandardIconsImageBundle extends ImageBundle {
     @Resource("search.png")
     public AbstractImagePrototype search();
 
-    @Resource("icon-img.png")
-    public AbstractImagePrototype img();
-    
     @Resource("lock.png")
     public AbstractImagePrototype lock();
 
@@ -83,5 +80,26 @@ public interface StandardIconsImageBundle extends ImageBundle {
 
     @Resource("workflow_task.png")
     public AbstractImagePrototype workflowTask();
+
+    @Resource("google-docs-32x32.png")
+    public AbstractImagePrototype googleDocsLarge();
+
+    @Resource("user.png")
+    public AbstractImagePrototype user();
+
+    @Resource("group.png")
+    public AbstractImagePrototype group();
+
+    @Resource("role.png")
+    public AbstractImagePrototype role();
+
+    @Resource("delete.png")
+    public AbstractImagePrototype delete();
+
+    @Resource("restore.png")
+    public AbstractImagePrototype restore();
+
+    @Resource("refresh.png")
+    public AbstractImagePrototype refresh();
 
 }

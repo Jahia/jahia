@@ -50,12 +50,14 @@ import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
 import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
 import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.usergroup.UserGroupSelect;
 import org.jahia.ajax.gwt.client.widget.usergroup.UserGroupAdder;
 
@@ -162,13 +164,13 @@ public class AclEditor {
             public Object render(final ModelData model, final String perm, ColumnData config, final int rowIndex, final int colIndex,
                                  ListStore listStore, final Grid grid) {
                 GWTJahiaNodeACE ace = model.get("ace");
-                Html html = new Html("&nbsp;");
+                Image html ;
                 if (ace.getPrincipalType() == 'u') {
-                    html.setStyleName("um-user");
+                    html = StandardIconsProvider.STANDARD_ICONS.user().createImage();
                 } else if (ace.getPrincipalType() == 'g') {
-                    html.setStyleName("um-group");
+                    html = StandardIconsProvider.STANDARD_ICONS.group().createImage();
                 } else {
-                    html.setStyleName("um-role");
+                    html = StandardIconsProvider.STANDARD_ICONS.role().createImage();
                 }
                 return html;
             }
@@ -431,7 +433,7 @@ public class AclEditor {
 
         ToolBar toolBar = new ToolBar();
         Button addUsersToolItem = new Button(getAddUsersLabel());
-        addUsersToolItem.setIconStyle("um-adduser");
+        addUsersToolItem.setIcon(StandardIconsProvider.STANDARD_ICONS.user());
         addUsersToolItem.setEnabled(!readOnly);
         addUsersToolItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
@@ -441,7 +443,7 @@ public class AclEditor {
         toolBar.add(addUsersToolItem);
 
         addUsersToolItem = new Button(getAddGroupsLabel());
-        addUsersToolItem.setIconStyle("um-addgroup");
+        addUsersToolItem.setIcon(StandardIconsProvider.STANDARD_ICONS.group());
         addUsersToolItem.setEnabled(!readOnly);
         addUsersToolItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
@@ -450,7 +452,7 @@ public class AclEditor {
         });
         toolBar.add(addUsersToolItem);
         addUsersToolItem = new Button(getAddRolesLabel());
-        addUsersToolItem.setIconStyle("um-addrole");
+        addUsersToolItem.setIcon(StandardIconsProvider.STANDARD_ICONS.role());
         addUsersToolItem.setEnabled(!readOnly);
         addUsersToolItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
@@ -499,7 +501,7 @@ public class AclEditor {
      */
     private Button buildRemoveButton(final ModelData item, final GWTJahiaNodeACE ace) {
         Button button = new Button();
-        button.setIconStyle("gwt-icons-delete");
+        button.setIcon(StandardIconsProvider.STANDARD_ICONS.delete());
         button.setBorders(false);
         button.setToolTip(getResource("label.remove"));
         button.setEnabled(!readOnly);
@@ -551,7 +553,7 @@ public class AclEditor {
      */
     private Button buildLocalRestoreButton(final ModelData item, final GWTJahiaNodeACE ace) {
         Button button = new Button();
-        button.setIconStyle("gwt-icons-restore");
+        button.setIcon(StandardIconsProvider.STANDARD_ICONS.restore());
         button.setToolTip(getResource("org.jahia.engines.rights.ManageRights.restoreInheritance.label"));
         button.setEnabled(!readOnly);
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -672,22 +674,12 @@ public class AclEditor {
     }
 
     /**
-     * Save button, takes care of sending modified properties to server.
-     */
-    private class SaveButton extends Button {
-        public SaveButton() {
-            super(getResource("label.save"));
-            setIconStyle("gwt-icons-save");
-        }
-    }
-
-    /**
      * Restore the properties retrieved by the last server call.
      */
     private class RestoreButton extends Button {
         public RestoreButton() {
             super(getResource("label.restore"));
-            setIconStyle("gwt-icons-restore");
+            setIcon(StandardIconsProvider.STANDARD_ICONS.restore());
         }
     }
 

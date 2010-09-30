@@ -43,6 +43,7 @@ import org.jahia.ajax.gwt.client.data.GWTRolesPermissions;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
+import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.LinkerComponent;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -180,7 +181,7 @@ public class PermissionRolePanel extends LayoutContainer implements LinkerCompon
     private Button createAddPermissionButton() {
         final String label = Messages.get("label.newPermission", "Add permission");
         Button add = new Button(label);
-        add.setIconStyle("gwt-toolbar-icon-addContent");
+        add.setIcon(ToolbarIconProvider.getInstance().getIcon("newContent"));
         add.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 final Dialog dialog = new Dialog();

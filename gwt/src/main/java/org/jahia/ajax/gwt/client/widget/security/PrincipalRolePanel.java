@@ -104,9 +104,9 @@ public class PrincipalRolePanel extends LayoutContainer {
         cp.setBodyBorder(false);
         ToolBar bar = new ToolBar();
         Button addUser = new Button(Messages.get("label.addUsersToRole"));
-        addUser.setIconStyle("um-adduser");
+        addUser.setIcon(StandardIconsProvider.STANDARD_ICONS.user());
         Button addGroup = new Button(Messages.get("label.addGroupsToRole"));
-        addGroup.setIconStyle("um-addgroup");
+        addGroup.setIcon(StandardIconsProvider.STANDARD_ICONS.group());
         bar.add(new FillToolItem());
         bar.setAlignment(HorizontalAlignment.LEFT);
         bar.add(addUser);

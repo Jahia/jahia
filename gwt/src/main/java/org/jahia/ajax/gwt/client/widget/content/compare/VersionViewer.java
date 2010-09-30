@@ -54,6 +54,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbarLayoutContainer;
 
@@ -217,7 +218,7 @@ public class VersionViewer extends ContentPanel {
         });
 
         final Button refresh = new Button();
-        refresh.setIconStyle("gwt-toolbar-icon-refresh");
+        refresh.setIcon(StandardIconsProvider.STANDARD_ICONS.refresh());
         refresh.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent componentEvent) {
@@ -227,7 +228,6 @@ public class VersionViewer extends ContentPanel {
         // case of preview or edit: no version
         if (addButtons) {
             final ToggleButton hButton = new ToggleButton("Highligthing");
-            hButton.setIconStyle("gwt-diff");
             hButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
                 @Override
                 public void componentSelected(ButtonEvent componentEvent) {

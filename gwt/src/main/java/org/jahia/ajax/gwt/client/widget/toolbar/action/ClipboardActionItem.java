@@ -88,13 +88,11 @@ public class ClipboardActionItem extends BaseActionItem {
         if (instance.linker != null ) {
             Button b = (Button) instance.getTextToolItem();
             if (instance.copiedStuff.isEmpty()) {
-                b.setText(null);
                 b.setEnabled(false);
                 b.setMenu(null);
             } else {
                 final List<GWTJahiaNode> copiedNodes = instance.copiedStuff.get(0);
                 final Menu menu = new Menu();
-                b.setText(Messages.get("label.clipboard","Clipboard"));
                 b.setMenu(menu);
                 for (List<GWTJahiaNode> c : instance.copiedStuff) {
                     MenuItem m = new MenuItem();
@@ -114,6 +112,7 @@ public class ClipboardActionItem extends BaseActionItem {
     @Override public Component createNewToolItem() {
         Button b = new Button();
         b.setEnabled(false);
+        b.setText(Messages.get("label.clipboard","Clipboard"));
         return b;
     }
 }

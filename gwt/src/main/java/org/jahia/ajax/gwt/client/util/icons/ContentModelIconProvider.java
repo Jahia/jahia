@@ -96,7 +96,7 @@ public class ContentModelIconProvider implements ModelIconProvider<GWTJahiaNode>
         return null;
     }
 
-    private AbstractImagePrototype getIcon(final String icon, final boolean isOpened, final boolean large) {
+    public AbstractImagePrototype getIcon(final String icon, final boolean isOpened, final boolean large) {
         return new AbstractImagePrototype() {
 
             public String getUrl() {

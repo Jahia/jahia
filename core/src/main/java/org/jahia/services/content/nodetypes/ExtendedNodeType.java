@@ -189,8 +189,8 @@ public class ExtendedNodeType implements NodeType {
         for (int i = 0; i < d.length; i++) {
             ExtendedNodeType s = d[i];
             if (s != null) {
-                l.addAll(Arrays.asList(s.getSupertypes()));
                 l.add(s);
+                l.addAll(Arrays.asList(s.getSupertypes()));
                 if (!s.isMixin()) {
                     primaryFound = true;
                 }
@@ -233,18 +233,19 @@ public class ExtendedNodeType implements NodeType {
     }
 
     public void setDeclaredSupertypes(String[] declaredSupertypes) {
-        Arrays.sort(declaredSupertypes);
         this.declaredSupertypeNames = declaredSupertypes;
     }
 
 
     void validate() throws NoSuchNodeTypeException {
         this.declaredSupertypes = new ExtendedNodeType[declaredSupertypeNames.length];
-        for (int i = 0; i < declaredSupertypes.length; i++) {
+        int mixIndex = 0;
+        for (int i = 0; i < declaredSupertypeNames.length; i++) {
             final ExtendedNodeType nodeType = registry.getNodeType(declaredSupertypeNames[i]);
             if (!nodeType.isMixin && i>0) {
-                System.arraycopy(this.declaredSupertypes, 0, this.declaredSupertypes, 1, i);
-                this.declaredSupertypes[0] = nodeType;
+                System.arraycopy(this.declaredSupertypes, mixIndex, this.declaredSupertypes, mixIndex+1, i-mixIndex);
+                this.declaredSupertypes[mixIndex] = nodeType;
+                mixIndex ++;
             } else {
                 this.declaredSupertypes[i] = nodeType;
             }
@@ -334,7 +335,7 @@ public class ExtendedNodeType implements NodeType {
         l.addAll(getDeclaredItems());
 
         ExtendedNodeType[] supertypes = getSupertypes();
-        for (int i = supertypes.length-1; i >=0 ; i--) {
+        for (int i = 0; i < supertypes.length ; i++) {
             l.addAll(supertypes[i].getDeclaredItems());
         }
 

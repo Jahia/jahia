@@ -84,6 +84,7 @@
 
                         <tbody>
                         <c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}" end="${moduleMap.end}">
+                            <c:if test="${jcr:isNodeType(subchild, 'jnt:folder,jnt:file')}">
 
                             <tr class="odd">
                                 <td class="center" headers="Type">
@@ -118,6 +119,7 @@
                                                                                      template="hidden.average.readonly"
                                                                                      nodetype="jmix:rating"/></td>
                             </tr>
+                            </c:if>
                         </c:forEach>
                         <div class="clear"></div>
                         <c:if test="${moduleMap.editable and renderContext.editMode}">

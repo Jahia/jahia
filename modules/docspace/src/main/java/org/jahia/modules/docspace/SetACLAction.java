@@ -80,9 +80,12 @@ public class SetACLAction implements org.jahia.bin.Action  {
         String user = "u:" + req.getParameter("user");
         String acl = req.getParameter("acl");
         try {
+            if(!resource.getNode().isCheckedOut()) {
+                resource.getNode().checkout();
+            }
             JCRNodeWrapperImpl.changePermissions(resource.getNode(), user, acl);
             jcrSessionWrapper.save();
-            return ActionResult.OK;
+            return ActionResult.OK_JSON;
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             return ActionResult.BAD_REQUEST;

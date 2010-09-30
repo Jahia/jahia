@@ -27,7 +27,7 @@
 <template:addResources type="css" resources="jquery.fancybox.css"/>
 <c:set var="aclNode" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 <c:if test="${not empty aclNode}">
-    <ul class="docspacelist docspacelistusers">
+    <ul class="docspacelist docspacelistusers" id="displayAclUsers">
         <c:forEach items="${aclNode.aclEntries}" var="acls">
             <li>
                 <c:set var="users" value="${fn:substringBefore(acls.key, ':')}"/>

@@ -16,6 +16,7 @@
         <template:addResources type="javascript" resources="jquery.autocomplete.js"/>
         <template:addResources type="javascript" resources="jquery.bgiframe.min.js"/>
         <template:addResources type="javascript" resources="thickbox-compressed.js"/>
+        <template:addResources type="javascript" resources="jquery.form.js"/>
         <script type="text/javascript">
             $(document).ready(function() {
 
@@ -54,9 +55,11 @@
                         removeDuplicatePropValues : "true"
                     }
                 });
+
+                $("#setAclForm").ajaxForm({dataType: "json",resetForm : true,success: function() {window.location.reload()}});
             });
         </script>
-        <form method="post" action="${url.base}${aclNode.path}.setAcl.do" class="userssearchform">
+        <form method="post" action="${url.base}${aclNode.path}.setAcl.do" class="userssearchform" id="setAclForm">
 
             <jcr:nodeProperty name="jcr:title" node="${aclNode}" var="title"/>
             <c:if test="${not empty title.string}">

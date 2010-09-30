@@ -72,6 +72,10 @@ public class ClipboardActionItem extends BaseActionItem {
 
     public static void setCopied(List<GWTJahiaNode> copiedPath) {
         if (instance == null) instance = new ClipboardActionItem();
+
+        // todo handle history, keeps old items
+        instance.copiedStuff.clear();
+
         instance.copiedStuff.add(0,copiedPath);
         if (instance.copiedStuff.size() == 10) {
             instance.copiedStuff.remove(9);
@@ -85,15 +89,23 @@ public class ClipboardActionItem extends BaseActionItem {
             Button b = (Button) instance.getTextToolItem();
             if (instance.copiedStuff.isEmpty()) {
                 b.setText(null);
-                b.setVisible(false);
+                b.setEnabled(false);
+                b.setMenu(null);
             } else {
                 final List<GWTJahiaNode> copiedNodes = instance.copiedStuff.get(0);
-                if (copiedNodes.size() > 1) {
-                    b.setText(copiedNodes.size() + " "+Messages.get("label.items", " Items"));
-                } else {
-                    b.setText(Messages.get("label.clipboard","Clipboard")+": "+copiedNodes.get(0).getDisplayName());
+                final Menu menu = new Menu();
+                b.setText(Messages.get("label.clipboard","Clipboard"));
+                b.setMenu(menu);
+                for (List<GWTJahiaNode> c : instance.copiedStuff) {
+                    MenuItem m = new MenuItem();
+                    if (copiedNodes.size() > 1) {
+                        m.setText(copiedNodes.size() + " "+Messages.get("label.items", " Items"));
+                    } else {
+                        m.setText(copiedNodes.get(0).getDisplayName());
+                    }
+                    menu.add(m);
                 }
-                b.setVisible(true);
+                b.setEnabled(true);
             }
         }
     }
@@ -101,7 +113,7 @@ public class ClipboardActionItem extends BaseActionItem {
 
     @Override public Component createNewToolItem() {
         Button b = new Button();
-        b.setVisible(false);
+        b.setEnabled(false);
         return b;
     }
 }

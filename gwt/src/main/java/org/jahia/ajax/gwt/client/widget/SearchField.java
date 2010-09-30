@@ -41,6 +41,7 @@ import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 
 /**
  * User: rfelden
@@ -69,7 +70,7 @@ public abstract class SearchField extends ToolBar {
         add(field);
 
         Button ok = new Button();
-        ok.setIconStyle("gwt-toolbar-icon-savedSearch");
+        ok.setIcon(StandardIconsProvider.STANDARD_ICONS.savedSearch());
         ok.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent e) {
                onFieldValidation(field.getRawValue());

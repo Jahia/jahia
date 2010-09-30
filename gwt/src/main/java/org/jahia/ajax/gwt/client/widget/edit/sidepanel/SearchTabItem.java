@@ -111,7 +111,6 @@ class SearchTabItem extends SidePanelTabItem {
                 loader.load(0, nbResults);
             }
         });
-        ok.setIconStyle("gwt-toolbar-icon-savedSearch");
         ok.setIcon(StandardIconsProvider.STANDARD_ICONS.search());
         final Button drag = new Button(Messages.get("org.jahia.jcr.edit.drag.label"));
         new EditModeDragSource(drag) {

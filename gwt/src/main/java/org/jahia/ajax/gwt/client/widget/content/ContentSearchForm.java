@@ -104,7 +104,7 @@ public class ContentSearchForm extends ContentPanel {
                 saveSearch();
             }
         });
-        save.setIconStyle("gwt-toolbar-icon-savedSearch");
+        save.setIcon(StandardIconsProvider.STANDARD_ICONS.savedSearch());
         save.setToolTip(Messages.get("saveSearch.label"));
 
         // main search field

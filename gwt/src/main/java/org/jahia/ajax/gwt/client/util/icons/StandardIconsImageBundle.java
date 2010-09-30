@@ -42,6 +42,9 @@ public interface StandardIconsImageBundle extends ImageBundle {
     @Resource("search.png")
     public AbstractImagePrototype search();
 
+    @Resource("saved-search.png")
+    public AbstractImagePrototype savedSearch();
+
     @Resource("lock.png")
     public AbstractImagePrototype lock();
 

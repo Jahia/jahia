@@ -36,6 +36,7 @@ import com.extjs.gxt.ui.client.widget.*;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTRepository;
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.tripanel.LeftComponent;
@@ -107,7 +108,7 @@ public class ContentRepositoryTabs extends LeftComponent {
         savedSearchPanel.setBorders(false);
         savedSearchPanel.setScrollMode(Style.Scroll.NONE);
         savedSearchPanel.setHeading(Messages.get("repository.savedSearch.label"));
-        savedSearchPanel.getHeader().setIconStyle("gwt-toolbar-icon-savedSearch");
+        savedSearchPanel.getHeader().setIcon(StandardIconsProvider.STANDARD_ICONS.savedSearch());
         savedSearchPanel.getHeader().setBorders(false);
 
         queryList = new DataList();

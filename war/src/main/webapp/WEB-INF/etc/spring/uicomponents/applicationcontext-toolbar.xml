@@ -676,7 +676,10 @@
 
     <bean id="Toolbar.Item.NewCategory" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewCategoryActionItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
+                <property name="nodeTypes" value="jnt:category"/>
+                <property name="parentTypes" value="jnt:category"/>                
+             </bean>
         </property>
         <property name="titleKey" value="label.newCategory"/>
         <property name="icon" value="newCategory"/>

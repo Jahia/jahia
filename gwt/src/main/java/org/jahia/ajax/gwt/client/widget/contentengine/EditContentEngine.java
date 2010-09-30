@@ -42,6 +42,7 @@ import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngine;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -74,7 +75,7 @@ public class EditContentEngine extends AbstractContentEngine {
      * @param linker the edit linker for refresh purpose
      */
     public EditContentEngine(GWTJahiaNode node, Linker linker, EngineContainer engineContainer) {
-        super(getEditConfig(node, (GWTEditConfiguration) linker.getConfig()), linker);
+        super(getEditConfig(node, linker.getConfig()), linker);
         contentPath = node.getPath();
         nodeName = node.getName();
         loadEngine();
@@ -93,7 +94,7 @@ public class EditContentEngine extends AbstractContentEngine {
         container.closeEngine();
     }
 
-    public static GWTEngine getEditConfig(GWTJahiaNode node, GWTEditConfiguration config) {
+    public static GWTEngine getEditConfig(GWTJahiaNode node, GWTConfiguration config) {
         for (GWTEngine engine : config.getEditEngines()) {
             if (node.getNodeTypes().contains(engine.getNodeType()) ||
                     node.getInheritedNodeTypes().contains(engine.getNodeType())) {

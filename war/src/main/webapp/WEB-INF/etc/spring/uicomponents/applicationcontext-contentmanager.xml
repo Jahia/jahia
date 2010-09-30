@@ -24,6 +24,15 @@
         <property name="editEngines">
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.editmode.Engine">
+                    <property name="nodeType" value="jnt:category"/>
+                    <property name="tabs">
+                        <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                            <value>content</value>
+                            <value>rights</value>
+                        </list>
+                    </property>
+                </bean>
+                <bean class="org.jahia.services.uicomponents.bean.editmode.Engine">
                     <property name="nodeType" value="jmix:list"/>
                     <property name="tabs">
                         <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
@@ -77,6 +86,15 @@
                             <value>tags</value>
                             <value>categories</value>
                             <value>options</value>
+                            <value>rights</value>
+                        </list>
+                    </property>
+                </bean>
+                <bean class="org.jahia.services.uicomponents.bean.editmode.Engine">
+                    <property name="nodeType" value="jnt:category"/>
+                    <property name="tabs">
+                        <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                            <value>content</value>
                             <value>rights</value>
                         </list>
                     </property>
@@ -421,6 +439,7 @@
                             <property name="titleKey" value="label.edit"/>
                             <property name="items">
                                 <list>
+                                    <ref bean="Toolbar.Item.EditContent"/>
                                     <ref bean="Toolbar.Item.Rename"/>
                                     <ref bean="Toolbar.Item.Delete"/>
                                     <ref bean="Toolbar.Item.Separator"/>
@@ -455,6 +474,7 @@
                 <property name="items">
                     <list>
                         <ref bean="Toolbar.Item.NewCategory"/>
+                        <ref bean="Toolbar.Item.EditContent"/>
                         <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Export"/>
                         <ref bean="Toolbar.Item.Import"/>
@@ -484,7 +504,6 @@
         <!-- tabs -->
         <property name="tabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                <value>info</value>
                 <value>content</value>
                 <value>rights</value>
                 <value>usages</value>

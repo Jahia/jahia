@@ -38,6 +38,7 @@ import org.apache.velocity.tools.generic.DateTool;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
+import org.jahia.services.mail.MailService;
 import org.jahia.services.rbac.RoleIdentity;
 import org.jahia.services.rbac.jcr.RoleBasedAccessControlService;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -79,25 +80,28 @@ public class JBPMMailProducer extends MailProducerImpl {
     private Bindings bindings;
 
     public Collection<Message> produce(Execution execution) {
-        try {
-            ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
-            scriptEngine = scriptEngineManager.getEngineByName(getTemplate().getLanguage());
-            bindings = null;
-            Message email = instantiateEmail();
-            fillFrom(execution, email);
+        if (ServicesRegistry.getInstance().getMailService().isEnabled()) {
+            try {
+                ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
+                scriptEngine = scriptEngineManager.getEngineByName(getTemplate().getLanguage());
+                bindings = null;
+                Message email = instantiateEmail();
+                fillFrom(execution, email);
 
-            fillRecipients(execution, email);
-            fillSubject(execution, email);
-            fillContent(execution, email);
-            Address[] addresses = email.getRecipients(Message.RecipientType.TO);
-            if (addresses != null && addresses.length > 0) {
-                return Collections.singleton(email);
-            } else {
-                return Collections.emptyList();
+                fillRecipients(execution, email);
+                fillSubject(execution, email);
+                fillContent(execution, email);
+                Address[] addresses = email.getRecipients(Message.RecipientType.TO);
+                if (addresses != null && addresses.length > 0) {
+                    return Collections.singleton(email);
+                } else {
+                    return Collections.emptyList();
+                }
+            } catch (MessagingException e) {
+                throw new JbpmException("failed to produce email message", e);
             }
-        } catch (MessagingException e) {
-            throw new JbpmException("failed to produce email message", e);
         }
+        return Collections.emptyList();
     }
 
     @Override

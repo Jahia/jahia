@@ -127,9 +127,7 @@ public class ContentDefinitionHelper {
         String label = nodeType.getLabel(uiLocale);
         gwt.setLabel(label);
 
-        List<ExtendedItemDefinition> defs;
-
-        defs = nodeType.getItems();
+        List<ExtendedItemDefinition> defs = nodeType.getItems();
 
         List<GWTJahiaItemDefinition> items = new ArrayList<GWTJahiaItemDefinition>();
         List<GWTJahiaItemDefinition> inheritedItems = new ArrayList<GWTJahiaItemDefinition>();

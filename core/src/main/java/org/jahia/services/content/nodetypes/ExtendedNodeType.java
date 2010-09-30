@@ -331,8 +331,13 @@ public class ExtendedNodeType implements NodeType {
 
     public List<ExtendedItemDefinition>  getItems() {
         List<ExtendedItemDefinition> l = new ArrayList<ExtendedItemDefinition>();
-        l.addAll(getChildNodeDefinitionsAsMap().values());
-        l.addAll(getPropertyDefinitionsAsMap().values());
+        l.addAll(getDeclaredItems());
+
+        ExtendedNodeType[] supertypes = getSupertypes();
+        for (int i = supertypes.length-1; i >=0 ; i--) {
+            l.addAll(supertypes[i].getDeclaredItems());
+        }
+
         return l;
     }
 

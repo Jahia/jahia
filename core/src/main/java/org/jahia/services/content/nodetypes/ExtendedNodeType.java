@@ -394,9 +394,19 @@ public class ExtendedNodeType implements NodeType {
     }
 
     public ExtendedPropertyDefinition[] getPropertyDefinitions() {
-        Collection<ExtendedPropertyDefinition> c = new ArrayList<ExtendedPropertyDefinition>(getPropertyDefinitionsAsMap().values());
-        c.addAll(getUnstructuredPropertyDefinitions().values());
-        return c.toArray(new ExtendedPropertyDefinition[c.size()]);
+        List<ExtendedPropertyDefinition> list = new ArrayList<ExtendedPropertyDefinition>();
+        Set<String> keys = new HashSet<String>();
+
+        final List<ExtendedItemDefinition> i = getItems();
+        Collections.reverse(i);
+        for (ExtendedItemDefinition item : i) {
+            if (!item.isNode() && ("*".equals(item.getName()) || !keys.contains(item.getName()))) {
+                list.add((ExtendedPropertyDefinition) item);
+                keys.add(item.getName());
+            }
+        }
+        Collections.reverse(list);
+        return list.toArray(new ExtendedPropertyDefinition[list.size()]);
     }
 
     public Map<String, ExtendedPropertyDefinition> getDeclaredPropertyDefinitionsAsMap() {
@@ -410,9 +420,21 @@ public class ExtendedNodeType implements NodeType {
     }
 
     public ExtendedPropertyDefinition[] getDeclaredPropertyDefinitions() {
-        Collection<ExtendedPropertyDefinition> c = new ArrayList<ExtendedPropertyDefinition>(getDeclaredPropertyDefinitionsAsMap().values());
-        c.addAll(getDeclaredUnstructuredPropertyDefinitions().values());
-        return c.toArray(new ExtendedPropertyDefinition[c.size()]);
+        List<ExtendedPropertyDefinition> list = new ArrayList<ExtendedPropertyDefinition>();
+        Set<String> keys = new HashSet<String>();
+
+        final List<ExtendedItemDefinition> i = getItems();
+        Collections.reverse(i);
+        for (ExtendedItemDefinition item : i) {
+            if (!item.isNode() && ("*".equals(item.getName()) || !keys.contains(item.getName()))) {
+                if (item.getDeclaringNodeType() == this) {
+                    list.add((ExtendedPropertyDefinition) item);
+                }
+                keys.add(item.getName());
+            }
+        }
+        Collections.reverse(list);
+        return list.toArray(new ExtendedPropertyDefinition[list.size()]);
     }
 
     public Map<String, ExtendedNodeDefinition> getChildNodeDefinitionsAsMap() {
@@ -459,9 +481,18 @@ public class ExtendedNodeType implements NodeType {
     }
 
     public ExtendedNodeDefinition[] getChildNodeDefinitions() {
-        Collection<ExtendedNodeDefinition> c = new ArrayList<ExtendedNodeDefinition>(getChildNodeDefinitionsAsMap().values());
-        c.addAll(getUnstructuredChildNodeDefinitions().values());
-        return c.toArray(new ExtendedNodeDefinition[c.size()]);
+        List<ExtendedNodeDefinition> list = new ArrayList<ExtendedNodeDefinition>();
+        Set<String> keys = new HashSet<String>();
+        final List<ExtendedItemDefinition> i = getItems();
+        Collections.reverse(i);
+        for (ExtendedItemDefinition item : i) {
+            if (item.isNode() && ("*".equals(item.getName()) || !keys.contains(item.getName()))) {
+                list.add((ExtendedNodeDefinition) item);
+                keys.add(item.getName());
+            }
+        }
+        Collections.reverse(list);
+        return list.toArray(new ExtendedNodeDefinition[list.size()]);
     }
 
     public Map<String, ExtendedNodeDefinition> getDeclaredChildNodeDefinitionsAsMap() {
@@ -475,9 +506,20 @@ public class ExtendedNodeType implements NodeType {
     }
 
     public ExtendedNodeDefinition[] getDeclaredChildNodeDefinitions() {
-        Collection<ExtendedNodeDefinition> c = new ArrayList<ExtendedNodeDefinition>(getDeclaredChildNodeDefinitionsAsMap().values());
-        c.addAll(getDeclaredUnstructuredChildNodeDefinitions().values());
-        return c.toArray(new ExtendedNodeDefinition[c.size()]);
+        List<ExtendedNodeDefinition> list = new ArrayList<ExtendedNodeDefinition>();
+        Set<String> keys = new HashSet<String>();
+        final List<ExtendedItemDefinition> i = getItems();
+        Collections.reverse(i);
+        for (ExtendedItemDefinition item : i) {
+            if (item.isNode() && ("*".equals(item.getName()) || !keys.contains(item.getName()))) {
+                if (item.getDeclaringNodeType() == this) {
+                    list.add((ExtendedNodeDefinition) item);
+                }
+                keys.add(item.getName());
+            }
+        }
+        Collections.reverse(list);
+        return list.toArray(new ExtendedNodeDefinition[list.size()]);
     }
 
     public List<String> getGroupedItems() {

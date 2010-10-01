@@ -24,21 +24,24 @@ public class GWTJahiaJobDetail extends BaseModelData implements Serializable, Co
                              String description,
                              String status,
                              String message,
-                             List<String> relatedPaths,
+                             List<String> targetPaths,
                              String group,
                              String jobClassName,
                              Long beginTime,
                              Long endTime,
                              Integer durationInSeconds,
                              String locale,
-                             String fileName) {
+                             String fileName,
+                             String targetNodeIdentifier,
+                             String targetAction,
+                             String targetWorkspace) {
         setName(name);
         setCreationTime(creationTime);
         setUser(user);
         setDescription(description);
         setStatus(status);
         setMessage(message);
-        setRelatedPaths(relatedPaths);
+        setTargetPaths(targetPaths);
         setGroup(group);
         setJobClassName(jobClassName);
         setBeginTime(beginTime);
@@ -46,6 +49,9 @@ public class GWTJahiaJobDetail extends BaseModelData implements Serializable, Co
         setDurationInSeconds(durationInSeconds);
         setLocale(locale);
         setFileName(fileName);
+        setTargetNodeIdentifier(targetNodeIdentifier);
+        setTargetAction(targetAction);
+        setTargetWorkspace(targetWorkspace);
     }
 
     public String getLabel() {
@@ -104,12 +110,12 @@ public class GWTJahiaJobDetail extends BaseModelData implements Serializable, Co
         set("message", message);
     }
 
-    public List<String> getRelatedPaths() {
-        return get("relatedPaths");
+    public List<String> getTargetPaths() {
+        return get("targetPaths");
     }
 
-    public void setRelatedPaths(List<String> relatedPaths) {
-        set("relatedPaths", relatedPaths);
+    public void setTargetPaths(List<String> targetPaths) {
+        set("targetPaths", targetPaths);
     }
 
     public String getGroup() {
@@ -166,6 +172,30 @@ public class GWTJahiaJobDetail extends BaseModelData implements Serializable, Co
 
     public void setFileName(String fileName) {
         set("fileName", fileName);
+    }
+
+    public void setTargetNodeIdentifier(String targetNodeIdentifier) {
+        set("targetNodeIdentifier", targetNodeIdentifier);
+    }
+
+    public String getTargetNodeIdentifier() {
+        return get("targetNodeIdentifier");
+    }
+
+    public void setTargetAction(String targetAction) {
+        set("targetAction", targetAction);
+    }
+
+    public String getTargetAction() {
+        return get("targetAction");
+    }
+
+    public void setTargetWorkspace(String targetWorkspace) {
+        set("targetWorkspace", targetWorkspace);
+    }
+
+    public String getTargetWorkspace() {
+        return get("targetWorkspace");
     }
 
     public int compareTo(Object o) {

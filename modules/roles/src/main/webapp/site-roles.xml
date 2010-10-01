@@ -50,7 +50,6 @@
             <site-manager jcr:primaryType="jnt:permission"/>
             <tag-manager jcr:primaryType="jnt:permission"/>
             <workflow-manager jcr:primaryType="jnt:permission"/>
-            <job-manager jcr:primaryType="jnt:permission"/>
         </managers>
         <selector jcr:primaryType="jnt:permissionGroup">
             <categories jcr:primaryType="jnt:permission"/>
@@ -82,6 +81,9 @@
             <basic jcr:primaryType="jnt:permission"/>
             <light jcr:primaryType="jnt:permission"/>
         </wysiwyg-editor-toolbar>
+        <jobs jcr:primaryType="jnt:permissionGroup">
+            <view-all-jobs jcr:primaryType="jnt:permission"/>
+        </jobs>
     </permissions>
 
     <roles jcr:primaryType="jnt:roles" jcr:mixinTypes="jmix:accessControlled">
@@ -104,7 +106,7 @@
                      j:assignedPermissions="actions/edit-mode edit-mode/analytics edit-mode/layout edit-mode/metadata edit-mode/seo edit-mode/usages languages/* managers/category-manager managers/site-manager managers/tag-manager selector/files-and-images selector/search selector/sitemap toolbar/edit toolbar/language-switcher toolbar/live-mode toolbar/preview-mode toolbar/publication toolbar/site-switcher toolbar/user toolbar/workflow wysiwyg-editor-toolbar/light"/>
 
         <site-administrator jcr:primaryType="jnt:role"
-                            j:assignedPermissions="actions/* admin/* edit-mode/* languages/* managers/* toolbar/* selector/* wysiwyg-editor-toolbar/*"
+                            j:assignedPermissions="actions/* admin/* edit-mode/* languages/* managers/* toolbar/* selector/* wysiwyg-editor-toolbar/* jobs/*"
                             j:grantToPrincipals="g:administrators"/>
 
         <translator jcr:primaryType="jnt:role"

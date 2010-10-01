@@ -43,7 +43,8 @@ import java.util.Map;
  * User: loom
  * Date: Sep 21, 2010
  * Time: 12:28:42 PM
- * todo : improved back-end pagination handling
+ * todo : improved back-end pagination handling, rename groups to types, clean up executing UI, calculate duration
+ * for executing tasks, add action and rule details, clean up details UI,
  */
 public class JobListPanel extends LayoutContainer {
 
@@ -116,7 +117,7 @@ public class JobListPanel extends LayoutContainer {
         column.setSortable(false);
         config.add(column);
 
-        column = new ColumnConfig("group", Messages.get("label.group", "Group"), 100);
+        column = new ColumnConfig("group", Messages.get("label.type", "Type"), 100);
         column.setSortable(false);
         column.setRenderer(new GridCellRenderer<GWTJahiaJobDetail>() {
             public Object render(GWTJahiaJobDetail jobDetail, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GWTJahiaJobDetail> gwtJahiaJobDetailListStore, Grid<GWTJahiaJobDetail> gwtJahiaJobDetailGrid) {
@@ -154,10 +155,7 @@ public class JobListPanel extends LayoutContainer {
                     }
                 }
                 if (STATUS_EXECUTING.equals(jobDetail.getStatus())) {
-                    ContentPanel contentPanel = new ContentPanel();
-                    contentPanel.setIconStyle("x-status-busy");
-                    contentPanel.addText(display);
-                    return contentPanel;
+                    return new Label(Messages.get("label.executingSince", "Executing since ") + display + "...");
                 } else {
                     return new Label(display);
                 }
@@ -486,11 +484,11 @@ public class JobListPanel extends LayoutContainer {
             addDetail("label.description", "Description", jobDetail.getDescription());
             addDetail("label.status", "Status", jobDetail.getStatus());
             StringBuffer paths = new StringBuffer();
-            for (String path : jobDetail.getRelatedPaths()) {
+            for (String path : jobDetail.getTargetPaths()) {
                 paths.append(path);
                 paths.append(" ");
             }
-            addDetail("label.relatedPaths", "Related paths", paths.toString());
+            addDetail("label.targetPaths", "Target paths", paths.toString());
             addDetail("label.fileName", "File name", jobDetail.getFileName());
             addDetail("label.name", "Name", jobDetail.getName());
             addDetail("label.creationTime", "Creation time", jobDetail.getCreationTime());
@@ -503,6 +501,9 @@ public class JobListPanel extends LayoutContainer {
             addTimeDetail("label.endTime", "End time", jobDetail.getEndTime());
             addDetail("label.duration", "Duration", jobDetail.getDurationInSeconds());
             addDetail("label.locale", "Locale code", jobDetail.getLocale());
+            addDetail("label.targetNodeIdentifier", "Target node identifier", jobDetail.getTargetNodeIdentifier());
+            addDetail("label.targetAction", "Target action", jobDetail.getTargetAction());
+            addDetail("label.targetWorkspace", "Target workspace", jobDetail.getTargetWorkspace());
         } else {
             int nbJobs = 0;
 

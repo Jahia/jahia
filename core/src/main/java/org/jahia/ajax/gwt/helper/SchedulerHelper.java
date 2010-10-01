@@ -62,19 +62,27 @@ public class SchedulerHelper {
             final String message = jobDataMap.getString(BackgroundJob.JOB_MESSAGE);
             final Long beginTime = getLong(jobDataMap, BackgroundJob.JOB_BEGIN);
             final Long endTime = getLong(jobDataMap, BackgroundJob.JOB_END);
-            final Integer durationInSeconds = getInteger(jobDataMap, BackgroundJob.JOB_DURATION);
+            Integer durationInSeconds = getInteger(jobDataMap, BackgroundJob.JOB_DURATION);
+            if ((durationInSeconds == null) && (beginTime != null) && (endTime == null) && BackgroundJob.STATUS_RUNNING.equals(status)) {
+                // here we have a currently running job, let's calculate the duration until now.
+                long timeUntilNow = System.currentTimeMillis() - beginTime.longValue();
+                durationInSeconds = (int) (timeUntilNow / 1000);
+            }
             final String jobLocale = jobDataMap.getString(BackgroundJob.JOB_CURRENT_LOCALE);
+            String targetNodeIdentifier = null;
+            String targetAction = null;
+            String targetWorkspace = null;
 
             if ((jahiaUser != null) && (!jahiaUser.getUserKey().equals(user))) {
                 // we must check whether the user has the permission to view other users's jobs
-                if (!jahiaUser.isPermitted(new PermissionIdentity("job-manager", "managers", null))) {
+                if (!jahiaUser.isPermitted(new PermissionIdentity("view-all-jobs", "jobs", null))) {
                     // he doesn't we skip this entry.
                     continue;
                 }
             }
 
             String description = jobDetail.getDescription();
-            final List<String> relatedPaths = new ArrayList<String>();
+            final List<String> targetPaths = new ArrayList<String>();
             String fileName = jobDataMap.getString(ImportJob.FILENAME);
             if (BackgroundJob.getGroupName(PublicationJob.class).equals(jobDetail.getGroup())) {
                 List<PublicationInfo> publicationInfos = (List<PublicationInfo>) jobDataMap.get(PublicationJob.PUBLICATION_INFOS);
@@ -84,29 +92,34 @@ public class SchedulerHelper {
             } else if (BackgroundJob.getGroupName(ImportJob.class).equals(jobDetail.getGroup())) {
                 String uri = (String) jobDataMap.get(ImportJob.URI);
                 if (uri != null) {
-                    relatedPaths.add(uri);
+                    targetPaths.add(uri);
                     description += " " + uri;
                 } else {
                     String destinationParentPath = jobDataMap.getString(ImportJob.DESTINATION_PARENT_PATH);
-                    relatedPaths.add(destinationParentPath);
+                    targetPaths.add(destinationParentPath);
                 }
             } else if (BackgroundJob.getGroupName(ActionJob.class).equals(jobDetail.getGroup())) {
                 String actionToExecute = jobDataMap.getString(ActionJob.JOB_ACTION_TO_EXECUTE);
+                targetAction = actionToExecute;
                 String nodeUUID = jobDataMap.getString(ActionJob.JOB_NODE_UUID);
+                targetNodeIdentifier = nodeUUID;
             } else if (BackgroundJob.getGroupName(RuleJob.class).equals(jobDetail.getGroup())) {
                 String ruleToExecute = jobDataMap.getString(RuleJob.JOB_RULE_TO_EXECUTE);
+                targetAction = ruleToExecute;
                 String nodeUUID = jobDataMap.getString(RuleJob.JOB_NODE_UUID);
+                targetNodeIdentifier = nodeUUID;
                 String workspace = jobDataMap.getString(RuleJob.JOB_WORKSPACE);
+                targetWorkspace = workspace;
             } else if (BackgroundJob.getGroupName(TextExtractorJob.class).equals(jobDetail.getGroup())) {
                 String path = jobDataMap.getString(TextExtractorJob.JOB_PATH);
                 String provider = jobDataMap.getString(TextExtractorJob.JOB_PROVIDER);
                 String extractNodePath = jobDataMap.getString(TextExtractorJob.JOB_EXTRACTNODE_PATH);
-                relatedPaths.add(path);
-                relatedPaths.add(extractNodePath);
+                targetPaths.add(path);
+                targetPaths.add(extractNodePath);
             }
             GWTJahiaJobDetail job = new GWTJahiaJobDetail(jobDetail.getName(), created, user, description,
-                    status, message, relatedPaths,
-                    jobDetail.getGroup(), jobDetail.getJobClass().getName(), beginTime, endTime, durationInSeconds, jobLocale, fileName);
+                    status, message, targetPaths,
+                    jobDetail.getGroup(), jobDetail.getJobClass().getName(), beginTime, endTime, durationInSeconds, jobLocale, fileName, targetNodeIdentifier, targetAction, targetWorkspace);
             job.setLabel(JahiaResourceBundle.getJahiaInternalResource("label." + jobDetail.getGroup() + ".task", locale));
             jobs.add(job);
         }

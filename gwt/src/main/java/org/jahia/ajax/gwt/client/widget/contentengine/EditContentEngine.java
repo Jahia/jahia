@@ -43,7 +43,6 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngine;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -64,6 +63,7 @@ public class EditContentEngine extends AbstractContentEngine {
     private String contentPath;
 
     private Button ok;
+    private Button cancel;
     private String nodeName;
     private Map<String, GWTJahiaGetPropertiesResult> langCodeGWTJahiaGetPropertiesResultMap =
             new HashMap<String, GWTJahiaGetPropertiesResult>();
@@ -78,8 +78,8 @@ public class EditContentEngine extends AbstractContentEngine {
         super(getEditConfig(node, linker.getConfig()), linker);
         contentPath = node.getPath();
         nodeName = node.getName();
-        loadEngine();
         init(engineContainer);
+        loadEngine();
 
         //setTopComponent(toolBar);
     }
@@ -110,7 +110,6 @@ public class EditContentEngine extends AbstractContentEngine {
     protected void initFooter() {
         ok = new Button(Messages.get("label.save"));
         ok.setHeight(BUTTON_HEIGHT);
-        ok.setEnabled(false);
         ok.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
         ok.addSelectionListener(new SaveSelectionListener());
         buttonBar.add(ok);
@@ -129,7 +128,7 @@ public class EditContentEngine extends AbstractContentEngine {
             });
             addButton(this.restore);
         }*/
-        Button cancel = new Button(Messages.get("label.cancel"));
+        cancel = new Button(Messages.get("label.cancel"));
         cancel.setHeight(BUTTON_HEIGHT);
         cancel.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonCancel());
         cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -139,6 +138,7 @@ public class EditContentEngine extends AbstractContentEngine {
             }
         });
         buttonBar.add(cancel);
+
     }
 
     /**
@@ -244,7 +244,6 @@ public class EditContentEngine extends AbstractContentEngine {
         }
     }
 
-
     /**
      * Save selection listener
      */
@@ -253,7 +252,8 @@ public class EditContentEngine extends AbstractContentEngine {
         }
 
         public void componentSelected(ButtonEvent event) {
-
+            mask(Messages.get("label.saving","Saving..."), "x-mask-loading");
+            ok.setEnabled(false);
             // node
             List<GWTJahiaNode> orderedChildrenNodes = null;
 

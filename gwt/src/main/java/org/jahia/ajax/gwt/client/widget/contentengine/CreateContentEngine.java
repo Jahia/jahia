@@ -72,6 +72,9 @@ public class CreateContentEngine extends AbstractContentEngine {
     protected GWTJahiaNodeType type = null;
     protected String targetName = null;
     protected boolean createInParentAndMoveBefore = false;
+    private Button ok;
+    private Button okAndNew;
+    private Button cancel;
 
 
     /**
@@ -98,9 +101,9 @@ public class CreateContentEngine extends AbstractContentEngine {
         nodeTypes.add(type);
         properties = new HashMap<String, GWTJahiaNodeProperty>(props);
         heading = "Create " + type.getLabel();
+        init(engineContainer);
         loadEngine();
 
-        init(engineContainer);
     }
 
     public void close() {
@@ -121,22 +124,21 @@ public class CreateContentEngine extends AbstractContentEngine {
      * init buttons
      */
     protected void initFooter() {
-        Button ok = new Button(Messages.get("label.save"));
+        ok = new Button(Messages.get("label.save"));
         ok.setHeight(BUTTON_HEIGHT);
-        ok.setEnabled(true);
         ok.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
         ok.addSelectionListener(new CreateSelectionListener());
 
         buttonBar.add(ok);
 
-        Button okAndNew = new Button(Messages.get("properties.saveAndNew.label"));
+        okAndNew = new Button(Messages.get("properties.saveAndNew.label"));
         okAndNew.setHeight(BUTTON_HEIGHT);
         okAndNew.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
 
         okAndNew.addSelectionListener(new CreateAndAddNewSelectionListener());
         buttonBar.add(okAndNew);
 
-        Button cancel = new Button(Messages.get("label.cancel"));
+        cancel = new Button(Messages.get("label.cancel"));
         cancel.setHeight(BUTTON_HEIGHT);
         cancel.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonCancel());
         cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -146,6 +148,8 @@ public class CreateContentEngine extends AbstractContentEngine {
             }
         });
         buttonBar.add(cancel);
+
+        setButtonsEnabled(false);
     }
 
     /**
@@ -175,6 +179,8 @@ public class CreateContentEngine extends AbstractContentEngine {
                     }
                     setAvailableLanguages(languages);
                 }
+                setButtonsEnabled(true);
+
                 fillCurrentTab();
 
             }
@@ -201,7 +207,8 @@ public class CreateContentEngine extends AbstractContentEngine {
     protected void save(final boolean closeAfterSave) {
         String nodeName = targetName;
         final List<String> mixin = new ArrayList<String>();
-
+        mask(Messages.get("label.saving","Saving..."), "x-mask-loading");
+        setButtonsEnabled(false);
         for (TabItem item : tabs.getItems()) {
             if (item instanceof PropertiesTabItem) {
                 PropertiesTabItem propertiesTabItem = (PropertiesTabItem) item;
@@ -260,6 +267,8 @@ public class CreateContentEngine extends AbstractContentEngine {
                     CreateContentEngine.this.tabs.removeAll();
                     CreateContentEngine.this.initTabs();
                     CreateContentEngine.this.layout(true);
+                    unmask();
+                    setButtonsEnabled(true);
                 }
 
 
@@ -275,6 +284,11 @@ public class CreateContentEngine extends AbstractContentEngine {
         } else {
             JahiaContentManagementService.App.getInstance().createNode(parentNode.getPath(), nodeName, type.getName(), mixin, newNodeACL, props, langCodeProperties, callback);
         }
+    }
+
+    private void setButtonsEnabled(final boolean enabled) {
+        ok.setEnabled(enabled);
+        okAndNew.setEnabled(enabled);
     }
 
 }

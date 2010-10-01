@@ -81,7 +81,7 @@ public class ModuleHelper {
         List<Element> el = TemplatesDOMUtil.getAllJahiaTypedElementsRec(html.getElement());
 
         Set<String> allNodetypes = new HashSet<String>();
-
+        allNodetypes.addAll(Arrays.asList(m.getNodeTypes().split(" ")));
         for (Element divElement : el) {
             String jahiatype = DOM.getElementAttribute(divElement, JahiaType.JAHIA_TYPE);
             if ("module".equals(jahiatype)) {

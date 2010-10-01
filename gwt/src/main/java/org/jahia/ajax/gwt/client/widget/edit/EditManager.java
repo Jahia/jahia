@@ -56,7 +56,7 @@ public class EditManager extends ContentPanel {
     private EditLinker editLinker;
     private BorderLayout borderLayout ;
 
-    public EditManager(String html, String path, String template, String locale, GWTEditConfiguration config) {
+    public EditManager(String html, String path, String template, String nodeTypes, String locale, GWTEditConfiguration config) {
         long start = System.currentTimeMillis();
         borderLayout =  new BorderLayout();
         setLayout(borderLayout);
@@ -77,7 +77,7 @@ public class EditManager extends ContentPanel {
         setTopComponent(toolbar);
 
         setScrollMode(Style.Scroll.NONE);
-        mainModule = new MainModule(html, path, template, config);
+        mainModule = new MainModule(html, path, template, nodeTypes, config);
         mainModule.getHeader().addStyleName("gwt-only-panel");        
         add(mainModule, new BorderLayoutData(Style.LayoutRegion.CENTER));
 

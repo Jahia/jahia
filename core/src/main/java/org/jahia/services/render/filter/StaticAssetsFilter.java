@@ -38,6 +38,7 @@ import net.htmlparser.jericho.*;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.jahia.services.content.nodetypes.ConstraintsHelper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.cache.AggregateCacheFilter;
@@ -90,7 +91,9 @@ public class StaticAssetsFilter extends AbstractFilter {
                         "\n" + "<div class=\"jahia-template-gxt editmode-gxt\" jahiatype=\"editmode\" id=\"editmode\"" +
                                 " config=\""+renderContext.getEditModeConfigName()+"\"" +
                                 " path=\""+resource.getNode().getPath()+"\" locale=\""+resource.getLocale()+"\"" +
-                                " template=\""+resource.getTemplate()+"\">");
+                                " template=\""+resource.getTemplate()+"\"" +
+                                " nodetypes=\""+  ConstraintsHelper.getConstraints(renderContext.getMainResource().getNode()) + "\"" +
+                                ">");
                 }
             }
             List<Element> headElementList = source.getAllElements(HTMLElementName.HEAD);

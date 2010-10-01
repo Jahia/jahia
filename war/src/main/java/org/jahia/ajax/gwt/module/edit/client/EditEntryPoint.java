@@ -64,7 +64,8 @@ public class EditEntryPoint extends CommonEntryPoint {
                     DOM.setInnerHTML(panel.getElement(), "");
                     panel.add(new EditPanelViewport(s,
                             DOM.getElementAttribute(panel.getElement(), "path"),
-                            DOM.getElementAttribute(panel.getElement(), "template"),
+                            DOM.getElementAttribute(panel.getElement(), "template"), 
+                            DOM.getElementAttribute(panel.getElement(), "nodetypes"),
                             DOM.getElementAttribute(panel.getElement(), "locale"), gwtEditConfiguration));
                 }
 

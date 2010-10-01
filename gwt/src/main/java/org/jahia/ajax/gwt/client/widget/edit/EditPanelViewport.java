@@ -45,15 +45,17 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
  */
 public class EditPanelViewport extends Viewport {
 
-        public EditPanelViewport(String html, String path, String template, String locale, GWTEditConfiguration config) {
+        public EditPanelViewport(String html, String path, String template, String nodeTypes, String locale,
+                                 GWTEditConfiguration config) {
             super() ;
             setLayout(new FitLayout());
             setStyleName("x-viewport-"+config.getName());
-            createUI(html, path,template,locale, config);
+            createUI(html, path,template, nodeTypes, locale, config);
         }
 
-        public void createUI(String html, String path, String template, String locale, GWTEditConfiguration config) {
-            EditManager layout = new EditManager(html, path,template,locale, config) ;
+        public void createUI(String html, String path, String template, String nodeTypes, String locale,
+                             GWTEditConfiguration config) {
+            EditManager layout = new EditManager(html, path,template, nodeTypes, locale, config) ;
 
             // layout is the main widget contained in the viewport
             add(layout) ;

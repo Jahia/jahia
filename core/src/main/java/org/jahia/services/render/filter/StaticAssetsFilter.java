@@ -62,7 +62,7 @@ public class StaticAssetsFilter extends AbstractFilter {
             Element element = source.getFirstElement();
             final EndTag tag = element != null ? element.getEndTag() : null;
             final String staticsAsset = AggregateCacheFilter.removeEsiTags(service.render(
-                    new Resource(resource.getNode(), "html", "html.statics.assets", Resource.CONFIGURATION_INCLUDE),
+                    new Resource(resource.getNode(), "html", "ajax.statics.assets", Resource.CONFIGURATION_INCLUDE),
                     renderContext));
             if (StringUtils.isNotBlank(staticsAsset)) {
                 if (tag != null) {

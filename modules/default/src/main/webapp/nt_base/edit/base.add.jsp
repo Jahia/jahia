@@ -44,7 +44,7 @@
     </c:if>
     <c:if test="${currentResource.moduleParams.resourceNodeType eq 'jnt:file'}">
         enctype="multipart/form-data"
-    </c:if>    
+    </c:if>
             >
         <c:choose>
             <c:when test="${not empty currentResource.moduleParams.workflowStartForm}">
@@ -71,7 +71,7 @@
                            name="${propertyDefinition.name}" <c:if test="${not empty workflowTaskFormTask}">value="${workflowTaskFormTask.variables[propertyDefinition.name][0].value}"</c:if>/>
 
                 </c:if>
-            </c:forEach>            
+            </c:forEach>
             <c:forEach items="${type.propertyDefinitions}" var="propertyDefinition">
                 <c:if test="${!propertyDefinition.multiple and propertyDefinition.contentItem and !(propertyDefinition.name eq 'jcr:title')}">
                     <p class="field">
@@ -121,7 +121,7 @@
                     <input type="hidden" name="j:editableInContribution" value="true"/>
                     <input type="hidden" name="j:canDeleteInContribution" value="true"/>
                     <input type="hidden" name="j:canOrderInContribution" value="true"/>
-                    
+
                 </p>
             </c:if>
             <c:if test="${currentResource.moduleParams.resourceNodeType eq 'jnt:file'}">
@@ -170,15 +170,12 @@
                     jreplace('${currentResource.moduleParams.workflowTaskFormCallbackId}', '${currentResource.moduleParams.workflowTaskFormCallbackURL}',null, "${currentResource.moduleParams.workflowTaskFormCallbackJS};$('#${jsNodeName}${scriptTypeName}').ajaxForm(options${jsNodeName}${scriptTypeName});");
                 </c:when>
                 <c:otherwise>
-                    jreplace('${currentNode.identifier}', '${currentResource.moduleParams.currentListURL}',null, "${currentResource.moduleParams.addContentCallbackJS};$('#${jsNodeName}${scriptTypeName}').ajaxForm(options${jsNodeName}${scriptTypeName});");
+                    window.location.reload();
                 </c:otherwise>
                 </c:choose>
-                    $.each(richTextEditors, function(key, value) {
-                        value.setData("");
-                    });
                 },
                 dataType: "json",
-                resetForm : true
+                clearForm: true
             };// wait for the DOM to be loaded
             $(document).ready(function() {
                 // bind 'myForm' and provide a simple callback function

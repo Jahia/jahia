@@ -19,17 +19,17 @@
 <%--@elvariable id="selectorType" type="org.jahia.services.content.nodetypes.SelectorType"--%>
 <template:addResources type="javascript"
                        resources="${url.context}/gwt/resources/${url.ckEditor}/ckeditor.js"/>
+<template:addResources type="javascript"
+                       resources="${url.context}/gwt/resources/${url.ckEditor}/adapters/jquery.js"/>
 <label for="ckeditor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">${jcr:label(propertyDefinition,renderContext.mainResourceLocale)}</label>
-<input type="hidden" name="${propertyDefinition.name}"
-       id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"/>
-<textarea rows="50" cols="40" id="ckeditor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"><c:if test="${not empty workflowTaskFormTask}">${workflowTaskFormTask.variables[propertyDefinition.name][0].value}</c:if></textarea>
+<textarea rows="50" cols="40" name="${propertyDefinition.name}"
+          id="newckeditor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" class="newContentCkeditorContribute"></textarea>
 <script>
     $(document).ready(function() {
-        richTextEditors['${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}'] = CKEDITOR.replace("ckeditor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}", { toolbar : 'User'});
+        $("#newckeditor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").ckeditor({toolbar: "User"});
+    <c:if test="${not empty workflowTaskFormTask}">
+        $("#newckeditor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").val('${workflowTaskFormTask.variables[propertyDefinition.name][0].value}');
+    </c:if>
     });
 
-    $("#${currentNode.name}${scriptTypeName}").submit(function() {
-        $("#${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").val(richTextEditors['${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}'].getData());
-
-    });
 </script>

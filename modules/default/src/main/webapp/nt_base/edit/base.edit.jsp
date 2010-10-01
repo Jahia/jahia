@@ -29,7 +29,8 @@
 <template:addResources type="javascript" resources="datepicker.js,jquery.jeditable.datepicker.js"/>
 <template:addResources type="javascript" resources="contributedefault.js"/>
 <template:addResources type="javascript" resources="i18n/contributedefault-${renderContext.mainResource.locale}.js"/>
-
+<template:addResources type="javascript"
+                       resources="${url.context}/gwt/resources/${url.ckEditor}/adapters/jquery.js"/>
 <utility:useConstants var="jcrPropertyTypes" className="org.jahia.services.content.nodetypes.ExtendedPropertyType"
                       scope="application"/>
 <utility:useConstants var="selectorType" className="org.jahia.services.content.nodetypes.SelectorType"

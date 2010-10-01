@@ -87,29 +87,29 @@ function initEditFields(id) {
     });
 }
 
-function invert(source, target, urlbase, callbackId, callbackUrl) {
+function invert(source, target, urlbase, callbackId, callbackUrl,callbackJS) {
     $.post(urlbase + source + ".move.do", {"action":"moveBefore", "target":target, "source":source},
         function(result) {
-            jreplace(callbackId, callbackUrl,null, '');
+            jreplace(callbackId, callbackUrl,null, callbackJS);
         },
         'json'
     );
 
 }
 
-function deleteNode(source, urlbase, callbackId, callbackUrl) {
+function deleteNode(source, urlbase, callbackId, callbackUrl,callbackJS) {
     $.post(urlbase + source, {"methodToCall":"delete"},
         function(result) {
-            jreplace(callbackId, callbackUrl,null, '');
+            jreplace(callbackId, callbackUrl,null, callbackJS);
         },
         'json'
     );
 }
 
-function startWorkflow(source, process, urlbase, callbackId, callbackUrl) {
+function startWorkflow(source, process, urlbase, callbackId, callbackUrl,callbackJS) {
     $.post(urlbase + source + ".startWorkflow.do", {"process": process},
         function(result) {
-            jreplace(callbackId, callbackUrl,null, '');
+            jreplace(callbackId, callbackUrl,null, callbackJS);
         },
         'json'
     );

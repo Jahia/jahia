@@ -116,11 +116,12 @@
 
                     });*/
                 }
-
+/*
                 if($this.attr('tagName')=='SCRIPT'){
                     $.getScript(getVoidUrl($this.attr('src')),function(){
                     });
                 }
+*/
             });
          }
 
@@ -161,9 +162,9 @@ function replace(id, url, callback) {
 
 function jreplace(id,url,params,callback) {
     $.get(url,params,function(data){
-        var links = $('head > link');
         $("#"+id).html(data);
-        links.reloadCSS();
+        var links = $("#"+id+ " link");
+        links.reloadCSS({preventCache:false});
         if (typeof callback != 'undefined') {
             eval(callback);
         }

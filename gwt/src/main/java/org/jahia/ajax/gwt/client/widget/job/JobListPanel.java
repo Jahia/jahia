@@ -43,8 +43,6 @@ import java.util.Map;
  * User: loom
  * Date: Sep 21, 2010
  * Time: 12:28:42 PM
- * todo : improved back-end pagination handling, rename groups to types, clean up executing UI, calculate duration
- * for executing tasks, add action and rule details, clean up details UI,
  */
 public class JobListPanel extends LayoutContainer {
 
@@ -134,7 +132,7 @@ public class JobListPanel extends LayoutContainer {
         column.setSortable(false);
         config.add(column);
 
-        column = new ColumnConfig("durationInSeconds", Messages.get("label.duration", "Duration"), 100);
+        column = new ColumnConfig("durationInSeconds", Messages.get("label.duration", "Duration"), 140);
         column.setSortable(false);
         column.setRenderer(new GridCellRenderer<GWTJahiaJobDetail>() {
             public Object render(GWTJahiaJobDetail jobDetail, String property, ColumnData config, int rowIndex,
@@ -187,7 +185,7 @@ public class JobListPanel extends LayoutContainer {
             public String render(GroupColumnData data) {
                 String f = cm.getColumnById(data.field).getHeader();
                 String l = data.models.size() == 1 ? Messages.get("label.item", "Item") : Messages.get("label.items", "Items");
-                return f + ": " + data.group + " (" + data.models.size() + " " + l + ")";
+                return f + ": " + Messages.get("label.job.status." + data.group) + " (" + data.models.size() + " " + l + ")";
             }
         });
 

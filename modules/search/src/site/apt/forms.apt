@@ -19,7 +19,7 @@ Building search forms
 +-------------
   1: <%@ taglib prefix="s" uri="http://www.jahia.org/tags/search" %>
   2: 
-  3: <s:form method="get">
+  3: <s:form method="post">
   4:    <label for="searchTerm">Start searching:</label>
   5:      <s:term id="searchTerm"/>
   6:      <s:site value="${renderContext.site.name}" display="false"/>
@@ -42,7 +42,7 @@ Building search forms
     (we omit resource bundles and layout stuff):
 
 +-------------
-  1: <s:form name="advancedSearchForm" method="get">
+  1: <s:form name="advancedSearchForm" method="post">
   2:   <fieldset>
   3:     <legend>Text search</legend>
   4:       <label for="searchTerm">Search:</label>
@@ -110,7 +110,7 @@ Building search forms
     (we omit resource bundles and layout stuff):
 
 +-------------
-  1: <s:form name="advancedSearchForm" method="get">
+  1: <s:form name="advancedSearchForm" method="post">
   2:   <fieldset>
   3:     <legend>Text search</legend>
   4:       <label for="searchTerm">Search:</label>

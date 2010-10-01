@@ -262,7 +262,7 @@
                         <ref bean="Toolbar.Item.Preview"/>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="titleKey" value="label.view"/>
-                            <property name="icon" value="preview"/>
+                            <!-- <property name="icon" value="preview"/> -->
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.PreviewAsGuest"/>
@@ -276,7 +276,7 @@
                         <ref bean="Toolbar.Item.Separator"/>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="titleKey" value="label.edit"/>
-                            <property name="icon" value="editAction"/>
+                            <!-- <property name="icon" value="editAction"/>  -->
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.EditContent"/>
@@ -305,7 +305,7 @@
                         </bean>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="titleKey" value="label.publication"/>
-                            <property name="icon" value="publicationAction"/>
+                            <!-- <property name="icon" value="publicationAction"/> -->
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.Publish"/>
@@ -332,7 +332,7 @@
                         <ref bean="editmode.managers.menu"/>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="titleKey" value="label.cache"/>
-                            <property name="icon" value="publicationAction"/>
+                            <!-- <property name="icon" value="publicationAction"/>  -->
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.Flush"/>
@@ -342,7 +342,7 @@
                             <property name="visibility" value="$site/toolbar/cache"/>
                         </bean>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
-                            <property name="icon" value="user"/>
+                            <!-- <property name="icon" value="user"/> -->
                             <property name="visibility" value="$site/toolbar/user"/>
                             <property name="titleKey" value="label.user"/>
                             <property name="items">

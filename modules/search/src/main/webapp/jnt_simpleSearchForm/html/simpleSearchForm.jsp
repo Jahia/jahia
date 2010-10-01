@@ -42,6 +42,7 @@
 
         $("#searchTerm").autocomplete("${url.find}", {
             dataType: "json",
+            selectFirst: false,
             cacheLength: 1,
             parse: function parse(data) {
                 return $.map(data, function(row) {

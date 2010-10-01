@@ -124,6 +124,7 @@ abstract class BrowseTabItem extends SidePanelTabItem {
 
         @Override
         protected void onDragEnter(DNDEvent e) {
+            super.onDragEnter(e);
             if (EditModeDNDListener.SIMPLEMODULE_TYPE.equals(e.getStatus().getData(EditModeDNDListener.SOURCE_TYPE))) {
                 List<GWTJahiaNode> nodes = e.getStatus().getData(EditModeDNDListener.SOURCE_NODES);
                 if (acceptNode(nodes.get(0))) {

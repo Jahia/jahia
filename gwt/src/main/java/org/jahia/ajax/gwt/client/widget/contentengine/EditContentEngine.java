@@ -179,11 +179,11 @@ public class EditContentEngine extends AbstractContentEngine {
                 properties = result.getProperties();
                 defaultLanguageBean = result.getCurrentLocale();
                 if(!node.isWriteable()) {
-                    heading = Messages.getWithArgs("label.edit.engine.heading.read.only","Read {0}",new String[]{nodeName});
-                    container.getPanel().setHeading(heading);
+                    heading = Messages.getWithArgs("label.edit.engine.heading.read.only","Read {0} ({1})",new String[]{nodeName, nodeTypes.get(0).getLabel()});
                 } else {
-                    heading = Messages.getWithArgs("label.edit.engine.heading.edit","Edit {0}",new String[]{nodeName});
+                    heading = Messages.getWithArgs("label.edit.engine.heading.edit","Edit {0} ({1})",new String[]{nodeName, nodeTypes.get(0).getLabel()});
                 }
+                container.getPanel().setHeading(heading);
                 if (node.isLocked()) {
                     heading = heading + Messages.getWithArgs("label.edit.engine.heading.locked.by","[ locked by {0} ]",new String[]{node.getLockOwner()});
                     container.getPanel().setHeading(heading);

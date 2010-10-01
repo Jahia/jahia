@@ -266,6 +266,7 @@ public class CreateContentEngine extends AbstractContentEngine {
                 } else {
                     CreateContentEngine.this.tabs.removeAll();
                     CreateContentEngine.this.initTabs();
+                    CreateContentEngine.this.tabs.setSelection(tabs.getItem(0));
                     CreateContentEngine.this.layout(true);
                     unmask();
                     setButtonsEnabled(true);

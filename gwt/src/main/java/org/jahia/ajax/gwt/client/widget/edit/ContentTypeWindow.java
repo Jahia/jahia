@@ -38,7 +38,7 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
-import com.extjs.gxt.ui.client.widget.layout.FillLayout;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.google.gwt.user.client.Event;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -76,7 +76,7 @@ public class ContentTypeWindow extends Window {
     public ContentTypeWindow(final Linker linker, GWTJahiaNode parent, Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> types, final Map<String, GWTJahiaNodeProperty> props, final String nodeName, final boolean createInParentAndMoveBefore) {
         this.linker = linker;
         this.parentNode = parent;
-        setLayout(new FillLayout());
+        setLayout(new FitLayout());
         setBodyBorder(false);
         setSize(400, 650);
         setClosable(true);
@@ -84,7 +84,7 @@ public class ContentTypeWindow extends Window {
         setModal(true);
         setMaximizable(true);
         setIcon(StandardIconsProvider.STANDARD_ICONS.engineLogoJahia());
-        contentTypeTree = new ContentTypeTree(types, 400,500,25);
+        contentTypeTree = new ContentTypeTree(types);
         TreeGrid treeGrid = contentTypeTree.getTreeGrid();
         treeGrid.sinkEvents(Event.ONDBLCLICK + Event.ONCLICK);
         treeGrid.addListener(Events.OnDoubleClick, new Listener<BaseEvent>() {

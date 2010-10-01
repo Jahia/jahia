@@ -4,9 +4,9 @@
 [jnt:pageCss] > jnt:content, jmix:sandboxContent
 - j:backgroundColor (string) = '' indexed=no
 - j:bodyColor (string) = '' indexed=no
-- fontFamily (string,choicelist) indexed=no < ' ', 'Arial, Helvetica, sans-serif', 'Times New Roman, Times, serif', 'Courier New, Courier, monospace', 'Georgia, Times New Roman, Times, serif', 'Verdana, Arial, Helvetica, sans-serif', 'Geneva, Arial, Helvetica, sans-serif'
-- lineHeight (string,choicelist) indexed=no < ' ', '100%', '110%', '120%', '130%', '140%', '150%', '160%', '170%', '180%', '190%', '200%'
-- fontSize (string,choicelist) indexed=no < ' ', '80%', '90%', '100%', '110%', '120%', '130%', '140%', '150%'
+- fontFamily (string,choicelist) indexed=no < '', 'Arial, Helvetica, sans-serif', 'Times New Roman, Times, serif', 'Courier New, Courier, monospace', 'Georgia, Times New Roman, Times, serif', 'Verdana, Arial, Helvetica, sans-serif', 'Geneva, Arial, Helvetica, sans-serif'
+- lineHeight (string,choicelist) indexed=no < '', '100%', '110%', '120%', '130%', '140%', '150%', '160%', '170%', '180%', '190%', '200%'
+- fontSize (string,choicelist) indexed=no < '', '80%', '90%', '100%', '110%', '120%', '130%', '140%', '150%'
 - j:aLinkVisitedColor (string) = '' indexed=no
 - j:aHoverActiveColor (string) = '' indexed=no
 - j:h1Color (string) = '' indexed=no
@@ -14,11 +14,11 @@
 - j:h3Color (string) = '' indexed=no
 - j:h4Color (string) = '' indexed=no
 - j:h5Color (string) = '' indexed=no
-- h1FontFamily (string,choicelist[resourceBundle]) indexed=no < ' ', 'Arial, Helvetica, sans-serif', 'Times New Roman, Times, serif', 'Courier New, Courier, monospace', 'Georgia, Times New Roman, Times, serif', 'Verdana, Arial, Helvetica, sans-serif', 'Geneva, Arial, Helvetica, sans-serif'
-- h2FontFamily (string,choicelist[resourceBundle]) indexed=no < ' ', 'Arial, Helvetica, sans-serif', 'Times New Roman, Times, serif', 'Courier New, Courier, monospace', 'Georgia, Times New Roman, Times, serif', 'Verdana, Arial, Helvetica, sans-serif', 'Geneva, Arial, Helvetica, sans-serif'
-- h3FontFamily (string,choicelist[resourceBundle]) indexed=no < ' ', 'Arial, Helvetica, sans-serif', 'Times New Roman, Times, serif', 'Courier New, Courier, monospace', 'Georgia, Times New Roman, Times, serif', 'Verdana, Arial, Helvetica, sans-serif', 'Geneva, Arial, Helvetica, sans-serif'
-- h4FontFamily (string,choicelist[resourceBundle]) indexed=no < ' ', 'Arial, Helvetica, sans-serif', 'Times New Roman, Times, serif', 'Courier New, Courier, monospace', 'Georgia, Times New Roman, Times, serif', 'Verdana, Arial, Helvetica, sans-serif', 'Geneva, Arial, Helvetica, sans-serif'
-- h5FontFamily (string,choicelist[resourceBundle]) indexed=no < ' ', 'Arial, Helvetica, sans-serif', 'Times New Roman, Times, serif', 'Courier New, Courier, monospace', 'Georgia, Times New Roman, Times, serif', 'Verdana, Arial, Helvetica, sans-serif', 'Geneva, Arial, Helvetica, sans-serif'
+- h1FontFamily (string,choicelist[resourceBundle]) indexed=no < '', 'Arial, Helvetica, sans-serif', 'Times New Roman, Times, serif', 'Courier New, Courier, monospace', 'Georgia, Times New Roman, Times, serif', 'Verdana, Arial, Helvetica, sans-serif', 'Geneva, Arial, Helvetica, sans-serif'
+- h2FontFamily (string,choicelist[resourceBundle]) indexed=no < '', 'Arial, Helvetica, sans-serif', 'Times New Roman, Times, serif', 'Courier New, Courier, monospace', 'Georgia, Times New Roman, Times, serif', 'Verdana, Arial, Helvetica, sans-serif', 'Geneva, Arial, Helvetica, sans-serif'
+- h3FontFamily (string,choicelist[resourceBundle]) indexed=no < '', 'Arial, Helvetica, sans-serif', 'Times New Roman, Times, serif', 'Courier New, Courier, monospace', 'Georgia, Times New Roman, Times, serif', 'Verdana, Arial, Helvetica, sans-serif', 'Geneva, Arial, Helvetica, sans-serif'
+- h4FontFamily (string,choicelist[resourceBundle]) indexed=no < '', 'Arial, Helvetica, sans-serif', 'Times New Roman, Times, serif', 'Courier New, Courier, monospace', 'Georgia, Times New Roman, Times, serif', 'Verdana, Arial, Helvetica, sans-serif', 'Geneva, Arial, Helvetica, sans-serif'
+- h5FontFamily (string,choicelist[resourceBundle]) indexed=no < '', 'Arial, Helvetica, sans-serif', 'Times New Roman, Times, serif', 'Courier New, Courier, monospace', 'Georgia, Times New Roman, Times, serif', 'Verdana, Arial, Helvetica, sans-serif', 'Geneva, Arial, Helvetica, sans-serif'
 - j:colorResource1 (string) = '' indexed=no
 - j:colorResource2 (string) = '' indexed=no
 - img1 (weakreference, picker[type='image'])

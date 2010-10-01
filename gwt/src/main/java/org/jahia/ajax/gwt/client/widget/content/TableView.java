@@ -75,7 +75,14 @@ public class TableView extends AbstractView {
             columns.add(0, checkboxSelectionModel.getColumn());
         }
 
-        m_grid = new Grid<GWTJahiaNode>(store, new ColumnModel(columns));
+        m_grid = new Grid<GWTJahiaNode>(store, new ColumnModel(columns)) {
+            @Override protected void onMouseDown(GridEvent<GWTJahiaNode> e) {
+                super.onMouseDown(e);
+                if (e.getRowIndex() == -1) {
+                    getSelectionModel().select((GWTJahiaNode) null, false);
+                }
+            }
+        };
         m_grid.setBorders(true);
         if (columns.getAutoExpand() != null) {
             m_grid.setAutoExpandColumn(columns.getAutoExpand());
@@ -115,10 +122,6 @@ public class TableView extends AbstractView {
 
     }
 
-    public void selectNodes(List<GWTJahiaNode> nodes) {
-        selection = nodes;
-    }
-
     @Override
     public void initWithLinker(ManagerLinker linker) {
         super.initWithLinker(linker);
@@ -135,39 +138,6 @@ public class TableView extends AbstractView {
 
     public void setContextMenu(Menu menu) {
         m_grid.setContextMenu(menu);
-    }
-
-    public void setContent(final Object root) {
-        clearTable();
-        if (root != null) {
-            loader.load(root);
-        }
-    }
-
-    public void setProcessedContent(Object content) {
-        clearTable();
-        if (content != null) {
-            List<GWTJahiaNode> gwtJahiaNodes = (List<GWTJahiaNode>) content;
-            store.add(gwtJahiaNodes);
-            getLinker().onTableItemSelected();
-        }
-    }
-
-    public void clearTable() {
-        store.removeAll();
-    }
-
-    public List<GWTJahiaNode> getSelection() {
-        List<GWTJahiaNode> elts = visibleSelection;
-        if (elts != null && elts.size() > 0) {
-            return elts;
-        } else {
-            return null;
-        }
-    }
-
-    public void refresh() {
-        setContent(getLinker().getTreeSelection());
     }
 
     public Component getComponent() {

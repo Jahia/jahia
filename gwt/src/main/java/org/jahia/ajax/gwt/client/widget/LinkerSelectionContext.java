@@ -57,6 +57,8 @@ public class LinkerSelectionContext {
     private List<GWTJahiaNode> multipleSelection;
     private GWTJahiaNode parent;
 
+    private boolean isSecondarySelection;
+
     private boolean pasteAllowed;
 
     private boolean writeable;
@@ -82,21 +84,15 @@ public class LinkerSelectionContext {
 
     public void refresh(int contextMenu) {
         switch (contextMenu) {
-            case CONTENT_VIEWS_CONTEXT_MENU:
-                multipleSelection = selectedNodes;
-                if (selectedNodes != null && selectedNodes.size() == 1) {
-                    singleSelection = selectedNodes.get(0);
-                } else {
-                    singleSelection = null;
-                }
-                break;
             case REPOSITORY_TABS_CONTEXT_MENU:
                 multipleSelection = new ArrayList<GWTJahiaNode>();
                 if (mainNode != null) {
                     multipleSelection.add(mainNode);
                 }
                 singleSelection = mainNode;
+                isSecondarySelection = false;
                 break;
+            case CONTENT_VIEWS_CONTEXT_MENU:
             case MAIN_AREA_CONTEXT_MENU:
             default:
                 if (selectedNodes != null) {
@@ -106,12 +102,14 @@ public class LinkerSelectionContext {
                     } else {
                         singleSelection = null;
                     }
+                    isSecondarySelection = false;
                 } else {
                     multipleSelection = new ArrayList<GWTJahiaNode>();
                     if (mainNode != null) {
                         multipleSelection.add(mainNode);
                     }
                     singleSelection = mainNode;
+                    isSecondarySelection = true;
                 }
         }
 
@@ -162,6 +160,10 @@ public class LinkerSelectionContext {
 
     public List<GWTJahiaNode> getMultipleSelection() {
         return multipleSelection;
+    }
+
+    public boolean isSecondarySelection() {
+        return isSecondarySelection;
     }
 
     public GWTJahiaNode getParent() {

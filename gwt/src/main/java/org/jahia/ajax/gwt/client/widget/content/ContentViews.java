@@ -57,7 +57,7 @@ public class ContentViews extends TopRightComponent {
     private ThumbView detailedThumbView;
 
     private LayoutContainer m_component;
-    private TopRightComponent current;
+    private AbstractView current;
 
     private GWTManagerConfiguration configuration;
 
@@ -103,9 +103,10 @@ public class ContentViews extends TopRightComponent {
         switchToView(detailedThumbView);
     }
 
-    public void switchToView(TopRightComponent newView) {
+    public void switchToView(AbstractView newView) {
         if (current != newView) {
-            List<GWTJahiaNode> currentSelection = current.getSelection();
+            List<GWTJahiaNode> hiddenSelection = current.getHiddenSelection();
+            List<GWTJahiaNode> visibleSelection = current.getVisibleSelection();
             clearTable();
             m_component.removeAll();
             current = newView;
@@ -113,7 +114,9 @@ public class ContentViews extends TopRightComponent {
             m_component.layout();
 
             refresh();
-            newView.selectNodes(currentSelection);
+
+            newView.setHiddenSelection(hiddenSelection);
+            newView.setVisibleSelection(visibleSelection);
 //            getLinker().handleNewSelection();
         }
     }

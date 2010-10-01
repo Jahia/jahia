@@ -201,7 +201,7 @@ public abstract class BaseActionItem implements ActionItem {
             Formatter.setMenuItemEnabled(getMenuItem(), enabled);
         }
         if (isContextMenuItem()) {
-            Formatter.setMenuItemEnabled(getContextMenuItem(), enabled);
+            getContextMenuItem().setVisible(enabled);
         }
     }
 

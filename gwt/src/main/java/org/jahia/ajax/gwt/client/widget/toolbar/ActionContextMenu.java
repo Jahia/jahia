@@ -36,6 +36,7 @@ import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
+import com.extjs.gxt.ui.client.widget.menu.Item;
 import com.google.gwt.user.client.Element;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
@@ -100,5 +101,10 @@ public class ActionContextMenu extends ActionToolbarMenu {
         super.onClick(ce);
         hide();
     }
+
+    protected Item createActionItem(ActionItem actionItem) {
+        return actionItem.getContextMenuItem();
+    }
+
 }
 

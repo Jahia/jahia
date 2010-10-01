@@ -43,22 +43,17 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.button.ToggleButton;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.StoreFilterField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.toolbar.*;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTColumn;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 
 import java.util.List;
-import java.util.ArrayList;
 
 /**
  * User: rfelden
@@ -187,42 +182,11 @@ public class ThumbView extends AbstractView {
         view.setContextMenu(menu);
     }
 
-    public void setContent(Object root) {
-        clearTable();
-        if (root != null) {
-            loader.load(root);
-        }
-    }
-
     public void setProcessedContent(Object content) {
-        clearTable();
+        super.setProcessedContent(content);
         if (content != null) {
-            List<GWTJahiaNode> gwtJahiaNodes = (List<GWTJahiaNode>) content;
-            store.add(gwtJahiaNodes);
-            getLinker().onTableItemSelected();
             sort();
         }
-    }
-
-    public void clearTable() {
-        store.removeAll();
-    }
-
-    public List<GWTJahiaNode> getSelection() {
-        List<GWTJahiaNode> elts = visibleSelection;
-        if (elts != null && elts.size() > 0) {
-            return elts;
-        } else {
-            return null;
-        }
-    }
-
-    public void selectNodes(List<GWTJahiaNode> node) {
-        this.selection = node;
-    }
-
-    public void refresh() {
-        setContent(getLinker().getTreeSelection());
     }
 
     public Component getComponent() {

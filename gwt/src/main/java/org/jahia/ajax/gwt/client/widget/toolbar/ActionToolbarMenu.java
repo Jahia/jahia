@@ -1,5 +1,6 @@
 package org.jahia.ajax.gwt.client.widget.toolbar;
 
+import com.extjs.gxt.ui.client.widget.menu.Item;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
@@ -60,10 +61,14 @@ public class ActionToolbarMenu extends Menu implements ToolbarGroup {
                 } else if (ActionToolbar.isSeparator(gwtToolbarItem)) {
                     add(new SeparatorMenuItem());
                 } else {
-                    add(actionItem.getMenuItem());
+                    add(createActionItem(actionItem));
                 }
             }
         }
 
+    }
+
+    protected Item createActionItem(ActionItem actionItem) {
+        return actionItem.getMenuItem();
     }
 }

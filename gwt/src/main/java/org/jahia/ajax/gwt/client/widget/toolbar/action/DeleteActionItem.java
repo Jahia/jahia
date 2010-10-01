@@ -168,6 +168,6 @@ public class DeleteActionItem extends BaseActionItem {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.getMultipleSelection().size() > 0 && lh.isWriteable());
+        setEnabled(lh.getMultipleSelection().size() > 0 && lh.isWriteable() && !lh.isSecondarySelection());
     }
 }

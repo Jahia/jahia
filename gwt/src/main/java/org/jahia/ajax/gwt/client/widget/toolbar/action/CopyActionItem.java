@@ -34,6 +34,7 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
+import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 
 import java.util.List;
 
@@ -54,6 +55,7 @@ public class CopyActionItem extends BaseActionItem{
     }
 
     public void handleNewLinkerSelection() {
-        setEnabled(linker.getSelectionContext().getMultipleSelection().size() > 0);
+        final LinkerSelectionContext lh = linker.getSelectionContext();
+        setEnabled(lh.getMultipleSelection().size() > 0 && !lh.isSecondarySelection());
     }
 }

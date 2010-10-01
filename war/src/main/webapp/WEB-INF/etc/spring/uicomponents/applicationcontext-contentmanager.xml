@@ -216,23 +216,17 @@
                         <ref bean="Toolbar.Item.Upload"/>
                         <ref bean="Toolbar.Item.Download"/>
                         <ref bean="Toolbar.Item.FilePreview"/>
-                        <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Lock"/>
                         <ref bean="Toolbar.Item.Unlock"/>
-                        <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Zip"/>
                         <ref bean="Toolbar.Item.Unzip"/>
-
                         <ref bean="Toolbar.Item.Rename"/>
                         <ref bean="Toolbar.Item.Delete"/>
-                        <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Copy"/>
                         <ref bean="Toolbar.Item.Cut"/>
                         <ref bean="Toolbar.Item.Paste"/>
                         <ref bean="Toolbar.Item.PasteReference"/>
-                        <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.SaveAsPortalComponent"/>
-                        <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Crop"/>
                         <ref bean="Toolbar.Item.Resize"/>
                         <ref bean="Toolbar.Item.Rotate"/>
@@ -361,7 +355,6 @@
                         <ref bean="Toolbar.Item.NewGadget"/>
                         <ref bean="Toolbar.Item.Rename"/>
                         <ref bean="Toolbar.Item.Delete"/>
-                        <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Copy"/>
                         <ref bean="Toolbar.Item.Cut"/>
                         <ref bean="Toolbar.Item.Paste"/>
@@ -475,12 +468,10 @@
                     <list>
                         <ref bean="Toolbar.Item.NewCategory"/>
                         <ref bean="Toolbar.Item.EditContent"/>
-                        <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Export"/>
                         <ref bean="Toolbar.Item.Import"/>
                         <ref bean="Toolbar.Item.Rename"/>
                         <ref bean="Toolbar.Item.Delete"/>
-                        <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Copy"/>
                         <ref bean="Toolbar.Item.Cut"/>
                         <ref bean="Toolbar.Item.Paste"/>
@@ -579,7 +570,6 @@
                 <property name="items">
                     <list>
                         <ref bean="Toolbar.Item.NewTag"/>
-                        <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Export"/>
                         <ref bean="Toolbar.Item.Import"/>
                         <ref bean="Toolbar.Item.Rename"/>
@@ -774,12 +764,10 @@
                     <list>
                         <ref bean="Toolbar.Item.Rename"/>
                         <ref bean="Toolbar.Item.Delete"/>
-                        <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Copy"/>
                         <ref bean="Toolbar.Item.Cut"/>
                         <ref bean="Toolbar.Item.Paste"/>
                         <ref bean="Toolbar.Item.PasteReference"/>
-                        <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.NewFolder"/>
                         <ref bean="Toolbar.Item.NewContentList"/>
                         <ref bean="Toolbar.Item.NewContent"/>
@@ -789,13 +777,10 @@
                         <ref bean="Toolbar.Item.NewGadget"/>
                         <ref bean="Toolbar.Item.Upload"/>
                         <ref bean="Toolbar.Item.Download"/>
-                        <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Lock"/>
                         <ref bean="Toolbar.Item.Unlock"/>
-                        <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Zip"/>
                         <ref bean="Toolbar.Item.Unzip"/>
-                        <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Export"/>
                         <ref bean="Toolbar.Item.Import"/>
                     </list>
@@ -926,17 +911,14 @@
                 <property name="items">
                     <list>
                         <ref bean="Toolbar.Item.NewPage"/>
-                        <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Lock"/>
                         <ref bean="Toolbar.Item.Unlock"/>
                         <ref bean="Toolbar.Item.Rename"/>
                         <ref bean="Toolbar.Item.Delete"/>
-                        <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Copy"/>
                         <ref bean="Toolbar.Item.Cut"/>
                         <ref bean="Toolbar.Item.Paste"/>
                         <ref bean="Toolbar.Item.PasteReference"/>
-                        <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.SaveAsPortalComponent"/>
                     </list>
                 </property>
@@ -1133,10 +1115,8 @@
                         <ref bean="Toolbar.Item.Upload"/>
                         <ref bean="Toolbar.Item.Download"/>
                         <ref bean="Toolbar.Item.FilePreview"/>
-                        <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Lock"/>
                         <ref bean="Toolbar.Item.Unlock"/>
-                        <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Zip"/>
                         <ref bean="Toolbar.Item.Unzip"/>
 
@@ -1147,9 +1127,7 @@
                         <ref bean="Toolbar.Item.Cut"/>
                         <ref bean="Toolbar.Item.Paste"/>
                         <ref bean="Toolbar.Item.PasteReference"/>
-                        <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.SaveAsPortalComponent"/>
-                        <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Crop"/>
                         <ref bean="Toolbar.Item.Resize"/>
                         <ref bean="Toolbar.Item.Rotate"/>
@@ -1245,23 +1223,17 @@
                         <ref bean="Toolbar.Item.Upload"/>
                         <ref bean="Toolbar.Item.Download"/>
                         <ref bean="Toolbar.Item.FilePreview"/>
-                        <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Lock"/>
                         <ref bean="Toolbar.Item.Unlock"/>
-                        <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Zip"/>
                         <ref bean="Toolbar.Item.Unzip"/>
-
                         <ref bean="Toolbar.Item.Rename"/>
                         <ref bean="Toolbar.Item.Delete"/>
-                        <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Copy"/>
                         <ref bean="Toolbar.Item.Cut"/>
                         <ref bean="Toolbar.Item.Paste"/>
                         <ref bean="Toolbar.Item.PasteReference"/>
-                        <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.SaveAsPortalComponent"/>
-                        <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Crop"/>
                         <ref bean="Toolbar.Item.Resize"/>
                         <ref bean="Toolbar.Item.Rotate"/>
@@ -1345,13 +1317,10 @@
                         <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Lock"/>
                         <ref bean="Toolbar.Item.Unlock"/>
-                        <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Zip"/>
                         <ref bean="Toolbar.Item.Unzip"/>
-
                         <ref bean="Toolbar.Item.Rename"/>
                         <ref bean="Toolbar.Item.Delete"/>
-                        <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Copy"/>
                         <ref bean="Toolbar.Item.Cut"/>
                         <ref bean="Toolbar.Item.Paste"/>
@@ -1612,7 +1581,6 @@
                 <property name="items">
                     <list>
                         <ref bean="Toolbar.Item.NewCategory"/>
-                        <ref bean="Toolbar.Item.Separator"/>
                         <ref bean="Toolbar.Item.Rename"/>
                         <ref bean="Toolbar.Item.Delete"/>
                         <ref bean="Toolbar.Item.Copy"/>
@@ -1662,7 +1630,6 @@
         <property name="items">
             <list>
                 <ref bean="Toolbar.Item.NewRole"/>
-                <ref bean="Toolbar.Item.Separator"/>
                 <ref bean="Toolbar.Item.Export"/>
                 <ref bean="Toolbar.Item.Import"/>
                 <ref bean="Toolbar.Item.Rename"/>

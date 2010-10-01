@@ -50,6 +50,6 @@ public class UnlockActionItem extends BaseActionItem {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.getMultipleSelection().size() > 0 && lh.isLockable() && lh.isLocked() && lh.isWriteable());
+        setEnabled(lh.getMultipleSelection().size() > 0 && lh.isLockable() && lh.isLocked() && lh.isWriteable() && !lh.isSecondarySelection());
     }
 }

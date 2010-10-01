@@ -25,7 +25,7 @@ import java.util.List;
 public abstract class AbstractView extends TopRightComponent {
     protected ListLoader<ListLoadResult<GWTJahiaNode>> loader;
     protected GWTManagerConfiguration configuration;
-    protected List<GWTJahiaNode> selection;
+    protected List<GWTJahiaNode> hiddenSelection;
     protected List<GWTJahiaNode> visibleSelection;
     protected ListStore<GWTJahiaNode> store;
     protected AbstractStoreSelectionModel<GWTJahiaNode> selectionModel;
@@ -52,8 +52,8 @@ public abstract class AbstractView extends TopRightComponent {
                 if (getLinker() != null) {
                     getLinker().loaded();
                 }
-                if (selection != null) {
-                    visibleSelection = new ArrayList<GWTJahiaNode>(selection);
+                if (hiddenSelection != null) {
+                    visibleSelection = new ArrayList<GWTJahiaNode>(hiddenSelection);
                     visibleSelection.retainAll(store.getModels());
                     if (visibleSelection.isEmpty()) {
                         getLinker().onTableItemSelected();
@@ -83,13 +83,68 @@ public abstract class AbstractView extends TopRightComponent {
         };
     }
 
+    public List<GWTJahiaNode> getSelection() {
+        List<GWTJahiaNode> elts = visibleSelection;
+        if (elts != null && elts.size() > 0) {
+            return elts;
+        } else {
+            return null;
+        }
+    }
+
+    List<GWTJahiaNode> getHiddenSelection() {
+        return hiddenSelection;
+    }
+
+    void setHiddenSelection(List<GWTJahiaNode> hiddenSelection) {
+        this.hiddenSelection = hiddenSelection;
+    }
+
+    List<GWTJahiaNode> getVisibleSelection() {
+        return visibleSelection;
+    }
+
+    void setVisibleSelection(List<GWTJahiaNode> visibleSelection) {
+        this.visibleSelection = visibleSelection;
+    }
+
+    public void setContent(final Object root) {
+        clearTable();
+        if (root != null) {
+            loader.load(root);
+        }
+    }
+
+    public void setProcessedContent(Object content) {
+        clearTable();
+        if (content != null) {
+            List<GWTJahiaNode> gwtJahiaNodes = (List<GWTJahiaNode>) content;
+            store.add(gwtJahiaNodes);
+            getLinker().onTableItemSelected();
+        }
+    }
+
+    public void selectNodes(List<GWTJahiaNode> nodes) {
+        hiddenSelection = nodes;
+    }
+
+    public void clearTable() {
+        store.removeAll();
+    }
+
+    public void refresh() {
+        setContent(getLinker().getTreeSelection());
+    }
+
     @Override public void initWithLinker(final ManagerLinker linker) {
         super.initWithLinker(linker);
 
         selectionModel.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
-                if (event.getSelection() != null && !event.getSelection().isEmpty() ) {
-                    selection = event.getSelection();
+                if (event.getSelection() != null) { // && !event.getSelection().isEmpty() ) {
+                    if (!event.getSelection().isEmpty()) {
+                        hiddenSelection = event.getSelection();
+                    }
                     visibleSelection = event.getSelection();
                 }
                 linker.onTableItemSelected();

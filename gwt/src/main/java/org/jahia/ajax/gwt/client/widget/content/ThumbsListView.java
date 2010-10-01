@@ -32,6 +32,7 @@
 
 package org.jahia.ajax.gwt.client.widget.content;
 
+import com.extjs.gxt.ui.client.event.ListViewEvent;
 import com.extjs.gxt.ui.client.util.Format;
 import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
@@ -90,6 +91,13 @@ public class ThumbsListView extends ListView<GWTJahiaNode> {
             model.set("tagsHTML", "<div><b>" + model.get("tagsLabel") + ": </b>" + model.getTags() + "</div>");
         }
         return model;
+    }
+
+    protected void onMouseDown(ListViewEvent<GWTJahiaNode> e) {
+        super.onMouseDown(e);
+        if (e.getIndex() == -1) {
+            getSelectionModel().select((GWTJahiaNode) null, false);
+        }
     }
 
     public void setContextMenu(Menu menu) {

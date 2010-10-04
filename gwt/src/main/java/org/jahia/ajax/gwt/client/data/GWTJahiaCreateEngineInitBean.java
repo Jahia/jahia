@@ -49,6 +49,7 @@ public class GWTJahiaCreateEngineInitBean implements Serializable {
     private List<GWTJahiaLanguage> languages;
     private List<GWTJahiaNodeType> mixin;
     private Map<String, List<GWTJahiaValueDisplayBean>> initializersValues;
+    private GWTJahiaLanguage currentLocale;
 
     public GWTJahiaCreateEngineInitBean() {
     }
@@ -75,5 +76,13 @@ public class GWTJahiaCreateEngineInitBean implements Serializable {
 
     public void setInitializersValues(Map<String, List<GWTJahiaValueDisplayBean>> initializersValues) {
         this.initializersValues = initializersValues;
+    }
+
+    public GWTJahiaLanguage getCurrentLocale() {
+        return currentLocale;
+    }
+
+    public void setCurrentLocale(GWTJahiaLanguage currentLocale) {
+        this.currentLocale = currentLocale;
     }
 }

@@ -168,17 +168,10 @@ public class CreateContentEngine extends AbstractContentEngine {
             public void onSuccess(GWTJahiaCreateEngineInitBean result) {
                 mixin = result.getMixin();
                 initializersValues = result.getInitializersValues();
+                defaultLanguageBean = result.getCurrentLocale();
 
                 final List<GWTJahiaLanguage> languages = result.getLanguages();
-                if (languages != null && !languages.isEmpty()) {
-                    for (GWTJahiaLanguage gwtJahiaLanguage : languages) {
-                        if (gwtJahiaLanguage.isCurrent()) {
-                            defaultLanguageBean = gwtJahiaLanguage;
-                            break;
-                        }
-                    }
-                    setAvailableLanguages(languages);
-                }
+                setAvailableLanguages(languages);
                 setButtonsEnabled(true);
 
                 fillCurrentTab();

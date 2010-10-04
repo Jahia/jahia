@@ -1437,6 +1437,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
             GWTJahiaCreateEngineInitBean result = new GWTJahiaCreateEngineInitBean();
             result.setLanguages(languages.getLanguages(getSite(), getRemoteJahiaUser(), getLocale()));
+            result.setCurrentLocale(languages.getCurrentLang(getLocale()));
             final List<ExtendedNodeType> availableMixins = contentDefinition.getAvailableMixin(typename);
 
             List<GWTJahiaNodeType> gwtMixin = contentDefinition.getGWTNodeTypes(availableMixins, getUILocale());

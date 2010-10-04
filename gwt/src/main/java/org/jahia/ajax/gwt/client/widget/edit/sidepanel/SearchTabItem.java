@@ -44,6 +44,7 @@ import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -59,6 +60,8 @@ import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactor
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
+import org.jahia.ajax.gwt.client.widget.contentengine.EditContentEngine;
+import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDragSource;
@@ -186,6 +189,11 @@ class SearchTabItem extends SidePanelTabItem {
         panel.add(gridPanel, new RowData(1, 1, new Margins(0, 0, 20, 0)));
         add(panel);
         displayGridSource = new DisplayGridDragSource(grid);
+        grid.addListener(Events.OnDoubleClick, new Listener<BaseEvent>() {
+            public void handleEvent(BaseEvent be) {
+                EngineLoader.showEditEngine(editLinker, (GWTJahiaNode) ((GridEvent)be).getModel());
+            }
+        });
     }
 
     @Override

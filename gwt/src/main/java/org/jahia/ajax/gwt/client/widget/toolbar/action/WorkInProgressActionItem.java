@@ -31,7 +31,6 @@ public class WorkInProgressActionItem extends BaseActionItem {
 
     private transient Timer timer;
 
-
     @Override
     public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
         super.init(gwtToolbarItem, linker);
@@ -71,8 +70,8 @@ public class WorkInProgressActionItem extends BaseActionItem {
     private void refreshStatus() {
         Button b = (Button) getTextToolItem();
         if (statuses.isEmpty() && processes.isEmpty()) {
-            b.setText(Messages.get("label.backgroundJobs", "Background jobs"));
-            b.setIconStyle(null);
+            b.setText(getMenuItem().getText());
+            b.setIcon(getMenuItem().getIcon());
             b.setEnabled(true);
         } else if (statuses.size() == 1) {
             b.setIconStyle("x-status-busy");

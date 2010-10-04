@@ -21,10 +21,11 @@
     </bean>
 
     <bean id="Toolbar.Item.WorkInProgress" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="icon" value="workInProgress"/>
+        <property name="titleKey" value="label.backgroundJobs"/>        
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.WorkInProgressActionItem"/>
         </property>
-        <property name="icon" value="workInProgress"/>            
     </bean>
     
     <bean id="Toolbar.ItemsGroup.Menu.GoogleDocs"

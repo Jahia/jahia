@@ -34,6 +34,7 @@ package org.jahia.services.content.rules;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.registries.ServicesRegistry;
@@ -61,6 +62,7 @@ import java.util.ResourceBundle;
 public class RulesNotificationService {
 
     private static RulesNotificationService instance;
+    private static Logger logger = Logger.getLogger(RulesNotificationService.class);
 
     public static synchronized RulesNotificationService getInstance() {
         if (instance == null) {
@@ -180,7 +182,13 @@ public class RulesNotificationService {
                 scriptEngine.eval(scriptContent, bindings);
                 StringWriter writer = (StringWriter) scriptContext.getWriter();
                 String body = writer.toString();
-                notificationService.sendMessage(fromMail, toMail, ccList, bcclist, subject, null, body);
+                if ("".equals(fromMail)) {
+                    logger.warn("A mail couldn't be send because from: has no recipient");
+                } else if ("".equals(toMail)) {
+                    logger.warn("A mail couldn't be send because to: has no recipient");
+                } else {
+                    notificationService.sendMessage(fromMail, toMail, ccList, bcclist, subject, null, body);
+                }
             } finally {
                 if (scriptContent != null) {
                     IOUtils.closeQuietly(scriptContent);

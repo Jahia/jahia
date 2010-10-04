@@ -12,7 +12,7 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-
+<template:addResources type="css" resources="fileList.css"/>
 <template:include template="hidden.header"/>
 <ul class="${currentNode.properties['j:className'].string}">
 <c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}" end="${moduleMap.end}">

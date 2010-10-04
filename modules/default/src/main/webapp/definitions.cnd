@@ -10,6 +10,16 @@
 [jmix:sendAsNewsletter] mixin
  extends = jnt:page
 
+[jmix:listOrdered] > jmix:templateMixin mixin
+ extends = jmix:list
+ itemtype = layout
+- j:className (string, choicelist[resourceBundle]) < '','simple','filesList'
+
+[jmix:columns] > jmix:templateMixin mixin
+ extends = jmix:list
+ itemtype = layout
+- j:columns (long)
+
 [jmix:userFilterable] mixin
  - firstField (string, choicelist[sortableFieldnames]) indexed=no
  - secondField (string, choicelist[sortableFieldnames]) indexed=no

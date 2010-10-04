@@ -68,7 +68,7 @@ public class ContentTabItem extends PropertiesTabItem {
     @Override
     public void attachPropertiesEditor() {
         // handle jcr:title property
-        if (!propertiesEditor.getFieldsMap().containsKey("jcr:title")) {
+        if (!propertiesEditor.getFieldsMap().containsKey("jcr:title") && !engine.isMultipleSelection()) {
                 setLayout(new RowLayout());
             FieldSet fSet = new FieldSet();
             fSet.add(createNamePanel());

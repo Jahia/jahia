@@ -274,6 +274,7 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void initializeEditEngine(String nodePath, boolean tryToLockNode, AsyncCallback<GWTJahiaEditEngineInitBean> async);
 
+    void initializeEditEngine(List<String> paths, boolean tryToLockNode, AsyncCallback<GWTJahiaEditEngineInitBean> async);
 
     void getWorkflowRules(String path, AsyncCallback<Map<GWTJahiaWorkflowType, Map<GWTJahiaWorkflowDefinition, GWTJahiaNodeACL>>> async);
 

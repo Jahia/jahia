@@ -66,7 +66,9 @@ public class LayoutTabItem extends PropertiesTabItem {
 
     @Override
     public void attachPropertiesEditor() {
-        if (engine.getNode() != null) {
+        if (engine.isMultipleSelection()) {
+            super.attachPropertiesEditor();
+        } else if (engine.getNode() != null) {
             final ComboBox<GWTJahiaValueDisplayBean> templateField = (ComboBox<GWTJahiaValueDisplayBean>) propertiesEditor.getFieldsMap().get("j:template");
             final ComboBox<GWTJahiaValueDisplayBean> skinField = (ComboBox<GWTJahiaValueDisplayBean>) propertiesEditor.getFieldsMap().get("j:skin");
             final ComboBox<GWTJahiaValueDisplayBean> subNodesTemplateField = (ComboBox<GWTJahiaValueDisplayBean>) propertiesEditor.getFieldsMap().get("j:subNodesTemplate");

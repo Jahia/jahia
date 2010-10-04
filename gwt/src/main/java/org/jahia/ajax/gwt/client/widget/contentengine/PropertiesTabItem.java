@@ -147,6 +147,7 @@ public class PropertiesTabItem extends EditEngineTabItem {
                 propertiesEditor.setWriteable(!engine.isExistingNode() || (engine.getNode().isWriteable() && !engine.getNode().isLocked()));
                 propertiesEditor.setFieldSetGrouping(true);
                 propertiesEditor.setExcludedTypes(excludedTypes);
+                propertiesEditor.setMultipleEdit(engine.isMultipleSelection());
                 propertiesEditor.renderNewFormPanel();
                 setPropertiesEditorByLang(locale);
 
@@ -225,5 +226,9 @@ public class PropertiesTabItem extends EditEngineTabItem {
             propertiesEditor = null;
         }
         super.setProcessed(processed);
+    }
+
+    @Override public boolean handleMultipleSelection() {
+        return true;
     }
 }

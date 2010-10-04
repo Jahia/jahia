@@ -1515,6 +1515,75 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
     }
 
+    public GWTJahiaEditEngineInitBean initializeEditEngine(List<String> paths, boolean tryToLockNode)
+            throws GWTJahiaServiceException {
+        try {
+            if (tryToLockNode) {
+                setLock(paths, true);
+            }
+
+            JCRSessionWrapper sessionWrapper = retrieveCurrentSession();
+
+            List<GWTJahiaNodeType> nodeTypes = null;
+            List<GWTJahiaNodeType> gwtMixin = null;
+            List<ExtendedNodeType> allTypes = new ArrayList<ExtendedNodeType>();
+
+            JCRNodeWrapper nodeWrapper = null;
+            for (String path : paths) {
+                nodeWrapper = sessionWrapper.getNode(path);
+                final GWTJahiaNode node = navigation.getGWTJahiaNode(nodeWrapper);
+
+                // get node type
+                final List<GWTJahiaNodeType> theseTypes =
+                        contentDefinition.getNodeTypes(nodeWrapper.getNodeTypes(), getUILocale());
+                if (nodeTypes == null) {
+                    nodeTypes = theseTypes;
+                } else {
+                    GWTJahiaNodeType p = nodeTypes.get(0);
+                    nodeTypes.retainAll(theseTypes);
+
+                    if (!nodeWrapper.isNodeType(p.getName())) {
+                        nodeTypes.remove(0);
+                        List<String> superTypes = p.getSuperTypes();
+                        for (String s : superTypes) {
+                            if (nodeWrapper.isNodeType(s)) {
+                                nodeTypes.add(0,contentDefinition.getNodeType(s, getUILocale()));
+                                break;
+                            }                            
+                        }
+                    }
+                }
+
+                final List<ExtendedNodeType> availableMixins =
+                        contentDefinition.getAvailableMixin(nodeWrapper.getPrimaryNodeTypeName());
+
+                List<GWTJahiaNodeType> theseMixin = contentDefinition.getGWTNodeTypes(availableMixins, getUILocale());
+                if (gwtMixin == null) {
+                    gwtMixin = theseMixin;
+                } else {
+                    gwtMixin.retainAll(theseMixin);
+                }
+
+                allTypes.add(nodeWrapper.getPrimaryNodeType());
+                allTypes.addAll(Arrays.asList(nodeWrapper.getMixinNodeTypes()));
+                allTypes.addAll(availableMixins);
+            }
+
+            final GWTJahiaEditEngineInitBean result = new GWTJahiaEditEngineInitBean(nodeTypes, new HashMap<String, GWTJahiaNodeProperty>());
+            result.setAvailabledLanguages(languages.getLanguages(getSite(), getRemoteJahiaUser(), getLocale()));
+            result.setCurrentLocale(languages.getCurrentLang(getLocale()));
+            result.setMixin(gwtMixin);
+            result.setInitializersValues(
+                    contentDefinition.getInitializersValues(allTypes, NodeTypeRegistry.getInstance().getNodeType("nt:base"), nodeWrapper,
+                            nodeWrapper.getParent(), getUILocale()));
+            return result;
+        } catch (RepositoryException e) {
+            logger.error("Cannot get node", e);
+            throw new GWTJahiaServiceException("Cannot get node");
+        }
+
+    }
+
     public Map<GWTJahiaWorkflowType, Map<GWTJahiaWorkflowDefinition, GWTJahiaNodeACL>> getWorkflowRules(String path)
             throws GWTJahiaServiceException {
         JCRSessionWrapper sessionWrapper = retrieveCurrentSession();

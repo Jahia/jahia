@@ -37,9 +37,10 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.*;
-import com.extjs.gxt.ui.client.widget.layout.FormData;
-import com.extjs.gxt.ui.client.widget.layout.FormLayout;
+import com.extjs.gxt.ui.client.widget.layout.*;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -218,7 +219,7 @@ public class PropertiesEditor extends FormPanel {
             final GWTJahiaNodeProperty gwtJahiaNodeProperty = currentProperties.get(definition.getName());
             List<GWTJahiaValueDisplayBean> values = initializersValues != null ?
                     initializersValues.get(definition.getDeclaringNodeType() + "." + definition.getName()) : null;
-            final Field<?> field = FormFieldCreator.createField(definition, gwtJahiaNodeProperty, values);
+            Field<?> field = FormFieldCreator.createField(definition, gwtJahiaNodeProperty, values);
             propertyDefinitions.put(gwtJahiaNodeProperty.getName(), definition);
             if (definition.getName().equals("j:template")) {
                 templateField = (ComboBox<GWTJahiaValueDisplayBean>) field;
@@ -236,7 +237,54 @@ public class PropertiesEditor extends FormPanel {
             if (field != null) {
                 if (!isWriteable) {
                     field.setReadOnly(true);
+                } else if (isMultipleEdit && !definition.isProtected()) {
+                    field.setEnabled(false);
+                    final CheckBox checkbox = new CheckBox();
+
+                    final Field f = field;
+                    checkbox.addListener(Events.Change, new Listener<ComponentEvent>() {
+                        public void handleEvent(ComponentEvent event) {
+                            if (checkbox.getValue()) {
+                                Log.debug("add ");
+                                f.setEnabled(true);
+                            } else {
+                                Log.debug("remove ");
+                                f.setEnabled(false);
+                            }
+                        }
+
+                    });
+                    checkbox.setHideLabel(true);
+                    add(checkbox);
+                    final HBoxLayout hBoxLayout = new HBoxLayout();
+                    hBoxLayout.setHBoxLayoutAlign(HBoxLayout.HBoxLayoutAlign.MIDDLE);
+                    final LayoutContainer panel = new LayoutContainer(hBoxLayout);
+                    panel.add(checkbox, new HBoxLayoutData());
+                    final HBoxLayoutData data = new HBoxLayoutData();
+                    panel.add(field, data);
+                    field = new AdapterField(panel) {
+                        public Object getValue() {
+                            return f.getValue();
+                        }
+
+                        public boolean isDirty() {
+                            return f.isDirty() && checkbox.getValue();
+                        }
+
+                        public void setVisible(boolean visible) {
+                            super.setVisible(visible);
+                            f.setVisible(visible);
+                        }
+
+                        public void setEnabled(boolean enabled) {
+                            super.setEnabled(enabled);
+                            f.setEnabled(enabled);
+                        }
+                    };
+                    field.setName(f.getName());
+                    field.setFieldLabel(f.getFieldLabel());
                 }
+
                 if (optional && fieldSetGrouping &&
                         (fieldSet == null || !fieldSet.getId().equals(definition.getDeclaringNodeTypeLabel()))) {
                     setPadding(0);
@@ -301,24 +349,6 @@ public class PropertiesEditor extends FormPanel {
                     }
 
                     this.form = form;
-                }
-                if (isMultipleEdit && !definition.isProtected()) {
-                    field.setEnabled(false);
-                    final CheckBox checkbox = new CheckBox();
-                    checkbox.addListener(Events.Change, new Listener<ComponentEvent>() {
-                        public void handleEvent(ComponentEvent event) {
-                            if (checkbox.getValue()) {
-                                Log.debug("add ");
-                                field.setEnabled(true);
-                            } else {
-                                Log.debug("remove ");
-                                field.setEnabled(false);
-                            }
-                        }
-
-                    });
-                    checkbox.setHideLabel(true);
-                    add(checkbox);
                 }
 
                 if (optional) {

@@ -39,6 +39,7 @@ import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
@@ -202,11 +203,29 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                     item.setEnabled(true);
                 }
             } else if (selectedNodes.size() > 1) {
+                List<String> paths = new ArrayList<String>();
+                for (GWTJahiaNode node : selectedNodes) {
+                    paths.add(node.getPath());
+                }
+                service.initializeEditEngine(paths,false, new BaseAsyncCallback<GWTJahiaEditEngineInitBean>() {
+                    public void onSuccess(GWTJahiaEditEngineInitBean result) {
+                        types = result.getNodeTypes();
+                        properties = result.getProperties();
+                        language = result.getCurrentLocale();
+
+                        mixin = result.getMixin();
+                        initializersValues = result.getInitializersValues();
+                        ok.setEnabled(true);
+                        fillCurrentTab();
+                    }
+                });
+
                 for (TabItem item : tabs.getItems()) {
                     if (((EditEngineTabItem) item).handleMultipleSelection()) {
                         item.setEnabled(true);
                     }
                 }
+
             }
 
 
@@ -292,9 +311,11 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                     PropertiesEditor pe = propertiesTabItem.getPropertiesEditor();
                     if (pe != null) {
                         //properties.addAll(pe.getProperties());
-                        getNode().getNodeTypes().removeAll(pe.getRemovedTypes());
-                        getNode().getNodeTypes().addAll(pe.getAddedTypes());
-                        getNode().getNodeTypes().addAll(pe.getTemplateTypes());
+                        for (GWTJahiaNode node : getNodes()) {
+                            node.getNodeTypes().removeAll(pe.getRemovedTypes());
+                            node.getNodeTypes().addAll(pe.getAddedTypes());
+                            node.getNodeTypes().addAll(pe.getTemplateTypes());
+                        }
                     }
 
                     // handle multilang
@@ -337,22 +358,27 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                     ((WorkflowTabItem) item).doSave();
                 }
             }
-
             // Ajax call to update values
-            JahiaContentManagementService.App.getInstance()
-                    .saveNode(getNode(), orderedChildrenNodes, newNodeACL, changedI18NProperties, changedProperties,
-                            new BaseAsyncCallback() {
-                                public void onApplicationFailure(Throwable throwable) {
-                                    com.google.gwt.user.client.Window
-                                            .alert(Messages.get("saved_prop_failed", "Properties save failed\n\n") +
-                                                    throwable.getLocalizedMessage());
-                                    Log.error("failed", throwable);
-                                }
+            AsyncCallback callback = new BaseAsyncCallback() {
+                public void onApplicationFailure(Throwable throwable) {
+                    com.google.gwt.user.client.Window
+                            .alert(Messages.get("saved_prop_failed", "Properties save failed\n\n") +
+                                    throwable.getLocalizedMessage());
+                    Log.error("failed", throwable);
+                }
 
-                                public void onSuccess(Object o) {
-                                    Info.display("", Messages.get("saved_prop", "Properties saved\n\n"));
-                                }
-                            });
+                public void onSuccess(Object o) {
+                    Info.display("", Messages.get("saved_prop", "Properties saved\n\n"));
+                }
+            };
+
+            if (isMultipleSelection()) {
+                JahiaContentManagementService.App.getInstance().savePropertiesAndACL(getNodes(), null, changedI18NProperties, changedProperties, callback);
+
+            } else {
+                JahiaContentManagementService.App.getInstance()
+                        .saveNode(getNode(), orderedChildrenNodes, newNodeACL, changedI18NProperties, changedProperties, callback);
+            }
         }
 
     }

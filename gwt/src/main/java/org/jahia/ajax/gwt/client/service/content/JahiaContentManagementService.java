@@ -36,6 +36,7 @@ import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -268,6 +269,8 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
     GWTJahiaCreatePortletInitBean initializeCreatePortletEngine(String typeName, String parentPath) throws GWTJahiaServiceException;
 
     GWTJahiaEditEngineInitBean initializeEditEngine(String nodePath, boolean tryToLockNode) throws GWTJahiaServiceException;
+
+    GWTJahiaEditEngineInitBean initializeEditEngine(List<String> paths, boolean tryToLockNode) throws GWTJahiaServiceException;
 
     public PagingLoadResult<GWTJahiaRole> searchRolesInContext(String search, int offset, int limit, String context) throws GWTJahiaServiceException;
 

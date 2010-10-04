@@ -67,7 +67,9 @@ public class ListOrderingContentTabItem extends ContentTabItem {
     public void attachPropertiesEditor() {
         setLayout(new RowLayout());
         add(propertiesEditor);
-        attachManualListOrderingEditor(propertiesEditor);
+        if (!engine.isMultipleSelection()) {
+            attachManualListOrderingEditor(propertiesEditor);
+        }
     }
 
     /**

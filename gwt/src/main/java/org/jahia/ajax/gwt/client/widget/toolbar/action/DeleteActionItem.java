@@ -92,13 +92,25 @@ public class DeleteActionItem extends BaseActionItem {
                     } else {
                         async.getUsages(l, new BaseAsyncCallback<List<GWTJahiaNodeUsage>>() {
                             public void onSuccess(List<GWTJahiaNodeUsage> result) {
-                                String message = l.size() > 1 ? Messages.getWithArgs("message.remove.multiple.confirm",
-                                        "Do you really want to remove the {0} selected resources?",
-                                        new String[]{String.valueOf(
-                                                l.size())}) : Messages.getWithArgs(
-                                        "message.remove.single.confirm",
-                                        "Do you really want to remove the selected resource {0}?",
-                                        new String[]{lh.getSingleSelection().getName()});
+                                String message;
+                                if (l.size() > 1) {
+                                    message = Messages.getWithArgs("message.remove.multiple.confirm",
+                                            "Do you really want to remove the {0} selected resources?",
+                                            new String[]{String.valueOf(
+                                                    l.size())});
+                                } else {
+                                    if (lh.getMultipleSelection().get(0).getNodeTypes().contains("jnt:page")) {
+                                        message = Messages.getWithArgs(
+                                                "message.remove.single.page.confirm",
+                                                "Do you really want to remove the selected PAGE {0}?",
+                                                new String[]{lh.getSingleSelection().getName()});
+                                    } else {
+                                        message = Messages.getWithArgs(
+                                                "message.remove.single.confirm",
+                                                "Do you really want to remove the selected resource {0}?",
+                                                new String[]{lh.getSingleSelection().getName()});
+                                    }
+                                }
                                 if (l.size() > 1) {
                                     message += "<br/><br/>";
                                     int i = 0;

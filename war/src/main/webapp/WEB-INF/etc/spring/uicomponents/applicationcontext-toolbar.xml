@@ -24,6 +24,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.WorkInProgressActionItem"/>
         </property>
+        <property name="icon" value="workInProgress"/>            
     </bean>
     
     <bean id="Toolbar.ItemsGroup.Menu.GoogleDocs"
@@ -258,7 +259,7 @@
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchModeActionItem"/>
         </property>
         <property name="titleKey" value="label.preview.as.guest"/>
-        <property name="icon" value="preview"/>
+        <property name="icon" value="previewAsGuest"/>
         <property name="properties">
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">

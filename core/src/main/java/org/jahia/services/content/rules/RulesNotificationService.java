@@ -155,7 +155,11 @@ public class RulesNotificationService {
                           Locale locale) throws RepositoryException, ScriptException {
         // Resolve template :
         ScriptEngineManager scriptManager = new ScriptEngineManager();
-        ScriptEngine scriptEngine = scriptManager.getEngineByExtension(StringUtils.substringAfterLast(template, "."));
+        String extension = StringUtils.substringAfterLast(template, ".");
+        ScriptEngine scriptEngine = scriptManager.getEngineByExtension(extension);
+        if(scriptEngine==null) {
+            throw new ScriptException("Script engine not found for template:"+template+ " trying to resolve sript engine for extension:"+extension);
+        }
         ScriptContext scriptContext = scriptEngine.getContext();
         final Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
         bindings.put("currentUser", user);

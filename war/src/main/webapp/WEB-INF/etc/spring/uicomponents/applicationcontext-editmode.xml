@@ -231,9 +231,6 @@
                 <ref bean="Toolbar.Item.FileManager"/>
                 <ref bean="Toolbar.Item.PortletManager"/>
                 <ref bean="Toolbar.Item.ContentManager"/>
-                <ref bean="Toolbar.Item.CategoryManager"/>
-                <ref bean="Toolbar.Item.TagManager"/>
-                <ref bean="Toolbar.Item.SiteManager"/>
             </list>
         </property>
     </bean>

@@ -33,11 +33,9 @@
             <list-management jcr:primaryType="jnt:permission"/>
             <metadata jcr:primaryType="jnt:permission"/>
             <options jcr:primaryType="jnt:permission"/>
-            <publication jcr:primaryType="jnt:permission"/>
             <rights jcr:primaryType="jnt:permission"/>
             <seo jcr:primaryType="jnt:permission"/>
             <tags jcr:primaryType="jnt:permission"/>
-            <template jcr:primaryType="jnt:permission"/>
             <usages jcr:primaryType="jnt:permission"/>
             <workflow jcr:primaryType="jnt:permission"/>
         </edit-mode>
@@ -49,7 +47,6 @@
             <remote-publication-manager jcr:primaryType="jnt:permission"/>
             <site-manager jcr:primaryType="jnt:permission"/>
             <tag-manager jcr:primaryType="jnt:permission"/>
-            <workflow-manager jcr:primaryType="jnt:permission"/>
         </managers>
         <selector jcr:primaryType="jnt:permissionGroup">
             <categories jcr:primaryType="jnt:permission"/>

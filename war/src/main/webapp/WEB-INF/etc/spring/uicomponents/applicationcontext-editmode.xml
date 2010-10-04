@@ -397,7 +397,6 @@
                             <value>options,$site/edit-mode/options</value>
                             <value>rights,$site/edit-mode/rights</value>
                             <value>usages,$site/edit-mode/usages</value>
-                            <value>publication,$site/edit-mode/publication</value>
                             <value>workflow,$site/edit-mode/workflow</value>
                             <value>versioning</value>
                             <value>seo,$site/edit-mode/seo</value>
@@ -417,7 +416,6 @@
                             <value>options,$site/edit-mode/options</value>
                             <value>rights,$site/edit-mode/rights</value>
                             <value>usages,$site/edit-mode/usages</value>
-                            <value>publication,$site/edit-mode/publication</value>
                             <value>workflow,$site/edit-mode/workflow</value>
                             <value>versioning</value>
                             <value>seo,$site/edit-mode/seo</value>

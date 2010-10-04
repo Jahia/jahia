@@ -104,6 +104,10 @@
             </spec>
         </field>
         <field type="space"/>
+        <field type="check" variable="dbSettings.dbms.storeFilesInDB" alight="left">
+            <spec txt="Store binary data in the database?" id="dbSettings.dbms.storeFilesInDB" true="true" false="false" set="false"/>
+        </field>
+        <field type="space"/>
         <field type="check" variable="dbSettings.dbms.createTables" alight="left">
             <spec txt="Create required database tables?" id="dbSettings.dbms.createTables" true="true" false="false" set="true"/>
         </field>

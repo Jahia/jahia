@@ -62,6 +62,9 @@
         <variable name="dbSettings.connection.url" value="${dbSettings.connection.url.postgresql}" condition="cnd.db.dbms.postgresql" />
         <variable name="dbSettings.connection.url" value="${dbSettings.connection.url.derby}" condition="cnd.db.dbms.derby" />
 
+		<!-- Store binary data on filesystem by default -->
+		<variable name="dbSettings.dbms.storeFilesInDB" value="false" condition="cnd.installation.type.express"/>
+		
         <!-- mail settings -->
         <variable name="mailSettings.administrator" value=""/>
         <variable name="mailSettings.from" value=""/>
@@ -198,14 +201,30 @@
         <panel classname="UserInputPanel" condition="cnd.installation.type.advanced+!cnd.pack.tomcat" id="serverType"/>
         <panel classname="UserInputPanel" condition="cnd.installation.type.advanced" id="dbMode"/>
         <panel classname="UserInputPanel" condition="cnd.db.mode.standalone" id="dbType"/>
-        <panel classname="UserInputPanel" condition="cnd.db.mode.standalone" id="dbSettings"/>
+        <panel classname="UserInputPanel" condition="cnd.db.mode.standalone" id="dbSettings">
+        	<actions>
+        		<action stage="postvalidate" classname="org.jahia.izpack.DbConnectionValidationPanelAction"/>
+        	</actions>
+        </panel>
         <panel classname="UserInputPanel" id="superUser"/>
         <panel classname="UserInputPanel" condition="cnd.installation.type.advanced" id="mailSettings"/>
         <panel classname="SummaryPanel"/>
-        <panel classname="ExtendedInstallPanel"/>
-        <panel classname="UserInputPanel" id="afterInstall" condition="cnd.pack.tomcat+izpack.windowsinstall"/>
+        <panel classname="ExtendedInstallPanel">
+        	<actions>
+        		<action stage="preactivate" classname="org.jahia.izpack.LockPrevButtonPanelAction"/>
+        	</actions>
+        </panel>
+        <panel classname="UserInputPanel" id="afterInstall" condition="cnd.pack.tomcat+izpack.windowsinstall">
+        	<actions>
+        		<action stage="preactivate" classname="org.jahia.izpack.LockPrevButtonPanelAction"/>
+        	</actions>
+        </panel>
         <panel classname="ProcessPanel" condition="cnd.launch.jahia|cnd.view.readme"/>
-        <panel classname="ShortcutPanel" id="shortcutPanel"/>
+        <panel classname="ShortcutPanel" id="shortcutPanel">
+        	<actions>
+        		<action stage="preactivate" classname="org.jahia.izpack.LockPrevButtonPanelAction"/>
+        	</actions>
+        </panel>
         <panel classname="SimpleFinishPanel"/>
     </panels>
     
@@ -321,8 +340,12 @@
          -->
     </packs>
 
-	<jar src="../dependency/jahia-installer-lib.jar" />
 	<jar src="../artifacts/ant.jar" />
 	<jar src="../artifacts/ant-launcher.jar" />
 	
+	<jar src="../dependency/derbyclient.jar" />
+	<jar src="../dependency/mysql-connector-java.jar" />
+	<jar src="../dependency/postgresql.jar" />
+
+	<jar src="../dependency/jahia-installer-lib.jar" />
 </installation>

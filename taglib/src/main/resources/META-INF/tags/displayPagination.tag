@@ -32,7 +32,7 @@
     <c:set target="${moduleMap}" property="basePaginationUrl" value="${basePaginationUrl}"/>
     <div class="pagination"><!--start pagination-->
 
-        <div class="paginationPosition"><span>Page ${currentPage} of ${moduleMap.nbPages} (${moduleMap.totalSize} results)</span>
+        <div class="paginationPosition"><span>Page ${moduleMap.currentPage} of ${moduleMap.nbPages} (${moduleMap.totalSize} results)</span>
         </div>
         <div class="paginationNavigation">
             <label for="pageSizeSelector">Nb of items:</label>

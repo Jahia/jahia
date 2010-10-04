@@ -35,6 +35,7 @@ package org.jahia.ajax.gwt.client.widget.contentengine;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.extjs.gxt.ui.client.event.*;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -44,11 +45,6 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.EditorEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Record.RecordUpdate;
 import com.extjs.gxt.ui.client.store.Store;
@@ -84,7 +80,7 @@ public class UrlMappingEditor extends LayoutContainer {
     private GWTJahiaLanguage locale;
 
     private ListStore<GWTJahiaUrlMapping> store;
-
+    private int sizeOfMappings;
     /**
      * Initializes an instance of this class.
      * 
@@ -107,6 +103,7 @@ public class UrlMappingEditor extends LayoutContainer {
 
                     public void onSuccess(List<GWTJahiaUrlMapping> mappings) {
                         store.add(mappings);
+                        sizeOfMappings = store.getCount();
                     }
                 });
     }
@@ -167,6 +164,16 @@ public class UrlMappingEditor extends LayoutContainer {
         configs.add(column);
 
         final RowEditor<GWTJahiaUrlMapping> re = new RowEditor<GWTJahiaUrlMapping>();
+
+        // Add a cancel edit event listener to remove empty line
+        re.addListener(Events.CancelEdit, new Listener<BaseEvent>() {
+            public void handleEvent(BaseEvent be) {
+                if(sizeOfMappings!=store.getCount()) {
+                    store.remove(0);
+                }
+            }
+        });
+
         final Grid<GWTJahiaUrlMapping> grid = new Grid<GWTJahiaUrlMapping>(store, new ColumnModel(configs));
         grid.setAutoExpandColumn("url");
         grid.setBorders(true);
@@ -198,6 +205,7 @@ public class UrlMappingEditor extends LayoutContainer {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 re.stopEditing(false);
+                sizeOfMappings = store.getCount();
                 GWTJahiaUrlMapping mapping = new GWTJahiaUrlMapping("", locale.getLanguage(),
                         store.getCount() == 0, true);
                 store.insert(mapping, 0);

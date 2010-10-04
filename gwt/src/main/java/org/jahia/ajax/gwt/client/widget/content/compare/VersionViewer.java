@@ -330,7 +330,7 @@ public class VersionViewer extends ContentPanel {
                 } else {
                     mask();
                     // version is not specified. Current.
-                    contentService.getNodeURL(currentNode.getPath(), null, null, workspace, locale,
+                    contentService.getNodeURL(null, currentNode.getPath(), null, null, workspace, locale,
                             new BaseAsyncCallback<String>() {
                                 public void onSuccess(String url) {
                                     currentFrame = setUrl(url);

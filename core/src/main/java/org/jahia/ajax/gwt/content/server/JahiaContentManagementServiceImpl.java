@@ -980,11 +980,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             // add current workspace version
             final GWTJahiaNodeVersion liveVersion = new GWTJahiaNodeVersion("live", node);
             result.add(0, liveVersion);
-            liveVersion.setUrl(navigation.getNodeURL(node.getPath(), null, null, "live", getLocale()));
+            liveVersion.setUrl(navigation.getNodeURL(null, node.getPath(), null, null, "live", getLocale()));
 
             final GWTJahiaNodeVersion defaultVersion = new GWTJahiaNodeVersion("default", node);
             result.add(0, defaultVersion);
-            defaultVersion.setUrl(navigation.getNodeURL(node.getPath(), null, null, "default", getLocale()));
+            defaultVersion.setUrl(navigation.getNodeURL(null, node.getPath(), null, null, "default", getLocale()));
 
             // get sublist: Todo Find a better way
             int size = result.size();
@@ -1024,11 +1024,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                         getResponse(), retrieveCurrentSession());
     }
 
-    public String getNodeURL(String path, Date versionDate, String versionLabel, String workspace, String locale)
+    public String getNodeURL(String servlet, String path, Date versionDate, String versionLabel, String workspace, String locale)
             throws GWTJahiaServiceException {
         final JCRSessionWrapper session = retrieveCurrentSession(workspace != null ? workspace : getWorkspace(),
                 locale != null ? LanguageCodeConverters.languageCodeToLocale(locale) : getLocale());
-        return this.navigation.getNodeURL(path, versionDate, versionLabel, session.getWorkspace().getName(),
+        return this.navigation.getNodeURL(servlet, path, versionDate, versionLabel, session.getWorkspace().getName(),
                 session.getLocale());
     }
 

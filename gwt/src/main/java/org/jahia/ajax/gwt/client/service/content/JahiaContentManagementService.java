@@ -188,7 +188,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     public GWTRenderResult getRenderedContent(String path, String workspace, String locale, String template, String configuration, Map<String, String> contextParams, boolean editMode, String configName) throws GWTJahiaServiceException;
 
-    public String getNodeURL(String path, Date versionDate, String versionLabel, String workspace, String locale) throws GWTJahiaServiceException;
+    public String getNodeURL(String servlet, String path, Date versionDate, String versionLabel, String workspace, String locale) throws GWTJahiaServiceException;
 
     public void importContent(String parentPath, String fileKey, Boolean asynchronously) throws GWTJahiaServiceException;
 

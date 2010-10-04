@@ -43,6 +43,7 @@ import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.api.Constants;
+import org.jahia.bin.Contribute;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.Render;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -1191,7 +1192,7 @@ public class NavigationHelper {
                 GWTJahiaNodeVersion jahiaNodeVersion =
                         new GWTJahiaNodeVersion(v.getIdentifier(), v.getName(), v.getCreated().getTime(), versionInfo.getLabel(),
                                 workspace, n);
-                String url = getNodeURL(node.getPath(), versionInfo.getVersion().getCreated().getTime(), versionInfo.getLabel(),
+                String url = getNodeURL(null, node.getPath(), versionInfo.getVersion().getCreated().getTime(), versionInfo.getLabel(),
                         workspace, node.getSession().getLocale());
                 jahiaNodeVersion.setUrl(url);
                 versions.add(jahiaNodeVersion);
@@ -1307,9 +1308,15 @@ public class NavigationHelper {
      * @param locale
      * @return
      */
-    public String getNodeURL(String path, Date versionDate, String versionLabel, final String workspace,
+    public String getNodeURL(String servlet, String path, Date versionDate, String versionLabel, final String workspace,
                              final Locale locale) {
-        String url = Jahia.getContextPath() + Render.getRenderServletPath() + "/" + workspace + "/" + locale;
+        String url = Jahia.getContextPath();
+        if (servlet.equals("contribute")) {
+            url += Contribute.getContributeServletPath();
+        } else {
+            url += Render.getRenderServletPath();
+        }
+        url +=  "/" + workspace + "/" + locale;
         url += path + ".html";
         if (versionDate != null) {
             url += "?v=" + (versionDate.getTime()) ;

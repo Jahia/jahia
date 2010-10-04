@@ -64,12 +64,13 @@ public class SwitchModeActionItem extends BaseActionItem {
     public void onComponentSelection() {
         final String workspace = getPropertyValue(getGwtToolbarItem(), "workspace");
         final String urlParams = getPropertyValue(getGwtToolbarItem(), "urlParams");
+        final String servlet = getPropertyValue(getGwtToolbarItem(), "servlet");
         final GWTJahiaNode node = linker.getSelectionContext().getMainNode();
         if (node != null) {
             String path = node.getPath();
             String locale = JahiaGWTParameters.getLanguage();
             JahiaContentManagementService.App.getInstance()
-                    .getNodeURL(path, null, null, workspace, locale, new BaseAsyncCallback<String>() {
+                    .getNodeURL(servlet, path, null, null, workspace, locale, new BaseAsyncCallback<String>() {
                         public void onSuccess(String url) {
                             String url1 = url + ((urlParams !=null) ? "?" + urlParams :"");
                             com.google.gwt.user.client.Window.open(url1, "mode"+ workspace, "");

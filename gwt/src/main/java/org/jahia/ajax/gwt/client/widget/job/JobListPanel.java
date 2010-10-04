@@ -9,6 +9,8 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
@@ -47,7 +49,7 @@ import java.util.Map;
 public class JobListPanel extends LayoutContainer {
 
     private JobListWindow window;
-    private ContentPanel detailsPanel;
+    private FormPanel detailsPanel;
 
     private Linker linker;
 
@@ -56,7 +58,7 @@ public class JobListPanel extends LayoutContainer {
     private Button deleteButton;
     private PagingToolBar pagingToolBar;
     private static final String STATUS_EXECUTING = "executing";
-    private int autoRefreshInterval = 60;
+    private int autoRefreshInterval = 10;
     private boolean autoRefreshActivated = false;
     private List<String> activeGroupNames = null;
 
@@ -355,12 +357,14 @@ public class JobListPanel extends LayoutContainer {
         BorderLayoutData centerData = new BorderLayoutData(Style.LayoutRegion.CENTER);
         add(listPanel, centerData);
 
-        ContentPanel detailPanel = new ContentPanel();
+        FormPanel detailPanel = new FormPanel();
         detailPanel.setBorders(true);
         detailPanel.setBodyBorder(true);
         detailPanel.setHeaderVisible(true);
         detailPanel.setHeading(Messages.get("label.detailed", "Details"));
         detailPanel.setScrollMode(Style.Scroll.AUTOY);
+        detailPanel.setLabelWidth(100);
+        detailPanel.setFieldWidth(500);
         detailsPanel = detailPanel;
 
         BorderLayoutData southData = new BorderLayoutData(Style.LayoutRegion.SOUTH, 200);
@@ -443,13 +447,17 @@ public class JobListPanel extends LayoutContainer {
 
     public void addDetail(String labelKey, String labelDefaultValue, Object value) {
         if (value != null) {
+            TextField textField = new TextField();
+            textField.setFieldLabel(Messages.get(labelKey, labelDefaultValue));
+            textField.setReadOnly(true);
             if (value instanceof String) {
-                detailsPanel.add(new HTML("<b>" + Messages.get(labelKey, labelDefaultValue) + ":</b> " + value));
+                textField.setValue(value);
             } else if (value instanceof Date) {
-                detailsPanel.add(new HTML("<b>" + Messages.get(labelKey, labelDefaultValue) + ":</b> " + org.jahia.ajax.gwt.client.util.Formatter.getFormattedDate((Date) value)));
+                textField.setValue(org.jahia.ajax.gwt.client.util.Formatter.getFormattedDate((Date) value));
             } else {
-                detailsPanel.add(new HTML("<b>" + Messages.get(labelKey, labelDefaultValue) + ":</b> " + value.toString()));
+                textField.setValue(value.toString());
             }
+            detailsPanel.add(textField);
         }
     }
 

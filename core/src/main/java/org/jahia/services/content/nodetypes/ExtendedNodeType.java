@@ -345,7 +345,13 @@ public class ExtendedNodeType implements NodeType {
     public List<ExtendedItemDefinition>  getDeclaredItems() {
         getPropertyDefinitionsAsMap();
         getChildNodeDefinitionsAsMap();
-        return Collections.unmodifiableList(items);
+        List<ExtendedItemDefinition> res = new ArrayList<ExtendedItemDefinition>();
+        for (ExtendedItemDefinition item : items) {
+            if (!item.isOverride()) {
+                res.add(item);
+            }
+        }
+        return Collections.unmodifiableList(res);
     }
 
     public synchronized Map<String, ExtendedPropertyDefinition> getPropertyDefinitionsAsMap() {
@@ -358,7 +364,7 @@ public class ExtendedNodeType implements NodeType {
             for (int i = supertypes.length-1; i >=0 ; i--) {
                 ExtendedNodeType nodeType = supertypes[i];
                 Map<String, ExtendedPropertyDefinition> c = new HashMap<String, ExtendedPropertyDefinition>(nodeType.getDeclaredPropertyDefinitionsAsMap());
-                Map<String, ExtendedPropertyDefinition> over = new HashMap<String, ExtendedPropertyDefinition>(allProperties);
+                Map<String, ExtendedPropertyDefinition> over = new HashMap<String, ExtendedPropertyDefinition>(properties);
                 over.keySet().retainAll(c.keySet());
                 for (ExtendedPropertyDefinition s : over.values()) {
                     s.setOverride(true);
@@ -381,7 +387,7 @@ public class ExtendedNodeType implements NodeType {
             for (int i = supertypes.length-1; i >=0 ; i--) {
                 ExtendedNodeType nodeType = supertypes[i];
                 Map<Integer,ExtendedPropertyDefinition> c = new HashMap<Integer,ExtendedPropertyDefinition>(nodeType.getDeclaredUnstructuredPropertyDefinitions());
-                Map<Integer,ExtendedPropertyDefinition> over = new HashMap<Integer,ExtendedPropertyDefinition>(allUnstructuredProperties);
+                Map<Integer,ExtendedPropertyDefinition> over = new HashMap<Integer,ExtendedPropertyDefinition>(unstructuredProperties);
                 over.keySet().retainAll(c.keySet());
                 for (ExtendedPropertyDefinition s : over.values()) {
                     s.setOverride(true);
@@ -421,19 +427,13 @@ public class ExtendedNodeType implements NodeType {
 
     public ExtendedPropertyDefinition[] getDeclaredPropertyDefinitions() {
         List<ExtendedPropertyDefinition> list = new ArrayList<ExtendedPropertyDefinition>();
-        Set<String> keys = new HashSet<String>();
 
-        final List<ExtendedItemDefinition> i = getItems();
-        Collections.reverse(i);
+        final List<ExtendedItemDefinition> i = getDeclaredItems();
         for (ExtendedItemDefinition item : i) {
-            if (!item.isNode() && ("*".equals(item.getName()) || !keys.contains(item.getName()))) {
-                if (item.getDeclaringNodeType() == this) {
+            if (!item.isNode()) { // && ("*".equals(item.getName()) || !keys.contains(item.getName()))) {
                     list.add((ExtendedPropertyDefinition) item);
-                }
-                keys.add(item.getName());
             }
         }
-        Collections.reverse(list);
         return list.toArray(new ExtendedPropertyDefinition[list.size()]);
     }
 
@@ -444,7 +444,7 @@ public class ExtendedNodeType implements NodeType {
             for (int i = supertypes.length-1; i >=0 ; i--) {
                 ExtendedNodeType nodeType = supertypes[i];
                 Map<String, ExtendedNodeDefinition> c = new HashMap<String, ExtendedNodeDefinition>(nodeType.getDeclaredChildNodeDefinitionsAsMap());
-                Map<String, ExtendedNodeDefinition> over = new HashMap<String, ExtendedNodeDefinition>(allNodes);
+                Map<String, ExtendedNodeDefinition> over = new HashMap<String, ExtendedNodeDefinition>(nodes);
                 over.keySet().retainAll(c.keySet());
                 for (ExtendedNodeDefinition s : over.values()) {
                     s.setOverride(true);
@@ -468,7 +468,7 @@ public class ExtendedNodeType implements NodeType {
             for (int i = supertypes.length-1; i >=0 ; i--) {
                 ExtendedNodeType nodeType = supertypes[i];
                 Map<String,ExtendedNodeDefinition> c = new HashMap<String,ExtendedNodeDefinition>(nodeType.getDeclaredUnstructuredChildNodeDefinitions());
-                Map<String,ExtendedNodeDefinition> over = new HashMap<String,ExtendedNodeDefinition>(allUnstructuredNodes);
+                Map<String,ExtendedNodeDefinition> over = new HashMap<String,ExtendedNodeDefinition>(unstructuredNodes);
                 over.keySet().retainAll(c.keySet());
                 for (ExtendedNodeDefinition s : over.values()) {
                     s.setOverride(true);
@@ -507,18 +507,12 @@ public class ExtendedNodeType implements NodeType {
 
     public ExtendedNodeDefinition[] getDeclaredChildNodeDefinitions() {
         List<ExtendedNodeDefinition> list = new ArrayList<ExtendedNodeDefinition>();
-        Set<String> keys = new HashSet<String>();
-        final List<ExtendedItemDefinition> i = getItems();
-        Collections.reverse(i);
+        final List<ExtendedItemDefinition> i = getDeclaredItems();
         for (ExtendedItemDefinition item : i) {
-            if (item.isNode() && ("*".equals(item.getName()) || !keys.contains(item.getName()))) {
-                if (item.getDeclaringNodeType() == this) {
+            if (item.isNode()) { // && ("*".equals(item.getName()) || !keys.contains(item.getName()))) {
                     list.add((ExtendedNodeDefinition) item);
-                }
-                keys.add(item.getName());
             }
         }
-        Collections.reverse(list);
         return list.toArray(new ExtendedNodeDefinition[list.size()]);
     }
 

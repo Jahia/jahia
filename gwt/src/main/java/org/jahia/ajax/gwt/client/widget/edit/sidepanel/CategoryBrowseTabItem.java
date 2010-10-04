@@ -34,9 +34,7 @@ package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.*;
-import com.extjs.gxt.ui.client.event.LoadListener;
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.grid.*;
@@ -48,8 +46,8 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTColumn;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
+import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 import java.util.ArrayList;
@@ -111,6 +109,15 @@ public class CategoryBrowseTabItem extends BrowseTabItem {
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
                 listLoader.load(event.getSelectedItem());
                 contentContainer.mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
+            }
+        });
+
+        grid.addListener(Events.OnDoubleClick, new Listener<BaseEvent>() {
+            public void handleEvent(BaseEvent baseEvent) {
+                GWTJahiaNode gwtJahiaNode = (GWTJahiaNode) (((GridEvent) baseEvent).getModel());
+                if (gwtJahiaNode != null && editLinker != null) {
+                    EngineLoader.showEditEngine(editLinker, gwtJahiaNode);
+                }
             }
         });
 

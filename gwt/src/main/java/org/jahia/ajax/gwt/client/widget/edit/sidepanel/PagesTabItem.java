@@ -32,6 +32,7 @@
 
 package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.dnd.TreeGridDropTarget;
@@ -99,14 +100,12 @@ public class PagesTabItem extends SidePanelTabItem {
         tree.setHeight("100%");
         tree.setIconProvider(ContentModelIconProvider.getInstance());
 
-        this.tree.setSelectionModel(new TreeGridSelectionModel<GWTJahiaNode>() {
-            @Override
-            protected void handleMouseClick(GridEvent<GWTJahiaNode> e) {
-                super.handleMouseClick(e);
-                if (!getSelectedItem().getPath().equals(editLinker.getMainModule().getPath())) {
-                    if (!getSelectedItem().getNodeTypes().contains("jnt:virtualsite")) {
-                        editLinker.getMainModule().goTo(getSelectedItem().getPath(), null);
-                    }
+        this.tree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
+            @Override public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {
+                if (!se.getSelectedItem().getPath().equals(editLinker.getMainModule().getPath()) &&
+                    !se.getSelectedItem().getNodeTypes().contains("jnt:virtualsite") &&
+                        !se.getSelectedItem().getInheritedNodeTypes().contains("jmix:link")) {
+                    Log.info("selection changed");
                 }
             }
         });

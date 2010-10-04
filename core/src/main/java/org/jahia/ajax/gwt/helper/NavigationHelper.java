@@ -1311,7 +1311,7 @@ public class NavigationHelper {
     public String getNodeURL(String servlet, String path, Date versionDate, String versionLabel, final String workspace,
                              final Locale locale) {
         String url = Jahia.getContextPath();
-        if (servlet.equals("contribute")) {
+        if ("contribute".equals(servlet)) {
             url += Contribute.getContributeServletPath();
         } else {
             url += Render.getRenderServletPath();

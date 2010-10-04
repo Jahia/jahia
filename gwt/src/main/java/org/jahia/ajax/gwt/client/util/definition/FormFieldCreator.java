@@ -106,7 +106,6 @@ public class FormFieldCreator {
                     field.setAutoWidth(false);
                     field.setAutoHeight(false);
                     field.setHeight(300);
-                    field.setWidth(550);
                     break;
                 case GWTJahiaNodeSelectorType.DATETIMEPICKER:
                     field = new CalendarField();
@@ -220,7 +219,6 @@ public class FormFieldCreator {
         if (property != null) {
             fillValue(field, definition, property);
         }
-        field.setWidth(550);
         return field;
     }
 

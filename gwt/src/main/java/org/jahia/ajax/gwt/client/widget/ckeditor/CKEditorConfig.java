@@ -39,7 +39,7 @@ package org.jahia.ajax.gwt.client.widget.ckeditor;/**
  */
 public class CKEditorConfig {
 
-    private String width = "100%";
+    private String width = "98%";
     private String height = "300px";
     private String toolbarSet = "Full";
 

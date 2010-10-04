@@ -38,6 +38,7 @@ import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.form.*;
+import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.*;
@@ -74,7 +75,6 @@ public class PropertiesEditor extends FormPanel {
     private FieldSet fieldSet = null;
     private ContentPanel commonFields = null;
     private FormPanel form = this;
-    private static final int FIELD_SIZE = 620;
 
     public PropertiesEditor(List<GWTJahiaNodeType> nodeTypes, Map<String, GWTJahiaNodeProperty> properties,
                             String datatype) {
@@ -127,10 +127,8 @@ public class PropertiesEditor extends FormPanel {
 
     public void renderNewFormPanel() {
         if (!fieldSetGrouping) {
-            // setFieldWidth(550);
             setLabelWidth(180);
         }
-        setFieldWidth(FIELD_SIZE);
         setLabelAlign(LabelAlign.TOP);
         setPadding(5);
         setCollapsible(false);
@@ -246,7 +244,7 @@ public class PropertiesEditor extends FormPanel {
                     boolean isOrderingList = "jmix:orderedList".equalsIgnoreCase(definition.getDeclaringNodeType());
                     fieldSet = new FieldSet();
                     fieldSet.setId(definition.getDeclaringNodeTypeLabel());
-                    fieldSet.add(field);
+                    fieldSet.add(field, new FormData("98%"));
                     if (isWriteable) {
                         fieldSet.setCollapsible(true);
                         if (!isOrderingList) {
@@ -290,7 +288,6 @@ public class PropertiesEditor extends FormPanel {
                     //fieldSet.setStyleAttribute("padding", "0");
                     form = new FormPanel();
                     form.setLabelAlign(LabelAlign.TOP);
-                    form.setFieldWidth(FIELD_SIZE);
                     form.setLabelWidth(80);
                     form.setHeaderVisible(false);
                     form.setFrame(false);
@@ -325,7 +322,7 @@ public class PropertiesEditor extends FormPanel {
                 }
 
                 if (optional) {
-                    form.add(field);
+                    form.add(field, new FormData("95%"));
                 } else {
                     addCommonFieldSet(field);
                 }
@@ -345,7 +342,6 @@ public class PropertiesEditor extends FormPanel {
             FieldSet commonFieldSet = new FieldSet();
             FormLayout layout = new FormLayout(LabelAlign.TOP);
             layout.setLabelWidth(80);
-            layout.setDefaultWidth(FIELD_SIZE);
 
             commonFields = new ContentPanel(layout);
             commonFields.setHeaderVisible(false);
@@ -355,19 +351,8 @@ public class PropertiesEditor extends FormPanel {
 
             commonFieldSet.add(commonFields);
             add(commonFieldSet);
-//            commonForm = new FormPanel();
-//            commonForm.setHeaderVisible(false);
-//            commonForm.setFrame(false);
-//            commonForm.setBorders(false);
-//            commonForm.setBodyBorder(false);
-//            commonForm.setLabelAlign(LabelAlign.TOP);
-//            commonForm.setFieldWidth(FIELD_SIZE);
-//            commonForm.setLabelWidth(80);
-//            commonFieldSet.add(commonForm);
-//            add(commonFieldSet);
-//          add(commonFieldSet);
         }
-        commonFields.add(field);
+        commonFields.add(field, new FormData("95%"));
 
     }
 

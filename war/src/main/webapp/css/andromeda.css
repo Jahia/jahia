@@ -26,13 +26,13 @@ padding-left:0;
 .clear {
   clear: both;
 }
-html, body {height:100%}
+html, body {}
 /* general */
 body {
   font-family:Arial, Verdana, Helvetica, sans-serif;
   background-color:#f1f5fa;
   font-size:11px!important;
-  margin: 20px;
+  margin:40px 20px 20px 20px;
 }
 body.login, #bodyLogin {
   background:url(images/andromeda/bg-body_community.gif) repeat-x bottom left;
@@ -135,7 +135,6 @@ font-family:"Courier New",Courier,monospace;
 /* Container structure */
 #mainAdminLayout {
   margin: auto;
-  margin-top:40px;
   width: 960px;
 }
 
@@ -229,8 +228,8 @@ h2.loginlogo_community{
 
 #topTitle {
   margin:0;
-  padding:2px;
-  height: 23px;
+  padding:0;
+  height: 27px;
   position:absolute;
   top:0;
   left:0;
@@ -255,7 +254,7 @@ h1 {
   text-indent: -2000em;
   display: block;
   width: 55px;
-  height: 23px;
+  height: 27px;
   background: url(images/andromeda/logo-jahia.png) no-repeat 10px 0px ;
   text-indent: -2000em;
 }
@@ -293,7 +292,7 @@ a:hover {
  */
 h2 {
   font-size: 120%;
-  margin: 4px 0px 3px 0px;
+  margin: 6px 0px 3px 0px;
   display: block;
   float: left;
   color:#FFF;
@@ -463,6 +462,7 @@ ul.dex-langItem-wrapper  {
 .dex-langItem-wrapper li img{
   vertical-align: middle;
 }
+
 
 /**
  * Menu

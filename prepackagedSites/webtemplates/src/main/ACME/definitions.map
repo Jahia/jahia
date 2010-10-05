@@ -154,7 +154,9 @@
  + logo = logo
  + banner = listA
  + promo = listA/promo
-   { setProperty [jmix:renderable|j:template=twoColumns] }
+    { addMixin jmix:columns}
+   { setProperty [jmix:renderable|j:template=columns] }
+   { setProperty [jmix:columns|j:columns=introduction] }
  + promoLarge = #skip
  + columnA_box = listA
  + columnB_box = listB

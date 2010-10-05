@@ -36,6 +36,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.tika.io.IOUtils;
+import org.jahia.ajax.gwt.client.data.GWTJahiaContentHistoryEntry;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -47,6 +48,8 @@ import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
+import org.jahia.services.history.ContentHistoryService;
+import org.jahia.services.history.HistoryEntry;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.ImportJob;
 import org.jahia.services.importexport.ReferencesHelper;
@@ -78,6 +81,7 @@ public class ContentManagerHelper {
 
     private JahiaSitesService sitesService;
     private ImportExportBaseService importExport;
+    private ContentHistoryService contentHistoryService;
 
     private NavigationHelper navigation;
     private PropertiesHelper properties;
@@ -103,6 +107,10 @@ public class ContentManagerHelper {
 
     public void setVersioning(VersioningHelper versioning) {
         this.versioning = versioning;
+    }
+
+    public void setContentHistoryService(ContentHistoryService contentHistoryService) {
+        this.contentHistoryService = contentHistoryService;
     }
 
     public JCRNodeWrapper addNode(JCRNodeWrapper parentNode, String name, String nodeType, List<String> mixin,
@@ -1083,6 +1091,21 @@ public class ContentManagerHelper {
                 zip(file, rootDir, zos);
             }
         }
+    }
+
+    public List<GWTJahiaContentHistoryEntry> getContentHistory(JCRSessionWrapper session, String nodeIdentifier, int offset, int limit) throws RepositoryException {
+        JCRNodeWrapper node = session.getNodeByIdentifier(nodeIdentifier);
+        List<HistoryEntry> historyEntryList = contentHistoryService.getNodeHistory(node);
+        List<GWTJahiaContentHistoryEntry> result = new ArrayList<GWTJahiaContentHistoryEntry>();
+        for (HistoryEntry historyEntry : historyEntryList) {
+            result.add(convertToGWTJahiaContentHistoryEntry(historyEntry));
+        }
+        return result;
+    }
+
+    private GWTJahiaContentHistoryEntry convertToGWTJahiaContentHistoryEntry(HistoryEntry historyEntry) {
+        GWTJahiaContentHistoryEntry result = new GWTJahiaContentHistoryEntry(historyEntry.getDate(), historyEntry.getAction(), historyEntry.getPropertyName(), historyEntry.getUserKey());
+        return result;
     }
 
 }

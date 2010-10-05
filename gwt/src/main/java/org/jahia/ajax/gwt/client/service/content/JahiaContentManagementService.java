@@ -36,7 +36,6 @@ import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -293,9 +292,35 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
      */
     BasePagingLoadResult<GWTJahiaJobDetail> getJobs(int offset, int limit, String sortField, String sortDir, List<String> groupNames) throws GWTJahiaServiceException;
 
+    /**
+     * Deletes a job either already executed or not yet executed. Don't try to call this on a running job as the
+     * behavior will not be determined.
+     *
+     * @param jobName
+     * @param groupName
+     * @return
+     * @throws GWTJahiaServiceException
+     */
     Boolean deleteJob(String jobName, String groupName) throws GWTJahiaServiceException;
 
+    /**
+     * Retrieves the list of job groups from the scheduler, to be used for example for filtering by group.
+     *
+     * @return
+     * @throws GWTJahiaServiceException
+     */
     List<String> getAllJobGroupNames() throws GWTJahiaServiceException;
+
+    /**
+     * Retrieves the history of modifications on a content node.
+     *
+     * @param nodeIdentifier the identifier of the node for which to retrieve the history
+     * @param offset         the paging offset
+     * @param limit          the limit of entries to retrieve
+     * @return a paging list of history entries for the specified node identifier.
+     * @throws GWTJahiaServiceException
+     */
+    BasePagingLoadResult<GWTJahiaContentHistoryEntry> getContentHistory(String nodeIdentifier, int offset, int limit) throws GWTJahiaServiceException;
 
     // -------------------------- INNER CLASSES --------------------------
 

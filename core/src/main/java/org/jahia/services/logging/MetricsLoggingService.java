@@ -36,7 +36,7 @@ import org.slf4j.profiler.Profiler;
 
 /**
  * This Service offer you to log information for metrics usages (not for information or debugging purposes).
- *
+ * <p/>
  * Or to profile some operations.
  *
  * @author : rincevent
@@ -46,32 +46,37 @@ import org.slf4j.profiler.Profiler;
 public interface MetricsLoggingService {
     /**
      * Log some metric about a node.
-     * @param user user achieving the operation
-     * @param ipAddress IP address of the user
-     * @param sessionID   if available, the identifier of the session, otherwise null or an empty string is fine. Note
-     * that if you use null it will be output verbatim in the log.
-     * @param path the node path on which the operation has been achieved
-     * @param nodeType the type of the node
-     * @param logTemplate the name of the template log you want to use.
-     * @param args variable list of arguments depending of the template you choose
+     *
+     * @param user           user achieving the operation
+     * @param ipAddress      IP address of the user
+     * @param sessionID      if available, the identifier of the session, otherwise null or an empty string is fine. Note
+     *                       that if you use null it will be output verbatim in the log.
+     * @param nodeIdentifier if available, the node identifier on which the event took place, otherwise null
+     * @param path           the node path on which the operation has been achieved
+     * @param nodeType       the type of the node
+     * @param logTemplate    the name of the template log you want to use.
+     * @param args           variable list of arguments depending of the template you choose
      */
-    void logContentEvent(String user, String sessionID, String ipAddress, String path, String nodeType, String logTemplate, String... args);
+    void logContentEvent(String user, String sessionID, String ipAddress, String nodeIdentifier, String path, String nodeType, String logTemplate, String... args);
 
     /**
      * Start a profiler and start the associated action (if the profilerName is not found it will create it)
+     *
      * @param profilerName name of the profiler you want to use or create
-     * @param action the action you want to profile
+     * @param action       the action you want to profile
      */
-    void startProfiler(String profilerName,String action);
+    void startProfiler(String profilerName, String action);
 
     /**
      * Stop all profiling for this profiler name
+     *
      * @param profilerName the name of the profiler you want to stop
      */
     void stopProfiler(String profilerName);
 
     /**
      * Create a sub profiler of an existing profiler
+     *
      * @param parentProfilerName the parent profiler name
      * @param nestedProfilerName the sub profiler name
      * @return the nested profiler
@@ -80,6 +85,7 @@ public interface MetricsLoggingService {
 
     /**
      * Stop a nested profiler
+     *
      * @param parentProfilerName the parent profiler name
      * @param nestedProfilerName the sub profiler name
      */
@@ -87,6 +93,7 @@ public interface MetricsLoggingService {
 
     /**
      * Start a new profiler and return it to the caller.
+     *
      * @param profilerName the new profiler you want to start
      * @return the newly created Profiler
      */

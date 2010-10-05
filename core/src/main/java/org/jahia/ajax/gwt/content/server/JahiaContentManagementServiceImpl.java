@@ -953,7 +953,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public void uploadedFile(List<String[]> uploadeds)
             throws GWTJahiaServiceException {
         for (String[] uploaded : uploadeds) {
-            contentManager.uploadedFile(uploaded[0], uploaded[1],Integer.parseInt(uploaded[2]),uploaded[3], retrieveCurrentSession());
+            contentManager.uploadedFile(uploaded[0], uploaded[1], Integer.parseInt(uploaded[2]), uploaded[3], retrieveCurrentSession());
         }
     }
 
@@ -1497,9 +1497,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                         List<String> superTypes = p.getSuperTypes();
                         for (String s : superTypes) {
                             if (nodeWrapper.isNodeType(s)) {
-                                nodeTypes.add(0,contentDefinition.getNodeType(s, getUILocale()));
+                                nodeTypes.add(0, contentDefinition.getNodeType(s, getUILocale()));
                                 break;
-                            }                            
+                            }
                         }
                     }
                 }
@@ -1656,4 +1656,19 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public List<String> getAllJobGroupNames() throws GWTJahiaServiceException {
         return schedulerHelper.getAllJobGroupNames();
     }
+
+    public BasePagingLoadResult<GWTJahiaContentHistoryEntry> getContentHistory(String nodeIdentifier, int offset, int limit) throws GWTJahiaServiceException {
+        JCRSessionWrapper sessionWrapper = retrieveCurrentSession();
+        List<GWTJahiaContentHistoryEntry> historyListJahia = null;
+        try {
+            historyListJahia = contentManager.getContentHistory(sessionWrapper, nodeIdentifier, offset, limit);
+            int size = historyListJahia.size();
+            historyListJahia = new ArrayList<GWTJahiaContentHistoryEntry>(historyListJahia.subList(offset, Math.min(size, offset + limit)));
+            BasePagingLoadResult pagingLoadResult = new BasePagingLoadResult(historyListJahia, offset, size);
+            return pagingLoadResult;
+        } catch (RepositoryException e) {
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+    }
+
 }

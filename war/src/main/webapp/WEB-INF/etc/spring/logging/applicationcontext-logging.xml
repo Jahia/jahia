@@ -10,6 +10,10 @@
                 <entry key="nodeUpdated" value="node updated with {}"/>
                 <entry key="nodeCreated" value="node created with {}"/>
                 <entry key="nodeDeleted" value="node deleted"/>
+                <entry key="nodeMoved" value="node moved to {}"/>
+                <entry key="propertyAdded" value="property added"/>
+                <entry key="propertyChanged" value="property changed"/>
+                <entry key="propertyRemoved" value="property removed"/>
             </map>
         </property>
     </bean>

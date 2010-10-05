@@ -42,7 +42,7 @@ import javax.jcr.observation.EventIterator;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * JCR listener that logs repository events to the metrics logging service.
  *
  * @author : rincevent
  * @since : JAHIA 6.1
@@ -65,7 +65,7 @@ public class MetricsLoggingJCReventListener extends DefaultEventListener {
     }
 
     public int getEventTypes() {
-        return Event.NODE_ADDED + Event.NODE_MOVED + Event.NODE_REMOVED;
+        return Event.NODE_ADDED + Event.NODE_MOVED + Event.NODE_REMOVED + Event.PROPERTY_ADDED + Event.PROPERTY_CHANGED + Event.PROPERTY_REMOVED;
     }
 
     public String getPath() {
@@ -87,16 +87,44 @@ public class MetricsLoggingJCReventListener extends DefaultEventListener {
                 Event event = events.nextEvent();
                 switch (event.getType()) {
                     case Event.NODE_ADDED:
-                        loggingService.logContentEvent(event.getUserID(), "", "", event.getPath(), "", "nodeCreated",
-                                                       new JSONObject(event.getInfo()).toString());
+                        loggingService.logContentEvent(event.getUserID(), "", "", event.getIdentifier(), event.getPath(), "", "nodeCreated",
+                                new JSONObject(event.getInfo()).toString());
                         break;
                     case Event.NODE_MOVED:
-                        loggingService.logContentEvent(event.getUserID(), "", "", event.getPath(), "", "nodeUpdated",
-                                                       new JSONObject(event.getInfo()).toString());
+                        /* From the JCR 2.0 Spec :
+                           12.3.3 Event Information on Move and Order
+
+                           On a NODE_MOVED event, the Map object returned by Event.getInfo() contains parameter
+                           information from the method that caused the event. There are three JCR methods that cause
+                           this event type: Session.move, Workspace.move and Node.orderBefore.
+
+                           If the method that caused the NODE_MOVE event was a Session.move or Workspace.move then the
+                           returned Map has keys srcAbsPath and destAbsPath with values corresponding to the parameters
+                           passed to the move method, as specified in the Javadoc.
+
+                           If the method that caused the NODE_MOVE event was a Node.orderBefore then the returned Map
+                           has keys srcChildRelPath and destChildRelPath with values corresponding to the parameters
+                           passed to the orderBefore method, as specified in the Javadoc.
+                        */
+                        loggingService.logContentEvent(event.getUserID(), "", "", event.getIdentifier(), event.getPath(), "", "nodeMoved",
+                                new JSONObject(event.getInfo()).toString());
                         break;
                     case Event.NODE_REMOVED:
-                        loggingService.logContentEvent(event.getUserID(), "", "", event.getPath(), "", "nodeDeleted",
-                                                       new JSONObject(event.getInfo()).toString());
+                        loggingService.logContentEvent(event.getUserID(), "", "", event.getIdentifier(), event.getPath(), "", "nodeDeleted",
+                                new JSONObject(event.getInfo()).toString());
+                        break;
+                    case Event.PROPERTY_ADDED:
+                        loggingService.logContentEvent(event.getUserID(), "", "", event.getIdentifier(), event.getPath(), "", "propertyAdded",
+                                new JSONObject(event.getInfo()).toString());
+                        break;
+                    case Event.PROPERTY_CHANGED:
+                        // @todo we might want to add the new value if available, so that we can track updates more finely ?
+                        loggingService.logContentEvent(event.getUserID(), "", "", event.getIdentifier(), event.getPath(), "", "propertyChanged",
+                                new JSONObject(event.getInfo()).toString());
+                        break;
+                    case Event.PROPERTY_REMOVED:
+                        loggingService.logContentEvent(event.getUserID(), "", "", event.getIdentifier(), event.getPath(), "", "propertyRemoved",
+                                new JSONObject(event.getInfo()).toString());
                         break;
                 }
             } catch (RepositoryException e) {

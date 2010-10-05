@@ -43,7 +43,9 @@ import java.util.Stack;
 
 
 /**
- * Created by IntelliJ IDEA.
+ * Default implementation of the metrics logging service, that logs to a specific Log4J appender using template
+ * strings to customize output. The template strings are partially hardcoded in this class, and partially configured
+ * in the Spring configuration file.
  *
  * @author : rincevent
  * @since : JAHIA 6.1
@@ -54,7 +56,7 @@ public class MetricsLoggingServiceImpl implements MetricsLoggingService {
     private transient static Logger profilerMetricsLogger = LoggerFactory.getLogger("profilerLoggingService");
     private Map<String, String> logTemplatesMap;
     private static MetricsLoggingServiceImpl instance;
-    private final static String headerTemplate = "user {} ip {} session {} path {} nodetype {} ";
+    private final static String headerTemplate = "user {} ip {} session {} identifier {} path {} nodetype {} ";
     private ThreadLocal<Stack<Profiler>> threadLocal = new ThreadLocal<Stack<Profiler>>();
 
     public MetricsLoggingServiceImpl() {
@@ -70,25 +72,27 @@ public class MetricsLoggingServiceImpl implements MetricsLoggingService {
     /**
      * Log some metric about a node.
      *
-     * @param user        user achieving the operation
-     * @param ipAddress   ip address of the user
-     * @param sessionID   if available, the identifier of the session, otherwise null or an empty string is fine. Note
-     * that if you use null it will be outputted verbatim in the log.
-     * @param path        the node path on which the operation has been achieved
-     * @param nodeType    the type of the node
-     * @param logTemplate the name of the template log you want to use.
-     * @param args        variable list of arguments depending of the template you choose
+     * @param user           user achieving the operation
+     * @param ipAddress      ip address of the user
+     * @param sessionID      if available, the identifier of the session, otherwise null or an empty string is fine. Note
+     *                       that if you use null it will be outputted verbatim in the log.
+     * @param nodeIdentifier if available, the node identifier on which the event took place, otherwise null
+     * @param path           the node path on which the operation has been achieved
+     * @param nodeType       the type of the node
+     * @param logTemplate    the name of the template log you want to use.
+     * @param args           variable list of arguments depending of the template you choose
      */
-    public void logContentEvent(String user, String ipAddress, String sessionID, String path, String nodeType, 
+    public void logContentEvent(String user, String ipAddress, String sessionID, String nodeIdentifier, String path, String nodeType,
                                 String logTemplate, String... args) {
         String template = logTemplatesMap.get(logTemplate);
-        String[] templateParameters = new String[5 + args.length];
+        String[] templateParameters = new String[6 + args.length];
         templateParameters[0] = user;
         templateParameters[1] = ipAddress;
         templateParameters[2] = sessionID;
-        templateParameters[3] = path;
-        templateParameters[4] = nodeType;
-        int i = 5;
+        templateParameters[3] = nodeIdentifier;
+        templateParameters[4] = path;
+        templateParameters[5] = nodeType;
+        int i = 6;
         for (String arg : args) {
             templateParameters[i++] = arg;
         }
@@ -145,7 +149,7 @@ public class MetricsLoggingServiceImpl implements MetricsLoggingService {
             profilers = threadLocal.get();
         }
         Profiler profiler = profilers.peek();
-        if(profiler==null) {
+        if (profiler == null) {
             profiler = startProfiler(parentProfilerName);
             profilers.push(profiler);
         }
@@ -180,10 +184,9 @@ public class MetricsLoggingServiceImpl implements MetricsLoggingService {
     }
 
     /**
-     * Start a new porfiler and return it to the caller.
+     * Returns the singleton instance, and creates it if not existing yet
      *
-     * @param profilerName the new profiler you want to start
-     * @return the newly created Profiler
+     * @return the singleton instance, either existing or newly created.
      */
     public static MetricsLoggingServiceImpl getInstance() {
         if (instance == null) {

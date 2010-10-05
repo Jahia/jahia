@@ -3,18 +3,21 @@ package org.jahia.modules.pagehit;
 import org.apache.camel.CamelContext;
 import org.apache.camel.CamelContextAware;
 import org.apache.camel.Exchange;
+import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.ProcessorEndpoint;
+import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.classic.Session;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.impl.SessionFactoryImpl;
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.content.*;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
 import org.springframework.beans.factory.InitializingBean;
-import org.apache.camel.Processor;
-import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean;
 
@@ -38,7 +41,7 @@ public class PageHitService implements Processor, InitializingBean, CamelContext
     private static PageHitService instance;
 
     private Pattern pattern = Pattern.compile(
-            "([0-9\\-]+ [0-9:,]+) user ([a-zA-Z@.0-9_\\-]+) ip ([0-9.:]+) session ([a-zA-Z@0-9_\\-\\/]+) path (.*) nodetype ([a-zA-Z:]+) page viewed with (.*)");
+            "([0-9\\-]+ [0-9:,]+) user ([a-zA-Z@.0-9_\\-]+) ip ([0-9.:]+) session ([a-zA-Z@0-9_\\-\\/]+) identifier ([a-zA-Z@0-9_\\-\\/]+) path (.*) nodetype ([a-zA-Z:]+) page viewed with (.*)");
     private CamelContext camelContext;
     private String from;
 
@@ -64,7 +67,7 @@ public class PageHitService implements Processor, InitializingBean, CamelContext
         final String message = (String) exchange.getIn().getBody();
         final Matcher matcher = pattern.matcher(message);
         if (matcher.matches()) {
-            final String path = matcher.group(5);
+            final String path = matcher.group(6);
             final JCRTemplate tpl = JCRTemplate.getInstance();
             JCRNodeWrapper node;
             try {
@@ -77,7 +80,7 @@ public class PageHitService implements Processor, InitializingBean, CamelContext
                 // Node not found might be due to old logs so fail silently
                 return;
             }
-            if(node==null) {
+            if (node == null) {
                 // stupid security check should not happen
                 logger.warn("Node not found in system but it has not thrown an exception strange");
                 return;
@@ -92,7 +95,7 @@ public class PageHitService implements Processor, InitializingBean, CamelContext
                 // Found update object
                 if (pageHit != null) {
                     pageHit.setHit(pageHit.getHit() + 1);
-                    if(!pageHit.getPath().equals(path)){
+                    if (!pageHit.getPath().equals(path)) {
                         pageHit.setPath(path);
                         logger.debug("Update into database pageHit page's path as change to: " + pageHit.getPath());
                     }

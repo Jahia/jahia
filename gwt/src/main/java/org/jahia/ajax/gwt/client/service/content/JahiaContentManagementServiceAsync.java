@@ -286,4 +286,5 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void getAllJobGroupNames(AsyncCallback<List<String>> async);
 
+    void getContentHistory(String nodeIdentifier, int offset, int limit, AsyncCallback<BasePagingLoadResult<GWTJahiaContentHistoryEntry>> async);
 }

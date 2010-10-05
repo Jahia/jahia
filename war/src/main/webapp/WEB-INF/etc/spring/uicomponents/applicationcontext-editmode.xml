@@ -825,7 +825,7 @@
         <property name="params">
             <map>
                 <entry key="search"
-                       value="select * from [jnt:content] as content order by content.['jcr:lastModified'] desc"/>
+                       value="select * from [jnt:content] as content where not content.[jcr:primaryType] = 'jnt:socialActivity' order by content.['jcr:lastModified'] desc"/>
                 <entry key="limit" value="100"/>
             </map>
         </property>

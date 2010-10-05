@@ -1,0 +1,28 @@
+
+
+
+
+                                     ____.
+                         __/\ ______|    |__/\.     _______
+              __   .____|    |       \   |    +----+       \
+      _______|  /--|    |    |    -   \  _    |    :    -   \_________
+     \\______: :---|    :    :           |    :    |         \________>
+             |__\---\_____________:______:    :____|____:_____\
+                                        /_____|
+
+      . . . s t a r t i n g   j a h i a   b u i l d   @BUILD_NUMBER@ . . .
+
+
+   Copyright 2002-2010 - Jahia Solutions Group SA http://www.jahia.com - All Rights Reserved
+
+
+ *******************************************************************************
+ * The contents of this software, or the files included with this software,    *
+ * are subject to the GNU General Public License (GPL).                        *
+ * You may not use this software except in compliance with the license. You    *
+ * may obtain a copy of the license at http://www.jahia.com/license. See the   *
+ * license for the rights, obligations and limitations governing use of the    *
+ * contents of the software.                                                   *
+ *******************************************************************************
+
+

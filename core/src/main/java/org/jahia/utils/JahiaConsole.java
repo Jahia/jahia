@@ -54,7 +54,11 @@
 
 package org.jahia.utils;
 
+import java.io.InputStream;
+
 import javax.servlet.GenericServlet;
+
+import org.apache.commons.io.IOUtils;
 
 public class JahiaConsole {
 
@@ -160,36 +164,42 @@ public class JahiaConsole {
             buildBuffer.append(buildString.substring(i, i + 1));
         }
 
-        StringBuilder msg = new StringBuilder(512);
-        msg
-                .append(
-                        "\n\n\n\n"
-                                + "                                     ____.\n"
-                                + "                         __/\\ ______|    |__/\\.     _______\n"
-                                + "              __   .____|    |       \\   |    +----+       \\\n"
-                                + "      _______|  /--|    |    |    -   \\  _    |    :    -   \\_________\n"
-                                + "     \\\\______: :---|    :    :           |    :    |         \\________>\n"
-                                + "             |__\\---\\_____________:______:    :____|____:_____\\\n"
-                                + "                                        /_____|\n"
-                                + "\n"
-                                + "      . . . s t a r t i n g   j a h i a   b u i l d  ")
-                .append(buildBuffer.toString())
-                .append(
-                        " . . .\n"
-                                + "\n\n"
-                                + "   Copyright 2002-2009 - Jahia Solutions Group SA http://www.jahia.com - All Rights Reserved\n"
-                                + "\n\n"
-                                + " *******************************************************************************\n"
-                                + " * The contents of this software, or the files included with this software,    *\n"
-                                + " * are subject to the GNU General Public License (GPL).                        *\n"
-                                + " * You may not use this software except in compliance with the license. You    *\n"
-                                + " * may obtain a copy of the license at http://www.jahia.com/license. See the   *\n"
-                                + " * license for the rights, obligations and limitations governing use of the    *\n"
-                                + " * contents of the software.                                                   *\n"
-                                + " *******************************************************************************\n"
-                                + "\n\n");
+        String msg;
+        InputStream is = JahiaConsole.class.getResourceAsStream("/jahia-startup-intro.txt");
+        try {
+            msg = IOUtils.toString(is);
+        } catch (Exception e) {
+        	logger.warn(e.getMessage(), e);
+            msg = 
+                    "\n\n\n\n"
+                            + "                                     ____.\n"
+                            + "                         __/\\ ______|    |__/\\.     _______\n"
+                            + "              __   .____|    |       \\   |    +----+       \\\n"
+                            + "      _______|  /--|    |    |    -   \\  _    |    :    -   \\_________\n"
+                            + "     \\\\______: :---|    :    :           |    :    |         \\________>\n"
+                            + "             |__\\---\\_____________:______:    :____|____:_____\\\n"
+                            + "                                        /_____|\n"
+                            + "\n"
+                            + "      . . . s t a r t i n g   j a h i a   b u i l d  @BUILD_NUMBER@"+
+                    " . . .\n"
+                            + "\n\n"
+                            + "   Copyright 2002-2010 - Jahia Solutions Group SA http://www.jahia.com - All Rights Reserved\n"
+                            + "\n\n"
+                            + " *******************************************************************************\n"
+                            + " * The contents of this software, or the files included with this software,    *\n"
+                            + " * are subject to the GNU General Public License (GPL).                        *\n"
+                            + " * You may not use this software except in compliance with the license. You    *\n"
+                            + " * may obtain a copy of the license at http://www.jahia.com/license. See the   *\n"
+                            + " * license for the rights, obligations and limitations governing use of the    *\n"
+                            + " * contents of the software.                                                   *\n"
+                            + " *******************************************************************************\n"
+                            + "\n\n";
+		} finally {
+			IOUtils.closeQuietly(is);
+		}
+        msg = msg.replace("@BUILD_NUMBER@", buildBuffer.toString());
 
-        System.out.println (msg.toString());
+        System.out.println (msg);
         System.out.flush();
     }
 

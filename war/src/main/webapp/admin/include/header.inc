@@ -78,6 +78,7 @@
     </script>
 </head>
 <body class="jahiaAdministration" ${not empty jahiaAdministrationLogin ? 'id="bodyLogin"' : ''} onunload="closeEngineWin()" onclose="closeEngineWin()">
+<div id="AdminBar"></div>
 <div id="mainAdminLayout">
 <%if(isConfigWizard){%>
 <%}%>

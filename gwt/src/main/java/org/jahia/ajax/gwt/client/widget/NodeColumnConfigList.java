@@ -45,6 +45,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
@@ -53,6 +54,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
+import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.form.CalendarField;
 import org.jahia.ajax.gwt.client.widget.publication.PublicationManagerEngine;
 
@@ -116,12 +118,16 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
     };
     private transient final GridCellRenderer<GWTJahiaNode> PUBLICATION_RENDERER =
             new GridCellRenderer<GWTJahiaNode>() {
-                public String render(GWTJahiaNode node, String property, ColumnData config, int rowIndex, int colIndex,
+                public Object render(GWTJahiaNode node, String property, ColumnData config, int rowIndex, int colIndex,
                                      ListStore<GWTJahiaNode> store, Grid<GWTJahiaNode> grid) {
                     int state = node.getPublicationInfo() != null ? node.getPublicationInfo().getStatus() : 0;
                     String title = Messages.get("fm_column_publication_info_" + state, String.valueOf(state));
-                    return "<img src=\"../gwt/resources/images/workflow/" + PublicationManagerEngine.statusToLabel.get(state) +
-                            ".png\" height=\"12\" width=\"12\" title=\"" + title + "\" alt=\"" + title + "\"/>";
+                    final Image image = ToolbarIconProvider.getInstance()
+                            .getIcon("publication/" + PublicationManagerEngine.statusToLabel.get(state)).createImage();
+                    image.setTitle(title);
+                    return image;
+//                    return "<img src=\"../gwt/resources/images/workflow/" + PublicationManagerEngine.statusToLabel.get(state) +
+//                            ".png\" height=\"12\" width=\"12\" title=\"" + title + "\" alt=\"" + title + "\"/>";
                 }
             };
     private transient final GridCellRenderer<GWTJahiaNode> VERSION_RENDERER = new GridCellRenderer<GWTJahiaNode>() {

@@ -299,7 +299,7 @@ public class PublicationManagerEngine extends Window {
             StringBuilder builder = new StringBuilder().append("<div class='x-grid3-check-col").append(
                     " x-grid3-check-col").append(getCheckState(node, state)).append(" x-grid3-cc-").append(
                     getId() + "-" + config.name).append("'>").append("<img src=\"").append(
-                    JahiaGWTParameters.getContextPath()).append("/gwt/resources/images/workflow/").append(
+                    JahiaGWTParameters.getContextPath()).append("/icons/publication/").append(
                     label).append(".png\" height=\"12\" width=\"12\" title=\"").append(
                     "\" alt=\"").append("\"/>").append("</div>");
             Html html = new Html(builder.toString());

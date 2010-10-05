@@ -331,7 +331,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         GWTJahiaNode tagNode = navigation.getTagNode(s, getSite());
         if (tagNode == null && create) {
             return createNode(navigation.getTagsNode(getSite()).getPath(), s, "jnt:tag", null, null,
-                    new ArrayList<GWTJahiaNodeProperty>());
+                    new ArrayList<GWTJahiaNodeProperty>(), null);
         } else {
             return tagNode;
         }
@@ -587,39 +587,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     /**
-     * Create node
-     *
-     * @param parentPath
-     * @param name
-     * @param nodeType
-     * @param mixin
-     * @param acl
-     * @param props
-     * @return
-     * @throws GWTJahiaServiceException
-     */
-    public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin,
-                                   GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props)
-            throws GWTJahiaServiceException {
-        GWTJahiaNode res;
-
-        res = contentManager.createNode(parentPath, name, nodeType, mixin, props, retrieveCurrentSession());
-
-        if (acl != null) {
-            setACL(res.getPath(), acl);
-        }
-
-        try {
-            retrieveCurrentSession().save();
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException("Node creation failed. Cause: " + e.getMessage());
-        }
-
-        return res;
-    }
-
-    /**
      * Create node with multilangue
      *
      * @param parentPath
@@ -650,7 +617,18 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             }
         }
 
-        GWTJahiaNode node = createNode(parentPath, name, nodeType, mixin, acl, props);
+        GWTJahiaNode res;
+
+        res = contentManager.createNode(parentPath, name, nodeType, mixin, props, retrieveCurrentSession());
+
+        try {
+            retrieveCurrentSession().save();
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            throw new GWTJahiaServiceException("Node creation failed. Cause: " + e.getMessage());
+        }
+
+        GWTJahiaNode node = res;
         // save shared properties
         if (langCodeProperties != null && !langCodeProperties.isEmpty()) {
             List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
@@ -663,6 +641,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 saveProperties(nodes, properties, currentLangCode);
             }
         }
+
+        if (acl != null) {
+            setACL(res.getPath(), acl);
+        }
+
         return node;
     }
 
@@ -681,41 +664,16 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                                                 GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> properties,
                                                 Map<String, List<GWTJahiaNodeProperty>> langCodeProperties)
             throws GWTJahiaServiceException {
-        if (name == null) {
-            List<GWTJahiaNodeProperty> l = langCodeProperties.get(getSite().getDefaultLanguage());
-            if (l == null && langCodeProperties.size() > 0) {
-                l = langCodeProperties.values().iterator().next();
-            }
-            if (l != null) {
-                name = contentManager.generateNameFromTitle(l);
-            }
-        }
 
         final GWTJahiaNode parentNode = navigation.getParentNode(path, retrieveCurrentSession());
-        final GWTJahiaNode jahiaNode = contentManager
-                .createNode(parentNode.getPath(), name, nodeType, mixin, properties, retrieveCurrentSession());
 
-        // save shared properties
-        if (langCodeProperties != null && !langCodeProperties.isEmpty()) {
-            List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
-            nodes.add(jahiaNode);
-            Iterator<String> langCode = langCodeProperties.keySet().iterator();
-            // save properties per lang
-            while (langCode.hasNext()) {
-                String currentLangCode = langCode.next();
-                List<GWTJahiaNodeProperty> props = langCodeProperties.get(currentLangCode);
-                saveProperties(nodes, props, currentLangCode);
-            }
-        }
+        GWTJahiaNode jahiaNode = createNode(parentNode.getPath(), name, nodeType, mixin, acl, properties, langCodeProperties);
 
         try {
             contentManager.moveOnTopOf(jahiaNode.getPath(), path, retrieveCurrentSession());
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
-        }
-        if (acl != null) {
-            setACL(jahiaNode.getPath(), acl);
         }
 
         try {

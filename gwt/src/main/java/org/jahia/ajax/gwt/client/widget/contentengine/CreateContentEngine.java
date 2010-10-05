@@ -234,6 +234,9 @@ public class CreateContentEngine extends AbstractContentEngine {
                 AclEditor acl = ((RightsTabItem) item).getRightsEditor();
                 if (acl != null) {
                     newNodeACL = acl.getAcl();
+                    if (newNodeACL.isInheritanceBroken()) {
+                        mixin.add("jmix:accessControlled");
+                    }
                 }
             } else if (item instanceof CategoriesTabItem) {
                 ((CategoriesTabItem) item).updateProperties(changedProperties, mixin);

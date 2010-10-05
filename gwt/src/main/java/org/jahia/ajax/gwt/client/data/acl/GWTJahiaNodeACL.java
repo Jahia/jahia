@@ -88,6 +88,19 @@ public class GWTJahiaNodeACL implements Serializable {
         this.permissionsDependencies = permissionsDependencies;
     }
 
+    public boolean isInheritanceBroken() {
+        boolean inheritanceBroken = breakAllInheritance;
+        if (!inheritanceBroken) {
+            for (GWTJahiaNodeACE ace : getAce()) {
+                inheritanceBroken = !ace.isInherited();
+                if (inheritanceBroken) {
+                    break;
+                }
+            }
+        }
+        return inheritanceBroken;
+    }    
+    
     public boolean isBreakAllInheritance() {
         return breakAllInheritance;
     }

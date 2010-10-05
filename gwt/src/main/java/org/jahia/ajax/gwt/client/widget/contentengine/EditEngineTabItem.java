@@ -31,9 +31,9 @@
  */
 
 package org.jahia.ajax.gwt.client.widget.contentengine;
+
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.content.InfoTabItem;
@@ -109,6 +109,8 @@ public abstract class EditEngineTabItem extends AsyncTabItem {
                 tabs.add(new PortletsTabItem(nodeHolder));
             } else if (tab.equals("versioning")) {
                 tabs.add(new VersioningTabItem(nodeHolder));
+            } else if (tab.equals("history")) {
+                tabs.add(new HistoryTabItem(nodeHolder));
             }
         }
     }

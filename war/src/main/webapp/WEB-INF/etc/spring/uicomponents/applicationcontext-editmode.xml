@@ -243,21 +243,21 @@
                 <property name="items">
                     <list>
                         <!--<bean class="org.jahia.services.uicomponents.bean.toolbar.Menu"-->
-                              <!--id="Toolbar.ItemsGroup.NewAction">-->
+                        <!--id="Toolbar.ItemsGroup.NewAction">-->
 
-                            <!--<property name="titleKey" value="label.new"/>-->
-                            <!--<property name="icon" value="newAction"/>-->
-                            <!--<property name="items">-->
-                                <!--<list>-->
-                                    <!--<ref bean="Toolbar.Item.NewPage"/>-->
-                                    <!--<ref bean="Toolbar.Item.NewContent"/>-->
-                                <!--</list>-->
-                            <!--</property>-->
-                            <!--<property name="visibility" value="$site/toolbar/new"/>-->
+                        <!--<property name="titleKey" value="label.new"/>-->
+                        <!--<property name="icon" value="newAction"/>-->
+                        <!--<property name="items">-->
+                        <!--<list>-->
+                        <!--<ref bean="Toolbar.Item.NewPage"/>-->
+                        <!--<ref bean="Toolbar.Item.NewContent"/>-->
+                        <!--</list>-->
+                        <!--</property>-->
+                        <!--<property name="visibility" value="$site/toolbar/new"/>-->
                         <!--</bean>-->
                         <ref bean="Toolbar.Item.Live"/>
                         <ref bean="Toolbar.Item.Preview"/>
-                        <ref bean="Toolbar.Item.Contribute"/>                        
+                        <ref bean="Toolbar.Item.Contribute"/>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="titleKey" value="label.view"/>
                             <!-- <property name="icon" value="preview"/> -->
@@ -399,6 +399,7 @@
                             <value>rights,$site/edit-mode/rights</value>
                             <value>usages,$site/edit-mode/usages</value>
                             <value>workflow,$site/edit-mode/workflow</value>
+                            <value>history,$site/edit-mode/history</value>
                             <value>versioning</value>
                             <value>seo,$site/edit-mode/seo</value>
                             <ref bean="analyticsEngineTab"/>
@@ -418,6 +419,7 @@
                             <value>rights,$site/edit-mode/rights</value>
                             <value>usages,$site/edit-mode/usages</value>
                             <value>workflow,$site/edit-mode/workflow</value>
+                            <value>history,$site/edit-mode/history</value>
                             <value>versioning</value>
                             <value>seo,$site/edit-mode/seo</value>
                             <ref bean="analyticsEngineTab"/>

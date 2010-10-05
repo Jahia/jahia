@@ -95,7 +95,7 @@
                 </col1>
                 <col2 jcr:primaryType="jnt:contentList">
                   <docspaceFormCreation jcr:primaryType="jnt:docspaceFormCreation" />
-                  <contentList jcr:mixinTypes="jmix:renderable" j:template="twoColumns" jcr:primaryType="jnt:contentList">
+                  <contentList jcr:mixinTypes="jmix:renderable jmix:columns" j:template="columns" j:columns="2" jcr:primaryType="jnt:contentList">
                     <lastDocspace jcr:primaryType="jnt:lastDocspace" />
 
                     <lastDocspaceDoc jcr:primaryType="jnt:lastDocspaceDoc" />
@@ -300,7 +300,7 @@
                   <topBlog pageSize="10" j:skin="skins.box5style5" j:template="unordered" jcr:mixinTypes="jmix:cssClass jmix:renderable jmix:skinnable" jcr:primaryType="jnt:topBlog" j:className="bloglist topblog" j:subNodesTemplate="blogList">
                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Blog List" jcr:primaryType="jnt:translation" />
                   </topBlog>
-                  <list jcr:mixinTypes="jmix:renderable" j:template="twoColumns" jcr:primaryType="jnt:contentList">
+                  <list jcr:mixinTypes="jmix:renderable jmix:columns" j:template="columns" j:columns="2" jcr:primaryType="jnt:contentList">
                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="list" jcr:primaryType="jnt:translation" />
                     <topBlogContent pageSize="10" j:skin="skins.box5style3" j:template="unordered" jcr:mixinTypes="jmix:cssClass jmix:renderable jmix:skinnable" jcr:primaryType="jnt:topBlogContent" j:className="bloglist topblogcontents" j:subNodesTemplate="blogList">
                       <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Latest entries" jcr:primaryType="jnt:translation" />

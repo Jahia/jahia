@@ -942,6 +942,9 @@ li.section a:hover {
 	color: #333333;
 	padding: 5px 10px 5px 26px;
 }
+.dex-PushButton a.noIcon {
+	padding: 5px 10px;
+}
 
 .dex-PushButton a:hover {
 	color: #333333;
@@ -1415,7 +1418,7 @@ table.evenOddTable th,table.evenOddTable td {
   border-width: 0 1px 0 0;
   background: #ffffff;
   color: #666666;
-  background: url(images/andromeda/bkg-th.png) repeat-x top left;
+  background:#e6e7e6 url(images/andromeda/bkg-th.png) repeat-x top left;
   font-weight: bold;
   font-size: 11px;
   text-align: left;
@@ -1704,6 +1707,11 @@ clear:both
 /* Errors and messages */
 .error {
   color: #FF0000 !important;
+  text-decoration: none;
+  font-style: normal;
+  padding: 5px;
+}
+.aloneP {
   text-decoration: none;
   font-style: normal;
   padding: 5px;

@@ -135,6 +135,7 @@ font-family:"Courier New",Courier,monospace;
 /* Container structure */
 #mainAdminLayout {
   margin: auto;
+  margin-top:40px;
   width: 960px;
 }
 
@@ -227,8 +228,14 @@ h2.loginlogo_community{
 }
 
 #topTitle {
-  margin: 12px 20px 20px 20px;
-  height: 20px;
+  margin:0;
+  padding:2px;
+  height: 23px;
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  background:#063996 url(images/andromeda/topTitle-bg.png) repeat-x left top;
 }
 
 ul.noStyle{
@@ -248,8 +255,8 @@ h1 {
   text-indent: -2000em;
   display: block;
   width: 55px;
-  height: 20px;
-  background: url(images/andromeda/logo-jahia.gif) no-repeat 10px 0px ;
+  height: 23px;
+  background: url(images/andromeda/logo-jahia.png) no-repeat 10px 0px ;
   text-indent: -2000em;
 }
 
@@ -286,9 +293,10 @@ a:hover {
  */
 h2 {
   font-size: 120%;
-  margin: 2px;
+  margin: 4px 0px 3px 0px;
   display: block;
   float: left;
+  color:#FFF;
 }
 
 h2.add {

@@ -15,6 +15,7 @@ import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.menu.CheckMenuItem;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
@@ -364,7 +365,6 @@ public class JobListPanel extends LayoutContainer {
         detailPanel.setHeading(Messages.get("label.detailed", "Details"));
         detailPanel.setScrollMode(Style.Scroll.AUTOY);
         detailPanel.setLabelWidth(100);
-        detailPanel.setFieldWidth(500);
         detailsPanel = detailPanel;
 
         BorderLayoutData southData = new BorderLayoutData(Style.LayoutRegion.SOUTH, 200);
@@ -457,7 +457,7 @@ public class JobListPanel extends LayoutContainer {
             } else {
                 textField.setValue(value.toString());
             }
-            detailsPanel.add(textField);
+            detailsPanel.add(textField, new FormData("98%"));
         }
     }
 

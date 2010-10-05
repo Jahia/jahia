@@ -241,72 +241,53 @@
         <os arch="i686"/>
         <os arch="x86"/>
     </native>
-    <!-- 
-    <native name="COIOSHelper_x64.dll" stage="both" type="3rdparty">
-        <os family="windows" />
-    </native>
-     -->
      
     <listeners>
     	<listener installer="ProgressBarInstallerListener"/>
         <listener installer="SummaryLoggerInstallerListener"/>
-        <!--
-        <listener installer="LateShortcutInstallListener">
-            <os family="windows" />
-            <os family="unix" />
-        </listener>
-        -->
 	    <listener installer="AntActionInstallerListener"/>
     </listeners>
 
-    <!-- 
-    <listeners>
-        <listener installer="RegistryInstallerListener" uninstaller="RegistryUninstallerListener">
-            <os family="windows" />
-        </listener>
-    </listeners>
-     -->
-      
     <packs>
         <pack name="Jahia xCM Platform" id="core" preselected="yes" required="yes">
             <description/>
-            <fileset dir="../licenses" targetdir="$INSTALL_PATH/licenses" />
-            <fileset dir="../links" targetdir="$INSTALL_PATH/docs">
+            <fileset dir="../licenses" targetdir="$INSTALL_PATH/licenses" override="true" />
+            <fileset dir="../links" targetdir="$INSTALL_PATH/docs" override="true">
                 <exclude name="OpenJahia*"/>
             </fileset>
-            <fileset dir="../artifacts/jahia" targetdir="${jahia.war.target.path}">
+            <fileset dir="../artifacts/jahia" targetdir="${jahia.war.target.path}" override="true">
                 <exclude name="WEB-INF/lib/juel-api-*.jar"/>
             </fileset>
-            <fileset dir="../images" targetdir="$INSTALL_PATH/icons" override="update">
+            <fileset dir="../images" targetdir="$INSTALL_PATH/icons" override="true">
                 <include name="jahia.ico"/>
                 <include name="jahia.png"/>
             </fileset>
-            <singlefile override="update" src="../scripts/openUrl.sh" target="$INSTALL_PATH/bin/openUrl.sh"/>
-            <singlefile override="update" src="../artifacts/jahia/WEB-INF/lib/juel-api-2.2.1.jar" target="${jahia.war.target.path}/juel-api-2.2.1.jar" condition="cnd.server.type.was"/>
-            <fileset dir="../artifacts/jahia-jboss-config" targetdir="$INSTALL_PATH/jahia-jboss-config" condition="cnd.server.type.jboss"/>
-            <singlefile override="update" src="install.properties" target="$INSTALL_PATH/logs/install.properties"/>
-            <singlefile override="update" src="../dependency/configurators-standalone.jar" target="$INSTALL_PATH/configurators.jar"/>
-            <singlefile override="update" src="../dependency/archivers-standalone.jar" target="$INSTALL_PATH/archivers.jar"/>
-            <singlefile override="update" src="../artifacts/shared-libraries-all.zip" target="$INSTALL_PATH/shared-libraries.zip" condition="!cnd.skip.shared.libs"/>
+            <singlefile override="true" src="../scripts/openUrl.sh" target="$INSTALL_PATH/bin/openUrl.sh"/>
+            <singlefile override="true" src="../artifacts/jahia/WEB-INF/lib/juel-api-2.2.1.jar" target="${jahia.war.target.path}/juel-api-2.2.1.jar" condition="cnd.server.type.was"/>
+            <fileset dir="../artifacts/jahia-jboss-config" targetdir="$INSTALL_PATH/jahia-jboss-config" condition="cnd.server.type.jboss" override="true"/>
+            <singlefile override="true" src="install.properties" target="$INSTALL_PATH/logs/install.properties"/>
+            <singlefile override="true" src="../dependency/configurators-standalone.jar" target="$INSTALL_PATH/configurators.jar"/>
+            <singlefile override="true" src="../dependency/archivers-standalone.jar" target="$INSTALL_PATH/archivers.jar"/>
+            <singlefile override="true" src="../artifacts/shared-libraries-all.zip" target="$INSTALL_PATH/shared-libraries.zip" condition="!cnd.skip.shared.libs"/>
             <parsable targetfile="$INSTALL_PATH/logs/install.properties" type="javaprop"/>
             <parsable targetfile="$INSTALL_PATH/docs/Readme.URL"/>
             <executable targetfile="$INSTALL_PATH/bin/openUrl.sh" />
         </pack>
         <pack name="Apache Tomcat" id="tomcat" preselected="yes" required="no">
             <description/>
-            <fileset dir="../links" targetdir="$INSTALL_PATH">
+            <fileset dir="../links" targetdir="$INSTALL_PATH" override="true">
                 <include name="OpenJahia*"/>
             </fileset>
-            <fileset dir="../artifacts/apache-tomcat-${jahia.tomcat.version}" targetdir="$INSTALL_PATH/tomcat" />
-            <file override="update" src="../artifacts/shared-libraries-all.zip" targetdir="$INSTALL_PATH/tomcat/lib" unpack="true"/>
-            <fileset dir="../tomcat" targetdir="$INSTALL_PATH/tomcat" override="update" />
-            <fileset dir="../scripts" targetdir="$INSTALL_PATH" override="update" condition="izpack.windowsinstall">
+            <fileset dir="../artifacts/apache-tomcat-${jahia.tomcat.version}" targetdir="$INSTALL_PATH/tomcat" override="true" />
+            <file override="true" src="../artifacts/shared-libraries-all.zip" targetdir="$INSTALL_PATH/tomcat/lib" unpack="true"/>
+            <fileset dir="../tomcat" targetdir="$INSTALL_PATH/tomcat" override="true" />
+            <fileset dir="../scripts" targetdir="$INSTALL_PATH" override="true" condition="izpack.windowsinstall">
                 <include name="st*.bat"/>
             </fileset>
-            <fileset dir="../scripts" targetdir="$INSTALL_PATH" override="update" condition="!izpack.windowsinstall">
+            <fileset dir="../scripts" targetdir="$INSTALL_PATH" override="true" condition="!izpack.windowsinstall">
                 <include name="st*.sh"/>
             </fileset>
-            <fileset dir="../images" targetdir="$INSTALL_PATH/icons" override="update">
+            <fileset dir="../images" targetdir="$INSTALL_PATH/icons" override="true">
                 <include name="st*.ico"/>
                 <include name="st*.png"/>
             </fileset>

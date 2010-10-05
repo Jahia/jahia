@@ -30,7 +30,7 @@
                        value="Content Repository API for Java(TM) Technology Specification"/>
                 <entry key="jcr.repository.vendor" value="Jahia"/>
                 <entry key="jcr.repository.vendor.url" value="http://www.jahia.org/"/>
-                <entry key="jcr.repository.name" value="Crazy Jane"/>
+                <entry key="jcr.repository.name" value="Jahia"/>
                 <entry key="jcr.repository.version" value="6.5"/>
                 <entry key="level.1.supported" value="true"/>
                 <entry key="level.2.supported" value="true"/>

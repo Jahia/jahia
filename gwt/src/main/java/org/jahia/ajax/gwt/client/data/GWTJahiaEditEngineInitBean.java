@@ -41,6 +41,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -53,6 +54,7 @@ public class GWTJahiaEditEngineInitBean extends GWTJahiaGetPropertiesResult {
     private List<GWTJahiaNodeType> mixin;
     private Map<String, List<GWTJahiaValueDisplayBean>> initializersValues;
     private GWTJahiaNodeACL acl;
+    private Map<String, Set<String>> referencesWarnings;
 
     public GWTJahiaEditEngineInitBean() {
     }
@@ -83,5 +85,13 @@ public class GWTJahiaEditEngineInitBean extends GWTJahiaGetPropertiesResult {
 
     public void setAcl(GWTJahiaNodeACL acl) {
         this.acl = acl;
+    }
+
+    public Map<String, Set<String>> getReferencesWarnings() {
+        return referencesWarnings;
+    }
+
+    public void setReferencesWarnings(Map<String, Set<String>> referencesWarnings) {
+        this.referencesWarnings = referencesWarnings;
     }
 }

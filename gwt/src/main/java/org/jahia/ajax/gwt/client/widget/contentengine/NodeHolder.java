@@ -41,6 +41,7 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -61,6 +62,8 @@ public interface NodeHolder {
     List<GWTJahiaNode> getNodes();
 
     GWTJahiaNodeACL getAcl();
+
+    Map<String, Set<String>> getReferencesWarnings();
 
     GWTJahiaNode getTargetNode();
 

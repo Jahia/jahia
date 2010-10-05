@@ -202,7 +202,7 @@ public class FormFieldCreator {
             }
             if (propDefinition.isInternationalized()) {
                 field.setLabelSeparator(" <img width='11px' height='11px' src='" + JahiaGWTParameters.getContextPath() +
-                        "/css/images/sharedLang.gif'/>:");
+                        "/css/images/sharedLang.gif'/> :");
             }
         } else {
             GWTJahiaNodeDefinition nodeDefinition = (GWTJahiaNodeDefinition) definition;

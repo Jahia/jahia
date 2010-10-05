@@ -179,7 +179,7 @@ public class EditContentEngine extends AbstractContentEngine {
                 properties = result.getProperties();
                 defaultLanguageBean = result.getCurrentLocale();
                 acl = result.getAcl();
-
+                referencesWarnings = result.getReferencesWarnings();
                 if(!node.isWriteable()) {
                     heading = Messages.getWithArgs("label.edit.engine.heading.read.only","Read {0} ({1})",new String[]{nodeName, nodeTypes.get(0).getLabel()});
                 } else {

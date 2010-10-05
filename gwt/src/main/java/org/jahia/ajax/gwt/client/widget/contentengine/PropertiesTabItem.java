@@ -34,13 +34,20 @@ package org.jahia.ajax.gwt.client.widget.contentengine;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.user.client.Window;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.definition.FormFieldCreator;
+import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
 import java.util.*;
@@ -141,7 +148,7 @@ public class PropertiesTabItem extends EditEngineTabItem {
                     }
                 }
 
-                propertiesEditor = new PropertiesEditor(engine.getNodeTypes(), engine.getProperties(), dataType);                
+                propertiesEditor = new PropertiesEditor(engine.getNodeTypes(), engine.getProperties(), dataType);
                 propertiesEditor.setMixin(engine.getMixin());
                 propertiesEditor.setInitializersValues(engine.getInitializersValues());
                 propertiesEditor.setWriteable(!engine.isExistingNode() || (engine.getNode().isWriteable() && !engine.getNode().isLocked()));
@@ -149,6 +156,40 @@ public class PropertiesTabItem extends EditEngineTabItem {
                 propertiesEditor.setExcludedTypes(excludedTypes);
                 propertiesEditor.setMultipleEdit(engine.isMultipleSelection());
                 propertiesEditor.renderNewFormPanel();
+                for (final Field field : propertiesEditor.getFields()) {
+                    if (field instanceof ContentPickerField) {
+                        final String labelSep = field.getLabelSeparator();
+                        if (engine.getReferencesWarnings().containsKey(field.getName())) {
+                            field.setLabelSeparator(labelSep + " <img width='11px' height='11px' src='" + JahiaGWTParameters
+                                    .getContextPath() + "/gwt/resources/images/default/shared/warning.gif'/> Warning : these users/groups might not view the reference "+engine.getReferencesWarnings().get(field.getName()));
+                            field.setFieldLabel(field.getFieldLabel());
+                        }
+                        field.setFireChangeEventOnSetValue(true);
+                        field.addListener(Events.Change, new Listener<FieldEvent>() {
+                            public void handleEvent(FieldEvent be) {
+                                final List<GWTJahiaNode> selectedNodes = (List<GWTJahiaNode>) be.getValue();
+                                if (selectedNodes != null && !selectedNodes.isEmpty()) {
+                                    JahiaContentManagementService.App.getInstance().compareAcl(engine.getAcl(),
+                                            selectedNodes, new BaseAsyncCallback<Set<String>>() {
+                                        public void onSuccess(Set<String> result) {
+                                            if (!result.isEmpty()) {
+                                                field.setLabelSeparator(labelSep + " <img width='11px' height='11px' src='" + JahiaGWTParameters
+                                                        .getContextPath() + "/gwt/resources/images/default/shared/warning.gif'/> Warning : these users/groups might not view the reference "+result);
+                                                field.setFieldLabel(field.getFieldLabel());
+                                            } else {
+                                                field.setLabelSeparator(labelSep);
+                                                field.setFieldLabel(field.getFieldLabel());
+                                            }
+                                        }
+                                    });
+                                } else {
+                                    field.setLabelSeparator(labelSep);
+                                    field.setFieldLabel(field.getFieldLabel());
+                                }
+                            }
+                        });
+                    }
+                }
                 setPropertiesEditorByLang(locale);
 
                 attachPropertiesEditor();

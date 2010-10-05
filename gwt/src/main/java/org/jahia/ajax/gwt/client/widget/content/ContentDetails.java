@@ -58,10 +58,7 @@ import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 import org.jahia.ajax.gwt.client.widget.contentengine.*;
 import org.jahia.ajax.gwt.client.widget.tripanel.BottomRightComponent;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -80,6 +77,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
     private Map<String, GWTJahiaNodeProperty> properties = new HashMap<String, GWTJahiaNodeProperty>();
     private GWTJahiaLanguage language;
     private GWTJahiaNodeACL acl;
+    protected Map<String,Set<String>> referencesWarnings;
 
     private List<GWTJahiaNode> selectedNodes = null;
 
@@ -197,6 +195,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                         initializersValues = result.getInitializersValues();
                         ok.setEnabled(true);
                         acl = result.getAcl();
+                        referencesWarnings = result.getReferencesWarnings();
                         fillCurrentTab();
                     }
                 });
@@ -270,6 +269,10 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
 
     public GWTJahiaNodeACL getAcl() {
         return acl;
+    }
+
+    public Map<String, Set<String>> getReferencesWarnings() {
+        return referencesWarnings;
     }
 
     public GWTJahiaNode getTargetNode() {

@@ -55,6 +55,7 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Remote GWT service for content management tasks.
@@ -267,6 +268,8 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
     void initializeEditEngine(String nodePath, boolean tryToLockNode, AsyncCallback<GWTJahiaEditEngineInitBean> async);
 
     void initializeEditEngine(List<String> paths, boolean tryToLockNode, AsyncCallback<GWTJahiaEditEngineInitBean> async);
+
+    void compareAcl(GWTJahiaNodeACL nodeAcl, List<GWTJahiaNode> reference, AsyncCallback<Set<String>> async);
 
     void getWorkflowRules(String path, AsyncCallback<Map<GWTJahiaWorkflowType, Map<GWTJahiaWorkflowDefinition, GWTJahiaNodeACL>>> async);
 

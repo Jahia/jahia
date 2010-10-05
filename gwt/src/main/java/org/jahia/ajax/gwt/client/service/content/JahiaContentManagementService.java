@@ -59,6 +59,7 @@ import org.jahia.ajax.gwt.client.util.URL;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Remote GWT service for content management tasks.
@@ -262,6 +263,8 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
     GWTJahiaEditEngineInitBean initializeEditEngine(String nodePath, boolean tryToLockNode) throws GWTJahiaServiceException;
 
     GWTJahiaEditEngineInitBean initializeEditEngine(List<String> paths, boolean tryToLockNode) throws GWTJahiaServiceException;
+
+    Set<String> compareAcl(GWTJahiaNodeACL nodeAcl, List<GWTJahiaNode> reference) throws GWTJahiaServiceException;        
 
     public PagingLoadResult<GWTJahiaRole> searchRolesInContext(String search, int offset, int limit, String context) throws GWTJahiaServiceException;
 

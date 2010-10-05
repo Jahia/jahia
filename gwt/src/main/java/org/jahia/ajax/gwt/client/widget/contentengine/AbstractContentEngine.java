@@ -83,6 +83,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     protected String heading;
     protected EngineContainer container;
     protected GWTJahiaNodeACL acl;
+    protected Map<String,Set<String>> referencesWarnings;
 
     // general properties
     protected final List<GWTJahiaNodeProperty> changedProperties = new ArrayList<GWTJahiaNodeProperty>();
@@ -240,6 +241,10 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
 
     public GWTJahiaNodeACL getAcl() {
         return acl;
+    }
+
+    public Map<String, Set<String>> getReferencesWarnings() {
+        return referencesWarnings;
     }
 
     public GWTJahiaNode getTargetNode() {

@@ -1,7 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <c:set var="jahiaAdministrationLogin" value="true" />
-<%@include file="/admin/include/header.inc" %>
+<%@include file="/admin/include/header-simple.inc" %>
 <%@page import="java.net.URLEncoder" %>
 <%
 String  redirectTo = (String) request.getAttribute("redirectTo");

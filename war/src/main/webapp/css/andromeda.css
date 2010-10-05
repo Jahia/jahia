@@ -26,7 +26,7 @@ padding-left:0;
 .clear {
   clear: both;
 }
-html, body {}
+html, body { height:100%}
 /* general */
 body {
   font-family:Arial, Verdana, Helvetica, sans-serif;

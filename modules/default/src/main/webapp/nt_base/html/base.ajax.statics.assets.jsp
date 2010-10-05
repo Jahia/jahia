@@ -3,10 +3,6 @@
 <%@ taglib prefix="internal" uri="http://www.jahia.org/tags/internalLib" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<c:if test="${renderContext.editMode and renderContext.mainResource.contextConfiguration eq 'page'}">
-    <internal:gwtInit modules="org.jahia.ajax.gwt.module.edit.Edit"/>
-    <internal:gwtGenerateDictionary/>
-</c:if>
 <c:forEach items="${renderContext.staticAssets}" var="staticAsset">
 
     <c:choose>

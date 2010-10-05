@@ -77,12 +77,17 @@
                     <p class="field">
                         <c:choose>
                             <c:when test="${(propertyDefinition.requiredType == jcrPropertyTypes.REFERENCE || propertyDefinition.requiredType == jcrPropertyTypes.WEAKREFERENCE)}">
-                                <c:if test="${propertyDefinition.selector eq selectorType.FILEUPLOAD or propertyDefinition.selector eq selectorType.CONTENTPICKER}">
+                                <c:choose>
+                                <c:when test="${propertyDefinition.selector eq selectorType.FILEUPLOAD or propertyDefinition.selector eq selectorType.CONTENTPICKER}">
                                     <%@include file="formelements/file.jsp" %>
-                                </c:if>
-                                <c:if test="${propertyDefinition.selector eq selectorType.CHOICELIST}">
+                                </c:when>
+                                <c:when test="${propertyDefinition.selector eq selectorType.CHOICELIST}">
                                     <%@include file="formelements/select.jsp" %>
-                                </c:if>
+                                </c:when>
+                                    <c:otherwise>
+                                        <%@include file="formelements/reference.jsp" %>
+                                    </c:otherwise>
+                                </c:choose>
                             </c:when>
                             <c:when test="${propertyDefinition.requiredType == jcrPropertyTypes.DATE}">
                                 <%@include file="formelements/datepicker.jsp" %>

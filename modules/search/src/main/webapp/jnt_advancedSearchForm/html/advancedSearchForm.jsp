@@ -30,7 +30,8 @@
     </script>
 </template:addResources>
 	<c:if test="${not empty title.string}">
-        <h3> ${fn:escapeXml(title.string)} </h3><a class="BtToggleSearch" href="#"></a>
+        <h3 class="inline-advancedSearchForm-title"> ${fn:escapeXml(title.string)} </h3><a class="BtToggleSearch" href="#"></a>
+        <div class="clear"></div>
     </c:if>
 <div id="advancedSearch">
     <div>

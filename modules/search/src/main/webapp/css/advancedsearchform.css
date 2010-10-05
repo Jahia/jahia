@@ -1,0 +1,10 @@
+a.BtToggleSearch {
+    background: url("img/search-open.png") repeat scroll 0 0 transparent;
+    display: block;
+    height: 26px;
+    width: 26px;
+}
+
+a.BtToggleSearch.active{
+    background: url("img/search-close.png") repeat scroll 0 0 transparent;
+}

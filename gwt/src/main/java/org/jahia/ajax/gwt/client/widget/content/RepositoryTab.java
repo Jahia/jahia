@@ -56,10 +56,7 @@ import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * User: rfelden
@@ -195,13 +192,25 @@ public class RepositoryTab extends ContentPanel {
      *
      * @param item
      */
-    public void openAndSelectItem(Object item) {
-        if (item != null && this.isExpanded()) {
-            GWTJahiaNode gItem = store.findModel((GWTJahiaNode) item);
-            Log.debug("expand: " + gItem.getPath());
-//            m_tree.addToOpenPaths(gItem);
-            m_tree.setExpanded(gItem, true);
-            m_tree.getSelectionModel().select(gItem, false);
+    public void openAndSelectItem(final Object item) {
+        final GWTJahiaNode openItem = (GWTJahiaNode) item;
+        if (openItem.getPath().startsWith(getSelectedItem().getPath())) {
+            if (m_tree.isExpanded(getSelectedItem())) {
+                GWTJahiaNode gItem = store.findModel((GWTJahiaNode) item);
+                Log.debug("expand: " + gItem.getPath());                
+                m_tree.getSelectionModel().select(gItem, false);
+            } else {
+                m_tree.addListener(Events.Expand, new Listener<TreeGridEvent>() {
+                    public void handleEvent(TreeGridEvent le) {
+                        m_tree.removeListener(Events.Expand, this);
+
+                        GWTJahiaNode gItem = store.findModel((GWTJahiaNode) item);
+                        Log.debug("expand: " + gItem.getPath());
+                        m_tree.getSelectionModel().select(gItem, false);                        
+                    }
+                });
+                m_tree.setExpanded(getSelectedItem(), true);
+            }
         }
     }
 

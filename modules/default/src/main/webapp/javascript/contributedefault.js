@@ -85,6 +85,27 @@ function initEditFields(id) {
             }, "json");
         }
     });
+
+
+    $(".fileSelector" + id).editable(function (value, settings) {
+        var data = {'methodToCall':'put'};
+        var submitId = $(this).attr('jcr:id');
+        data[submitId] = value;
+        $.post($(this).attr('jcr:url'), data, null, "json");
+        return(value);
+    }, {
+        type    : 'treeItemSelector',
+        onblur : 'ignore',
+        submit : '<button type="submit"><span class="icon-contribute icon-accept"></span>' + contributionI18n['ok'] + '</button>',
+        cancel : '<button type="submit"><span class="icon-contribute icon-cancel"></span>' + contributionI18n['cancel'] + '</button>',
+        tooltip : contributionI18n['edit'],
+        nodeTypes : $(".fileSelector" + id).attr('jeditabletreeselector:nodetypes'),
+        selectableNodeTypes : $(".fileSelector" + id).attr('jeditabletreeselector:selectablenodetypes'),
+        baseURL : $(".fileSelector" + id).attr('jeditabletreeselector:baseURL'),
+        root : $(".fileSelector" + id).attr('jeditabletreeselector:root'),
+        selectorLabel : $(".fileSelector" + id).attr('jeditabletreeselector:selectorLabel')
+
+    });
 }
 
 function invert(source, target, urlbase, callbackId, callbackUrl,callbackJS) {

@@ -22,4 +22,7 @@
 <template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
 <label for="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">${jcr:label(propertyDefinition,renderContext.mainResourceLocale)}</label>
 <input type="hidden" name="${propertyDefinition.name}" id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"/>
-<ui:treeItemSelector fieldId="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" valueType="identifier" nodeTypes="jnt:content,jnt:page,jnt:virtualsite" selectableNodeTypes="jnt:content" displayIncludeChildren="false"/>
+<fmt:message key="label.select.content" var="contentLabel"/>
+<ui:treeItemSelector fieldId="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" valueType="identifier"
+                     nodeTypes="jnt:content,jnt:page,jnt:virtualsite" selectableNodeTypes="jnt:content,jnt:page" displayIncludeChildren="false"
+        label="${contentLabel}"/>

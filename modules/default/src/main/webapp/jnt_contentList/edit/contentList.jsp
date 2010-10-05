@@ -25,6 +25,19 @@
 <template:addResources type="javascript" resources="jquery.jeditable.ajaxupload.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.ckeditor.js"/>
 <template:addResources type="javascript" resources="datepicker.js,jquery.jeditable.datepicker.js"/>
+<template:addResources type="css" resources="jquery.treeview.css,jquery.fancybox.css"/>
+<template:addResources type="javascript"
+                       resources="jquery.treeview.min.js,jquery.treeview.async.jahia.js,jquery.fancybox.pack.js"/>
+<template:addResources>
+    <style type="text/css">
+        div#fancy_div {
+            background: #FFF;
+            color: #000;
+            overflow: auto;
+        }
+    </style>
+</template:addResources>
+<template:addResources type="javascript" resources="jquery.jeditable.treeItemSelector.js"/>
 <template:addResources type="javascript" resources="contributedefault.js"/>
 <template:addResources type="javascript" resources="i18n/contributedefault-${renderContext.mainResource.locale}.js"/>
 <template:addResources type="javascript" resources="animatedcollapse.js"/>

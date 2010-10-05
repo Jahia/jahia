@@ -32,6 +32,9 @@
 
 package org.jahia.ajax.gwt.helper;
 
+import net.htmlparser.jericho.Source;
+import net.htmlparser.jericho.SourceCompactor;
+import net.htmlparser.jericho.SourceFormatter;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
@@ -74,8 +77,12 @@ public class DiffHelper {
             final XslFilter filter = new XslFilter();
 
             // replace /live/ by /default/ in href and src attributes as it represents same image
-            original = original.replaceAll("/"+ Constants.LIVE_WORKSPACE+"/","/"+Constants.EDIT_WORKSPACE+"/");
-
+            if(original.contains("/files/"+Constants.EDIT_WORKSPACE+"/")||amendment.contains("/files/"+Constants.EDIT_WORKSPACE+"/")) {
+                original = original.replaceAll("/"+ Constants.LIVE_WORKSPACE+"/","/"+Constants.EDIT_WORKSPACE+"/");
+                amendment = amendment.replaceAll("/"+ Constants.LIVE_WORKSPACE+"/","/"+Constants.EDIT_WORKSPACE+"/");
+            }
+            original = new SourceFormatter(new Source(original)).toString();
+            amendment = new SourceFormatter(new Source(amendment)).toString();
             final ContentHandler postProcess = filter.xsl(result, "jahiahtmlheader.xsl");
 
             final Locale locale = Locale.ENGLISH;
@@ -101,12 +108,10 @@ public class DiffHelper {
             addDiffCss(postProcess);
             postProcess.startElement("", "diff", "diff", new AttributesImpl());
 
-
             final HtmlSaxDiffOutput output = new HtmlSaxDiffOutput(postProcess,prefix);
 
             final HTMLDiffer differ = new HTMLDiffer(output);
-            differ.diff(leftComparator, rightComparator);
-
+            differ.diff(rightComparator, leftComparator);
 
             postProcess.endElement("", "diff", "diff");
             postProcess.endElement("", "diffreport", "diffreport");

@@ -24,7 +24,7 @@
             <subject>${bundle.getString("workflow.start.mail.subject")} ${date.format("short","short",$submissionDate,$locale)} ${bundle.getString("mail.subject.by")} ${user.getUsername()};</subject>
             <text>${bundle.getString("workflow.start.mail.subject")} ${date.format("short","short",$submissionDate,$locale)} ${bundle.getString("mail.subject.by")} ${user.getUsername()};</text>
         </mail-template>
-        <mail-template name="alert-reject--template" language="velocity">
+        <mail-template name="alert-reject-template" language="velocity">
             <to users="${user.getProperty('j:email')}" />
             <cc users="assignable"/>
             <subject>Reject - ${bundle.getString("workflow.start.mail.subject")} ${date.format("short","short",$submissionDate,$locale)} ${bundle.getString("mail.subject.by")} ${user.getUsername()};</subject>

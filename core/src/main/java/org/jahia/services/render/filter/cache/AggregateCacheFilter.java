@@ -173,93 +173,101 @@ public class AggregateCacheFilter extends AbstractFilter {
         if (debugEnabled) {
             logger.debug("Generating content for node : " + perUserKey);
         }
-        if (cacheable) {
-            String cacheAttribute = (String) renderContext.getRequest().getAttribute("expiration");
-            Long expiration = cacheAttribute != null ? Long.valueOf(cacheAttribute) : Long.valueOf(script!=null?
-                    script.getTemplate().getProperties().getProperty("cache.expiration", "-1"):"-1");
-            final Cache dependenciesCache = cacheProvider.getDependenciesCache();
-            Set<String> depNodeWrappers = resource.getDependencies();
-            for (String path : depNodeWrappers) {
-
-                Element element1 = dependenciesCache.get(path);
-                Set<String> dependencies;
-                if (element1 != null) {
-                    dependencies = (Set<String>) element1.getValue();
-                } else {
-                    dependencies = new LinkedHashSet<String>();
-                }
-                dependencies.add(perUserKey);
-                dependenciesCache.put(new Element(path, dependencies));
-            }
-            // append cache:include tag
-            String cachedRenderContent = ESI_INCLUDE_STOPTAG_REGEXP.matcher(previousOut).replaceAll("</esi:include>");
-            cachedRenderContent = ESI_INCLUDE_STARTTAG_REGEXP.matcher(cachedRenderContent).replaceAll(
-                    "<esi:include src=\"$1\">");
-            if(debugEnabled) {
-                logger.debug("Storing for key: "+key+" content:\n"+cachedRenderContent);
-            }
-            Source source = new Source(cachedRenderContent);
-            // This will remove all blank line and drastically reduce data in memory
-            source = new Source((new SourceFormatter(source)).toString());
-            List<StartTag> esiIncludeTags = source.getAllStartTags("esi:include");
-            if (debugEnabled) {
-                displaySegments(esiIncludeTags);
-            }
-            // We will remove container content here has we do not want to store them twice in memory
-            OutputDocument outputDocument = emptyEsiIncludeTagContainer(esiIncludeTags, source);
-            final String output = outputDocument.toString();
-            cachedRenderContent = surroundWithCacheTag(key, output);
-            CacheEntry<String> cacheEntry = new CacheEntry<String>(cachedRenderContent);
-            cacheEntry.setProperty(RESOURCES, renderContext.getStaticAssets());
-            Element cachedElement = new Element(perUserKey, cacheEntry);
-            if (expiration > 0) {
-                cachedElement.setTimeToLive(expiration.intValue() + 1);
-                String hiddenKey = cacheProvider.getKeyGenerator().replaceField(perUserKey, "template", "hidden.load");
-                Element hiddenElement = cache.isKeyInCache(hiddenKey) ? cache.get(hiddenKey) : null;
-                if (hiddenElement != null) {
-                    hiddenElement.setTimeToLive(expiration.intValue() + 1);
-                    cache.put(hiddenElement);
-                }
-                hiddenKey = cacheProvider.getKeyGenerator().replaceField(perUserKey, "template", "hidden.footer");
-                hiddenElement = cache.isKeyInCache(hiddenKey) ? cache.get(hiddenKey) : null;
-                if (hiddenElement != null) {
-                    hiddenElement.setTimeToLive(expiration.intValue() + 1);
-                    cache.put(hiddenElement);
-                }
-                hiddenKey = cacheProvider.getKeyGenerator().replaceField(perUserKey, "template", "hidden.header");
-                hiddenElement = cache.isKeyInCache(hiddenKey) ? cache.get(hiddenKey) : null;
-                if (hiddenElement != null) {
-                    hiddenElement.setTimeToLive(expiration.intValue() + 1);
-                    cache.put(hiddenElement);
-                }
-            }
-            if (expiration != 0) {
-                cache.put(cachedElement);
-            } else {
-                cachedElement = new Element(perUserKey, null);
-                cache.put(cachedElement);
-                notCacheableFragment.add(key);
-            }
-            if (debugEnabled) {
-                logger.debug("Store in cache content of node with key: " + perUserKey);
-                StringBuilder stringBuilder = new StringBuilder();
+        try {
+            if (cacheable) {
+                String cacheAttribute = (String) renderContext.getRequest().getAttribute("expiration");
+                Long expiration = cacheAttribute != null ? Long.valueOf(cacheAttribute) : Long.valueOf(
+                        script != null ? script.getTemplate().getProperties().getProperty("cache.expiration",
+                                "-1") : "-1");
+                final Cache dependenciesCache = cacheProvider.getDependenciesCache();
+                Set<String> depNodeWrappers = resource.getDependencies();
                 for (String path : depNodeWrappers) {
-                    stringBuilder.append(path).append("\n");
+
+                    Element element1 = dependenciesCache.get(path);
+                    Set<String> dependencies;
+                    if (element1 != null) {
+                        dependencies = (Set<String>) element1.getValue();
+                    } else {
+                        dependencies = new LinkedHashSet<String>();
+                    }
+                    dependencies.add(perUserKey);
+                    dependenciesCache.put(new Element(path, dependencies));
                 }
-                logger.debug("Dependencies of " + perUserKey + " : \n" + stringBuilder.toString());
+                // append cache:include tag
+                String cachedRenderContent = ESI_INCLUDE_STOPTAG_REGEXP.matcher(previousOut).replaceAll(
+                        "</esi:include>");
+                cachedRenderContent = ESI_INCLUDE_STARTTAG_REGEXP.matcher(cachedRenderContent).replaceAll(
+                        "<esi:include src=\"$1\">");
+                if (debugEnabled) {
+                    logger.debug("Storing for key: " + key + " content:\n" + cachedRenderContent);
+                }
+                Source source = new Source(cachedRenderContent);
+                // This will remove all blank line and drastically reduce data in memory
+                source = new Source((new SourceFormatter(source)).toString());
+                List<StartTag> esiIncludeTags = source.getAllStartTags("esi:include");
+                if (debugEnabled) {
+                    displaySegments(esiIncludeTags);
+                }
+                // We will remove container content here has we do not want to store them twice in memory
+                OutputDocument outputDocument = emptyEsiIncludeTagContainer(esiIncludeTags, source);
+                final String output = outputDocument.toString();
+                cachedRenderContent = surroundWithCacheTag(key, output);
+                CacheEntry<String> cacheEntry = new CacheEntry<String>(cachedRenderContent);
+                cacheEntry.setProperty(RESOURCES, renderContext.getStaticAssets());
+                Element cachedElement = new Element(perUserKey, cacheEntry);
+                if (expiration > 0) {
+                    cachedElement.setTimeToLive(expiration.intValue() + 1);
+                    String hiddenKey = cacheProvider.getKeyGenerator().replaceField(perUserKey, "template",
+                            "hidden.load");
+                    Element hiddenElement = cache.isKeyInCache(hiddenKey) ? cache.get(hiddenKey) : null;
+                    if (hiddenElement != null) {
+                        hiddenElement.setTimeToLive(expiration.intValue() + 1);
+                        cache.put(hiddenElement);
+                    }
+                    hiddenKey = cacheProvider.getKeyGenerator().replaceField(perUserKey, "template", "hidden.footer");
+                    hiddenElement = cache.isKeyInCache(hiddenKey) ? cache.get(hiddenKey) : null;
+                    if (hiddenElement != null) {
+                        hiddenElement.setTimeToLive(expiration.intValue() + 1);
+                        cache.put(hiddenElement);
+                    }
+                    hiddenKey = cacheProvider.getKeyGenerator().replaceField(perUserKey, "template", "hidden.header");
+                    hiddenElement = cache.isKeyInCache(hiddenKey) ? cache.get(hiddenKey) : null;
+                    if (hiddenElement != null) {
+                        hiddenElement.setTimeToLive(expiration.intValue() + 1);
+                        cache.put(hiddenElement);
+                    }
+                }
+                if (expiration != 0) {
+                    cache.put(cachedElement);
+                } else {
+                    cachedElement = new Element(perUserKey, null);
+                    cache.put(cachedElement);
+                    notCacheableFragment.add(key);
+                }
+                if (debugEnabled) {
+                    logger.debug("Store in cache content of node with key: " + perUserKey);
+                    StringBuilder stringBuilder = new StringBuilder();
+                    for (String path : depNodeWrappers) {
+                        stringBuilder.append(path).append("\n");
+                    }
+                    logger.debug("Dependencies of " + perUserKey + " : \n" + stringBuilder.toString());
+                }
+                if (displayCacheInfo && !previousOut.contains("<body") && previousOut.trim().length() > 0) {
+                    return appendDebugInformation(renderContext, key, surroundWithCacheTag(key, previousOut),
+                            cachedElement);
+                }
             }
             if (displayCacheInfo && !previousOut.contains("<body") && previousOut.trim().length() > 0) {
-                return appendDebugInformation(renderContext, key, surroundWithCacheTag(key, previousOut),
-                                              cachedElement);
+                return appendDebugInformation(renderContext, key, surroundWithCacheTag(key, previousOut), null);
             }
-        }
-        if (displayCacheInfo && !previousOut.contains("<body") && previousOut.trim().length() > 0) {
-            return appendDebugInformation(renderContext, key, surroundWithCacheTag(key, previousOut), null);
-        }
-        if (renderContext.getMainResource() == resource) {
-            return removeEsiTags(previousOut);
-        } else {
-            return surroundWithCacheTag(key, previousOut);
+            if (renderContext.getMainResource() == resource) {
+                return removeEsiTags(previousOut);
+            } else {
+                return surroundWithCacheTag(key, previousOut);
+            }
+        } catch (Exception e) {
+            cache.put(new Element(perUserKey, null));
+            throw e;
         }
     }
 
@@ -287,8 +295,14 @@ public class AggregateCacheFilter extends AbstractFilter {
                         if (logger.isDebugEnabled()) {
                             logger.debug("Document replace from : "+segment.getStartTagType()+" to "+segment.getElement().getEndTag().getEndTagType()+ " with "+content);
                         }
-                        outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(),
-                                               aggregateContent(cache, content, renderContext));
+                        if(!cachedContent.equals(content)) {
+                            String aggregatedContent = aggregateContent(cache, content, renderContext);
+                            outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(),
+                                aggregatedContent);
+                        } else {
+                            outputDocument.replace(segment.getBegin(), segment.getElement().getEndTag().getEnd(),
+                                content);
+                        }
                         if (cacheEntry.getProperty(RESOURCES) != null) {
                             renderContext.addStaticAsset((Map<String, Set<String>>) cacheEntry.getProperty(RESOURCES));
                         }
@@ -402,5 +416,29 @@ public class AggregateCacheFilter extends AbstractFilter {
 
     public static String removeEsiTags(String content) {
         return StringUtils.isNotEmpty(content) ? CLEANUP_REGEXP.matcher(content).replaceAll("") : content;
+    }
+
+    @Override
+    public void handleError(RenderContext renderContext, Resource resource, RenderChain chain, Exception e) {
+        super.handleError(renderContext, resource, chain, e);
+        final Script script = (Script) renderContext.getRequest().getAttribute("script");
+        if (script != null) {
+            chain.pushAttribute(renderContext.getRequest(), "cache.perUser", Boolean.valueOf(
+                    script.getTemplate().getProperties().getProperty("cache.perUser", "false")));
+            chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.valueOf(
+                    script.getTemplate().getProperties().getProperty("cache.mainResource", "false")));
+
+            if (Boolean.valueOf(script.getTemplate().getProperties().getProperty(
+                    "cache.additional.key.useMainResourcePath", "false"))) {
+                resource.getModuleParams().put("module.cache.additional.key",
+                        renderContext.getMainResource().getNode().getPath());
+            }
+        }
+        String key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
+
+        final BlockingCache cache = cacheProvider.getCache();
+        String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername()).replaceAll("_mr_",
+                renderContext.getMainResource().getNode().getPath() + renderContext.getMainResource().getTemplate());
+        cache.put(new Element(perUserKey,null));
     }
 }

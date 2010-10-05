@@ -129,6 +129,13 @@ public class RenderChain {
             }
         } catch (Exception e) {
             logger.error("Error while rendering the resource: " + resource);
+            for (; index>0 && renderContext.getRedirect() == null; index--) {
+                RenderFilter filter = filters.get(index-1);
+                if (filter.areConditionsMatched(renderContext, resource)) {
+                    if (logger.isDebugEnabled()) { logger.debug(resource.getNode().getPath() + " : handling error filter " + filter.getClass().getName()); }
+                    filter.handleError(renderContext, resource, this, e);
+                }
+            }
             throw new RenderFilterException(e);
         } finally {
             popAttributes(renderContext.getRequest());

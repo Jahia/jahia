@@ -51,9 +51,14 @@
             </snapshots>
         </repository>
         <repository>
-            <id>sourceForge</id>
-            <name>Sourceforge Maven Repository</name>
-            <url>http://oss.sonatype.org/content/repositories/sourceforge-releases</url>
+            <id>sourceforge</id>
+            <url>http://oss.sonatype.org/content/groups/sourceforge/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>javanet</id>
@@ -792,7 +797,7 @@
         <dependency>
             <groupId>net.sf.ehcache</groupId>
             <artifactId>ehcache-core</artifactId>
-            <version>1.7.2</version>
+            <version>2.2.0</version>
         </dependency>
 
         <dependency>

@@ -688,7 +688,7 @@ public class ContentManagerHelper {
                     new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
         }
 
-        node.revokeAllPermissions();
+//        node.revokeAllPermissions();
         for (GWTJahiaNodeACE ace : acl.getAce()) {
             String user = ace.getPrincipalType() + ":" + ace.getPrincipal();
             if (!ace.isInherited()) {

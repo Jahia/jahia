@@ -763,4 +763,8 @@ public abstract class AbstractFilter implements RenderFilter {
         }
         return false; 
     }
+
+    public void handleError(RenderContext renderContext, Resource resource, RenderChain renderChain, Exception e) {
+        logger.debug("Handling exception "+e.getMessage()+ " in "+resource.getNode().getPath());
+    }
 }

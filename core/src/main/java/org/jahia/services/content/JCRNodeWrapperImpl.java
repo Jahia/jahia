@@ -2373,10 +2373,18 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
         String[] grs = new String[grClone.size()];
         grClone.toArray(grs);
-        aceg.setProperty(J_PRIVILEGES, grs);
+        if(grs.length==0) {
+            aceg.remove();
+        } else {
+            aceg.setProperty(J_PRIVILEGES, grs);
+        }
         String[] dens = new String[denClone.size()];
         denClone.toArray(dens);
-        aced.setProperty(J_PRIVILEGES, dens);
+        if (dens.length==0) {
+            aced.remove();
+        } else {
+            aced.setProperty(J_PRIVILEGES, dens);
+        }
     }
 
     /**

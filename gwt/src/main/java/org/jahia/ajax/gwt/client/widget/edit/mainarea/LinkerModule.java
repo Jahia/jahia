@@ -160,7 +160,7 @@ public class LinkerModule extends Module {
     public void setNode(GWTJahiaNode node) {
         super.setNode(node);
         final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
-        async.getProperties(node.getPath(), new BaseAsyncCallback<GWTJahiaGetPropertiesResult>() {
+        async.getProperties(node.getPath(), null, new BaseAsyncCallback<GWTJahiaGetPropertiesResult>() {
             public void onSuccess(GWTJahiaGetPropertiesResult gwtJahiaGetPropertiesResult) {
                 if (gwtJahiaGetPropertiesResult.getProperties().containsKey(property)) {
                     final GWTJahiaNodeProperty o = gwtJahiaGetPropertiesResult.getProperties().get(property);

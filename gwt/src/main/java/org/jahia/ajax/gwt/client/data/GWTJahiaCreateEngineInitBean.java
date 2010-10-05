@@ -32,6 +32,7 @@
 
 package org.jahia.ajax.gwt.client.data;
 
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 
 import java.io.Serializable;
@@ -50,6 +51,7 @@ public class GWTJahiaCreateEngineInitBean implements Serializable {
     private List<GWTJahiaNodeType> mixin;
     private Map<String, List<GWTJahiaValueDisplayBean>> initializersValues;
     private GWTJahiaLanguage currentLocale;
+    private GWTJahiaNodeACL acl;
 
     public GWTJahiaCreateEngineInitBean() {
     }
@@ -84,5 +86,13 @@ public class GWTJahiaCreateEngineInitBean implements Serializable {
 
     public void setCurrentLocale(GWTJahiaLanguage currentLocale) {
         this.currentLocale = currentLocale;
+    }
+
+    public GWTJahiaNodeACL getAcl() {
+        return acl;
+    }
+
+    public void setAcl(GWTJahiaNodeACL acl) {
+        this.acl = acl;
     }
 }

@@ -76,12 +76,13 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     protected TabPanel tabs;
     protected boolean existingNode = true;
     protected GWTJahiaNode node;
-    protected GWTJahiaNode parentNode;
+    protected GWTJahiaNode targetNode;
     protected GWTJahiaLanguage defaultLanguageBean;
     protected ComboBox<GWTJahiaLanguage> languageSwitcher;
     protected ButtonBar buttonBar;
     protected String heading;
     protected EngineContainer container;
+    protected GWTJahiaNodeACL acl;
 
     // general properties
     protected final List<GWTJahiaNodeProperty> changedProperties = new ArrayList<GWTJahiaNodeProperty>();
@@ -237,8 +238,12 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         return node;
     }
 
-    public GWTJahiaNode getParentNode() {
-        return parentNode;
+    public GWTJahiaNodeACL getAcl() {
+        return acl;
+    }
+
+    public GWTJahiaNode getTargetNode() {
+        return targetNode;
     }
 
     public boolean isExistingNode() {

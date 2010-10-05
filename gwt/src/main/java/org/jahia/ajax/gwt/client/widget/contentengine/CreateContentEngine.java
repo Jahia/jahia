@@ -75,7 +75,7 @@ public class CreateContentEngine extends AbstractContentEngine {
     private Button ok;
     private Button okAndNew;
     private Button cancel;
-
+    private String parentPath;
 
     /**
      * Open Edit content engine for a new node creation
@@ -90,10 +90,15 @@ public class CreateContentEngine extends AbstractContentEngine {
     public CreateContentEngine(Linker linker, GWTJahiaNode parent, GWTJahiaNodeType type, Map<String, GWTJahiaNodeProperty> props, String targetName, boolean createInParentAndMoveBefore, EngineContainer engineContainer) {
         super(getCreateConfig(type, linker.getConfig()), linker);
         this.existingNode = false;
-        this.parentNode = parent;
+        this.targetNode = parent;
         this.type = type;
         if (!"*".equals(targetName)) {
             this.targetName = targetName;
+        }
+        if (createInParentAndMoveBefore) {
+            this.parentPath = parent.getPath().substring(0, parent.getPath().lastIndexOf('/'));
+        } else {
+            this.parentPath = parent.getPath();
         }
         this.createInParentAndMoveBefore = createInParentAndMoveBefore;
 
@@ -164,12 +169,12 @@ public class CreateContentEngine extends AbstractContentEngine {
      * load mixin
      */
     private void loadEngine() {
-        contentService.initializeCreateEngine(nodeTypes.iterator().next().getName(), parentNode.getPath(), new BaseAsyncCallback<GWTJahiaCreateEngineInitBean>() {
+        contentService.initializeCreateEngine(nodeTypes.iterator().next().getName(), parentPath, new BaseAsyncCallback<GWTJahiaCreateEngineInitBean>() {
             public void onSuccess(GWTJahiaCreateEngineInitBean result) {
                 mixin = result.getMixin();
                 initializersValues = result.getInitializersValues();
                 defaultLanguageBean = result.getCurrentLocale();
-
+                acl = result.getAcl();
                 final List<GWTJahiaLanguage> languages = result.getLanguages();
                 setAvailableLanguages(languages);
                 setButtonsEnabled(true);
@@ -277,9 +282,9 @@ public class CreateContentEngine extends AbstractContentEngine {
             }
         };
         if (createInParentAndMoveBefore) {
-            JahiaContentManagementService.App.getInstance().createNodeAndMoveBefore(parentNode.getPath(), nodeName, type.getName(), mixin, newNodeACL, props, langCodeProperties, callback);
+            JahiaContentManagementService.App.getInstance().createNodeAndMoveBefore(targetNode.getPath(), nodeName, type.getName(), mixin, newNodeACL, props, langCodeProperties, callback);
         } else {
-            JahiaContentManagementService.App.getInstance().createNode(parentNode.getPath(), nodeName, type.getName(), mixin, newNodeACL, props, langCodeProperties, callback);
+            JahiaContentManagementService.App.getInstance().createNode(parentPath, nodeName, type.getName(), mixin, newNodeACL, props, langCodeProperties, callback);
         }
     }
 

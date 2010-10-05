@@ -79,6 +79,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
     private Map<String, List<GWTJahiaValueDisplayBean>> initializersValues;
     private Map<String, GWTJahiaNodeProperty> properties = new HashMap<String, GWTJahiaNodeProperty>();
     private GWTJahiaLanguage language;
+    private GWTJahiaNodeACL acl;
 
     private List<GWTJahiaNode> selectedNodes = null;
 
@@ -195,6 +196,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                         mixin = result.getMixin();
                         initializersValues = result.getInitializersValues();
                         ok.setEnabled(true);
+                        acl = result.getAcl();
                         fillCurrentTab();
                     }
                 });
@@ -266,7 +268,11 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
         return selectedNodes;
     }
 
-    public GWTJahiaNode getParentNode() {
+    public GWTJahiaNodeACL getAcl() {
+        return acl;
+    }
+
+    public GWTJahiaNode getTargetNode() {
         return null;
     }
 

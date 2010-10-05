@@ -114,8 +114,6 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void getProperties(String path, String langCode, AsyncCallback<GWTJahiaGetPropertiesResult> async);
 
-    void getProperties(String path, AsyncCallback<GWTJahiaGetPropertiesResult> async);
-
     void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps, AsyncCallback async);
 
     void savePropertiesAndACL(List<GWTJahiaNode> nodes, GWTJahiaNodeACL acl, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<GWTJahiaNodeProperty> sharedProperties, AsyncCallback async);
@@ -143,10 +141,6 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
     void moveAtEnd(String sourcePath, String targetPath, AsyncCallback asyncCallback);
 
     void moveOnTopOf(String sourcePath, String targetPath, AsyncCallback asyncCallback);
-
-    void getACL(String path, AsyncCallback<GWTJahiaNodeACL> async);
-
-    void setACL(String path, GWTJahiaNodeACL acl, AsyncCallback async);
 
     void createDefaultUsersGroupACE(List<String> permissions, boolean grand, AsyncCallback<GWTJahiaNodeACE> async);
 

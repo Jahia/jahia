@@ -32,6 +32,7 @@
 
 package org.jahia.ajax.gwt.client.data;
 
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
@@ -51,6 +52,7 @@ import java.util.Map;
 public class GWTJahiaEditEngineInitBean extends GWTJahiaGetPropertiesResult {
     private List<GWTJahiaNodeType> mixin;
     private Map<String, List<GWTJahiaValueDisplayBean>> initializersValues;
+    private GWTJahiaNodeACL acl;
 
     public GWTJahiaEditEngineInitBean() {
     }
@@ -73,5 +75,13 @@ public class GWTJahiaEditEngineInitBean extends GWTJahiaGetPropertiesResult {
 
     public void setInitializersValues(Map<String, List<GWTJahiaValueDisplayBean>> initializersValues) {
         this.initializersValues = initializersValues;
+    }
+
+    public GWTJahiaNodeACL getAcl() {
+        return acl;
+    }
+
+    public void setAcl(GWTJahiaNodeACL acl) {
+        this.acl = acl;
     }
 }

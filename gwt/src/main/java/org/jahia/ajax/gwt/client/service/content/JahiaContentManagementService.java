@@ -123,8 +123,6 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     public GWTJahiaGetPropertiesResult getProperties(String path, String langCode) throws GWTJahiaServiceException;
 
-    public GWTJahiaGetPropertiesResult getProperties(String path) throws GWTJahiaServiceException;
-
     public void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps) throws GWTJahiaServiceException;
 
     void savePropertiesAndACL(List<GWTJahiaNode> nodes, GWTJahiaNodeACL acl, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<GWTJahiaNodeProperty> sharedProperties) throws GWTJahiaServiceException;
@@ -152,10 +150,6 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
     public void moveAtEnd(String sourcePath, String targetPath) throws GWTJahiaServiceException;
 
     public void moveOnTopOf(String sourcePath, String targetPath) throws GWTJahiaServiceException;
-
-    public GWTJahiaNodeACL getACL(String path) throws GWTJahiaServiceException;
-
-    public void setACL(String path, GWTJahiaNodeACL acl) throws GWTJahiaServiceException;
 
     public GWTJahiaNodeACE createDefaultUsersGroupACE(List<String> permissions, boolean grand) throws GWTJahiaServiceException;
 

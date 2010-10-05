@@ -443,15 +443,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public GWTJahiaGetPropertiesResult getProperties(String path, String langCode) throws GWTJahiaServiceException {
         if (langCode == null) {
-            return getProperties(path);
+            return getProperties(path, getLocale());
         }
         return getProperties(path, LanguageCodeConverters.getLocaleFromCode(langCode));
     }
 
-
-    public GWTJahiaGetPropertiesResult getProperties(String path) throws GWTJahiaServiceException {
-        return getProperties(path, getLocale());
-    }
 
     /**
      * Get GWTJahiaGetPropertiesResult
@@ -536,7 +532,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         // save acl
         if (acl != null) {
             for (GWTJahiaNode node : nodes) {
-                setACL(node.getPath(), acl);
+                contentManager.setACL(node.getPath(), acl, retrieveCurrentSession());
             }
         }
     }
@@ -568,12 +564,13 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
 
         // save children orders
-        contentManager.updateChildren(node, orderedChildrenNode, retrieveCurrentSession());
+        final JCRSessionWrapper jcrSessionWrapper = retrieveCurrentSession();
+        contentManager.updateChildren(node, orderedChildrenNode, jcrSessionWrapper);
 
 
         // save acl
         if (acl != null) {
-            setACL(node.getPath(), acl);
+            contentManager.setACL(node.getPath(), acl, jcrSessionWrapper);
         }
 
         if (node.get("vanityMappings") != null) {
@@ -581,8 +578,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
         if (node.get("activeWorkflows") != null) {
             workflow.updateWorkflowRules(node,
-                    (Map<GWTJahiaWorkflowDefinition, GWTJahiaNodeACL>) node.get("activeWorkflows"),
-                    retrieveCurrentSession());
+                    (Map<GWTJahiaWorkflowDefinition, GWTJahiaNodeACL>) node.get("activeWorkflows"), jcrSessionWrapper);
         }
     }
 
@@ -619,10 +615,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
         GWTJahiaNode res;
 
-        res = contentManager.createNode(parentPath, name, nodeType, mixin, props, retrieveCurrentSession());
+        final JCRSessionWrapper jcrSessionWrapper = retrieveCurrentSession();
+        res = contentManager.createNode(parentPath, name, nodeType, mixin, props, jcrSessionWrapper);
 
         try {
-            retrieveCurrentSession().save();
+            jcrSessionWrapper.save();
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException("Node creation failed. Cause: " + e.getMessage());
@@ -643,7 +640,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
 
         if (acl != null) {
-            setACL(res.getPath(), acl);
+            contentManager.setACL(res.getPath(), acl, jcrSessionWrapper);
         }
 
         return node;
@@ -743,14 +740,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }
-    }
-
-    public GWTJahiaNodeACL getACL(String path) throws GWTJahiaServiceException {
-        return contentManager.getACL(path, false, retrieveCurrentSession(), getLocale());
-    }
-
-    public void setACL(String path, GWTJahiaNodeACL acl) throws GWTJahiaServiceException {
-        contentManager.setACL(path, acl, retrieveCurrentSession());
     }
 
     public GWTJahiaNodeACE createDefaultUsersGroupACE(List<String> permissions, boolean grand)
@@ -1408,6 +1397,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
             result.setInitializersValues(contentDefinition.getInitializersValues(allTypes,
                     NodeTypeRegistry.getInstance().getNodeType(typename), null, parent, getUILocale()));
+
+            result.setAcl(contentManager.getACL(parentpath, true, sessionWrapper, getLocale()));
             return result;
         } catch (RepositoryException e) {
             logger.error("Cannot get node", e);
@@ -1466,6 +1457,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             result.setInitializersValues(
                     contentDefinition.getInitializersValues(allTypes, nodeWrapper.getPrimaryNodeType(), nodeWrapper,
                             nodeWrapper.getParent(), getUILocale()));
+            result.setAcl(contentManager.getACL(nodepath, false, sessionWrapper, getLocale()));
             return result;
         } catch (RepositoryException e) {
             logger.error("Cannot get node", e);

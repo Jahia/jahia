@@ -33,6 +33,7 @@
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -59,7 +60,9 @@ public interface NodeHolder {
 
     List<GWTJahiaNode> getNodes();
 
-    GWTJahiaNode getParentNode();
+    GWTJahiaNodeACL getAcl();
+
+    GWTJahiaNode getTargetNode();
 
     boolean isExistingNode();
 

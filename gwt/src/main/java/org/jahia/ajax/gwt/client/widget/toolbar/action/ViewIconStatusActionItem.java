@@ -32,21 +32,9 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.MenuEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.menu.CheckMenuItem;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
-import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
-import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -55,14 +43,14 @@ import java.util.List;
  * Time: 6:59:01 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ViewACLStatusActionItem extends BaseActionItem {
+public class ViewIconStatusActionItem extends BaseActionItem {
 
     @Override public MenuItem createMenuItem() {
         return new CheckMenuItem();
     }
 
     @Override public void onComponentSelection() {
-        ((EditLinker)linker).getMainModule().setInfoLayer("acl", ((CheckMenuItem)getMenuItem()).isChecked());
+        ((EditLinker)linker).getMainModule().setInfoLayer(getGwtToolbarItem().getProperties().get("type").getValue(), ((CheckMenuItem)getMenuItem()).isChecked());
     }
 
 }

@@ -50,6 +50,7 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaPermission;
 import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -60,6 +61,7 @@ import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.contentengine.EditContentEnginePopupListener;
 import org.jahia.ajax.gwt.client.widget.edit.InfoLayers;
+import org.jahia.ajax.gwt.client.widget.publication.PublicationManagerEngine;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionContextMenu;
 
 import java.util.*;
@@ -190,7 +192,7 @@ public class MainModule extends Module {
                                 Selection.getInstance().hide();
                                 Hover.getInstance().removeAll();
                                 infoLayers.removeAll();
-                                
+
                                 display(result.getResult());
 
                                 scrollContainer.setVScrollPosition(i);
@@ -344,7 +346,7 @@ public class MainModule extends Module {
         String param = hash.substring(index2+1);
         staticGoTo(url, template, param);
     }
-    
+
     public void switchLanguage(String language) {
         mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
         editLinker.setLocale(language);
@@ -406,12 +408,35 @@ public class MainModule extends Module {
 
             List<Module> modules = ModuleHelper.getModules();
 
+            String lastUnpublished = null;
+
             for (Module m : modules) {
                 if (!m.getPath().endsWith("*")) {
                     if (m.getNode() != null) {
                         List<AbstractImagePrototype> images = new ArrayList<AbstractImagePrototype>();
                         if (activeLayers.containsKey("acl") && m.getNode().isHasAcl()) {
                             images.add(ToolbarIconProvider.getInstance().getIcon("viewACLStatus"));
+                        }
+                        if (activeLayers.containsKey("publication")) {
+                            GWTJahiaPublicationInfo info = m.getNode().getPublicationInfo();
+                            if (lastUnpublished == null || !m.getNode().getPath().startsWith(lastUnpublished)) {
+                                if (info.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
+                                    lastUnpublished = m.getNode().getPath();
+                                    if (info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
+                                        images.add(ToolbarIconProvider.getInstance().getIcon("publication/unpublished"));
+                                    } else {
+                                        images.add(ToolbarIconProvider.getInstance().getIcon("publication/notpublished"));
+                                    }
+                                } else if (info.getStatus() == GWTJahiaPublicationInfo.LOCKED) {
+                                    images.add(ToolbarIconProvider.getInstance().getIcon("publication/locked"));
+                                } else if (info.getStatus() == GWTJahiaPublicationInfo.MODIFIED) {
+                                    images.add(ToolbarIconProvider.getInstance().getIcon("publication/modified"));
+                                } else if (info.getStatus() == GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE) {
+                                    images.add(ToolbarIconProvider.getInstance().getIcon("publication/mandatorylanguageunpublishable"));
+                                } else if (info.getStatus() == GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_VALID) {
+                                    images.add(ToolbarIconProvider.getInstance().getIcon("publication/mandatorylanguagevalid"));
+                                }
+                            }
                         }
                         if (!images.isEmpty()) {
                             infoLayers.addInfoLayer(m, images, null,true, "1");

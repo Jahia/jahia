@@ -14,13 +14,17 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <c:if test="${not omitFormatting && !inWrapper}"><div id="${currentNode.UUID}"></c:if>
 <template:include template="hidden.header"/>
-
+<c:set var="isEmpty" value="true"/>
 <c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}" end="${moduleMap.end}">
     <template:module node="${subchild}" template="${moduleMap.subNodesTemplate}" editable="${moduleMap.editable}"/>
+    <c:set var="isEmpty" value="false"/>
 </c:forEach>
 <c:if test="${not omitFormatting}"><div class="clear"></div></c:if>
 <c:if test="${moduleMap.editable and renderContext.editMode}">
     <template:module path="*"/>
+</c:if>
+<c:if test="${not empty moduleMap.emptyListMessage and renderContext.editMode and isEmpty}">
+    ${moduleMap.emptyListMessage}
 </c:if>
 <template:include template="hidden.footer"/>
 

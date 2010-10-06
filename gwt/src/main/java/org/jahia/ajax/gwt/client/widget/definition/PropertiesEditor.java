@@ -37,7 +37,6 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.*;
@@ -75,7 +74,6 @@ public class PropertiesEditor extends FormPanel {
     private Set<String> templateTypes = new HashSet<String>();
     private FieldSet fieldSet = null;
     private ContentPanel commonFields = null;
-    private FormPanel form = this;
 
     public PropertiesEditor(List<GWTJahiaNodeType> nodeTypes, Map<String, GWTJahiaNodeProperty> properties,
                             String datatype) {
@@ -155,9 +153,9 @@ public class PropertiesEditor extends FormPanel {
             }
 
             if (viewInheritedItems) {
-                addItems(form, nodeType, nodeType.getInheritedItems(), false, fieldSetGrouping);
+                addItems(nodeType, nodeType.getInheritedItems(), false, fieldSetGrouping);
             }
-            addItems(form, nodeType, nodeType.getItems(), false, fieldSetGrouping);
+            addItems(nodeType, nodeType.getItems(), false, fieldSetGrouping);
         }
         if (mixin != null) {
             for (GWTJahiaNodeType mix : mixin) {
@@ -166,15 +164,15 @@ public class PropertiesEditor extends FormPanel {
                 }
 
                 if (viewInheritedItems) {
-                    addItems(form, mix, mix.getInheritedItems(), true, fieldSetGrouping);
+                    addItems(mix, mix.getInheritedItems(), true, fieldSetGrouping);
                 }
 
-                addItems(form, mix, mix.getItems(), true, fieldSetGrouping);
+                addItems(mix, mix.getItems(), true, fieldSetGrouping);
 
             }
         }
         if (templateField != null && templateField.getValue() != null) {
-            setTemplate((FormPanel) templateField.getParent());
+            setTemplate();
         }
 
 
@@ -190,9 +188,11 @@ public class PropertiesEditor extends FormPanel {
      * @param optional
      * @param fieldSetGrouping
      */
-    private void addItems(FormPanel form, GWTJahiaNodeType nodeType, List<GWTJahiaItemDefinition> items,
+    private void addItems(GWTJahiaNodeType nodeType, List<GWTJahiaItemDefinition> items,
                           boolean optional, boolean fieldSetGrouping) {
 
+
+        ContentPanel fieldContainer = this;
 
         for (final GWTJahiaItemDefinition definition : items) {
             if ((excludedTypes != null && excludedTypes.contains(definition.getDeclaringNodeType())) ||
@@ -225,10 +225,10 @@ public class PropertiesEditor extends FormPanel {
                 templateField = (ComboBox<GWTJahiaValueDisplayBean>) field;
                 templateField.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaValueDisplayBean>() {
                     public void selectionChanged(SelectionChangedEvent<GWTJahiaValueDisplayBean> event) {
-                        FormPanel form = (FormPanel) templateField.getParent();
+                        ContentPanel form = (ContentPanel) templateField.getParent();
                         form.removeAll();
                         form.add(templateField);
-                        setTemplate(form);
+                        setTemplate();
                         form.layout();
                     }
                 });
@@ -284,7 +284,7 @@ public class PropertiesEditor extends FormPanel {
                     field.setName(f.getName());
                     field.setFieldLabel(f.getFieldLabel());
                 }
-
+                
                 if (optional && fieldSetGrouping &&
                         (fieldSet == null || !fieldSet.getId().equals(definition.getDeclaringNodeTypeLabel()))) {
                     setPadding(0);
@@ -306,8 +306,8 @@ public class PropertiesEditor extends FormPanel {
                                 public void handleEvent(ComponentEvent componentEvent) {
                                     removedTypes.add(definition.getDeclaringNodeType());
                                     addedTypes.remove(definition.getDeclaringNodeType());
-                                    final FormPanel thisForm =
-                                            (FormPanel) ((FieldSet) ((FieldSetEvent) componentEvent).getBoxComponent())
+                                    final ContentPanel thisForm =
+                                            (ContentPanel) ((FieldSet) ((FieldSetEvent) componentEvent).getBoxComponent())
                                                     .getItem(0);
                                     for (Component component : thisForm.getItems()) {
                                         component.setData("addedField", null);
@@ -318,8 +318,8 @@ public class PropertiesEditor extends FormPanel {
                                 public void handleEvent(ComponentEvent componentEvent) {
                                     addedTypes.add(definition.getDeclaringNodeType());
                                     removedTypes.remove(definition.getDeclaringNodeType());
-                                    final FormPanel thisForm =
-                                            (FormPanel) ((FieldSet) ((FieldSetEvent) componentEvent).getBoxComponent())
+                                    final ContentPanel thisForm =
+                                            (ContentPanel) ((FieldSet) ((FieldSetEvent) componentEvent).getBoxComponent())
                                                     .getItem(0);
                                     for (Component component : thisForm.getItems()) {
                                         component.setData("addedField", "true");
@@ -334,25 +334,26 @@ public class PropertiesEditor extends FormPanel {
                     }
                     fieldSet.setHeading(definition.getDeclaringNodeTypeLabel());
                     //fieldSet.setStyleAttribute("padding", "0");
-                    form = new FormPanel();
-                    form.setLabelAlign(LabelAlign.TOP);
-                    form.setLabelWidth(80);
-                    form.setHeaderVisible(false);
-                    form.setFrame(false);
-                    setBorders(false);
-                    setBodyBorder(false);
-                    fieldSet.add(form);
+                    
+                    FormLayout layout = new FormLayout(LabelAlign.TOP);
+                    layout.setLabelWidth(80);
+
+                    fieldContainer = new ContentPanel(layout);
+                    fieldContainer.setHeaderVisible(false);
+                    fieldContainer.setFrame(false);
+                    fieldContainer.setBorders(false);
+                    fieldContainer.setBodyBorder(true);
+                    
+                    fieldSet.add(fieldContainer);
                     add(fieldSet);
 
                     if (isOrderingList) {
                         orderingListFieldSet.add(fieldSet);
                     }
-
-                    this.form = form;
                 }
 
                 if (optional) {
-                    form.add(field, new FormData("95%"));
+                	fieldContainer.add(field, new FormData("95%"));
                 } else {
                     addCommonFieldSet(field);
                 }
@@ -391,14 +392,14 @@ public class PropertiesEditor extends FormPanel {
      *
      * @param form
      */
-    private void setTemplate(FormPanel form) {
+    private void setTemplate() {
         String addMixin = templateField.getValue().get("addMixin");
         templateTypes.clear();
         if (addMixin != null && mixin != null) {
             for (GWTJahiaNodeType mix : mixin) {
                 if (mix.getName().equals(addMixin)) {
                     templateTypes.add(mix.getName());
-                    addItems(form, mix, mix.getItems(), false, false);
+                    addItems(mix, mix.getItems(), false, false);
                 }
             }
         }

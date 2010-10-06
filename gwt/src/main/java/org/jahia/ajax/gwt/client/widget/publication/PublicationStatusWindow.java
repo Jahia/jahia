@@ -84,10 +84,7 @@ public class PublicationStatusWindow extends Window {
         TableData d = new TableData(Style.HorizontalAlignment.CENTER, Style.VerticalAlignment.MIDDLE);
         d.setMargin(5);
 
-        GroupingStore<GWTJahiaPublicationInfo> store = new GroupingStore<GWTJahiaPublicationInfo>();
-        store.add(infos);
-
-        final Grid<GWTJahiaPublicationInfo> grid = new PublicationStatusGrid(store);
+        final Grid<GWTJahiaPublicationInfo> grid = new PublicationStatusGrid(infos);
         add(grid);
 
         cancel = new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {

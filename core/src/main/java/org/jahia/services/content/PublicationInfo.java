@@ -43,7 +43,6 @@ import java.util.*;
  */
 public class PublicationInfo implements Serializable {
     public static final int PUBLISHED = 1;
-    public static final int LOCKED = 2;
     public static final int MODIFIED = 3;
     public static final int NOT_PUBLISHED = 4;
     public static final int UNPUBLISHED = 5;

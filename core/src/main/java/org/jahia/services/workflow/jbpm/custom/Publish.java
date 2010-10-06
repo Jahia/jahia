@@ -67,7 +67,7 @@ public class Publish implements ExternalActivityBehaviour {
         jobDataMap.put(PublicationJob.PUBLICATION_INFOS, info);
         jobDataMap.put(PublicationJob.SOURCE, workspace);
         jobDataMap.put(PublicationJob.DESTINATION, Constants.LIVE_WORKSPACE);
-        jobDataMap.put(PublicationJob.LOCK, "process-" + execution.getProcessInstance().getId());
+        jobDataMap.put(PublicationJob.LOCK, "publication-process-" + execution.getProcessInstance().getId());
 
         ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail);
         List<WorkflowVariable> workflowVariables = (List<WorkflowVariable>) execution.getVariable("endDate");

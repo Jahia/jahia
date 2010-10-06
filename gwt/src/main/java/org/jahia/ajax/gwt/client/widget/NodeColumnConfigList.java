@@ -121,10 +121,13 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
                                      ListStore<GWTJahiaNode> store, Grid<GWTJahiaNode> grid) {
                     final GWTJahiaPublicationInfo info = node.getPublicationInfo();
                     if (info != null) {
-                        Set<Integer> status = new HashSet<Integer>(info.getSubnodesStatus());
-                        status.addAll(info.getReferencesStatus());
-                        status.add(info.getStatus());
-                        int state = Collections.max(status);
+                        int state = info.getStatus();
+                        if (state != GWTJahiaPublicationInfo.LOCKED) {
+                            Set<Integer> status = new HashSet<Integer>(info.getSubnodesStatus());
+                            status.addAll(info.getReferencesStatus());
+                            status.add(info.getStatus());
+                            state = Collections.max(status);
+                        }
                         if (state > 0) {
                             String title = Messages.get("fm_column_publication_info_" + state, String.valueOf(state));
                             final Image image = ToolbarIconProvider.getInstance()

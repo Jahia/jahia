@@ -52,7 +52,7 @@ public class Unlock implements ExternalActivityBehaviour {
     public void execute(ActivityExecution execution) throws Exception {
         List<PublicationInfo> info = (List<PublicationInfo>) execution.getVariable("publicationInfos");
         String workspace = (String) execution.getVariable("workspace");
-        JCRPublicationService.getInstance().unlockForPublication(info, workspace, "process-"+execution.getProcessInstance().getId());
+        JCRPublicationService.getInstance().unlockForPublication(info, workspace, "publication-process-"+execution.getProcessInstance().getId());
         execution.takeDefaultTransition();
     }
 

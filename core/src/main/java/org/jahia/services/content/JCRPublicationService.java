@@ -930,6 +930,16 @@ public class JCRPublicationService extends JahiaService {
                 }
             }
         }
+
+        if (node.hasProperty(Constants.JAHIA_LOCKTYPES)) {
+            Value[] lockTypes = node.getProperty(Constants.JAHIA_LOCKTYPES).getValues();
+            for (Value lockType : lockTypes) {
+                if (StringUtils.substringAfter(lockType.getString(),":").startsWith("publication-")) {
+                    info.setLocked(true);
+                }
+            }
+        }
+        
         // todo : performance problem on permission check
 //        info.setCanPublish(stageNode.hasPermission(JCRNodeWrapper.WRITE_LIVE));
         info.setCanPublish(true);

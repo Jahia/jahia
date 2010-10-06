@@ -32,6 +32,7 @@
 
 package org.jahia.ajax.gwt.helper;
 
+import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -88,6 +89,9 @@ public class PublicationHelper {
         try {
             PublicationInfo pubInfo = publicationService.getPublicationInfo(uuid, languages, true, true, false, currentUserSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE).get(0);
             GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(pubInfo.getRoot().getPath(), pubInfo.getRoot().getStatus(), pubInfo.getRoot().isCanPublish());
+            if (pubInfo.getRoot().isLocked()) {
+                gwtInfo.setStatus(GWTJahiaPublicationInfo.LOCKED);
+            }
             for (PublicationInfoNode sub : pubInfo.getRoot().getChildren()) {
                 if (sub.getPath().contains("/j:translation")) {
                     if (sub.getStatus() > gwtInfo.getStatus()) {
@@ -95,6 +99,9 @@ public class PublicationHelper {
                     }
                     if (gwtInfo.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED && sub.getStatus() != GWTJahiaPublicationInfo.UNPUBLISHED) {
                         gwtInfo.setStatus(sub.getStatus());
+                    }
+                    if (sub.isLocked()) {
+                        gwtInfo.setStatus(GWTJahiaPublicationInfo.LOCKED);
                     }
                 }
             }
@@ -114,14 +121,7 @@ public class PublicationHelper {
                                                             JCRSessionWrapper currentUserSession, boolean allSubTree) throws GWTJahiaServiceException {
         try {
             List<PublicationInfo> infos = publicationService.getPublicationInfos(uuids, languages, true, true, allSubTree, currentUserSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE);
-            List<GWTJahiaPublicationInfo> list = convert(infos, currentUserSession);
-//            List<GWTJahiaPublicationInfo> res = new ArrayList<GWTJahiaPublicationInfo>(list);
-//            for (GWTJahiaPublicationInfo info : list) {
-//                if (info.getStatus() == GWTJahiaPublicationInfo.PUBLISHED) {
-//                    res.remove(info);
-//                }
-//            }
-            return list;
+            return convert(infos, currentUserSession);
         } catch (RepositoryException e) {
             logger.error("repository exception", e);
             throw new GWTJahiaServiceException(e.getMessage());
@@ -130,26 +130,31 @@ public class PublicationHelper {
 
     public List<GWTJahiaPublicationInfo> convert(List<PublicationInfo> pubInfos, JCRSessionWrapper currentUserSession) {
         List<GWTJahiaPublicationInfo> gwtInfos = new ArrayList<GWTJahiaPublicationInfo>();
+        List<String> mainTitles = new ArrayList<String>();
         for (PublicationInfo pubInfo : pubInfos) {
-            PublicationInfoNode node = pubInfo.getRoot();
-            gwtInfos.addAll(convert(pubInfo, pubInfo.getRoot().getPath(), currentUserSession));
+            gwtInfos.addAll(convert(pubInfo, pubInfo.getRoot().getPath(), mainTitles, currentUserSession));
         }
         return gwtInfos;
     }
 
-    private List<GWTJahiaPublicationInfo> convert(PublicationInfo pubInfo, String mainTitle, JCRSessionWrapper currentUserSession) {
+    private List<GWTJahiaPublicationInfo> convert(PublicationInfo pubInfo, String mainTitle, List<String> mainTitles,
+                                                  JCRSessionWrapper currentUserSession) {
         PublicationInfoNode node = pubInfo.getRoot();
         List<GWTJahiaPublicationInfo> gwtInfos = new ArrayList<GWTJahiaPublicationInfo>();
-        convert(gwtInfos, mainTitle, node, currentUserSession);
+        convert(gwtInfos, mainTitle, mainTitles, node, currentUserSession);
         return gwtInfos;
     }
 
-    private GWTJahiaPublicationInfo convert(List<GWTJahiaPublicationInfo> all, String mainTitle, PublicationInfoNode node,
+    private GWTJahiaPublicationInfo convert(List<GWTJahiaPublicationInfo> all, String mainTitle,
+                                            List<String> mainTitles, PublicationInfoNode node,
                                             JCRSessionWrapper currentUserSession) {
         GWTJahiaPublicationInfo gwtInfo = convert(node, currentUserSession);
         all.add(gwtInfo);
         gwtInfo.set("mainTitle", mainTitle);
-
+        if (!mainTitles.contains(mainTitle)) {
+            mainTitles.add(mainTitle);
+        }
+        gwtInfo.set("mainTitleIndex", mainTitles.indexOf(mainTitle));
         Map<String, GWTJahiaPublicationInfo> gwtInfos = new HashMap<String, GWTJahiaPublicationInfo>();
         gwtInfos.put(node.getPath(), gwtInfo);
         List<String> refUuids = new ArrayList<String>();
@@ -168,19 +173,19 @@ public class PublicationHelper {
                 for (PublicationInfo pi : sub.getReferences()) {
                     if (!refUuids.contains(pi.getRoot().getUuid())) {
                         refUuids.add(pi.getRoot().getUuid());
-                        all.addAll(convert(pi, "reference", currentUserSession));
+                        all.addAll(convert(pi, pi.getRoot().getPath(), mainTitles, currentUserSession));
                     }
                 }
 
             } else if (sub.getPath().indexOf("/j:translation") == -1) {
-                GWTJahiaPublicationInfo lastPub = convert(all, mainTitle, sub, currentUserSession);
+                GWTJahiaPublicationInfo lastPub = convert(all, mainTitle, mainTitles, sub, currentUserSession);
                 gwtInfos.put(lastPub.getPath(), lastPub);
             }
         }
         for (PublicationInfo pi : node.getReferences()) {
             if (!refUuids.contains(pi.getRoot().getUuid())) {
                 refUuids.add(pi.getRoot().getUuid());
-                all.addAll(convert(pi, "reference", currentUserSession));
+                all.addAll(convert(pi, pi.getRoot().getPath(), mainTitles, currentUserSession));
             }
         }
 
@@ -248,7 +253,7 @@ public class PublicationHelper {
             List<PublicationInfo> infos = publicationService.getPublicationInfos(uuids, Collections.singleton(language), true, true, allSubTree,
                     workspaceName, Constants.LIVE_WORKSPACE);
             if (workflow) {
-                Map<WorkflowRule, List<PublicationInfo>> m = new HashMap<WorkflowRule, List<PublicationInfo>>();
+                Map<WorkflowRule, List<PublicationInfo>> m = new ListOrderedMap();
 
                 for (PublicationInfo info : infos) {
                     if (info.needPublication()) {

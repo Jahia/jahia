@@ -310,26 +310,26 @@ public class PublicationManagerEngine extends Window {
         private int getState(GWTJahiaNode node) {
             int state = node.getPublicationInfos() != null ? node.getPublicationInfos().get(
                     getDataIndex()).getStatus() : 0;
-            boolean wfStatus = state == GWTJahiaPublicationInfo.MODIFIED || state == GWTJahiaPublicationInfo.NOT_PUBLISHED || state==GWTJahiaPublicationInfo.UNPUBLISHED;
-            if(!wfStatus && node.getPublicationInfos() != null) {
-                GWTJahiaPublicationInfo publicationInfo = node.getPublicationInfos().get(getDataIndex());
-                if(state < GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE &&
-                   (publicationInfo.getSubnodesStatus().contains(GWTJahiaPublicationInfo.MODIFIED) ||
-                    publicationInfo.getSubnodesStatus().contains(GWTJahiaPublicationInfo.NOT_PUBLISHED) ||
-                    publicationInfo.getSubnodesStatus().contains(GWTJahiaPublicationInfo.UNPUBLISHED))) {
-                    state = publicationInfo.getSubnodesStatus().contains(GWTJahiaPublicationInfo.MODIFIED)?GWTJahiaPublicationInfo.MODIFIED:state;
-                    state = publicationInfo.getSubnodesStatus().contains(GWTJahiaPublicationInfo.NOT_PUBLISHED)?GWTJahiaPublicationInfo.NOT_PUBLISHED:state;
-                    state = publicationInfo.getSubnodesStatus().contains(GWTJahiaPublicationInfo.UNPUBLISHED)?GWTJahiaPublicationInfo.UNPUBLISHED:state;
-                    wfStatus = true;
-                }
-            }
-            if (wfStatus) {
-                // is there a workflow started
-                GWTJahiaWorkflowInfo info = node.getWorkflowInfos().get(getDataIndex());
-                if (info.getActiveWorkflows().get(new GWTJahiaWorkflowType("publish")) != null) {
-                    state = GWTJahiaPublicationInfo.LOCKED;
-                }
-            }
+//            boolean wfStatus = state == GWTJahiaPublicationInfo.MODIFIED || state == GWTJahiaPublicationInfo.NOT_PUBLISHED || state==GWTJahiaPublicationInfo.UNPUBLISHED;
+//            if(!wfStatus && node.getPublicationInfos() != null) {
+//                GWTJahiaPublicationInfo publicationInfo = node.getPublicationInfos().get(getDataIndex());
+//                if(state < GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE &&
+//                   (publicationInfo.getSubnodesStatus().contains(GWTJahiaPublicationInfo.MODIFIED) ||
+//                    publicationInfo.getSubnodesStatus().contains(GWTJahiaPublicationInfo.NOT_PUBLISHED) ||
+//                    publicationInfo.getSubnodesStatus().contains(GWTJahiaPublicationInfo.UNPUBLISHED))) {
+//                    state = publicationInfo.getSubnodesStatus().contains(GWTJahiaPublicationInfo.MODIFIED)?GWTJahiaPublicationInfo.MODIFIED:state;
+//                    state = publicationInfo.getSubnodesStatus().contains(GWTJahiaPublicationInfo.NOT_PUBLISHED)?GWTJahiaPublicationInfo.NOT_PUBLISHED:state;
+//                    state = publicationInfo.getSubnodesStatus().contains(GWTJahiaPublicationInfo.UNPUBLISHED)?GWTJahiaPublicationInfo.UNPUBLISHED:state;
+//                    wfStatus = true;
+//                }
+//            }
+//            if (wfStatus) {
+//                // is there a workflow started
+//                GWTJahiaWorkflowInfo info = node.getWorkflowInfos().get(getDataIndex());
+//                if (info.getActiveWorkflows().get(new GWTJahiaWorkflowType("publish")) != null) {
+//                    state = GWTJahiaPublicationInfo.LOCKED;
+//                }
+//            }
             return state;
         }
 

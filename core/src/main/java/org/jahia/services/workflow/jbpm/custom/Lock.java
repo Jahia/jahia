@@ -51,7 +51,7 @@ public class Lock implements ExternalActivityBehaviour {
     public void execute(ActivityExecution execution) throws Exception {
         List<PublicationInfo> info = (List<PublicationInfo>) execution.getVariable("publicationInfos");
         String workspace = (String) execution.getVariable("workspace");
-        JCRPublicationService.getInstance().lockForPublication(info, workspace, "process-"+execution.getProcessInstance().getId());
+        JCRPublicationService.getInstance().lockForPublication(info, workspace, "publication-process-"+execution.getProcessInstance().getId());
         execution.takeDefaultTransition();
     }
 

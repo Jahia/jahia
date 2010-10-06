@@ -112,6 +112,7 @@ public class EditContentEngine extends AbstractContentEngine {
         ok.setHeight(BUTTON_HEIGHT);
         ok.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
         ok.addSelectionListener(new SaveSelectionListener());
+        ok.setEnabled(false);
         buttonBar.add(ok);
 
         /* ToDo: activate restore button in the engine

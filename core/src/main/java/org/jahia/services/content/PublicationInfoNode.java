@@ -15,6 +15,7 @@ public class PublicationInfoNode implements Serializable {
     private String uuid;
     private String path;
     private int status;
+    private boolean locked;
     private boolean canPublish;
     private List<PublicationInfoNode> child = new ArrayList<PublicationInfoNode>();
     private List<PublicationInfo> references = new ArrayList<PublicationInfo>();
@@ -42,6 +43,14 @@ public class PublicationInfoNode implements Serializable {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
     }
 
     public boolean isCanPublish() {

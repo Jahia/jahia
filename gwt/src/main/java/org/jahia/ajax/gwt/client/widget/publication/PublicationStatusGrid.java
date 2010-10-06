@@ -34,6 +34,9 @@ package org.jahia.ajax.gwt.client.widget.publication;
 
 import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.store.StoreSorter;
+import com.extjs.gxt.ui.client.util.SwallowEvent;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
@@ -51,8 +54,20 @@ import java.util.List;
  */
 public class PublicationStatusGrid extends Grid<GWTJahiaPublicationInfo> {
 
-    public PublicationStatusGrid(GroupingStore<GWTJahiaPublicationInfo> store) {
+    public PublicationStatusGrid(final List<GWTJahiaPublicationInfo> infos) {
         super();
+        GroupingStore<GWTJahiaPublicationInfo> store = new GroupingStore<GWTJahiaPublicationInfo>() ;
+        store.add(infos);
+
+        store.setStoreSorter(new StoreSorter<GWTJahiaPublicationInfo>() {
+            @Override public int compare(Store<GWTJahiaPublicationInfo> store,
+                                         GWTJahiaPublicationInfo m1, GWTJahiaPublicationInfo m2, String property) {
+                if (property.equals("mainTitle")) {
+                    return super.compare(store, m1, m2, "mainTitleIndex");
+                }
+                return super.compare(store, m1, m2, property);
+            }
+        });
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
         ColumnConfig column = new ColumnConfig("title", Messages.get("label.path"), 450);
@@ -96,7 +111,7 @@ public class PublicationStatusGrid extends Grid<GWTJahiaPublicationInfo> {
                         Messages.get("label.items", "Items");
                 String v = config.getRenderer() != null ?
                         config.getRenderer().render(data.models.get(0), null, null, 0, 0, null, null).toString() :
-                        data.group;
+                        data.group.substring(1);
                 return v + " (" + data.models.size() + " " + l + ")";
             }
         });

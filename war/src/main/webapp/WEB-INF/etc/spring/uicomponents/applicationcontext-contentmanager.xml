@@ -1200,7 +1200,6 @@
                         <ref bean="Toolbar.Item.Paste"/>
                         <ref bean="Toolbar.Item.PasteReference"/>
                         <ref bean="Toolbar.Item.Separator"/>
-                        <ref bean="Toolbar.Item.SaveAsPortalComponent"/>
                         <ref bean="Toolbar.Item.Mount"/>
                         <ref bean="Toolbar.Item.Unmount"/>
                         <ref bean="Toolbar.Item.Crop"/>
@@ -1233,7 +1232,6 @@
                         <ref bean="Toolbar.Item.Cut"/>
                         <ref bean="Toolbar.Item.Paste"/>
                         <ref bean="Toolbar.Item.PasteReference"/>
-                        <ref bean="Toolbar.Item.SaveAsPortalComponent"/>
                         <ref bean="Toolbar.Item.Crop"/>
                         <ref bean="Toolbar.Item.Resize"/>
                         <ref bean="Toolbar.Item.Rotate"/>

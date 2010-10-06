@@ -159,7 +159,7 @@ public class PropertiesTabItem extends EditEngineTabItem {
                 for (final Field field : propertiesEditor.getFields()) {
                     if (field instanceof ContentPickerField) {
                         final String labelSep = field.getLabelSeparator();
-                        if (engine.getReferencesWarnings().containsKey(field.getName())) {
+                        if (engine.getReferencesWarnings() != null && engine.getReferencesWarnings().containsKey(field.getName())) {
                             field.setLabelSeparator(labelSep + " <img width='11px' height='11px' src='" + JahiaGWTParameters
                                     .getContextPath() + "/gwt/resources/images/default/shared/warning.gif'/> Warning : these users/groups might not view the reference "+engine.getReferencesWarnings().get(field.getName()));
                             field.setFieldLabel(field.getFieldLabel());

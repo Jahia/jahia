@@ -80,7 +80,7 @@ public interface WorkflowProvider {
 
     List<String> getConfigurableRoles(String processKey);
 
-    void addComment(String taskId, String comment);
+    void addComment(String processId, String comment, String user);
 
     WorkflowTask getWorkflowTask(String taskId, Locale locale);
 

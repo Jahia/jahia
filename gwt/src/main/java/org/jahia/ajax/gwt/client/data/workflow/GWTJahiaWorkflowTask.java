@@ -33,12 +33,10 @@
 package org.jahia.ajax.gwt.client.data.workflow;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -49,7 +47,7 @@ import java.util.Map;
  */
 public class GWTJahiaWorkflowTask extends BaseModelData implements Serializable {
     private List<GWTJahiaWorkflowOutcome> outcomes;
-    private List<GWTJahiaWorkflowTaskComment> taskComments;
+    private List<GWTJahiaWorkflowComment> comments;
 
     public GWTJahiaWorkflowTask() {
     }
@@ -86,12 +84,12 @@ public class GWTJahiaWorkflowTask extends BaseModelData implements Serializable 
         this.outcomes = outcomes;
     }
 
-    public void setTaskComments(List<GWTJahiaWorkflowTaskComment> taskComments) {
-        this.taskComments = taskComments;
+    public void setTaskComments(List<GWTJahiaWorkflowComment> comments) {
+        this.comments = comments;
     }
 
-    public List<GWTJahiaWorkflowTaskComment> getTaskComments() {
-        return taskComments;
+    public List<GWTJahiaWorkflowComment> getTaskComments() {
+        return comments;
     }
 
     public void setFormResourceName(String formResourceName) {

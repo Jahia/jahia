@@ -86,7 +86,7 @@ public class PublicationWorkflow implements CustomWorkflow {
                 final String status = Messages.get("label.workflow.task", "Executing workflow task");
                 WorkInProgressActionItem.setStatus(status);
                 JahiaContentManagementService.App.getInstance()
-                        .publish(uuids, allSubTree, true, false, nodeProperties, language, new BaseAsyncCallback() {
+                        .publish(uuids, allSubTree, true, false, nodeProperties, dialog.getComments(), language, new BaseAsyncCallback() {
                             public void onApplicationFailure(Throwable caught) {
                                 WorkInProgressActionItem.removeStatus(status);
                                 Log.error("Cannot publish", caught);
@@ -117,7 +117,7 @@ public class PublicationWorkflow implements CustomWorkflow {
                     Info.display(status, status);
                     WorkInProgressActionItem.setStatus(status);
                     JahiaContentManagementService.App.getInstance()
-                            .publish(uuids, allSubTree, false, false, null, null, new BaseAsyncCallback() {
+                            .publish(uuids, allSubTree, false, false, null, null, null, new BaseAsyncCallback() {
                                 public void onApplicationFailure(Throwable caught) {
                                     WorkInProgressActionItem.removeStatus(status);
                                     Info.display("Cannot publish", "Cannot publish");

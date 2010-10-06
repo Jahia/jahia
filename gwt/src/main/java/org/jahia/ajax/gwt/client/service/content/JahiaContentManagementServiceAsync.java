@@ -177,7 +177,7 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void importContent(String parentPath, String fileKey, Boolean asynchronously, AsyncCallback async);
 
-    void startWorkflow(String path, GWTJahiaWorkflowDefinition workflowDefinition, List<GWTJahiaNodeProperty> properties, AsyncCallback async);
+    void startWorkflow(String path, GWTJahiaWorkflowDefinition workflowDefinition, List<GWTJahiaNodeProperty> properties, List<String> comments, AsyncCallback async);
 
     void assignAndCompleteTask(String path, GWTJahiaWorkflowTask task, GWTJahiaWorkflowOutcome outcome, List<GWTJahiaNodeProperty> properties, AsyncCallback async);
 
@@ -187,7 +187,7 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
      * @param uuids the list of node uuids to publish
      * @param async Local implementation of callback to react on return for asynchronous call to publish
      */
-    void publish(List<String> uuids, boolean allSubTree, boolean workflow, boolean reverse, List<GWTJahiaNodeProperty> properties, String language, AsyncCallback async);
+    void publish(List<String> uuids, boolean allSubTree, boolean workflow, boolean reverse, List<GWTJahiaNodeProperty> properties, List<String> comments, String language, AsyncCallback async);
 
     /**
      * Unpublish the specified path and its subnodes.
@@ -246,9 +246,9 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
     void generateWar(String moduleName, AsyncCallback<GWTJahiaNode> asyncCallback);
 
     void addCommentToWorkflow(GWTJahiaWorkflow task, String comment,
-                              AsyncCallback asyncCallback);
+                              AsyncCallback<List<GWTJahiaWorkflowComment>> asyncCallback);
 
-    void getTaskComments(GWTJahiaWorkflow task, AsyncCallback<List<GWTJahiaWorkflowTaskComment>> async);
+    void getWorkflowComments(GWTJahiaWorkflow workflow, AsyncCallback<List<GWTJahiaWorkflowComment>> async);
 
     public void getWorkflowHistoryProcesses(String nodeId, String locale, AsyncCallback<List<GWTJahiaWorkflowHistoryItem>> async);
 

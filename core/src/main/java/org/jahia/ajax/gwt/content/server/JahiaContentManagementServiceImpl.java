@@ -990,8 +990,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public void startWorkflow(String path, GWTJahiaWorkflowDefinition workflowDefinition,
-                              List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException {
-        workflow.startWorkflow(path, workflowDefinition, retrieveCurrentSession(), properties);
+                              List<GWTJahiaNodeProperty> properties, List<String> comments) throws GWTJahiaServiceException {
+        workflow.startWorkflow(path, workflowDefinition, retrieveCurrentSession(), properties, comments);
     }
 
     public void assignAndCompleteTask(String path, GWTJahiaWorkflowTask task, GWTJahiaWorkflowOutcome outcome,
@@ -999,12 +999,13 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         workflow.assignAndCompleteTask(path, task, outcome, retrieveCurrentSession(), properties);
     }
 
-    public void addCommentToWorkflow(GWTJahiaWorkflow wf, String comment) {
-        this.workflow.addCommentToWorkflow(wf, comment);
+    public List<GWTJahiaWorkflowComment> addCommentToWorkflow(GWTJahiaWorkflow wf, String comment) {
+        this.workflow.addCommentToWorkflow(wf, getUser(), comment, getLocale());
+        return getWorkflowComments(wf);
     }
 
-    public List<GWTJahiaWorkflowTaskComment> getTaskComments(GWTJahiaWorkflow task) {
-        return new ArrayList<GWTJahiaWorkflowTaskComment>();//workflow.getTaskComments(task);
+    public List<GWTJahiaWorkflowComment> getWorkflowComments(GWTJahiaWorkflow workflow) {
+        return this.workflow.getWorkflowComments(workflow, getLocale());
     }
 
     public List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryForUser() throws GWTJahiaServiceException {
@@ -1034,14 +1035,14 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException
      */
     public void publish(List<String> uuids, boolean allSubTree, boolean workflow, boolean reverse,
-                        List<GWTJahiaNodeProperty> properties, String language) throws GWTJahiaServiceException {
+                        List<GWTJahiaNodeProperty> properties, List<String> comments, String language) throws GWTJahiaServiceException {
         JCRSessionWrapper session = retrieveCurrentSession();
         String locale = session.getLocale().toString();
         if (language != null) {
             session = retrieveCurrentSession(LanguageCodeConverters.languageCodeToLocale(language));
             locale = language;
         }
-        publication.publish(uuids, locale, allSubTree, workflow, reverse, session, properties);
+        publication.publish(uuids, locale, allSubTree, workflow, reverse, session, properties, comments);
     }
 
     /**

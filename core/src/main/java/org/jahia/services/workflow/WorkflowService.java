@@ -494,8 +494,8 @@ public class WorkflowService {
         });
     }
 
-    public void addCommentToTask(String taskId, String provider, String comment) {
-        lookupProvider(provider).addComment(taskId, comment);
+    public void addComment(String processId, String provider, String comment, String user) {
+        lookupProvider(provider).addComment(processId, comment, user);
     }
 
     public WorkflowTask getWorkflowTask(String taskId, String provider, Locale locale) {

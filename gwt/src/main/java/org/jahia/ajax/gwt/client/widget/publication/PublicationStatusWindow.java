@@ -126,7 +126,7 @@ public class PublicationStatusWindow extends Window {
             Info.display(status,status);
             WorkInProgressActionItem.setStatus(status);
             JahiaContentManagementService.App.getInstance()
-                    .publish(uuids, allSubTree, false, false, null, null, new BaseAsyncCallback() {
+                    .publish(uuids, allSubTree, false, false, null, null, null, new BaseAsyncCallback() {
                         public void onApplicationFailure(Throwable caught) {
                             WorkInProgressActionItem.removeStatus(status);
                             Info.display("Cannot publish", "Cannot publish");

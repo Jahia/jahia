@@ -126,9 +126,10 @@ public class WorkflowHelper {
     public GWTJahiaWorkflow getGWTJahiaWorkflow(Workflow wf) {
         GWTJahiaWorkflow gwtWf;
         gwtWf = new GWTJahiaWorkflow();
+        gwtWf.setId(wf.getId());
+        gwtWf.setProvider(wf.getProvider());
         gwtWf.setDefinition(getGWTJahiaWorkflowDefinition(wf.getWorkflowDefinition()));
         gwtWf.setAvailableTasks(new ArrayList<GWTJahiaWorkflowTask>());
-
         Map<String, Object> map = wf.getVariables();
         Map<String, GWTJahiaNodeProperty> properties = new HashMap<String, GWTJahiaNodeProperty>(map.size());
         for (Map.Entry<String, Object> entry : map.entrySet()) {
@@ -199,12 +200,15 @@ public class WorkflowHelper {
     }
 
     public void startWorkflow(String path, GWTJahiaWorkflowDefinition def, JCRSessionWrapper session,
-                              List<GWTJahiaNodeProperty> properties)
+                              List<GWTJahiaNodeProperty> properties, List<String> comments)
             throws GWTJahiaServiceException {
         try {
             JCRNodeWrapper node = session.getNode(path);
             HashMap<String, Object> map = getVariablesMap(properties);
-            service.startProcess(node, def.getId(), def.getProvider(), map);
+            String id = service.startProcess(node, def.getId(), def.getProvider(), map);
+            for (String s : comments) {
+                service.addComment(id, def.getProvider(), s, session.getUser().getUserKey());
+            }
         } catch (RepositoryException e) {
             e.printStackTrace();
             throw new GWTJahiaServiceException(e.getMessage());
@@ -246,22 +250,34 @@ public class WorkflowHelper {
         return map;
     }
 
-    public void addCommentToWorkflow(GWTJahiaWorkflow workflow, String comment) {
-//        service.addCommentToTask(task.getId(), task.getProvider(), comment);
+    public void addCommentToWorkflow(GWTJahiaWorkflow workflow, JahiaUser user, String comment, Locale locale) {
+        service.addComment(workflow.getId(), workflow.getProvider(), comment, user.getUserKey());
     }
 
-    public List<GWTJahiaWorkflowTaskComment> getTaskComments(GWTJahiaWorkflowTask task) {
-        WorkflowTask workflowTask = service.getWorkflowTask(task.getId(), task.getProvider(),null);
-        List<GWTJahiaWorkflowTaskComment> taskComments = new ArrayList<GWTJahiaWorkflowTaskComment>();
-        List<WorkflowTaskComment> workflowTaskComments = workflowTask.getTaskComments();
-        for (WorkflowTaskComment comment : workflowTaskComments) {
-            GWTJahiaWorkflowTaskComment taskComment = new GWTJahiaWorkflowTaskComment();
-            taskComment.setComment(comment.getComment());
-            taskComment.setTime(comment.getTime());
-            taskComment.setUser(comment.getUser());
-            taskComments.add(taskComment);
+    public List<GWTJahiaWorkflowComment> getWorkflowComments(GWTJahiaWorkflow workflow, Locale locale) {
+        Workflow wf = service.getWorkflow(workflow.getProvider(), workflow.getId(), locale);
+        List<WorkflowComment> comments = wf.getComments();
+
+        List<GWTJahiaWorkflowComment> gwtComments = new ArrayList<GWTJahiaWorkflowComment>();
+        if (comments == null) {
+            return gwtComments;
         }
-        return taskComments;
+
+        for (WorkflowComment comment : comments) {
+            final GWTJahiaWorkflowComment workflowComment = new GWTJahiaWorkflowComment();
+            workflowComment.setComment(comment.getComment());
+            workflowComment.setTime(comment.getTime());
+            final JahiaUser user =
+                    ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(comment.getUser());
+            if (user != null) {
+                workflowComment.setUser(user.getName());
+            } else {
+                workflowComment.setUser(comment.getUser());
+            }
+            gwtComments.add(workflowComment);
+        }
+
+        return gwtComments;
     }
 
     public List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryProcesses(String nodeId,JCRSessionWrapper session, Locale locale) throws GWTJahiaServiceException {

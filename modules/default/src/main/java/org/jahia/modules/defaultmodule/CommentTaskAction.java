@@ -39,13 +39,8 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
 import org.jahia.services.workflow.WorkflowService;
-import org.jahia.services.workflow.WorkflowVariable;
-import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -79,7 +74,7 @@ public class CommentTaskAction implements Action {
         String providerKey = StringUtils.substringBefore(task, ":");
         String comment = parameters.get("comment").get(0);
 
-        workflowService.addCommentToTask(taskId, providerKey, comment);
+        workflowService.addComment(taskId, providerKey, comment, renderContext.getUser().getUserKey());
 
         return ActionResult.OK;
     }

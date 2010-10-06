@@ -77,6 +77,8 @@ public class WorkflowActionDialog extends Window {
     private TabItem actionTab;
     private TabItem commentsTab;
 
+    private List<String> comments;
+
     private GWTJahiaNode node;
     private GWTJahiaWorkflow workflow;
 
@@ -89,7 +91,8 @@ public class WorkflowActionDialog extends Window {
 
 
     public WorkflowActionDialog(final GWTJahiaNode node, final Linker linker) {
-       this(node, null, linker);
+        this(node, null, linker);
+        comments = new ArrayList<String>();
     }
 
     public WorkflowActionDialog(final GWTJahiaNode node, final GWTJahiaWorkflow workflow, final Linker linker) {
@@ -128,9 +131,9 @@ public class WorkflowActionDialog extends Window {
     }
 
     public void initStartWorkflowDialog(final GWTJahiaWorkflowDefinition workflowDefinition) {
-        setHeading(Messages.get("label.workflowAction",
-                "Workflow action") + " [" + workflowDefinition.getName() + "] " + Messages.get("label.for",
-                "for") + " node: " + node.getDisplayName());
+        setHeading(
+                Messages.get("label.workflowAction", "Workflow action") + " [" + workflowDefinition.getName() + "] " +
+                        Messages.get("label.for", "for") + " node: " + node.getDisplayName());
         initTabs(workflowDefinition.getFormResourceName());
         Button button = null;
         Button bypassButton = null;
@@ -152,9 +155,8 @@ public class WorkflowActionDialog extends Window {
     }
 
     public void initExecuteActionDialog(final GWTJahiaWorkflowTask task) {
-        setHeading(Messages.get("label.workflowAction",
-                "Workflow action") + " [" + task.getName() + "] " + Messages.get("label.for",
-                "for") + " node: " + node.getDisplayName());
+        setHeading(Messages.get("label.workflowAction", "Workflow action") + " [" + task.getName() + "] " +
+                Messages.get("label.for", "for") + " node: " + node.getDisplayName());
         initTabs(task.getFormResourceName());
         List<Button> buttons = generateActionButtons(task);
 
@@ -169,6 +171,8 @@ public class WorkflowActionDialog extends Window {
     private void initTabs(final String formResourceName) {
         TabItem action = initActionTab(formResourceName);
         tabPanel.add(action);
+        TabItem comments = initCommentTab();
+        tabPanel.add(comments);
         if (custom != null) {
             for (TabItem item : custom.getAdditionalTabs()) {
                 tabPanel.add(item);
@@ -181,12 +185,13 @@ public class WorkflowActionDialog extends Window {
         actionTab = new TabItem(Messages.get("label.action", "Action"));
         actionTab.setLayout(new FitLayout());
         if (formResourceName != null && !"".equals(formResourceName)) {
-            contentDefinition.getWFFormForNodeAndNodeType(node, formResourceName,
-                    new BaseAsyncCallback<GWTJahiaNodeType>() {
+            contentDefinition
+                    .getWFFormForNodeAndNodeType(node, formResourceName, new BaseAsyncCallback<GWTJahiaNodeType>() {
                         public void onSuccess(GWTJahiaNodeType result) {
-                            final Map<String, GWTJahiaNodeProperty> variables = workflow != null ? workflow.getVariables() : new HashMap<String, GWTJahiaNodeProperty>();
-                            propertiesEditor = new PropertiesEditor(
-                                    Arrays.asList(result), variables,
+                            final Map<String, GWTJahiaNodeProperty> variables =
+                                    workflow != null ? workflow.getVariables() :
+                                            new HashMap<String, GWTJahiaNodeProperty>();
+                            propertiesEditor = new PropertiesEditor(Arrays.asList(result), variables,
                                     GWTJahiaItemDefinition.CONTENT);
                             propertiesEditor.setViewInheritedItems(true);
                             propertiesEditor.renderNewFormPanel();
@@ -209,17 +214,20 @@ public class WorkflowActionDialog extends Window {
         final LayoutContainer commentsContainer = new LayoutContainer(new RowLayout(Style.Orientation.VERTICAL));
         commentsTab.add(commentsContainer, new BorderLayoutData(Style.LayoutRegion.CENTER));
 
-        commentsContainer.setScrollMode(Style.Scroll.NONE);
+        commentsContainer.setScrollMode(Style.Scroll.AUTOY);
         commentsContainer.setBorders(false);
 
         if (workflow != null) {
-            displayComments(workflow, commentsContainer);
+            JahiaContentManagementService.App.getInstance().getWorkflowComments(workflow, new BaseAsyncCallback<List<GWTJahiaWorkflowComment>>() {
+                public void onSuccess(List<GWTJahiaWorkflowComment> result) {
+                    displayComments(result, commentsContainer);
+                }
+            });
         }
 
         // Display add a comment
         FormPanel formPanel = new FormPanel();
         formPanel.setHeaderVisible(false);
-        formPanel.setWidth("100%");
         formPanel.setBorders(false);
         formPanel.setBodyBorder(false);
         formPanel.setLayout(new FormLayout(FormPanel.LabelAlign.LEFT));
@@ -235,64 +243,89 @@ public class WorkflowActionDialog extends Window {
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                contentManagement.addCommentToWorkflow(workflow, textArea.getValue(), new BaseAsyncCallback<Object>() {
-                    public void onSuccess(Object result) {
-                        commentsContainer.removeAll();
-                        displayComments(workflow, commentsContainer);
-                        Info.display(Messages.get("label.commentAdded", "Comment Added"), Messages.get(
-                                "label.commentAdded", "Comment Added"));
-                    }
+                if (workflow != null) {
+                    contentManagement
+                            .addCommentToWorkflow(workflow, textArea.getValue(), new BaseAsyncCallback<List<GWTJahiaWorkflowComment>>() {
+                                public void onSuccess(List<GWTJahiaWorkflowComment> result) {
+                                    commentsContainer.removeAll();
+                                    displayComments(result, commentsContainer);
+                                    Info.display(Messages.get("label.commentAdded", "Comment Added"),
+                                            Messages.get("label.commentAdded", "Comment Added"));
+                                }
 
-                    public void onApplicationFailure(Throwable caught) {
-                        Info.display("Adding comment failed", "Adding comment failed");
-                    }
-                });
+                                public void onApplicationFailure(Throwable caught) {
+                                    Info.display("Adding comment failed", "Adding comment failed");
+                                }
+                            });
+                } else {
+                    comments.add(textArea.getValue());
+                    commentsContainer.removeAll();
+                    displayStringComments(comments, commentsContainer);
+                }
             }
         });
         formPanel.setButtonAlign(Style.HorizontalAlignment.CENTER);
         formPanel.add(button, data);
         FormButtonBinding buttonBinding = new FormButtonBinding(formPanel);
         buttonBinding.addButton(button);
-        commentsTab.add(formPanel, new BorderLayoutData(Style.LayoutRegion.SOUTH, 200));
+        commentsTab.add(formPanel, new BorderLayoutData(Style.LayoutRegion.SOUTH, 100));
 
         return commentsTab;
     }
 
-    private void displayComments(GWTJahiaWorkflow workflow, final LayoutContainer commentsPanel) {
-        contentManagement.getTaskComments(workflow, new BaseAsyncCallback<List<GWTJahiaWorkflowTaskComment>>() {
-            public void onSuccess(List<GWTJahiaWorkflowTaskComment> result) {
-                int i = 0;
-                for (GWTJahiaWorkflowTaskComment comment : result) {
-                    Text text = new Text(comment.getComment());
-                    text.setWidth(450);
-                    Text time = new Text(Messages.get("label.at",
-                            "at") + " " + DateTimeFormat.getMediumDateTimeFormat().format(
-                            comment.getTime()));
-//                    Text user = new Text("by " + comment.getUser());
-                    HorizontalPanel commentPanel = new HorizontalPanel();
-                    commentPanel.setBorders(false);
-                    commentPanel.setWidth("100%");
-                    TableData data = new TableData(Style.HorizontalAlignment.LEFT, Style.VerticalAlignment.MIDDLE);
-                    data.setPadding(5);
-                    commentPanel.add(text, data);
-                    commentPanel.setScrollMode(Style.Scroll.NONE);
-                    commentPanel.setStyleAttribute("background-color", i % 2 == 0 ? "#e9eff3" : "white");
-                    VerticalPanel verticalPanel = new VerticalPanel();
-                    verticalPanel.add(time, data);
-//                    verticalPanel.add(user);
-                    verticalPanel.setWidth(250);
-                    verticalPanel.setBorders(false);
-                    commentPanel.add(verticalPanel);
-                    commentsPanel.add(commentPanel);
-                    commentPanel.layout();
-                    i++;
-                }
-            }
-        });
+    private void displayStringComments(List<String> comments, final LayoutContainer commentsPanel) {
+        int i = 0;
+        for (String comment : comments) {
+            Text text = new Text(comment);
+            text.setWidth(450);
+            HorizontalPanel commentPanel = new HorizontalPanel();
+            commentPanel.setBorders(false);
+            commentPanel.setWidth("100%");
+            TableData data = new TableData(Style.HorizontalAlignment.LEFT, Style.VerticalAlignment.MIDDLE);
+            data.setPadding(5);
+            commentPanel.add(text, data);
+            commentPanel.setScrollMode(Style.Scroll.NONE);
+            commentPanel.setStyleAttribute("background-color", i % 2 == 0 ? "#e9eff3" : "white");
+            VerticalPanel verticalPanel = new VerticalPanel();
+            verticalPanel.setWidth(250);
+            verticalPanel.setBorders(false);
+            commentPanel.add(verticalPanel);
+            commentsPanel.add(commentPanel);
+            i++;
+        }
+        commentsPanel.layout();
+    }
+
+    private void displayComments(List<GWTJahiaWorkflowComment> comments, final LayoutContainer commentsPanel) {
+        int i = 0;
+        for (GWTJahiaWorkflowComment comment : comments) {
+            Text text = new Text(comment.getComment());
+            text.setWidth(450);
+            Text time = new Text(Messages.get("label.at", "at") + " " +
+                    DateTimeFormat.getMediumDateTimeFormat().format(comment.getTime()));
+            Text user = new Text("by " + comment.getUser());
+            HorizontalPanel commentPanel = new HorizontalPanel();
+            commentPanel.setBorders(false);
+            commentPanel.setWidth("100%");
+            TableData data = new TableData(Style.HorizontalAlignment.LEFT, Style.VerticalAlignment.MIDDLE);
+            data.setPadding(5);
+            commentPanel.add(text, data);
+            commentPanel.setScrollMode(Style.Scroll.NONE);
+            commentPanel.setStyleAttribute("background-color", i % 2 == 0 ? "#e9eff3" : "white");
+            VerticalPanel verticalPanel = new VerticalPanel();
+            verticalPanel.add(time, data);
+            verticalPanel.add(user);
+            verticalPanel.setWidth(250);
+            verticalPanel.setBorders(false);
+            commentPanel.add(verticalPanel);
+            commentsPanel.add(commentPanel);
+            i++;
+        }
+        commentsPanel.layout();
     }
 
     private Button generateStartWorkflowButton(final GWTJahiaWorkflowDefinition wf) {
-        final Button button = new Button(Messages.get("label.workflow.start", "Start Workflow")+":" + wf.getName());
+        final Button button = new Button(Messages.get("label.workflow.start", "Start Workflow") + ":" + wf.getName());
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
@@ -305,7 +338,7 @@ public class WorkflowActionDialog extends Window {
                 final String status = Messages.get("label.workflow.task", "Executing workflow task");
                 Info.display(status, status);
                 WorkInProgressActionItem.setStatus(status);
-                contentManagement.startWorkflow(node.getPath(), wf, nodeProperties, new BaseAsyncCallback() {
+                contentManagement.startWorkflow(node.getPath(), wf, nodeProperties, comments, new BaseAsyncCallback() {
                     public void onSuccess(Object result) {
                         Info.display("Workflow executed", "Workflow executed");
                         WorkInProgressActionItem.removeStatus(status);
@@ -345,8 +378,7 @@ public class WorkflowActionDialog extends Window {
                             new BaseAsyncCallback() {
                                 public void onSuccess(Object result) {
                                     WorkInProgressActionItem.removeStatus(status);
-                                    Info.display("Workflow executed",
-                                            "Workflow executed");
+                                    Info.display("Workflow executed", "Workflow executed");
                                     linker.refresh(Linker.REFRESH_MAIN);
                                 }
 
@@ -367,7 +399,11 @@ public class WorkflowActionDialog extends Window {
         this.workflowDashboard = workflowDashboard;
     }
 
-// -------------------------- OTHER METHODS --------------------------
+    public List<String> getComments() {
+        return comments;
+    }
+
+    // -------------------------- OTHER METHODS --------------------------
 
     @Override
     protected void onHide() {

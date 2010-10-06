@@ -33,6 +33,7 @@
 package org.jahia.services.workflow;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -50,6 +51,7 @@ public class Workflow extends WorkflowBase {
     private Date duedate = null;
     private WorkflowDefinition workflowDefinition;
     private Map<String, Object> variables;
+    private List<WorkflowComment> comments;
 
     public Workflow(String name, String id, String provider) {
         super(name, provider);
@@ -107,4 +109,9 @@ public class Workflow extends WorkflowBase {
     public void setVariables(Map<String, Object> variables) {
         this.variables = variables;
     }
+
+    public List<WorkflowComment> getComments() {
+        return (List<WorkflowComment>) variables.get("comments");
+    }
+
 }

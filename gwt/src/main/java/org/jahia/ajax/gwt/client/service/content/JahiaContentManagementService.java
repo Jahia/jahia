@@ -185,7 +185,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     public void importContent(String parentPath, String fileKey, Boolean asynchronously) throws GWTJahiaServiceException;
 
-    public void startWorkflow(String path, GWTJahiaWorkflowDefinition workflowDefinition, List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException;
+    public void startWorkflow(String path, GWTJahiaWorkflowDefinition workflowDefinition, List<GWTJahiaNodeProperty> properties, List<String> comments) throws GWTJahiaServiceException;
 
     public void assignAndCompleteTask(String path, GWTJahiaWorkflowTask task, GWTJahiaWorkflowOutcome outcome, List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException;
 
@@ -194,7 +194,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
      *
      * @param uuids the list of node uuids to publish, will not auto publish the parents
      */
-    public void publish(List<String> uuids, boolean allSubTree, boolean workflow, boolean reverse, List<GWTJahiaNodeProperty> properties, String language) throws GWTJahiaServiceException;
+    public void publish(List<String> uuids, boolean allSubTree, boolean workflow, boolean reverse, List<GWTJahiaNodeProperty> properties, List<String> comments, String language) throws GWTJahiaServiceException;
 
     /**
      * Unpublish the specified path and its subnodes.
@@ -242,9 +242,9 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     GWTJahiaNode generateWar(String moduleName) throws GWTJahiaServiceException;
 
-    void addCommentToWorkflow(GWTJahiaWorkflow task, String comment);
+    List<GWTJahiaWorkflowComment> addCommentToWorkflow(GWTJahiaWorkflow task, String comment);
 
-    List<GWTJahiaWorkflowTaskComment> getTaskComments(GWTJahiaWorkflow task);
+    List<GWTJahiaWorkflowComment> getWorkflowComments(GWTJahiaWorkflow workflow);
 
     public List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryProcesses(String nodeId,
                                                                          String locale) throws GWTJahiaServiceException;

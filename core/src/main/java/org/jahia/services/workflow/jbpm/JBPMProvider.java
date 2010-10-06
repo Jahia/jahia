@@ -441,14 +441,7 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         }
         // Get form resource name
         action.setFormResourceName(task.getFormResourceName());
-        // Get task comments
-        List<HistoryComment> taskComments = taskService.getTaskComments(task.getId());
-        List<WorkflowTaskComment> comments = new ArrayList<WorkflowTaskComment>(taskComments.size());
-        for (HistoryComment taskComment : taskComments) {
-            comments.add(
-                    new WorkflowTaskComment(taskComment.getMessage(), taskComment.getTime(), taskComment.getUserId()));
-        }
-        action.setTaskComments(comments);
+
         // Get Tasks variables
         Set<String> variableNames = taskService.getVariableNames(task.getId());
         action.setVariables(taskService.getVariables(task.getId(), variableNames));
@@ -512,8 +505,17 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         return results;
     }
 
-    public void addComment(String taskId, String comment) {
-        taskService.addTaskComment(taskId, comment);
+    public void addComment(String processId, String comment, String user) {
+        List<WorkflowComment> comments = (List<WorkflowComment>) executionService.getVariable(processId, "comments");
+        if (comments == null) {
+            comments = new ArrayList<WorkflowComment>();
+        }
+        final WorkflowComment wfComment = new WorkflowComment();
+        wfComment.setComment(comment);
+        wfComment.setUser(user);
+        wfComment.setTime(new Date());
+        comments.add(wfComment);
+        executionService.setVariable(processId, "comments", comments);
     }
 
     public WorkflowTask getWorkflowTask(String taskId, Locale locale) {

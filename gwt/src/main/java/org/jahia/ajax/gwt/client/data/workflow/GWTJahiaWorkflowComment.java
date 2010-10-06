@@ -44,9 +44,9 @@ import java.util.Date;
  * @since : JAHIA 6.1
  *        Created : 29 avr. 2010
  */
-public class GWTJahiaWorkflowTaskComment extends BaseModelData implements Serializable {
+public class GWTJahiaWorkflowComment extends BaseModelData implements Serializable {
 
-    public GWTJahiaWorkflowTaskComment() {
+    public GWTJahiaWorkflowComment() {
     }
 
     public String getComment() {

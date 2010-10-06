@@ -84,7 +84,9 @@ import java.util.*;
  * Rendering controller. Resolves the node and the template, and renders it by executing the appropriate script.
  */
 public class Render extends HttpServlet implements Controller, ServletConfigAware {
-    /** The serialVersionUID. */
+    /**
+     * The serialVersionUID.
+     */
     private static final long serialVersionUID = 5377039107890340659L;
 
     protected static final String METHOD_DELETE = "DELETE";
@@ -118,7 +120,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     public static final String ALIAS_USER = "alias";
 
     private static final List<String> REDIRECT_CODE_MOVED_PERMANENTLY = new ArrayList<String>(
-            Arrays.asList(new String[] { String.valueOf(HttpServletResponse.SC_MOVED_PERMANENTLY) }));
+            Arrays.asList(new String[]{String.valueOf(HttpServletResponse.SC_MOVED_PERMANENTLY)}));
     private static final List<String> LIST_WITH_EMPTY_STRING = new ArrayList<String>(Arrays.asList(new String[]{StringUtils.EMPTY}));
 
     private MetricsLoggingService loggingService;
@@ -231,8 +233,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         }
         loggingService.stopProfiler("MAIN");
         loggingService.logContentEvent(renderContext.getUser().getName(), req.getRemoteAddr(), sessionID,
-                resource.getNode().getPath(), resource.getNode().getPrimaryNodeType().getName(), "pageViewed",
-                req.getHeader("User-Agent"), req.getHeader("Referer"),Long.toString(System.currentTimeMillis() - startTime));
+                resource.getNode().getIdentifier(), resource.getNode().getPath(), resource.getNode().getPrimaryNodeType().getName(), "pageViewed",
+                req.getHeader("User-Agent"), req.getHeader("Referer"), Long.toString(System.currentTimeMillis() - startTime));
     }
 
     protected void doPut(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext,
@@ -287,7 +289,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             sessionID = httpSession.getId();
         }
         loggingService.logContentEvent(renderContext.getUser().getName(), req.getRemoteAddr(), sessionID,
-                urlResolver.getPath(), node.getPrimaryNodeType().getName(), "nodeUpdated",
+                node.getIdentifier(), urlResolver.getPath(), node.getPrimaryNodeType().getName(), "nodeUpdated",
                 new JSONObject(req.getParameterMap()).toString());
     }
 
@@ -346,7 +348,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         if (urlResolver.getPath().endsWith(".do")) {
             Date date = getVersionDate(req);
             String versionLabel = getVersionLabel(req);
-            resource = urlResolver.getResource(date,versionLabel);
+            resource = urlResolver.getResource(date, versionLabel);
             renderContext.setMainResource(resource);
             JCRSiteNode site = resource.getNode().getResolveSite();
             renderContext.setSite(site);
@@ -627,7 +629,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             urlResolver.setRenderContext(renderContext);
             req.getSession().setAttribute(ParamBean.SESSION_LOCALE, urlResolver.getLocale());
             jcrSessionFactory.setCurrentLocale(urlResolver.getLocale());
-            if(renderContext.isPreviewMode() && req.getParameter(ALIAS_USER)!=null && !JahiaUserManagerService.isGuest(jcrSessionFactory.getCurrentUser())) {
+            if (renderContext.isPreviewMode() && req.getParameter(ALIAS_USER) != null && !JahiaUserManagerService.isGuest(jcrSessionFactory.getCurrentUser())) {
                 jcrSessionFactory.setCurrentAliasedUser(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(req.getParameter(ALIAS_USER)));
             }
             if (method.equals(METHOD_GET)) {
@@ -645,7 +647,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     Date date = getVersionDate(req);
                     String versionLabel = getVersionLabel(req);
 
-                    resource = urlResolver.getResource(date, versionLabel);                    
+                    resource = urlResolver.getResource(date, versionLabel);
                     renderContext.setMainResource(resource);
                     JCRSiteNode site = resource.getNode().getResolveSite();
 
@@ -658,7 +660,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     if (lastModified == -1) {
                         // servlet doesn't support if-modified-since, no reason
                         // to go through further expensive logic
-                        doGet(req, resp, renderContext, resource,startTime);
+                        doGet(req, resp, renderContext, resource, startTime);
                     } else {
                         long ifModifiedSince = req.getDateHeader(HEADER_IFMODSINCE);
                         if (ifModifiedSince < (lastModified / 1000 * 1000)) {
@@ -666,7 +668,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                             // Round down to the nearest second for a proper compare
                             // A ifModifiedSince of -1 will always be less
                             maybeSetLastModified(resp, lastModified);
-                            doGet(req, resp, renderContext, resource,startTime);
+                            doGet(req, resp, renderContext, resource, startTime);
                         } else {
                             resp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
                         }

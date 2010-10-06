@@ -102,7 +102,11 @@ public class MetricsLoggingServiceImpl implements MetricsLoggingService {
         for (String arg : args) {
             templateParameters[i++] = arg;
         }
-        metricsLogger.trace(template, templateParameters);
+        if (template == null) {
+            metricsLogger.trace("Couldn't find template for " + logTemplate + " and args " + templateParameters);
+        } else {
+            metricsLogger.trace(template, templateParameters);
+        }
     }
 
     /**

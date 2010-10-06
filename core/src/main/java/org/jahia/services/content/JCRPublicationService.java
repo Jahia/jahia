@@ -41,6 +41,7 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyType;
+import org.jahia.services.logging.MetricsLoggingService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.LanguageCodeConverters;
 
@@ -62,6 +63,7 @@ public class JCRPublicationService extends JahiaService {
     private JCRSessionFactory sessionFactory;
     private JCRVersionService jcrVersionService;
     private static JCRPublicationService instance;
+    private MetricsLoggingService loggingService;
 
     private JCRPublicationService() {
     }
@@ -86,6 +88,10 @@ public class JCRPublicationService extends JahiaService {
 
     public void setJcrVersionService(JCRVersionService jcrVersionService) {
         this.jcrVersionService = jcrVersionService;
+    }
+
+    public void setLoggingService(MetricsLoggingService loggingService) {
+        this.loggingService = loggingService;
     }
 
     /**
@@ -229,7 +235,7 @@ public class JCRPublicationService extends JahiaService {
                         VersionManager versionManager = sourceSession.getWorkspace().getVersionManager();
                         for (PublicationInfo publicationInfo : publicationInfos) {
                             JCRNodeWrapper n = sourceSession.getNodeByUUID(publicationInfo.getRoot().getUuid());
-                            logger.info("Start publication for publication infos associated with root node "+n.getPath());
+                            logger.info("Start publication for publication infos associated with root node " + n.getPath());
                             for (ExtendedNodeType type : n.getMixinNodeTypes()) {
                                 if (type.getName().equals("jmix:publication")) {
                                     if (!versionManager.isCheckedOut(n.getPath())) {
@@ -308,7 +314,7 @@ public class JCRPublicationService extends JahiaService {
         VersionManager destinationVersionManager = destinationSession.getWorkspace().getVersionManager();
         if (destinationSession.getWorkspace().getName().equals(Constants.LIVE_WORKSPACE)) {
             for (JCRNodeWrapper jcrNodeWrapper : toPublish) {
-                logger.debug("Publishing node "+ jcrNodeWrapper.getPath());
+                logger.debug("Publishing node " + jcrNodeWrapper.getPath());
                 if (!jcrNodeWrapper.hasProperty("j:published") ||
                         !jcrNodeWrapper.getProperty("j:published").getBoolean()) {
                     if (!sourceVersionManager.isCheckedOut(jcrNodeWrapper.getPath())) {
@@ -351,7 +357,12 @@ public class JCRPublicationService extends JahiaService {
             cloneToDestinationWorkspace(toPublish.iterator().next(), uuidsToPublish, sourceNode.getSession(),
                     destinationSession, calendar);
         } finally {
-            JCRObservationManager.setEventsDisabled(null);                 
+            JCRObservationManager.setEventsDisabled(null);
+        }
+
+        // now let's output the publication information to the logging service.
+        for (JCRNodeWrapper publishedNode : toPublish) {
+            loggingService.logContentEvent(sourceSession.getUserID(), "", "", publishedNode.getIdentifier(), publishedNode.getPath(), publishedNode.getPrimaryNodeTypeName(), "publishedNode", sourceSession.getWorkspace().getName(), destinationSession.getWorkspace().getName());
         }
     }
 
@@ -537,7 +548,7 @@ public class JCRPublicationService extends JahiaService {
         final String sourceNodePath =
                 sourceNode.getIndex() > 1 ? sourceNode.getPath() + "[" + sourceNode.getIndex() + "]" :
                         sourceNode.getPath();
-        logger.debug("Cloning node : " + sourceNodePath + " parent path "+parent.getPath());
+        logger.debug("Cloning node : " + sourceNodePath + " parent path " + parent.getPath());
         final String destinationWorkspaceName = destinationSession.getWorkspace().getName();
         final String destinationParentPath = parent.getCorrespondingNodePath(destinationWorkspaceName);
 
@@ -691,7 +702,7 @@ public class JCRPublicationService extends JahiaService {
             if (!node.isCheckedOut()) {
                 node.checkout();
             }
-            logger.debug("Set publication date "+c.getTime().toString()+" on node "+node.getPath());
+            logger.debug("Set publication date " + c.getTime().toString() + " on node " + node.getPath());
             node.setProperty("j:lastPublished", c);
             node.setProperty("j:lastPublishedBy", userID);
         }
@@ -706,11 +717,11 @@ public class JCRPublicationService extends JahiaService {
 
     private void checkin(Session session, JCRNodeWrapper node, VersionManager versionManager, Calendar calendar)
             throws RepositoryException {
-        logger.debug("Checkin node "+node.getPath()+" in workspace "+session.getWorkspace().getName()+ " with current version "+versionManager.getBaseVersion(node.getPath()).getName());
+        logger.debug("Checkin node " + node.getPath() + " in workspace " + session.getWorkspace().getName() + " with current version " + versionManager.getBaseVersion(node.getPath()).getName());
         jcrVersionService.setNodeCheckinDate(node, calendar);
         session.save();
         Version version = versionManager.checkin(node.getPath());
-        logger.debug("Checkin node "+node.getPath()+" in workspace "+session.getWorkspace().getName()+ " with new version "+version.getName()+ " base version is "+versionManager.getBaseVersion(node.getPath()).getName());
+        logger.debug("Checkin node " + node.getPath() + " in workspace " + session.getWorkspace().getName() + " with new version " + version.getName() + " base version is " + versionManager.getBaseVersion(node.getPath()).getName());
     }
 
     private void recurseCheckin(Session session, JCRNodeWrapper node, List<String> uuidsToPublish,
@@ -855,7 +866,7 @@ public class JCRPublicationService extends JahiaService {
      * @param includesSubnodes   If true include info for subnodes
      * @param sourceSession
      * @param destinationSession
-     * @param infosMap              a Set of uuids, which don't need to be checked or have already been checked
+     * @param infosMap           a Set of uuids, which don't need to be checked or have already been checked
      * @return the <code>PublicationInfo</code> for the requested node(s)
      * @throws RepositoryException
      */
@@ -953,7 +964,7 @@ public class JCRPublicationService extends JahiaService {
                                         sourceSession, destinationSession, infosMap, infos);
                         info.addChild(child);
                     } else {
-                        getReferences(n,languages, includesReferences, includesSubnodes, sourceSession, destinationSession, infosMap, infos, info);
+                        getReferences(n, languages, includesReferences, includesSubnodes, sourceSession, destinationSession, infosMap, infos, info);
                     }
                 }
             }

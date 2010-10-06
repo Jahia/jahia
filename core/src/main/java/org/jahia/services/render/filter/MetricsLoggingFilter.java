@@ -36,14 +36,13 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.logging.MetricsLoggingService;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
-import org.jahia.services.render.scripting.Script;
 import org.slf4j.profiler.Profiler;
 
 import javax.servlet.http.HttpSession;
 
 /**
  * MetricsLoggingFilter
- *
+ * <p/>
  * Calls the logging service to log the display of a resource.
  * Also initializes profiling information.
  */
@@ -59,24 +58,25 @@ public class MetricsLoggingFilter extends AbstractFilter {
 
         String profilerName = "render module " + node.getPath();
         Profiler profiler = loggingService.createNestedProfiler("MAIN", profilerName);
-        profiler.start("render filters for "+node.getPath());
+        profiler.start("render filters for " + node.getPath());
         context.getRequest().setAttribute("profiler", profiler);
         return null;
     }
 
 
-    @Override public String execute(String previousOut, RenderContext context, Resource resource,
-                                    RenderChain chain) throws Exception {
+    @Override
+    public String execute(String previousOut, RenderContext context, Resource resource,
+                          RenderChain chain) throws Exception {
         JCRNodeWrapper node = resource.getNode();
 
         String profilerName = "render module " + node.getPath();
 
-        String sessionID ="";
+        String sessionID = "";
         HttpSession session = context.getRequest().getSession(false);
         if (session != null) {
             sessionID = session.getId();
         }
-        loggingService.logContentEvent(context.getUser().getName(),context.getRequest().getRemoteAddr(),sessionID, node.getPath(),node.getNodeTypes().get(0),"moduleViewed", resource.getTemplate());
+        loggingService.logContentEvent(context.getUser().getName(), context.getRequest().getRemoteAddr(), sessionID, node.getIdentifier(), node.getPath(), node.getNodeTypes().get(0), "moduleViewed", resource.getTemplate());
 
         loggingService.stopNestedProfiler("MAIN", profilerName);
 

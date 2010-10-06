@@ -5,7 +5,7 @@
     <bean id="loggingService" class="org.jahia.services.logging.MetricsLoggingServiceImpl" factory-method="getInstance">
         <property name="ignoreUsers">
             <set>
-                <value>system</value>
+                <value><![CDATA[ system ]]></value>
             </set>
         </property>
         <property name="logTemplatesMap">
@@ -17,8 +17,9 @@
                 <entry key="nodeDeleted" value="node deleted"/>
                 <entry key="nodeMoved" value="node moved to {}"/>
                 <entry key="propertyAdded" value="property added"/>
-                <entry key="propertyChanged" value="property changed"/>
+                <entry key="propertyChanged" value="property changed to {}"/>
                 <entry key="propertyRemoved" value="property removed"/>
+                <entry key="publishedNode" value="node published from {} to {}"/>
             </map>
         </property>
     </bean>

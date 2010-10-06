@@ -29,17 +29,23 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by IntelliJ IDEA.
+ * This service is responsible for listening to the metrics log and then constructing a history
+ * table that we can query to know all the history of a content object.
+ * <p/>
  * User: loom
  * Date: Oct 5, 2010
  * Time: 11:29:45 AM
  * To change this template use File | Settings | File Templates.
+ *
+ * @todo generate SQL DDL scripts for each DB, add messages to entries, fix date ordering bug, see if we can add a
+ * Log4J appender component to Camel to speed up parsing.
  */
 public class ContentHistoryService implements Processor, InitializingBean, CamelContextAware {
     private transient static Logger logger = Logger.getLogger(ContentHistoryService.class);
 
     private org.hibernate.impl.SessionFactoryImpl sessionFactoryBean;
     private Class mappingClass;
+    private long processedCount = 0;
 
     private static ContentHistoryService instance;
 
@@ -80,6 +86,10 @@ public class ContentHistoryService implements Processor, InitializingBean, Camel
         final String message = (String) exchange.getIn().getBody();
         final Matcher matcher = pattern.matcher(message);
         if (matcher.matches()) {
+            processedCount++;
+            if (processedCount % 1000 == 0) {
+                logger.info("Processed " + processedCount + " content history messages.");
+            }
             final String dateStr = matcher.group(1);
             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
             final Date date = dateFormat.parse(dateStr);

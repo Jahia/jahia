@@ -67,9 +67,9 @@ import java.util.*;
  *        Created : 11 mars 2010
  */
 public class DefaultPostAction implements Action {
-    
+
     private static Logger logger = Logger.getLogger(DefaultPostAction.class);
-    
+
     public static final String ACTION_NAME = "default";
 
     private MetricsLoggingService loggingService;
@@ -92,13 +92,13 @@ public class DefaultPostAction implements Action {
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
                                   Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(urlResolver.getWorkspace(),
-                                                                                          urlResolver.getLocale());
+                urlResolver.getLocale());
         JCRNodeWrapper newNode = null;
         String[] subPaths = urlResolver.getPath().split("/");
         String lastPath = subPaths[subPaths.length - 1];
         JCRNodeWrapper node = null;
         StringBuffer realPath = new StringBuffer();
-            for (String subPath : subPaths) {
+        for (String subPath : subPaths) {
             if (StringUtils.isNotBlank(subPath) && !"*".equals(subPath) && !subPath.equals(lastPath)) {
                 realPath.append("/").append(subPath);
                 try {
@@ -132,7 +132,7 @@ public class DefaultPostAction implements Action {
                 final Map<String, DiskFileItem> stringDiskFileItemMap = fileUpload.getFileItems();
                 for (Map.Entry<String, DiskFileItem> itemEntry : stringDiskFileItemMap.entrySet()) {
                     newNode.uploadFile(itemEntry.getValue().getName(), itemEntry.getValue().getInputStream(),
-                                       itemEntry.getValue().getContentType());
+                            itemEntry.getValue().getContentType());
                 }
             }
             session.save();
@@ -147,8 +147,12 @@ public class DefaultPostAction implements Action {
         if (httpSession != null) {
             sessionID = httpSession.getId();
         }
+        String nodeIdentifier = null;
+        if (newNode != null) {
+            nodeIdentifier = newNode.getIdentifier();
+        }
         loggingService.logContentEvent(renderContext.getUser().getName(), req
-                .getRemoteAddr(), sessionID, urlResolver.getPath(), (String) ((List) parameters.get(Render.NODE_TYPE)).get(0), "nodeCreated", new JSONObject(parameters).toString());
+                .getRemoteAddr(), sessionID, nodeIdentifier, urlResolver.getPath(), (String) ((List) parameters.get(Render.NODE_TYPE)).get(0), "nodeCreated", new JSONObject(parameters).toString());
 
         if (newNode != null) {
             return new ActionResult(HttpServletResponse.SC_CREATED, newNode.getPath(), Render.serializeNodeToJSON(newNode));
@@ -158,8 +162,8 @@ public class DefaultPostAction implements Action {
     }
 
     protected JCRNodeWrapper createNode(HttpServletRequest req, Map<String, List<String>> parameters,
-                                     JCRSessionWrapper session, JCRNodeWrapper node, String realPath,
-                                     String nodeType, String nodeName) throws RepositoryException {
+                                        JCRSessionWrapper session, JCRNodeWrapper node, String realPath,
+                                        String nodeType, String nodeName) throws RepositoryException {
         JCRNodeWrapper newNode;
         if (StringUtils.isBlank(nodeName)) {
             if (parameters.get("jcr:title") != null) {
@@ -183,7 +187,7 @@ public class DefaultPostAction implements Action {
             }
             newNode = node.addNode(nodeName, nodeType);
         }
-        
+
 //        String template = parameters.containsKey("j:sourceTemplate") ? parameters.get("j:sourceTemplate").get(0) : null;
 //        if (Constants.JAHIANT_PAGE.equals(nodeType) && template != null) {
 //            // we will use the provided template
@@ -196,7 +200,7 @@ public class DefaultPostAction implements Action {
 //            }
 //
 //        }
-        
+
         if (parameters.containsKey(Constants.JCR_MIXINTYPES)) {
             for (Object o : ((ArrayList) parameters.get(Constants.JCR_MIXINTYPES))) {
                 String mixin = (String) o;
@@ -212,10 +216,10 @@ public class DefaultPostAction implements Action {
                     ExtendedPropertyDefinition propertyDefinition = newNode.getApplicablePropertyDefinition(key);
                     if (propertyDefinition.isMultiple()) {
                         newNode.setProperty(key, values.toArray(new String[values.size()]));
-                    } else if(values.get(0).length() > 0){
-                        if(propertyDefinition.getRequiredType() == ExtendedPropertyType.DATE) {
+                    } else if (values.get(0).length() > 0) {
+                        if (propertyDefinition.getRequiredType() == ExtendedPropertyType.DATE) {
                             DateTime dateTime = ISODateTimeFormat.dateOptionalTimeParser().parseDateTime(values.get(0));
-                            newNode.setProperty(key,dateTime.toCalendar(Locale.ENGLISH));
+                            newNode.setProperty(key, dateTime.toCalendar(Locale.ENGLISH));
                         } else {
                             newNode.setProperty(key, values.get(0));
                         }
@@ -223,7 +227,7 @@ public class DefaultPostAction implements Action {
                 }
             }
         }
-        
+
         return newNode;
     }
 }

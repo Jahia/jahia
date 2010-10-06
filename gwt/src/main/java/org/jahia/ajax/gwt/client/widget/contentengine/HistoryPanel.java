@@ -89,6 +89,7 @@ public class HistoryPanel extends LayoutContainer {
         store.groupBy("status");
 
         pagingToolBar = new PagingToolBar(50);
+        pagingToolBar.getMessages().setEmptyMsg(Messages.get("label.historyNotAvailable", "No history for object. History building may be delayed."));
         pagingToolBar.bind(loader);
 
         List<ColumnConfig> config = new ArrayList<ColumnConfig>();

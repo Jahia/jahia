@@ -30,9 +30,10 @@
     </script>
 </template:addResources>
 	<c:if test="${not empty title.string}">
-        <h3 class="inline-advancedSearchForm-title"> ${fn:escapeXml(title.string)} </h3><a class="BtToggleSearch" href="#"></a>
-        <div class="clear"></div>
-    </c:if>
+        <h3 class="inline-advancedSearchForm-title"> ${fn:escapeXml(title.string)} </h3>
+	</c:if>
+	<a class="BtToggleSearch" href="#"></a>
+    <div class="clear"></div>
 <div id="advancedSearch">
     <div>
         <s:form name="advancedSearchForm" class="Form advancedSearchForm" method="post" action="${url.base}${renderContext.mainResource.node.path}.html">

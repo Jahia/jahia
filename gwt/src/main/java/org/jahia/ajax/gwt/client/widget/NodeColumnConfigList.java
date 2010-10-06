@@ -49,6 +49,7 @@ import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
+import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTColumn;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.Formatter;
@@ -58,9 +59,7 @@ import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.form.CalendarField;
 import org.jahia.ajax.gwt.client.widget.publication.PublicationManagerEngine;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -120,14 +119,22 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
             new GridCellRenderer<GWTJahiaNode>() {
                 public Object render(GWTJahiaNode node, String property, ColumnData config, int rowIndex, int colIndex,
                                      ListStore<GWTJahiaNode> store, Grid<GWTJahiaNode> grid) {
-                    int state = node.getPublicationInfo() != null ? node.getPublicationInfo().getStatus() : 0;
-                    String title = Messages.get("fm_column_publication_info_" + state, String.valueOf(state));
-                    final Image image = ToolbarIconProvider.getInstance()
-                            .getIcon("publication/" + PublicationManagerEngine.statusToLabel.get(state)).createImage();
-                    image.setTitle(title);
-                    return image;
-//                    return "<img src=\"../gwt/resources/images/workflow/" + PublicationManagerEngine.statusToLabel.get(state) +
-//                            ".png\" height=\"12\" width=\"12\" title=\"" + title + "\" alt=\"" + title + "\"/>";
+                    final GWTJahiaPublicationInfo info = node.getPublicationInfo();
+                    if (info != null) {
+                        Set<Integer> status = new HashSet<Integer>(info.getSubnodesStatus());
+                        status.addAll(info.getReferencesStatus());
+                        status.add(info.getStatus());
+                        int state = Collections.max(status);
+                        if (state > 0) {
+                            String title = Messages.get("fm_column_publication_info_" + state, String.valueOf(state));
+                            final Image image = ToolbarIconProvider.getInstance()
+                                    .getIcon("publication/" + PublicationManagerEngine.statusToLabel.get(state)).createImage();
+                            image.setTitle(title);
+                            return image;
+                        }
+                    }
+
+                    return "";
                 }
             };
     private transient final GridCellRenderer<GWTJahiaNode> VERSION_RENDERER = new GridCellRenderer<GWTJahiaNode>() {

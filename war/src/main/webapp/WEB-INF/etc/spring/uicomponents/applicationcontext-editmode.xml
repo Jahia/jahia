@@ -594,6 +594,7 @@
         <property name="treeColumns">
             <list>
                 <value>displayName,*,label.title</value>
+                <value>publicationInfo,20,label.status</value>
             </list>
         </property>
         <property name="treeContextMenu">

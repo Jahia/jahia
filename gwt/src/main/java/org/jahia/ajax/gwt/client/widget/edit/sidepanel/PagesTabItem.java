@@ -85,6 +85,7 @@ public class PagesTabItem extends SidePanelTabItem {
     private void initTree() {
         GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(config.getPaths());
         factory.setNodeTypes(config.getFolderTypes());
+        factory.setFields(config.getTreeColumnKeys());
         this.factory = factory;
         this.factory.setSelectedPath(path);
 

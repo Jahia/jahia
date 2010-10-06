@@ -398,6 +398,7 @@
         </property>
         <property name="tableColumns">
             <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>icon,*,label.icon</value>
                 <value>name,*,label.name</value>
                 <!--
                                 <value>locked,60,label.lock</value>

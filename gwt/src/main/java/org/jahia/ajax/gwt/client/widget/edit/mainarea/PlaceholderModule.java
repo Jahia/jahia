@@ -47,6 +47,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
@@ -138,7 +139,10 @@ public class PlaceholderModule extends Module {
             button.setStyleName("button-placeholder");
             button.addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent event) {
-                    ContentActions.showContentWizard(mainModule.getEditLinker(), parentModule.getNodeTypes(), getParentModule().getNode());
+                    final GWTJahiaNode parentNode = getParentModule().getNode();
+                    if (parentNode != null && parentNode.isWriteable() && !parentNode.isLocked()) {
+                        ContentActions.showContentWizard(mainModule.getEditLinker(), parentModule.getNodeTypes(), parentNode);
+                    }
                 }
             });
             panel.add(button);

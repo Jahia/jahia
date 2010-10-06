@@ -37,9 +37,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.profiler.Profiler;
 import org.slf4j.profiler.ProfilerRegistry;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 
 /**
@@ -55,6 +53,7 @@ public class MetricsLoggingServiceImpl implements MetricsLoggingService {
     private transient static Logger metricsLogger = LoggerFactory.getLogger("loggingService");
     private transient static Logger profilerMetricsLogger = LoggerFactory.getLogger("profilerLoggingService");
     private Map<String, String> logTemplatesMap;
+    private Set<String> ignoreUsers = new HashSet<String>();
     private static MetricsLoggingServiceImpl instance;
     private final static String headerTemplate = "user {} ip {} session {} identifier {} path {} nodetype {} ";
     private ThreadLocal<Stack<Profiler>> threadLocal = new ThreadLocal<Stack<Profiler>>();
@@ -67,6 +66,10 @@ public class MetricsLoggingServiceImpl implements MetricsLoggingService {
         for (Map.Entry<String, String> entry : logTemplatesMap.entrySet()) {
             this.logTemplatesMap.put(entry.getKey(), headerTemplate + entry.getValue());
         }
+    }
+
+    public void setIgnoreUsers(Set<String> ignoreUsers) {
+        this.ignoreUsers = ignoreUsers;
     }
 
     /**
@@ -84,6 +87,9 @@ public class MetricsLoggingServiceImpl implements MetricsLoggingService {
      */
     public void logContentEvent(String user, String ipAddress, String sessionID, String nodeIdentifier, String path, String nodeType,
                                 String logTemplate, String... args) {
+        if (ignoreUsers.contains(user)) {
+            return;
+        }
         String template = logTemplatesMap.get(logTemplate);
         String[] templateParameters = new String[6 + args.length];
         templateParameters[0] = user;

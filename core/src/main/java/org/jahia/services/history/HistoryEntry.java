@@ -102,4 +102,19 @@ public class HistoryEntry {
         this.message = message;
     }
 
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer();
+        sb.append("HistoryEntry");
+        sb.append("{action='").append(action).append('\'');
+        sb.append(", id=").append(id);
+        sb.append(", date=").append(date);
+        sb.append(", path='").append(path).append('\'');
+        sb.append(", uuid='").append(uuid).append('\'');
+        sb.append(", propertyName='").append(propertyName).append('\'');
+        sb.append(", userKey='").append(userKey).append('\'');
+        sb.append(", message='").append(message).append('\'');
+        sb.append('}');
+        return sb.toString();
+    }
 }

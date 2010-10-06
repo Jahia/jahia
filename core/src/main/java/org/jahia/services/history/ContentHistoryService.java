@@ -13,16 +13,18 @@ import org.hibernate.classic.Session;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.impl.SessionFactoryImpl;
 import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean;
 
+import javax.jcr.RepositoryException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,6 +47,8 @@ public class ContentHistoryService implements Processor, InitializingBean, Camel
             "([0-9\\-]+ [0-9:,]+) user ([\\sa-zA-Z@.0-9_\\-]*) ip ([0-9.:]*) session ([a-zA-Z@0-9_\\-\\/]*) identifier ([a-zA-Z@0-9_\\-\\/:]*) path (.*) nodetype ([a-zA-Z:]*) (.*)");
     private CamelContext camelContext;
     private String from;
+    private Set<String> ignoreProperties = new HashSet<String>();
+    private Set<String> ignoreNodeTypes = new HashSet<String>();
 
     public void setSessionFactoryBean(SessionFactoryImpl sessionFactoryBean) {
         this.sessionFactoryBean = sessionFactoryBean;
@@ -52,6 +56,14 @@ public class ContentHistoryService implements Processor, InitializingBean, Camel
 
     public void setMappingClass(Class mappingClass) {
         this.mappingClass = mappingClass;
+    }
+
+    public void setIgnoreProperties(Set<String> ignoreProperties) {
+        this.ignoreProperties = ignoreProperties;
+    }
+
+    public void setIgnoreNodeTypes(Set<String> ignoreNodeTypes) {
+        this.ignoreNodeTypes = ignoreNodeTypes;
     }
 
     public static ContentHistoryService getInstance() {
@@ -88,6 +100,39 @@ public class ContentHistoryService implements Processor, InitializingBean, Camel
                 }
             }
 
+            if ((propertyName != null) && ignoreProperties.contains(propertyName)) {
+                logger.debug("Ignoring property " + propertyName + " as configured.");
+                return;
+            }
+
+            if ((nodeIdentifier != null) && (ignoreNodeTypes.size() > 0)) {
+                final JCRTemplate tpl = JCRTemplate.getInstance();
+                String matchingNodeType = null;
+                try {
+                    matchingNodeType = tpl.doExecuteWithSystemSession(new JCRCallback<String>() {
+                        public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            JCRNodeWrapper node = session.getNodeByIdentifier(nodeIdentifier);
+                            if (node != null) {
+                                for (String ignoreNodeType : ignoreNodeTypes) {
+                                    if (node.isNodeType(ignoreNodeType)) {
+                                        return ignoreNodeType;
+                                    }
+                                }
+                            }
+                            return null;
+                        }
+                    });
+                    if (matchingNodeType != null) {
+                        logger.debug("Ignoring node type " + matchingNodeType + " as configured.");
+                        return;
+                    }
+                } catch (RepositoryException e) {
+                    // Node not found might be due to old logs so fail silently
+                    logger.debug("Couldn't find node " + nodeIdentifier + " will not insert log entry. This could be due to parsing an old log.");
+                    return;
+                }
+
+            }
             Session session = sessionFactoryBean.openSession();
             try {
                 Criteria criteria = session.createCriteria(HistoryEntry.class);
@@ -99,6 +144,9 @@ public class ContentHistoryService implements Processor, InitializingBean, Camel
                 // Found update object
                 if (historyEntry != null) {
                     // history entry already exists, we will not update it.
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Content history entry " + historyEntry + " already exists, ignoring...");
+                    }
                 }
                 // Not found new object
                 else {

@@ -211,6 +211,46 @@
         <property name="sessionFactoryBean" ref="sessionFactory"/>
         <property name="mappingClass" value="org.jahia.services.history.HistoryEntry"/>
         <property name="from" value="seda:logMsgs?size=10000&amp;concurrentConsumers=5"/>
+        <property name="ignoreProperties">
+            <set>
+                <value>jcr:created</value>
+                <value>jcr:createdBy</value>
+                <value>jcr:lastModifiedBy</value>
+                <value>jcr:baseVersion</value>
+                <value>jcr:lastModified</value>
+                <value>jcr:versionHistory</value>
+                <value>jcr:predecessors</value>
+                <value>jcr:isCheckedOut</value>
+                <value>jcr:mimeType</value>
+                <value>jcr:data</value>
+                <value>jcr:uuid</value>
+                <value>jcr:primaryType</value>
+                <value>jcr:mixinTypes</value>
+                <value>jcr:language</value>
+                <value>j:hidden</value>
+                <value>j:inherit</value>
+                <value>j:userTemplate</value>
+                <value>j:aceType</value>
+                <value>j:nodename</value>
+                <value>j:fullpath</value>
+                <value>j:originWS</value>
+                <value>j:privileges</value>
+                <value>j:principal</value>
+                <value>j:protected</value>
+                <value>j:external</value>
+                <value>j:password</value>
+                <value>j:accountLocked</value>
+                <value>j:lockTypes</value>
+                <value>j:locktoken</value>
+                <value>j:published</value>
+            </set>
+        </property>
+        <property name="ignoreNodeTypes">
+            <set>
+                <value>jnt:usersFolder</value>
+                <value>jnt:groupsFolder</value>
+            </set>
+        </property>
     </bean>
 
 </beans>

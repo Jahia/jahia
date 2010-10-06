@@ -84,6 +84,10 @@ public class NavigationHelper {
 
     private PublicationHelper publication;
     private WorkflowHelper workflow;
+    
+    private boolean ignoreWeakreferencesInUsages;
+    
+    private Set<String> ignoreInUsages = Collections.emptySet();
 
 
     public void setSessionFactory(JCRSessionFactory sessionFactory) {
@@ -499,7 +503,9 @@ public class NavigationHelper {
 
             try {
                 fillUsages(result, node.getReferences());
-                fillUsages(result, node.getWeakReferences());
+                if (!ignoreWeakreferencesInUsages) {
+                	fillUsages(result, node.getWeakReferences());
+                }
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
             }
@@ -513,6 +519,13 @@ public class NavigationHelper {
             if (!reference.getPath().startsWith("/referencesKeeper")) {
                 JCRNodeWrapper refNode = reference.getParent();
                 if (!refNode.getPath().startsWith("/" + Constants.JCR_SYSTEM)) {
+					if (!ignoreInUsages.isEmpty()) {
+						String nt = refNode.getPrimaryNodeTypeName() + ".";
+						if (ignoreInUsages.contains(nt + "*")
+						        || ignoreInUsages.contains(nt + reference.getName())) {
+							continue;
+						}
+					}
                     addUsage(result, refNode, "reference");
                 }
             }
@@ -853,7 +866,7 @@ public class NavigationHelper {
         if (fields.contains(GWTJahiaNode.COUNT)) {
             try {
                 n.set("count",
-                        JCRContentUtils.size(node.getWeakReferences()) + JCRContentUtils.size(node.getReferences()));
+                        (!ignoreWeakreferencesInUsages ? JCRContentUtils.size(node.getWeakReferences()) : 0) + JCRContentUtils.size(node.getReferences()));
             } catch (RepositoryException e) {
                 logger.warn("Unable to count node references for node");
             }
@@ -1132,7 +1145,7 @@ public class NavigationHelper {
         return null;
     }
 
-    private Map<String, Boolean> iconsPresence = new HashMap();
+    private Map<String, Boolean> iconsPresence = new HashMap<String, Boolean>();
 
     public boolean check(String icon) {
         try {
@@ -1326,6 +1339,14 @@ public class NavigationHelper {
         }
 
         return url;
+    }
+
+	public void setIgnoreWeakreferencesInUsages(boolean ignoreWeakreferencesInUsages) {
+    	this.ignoreWeakreferencesInUsages = ignoreWeakreferencesInUsages;
+    }
+
+	public void setIgnoreInUsages(Set<String> ignoreInUsages) {
+    	this.ignoreInUsages = ignoreInUsages;
     }
 
 }

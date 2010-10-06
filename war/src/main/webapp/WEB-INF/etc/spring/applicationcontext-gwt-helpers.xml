@@ -39,6 +39,12 @@
         <property name="jcrVersionService" ref="jcrVersionService"/>
         <property name="publication" ref="PublicationHelper"/>
         <property name="workflow" ref="WorkflowHelper"/>
+        <property name="ignoreWeakreferencesInUsages" value="false"/>
+        <property name="ignoreInUsages">
+        	<set>
+        		<value>jnt:socialActivity.*</value>
+        	</set>
+        </property>
     </bean>
 
     <bean name="LanguagesHelper" class="org.jahia.ajax.gwt.helper.LanguageHelper"/>

@@ -18,12 +18,14 @@ public class GWTJahiaContentHistoryEntry extends BaseModelData implements Serial
         super();
     }
 
-    public GWTJahiaContentHistoryEntry(Date date, String action, String propertyName, String userKey) {
+    public GWTJahiaContentHistoryEntry(Date date, String action, String propertyName, String userKey, String path, String message) {
         super();
         setDate(date);
         setAction(action);
         setPropertyName(propertyName);
         setUserKey(userKey);
+        setPath(path);
+        setMessage(message);
     }
 
     public Date getDate() {
@@ -58,7 +60,23 @@ public class GWTJahiaContentHistoryEntry extends BaseModelData implements Serial
         set("userKey", userKey);
     }
 
+    public String getPath() {
+        return get("path");
+    }
+
+    public void setPath(String path) {
+        set("path", path);
+    }
+
+    public String getMessage() {
+        return get("message");
+    }
+
+    public void setMessage(String message) {
+        set("message", message);
+    }
+
     public int compareTo(Object o) {
-        return getDate().compareTo(((GWTJahiaContentHistoryEntry) o).getDate());
+        return -getDate().compareTo(((GWTJahiaContentHistoryEntry) o).getDate());
     }
 }

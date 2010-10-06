@@ -110,6 +110,7 @@ public class ContentHistoryService implements Processor, InitializingBean, Camel
                         historyEntry.setUserKey(userKey);
                         historyEntry.setAction(argList[1]);
                         historyEntry.setPropertyName(propertyName);
+                        historyEntry.setMessage("");
                         session.save(historyEntry);
                     }
                 }

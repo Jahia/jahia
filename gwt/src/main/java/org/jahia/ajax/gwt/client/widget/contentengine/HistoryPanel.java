@@ -11,6 +11,7 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
@@ -47,7 +48,7 @@ public class HistoryPanel extends LayoutContainer {
 
 
     public HistoryPanel(GWTJahiaNode node) {
-        super(new FitLayout());
+        super(new BorderLayout());
         this.node = node;
         init();
     }
@@ -230,7 +231,7 @@ public class HistoryPanel extends LayoutContainer {
             addDetail("label.user", "User key", historyEntry.getUserKey());
             addTimeDetail("label.date", "Date", historyEntry.getAction());
             addDetail("label.propertyName", "Property name", historyEntry.getPropertyName());
-            addDetail("label.path", "Path", historyEntry.getPropertyName());
+            addDetail("label.path", "Path", historyEntry.getPath());
         } else {
             int nbHistoryEntries = 0;
 

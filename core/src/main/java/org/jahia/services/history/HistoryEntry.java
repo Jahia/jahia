@@ -25,6 +25,7 @@ public class HistoryEntry {
     private String action;
     private String propertyName;
     private String userKey;
+    private String message;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -46,6 +47,7 @@ public class HistoryEntry {
     }
 
     @Basic
+    @Column(length = 50)
     public String getUuid() {
         return uuid;
     }
@@ -55,6 +57,7 @@ public class HistoryEntry {
     }
 
     @Basic
+    @Column(length = 50)
     public String getPropertyName() {
         return propertyName;
     }
@@ -89,4 +92,14 @@ public class HistoryEntry {
     public void setUserKey(String userKey) {
         this.userKey = userKey;
     }
+
+    @Basic
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
 }

@@ -1104,7 +1104,7 @@ public class ContentManagerHelper {
     }
 
     private GWTJahiaContentHistoryEntry convertToGWTJahiaContentHistoryEntry(HistoryEntry historyEntry) {
-        GWTJahiaContentHistoryEntry result = new GWTJahiaContentHistoryEntry(historyEntry.getDate(), historyEntry.getAction(), historyEntry.getPropertyName(), historyEntry.getUserKey());
+        GWTJahiaContentHistoryEntry result = new GWTJahiaContentHistoryEntry(historyEntry.getDate(), historyEntry.getAction(), historyEntry.getPropertyName(), historyEntry.getUserKey(), historyEntry.getPath(), historyEntry.getMessage());
         return result;
     }
 

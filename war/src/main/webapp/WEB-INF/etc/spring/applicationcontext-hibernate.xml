@@ -5,13 +5,20 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
     <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
-        <property name="jndiName" value="java:comp/env/jdbc/jahia" />
+        <property name="jndiName" value="java:comp/env/jdbc/jahia"/>
     </bean>
 
-    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean" depends-on="settingsBean">
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean"
+          depends-on="settingsBean">
         <property name="dataSource">
             <ref bean="dataSource"/>
         </property>
+        <property name="annotatedClasses">
+            <list>
+                <value>org.jahia.services.history.HistoryEntry</value>
+            </list>
+        </property>
+
         <property name="mappingResources">
             <list>
                 <value>org/jahia/hibernate/model/JahiaPwdPolicy.hbm.xml</value>
@@ -30,7 +37,7 @@
             <props>
                 <prop key="hibernate.dialect">${hibernate.dialect}</prop>
                 <prop key="hibernate.hbm2ddl.auto">none</prop>
-                <prop key="hibernate.show_sql">false</prop>
+                <prop key="hibernate.show_sql">true</prop>
                 <!-- prop key="hibernate.cache.provider_class">org.jahia.hibernate.cache.JahiaClusterCacheHibernateProvider</prop-->
                 <!--prop key="hibernate.cache.provider_class">org.jahia.hibernate.cache.JahiaBatchingClusterCacheHibernateProvider</prop-->
                 <!--prop key="hibernate.cache.provider_class">net.sf.ehcache.hibernate.EhCacheProvider</prop-->
@@ -48,7 +55,7 @@
                 <prop key="hibernate.transaction.factory_class">org.hibernate.transaction.JTATransactionFactory</prop>
                 <prop key="hibernate.transaction.manager_lookup_class">	org.hibernate.transaction.JOTMTransactionManagerLookup</prop>
                 -->
-<!-- Uncomment to use other provider than net.sf.ehcache.hibernate.EhCacheProvider -->
+                <!-- Uncomment to use other provider than net.sf.ehcache.hibernate.EhCacheProvider -->
                 <!--<prop key="activated">${cluster.activated}</prop>
                 <prop key="serverId">${cluster.node.serverId}</prop>
                 <prop key="channelGroupName">JahiaHibernateCluster</prop>
@@ -59,7 +66,7 @@
                 <prop key="cacheClusterUnderlyingImplementation">${cacheClusterUnderlyingImplementation}</prop>
                 <prop key="cacheMaxGroups">${cacheMaxGroups}</prop>-->
                 <!-- Configure WEB-INF/classes/ehcache-hibernate.xml to activate cluster-->
-                <prop key="net.sf.ehcache.configurationResourceName">/${ehcache.hibernate.file}</prop>                
+                <prop key="net.sf.ehcache.configurationResourceName">/${ehcache.hibernate.file}</prop>
             </props>
         </property>
         <property name="eventListeners">
@@ -83,6 +90,6 @@
         <property name="sessionFactory">
             <ref local="sessionFactory"/>
         </property>
-        <property name="nestedTransactionAllowed" value="${nested.transaction.allowed}" />
+        <property name="nestedTransactionAllowed" value="${nested.transaction.allowed}"/>
     </bean>
 </beans>

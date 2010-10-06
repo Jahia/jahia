@@ -1468,7 +1468,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             result.setAcl(gwtJahiaNodeACL);
             Map<String,Set<String>> referencesWarnings = new HashMap<String, Set<String>>();
             for (GWTJahiaNodeProperty property : props.values()) {
-                if (nodeWrapper.getProperty(property.getName()).getDefinition().isProtected()) {
+                if (property.getName().equals("*") || nodeWrapper.getProperty(property.getName()).getDefinition().isProtected()) {
                     continue;
                 }
                 List<GWTJahiaNode> refs = new ArrayList<GWTJahiaNode>();

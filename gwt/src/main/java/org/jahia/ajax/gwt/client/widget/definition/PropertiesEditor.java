@@ -40,6 +40,8 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.*;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -182,7 +184,6 @@ public class PropertiesEditor extends FormPanel {
     /**
      * Add item
      *
-     * @param form
      * @param nodeType
      * @param items
      * @param optional
@@ -321,9 +322,22 @@ public class PropertiesEditor extends FormPanel {
                                     final ContentPanel thisForm =
                                             (ContentPanel) ((FieldSet) ((FieldSetEvent) componentEvent).getBoxComponent())
                                                     .getItem(0);
+                                    final List<Component> w = new ArrayList<Component>();
+                                    w.addAll(fieldSet.getItems());
+                                    fieldSet.removeAll();
+                                    DeferredCommand.addCommand(new Command() {
+                                        public void execute() {
+                                            for (Component component : w) {
+                                                component.setWidth(""+fieldSet.getWidth());
+                                                fieldSet.add(component);
+                                            }
+                                            fieldSet.layout();
+                                        }
+                                    });
                                     for (Component component : thisForm.getItems()) {
                                         component.setData("addedField", "true");
                                     }
+                                    fieldSet.layout();
                                 }
                             });
                         }
@@ -390,7 +404,6 @@ public class PropertiesEditor extends FormPanel {
     /**
      * Set template
      *
-     * @param form
      */
     private void setTemplate() {
         String addMixin = templateField.getValue().get("addMixin");

@@ -93,8 +93,8 @@ public class ContentRepositoryTabs extends LeftComponent {
         m_component.setBodyBorder(false);
         m_component.setBorders(false);
 
-        browseTabITem = new TabItem("Browse");
-        searchTabITem = new TabItem("Search");
+        browseTabITem = new TabItem(Messages.get("browse.label", "Browse"));
+        searchTabITem = new TabItem(Messages.get("label.search", "Search"));
 
         for (GWTRepository repo : config.getRepositories()) {
             repositories.add(new RepositoryTab(this, repo, selectedPaths, config));

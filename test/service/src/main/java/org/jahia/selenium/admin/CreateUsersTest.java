@@ -4,11 +4,7 @@ import com.thoughtworks.selenium.SeleneseTestCase;
 import com.thoughtworks.selenium.Wait;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Dorth
- * Date: 19 août 2010
- * Time: 10:30:39
- * To change this template use File | Settings | File Templates.
+this integration test, create user in administration, in manage user
  */
 public class CreateUsersTest extends SeleneseTestCase {
     private final String userName = "user";
@@ -48,6 +44,18 @@ public class CreateUsersTest extends SeleneseTestCase {
                 selenium.waitForPageToLoad("30000");
             }
         }
+        //switch language to English
+        selenium.setSpeed("1500");
+        if(selenium.getSelectedLabel("preferredLanguage").equals("français")){
+            selenium.select("preferredLanguage","label=English");
+            if(selenium.getSelectedLabel("preferredLanguage").equals("français")){
+                selenium.click("link=Statut du serveur et du cache");
+                selenium.click("flushAllCaches");
+                selenium.click("link=Paramètres du serveur");
+                selenium.select("preferredLanguage","label=English");
+            }
+        }
+        selenium.setSpeed(TEST_SPEED);
         new Wait("wait") {
             public boolean until() {
                 return selenium.isElementPresent("link=Manage users");

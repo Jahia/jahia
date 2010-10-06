@@ -8,11 +8,7 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Dorth
- * Date: 30 sept. 2010
- * Time: 13:56:33
- * To change this template use File | Settings | File Templates.
+this integration test, create a home-blog page in edit, and create a blog in contribute mode
  */
 public class CreateBlog extends SeleneseTestCase{
     private static Logger logger = Logger.getLogger(CreateBlog.class);
@@ -98,5 +94,18 @@ public class CreateBlog extends SeleneseTestCase{
         selenium.type("jcr:title", "my first comment");
         selenium.type("//textarea[@name='content']", "content of my first Comment");
         selenium.click("//input[@value='Submit']");
+        deleteContentCreated();
+    }
+
+    public void deleteContentCreated(){
+        selenium.open("/jahia/cms/edit/default/en/sites/mySite/home.html");
+        selenium.waitForPageToLoad("10000");
+        selenium.clickAt("//span[text()='my blog home']","0,0");
+        selenium.contextMenuAt("//span[text()='my blog home']","0,0");
+        selenium.click("link=Remove");
+        if (selenium.isElementPresent("//button[text()='Yes']")){
+            selenium.click("//button[text()='Yes']");
+        }
+        selenium.refresh();
     }
 }

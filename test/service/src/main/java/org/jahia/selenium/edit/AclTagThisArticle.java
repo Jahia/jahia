@@ -8,11 +8,7 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Dorth
- * Date: 22 sept. 2010
- * Time: 17:18:23
- * To change this template use File | Settings | File Templates.
+this test create an Article in edit, déselect all Acl on this and save, after that, select all Acl and Save, and to finish add add manys tags
  */
 public class AclTagThisArticle extends SeleneseTestCase {
     private static Logger logger = Logger.getLogger(AclTagThisArticle.class);
@@ -71,6 +67,7 @@ public class AclTagThisArticle extends SeleneseTestCase {
         CreateAnArticle();
         AclThisArticle();
         TagThisArticle(tags);
+        deleteContentCreated();
     }
 
     public void CreateAnArticle() {
@@ -212,6 +209,16 @@ public class AclTagThisArticle extends SeleneseTestCase {
             Tag = "Tag";
         }
         selenium.setSpeed(TEST_SPEED);
+    }
+
+    public void deleteContentCreated(){
+        selenium.mouseOver("//span[text()='Area : listA']");
+        selenium.contextMenuAt("//span[text()='Area : listA']", "0,0");
+        selenium.click("link=Remove");
+        if (selenium.isElementPresent("//button[text()='Yes']")){
+            selenium.click("//button[text()='Yes']");
+        }
+        selenium.refresh();
     }
 
     public String getAllCheckBoxAcl() {

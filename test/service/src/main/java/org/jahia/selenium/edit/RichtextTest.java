@@ -12,7 +12,9 @@ import org.jahia.test.TestHelper;
 
 import javax.jcr.Node;
 
-/* YOU NEED A SERVER SELENIUM UP ON YOUR SYSTEM */
+/**
+ * this test, create RichText un ListA of mySite
+ */
 public class RichtextTest extends SeleneseTestCase {
     private static Logger logger = Logger.getLogger(RichtextTest.class);
     private JahiaSite site;
@@ -129,5 +131,15 @@ public class RichtextTest extends SeleneseTestCase {
             };
             selenium.click("//div[@class=' x-small-editor x-panel-btns-center x-panel-fbar x-component x-toolbar-layout-ct']/table/tbody/tr/td[1]/table/tbody/tr/td[1]/table");
         }
+        deleteContentCreated();
+    }
+    public void deleteContentCreated(){
+        selenium.mouseOver("//span[text()='Area : listA']");
+        selenium.contextMenuAt("//span[text()='Area : listA']", "0,0");
+        selenium.click("link=Remove");
+        if (selenium.isElementPresent("//button[text()='Yes']")){
+            selenium.click("//button[text()='Yes']");
+        }
+        selenium.refresh();
     }
 }

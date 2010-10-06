@@ -100,6 +100,8 @@ db_script                                              =   derby_embedded.script
 hibernate.dialect                                      =   @HIBERNATE_DIALECT@
 # Should nested transaction be allowed?
 nested.transaction.allowed                             =   @NESTED_TRANSACTION_ALLOWED@
+# Quartz scheduler driver delegate class
+org.quartz.driverDelegateClass                         =   org.quartz.impl.jdbcjobstore.StdJDBCDelegate
 
 ######################################################################
 ### Characters encoding ##############################################

@@ -8,7 +8,7 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
 
 /**
- this test open the category manager, and create categories, and creates categories under that first created.
+ * this test open the category manager, and create categories, and creates categories under that first created.
  */
 public class CreateCategories extends SeleneseTestCase {
     private static Logger logger = Logger.getLogger(CreateCategories.class);
@@ -72,10 +72,17 @@ public class CreateCategories extends SeleneseTestCase {
         selenium.waitForPopUp("Category_manager", "30000");
         selenium.selectPopUp("Category_manager");
 
+        //Create main Category
+        selenium.clickAt("//span[text()='categories']", "1,1");
+        selenium.contextMenuAt("//span[text()='categories']", "1,1");
+        selenium.click("link=New category");
+        selenium.type("jcr:title", "myMainCategory");
+        selenium.click("//div[@class=' x-small-editor x-panel-btns-center x-panel-fbar x-component x-toolbar-layout-ct']/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[2]/td[2]/em/button[text()='Save']");
+
         for (int i = 0; i < numberOfCategories; i++) {
             //Create new Category
-            selenium.clickAt("//span[text()='categories']", "1,1");
-            selenium.contextMenuAt("//span[text()='categories']", "1,1");
+            selenium.clickAt("//span[text()='myMainCategory']", "1,1");
+            selenium.contextMenuAt("//span[text()='myMainCategory']", "1,1");
             selenium.click("link=New category");
             selenium.type("jcr:title", "myCategory" + i);
             selenium.click("//div[@class=' x-small-editor x-panel-btns-center x-panel-fbar x-component x-toolbar-layout-ct']/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[2]/td[2]/em/button[text()='Save']");
@@ -91,9 +98,8 @@ public class CreateCategories extends SeleneseTestCase {
     }
 
     public void deleteContentCreated() {
-        selenium.clickAt("//span[text()='categories']", "1,1");
-        selenium.click("//div[@class=' x-grid3-hd-inner x-grid3-hd-checker x-component']");
-        selenium.contextMenuAt("//div[text()='mycategory3']", "");
+        selenium.clickAt("//span[text()='myMainCategory']", "1,1");
+        selenium.contextMenuAt("//span[text()='myMainCategory']", "1,1");
         selenium.click("link=Remove");
         if (selenium.isElementPresent("//button[text()='Yes']")) {
             selenium.click("//button[text()='Yes']");

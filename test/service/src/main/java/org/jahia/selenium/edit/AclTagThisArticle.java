@@ -7,8 +7,10 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
 
+import java.util.ArrayList;
+
 /**
-this test create an Article in edit, déselect all Acl on this and save, after that, select all Acl and Save, and to finish add add manys tags
+ * this test create an Article in edit, déselect all Acl on this and save, after that, select all Acl and Save, and to finish add add manys tags
  */
 public class AclTagThisArticle extends SeleneseTestCase {
     private static Logger logger = Logger.getLogger(AclTagThisArticle.class);
@@ -16,6 +18,8 @@ public class AclTagThisArticle extends SeleneseTestCase {
     private JahiaSite site;
     private final static String TESTSITE_NAME = "mySite";
     private final static String TEST_SPEED = "800";  //speed between selenium commands
+    private ArrayList<String> defaultAcl = new ArrayList<String>();
+    private ArrayList<String> defaultAclAfterRestore = new ArrayList<String>();
 
     public void setUp() throws Exception {
         try {
@@ -129,44 +133,50 @@ public class AclTagThisArticle extends SeleneseTestCase {
     }
 
     public void AclThisArticle() {
-        for (int i = 0; i < 2; i++) {
-            // wait article pop in the page, on double click on it
-            new Wait("wait") {
-                public boolean until() {
-                    return selenium.isElementPresent("j:newTag");
-                }
-            };
-            selenium.mouseOver("j:newTag"); //tips in order to click on a element in edit mode.
-            selenium.doubleClick("j:newTag");
-            //click on Rights
-            new Wait("wait") {
-                public boolean until() {
-                    return selenium.isElementPresent("link=Rights");
-                }
-            };
-            selenium.click("link=Rights");
-            //déselect or select all acl
-            String[] ids = selenium.getEval(getAllCheckBoxAcl()).split(",");
-            for (String id : ids) {
-                selenium.setSpeed("100");
-                if (i == 0) {
-                    //deselect
-                    if (selenium.isChecked(id)) {
-                        selenium.click(id);
-                    }
-                } else if (i == 1) {
-                    //select
-                    if (!selenium.isChecked(id)) {
-                        selenium.click(id);
-                    }
-                } else {
-                    //restore
-                }
+        // déselect all Acl
+        String[] ids = getRights();
+        selenium.setSpeed("100");
+        for (String id : ids) {
+            //deselect
+            if (selenium.isChecked(id)) {
+                defaultAcl.add(id);
+                selenium.click(id);
             }
-            selenium.setSpeed(TEST_SPEED);
-            //save
-            selenium.click("//div[@class=' x-small-editor x-panel-btns-center x-panel-fbar x-component x-toolbar-layout-ct']/table/tbody/tr/td[1]/table/tbody/tr/td[1]/table");
         }
+        selenium.click("//div[@class=' x-small-editor x-panel-btns-center x-panel-fbar x-component x-toolbar-layout-ct']/table/tbody/tr/td[1]/table/tbody/tr/td[1]/table");
+
+        //check if all acl are deselect
+        ids = getRights();
+        for (String id : ids) {
+            if (selenium.isChecked(id)) {
+                fail("Error: when check if all Acl are deselect");
+            }
+        }
+        selenium.click("//div[@class=' x-small-editor x-panel-btns-center x-panel-fbar x-component x-toolbar-layout-ct']/table/tbody/tr/td[1]/table/tbody/tr/td[1]/table");
+
+
+        //restore
+        selenium.setSpeed(TEST_SPEED);
+        getRights();
+        int j = 1;
+        while (selenium.isElementPresent("//div[@class=' x-panel-noborder x-panel x-component x-border-panel']/div[2]/div/div/div/div[2]/div[2]/div/div[2]/div[2]/div/div/div/div[2]/div/div[" + j + "]/table/tbody/tr/td[8]/div/div/table/tbody/tr[2]/td[2]/em/button")) {
+            selenium.click("//div[@class=' x-panel-noborder x-panel x-component x-border-panel']/div[2]/div/div/div/div[2]/div[2]/div/div[2]/div[2]/div/div/div/div[2]/div/div[" + j + "]/table/tbody/tr/td[8]/div/div/table/tbody/tr[2]/td[2]/em/button");
+            j++;
+        }
+        selenium.click("//div[@class=' x-small-editor x-panel-btns-center x-panel-fbar x-component x-toolbar-layout-ct']/table/tbody/tr/td[1]/table/tbody/tr/td[1]/table");
+
+        //check if all acl are restored
+        ids = getRights();
+        for (String id : ids) {
+            if (selenium.isChecked(id)) {
+                defaultAclAfterRestore.add(id);
+            }
+        }
+        if (defaultAcl.size() != defaultAclAfterRestore.size()) {
+            fail("Error durring check default Acl are restore");
+        }
+        selenium.click("//div[@class=' x-small-editor x-panel-btns-center x-panel-fbar x-component x-toolbar-layout-ct']/table/tbody/tr/td[1]/table/tbody/tr/td[1]/table");
+
     }
 
     public void TagThisArticle(int numberOfTags) {
@@ -211,11 +221,31 @@ public class AclTagThisArticle extends SeleneseTestCase {
         selenium.setSpeed(TEST_SPEED);
     }
 
-    public void deleteContentCreated(){
+    public String[] getRights() {
+        new Wait("wait") {
+            public boolean until() {
+                return selenium.isElementPresent("j:newTag");
+            }
+        };
+        selenium.mouseOver("j:newTag"); //tips in order to click on a element in edit mode.
+        selenium.doubleClick("j:newTag");
+        //click on Rights
+        new Wait("wait") {
+            public boolean until() {
+                return selenium.isElementPresent("link=Rights");
+            }
+        };
+        selenium.click("link=Rights");
+        //déselect or select all acl
+        String[] ids = selenium.getEval(getAllCheckBoxAcl()).split(",");
+        return ids;
+    }
+
+    public void deleteContentCreated() {
         selenium.mouseOver("//span[text()='Area : listA']");
         selenium.contextMenuAt("//span[text()='Area : listA']", "0,0");
         selenium.click("link=Remove");
-        if (selenium.isElementPresent("//button[text()='Yes']")){
+        if (selenium.isElementPresent("//button[text()='Yes']")) {
             selenium.click("//button[text()='Yes']");
         }
         selenium.refresh();

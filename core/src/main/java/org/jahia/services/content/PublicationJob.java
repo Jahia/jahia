@@ -30,12 +30,12 @@ public class PublicationJob extends BackgroundJob {
         String lock = (String) jobDataMap.get(LOCK);
 
         String label = "published_at_" + new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(GregorianCalendar.getInstance().getTime());
-        if (lock != null) {
-            JCRPublicationService.getInstance().unlockForPublication(info, source, lock);
-        }
         JCRPublicationService.getInstance().publish(info, source, destination);
         for (PublicationInfo publicationInfo : info) {
             label(publicationInfo, source, label);
+        }
+        if (lock != null) {
+            JCRPublicationService.getInstance().unlockForPublication(info, source, lock);
         }
     }
 

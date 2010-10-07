@@ -151,10 +151,12 @@ public class PublishActionItem extends BaseActionItem {
                 status.addAll(info.getReferencesStatus());
                 status.add(info.getStatus());
 
-                setEnabled(!gwtJahiaNode.isLanguageLocked(JahiaGWTParameters.getLanguage()) && info.isCanPublish() &&
+                boolean b = !info.isLocked() && (!gwtJahiaNode.isLanguageLocked(JahiaGWTParameters.getLanguage()) && info.isCanPublish() &&
                         (status.contains(GWTJahiaPublicationInfo.NOT_PUBLISHED) ||
                                 status.contains(GWTJahiaPublicationInfo.MODIFIED) ||
-                                status.contains(GWTJahiaPublicationInfo.UNPUBLISHED)));
+                                status.contains(GWTJahiaPublicationInfo.UNPUBLISHED))) && (!status.contains(GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE));
+                setEnabled(b);
+                
                 updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getName());
             }
         }

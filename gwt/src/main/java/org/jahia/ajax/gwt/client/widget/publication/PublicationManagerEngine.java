@@ -48,6 +48,7 @@ import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.user.client.ui.Widget;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
@@ -326,9 +327,24 @@ public class PublicationManagerEngine extends Window {
                     checked = (Boolean) o;
                 }
             }
-            int state = info.getStatus();
-            boolean wfStatus = !info.isLocked() && (state == GWTJahiaPublicationInfo.MODIFIED || state == GWTJahiaPublicationInfo.NOT_PUBLISHED || state==GWTJahiaPublicationInfo.UNPUBLISHED);
+            boolean wfStatus = getStatus(model, info);
             return wfStatus ? (checked ? "-on" : "") : "-disabled";
+        }
+
+        public boolean getStatus(GWTJahiaNode node, GWTJahiaPublicationInfo info) {
+            if (info.get("checkboxEnabled") != null) {
+                return info.get("checkboxEnabled");
+            }
+            Set<Integer> status = new HashSet<Integer>(info.getSubnodesStatus());
+            status.addAll(info.getReferencesStatus());
+            status.add(info.getStatus());
+
+            boolean b = !info.isLocked() && (!node.isLanguageLocked(JahiaGWTParameters.getLanguage()) && info.isCanPublish() &&
+                    (status.contains(GWTJahiaPublicationInfo.NOT_PUBLISHED) ||
+                            status.contains(GWTJahiaPublicationInfo.MODIFIED) ||
+                            status.contains(GWTJahiaPublicationInfo.UNPUBLISHED))) && (!status.contains(GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE));
+            info.set("checkboxEnable", b);
+            return b;
         }
 
         /**
@@ -387,13 +403,15 @@ public class PublicationManagerEngine extends Window {
                 List<GWTJahiaNode> nodes = store.getModels();
                 for (GWTJahiaNode node : nodes) {
                     Record record = store.getRecord(node);
-                    int state = getState(node);
-                    if (state == GWTJahiaPublicationInfo.MODIFIED || state == GWTJahiaPublicationInfo.NOT_PUBLISHED) {
-                        if (record.get(getDataIndex()) == null) {
-                            record.set(getDataIndex(), Boolean.TRUE);
-                        } else {
-                            record.set(getDataIndex(), c.getStyleName().contains("x-grid3-check-col-on"));
+                    if (node.getPublicationInfos() != null) {
+                        boolean wfStatus = getStatus(node, node.getPublicationInfos().get(getDataIndex()));
+                        if (wfStatus) {
+                            if (record.get(getDataIndex()) == null) {
+                                record.set(getDataIndex(), Boolean.TRUE);
+                            } else {
+                                record.set(getDataIndex(), c.getStyleName().contains("x-grid3-check-col-on"));
 //                            record.set(getDataIndex(), checkboxMap.get(getDataIndex()).getValue());
+                            }
                         }
                     }
                 }

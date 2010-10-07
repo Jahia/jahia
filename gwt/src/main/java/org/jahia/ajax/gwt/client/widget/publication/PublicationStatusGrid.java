@@ -117,5 +117,11 @@ public class PublicationStatusGrid extends Grid<GWTJahiaPublicationInfo> {
         setView(view);
         reconfigure(store, cm);
         setSelectionModel(new GridSelectionModel<GWTJahiaPublicationInfo>());
+
+    }
+
+    protected void onAfterRenderView() {
+        super.onAfterRenderView();
+        ((GroupingView)getView()).collapseAllGroups();
     }
 }

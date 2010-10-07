@@ -420,6 +420,10 @@ public class MainModule extends Module {
                         if (activeLayers.containsKey("publication")) {
                             GWTJahiaPublicationInfo info = m.getNode().getPublicationInfo();
                             if (lastUnpublished == null || !m.getNode().getPath().startsWith(lastUnpublished)) {
+                                if (info.isLocked()) {
+                                    images.add(ToolbarIconProvider.getInstance().getIcon("publication/locked"));
+                                }
+                                
                                 if (info.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
                                     lastUnpublished = m.getNode().getPath();
                                     if (info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
@@ -427,8 +431,6 @@ public class MainModule extends Module {
                                     } else {
                                         images.add(ToolbarIconProvider.getInstance().getIcon("publication/notpublished"));
                                     }
-                                } else if (info.getStatus() == GWTJahiaPublicationInfo.LOCKED) {
-                                    images.add(ToolbarIconProvider.getInstance().getIcon("publication/locked"));
                                 } else if (info.getStatus() == GWTJahiaPublicationInfo.MODIFIED) {
                                     images.add(ToolbarIconProvider.getInstance().getIcon("publication/modified"));
                                 } else if (info.getStatus() == GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE) {

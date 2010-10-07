@@ -104,7 +104,7 @@ public class PagesTabItem extends SidePanelTabItem {
         this.tree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             @Override public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {
                 final GWTJahiaNode node = se.getSelectedItem();
-                if (!node.getPath().equals(editLinker.getMainModule().getPath()) &&
+                if (node != null && !node.getPath().equals(editLinker.getMainModule().getPath()) &&
                     !node.getNodeTypes().contains("jnt:virtualsite") &&
                         !node.getInheritedNodeTypes().contains("jmix:link")) {
                     editLinker.getMainModule().goTo(node.getPath(), null);

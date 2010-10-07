@@ -90,7 +90,7 @@ public class PublicationHelper {
             PublicationInfo pubInfo = publicationService.getPublicationInfo(uuid, languages, true, true, false, currentUserSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE).get(0);
             GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(pubInfo.getRoot().getPath(), pubInfo.getRoot().getStatus(), pubInfo.getRoot().isCanPublish());
             if (pubInfo.getRoot().isLocked()) {
-                gwtInfo.setStatus(GWTJahiaPublicationInfo.LOCKED);
+                gwtInfo.setLocked(true);
             }
             for (PublicationInfoNode sub : pubInfo.getRoot().getChildren()) {
                 if (sub.getPath().contains("/j:translation")) {
@@ -101,7 +101,7 @@ public class PublicationHelper {
                         gwtInfo.setStatus(sub.getStatus());
                     }
                     if (sub.isLocked()) {
-                        gwtInfo.setStatus(GWTJahiaPublicationInfo.LOCKED);
+                        gwtInfo.setLocked(true);
                     }
                 }
             }

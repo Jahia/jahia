@@ -51,19 +51,16 @@ import java.util.List;
 public class PublicationManagerActionItem extends BaseActionItem{
 
     public void onComponentSelection() {
-        if (linker.getSelectionContext().getSingleSelection() != null) {
-            JahiaContentManagementService
-                    .App.getInstance().getSiteLanguages(new BaseAsyncCallback<List<GWTJahiaLanguage>>() {
-                public void onSuccess(List<GWTJahiaLanguage> result) {
-                    new PublicationManagerEngine(linker,result).show();
-                }
-            });
-        }
+        JahiaContentManagementService
+                .App.getInstance().getSiteLanguages(new BaseAsyncCallback<List<GWTJahiaLanguage>>() {
+            public void onSuccess(List<GWTJahiaLanguage> result) {
+                new PublicationManagerEngine(linker,result).show();
+            }
+        });
     }
 
     public void handleNewLinkerSelection() {
-        LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.getSingleSelection() != null && lh.isWriteable());
+        setEnabled(true);
     }
 
 }

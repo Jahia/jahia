@@ -32,7 +32,10 @@
 
 package org.jahia.ajax.gwt.client.data.publication;
 
+import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.data.SerializableBaseModel;
+import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 
 import java.util.*;
 
@@ -46,7 +49,6 @@ import java.util.*;
 public class GWTJahiaPublicationInfo extends SerializableBaseModel {
 
     public static final int PUBLISHED = 1;
-    public static final int LOCKED = 2;
     public static final int MODIFIED = 3;
     public static final int NOT_PUBLISHED = 4;
     public static final int UNPUBLISHED = 5;
@@ -58,8 +60,19 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
     
     private Set<Integer> subnodesStatus = new HashSet<Integer>();
     private Set<Integer> referencesStatus = new HashSet<Integer>();
+    public static Map<Integer,String> statusToLabel = new HashMap<Integer, String>();
 
-    private List<GWTJahiaPublicationInfo> subnodes = new ArrayList<GWTJahiaPublicationInfo>();
+    static {
+        statusToLabel.put(GWTJahiaPublicationInfo.PUBLISHED,"published");
+        statusToLabel.put(GWTJahiaPublicationInfo.MODIFIED,"modified");
+        statusToLabel.put(GWTJahiaPublicationInfo.NOT_PUBLISHED,"notpublished");
+        statusToLabel.put(GWTJahiaPublicationInfo.UNPUBLISHED,"unpublished");
+        statusToLabel.put(GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE,"mandatorylanguageunpublishable");
+        statusToLabel.put(GWTJahiaPublicationInfo.LIVE_MODIFIED,"livemodified");
+        statusToLabel.put(GWTJahiaPublicationInfo.LIVE_ONLY,"liveonly");
+        statusToLabel.put(GWTJahiaPublicationInfo.CONFLICT,"conflict");
+        statusToLabel.put(GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_VALID,"mandatorylanguagevalid");
+    }
 
     public GWTJahiaPublicationInfo() {
     }
@@ -68,6 +81,7 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
         setPath(path);
         setStatus(status);
         setCanPublish(canPublish);
+        setLocked(false);
     }
 
     public String getTitle() {
@@ -126,13 +140,33 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
         set("canPublish", canPublish);
     }
 
-    public void addSubnode(GWTJahiaPublicationInfo subnode) {
-        subnodes.add(subnode);
+    public Boolean isLocked() {
+        return get("locked");
     }
 
-    public List<GWTJahiaPublicationInfo> getSubnodes() {
-        return subnodes;
+    public void setLocked(Boolean locked) {
+        set("locked", locked);
     }
 
+    public static Object renderPublicationStatusImage(GWTJahiaPublicationInfo info) {
+        if (info != null) {
+            String label;
+            if (info.isLocked()) {
+                label = "locked";
+            } else {
+                Set<Integer> status = new HashSet<Integer>(info.getSubnodesStatus());
+                status.addAll(info.getReferencesStatus());
+                status.add(info.getStatus());
+                int state = Collections.max(status);
+                label = statusToLabel.get(state);
+            }
 
+            String title = Messages.get("label.publication." + label, label);
+            final Image image = ToolbarIconProvider.getInstance().getIcon("publication/" + label).createImage();
+            image.setTitle(title);
+            return image;
+        }
+
+        return "";
+    }
 }

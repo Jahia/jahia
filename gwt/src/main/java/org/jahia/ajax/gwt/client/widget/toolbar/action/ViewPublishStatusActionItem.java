@@ -37,7 +37,6 @@ import com.extjs.gxt.ui.client.event.Listener;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
-import org.jahia.ajax.gwt.client.widget.publication.PublicationManagerEngine;
 
 import java.util.List;
 
@@ -65,10 +64,13 @@ public class ViewPublishStatusActionItem extends ViewStatusActionItem {
                         continue;
                     }
 
-                    final String label = PublicationManagerEngine.statusToLabel.get(info.getStatus());
+                    final String label = GWTJahiaPublicationInfo.statusToLabel.get(info.getStatus());
                     String status = Messages.get("label.publication." + label, label);
 
-                    if (info.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
+                    if (info.isLocked()) {
+                        infoLayers.addInfoLayer(module, Messages.get("label.publication.locked", "locked"), "orange", "orange", removeListener, true,
+                                "0.7");
+                    } else if (info.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
                         lastUnpublished = module.getNode().getPath();
                         if (info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
                             infoLayers.addInfoLayer(module, status, "black", "black", removeListener, false,
@@ -77,9 +79,6 @@ public class ViewPublishStatusActionItem extends ViewStatusActionItem {
                             infoLayers.addInfoLayer(module, status, "black", "black", removeListener, false,
                                     "0.7");
                         }
-                    } else if (info.getStatus() == GWTJahiaPublicationInfo.LOCKED) {
-                        infoLayers.addInfoLayer(module, status, "red", "red", removeListener, true,
-                                "0.7");
                     } else if (info.getStatus() == GWTJahiaPublicationInfo.MODIFIED) {
                         infoLayers.addInfoLayer(module, status, "red", "red", removeListener, true,
                                 "0.7");

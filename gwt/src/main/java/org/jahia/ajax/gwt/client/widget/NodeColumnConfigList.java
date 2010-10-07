@@ -45,7 +45,6 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
@@ -55,9 +54,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
-import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.form.CalendarField;
-import org.jahia.ajax.gwt.client.widget.publication.PublicationManagerEngine;
 
 import java.util.*;
 
@@ -120,26 +117,10 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
                 public Object render(GWTJahiaNode node, String property, ColumnData config, int rowIndex, int colIndex,
                                      ListStore<GWTJahiaNode> store, Grid<GWTJahiaNode> grid) {
                     final GWTJahiaPublicationInfo info = node.getPublicationInfo();
-                    if (info != null) {
-                        int state = info.getStatus();
-                        if (state != GWTJahiaPublicationInfo.LOCKED) {
-                            Set<Integer> status = new HashSet<Integer>(info.getSubnodesStatus());
-                            status.addAll(info.getReferencesStatus());
-                            status.add(info.getStatus());
-                            state = Collections.max(status);
-                        }
-                        if (state > 0) {
-                            String title = Messages.get("fm_column_publication_info_" + state, String.valueOf(state));
-                            final Image image = ToolbarIconProvider.getInstance()
-                                    .getIcon("publication/" + PublicationManagerEngine.statusToLabel.get(state)).createImage();
-                            image.setTitle(title);
-                            return image;
-                        }
-                    }
-
-                    return "";
+                    return GWTJahiaPublicationInfo.renderPublicationStatusImage(info);
                 }
             };
+
     private transient final GridCellRenderer<GWTJahiaNode> VERSION_RENDERER = new GridCellRenderer<GWTJahiaNode>() {
         public Object render(final GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i,
                              int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore,

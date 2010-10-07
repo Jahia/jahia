@@ -38,19 +38,13 @@ import org.jahia.bin.ActionResult;
 import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.PublicationInfo;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
-import org.json.JSONObject;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -80,9 +74,9 @@ public class PublishFile implements org.jahia.bin.Action {
             final Set<String> languages = Collections.singleton(resource.getLocale().toString());
 //            final PublicationInfo publicationInfo = service.getPublicationInfo(resource.getNode().getIdentifier(), languages,
 //                                                                               false, false, false, resource.getNode().getSession().getWorkspace().getName(), "live");
-            boolean publishChildren = req.getParameter("publishChildren")!=null && Boolean.valueOf(req.getParameter("publishChildren"));
+            boolean publishChildren = req.getParameter("publishChildren") != null && Boolean.valueOf(req.getParameter("publishChildren"));
             service.publish(resource.getNode().getIdentifier(), resource.getWorkspace(), Constants.LIVE_WORKSPACE, languages,
-                    publishChildren);
+                    publishChildren, new ArrayList<String>());
             jcrSessionWrapper.save();
             return ActionResult.OK;
         } catch (RepositoryException e) {

@@ -19,7 +19,8 @@
                 <entry key="propertyAdded" value="property added"/>
                 <entry key="propertyChanged" value="property changed to {}"/>
                 <entry key="propertyRemoved" value="property removed"/>
-                <entry key="publishedNode" value="node published from {} to {}"/>
+                <entry key="publishedNode" value="node published from {} to {} with comments {}"/>
+                <entry key="unpublishedNode" value="node unpublished from {}"/>
             </map>
         </property>
     </bean>

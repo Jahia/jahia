@@ -16,6 +16,7 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
@@ -24,7 +25,6 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
-import org.jahia.ajax.gwt.client.util.Formatter;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,11 +32,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
+ * A GXT panel to display a content object's history
  * User: loom
  * Date: Oct 5, 2010
  * Time: 5:47:40 PM
- * To change this template use File | Settings | File Templates.
+ *
+ * @todo Add resource bundle entries. Fix date sorting.
  */
 public class HistoryPanel extends LayoutContainer {
 
@@ -45,6 +46,7 @@ public class HistoryPanel extends LayoutContainer {
 
     private List<GWTJahiaContentHistoryEntry> selectedItems = null;
     private PagingToolBar pagingToolBar;
+    public static final String PRECISE_DATETIME_FORMAT = "dd.MM.yyyy HH:mm:ss,SSS";
 
 
     public HistoryPanel(GWTJahiaNode node) {
@@ -89,29 +91,35 @@ public class HistoryPanel extends LayoutContainer {
         store.groupBy("status");
 
         pagingToolBar = new PagingToolBar(50);
-        pagingToolBar.getMessages().setEmptyMsg(Messages.get("label.historyNotAvailable", "No history for object. History building may be delayed."));
+        PagingToolBar.PagingToolBarMessages pagingMessages = pagingToolBar.getMessages();
+        pagingMessages.setEmptyMsg(pagingMessages.getEmptyMsg() + ". " + Messages.get("label.historyMayBeDelayed", "History may be delayed."));
+        pagingMessages.setDisplayMsg(pagingMessages.getDisplayMsg() + ". " + Messages.get("label.historyMayBeDelayed", "History may be delayed."));
         pagingToolBar.bind(loader);
 
         List<ColumnConfig> config = new ArrayList<ColumnConfig>();
 
-        ColumnConfig column = new ColumnConfig("date", Messages.get("label.date", "Date"), 100);
-        column.setDateTimeFormat(Formatter.DEFAULT_DATETIME_FORMAT);
+        ColumnConfig column = new ColumnConfig("date", Messages.get("label.date", "Date"), 125);
+        column.setDateTimeFormat(DateTimeFormat.getFormat(PRECISE_DATETIME_FORMAT));
         column.setSortable(false);
         config.add(column);
 
-        column = new ColumnConfig("action", Messages.get("label.action", "Action"), 100);
+        column = new ColumnConfig("action", Messages.get("label.action", "Action"), 90);
         column.setSortable(false);
         config.add(column);
 
-        column = new ColumnConfig("userKey", Messages.get("label.user", "User"), 100);
+        column = new ColumnConfig("userKey", Messages.get("label.user", "User"), 90);
         column.setSortable(false);
         config.add(column);
 
-        column = new ColumnConfig("propertyName", Messages.get("label.propertyName", "Property name"), 100);
+        column = new ColumnConfig("propertyName", Messages.get("label.propertyName", "Property name"), 90);
         column.setSortable(false);
         config.add(column);
 
-        column = new ColumnConfig("path", Messages.get("label.path", "Path"), 100);
+        column = new ColumnConfig("languageCode", Messages.get("label.language", "Language"), 70);
+        column.setSortable(false);
+        config.add(column);
+
+        column = new ColumnConfig("path", Messages.get("label.path", "Path"), 300);
         column.setSortable(false);
         config.add(column);
 
@@ -195,7 +203,7 @@ public class HistoryPanel extends LayoutContainer {
             if (value instanceof String) {
                 textField.setValue(value);
             } else if (value instanceof Date) {
-                textField.setValue(org.jahia.ajax.gwt.client.util.Formatter.getFormattedDate((Date) value));
+                textField.setValue(org.jahia.ajax.gwt.client.util.Formatter.getFormattedDate((Date) value, PRECISE_DATETIME_FORMAT));
             } else {
                 textField.setValue(value.toString());
             }
@@ -230,9 +238,12 @@ public class HistoryPanel extends LayoutContainer {
             GWTJahiaContentHistoryEntry historyEntry = selectedItems.get(0);
 
             addDetail("label.user", "User key", historyEntry.getUserKey());
-            addTimeDetail("label.date", "Date", historyEntry.getAction());
+            addTimeDetail("label.date", "Date", historyEntry.getDate());
             addDetail("label.propertyName", "Property name", historyEntry.getPropertyName());
+            addDetail("label.language", "Language", historyEntry.getLanguageCode());
             addDetail("label.path", "Path", historyEntry.getPath());
+            addDetail("label.action", "Action", historyEntry.getAction());
+            addDetail("label.message", "Message", historyEntry.getMessage());
         } else {
             int nbHistoryEntries = 0;
 

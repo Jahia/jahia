@@ -606,7 +606,7 @@ public class JCRStoreProvider {
 
     public JCRNodeWrapper getNodeWrapper(final Node objectNode, JCRSessionWrapper session) throws RepositoryException {
         if (session.getUser() != null && sessionFactory.getCurrentAliasedUser() != null &&
-            !sessionFactory.getCurrentAliasedUser().equals(session.getUser())) {
+                !sessionFactory.getCurrentAliasedUser().equals(session.getUser())) {
             JCRTemplate.getInstance().doExecuteWithUserSession(sessionFactory.getCurrentAliasedUser().getUsername(),
                     session.getWorkspace().getName(), session.getLocale(), new JCRCallback<Object>() {
                         public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
@@ -624,7 +624,7 @@ public class JCRStoreProvider {
 
     public JCRNodeWrapper getNodeWrapper(final Node objectNode, String path, JCRNodeWrapper parent, JCRSessionWrapper session) throws RepositoryException {
         if (session.getUser() != null && sessionFactory.getCurrentAliasedUser() != null &&
-            !sessionFactory.getCurrentAliasedUser().equals(session.getUser())) {
+                !sessionFactory.getCurrentAliasedUser().equals(session.getUser())) {
             JCRTemplate.getInstance().doExecuteWithUserSession(sessionFactory.getCurrentAliasedUser().getUsername(),
                     session.getWorkspace().getName(), session.getLocale(), new JCRCallback<Object>() {
                         public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
@@ -736,7 +736,7 @@ public class JCRStoreProvider {
                                         session.save();
                                         session.getWorkspace().getVersionManager().checkin(f.getPath());
                                         publicationService.publish(userNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
-                                                true);
+                                                true, new ArrayList<String>());
                                     } catch (RepositoryException e1) {
                                         logger.error("Cannot save", e1);
                                     }

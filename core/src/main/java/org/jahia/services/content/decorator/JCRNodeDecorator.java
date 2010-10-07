@@ -32,11 +32,11 @@
 
 package org.jahia.services.content.decorator;
 
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
 import org.jahia.services.content.*;
+import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.usermanager.JahiaUser;
 
 import javax.jcr.*;
 import javax.jcr.lock.Lock;
@@ -49,8 +49,8 @@ import javax.jcr.version.VersionHistory;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.io.InputStream;
-import java.util.*;
 import java.math.BigDecimal;
+import java.util.*;
 
 /**
  * User: toto
@@ -102,7 +102,7 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
     }
 
     public boolean changePermissions(String user, String perm) {
-        return node.changePermissions(user, perm);        
+        return node.changePermissions(user, perm);
     }
 
     public boolean changePermissions(String user, Map<String, String> perm) {
@@ -224,7 +224,7 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
     public String getPublicationUser() {
         return node.getPublicationUser();
     }
-    
+
     public String getLanguage() {
         return node.getLanguage();
     }
@@ -259,14 +259,14 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
 
     public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, Map<String, List<String>> references) throws RepositoryException {
         return node.copy(dest, name, allowsExternalSharedNodes, references);
-    }    
+    }
 
     public void copyProperties(JCRNodeWrapper destinationNode, Map<String, List<String>> references) throws RepositoryException {
         node.copyProperties(destinationNode, references);
     }
 
 
-    public boolean lockAndStoreToken(String type) throws RepositoryException  {
+    public boolean lockAndStoreToken(String type) throws RepositoryException {
         return node.lockAndStoreToken(type);
     }
 
@@ -298,6 +298,7 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
 //        return node.getFrozenVersionAsRegular(versionLabel);
 //    }
 //
+
     public JCRStoreProvider getJCRProvider() {
         return node.getJCRProvider();
     }
@@ -676,6 +677,10 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
 
     public void remove() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
         node.remove();
+    }
+
+    public List<Locale> getExistingLocales() throws RepositoryException {
+        return node.getExistingLocales();
     }
 
     public Node getI18N(Locale locale) throws RepositoryException {

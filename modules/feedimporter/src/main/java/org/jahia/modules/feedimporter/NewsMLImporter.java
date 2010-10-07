@@ -188,7 +188,7 @@ public class NewsMLImporter {
         if (newsSubjectCode != null) {
             newsComponentNode.setProperty("subjectCode", newsSubjectCode);
             newsMLItemNode.setProperty("subjectCode", newsSubjectCode);
-             // we have the subject code, let's categorize the newsMLItem properly.
+            // we have the subject code, let's categorize the newsMLItem properly.
 
             String categoryKey = subjectCodeToCategoryKey.getProperty(newsSubjectCode);
             if (categoryKey != null) {
@@ -287,8 +287,8 @@ public class NewsMLImporter {
         String newsDateStr = getElementText(newsItem, "Identification/NewsIdentifier/DateId");
         String newsFirstCreatedDateStr = getElementText(newsItem, "NewsManagement/FirstCreated");
         String newsThisRevisionCreatedDateStr = getElementText(newsItem, "NewsManagement/ThisRevisionCreated");
-        String newsUrgency = getElementAttributeValue(newsItem, "NewsManagement/Urgency","FormalName");
-        String newsStatus = getElementAttributeValue(newsItem, "NewsManagement/Status","FormalName");
+        String newsUrgency = getElementAttributeValue(newsItem, "NewsManagement/Urgency", "FormalName");
+        String newsStatus = getElementAttributeValue(newsItem, "NewsManagement/Status", "FormalName");
         if ("Embargoed".equals(newsStatus)) {
             Element statusWillChange = getElement(newsItem, "NewsManagement/StatusWillChange");
             if (statusWillChange != null) {
@@ -365,7 +365,7 @@ public class NewsMLImporter {
             newsMLItemNode = parentNode.addNode(entryBaseName, "jnt:newsMLItem");
         }
         // newsMLItemNode.setProperty("jcr:title", newsHeadline);
-        Calendar newsCalendar=Calendar.getInstance();
+        Calendar newsCalendar = Calendar.getInstance();
         newsCalendar.setTime(newsDate);
         newsMLItemNode.setProperty("date", newsCalendar);
         newsMLItemNode.setProperty("itemID", newsItemID);
@@ -392,7 +392,7 @@ public class NewsMLImporter {
         while (childNodeIterator.hasNext()) {
             childNodeIterator.nextNode().remove();
         }
-        
+
         List<Element> newsComponents = newsItem.getChildren("NewsComponent");
         for (Element newsComponent : newsComponents) {
             processNewsComponent(newsComponent, newsMLItemNode, entryBaseName, contextFileObject, feedNode, newsMLItemNode);
@@ -406,7 +406,7 @@ public class NewsMLImporter {
             newsMLItemNode = session.getNodeByIdentifier(newsMLItemNodeIdentifier);
             logger.info("Publishing news item " + newsMLItemNode.getPath());
             JCRPublicationService.getInstance().publish(newsMLItemNode.getPath(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
-                    true);
+                    true, new ArrayList<String>());
         } else if (mustUpdate) {
             newsMLItemNode = session.getNodeByIdentifier(newsMLItemNodeIdentifier);
             final JCRSessionWrapper jcrSessionWrapper = newsMLItemNode.getSession();
@@ -445,7 +445,7 @@ public class NewsMLImporter {
         }
     }
 
-    public void importFeed (String feedURL, String userName, String password, JCRNodeWrapper feedNode, JCRSessionWrapper session) throws IOException, JDOMException, RepositoryException {
+    public void importFeed(String feedURL, String userName, String password, JCRNodeWrapper feedNode, JCRSessionWrapper session) throws IOException, JDOMException, RepositoryException {
 
         if ((userName != null) && (password != null)) {
             StaticUserAuthenticator auth = new StaticUserAuthenticator(userName, password, null);
@@ -455,17 +455,17 @@ public class NewsMLImporter {
 
         // Locate the Jar file
         FileSystemManager fsManager = VFS.getManager();
-        FileObject jarFile = fsManager.resolveFile( feedURL );
+        FileObject jarFile = fsManager.resolveFile(feedURL);
 
         // List the children of the Jar file and sort them by file name.
         FileObject[] children = jarFile.getChildren();
         Arrays.sort(children, new FileObjectComparator());
-        logger.debug( "Children of " + jarFile.getName().getURI() );
-        for ( int i = 0; i < children.length; i++ ) {
-            logger.debug( children[ i ].getName().getBaseName() );
+        logger.debug("Children of " + jarFile.getName().getURI());
+        for (int i = 0; i < children.length; i++) {
+            logger.debug(children[i].getName().getBaseName());
             if ("xml".equals(children[i].getName().getExtension().toLowerCase())) {
                 InputStream currentNewsItemInputStream = children[i].getContent().getInputStream();
-                
+
                 // session.importXML(node.getPath(), currentNewsItemInputStream, ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING);
                 SAXBuilder saxBuilder = new SAXBuilder();
                 saxBuilder.setFeature(
@@ -475,17 +475,17 @@ public class NewsMLImporter {
                     Document document = saxBuilder.build(currentNewsItemInputStream);
 
                     if ("NewsML".equals(document.getRootElement().getName())) {
-                        logger.info("Importing contents of XML NewsML file " + children[ i ].getName().getBaseName());
+                        logger.info("Importing contents of XML NewsML file " + children[i].getName().getBaseName());
 
                         processDocument(document, feedNode, children[i].getName().getBaseName(), jarFile);
                     }
                 } catch (JDOMParseException jdpe) {
-                    logger.warn("Error "+jdpe.getMessage() +" while parsing file " + children[i].getName().getBaseName() + ", ignoring it. Switch logging to debug for detailed stack trace.");
+                    logger.warn("Error " + jdpe.getMessage() + " while parsing file " + children[i].getName().getBaseName() + ", ignoring it. Switch logging to debug for detailed stack trace.");
                     logger.debug("Detailed parsing error info ", jdpe);
                 }
             }
         }
-         session.save();
+        session.save();
 
     }
 
@@ -495,9 +495,10 @@ public class NewsMLImporter {
      * for a Spring XML configuration will look like this :
      * /xp:beans/xp:bean[@id="FileListSync"]/xp:property[@name="syncUrl"]
      * Currently there is no way to rename the prefix.
-     * @param scopeElement the scope in which to execute the XPath query
+     *
+     * @param scopeElement    the scope in which to execute the XPath query
      * @param xPathExpression the XPath query to select the element we wish to retrieve. In the case where multiple
-     * elements match, only the first one will be returned.
+     *                        elements match, only the first one will be returned.
      * @return the first element that matches the XPath expression, or null if no element matches.
      * @throws JDOMException raised if there was a problem navigating the JDOM structure.
      */
@@ -534,7 +535,7 @@ public class NewsMLImporter {
         if ((namespaceURI != null) && (!"".equals(namespaceURI))) {
             xPath.addNamespace("xp", namespaceURI);
         }
-        return (List<Element>) xPath.selectNodes(scopeElement);            
+        return (List<Element>) xPath.selectNodes(scopeElement);
     }
 
 }

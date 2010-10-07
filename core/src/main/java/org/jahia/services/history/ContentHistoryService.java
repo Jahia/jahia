@@ -21,6 +21,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean;
 
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -181,12 +182,26 @@ public class ContentHistoryService implements Processor, InitializingBean, Camel
         }
     }
 
-    public List<HistoryEntry> getNodeHistory(JCRNodeWrapper node) {
+    public List<HistoryEntry> getNodeHistory(JCRNodeWrapper node, boolean withLanguageNodes) {
         Session session = sessionFactoryBean.openSession();
         Criteria criteria = session.createCriteria(HistoryEntry.class);
         try {
             criteria.add(Restrictions.eq("uuid", node.getIdentifier()));
-            return (List<HistoryEntry>) criteria.list();
+            List<HistoryEntry> result = (List<HistoryEntry>) criteria.list();
+            if (withLanguageNodes) {
+                List<Locale> existingLocales = node.getExistingLocales();
+                for (Locale existingLocale : existingLocales) {
+                    Node localeNode = node.getI18N(existingLocale);
+                    criteria = session.createCriteria(HistoryEntry.class);
+                    criteria.add(Restrictions.eq("uuid", localeNode.getIdentifier()));
+                    List<HistoryEntry> languageHistoryEntries = (List<HistoryEntry>) criteria.list();
+                    for (HistoryEntry languageHistoryEntry : languageHistoryEntries) {
+                        languageHistoryEntry.setLocale(existingLocale);
+                        result.add(languageHistoryEntry);
+                    }
+                }
+            }
+            return result;
         } catch (Exception e) {
             return new ArrayList<HistoryEntry>();
         } finally {

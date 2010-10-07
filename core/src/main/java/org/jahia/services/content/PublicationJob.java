@@ -16,6 +16,7 @@ import java.util.List;
  */
 public class PublicationJob extends BackgroundJob {
     public static final String PUBLICATION_INFOS = "publicationInfos";
+    public static final String PUBLICATION_COMMENTS = "publicationComments";
     public static final String SOURCE = "source";
     public static final String DESTINATION = "destination";
     public static final String LOCK = "lock";
@@ -28,9 +29,10 @@ public class PublicationJob extends BackgroundJob {
         String source = (String) jobDataMap.get(SOURCE);
         String destination = (String) jobDataMap.get(DESTINATION);
         String lock = (String) jobDataMap.get(LOCK);
+        List<String> comments = (List<String>) jobDataMap.get(PUBLICATION_COMMENTS);
 
         String label = "published_at_" + new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(GregorianCalendar.getInstance().getTime());
-        JCRPublicationService.getInstance().publish(info, source, destination);
+        JCRPublicationService.getInstance().publish(info, source, destination, comments);
         for (PublicationInfo publicationInfo : info) {
             label(publicationInfo, source, label);
         }

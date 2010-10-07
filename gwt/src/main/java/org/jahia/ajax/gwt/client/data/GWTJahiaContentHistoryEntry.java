@@ -18,7 +18,7 @@ public class GWTJahiaContentHistoryEntry extends BaseModelData implements Serial
         super();
     }
 
-    public GWTJahiaContentHistoryEntry(Date date, String action, String propertyName, String userKey, String path, String message) {
+    public GWTJahiaContentHistoryEntry(Date date, String action, String propertyName, String userKey, String path, String message, String languageCode) {
         super();
         setDate(date);
         setAction(action);
@@ -26,6 +26,7 @@ public class GWTJahiaContentHistoryEntry extends BaseModelData implements Serial
         setUserKey(userKey);
         setPath(path);
         setMessage(message);
+        setLanguageCode(languageCode);
     }
 
     public Date getDate() {
@@ -76,7 +77,15 @@ public class GWTJahiaContentHistoryEntry extends BaseModelData implements Serial
         set("message", message);
     }
 
+    public String getLanguageCode() {
+        return get("languageCode");
+    }
+
+    public void setLanguageCode(String languageCode) {
+        set("languageCode", languageCode);
+    }
+
     public int compareTo(Object o) {
-        return -getDate().compareTo(((GWTJahiaContentHistoryEntry) o).getDate());
+        return getDate().compareTo(((GWTJahiaContentHistoryEntry) o).getDate());
     }
 }

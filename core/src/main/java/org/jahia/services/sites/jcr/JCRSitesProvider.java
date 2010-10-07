@@ -46,7 +46,6 @@ import org.jahia.settings.SettingsBean;
 import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -80,7 +79,7 @@ public class JCRSitesProvider {
                             try {
                                 list.add(getSite(nodeWrapper));
                             } catch (RepositoryException e) {
-                                logger.error("Cannot get site",e);
+                                logger.error("Cannot get site", e);
                             }
                         }
                     }
@@ -88,7 +87,7 @@ public class JCRSitesProvider {
                 }
             });
         } catch (RepositoryException e) {
-            logger.error("Cannot get sites",e);
+            logger.error("Cannot get sites", e);
         }
         return null;
     }
@@ -198,8 +197,8 @@ public class JCRSitesProvider {
 
 
     public void addSite(final JahiaSite site, final String siteKey, final String templatePackage, final String title,
-                       final String descr, final String serverName, final String defaultLanguage, final boolean mixLanguagesActive, final Set<String> languages,
-                       final Set<String> mandatoryLanguages) {
+                        final String descr, final String serverName, final String defaultLanguage, final boolean mixLanguagesActive, final Set<String> languages,
+                        final Set<String> mandatoryLanguages) {
         try {
             int id = 1;
             List<JahiaSite> sites = getSites();
@@ -238,17 +237,17 @@ public class JCRSitesProvider {
                                         String[] skeletons = sitesFolder.getProperty("j:virtualsitesFolderSkeleton").getString().split(",");
                                         for (int i = 0; i < skeletons.length; i++) {
                                             String skeleton = skeletons[i].trim();
-                                            File path = null; 
+                                            File path = null;
                                             if (skeleton.startsWith("/")) {
-                                                path = new File(SettingsBean.getInstance().getJahiaJspDiskPath(), skeleton); 
+                                                path = new File(SettingsBean.getInstance().getJahiaJspDiskPath(), skeleton);
                                             } else {
-                                                path = new File(SettingsBean.getInstance().getJahiaEtcDiskPath(), "/repository/"+ skeleton);
+                                                path = new File(SettingsBean.getInstance().getJahiaEtcDiskPath(), "/repository/" + skeleton);
                                             }
                                             if (path.exists()) {
                                                 InputStream is = null;
                                                 try {
                                                     is = new FileInputStream(path);
-                                                    session.importXML(f.getPath()+"/"+ siteKey, is,ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
+                                                    session.importXML(f.getPath() + "/" + siteKey, is, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
                                                 } finally {
                                                     IOUtils.closeQuietly(is);
                                                 }
@@ -359,7 +358,7 @@ public class JCRSitesProvider {
                     }
                     session.save();
                     JCRPublicationService.getInstance().publish(siteNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
-                            false);
+                            false, new ArrayList<String>());
                     return null;
                 }
             });
@@ -402,9 +401,9 @@ public class JCRSitesProvider {
         String typeUrl = node.getPropertyAsString("j:gaTypeUrl");
         boolean enabled = true;
         site.setGoogleAnalyticsProfile(typeUrl, enabled, password, login, profile, account);
-        
+
         site.setUuid(node.getIdentifier());
-        
+
         return site;
     }
 

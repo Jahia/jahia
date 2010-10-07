@@ -1095,16 +1095,26 @@ public class ContentManagerHelper {
 
     public List<GWTJahiaContentHistoryEntry> getContentHistory(JCRSessionWrapper session, String nodeIdentifier, int offset, int limit) throws RepositoryException {
         JCRNodeWrapper node = session.getNodeByIdentifier(nodeIdentifier);
-        List<HistoryEntry> historyEntryList = contentHistoryService.getNodeHistory(node);
+        List<HistoryEntry> historyEntryList = contentHistoryService.getNodeHistory(node, true);
         List<GWTJahiaContentHistoryEntry> result = new ArrayList<GWTJahiaContentHistoryEntry>();
         for (HistoryEntry historyEntry : historyEntryList) {
             result.add(convertToGWTJahiaContentHistoryEntry(historyEntry));
         }
+        Collections.sort(result, new Comparator<GWTJahiaContentHistoryEntry>() {
+            public int compare(GWTJahiaContentHistoryEntry o1, GWTJahiaContentHistoryEntry o2) {
+                return -o1.compareTo(o2);
+            }
+        });
+
         return result;
     }
 
     private GWTJahiaContentHistoryEntry convertToGWTJahiaContentHistoryEntry(HistoryEntry historyEntry) {
-        GWTJahiaContentHistoryEntry result = new GWTJahiaContentHistoryEntry(historyEntry.getDate(), historyEntry.getAction(), historyEntry.getPropertyName(), historyEntry.getUserKey(), historyEntry.getPath(), historyEntry.getMessage());
+        String languageCode = null;
+        if (historyEntry.getLocale() != null) {
+            languageCode = historyEntry.getLocale().toString();
+        }
+        GWTJahiaContentHistoryEntry result = new GWTJahiaContentHistoryEntry(historyEntry.getDate(), historyEntry.getAction(), historyEntry.getPropertyName(), historyEntry.getUserKey(), historyEntry.getPath(), historyEntry.getMessage(), languageCode);
         return result;
     }
 

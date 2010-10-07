@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,6 +27,7 @@ public class HistoryEntry {
     private String propertyName;
     private String userKey;
     private String message;
+    private transient Locale locale;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -102,6 +104,15 @@ public class HistoryEntry {
         this.message = message;
     }
 
+    @Transient
+    public Locale getLocale() {
+        return locale;
+    }
+
+    public void setLocale(Locale locale) {
+        this.locale = locale;
+    }
+
     @Override
     public String toString() {
         final StringBuffer sb = new StringBuffer();
@@ -114,6 +125,7 @@ public class HistoryEntry {
         sb.append(", propertyName='").append(propertyName).append('\'');
         sb.append(", userKey='").append(userKey).append('\'');
         sb.append(", message='").append(message).append('\'');
+        sb.append(", locale=").append(locale);
         sb.append('}');
         return sb.toString();
     }

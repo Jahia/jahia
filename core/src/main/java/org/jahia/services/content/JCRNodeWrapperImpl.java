@@ -47,7 +47,10 @@ import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.decorator.*;
+import org.jahia.services.content.decorator.JCRFileContent;
+import org.jahia.services.content.decorator.JCRPlaceholderNode;
+import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.decorator.JCRVersion;
 import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -595,7 +598,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public String getAbsoluteUrl(ServletRequest request) {
-            return provider.getAbsoluteContextPath(request) + getUrl();
+        return provider.getAbsoluteContextPath(request) + getUrl();
     }
 
     /**
@@ -620,7 +623,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public String getAbsoluteWebdavUrl(final HttpServletRequest request) {
-            return provider.getAbsoluteContextPath(request) + getWebdavUrl();
+        return provider.getAbsoluteContextPath(request) + getWebdavUrl();
     }
 
     /**
@@ -1122,6 +1125,16 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
         }
         return language;
+    }
+
+    public List<Locale> getExistingLocales() throws RepositoryException {
+        List<Locale> r = new ArrayList<Locale>();
+        NodeIterator ni = objectNode.getNodes("j:translation*");
+        while (ni.hasNext()) {
+            Node n = ni.nextNode();
+            r.add(new Locale(n.getProperty("jcr:language").getString()));
+        }
+        return r;
     }
 
     /**
@@ -2373,14 +2386,14 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
         String[] grs = new String[grClone.size()];
         grClone.toArray(grs);
-        if(grs.length==0) {
+        if (grs.length == 0) {
             aceg.remove();
         } else {
             aceg.setProperty(J_PRIVILEGES, grs);
         }
         String[] dens = new String[denClone.size()];
         denClone.toArray(dens);
-        if (dens.length==0) {
+        if (dens.length == 0) {
             aced.remove();
         } else {
             aced.setProperty(J_PRIVILEGES, dens);
@@ -3032,12 +3045,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             String path = getPath();
             if (path.startsWith("/sites/")) {
                 int index = path.indexOf('/', 7);
-                return (site = (JCRSiteNode) (getSession().getNode(index==-1?path:path.substring(0, index))));
+                return (site = (JCRSiteNode) (getSession().getNode(index == -1 ? path : path.substring(0, index))));
             }
 
             if (path.startsWith("/templateSets/")) {
                 int index = path.indexOf('/', 14);
-                return (site = (JCRSiteNode) (getSession().getNode(index==-1?path:path.substring(0, index))));
+                return (site = (JCRSiteNode) (getSession().getNode(index == -1 ? path : path.substring(0, index))));
             }
         } catch (ItemNotFoundException e) {
         }

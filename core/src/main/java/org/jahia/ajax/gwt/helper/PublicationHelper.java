@@ -219,14 +219,14 @@ public class PublicationHelper {
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      *          in case of any RepositoryException
      */
-    public void publish(String path, Set<String> languages, boolean allSubTree, boolean reverse, JCRSessionWrapper session) throws GWTJahiaServiceException {
+    public void publish(String path, Set<String> languages, boolean allSubTree, boolean reverse, JCRSessionWrapper session, List<String> comments) throws GWTJahiaServiceException {
         try {
             if (reverse) {
                 publicationService.publish(path, Constants.LIVE_WORKSPACE, session.getWorkspace().getName(), languages,
-                        allSubTree);
+                        allSubTree, comments);
             } else {
                 publicationService.publish(path, session.getWorkspace().getName(), Constants.LIVE_WORKSPACE, languages,
-                        allSubTree);
+                        allSubTree, comments);
             }
         } catch (RepositoryException e) {
             logger.error("repository exception", e);
@@ -310,6 +310,7 @@ public class PublicationHelper {
                 } else {
                     JobDetail jobDetail = BackgroundJob.createJahiaJob("Publication", PublicationJob.class);
                     JobDataMap jobDataMap = jobDetail.getJobDataMap();
+                    jobDataMap.put(PublicationJob.PUBLICATION_COMMENTS, comments);
                     jobDataMap.put(PublicationJob.PUBLICATION_INFOS, infos);
                     jobDataMap.put(PublicationJob.SOURCE, workspaceName);
                     jobDataMap.put(PublicationJob.DESTINATION, Constants.LIVE_WORKSPACE);

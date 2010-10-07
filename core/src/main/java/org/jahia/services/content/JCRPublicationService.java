@@ -34,6 +34,7 @@ package org.jahia.services.content;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaAccessManager;
+import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
@@ -207,20 +208,22 @@ public class JCRPublicationService extends JahiaService {
      * @param destinationWorkspace the destination workspace of the publication
      * @param languages            set of languages you wish to publish
      * @param allSubTree
+     * @param comments             an optional List<String> of comments that will be used to log the publication in the metrics
+     *                             service.
      * @throws javax.jcr.RepositoryException in case of error
      */
     public void publish(final String uuid, final String sourceWorkspace, final String destinationWorkspace,
-                        final Set<String> languages, final boolean allSubTree) throws RepositoryException {
+                        final Set<String> languages, final boolean allSubTree, List<String> comments) throws RepositoryException {
         if (sessionFactory.getCurrentUser() == null) {
             return;
         }
         List<PublicationInfo> tree =
                 getPublicationInfo(uuid, languages, true, true, allSubTree, sourceWorkspace, destinationWorkspace);
-        publish(tree, sourceWorkspace, destinationWorkspace);
+        publish(tree, sourceWorkspace, destinationWorkspace, comments);
     }
 
     public void publish(final List<PublicationInfo> publicationInfos, final String sourceWorkspace,
-                        final String destinationWorkspace) throws RepositoryException {
+                        final String destinationWorkspace, final List<String> comments) throws RepositoryException {
         final String username;
         final JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser();
         if (user != null) {
@@ -246,7 +249,7 @@ public class JCRPublicationService extends JahiaService {
                                 }
                             }
 
-                            publish(publicationInfo, sourceSession, destinationSession, new HashSet<String>());
+                            publish(publicationInfo, sourceSession, destinationSession, new HashSet<String>(), comments);
                         }
                         return null;
                     }
@@ -258,7 +261,7 @@ public class JCRPublicationService extends JahiaService {
     }
 
     private void publish(final PublicationInfo publicationInfo, JCRSessionWrapper sourceSession,
-                         JCRSessionWrapper destinationSession, Set<String> uuids) throws RepositoryException {
+                         JCRSessionWrapper destinationSession, Set<String> uuids, final List<String> comments) throws RepositoryException {
         final Calendar calendar = new GregorianCalendar();
         uuids.add(publicationInfo.getRoot().getUuid());
 
@@ -299,7 +302,7 @@ public class JCRPublicationService extends JahiaService {
             try {
                 if (!uuids.contains(subtree.getRoot().getUuid()) &&
                         !uuidsToPublish.contains(subtree.getRoot().getUuid())) {
-                    publish(subtree, sourceSession, destinationSession, uuids);
+                    publish(subtree, sourceSession, destinationSession, uuids, comments);
                 }
             } catch (Exception e) {
                 logger.warn("Cannot publish node at : " + subtree.getRoot().getUuid(), e);
@@ -362,7 +365,17 @@ public class JCRPublicationService extends JahiaService {
 
         // now let's output the publication information to the logging service.
         for (JCRNodeWrapper publishedNode : toPublish) {
-            loggingService.logContentEvent(sourceSession.getUserID(), "", "", publishedNode.getIdentifier(), publishedNode.getPath(), publishedNode.getPrimaryNodeTypeName(), "publishedNode", sourceSession.getWorkspace().getName(), destinationSession.getWorkspace().getName());
+            String userID = sourceSession.getUserID();
+            if ((userID != null) && (userID.startsWith(JahiaLoginModule.SYSTEM))) {
+                userID = userID.substring(JahiaLoginModule.SYSTEM.length());
+            }
+            StringBuffer commentBuf = new StringBuffer();
+            if (comments != null) {
+                for (String comment : comments) {
+                    commentBuf.append(comment);
+                }
+            }
+            loggingService.logContentEvent(userID, "", "", publishedNode.getIdentifier(), publishedNode.getPath(), publishedNode.getPrimaryNodeTypeName(), "publishedNode", sourceSession.getWorkspace().getName(), destinationSession.getWorkspace().getName(), commentBuf.toString());
         }
     }
 
@@ -794,6 +807,11 @@ public class JCRPublicationService extends JahiaService {
                 i18n.setProperty("j:published", false);
             }
         }
+        String userID = node.getSession().getUserID();
+        if ((userID != null) && (userID.startsWith(JahiaLoginModule.SYSTEM))) {
+            userID = userID.substring(JahiaLoginModule.SYSTEM.length());
+        }
+        loggingService.logContentEvent(userID, "", "", node.getIdentifier(), node.getPath(), node.getPrimaryNodeTypeName(), "unpublishedNode", node.getSession().getWorkspace().getName());
     }
 
     public List<PublicationInfo> getPublicationInfos(List<String> uuids, Set<String> languages,
@@ -934,12 +952,12 @@ public class JCRPublicationService extends JahiaService {
         if (node.hasProperty(Constants.JAHIA_LOCKTYPES)) {
             Value[] lockTypes = node.getProperty(Constants.JAHIA_LOCKTYPES).getValues();
             for (Value lockType : lockTypes) {
-                if (StringUtils.substringAfter(lockType.getString(),":").startsWith("publication-")) {
+                if (StringUtils.substringAfter(lockType.getString(), ":").startsWith("publication-")) {
                     info.setLocked(true);
                 }
             }
         }
-        
+
         // todo : performance problem on permission check
 //        info.setCanPublish(stageNode.hasPermission(JCRNodeWrapper.WRITE_LIVE));
         info.setCanPublish(true);

@@ -194,7 +194,7 @@ public class ContentSearchForm extends ContentPanel {
     private ContentPickerField createPageSelectorField() {
         ContentPickerField field = new ContentPickerField(null,
                 null, null, ManagerConfigurationFactory.PAGEPICKER, false);
-        field.setFieldLabel(Messages.get("label.pagepicker", "Pages"));
+        field.setFieldLabel(Messages.get("label.pagePicker", "Pages"));
         return field;
     }
 

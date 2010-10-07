@@ -38,6 +38,7 @@
             <tags jcr:primaryType="jnt:permission"/>
             <usages jcr:primaryType="jnt:permission"/>
             <workflow jcr:primaryType="jnt:permission"/>
+            <publication jcr:primaryType="jnt:permission"/>
         </edit-mode>
         <managers jcr:primaryType="jnt:permissionGroup">
             <category-manager jcr:primaryType="jnt:permission"/>

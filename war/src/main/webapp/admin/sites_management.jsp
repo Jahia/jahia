@@ -185,7 +185,7 @@
                         if (site.isDefault()) {
                     %>
                     <img
-                            src="<%=URL%>images/icons/workflow/accept.gif"
+                            src="${pageContext.request.contextPath}/css/images/andromeda/icons/accept.png"
                             alt="+"
                             title="<fmt:message key='org.jahia.admin.site.ManageSites.isTheDefaultSite.label'/>" width="10"
                             height="10" border="0"/>

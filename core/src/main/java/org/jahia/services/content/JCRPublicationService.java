@@ -41,6 +41,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedPropertyType;
 import org.jahia.services.logging.MetricsLoggingService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -923,6 +924,17 @@ public class JCRPublicationService extends JahiaService {
             info.setStatus(PublicationInfo.UNPUBLISHED);
         } else if (publishedNode == null) {
             info.setStatus(PublicationInfo.NOT_PUBLISHED);
+            if (node.isNodeType(Constants.JAHIANT_TRANSLATION)) {
+                boolean hasProperty = false;
+                final PropertyIterator iterator = node.getProperties();
+                while (iterator.hasNext() && !hasProperty) {
+                    Property property = (Property) iterator.next();
+                    hasProperty = ((ExtendedPropertyDefinition)property.getDefinition()).isInternationalized();
+                }
+                if (!hasProperty) {
+                    info.setStatus(PublicationInfo.PUBLISHED);
+                }
+            }
         } else {
             if (node.hasProperty("jcr:mergeFailed") || publishedNode.hasProperty("jcr:mergeFailed")) {
                 info.setStatus(PublicationInfo.CONFLICT);

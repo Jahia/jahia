@@ -382,6 +382,9 @@ public class WorkflowService {
 
     public synchronized void removeProcessId(JCRNodeWrapper stageNode, String provider, String processId)
             throws RepositoryException {
+        if (!stageNode.hasProperty(Constants.PROCESSID)) {
+            return;
+        }
         stageNode.checkout();
         List<Value> values =
                 new ArrayList<Value>(Arrays.asList(stageNode.getProperty(Constants.PROCESSID).getValues()));
@@ -391,7 +394,13 @@ public class WorkflowService {
                 newValues.add(value);
             }
         }
-        stageNode.setProperty(Constants.PROCESSID, newValues.toArray(new Value[newValues.size()]));
+        if (newValues.isEmpty()) {
+            if (stageNode.hasProperty(Constants.PROCESSID)) {
+                stageNode.getProperty(Constants.PROCESSID).remove();
+            }
+        } else {
+            stageNode.setProperty(Constants.PROCESSID, newValues.toArray(new Value[newValues.size()]));
+        }
         stageNode.getSession().save();
     }
 

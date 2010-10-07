@@ -9,6 +9,7 @@ import org.apache.camel.impl.ProcessorEndpoint;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
+import org.hibernate.Transaction;
 import org.hibernate.classic.Session;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.impl.SessionFactoryImpl;
@@ -103,8 +104,14 @@ public class ContentHistoryService implements Processor, InitializingBean, Camel
             final String args = matcher.group(8);
             String propertyName = null;
             String[] argList = args.split(" ");
+            String objectType = null;
+            String action = null;
+            if (argList.length >= 2) {
+                objectType = argList[0].trim();
+                action = argList[1].trim();
+            }
 
-            if ("property".equals(argList[0].trim())) {
+            if ("property".equals(objectType)) {
                 int lastSlashPos = path.lastIndexOf("/");
                 if (lastSlashPos > -1) {
                     propertyName = path.substring(lastSlashPos + 1);
@@ -161,15 +168,28 @@ public class ContentHistoryService implements Processor, InitializingBean, Camel
                 }
                 // Not found new object
                 else {
-                    if (!"viewed".equals(argList[1].trim())) {
+                    if (!"viewed".equals(action)) {
                         historyEntry = new HistoryEntry();
                         historyEntry.setDate(date);
                         historyEntry.setPath(path);
                         historyEntry.setUuid(nodeIdentifier);
                         historyEntry.setUserKey(userKey);
-                        historyEntry.setAction(argList[1]);
+                        historyEntry.setAction(action);
                         historyEntry.setPropertyName(propertyName);
-                        historyEntry.setMessage("");
+                        String historyMessage = "";
+                        if ("published".equals(action)) {
+                            if (argList.length >= 8) {
+                                String sourceWorkspace = argList[3].trim();
+                                String destinationWorkspace = argList[5].trim();
+                                String historyComments = "";
+                                int commentsPos = args.indexOf("with comments ");
+                                if (commentsPos > -1) {
+                                    historyComments = ";;" + args.substring(commentsPos + 1);
+                                }
+                                historyMessage = sourceWorkspace + ";;" + destinationWorkspace + historyComments;
+                            }
+                        }
+                        historyEntry.setMessage(historyMessage);
                         session.save(historyEntry);
                     }
                 }
@@ -204,6 +224,26 @@ public class ContentHistoryService implements Processor, InitializingBean, Camel
             return result;
         } catch (Exception e) {
             return new ArrayList<HistoryEntry>();
+        } finally {
+            session.close();
+        }
+    }
+
+    public long deleteHistoryBeforeDate(Date date) {
+        Session session = sessionFactoryBean.openSession();
+
+        try {
+            Transaction tx = session.beginTransaction();
+
+            String hqlDelete = "delete HistoryEntry c where c.date < :date";
+            int deletedEntities = session.createQuery(hqlDelete)
+                    .setDate("date", date)
+                    .executeUpdate();
+            tx.commit();
+            return deletedEntities;
+        } catch (Exception e) {
+            logger.error("Error deleting history entries before date " + date, e);
+            return -1;
         } finally {
             session.close();
         }

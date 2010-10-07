@@ -4,13 +4,13 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.GroupingStore;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -119,15 +119,22 @@ public class HistoryPanel extends LayoutContainer {
         column.setSortable(false);
         config.add(column);
 
-        column = new ColumnConfig("path", Messages.get("label.path", "Path"), 300);
+        column = new ColumnConfig("message", Messages.get("label.message", "Message"), 300);
         column.setSortable(false);
+        column.setRenderer(new GridCellRenderer<GWTJahiaContentHistoryEntry>() {
+
+            public Object render(GWTJahiaContentHistoryEntry gwtJahiaContentHistoryEntry, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaContentHistoryEntry> gwtJahiaContentHistoryEntryListStore, Grid<GWTJahiaContentHistoryEntry> gwtJahiaContentHistoryEntryGrid) {
+                String message = buildMessage(gwtJahiaContentHistoryEntry);
+                return new Label(message);
+            }
+        });
         config.add(column);
 
         final ColumnModel cm = new ColumnModel(config);
 
         final Grid<GWTJahiaContentHistoryEntry> grid = new Grid<GWTJahiaContentHistoryEntry>(store, cm);
         grid.setBorders(true);
-        grid.setAutoExpandColumn("path");
+        grid.setAutoExpandColumn("message");
         grid.setTrackMouseOver(false);
         grid.setStateId("historyPagingGrid");
         grid.setStateful(true);
@@ -195,6 +202,19 @@ public class HistoryPanel extends LayoutContainer {
 
     }
 
+    private String buildMessage(GWTJahiaContentHistoryEntry gwtJahiaContentHistoryEntry) {
+        String message = gwtJahiaContentHistoryEntry.getMessage();
+        if ("published".equals(gwtJahiaContentHistoryEntry)) {
+            String[] messageParts = message.split(";;");
+            if (messageParts.length == 3) {
+                message = Messages.getWithArgs("label.publishMessageHistoryWithComments", "Published from {0} to {1} with comments {2}", messageParts);
+            } else if (messageParts.length == 2) {
+                message = Messages.getWithArgs("label.publishMessageHistoryWithComments", "Published from {0} to {1}", messageParts);
+            }
+        }
+        return message;
+    }
+
     public void addDetail(String labelKey, String labelDefaultValue, Object value) {
         if (value != null) {
             TextField textField = new TextField();
@@ -243,7 +263,7 @@ public class HistoryPanel extends LayoutContainer {
             addDetail("label.language", "Language", historyEntry.getLanguageCode());
             addDetail("label.path", "Path", historyEntry.getPath());
             addDetail("label.action", "Action", historyEntry.getAction());
-            addDetail("label.message", "Message", historyEntry.getMessage());
+            addDetail("label.message", "Message", buildMessage(historyEntry));
         } else {
             int nbHistoryEntries = 0;
 

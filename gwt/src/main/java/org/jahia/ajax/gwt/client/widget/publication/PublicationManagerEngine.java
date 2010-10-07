@@ -333,7 +333,7 @@ public class PublicationManagerEngine extends Window {
 
         public boolean getStatus(GWTJahiaNode node, GWTJahiaPublicationInfo info) {
             if (info.get("checkboxEnabled") != null) {
-                return info.get("checkboxEnabled");
+                return info.<Boolean>get("checkboxEnabled").booleanValue();
             }
             Set<Integer> status = new HashSet<Integer>(info.getSubnodesStatus());
             status.addAll(info.getReferencesStatus());

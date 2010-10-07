@@ -139,7 +139,7 @@
                             <webappDirectory>${project.build.directory}/jahia/gwt</webappDirectory>
                             <skip>${jahia.gwt.skip}</skip>
                             <module>${singleModuleName}</module>
-                            <style>DETAILED</style>
+							<style>DETAILED</style>
                         </configuration>
                         <executions>
                             <execution>
@@ -632,6 +632,27 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+        <profile>
+            <id>mahout-deployment</id>
+            <activation>
+                <jdk>[1.6,)</jdk>
+            </activation>
+            <dependencies>
+                <!-- dependency for mahout -->
+                <dependency>
+                    <groupId>org.apache.mahout</groupId>
+                    <artifactId>mahout-core</artifactId>
+                    <version>0.3</version>
+                    <scope>runtime</scope>
+		            <exclusions>
+		                <exclusion>
+		                    <groupId>velocity</groupId>
+		                    <artifactId>velocity</artifactId>
+		                </exclusion>
+		            </exclusions>
+                </dependency>
+            </dependencies>
         </profile>
     </profiles>
 

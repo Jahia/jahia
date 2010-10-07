@@ -29,7 +29,7 @@
 
   <transaction-context>
     <transaction />
-    <hibernate-session />
+    <hibernate-session factory="sessionFactory" />
   </transaction-context>
 
 </jbpm-configuration>

@@ -48,6 +48,8 @@ import org.jahia.services.importexport.DefinitionsMapping.Action;
 import org.jahia.services.importexport.DefinitionsMapping.AddMixin;
 import org.jahia.services.importexport.DefinitionsMapping.AddNode;
 import org.jahia.services.importexport.DefinitionsMapping.SetProperties;
+import org.jahia.services.render.RenderService;
+import org.jahia.services.render.Resource;
 import org.jahia.utils.i18n.ResourceBundleMarker;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -56,6 +58,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.query.Query;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -447,6 +450,12 @@ public class LegacyImportHandler extends DefaultHandler {
             node = parent.addNode(nodeName, Constants.JAHIANT_PAGE);
             if (template != null) {
                 node.setProperty("j:templateNode",template);
+                Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:mainResourceArea] as a where isdescendantnode(a,['"+template.getPath()+"'])", Query.JCR_SQL2);
+                NodeIterator ni = q.execute().getNodes();
+                while (ni.hasNext()) {
+                    JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) ni.next();
+                    node.addNode(nodeWrapper.getName(), "jnt:contentList");
+                }
             }
 //            }
         }
@@ -824,7 +833,11 @@ public class LegacyImportHandler extends DefaultHandler {
                                 value = baseType != null ? mapping.getMappedPropertyValue(baseType, localName, value) :
                                         value;
                                 if (constraints.isEmpty() || constraints.contains(value)) {
-                                    n.setProperty(propertyName, value);
+                                    try {
+                                        n.setProperty(propertyName, value);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
                                 }
                             } else {
                                 String[] strings = value.split("\\$\\$\\$");

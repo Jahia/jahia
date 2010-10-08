@@ -547,6 +547,7 @@ public class VanityUrlManager {
                 JCRNodeWrapper vanityUrlNode = vanityUrlMappingsNode
                         .getNode(entry.getKey());
                 VanityUrl vanityUrl = entry.getValue();
+                session.checkout(vanityUrlNode);
                 vanityUrlNode
                         .setProperty(PROPERTY_ACTIVE, vanityUrl.isActive());
                 vanityUrlNode.setProperty(PROPERTY_DEFAULT, vanityUrl
@@ -555,18 +556,20 @@ public class VanityUrlManager {
             for (String index : removeDefaultMapping) {
                 JCRNodeWrapper vanityUrlNode = vanityUrlMappingsNode
                         .getNode(index);
+                session.checkout(vanityUrlNode);
                 vanityUrlNode.setProperty(PROPERTY_DEFAULT, false);
             }
             for (Map.Entry<String, VanityUrl> entry : toDelete) {
                 JCRNodeWrapper vanityUrlNode = vanityUrlMappingsNode
                         .getNode(entry.getKey());
+                session.checkout(vanityUrlNode);
                 vanityUrlNode.remove();
             }
 
             for (VanityUrl vanityUrl : toAdd) {
                 JCRNodeWrapper vanityUrlNode = vanityUrlMappingsNode.addNode(
                         Text.escapeIllegalJcrChars(vanityUrl.getUrl()), JAHIANT_VANITYURL);
-
+                session.checkout(vanityUrlNode);
                 vanityUrlNode.setProperty(PROPERTY_URL, vanityUrl.getUrl());
                 vanityUrlNode
                         .setProperty(JCR_LANGUAGE, vanityUrl.getLanguage());

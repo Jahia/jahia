@@ -100,7 +100,7 @@
                        <c:if test="${avg > 4.0}">checked="checked"</c:if> />
                 <input type="radio" name="rate_avg" value="5" title="Excellent"
                        disabled="disabled"
-                       <c:if test="${avg > 5.0}">checked="checked"</c:if> />
+                       <c:if test="${avg >= 5.0}">checked="checked"</c:if> />
 
             </form>
         </div>

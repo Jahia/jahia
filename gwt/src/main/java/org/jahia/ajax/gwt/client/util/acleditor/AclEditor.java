@@ -144,15 +144,8 @@ public class AclEditor {
     }
 
     public void addNewAclPanel(final LayoutContainer c) {
-        GWT.runAsync(new RunAsyncCallback() {
-            public void onFailure(Throwable reason) {
-            }
-
-            public void onSuccess() {
-                c.add(renderNewAclPanel());
-                c.layout();
-            }
-        });
+        c.add(renderNewAclPanel());
+        c.layout();
     }
 
     public ContentPanel renderNewAclPanel() {

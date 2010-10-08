@@ -159,8 +159,21 @@ public class CreateContentEngine extends AbstractContentEngine {
 
     /**
      * on language chnage, fill currentAzble
+     * @param previous
      */
-    protected void onLanguageChange() {
+    protected void onLanguageChange(GWTJahiaLanguage previous) {
+        if (previous != null) {
+            final String lang = previous.getLanguage();
+            for (TabItem item : tabs.getItems()) {
+                if (!changedI18NProperties.containsKey(lang)) {
+                    changedI18NProperties.put(lang, new ArrayList<GWTJahiaNodeProperty>());
+                }
+                if (item instanceof PropertiesTabItem) {
+                    PropertiesTabItem propertiesTabItem = (PropertiesTabItem) item;
+                    changedI18NProperties.get(lang).addAll(propertiesTabItem.getLanguageProperties(true, lang));
+                }
+            }
+        }
         fillCurrentTab();
     }
 
@@ -220,7 +233,12 @@ public class CreateContentEngine extends AbstractContentEngine {
                 // handle multilang
                 if (propertiesTabItem.isMultiLang()) {
                     // for now only contentTabItem  has multilang. properties
-                    changedI18NProperties.putAll(propertiesTabItem.getLangPropertiesMap(false));
+                    final String lang = getSelectedLanguage().getLanguage();
+                    if (!changedI18NProperties.containsKey(lang)) {
+                        changedI18NProperties.put(lang, new ArrayList<GWTJahiaNodeProperty>());
+                    }
+
+                    changedI18NProperties.get(lang).addAll(propertiesTabItem.getLanguageProperties(true, lang));
                     if (pe != null) {
                         changedProperties.addAll(pe.getProperties(false, true, false));
                     }

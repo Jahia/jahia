@@ -70,6 +70,7 @@ public class PropertiesEditor extends FormPanel {
     private List<String> excludedTypes;
     private String dataType;
     private boolean isWriteable = true;
+    private boolean isI18NWriteable = true;
     private boolean fieldSetGrouping = false;
     private Set<String> addedTypes = new HashSet<String>();
     private Set<String> removedTypes = new HashSet<String>();
@@ -118,6 +119,10 @@ public class PropertiesEditor extends FormPanel {
 
     public void setWriteable(boolean writeable) {
         isWriteable = writeable;
+    }
+
+    public void setI18NWriteable(boolean i18NWriteable) {
+        isI18NWriteable = i18NWriteable;
     }
 
     public void setFieldSetGrouping(boolean fieldSetGrouping) {
@@ -223,7 +228,7 @@ public class PropertiesEditor extends FormPanel {
                     fieldSet.setLayout(fl);
                     add(fieldSet);
                 }
-                if (!isWriteable) {
+                if (!isWriteable || (!isI18NWriteable && !definition.isNode() && !((GWTJahiaPropertyDefinition)definition).isInternationalized())) {
                     field.setReadOnly(true);
                 } else if (isMultipleEdit && !definition.isProtected()) {
                     field.setEnabled(false);
@@ -431,8 +436,8 @@ public class PropertiesEditor extends FormPanel {
                                 Log.debug("Set value for " + prop.getName());
                                 prop.setValues(getPropertyValues(f, definition));
                                 newProps.add(prop);
-                            } else {
-                                newProps.add(prop);
+//                            } else {
+//                                newProps.add(prop);
                             }
                         }
                     }

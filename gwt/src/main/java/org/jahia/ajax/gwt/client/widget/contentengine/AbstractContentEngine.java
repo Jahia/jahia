@@ -84,6 +84,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     protected EngineContainer container;
     protected GWTJahiaNodeACL acl;
     protected Map<String,Set<String>> referencesWarnings;
+    protected GWTJahiaLanguage language;
 
     // general properties
     protected final List<GWTJahiaNodeProperty> changedProperties = new ArrayList<GWTJahiaNodeProperty>();
@@ -148,7 +149,9 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         languageSwitcher.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaLanguage>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaLanguage> event) {
-                onLanguageChange();
+                GWTJahiaLanguage previous = language;
+                language = event.getSelectedItem();
+                onLanguageChange(previous);
             }
         });
         languageSwitcher.setTemplate(getLangSwitchingTemplate());
@@ -160,8 +163,9 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
 
     /**
      * Called when a new language has been selected
+     * @param previous
      */
-    protected void onLanguageChange() {
+    protected void onLanguageChange(GWTJahiaLanguage previous) {
 
     }
 
@@ -210,7 +214,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         if (currentTab instanceof EditEngineTabItem) {
             EditEngineTabItem engineTabItem = (EditEngineTabItem) currentTab;
             if (!engineTabItem.isProcessed()) {
-                engineTabItem.create(getSelectedLang());
+                engineTabItem.create(getSelectedLanguage());
             }
         }
     }
@@ -268,25 +272,8 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
      *
      * @return
      */
-    public GWTJahiaLanguage getSelectedLang() {
-        if (languageSwitcher == null || languageSwitcher.getSelection().isEmpty()) {
-            Log.debug("language switcher value is null");
-            return defaultLanguageBean;
-        }
-        return languageSwitcher.getSelection().get(0);
-    }
-
-    /**
-     * Get Selected Language Code
-     *
-     * @return
-     */
-    public String getSelectedLanguageCode() {
-        if (languageSwitcher == null || languageSwitcher.getSelection().isEmpty()) {
-            Log.debug("language switcher value is null");
-            return null;
-        }
-        return getSelectedLang().getLanguage();
+    public GWTJahiaLanguage getSelectedLanguage() {
+        return language;
     }
 
     /**

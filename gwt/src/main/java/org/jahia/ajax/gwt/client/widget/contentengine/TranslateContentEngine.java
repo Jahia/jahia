@@ -97,7 +97,6 @@ public class TranslateContentEngine extends Window {
         setResizable(true);
         setModal(true);
         setMaximizable(true);
-        setIcon(StandardIconsProvider.STANDARD_ICONS.engineLogoJahia());
         setHeading(Messages.get("cm_translate " + node.getName(), "Translate " + node.getName()));
         ContentPanel panel = new ContentPanel();
         panel.setLayout(new RowLayout(Style.Orientation.HORIZONTAL));

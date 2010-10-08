@@ -335,9 +335,6 @@ public class PublicationManagerEngine extends Window {
             if (info.get("checkboxEnabled") != null) {
                 return info.<Boolean>get("checkboxEnabled").booleanValue();
             }
-            Set<Integer> status = new HashSet<Integer>(info.getSubnodesStatus());
-            status.addAll(info.getReferencesStatus());
-            status.add(info.getStatus());
 
             boolean b = GWTJahiaPublicationInfo.canPublish(node, info, JahiaGWTParameters.getLanguage());
             info.set("checkboxEnable", b);

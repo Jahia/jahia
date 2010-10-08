@@ -65,7 +65,7 @@ public class PropertiesTabItem extends EditEngineTabItem {
     protected String dataType;
     protected List<String> excludedTypes;
     protected boolean multiLang = false;
-    
+
 
 
     protected PropertiesTabItem(String title, NodeHolder engine, String dataType) {
@@ -207,17 +207,6 @@ public class PropertiesTabItem extends EditEngineTabItem {
                     }
                 }
             }
-            
-            if (isMultiLang()) {
-                List<GWTJahiaNodeProperty> nodeProperties = propertiesEditor.getProperties(true, false, false, true);
-                for (GWTJahiaNodeProperty property : nodeProperties) {
-                    Map<String, Field<?>> fieldsMap = propertiesEditor.getFieldsMap();
-                    if (fieldsMap.containsKey(property.getName())) {
-                        FormFieldCreator.fillValue(fieldsMap.get(property.getName()),
-                                propertiesEditor.getGWTJahiaItemDefinition(property), property);
-                    }
-                }
-            }
             propertiesEditor.setVisible(true);
 
             layout();
@@ -251,14 +240,11 @@ public class PropertiesTabItem extends EditEngineTabItem {
      * @return
      * @param modifiedOnly
      */
-    public Map<String, List<GWTJahiaNodeProperty>> getLangPropertiesMap(boolean modifiedOnly) {
-        Map<String, List<GWTJahiaNodeProperty>> mapProperties = new HashMap<String, List<GWTJahiaNodeProperty>>();
-        Iterator<String> langCodes = langPropertiesEditorMap.keySet().iterator();
-        while (langCodes.hasNext()) {
-            String langCode = langCodes.next();
-            mapProperties.put(langCode, langPropertiesEditorMap.get(langCode).getProperties(true, false, modifiedOnly));
+    public List<GWTJahiaNodeProperty> getLanguageProperties(boolean modifiedOnly, String language) {
+        if (langPropertiesEditorMap.containsKey(language)) {
+            return langPropertiesEditorMap.get(language).getProperties(true, false, modifiedOnly);
         }
-        return mapProperties;
+        return new ArrayList<GWTJahiaNodeProperty>();
     }
 
     public void setProcessed(boolean processed) {

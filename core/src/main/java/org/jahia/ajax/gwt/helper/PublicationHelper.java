@@ -89,8 +89,8 @@ public class PublicationHelper {
         try {
             PublicationInfo pubInfo = publicationService.getPublicationInfo(uuid, languages, true, true, false, currentUserSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE).get(0);
             GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(pubInfo.getRoot().getPath(), pubInfo.getRoot().getStatus(), pubInfo.getRoot().isCanPublish());
-            if (pubInfo.getRoot().isLocked()) {
-                gwtInfo.setLocked(true);
+            if (pubInfo.getRoot().isLocked()  ) {
+//                gwtInfo.setLocked(true);
             }
             for (PublicationInfoNode sub : pubInfo.getRoot().getChildren()) {
                 if (sub.getPath().contains("/j:translation")) {
@@ -105,9 +105,16 @@ public class PublicationHelper {
                     }
                 }
             }
-            gwtInfo.setSubnodesStatus(pubInfo.getTreeStatus());
-            for (PublicationInfo refInfo : pubInfo.getAllReferences()) {
-                gwtInfo.getReferencesStatus().addAll(refInfo.getTreeStatus());
+
+
+            if (gwtInfo.getStatus() < GWTJahiaPublicationInfo.NOT_PUBLISHED) {
+                Set<Integer> status = new HashSet<Integer>(pubInfo.getTreeStatus());
+                for (PublicationInfo refInfo : pubInfo.getAllReferences()) {
+                    status.addAll(refInfo.getTreeStatus());
+                }
+                if (!status.isEmpty() && Collections.max(status) > GWTJahiaPublicationInfo.PUBLISHED) {
+                    gwtInfo.setStatus(GWTJahiaPublicationInfo.MODIFIED);
+                }
             }
             return gwtInfo;
         } catch (RepositoryException e) {
@@ -158,6 +165,9 @@ public class PublicationHelper {
         Map<String, GWTJahiaPublicationInfo> gwtInfos = new HashMap<String, GWTJahiaPublicationInfo>();
         gwtInfos.put(node.getPath(), gwtInfo);
         List<String> refUuids = new ArrayList<String>();
+        if (node.isLocked()  ) {
+//            gwtInfo.setLocked(true);
+        }
         for (PublicationInfoNode sub : node.getChildren()) {
             if (sub.getPath().contains("/j:translation")) {
                 String key = StringUtils.substringBeforeLast(sub.getPath(), "/j:translation");
@@ -168,6 +178,9 @@ public class PublicationHelper {
                     }
                     if (lastPub.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED && sub.getStatus() != GWTJahiaPublicationInfo.UNPUBLISHED) {
                         lastPub.setStatus(sub.getStatus());
+                    }
+                    if (sub.isLocked()) {
+                        gwtInfo.setLocked(true);
                     }
                 }
                 for (PublicationInfo pi : sub.getReferences()) {

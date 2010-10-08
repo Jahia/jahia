@@ -119,7 +119,7 @@ public class PagesTabItem extends SidePanelTabItem {
     }
 
     @Override public void handleNewMainSelection(String path) {
-        if (!path.equals(tree.getSelectionModel().getSelectedItem().getPath())) {
+        if (tree != null && !path.equals(tree.getSelectionModel().getSelectedItem().getPath())) {
             factory.setSelectedPath(Arrays.asList(path));
         }
     }
@@ -229,7 +229,7 @@ public class PagesTabItem extends SidePanelTabItem {
 
             List<GWTJahiaNode> l = new ArrayList<GWTJahiaNode>();
             final GWTJahiaNode node = PagesTabItem.this.tree.getSelectionModel().getSelectedItem();
-            if (node.getInheritedNodeTypes().contains("jmix:navMenuItem")) {
+            if (node.getInheritedNodeTypes().contains("jmix:navMenuItem") && node.isWriteable() && !node.isLocked()) {
                 l.add(node);
                 e.getStatus().setData(EditModeDNDListener.SOURCE_TYPE, EditModeDNDListener.PAGETREE_TYPE);
                 e.getStatus().setData(EditModeDNDListener.SOURCE_NODES, l);

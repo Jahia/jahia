@@ -41,6 +41,7 @@ import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
@@ -330,7 +331,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                     // handle multilang
                     if (propertiesTabItem.isMultiLang()) {
                         // for now only contentTabItem  has multilang. properties
-                        changedI18NProperties.putAll(propertiesTabItem.getLangPropertiesMap(true));
+                        changedI18NProperties.put(JahiaGWTParameters.getLanguage(), propertiesTabItem.getLanguageProperties(true, JahiaGWTParameters.getLanguage()));
                         if (pe != null) {
                             changedProperties.addAll(pe.getProperties(false, true, true));
                         }

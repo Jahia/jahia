@@ -40,6 +40,8 @@ import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
+import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
@@ -146,7 +148,7 @@ public class EditContentEngine extends AbstractContentEngine {
      * load node
      */
     private void loadProperties() {
-        contentService.getProperties(contentPath, getSelectedLanguageCode(), new BaseAsyncCallback<GWTJahiaGetPropertiesResult>() {
+        contentService.getProperties(contentPath, getSelectedLanguage().getLanguage(), new BaseAsyncCallback<GWTJahiaGetPropertiesResult>() {
             public void onApplicationFailure(Throwable throwable) {
                 Log.debug("Cannot get properties", throwable);
             }
@@ -158,8 +160,8 @@ public class EditContentEngine extends AbstractContentEngine {
                 defaultLanguageBean = result.getCurrentLocale();
 
                 // set selectedNode as processed
-                if (getSelectedLanguageCode() != null) {
-                    langCodeGWTJahiaGetPropertiesResultMap.put(getSelectedLanguageCode(), result);
+                if (getSelectedLanguage().getLanguage() != null) {
+                    langCodeGWTJahiaGetPropertiesResultMap.put(getSelectedLanguage().getLanguage(), result);
                 }
 
                 fillCurrentTab();
@@ -192,12 +194,12 @@ public class EditContentEngine extends AbstractContentEngine {
                     container.getPanel().setHeading(heading);
                 }
                 
-                // set selectedNode as processed
-                if (getSelectedLanguageCode() != null) {
-                    langCodeGWTJahiaGetPropertiesResultMap.put(getSelectedLanguageCode(), result);
-                }
-
                 setAvailableLanguages(result.getAvailabledLanguages());
+
+                // set selectedNode as processed
+                if (getSelectedLanguage() != null) {
+                    langCodeGWTJahiaGetPropertiesResultMap.put(getSelectedLanguage().getLanguage(), result);
+                }
 
                 mixin = result.getMixin();
                 initializersValues = result.getInitializersValues();
@@ -219,30 +221,29 @@ public class EditContentEngine extends AbstractContentEngine {
 
     /**
      * on language chnage, reload the node
+     * @param previous
      */
-    protected void onLanguageChange() {
-        GWTJahiaGetPropertiesResult result = langCodeGWTJahiaGetPropertiesResultMap.get(getSelectedLanguageCode());
-        if (result == null) {
+    protected void onLanguageChange(GWTJahiaLanguage previous) {
+        if (previous != null) {
+            final String lang = previous.getLanguage();
             for (TabItem item : tabs.getItems()) {
+                if (!changedI18NProperties.containsKey(lang)) {
+                    changedI18NProperties.put(lang, new ArrayList<GWTJahiaNodeProperty>());
+                }
                 if (item instanceof PropertiesTabItem) {
                     PropertiesTabItem propertiesTabItem = (PropertiesTabItem) item;
-                    changedI18NProperties.putAll(propertiesTabItem.getLangPropertiesMap(true));
-                    break;
+                    changedI18NProperties.get(lang).addAll(propertiesTabItem.getLanguageProperties(true, lang));
                 }
             }
+        }
+        GWTJahiaGetPropertiesResult result = langCodeGWTJahiaGetPropertiesResultMap.get(getSelectedLanguage().getLanguage());
+        if (result == null) {
             loadProperties();
         } else {
             node = result.getNode();
             nodeTypes = result.getNodeTypes();
             properties = result.getProperties();
             defaultLanguageBean = result.getCurrentLocale();
-            for (TabItem item : tabs.getItems()) {
-                if (item instanceof PropertiesTabItem) {
-                    PropertiesTabItem propertiesTabItem = (PropertiesTabItem) item;
-                    changedI18NProperties.putAll(propertiesTabItem.getLangPropertiesMap(true));
-                    break;
-                }
-            }
             fillCurrentTab();
         }
     }
@@ -274,7 +275,12 @@ public class EditContentEngine extends AbstractContentEngine {
                     // handle multilang
                     if (propertiesTabItem.isMultiLang()) {
                         // for now only contentTabItem  has multilang. properties
-                        changedI18NProperties.putAll(propertiesTabItem.getLangPropertiesMap(true));
+                        final String lang = getSelectedLanguage().getLanguage();
+                        if (!changedI18NProperties.containsKey(lang)) {
+                            changedI18NProperties.put(lang, new ArrayList<GWTJahiaNodeProperty>());
+                        }
+
+                        changedI18NProperties.get(lang).addAll(propertiesTabItem.getLanguageProperties(true, lang));
                         if (pe != null) {
                             changedProperties.addAll(pe.getProperties(false, true, true));
                         }

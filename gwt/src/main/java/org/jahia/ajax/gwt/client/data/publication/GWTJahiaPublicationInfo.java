@@ -117,22 +117,6 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
         set("status", status);
     }
 
-    public Set<Integer> getSubnodesStatus() {
-        return subnodesStatus;
-    }
-
-    public void setSubnodesStatus(Set<Integer> subnodesStatus) {
-        this.subnodesStatus = subnodesStatus;
-    }
-
-    public Set<Integer> getReferencesStatus() {
-        return referencesStatus;
-    }
-
-    public void setReferencesStatus(Set<Integer> referencesStatus) {
-        this.referencesStatus = referencesStatus;
-    }
-
     public Boolean isCanPublish() {
         return get("canPublish");
     }
@@ -155,17 +139,7 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
             if (info.isLocked()) {
                 label = "locked";
             } else {
-                if (info.getStatus() >= GWTJahiaPublicationInfo.NOT_PUBLISHED) {
-                    label = statusToLabel.get(info.getStatus());
-                } else {
-                    Set<Integer> status = new HashSet<Integer>(info.getSubnodesStatus());
-                    status.addAll(info.getReferencesStatus());
-                    if (Collections.max(status) == GWTJahiaPublicationInfo.PUBLISHED) {
-                        label = statusToLabel.get(info.getStatus());
-                    } else {
-                        label = statusToLabel.get(GWTJahiaPublicationInfo.MODIFIED);
-                    }
-                }
+                label = statusToLabel.get(info.getStatus());
             }
 
             String title = Messages.get("label.publication." + label, label);
@@ -178,15 +152,10 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
     }
 
     public static boolean canPublish(GWTJahiaNode node, GWTJahiaPublicationInfo info, final String language) {
-        Set<Integer> status = new HashSet<Integer>(info.getSubnodesStatus());
-        status.addAll(info.getReferencesStatus());
-        status.add(info.getStatus());
 
-        return !info.isLocked() && (!node.isLanguageLocked(language) && info.isCanPublish() &&
-                        (status.contains(GWTJahiaPublicationInfo.NOT_PUBLISHED) ||
-                                status.contains(GWTJahiaPublicationInfo.MODIFIED) ||
-                                status.contains(GWTJahiaPublicationInfo.UNPUBLISHED))) &&
-                (info.getStatus() != GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE) &&
-                (info.getStatus() != GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_VALID);
+        return !node.isLanguageLocked(language) && info.isCanPublish() &&
+                info.getStatus() > GWTJahiaPublicationInfo.PUBLISHED &&
+                info.getStatus() != GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE &&
+                info.getStatus() != GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_VALID;
     }
 }

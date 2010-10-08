@@ -95,7 +95,7 @@ public class SiteTest extends TestCase {
         page3.setProperty("jcr:title", "Page3");
         session.save();
         JCRPublicationService.getInstance().publish(node.getIdentifier(), Constants.EDIT_WORKSPACE,
-                                                    Constants.LIVE_WORKSPACE, null, true);
+                                                    Constants.LIVE_WORKSPACE, null, true, null);
 
         JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE,
                                                                                               LanguageCodeConverters.languageCodeToLocale(
@@ -108,7 +108,7 @@ public class SiteTest extends TestCase {
         TestHelper.deleteSite("targetSite");
         TestHelper.createSite("targetSite");
         JCRPublicationService.getInstance().publish(node.getIdentifier(), Constants.EDIT_WORKSPACE,
-                                                    Constants.LIVE_WORKSPACE, null, true);
+                                                    Constants.LIVE_WORKSPACE, null, true, null);
         RemotePublicationService.getInstance().replayLog(liveSession.getNode("/sites/targetSite"),
                                                          new FileInputStream(tmp));
 

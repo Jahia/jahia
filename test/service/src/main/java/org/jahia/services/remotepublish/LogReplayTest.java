@@ -118,7 +118,7 @@ public class LogReplayTest extends TestCase {
         Calendar now = new GregorianCalendar();
 
         JCRPublicationService.getInstance()
-                .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+                .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true,null);
 
         JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
@@ -137,14 +137,14 @@ public class LogReplayTest extends TestCase {
         assertTrue("Node not added", target.hasNode("page2"));
         assertTrue("Node not added", target.hasNode("page3"));
         JCRPublicationService.getInstance()
-                .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+                .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
         now = new GregorianCalendar();
         session.checkout(source);
         session.checkout(page1);
         page1.remove();
         session.save();
         JCRPublicationService.getInstance()
-                .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+                .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
         try {
             liveSession.getNode("/sites/jcrRPTest/home/source/page1");
             fail("/sites/jcrRPTest/home/source/page1 should not have been found in live");
@@ -172,7 +172,7 @@ public class LogReplayTest extends TestCase {
 
 
             JCRPublicationService.getInstance()
-                    .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+                    .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
 
             Calendar now = new GregorianCalendar();
             session.checkout(source);
@@ -180,7 +180,7 @@ public class LogReplayTest extends TestCase {
             session.save();
 
             JCRPublicationService.getInstance()
-                    .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+                    .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
             JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE,
                     LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
             target = liveSession.getNode("/sites/jcrRPTest/home/target-user");
@@ -196,13 +196,13 @@ public class LogReplayTest extends TestCase {
                     "testLogAddAndUpdateOfProperty", target.getProperty("j:firstName").getString());
 
             JCRPublicationService.getInstance()
-                    .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+                    .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
             now = new GregorianCalendar();
             session.checkout(source);
             source.setProperty("j:firstName", "testLogAddAndUpdateOfProperty_updated");
             session.save();
             JCRPublicationService.getInstance()
-                    .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+                    .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
             tmp = File.createTempFile("remoteRemoveNode", ".log.gz");
             RemotePublicationService.getInstance().generateLog(liveSource, now, new FileOutputStream(tmp));
             RemotePublicationService.getInstance().replayLog(target, new FileInputStream(tmp));
@@ -228,7 +228,7 @@ public class LogReplayTest extends TestCase {
             session.save();
 
             JCRPublicationService.getInstance().publish(node.getIdentifier(),
-                    Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+                    Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
 
             Calendar now = new GregorianCalendar();
             session.checkout(source);
@@ -236,7 +236,7 @@ public class LogReplayTest extends TestCase {
             session.save();
 
             JCRPublicationService.getInstance().publish(node.getIdentifier(),
-                    Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+                    Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
             JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(
                     Constants.LIVE_WORKSPACE,
                     LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
@@ -254,13 +254,13 @@ public class LogReplayTest extends TestCase {
                     "testLogAddAndUpdateOfProperty", target.getProperty("j:firstName").getString());
 
             JCRPublicationService.getInstance().publish(node.getIdentifier(),
-                    Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+                    Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
             now = new GregorianCalendar();
             session.checkout(source);
             source.getProperty("j:firstName").remove();
             session.save();
             JCRPublicationService.getInstance().publish(node.getIdentifier(),
-                    Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+                    Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
             tmp = File.createTempFile("remoteRemoveNode", ".log.gz");
             RemotePublicationService.getInstance().generateLog(liveSource, now,
                     new FileOutputStream(tmp));
@@ -298,7 +298,7 @@ public class LogReplayTest extends TestCase {
         Calendar now = new GregorianCalendar();
 
         JCRPublicationService.getInstance()
-                .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+                .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
         JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
 
@@ -318,7 +318,7 @@ public class LogReplayTest extends TestCase {
         }
 
         JCRPublicationService.getInstance()
-                .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+                .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
 
         session.checkout(page1);
         session.checkout(page3);
@@ -327,7 +327,7 @@ public class LogReplayTest extends TestCase {
         session.save();
         now = new GregorianCalendar();
         JCRPublicationService.getInstance()
-                .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+                .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
 
         tmp = File.createTempFile("remoteMoveNode", ".log.gz");
         RemotePublicationService.getInstance().generateLog(liveSource, now, new FileOutputStream(tmp));
@@ -371,14 +371,14 @@ public class LogReplayTest extends TestCase {
         session.save();
 
         JCRPublicationService.getInstance()
-                .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+                .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
         JCRPublicationService.getInstance()
-                .publish(source.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+                .publish(source.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
         JCRPublicationService.getInstance()
                 .publish(fileNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,
-                        null, true);
+                        null, true, null);
         JCRPublicationService.getInstance()
-                .publish(target.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+                .publish(target.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
 
         JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
@@ -428,7 +428,7 @@ public class LogReplayTest extends TestCase {
         Calendar now = new GregorianCalendar();
 
         JCRPublicationService.getInstance()
-                .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+                .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
 
         JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
@@ -446,7 +446,7 @@ public class LogReplayTest extends TestCase {
         assertTrue("Node not added", target.hasNode("page1"));
         assertTrue("Node not added", target.hasNode("page2"));
         JCRPublicationService.getInstance()
-                .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+                .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
 
         now = new GregorianCalendar();
         session.checkout(source);
@@ -454,7 +454,7 @@ public class LogReplayTest extends TestCase {
         page2.clone(subpage, "sharedsubpage");
         session.save();
         JCRPublicationService.getInstance()
-                .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+                .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
         tmp = File.createTempFile("remoteShareNode", ".log.gz");
         RemotePublicationService.getInstance().generateLog(liveSource, now, new FileOutputStream(tmp));
 
@@ -499,7 +499,7 @@ public class LogReplayTest extends TestCase {
         Calendar now = new GregorianCalendar();
 
         JCRPublicationService.getInstance()
-                .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+                .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
         JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(site.getDefaultLanguage()));
 
@@ -528,7 +528,7 @@ public class LogReplayTest extends TestCase {
                 pageNames.size() == pageFound.size());
 
         JCRPublicationService.getInstance()
-                .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+                .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
         session.checkout(source);
         session.checkout(page1);
         session.checkout(page2);
@@ -553,7 +553,7 @@ public class LogReplayTest extends TestCase {
         }
         now = new GregorianCalendar();
         JCRPublicationService.getInstance()
-                .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+                .publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
 
         tmp = File.createTempFile("remoteMoveNode", ".log.gz");
 

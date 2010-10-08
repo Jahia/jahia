@@ -64,6 +64,7 @@ import java.util.Locale;
  * Time: 1:40:10 PM
  * To change this template use File | Settings | File Templates.
  */
+/*
 public class RenderTest extends TestCase {
 
     private static Logger logger = Logger.getLogger(RenderTest.class);
@@ -242,3 +243,4 @@ public class RenderTest extends TestCase {
     }
 
 }
+*/

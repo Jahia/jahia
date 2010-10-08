@@ -106,7 +106,7 @@ public class ActionTest extends TestCase {
         session.save();
 
         JCRPublicationService.getInstance().publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
-                true);
+                true, null);
 
         HttpClient client = new HttpClient();
         client.getParams().setAuthenticationPreemptive(true);

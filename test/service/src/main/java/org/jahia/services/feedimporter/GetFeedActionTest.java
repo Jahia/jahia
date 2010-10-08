@@ -99,7 +99,7 @@ public class GetFeedActionTest extends TestCase {
         session.save();
 
         JCRPublicationService.getInstance().publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
-                true);
+                true, null);
 
         testFeed("testSDAFeed", "res:feedimporter/newsml/newsml_1_2_sda", "2_textwithphotoreference.xml");
         testFeed("testKoreanPicturesFeed", "res:feedimporter/newsml/koreanpictures_iptc", "2002-09-23T000051Z_01_BER04D_RTRIDSP_0_GERMANY.XML");
@@ -125,7 +125,7 @@ public class GetFeedActionTest extends TestCase {
 
         session.save();
         JCRPublicationService.getInstance().publish(sdaFeedNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
-                true);
+                true, null);
 
         HttpClient client = new HttpClient();
         client.getParams().setAuthenticationPreemptive(true);

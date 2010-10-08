@@ -425,7 +425,7 @@ public class URLFilterTest {
         languages.add("en");
         ServicesRegistry.getInstance().getJCRPublicationService().publish(
                 pageNode.getIdentifier(), Constants.EDIT_WORKSPACE,
-                Constants.LIVE_WORKSPACE, languages, true);
+                Constants.LIVE_WORKSPACE, languages, true, null);
         
         urlResolver = new URLResolver("/render/live/testpage", site.getServerName());
         resolvedNode = urlResolver.getNode();
@@ -461,7 +461,7 @@ public class URLFilterTest {
         languages.add("fr");
         ServicesRegistry.getInstance().getJCRPublicationService().publish(
                 pageNode.getIdentifier(), Constants.EDIT_WORKSPACE,
-                Constants.LIVE_WORKSPACE, languages, true);
+                Constants.LIVE_WORKSPACE, languages, true, null);
         
         urlResolver = new URLResolver("/render/live/testpage/french2", site.getServerName());      
         resolvedNode = urlResolver.getNode();

@@ -96,7 +96,7 @@ public class SimpleSearchTest {
                                 jcrService.publish(session.getNode(
                                         FIRST_SITECONTENT_ROOT_NODE + "/home")
                                         .getIdentifier(), Constants.EDIT_WORKSPACE,
-                                        Constants.LIVE_WORKSPACE, null, true);
+                                        Constants.LIVE_WORKSPACE, null, true, null);
                             } catch (Exception e) {
                                 logger
                                         .error("Cannot create or publish site",
@@ -115,7 +115,7 @@ public class SimpleSearchTest {
                                 jcrService.publish(session.getNode(
                                         SECOND_SITECONTENT_ROOT_NODE + "/home")
                                         .getIdentifier(), Constants.EDIT_WORKSPACE,
-                                        Constants.LIVE_WORKSPACE, null, true);
+                                        Constants.LIVE_WORKSPACE, null, true, null);
                             } catch (Exception e) {
                                 logger
                                         .error("Cannot create or publish site",

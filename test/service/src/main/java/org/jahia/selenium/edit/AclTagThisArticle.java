@@ -236,7 +236,6 @@ public class AclTagThisArticle extends SeleneseTestCase {
             }
         };
         selenium.click("link=Rights");
-        //déselect or select all acl
         String[] ids = selenium.getEval(getAllCheckBoxAcl()).split(",");
         return ids;
     }

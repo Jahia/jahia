@@ -87,7 +87,7 @@ public class MultiLanguageTest extends TestCase {
         englishEditSession.save();
 
         jcrService.publish(stageNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, Sets.newHashSet(Locale.ENGLISH.toString(), Locale.FRENCH.toString()),
-                false);
+                false, null);
 
         JCRSessionWrapper frenchEditSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.FRENCH, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
         JCRNodeWrapper frenchTextNode = frenchEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/text1");

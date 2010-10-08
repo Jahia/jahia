@@ -90,7 +90,7 @@ public class TestCreateSiteServlet extends HttpServlet implements Controller, Se
                                         SettingsBean.getInstance().getJahiaVarDiskPath()
                                                 + "/prepackagedSites/webtemplates65.zip", "ACME.zip");
                                 jcrService.publish(session.getRootNode().getNode("sites/ACME/home")
-                                        .getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+                                        .getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
                                 session.save();
                             } catch (Exception e) {
                                 logger.error("Cannot create or publish site", e);

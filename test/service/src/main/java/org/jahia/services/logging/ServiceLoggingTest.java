@@ -34,6 +34,7 @@ package org.jahia.services.logging;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.Level;
+import org.hamcrest.Matcher;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -163,7 +164,7 @@ public class ServiceLoggingTest {
         stopWatch.stop();
         final long withoutLogs = stopWatch.getLastTaskTimeMillis();
         assertThat("Logs has more than 5% impact on peformance",
-                ((Math.abs(withLogs - withoutLogs) / (float)withoutLogs) * 100), lessThan((float)5));
+                ((Math.abs(withLogs - withoutLogs) / (float)withoutLogs) * 100), (Matcher<Object>) lessThan((float)5));
         logger.error(stopWatch.prettyPrint());
     }
 }

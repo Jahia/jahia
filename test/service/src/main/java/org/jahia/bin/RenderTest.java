@@ -54,6 +54,7 @@ import org.json.JSONObject;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -64,7 +65,6 @@ import java.util.Locale;
  * Time: 1:40:10 PM
  * To change this template use File | Settings | File Templates.
  */
-
 public class RenderTest extends TestCase {
 
     private static Logger logger = Logger.getLogger(RenderTest.class);
@@ -152,7 +152,7 @@ public class RenderTest extends TestCase {
         editSession.save();
 
         // publish it
-        jcrService.publish(stageNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
+        jcrService.publish(stageNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true,Collections.<String>emptyList());
 
         for (int i = 1; i < NUMBER_OF_VERSIONS; i++) {
             editSession.checkout(stagedSubPage);
@@ -160,7 +160,8 @@ public class RenderTest extends TestCase {
             editSession.save();
 
             // each time the node i published, a new version should be created
-            jcrService.publish(stagedSubPage.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, null);
+            jcrService.publish(stagedSubPage.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false,
+                    Collections.<String>emptyList());
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {

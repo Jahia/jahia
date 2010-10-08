@@ -371,6 +371,9 @@ public class TestHelper {
 
     public static void createSubPages(Node currentNode, int level, int nbChildren) throws RepositoryException, LockException, ConstraintViolationException, NoSuchNodeTypeException, ItemExistsException, VersionException {
         if (level <= 0) return;
+        if(!currentNode.isCheckedOut()) {
+            currentNode.checkout();
+        }
         for (int i=0; i < nbChildren; i++) {
             Node newSubPage = currentNode.addNode("child" + Integer.toString(i), "jnt:page");
             createSubPages(newSubPage, level-1, nbChildren);

@@ -132,6 +132,9 @@
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
             <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
             <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.FILE_NAME"></stringProp>
+            <stringProp name="HTTPSampler.FILE_FIELD"></stringProp>
+            <stringProp name="HTTPSampler.mimetype"></stringProp>
             <boolProp name="HTTPSampler.monitor">false</boolProp>
             <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
           </HTTPSampler>
@@ -152,6 +155,9 @@
             <boolProp name="HTTPSampler.auto_redirects">true</boolProp>
             <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
             <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.FILE_NAME"></stringProp>
+            <stringProp name="HTTPSampler.FILE_FIELD"></stringProp>
+            <stringProp name="HTTPSampler.mimetype"></stringProp>
             <boolProp name="HTTPSampler.monitor">false</boolProp>
             <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
           </HTTPSampler>
@@ -187,6 +193,9 @@
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
               <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
               <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+              <stringProp name="HTTPSampler.FILE_NAME"></stringProp>
+              <stringProp name="HTTPSampler.FILE_FIELD"></stringProp>
+              <stringProp name="HTTPSampler.mimetype"></stringProp>
               <boolProp name="HTTPSampler.monitor">false</boolProp>
               <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
             </HTTPSampler>
@@ -233,12 +242,15 @@
               <stringProp name="HTTPSampler.response_timeout"></stringProp>
               <stringProp name="HTTPSampler.protocol">HTTP</stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">${CONTEXT}/cms/edit/default/en/sites/${SITE_KEY}/home/*</stringProp>
+              <stringProp name="HTTPSampler.path">${CONTEXT}/cms/render/default/en/sites/${SITE_KEY}/home/*</stringProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
               <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
               <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+              <stringProp name="HTTPSampler.FILE_NAME"></stringProp>
+              <stringProp name="HTTPSampler.FILE_FIELD"></stringProp>
+              <stringProp name="HTTPSampler.mimetype"></stringProp>
               <boolProp name="HTTPSampler.monitor">false</boolProp>
               <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
             </HTTPSampler>
@@ -268,12 +280,15 @@
               <stringProp name="HTTPSampler.response_timeout"></stringProp>
               <stringProp name="HTTPSampler.protocol">HTTP</stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">${CONTEXT}/cms/edit/default/en/sites/${SITE_KEY}/home/forumtest/boardindex/boardSubject${COUNTER_BOARDINDEX}.html</stringProp>
+              <stringProp name="HTTPSampler.path">${CONTEXT}/cms/render/default/en/sites/${SITE_KEY}/home/forumtest/boardindex/boardSubject${COUNTER_BOARDINDEX}.html</stringProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
               <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
               <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+              <stringProp name="HTTPSampler.FILE_NAME"></stringProp>
+              <stringProp name="HTTPSampler.FILE_FIELD"></stringProp>
+              <stringProp name="HTTPSampler.mimetype"></stringProp>
               <boolProp name="HTTPSampler.monitor">false</boolProp>
               <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
             </HTTPSampler>
@@ -332,12 +347,15 @@
                 <stringProp name="HTTPSampler.response_timeout"></stringProp>
                 <stringProp name="HTTPSampler.protocol">HTTP</stringProp>
                 <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-                <stringProp name="HTTPSampler.path">${CONTEXT}/cms/edit/default/en/sites/${SITE_KEY}/home/forumtest/boardindex/*</stringProp>
+                <stringProp name="HTTPSampler.path">${CONTEXT}/cms/render/default/en/sites/${SITE_KEY}/home/forumtest/boardindex/*</stringProp>
                 <stringProp name="HTTPSampler.method">POST</stringProp>
                 <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
                 <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
                 <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
                 <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+                <stringProp name="HTTPSampler.FILE_NAME"></stringProp>
+                <stringProp name="HTTPSampler.FILE_FIELD"></stringProp>
+                <stringProp name="HTTPSampler.mimetype"></stringProp>
                 <boolProp name="HTTPSampler.monitor">false</boolProp>
                 <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
               </HTTPSampler>
@@ -373,6 +391,9 @@
                 <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
                 <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
                 <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+                <stringProp name="HTTPSampler.FILE_NAME"></stringProp>
+                <stringProp name="HTTPSampler.FILE_FIELD"></stringProp>
+                <stringProp name="HTTPSampler.mimetype"></stringProp>
                 <boolProp name="HTTPSampler.monitor">false</boolProp>
                 <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
               </HTTPSampler>
@@ -424,12 +445,15 @@
                   <stringProp name="HTTPSampler.response_timeout"></stringProp>
                   <stringProp name="HTTPSampler.protocol">HTTP</stringProp>
                   <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-                  <stringProp name="HTTPSampler.path">${CONTEXT}/cms/edit/default/en/sites/${SITE_KEY}/home/forumtest/boardindex/boardSubject${COUNTER_BOARDINDEX}/*</stringProp>
+                  <stringProp name="HTTPSampler.path">${CONTEXT}/cms/render/default/en/sites/${SITE_KEY}/home/forumtest/boardindex/boardSubject${COUNTER_BOARDINDEX}/*</stringProp>
                   <stringProp name="HTTPSampler.method">POST</stringProp>
                   <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
                   <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
                   <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
                   <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+                  <stringProp name="HTTPSampler.FILE_NAME"></stringProp>
+                  <stringProp name="HTTPSampler.FILE_FIELD"></stringProp>
+                  <stringProp name="HTTPSampler.mimetype"></stringProp>
                   <boolProp name="HTTPSampler.monitor">false</boolProp>
                   <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
                 </HTTPSampler>
@@ -459,12 +483,15 @@
                   <stringProp name="HTTPSampler.response_timeout"></stringProp>
                   <stringProp name="HTTPSampler.protocol">HTTP</stringProp>
                   <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-                  <stringProp name="HTTPSampler.path">${CONTEXT}/cms/edit/default/en/sites/${SITE_KEY}/home/forumtest/boardindex/boardSubject${COUNTER_BOARDINDEX}/jmeterTopic${COUNTER_TOPIC}/jmeterThread${COUNTER_THREAD}.html</stringProp>
+                  <stringProp name="HTTPSampler.path">${CONTEXT}/cms/render/default/en/sites/${SITE_KEY}/home/forumtest/boardindex/boardSubject${COUNTER_BOARDINDEX}/jmeterTopic${COUNTER_TOPIC}/jmeterThread${COUNTER_THREAD}.html</stringProp>
                   <stringProp name="HTTPSampler.method">GET</stringProp>
                   <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                   <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
                   <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
                   <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+                  <stringProp name="HTTPSampler.FILE_NAME"></stringProp>
+                  <stringProp name="HTTPSampler.FILE_FIELD"></stringProp>
+                  <stringProp name="HTTPSampler.mimetype"></stringProp>
                   <boolProp name="HTTPSampler.monitor">false</boolProp>
                   <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
                 </HTTPSampler>
@@ -516,12 +543,15 @@
                     <stringProp name="HTTPSampler.response_timeout"></stringProp>
                     <stringProp name="HTTPSampler.protocol">HTTP</stringProp>
                     <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-                    <stringProp name="HTTPSampler.path">${CONTEXT}/cms/edit/default/en/sites/${SITE_KEY}/home/forumtest/boardindex/boardSubject${COUNTER_BOARDINDEX}/jmeterTopic${COUNTER_TOPIC}/*</stringProp>
+                    <stringProp name="HTTPSampler.path">${CONTEXT}/cms/render/default/en/sites/${SITE_KEY}/home/forumtest/boardindex/boardSubject${COUNTER_BOARDINDEX}/jmeterTopic${COUNTER_TOPIC}/*</stringProp>
                     <stringProp name="HTTPSampler.method">POST</stringProp>
                     <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
                     <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
                     <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
                     <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+                    <stringProp name="HTTPSampler.FILE_NAME"></stringProp>
+                    <stringProp name="HTTPSampler.FILE_FIELD"></stringProp>
+                    <stringProp name="HTTPSampler.mimetype"></stringProp>
                     <boolProp name="HTTPSampler.monitor">false</boolProp>
                     <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
                   </HTTPSampler>
@@ -541,9 +571,31 @@
                     <boolProp name="CounterConfig.per_user">true</boolProp>
                   </CounterConfig>
                   <hashTree/>
-                  <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="check post" enabled="true">
+                  <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="Create Post" enabled="true">
                     <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="Variables pré-définies" enabled="true">
-                      <collectionProp name="Arguments.arguments"/>
+                      <collectionProp name="Arguments.arguments">
+                        <elementProp name="nodeType" elementType="HTTPArgument">
+                          <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                          <stringProp name="Argument.value">jnt:post</stringProp>
+                          <stringProp name="Argument.metadata">=</stringProp>
+                          <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                          <stringProp name="Argument.name">nodeType</stringProp>
+                        </elementProp>
+                        <elementProp name="jcr:title" elementType="HTTPArgument">
+                          <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                          <stringProp name="Argument.value">jmeterPost${COUNTER_POST}</stringProp>
+                          <stringProp name="Argument.metadata">=</stringProp>
+                          <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                          <stringProp name="Argument.name">jcr:title</stringProp>
+                        </elementProp>
+                        <elementProp name="content" elementType="HTTPArgument">
+                          <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                          <stringProp name="Argument.value">content example from JMeter</stringProp>
+                          <stringProp name="Argument.metadata">=</stringProp>
+                          <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                          <stringProp name="Argument.name">content</stringProp>
+                        </elementProp>
+                      </collectionProp>
                     </elementProp>
                     <stringProp name="HTTPSampler.domain"></stringProp>
                     <stringProp name="HTTPSampler.port"></stringProp>
@@ -551,72 +603,23 @@
                     <stringProp name="HTTPSampler.response_timeout"></stringProp>
                     <stringProp name="HTTPSampler.protocol">HTTP</stringProp>
                     <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-                    <stringProp name="HTTPSampler.path">${CONTEXT}/cms/edit/default/en/sites/${SITE_KEY}/home/forumtest/boardindex/boardSubject${COUNTER_BOARDINDEX}/jmeterTopic${COUNTER_TOPIC}/jmeterThread${COUNTER_THREAD}/jmeterpost${COUNTER_POST}.html</stringProp>
-                    <stringProp name="HTTPSampler.method">GET</stringProp>
-                    <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+                    <stringProp name="HTTPSampler.path">${CONTEXT}/cms/render/default/en/sites/${SITE_KEY}/home/forumtest/boardindex/boardSubject${COUNTER_BOARDINDEX}/jmeterTopic${COUNTER_TOPIC}/jmeterThread${COUNTER_THREAD}/*</stringProp>
+                    <stringProp name="HTTPSampler.method">POST</stringProp>
+                    <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
                     <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
                     <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
                     <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+                    <stringProp name="HTTPSampler.FILE_NAME"></stringProp>
+                    <stringProp name="HTTPSampler.FILE_FIELD"></stringProp>
+                    <stringProp name="HTTPSampler.mimetype"></stringProp>
                     <boolProp name="HTTPSampler.monitor">false</boolProp>
                     <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
                   </HTTPSampler>
                   <hashTree>
-                    <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Vérif" enabled="true">
-                      <collectionProp name="Asserion.test_strings">
-                        <stringProp name="49586">200</stringProp>
-                      </collectionProp>
-                      <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
-                      <boolProp name="Assertion.assume_success">false</boolProp>
-                      <intProp name="Assertion.test_type">8</intProp>
-                    </ResponseAssertion>
-                    <hashTree/>
-                  </hashTree>
-                  <IfController guiclass="IfControllerPanel" testclass="IfController" testname="if post not exist" enabled="true">
-                    <stringProp name="IfController.condition">${JMeterThread.last_sample_ok} == false</stringProp>
-                    <boolProp name="IfController.evaluateAll">false</boolProp>
-                  </IfController>
-                  <hashTree>
-                    <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="Create Post" enabled="true">
-                      <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="Variables pré-définies" enabled="true">
-                        <collectionProp name="Arguments.arguments">
-                          <elementProp name="nodeType" elementType="HTTPArgument">
-                            <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                            <stringProp name="Argument.value">jnt:post</stringProp>
-                            <stringProp name="Argument.metadata">=</stringProp>
-                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                            <stringProp name="Argument.name">nodeType</stringProp>
-                          </elementProp>
-                          <elementProp name="jcr:title" elementType="HTTPArgument">
-                            <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                            <stringProp name="Argument.value">jmeterPost${COUNTER_POST}</stringProp>
-                            <stringProp name="Argument.metadata">=</stringProp>
-                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                            <stringProp name="Argument.name">jcr:title</stringProp>
-                          </elementProp>
-                          <elementProp name="content" elementType="HTTPArgument">
-                            <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                            <stringProp name="Argument.value">content example from JMeter</stringProp>
-                            <stringProp name="Argument.metadata">=</stringProp>
-                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                            <stringProp name="Argument.name">content</stringProp>
-                          </elementProp>
-                        </collectionProp>
-                      </elementProp>
-                      <stringProp name="HTTPSampler.domain"></stringProp>
-                      <stringProp name="HTTPSampler.port"></stringProp>
-                      <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-                      <stringProp name="HTTPSampler.response_timeout"></stringProp>
-                      <stringProp name="HTTPSampler.protocol">HTTP</stringProp>
-                      <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-                      <stringProp name="HTTPSampler.path">${CONTEXT}/cms/edit/default/en/sites/${SITE_KEY}/home/forumtest/boardindex/boardSubject${COUNTER_BOARDINDEX}/jmeterTopic${COUNTER_TOPIC}/jmeterThread${COUNTER_THREAD}/*</stringProp>
-                      <stringProp name="HTTPSampler.method">POST</stringProp>
-                      <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
-                      <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
-                      <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-                      <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-                      <boolProp name="HTTPSampler.monitor">false</boolProp>
-                      <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
-                    </HTTPSampler>
+                    <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="Compteur de temps aléatoire uniforme" enabled="true">
+                      <stringProp name="ConstantTimer.delay">5000</stringProp>
+                      <stringProp name="RandomTimer.range">2000.0</stringProp>
+                    </UniformRandomTimer>
                     <hashTree/>
                   </hashTree>
                 </hashTree>

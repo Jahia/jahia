@@ -15,7 +15,7 @@
     <title><fmt:message key="label.error.400.title"/></title>
 
 </head>
-<body class="login">
+<body class="login" onload="if (history.length > 1) { document.getElementById('backLink').style.display=''; }">
 <div class="grass"></div>
 <div class="grass2"></div>
 <div class="hive"></div>
@@ -28,6 +28,8 @@
             <br class="clearFloat" />
             <h3 class="loginIcon"><fmt:message key="label.error.400.title"/></h3>
         	<p><fmt:message key="label.error.400.description"/><br/><c:out value="${not empty requestScope['org.jahia.exception'] ? requestScope['org.jahia.exception'].message : requestScope['javax.servlet.error.message']}"/></p>
+	        <p id="backLink" style="display:none"><fmt:message key="label.error.backLink.1"/>&nbsp;<a href="javascript:history.back()"><fmt:message key="label.error.backLink.2"/></a>&nbsp;<fmt:message key="label.error.backLink.3"/></p>
+	        <p><fmt:message key="label.error.homeLink"/>:&nbsp;<a href="<c:url value='/'/>"><fmt:message key="label.homepage"/></a></p>
             <br class="clearFloat" />
     </div>
 </body>

@@ -137,19 +137,22 @@
             <th width="5%">
                 &nbsp;
             </th>
-            <th width="35%">
+            <th width="3%">
+                &nbsp;
+            </th>
+            <th width="30%">
                 <fmt:message key="label.name"/>
             </th>
             <th width="12%" style="white-space: nowrap">
                 <fmt:message key="org.jahia.admin.site.ManageSites.siteKey.label"/>
             </th>
-            <th width="3%">
-                &nbsp;
+            <th width="20%">
+                <fmt:message key="org.jahia.admin.site.ManageSites.siteServerName.label"/>
             </th>
-            <th width="30%">
+            <th width="20%">
                 <fmt:message key="org.jahia.admin.site.ManageSites.templateSet.label"/>
             </th>
-            <th width="15%" class="lastCol">
+            <th width="10%" class="lastCol">
                 <fmt:message key="label.action"/>
             </th>
         </tr>
@@ -172,14 +175,6 @@
                 <td>
                     <input type="checkbox" name="sitebox" value="<%=site.getSiteKey()%>">
                 </td>
-                <td>
-                    <a href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=edit&siteid=" + site.getID())%>'
-                       title="<fmt:message key='label.edit'/>"><%=site.getTitle() %>
-                    </a>
-                </td>
-                <td>
-                    <%=site.getSiteKey() %>
-                </td>
                 <td align="center">
                     <%
                         if (site.isDefault()) {
@@ -193,6 +188,17 @@
                     } else {
                     %>&nbsp;<% } %>
 
+                </td>
+                <td>
+                    <a href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=edit&siteid=" + site.getID())%>'
+                       title="<fmt:message key='label.edit'/>"><%=site.getTitle() %>
+                    </a>
+                </td>
+                <td>
+                    <%=site.getSiteKey() %>
+                </td>
+                <td>
+                    <%=site.getServerName() %>
                 </td>
                 <td>
                     <%=site.getTemplatePackageName() %>

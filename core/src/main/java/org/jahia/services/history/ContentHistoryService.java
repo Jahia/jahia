@@ -240,10 +240,12 @@ public class ContentHistoryService implements Processor, InitializingBean, Camel
 
             String hqlDelete = "delete HistoryEntry c where c.date < :date";
             int deletedEntities = session.createQuery(hqlDelete)
-                    .setDate("date", date)
+                    .setTimestamp("date", date)
                     .executeUpdate();
             tx.commit();
-            logger.info("Successfully deleted " + deletedEntities + " content history entries before date " + date);
+            if (deletedEntities > 0) {
+                logger.info("Successfully deleted " + deletedEntities + " content history entries before date " + date);
+            }
             return deletedEntities;
         } catch (Exception e) {
             logger.error("Error deleting history entries before date " + date, e);

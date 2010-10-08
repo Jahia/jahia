@@ -46,7 +46,7 @@ public class HistoryPanel extends LayoutContainer {
 
     private List<GWTJahiaContentHistoryEntry> selectedItems = null;
     private PagingToolBar pagingToolBar;
-    public static final String PRECISE_DATETIME_FORMAT = "dd.MM.yyyy HH:mm:ss,SSS";
+    public static final String SECONDS_PRECISION_DATETIME_FORMAT = "dd.MM.yyyy HH:mm:ss";
 
 
     public HistoryPanel(GWTJahiaNode node) {
@@ -93,13 +93,15 @@ public class HistoryPanel extends LayoutContainer {
         pagingToolBar = new PagingToolBar(50);
         PagingToolBar.PagingToolBarMessages pagingMessages = pagingToolBar.getMessages();
         pagingMessages.setEmptyMsg(pagingMessages.getEmptyMsg() + ". " + Messages.get("label.historyMayBeDelayed", "History may be delayed."));
-        pagingMessages.setDisplayMsg(pagingMessages.getDisplayMsg() + ". " + Messages.get("label.historyMayBeDelayed", "History may be delayed."));
+        if (pagingMessages.getDisplayMsg() != null) {
+            pagingMessages.setDisplayMsg(pagingMessages.getDisplayMsg() + ". " + Messages.get("label.historyMayBeDelayed", "History may be delayed."));
+        }
         pagingToolBar.bind(loader);
 
         List<ColumnConfig> config = new ArrayList<ColumnConfig>();
 
         ColumnConfig column = new ColumnConfig("date", Messages.get("label.date", "Date"), 125);
-        column.setDateTimeFormat(DateTimeFormat.getFormat(PRECISE_DATETIME_FORMAT));
+        column.setDateTimeFormat(DateTimeFormat.getFormat(SECONDS_PRECISION_DATETIME_FORMAT));
         column.setSortable(false);
         config.add(column);
 
@@ -111,7 +113,7 @@ public class HistoryPanel extends LayoutContainer {
         column.setSortable(false);
         config.add(column);
 
-        column = new ColumnConfig("propertyName", Messages.get("label.propertyName", "Property name"), 90);
+        column = new ColumnConfig("propertyName", Messages.get("label.property", "Property"), 90);
         column.setSortable(false);
         config.add(column);
 
@@ -204,12 +206,12 @@ public class HistoryPanel extends LayoutContainer {
 
     private String buildMessage(GWTJahiaContentHistoryEntry gwtJahiaContentHistoryEntry) {
         String message = gwtJahiaContentHistoryEntry.getMessage();
-        if ("published".equals(gwtJahiaContentHistoryEntry)) {
+        if ("published".equals(gwtJahiaContentHistoryEntry.getAction())) {
             String[] messageParts = message.split(";;");
             if (messageParts.length == 3) {
-                message = Messages.getWithArgs("label.publishMessageHistoryWithComments", "Published from {0} to {1} with comments {2}", messageParts);
+                message = Messages.getWithArgs("label.publishMessageWithComments", "Published from {0} to {1} with comments \"{2}\"", messageParts);
             } else if (messageParts.length == 2) {
-                message = Messages.getWithArgs("label.publishMessageHistoryWithComments", "Published from {0} to {1}", messageParts);
+                message = Messages.getWithArgs("label.publishMessage", "Published from {0} to {1}", messageParts);
             }
         }
         return message;
@@ -223,7 +225,7 @@ public class HistoryPanel extends LayoutContainer {
             if (value instanceof String) {
                 textField.setValue(value);
             } else if (value instanceof Date) {
-                textField.setValue(org.jahia.ajax.gwt.client.util.Formatter.getFormattedDate((Date) value, PRECISE_DATETIME_FORMAT));
+                textField.setValue(org.jahia.ajax.gwt.client.util.Formatter.getFormattedDate((Date) value, SECONDS_PRECISION_DATETIME_FORMAT));
             } else {
                 textField.setValue(value.toString());
             }
@@ -259,7 +261,7 @@ public class HistoryPanel extends LayoutContainer {
 
             addDetail("label.user", "User key", historyEntry.getUserKey());
             addTimeDetail("label.date", "Date", historyEntry.getDate());
-            addDetail("label.propertyName", "Property name", historyEntry.getPropertyName());
+            addDetail("label.property", "Property", historyEntry.getPropertyName());
             addDetail("label.language", "Language", historyEntry.getLanguageCode());
             addDetail("label.path", "Path", historyEntry.getPath());
             addDetail("label.action", "Action", historyEntry.getAction());

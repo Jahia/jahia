@@ -57,6 +57,9 @@ public class ContentHistoryService implements Processor, InitializingBean, Camel
     private String from;
     private Set<String> ignoreProperties = new HashSet<String>();
     private Set<String> ignoreNodeTypes = new HashSet<String>();
+    public static final String WITH_COMMENTS_MESSAGE_PART = "with comments ";
+    public static final String VIEWED_ACTION_NAME = "viewed";
+    public static final String PUBLISHED_ACTION_NAME = "published";
 
     public void setSessionFactoryBean(SessionFactoryImpl sessionFactoryBean) {
         this.sessionFactoryBean = sessionFactoryBean;
@@ -168,7 +171,7 @@ public class ContentHistoryService implements Processor, InitializingBean, Camel
                 }
                 // Not found new object
                 else {
-                    if (!"viewed".equals(action)) {
+                    if (!VIEWED_ACTION_NAME.equals(action)) {
                         historyEntry = new HistoryEntry();
                         historyEntry.setDate(date);
                         historyEntry.setPath(path);
@@ -177,14 +180,14 @@ public class ContentHistoryService implements Processor, InitializingBean, Camel
                         historyEntry.setAction(action);
                         historyEntry.setPropertyName(propertyName);
                         String historyMessage = "";
-                        if ("published".equals(action)) {
+                        if (PUBLISHED_ACTION_NAME.equals(action)) {
                             if (argList.length >= 8) {
                                 String sourceWorkspace = argList[3].trim();
                                 String destinationWorkspace = argList[5].trim();
                                 String historyComments = "";
-                                int commentsPos = args.indexOf("with comments ");
+                                int commentsPos = args.indexOf(WITH_COMMENTS_MESSAGE_PART);
                                 if (commentsPos > -1) {
-                                    historyComments = ";;" + args.substring(commentsPos + 1);
+                                    historyComments = ";;" + args.substring(commentsPos + WITH_COMMENTS_MESSAGE_PART.length());
                                 }
                                 historyMessage = sourceWorkspace + ";;" + destinationWorkspace + historyComments;
                             }

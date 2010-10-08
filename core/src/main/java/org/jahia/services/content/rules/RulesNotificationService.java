@@ -153,6 +153,15 @@ public class RulesNotificationService {
 
     private void sendMail(String template, Object user, String toMail, String fromMail, String ccList, String bcclist,
                           Locale locale) throws RepositoryException, ScriptException {
+        if (StringUtils.isEmpty(fromMail)) {
+            logger.warn("A mail couldn't be sent because from: has no recipient");
+            return;
+        }
+        if (StringUtils.isEmpty(toMail)) {
+            logger.warn("A mail couldn't be sent because to: has no recipient");
+            return;
+        }
+
         // Resolve template :
         ScriptEngineManager scriptManager = new ScriptEngineManager();
         String extension = StringUtils.substringAfterLast(template, ".");
@@ -186,13 +195,7 @@ public class RulesNotificationService {
                 scriptEngine.eval(scriptContent, bindings);
                 StringWriter writer = (StringWriter) scriptContext.getWriter();
                 String body = writer.toString();
-                if ("".equals(fromMail)) {
-                    logger.warn("A mail couldn't be send because from: has no recipient");
-                } else if ("".equals(toMail)) {
-                    logger.warn("A mail couldn't be send because to: has no recipient");
-                } else {
-                    notificationService.sendMessage(fromMail, toMail, ccList, bcclist, subject, null, body);
-                }
+                notificationService.sendMessage(fromMail, toMail, ccList, bcclist, subject, null, body);
             } finally {
                 if (scriptContent != null) {
                     IOUtils.closeQuietly(scriptContent);

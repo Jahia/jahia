@@ -5,13 +5,14 @@
 
 <jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>
 
+<c:if test="${not empty title}">
+    <div class="clear"></div>
+    <h4 class="box5-title box5-title${currentNode.properties['j:style'].string}">${title.string}</h4>
+</c:if>
 <div class="box5">
-<div class="box5grey box5padding16 box5marginbottom16">
+<div class="box5 box5padding16 box5marginbottom16">
     <div class="box5-inner">
             <div class="box5-inner-border"><!--start box5 -->
-                <c:if test="${not empty title}">
-                    <h3 class="box5titleh3">${title.string}</h3>
-                </c:if>
                 ${wrappedContent}
                 <div class="clear"></div>
             </div>

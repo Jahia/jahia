@@ -214,7 +214,7 @@ public class CreateContentEngine extends AbstractContentEngine {
                 if (pe != null) {
                     // props.addAll(pe.getProperties());
                     mixin.addAll(pe.getAddedTypes());
-                    mixin.addAll(pe.getTemplateTypes());
+                    mixin.addAll(pe.getExternalMixin());
                 }
 
                 // handle multilang

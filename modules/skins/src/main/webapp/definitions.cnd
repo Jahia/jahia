@@ -1,5 +1,10 @@
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
+[jmix:style] > jmix:templateMixin mixin
+ extends = jmix:list
+ itemtype = layout
+ - j:style (string, choicelist) = 'grey' < 'grey','shadow','blue','mushroom','orange','black','red','green','purple','yellow'
+
 [jmix:skinnable] mixin
  extends = jmix:list
  itemtype = layout

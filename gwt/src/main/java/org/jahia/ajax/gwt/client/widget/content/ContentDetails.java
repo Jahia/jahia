@@ -323,7 +323,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                         for (GWTJahiaNode node : getNodes()) {
                             node.getNodeTypes().removeAll(pe.getRemovedTypes());
                             node.getNodeTypes().addAll(pe.getAddedTypes());
-                            node.getNodeTypes().addAll(pe.getTemplateTypes());
+                            node.getNodeTypes().addAll(pe.getExternalMixin());
                         }
                     }
 

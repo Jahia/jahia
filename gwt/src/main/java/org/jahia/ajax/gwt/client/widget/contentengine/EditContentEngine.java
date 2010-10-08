@@ -268,7 +268,7 @@ public class EditContentEngine extends AbstractContentEngine {
                         //properties.addAll(pe.getProperties());
                         node.getNodeTypes().removeAll(pe.getRemovedTypes());
                         node.getNodeTypes().addAll(pe.getAddedTypes());
-                        node.getNodeTypes().addAll(pe.getTemplateTypes());
+                        node.getNodeTypes().addAll(pe.getExternalMixin());
                     }
 
                     // handle multilang

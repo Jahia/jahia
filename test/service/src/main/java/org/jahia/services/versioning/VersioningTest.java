@@ -28,8 +28,7 @@
  * in accordance with the terms contained in a separate written agreement
  * between you and Jahia Solutions Group SA. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
- *//*
-
+ */
 
 package org.jahia.services.versioning;
 
@@ -58,11 +57,9 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-*/
 /**
  * Unit test to test version listing created during publication
- *//*
-
+ */
 public class VersioningTest extends TestCase {
     private static Logger logger = Logger.getLogger(VersioningTest.class);
     private JahiaSite site;
@@ -101,13 +98,11 @@ public class VersioningTest extends TestCase {
     }
 
 
-    */
-/**
+    /**
      * Test number of version after publication
      *
      * @throws Exception
-     *//*
-
+     */
     public void testVersions() throws Exception {
         try {
             JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
@@ -661,7 +656,7 @@ public class VersioningTest extends TestCase {
         languagesStringSet.add(Locale.ENGLISH.toString());
         List<PublicationInfo> infoList = jcrPublicationService.getPublicationInfo(identifier, languagesStringSet, true,
                 true, true, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
-        jcrPublicationService.publish(infoList, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
+        jcrPublicationService.publish(infoList, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null);
         for (PublicationInfo info : infoList) {
             jcrVersionService.addVersionLabel(info.getAllUuids(),
                     Constants.EDIT_WORKSPACE + "_" + labelForForstPublication, Constants.EDIT_WORKSPACE);
@@ -671,4 +666,3 @@ public class VersioningTest extends TestCase {
     }
 
 }
-*/

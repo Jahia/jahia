@@ -1193,19 +1193,25 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public JCRPropertyWrapper getProperty(String name) throws javax.jcr.PathNotFoundException, javax.jcr.RepositoryException {
-        ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
-        if ((epd.getRequiredType() == PropertyType.WEAKREFERENCE) ||
-                (epd.getRequiredType() == PropertyType.REFERENCE)) {
-            if (isNodeType(Constants.JAHIAMIX_EXTERNALREFERENCE)) {
-                return retrieveExternalReferenceProperty(name, epd);
-            }
-        }
-        return internalGetProperty(name);
+    	try {
+	        ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
+	        if ((epd.getRequiredType() == PropertyType.WEAKREFERENCE) ||
+	                (epd.getRequiredType() == PropertyType.REFERENCE)) {
+	            if (isNodeType(Constants.JAHIAMIX_EXTERNALREFERENCE)) {
+	                return retrieveExternalReferenceProperty(name, epd);
+	            }
+	        }
+	        return internalGetProperty(name, epd);
+    	} catch (ConstraintViolationException e) {
+    		throw new PathNotFoundException(e.getMessage(), e);
+    	}
     }
 
-    private JCRPropertyWrapper internalGetProperty(String name) throws RepositoryException {
+    private JCRPropertyWrapper internalGetProperty(String name, ExtendedPropertyDefinition epd) throws RepositoryException {
         final Locale locale = getSession().getLocale();
-        ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
+        if (epd == null) {
+        	epd = getApplicablePropertyDefinition(name);
+        }
         if (locale != null) {
             if (epd != null && epd.isInternationalized()) {
                 try {
@@ -1594,7 +1600,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
 
         if (internalHasProperty(name)) {
-            Property property = internalGetProperty(name);
+            Property property = internalGetProperty(name, null);
             property.remove();
         }
 

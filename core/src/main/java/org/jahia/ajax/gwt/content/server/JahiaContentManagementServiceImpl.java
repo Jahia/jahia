@@ -84,6 +84,7 @@ import org.jahia.tools.imageprocess.ImageProcess;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolationException;
@@ -1468,9 +1469,13 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             result.setAcl(gwtJahiaNodeACL);
             Map<String,Set<String>> referencesWarnings = new HashMap<String, Set<String>>();
             for (GWTJahiaNodeProperty property : props.values()) {
-                if (property.getName().equals("*") || nodeWrapper.getProperty(property.getName()).getDefinition().isProtected()) {
-                    continue;
-                }
+            	try {
+	                if (property.getName().equals("*") || nodeWrapper.getProperty(property.getName()).getDefinition().isProtected()) {
+	                    continue;
+	                }
+            	} catch (PathNotFoundException e) {
+            		// ignore
+            	}
                 List<GWTJahiaNode> refs = new ArrayList<GWTJahiaNode>();
                 for (GWTJahiaNodePropertyValue value : (property.getValues())) {
                     if ((value.getType() == GWTJahiaNodePropertyType.REFERENCE ||

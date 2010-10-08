@@ -70,7 +70,7 @@ public abstract class FormDeployPortletDefinition extends FormPanel {
         portletDefinitionField.setAllowBlank(false);
         portletDefinitionField.setName("portletDefinition");
         portletDefinitionField.setWidth(290);
-        portletDefinitionField.setFieldLabel(Messages.get("org.jahia.engines.PortletsManager.wizard.portletdef.label", "Portlet Definition"));
+        portletDefinitionField.setFieldLabel(Messages.get("org.jahia.engines.PortletsManager.wizard.upload.label", "Portlets WAR file"));
         add(portletDefinitionField);
 
         final HiddenField<Boolean> preparePortlet = new HiddenField<Boolean>();

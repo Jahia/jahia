@@ -624,7 +624,14 @@
 
         <property name="nodeTypes" value="jnt:portletDefinition"/>
         <property name="toolbars">
-            <list/>
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.DeployPortlets"/>
+                        <ref bean="Toolbar.Item.Delete"/>
+                    </list>
+                </property>
+            </bean>
         </property>
 
         <property name="contextMenu">

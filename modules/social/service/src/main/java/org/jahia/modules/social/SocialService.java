@@ -104,6 +104,9 @@ public class SocialService {
     }
 
     public void addActivity(final String activityType, final String user, final String message, final String messageKey, final JCRNodeWrapper targetNode, final List<String> nodeTypeList, JCRSessionWrapper session) throws RepositoryException {
+        if (user == null || "".equals(user.trim())) {
+            return;
+        }
         final JCRUser fromJCRUser = getJCRUserFromUserKey(user);
         if (fromJCRUser == null) {
             logger.warn("No user found, not adding activity !");

@@ -132,7 +132,7 @@ public abstract class BackgroundJob implements StatefulJob {
         JobDetail jobDetail = jobExecutionContext.getJobDetail();
         JobDataMap data = jobDetail.getJobDataMap();
         long now = System.currentTimeMillis();
-        logger.info("Background job " + jobDetail.getName() + "\n started @ " + new Date(now));
+        logger.info("Background job " + jobDetail.getName() + " started @ " + new Date(now));
         String status = STATUS_FAILED;
         final JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
         try {

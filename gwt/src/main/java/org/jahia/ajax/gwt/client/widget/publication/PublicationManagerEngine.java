@@ -339,10 +339,7 @@ public class PublicationManagerEngine extends Window {
             status.addAll(info.getReferencesStatus());
             status.add(info.getStatus());
 
-            boolean b = !info.isLocked() && (!node.isLanguageLocked(JahiaGWTParameters.getLanguage()) && info.isCanPublish() &&
-                    (status.contains(GWTJahiaPublicationInfo.NOT_PUBLISHED) ||
-                            status.contains(GWTJahiaPublicationInfo.MODIFIED) ||
-                            status.contains(GWTJahiaPublicationInfo.UNPUBLISHED))) && (!status.contains(GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE));
+            boolean b = GWTJahiaPublicationInfo.canPublish(node, info, JahiaGWTParameters.getLanguage());
             info.set("checkboxEnable", b);
             return b;
         }

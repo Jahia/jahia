@@ -42,8 +42,10 @@ public class WorkInProgressActionItem extends BaseActionItem {
                 JahiaContentManagementService.App.getInstance().getActiveJobs(new AsyncCallback<List<GWTJahiaJobDetail>>() {
                     public void onSuccess(List<GWTJahiaJobDetail> result) {
                         if (!processes.equals(result)) {
+                            final ArrayList<GWTJahiaJobDetail> deleted = new ArrayList<GWTJahiaJobDetail>(processes);
+                            deleted.removeAll(result);
                             processes = result;
-                            refreshStatus();
+                            refreshStatus(deleted);
                         }
                         schedule(5000);
                     }
@@ -65,6 +67,22 @@ public class WorkInProgressActionItem extends BaseActionItem {
     public static void setStatus(String status) {
         instance.statuses.add(status);
         instance.refreshStatus();
+    }
+
+    private void refreshStatus(List<GWTJahiaJobDetail> oldJobs) {
+        refreshStatus();
+        int refresh = 0;
+        if (oldJobs != null) {
+            for (GWTJahiaJobDetail oldJob : oldJobs) {
+                if (oldJob.getGroup().equals("PublicationJob")) {
+                    refresh |= Linker.REFRESH_PAGES;
+                    refresh |= Linker.REFRESH_MAIN;
+                }
+            }
+        }
+        if (refresh > 0) {
+            linker.refresh(refresh);
+        }
     }
 
     private void refreshStatus() {

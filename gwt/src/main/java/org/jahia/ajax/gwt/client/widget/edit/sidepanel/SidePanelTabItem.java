@@ -86,6 +86,10 @@ public class SidePanelTabItem extends TabItem {
         // do nothing by default
     }
 
+    public void handleNewMainSelection(String path) {
+        // do nothing by default
+    }
+
     /**
      * Creates the context menu using specified Spring toolbar bean name.
      *

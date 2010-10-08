@@ -64,7 +64,10 @@ import java.util.ArrayList;
 public class EditLinker implements Linker {
 
     private GWTEditConfiguration config;
-    private GWTJahiaNode sidePanelSelectedNode;
+    private String mainPath;
+    private String template;
+    private String param;
+
     private LinkerSelectionContext selectionContext = new LinkerSelectionContext();
     private Module selectedModule;
     private EditModeDNDListener dndListener;
@@ -132,6 +135,14 @@ public class EditLinker implements Linker {
         }
     }
 
+    public void onMainSelection(String mainPath, String template, String param) {
+        this.mainPath = mainPath;
+        this.template = template;
+        this.param = param;
+
+        handleNewMainSelection();
+    }
+
     public void refresh(int flag) {
         mainModule.refresh(flag);
         sidePanel.refresh(flag);
@@ -146,11 +157,10 @@ public class EditLinker implements Linker {
         sidePanel.handleNewModuleSelection(selectedModule);
     }
 
-    public void handleNewSidePanelSelection() {
+    public void handleNewMainSelection() {
         syncSelectionContext();
-        toolbar.handleNewLinkerSelection();
-        mainModule.handleNewSidePanelSelection(sidePanelSelectedNode);
-        sidePanel.handleNewSidePanelSelection(sidePanelSelectedNode);
+        mainModule.handleNewMainSelection(mainPath,template, param);
+        sidePanel.handleNewMainSelection(mainPath);
     }
 
     /**

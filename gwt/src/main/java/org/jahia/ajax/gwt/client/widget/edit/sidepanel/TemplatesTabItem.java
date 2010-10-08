@@ -78,7 +78,7 @@ public class TemplatesTabItem extends BrowseTabItem {
                 super.handleMouseClick(e);
                 if (!getSelectedItem().getPath().equals(editLinker.getMainModule().getPath())) {
                     if (!getSelectedItem().getNodeTypes().contains("jnt:virtualsite") && !getSelectedItem().getNodeTypes().contains("jnt:templatesFolder")) {
-                        editLinker.getMainModule().goTo(getSelectedItem().getPath(), null);
+                        editLinker.onMainSelection(getSelectedItem().getPath(), null, null);
                     }
                 }
             }

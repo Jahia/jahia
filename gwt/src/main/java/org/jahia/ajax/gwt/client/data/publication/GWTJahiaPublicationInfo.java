@@ -34,6 +34,7 @@ package org.jahia.ajax.gwt.client.data.publication;
 
 import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.data.SerializableBaseModel;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 
@@ -154,11 +155,17 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
             if (info.isLocked()) {
                 label = "locked";
             } else {
-                Set<Integer> status = new HashSet<Integer>(info.getSubnodesStatus());
-                status.addAll(info.getReferencesStatus());
-                status.add(info.getStatus());
-                int state = Collections.max(status);
-                label = statusToLabel.get(state);
+                if (info.getStatus() >= GWTJahiaPublicationInfo.NOT_PUBLISHED) {
+                    label = statusToLabel.get(info.getStatus());
+                } else {
+                    Set<Integer> status = new HashSet<Integer>(info.getSubnodesStatus());
+                    status.addAll(info.getReferencesStatus());
+                    if (Collections.max(status) == GWTJahiaPublicationInfo.PUBLISHED) {
+                        label = statusToLabel.get(info.getStatus());
+                    } else {
+                        label = statusToLabel.get(GWTJahiaPublicationInfo.MODIFIED);
+                    }
+                }
             }
 
             String title = Messages.get("label.publication." + label, label);
@@ -168,5 +175,18 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
         }
 
         return "";
+    }
+
+    public static boolean canPublish(GWTJahiaNode node, GWTJahiaPublicationInfo info, final String language) {
+        Set<Integer> status = new HashSet<Integer>(info.getSubnodesStatus());
+        status.addAll(info.getReferencesStatus());
+        status.add(info.getStatus());
+
+        return !info.isLocked() && (!node.isLanguageLocked(language) && info.isCanPublish() &&
+                        (status.contains(GWTJahiaPublicationInfo.NOT_PUBLISHED) ||
+                                status.contains(GWTJahiaPublicationInfo.MODIFIED) ||
+                                status.contains(GWTJahiaPublicationInfo.UNPUBLISHED))) &&
+                (info.getStatus() != GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE) &&
+                (info.getStatus() != GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_VALID);
     }
 }

@@ -100,14 +100,14 @@ public class PagesTabItem extends SidePanelTabItem {
         tree.getTreeView().setForceFit(true);
         tree.setHeight("100%");
         tree.setIconProvider(ContentModelIconProvider.getInstance());
-
+        
         this.tree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             @Override public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {
                 final GWTJahiaNode node = se.getSelectedItem();
                 if (node != null && !node.getPath().equals(editLinker.getMainModule().getPath()) &&
                     !node.getNodeTypes().contains("jnt:virtualsite") &&
                         !node.getInheritedNodeTypes().contains("jmix:link")) {
-                    editLinker.getMainModule().goTo(node.getPath(), null);
+                    editLinker.onMainSelection(node.getPath(), null, null);
                 }
             }
         });
@@ -116,6 +116,12 @@ public class PagesTabItem extends SidePanelTabItem {
         tree.setContextMenu(createContextMenu(config.getTreeContextMenu(), tree.getSelectionModel()));
 
         add(tree);
+    }
+
+    @Override public void handleNewMainSelection(String path) {
+        if (!path.equals(tree.getSelectionModel().getSelectedItem().getPath())) {
+            factory.setSelectedPath(Arrays.asList(path));
+        }
     }
 
     private void initDND() {

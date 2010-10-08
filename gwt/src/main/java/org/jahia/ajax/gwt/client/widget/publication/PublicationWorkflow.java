@@ -89,7 +89,7 @@ public class PublicationWorkflow implements CustomWorkflow {
                             public void onSuccess(Object result) {
                                 Info.display("Publication workflow started", "Publication workflow started");
                                 WorkInProgressActionItem.removeStatus(status);
-                                dialog.getLinker().refresh(Linker.REFRESH_ALL);
+                                dialog.getLinker().refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES);
                             }
                         });
             }
@@ -114,14 +114,11 @@ public class PublicationWorkflow implements CustomWorkflow {
                                 public void onApplicationFailure(Throwable caught) {
                                     WorkInProgressActionItem.removeStatus(status);
                                     Info.display("Cannot publish", "Cannot publish");
-                                    Log.error("Cannot publish", caught);
+                                    com.google.gwt.user.client.Window.alert("Cannot publish " + caught.getMessage());
                                 }
 
                                 public void onSuccess(Object result) {
                                     WorkInProgressActionItem.removeStatus(status);
-                                    Info.display(Messages.get("message.content.published"),
-                                            Messages.get("message.content.published"));
-                                    dialog.getLinker().refresh(Linker.REFRESH_ALL);
                                 }
                             });
                 }

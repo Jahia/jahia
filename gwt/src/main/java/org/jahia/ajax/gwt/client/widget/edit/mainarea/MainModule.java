@@ -305,29 +305,8 @@ public class MainModule extends Module {
         return "main";
     }
 
-    public void goTo(String path, String template) {
-        mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
-        this.path = path;
-        this.template = template;
-        setUrlMarker(path, template, "");
-        refresh();
-    }
-
     public static void staticGoTo(String path, String template, String param) {
-        Map<String,String> params = null;
-        if (param.length() > 0) {
-            params = new HashMap<String,String>();
-            for (String s : param.split("&")) {
-                final String[] key = param.split("=");
-                params.put(key[0], key[1]);
-            }
-        }
-        module.mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
-        module.path = path;
-        module.template = template;
-        module.moduleParams = params;
-        setUrlMarker(path, template, param);
-        module.refresh();
+        module.editLinker.onMainSelection(path, template, param);
     }
 
     private static void setUrlMarker(String path, String template, String param) {
@@ -350,7 +329,7 @@ public class MainModule extends Module {
     public void switchLanguage(String language) {
         mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
         editLinker.setLocale(language);
-        refresh();
+        editLinker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES);
     }
 
     public void setNode(GWTJahiaNode node) {
@@ -388,7 +367,23 @@ public class MainModule extends Module {
         l.layout();
     }
 
-    public void handleNewSidePanelSelection(GWTJahiaNode node) {
+    public void handleNewMainSelection(String path, String template, String param) {
+        this.path = path;
+        this.template = template;
+
+        Map<String,String> params = null;
+        if (param != null && param.length() > 0) {
+            params = new HashMap<String,String>();
+            for (String s : param.split("&")) {
+                final String[] key = s.split("=");
+                params.put(key[0], key[1]);
+            }
+        }
+        moduleParams = params;
+
+        module.mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
+        setUrlMarker(path, template, param);
+        module.refresh();
 
     }
 

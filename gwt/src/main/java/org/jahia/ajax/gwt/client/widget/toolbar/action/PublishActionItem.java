@@ -147,16 +147,8 @@ public class PublishActionItem extends BaseActionItem {
                 wf = null;
                 GWTJahiaPublicationInfo info = gwtJahiaNode.getPublicationInfo();
 
-                Set<Integer> status = new HashSet<Integer>(info.getSubnodesStatus());
-                status.addAll(info.getReferencesStatus());
-                status.add(info.getStatus());
+                setEnabled(GWTJahiaPublicationInfo.canPublish(gwtJahiaNode, info, JahiaGWTParameters.getLanguage()));
 
-                boolean b = !info.isLocked() && (!gwtJahiaNode.isLanguageLocked(JahiaGWTParameters.getLanguage()) && info.isCanPublish() &&
-                        (status.contains(GWTJahiaPublicationInfo.NOT_PUBLISHED) ||
-                                status.contains(GWTJahiaPublicationInfo.MODIFIED) ||
-                                status.contains(GWTJahiaPublicationInfo.UNPUBLISHED))) && (!status.contains(GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE));
-                setEnabled(b);
-                
                 updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getName());
             }
         }

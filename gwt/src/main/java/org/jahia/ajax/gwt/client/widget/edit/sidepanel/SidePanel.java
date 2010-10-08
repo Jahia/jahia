@@ -117,7 +117,10 @@ public class SidePanel extends ContentPanel {
         }
     }
 
-    public void handleNewSidePanelSelection(GWTJahiaNode node) {
+    public void handleNewMainSelection(String path) {
+        for (SidePanelTabItem tab : tabs) {
+            tab.handleNewMainSelection(path);
+        }
     }
 
     public GWTJahiaNode getRootTemplate() {

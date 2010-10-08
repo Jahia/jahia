@@ -379,7 +379,7 @@ public class WorkflowActionDialog extends Window {
                                 public void onSuccess(Object result) {
                                     WorkInProgressActionItem.removeStatus(status);
                                     Info.display("Workflow executed", "Workflow executed");
-                                    linker.refresh(Linker.REFRESH_MAIN);
+                                    linker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES);
                                 }
 
                                 public void onApplicationFailure(Throwable caught) {

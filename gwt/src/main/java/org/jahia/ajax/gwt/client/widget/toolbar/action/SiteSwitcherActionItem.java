@@ -112,7 +112,8 @@ public class SiteSwitcherActionItem extends BaseActionItem {
                         JahiaGWTParameters.setSiteUUID(jahiaNode.getUUID());
                         JahiaGWTParameters.setSiteKey(jahiaNode.getName());
                         ((EditLinker) linker).getSidePanel().refresh(EditLinker.REFRESH_ALL);
-                        ((EditLinker) linker).getMainModule().goTo(jahiaNode.getPath()+"/home", null);
+                        ((EditLinker) linker).onMainSelection(jahiaNode.getPath()+"/home", null, null);
+
                     }
                 });
             }

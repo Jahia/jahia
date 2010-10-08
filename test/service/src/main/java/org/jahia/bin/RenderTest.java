@@ -64,7 +64,7 @@ import java.util.Locale;
  * Time: 1:40:10 PM
  * To change this template use File | Settings | File Templates.
  */
-/*
+
 public class RenderTest extends TestCase {
 
     private static Logger logger = Logger.getLogger(RenderTest.class);
@@ -152,7 +152,7 @@ public class RenderTest extends TestCase {
         editSession.save();
 
         // publish it
-        jcrService.publish(stageNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true);
+        jcrService.publish(stageNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
 
         for (int i = 1; i < NUMBER_OF_VERSIONS; i++) {
             editSession.checkout(stagedSubPage);
@@ -160,7 +160,7 @@ public class RenderTest extends TestCase {
             editSession.save();
 
             // each time the node i published, a new version should be created
-            jcrService.publish(stagedSubPage.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false);
+            jcrService.publish(stagedSubPage.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, null);
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -243,4 +243,3 @@ public class RenderTest extends TestCase {
     }
 
 }
-*/

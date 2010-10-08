@@ -92,7 +92,7 @@ public abstract class BackgroundJob implements StatefulJob {
 
     public static JobDetail createJahiaJob(String desc, Class<? extends BackgroundJob> jobClass) {
         // jobdetail is non-volatile,durable,non-recoverable
-        JobDetail jobDetail = new JobDetail("BackgroundJob-" + idGen.nextIdentifier(),
+        JobDetail jobDetail = new JobDetail(getGroupName(jobClass) + "-" + idGen.nextIdentifier(),
                 getGroupName(jobClass),
                 jobClass,
                 false,
@@ -120,17 +120,28 @@ public abstract class BackgroundJob implements StatefulJob {
     }
 
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+
+        // First some sanity checks, mostly because we could be executing jobs before Jahia has finished initializing
+        if (ServicesRegistry.getInstance() == null) {
+            return;
+        }
+        if (ServicesRegistry.getInstance().getJahiaUserManagerService() == null) {
+            return;
+        }
+
         JobDetail jobDetail = jobExecutionContext.getJobDetail();
         JobDataMap data = jobDetail.getJobDataMap();
         long now = System.currentTimeMillis();
-        logger.info("execute Background job " + jobDetail.getName() + "\n started @ " + new Date(now));
+        logger.info("Background job " + jobDetail.getName() + "\n started @ " + new Date(now));
         String status = STATUS_FAILED;
         final JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
         try {
             JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey((String) data.get(JOB_USERKEY));
             sessionFactory.setCurrentUser(user);
             sessionFactory.setCurrentLocale(LanguageCodeConverters.languageCodeToLocale((String) data.get(JOB_CURRENT_LOCALE)));
+
             executeJahiaJob(jobExecutionContext);
+
             status = data.getString(BackgroundJob.JOB_STATUS);
             if (!(BackgroundJob.STATUS_ABORTED.equals(status) ||
                     BackgroundJob.STATUS_FAILED.equals(status) ||
@@ -147,6 +158,7 @@ public abstract class BackgroundJob implements StatefulJob {
             JahiaBatchingClusterCacheHibernateProvider.syncClusterNow();
 
             data.putAsString(JOB_END, System.currentTimeMillis());
+            // job begin is set by trigger listener in SchedulerService
             int duration = (int) ((Long.parseLong((String) data.get(JOB_END)) - Long.parseLong((String) data.get(JOB_BEGIN))) / 1000);
             data.putAsString(JOB_DURATION, duration);//duration
 

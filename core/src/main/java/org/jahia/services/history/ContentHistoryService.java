@@ -243,6 +243,7 @@ public class ContentHistoryService implements Processor, InitializingBean, Camel
                     .setDate("date", date)
                     .executeUpdate();
             tx.commit();
+            logger.info("Successfully deleted " + deletedEntities + " content history entries before date " + date);
             return deletedEntities;
         } catch (Exception e) {
             logger.error("Error deleting history entries before date " + date, e);

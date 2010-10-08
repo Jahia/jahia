@@ -2,6 +2,25 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+    <bean name="contentHistoryPurgeJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass" value="org.jahia.services.scheduler.JSR223ScriptJob"/>
+        <property name="group" value="JSR223ScriptJob"/>
+        <property name="description" value="Content history purge"/>
+        <property name="jobDataAsMap">
+            <map>
+                <entry key="userkey" value=" system "/>
+                <entry key="jobScriptPath" value="/WEB-INF/var/scripts/groovy/purgeContentHistory.groovy"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="contentHistoryPurgeTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="contentHistoryPurgeJob"/>
+        <!-- run every minute to debug -->
+        <property name="cronExpression" value="0 * * * * ?"/>
+    </bean>
+
     <bean id="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="quartzProperties">
             <props>
@@ -23,6 +42,11 @@
                 <prop key="org.quartz.scheduler.skipUpdateCheck">true</prop>
             </props>
         </property>
+        <property name="triggers">
+            <list>
+                <ref bean="contentHistoryPurgeTrigger"/>
+            </list>
+        </property>
     </bean>
     <bean id="ramScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="quartzProperties">
@@ -42,8 +66,9 @@
     <!-- The scheduler service is required for the file watchers to work properly -->
     <bean id="SchedulerService" parent="proxyTemplate">
         <property name="target">
-            <bean class="org.jahia.services.scheduler.SchedulerServiceImpl" parent="jahiaServiceTemplate" factory-method="getInstance">
-                <property name="clusterService" ref="clusterService" />
+            <bean class="org.jahia.services.scheduler.SchedulerServiceImpl" parent="jahiaServiceTemplate"
+                  factory-method="getInstance">
+                <property name="clusterService" ref="clusterService"/>
                 <property name="scheduler" ref="scheduler"/>
                 <property name="ramscheduler" ref="ramScheduler"/>
             </bean>

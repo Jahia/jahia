@@ -103,7 +103,7 @@
     </category>
 
     <category name="org.hibernate">
-        <priority value="info"/>
+        <priority value="warn"/>
     </category>
 
     <category name="net.sf.ehcache">
@@ -172,7 +172,7 @@
     <category name="org.jahia.services.textextraction.TextExtractionService">
         <priority value="info"/>
     </category>
-    
+
     <root>
         <level value="info"/>
         <appender-ref ref="ROLL"/>

@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.Factory;
+import org.apache.commons.collections.FactoryUtils;
 import org.apache.commons.collections.list.LazyList;
 import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.lang.StringUtils;
@@ -379,6 +380,8 @@ public class SearchCriteria implements Serializable {
      */
     public static class NodePropertyDescriptor implements Serializable {
 
+        private static final long serialVersionUID = 857471721394958140L;
+
         private String[] allowedValues;
 
         private boolean constrained;
@@ -480,6 +483,16 @@ public class SearchCriteria implements Serializable {
         @Override
         public String toString() {
             return ReflectionToStringBuilder.reflectionToString(this);
+        }
+    }
+    
+    protected static class NodePropertyMapFactory implements Factory, Serializable {
+        private static final long serialVersionUID = 5271166314214230283L;
+
+        public Object create() {
+            return LazyMap.decorate(
+                    new HashMap<String, NodeProperty>(),
+                    FactoryUtils.instantiateFactory(NodeProperty.class));
         }
     }
 
@@ -720,28 +733,14 @@ public class SearchCriteria implements Serializable {
 
     private Map<String /* nodeType */, Map<String /* propertyName */, NodeProperty>> properties = LazyMap
             .decorate(new HashMap<String, Map<String, NodeProperty>>(),
-                    new Factory() {
-                        public Object create() {
-                            return LazyMap.decorate(
-                                    new HashMap<String, NodeProperty>(),
-                                    new Factory() {
-                                        public Object create() {
-                                            return new NodeProperty();
-                                        }
-                                    });
-                        }
-                    });
+                    new NodePropertyMapFactory());
 
     private String rawQuery;
 
     private CommaSeparatedMultipleValue sites = new CommaSeparatedMultipleValue();
     
     private List<Term> terms = LazyList.decorate(new LinkedList<Term>(),
-            new Factory() {
-                public Object create() {
-                    return new Term();
-                }
-            });
+            FactoryUtils.instantiateFactory(Term.class));
     
     /**
      * Initializes an instance of this class.

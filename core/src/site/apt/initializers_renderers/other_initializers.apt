@@ -18,7 +18,7 @@ Jahia Crazy Jane - Core Module - Other Initializer
   This will create a dropdown listing all the <<<jnt:category>>> elements from the folder <<</categories>>>.
 
 -----------------------------------
- - j:theme (weakreference,choicelist[nodes='/sites/$currentSite/themes;jnt:folder'])
+ - j:theme (weakreference,choicelist[nodes='$currentSite/themes;jnt:folder'])
 -----------------------------------
 
   This will create a dropdown listing all the subfolders elements of the folder  themes in the current site.

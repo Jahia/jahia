@@ -88,7 +88,7 @@ public class NodesChoiceListInitializerImpl implements ChoiceListInitializer {
                 if (site != null) {
                     fallbackLocale = site.isMixLanguagesActive() ? LanguageCodeConverters.languageCodeToLocale(
                             site.getDefaultLanguage()) : null;
-                    path = path.replace("$currentSite", site.getSiteKey());
+                    path = path.replace("$currentSite", site.getPath());
                 }
                 final JCRSessionWrapper jcrSessionWrapper = sessionFactory.getCurrentUserSession(null, locale, fallbackLocale);
                 final JCRNodeWrapper node = jcrSessionWrapper.getNode(path);

@@ -142,16 +142,16 @@ public class TagsTabItem extends EditEngineTabItem {
         tagStore = new TreeStore<GWTJahiaNode>(tagLoader);
 
         ColumnConfig columnConfig;
-        columnConfig = new ColumnConfig("name", "Name", 500);
+        columnConfig = new ColumnConfig("name", Messages.get("label.name"), 500);
         columnConfig.setFixed(true);
         columnConfig.setRenderer(new TreeGridCellRenderer<GWTJahiaNode>());
 
-        ColumnConfig action = new ColumnConfig("action", "Action", 100);
+        ColumnConfig action = new ColumnConfig("action", Messages.get("label.action"), 100);
         action.setAlignment(Style.HorizontalAlignment.RIGHT);
         action.setRenderer(new GridCellRenderer() {
             public Object render(ModelData modelData, String s, ColumnData columnData, int i, int i1,
                                  ListStore listStore, Grid grid) {
-                Button button = new Button("Remove", new SelectionListener<ButtonEvent>() {
+                Button button = new Button(Messages.get("label.remove"), new SelectionListener<ButtonEvent>() {
                     @Override
                     public void componentSelected(ButtonEvent buttonEvent) {
                         final GWTJahiaNode node1 = (GWTJahiaNode) buttonEvent.getButton().getData("associatedNode");
@@ -199,7 +199,7 @@ public class TagsTabItem extends EditEngineTabItem {
         if (!engine.isExistingNode() || (node.isWriteable() && !node.isLocked())) {
             ButtonBar bar = new ButtonBar();
             bar.add(new FillToolItem());
-            bar.add(new Text(Messages.get("label_add_tag", "Add Tag") + ":"));
+            bar.add(new Text(Messages.get("label.add", "Add Tag") + ":"));
             bar.add(autoCompleteComboBox);
             bar.add(addTag);
             add(bar, new BorderLayoutData(Style.LayoutRegion.NORTH, 45));

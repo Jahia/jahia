@@ -108,7 +108,7 @@ public class CategoriesTabItem extends EditEngineTabItem {
         GWTJahiaNodeTreeFactory treeGridFactory =
                 new GWTJahiaNodeTreeFactory(Arrays.asList("/categories"), GWTJahiaNode.DEFAULT_REFERENCE_FIELDS);
         treeGridFactory.setNodeTypes(JCRClientUtils.CATEGORY_NODETYPES);
-        ColumnConfig name = new ColumnConfig("name", "Name", 500);
+        ColumnConfig name = new ColumnConfig("displayName", Messages.get("label.title"), 500);
         name.setRenderer(new TreeGridCellRenderer<GWTJahiaNode>());
         name.setFixed(true);
         ColumnConfig action = new ColumnConfig("action", "Action", 100);
@@ -140,7 +140,7 @@ public class CategoriesTabItem extends EditEngineTabItem {
         treeGrid.setIconProvider(ContentModelIconProvider.getInstance());
 
         treeGrid.setBorders(true);
-        treeGrid.setAutoExpandColumn("name");
+        treeGrid.setAutoExpandColumn("displayName");
         treeGrid.getTreeView().setRowHeight(25);
         treeGrid.getTreeView().setForceFit(true);
         return treeGrid;
@@ -173,17 +173,17 @@ public class CategoriesTabItem extends EditEngineTabItem {
     }
 
     private Component createSelectedCategoriesPanel() {
-        ColumnConfig columnConfig = new ColumnConfig("name", "Name", 500);
+        ColumnConfig columnConfig = new ColumnConfig("displayName", Messages.get("label.title"), 500);
         columnConfig.setFixed(true);
         columnConfig.setRenderer(new TreeGridCellRenderer<GWTJahiaNode>());
 
 
-        ColumnConfig action = new ColumnConfig("action", "Action", 100);
+        ColumnConfig action = new ColumnConfig("action", Messages.get("label.action"), 100);
         action.setAlignment(Style.HorizontalAlignment.RIGHT);
         action.setRenderer(new GridCellRenderer() {
             public Object render(ModelData modelData, String s, ColumnData columnData, int i, int i1,
                                  ListStore listStore, Grid grid) {
-                Button button = new Button("Remove", new SelectionListener<ButtonEvent>() {
+                Button button = new Button(Messages.get("label.remove"), new SelectionListener<ButtonEvent>() {
                     @Override
                     public void componentSelected(ButtonEvent buttonEvent) {
                         final GWTJahiaNode node1 = (GWTJahiaNode) buttonEvent.getButton().getData("associatedNode");
@@ -207,7 +207,7 @@ public class CategoriesTabItem extends EditEngineTabItem {
 
         TreeGrid<GWTJahiaNode> catGrid = new TreeGrid<GWTJahiaNode>(catStore, new ColumnModel(configs));
         catGrid.setIconProvider(ContentModelIconProvider.getInstance());
-        catGrid.setAutoExpandColumn("name");
+        catGrid.setAutoExpandColumn("displayName");
         catGrid.getTreeView().setRowHeight(25);
         catGrid.getTreeView().setForceFit(true);
 

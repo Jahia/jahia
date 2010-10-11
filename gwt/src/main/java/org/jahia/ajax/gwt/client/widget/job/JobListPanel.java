@@ -59,6 +59,8 @@ public class JobListPanel extends LayoutContainer {
     private Button deleteButton;
     private PagingToolBar pagingToolBar;
     private static final String STATUS_EXECUTING = "executing";
+    public static final String STATUS_WAITING = "waiting";
+    public static final String STATUS_POOLED = "pooled";
     private int autoRefreshInterval = 10;
     private boolean autoRefreshActivated = false;
     private List<String> activeGroupNames = null;
@@ -227,7 +229,8 @@ public class JobListPanel extends LayoutContainer {
             public void selectionChanged(SelectionChangedEvent<GWTJahiaJobDetail> gwtJahiaJobDetailSelectionChangedEvent) {
                 selectedItems = gwtJahiaJobDetailSelectionChangedEvent.getSelection();
                 for (GWTJahiaJobDetail jobDetail : selectedItems) {
-                    if (STATUS_EXECUTING.equals(jobDetail.getStatus())) {
+                    if (STATUS_EXECUTING.equals(jobDetail.getStatus()) ||
+                            STATUS_POOLED.equals(jobDetail.getStatus())) {
                         deleteButton.disable();
                         break;
                     } else {

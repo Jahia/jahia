@@ -56,12 +56,16 @@ public class SchedulerHelper {
         List<GWTJahiaJobDetail> jobs = new ArrayList<GWTJahiaJobDetail>();
         for (JobDetail jobDetail : jobDetails) {
             JobDataMap jobDataMap = jobDetail.getJobDataMap();
-            final Date created = (Date) jobDataMap.get(BackgroundJob.JOB_CREATED);
+            Date created = (Date) jobDataMap.get(BackgroundJob.JOB_CREATED);
             final String status = jobDataMap.getString(BackgroundJob.JOB_STATUS);
             final String user = jobDataMap.getString(BackgroundJob.JOB_USERKEY);
             final String message = jobDataMap.getString(BackgroundJob.JOB_MESSAGE);
             final Long beginTime = getLong(jobDataMap, BackgroundJob.JOB_BEGIN);
             final Long endTime = getLong(jobDataMap, BackgroundJob.JOB_END);
+            if (created == null && beginTime != null) {
+                // this can happen for cron scheduler jobs.
+                created = new Date(beginTime);
+            }
             Integer durationInSeconds = getInteger(jobDataMap, BackgroundJob.JOB_DURATION);
             if ((durationInSeconds == null) && (beginTime != null) && (endTime == null) && BackgroundJob.STATUS_RUNNING.equals(status)) {
                 // here we have a currently running job, let's calculate the duration until now.

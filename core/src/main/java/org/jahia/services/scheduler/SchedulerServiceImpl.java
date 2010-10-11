@@ -596,7 +596,14 @@ public class SchedulerServiceImpl extends SchedulerService implements ClusterLis
                 Trigger t = scheduler.getTrigger(trigs[n], gn);
                 if (t != null && !t.getJobGroup().equals(SYSTEM_JOB_GROUP)) {
                     JobDetail jd = getJobDetail(t.getJobName(), t.getJobGroup());
-                    all.add(jd);
+                    if (jd.getJobDataMap() != null) {
+                        JobDataMap dataMap = jd.getJobDataMap();
+                        if (BackgroundJob.STATUS_RUNNING.equals(dataMap.getString(BackgroundJob.JOB_STATUS))) {
+                            all.add(jd);
+                        }
+                    } else {
+                        all.add(jd);
+                    }
                 }
             }
             return all;

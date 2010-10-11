@@ -220,6 +220,13 @@ public class GWTJahiaJobDetail extends BaseModelData implements Serializable, Co
     }
 
     public int compareTo(Object o) {
-        return getCreationTime().compareTo(((GWTJahiaJobDetail) o).getCreationTime());
+        if (getCreationTime() != null) {
+            return getCreationTime().compareTo(((GWTJahiaJobDetail) o).getCreationTime());
+        } else {
+            if (getBeginTime() != null) {
+                return getBeginTime().compareTo(((GWTJahiaJobDetail) o).getBeginTime());
+            }
+        }
+        return 0;
     }
 }

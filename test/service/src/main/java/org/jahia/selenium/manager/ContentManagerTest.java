@@ -20,19 +20,18 @@ public class ContentManagerTest extends SeleneseTestCase {
     @Override
     public void setUp() throws Exception {
         try {
-            final JahiaSite mySite = ServicesRegistry.getInstance().getJahiaSitesService().getSite("localhostTest");
+            final JahiaSite mySite = ServicesRegistry.getInstance().getJahiaSitesService().getSite("localhost");
             if (mySite == null) {
-                site = TestHelper.createSite(TESTSITE_NAME, "localhostTest", TestHelper.TEST_TEMPLATES);
+                site = TestHelper.createSite(TESTSITE_NAME, "localhost",  "templates-web");
                 assertNotNull(site);
             } else {
                 logger.warn("can't create mySite for running tests, because already exist...");
+                logger.warn("your test(s) will become in few moment");
             }
-            logger.warn("your test(s) will become in few moment");
         } catch (Exception e) {
             logger.warn("Exception during test setUp", e);
         }
         setUp("http://localhost:8080", "*firefox");
-        selenium.setSpeed(TEST_SPEED);
     }
 
     @Override

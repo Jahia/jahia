@@ -28,9 +28,9 @@ public class KeywordRichtextTest extends SeleneseTestCase {
 
     public void setUp() throws Exception {
         try {
-            final JahiaSite mySite = ServicesRegistry.getInstance().getJahiaSitesService().getSite("localhostTest");
+            final JahiaSite mySite = ServicesRegistry.getInstance().getJahiaSitesService().getSite("localhost");
             if (mySite == null) {
-                site = TestHelper.createSite(TESTSITE_NAME, "localhostTest", TestHelper.TEST_TEMPLATES);
+                site = TestHelper.createSite(TESTSITE_NAME, "localhost",  "templates-web");
                 assertNotNull(site);
             } else {
                 logger.warn("can't create mySite for running tests, because already exist...");
@@ -39,7 +39,7 @@ public class KeywordRichtextTest extends SeleneseTestCase {
         } catch (Exception e) {
             logger.warn("Exception during test setUp", e);
         }
-        setUp("http://localhost:8080/", "*firefox");
+        setUp("http://localhost:8080", "*firefox");
     }
 
     @Override

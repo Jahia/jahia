@@ -48,6 +48,8 @@ public class ContentHistoryService implements Processor, InitializingBean, Camel
     private org.hibernate.impl.SessionFactoryImpl sessionFactoryBean;
     private Class mappingClass;
     private long processedCount = 0;
+    private long ignoredCount = 0;
+    private long insertedCount = 0;
 
     private static ContentHistoryService instance;
 
@@ -92,8 +94,8 @@ public class ContentHistoryService implements Processor, InitializingBean, Camel
         final Matcher matcher = pattern.matcher(message);
         if (matcher.matches()) {
             processedCount++;
-            if (processedCount % 1000 == 0) {
-                logger.info("Processed " + processedCount + " content history messages.");
+            if (processedCount % 2000 == 0) {
+                logger.info("Processed " + processedCount + " content history messages. Ignored=" + ignoredCount + " Inserted=" + insertedCount);
             }
             final String dateStr = matcher.group(1);
             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
@@ -123,6 +125,7 @@ public class ContentHistoryService implements Processor, InitializingBean, Camel
 
             if ((propertyName != null) && ignoreProperties.contains(propertyName)) {
                 logger.debug("Ignoring property " + propertyName + " as configured.");
+                ignoredCount++;
                 return;
             }
 
@@ -144,12 +147,14 @@ public class ContentHistoryService implements Processor, InitializingBean, Camel
                         }
                     });
                     if (matchingNodeType != null) {
+                        ignoredCount++;
                         logger.debug("Ignoring node type " + matchingNodeType + " as configured.");
                         return;
                     }
                 } catch (RepositoryException e) {
                     // Node not found might be due to old logs so fail silently
                     logger.debug("Couldn't find node " + nodeIdentifier + " will not insert log entry. This could be due to parsing an old log.");
+                    ignoredCount++;
                     return;
                 }
 
@@ -168,6 +173,7 @@ public class ContentHistoryService implements Processor, InitializingBean, Camel
                     if (logger.isDebugEnabled()) {
                         logger.debug("Content history entry " + historyEntry + " already exists, ignoring...");
                     }
+                    ignoredCount++;
                 }
                 // Not found new object
                 else {
@@ -194,6 +200,9 @@ public class ContentHistoryService implements Processor, InitializingBean, Camel
                         }
                         historyEntry.setMessage(historyMessage);
                         session.save(historyEntry);
+                        insertedCount++;
+                    } else {
+                        ignoredCount++;
                     }
                 }
             } catch (HibernateException e) {

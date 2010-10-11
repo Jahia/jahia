@@ -43,7 +43,10 @@ import org.jahia.test.TestHelper;
 import org.springframework.util.StopWatch;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
@@ -183,6 +186,66 @@ public class ConcurrentReadTest extends TestCase {
         }
     }
 
+    private class Search implements Runnable {
+        StopWatch stopWatch;
+        private JCRTemplate jcrTemplate;
+        private String testQuery;
+
+        public Search(String s){
+            testQuery = s;
+            stopWatch = new StopWatch();
+            jcrTemplate = JCRTemplate.getInstance();
+        }
+
+        public void run() {
+            try {
+                stopWatch.start(Thread.currentThread().getName() + " searching node");
+                jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Object>() {
+                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        testQuery = testQuery.replace("path", session.getNode(SITECONTENT_ROOT_NODE).getPath());
+                        Query query = session.getWorkspace().getQueryManager().createQuery(testQuery, Query.JCR_SQL2);
+                        query.execute();
+                        return null;
+                    }
+                });
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+    }
+
+    private class SearchIteratorResults implements Runnable {
+        StopWatch stopWatch;
+        private JCRTemplate jcrTemplate;
+        private String testQuery;
+
+        public SearchIteratorResults(String s){
+            testQuery = s;
+            stopWatch = new StopWatch();
+            jcrTemplate = JCRTemplate.getInstance();
+        }
+
+        public void run() {
+            try {
+                stopWatch.start(Thread.currentThread().getName() + " searching node");
+                jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Object>() {
+                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        testQuery = testQuery.replace("path", session.getNode(SITECONTENT_ROOT_NODE).getPath());
+                        Query query = session.getWorkspace().getQueryManager().createQuery(testQuery, Query.JCR_SQL2);
+                        QueryResult queryResult = query.execute();
+                        if(queryResult.getNodes().getSize() == -1){
+                            NodeIterator nodeIterator = queryResult.getNodes();
+                            nodeIterator.nextNode();
+                        }
+                        return null;
+                    }
+                });
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+    }
+
     private static final int CHILD_COUNT = 1000;
 
     public void testCreateManyChildUnstructuredNodes() throws RepositoryException {
@@ -285,6 +348,81 @@ public class ConcurrentReadTest extends TestCase {
             } else {
                 service.submit(new Reader(), Boolean.TRUE);
             }
+        }
+        for (int i = 0; i < 1000; i++) {
+            Boolean aBoolean = service.take().get();
+        }
+        stopWatch.stop();
+        logger.fatal(stopWatch.prettyPrint());
+    }
+
+    public void testConcurrentSearchIsDescendant()  throws InterruptedException, ExecutionException {
+        Executor executor = Executors.newFixedThreadPool(300);
+        ExecutorCompletionService<Boolean> service = new ExecutorCompletionService<Boolean> (executor);
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start(Thread.currentThread().getName()+ " search jnt:pages nodes is descendant site node");
+        for(int i = 0; i < 1000; i++) {
+            service.submit(new Search("select * from [jnt:page] as page where isdescendantnode(page, 'path') "), Boolean.TRUE);
+        }
+        for (int i = 0; i < 1000; i++) {
+            Boolean aBoolean = service.take().get();
+        }
+        stopWatch.stop();
+        logger.fatal(stopWatch.prettyPrint());
+    }
+
+    public void testConcurrentSearchIsChild()  throws InterruptedException, ExecutionException {
+        Executor executor = Executors.newFixedThreadPool(300);
+        ExecutorCompletionService<Boolean> service = new ExecutorCompletionService<Boolean> (executor);
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start(Thread.currentThread().getName()+ " search jnt:pages nodes is child site node");
+        for(int i = 0; i < 1000; i++) {
+            service.submit(new Search("select * from [jnt:page] as page where ischildnode(page, 'path') "), Boolean.TRUE);
+        }
+        for (int i = 0; i < 1000; i++) {
+            Boolean aBoolean = service.take().get();
+        }
+        stopWatch.stop();
+        logger.fatal(stopWatch.prettyPrint());
+    }
+
+    public void testConcurrentSearchIsDescendantAndIteratorResults()  throws InterruptedException, ExecutionException {
+        Executor executor = Executors.newFixedThreadPool(300);
+        ExecutorCompletionService<Boolean> service = new ExecutorCompletionService<Boolean> (executor);
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start(Thread.currentThread().getName()+ " search jnt:page nodes is descendant site node, iterator results for query results size = -1 ");
+        for(int i = 0; i < 1000; i++) {
+            service.submit(new SearchIteratorResults("select * from [jnt:page] as page where isdescendantnode(page, 'path') "), Boolean.TRUE);
+        }
+        for (int i = 0; i < 1000; i++) {
+            Boolean aBoolean = service.take().get();
+        }
+        stopWatch.stop();
+        logger.fatal(stopWatch.prettyPrint());
+    }
+
+    public void testConcurrentSearchIsCreatedBeforeNow()  throws InterruptedException, ExecutionException {
+        Executor executor = Executors.newFixedThreadPool(300);
+        ExecutorCompletionService<Boolean> service = new ExecutorCompletionService<Boolean> (executor);
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start(Thread.currentThread().getName()+ " search jnt:page nodes is created before now");
+        for(int i = 0; i < 1000; i++) {
+            service.submit(new Search("select * from [jnt:page] as page where page.[jcr:created] < CAST("+ System.currentTimeMillis() +" as date) "), Boolean.TRUE);
+        }
+        for (int i = 0; i < 1000; i++) {
+            Boolean aBoolean = service.take().get();
+        }
+        stopWatch.stop();
+        logger.fatal(stopWatch.prettyPrint());
+    }
+
+    public void testConcurrentSearchIsCreatedBeforeNowAndIsDescendant()  throws InterruptedException, ExecutionException {
+        Executor executor = Executors.newFixedThreadPool(300);
+        ExecutorCompletionService<Boolean> service = new ExecutorCompletionService<Boolean> (executor);
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start(Thread.currentThread().getName()+ " search jnt:page nodes is created before now and is descendant site node");
+        for(int i = 0; i < 1000; i++) {
+            service.submit(new Search("select * from [jnt:page] as page where isdescendantnode(page, 'path') and page.[jcr:created] < CAST("+ System.currentTimeMillis() +" as date) "), Boolean.TRUE);
         }
         for (int i = 0; i < 1000; i++) {
             Boolean aBoolean = service.take().get();

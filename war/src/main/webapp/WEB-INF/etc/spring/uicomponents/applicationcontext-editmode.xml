@@ -118,7 +118,6 @@
                             </property>
                         </bean>
                         <ref bean="Toolbar.Item.Admin"/>
-                        <ref bean="Toolbar.Item.WorkInProgress"/>
                         <ref bean="Toolbar.Item.ClipBoard"/>
                     </list>
                 </property>
@@ -438,7 +437,7 @@
                     <property name="visibility" value="$site/selector/files-and-images"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
-                    <property name="key" value="themes"/>
+                    <property name="key" value="filesimages"/>
                     <property name="icon" value="tab-themes"/>
                     <property name="paths">
                         <list>

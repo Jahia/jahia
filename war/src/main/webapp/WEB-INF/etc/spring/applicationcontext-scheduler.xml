@@ -18,9 +18,9 @@
     <bean id="contentHistoryPurgeTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail" ref="contentHistoryPurgeJob"/>
         <!-- run every year -->
-        <!--property name="cronExpression" value="0 0 0 L DEC ? *"/-->
+        <property name="cronExpression" value="0 0 0 L DEC ? *"/>
         <!-- run every hour to debug -->
-        <property name="cronExpression" value="0 0 * * * ?"/>
+        <!--property name="cronExpression" value="0 0 * * * ?"/-->
     </bean>
 
     <bean id="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">

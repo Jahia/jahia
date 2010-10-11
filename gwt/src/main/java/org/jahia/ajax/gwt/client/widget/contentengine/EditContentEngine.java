@@ -275,12 +275,14 @@ public class EditContentEngine extends AbstractContentEngine {
                     // handle multilang
                     if (propertiesTabItem.isMultiLang()) {
                         // for now only contentTabItem  has multilang. properties
-                        final String lang = getSelectedLanguage().getLanguage();
-                        if (!changedI18NProperties.containsKey(lang)) {
-                            changedI18NProperties.put(lang, new ArrayList<GWTJahiaNodeProperty>());
-                        }
+                        if (getSelectedLanguage() != null) {
+                            final String lang = getSelectedLanguage().getLanguage();
+                            if (!changedI18NProperties.containsKey(lang)) {
+                                changedI18NProperties.put(lang, new ArrayList<GWTJahiaNodeProperty>());
+                            }
 
-                        changedI18NProperties.get(lang).addAll(propertiesTabItem.getLanguageProperties(true, lang));
+                            changedI18NProperties.get(lang).addAll(propertiesTabItem.getLanguageProperties(true, lang));
+                        }
                         if (pe != null) {
                             changedProperties.addAll(pe.getProperties(false, true, true));
                         }

@@ -490,7 +490,13 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                     addConstraint(textSearchConstraints, "or", "jcr:contains(@j:keywords, " + searchExpression + ")");
                 }
                 if (searchFields.isFilename()) {
-                    addConstraint(textSearchConstraints, "or", "jcr:contains(@j:nodename, " + searchExpression + ")");
+                    addConstraint(
+                            textSearchConstraints,
+                            "or",
+                            "jcr:contains(@j:nodename, "
+                                    + (textSearch.getTerm().endsWith("*") ? searchExpression
+                                            : getSearchExpressionForMatchType(textSearch.getTerm()
+                                                    + "*", textSearch.getMatch())) + ")");
                 }
                 if (searchFields.isTags() && getTaggingService() != null && (params.getSites().getValue() != null || params.getOriginSiteKey() != null)) {
                     try {

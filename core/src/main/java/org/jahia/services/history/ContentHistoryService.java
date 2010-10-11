@@ -39,8 +39,7 @@ import java.util.regex.Pattern;
  * Time: 11:29:45 AM
  * To change this template use File | Settings | File Templates.
  *
- * @todo generate SQL DDL scripts for each DB, add messages to entries, fix date ordering bug, see if we can add a
- * Log4J appender component to Camel to speed up parsing.
+ * @todo generate SQL DDL scripts for each DB.
  */
 public class ContentHistoryService implements Processor, InitializingBean, CamelContextAware {
     private transient static Logger logger = Logger.getLogger(ContentHistoryService.class);

@@ -36,8 +36,6 @@ import java.util.Map;
  * User: loom
  * Date: Oct 5, 2010
  * Time: 5:47:40 PM
- *
- * @todo Add resource bundle entries. Fix date sorting.
  */
 public class HistoryPanel extends LayoutContainer {
 

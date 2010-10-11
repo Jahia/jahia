@@ -94,9 +94,6 @@ public class ContentHistoryService implements Processor, InitializingBean, Camel
         final Matcher matcher = pattern.matcher(message);
         if (matcher.matches()) {
             processedCount++;
-            if (processedCount % 2000 == 0) {
-                logger.info("Processed " + processedCount + " content history messages. Ignored=" + ignoredCount + " Inserted=" + insertedCount);
-            }
             final String dateStr = matcher.group(1);
             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
             final Date date = dateFormat.parse(dateStr);
@@ -193,7 +190,10 @@ public class ContentHistoryService implements Processor, InitializingBean, Camel
                                 String historyComments = "";
                                 int commentsPos = args.indexOf(WITH_COMMENTS_MESSAGE_PART);
                                 if (commentsPos > -1) {
-                                    historyComments = ";;" + args.substring(commentsPos + WITH_COMMENTS_MESSAGE_PART.length());
+                                    String comment = args.substring(commentsPos + WITH_COMMENTS_MESSAGE_PART.length());
+                                    if ((comment != null) && (!comment.trim().isEmpty())) {
+                                        historyComments = ";;" + comment.trim();
+                                    }
                                 }
                                 historyMessage = sourceWorkspace + ";;" + destinationWorkspace + historyComments;
                             }
@@ -210,6 +210,9 @@ public class ContentHistoryService implements Processor, InitializingBean, Camel
             } finally {
                 session.flush();
                 session.close();
+            }
+            if (processedCount % 2000 == 0) {
+                logger.info("Processed " + processedCount + " content history messages. Ignored=" + ignoredCount + " Inserted=" + insertedCount);
             }
         }
     }

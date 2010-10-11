@@ -12,9 +12,9 @@ import org.jahia.services.history.ContentHistoryService;
 if (SpringContextSingleton.getInstance() != null) {
   ContentHistoryService contentHistoryService = (ContentHistoryService) SpringContextSingleton.getInstance().getBean("ContentHistoryService");
   if (contentHistoryService != null) {
-    // This removes all history older than the day before.
     Calendar calendar = Calendar.getInstance();
-    //calendar.add(Calendar.DAY_OF_MONTH, -1);
+    // This removes all history older than the day before.
+    //calendar.add(Calendar.YEAR, -1);
     calendar.add(Calendar.HOUR_OF_DAY, -1);
     contentHistoryService.deleteHistoryBeforeDate(calendar.getTime());
   }

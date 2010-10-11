@@ -1,0 +1,29 @@
+Content History configuration
+
+ By default, content history is kept for a year, and a job is executed every year to purge the content that is older
+ than a year. This document explains how to modify this default configuration to fit your needs.
+
+ The following section in the <<<WEB-INF/etc/spring/applicationcontext-scheduler.xml>>> contains the configuration for the frequency of 
+ execution of the script that will purge the content history :
+
++-------------------------------------
+    <bean id="contentHistoryPurgeTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="contentHistoryPurgeJob"/>
+        <!-- run every minute to debug -->
+        <property name="cronExpression" value="0 0 0 L DEC ? *"/>
+    </bean>
++-------------------------------------
+
+ The value you want to change is the cronExpression. For more information on the CRON syntax, please refer to the
+ following URL : {{http://www.quartz-scheduler.org/docs/tutorials/crontrigger.html}}
+
+ Then in the <<<WEB-INF/var/scripts/groovy/purgeContentHistory.groovy>>> file, you can modify the date for purging the history. Here is the default
+ configuration :
+
++-------------------------------------
+    // This removes all history older than a year.
+    calendar.add(Calendar.YEAR, -1);
++-------------------------------------
+
+ You can find the reference to the available Calendar fields here :
+ {{http://download.oracle.com/javase/1.5.0/docs/api/java/util/Calendar.html}}

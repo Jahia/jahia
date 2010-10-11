@@ -15,4 +15,6 @@ Core Module
  
  * {{{./htmlexternalizer/description.html}HTML externalization}}
 
- * {{{./htmlcleanup.html}HTML cleanup}} - removing "unwanted" HTML tags from rich text. 
+ * {{{./htmlcleanup.html}HTML cleanup}} - removing "unwanted" HTML tags from rich text.
+
+ * {{{./history/history.html}Content History configuration}} - how to configure automatic purging of content history.

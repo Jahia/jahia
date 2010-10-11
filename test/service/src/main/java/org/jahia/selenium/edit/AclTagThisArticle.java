@@ -34,7 +34,7 @@ public class AclTagThisArticle extends SeleneseTestCase {
         } catch (Exception e) {
             logger.warn("Exception during test setUp", e);
         }
-        setUp("http://localhost:8080/jahia", "*firefox");
+        setUp("http://localhost:8080", "*firefox");
     }
 
     public void tearDown() throws Exception {
@@ -49,7 +49,7 @@ public class AclTagThisArticle extends SeleneseTestCase {
     public void test() throws InterruptedException {
         selenium.setSpeed(TEST_SPEED);
         try {
-            selenium.open("/jahia/cms/edit/default/en/sites/mySite/home.html");
+            selenium.open("/cms/edit/default/en/sites/mySite/home.html");
         } catch (Exception e) {
             new Wait("Couldn't find the login page!") {
                 public boolean until() {
@@ -86,18 +86,18 @@ public class AclTagThisArticle extends SeleneseTestCase {
         //doubleClick on "Editorial content"
         new Wait("wait") {
             public boolean until() {
-                return selenium.isElementPresent("//img[@src='/jahia/modules/default/icons/jmix_editorialContent.png']");
+                return selenium.isElementPresent("//img[@src='/modules/default/icons/jmix_editorialContent.png']");
             }
         };
-        selenium.doubleClick("//img[@src='/jahia/modules/default/icons/jmix_editorialContent.png']");
+        selenium.doubleClick("//img[@src='/modules/default/icons/jmix_editorialContent.png']");
 
         //doubleClick on "Article"
         new Wait("wait") {
             public boolean until() {
-                return selenium.isElementPresent("//img[@src='/jahia/modules/article/icons/jnt_article.png']");
+                return selenium.isElementPresent("//img[@src='/modules/article/icons/jnt_article.png']");
             }
         };
-        selenium.doubleClick("//img[@src='/jahia/modules/article/icons/jnt_article.png']");
+        selenium.doubleClick("//img[@src='/modules/article/icons/jnt_article.png']");
 
         //fill Title
         new Wait("wait") {

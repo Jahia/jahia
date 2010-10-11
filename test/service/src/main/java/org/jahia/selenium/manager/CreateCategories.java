@@ -31,7 +31,7 @@ public class CreateCategories extends SeleneseTestCase {
         } catch (Exception e) {
             logger.warn("Exception during test setUp", e);
         }
-        setUp("http://localhost:8080/jahia", "*firefox");
+        setUp("http://localhost:8080", "*firefox");
         selenium.setSpeed(TEST_SPEED);
     }
 
@@ -47,7 +47,7 @@ public class CreateCategories extends SeleneseTestCase {
 
     public void test() throws InterruptedException {
         try {
-            selenium.open("/jahia/cms/edit/default/en/sites/mySite/home.html");
+            selenium.open("/cms/edit/default/en/sites/mySite/home.html");
         } catch (Exception e) {
             new Wait("Couldn't find the login page!") {
                 public boolean until() {

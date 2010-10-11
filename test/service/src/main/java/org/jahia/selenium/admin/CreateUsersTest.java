@@ -15,7 +15,7 @@ public class CreateUsersTest extends SeleneseTestCase {
     private final static String TEST_SPEED = "500";
 
     public void setUp() throws Exception {
-        setUp("http://localhost:8080/jahia", "*firefox");
+        setUp("http://localhost:8080", "*firefox");
         // for the test work you have to import the ACME demo and add a module
         // of user registration in the Home page
         // set the property to page return to "users" of the user registration module
@@ -24,7 +24,7 @@ public class CreateUsersTest extends SeleneseTestCase {
 
     public void test() throws InterruptedException {
         selenium.setSpeed(TEST_SPEED); //speed between selenium commands
-        selenium.open("/jahia/administration");
+        selenium.open("/administration");
         new Wait("Couldn't find the login page!") {
             public boolean until() {
                 return selenium.isElementPresent("login_username");

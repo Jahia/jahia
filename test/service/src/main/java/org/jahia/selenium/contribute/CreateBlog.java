@@ -29,7 +29,7 @@ public class CreateBlog extends SeleneseTestCase{
         } catch (Exception e) {
             logger.warn("Exception during test setUp", e);
         }
-        setUp("http://localhost:8080/jahia", "*firefox");
+        setUp("http://localhost:8080", "*firefox");
     }
 
     public void tearDown() throws Exception {
@@ -44,7 +44,7 @@ public class CreateBlog extends SeleneseTestCase{
     public void test() throws InterruptedException {
         selenium.setSpeed(TEST_SPEED);
         try {
-            selenium.open("/jahia/cms/edit/default/en/sites/mySite/home.html");
+            selenium.open("/cms/edit/default/en/sites/mySite/home.html");
         } catch (Exception e) {
             new Wait("Couldn't find the login page!") {
                 public boolean until() {
@@ -77,13 +77,13 @@ public class CreateBlog extends SeleneseTestCase{
         selenium.click("//html/body/div/div/div/div[2]/div[2]/div[2]/div[2]/div[2]/div/div/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[2]/td[2]/em/button");
 
         //Create a blog page in contribute mode
-        selenium.open("http://localhost:8080/jahia/cms/contribute/default/en/sites/mySite/home/my-blog-home.html");
+        selenium.open("http://localhost:8080/cms/contribute/default/en/sites/mySite/home/my-blog-home.html");
         selenium.type("jcr:title", "myFirstBlog");
         selenium.type("jcr:description", "my first Blog");
         selenium.click("//input[@value='create']");
 
         //Add post to this blog
-        selenium.open("http://localhost:8080/jahia/cms/render/default/en/sites/mySite/home/my-blog-home/myfirstblog.blogNew.html");
+        selenium.open("http://localhost:8080/cms/render/default/en/sites/mySite/home/my-blog-home/myfirstblog.blogNew.html");
         selenium.type("jcr:title", "my first post");
         selenium.click("//html/body/div/div[3]/div/div/div/div/div/div/div/form/div/p/span/span[2]/span/table/tbody/tr/td/div/span[4]/span[2]/span/a/span");
         selenium.type("//input[@class='cke_dialog_ui_input_text']", "www.jahia.org/cms");
@@ -98,7 +98,7 @@ public class CreateBlog extends SeleneseTestCase{
     }
 
     public void deleteContentCreated(){
-        selenium.open("/jahia/cms/edit/default/en/sites/mySite/home.html");
+        selenium.open("/cms/edit/default/en/sites/mySite/home.html");
         selenium.waitForPageToLoad("10000");
         selenium.clickAt("//span[text()='my blog home']","0,0");
         selenium.contextMenuAt("//span[text()='my blog home']","0,0");

@@ -55,7 +55,7 @@ public class RichtextTest extends SeleneseTestCase {
     public void test() throws Exception {
         selenium.setSpeed(TEST_SPEED);  //speed between selenium commands
         try {
-            selenium.open("/jahia/cms/edit/default/en/sites/mySite/home.html");
+            selenium.open("/cms/edit/default/en/sites/mySite/home.html");
         } catch (Exception e) {
             new Wait("Couldn't find the login page!") {
                 public boolean until() {
@@ -94,18 +94,18 @@ public class RichtextTest extends SeleneseTestCase {
             //Double click on "Editorial content"
             new Wait("wait") {
                 public boolean until() {
-                    return selenium.isElementPresent("//img[@src='/jahia/modules/default/icons/jmix_editorialContent.png']");
+                    return selenium.isElementPresent("//img[@src='/modules/default/icons/jmix_editorialContent.png']");
                 }
             };
-            selenium.doubleClick("//img[@src='/jahia/modules/default/icons/jmix_editorialContent.png']");
-            
+            selenium.doubleClick("//img[@src='/modules/default/icons/jmix_editorialContent.png']");
+
             //Double click on "Rich Text"
             new Wait("wait") {
                 public boolean until() {
-                    return selenium.isElementPresent("//img[@src='/jahia/modules/default/icons/jnt_bigText.png']");
+                    return selenium.isElementPresent("//img[@src='/modules/default/icons/jnt_bigText.png']");
                 }
             };
-            selenium.doubleClick("//img[@src='/jahia/modules/default/icons/jnt_bigText.png']");
+            selenium.doubleClick("//img[@src='/modules/default/icons/jnt_bigText.png']");
 
             //Click on "source"
             new Wait("wait") {
@@ -133,11 +133,12 @@ public class RichtextTest extends SeleneseTestCase {
         }
         deleteContentCreated();
     }
-    public void deleteContentCreated(){
+
+    public void deleteContentCreated() {
         selenium.mouseOver("//span[text()='Area : listA']");
         selenium.contextMenuAt("//span[text()='Area : listA']", "0,0");
         selenium.click("link=Remove");
-        if (selenium.isElementPresent("//button[text()='Yes']")){
+        if (selenium.isElementPresent("//button[text()='Yes']")) {
             selenium.click("//button[text()='Yes']");
         }
         selenium.refresh();

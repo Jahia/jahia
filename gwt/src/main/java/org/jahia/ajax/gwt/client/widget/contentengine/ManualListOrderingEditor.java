@@ -87,12 +87,13 @@ public class ManualListOrderingEditor extends ContentPanel {
     private void init() {
         setBodyBorder(true);
         List<GWTColumn> columnNames = new ArrayList<GWTColumn>();
-        columnNames.add(new GWTColumn("icon","icon",50));
-        columnNames.add(new GWTColumn("name","name",100));
-        columnNames.add(new GWTColumn("created","created",75));
-        columnNames.add(new GWTColumn("createdBy","createdBy",75));
-        columnNames.add(new GWTColumn("lastModified","lastModified",75));
-        columnNames.add(new GWTColumn("lastModifiedBy","lastModifiedBy",75));
+        columnNames.add(new GWTColumn(GWTJahiaNode.ICON,Messages.get("label.icon"),30));
+        columnNames.add(new GWTColumn(GWTJahiaNode.DISPLAY_NAME,Messages.get("label.title"),350));
+        columnNames.add(new GWTColumn(GWTJahiaNode.NAME,Messages.get("label.name"),100));
+        columnNames.add(new GWTColumn("jcr:created",Messages.get("label.created"),100));
+        columnNames.add(new GWTColumn("jcr:createdBy",Messages.get("column.createdBy.label"),75));
+        columnNames.add(new GWTColumn("jcr:lastModified",Messages.get("label.lastModif"),100));
+        columnNames.add(new GWTColumn("jcr:lastModifiedBy",Messages.get("column.modifiedBy.label"),75));
 
 
         final NodeColumnConfigList columnConfigList = new NodeColumnConfigList(columnNames);
@@ -108,7 +109,7 @@ public class ManualListOrderingEditor extends ContentPanel {
             protected void load(Object gwtJahiaFolder, AsyncCallback<ListLoadResult<GWTJahiaNode>> listAsyncCallback) {
                 Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getPath());
                 JahiaContentManagementService.App.getInstance().lsLoad((GWTJahiaNode) gwtJahiaFolder, JCRClientUtils.CONTENT_NODETYPES, null, null,
-                        Arrays.asList("icon","name","created","createdBy","lastModified","lastModifiedBy"), false, listAsyncCallback);
+                        Arrays.asList(GWTJahiaNode.ICON,GWTJahiaNode.DISPLAY_NAME,GWTJahiaNode.NAME,"jcr:created","jcr:createdBy","jcr:lastModified","jcr:lastModifiedBy"), false, listAsyncCallback);
                 childrenGrid.unmask();
             }
 
@@ -136,7 +137,7 @@ public class ManualListOrderingEditor extends ContentPanel {
         }
 
         final ToolBar toolBar = new ToolBar();
-        Button moveUp = new Button(Messages.get("label_moveUp", "move up"), new SelectionListener<ButtonEvent>() {
+        Button moveUp = new Button(Messages.get("label.move.up", "move up"), new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 for (GWTJahiaNode node : getOrderedSelectedList()) {
@@ -160,7 +161,7 @@ public class ManualListOrderingEditor extends ContentPanel {
         moveUp.setIcon(StandardIconsProvider.STANDARD_ICONS.moveUp());
         toolBar.add(moveUp);
 
-        Button moveFirst = new Button(Messages.get("label_moveFirst", "move first"), new SelectionListener<ButtonEvent>() {
+        Button moveFirst = new Button(Messages.get("label.move.first", "move first"), new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 int iteration = 0;
@@ -180,7 +181,7 @@ public class ManualListOrderingEditor extends ContentPanel {
         moveFirst.setIcon(StandardIconsProvider.STANDARD_ICONS.moveFirst());
         toolBar.add(moveFirst);
 
-        Button moveDown = new Button(Messages.get("label_moveDown", "move down"), new SelectionListener<ButtonEvent>() {
+        Button moveDown = new Button(Messages.get("label.move.down", "move down"), new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 List<GWTJahiaNode> ordered = getOrderedSelectedList();
@@ -204,7 +205,7 @@ public class ManualListOrderingEditor extends ContentPanel {
         moveDown.setIcon(StandardIconsProvider.STANDARD_ICONS.moveDown());
         toolBar.add(moveDown);
 
-        Button moveLast = new Button(Messages.get("label_moveLast", "move last"), new SelectionListener<ButtonEvent>() {
+        Button moveLast = new Button(Messages.get("label.move.last", "move last"), new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 List<GWTJahiaNode> ordered = getOrderedSelectedList();
@@ -229,7 +230,7 @@ public class ManualListOrderingEditor extends ContentPanel {
         moveLast.setIcon(StandardIconsProvider.STANDARD_ICONS.moveLast());
         toolBar.add(moveLast);
 
-        Button remove = new Button(Messages.get("label_remove", "Delete"), new SelectionListener<ButtonEvent>() {
+        Button remove = new Button(Messages.get("label.remove", "Delete"), new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 for (GWTJahiaNode node : childrenGrid.getSelectionModel().getSelectedItems()) {

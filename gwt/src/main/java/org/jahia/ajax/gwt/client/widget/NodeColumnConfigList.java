@@ -223,6 +223,10 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
             } else if ("version".equals(column.getKey())) {
                 col.setAlignment(Style.HorizontalAlignment.CENTER);
                 col.setRenderer(VERSION_RENDERER);
+            } else if ("jcr:created".equals(column.getKey())) {
+                col.setRenderer(DATE_RENDERER);
+            }  else if ("jcr:lastModified".equals(column.getKey())) {
+                col.setRenderer(DATE_RENDERER);
             } else if ("index".equals(column.getKey())) {
                 col.setHeader("");
                 col.setResizable(false);

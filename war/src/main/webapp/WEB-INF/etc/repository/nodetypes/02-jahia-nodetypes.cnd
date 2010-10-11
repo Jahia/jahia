@@ -15,7 +15,10 @@
  - j:nodename (string) protected hidden nofulltext
  - j:fullpath (string) protected hidden nofulltext
 
-[jnt:systemNode] > nt:unstructured, jmix:nodenameInfo
+[jnt:systemNode] > nt:base, jmix:nodenameInfo
+
+[jnt:systemFolder] > jnt:systemNode
+ + * (nt:base)
 
 //---------------------------------------------------------
 // Rules
@@ -220,7 +223,6 @@
 //---------------------------------------------------------
 
 [jnt:usersFolder] > jnt:systemNode, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:list
-
  - j:usersFolderConfig (string) nofulltext
  - j:usersFolderSkeleton (string) nofulltext
  + * (jnt:user)
@@ -280,6 +282,7 @@
  - * (string)
  + j:addresses (jnt:addresses) = jnt:addresses mandatory autocreated
  + j:phones (jnt:phoneNumbers) = jnt:phoneNumbers mandatory autocreated
+ + * (nt:base)
 
 [jnt:groupsFolder] > jnt:systemNode, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:list
  - j:groupsFolderConfig (string) nofulltext
@@ -389,6 +392,7 @@
  - j:defaultSite (weakreference) < jnt:virtualsite
  - j:virtualsitesFolderConfig (string) nofulltext
  - j:virtualsitesFolderSkeleton (string) nofulltext
+ + * (jnt:virtualsite)
 
 [jnt:virtualsite] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:googleAnalyticsAccount, jmix:observable
  - j:title (string) protected nofulltext

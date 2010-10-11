@@ -1,10 +1,10 @@
-<content jcr:primaryType="jnt:systemNode"
+<content jcr:primaryType="jnt:systemFolder"
 
          xmlns:jcr="http://www.jcp.org/jcr/1.0"
          xmlns:j="http://www.jahia.org/jahia/1.0"
          xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
 
-    <shared jcr:primaryType="jnt:systemNode" jcr:mixinTypes="jmix:accessControlled">
+    <shared jcr:primaryType="jnt:systemFolder" jcr:mixinTypes="jmix:accessControlled">
 
         <j:acl jcr:primaryType="jnt:acl">
             <GRANT_jcr_read_live_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users"
@@ -88,7 +88,7 @@
     <imports jcr:primaryType="jnt:importDropBox"/>
     <referencesKeeper jcr:primaryType="jnt:referencesKeeper"/>
 
-    <mounts jcr:primaryType="jnt:systemNode" jcr:mixinTypes="jmix:accessControlled">
+    <mounts jcr:primaryType="jnt:systemFolder" jcr:mixinTypes="jmix:accessControlled">
         <j:acl jcr:primaryType="jnt:acl">
             <GRANT_jcr_read_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users"
                                     j:privileges="jcr:read" j:aceType="GRANT"/>

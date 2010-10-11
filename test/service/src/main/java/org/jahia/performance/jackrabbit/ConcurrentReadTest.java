@@ -141,10 +141,12 @@ public class ConcurrentReadTest extends TestCase {
         private final Random random = new Random();
         StopWatch stopWatch;
         private JCRTemplate jcrTemplate;
+        private String primaryNodeTypeName;
 
-        public Writer() {
+        public Writer(String primaryNodeTypeName) {
             stopWatch = new StopWatch();
             jcrTemplate = JCRTemplate.getInstance();
+            this.primaryNodeTypeName = primaryNodeTypeName;
         }
 
         /**
@@ -168,7 +170,7 @@ public class ConcurrentReadTest extends TestCase {
                         int k = random.nextInt(NB_CHILDREN);
                         JCRNodeWrapper node = session.getNode(SITECONTENT_ROOT_NODE).getNode("child" + i).getNode(
                                 "child" + j).getNode("child" + k);
-                        node.addNode("child" + random.nextLong(), "jnt:page");
+                        node.addNode("child" + random.nextLong(), primaryNodeTypeName);
                         session.save();
                         return null;
                     }
@@ -241,7 +243,7 @@ public class ConcurrentReadTest extends TestCase {
         stopWatch.start(Thread.currentThread().getName() + " reading // writing nodes (10% writers)");
         for (int i = 0; i < 1000; i++) {
             if (i % 10 == 0) {
-                service.submit(new Writer(), Boolean.TRUE);
+                service.submit(new Writer("jnt:page"), Boolean.TRUE);
             } else {
                 service.submit(new Reader(), Boolean.TRUE);
             }
@@ -260,7 +262,26 @@ public class ConcurrentReadTest extends TestCase {
         stopWatch.start(Thread.currentThread().getName() + " reading // writing nodes (1% writers)");
         for (int i = 0; i < 1000; i++) {
             if (i % 100 == 0) {
-                service.submit(new Writer(), Boolean.TRUE);
+                service.submit(new Writer("jnt:page"), Boolean.TRUE);
+            } else {
+                service.submit(new Reader(), Boolean.TRUE);
+            }
+        }
+        for (int i = 0; i < 1000; i++) {
+            Boolean aBoolean = service.take().get();
+        }
+        stopWatch.stop();
+        logger.fatal(stopWatch.prettyPrint());
+    }
+
+    public void testConcurrentReadWrite10PercentUnstructured() throws InterruptedException, ExecutionException {
+        Executor executor = Executors.newFixedThreadPool(300);
+        ExecutorCompletionService<Boolean> service = new ExecutorCompletionService<Boolean>(executor);
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start(Thread.currentThread().getName() + " reading // writing nodes (10% writers)");
+        for (int i = 0; i < 1000; i++) {
+            if (i % 10 == 0) {
+                service.submit(new Writer("nt:unstructured"), Boolean.TRUE);
             } else {
                 service.submit(new Reader(), Boolean.TRUE);
             }

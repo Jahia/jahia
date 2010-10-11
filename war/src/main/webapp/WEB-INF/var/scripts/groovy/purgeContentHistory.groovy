@@ -13,7 +13,7 @@ if (SpringContextSingleton.getInstance() != null) {
   ContentHistoryService contentHistoryService = (ContentHistoryService) SpringContextSingleton.getInstance().getBean("ContentHistoryService");
   if (contentHistoryService != null) {
     Calendar calendar = Calendar.getInstance();
-    // This removes all history older than the day before.
+    // This removes all history older than a year
     calendar.add(Calendar.YEAR, -1);
     //calendar.add(Calendar.HOUR_OF_DAY, -1);
     contentHistoryService.deleteHistoryBeforeDate(calendar.getTime());

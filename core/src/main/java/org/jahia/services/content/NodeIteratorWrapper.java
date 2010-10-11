@@ -71,7 +71,7 @@ public class NodeIteratorWrapper implements NodeIterator {
     }
 
     public long getPosition() {
-        return ni.getPosition();
+        return ni.getPosition() - (nextNode != null ? 1 : 0);
     }
 
     public Node nextNode() {

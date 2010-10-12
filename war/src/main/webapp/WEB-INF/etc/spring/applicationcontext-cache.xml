@@ -77,7 +77,7 @@ when we flush this entry we will flush the whole cache-->
 	<bean id="ModuleCacheProvider" class="org.jahia.services.render.filter.cache.ModuleCacheProvider">
         <property name="cacheProvider" ref="ehCacheProvider"/>
         <!-- Time to wait before going to render generation if someone is already asking for the same key put 0 for waiting forever-->
-        <property name="blockingTimeout" value="5000"/>
+        <property name="blockingTimeout" value="30000"/>
         <property name="keyGenerator">
         	<bean class="org.jahia.services.render.filter.cache.DefaultCacheKeyGenerator">
                 <property name="groupManagerService" ref="JahiaGroupManagerService"/>
@@ -102,12 +102,19 @@ when we flush this entry we will flush the whole cache-->
             </set>
         </property>
     </bean>-->
+
+    <bean id="pageGeneratorQueue" class="org.jahia.services.render.filter.cache.PageGeneratorQueue">
+        <property name="pageGenerationWaitTime" value="5000"/>
+        <property name="pageGenerationWaitTimeOnStartup" value="30000"/>
+    </bean>
+
     <bean id="cacheFilter" class="org.jahia.services.render.filter.cache.AggregateCacheFilter">
         <property name="priority" value="16" />
     	<property name="cacheProvider" ref="ModuleCacheProvider"/>
     	<property name="skipOnTemplateTypes" value="json"/>
         <property name="skipOnConfiguration" value="include,wrapper,option"/>
         <property name="applyOnModes" value="live"/>
+        <property name="generatorQueue" ref="pageGeneratorQueue"/>
     </bean>
     <bean id="mainResourceCacheFilter" class="org.jahia.services.render.filter.cache.CacheFilter" parent="cacheFilter">
         <property name="applyOnMainResource" value="true"/>

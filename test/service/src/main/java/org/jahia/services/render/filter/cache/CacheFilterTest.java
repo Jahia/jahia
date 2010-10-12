@@ -33,6 +33,7 @@
 package org.jahia.services.render.filter.cache;
 
 import junit.framework.TestCase;
+import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.BlockingCache;
 import org.apache.log4j.Logger;
@@ -235,7 +236,7 @@ public class CacheFilterTest extends TestCase {
 
         String result = chain.doFilter(context, resource);
 
-        final BlockingCache cache = moduleCacheProvider.getCache();
+        final Cache cache = moduleCacheProvider.getCache();
         Element element = cache.get(key);
         assertNotNull("Html Cache does not contains our html rendering", element);
         assertTrue("Content Cache and rendering are not equals",result.equals(((CacheEntry)element.getValue()).getObject()));

@@ -188,78 +188,99 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
 
     private boolean hasUserAcl(final String userName) throws RepositoryException {
         if (cache.getSize() == 0) {
-            template.doExecuteWithSystemSession(new JCRCallback<Object>() {
-                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    Query query = session.getWorkspace().getQueryManager().createQuery(
-                            "select * from [jnt:ace] as ace where ace.[j:principal] like 'u%" + userName + "'",
-                            Query.JCR_SQL2);
-                    QueryResult queryResult = query.execute();
-                    NodeIterator rowIterator = queryResult.getNodes();
-                    while (rowIterator.hasNext()) {
-                        Node node = (Node) rowIterator.next();
-                        String s = StringUtils.substringAfter(node.getProperty("j:principal").getString(), ":");
-                        if (!cache.isKeyInCache(s) && !node.getPath().startsWith("/users/" + s + "/j:acl")) {
-                            final Element element = new Element(s, s);
-                            element.setEternal(true);
-                            cache.put(element);
-                        }
-                    }
-                    return null;
-                }
-            });
+            initCache(userName);
         }
         return cache.isKeyInCache(userName);
     }
 
+    private synchronized void initCache(final String userName) throws RepositoryException {
+        if (cache.getSize() > 0) {
+            return;
+        }
+        template.doExecuteWithSystemSession(new JCRCallback<Object>() {
+            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                Query query = session.getWorkspace().getQueryManager().createQuery(
+                        "select * from [jnt:ace] as ace where ace.[j:principal] like 'u%" + userName + "'",
+                        Query.JCR_SQL2);
+                QueryResult queryResult = query.execute();
+                NodeIterator rowIterator = queryResult.getNodes();
+                while (rowIterator.hasNext()) {
+                    Node node = (Node) rowIterator.next();
+                    String s = StringUtils.substringAfter(node.getProperty("j:principal").getString(), ":");
+                    if (!cache.isKeyInCache(s) && !node.getPath().startsWith("/users/" + s + "/j:acl")) {
+                        final Element element = new Element(s, s);
+                        element.setEternal(true);
+                        cache.put(element);
+                    }
+                }
+                return null;
+            }
+        });
+    }
+
     private Set<JahiaGroup> getAllAclsGroups() throws RepositoryException {
         if (aclGroups == null) {
-            aclGroups = new LinkedHashSet<JahiaGroup>();
-            template.doExecuteWithSystemSession(new JCRCallback<Object>() {
-                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    Query groupQuery = session.getWorkspace().getQueryManager().createQuery(
-                    "select u.[j:principal] as name from [jnt:ace] as u where u.[j:principal] like 'g%'",
-                    Query.JCR_SQL2);
-            QueryResult groupQueryResult = groupQuery.execute();
-            final RowIterator nodeIterator = groupQueryResult.getRows();
-            while (nodeIterator.hasNext()) {
-                Row row = (Row) nodeIterator.next();
-                final Value value = row.getValues()[0];
-                final String groupName = StringUtils.substringAfter(value.getString(), ":");
-                final JahiaGroup group = groupManagerService.lookupGroup(groupName);
-                if (!aclGroups.contains(group)) {
-                    aclGroups.add(group);
-                }
-            }
-                    return null;
-                }
-            });
+            initAclGroups();
         }
         return aclGroups;
     }
 
+    private synchronized void initAclGroups() throws RepositoryException {
+        if(aclGroups!=null) {
+            return;
+        }
+        aclGroups = new LinkedHashSet<JahiaGroup>();
+        template.doExecuteWithSystemSession(new JCRCallback<Object>() {
+            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                Query groupQuery = session.getWorkspace().getQueryManager().createQuery(
+                "select u.[j:principal] as name from [jnt:ace] as u where u.[j:principal] like 'g%'",
+                Query.JCR_SQL2);
+        QueryResult groupQueryResult = groupQuery.execute();
+        final RowIterator nodeIterator = groupQueryResult.getRows();
+        while (nodeIterator.hasNext()) {
+            Row row = (Row) nodeIterator.next();
+            final Value value = row.getValues()[0];
+            final String groupName = StringUtils.substringAfter(value.getString(), ":");
+            final JahiaGroup group = groupManagerService.lookupGroup(groupName);
+            if (!aclGroups.contains(group)) {
+                aclGroups.add(group);
+            }
+        }
+                return null;
+            }
+        });
+    }
+
     private Set<Role> getAllAclsRoles() throws RepositoryException {
         if (aclRoles == null) {
-            aclRoles = new LinkedHashSet<Role>();
-            template.doExecuteWithSystemSession(new JCRCallback<Object>() {
-                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    Query groupQuery = session.getWorkspace().getQueryManager().createQuery(
-                            "select u from [jnt:ace] as u where u.[j:principal] like 'r%'", Query.JCR_SQL2);
-                    QueryResult groupQueryResult = groupQuery.execute();
-                    final NodeIterator nodeIterator = groupQueryResult.getNodes();
-                    while (nodeIterator.hasNext()) {
-                        JCRNodeWrapper row = (JCRNodeWrapper) nodeIterator.next();
-                        final String roleName = StringUtils.substringAfter(row.getProperty("j:principal").getString(),
-                                                                           ":");
-                        RoleIdentity roleIdentity = new RoleIdentity(roleName, row.getResolveSite().getSiteKey());
-                        if (!aclRoles.contains(roleIdentity)) {
-                            aclRoles.add(roleIdentity);
-                        }
-                    }
-                    return null;
-                }
-            });
+            initAclRoles();
         }
         return aclRoles;
+    }
+
+    private synchronized void initAclRoles() throws RepositoryException {
+        if(aclRoles!=null) {
+            return;
+        }
+        aclRoles = new LinkedHashSet<Role>();
+        template.doExecuteWithSystemSession(new JCRCallback<Object>() {
+            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                Query groupQuery = session.getWorkspace().getQueryManager().createQuery(
+                        "select u from [jnt:ace] as u where u.[j:principal] like 'r%'", Query.JCR_SQL2);
+                QueryResult groupQueryResult = groupQuery.execute();
+                final NodeIterator nodeIterator = groupQueryResult.getNodes();
+                while (nodeIterator.hasNext()) {
+                    JCRNodeWrapper row = (JCRNodeWrapper) nodeIterator.next();
+                    final String roleName = StringUtils.substringAfter(row.getProperty("j:principal").getString(),
+                                                                       ":");
+                    RoleIdentity roleIdentity = new RoleIdentity(roleName, row.getResolveSite().getSiteKey());
+                    if (!aclRoles.contains(roleIdentity)) {
+                        aclRoles.add(roleIdentity);
+                    }
+                }
+                return null;
+            }
+        });
     }
 
     public String getPath(String key) throws ParseException {

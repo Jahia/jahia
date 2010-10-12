@@ -39,7 +39,11 @@ import net.sf.ehcache.constructs.blocking.BlockingCache;
 import net.sf.ehcache.constructs.blocking.LockTimeoutException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.jahia.bin.Jahia;
+import org.jahia.params.ProcessingContext;
+import org.jahia.pipelines.PipelineException;
 import org.jahia.services.cache.CacheEntry;
+import org.jahia.services.cache.GroupCacheKey;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.render.RenderContext;
@@ -55,6 +59,8 @@ import javax.jcr.RepositoryException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 /**
@@ -67,6 +73,7 @@ import java.util.regex.Pattern;
 public class AggregateCacheFilter extends AbstractFilter {
     private transient static Logger logger = Logger.getLogger(AggregateCacheFilter.class);
     private ModuleCacheProvider cacheProvider;
+    private PageGeneratorQueue generatorQueue;
 
     public static final Pattern ESI_INCLUDE_STARTTAG_REGEXP = Pattern.compile(
             "<!-- cache:include src=\\\"(.*)\\\" -->");
@@ -100,7 +107,7 @@ public class AggregateCacheFilter extends AbstractFilter {
             if (Boolean.valueOf(script.getTemplate().getProperties().getProperty(
                     "cache.additional.key.useMainResourcePath", "false"))) {
                 resource.getModuleParams().put("module.cache.additional.key",
-                                               renderContext.getMainResource().getNode().getPath());
+                        renderContext.getMainResource().getNode().getPath());
             }
         }
         String key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
@@ -109,9 +116,10 @@ public class AggregateCacheFilter extends AbstractFilter {
             logger.debug("Cache filter for key " + key);
         }
         Element element = null;
-        final BlockingCache cache = cacheProvider.getCache();
+        final Cache cache = cacheProvider.getCache();
         final boolean cacheable = !notCacheableFragment.contains(key);
-        String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername()).replaceAll("_mr_",renderContext.getMainResource().getNode().getPath()+renderContext.getMainResource().getTemplate());
+        String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername()).replaceAll("_mr_",
+                renderContext.getMainResource().getNode().getPath() + renderContext.getMainResource().getTemplate());
         if (cacheable) {
             try {
                 if (debugEnabled) {
@@ -119,27 +127,45 @@ public class AggregateCacheFilter extends AbstractFilter {
                 }
                 element = cache.get(perUserKey);
             } catch (LockTimeoutException e) {
-                logger.warn(e.getMessage(), e);
+                logger.warn("Error while rendering " + renderContext.getMainResource() + e.getMessage(), e);
             }
         }
         if (element != null && element.getValue() != null) {
-            if (debugEnabled) {
-                logger.debug("Content retrieved from cache for node with key: " + perUserKey);
-            }
-            String cachedContent = (String) ((CacheEntry) element.getValue()).getObject();
-            cachedContent = aggregateContent(cache, cachedContent, renderContext);
-
-            if (renderContext.getMainResource() == resource) {
-                cachedContent = removeEsiTags(cachedContent);
-            }
-            servedFromCache.add(key);
-            if (displayCacheInfo && !cachedContent.contains("<body") && cachedContent.trim().length() > 0) {
-                return appendDebugInformation(renderContext, key, cachedContent, element);
-            } else {
-                return cachedContent;
-            }
+            return returnFromCache(renderContext, resource, debugEnabled, displayCacheInfo, servedFromCache, key,
+                    element, cache, perUserKey);
         } else {
+            if (cacheable) {
+                // Use CountLatch as not found in cache
+                CountDownLatch countDownLatch = avoidParallelProcessingOfSamePage(perUserKey);
+                if (countDownLatch == null) {
+                    element = cache.get(perUserKey);
+                    if (element != null && element.getValue() != null) {
+                        return returnFromCache(renderContext, resource, debugEnabled, displayCacheInfo, servedFromCache,
+                                key, element, cache, perUserKey);
+                    }
+                }
+            }
             return null;
+        }
+    }
+
+    private String returnFromCache(RenderContext renderContext, Resource resource, boolean debugEnabled,
+                                   boolean displayCacheInfo, Set<String> servedFromCache, String key, Element element,
+                                   Cache cache, String perUserKey) {
+        if (debugEnabled) {
+            logger.debug("Content retrieved from cache for node with key: " + perUserKey);
+        }
+        String cachedContent = (String) ((CacheEntry) element.getValue()).getObject();
+        cachedContent = aggregateContent(cache, cachedContent, renderContext);
+
+        if (renderContext.getMainResource() == resource) {
+            cachedContent = removeEsiTags(cachedContent);
+        }
+        servedFromCache.add(key);
+        if (displayCacheInfo && !cachedContent.contains("<body") && cachedContent.trim().length() > 0) {
+            return appendDebugInformation(renderContext, key, cachedContent, element);
+        } else {
+            return cachedContent;
         }
     }
 
@@ -166,7 +192,7 @@ public class AggregateCacheFilter extends AbstractFilter {
             }
         }
         final boolean cacheable = !notCacheableFragment.contains(key);
-        final BlockingCache cache = cacheProvider.getCache();
+        final Cache cache = cacheProvider.getCache();
         boolean debugEnabled = logger.isDebugEnabled();
         boolean displayCacheInfo = Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
         String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername()).replaceAll("_mr_",renderContext.getMainResource().getNode().getPath()+renderContext.getMainResource().getTemplate());
@@ -268,10 +294,16 @@ public class AggregateCacheFilter extends AbstractFilter {
         } catch (Exception e) {
             cache.put(new Element(perUserKey, null));
             throw e;
+        } finally {
+            CountDownLatch countDownLatch = generatorQueue.getGeneratingPages().get(perUserKey);
+            if(countDownLatch!=null) {
+                generatorQueue.getGeneratingPages().remove(perUserKey);
+                countDownLatch.countDown();
+            }
         }
     }
 
-    private String aggregateContent(BlockingCache cache, String cachedContent, RenderContext renderContext) {
+    private String aggregateContent(Cache cache, String cachedContent, RenderContext renderContext) {
         // aggregate content
         Source htmlContent = new Source(cachedContent);
         List<? extends Tag> esiIncludeTags = htmlContent.getAllStartTags("esi:include");
@@ -366,6 +398,10 @@ public class AggregateCacheFilter extends AbstractFilter {
         this.cacheProvider = cacheProvider;
     }
 
+    public void setGeneratorQueue(PageGeneratorQueue generatorQueue) {
+        this.generatorQueue = generatorQueue;
+    }
+
     private String appendDebugInformation(RenderContext renderContext, String key, String renderContent,
                                           Element cachedElement) {
         StringBuilder stringBuilder = new StringBuilder();
@@ -436,9 +472,36 @@ public class AggregateCacheFilter extends AbstractFilter {
         }
         String key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
 
-        final BlockingCache cache = cacheProvider.getCache();
+        final Cache cache = cacheProvider.getCache();
         String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername()).replaceAll("_mr_",
                 renderContext.getMainResource().getNode().getPath() + renderContext.getMainResource().getTemplate());
         cache.put(new Element(perUserKey,null));
+    }
+
+    private CountDownLatch avoidParallelProcessingOfSamePage(String key) throws Exception {
+        CountDownLatch latch = null;
+        boolean mustWait = true;
+        Map<String, CountDownLatch> generatingPages = generatorQueue.getGeneratingPages();
+        synchronized (generatingPages) {
+            latch = (CountDownLatch) generatingPages.get(key);
+            if (latch == null) {
+                latch = new CountDownLatch(1);
+                generatingPages.put(key, latch);
+                mustWait = false;
+            }
+        }
+        if (mustWait) {
+            try {
+                if (!latch.await(generatorQueue
+                        .getPageGenerationWaitTime(), TimeUnit.MILLISECONDS)) {
+                    throw new Exception("Server is overloaded");
+                }
+                latch = null;
+            } catch (InterruptedException ie) {
+                logger.debug("The waiting thread has been interrupted :", ie);
+                throw new Exception(ie);
+            }
+        }
+        return latch;
     }
 }

@@ -59,6 +59,7 @@ import java.util.*;
 public class CacheFilter extends AbstractFilter {
     private transient static Logger logger = Logger.getLogger(CacheFilter.class);
     private ModuleCacheProvider cacheProvider;
+    private PageGeneratorQueue generatorQueue;
 
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         if (!(resource.getNode() instanceof JCRFrozenNodeAsRegular)) {
@@ -160,7 +161,7 @@ public class CacheFilter extends AbstractFilter {
             }
             CacheEntry<String> cacheEntry = new CacheEntry<String>(previousOut);
             Element cachedElement = new Element(perUserKey, cacheEntry);
-            BlockingCache cache = cacheProvider.getCache();
+            Cache cache = cacheProvider.getCache();
             if (expiration >= 0) {
                 cachedElement.setTimeToLive(expiration.intValue() + 1);
                 cachedElement.setTimeToIdle(1);
@@ -215,6 +216,10 @@ public class CacheFilter extends AbstractFilter {
         this.cacheProvider = cacheProvider;
     }
 
+    public void setGeneratorQueue(PageGeneratorQueue generatorQueue) {
+        this.generatorQueue = generatorQueue;
+    }
+    
     private String appendDebugInformation(RenderContext renderContext, String key, String renderContent,
                                           Element cachedElement) {
         StringBuilder stringBuilder = new StringBuilder();

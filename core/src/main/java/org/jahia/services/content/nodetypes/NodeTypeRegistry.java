@@ -63,12 +63,9 @@ public class NodeTypeRegistry implements NodeTypeManager {
     private Map<ExtendedNodeType,Set<ExtendedNodeType>> mixinExtensions = new HashMap<ExtendedNodeType,Set<ExtendedNodeType>>();
     private Map<String,Set<ExtendedItemDefinition>> typedItems = new HashMap<String,Set<ExtendedItemDefinition>>();
 
-    private static NodeTypeRegistry instance;
+    private static final NodeTypeRegistry instance = new NodeTypeRegistry(true);
 
-    public synchronized static NodeTypeRegistry getInstance() {
-        if (instance == null) {
-            instance = new NodeTypeRegistry(true);
-        }
+    public static NodeTypeRegistry getInstance() {
         return instance;
     }
 

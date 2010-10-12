@@ -66,7 +66,7 @@ public class ModuleCacheProvider implements InitializingBean {
         return (ModuleCacheProvider) SpringContextSingleton.getBean("ModuleCacheProvider");
     }
     
-    private BlockingCache blockingCache;
+    private Cache blockingCache;
     private int blockingTimeout = 5000;
     private EhCacheProvider cacheProvider;
     private Cache dependenciesCache;
@@ -92,8 +92,8 @@ public class ModuleCacheProvider implements InitializingBean {
         if (!cacheManager.cacheExists(DEPS_CACHE_NAME)) {
             cacheManager.addCache(DEPS_CACHE_NAME);
         }
-        blockingCache = new BlockingCache(cacheManager.getCache(CACHE_NAME));
-        blockingCache.setTimeoutMillis(blockingTimeout);
+        blockingCache = cacheManager.getCache(CACHE_NAME);
+//        blockingCache.setTimeoutMillis(blockingTimeout);
         dependenciesCache = cacheManager.getCache(DEPS_CACHE_NAME);
     }
 
@@ -124,7 +124,7 @@ public class ModuleCacheProvider implements InitializingBean {
         }
     }
 
-    public BlockingCache getCache() {
+    public Cache getCache() {
         return blockingCache;
     }
 

@@ -6,6 +6,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.ProcessorEndpoint;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
@@ -190,7 +191,7 @@ public class ContentHistoryService implements Processor, InitializingBean, Camel
                                 int commentsPos = args.indexOf(WITH_COMMENTS_MESSAGE_PART);
                                 if (commentsPos > -1) {
                                     String comment = args.substring(commentsPos + WITH_COMMENTS_MESSAGE_PART.length());
-                                    if ((comment != null) && (!comment.trim().isEmpty())) {
+                                    if ((comment != null) && (!StringUtils.isEmpty(comment.trim()))) {
                                         historyComments = ";;" + comment.trim();
                                     }
                                 }

@@ -14,7 +14,7 @@ public class CreateCategories extends SeleneseTestCase {
     private static Logger logger = Logger.getLogger(CreateCategories.class);
     private JahiaSite site;
     private final static String TESTSITE_NAME = "mySite";
-    private final static String TEST_SPEED = "1000"; //speed between selenium commands
+    private final static String TEST_SPEED = "1500"; //speed between selenium commands
     private final int numberOfCategories = 10;
 
     @Override
@@ -57,17 +57,17 @@ public class CreateCategories extends SeleneseTestCase {
                 selenium.type("password", "root1234");
                 if (selenium.isElementPresent("link=Login")) {
                     selenium.click("link=Login");
-                    selenium.waitForPageToLoad("30000");
+                    selenium.waitForPageToLoad("34000");
                 } else if (selenium.isElementPresent("link=Se connecter")) {
                     selenium.click("link=Se connecter");
-                    selenium.waitForPageToLoad("30000");
+                    selenium.waitForPageToLoad("34000");
                 }
             }
         }
         //open Category manager
         selenium.click("//button[text()='Managers']");
         selenium.click("link=Category manager");
-        selenium.waitForPopUp("Category_manager", "30000");
+        selenium.waitForPopUp("Category_manager", "34000");
         selenium.selectPopUp("Category_manager");
 
         //Create main Category

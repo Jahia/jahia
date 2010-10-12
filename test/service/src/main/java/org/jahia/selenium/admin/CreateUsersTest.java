@@ -12,7 +12,7 @@ public class CreateUsersTest extends SeleneseTestCase {
     private final String login_username = "root";
     private final String login_password = "root1234";
     private final int numberOfUsers = 20;
-    private final static String TEST_SPEED = "500";
+    private final static String TEST_SPEED = "1500";
 
     public void setUp() throws Exception {
         setUp("http://localhost:8080", "*firefox");

@@ -16,9 +16,9 @@
 <c:set var="mainTemplate" value="${currentNode.properties['j:userTemplate'].string}"/>
 <c:choose>
     <c:when test="${renderContext.editMode}">
-        <div class="mainResourceArea<c:if test="${not empty currentNode.properties['j:mockupStyle']}"> ${currentNode.properties['j:mockupStyle'].string}</c:if>">
+        <div class="authorDisplayArea<c:if test="${not empty currentNode.properties['j:mockupStyle']}"> ${currentNode.properties['j:mockupStyle'].string}</c:if>">
             <c:if test="${not empty currentNode.properties['j:userTemplate'].string}">
-                <div class="mainResourceTemplate">
+                <div class="authorDisplayTemplate">
                     <span>${currentNode.properties['j:userTemplate'].string}</span>
                 </div>
             </c:if>

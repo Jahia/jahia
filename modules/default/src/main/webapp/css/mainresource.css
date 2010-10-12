@@ -3,7 +3,7 @@
 	overflow: hidden; 
 	background-color:#d8effb; 
 	padding:5px;
-	color:#99ccff;
+	color:#666;
 	position:relative;
 	border: 1px dashed #99ccff;
 }
@@ -27,12 +27,15 @@
 	-webkit-box-shadow: 0 1px 3px #999;
 	box-shadow: 0 1px 3px #999;
 }
+#bodywrapper .AreaInformation{
+	color:#666;
+}
 #bodywrapper .mainResourceAbsoluteArea { 
 	height:200px; 
 	overflow: hidden; 
 	background-color:#ffcccc; 
 	padding:5px;
-	color:#cc6666;
+	color:#666;
 	position:relative;
 	border: 1px dashed #cc6666;
 }
@@ -61,13 +64,42 @@
 	overflow:hidden; 
 	background-color:#eaeaea; 
 	padding:5px;
-	color:#ccc;
+	color:#666;
 	position:relative;
 	border: 1px dashed #333;
 }
 #bodywrapper .mainResourceDisplayTemplate{
 	background-color: #333;
 	border:1px solid #000;
+	color:#fff;
+	padding:5px;
+	position:absolute; 
+	left: 35%;  
+	top: 35%; 
+	width: 30%; 
+	margin-left: auto; 
+	margin-right: auto; 
+	text-align:center;
+    font-family: tahoma, arial, verdana, sans-serif;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	-moz-box-shadow: 0 1px 3px #999;
+	-webkit-box-shadow: 0 1px 3px #999;
+	box-shadow: 0 1px 3px #999;
+}
+#bodywrapper .authorDisplayArea { 
+	height:200px; 
+	overflow: hidden; 
+	padding:5px;
+	color:#666;
+	position:relative;
+	border: 1px dashed #99ccff;
+	background:#d8effb url(img/authorDisplayArea-bg.png) no-repeat scroll 50% 100% ;
+}
+#bodywrapper .authorDisplayTemplate{
+	background-color: #336699;
+	border:1px solid #003366;
 	color:#fff;
 	padding:5px;
 	position:absolute; 

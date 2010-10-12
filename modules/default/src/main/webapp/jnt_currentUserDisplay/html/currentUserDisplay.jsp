@@ -16,11 +16,11 @@
     <c:when test="${not empty inWrapper and inWrapper eq false}">
         <div class="mainResourceArea <c:if test="${not empty currentNode.properties['j:mockupStyle']}">${currentNode.properties['j:mockupStyle'].string}</c:if>">
             <c:if test="${not empty currentNode.properties['j:userTemplate'].string}">
-                <div class="mainResourceTemplate">
+                <div class="mainResourceAreaTemplate">
                     <span>${currentNode.properties['j:userTemplate'].string}</span>
                 </div>
             </c:if>
-            <div class="loremipsum">
+            <div class="AreaInformation">
                 Current user component</br>
                 Displayed information: Username
             </div>

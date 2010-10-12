@@ -148,7 +148,7 @@ public class EditContentEngine extends AbstractContentEngine {
      * load node
      */
     private void loadProperties() {
-        contentService.getProperties(contentPath, getSelectedLanguage().getLanguage(), new BaseAsyncCallback<GWTJahiaGetPropertiesResult>() {
+        contentService.getProperties(contentPath, getSelectedLanguage(), new BaseAsyncCallback<GWTJahiaGetPropertiesResult>() {
             public void onApplicationFailure(Throwable throwable) {
                 Log.debug("Cannot get properties", throwable);
             }
@@ -160,8 +160,8 @@ public class EditContentEngine extends AbstractContentEngine {
                 defaultLanguageBean = result.getCurrentLocale();
 
                 // set selectedNode as processed
-                if (getSelectedLanguage().getLanguage() != null) {
-                    langCodeGWTJahiaGetPropertiesResultMap.put(getSelectedLanguage().getLanguage(), result);
+                if (getSelectedLanguage() != null) {
+                    langCodeGWTJahiaGetPropertiesResultMap.put(getSelectedLanguage(), result);
                 }
 
                 fillCurrentTab();
@@ -198,7 +198,7 @@ public class EditContentEngine extends AbstractContentEngine {
 
                 // set selectedNode as processed
                 if (getSelectedLanguage() != null) {
-                    langCodeGWTJahiaGetPropertiesResultMap.put(getSelectedLanguage().getLanguage(), result);
+                    langCodeGWTJahiaGetPropertiesResultMap.put(getSelectedLanguage(), result);
                 }
 
                 mixin = result.getMixin();
@@ -236,7 +236,7 @@ public class EditContentEngine extends AbstractContentEngine {
                 }
             }
         }
-        GWTJahiaGetPropertiesResult result = langCodeGWTJahiaGetPropertiesResultMap.get(getSelectedLanguage().getLanguage());
+        GWTJahiaGetPropertiesResult result = langCodeGWTJahiaGetPropertiesResultMap.get(getSelectedLanguage());
         if (result == null) {
             loadProperties();
         } else {
@@ -276,7 +276,7 @@ public class EditContentEngine extends AbstractContentEngine {
                     if (propertiesTabItem.isMultiLang()) {
                         // for now only contentTabItem  has multilang. properties
                         if (getSelectedLanguage() != null) {
-                            final String lang = getSelectedLanguage().getLanguage();
+                            final String lang = getSelectedLanguage();
                             if (!changedI18NProperties.containsKey(lang)) {
                                 changedI18NProperties.put(lang, new ArrayList<GWTJahiaNodeProperty>());
                             }

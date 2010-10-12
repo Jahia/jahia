@@ -38,7 +38,6 @@ import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
@@ -88,15 +87,15 @@ public class PropertiesTabItem extends EditEngineTabItem {
     /**
      * Get properties editor by langCode
      *
-     * @param locale
+     * @param language
      * @return
      */
-    public PropertiesEditor getPropertiesEditorByLang(GWTJahiaLanguage locale) {
-        if (locale == null) {
+    public PropertiesEditor getPropertiesEditorByLang(String language) {
+        if (language == null) {
             Log.error("Locale is null");
             return null;
         }
-        return langPropertiesEditorMap.get(locale.getLanguage());
+        return langPropertiesEditorMap.get(language);
     }
 
     /**
@@ -104,15 +103,15 @@ public class PropertiesTabItem extends EditEngineTabItem {
      *
      * @param locale
      */
-    private void setPropertiesEditorByLang(GWTJahiaLanguage locale) {
-        if (langPropertiesEditorMap == null || locale == null) {
+    private void setPropertiesEditorByLang(String language) {
+        if (langPropertiesEditorMap == null || language == null) {
             return;
         }
-        langPropertiesEditorMap.put(locale.getLanguage(), propertiesEditor);
+        langPropertiesEditorMap.put(language, propertiesEditor);
     }
 
     @Override
-    public void create(GWTJahiaLanguage locale) {
+    public void create(String language) {
         // do not re-process the view if it's already done and the tabItem is not multilang
         if (!isMultiLang() && isProcessed()) {
             return;
@@ -124,7 +123,7 @@ public class PropertiesTabItem extends EditEngineTabItem {
             List<GWTJahiaNodeProperty> previousNon18nProperties = null;
 
             if (propertiesEditor != null) {
-                if (propertiesEditor == getPropertiesEditorByLang(locale)) {
+                if (propertiesEditor == getPropertiesEditorByLang(language)) {
                     return;
                 }
                 addSharedLangLabel = false;
@@ -135,7 +134,7 @@ public class PropertiesTabItem extends EditEngineTabItem {
             if (!isMultiLang()) {
                 setProcessed(true);
             }
-            propertiesEditor = getPropertiesEditorByLang(locale);
+            propertiesEditor = getPropertiesEditorByLang(language);
 
             if (propertiesEditor == null) {
                 if (engine.isExistingNode() && engine.getNode().isShared()) {
@@ -190,7 +189,7 @@ public class PropertiesTabItem extends EditEngineTabItem {
                         });
                     }
                 }
-                setPropertiesEditorByLang(locale);
+                setPropertiesEditorByLang(language);
 
                 attachPropertiesEditor();
 

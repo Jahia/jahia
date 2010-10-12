@@ -40,6 +40,7 @@ import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
@@ -272,8 +273,12 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
      *
      * @return
      */
-    public GWTJahiaLanguage getSelectedLanguage() {
-        return language;
+    public String getSelectedLanguage() {
+        if (language != null) {
+            return language.getLanguage();
+        } else {
+            return JahiaGWTParameters.getLanguage();
+        }
     }
 
     /**

@@ -37,7 +37,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
-import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsData;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsQuery;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -69,7 +68,7 @@ public class AnalyticsTabItem extends EditEngineTabItem {
     }
 
     @Override
-    public void create(final GWTJahiaLanguage locale) {
+    public void create(final String locale) {
         GWT.runAsync(new RunAsyncCallback() {
             public void onFailure(Throwable reason) {
                 Window.alert("Code download failed");
@@ -84,7 +83,7 @@ public class AnalyticsTabItem extends EditEngineTabItem {
                     lastQuery.setMetrics("ga:pageviews");
                     lastQuery.setSort("-ga:pageviews");
                     //lastQuery.setFilters("ga:pagePath==" + engine.getNode());
-                    display(locale);
+                    display();
                 }
                 layout();
             }
@@ -94,9 +93,8 @@ public class AnalyticsTabItem extends EditEngineTabItem {
     /**
      * render chart
      *
-     * @param locale
      */
-    private void display(GWTJahiaLanguage locale) {
+    private void display() {
         // init data visulaiser
         if (dataVisualizer == null) {
             dataVisualizer = new AnalyticsDataVisualizer() {

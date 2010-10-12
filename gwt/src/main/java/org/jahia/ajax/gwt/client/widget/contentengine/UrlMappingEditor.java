@@ -77,7 +77,7 @@ import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 public class UrlMappingEditor extends LayoutContainer {
     private GWTJahiaNode node;
 
-    private GWTJahiaLanguage locale;
+    private String locale;
 
     private ListStore<GWTJahiaUrlMapping> store;
     private int sizeOfMappings;
@@ -86,13 +86,13 @@ public class UrlMappingEditor extends LayoutContainer {
      * 
      * @param node
      */
-    public UrlMappingEditor(GWTJahiaNode node, GWTJahiaLanguage locale) {
+    public UrlMappingEditor(GWTJahiaNode node, String locale) {
         super(new FitLayout());
         this.locale = locale;
         this.node = node;
         setBorders(false);
         store = new ListStore<GWTJahiaUrlMapping>();
-        JahiaContentManagementService.App.getInstance().getUrlMappings(node, locale.getLanguage(),
+        JahiaContentManagementService.App.getInstance().getUrlMappings(node, locale,
                 new BaseAsyncCallback<List<GWTJahiaUrlMapping>>() {
                     public void onApplicationFailure(Throwable throwable) {
                         com.google.gwt.user.client.Window.alert(Messages.getWithArgs("failure.load.urlmappings.label",
@@ -206,7 +206,7 @@ public class UrlMappingEditor extends LayoutContainer {
             public void componentSelected(ButtonEvent ce) {
                 re.stopEditing(false);
                 sizeOfMappings = store.getCount();
-                GWTJahiaUrlMapping mapping = new GWTJahiaUrlMapping("", locale.getLanguage(),
+                GWTJahiaUrlMapping mapping = new GWTJahiaUrlMapping("", locale,
                         store.getCount() == 0, true);
                 store.insert(mapping, 0);
                 re.startEditing(store.indexOf(mapping), true);

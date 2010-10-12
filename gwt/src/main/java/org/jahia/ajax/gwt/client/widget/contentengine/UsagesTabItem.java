@@ -56,7 +56,7 @@ public class UsagesTabItem extends EditEngineTabItem {
     }
 
     @Override
-    public void create(GWTJahiaLanguage locale) {
+    public void create(String locale) {
         setLayout(new FitLayout());
         if (engine.getNode() != null) {
             Grid<GWTJahiaNodeUsage> grid = NodeUsagesGrid.createUsageGrid(Arrays.asList(engine.getNode()));

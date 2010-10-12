@@ -66,7 +66,7 @@ public abstract class EditEngineTabItem extends AsyncTabItem {
     /**
      * Create the tab item
      */
-    public abstract void create(GWTJahiaLanguage locale);
+    public abstract void create(String language);
 
 
     public boolean handleMultipleSelection() {

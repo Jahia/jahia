@@ -234,7 +234,7 @@ public class CreateContentEngine extends AbstractContentEngine {
                 if (propertiesTabItem.isMultiLang()) {
                     // for now only contentTabItem  has multilang. properties
                     if (getSelectedLanguage() != null) {
-                        final String lang = getSelectedLanguage().getLanguage();
+                        final String lang = getSelectedLanguage();
                         if (!changedI18NProperties.containsKey(lang)) {
                             changedI18NProperties.put(lang, new ArrayList<GWTJahiaNodeProperty>());
                         }

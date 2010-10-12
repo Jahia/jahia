@@ -65,7 +65,7 @@ public class PortletsTabItem extends EditEngineTabItem {
     }
 
     @Override
-    public void create(GWTJahiaLanguage locale) {
+    public void create(String locale) {
         if (engine.getNode() == null || isProcessed()) {
             return;
         }

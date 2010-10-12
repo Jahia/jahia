@@ -61,7 +61,7 @@ public class RightsTabItem extends EditEngineTabItem {
     }
 
     @Override
-    public void create(GWTJahiaLanguage locale) {
+    public void create(String locale) {
         if (engine.getAcl() != null) {
             setProcessed(true);
 

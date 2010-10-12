@@ -75,7 +75,7 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class TagsTabItem extends EditEngineTabItem {
-    private GWTJahiaLanguage locale;
+    private String locale;
     private Map<String, GWTJahiaNodeProperty> values;
     private TreeStore<GWTJahiaNode> tagStore;
     private TreeLoader<GWTJahiaNode> tagLoader;
@@ -85,7 +85,7 @@ public class TagsTabItem extends EditEngineTabItem {
         super(Messages.get("label.engineTab.tags", "Tags"), engine);
     }
 
-    public void create(GWTJahiaLanguage locale) {
+    public void create(String locale) {
         if (!engine.isExistingNode() || (engine.getNode() != null)) {
 //            setProcessed(true);
             if (values == null) {
@@ -109,8 +109,8 @@ public class TagsTabItem extends EditEngineTabItem {
             protected void load(Object o, final AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
                 if (node != null) {
                     final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
-                    if (values.containsKey(locale.getLanguage())) {
-                        final GWTJahiaNodeProperty gwtJahiaNodeProperty = values.get(locale.getLanguage());
+                    if (values.containsKey(locale)) {
+                        final GWTJahiaNodeProperty gwtJahiaNodeProperty = values.get(locale);
                         final List<GWTJahiaNodePropertyValue> propertyValues = gwtJahiaNodeProperty.getValues();
                         List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>(propertyValues.size());
                         for (GWTJahiaNodePropertyValue propertyValue : propertyValues) {
@@ -133,7 +133,7 @@ public class TagsTabItem extends EditEngineTabItem {
                             gwtJahiaNodeProperty.setName("j:tags");
                             listAsyncCallback.onSuccess(new ArrayList<GWTJahiaNode>());
                         }
-                        values.put(locale.getLanguage(), gwtJahiaNodeProperty);
+                        values.put(locale, gwtJahiaNodeProperty);
                     }
                 }
             }
@@ -156,7 +156,7 @@ public class TagsTabItem extends EditEngineTabItem {
                     public void componentSelected(ButtonEvent buttonEvent) {
                         final GWTJahiaNode node1 = (GWTJahiaNode) buttonEvent.getButton().getData("associatedNode");
                         tagStore.remove(node1);
-                        values.get(locale.getLanguage()).getValues().remove(new GWTJahiaNodePropertyValue(node1,
+                        values.get(locale).getValues().remove(new GWTJahiaNodePropertyValue(node1,
                                     GWTJahiaNodePropertyType.WEAKREFERENCE));
                     }
                 });
@@ -185,7 +185,7 @@ public class TagsTabItem extends EditEngineTabItem {
                     public void onSuccess(GWTJahiaNode result) {
                         if (tagStore.findModel(result) == null) {
                             tagStore.add(result, false);
-                            values.get(locale.getLanguage()).getValues().add(new GWTJahiaNodePropertyValue(result,
+                            values.get(locale).getValues().add(new GWTJahiaNodePropertyValue(result,
                                     GWTJahiaNodePropertyType.WEAKREFERENCE));
                         }
                     }

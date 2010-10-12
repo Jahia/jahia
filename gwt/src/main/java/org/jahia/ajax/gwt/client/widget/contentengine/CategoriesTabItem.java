@@ -81,7 +81,7 @@ public class CategoriesTabItem extends EditEngineTabItem {
     }
 
     @Override
-    public void create(GWTJahiaLanguage locale) {
+    public void create(String locale) {
         if (!engine.isExistingNode() || (engine.getNode() != null)) {
             setProcessed(true);
             init();

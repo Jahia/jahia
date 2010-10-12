@@ -59,7 +59,7 @@ public class InfoTabItem extends EditEngineTabItem {
         super(Messages.get("label.information"), engine);
     }
 
-    public void create(GWTJahiaLanguage locale) {
+    public void create(String locale) {
         if (!isProcessed()) {
             infoPanel = new FlowPanel();
             infoPanel.addStyleName("infoPane");

@@ -66,7 +66,7 @@ public class SeoTabItem extends EditEngineTabItem {
     }
 
     @Override
-    public void create(GWTJahiaLanguage locale) {
+    public void create(String locale) {
         if (engine.getNode() == null) {
             return;
         }
@@ -86,12 +86,12 @@ public class SeoTabItem extends EditEngineTabItem {
         layout();
     }
 
-    private UrlMappingEditor getEditor(GWTJahiaLanguage locale) {
-        UrlMappingEditor editor = editorsByLanguage.get(locale.getLanguage());
+    private UrlMappingEditor getEditor(String locale) {
+        UrlMappingEditor editor = editorsByLanguage.get(locale);
         if (editor == null) {
             editor = new UrlMappingEditor(engine.getNode(), locale);
             editor.setVisible(false);
-            editorsByLanguage.put(locale.getLanguage(), editor);
+            editorsByLanguage.put(locale, editor);
             add(editor);
         }
         return editor;

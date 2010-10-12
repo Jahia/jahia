@@ -74,7 +74,7 @@ public class VersioningTabItem extends EditEngineTabItem {
      * Create the tab item
      */
     @Override
-    public void create(final GWTJahiaLanguage locale) {
+    public void create(final String locale) {
         final VersioningTabItem tabItem = this;
         service.getVersions(engine.getNode().getPath(), new BaseAsyncCallback<List<GWTJahiaNodeVersion>>() {
             public void onSuccess(List<GWTJahiaNodeVersion> result) {
@@ -178,7 +178,7 @@ public class VersioningTabItem extends EditEngineTabItem {
                                     }
                                 }
                             } else {
-                                service.getNodeURL(null, el.getPath(), version.getDate(), version.getLabel(), "default", locale.getLanguage(), new BaseAsyncCallback<String>() {
+                                service.getNodeURL(null, el.getPath(), version.getDate(), version.getLabel(), "default", locale, new BaseAsyncCallback<String>() {
                                             public void onSuccess(String result) {
                                                 final com.extjs.gxt.ui.client.widget.Window dl =
                                                         new com.extjs.gxt.ui.client.widget.Window();

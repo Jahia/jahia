@@ -242,7 +242,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
         if (currentTab instanceof EditEngineTabItem) {
             EditEngineTabItem engineTabItem = (EditEngineTabItem) currentTab;
             if (!engineTabItem.isProcessed()) {
-                engineTabItem.create(language);
+                engineTabItem.create(language.getLanguage());
                 m_component.layout();
             }
         }

@@ -89,7 +89,7 @@ public class WorkflowTabItem extends EditEngineTabItem {
     }
 
     @Override
-    public void create(GWTJahiaLanguage locale) {
+    public void create(String locale) {
         if (engine.getNode() == null) {
             return;
         }
@@ -104,7 +104,7 @@ public class WorkflowTabItem extends EditEngineTabItem {
 
         setProcessed(true);
 
-        WorkflowHistoryPanel next = getPanel(locale.getLanguage());
+        WorkflowHistoryPanel next = getPanel(locale);
         if (activePanel != null) {
             if (activePanel != next) {
                 activePanel.removeFromParent();

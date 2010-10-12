@@ -145,7 +145,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
         pathes.push(pathes.peek() + "/" + decodedQName);
 
         if (noRoot && pathes.size() <= 2) {
-            return;
+             session.getPathMapping().put("/" + decodedQName, nodes.peek().getPath());return;
         }
 
         try {

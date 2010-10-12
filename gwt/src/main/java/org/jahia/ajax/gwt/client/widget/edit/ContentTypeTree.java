@@ -111,7 +111,7 @@ public class ContentTypeTree extends LayoutContainer {
         Layout layout = new BorderLayout();
         setLayout(layout);
         
-        setBorders(true);
+        setBorders(false);
         
 		StoreFilterField<GWTJahiaNodeType> filter = new StoreFilterField<GWTJahiaNodeType>() {
 			@Override

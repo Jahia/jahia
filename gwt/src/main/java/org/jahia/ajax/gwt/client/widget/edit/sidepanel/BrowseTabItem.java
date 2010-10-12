@@ -70,6 +70,7 @@ abstract class BrowseTabItem extends SidePanelTabItem {
     protected TreeGridDropTarget treeDropTarget;
     protected String repositoryType;
     protected List<String> folderTypes;
+    private GWTJahiaNodeTreeFactory factory;
 
     public BrowseTabItem(GWTSidePanelTab config) {
         super(config);
@@ -79,10 +80,10 @@ abstract class BrowseTabItem extends SidePanelTabItem {
         setLayout(l);
 
         treeContainer = new LayoutContainer();
-        treeContainer.setBorders(true);
+        treeContainer.setBorders(false);
         treeContainer.setScrollMode(Style.Scroll.AUTO);
         treeContainer.setLayout(new FitLayout());
-        GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(config.getPaths());
+        factory = new GWTJahiaNodeTreeFactory(config.getPaths());
         factory.setNodeTypes(this.folderTypes);
 
         NodeColumnConfigList columns = new NodeColumnConfigList(config.getTreeColumns());
@@ -158,6 +159,10 @@ abstract class BrowseTabItem extends SidePanelTabItem {
             return callback;
         }
 
+    }
+
+    @Override public void refresh(int flag) {
+        factory.getLoader().load();
     }
 
     protected abstract boolean acceptNode(GWTJahiaNode node);

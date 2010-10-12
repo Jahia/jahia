@@ -308,7 +308,7 @@ public class GWTJahiaNodeTreeFactory {
     }
 
 
-    class GWTJahiaNodeTreeLoader extends BaseTreeLoader<GWTJahiaNode> {
+    public class GWTJahiaNodeTreeLoader extends BaseTreeLoader<GWTJahiaNode> {
         GWTJahiaNodeTreeLoader(DataProxy proxy) {
             super(proxy);
         }
@@ -319,7 +319,7 @@ public class GWTJahiaNodeTreeFactory {
         }
     }
 
-    class GWTJahiaNodeTreeGrid extends TreeGrid<GWTJahiaNode> {
+    public class GWTJahiaNodeTreeGrid extends TreeGrid<GWTJahiaNode> {
         GWTJahiaNodeTreeGrid(TreeStore store, ColumnModel cm) {
             super(store, cm);
         }
@@ -351,7 +351,7 @@ public class GWTJahiaNodeTreeFactory {
 
     }
 
-    class GWTJahiaNodeTreePanel extends TreePanel<GWTJahiaNode> {
+    public class GWTJahiaNodeTreePanel extends TreePanel<GWTJahiaNode> {
         GWTJahiaNodeTreePanel(TreeStore store) {
             super(store);
             setAutoSelect(false);

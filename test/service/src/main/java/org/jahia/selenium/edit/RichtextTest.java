@@ -19,8 +19,8 @@ public class RichtextTest extends SeleneseTestCase {
     private static Logger logger = Logger.getLogger(RichtextTest.class);
     private JahiaSite site;
     private final static String TESTSITE_NAME = "mySite";
-    private final static String TEST_SPEED = "1500"; //speed between selenium commands
-    private final static int numberOfNodes = 10;
+    private final static String TEST_SPEED = "3000"; //speed between selenium commands
+    private final static int numberOfNodes = 3;
 
     /*  protected DefaultSelenium createSeleniumClient(String url) throws Exception {
     return new DefaultSelenium("localhost", 4444, "*firefox", url);
@@ -133,6 +133,9 @@ public class RichtextTest extends SeleneseTestCase {
         }
         deleteContentCreated();
     }
+
+    public void createRichtext()
+
 
     public void deleteContentCreated() {
         selenium.mouseOver("//span[text()='Area : listA']");

@@ -8,9 +8,13 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
 
 /**
- * this test open the category manager, and create categories, and creates categories under that first created.
+ * Created by IntelliJ IDEA.
+ * User: sophiabatata
+ * Date: Oct 12, 2010
+ * Time: 6:24:51 PM
+ * To change this template use File | Settings | File Templates.
  */
-public class ContentManagerTest extends SeleneseTestCase {
+public class CreatePortlet extends SeleneseTestCase {
     private static Logger logger = Logger.getLogger(CreateCategories.class);
     private JahiaSite site;
     private final static String TESTSITE_NAME = "mySite";
@@ -36,6 +40,7 @@ public class ContentManagerTest extends SeleneseTestCase {
 
     @Override
     public void tearDown() throws Exception {
+                selenium.setSpeed(TEST_SPEED);
         try {
             selenium.stop();
             // TestHelper.deleteSite(TESTSITE_NAME);
@@ -45,7 +50,6 @@ public class ContentManagerTest extends SeleneseTestCase {
     }
 
     public void test() throws InterruptedException {
-                selenium.setSpeed(TEST_SPEED);
         try {
             selenium.open("/cms/edit/default/en/sites/mySite/home.html");
         } catch (Exception e) {
@@ -66,10 +70,22 @@ public class ContentManagerTest extends SeleneseTestCase {
                 }
             }
         }
-         contentManager();
+        deleteContentCreated();
+        addPortlet();
+        deleteContentCreated();
     }
-        public void contentManager() {
 
+         public void deleteContentCreated(){
+        selenium.mouseOver("//span[text()='Area : listA']");
+        selenium.contextMenuAt("//span[text()='Area : listA']", "0,0");
+        selenium.click("link=Remove");
+        if (selenium.isElementPresent("//button[text()='Yes']")){
+            selenium.click("//button[text()='Yes']");
+        }
+        selenium.refresh();
+    }
+
+    public void addPortlet() {
         //click on "Managers"
         new Wait("wait") {
             public boolean until() {
@@ -78,114 +94,89 @@ public class ContentManagerTest extends SeleneseTestCase {
         };
         selenium.click("//button[text()='Managers']");
 
-        //Click on "Content Manager"
+        //Click on "Porlet Manager"
         new Wait("wait") {
             public boolean until() {
                 return selenium.isElementPresent("Link=Content manager");
             }
         };
-        selenium.click("Link=Content manager");
+        selenium.click("Link=Portlet manager");
 
-        //Select Window "Content manager"
-        selenium.waitForPopUp("Content_manager", "3000");
-        selenium.selectWindow("Content manager");
+        //Select Window "Portlet manager"
+        selenium.waitForPopUp("Portlet_manager", "3500");
+        selenium.selectWindow("Portlet manager");
 
-        //Open "root" tree
+        //Right click on portlet
         new Wait("wait") {
             public boolean until() {
-                return selenium.isElementPresent("//span[text()='root']");
+                return selenium.isElementPresent("//span[text()='portlets']");
             }
         };
-        selenium.doubleClick("//span[text()='root']");
+        selenium.doubleClickAt("//span[text()='portlets']", "5,5");
+        selenium.mouseOver("//span[text()='portlets']");
+        selenium.contextMenuAt("//span[text()='portlets']", "5,5");
 
-        //Click on "site"
+        //Click on new rss
         new Wait("wait") {
             public boolean until() {
-                return selenium.isElementPresent("//span[text()='sites']");
+                return selenium.isElementPresent("Link=New RSS");
             }
         };
-        selenium.doubleClick("//span[text()='sites']");
+        selenium.click("Link=New RSS");
 
-        //Click on "mysite"
+
+
+        //Fill name
         new Wait("wait") {
             public boolean until() {
-                return selenium.isElementPresent("//span[text()='mySite']");
+                return selenium.isElementPresent("//input[@name='name']");
             }
         };
-        selenium.doubleClick("//span[text()='mySite']");
+        selenium.type("//input[@name='name']", "Flux RSS lemonde.fr");
+
+        //Fill url
+        selenium.type("//input[@name='url']", "http://www.lemonde.fr/rss/une.xml");
+        selenium.click("//html/body/div[4]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[2]/td[2]/em/button");
+
+        selenium.selectWindow("Home");
+        /*/click on "Any content"
+              new Wait("wait") {
+                  public boolean until() {
+                      return selenium.isElementPresent("//div[@path='/sites/mySite/home/listA']/div/div[2]/div/div/div/div/table/tbody/tr/td[2]/button");
+                  }
+              };
+              selenium.click("//div[@path='/sites/mySite/home/listA']/div/div[2]/div/div/div/div/table/tbody/tr/td[2]/button");
 
 
-        //Right click on My profile
+
+        //click on the image for sort"
         new Wait("wait") {
             public boolean until() {
-                return selenium.isElementPresent("//span[text()='My Profile']");
+                return selenium.isElementPresent("//td[@class='x-grid3-header x-grid3-hd x-grid3-cell x-grid3-td-label']/div/span");
             }
         };
-        selenium.doubleClickAt("//span[text()='My Profile']", "5,5");
+        selenium.click("//td[@class='x-grid3-header x-grid3-hd x-grid3-cell x-grid3-td-label']/div/span");
 
-        selenium.mouseOver("//span[text()='My Profile']");
-        selenium.contextMenuAt("//span[text()='My Profile']", "5,5");
 
-        //Click on "New Page"
+        //doubleClick on "Editorial content"
         new Wait("wait") {
             public boolean until() {
-                return selenium.isElementPresent("Link=New page");
+                return selenium.isElementPresent("//img[@src='/modules/default/icons/jmix_editorialContent.png']");
             }
         };
-        selenium.click("Link=New page");
+        selenium.doubleClick("//img[@src='/modules/default/icons/jmix_editorialContent.png']");
 
-        //Create 2 new pages
+        //doubleClick on "Portlet Reference"
         new Wait("wait") {
             public boolean until() {
-                return selenium.isElementPresent("//input[@name='jcr:title']");
+                return selenium.isElementPresent("//img[@src='/modules/default/icons/jnt_portletReference.png']");
             }
         };
-        selenium.type("//input[@name='jcr:title']", "Page 1");
-        selenium.type("//input[@name='j:templateNode']", "base");
-        selenium.click("//button[text()='Save And Add New']");
+        selenium.doubleClick("//img[@src='/modules/default/icons/jnt_portletReference.png']");        */
 
-        new Wait("wait") {
-            public boolean until() {
-                return selenium.isElementPresent("//input[@name='jcr:title']");
-            }
-        };
-        selenium.type("//input[@name='jcr:title']", "Page 2");
-        selenium.type("//input[@name='j:templateNode']", "base");
-        selenium.click("//button[text()='Save And Add New']");
-
-        new Wait("wait") {
-            public boolean until() {
-                return selenium.isElementPresent("//input[@name='jcr:title']");
-            }
-        };
-        selenium.click("//button[text()='Cancel']");
-
-        //Verify if Page 1 and page 2 exist
-         selenium.mouseOver("//div[text()='Page 1']");
-         selenium.mouseOver("//div[text()='Page 2']");
-
-
-
-        //Copy page 1
-        selenium.mouseOver("//span[text()='Page 1']");
-        selenium.contextMenuAt("//span[text()='Page 1']", "5,5");
-        selenium.click("Link=Copy");
-
-        //Paste Page 1
-        selenium.mouseOver("//span[text()='My Profile']");
-        selenium.contextMenuAt("//span[text()='My Profile']", "5,5");
-        selenium.click("Link=Paste");
-        //Delete the two Page 1
-        selenium.mouseOver("//div[text()='Page 1']");
-        selenium.contextMenuAt("//div[text()='Page 1']", "0,0");
-        selenium.click("Link=Remove");
-        selenium.mouseOver("//div[text()='Page 1']");
-        selenium.contextMenuAt("//div[text()='Page 1']", "5,5");
-        selenium.click("Link=Remove");
 
 
 
 
     }
-
 }

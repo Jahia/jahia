@@ -49,6 +49,7 @@ public class DocumentManagerTest extends SeleneseTestCase {
     }
 
     public void test() throws InterruptedException {
+                selenium.setSpeed(TEST_SPEED);
         try {
             selenium.open("/cms/edit/default/en/sites/mySite/home.html");
         } catch (Exception e) {
@@ -109,7 +110,6 @@ public class DocumentManagerTest extends SeleneseTestCase {
         selenium.refresh();
 
 
-        pause(15000);
 
 
     }

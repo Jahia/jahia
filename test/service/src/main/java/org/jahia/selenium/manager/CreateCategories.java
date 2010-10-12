@@ -14,7 +14,7 @@ public class CreateCategories extends SeleneseTestCase {
     private static Logger logger = Logger.getLogger(CreateCategories.class);
     private JahiaSite site;
     private final static String TESTSITE_NAME = "mySite";
-    private final static String TEST_SPEED = "1500"; //speed between selenium commands
+    private final static String TEST_SPEED = "3000"; //speed between selenium commands
     private final int numberOfCategories = 10;
 
     @Override
@@ -44,6 +44,7 @@ public class CreateCategories extends SeleneseTestCase {
     }
 
     public void test() throws InterruptedException {
+                selenium.setSpeed(TEST_SPEED);
         try {
             selenium.open("/cms/edit/default/en/sites/mySite/home.html");
         } catch (Exception e) {

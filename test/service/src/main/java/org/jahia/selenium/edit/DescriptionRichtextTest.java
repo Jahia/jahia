@@ -23,7 +23,7 @@ public class DescriptionRichtextTest extends SeleneseTestCase {
     private static Logger logger = Logger.getLogger(DescriptionRichtextTest.class);
     private JahiaSite site;
     private final static String TESTSITE_NAME = "mySite";
-    private final static String TEST_SPEED = "1500";  //speed between selenium commands
+    private final static String TEST_SPEED = "3000";  //speed between selenium commands
     private ArrayList<String> defaultAcl = new ArrayList<String>();
     private ArrayList<String> defaultAclAfterRestore = new ArrayList<String>();
 

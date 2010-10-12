@@ -13,7 +13,11 @@
 
     <portlets jcr:primaryType="jnt:portletList"/>
 
-    <themes jcr:primaryType="jnt:folder"/>
+    <themes jcr:primaryType="jnt:folder">
+        <default jcr:primaryType="jnt:folder">
+
+        </default>
+    </themes>
 
     <home jcr:mixinTypes="jmix:sitemap jmix:hasDefaultTemplateNode"
           j:defaultTemplateNode="/templatesSet/templates/base" j:displayInMenu="primary"
@@ -22,10 +26,8 @@
     </home>
 
     <templates jcr:primaryType="jnt:templatesFolder">
-        <base jcr:mixinTypes="jmix:renderable" j:template="default" jcr:primaryType="jnt:masterTemplate">
+        <base jcr:mixinTypes="jmix:renderable jmix:theme" j:template="default" jcr:primaryType="jnt:masterTemplate" j:theme="/templatesSet/themes/default">
             <wrappercontent jcr:primaryType="jnt:contentList">
-                <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:mainResourceTemplate="fullpage"/>
-                <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:mainResourceTemplate="fullpage"/>
                 <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:mainResourceTemplate="fullpage"/>
             </wrappercontent>
             <home jcr:primaryType="jnt:masterTemplate">

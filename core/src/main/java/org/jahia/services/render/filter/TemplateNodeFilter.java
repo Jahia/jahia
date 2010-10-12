@@ -42,6 +42,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -225,6 +226,29 @@ public class TemplateNodeFilter extends AbstractFilter {
         @Override
         public String toString() {
             return templateName + " for node " + node.getPath();
+        }
+
+        public String getTemplateName() {
+            return templateName;
+        }
+
+        public JCRNodeWrapper getNode() {
+            return node;
+        }
+
+        public Template getNext() {
+            return next;
+        }
+
+        public List<Template> getNextTemplates() {
+            List<Template> t;
+            if (next == null) {
+                 t = new ArrayList<Template>();
+            } else {
+                t = next.getNextTemplates();
+            }
+            t.add(this);
+            return t;
         }
     }
 

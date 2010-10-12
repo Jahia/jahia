@@ -162,6 +162,7 @@ abstract class BrowseTabItem extends SidePanelTabItem {
     }
 
     @Override public void refresh(int flag) {
+        factory.getStore().removeAll();
         factory.getLoader().load();
     }
 

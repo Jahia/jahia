@@ -119,7 +119,7 @@ public class PagesTabItem extends SidePanelTabItem {
     }
 
     @Override public void handleNewMainSelection(String path) {
-        if (tree != null && !path.equals(tree.getSelectionModel().getSelectedItem().getPath())) {
+        if (tree != null && (tree.getSelectionModel().getSelectedItem() == null || !path.equals(tree.getSelectionModel().getSelectedItem().getPath()))) {
             factory.setSelectedPath(Arrays.asList(path));
         }
     }

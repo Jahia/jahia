@@ -21,12 +21,7 @@
 
 <body>
 
-<jcr:nodeProperty var="theme" node="${renderContext.mainResource.node}" name="j:theme" inherited="true"/>
-<c:if test="${!empty theme}">
-    <c:forEach var="themeFile" items="${jcr:getChildrenOfType(theme.node,'nt:file')}">
-        <template:addResources type="css" resources="${themeFile.url}" insert="true"/>
-    </c:forEach>
-</c:if>
+<template:theme/>
 <template:addResources type="css" resources="960.css,01web.css"/>
 <c:if test="${renderContext.editMode}">
     <template:addResources type="css" resources="edit.css" />

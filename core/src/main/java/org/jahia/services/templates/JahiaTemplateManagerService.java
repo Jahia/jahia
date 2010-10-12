@@ -35,6 +35,7 @@ package org.jahia.services.templates;
 import java.io.*;
 import java.util.*;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Action;
 import org.jahia.bin.errors.ErrorHandler;

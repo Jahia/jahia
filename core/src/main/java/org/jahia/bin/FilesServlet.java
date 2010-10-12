@@ -166,7 +166,7 @@ public class FilesServlet extends HttpServlet {
             if (contentLength < cacheThreshold) {
                 String cacheKey = workspace + ":" + p + ":" + (v==null ? "0" : v) + ":" + (l==null ? "" : l);
                 byte[] b = (byte[]) cache.get(cacheKey);
-                if (b == null) {
+                if (b == null || b.length != contentLength) {
                     is = fileContent.downloadFile();
                     if(is!=null) {
                         try {

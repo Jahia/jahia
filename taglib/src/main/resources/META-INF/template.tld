@@ -490,4 +490,11 @@
     	<name>displayPagination</name>
     	<path>/META-INF/tags/displayPagination.tag</path>
     </tag-file>
+
+    <tag-file>
+        <name>theme</name>
+        <path>/META-INF/tags/theme.tag</path>
+    </tag-file>
+
+
 </taglib>

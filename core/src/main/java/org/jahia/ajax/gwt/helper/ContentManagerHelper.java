@@ -1017,22 +1017,30 @@ public class ContentManagerHelper {
     }
 
 
-    public GWTJahiaNode createTemplateSet(String key, JCRSessionWrapper session) throws IOException, RepositoryException {
-        File path = new File(SettingsBean.getInstance().getJahiaEtcDiskPath(), "/repository/templatesSet.xml");
-        if (path.exists()) {
-            InputStream is = null;
-            try {
-                is = new FileInputStream(path);
-                JCRNodeWrapper templateSet = session.getNode("/templateSets").addNode(key, "jnt:virtualsite");
-                templateSet.setProperty("j:installedModules", new Value[]{session.getValueFactory().createValue(key)});
-                session.importXML("/templateSets/" + key, is, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
-                session.save();
-                ServicesRegistry.getInstance().getJahiaTemplateManagerService().createModule(key);
+    public GWTJahiaNode createTemplateSet(String key, String baseSet, JCRSessionWrapper session) throws  GWTJahiaServiceException {
+        if (baseSet == null) {
+            File path = new File(SettingsBean.getInstance().getJahiaEtcDiskPath(), "/repository/templatesSet.xml");
+            if (path.exists()) {
+                InputStream is = null;
+                try {
+                    is = new FileInputStream(path);
+                    JCRNodeWrapper templateSet = session.getNode("/templateSets").addNode(key, "jnt:virtualsite");
+                    templateSet.setProperty("j:installedModules", new Value[]{session.getValueFactory().createValue(key)});
+                    session.importXML("/templateSets/" + key, is, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
+                    session.save();
+                    ServicesRegistry.getInstance().getJahiaTemplateManagerService().createModule(key);
 
-                return navigation.getGWTJahiaNode(templateSet);
-            } finally {
-                org.apache.commons.io.IOUtils.closeQuietly(is);
+                    return navigation.getGWTJahiaNode(templateSet);
+                } catch (Exception e) {
+                    throw new GWTJahiaServiceException(e);
+                } finally {
+                    org.apache.commons.io.IOUtils.closeQuietly(is);
+                }
             }
+        } else {
+            List<GWTJahiaNode> result = copy(Arrays.asList("/templateSets/" + baseSet), "/templateSets", key, false, false, false, false, session);
+            ServicesRegistry.getInstance().getJahiaTemplateManagerService().createModule(key);
+            return result.get(0);
         }
         return null;
     }

@@ -98,6 +98,10 @@ public class FilesCacheListener extends DefaultEventListener {
                     // invalidate container HTML cache when the file is moved/renamed 
                     nodes.add(parentPath);
                 }
+                if ((event.getType() == Event.PROPERTY_ADDED || event.getType() == Event.PROPERTY_CHANGED) && parentName.equals("jcr:content")) {
+                    parentPath = parentPath.substring(0, parentPath.lastIndexOf('/'));
+                    nodes.add(parentPath);
+                }
                 if ((event.getType() == Event.NODE_REMOVED) && name.indexOf(':') == -1) {
                     nodes.add(path);
                 }
@@ -109,9 +113,13 @@ public class FilesCacheListener extends DefaultEventListener {
             try {
                 JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        for (String s : nodes) {
-                            JCRNodeWrapper n = (JCRNodeWrapper) session.getItem(s);
-                            cache.remove(n.getPath());
+                        try {
+                            for (String s : nodes) {
+                                JCRNodeWrapper n = (JCRNodeWrapper) session.getItem(s);
+                                cache.remove(session.getWorkspace().getName()+ ":" + n.getPath() + ":0:");
+                            }
+                        } catch (Throwable e) {
+                            logger.error(e.getMessage(), e);
                         }
                         return null;
                     }

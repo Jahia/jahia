@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:test="http://www.apache.org/jackrabbit/test" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
+  <templateSets jcr:primaryType="jnt:templateSets">
+    <templates-intranet jcr:mixinTypes="jmix:hasTemplateNode jmix:sitemap jmix:accessControlled" jcr:primaryType="jnt:virtualsite" changefreq="monthly" j:installedModules="templates-intranet" j:templateNode="/templateSets/templates-intranet/templates/base" priority="0.5">
+      <contents jcr:primaryType="jnt:contentList">
+        <site_components jcr:primaryType="jnt:contentList">
+          <login-to-jahia jcr:primaryType="jnt:loginForm">
+            <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Login to Jahia" jcr:primaryType="jnt:translation" />
+          </login-to-jahia>
+        </site_components>
+      </contents>
+      <files jcr:primaryType="jnt:folder" />
+      <mashups jcr:primaryType="jnt:portletList" />
+      <themes jcr:primaryType="jnt:folder">
+        <theme-yellow jcr:primaryType="jnt:folder">
+          <theme-yellow jcr:primaryType="jnt:folder">
+            <img jcr:primaryType="jnt:folder">
+              <bottomheader-bg.png jcr:mixinTypes="jmix:image" j:height="113" jcr:primaryType="jnt:file" j:width="13">
+                <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+              </bottomheader-bg.png>
+              <navbar-bg.png jcr:mixinTypes="jmix:image" j:height="100" jcr:primaryType="jnt:file" j:width="820">
+                <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+              </navbar-bg.png>
+            </img>
+            <mod jcr:primaryType="jnt:folder">
+              <shortcuts-bg-on.png jcr:mixinTypes="jmix:image" j:height="38" jcr:primaryType="jnt:file" j:width="102">
+                <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+              </shortcuts-bg-on.png>
+              <shortcuts-bg.png jcr:mixinTypes="jmix:image" j:height="38" jcr:primaryType="jnt:file" j:width="102">
+                <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+              </shortcuts-bg.png>
+            </mod>
+          </theme-yellow>
+          <theme-yellow.css jcr:primaryType="jnt:file">
+            <jcr:content jcr:mimeType="text/css" jcr:primaryType="jnt:resource" />
+          </theme-yellow.css>
+        </theme-yellow>
+      </themes>
+      <home jcr:mixinTypes="jmix:sitemap jmix:hasDefaultTemplateNode" j:defaultTemplateNode="/templateSets/templates-intranet/templates/base" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" j:templateNode="/templateSets/templates-intranet/templates/base/home" priority="0.5">
+        <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Home" jcr:primaryType="jnt:translation" />
+        <logo jcr:primaryType="jnt:contentList" />
+        <listA jcr:primaryType="jnt:contentList" />
+        <listB jcr:primaryType="jnt:contentList" />
+        <footer jcr:primaryType="jnt:contentList" />
+      </home>
+      <templates jcr:primaryType="jnt:templatesFolder">
+        <base jcr:mixinTypes="jmix:renderable" j:template="intranet" jcr:primaryType="jnt:masterTemplate">
+          <logo jcr:primaryType="jnt:contentList">
+            <logo j:basenode="/templateSets/templates-intranet/home" jcr:primaryType="jnt:absoluteArea" />
+          </logo>
+          <simpleSearch jcr:primaryType="jnt:contentList">
+            <simpleSearchForm result="/templateSets/templates-intranet/search-results" jcr:primaryType="jnt:simpleSearchForm" />
+          </simpleSearch>
+          <topMenu jcr:primaryType="jnt:contentList">
+            <top-menu j:menuType="primary" j:maxDepth="2" jcr:primaryType="jnt:navMenu" j:baselineNode="/templateSets/templates-intranet/home" j:styleName="navigation" />
+            <shortcuts jcr:primaryType="jnt:shortcuts" />
+          </topMenu>
+          <footer jcr:primaryType="jnt:contentList">
+            <footer j:basenode="/templateSets/templates-intranet/home" jcr:primaryType="jnt:absoluteArea" />
+          </footer>
+          <wrappercontent jcr:primaryType="jnt:contentList">
+            <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:mainResourceTemplate="fullpage" />
+          </wrappercontent>
+          <pagetitle jcr:primaryType="jnt:contentList" />
+          <topfooter jcr:primaryType="jnt:contentList" />
+          <home jcr:primaryType="jnt:masterTemplate">
+            <wrappercontent jcr:primaryType="jnt:contentList">
+              <row1 column="2col106" jcr:primaryType="jnt:row">
+                <col1 j:skin="skins.box3style1" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
+                  <listA jcr:primaryType="jnt:mainResourceArea" />
+                </col1>
+                <col2 j:skin="skins.box5" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
+                  <login-to-jahia j:node="/templateSets/templates-intranet/contents/site_components/login-to-jahia" jcr:primaryType="jnt:contentReference" />
+                  <listB jcr:primaryType="jnt:mainResourceArea" />
+                </col2>
+              </row1>
+            </wrappercontent>
+          </home>
+          <simple jcr:primaryType="jnt:masterTemplate">
+            <wrappercontent jcr:primaryType="jnt:contentList">
+              <row1 column="2col124" jcr:primaryType="jnt:row">
+                <col1 j:skin="skins.box3style1" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
+                  <listA jcr:primaryType="jnt:mainResourceArea" />
+                </col1>
+                <col2 j:skin="skins.box5" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
+                  <listB jcr:primaryType="jnt:mainResourceArea" />
+                </col2>
+              </row1>
+            </wrappercontent>
+          </simple>
+          <double jcr:primaryType="jnt:masterTemplate">
+            <wrappercontent jcr:primaryType="jnt:contentList">
+              <row1 column="3col664" jcr:primaryType="jnt:row">
+                <col1 j:skin="skins.box3style1" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
+                  <listA jcr:primaryType="jnt:mainResourceArea" />
+                </col1>
+                <col2 j:skin="skins.box3style1" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
+                  <listB jcr:primaryType="jnt:mainResourceArea" />
+                </col2>
+                <col3 j:skin="skins.box5" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
+                  <listC jcr:primaryType="jnt:mainResourceArea" />
+                </col3>
+              </row1>
+            </wrappercontent>
+          </double>
+          <docspace jcr:primaryType="jnt:masterTemplate">
+            <wrappercontent jcr:primaryType="jnt:contentList">
+              <row column="2col88" jcr:primaryType="jnt:row">
+                <col1 jcr:primaryType="jnt:contentList">
+                  <docspaceTree jcr:primaryType="jnt:docspaceTree" />
+                </col1>
+                <col2 jcr:primaryType="jnt:contentList">
+                  <docspaceFormCreation jcr:primaryType="jnt:docspaceFormCreation" />
+                  <contentList jcr:mixinTypes="jmix:renderable" j:template="twoColumns" jcr:primaryType="jnt:contentList">
+                    <lastDocspace jcr:primaryType="jnt:lastDocspace" />
+                    <lastDocspaceDoc jcr:primaryType="jnt:lastDocspaceDoc" />
+                  </contentList>
+                </col2>
+              </row>
+            </wrappercontent>
+            <file jcr:primaryType="jnt:derivedTemplate" j:applyOn="jnt:file">
+              <wrappercontent jcr:primaryType="jnt:contentList">
+                <row column="2col124" jcr:primaryType="jnt:row">
+                  <col1 jcr:primaryType="jnt:contentList">
+                    <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:mainResourceTemplate="docspace" />
+                    <mainResourceDisplay-1 jcr:primaryType="jnt:mainResourceDisplay" j:mainResourceTemplate="updateFile" />
+                    <document-history j:skin="skins.box2" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
+                      <j:translation_en j:skin="skins.box2" jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Document History" jcr:primaryType="jnt:translation" />
+                      <commentable jcr:primaryType="jnt:commentable" j:bindedComponent="/templateSets/templates-intranet/templates/base/docspace/file/wrappercontent/row/col1/mainResourceDisplay" />
+                      <commentable-1 jcr:mixinTypes="jmix:renderable" j:template="addcomment" jcr:primaryType="jnt:commentable" j:bindedComponent="/templateSets/templates-intranet/templates/base/docspace/file/wrappercontent/row/col1/mainResourceDisplay" />
+                    </document-history>
+                  </col1>
+                  <col2 jcr:primaryType="jnt:contentList">
+                    <displayVersion jcr:primaryType="jnt:displayVersion" j:bindedComponent="/templateSets/templates-intranet/templates/base/docspace/file/wrappercontent/row/col1/mainResourceDisplay" />
+                    <extras j:skin="skins.box5style2" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
+                      <j:translation_en j:skin="skins.box5style2" jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Extras" jcr:primaryType="jnt:translation" />
+                      <rateable jcr:primaryType="jnt:rateable" j:bindedComponent="/templateSets/templates-intranet/templates/base/docspace/file/wrappercontent/row/col1/mainResourceDisplay" />
+                      <tag-this-document jcr:primaryType="jnt:tagging" j:bindedComponent="/templateSets/templates-intranet/templates/base/docspace/file/wrappercontent/row/col1/mainResourceDisplay">
+                        <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Tag This Document" jcr:primaryType="jnt:translation" />
+                      </tag-this-document>
+                      <tag-this-document-1 jcr:mixinTypes="jmix:renderable" j:template="addtag" jcr:primaryType="jnt:tagging" j:bindedComponent="/templateSets/templates-intranet/templates/base/docspace/file/wrappercontent/row/col1/mainResourceDisplay">
+                        <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Tag this document" jcr:primaryType="jnt:translation" />
+                      </tag-this-document-1>
+                    </extras>
+                  </col2>
+                </row>
+              </wrappercontent>
+            </file>
+            <folder jcr:primaryType="jnt:derivedTemplate" j:applyOn="jnt:folder">
+              <wrappercontent jcr:primaryType="jnt:contentList">
+                <row column="2col124" jcr:primaryType="jnt:row">
+                  <col1 jcr:primaryType="jnt:contentList">
+                    <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:mainResourceTemplate="docspace.detail" />
+                  </col1>
+                  <col2 jcr:primaryType="jnt:contentList">
+                    <aclUsers jcr:primaryType="jnt:aclUsers" j:bindedComponent="/templateSets/templates-intranet/templates/base/docspace/folder/wrappercontent/row/col1/mainResourceDisplay" />
+                    <aclUsers-1 jcr:mixinTypes="jmix:renderable" j:template="add" jcr:primaryType="jnt:aclUsers" j:bindedComponent="/templateSets/templates-intranet/templates/base/docspace/folder/wrappercontent/row/col1/mainResourceDisplay" />
+                    <lastDocspace jcr:primaryType="jnt:lastDocspace" />
+                  </col2>
+                </row>
+                <row-1 column="1col16" jcr:primaryType="jnt:row">
+                  <col1 jcr:primaryType="jnt:contentList">
+                    <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:mainResourceTemplate="docspace" />
+                  </col1>
+                </row-1>
+              </wrappercontent>
+            </folder>
+          </docspace>
+          <wiki jcr:primaryType="jnt:masterTemplate">
+            <wrappercontent jcr:primaryType="jnt:contentList">
+              <tabs jcr:primaryType="jnt:tabularList">
+                <last-pages jcr:primaryType="jnt:contentList">
+                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Latest Wiki Pages" jcr:primaryType="jnt:translation" />
+                  <latestContent j:criteria="lastModified" jcr:mixinTypes="jmix:renderable" j:template="linkList" j:type="jnt:wikiPage" j:nbOfResult="20" jcr:primaryType="jnt:latestContent" />
+                </last-pages>
+                <create-new-page jcr:primaryType="jnt:contentList">
+                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Create new page" jcr:primaryType="jnt:translation" />
+                  <create-a-wiki-page jcr:primaryType="jnt:wikiPageFormCreation">
+                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Create a wiki page" jcr:primaryType="jnt:translation" />
+                  </create-a-wiki-page>
+                </create-new-page>
+              </tabs>
+            </wrappercontent>
+            <wrapper jcr:primaryType="jnt:derivedTemplate" j:applyOn="jnt:wikiPage">
+              <wrappercontent jcr:primaryType="jnt:contentList">
+                <row column="2col124" jcr:primaryType="jnt:row">
+                  <col1 jcr:primaryType="jnt:contentList">
+                    <tabularList jcr:primaryType="jnt:tabularList">
+                      <content jcr:primaryType="jnt:contentList">
+                        <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Content" jcr:primaryType="jnt:translation" />
+                        <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:mainResourceTemplate="default" />
+                      </content>
+                      <contribute jcr:primaryType="jnt:contentList">
+                        <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Contribute" jcr:primaryType="jnt:translation" />
+                        <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:mainResourceTemplate="contribute" />
+                      </contribute>
+                      <history jcr:primaryType="jnt:contentList">
+                        <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="History" jcr:primaryType="jnt:translation" />
+                        <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:mainResourceTemplate="history" />
+                      </history>
+                    </tabularList>
+                  </col1>
+                  <col2 jcr:primaryType="jnt:contentList" />
+                </row>
+              </wrappercontent>
+            </wrapper>
+          </wiki>
+          <forum jcr:primaryType="jnt:masterTemplate">
+            <wrappercontent jcr:primaryType="jnt:contentList">
+              <row column="2col124" jcr:primaryType="jnt:row">
+                <col1 jcr:primaryType="jnt:contentList">
+                  <boardindex jcr:primaryType="jnt:mainResourceArea">
+                    <boardIndex boardDescription="Board Description" jcr:primaryType="jnt:boardIndex" boardSubject="Board Subject" />
+                  </boardindex>
+                </col1>
+                <col2 jcr:primaryType="jnt:contentList" />
+              </row>
+            </wrappercontent>
+            <wrapper jcr:primaryType="jnt:derivedTemplate" j:applyOn="jnt:topic jnt:thread">
+              <wrappercontent jcr:primaryType="jnt:contentList">
+                <row column="2col124" jcr:primaryType="jnt:row">
+                  <col1 jcr:primaryType="jnt:contentList">
+                    <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:mainResourceTemplate="default" />
+                  </col1>
+                  <col2 jcr:primaryType="jnt:contentList" />
+                </row>
+              </wrappercontent>
+            </wrapper>
+          </forum>
+          <my-profile jcr:primaryType="jnt:masterTemplate">
+            <wrappercontent jcr:primaryType="jnt:contentList">
+              <tabularList jcr:primaryType="jnt:tabularList">
+                <my-profile jcr:primaryType="jnt:contentList">
+                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="My Profile" jcr:primaryType="jnt:translation" />
+                  <user-profile j:userTemplate="myprofile" jcr:primaryType="jnt:currentUserDisplay" />
+                </my-profile>
+                <my-content jcr:primaryType="jnt:contentList">
+                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="My Content" jcr:primaryType="jnt:translation" />
+                  <currentUserDisplay j:userTemplate="mycontent" jcr:primaryType="jnt:currentUserDisplay" />
+                </my-content>
+                <my-docspaces jcr:primaryType="jnt:contentList">
+                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="My Docspaces" jcr:primaryType="jnt:translation" />
+                  <currentUserDisplay j:userTemplate="mydocspaces" jcr:primaryType="jnt:currentUserDisplay" />
+                </my-docspaces>
+                <my-tasks jcr:primaryType="jnt:contentList">
+                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="My Tasks" jcr:primaryType="jnt:translation" />
+                  <currentUserDisplay j:userTemplate="tasklist" jcr:primaryType="jnt:currentUserDisplay" />
+                </my-tasks>
+                <my-bookmarks jcr:primaryType="jnt:contentList">
+                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="My Bookmarks" jcr:primaryType="jnt:translation" />
+                  <currentUserDisplay j:userTemplate="bookmarks" jcr:primaryType="jnt:currentUserDisplay" />
+                </my-bookmarks>
+                <my-portal jcr:primaryType="jnt:contentList">
+                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="My Portal" jcr:primaryType="jnt:translation" />
+                  <currentUserDisplay j:userTemplate="portal" jcr:primaryType="jnt:currentUserDisplay" />
+                </my-portal>
+                <my-connections jcr:primaryType="jnt:contentList">
+                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="My Connections" jcr:primaryType="jnt:translation" />
+                  <currentUserDisplay j:userTemplate="myconnections" jcr:primaryType="jnt:currentUserDisplay" />
+                </my-connections>
+                <my-messages jcr:primaryType="jnt:contentList">
+                  <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="My Messages" jcr:primaryType="jnt:translation" />
+                  <currentUserDisplay j:userTemplate="mymessages" jcr:primaryType="jnt:currentUserDisplay" />
+                </my-messages>
+              </tabularList>
+            </wrappercontent>
+          </my-profile>
+          <events jcr:primaryType="jnt:masterTemplate">
+            <wrappercontent jcr:primaryType="jnt:contentList">
+              <row1 column="2col115" jcr:primaryType="jnt:row">
+                <col1 j:skin="skins.box3style1" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
+                  <listA jcr:primaryType="jnt:mainResourceArea" />
+                  <events jcr:primaryType="jnt:mainResourceArea" j:allowedTypes="jnt:event" />
+                </col1>
+                <col2 j:skin="skins.box5" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
+                  <calendar startDateProperty="startDate" endDateProperty="endDate" jcr:primaryType="jnt:calendar" j:bindedComponent="/templateSets/templates-intranet/templates/base/events/wrappercontent/row1/col1/events" />
+                  <facets jcr:primaryType="jnt:facets" j:bindedComponent="/templateSets/templates-intranet/templates/base/events/wrappercontent/row1/col1/events">
+                    <fieldFacet mincount="1" field="jnt:event;eventsType" jcr:primaryType="jnt:fieldFacet" missing="false" facet="type" offset="0" limit="100">
+                      <j:translation_en label="Type" jcr:language="en" jcr:primaryType="jnt:translation" />
+                    </fieldFacet>
+                  </facets>
+                </col2>
+              </row1>
+            </wrappercontent>
+          </events>
+          <blog-home jcr:primaryType="jnt:masterTemplate">
+            <wrappercontent jcr:primaryType="jnt:contentList">
+              <row column="2col115" jcr:primaryType="jnt:row">
+                <col1 j:skin="skins.box5style1" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
+                  <new-blog templateNode="/templateSets/templates-intranet/templates/base/blog" buttonLabel="create" jcr:primaryType="jnt:pageFormCreation">
+                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="New Blog" jcr:primaryType="jnt:translation" />
+                  </new-blog>
+                  <topBlog pageSize="10" jcr:primaryType="jnt:topBlog" />
+                  <list jcr:mixinTypes="jmix:renderable" j:template="twoColumns" jcr:primaryType="jnt:contentList">
+                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="list" jcr:primaryType="jnt:translation" />
+                    <topBlogContent pageSize="10" jcr:primaryType="jnt:topBlogContent" />
+                    <topBlogComment pageSize="10" jcr:primaryType="jnt:topBlogComment" />
+                  </list>
+                </col1>
+                <col2 jcr:primaryType="jnt:contentList" />
+              </row>
+            </wrappercontent>
+          </blog-home>
+          <blog jcr:primaryType="jnt:masterTemplate">
+            <wrappercontent jcr:primaryType="jnt:contentList">
+              <row column="2col115" jcr:primaryType="jnt:row">
+                <col1 j:skin="skins.box6" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
+                  <blog-content j:subNodesTemplate="short" jcr:primaryType="jnt:mainResourceArea" j:allowedTypes="jnt:blogContent" />
+                </col1>
+                <col2 jcr:primaryType="jnt:contentList">
+                  <addBlogLink jcr:primaryType="jnt:addBlogLink" />
+                  <authorDisplay j:userTemplate="blog" jcr:primaryType="jnt:authorDisplay" />
+                  <calendar startDateProperty="jcr:created" endDateProperty="jcr:created" jcr:primaryType="jnt:calendar" j:bindedComponent="/templateSets/templates-intranet/templates/base/blog/wrappercontent/row/col1/blog-content" />
+                  <facets jcr:primaryType="jnt:facets" j:bindedComponent="/templateSets/templates-intranet/templates/base/blog/wrappercontent/row/col1/blog-content">
+                    <fieldFacet mincount="1" field="jmix:tagged;j:tags" jcr:primaryType="jnt:fieldFacet" missing="false" facet="tags" offset="0" sort="true" limit="100">
+                      <j:translation_en jcr:language="en" label="Tags" jcr:primaryType="jnt:translation" />
+                    </fieldFacet>
+                  </facets>
+                </col2>
+              </row>
+            </wrappercontent>
+            <blog-edit j:templateKey="blogEdit" jcr:primaryType="jnt:derivedTemplate" j:applyOn="jnt:blogContent">
+              <wrappercontent jcr:primaryType="jnt:contentList">
+                <row column="2col115" jcr:primaryType="jnt:row">
+                  <col1 j:skin="skins.box5style1" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
+                    <edit jcr:primaryType="jnt:blogEntryFormEdition">
+                      <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Edit" jcr:primaryType="jnt:translation" />
+                    </edit>
+                  </col1>
+                  <col2 jcr:primaryType="jnt:contentList">
+                    <authorDisplay j:userTemplate="blog" jcr:primaryType="jnt:authorDisplay" />
+                  </col2>
+                </row>
+              </wrappercontent>
+            </blog-edit>
+            <blog-content jcr:primaryType="jnt:derivedTemplate" j:applyOn="jnt:blogContent">
+              <wrappercontent jcr:primaryType="jnt:contentList">
+                <row column="2col115" jcr:primaryType="jnt:row">
+                  <col1 j:skin="skins.box6" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
+                    <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" />
+                    <document-history j:skin="skins.box2" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
+                      <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Comments" jcr:primaryType="jnt:translation" />
+                      <commentable jcr:primaryType="jnt:commentable" j:bindedComponent="/templateSets/templates-intranet/templates/base/blog/blog-content/wrappercontent/row/col1/mainResourceDisplay" />
+                      <commentable-1 jcr:mixinTypes="jmix:renderable" j:template="addcomment" jcr:primaryType="jnt:commentable" j:bindedComponent="/templateSets/templates-intranet/templates/base/blog/blog-content/wrappercontent/row/col1/mainResourceDisplay" />
+                    </document-history>
+                  </col1>
+                  <col2 jcr:primaryType="jnt:contentList">
+                    <back-to-parent-page jcr:primaryType="jnt:backToParentPage">
+                      <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Back to parent page" jcr:primaryType="jnt:translation" />
+                    </back-to-parent-page>
+                    <authorDisplay j:userTemplate="blog" jcr:primaryType="jnt:authorDisplay" />
+                  </col2>
+                </row>
+              </wrappercontent>
+            </blog-content>
+            <blog-new j:templateKey="blogNew" jcr:primaryType="jnt:derivedTemplate" j:applyOn="jnt:page">
+              <wrappercontent jcr:primaryType="jnt:contentList">
+                <row column="2col115" jcr:primaryType="jnt:row">
+                  <col1 j:skin="skins.box5style1" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
+                    <blogEntryFormCreation jcr:primaryType="jnt:blogEntryFormCreation" />
+                  </col1>
+                  <col2 jcr:primaryType="jnt:contentList">
+                    <authorDisplay j:userTemplate="blog" jcr:primaryType="jnt:authorDisplay" />
+                  </col2>
+                </row>
+              </wrappercontent>
+            </blog-new>
+          </blog>
+        </base>
+      </templates>
+      <search-results jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" j:templateNode="/templateSets/templates-intranet/templates/base" priority="0.5">
+        <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Search results" jcr:primaryType="jnt:translation" />
+        <pagecontent jcr:primaryType="jnt:contentList">
+          <row1 column="1col16" jcr:primaryType="jnt:row">
+            <col1 jcr:primaryType="jnt:contentList">
+              <results autoSuggest="true" pageSize="10" jcr:primaryType="jnt:searchResults" autoSuggestHitCount="2" autoSuggestMinimumHitCount="2">
+                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Results" jcr:primaryType="jnt:translation" />
+              </results>
+            </col1>
+            <col2 jcr:primaryType="jnt:contentList" />
+          </row1>
+        </pagecontent>
+      </search-results>
+      <my-profile jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" j:templateNode="/templateSets/templates-intranet/templates/base/my-profile" priority="0.5">
+        <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="My Profile" jcr:primaryType="jnt:translation" />
+      </my-profile>
+      <j:acl jcr:primaryType="jnt:acl">
+        <GRANT_r_editor j:privileges="jcr:read jcr:read_live jcr:write" j:protected="false" j:principal="r:editor" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+        <DENY_r_editor j:privileges="jcr:write_live jcr:modifyAccessControl" j:protected="false" j:principal="r:editor" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+        <GRANT_r_editor-in-chief j:privileges="jcr:read jcr:write_live jcr:modifyAccessControl jcr:read_live jcr:write" j:protected="false" j:principal="r:editor-in-chief" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+        <GRANT_r_publisher j:privileges="jcr:read jcr:write_live jcr:read_live jcr:write" j:protected="false" j:principal="r:publisher" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+        <DENY_r_publisher j:privileges="jcr:modifyAccessControl" j:protected="false" j:principal="r:publisher" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+        <GRANT_r_seo-manager j:privileges="jcr:read jcr:read_live jcr:write" j:protected="false" j:principal="r:seo-manager" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+        <DENY_r_seo-manager j:privileges="jcr:write_live jcr:modifyAccessControl" j:protected="false" j:principal="r:seo-manager" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+        <GRANT_r_site-administrator j:privileges="jcr:read jcr:write_live jcr:modifyAccessControl jcr:read_live jcr:write" j:protected="false" j:principal="r:site-administrator" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+        <GRANT_r_translator j:privileges="jcr:read jcr:read_live jcr:write" j:protected="false" j:principal="r:translator" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+        <DENY_r_translator j:privileges="jcr:write_live jcr:modifyAccessControl" j:protected="false" j:principal="r:translator" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+        <GRANT_r_web-designer j:privileges="jcr:read jcr:read_live jcr:write" j:protected="false" j:principal="r:web-designer" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+        <DENY_r_web-designer j:privileges="jcr:write_live jcr:modifyAccessControl" j:protected="false" j:principal="r:web-designer" j:aceType="DENY" jcr:primaryType="jnt:ace" />
+      </j:acl>
+      <workflowrules jcr:primaryType="jnt:workflowRules">
+        <jBPM_1-step-publication j:workflow="jBPM:1-step-publication" jcr:primaryType="jnt:workflowRule">
+          <GRANT_r_editor-in-chief j:privileges="review start" j:protected="false" j:principal="r:editor-in-chief" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+          <GRANT_r_editor j:privileges="start" j:protected="false" j:principal="r:editor" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+          <GRANT_r_publisher j:privileges="review" j:protected="false" j:principal="r:publisher" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
+        </jBPM_1-step-publication>
+      </workflowrules>
+    </templates-intranet>
+  </templateSets>
+</content>
+

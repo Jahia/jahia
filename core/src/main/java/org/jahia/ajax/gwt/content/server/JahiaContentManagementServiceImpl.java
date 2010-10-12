@@ -1307,9 +1307,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         contentManager.synchro(pathsToSyncronize, retrieveCurrentSession());
     }
 
-    public GWTJahiaNode createTemplateSet(String key) throws GWTJahiaServiceException {
+    public GWTJahiaNode createTemplateSet(String key, String baseSet) throws GWTJahiaServiceException {
         try {
-            return contentManager.createTemplateSet(key, retrieveCurrentSession());
+            return contentManager.createTemplateSet(key, baseSet, retrieveCurrentSession());
         } catch (Exception e) {
             logger.error("", e);
             throw new GWTJahiaServiceException(e.toString());

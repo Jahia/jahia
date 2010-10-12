@@ -45,6 +45,14 @@
                                             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewTemplatesSetActionItem"/>
                                         </property>
                                         <property name="titleKey" value="label.newTemplatesSet"/>
+                                        <property name="icon" value="newTemplatesSet"/>
+                                    </bean>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                                        <property name="actionItem">
+                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DuplicateTemplatesSetActionItem"/>
+                                        </property>
+                                        <property name="titleKey" value="label.duplicateTemplatesSet"/>
+                                        <property name="icon" value="duplicateTemplatesSet"/>
                                     </bean>
                                     <ref bean="Toolbar.Item.NewPage"/>
                                     <ref bean="Toolbar.Item.NewContent"/>
@@ -118,6 +126,7 @@
                             </property>
                         </bean>
                         <ref bean="Toolbar.Item.Admin"/>
+                        <ref bean="Toolbar.Item.EditMode"/>
                         <ref bean="Toolbar.Item.ClipBoard"/>
                     </list>
                 </property>

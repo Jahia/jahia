@@ -238,7 +238,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     void synchro(Map<String, String> pathsToSyncronize) throws GWTJahiaServiceException;
 
-    GWTJahiaNode createTemplateSet(String key) throws GWTJahiaServiceException;
+    GWTJahiaNode createTemplateSet(String key, String baseSet) throws GWTJahiaServiceException;
 
     GWTJahiaNode generateWar(String moduleName) throws GWTJahiaServiceException;
 

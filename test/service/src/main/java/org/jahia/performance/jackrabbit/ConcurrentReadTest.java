@@ -40,6 +40,10 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.springframework.util.StopWatch;
 
 import javax.jcr.Node;
@@ -60,7 +64,7 @@ import java.util.concurrent.Executors;
  * @since : JAHIA 6.1
  *        Created : 8 oct. 2010
  */
-public class ConcurrentReadTest extends TestCase {
+public class ConcurrentReadTest {
     private transient static Logger logger = Logger.getLogger(ConcurrentReadTest.class);
     private final static String TESTSITE_NAME = "jcrConcurrentReadTest";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
@@ -68,12 +72,13 @@ public class ConcurrentReadTest extends TestCase {
 //    private static final String INITIAL_ENGLISH_SHARED_TEXT_NODE_PROPERTY_VALUE = "English shared text";
     public static final int NB_CHILDREN = 10;
 
-    protected void setUp() throws Exception {
-        try {
+    @BeforeClass
+    public static void oneTimeSetUp() throws Exception {
+    try {
             JahiaSite site = TestHelper.createSite(TESTSITE_NAME);
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    StopWatch stopWatch = new StopWatch();
+                    StopWatch stopWatch = new StopWatch("oneTimeSetUp");
                     stopWatch.start(Thread.currentThread().getName() + " creating set up nodes");
                     TestHelper.createSubPages(session.getNode(SITECONTENT_ROOT_NODE), 3, NB_CHILDREN);
                     session.save();
@@ -82,15 +87,15 @@ public class ConcurrentReadTest extends TestCase {
                     return null;
                 }
             });
-            assertNotNull(site);
+            Assert.assertNotNull(site);
         } catch (Exception ex) {
             logger.warn("Exception during test setUp", ex);
-            fail();
+            Assert.fail();
         }
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    @AfterClass
+    public static void oneTimeTearDown() throws Exception {
         try {
             TestHelper.deleteSite(TESTSITE_NAME);
         } catch (Exception ex) {
@@ -104,7 +109,7 @@ public class ConcurrentReadTest extends TestCase {
         private JCRTemplate jcrTemplate;
 
         public Reader() {
-            stopWatch = new StopWatch();
+            stopWatch = new StopWatch("ReaderRunnable");
             stopWatch.start(Thread.currentThread().getName() + " reading node");
             jcrTemplate = JCRTemplate.getInstance();
         }
@@ -147,7 +152,7 @@ public class ConcurrentReadTest extends TestCase {
         private String primaryNodeTypeName;
 
         public Writer(String primaryNodeTypeName) {
-            stopWatch = new StopWatch();
+            stopWatch = new StopWatch("WriterRunnable");
             jcrTemplate = JCRTemplate.getInstance();
             this.primaryNodeTypeName = primaryNodeTypeName;
         }
@@ -193,7 +198,7 @@ public class ConcurrentReadTest extends TestCase {
 
         public Search(String s){
             testQuery = s;
-            stopWatch = new StopWatch();
+            stopWatch = new StopWatch("SearchRunnable");
             jcrTemplate = JCRTemplate.getInstance();
         }
 
@@ -221,7 +226,7 @@ public class ConcurrentReadTest extends TestCase {
 
         public SearchIteratorResults(String s){
             testQuery = s;
-            stopWatch = new StopWatch();
+            stopWatch = new StopWatch("SearchIteratorResultsRunnable");
             jcrTemplate = JCRTemplate.getInstance();
         }
 
@@ -248,13 +253,14 @@ public class ConcurrentReadTest extends TestCase {
 
     private static final int CHILD_COUNT = 1000;
 
+    @Test
     public void testCreateManyChildUnstructuredNodes() throws RepositoryException {
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                StopWatch stopWatch = new StopWatch();
+                StopWatch stopWatch = new StopWatch("testCreateManyChildUnstructuredNodes");
                 stopWatch.start(Thread.currentThread().getName() + " creating unstructured nodes");
                 JCRNodeWrapper currentNode = session.getNode(SITECONTENT_ROOT_NODE);
-                Node node = currentNode.addNode("testnode", "nt:unstructured");
+                Node node = currentNode.addNode("testnodeUnstructured", "nt:unstructured");
                 for (int i = 0; i < CHILD_COUNT; i++) {
                     node.addNode("node" + i, "nt:unstructured");
                 }
@@ -266,13 +272,14 @@ public class ConcurrentReadTest extends TestCase {
         });
     }
 
+    @Test
     public void testCreateManyChildPageNodes() throws RepositoryException {
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                StopWatch stopWatch = new StopWatch();
+                StopWatch stopWatch = new StopWatch("testCreateManyChildPageNodes");
                 stopWatch.start(Thread.currentThread().getName() + " creating page nodes");
                 JCRNodeWrapper currentNode = session.getNode(SITECONTENT_ROOT_NODE);
-                Node node = currentNode.addNode("testnode", "jnt:page");
+                Node node = currentNode.addNode("testPageNode", "jnt:page");
                 for (int i = 0; i < CHILD_COUNT; i++) {
                     node.addNode("child" + Integer.toString(i), "jnt:page");
                 }
@@ -284,10 +291,11 @@ public class ConcurrentReadTest extends TestCase {
         });
     }
 
+    @Test
     public void testConcurrentRead() throws InterruptedException, ExecutionException {
         Executor executor = Executors.newFixedThreadPool(300);
         ExecutorCompletionService<Boolean> service = new ExecutorCompletionService<Boolean>(executor);
-        StopWatch stopWatch = new StopWatch();
+        StopWatch stopWatch = new StopWatch("testConcurrentRead");
         stopWatch.start(Thread.currentThread().getName() + " only reading nodes");
         for (int i = 0; i < 1000; i++) {
             service.submit(new Reader(), Boolean.TRUE);
@@ -299,10 +307,11 @@ public class ConcurrentReadTest extends TestCase {
         logger.fatal(stopWatch.prettyPrint());
     }
 
+    @Test
     public void testConcurrentReadWrite10Percent() throws InterruptedException, ExecutionException {
         Executor executor = Executors.newFixedThreadPool(300);
         ExecutorCompletionService<Boolean> service = new ExecutorCompletionService<Boolean>(executor);
-        StopWatch stopWatch = new StopWatch();
+        StopWatch stopWatch = new StopWatch("testConcurrentReadWrite10Percent");
         stopWatch.start(Thread.currentThread().getName() + " reading // writing nodes (10% writers)");
         for (int i = 0; i < 1000; i++) {
             if (i % 10 == 0) {
@@ -318,10 +327,11 @@ public class ConcurrentReadTest extends TestCase {
         logger.fatal(stopWatch.prettyPrint());
     }
 
+    @Test
     public void testConcurrentReadWrite1Percent() throws InterruptedException, ExecutionException {
         Executor executor = Executors.newFixedThreadPool(300);
         ExecutorCompletionService<Boolean> service = new ExecutorCompletionService<Boolean>(executor);
-        StopWatch stopWatch = new StopWatch();
+        StopWatch stopWatch = new StopWatch("testConcurrentReadWrite1Percent");
         stopWatch.start(Thread.currentThread().getName() + " reading // writing nodes (1% writers)");
         for (int i = 0; i < 1000; i++) {
             if (i % 100 == 0) {
@@ -337,10 +347,11 @@ public class ConcurrentReadTest extends TestCase {
         logger.fatal(stopWatch.prettyPrint());
     }
 
+    @Test
     public void testConcurrentReadWrite10PercentUnstructured() throws InterruptedException, ExecutionException {
         Executor executor = Executors.newFixedThreadPool(300);
         ExecutorCompletionService<Boolean> service = new ExecutorCompletionService<Boolean>(executor);
-        StopWatch stopWatch = new StopWatch();
+        StopWatch stopWatch = new StopWatch("testConcurrentReadWrite10PercentUnstructured");
         stopWatch.start(Thread.currentThread().getName() + " reading // writing nodes (10% writers)");
         for (int i = 0; i < 1000; i++) {
             if (i % 10 == 0) {
@@ -356,10 +367,11 @@ public class ConcurrentReadTest extends TestCase {
         logger.fatal(stopWatch.prettyPrint());
     }
 
+    @Test
     public void testConcurrentSearchIsDescendant()  throws InterruptedException, ExecutionException {
         Executor executor = Executors.newFixedThreadPool(300);
         ExecutorCompletionService<Boolean> service = new ExecutorCompletionService<Boolean> (executor);
-        StopWatch stopWatch = new StopWatch();
+        StopWatch stopWatch = new StopWatch("testConcurrentSearchIsDescendant");
         stopWatch.start(Thread.currentThread().getName()+ " search jnt:pages nodes is descendant site node");
         for(int i = 0; i < 1000; i++) {
             service.submit(new Search("select * from [jnt:page] as page where isdescendantnode(page, 'path') "), Boolean.TRUE);
@@ -371,10 +383,11 @@ public class ConcurrentReadTest extends TestCase {
         logger.fatal(stopWatch.prettyPrint());
     }
 
+    @Test
     public void testConcurrentSearchIsChild()  throws InterruptedException, ExecutionException {
         Executor executor = Executors.newFixedThreadPool(300);
         ExecutorCompletionService<Boolean> service = new ExecutorCompletionService<Boolean> (executor);
-        StopWatch stopWatch = new StopWatch();
+        StopWatch stopWatch = new StopWatch("testConcurrentSearchIsChild");
         stopWatch.start(Thread.currentThread().getName()+ " search jnt:pages nodes is child site node");
         for(int i = 0; i < 1000; i++) {
             service.submit(new Search("select * from [jnt:page] as page where ischildnode(page, 'path') "), Boolean.TRUE);
@@ -386,10 +399,11 @@ public class ConcurrentReadTest extends TestCase {
         logger.fatal(stopWatch.prettyPrint());
     }
 
+    @Test
     public void testConcurrentSearchIsDescendantAndIteratorResults()  throws InterruptedException, ExecutionException {
         Executor executor = Executors.newFixedThreadPool(300);
         ExecutorCompletionService<Boolean> service = new ExecutorCompletionService<Boolean> (executor);
-        StopWatch stopWatch = new StopWatch();
+        StopWatch stopWatch = new StopWatch("testConcurrentSearchIsDescendantAndIteratorResults");
         stopWatch.start(Thread.currentThread().getName()+ " search jnt:page nodes is descendant site node, iterator results for query results size = -1 ");
         for(int i = 0; i < 1000; i++) {
             service.submit(new SearchIteratorResults("select * from [jnt:page] as page where isdescendantnode(page, 'path') "), Boolean.TRUE);
@@ -401,10 +415,11 @@ public class ConcurrentReadTest extends TestCase {
         logger.fatal(stopWatch.prettyPrint());
     }
 
+    @Test
     public void testConcurrentSearchIsCreatedBeforeNow()  throws InterruptedException, ExecutionException {
         Executor executor = Executors.newFixedThreadPool(300);
         ExecutorCompletionService<Boolean> service = new ExecutorCompletionService<Boolean> (executor);
-        StopWatch stopWatch = new StopWatch();
+        StopWatch stopWatch = new StopWatch("testConcurrentSearchIsCreatedBeforeNow");
         stopWatch.start(Thread.currentThread().getName()+ " search jnt:page nodes is created before now");
         for(int i = 0; i < 1000; i++) {
             service.submit(new Search("select * from [jnt:page] as page where page.[jcr:created] < CAST("+ System.currentTimeMillis() +" as date) "), Boolean.TRUE);
@@ -416,10 +431,11 @@ public class ConcurrentReadTest extends TestCase {
         logger.fatal(stopWatch.prettyPrint());
     }
 
+    @Test
     public void testConcurrentSearchIsCreatedBeforeNowAndIsDescendant()  throws InterruptedException, ExecutionException {
         Executor executor = Executors.newFixedThreadPool(300);
         ExecutorCompletionService<Boolean> service = new ExecutorCompletionService<Boolean> (executor);
-        StopWatch stopWatch = new StopWatch();
+        StopWatch stopWatch = new StopWatch("testConcurrentSearchIsCreatedBeforeNowAndIsDescendant");
         stopWatch.start(Thread.currentThread().getName()+ " search jnt:page nodes is created before now and is descendant site node");
         for(int i = 0; i < 1000; i++) {
             service.submit(new Search("select * from [jnt:page] as page where isdescendantnode(page, 'path') and page.[jcr:created] < CAST("+ System.currentTimeMillis() +" as date) "), Boolean.TRUE);

@@ -183,7 +183,7 @@ public class AclEditor {
         }
 
         // name of the princial
-        col = new ColumnConfig("principal",getResource("label.user"), 140);
+        col = new ColumnConfig("principal",getResource("label.user"), 300);
         columns.add(col);
 
         // add a column per available permission
@@ -267,7 +267,7 @@ public class AclEditor {
 
         // column break in heritance
         if (displayInheritanceColumn) {
-            col = new ColumnConfig("inheritance", "", 200);
+            col = new ColumnConfig("inheritance", Messages.get("label.inherited"), 300);
             col.setAlignment(Style.HorizontalAlignment.LEFT);
             col.setRenderer(new GridCellRenderer<ModelData>() {
                 public Object render(ModelData model, String property, ColumnData config, int rowIndex, int colIndex,
@@ -297,7 +297,7 @@ public class AclEditor {
         grid = new Grid<ModelData>(store, new ColumnModel(columns));
         final BufferView bufferView = new BufferView();
         bufferView.setRowHeight(28);
-        grid.setAutoExpandColumn("principal");
+        grid.setAutoExpandColumn("inheritance");        
         grid.setView(bufferView);
 //        aclTable.setBulkRender(false);
         store.sort("name", Style.SortDir.ASC);
@@ -526,9 +526,9 @@ public class AclEditor {
     private Text buildInheritanceLabel(GWTJahiaNodeACE ace) {
         String label;
         if (ace.getInheritedFrom() != null) {
-            label = getResource("org.jahia.engines.rights.ManageRights.inheritedFrom.label") + " : " + ace.getInheritedFrom();
+            label = getResource("label.inheritedFrom") + " : " + ace.getInheritedFrom();
         } else {
-            label = getResource("org.jahia.engines.rights.ManageRights.inherited.label");
+            label = getResource("label.inherited");
         }
 
         Text text = new Text(label);

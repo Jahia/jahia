@@ -41,10 +41,7 @@ import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.params.valves.LoginEngineAuthValveImpl;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPublicationService;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.VersionInfo;
+import org.jahia.services.content.*;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
@@ -54,7 +51,9 @@ import org.json.JSONObject;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -129,7 +128,7 @@ public class RenderTest extends TestCase {
 
     public void testVersionRender() throws RepositoryException {
         JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
-
+        JCRVersionService jcrVersionService = ServicesRegistry.getInstance().getJCRVersionService();
         JCRSessionWrapper editSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
         JCRSessionWrapper liveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
 
@@ -153,7 +152,9 @@ public class RenderTest extends TestCase {
 
         // publish it
         jcrService.publish(stageNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true,Collections.<String>emptyList());
-
+        String label = "published_at_" + new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(
+                GregorianCalendar.getInstance().getTime());
+        jcrVersionService.addVersionLabel(liveSession.getNodeByUUID(stageNode.getIdentifier()), label);
         for (int i = 1; i < NUMBER_OF_VERSIONS; i++) {
             editSession.checkout(stagedSubPage);
             stagedSubPage.setProperty("jcr:title", "title" + i);
@@ -162,6 +163,9 @@ public class RenderTest extends TestCase {
             // each time the node i published, a new version should be created
             jcrService.publish(stagedSubPage.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false,
                     Collections.<String>emptyList());
+            label = "published_at_" + new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(
+                GregorianCalendar.getInstance().getTime());
+            jcrVersionService.addVersionLabel(liveSession.getNodeByUUID(stagedSubPage.getIdentifier()), label);
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -178,7 +182,7 @@ public class RenderTest extends TestCase {
         // check number of versions
         JCRNodeWrapper subPagePublishedNode = liveSession.getNode(stagedSubPage.getPath());
 
-        List<VersionInfo> liveVersionInfos = ServicesRegistry.getInstance().getJCRVersionService().getVersionInfos(liveSession, subPagePublishedNode);
+        List<VersionInfo> liveVersionInfos = jcrVersionService.getVersionInfos(liveSession, subPagePublishedNode);
         int index = 0;
         for (VersionInfo curVersionInfo : liveVersionInfos) {
             if (curVersionInfo.getVersion().getCreated() != null) {
@@ -195,6 +199,7 @@ public class RenderTest extends TestCase {
             index++;
             }
         }
+        index++;
         logger.debug("number of version: " + index);
         assertEquals(NUMBER_OF_VERSIONS, index);
 

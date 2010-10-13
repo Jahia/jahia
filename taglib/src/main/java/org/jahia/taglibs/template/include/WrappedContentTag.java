@@ -47,7 +47,6 @@ import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.ConstraintViolationException;
-import javax.servlet.jsp.PageContext;
 import java.io.IOException;
 import java.util.Set;
 
@@ -90,7 +89,7 @@ public class WrappedContentTag extends ModuleTag implements ParamParent {
                         }
                         node = nodeWrapper.addNode(path, areaType);
                         if(mainResource!=null)
-                        applyContributeModeOptions(mainResource.getNode());
+                        applyContributeModeOptions(mainResource.getNode(), false);
                     }
                 } else {
                     // Absolute area
@@ -101,7 +100,7 @@ public class WrappedContentTag extends ModuleTag implements ParamParent {
                         }
                         node = parent.addNode(StringUtils.substringAfterLast(path, "/"), areaType);
                         if(mainResource!=null)
-                        applyContributeModeOptions(mainResource.getNode());
+                        applyContributeModeOptions(mainResource.getNode(), false);
                     }
                 }
                 NodeIterator ni = mainResource.getNode().getNodes();
@@ -118,20 +117,25 @@ public class WrappedContentTag extends ModuleTag implements ParamParent {
         }
     }
 
-    private void applyContributeModeOptions(JCRNodeWrapper nodeWrapper) throws RepositoryException {
+    private void applyContributeModeOptions(JCRNodeWrapper nodeWrapper, boolean nodeAlreadyExist)
+            throws RepositoryException {
         if (nodeWrapper.isNodeType("jmix:contributeMode")) {
-            ExtendedNodeType nodeType = NodeTypeRegistry.getInstance().getNodeType(
-                    "jmix:contributeMode");
-            Set<String> propertyNameSet = nodeType.getPropertyDefinitionsAsMap().keySet();
-            node.addMixin("jmix:contributeMode");
-            for (String propertyName : propertyNameSet) {
-                if (nodeWrapper.hasProperty(propertyName)) {
-                    JCRPropertyWrapper property = nodeWrapper.getProperty(propertyName);
-                    if (!property.isMultiple()) {
-                        node.setProperty(propertyName, property.getValue());
-                    } else {
-                        node.setProperty(propertyName, property.getValues());
+            if (!node.isNodeType("jmix:contributeMode")) {
+                ExtendedNodeType nodeType = NodeTypeRegistry.getInstance().getNodeType("jmix:contributeMode");
+                Set<String> propertyNameSet = nodeType.getPropertyDefinitionsAsMap().keySet();
+                node.addMixin("jmix:contributeMode");
+                for (String propertyName : propertyNameSet) {
+                    if (nodeWrapper.hasProperty(propertyName)) {
+                        JCRPropertyWrapper property = nodeWrapper.getProperty(propertyName);
+                        if (!property.isMultiple()) {
+                            node.setProperty(propertyName, property.getValue());
+                        } else {
+                            node.setProperty(propertyName, property.getValues());
+                        }
                     }
+                }
+                if(nodeAlreadyExist) {
+                    node.getSession().save();
                 }
             }
         }
@@ -164,6 +168,7 @@ public class WrappedContentTag extends ModuleTag implements ParamParent {
                 if (!path.startsWith("/")) {
                     if (!path.equals("*") && node.hasNode(path)) {
                         node = node.getNode(path);
+                        applyContributeModeOptions(currentResource.getNode(),true);
                     } else {
                         missingResource(renderContext, currentResource, resource);
                     }
@@ -171,6 +176,7 @@ public class WrappedContentTag extends ModuleTag implements ParamParent {
                     JCRSessionWrapper session = node.getSession();
                     try {
                         node = (JCRNodeWrapper) session.getItem(path);
+                        applyContributeModeOptions(currentResource.getNode(),true);
                     } catch (PathNotFoundException e) {
                         missingResource(renderContext, currentResource, resource);
                     }

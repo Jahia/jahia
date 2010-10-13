@@ -55,8 +55,10 @@
         </div>
     </ui:loginArea>
 </c:if>
-<c:if test="${renderContext.loggedIn}">
-    <p>Logged as ${renderContext.user.username}</p>
+<c:if test="${renderContext.loggedIn &&  !(currentAliasUser.username eq 'guest')}">
+    <p>Logged as ${renderContext.user.username}
+        <c:if test="${!empty currentAliasUser}">( as ${currentAliasUser.username}) </c:if>
+    </p>
     <p><a class="loginFormTopLogoutShortcuts"
           href='${url.logout}'><span><fmt:message key="label.logout"/></span></a></p>
 </c:if>

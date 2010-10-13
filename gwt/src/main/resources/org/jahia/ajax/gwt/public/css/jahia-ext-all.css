@@ -5774,15 +5774,6 @@ body.ext-ie6.x-body-masked .x-window select {
   outline: 0 none;
 }
 
-.my-tbl-data .my-tbl-item-cell-text {
-  padding: 3px 4px;
-  font-family: arial, tahoma, helvetica, sans-serif;
-  font-size: 11px;
-  -moz-outline: none;
-  -moz-user-focus: normal;
-  outline: 0 none;
-}
-
 .my-tbl-data .my-tbl-item-cell-widget {
   padding: 1px 4px;
 }

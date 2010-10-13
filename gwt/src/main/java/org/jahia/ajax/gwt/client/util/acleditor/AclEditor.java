@@ -532,8 +532,6 @@ public class AclEditor {
         }
 
         Text text = new Text(label);
-        text.setToolTip(label);
-        text.setStyleName("my-tbl-item-cell-text");
         return text;
     }
 

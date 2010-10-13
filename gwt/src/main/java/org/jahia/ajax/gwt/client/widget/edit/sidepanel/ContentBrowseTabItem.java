@@ -49,13 +49,10 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
-import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
-import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
+import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * Side panel tab item for browsing the content repository.
@@ -69,7 +66,7 @@ class ContentBrowseTabItem extends BrowseTabItem {
     protected ListStore<GWTJahiaNode> contentStore;
     protected DisplayGridDragSource displayGridSource;
 
-    public ContentBrowseTabItem(GWTSidePanelTab config) {
+    public ContentBrowseTabItem(final GWTSidePanelTab config) {
         super(config);
 
         contentContainer = new LayoutContainer();
@@ -84,7 +81,7 @@ class ContentBrowseTabItem extends BrowseTabItem {
                 if (gwtJahiaFolder != null) {
                     Log.debug("retrieving children of " + ((GWTJahiaNode) gwtJahiaFolder).getName());
                     JahiaContentManagementService.App.getInstance()
-                            .lsLoad((GWTJahiaNode) gwtJahiaFolder, JCRClientUtils.CONTENT_NODETYPES, null, null, Arrays.asList(GWTJahiaNode.ICON), false, listAsyncCallback);
+                            .lsLoad((GWTJahiaNode) gwtJahiaFolder, JCRClientUtils.CONTENT_NODETYPES, null, null, config.getTableColumnKeys(), false, listAsyncCallback);
                 } else {
                     contentContainer.unmask();
                 }
@@ -103,20 +100,9 @@ class ContentBrowseTabItem extends BrowseTabItem {
 
         contentStore = new ListStore<GWTJahiaNode>(listLoader);
 
-        List<ColumnConfig> displayColumns = new ArrayList<ColumnConfig>();
-
-        ColumnConfig col = new ColumnConfig("icon", "", 40);
-        col.setAlignment(Style.HorizontalAlignment.CENTER);
-        col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
-            public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1,
-                                 ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
-                return ContentModelIconProvider.getInstance().getIcon(modelData).getHTML();
-            }
-        });
-        displayColumns.add(col);
-        displayColumns.add(new ColumnConfig("displayName", Messages.get("label.name"), 280));
+        NodeColumnConfigList displayColumns = new NodeColumnConfigList(config.getTableColumns(), true);
         final Grid<GWTJahiaNode> grid = new Grid<GWTJahiaNode>(contentStore, new ColumnModel(displayColumns));
-
+        grid.setAutoExpandColumn(displayColumns.getAutoExpand());
         contentContainer.add(grid);
 
         tree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {

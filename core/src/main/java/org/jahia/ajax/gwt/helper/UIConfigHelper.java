@@ -376,12 +376,12 @@ public class UIConfigHelper {
                 col.setTitle(epd.getLabel(uiLocale != null ? uiLocale : locale));
             } catch (Exception e) {
                 logger.error("Cannot get node type name", e);
-                col.setTitle(item.getKey());
+                col.setTitle("");
             }
         } else if (item.getTitle() != null) {
             col.setTitle(item.getTitle());
         } else {
-            col.setTitle(item.getKey());
+            col.setTitle("");
         }
         if (item.getSize().equals("*")) {
             col.setSize(-1);

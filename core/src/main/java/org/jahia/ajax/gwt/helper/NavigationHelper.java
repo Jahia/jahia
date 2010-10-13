@@ -592,7 +592,7 @@ public class NavigationHelper {
                         currentNode = currentNode.getParent();
                     }
                     if (!alreadyIncludedIdentifiers.contains(currentNode.getIdentifier())) {
-                        result.add(getGWTJahiaNode(currentNode, Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.NAME)));
+                        result.add(getGWTJahiaNode(currentNode, Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.NAME)));
                         alreadyIncludedIdentifiers.add(currentNode.getIdentifier());
                     }
                 }
@@ -921,7 +921,7 @@ public class NavigationHelper {
             }
         }
 
-        if (fields.contains(GWTJahiaNode.WORKFLOW_INFO)) {
+        if (fields.contains(GWTJahiaNode.WORKFLOW_INFO) || fields.contains(GWTJahiaNode.PUBLICATION_INFO)) {
             try {
                 n.setWorkflowInfo(
                         workflow.getWorkflowInfo(n.getPath(), node.getSession(), node.getSession().getLocale()));

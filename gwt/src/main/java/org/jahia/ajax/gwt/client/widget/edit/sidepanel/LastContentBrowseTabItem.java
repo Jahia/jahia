@@ -106,7 +106,7 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
 
         grid.setContextMenu(createContextMenu(config.getTableContextMenu(), grid.getSelectionModel()));
         grid.getStore().setMonitorChanges(true);
-
+        grid.setAutoExpandColumn("displayName");
         final LayoutContainer previewLayoutContainer = new LayoutContainer();
         previewLayoutContainer.setLayout(new FitLayout());
         previewLayoutContainer.setId("bodywrapper");

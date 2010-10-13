@@ -238,6 +238,7 @@
                               id="org.jahia.toolbar.sidePanel.templates">
                             <property name="items">
                                 <list>
+                                    <ref bean="Toolbar.Item.NewPage"/>
                                     <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
                                         <property name="actionItem">
                                             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
@@ -259,13 +260,8 @@
                                         <property name="titleKey" value="label.newDerivedTemplate"/>
                                         <property name="icon" value="newDerivedTemplate"/>
                                     </bean>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item"
-                                          parent="Toolbar.Item.EditContent">
-                                        <property name="titleKey" value="label.rename"/>
-                                        <property name="icon" value="rename"/>
-                                    </bean>
-                                    <ref bean="Toolbar.Item.NewPage"/>
                                     <ref bean="Toolbar.Item.EditContent"/>
+                                    <ref bean="Toolbar.Item.Rename"/>
                                     <ref bean="Toolbar.Item.Delete"/>
                                     <ref bean="Toolbar.Item.Separator"/>
                                     <ref bean="Toolbar.Item.Copy"/>
@@ -289,6 +285,55 @@
                     <property name="visibility" value="$site/selector/templates"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
+                    <property name="key" value="themes"/>
+                    <property name="icon" value="tab-themes"/>
+                    <property name="paths">
+                        <list>
+                            <value>$site/themes</value>
+                        </list>
+                    </property>
+                    <property name="folderTypes">
+                        <list>
+                            <value>nt:folder</value>
+                            <value>jnt:mountPoint</value>
+                        </list>
+                    </property>
+                    <property name="treeColumns">
+                        <list>
+                            <value>displayName,*,label.title</value>
+                        </list>
+                    </property>
+                    <property name="treeContextMenu">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.NewFolder"/>
+                                    <ref bean="Toolbar.Item.Upload"/>
+                                    <ref bean="Toolbar.Item.Rename"/>
+                                    <ref bean="Toolbar.Item.Delete"/>
+                                </list>
+                            </property>
+                        </bean>
+                    </property>
+                    <property name="tableContextMenu">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.Download"/>
+                                    <ref bean="Toolbar.Item.FilePreview"/>
+                                    <ref bean="Toolbar.Item.Rename"/>
+                                    <ref bean="Toolbar.Item.Delete"/>
+                                    <ref bean="Toolbar.Item.Copy"/>
+                                    <ref bean="Toolbar.Item.Cut"/>
+                                    <ref bean="Toolbar.Item.Paste"/>
+                                    <ref bean="Toolbar.Item.PasteReference"/>
+                                </list>
+                            </property>
+                        </bean>
+                    </property>
+                    <property name="visibility" value="$site/selector/files-and-images"/>
+                </bean>
+                <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                     <property name="key" value="pages"/>
                     <property name="icon" value="tab-pages"/>
                     <property name="paths">
@@ -306,11 +351,7 @@
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                             <property name="items">
                                 <list>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item"
-                                          parent="Toolbar.Item.EditContent">
-                                        <property name="titleKey" value="label.rename"/>
-                                        <property name="icon" value="rename"/>
-                                    </bean>
+                                    <ref bean="Toolbar.Item.NewPage"/>
                                     <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
                                         <property name="actionItem">
                                             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
@@ -331,8 +372,8 @@
                                         <property name="titleKey" value="label.newExternalLink"/>
                                         <property name="icon" value="newExternalLink"/>
                                     </bean>
-                                    <ref bean="Toolbar.Item.NewPage"/>
                                     <ref bean="Toolbar.Item.EditContent"/>
+                                    <ref bean="Toolbar.Item.Rename"/>
                                     <ref bean="Toolbar.Item.Delete"/>
                                     <ref bean="Toolbar.Item.Separator"/>
                                     <ref bean="Toolbar.Item.Copy"/>
@@ -385,6 +426,7 @@
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.EditContent"/>
+                                    <ref bean="Toolbar.Item.Rename"/>
                                     <ref bean="Toolbar.Item.Delete"/>
                                     <ref bean="Toolbar.Item.Copy"/>
                                     <ref bean="Toolbar.Item.Cut"/>
@@ -402,55 +444,6 @@
                     <property name="paths">
                         <list>
                             <value>$site/files</value>
-                        </list>
-                    </property>
-                    <property name="folderTypes">
-                        <list>
-                            <value>nt:folder</value>
-                            <value>jnt:mountPoint</value>
-                        </list>
-                    </property>
-                    <property name="treeColumns">
-                        <list>
-                            <value>displayName,*,label.title</value>
-                        </list>
-                    </property>
-                    <property name="treeContextMenu">
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                            <property name="items">
-                                <list>
-                                    <ref bean="Toolbar.Item.NewFolder"/>
-                                    <ref bean="Toolbar.Item.Upload"/>
-                                    <ref bean="Toolbar.Item.Rename"/>
-                                    <ref bean="Toolbar.Item.Delete"/>
-                                </list>
-                            </property>
-                        </bean>
-                    </property>
-                    <property name="tableContextMenu">
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                            <property name="items">
-                                <list>
-                                    <ref bean="Toolbar.Item.Download"/>
-                                    <ref bean="Toolbar.Item.FilePreview"/>
-                                    <ref bean="Toolbar.Item.Rename"/>
-                                    <ref bean="Toolbar.Item.Delete"/>
-                                    <ref bean="Toolbar.Item.Copy"/>
-                                    <ref bean="Toolbar.Item.Cut"/>
-                                    <ref bean="Toolbar.Item.Paste"/>
-                                    <ref bean="Toolbar.Item.PasteReference"/>
-                                </list>
-                            </property>
-                        </bean>
-                    </property>
-                    <property name="visibility" value="$site/selector/files-and-images"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
-                    <property name="key" value="themes"/>
-                    <property name="icon" value="tab-themes"/>
-                    <property name="paths">
-                        <list>
-                            <value>$site/themes</value>
                         </list>
                     </property>
                     <property name="folderTypes">
@@ -531,6 +524,7 @@
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.EditContent"/>
+                                    <ref bean="Toolbar.Item.Rename"/>
                                     <ref bean="Toolbar.Item.Delete"/>
                                     <ref bean="Toolbar.Item.Copy"/>
                                     <ref bean="Toolbar.Item.Cut"/>
@@ -571,19 +565,6 @@
                 <property name="layout" value="button-label"/>
                 <property name="items">
                     <list>
-                        <!--<bean class="org.jahia.services.uicomponents.bean.toolbar.Menu"-->
-                        <!--id="Toolbar.ItemsGroup.NewAction">-->
-
-                        <!--<property name="titleKey" value="label.new"/>-->
-                        <!--<property name="icon" value="newAction"/>-->
-                        <!--<property name="items">-->
-                        <!--<list>-->
-                        <!--<ref bean="Toolbar.Item.NewPage"/>-->
-                        <!--<ref bean="Toolbar.Item.NewContent"/>-->
-                        <!--</list>-->
-                        <!--</property>-->
-                        <!--<property name="visibility" value="$site/toolbar/new"/>-->
-                        <!--</bean>-->
                         <ref bean="Toolbar.Item.Live"/>
                         <ref bean="Toolbar.Item.Preview"/>
                         <ref bean="Toolbar.Item.Contribute"/>
@@ -806,18 +787,14 @@
                     <property name="treeColumns">
                         <list>
                             <value>displayName,*,label.title</value>
-                            <value>publicationInfo,20,label.status</value>
+                            <value>publicationInfo,20</value>
                         </list>
                     </property>
                     <property name="treeContextMenu">
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                             <property name="items">
                                 <list>
-                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item"
-                                          parent="Toolbar.Item.EditContent">
-                                        <property name="titleKey" value="label.rename"/>
-                                        <property name="icon" value="rename"/>
-                                    </bean>
+                                    <ref bean="Toolbar.Item.NewPage"/>
                                     <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
                                         <property name="actionItem">
                                             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
@@ -838,8 +815,9 @@
                                         <property name="titleKey" value="label.newExternalLink"/>
                                         <property name="icon" value="newExternalLink"/>
                                     </bean>
-                                    <ref bean="Toolbar.Item.NewPage"/>
+                                    <ref bean="Toolbar.Item.Publish"/>
                                     <ref bean="Toolbar.Item.EditContent"/>
+                                    <ref bean="Toolbar.Item.Rename"/>
                                     <ref bean="Toolbar.Item.Delete"/>
                                     <ref bean="Toolbar.Item.Separator"/>
                                     <ref bean="Toolbar.Item.Copy"/>
@@ -889,11 +867,20 @@
                             </property>
                         </bean>
                     </property>
+                    <property name="tableColumns">
+                        <list>
+                            <value>icon,40</value>
+                            <value>displayName,*,label.title</value>
+                            <value>publicationInfo,20</value>
+                        </list>
+                    </property>
                     <property name="tableContextMenu">
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.EditContent"/>
+                                    <ref bean="Toolbar.Item.Publish"/>
+                                    <ref bean="Toolbar.Item.Rename"/>
                                     <ref bean="Toolbar.Item.Delete"/>
                                     <ref bean="Toolbar.Item.Copy"/>
                                     <ref bean="Toolbar.Item.Cut"/>
@@ -944,6 +931,7 @@
                                 <list>
                                     <ref bean="Toolbar.Item.Download"/>
                                     <ref bean="Toolbar.Item.FilePreview"/>
+                                    <ref bean="Toolbar.Item.Publish"/>
                                     <ref bean="Toolbar.Item.Rename"/>
                                     <ref bean="Toolbar.Item.Delete"/>
                                     <ref bean="Toolbar.Item.Copy"/>
@@ -995,6 +983,8 @@
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.EditContent"/>
+                                    <ref bean="Toolbar.Item.Publish"/>
+                                    <ref bean="Toolbar.Item.Rename"/>
                                     <ref bean="Toolbar.Item.Delete"/>
                                     <ref bean="Toolbar.Item.Copy"/>
                                     <ref bean="Toolbar.Item.Cut"/>
@@ -1016,6 +1006,13 @@
                         <map>
                             <entry key="limit" value="500"/>
                         </map>
+                    </property>
+                    <property name="tableColumns">
+                        <list>
+                            <value>icon,40</value>
+                            <value>displayName,*,label.title</value>
+                            <value>publicationInfo,20</value>
+                        </list>
                     </property>
                     <property name="visibility" value="$site/selector/categories"/>
                 </bean>
@@ -1045,11 +1042,19 @@
                             </property>
                         </bean>
                     </property>
+                    <property name="tableColumns">
+                        <list>
+                            <value>icon,40</value>
+                            <value>displayName,*,label.title</value>
+                            <value>publicationInfo,20</value>
+                        </list>
+                    </property>
                     <property name="tableContextMenu">
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.EditContent"/>
+                                    <ref bean="Toolbar.Item.Rename"/>
                                     <ref bean="Toolbar.Item.Delete"/>
                                     <ref bean="Toolbar.Item.Copy"/>
                                     <ref bean="Toolbar.Item.Cut"/>

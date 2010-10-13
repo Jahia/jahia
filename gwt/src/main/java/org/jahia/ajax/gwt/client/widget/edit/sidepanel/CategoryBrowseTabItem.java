@@ -97,10 +97,9 @@ public class CategoryBrowseTabItem extends BrowseTabItem {
         contentStore = new ListStore<GWTJahiaNode>(listLoader);
 
         // grid
-        final List<GWTColumn> columnNames = new ArrayList<GWTColumn>();
-        columnNames.add(new GWTColumn("icon",Messages.get("label.icon","icon"),40));
-        columnNames.add(new GWTColumn("displayName",Messages.get("label.displayName","displayName"),215));
-        final Grid<GWTJahiaNode> grid = new Grid<GWTJahiaNode>(contentStore, new ColumnModel(new NodeColumnConfigList(columnNames,true)));
+        NodeColumnConfigList displayColumns = new NodeColumnConfigList(config.getTableColumns(), true);
+        final Grid<GWTJahiaNode> grid = new Grid<GWTJahiaNode>(contentStore, new ColumnModel(displayColumns));
+        grid.setAutoExpandColumn(displayColumns.getAutoExpand());
         contentContainer.add(grid);
 
   

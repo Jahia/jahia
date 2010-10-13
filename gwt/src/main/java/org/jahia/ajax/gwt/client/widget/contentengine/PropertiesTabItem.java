@@ -190,9 +190,11 @@ public class PropertiesTabItem extends EditEngineTabItem {
                     }
                 }
                 setPropertiesEditorByLang(language);
-
                 attachPropertiesEditor();
-
+                if (propertiesEditor.getFieldsMap().containsKey("jcr:title")) {
+                    Field title = propertiesEditor.getFieldsMap().get("jcr:title");
+                    title.focus();
+                }
             }
 
             // synch non18n properties

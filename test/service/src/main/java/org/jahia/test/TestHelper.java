@@ -89,7 +89,6 @@ public class TestHelper {
     public static final String TCK_TEMPLATES = "Jahia Test";
     public static final String ACME_TEMPLATES = "templates-web";
     public static final String INTRANET_TEMPLATES = "templates-intranet";
-    public static final String TEST_TEMPLATES = "templates-test";
 
     public static JahiaSite createSite(String name) throws Exception {
         return createSite(name, "localhost"+System.currentTimeMillis(), ACME_TEMPLATES, null, null);

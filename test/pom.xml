@@ -16,6 +16,5 @@
 	<modules>
 		<module>service</module>
 		<module>war</module>
-        <module>templates-test</module>
 	</modules>
 </project>

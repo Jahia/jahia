@@ -446,7 +446,7 @@
                     <property name="visibility" value="$site/selector/files-and-images"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
-                    <property name="key" value="filesimages"/>
+                    <property name="key" value="themes"/>
                     <property name="icon" value="tab-themes"/>
                     <property name="paths">
                         <list>

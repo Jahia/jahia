@@ -82,6 +82,8 @@ public class SidePanel extends ContentPanel {
                 tabItem = new ContentBrowseTabItem(tab);
             } else if (tab.getName().equals("filesimages")) {
                 tabItem = new FileImagesBrowseTabItem(tab);
+            } else if (tab.getName().equals("themes")) {
+                tabItem = new FileImagesBrowseTabItem(tab);
             } else if (tab.getName().equals("portlets")) {
                 tabItem = new PortletBrowseTabItem(tab);
             } else if (tab.getName().equals("search")) {

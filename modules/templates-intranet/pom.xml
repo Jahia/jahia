@@ -172,7 +172,7 @@
                 <executions>
                     <execution>
                         <id>packaging</id>
-                        <phase>package</phase>
+                        <phase>generate-resources</phase>
                         <configuration>
                             <tasks>
                                 <copy file="./target/import.zip" todir="${project.basedir}/src/main/webapp" overwrite="true"/>

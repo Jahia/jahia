@@ -12,6 +12,11 @@
                         <DENY_jcr_write_g_guest j:privileges="jcr:write" j:protected="false" j:principal="g:guest" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_write_g_guest>
                         <DENY_jcr_modifyAccessControl_g_guest j:privileges="jcr:modifyAccessControl" j:protected="false" j:principal="g:guest" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_modifyAccessControl_g_guest>
                         <DENY_jcr_write_live_g_guest j:privileges="jcr:write_live" j:protected="false" j:principal="g:guest" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_write_live_g_guest>
+                        <DENY_jcr_read_live_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:read_live" j:aceType="DENY"/>
+                        <DENY_jcr_read_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:read" j:aceType="DENY"/>
+                        <DENY_jcr_write_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:write" j:aceType="DENY"/>
+                        <DENY_jcr_modifyAccessControl_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:modifyAccessControl" j:aceType="DENY"/>
+                        <DENY_jcr_write_live_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:write_live" j:aceType="DENY"/>
                     </j:acl>
                     <imports jcr:uuid="e0265a2f-f745-4f05-94d5-90af2ae4b6ea" j:published="true" jcr:created="2010-04-11T14:29:12.880+02:00" jcr:primaryType="jnt:importDropBox" jcr:lastModifiedBy="author" j:lastPublished="2010-04-11T14:29:14.439+02:00" j:lastPublishedBy="root" jcr:createdBy=" system " j:fullpath="/users/author/files/private/imports" jcr:lastModified="2009-05-19T15:20:25.370+02:00" j:checkinDate="2010-04-11T14:29:14.439+02:00"></imports>
                 </private>
@@ -48,6 +53,11 @@
                         <DENY_jcr_write_g_guest j:privileges="jcr:write" j:protected="false" j:principal="g:guest" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_write_g_guest>
                         <DENY_jcr_modifyAccessControl_g_guest j:privileges="jcr:modifyAccessControl" j:protected="false" j:principal="g:guest" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_modifyAccessControl_g_guest>
                         <DENY_jcr_write_live_g_guest j:privileges="jcr:write_live" j:protected="false" j:principal="g:guest" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_write_live_g_guest>
+                        <DENY_jcr_read_live_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:read_live" j:aceType="DENY"/>
+                        <DENY_jcr_read_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:read" j:aceType="DENY"/>
+                        <DENY_jcr_write_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:write" j:aceType="DENY"/>
+                        <DENY_jcr_modifyAccessControl_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:modifyAccessControl" j:aceType="DENY"/>
+                        <DENY_jcr_write_live_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:write_live" j:aceType="DENY"/>
                     </j:acl>
                     <imports jcr:uuid="ea076754-602e-4b39-9309-3fc7e6cf1a90" j:published="true" jcr:created="2010-04-11T14:29:22.445+02:00" jcr:primaryType="jnt:importDropBox" jcr:lastModifiedBy="publisher" j:lastPublished="2010-04-11T14:29:23.243+02:00" j:lastPublishedBy="root" jcr:createdBy=" system " j:fullpath="/users/publisher/files/private/imports" jcr:lastModified="2009-05-19T15:20:25.575+02:00" j:checkinDate="2010-04-11T14:29:23.243+02:00"></imports>
                 </private>
@@ -82,6 +92,11 @@
                         <DENY_jcr_write_g_guest j:privileges="jcr:write" j:protected="false" j:principal="g:guest" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_write_g_guest>
                         <DENY_jcr_modifyAccessControl_g_guest j:privileges="jcr:modifyAccessControl" j:protected="false" j:principal="g:guest" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_modifyAccessControl_g_guest>
                         <DENY_jcr_write_live_g_guest j:privileges="jcr:write_live" j:protected="false" j:principal="g:guest" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_write_live_g_guest>
+                        <DENY_jcr_read_live_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:read_live" j:aceType="DENY"/>
+                        <DENY_jcr_read_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:read" j:aceType="DENY"/>
+                        <DENY_jcr_write_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:write" j:aceType="DENY"/>
+                        <DENY_jcr_modifyAccessControl_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:modifyAccessControl" j:aceType="DENY"/>
+                        <DENY_jcr_write_live_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:write_live" j:aceType="DENY"/>
                     </j:acl>
                     <imports jcr:uuid="fbb67369-c082-4d61-bc16-4ee1ec661654" j:published="true" jcr:created="2010-04-11T14:29:26.857+02:00" jcr:primaryType="jnt:importDropBox" jcr:lastModifiedBy="siteadmin" j:lastPublished="2010-04-11T14:29:27.778+02:00" j:lastPublishedBy="root" jcr:createdBy=" system " j:fullpath="/users/siteadmin/files/private/imports" jcr:lastModified="2009-05-19T15:20:25.773+02:00" j:checkinDate="2010-04-11T14:29:27.778+02:00"></imports>
                 </private>
@@ -117,6 +132,11 @@
                         <DENY_jcr_write_g_guest j:privileges="jcr:write" j:protected="false" j:principal="g:guest" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_write_g_guest>
                         <DENY_jcr_modifyAccessControl_g_guest j:privileges="jcr:modifyAccessControl" j:protected="false" j:principal="g:guest" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_modifyAccessControl_g_guest>
                         <DENY_jcr_write_live_g_guest j:privileges="jcr:write_live" j:protected="false" j:principal="g:guest" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_jcr_write_live_g_guest>
+                        <DENY_jcr_read_live_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:read_live" j:aceType="DENY"/>
+                        <DENY_jcr_read_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:read" j:aceType="DENY"/>
+                        <DENY_jcr_write_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:write" j:aceType="DENY"/>
+                        <DENY_jcr_modifyAccessControl_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:modifyAccessControl" j:aceType="DENY"/>
+                        <DENY_jcr_write_live_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:write_live" j:aceType="DENY"/>
                     </j:acl>
                     <imports jcr:uuid="f509e5e2-9a10-41a9-b741-4a3f7c4bfd57" j:published="true" jcr:created="2010-04-11T14:29:30.421+02:00" jcr:primaryType="jnt:importDropBox" jcr:lastModifiedBy="visitor" j:lastPublished="2010-04-11T14:29:31.374+02:00" j:lastPublishedBy="root" jcr:createdBy=" system " j:fullpath="/users/visitor/files/private/imports" jcr:lastModified="2009-05-19T15:20:25.970+02:00" j:checkinDate="2010-04-11T14:29:31.374+02:00"></imports>
                 </private>

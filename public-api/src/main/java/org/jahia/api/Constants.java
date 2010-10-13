@@ -238,4 +238,5 @@ public class Constants {
     public static final List<String> forbiddenPropertiesToCopy = Arrays.asList(PROCESSID,JCR_FROZENUUID,JCR_FROZENMIXINTYPES,JCR_FROZENPRIMARYTYPE,JCR_UUID,JCR_BASEVERSION,JCR_MIXINTYPES,JCR_PRIMARYTYPE);
 
     public static final List<String> forbiddenMixinToCopy = Arrays.asList(JAHIAMIX_WORKFLOW);
+    public static final String JCR_LASTLOGINDATE = "lastLoginDate";
 }

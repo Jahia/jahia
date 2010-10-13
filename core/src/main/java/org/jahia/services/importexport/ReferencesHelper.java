@@ -40,6 +40,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 
 import javax.jcr.*;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -156,11 +157,15 @@ public class ReferencesHelper {
                 newValues = new Value[1];
             }
             newValues[newValues.length-1] =  session.getValueFactory().createValue(value, propertyDefinition.getRequiredType() );
-            n.checkout();
-            n.setProperty(pName, newValues);
+            if (!n.hasProperty(pName) || !Arrays.equals(newValues, n.getProperty(pName).getValues())) {
+                n.checkout();
+                n.setProperty(pName, newValues);
+            }
         } else {
-            n.checkout();
-            n.setProperty(pName, session.getValueFactory().createValue(value, propertyDefinition.getRequiredType()));
+            if (!n.hasProperty(pName) || !value.equals(n.getProperty(pName).getString())) {
+                n.checkout();
+                n.setProperty(pName, session.getValueFactory().createValue(value, propertyDefinition.getRequiredType()));
+            }
         }
     }
 

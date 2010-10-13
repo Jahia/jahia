@@ -924,7 +924,8 @@ public class ContentManagerHelper {
         }
 
         uuidMapping.put(source.getIdentifier(), destinationNode.getIdentifier());
-        if (source.hasProperty("jcr:language")) {
+        if (source.hasProperty("jcr:language") && (!destinationNode.hasProperty("jcr:language") ||
+                (!destinationNode.getProperty("jcr:language").getString().equals(source.getProperty("jcr:language").getString())))) {
             destinationNode.setProperty("jcr:language", source.getProperty("jcr:language").getString());
         }
 
@@ -947,10 +948,12 @@ public class ContentManagerHelper {
                         } else {
                             keepReference(destinationNode, references, property, property.getValue().getString());
                         }
-                    }
-                    if (property.getDefinition().isMultiple() && (property.isMultiple())) {
-                        destinationNode.setProperty(property.getName(), property.getValues());
-                    } else {
+                    } else if (property.getDefinition().isMultiple() && (property.isMultiple())) {
+                        if (!Arrays.equals(destinationNode.getProperty(property.getName()).getValues(), property.getValues())) {
+                            destinationNode.setProperty(property.getName(), property.getValues());
+                        }
+                    } else if (!destinationNode.hasProperty(property.getName()) ||
+                            !destinationNode.getProperty(property.getName()).getValue().equals(property.getValue())) {
                         destinationNode.setProperty(property.getName(), property.getValue());
                     }
                 }
@@ -963,7 +966,7 @@ public class ContentManagerHelper {
         while (pi.hasNext()) {
             JCRPropertyWrapper oldChild = (JCRPropertyWrapper) pi.next();
             if (!oldChild.getDefinition().isProtected()) {
-                if (!names.contains(oldChild.getName())) {
+                if (!names.contains(oldChild.getName()) && !oldChild.getName().equals("j:published")) {
                     oldChild.remove();
                 }
             }
@@ -998,7 +1001,14 @@ public class ContentManagerHelper {
                 }
             }
         }
-        if (destinationNode.getPrimaryNodeType().hasOrderableChildNodes()) {
+
+        List<String> destNames = new ArrayList<String>();
+        ni = destinationNode.getNodes();
+        while (ni.hasNext()) {
+            JCRNodeWrapper oldChild = (JCRNodeWrapper) ni.next();
+            destNames.add(oldChild.getName());
+        }
+        if (destinationNode.getPrimaryNodeType().hasOrderableChildNodes() && !names.equals(destNames)) {
             Collections.reverse(names);
             String previous = null;
             for (String name : names) {

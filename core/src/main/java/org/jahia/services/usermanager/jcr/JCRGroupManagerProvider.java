@@ -109,7 +109,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
      *         already exists or another error occured, null is returned.
      */
     public JCRGroup createGroup(final int siteID, final String name, final Properties properties,
-                                  final boolean hidden) {
+                                final boolean hidden) {
         try {
             return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JCRGroup>() {
                 public JCRGroup doInJCR(JCRSessionWrapper session) throws RepositoryException {
@@ -120,8 +120,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                             parentNodeWrapper = session.getNode("/groups");
                         } else {
                             String siteName = sitesService.getSite(siteID).getSiteKey();
-                            parentNodeWrapper = session.getNode(
-                                    "/sites/" + siteName + "/groups");
+                            parentNodeWrapper = session.getNode("/sites/" + siteName + "/groups");
                         }
                         parentNodeWrapper.checkout();
                         nodeWrapper = parentNodeWrapper.addNode(name, Constants.JAHIANT_GROUP);
@@ -151,8 +150,8 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
 
     /**
      * Create an entry in the JCR for an external group.
-     *  
-     * @param name the unique name for the group
+     *
+     * @param name        the unique name for the group
      * @param providerKey the group provider key
      * @return a reference on a group object on success, or if the group name
      *         already exists or another error occurred, null is returned.
@@ -161,7 +160,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
         Properties properties = new Properties();
         properties.put(JCRGroup.J_EXTERNAL, Boolean.TRUE);
         properties.put(JCRGroup.J_EXTERNAL_SOURCE, providerKey);
-        
+
         return createGroup(0, name, properties, true);
     }
 
@@ -219,7 +218,9 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                 public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     List<String> groups = new ArrayList<String>();
                     if (session.getWorkspace().getQueryManager() != null) {
-                        String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_GROUP + "] as group WHERE group.[" + JCRGroup.J_EXTERNAL + "] = 'false' ORDER BY group.[j:nodename]";
+                        String query =
+                                "SELECT [j:nodename] FROM [" + Constants.JAHIANT_GROUP + "] as group WHERE group.[" +
+                                        JCRGroup.J_EXTERNAL + "] = 'false' ORDER BY group.[j:nodename]";
                         Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                         QueryResult qr = q.execute();
                         RowIterator rows = qr.getRows();
@@ -255,14 +256,17 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                     try {
                         if (session.getWorkspace().getQueryManager() != null) {
                             String siteName = sitesService.getSite(siteID).getSiteKey();
-                            String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_GROUP + "] as group WHERE group.[" + JCRGroup.J_EXTERNAL + "] = 'false' AND ISCHILDNODE(group, '/sites/" + siteName + "/groups') ORDER BY group.[j:nodename]";
+                            String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_GROUP +
+                                    "] as group WHERE group.[" + JCRGroup.J_EXTERNAL +
+                                    "] = 'false' AND ISCHILDNODE(group, '/sites/" + siteName +
+                                    "/groups') ORDER BY group.[j:nodename]";
                             Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                             QueryResult qr = q.execute();
                             RowIterator rows = qr.getRows();
                             while (rows.hasNext()) {
                                 Row groupsFolderNode = rows.nextRow();
-                                String groupName = "{jcr}" + groupsFolderNode.getValue(
-                                        "j:nodename").getString() + ":" + siteID;
+                                String groupName =
+                                        "{jcr}" + groupsFolderNode.getValue("j:nodename").getString() + ":" + siteID;
                                 if (!groups.contains(groupName)) {
                                     groups.add(groupName);
                                 }
@@ -293,7 +297,9 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                 public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     List<String> groups = new ArrayList<String>();
                     if (session.getWorkspace().getQueryManager() != null) {
-                        String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_GROUP + "] as group WHERE group.[" + JCRGroup.J_EXTERNAL + "] = 'false' ORDER BY group.[j:nodename]";
+                        String query =
+                                "SELECT [j:nodename] FROM [" + Constants.JAHIANT_GROUP + "] as group WHERE group.[" +
+                                        JCRGroup.J_EXTERNAL + "] = 'false' ORDER BY group.[j:nodename]";
                         Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                         QueryResult qr = q.execute();
                         RowIterator rows = qr.getRows();
@@ -328,7 +334,10 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                     try {
                         if (session.getWorkspace().getQueryManager() != null) {
                             String siteName = sitesService.getSite(siteID).getSiteKey();
-                            String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_GROUP + "] as group WHERE group.[" + JCRGroup.J_EXTERNAL + "] = 'false' AND ISCHILDNODE(group, '/sites/" + siteName + "/groups') ORDER BY group.[j:nodename]";
+                            String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_GROUP +
+                                    "] as group WHERE group.[" + JCRGroup.J_EXTERNAL +
+                                    "] = 'false' AND ISCHILDNODE(group, '/sites/" + siteName +
+                                    "/groups') ORDER BY group.[j:nodename]";
                             Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                             QueryResult qr = q.execute();
                             RowIterator rows = qr.getRows();
@@ -382,15 +391,15 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
     public List<String> getMembership(final JahiaPrincipal principal) {
         String uuid = null;
         if (principal instanceof JCRPrincipal) {
-            uuid = ((JCRPrincipal)principal).getIdentifier();
+            uuid = ((JCRPrincipal) principal).getIdentifier();
         } else {
             if (principal instanceof JahiaUser) {
-                JCRUser extUser = userManagerProvider.lookupExternalUser(((JahiaUser)principal).getName());
+                JCRUser extUser = userManagerProvider.lookupExternalUser(((JahiaUser) principal).getName());
                 if (extUser != null) {
                     uuid = extUser.getIdentifier();
                 }
             } else if (principal instanceof JahiaGroup) {
-                JCRGroup extGroup = lookupExternalGroup(((JahiaGroup)principal).getGroupname());
+                JCRGroup extGroup = lookupExternalGroup(((JahiaGroup) principal).getGroupname());
                 if (extGroup != null) {
                     uuid = extGroup.getIdentifier();
                 }
@@ -413,16 +422,18 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                             PropertyIterator weakReferences = session.getNodeByUUID(principalId).getWeakReferences();
                             while (weakReferences.hasNext()) {
                                 Property property = weakReferences.nextProperty();
-                                if(property.getPath().contains("j:members")) {
-                                Node group = property.getParent().getParent().getParent();
-                                int siteID;
-                                    try {
-                                        siteID = sitesService.getSiteByKey(
-                                                group.getParent().getParent().getName()).getID();
-                                    } catch (NullPointerException e) {
-                                        siteID = 0;
+                                if (property.getPath().contains("j:members")) {
+                                    Node group = property.getParent().getParent().getParent();
+                                    if (group.isNodeType("jnt:group")) {
+                                        int siteID;
+                                        try {
+                                            siteID = sitesService.getSiteByKey(group.getParent().getParent().getName())
+                                                    .getID();
+                                        } catch (NullPointerException e) {
+                                            siteID = 0;
+                                        }
+                                        groups.add(group.getName() + ":" + siteID);
                                     }
-                                    groups.add(group.getName() + ":" + siteID);
                                 }
                             }
                             if (principal instanceof JahiaUser) {
@@ -434,12 +445,14 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                         } catch (JahiaException e) {
                             logger.error("Error retrieving membership for user ", e);
                         }
-                        if(finalObjectCache !=null) {
-                            finalObjectCache.put(principalId,groups);
+                        if (finalObjectCache != null) {
+                            finalObjectCache.put(principalId, groups);
                         }
                         return groups;
                     }
-                });
+                }
+
+                );
             } catch (RepositoryException e) {
                 logger.error("Error retrieving membership for user ", e);
             } catch (JahiaInitializationException e) {
@@ -454,6 +467,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
      *
      * @return Return the instance of the users group. Return null on any failure
      */
+
     public JahiaGroup getUsersGroup(int siteID) {
         return lookupGroup(0, USERS_GROUPNAME);
     }
@@ -462,8 +476,8 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
      * This function checks on a given site if the groupname has already been
      * assigned to another group.
      *
-     * @param siteID       siteID the site id
-     * @param name String representing the unique group name.
+     * @param siteID siteID the site id
+     * @param name   String representing the unique group name.
      * @return Return true if the specified username has not been assigned yet,
      *         return false on any failure.
      */
@@ -477,21 +491,20 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                             groupNode = session.getNode("/groups/" + name.trim());
                         } else {
                             String siteName = sitesService.getSite(siteID).getSiteKey();
-                            groupNode = session.getNode(
-                                     "/sites/" + siteName + "/groups/" + name.trim());
+                            groupNode = session.getNode("/sites/" + siteName + "/groups/" + name.trim());
                         }
                         return groupNode != null && !groupNode.getProperty(JCRGroup.J_EXTERNAL).getBoolean();
                     } catch (JahiaException e) {
-                        logger.error("Error testing existence of group " + name + " for site "+ siteID, e);
+                        logger.error("Error testing existence of group " + name + " for site " + siteID, e);
                         return false;
                     }
                 }
             });
 
         } catch (PathNotFoundException e) {
-            logger.debug("Error testing existence of group " + name + " for site "+ siteID, e);
+            logger.debug("Error testing existence of group " + name + " for site " + siteID, e);
         } catch (RepositoryException e) {
-            logger.warn("Error testing existence of group " + name + " for site "+ siteID, e);
+            logger.warn("Error testing existence of group " + name + " for site " + siteID, e);
         }
         return false;
     }
@@ -527,7 +540,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
      * load it into the cache from the database.
      *
      * @param siteID the site id
-     * @param name Group's unique identification name.
+     * @param name   Group's unique identification name.
      * @return Return a reference on a the specified group name. Return null
      *         if the group doesn't exist or when any error occured.
      */
@@ -537,7 +550,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
 
     /**
      * Lookup the external group information from the JCR.
-     * 
+     *
      * @param name Group's unique identification name.
      * @return an instance of the {@link JCRGroup} for an external group or null
      *         if the group cannot be found
@@ -552,7 +565,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
      * load it into the cache from the database.
      *
      * @param siteID the site id
-     * @param name Group's unique identification name.
+     * @param name   Group's unique identification name.
      * @return Return a reference on a the specified group name. Return null
      *         if the group doesn't exist or when any error occured.
      */
@@ -581,8 +594,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                                 return null;
                             }
                             String siteName = site.getSiteKey();
-                            groupNode = session.getNode(
-                                  "/sites/" + siteName + "/groups/" + name.trim());
+                            groupNode = session.getNode("/sites/" + siteName + "/groups/" + name.trim());
                         }
                         JCRGroup group = null;
                         boolean external = groupNode.getProperty(JCRGroup.J_EXTERNAL).getBoolean();
@@ -630,19 +642,20 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
         try {
             String uuid = null;
             if (user instanceof JCRUser) {
-                uuid = ((JCRUser)user).getIdentifier();
+                uuid = ((JCRUser) user).getIdentifier();
             } else {
-                    JCRUser extUser = userManagerProvider.lookupExternalUser(user.getName());
-                    if (extUser != null) {
-                        uuid = extUser.getIdentifier();
-                    }
+                JCRUser extUser = userManagerProvider.lookupExternalUser(user.getName());
+                if (extUser != null) {
+                    uuid = extUser.getIdentifier();
+                }
             }
             if (uuid != null) {
-                final String id = uuid; 
+                final String id = uuid;
                 return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                     public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         if (session.getWorkspace().getQueryManager() != null) {
-                            String query = "SELECT * FROM [jnt:member] as m where m.[j:member] = '" + id + "' ORDER BY m.[j:nodename]";
+                            String query = "SELECT * FROM [jnt:member] as m where m.[j:member] = '" + id +
+                                    "' ORDER BY m.[j:nodename]";
                             Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                             QueryResult qr = q.execute();
                             NodeIterator nodes = qr.getNodes();
@@ -671,13 +684,16 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                         Set<JahiaGroup> users = new HashSet<JahiaGroup>();
                         if (session.getWorkspace().getQueryManager() != null) {
                             String siteName = sitesService.getSite(siteID).getSiteKey();
-                            StringBuffer query = new StringBuffer("SELECT * FROM [" + Constants.JAHIANT_GROUP + "] as g WHERE g.[" + JCRGroup.J_EXTERNAL + "] = 'false' AND ISCHILDNODE(g, '/sites/" + siteName + "/groups')");
+                            StringBuffer query = new StringBuffer(
+                                    "SELECT * FROM [" + Constants.JAHIANT_GROUP + "] as g WHERE g.[" +
+                                            JCRGroup.J_EXTERNAL + "] = 'false' AND ISCHILDNODE(g, '/sites/" + siteName +
+                                            "/groups')");
                             if (searchCriterias != null && searchCriterias.size() > 0) {
                                 // Avoid wildcard attribute
-                                if (!(searchCriterias.containsKey(
-                                        "*") && searchCriterias.size() == 1 && searchCriterias.getProperty("*").equals(
-                                        "*"))) {
-                                    Iterator<Map.Entry<Object, Object>> objectIterator = searchCriterias.entrySet().iterator();
+                                if (!(searchCriterias.containsKey("*") && searchCriterias.size() == 1 &&
+                                        searchCriterias.getProperty("*").equals("*"))) {
+                                    Iterator<Map.Entry<Object, Object>> objectIterator =
+                                            searchCriterias.entrySet().iterator();
                                     if (objectIterator.hasNext()) {
                                         query.append(" AND (");
                                         while (objectIterator.hasNext()) {
@@ -693,16 +709,17 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                                                 propertyValue = propertyValue + "%";
                                             }
                                             if ("*".equals(propertyKey)) {
-                                                query.append("CONTAINS(g.*,'" + propertyValue.replaceAll("%", "") + "')");
+                                                query.append(
+                                                        "CONTAINS(g.*,'" + propertyValue.replaceAll("%", "") + "')");
                                             } else {
-                                                query.append("g.[" + propertyKey.replaceAll("\\.", "\\\\.") + "]").append(
-                                                        " LIKE '").append(propertyValue).append("'");
+                                                query.append("g.[" + propertyKey.replaceAll("\\.", "\\\\.") + "]")
+                                                        .append(" LIKE '").append(propertyValue).append("'");
                                             }
                                             if (objectIterator.hasNext()) {
                                                 query.append(" OR ");
                                             }
                                         }
-                                    query.append(")");
+                                        query.append(")");
                                     }
                                 }
                             }
@@ -710,8 +727,8 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                             if (logger.isDebugEnabled()) {
                                 logger.debug(query);
                             }
-                            Query q = session.getWorkspace().getQueryManager().createQuery(query.toString(),
-                                                                                           Query.JCR_SQL2);
+                            Query q = session.getWorkspace().getQueryManager()
+                                    .createQuery(query.toString(), Query.JCR_SQL2);
                             QueryResult qr = q.execute();
                             NodeIterator ni = qr.getNodes();
                             while (ni.hasNext()) {
@@ -721,7 +738,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                         }
                         return users;
                     } catch (JahiaException e) {
-                        logger.error("Error searching groups for site "+ siteID, e);
+                        logger.error("Error searching groups for site " + siteID, e);
                         return null;
                     }
                 }
@@ -758,11 +775,11 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                 cache = cacheService.createCacheInstance("JCR_GROUP_CACHE");
             }
         }
-        
+
         return cache;
     }
 
-    private Cache<String,List<String>> getMembershipCache() throws JahiaInitializationException {
+    private Cache<String, List<String>> getMembershipCache() throws JahiaInitializationException {
         if (membershipCache == null) {
             if (cacheService != null) {
                 membershipCache = cacheService.createCacheInstance(JCR_GROUPMEMBERSHIP_CACHE);

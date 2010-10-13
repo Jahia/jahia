@@ -1,0 +1,38 @@
+/******************************************************************************
+*  Topheader
+******************************************************************************/
+#bodywrapper #topheader{
+	border-bottom:1px solid #ffdc2e;
+}
+/******************************************************************************
+*  Bottom 
+******************************************************************************/
+#bodywrapper #bottomheader{
+	background:#ffed92 url(theme-yellow/img/bottomheader-bg.png) repeat-x bottom left;
+	padding-top:10px;
+	position:relative;
+	z-index:800;
+	width:100%
+}
+/******************************************************************************
+*  navigation 
+******************************************************************************/
+#bodywrapper .navigation .navbar {
+	background-image:url(theme-yellow/img/navbar-bg.png);
+}
+/******************************************************************************
+*  navigation 
+******************************************************************************/
+#bodywrapper #shortcuts h3 {
+	background-image:url(theme-yellow/mod/shortcuts-bg.png);
+}
+#bodywrapper #shortcuts h3:hover {
+	background-image:url(theme-yellow/mod/shortcuts-bg-on.png);
+}
+/******************************************************************************
+*  navigation 
+******************************************************************************/
+#bodywrapper #bottomheader h2.pageTitle {
+	color:#ff9900;
+	text-shadow:0 1px 1px #cc9900;
+}

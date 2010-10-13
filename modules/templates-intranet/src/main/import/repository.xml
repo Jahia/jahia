@@ -12,6 +12,7 @@
       <files jcr:primaryType="jnt:folder" />
       <mashups jcr:primaryType="jnt:portletList" />
       <themes jcr:primaryType="jnt:folder">
+        <default jcr:primaryType="jnt:folder"/>
         <theme-yellow jcr:primaryType="jnt:folder">
           <theme-yellow jcr:primaryType="jnt:folder">
             <img jcr:primaryType="jnt:folder">

@@ -134,7 +134,7 @@ public class RichtextTest extends SeleneseTestCase {
         deleteContentCreated();
     }
 
-    public void createRichtext()
+
 
 
     public void deleteContentCreated() {

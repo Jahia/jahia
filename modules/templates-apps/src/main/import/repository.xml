@@ -9,7 +9,9 @@
         </site_components>
       </contents>
       <portlets jcr:primaryType="jnt:portletList"/>
-      <themes jcr:primaryType="jnt:folder"/>
+        <themes jcr:primaryType="jnt:folder" >
+            <default jcr:primaryType="jnt:folder"/>
+        </themes>
       <templates jcr:primaryType="jnt:templatesFolder">
         <base jcr:mixinTypes="jmix:renderable" j:template="apps" jcr:primaryType="jnt:masterTemplate">
           <logo jcr:primaryType="jnt:contentList"/>

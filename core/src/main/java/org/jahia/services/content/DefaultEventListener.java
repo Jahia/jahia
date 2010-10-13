@@ -80,6 +80,7 @@ public abstract class DefaultEventListener implements EventListener {
         propertiesToIgnore.add(Constants.JCR_MERGEFAILED);
         propertiesToIgnore.add(Constants.REVISION_NUMBER);
         propertiesToIgnore.add(Constants.CHECKIN_DATE);
+        propertiesToIgnore.add(Constants.JCR_LASTLOGINDATE);
     }
 
     public void setWorkspace(String workspace) {

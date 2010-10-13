@@ -60,7 +60,6 @@ public abstract class JahiaUserManagerService extends JahiaService {
      * automatically for each anonymous session internally in Jahia.
      */
     public static final String GUEST_USERNAME = "guest";
-    public static final String PROP_LAST_LOGIN_DATE = "lastLoginDate";
 
 // -------------------------- STATIC METHODS --------------------------
 

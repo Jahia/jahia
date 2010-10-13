@@ -34,6 +34,7 @@ package org.jahia.params.valves;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.jahia.api.Constants;
 import org.jahia.engines.EngineMessage;
 import org.jahia.engines.EngineMessages;
 import org.jahia.params.ProcessingContext;
@@ -167,7 +168,7 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
             }
 
             enforcePasswordPolicy(theUser);
-            theUser.setProperty(JahiaUserManagerService.PROP_LAST_LOGIN_DATE,
+            theUser.setProperty(Constants.JCR_LASTLOGINDATE,
                     String.valueOf(System.currentTimeMillis()));
         } else {
             valveContext.invokeNext(context);

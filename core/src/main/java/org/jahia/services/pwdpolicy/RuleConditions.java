@@ -35,10 +35,9 @@ package org.jahia.services.pwdpolicy;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.api.Constants;
 import org.jahia.services.usermanager.JahiaDBUser;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.services.usermanager.UserProperty;
 
 /**
  * Includes a set of conditions for the Password Policy Service.
@@ -121,7 +120,7 @@ public final class RuleConditions {
                         "The user object is null. Unable to evaluate the condition");
             }
 
-            return ctx.getUser().getProperty(JahiaUserManagerService.PROP_LAST_LOGIN_DATE) != null;
+            return ctx.getUser().getProperty(Constants.JCR_LASTLOGINDATE) != null;
         }
     }
 

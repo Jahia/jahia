@@ -73,6 +73,8 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
     private transient JahiaSitesService sitesService;
     private transient CacheService cacheService;
     private transient Cache<String, JCRGroup> cache;
+    private Cache<String, List<String>> membershipCache;
+    public static final String JCR_GROUPMEMBERSHIP_CACHE = "JCR_GROUPMEMBERSHIP_CACHE";
 
     /**
      * Create an new instance of the User Manager Service if the instance do not
@@ -397,19 +399,23 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
         if (uuid != null) {
             try {
                 final String principalId = uuid;
+                Cache<String, List<String>> membershipCache = getMembershipCache();
+
+                List<String> membership = membershipCache.get(uuid);
+                if (membership != null) {
+                    return membership;
+                }
+                final Cache<String, List<String>> finalObjectCache = membershipCache;
                 return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<List<String>>() {
                     public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         List<String> groups = new ArrayList<String>();
                         try {
-                            if (session.getWorkspace().getQueryManager() != null) {
-                                String query = "SELECT * FROM [jnt:member] as m where m.[j:member] = '" + principalId + "' ORDER BY m.[j:nodename]";
-                                Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
-                                QueryResult qr = q.execute();
-                                NodeIterator nodes = qr.getNodes();
-                                while (nodes.hasNext()) {
-                                    Node memberNode = nodes.nextNode();
-                                    Node group = memberNode.getParent().getParent();
-                                    int siteID;
+                            PropertyIterator weakReferences = session.getNodeByUUID(principalId).getWeakReferences();
+                            while (weakReferences.hasNext()) {
+                                Property property = weakReferences.nextProperty();
+                                if(property.getPath().contains("j:members")) {
+                                Node group = property.getParent().getParent().getParent();
+                                int siteID;
                                     try {
                                         siteID = sitesService.getSiteByKey(
                                                 group.getParent().getParent().getName()).getID();
@@ -428,11 +434,16 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                         } catch (JahiaException e) {
                             logger.error("Error retrieving membership for user ", e);
                         }
+                        if(finalObjectCache !=null) {
+                            finalObjectCache.put(principalId,groups);
+                        }
                         return groups;
                     }
                 });
             } catch (RepositoryException e) {
                 logger.error("Error retrieving membership for user ", e);
+            } catch (JahiaInitializationException e) {
+                logger.error(e.getMessage(), e);
             }
         }
         return new ArrayList<String>();
@@ -751,6 +762,15 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
         return cache;
     }
 
+    private Cache<String,List<String>> getMembershipCache() throws JahiaInitializationException {
+        if (membershipCache == null) {
+            if (cacheService != null) {
+                membershipCache = cacheService.createCacheInstance(JCR_GROUPMEMBERSHIP_CACHE);
+            }
+        }
+        return membershipCache;
+    }
+
     public void stop() throws JahiaException {
         // do nothing
     }
@@ -760,5 +780,13 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
      */
     public void setUserManagerProvider(JCRUserManagerProvider userManagerProvider) {
         this.userManagerProvider = userManagerProvider;
+    }
+
+    public void updateMembershipCache(String identifier) {
+        try {
+            getMembershipCache().remove(identifier);
+        } catch (JahiaInitializationException e) {
+            logger.error(e.getMessage(), e);
+        }
     }
 }

@@ -32,7 +32,6 @@
 
 package org.jahia.services.usermanager.jcr;
 
-import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRCallback;
@@ -49,7 +48,6 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import java.security.Principal;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
@@ -220,6 +218,7 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
                             members.checkout();
                             Node member = members.addNode(principal.getName(), Constants.JAHIANT_MEMBER);
                             member.setProperty("j:member", jcrUser.getIdentifier());
+                            JCRGroupManagerProvider.getInstance().updateMembershipCache(jcrUser.getIdentifier());
                             session.save();
                         }
                         return true;

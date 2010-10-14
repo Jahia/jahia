@@ -85,6 +85,6 @@ public class RenameActionItem extends BaseActionItem {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.getSingleSelection() != null && lh.isWriteable() && !lh.isSecondarySelection());
+        setEnabled(lh.getSingleSelection() != null && lh.isWriteable() && !lh.isSecondarySelection() && !lh.getSingleSelection().getPath().equals("/sites/"+lh.getSingleSelection().getSiteKey()+"/"+lh.getSingleSelection().getName()) && !lh.getSingleSelection().getPath().equals("/"+lh.getSingleSelection().getName()));
     }
 }

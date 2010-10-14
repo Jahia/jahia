@@ -6,4 +6,4 @@
  - pdfVersion (weakreference, picker[type='file']) i18n
 
 [jnt:pressReleases] > jnt:content, jmix:queryContent
- - searchPath (weakreference, picker[type='file'])
+ - searchPath (weakreference)

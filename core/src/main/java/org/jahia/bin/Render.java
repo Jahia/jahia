@@ -427,9 +427,9 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                             target = (fileUpload.getParameterValues(TARGETDIRECTORY))[0];
                         }
                         final JCRNodeWrapper targetDirectory = session.getNode(target);
-                        List<String> uuids = new ArrayList<String>();
+                        List<String> uuids = new LinkedList<String>();
                         List<String> files = new ArrayList<String>();
-
+                        List<String> urls =  new LinkedList<String>();
                         // If target directory is defined or if it is an ajax request then save the file now
                         // otherwise we delay the save of the file to the node creation
                         if (isTargetDirectoryDefined || isAjaxRequest) {
@@ -452,6 +452,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                                                 itemEntry.getValue().getInputStream(),
                                                 itemEntry.getValue().getContentType());
                                 uuids.add(wrapper.getIdentifier());
+                                urls.add(wrapper.getAbsoluteUrl(req));
                                 files.add(itemEntry.getValue().getName());
                                 if (isVersionActivated) {
                                     if (!wrapper.isVersioned()) {
@@ -476,6 +477,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                                 resp.setStatus(HttpServletResponse.SC_CREATED);
                                 Map<String, Object> map = new LinkedHashMap<String, Object>();
                                 map.put("uuids", uuids);
+                                map.put("urls", urls);
                                 JSONObject nodeJSON = new JSONObject(map);
                                 nodeJSON.write(resp.getWriter());
                                 return true;

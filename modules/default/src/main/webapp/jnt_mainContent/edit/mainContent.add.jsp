@@ -51,7 +51,7 @@
                     tooltip : 'Click to edit',
                     callback : function (data, status, original) {
                         $("#${currentNode.identifier}jnt_mainContentImage").val(data.uuids[0]);
-                        $("#file${currentNode.identifier}jnt_mainContentImage").html($('<span>file uploaded</span>'));
+                        $("#file${currentNode.identifier}jnt_mainContentImage").html($('<span style="color:green;text-decoration:blink;">file uploaded</span><br/><img src="'+data.urls[0]+'"/>'));
                     }
                 });
             });
@@ -82,13 +82,11 @@
 
             var options${currentNode.name}jnt_mainContentForm = {
                 success: function() {
-                    replace('${currentNode.identifier}', '${currentResource.moduleParams.currentListURL}', '');
-                    $.each(richTextEditors, function(key, value) {
-                        value.setData("");
-                    });
+                    window.location.reload();
                 },
                 dataType: "json",
-                resetForm : true
+                resetForm : true,
+                clearForm : true
             };// wait for the DOM to be loaded
             $(document).ready(function() {
                 // bind 'myForm' and provide a simple callback function

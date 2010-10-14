@@ -37,7 +37,6 @@ import java.util.List;
 
 import com.extjs.gxt.ui.client.event.*;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
-import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -54,7 +53,9 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.form.Validator;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.CheckColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -80,7 +81,6 @@ public class UrlMappingEditor extends LayoutContainer {
     private String locale;
 
     private ListStore<GWTJahiaUrlMapping> store;
-    private int sizeOfMappings;
     /**
      * Initializes an instance of this class.
      * 
@@ -103,7 +103,6 @@ public class UrlMappingEditor extends LayoutContainer {
 
                     public void onSuccess(List<GWTJahiaUrlMapping> mappings) {
                         store.add(mappings);
-                        sizeOfMappings = store.getCount();
                     }
                 });
     }
@@ -126,6 +125,25 @@ public class UrlMappingEditor extends LayoutContainer {
         text.setRegex("^/?(?!.*/{2,})[a-zA-Z_0-9\\-\\./]+$");
         text.setMaxLength(250);
         text.getMessages().setRegexText(Messages.get("failure.invalid.urlmapping.label", "The vanity URL can only contain letters, digits, dots (.), dashes (-) and no consecutive slashes (/)"));
+        text.setValidator(new Validator() {
+            public String validate(Field<?> field, String value) {
+                boolean isDuplicate = false;
+                if (!value.startsWith("/")) {
+                    value = "/" + value;
+                }
+                for (GWTJahiaUrlMapping mapping : getMappings()) {
+                    String url = mapping.getUrl();
+                    if (!url.startsWith("/")) {
+                        url = "/" + url;
+                    }
+                    if (url.equals(value)) {
+                        isDuplicate = true;
+                        break;
+                    }
+                }
+                return !isDuplicate ? null: Messages.getWithArgs("failure.duplicate.urlmapping", "The vanity URL {0} already exists", new Object[]{value});
+            }
+        });
         CellEditor ce = new CellEditor(text);
         ce.addListener(Events.BeforeComplete, new Listener<EditorEvent>() {
             public void handleEvent(EditorEvent be) {
@@ -166,10 +184,13 @@ public class UrlMappingEditor extends LayoutContainer {
         final RowEditor<GWTJahiaUrlMapping> re = new RowEditor<GWTJahiaUrlMapping>();
 
         // Add a cancel edit event listener to remove empty line
-        re.addListener(Events.CancelEdit, new Listener<BaseEvent>() {
-            public void handleEvent(BaseEvent be) {
-                if(sizeOfMappings!=store.getCount()) {
-                    store.remove(0);
+        re.addListener(Events.CancelEdit, new Listener<RowEditorEvent>() {
+            public void handleEvent(RowEditorEvent ree) {
+                GWTJahiaUrlMapping urlMapping = store.getModels().get(ree.getRowIndex());
+                if (urlMapping.getUrl().length() == 0) {
+                    store.remove(ree.getRowIndex());
+                } else {
+                    //TODO: just reject current edit
                 }
             }
         });
@@ -205,7 +226,6 @@ public class UrlMappingEditor extends LayoutContainer {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 re.stopEditing(false);
-                sizeOfMappings = store.getCount();
                 GWTJahiaUrlMapping mapping = new GWTJahiaUrlMapping("", locale,
                         store.getCount() == 0, true);
                 store.insert(mapping, 0);

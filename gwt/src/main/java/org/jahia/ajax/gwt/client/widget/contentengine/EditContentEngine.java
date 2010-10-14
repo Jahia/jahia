@@ -336,6 +336,8 @@ public class EditContentEngine extends AbstractContentEngine {
                             com.google.gwt.user.client.Window.alert(Messages.get("saved_prop_failed",
                                     "Properties save failed\n\n") + throwable.getLocalizedMessage());
                             Log.error("failed", throwable);
+                            unmask();
+                            ok.setEnabled(true);
                         }
 
                         public void onSuccess(Object o) {

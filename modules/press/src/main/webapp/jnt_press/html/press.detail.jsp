@@ -20,7 +20,6 @@
 </c:if>
 <c:if test="${!empty pressReleaseContainerCatKeys }">
             <span class="pressRealeseCategory">
-                <strong><fmt:message key='label.categories'/></strong> : <ui:displayCategoryTitle
-                    categoryKeys="${pressReleaseContainerCatKeys}"/>
+                <fmt:message key='label.categories'/> : <c:forEach items="${pressReleaseContainerCatKeys}" var="category" varStatus="status"><c:if test="${not status.first}">,</c:if><jcr:nodeProperty node="${category.node}" name="jcr:title" var="title"/><c:choose><c:when test="${not empty title}">${title}</c:when><c:otherwise>${category.node.name}</c:otherwise></c:choose></c:forEach>
             </span>
 </c:if>

@@ -47,9 +47,9 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.validation.ConstraintViolationException;
 
-import org.apache.axis.utils.StringUtils;
 import org.apache.commons.collections.KeyValue;
 import org.apache.commons.collections.keyvalue.DefaultKeyValue;
+import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.Text;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -607,9 +607,9 @@ public class VanityUrlManager {
                                         + " to be set on node: "
                                         + contentNode.getPath()
                                         + " already found on "
-                                        + session.getNodeByUUID(
+                                        +   StringUtils.removeEnd(session.getNodeByUUID(
                                                 existingUrl.getIdentifier())
-                                                .getParent().getPath(), null);
+                                                .getParent().getPath(), "/" + VANITYURLMAPPINGS_NODE), null);
                     }
                 }
             }

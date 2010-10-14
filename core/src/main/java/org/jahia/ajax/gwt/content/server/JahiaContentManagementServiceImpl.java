@@ -1406,7 +1406,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             result.setInitializersValues(contentDefinition.getInitializersValues(allTypes,
                     NodeTypeRegistry.getInstance().getNodeType(typename), null, parent, getUILocale()));
 
-            result.setAcl(contentManager.getACL(parentpath, true, sessionWrapper, getLocale()));
+            result.setAcl(contentManager.getACL(parentpath, true, sessionWrapper, getUILocale()));
             return result;
         } catch (RepositoryException e) {
             logger.error("Cannot get node", e);
@@ -1465,7 +1465,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             result.setInitializersValues(
                     contentDefinition.getInitializersValues(allTypes, nodeWrapper.getPrimaryNodeType(), nodeWrapper,
                             nodeWrapper.getParent(), getUILocale()));
-            final GWTJahiaNodeACL gwtJahiaNodeACL = contentManager.getACL(nodepath, false, sessionWrapper, getLocale());
+            final GWTJahiaNodeACL gwtJahiaNodeACL = contentManager.getACL(nodepath, false, sessionWrapper, getUILocale());
             result.setAcl(gwtJahiaNodeACL);
             Map<String,Set<String>> referencesWarnings = new HashMap<String, Set<String>>();
             for (GWTJahiaNodeProperty property : props.values()) {
@@ -1506,7 +1506,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
         for (GWTJahiaNode reference : references) {
             GWTJahiaNodeACL referenceAcl =
-                    contentManager.getACL(reference.getPath(), false, sessionWrapper, getLocale());
+                    contentManager.getACL(reference.getPath(), false, sessionWrapper, getUILocale());
 
             final Set<String> allReadUsers = new HashSet<String>();  // All users having read rights
             for (GWTJahiaNodeACE ace : nodeAcl.getAce()) {

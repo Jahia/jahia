@@ -294,12 +294,6 @@ public class AggregateCacheFilter extends AbstractFilter {
         } catch (Exception e) {
             cache.put(new Element(perUserKey, null));
             throw e;
-        } finally {
-            CountDownLatch countDownLatch = generatorQueue.getGeneratingPages().get(perUserKey);
-            if(countDownLatch!=null) {
-                generatorQueue.getGeneratingPages().remove(perUserKey);
-                countDownLatch.countDown();
-            }
         }
     }
 
@@ -476,6 +470,34 @@ public class AggregateCacheFilter extends AbstractFilter {
         String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername()).replaceAll("_mr_",
                 renderContext.getMainResource().getNode().getPath() + renderContext.getMainResource().getTemplate());
         cache.put(new Element(perUserKey,null));
+    }
+
+    @Override
+    public void finalize(RenderContext renderContext, Resource resource, RenderChain chain) {
+        final Script script = (Script) renderContext.getRequest().getAttribute("script");
+        if (script != null) {
+            chain.pushAttribute(renderContext.getRequest(), "cache.perUser", Boolean.valueOf(
+                    script.getTemplate().getProperties().getProperty("cache.perUser", "false")));
+            chain.pushAttribute(renderContext.getRequest(), "cache.mainResource", Boolean.valueOf(
+                    script.getTemplate().getProperties().getProperty("cache.mainResource", "false")));
+
+            if (Boolean.valueOf(script.getTemplate().getProperties().getProperty(
+                    "cache.additional.key.useMainResourcePath", "false"))) {
+                resource.getModuleParams().put("module.cache.additional.key",
+                        renderContext.getMainResource().getNode().getPath());
+            }
+        }
+        String key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
+        String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername()).replaceAll("_mr_",
+                renderContext.getMainResource().getNode().getPath() + renderContext.getMainResource().getTemplate());
+        Map<String, CountDownLatch> countDownLatchMap = generatorQueue.getGeneratingPages();
+        synchronized (countDownLatchMap) {
+            CountDownLatch countDownLatch = countDownLatchMap.get(perUserKey);
+            if (countDownLatch != null) {
+                generatorQueue.getGeneratingPages().remove(perUserKey);
+                countDownLatch.countDown();
+            }
+        }
     }
 
     private CountDownLatch avoidParallelProcessingOfSamePage(String key) throws Exception {

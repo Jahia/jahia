@@ -35,9 +35,12 @@ package org.jahia.ajax.gwt.client.widget.contentengine;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
@@ -46,6 +49,7 @@ import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -66,9 +70,7 @@ public class LayoutTabItem extends PropertiesTabItem {
 
     @Override
     public void attachPropertiesEditor() {
-        if (engine.isMultipleSelection()) {
-            super.attachPropertiesEditor();
-        } else if (engine.getNode() != null) {
+        if (engine.getNode() != null && engine.getLinker() instanceof EditLinker) {
             final ComboBox<GWTJahiaValueDisplayBean> templateField = (ComboBox<GWTJahiaValueDisplayBean>) propertiesEditor.getFieldsMap().get("j:template");
             final ComboBox<GWTJahiaValueDisplayBean> skinField = (ComboBox<GWTJahiaValueDisplayBean>) propertiesEditor.getFieldsMap().get("j:skin");
             final ComboBox<GWTJahiaValueDisplayBean> subNodesTemplateField = (ComboBox<GWTJahiaValueDisplayBean>) propertiesEditor.getFieldsMap().get("j:subNodesTemplate");
@@ -95,16 +97,18 @@ public class LayoutTabItem extends PropertiesTabItem {
             }
             listener.selectionChanged(null);
 
-            setLayout(new RowLayout());
+            setLayout(new FillLayout());
             add(propertiesEditor);
 
-            htmlPreview = new LayoutContainer(new FitLayout());
+            htmlPreview = new ContentPanel(new FitLayout());
+            htmlPreview.setTitle(Messages.get("label.preview", "Preview"));
             htmlPreview.setId("bodywrapper");
             htmlPreview.setStyleAttribute("background-color", "white");
             htmlPreview.addStyleName("x-panel");
             htmlPreview.setScrollMode(Style.Scroll.AUTO);
             add(htmlPreview);
-
+        } else {
+            super.attachPropertiesEditor();
         }
     }
 

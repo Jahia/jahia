@@ -59,8 +59,6 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
     public static final int CONFLICT = 9;
     public static final int MANDATORY_LANGUAGE_VALID = 10;
     
-    private Set<Integer> subnodesStatus = new HashSet<Integer>();
-    private Set<Integer> referencesStatus = new HashSet<Integer>();
     public static Map<Integer,String> statusToLabel = new HashMap<Integer, String>();
 
     static {
@@ -158,4 +156,6 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
                 info.getStatus() != GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE &&
                 info.getStatus() != GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_VALID;
     }
+
+
 }

@@ -104,25 +104,60 @@ public class SerializableBaseModel implements ModelData, Serializable {
     public <X> X set(String property, X value) {
         if (value instanceof String) {
             if (strings == null) {
-                strings = new HashMap<String, String>();
+                strings = new LinkedHashMap<String, String>();
             }
             return (X) strings.put(property, (String) value);
         } else if (value instanceof Integer) {
             if (integers == null) {
-                integers = new HashMap<String, Integer>();
+                integers = new LinkedHashMap<String, Integer>();
             }
             return (X) integers.put(property, (Integer) value);
         } else if (value instanceof Boolean) {
             if (booleans == null) {
-                booleans = new HashMap<String, Boolean>();
+                booleans = new LinkedHashMap<String, Boolean>();
             }
             return (X) booleans.put(property, (Boolean) value);
         }
         if (properties == null) {
-            properties = new HashMap<String, Serializable>();
+            properties = new LinkedHashMap<String, Serializable>();
         }
         return (X) properties.put(property, (Serializable) value);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof SerializableBaseModel)) {
+            return false;
+        }
+
+        SerializableBaseModel that = (SerializableBaseModel) o;
+
+        if (booleans != null ? !booleans.equals(that.booleans) : that.booleans != null) {
+            return false;
+        }
+        if (integers != null ? !integers.equals(that.integers) : that.integers != null) {
+            return false;
+        }
+        if (properties != null ? !properties.equals(that.properties) : that.properties != null) {
+            return false;
+        }
+        if (strings != null ? !strings.equals(that.strings) : that.strings != null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = strings != null ? strings.hashCode() : 0;
+        result = 31 * result + (integers != null ? integers.hashCode() : 0);
+        result = 31 * result + (booleans != null ? booleans.hashCode() : 0);
+        result = 31 * result + (properties != null ? properties.hashCode() : 0);
+        return result;
+    }
 }
 

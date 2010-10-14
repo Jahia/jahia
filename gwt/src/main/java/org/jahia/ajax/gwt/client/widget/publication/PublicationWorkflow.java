@@ -130,4 +130,40 @@ public class PublicationWorkflow implements CustomWorkflow {
 
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof PublicationWorkflow)) {
+            return false;
+        }
+
+        PublicationWorkflow that = (PublicationWorkflow) o;
+
+        if (allSubTree != that.allSubTree) {
+            return false;
+        }
+        if (language != null ? !language.equals(that.language) : that.language != null) {
+            return false;
+        }
+        if (publicationInfos != null ? !publicationInfos.equals(that.publicationInfos) :
+                that.publicationInfos != null) {
+            return false;
+        }
+        if (uuids != null ? !uuids.equals(that.uuids) : that.uuids != null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = publicationInfos != null ? publicationInfos.hashCode() : 0;
+        result = 31 * result + (uuids != null ? uuids.hashCode() : 0);
+        result = 31 * result + (allSubTree ? 1 : 0);
+        result = 31 * result + (language != null ? language.hashCode() : 0);
+        return result;
+    }
 }

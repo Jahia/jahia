@@ -52,7 +52,6 @@ import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
-import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
@@ -76,7 +75,8 @@ import java.util.*;
  */
 public class TagsTabItem extends EditEngineTabItem {
     private String locale;
-    private Map<String, GWTJahiaNodeProperty> values;
+    private Map<String, GWTJahiaNodeProperty> oldValues;
+    private Map<String, GWTJahiaNodeProperty> newValues;
     private TreeStore<GWTJahiaNode> tagStore;
     private TreeLoader<GWTJahiaNode> tagLoader;
 //    private TreeStore<GWTJahiaNode> tagStore;
@@ -88,9 +88,10 @@ public class TagsTabItem extends EditEngineTabItem {
     public void create(String locale) {
         if (!engine.isExistingNode() || (engine.getNode() != null)) {
 //            setProcessed(true);
-            if (values == null) {
+            if (newValues == null) {
                 this.locale = locale;
-                this.values = new HashMap<String, GWTJahiaNodeProperty>();
+                this.oldValues = new HashMap<String, GWTJahiaNodeProperty>();
+                this.newValues = new HashMap<String, GWTJahiaNodeProperty>();
                 init();
                 layout();
             } else {
@@ -109,8 +110,8 @@ public class TagsTabItem extends EditEngineTabItem {
             protected void load(Object o, final AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
                 if (node != null) {
                     final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
-                    if (values.containsKey(locale)) {
-                        final GWTJahiaNodeProperty gwtJahiaNodeProperty = values.get(locale);
+                    if (newValues.containsKey(locale)) {
+                        final GWTJahiaNodeProperty gwtJahiaNodeProperty = newValues.get(locale);
                         final List<GWTJahiaNodePropertyValue> propertyValues = gwtJahiaNodeProperty.getValues();
                         List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>(propertyValues.size());
                         for (GWTJahiaNodePropertyValue propertyValue : propertyValues) {
@@ -118,22 +119,26 @@ public class TagsTabItem extends EditEngineTabItem {
                         }
                         listAsyncCallback.onSuccess(nodes);
                     } else {
-                        GWTJahiaNodeProperty gwtJahiaNodeProperty = engine.getProperties().get("j:tags");
-                        if (gwtJahiaNodeProperty != null) {
-                            final List<GWTJahiaNodePropertyValue> propertyValues = gwtJahiaNodeProperty.getValues();
+                        GWTJahiaNodeProperty oldProperty = engine.getProperties().get("j:tags");
+
+                        GWTJahiaNodeProperty newProperty = new GWTJahiaNodeProperty();
+                        newProperty.setMultiple(true);
+                        newProperty.setValues(new ArrayList<GWTJahiaNodePropertyValue>());
+                        newProperty.setName("j:tags");
+
+                        if (oldProperty != null) {
+                            final List<GWTJahiaNodePropertyValue> propertyValues = oldProperty.getValues();
                             List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>(propertyValues.size());
                             for (GWTJahiaNodePropertyValue propertyValue : propertyValues) {
                                 nodes.add(propertyValue.getNode());
                             }
+                            newProperty.getValues().addAll(oldProperty.getValues());
                             listAsyncCallback.onSuccess(nodes);
                         } else {
-                            gwtJahiaNodeProperty = new GWTJahiaNodeProperty();
-                            gwtJahiaNodeProperty.setMultiple(true);
-                            gwtJahiaNodeProperty.setValues(new ArrayList<GWTJahiaNodePropertyValue>());
-                            gwtJahiaNodeProperty.setName("j:tags");
                             listAsyncCallback.onSuccess(new ArrayList<GWTJahiaNode>());
                         }
-                        values.put(locale, gwtJahiaNodeProperty);
+                        oldValues.put(locale, oldProperty);
+                        newValues.put(locale, newProperty);
                     }
                 }
             }
@@ -156,7 +161,7 @@ public class TagsTabItem extends EditEngineTabItem {
                     public void componentSelected(ButtonEvent buttonEvent) {
                         final GWTJahiaNode node1 = (GWTJahiaNode) buttonEvent.getButton().getData("associatedNode");
                         tagStore.remove(node1);
-                        values.get(locale).getValues().remove(new GWTJahiaNodePropertyValue(node1,
+                        newValues.get(locale).getValues().remove(new GWTJahiaNodePropertyValue(node1,
                                     GWTJahiaNodePropertyType.WEAKREFERENCE));
                     }
                 });
@@ -185,7 +190,7 @@ public class TagsTabItem extends EditEngineTabItem {
                     public void onSuccess(GWTJahiaNode result) {
                         if (tagStore.findModel(result) == null) {
                             tagStore.add(result, false);
-                            values.get(locale).getValues().add(new GWTJahiaNodePropertyValue(result,
+                            newValues.get(locale).getValues().add(new GWTJahiaNodePropertyValue(result,
                                     GWTJahiaNodePropertyType.WEAKREFERENCE));
                         }
                     }
@@ -224,32 +229,25 @@ public class TagsTabItem extends EditEngineTabItem {
 
     public void updateProperties(Map<String,List<GWTJahiaNodeProperty>> list, List<String> mixin) {
         boolean noTag = true;
-        if (values != null) {
-            for (Map.Entry<String, GWTJahiaNodeProperty> entry : values.entrySet()) {
-                GWTJahiaNodeProperty tags = null;
+        if (newValues != null) {
+            for (Map.Entry<String, GWTJahiaNodeProperty> entry : newValues.entrySet()) {
+                GWTJahiaNodeProperty newTag = entry.getValue();
+                GWTJahiaNodeProperty oldTag = oldValues.get(entry.getKey());
 
-                List<GWTJahiaNodeProperty> props = list.get(entry.getKey());
+                if (!newTag.equals(oldTag)) {
+                    List<GWTJahiaNodeProperty> props = list.get(entry.getKey());
 
-                if (props != null) {
-                    for (GWTJahiaNodeProperty property : props) {
-                        if (property.getName().equals("j:tags")) {
-                            tags = property;
-                        }
+                    if (props == null) {
+                        props = new ArrayList<GWTJahiaNodeProperty>();
+                        list.put(entry.getKey(), props);
                     }
-                } else {
-                    props = new ArrayList<GWTJahiaNodeProperty>();
-                    list.put(entry.getKey(), props);
-                }
-                if (tags != null) {
-                    if (entry.getValue().getValues().isEmpty()) {
-                        props.remove(tags);
-                    } else {
+
+                    if (!newTag.getValues().isEmpty()) {
                         noTag = false;
-                        tags.setValues(entry.getValue().getValues());
                     }
-                } else {
-                    if (!entry.getValue().getValues().isEmpty()) {
-                        props.add(entry.getValue());
+                    props.add(newTag);
+                } else if (oldTag != null) {
+                    if (!oldTag.getValues().isEmpty()) {
                         noTag = false;
                     }
                 }
@@ -260,6 +258,13 @@ public class TagsTabItem extends EditEngineTabItem {
         } else if (!mixin.contains("jmix:tagged")) {
             mixin.add("jmix:tagged");
         }
+    }
+
+    public void setProcessed(boolean processed) {
+        if (!processed && newValues != null) {
+            newValues = null;
+        }
+        super.setProcessed(processed);
     }
 
 }

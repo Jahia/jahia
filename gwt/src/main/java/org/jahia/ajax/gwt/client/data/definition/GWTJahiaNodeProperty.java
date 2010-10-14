@@ -116,8 +116,8 @@ public class GWTJahiaNodeProperty implements Serializable {
 
     public String toString() {
         if (multiple) {
-            StringBuilder buf = new StringBuilder(values.get(0).toString());
-            for (int i = 1; i < values.size(); i++) {
+            StringBuilder buf = new StringBuilder();
+            for (int i = 0; i < values.size(); i++) {
                 buf.append(", ").append(values.get(i).toString());
             }
             return buf.toString();

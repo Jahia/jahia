@@ -50,7 +50,6 @@ import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
-import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
@@ -74,6 +73,7 @@ import java.util.List;
  */
 public class CategoriesTabItem extends EditEngineTabItem {
     private TreeStore<GWTJahiaNode> catStore;
+    private GWTJahiaNodeProperty categoryProperty;
 
     public CategoriesTabItem(NodeHolder engine) {
         super(Messages.get("label.engineTab.categories", "Categories"), engine);
@@ -156,9 +156,9 @@ public class CategoriesTabItem extends EditEngineTabItem {
             @Override
             protected void load(Object o, final AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
                 if (node != null) {
-                    final GWTJahiaNodeProperty gwtJahiaNodeProperty = engine.getProperties().get("j:defaultCategory");
-                    if (gwtJahiaNodeProperty != null) {
-                        final List<GWTJahiaNodePropertyValue> propertyValues = gwtJahiaNodeProperty.getValues();
+                    categoryProperty = engine.getProperties().get("j:defaultCategory");
+                    if (categoryProperty != null) {
+                        final List<GWTJahiaNodePropertyValue> propertyValues = categoryProperty.getValues();
                         List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>(propertyValues.size());
                         for (GWTJahiaNodePropertyValue propertyValue : propertyValues) {
                             nodes.add(propertyValue.getNode());
@@ -215,18 +215,9 @@ public class CategoriesTabItem extends EditEngineTabItem {
         return catGrid;
     }
 
-    public void updateProperties(List<GWTJahiaNodeProperty> list, List<String> mixin) {
+    public void updateProperties(List<GWTJahiaNodeProperty> newProperties, List<String> mixin) {
         if (catStore == null) {
             return;
-        }
-
-        GWTJahiaNodeProperty category = null;
-        GWTJahiaNodeProperty tags = null;
-
-        for (GWTJahiaNodeProperty property : list) {
-            if (property.getName().equals("j:defaultCategory")) {
-                category = property;
-            }
         }
 
         List<GWTJahiaNode> gwtJahiaNodes = catStore.getAllItems();
@@ -238,17 +229,16 @@ public class CategoriesTabItem extends EditEngineTabItem {
         gwtJahiaNodeProperty.setMultiple(true);
         gwtJahiaNodeProperty.setValues(values);
         gwtJahiaNodeProperty.setName("j:defaultCategory");
-        if (category != null) {
+        if (this.categoryProperty != null) {
             if (values.isEmpty()) {
                 mixin.remove("jmix:categorized");
-                list.remove(category);
             } else {
-                list.add(gwtJahiaNodeProperty);
+                newProperties.add(gwtJahiaNodeProperty);
             }
         } else {
             if (!values.isEmpty()) {
                 mixin.add("jmix:categorized");
-                list.add(gwtJahiaNodeProperty);
+                newProperties.add(gwtJahiaNodeProperty);
             }
         }
     }

@@ -43,7 +43,7 @@
           <wrappercontent jcr:primaryType="jnt:contentList">
             <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:mainResourceTemplate="fullpage" />
           </wrappercontent>
-          <home jcr:mixinTypes="jmix:hasTemplateNode" jcr:primaryType="jnt:masterTemplate">
+          <home jcr:primaryType="jnt:masterTemplate">
             <wrappercontent jcr:primaryType="jnt:contentList">
               <row column="2col115" jcr:primaryType="jnt:row">
                 <col1 jcr:primaryType="jnt:contentList">
@@ -57,7 +57,7 @@
               </row>
             </wrappercontent>
           </home>
-          <my-portal jcr:mixinTypes="jmix:hasTemplateNode" jcr:primaryType="jnt:masterTemplate">
+          <my-portal jcr:primaryType="jnt:masterTemplate">
             <wrappercontent jcr:primaryType="jnt:contentList">
               <my-portal jcr:primaryType="jnt:contentList">
                 <j:translation_en jcr:title="My Portal" jcr:language="en" jcr:primaryType="jnt:translation" />
@@ -65,7 +65,7 @@
               </my-portal>
             </wrappercontent>
           </my-portal>
-          <events jcr:mixinTypes="jmix:hasTemplateNode" jcr:primaryType="jnt:masterTemplate">
+          <events jcr:primaryType="jnt:masterTemplate">
             <wrappercontent jcr:primaryType="jnt:contentList">
               <row1 column="2col115" jcr:primaryType="jnt:row">
                 <col1 jcr:primaryType="jnt:contentList">
@@ -87,7 +87,7 @@
               </row1>
             </wrappercontent>
           </events>
-          <simple jcr:mixinTypes="jmix:hasTemplateNode" jcr:primaryType="jnt:masterTemplate">
+          <simple jcr:primaryType="jnt:masterTemplate">
             <wrappercontent jcr:primaryType="jnt:contentList">
               <row column="2col115" jcr:primaryType="jnt:row">
                 <col1 jcr:primaryType="jnt:contentList">

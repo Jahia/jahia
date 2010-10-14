@@ -342,17 +342,18 @@
  - j:templateKey (string)
 
 [jmix:mockupStyle] mixin
+ itemtype = layout
  - j:mockupStyle (string)
 
-[jnt:mainResourceDisplay] > jnt:content, jmix:renderableMainResource, jmix:siteComponentContent, jmix:mockupStyle
+[jnt:mainResourceDisplay] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata, jmix:renderableMainResource, jmix:siteComponentContent, jmix:mockupStyle
 
-[jnt:mainResourceArea] > jnt:content, jmix:renderableArea, jmix:siteComponentContent, jmix:listRestrictions, jmix:mockupStyle
+[jnt:mainResourceArea] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata, jmix:renderableArea, jmix:siteComponentContent, jmix:listRestrictions, jmix:mockupStyle
  + * (jmix:droppableContent) = jmix:droppableContent version
 
-[jnt:absoluteArea] > jnt:content, jmix:renderableArea, jmix:siteComponentContent, jmix:listRestrictions, jmix:mockupStyle
+[jnt:absoluteArea] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata, jmix:renderableArea, jmix:siteComponentContent, jmix:listRestrictions, jmix:mockupStyle
  - j:basenode (weakreference,picker[type='page'])
 
-[jnt:levelAbsoluteArea] > jnt:content, jmix:renderableArea, jmix:siteComponentContent, jmix:listRestrictions, jmix:mockupStyle
+[jnt:levelAbsoluteArea] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata, jmix:renderableArea, jmix:siteComponentContent, jmix:listRestrictions, jmix:mockupStyle
  - j:level (long)
 
 [jnt:currentUserDisplay] > jnt:content, jmix:renderableUser, jmix:siteComponentContent, jmix:mockupStyle

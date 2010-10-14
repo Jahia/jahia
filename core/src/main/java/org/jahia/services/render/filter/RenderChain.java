@@ -138,6 +138,13 @@ public class RenderChain {
             }
             throw new RenderFilterException(e);
         } finally {
+            for (; index<filters.size(); index++) {
+                RenderFilter filter = filters.get(index);
+                if (filter.areConditionsMatched(renderContext, resource)) {
+                    if (logger.isDebugEnabled()) { logger.debug(resource.getNode().getPath() + " : finalizing filter " + filter.getClass().getName()); }
+                    filter.finalize(renderContext, resource, this);
+                }
+            }
             popAttributes(renderContext.getRequest());
         }
 

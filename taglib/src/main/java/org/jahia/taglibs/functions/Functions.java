@@ -321,4 +321,8 @@ public class Functions {
         return isIt;
     }
 
+
+    public static java.lang.String displayLocaleNameWith(java.util.Locale localeToDisplay,java.util.Locale localeUsedForRendering) {
+        return localeToDisplay.getDisplayName(localeUsedForRendering);
+    }
 }

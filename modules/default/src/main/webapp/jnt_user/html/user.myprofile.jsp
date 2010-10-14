@@ -4,6 +4,17 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
+<%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
+<%--@elvariable id="propertyDefinition" type="org.jahia.services.content.nodetypes.ExtendedPropertyDefinition"--%>
+<%--@elvariable id="type" type="org.jahia.services.content.nodetypes.ExtendedNodeType"--%>
+<%--@elvariable id="out" type="java.io.PrintWriter"--%>
+<%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
+<%--@elvariable id="scriptInfo" type="java.lang.String"--%>
+<%--@elvariable id="workspace" type="java.lang.String"--%>
+<%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
+<%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
+<%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <jsp:useBean id="now" class="java.util.Date"/>
 <template:addResources type="css" resources="userProfile.css"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
@@ -252,8 +263,8 @@
                     <h3 class="boxuserprofiletitleh3"><fmt:message key="jnt_user.yourPreferences"/></h3>
 
                     <div class="preferencesForm"><!--start preferencesForm -->
-                        <jcr:preference name="preferredLanguage" var="prefLangNode"
-                                        defaultValue="${renderContext.request.locale}"/>
+                        <%--<jcr:preference name="preferredLanguage" var="prefLangNode"
+                                        defaultValue="${renderContext.request.locale}"/>--%>
                         <fieldset>
                             <legend><fmt:message key="jnt_user.profile.preferences.form.name"/></legend>
 
@@ -264,14 +275,20 @@
                                             var data = {};
                                             data[submitId] = value;
                                             data['methodToCall'] = 'put';
-                                            $.post("${url.base}${prefLangNode.path}", data, null, "json");
-                                            if (value == "en")
-                                                return "English"; else if (value == "de")
-                                                return "Deutsch"; else if (value == "fr")
-                                                    return "French";
+                                            $.post("${url.base}${currentNode.path}", data, null, "json");
+                                            <c:forEach items='${functions:availableAdminBundleLocale(renderContext.mainResourceLocale)}' var="adLocale" varStatus="status">
+                                                <c:choose>
+                                                    <c:when test="${status.first}">
+                                                        if (value=="${adLocale}") return "${functions:displayLocaleNameWith(adLocale,renderContext.mainResourceLocale)}";
+                                                    </c:when>
+                                            <c:otherwise>
+                                            else if (value=="${adLocale}") return "${functions:displayLocaleNameWith(adLocale,renderContext.mainResourceLocale)}";
+                                            </c:otherwise>
+                                                </c:choose>
+                                            </c:forEach>
                                         }, {
                                             type    : 'select',
-                                            data   : "{'en':'English','fr':'French','de':'Deutsch'}",
+                                            data   : "{<c:forEach items='${functions:availableAdminBundleLocale(renderContext.mainResourceLocale)}' var="adLocale" varStatus="status"><c:if test="${not status.first}">,</c:if>'${adLocale}':'${functions:displayLocaleNameWith(adLocale,renderContext.mainResourceLocale)}'</c:forEach>}",
                                             onblur : 'ignore',
                                             submit : 'OK',
                                             cancel : 'Cancel',
@@ -281,11 +298,11 @@
                                 </script>
                             <label class="left"><fmt:message
                                     key="jnt_user.preference.preferredLanguage"/></label>
-                            <div class="prefEdit" id="j_prefValue">
+                            <div class="prefEdit" id="preferredLanguage">
                                 <c:choose>
-                                    <c:when test="${prefLangNode.prefValue eq 'en'}">English</c:when>
-                                    <c:when test="${prefLangNode.prefValue eq 'de'}">Deustch</c:when>
-                                    <c:when test="${prefLangNode.prefValue eq 'fr'}">French</c:when>
+                                    <c:when test="${not empty fields.preferredLanguage}">
+                                        ${functions:displayLocaleNameWith(functions:toLocale(fields.preferredLanguage),renderContext.mainResourceLocale)}
+                                    </c:when>
                                 </c:choose>
                             </div>
                         </fieldset>

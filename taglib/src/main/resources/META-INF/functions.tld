@@ -354,5 +354,28 @@
                 &lt;/c:forEach&gt;
             &lt;/c:if&gt;
         </example>
-    </function>    
+    </function>
+
+    <function>
+        <description>Convert language code to locale object</description>
+        <name>toLocale</name>
+        <function-class>org.jahia.utils.LanguageCodeConverters</function-class>
+        <function-signature>java.util.Locale languageCodeToLocale(java.lang.String)</function-signature>
+    </function>
+
+    <function>
+        <description>Get list of available locales for administration</description>
+        <name>availableAdminBundleLocale</name>
+        <function-class>org.jahia.utils.LanguageCodeConverters</function-class>
+        <function-signature>java.util.List getAvailableBundleLocalesSorted(java.util.Locale)</function-signature>
+    </function>
+
+    <function>
+        <description>
+			Display a locale name in a specified locale
+        </description>
+        <name>displayLocaleNameWith</name>
+        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-signature>java.lang.String displayLocaleNameWith(java.util.Locale,java.util.Locale)</function-signature>
+    </function>
 </taglib>

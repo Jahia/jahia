@@ -99,6 +99,8 @@ public class LinkerSelectionContext {
                     multipleSelection = selectedNodes;
                     if (selectedNodes.size() == 1) {
                         singleSelection = selectedNodes.get(0);
+                    } else if (selectedNodes.size() == 0) {
+                        singleSelection = mainNode;
                     } else {
                         singleSelection = null;
                     }

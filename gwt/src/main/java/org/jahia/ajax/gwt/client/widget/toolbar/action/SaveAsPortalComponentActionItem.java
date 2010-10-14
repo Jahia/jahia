@@ -68,7 +68,7 @@ public class SaveAsPortalComponentActionItem extends BaseActionItem {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.getSingleSelection() != null && !lh.isSecondarySelection());
+        setEnabled(lh.getSingleSelection() != null && !lh.isSecondarySelection() && lh.getSingleSelection().getInheritedNodeTypes().contains("jnt:content"));
     }
 
 }

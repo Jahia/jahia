@@ -380,6 +380,11 @@
                                     <ref bean="Toolbar.Item.Cut"/>
                                     <ref bean="Toolbar.Item.Paste"/>
                                     <ref bean="Toolbar.Item.PasteReference"/>
+                                    <ref bean="Toolbar.Item.Translate"/>
+                                    <ref bean="Toolbar.Item.Export"/>
+                                    <ref bean="Toolbar.Item.Import"/>
+                                    <ref bean="Toolbar.Item.Lock"/>
+                                    <ref bean="Toolbar.Item.Unlock"/>
                                 </list>
                             </property>
                         </bean>
@@ -824,6 +829,11 @@
                                     <ref bean="Toolbar.Item.Cut"/>
                                     <ref bean="Toolbar.Item.Paste"/>
                                     <ref bean="Toolbar.Item.PasteReference"/>
+                                    <ref bean="Toolbar.Item.Translate"/>
+                                    <ref bean="Toolbar.Item.Export"/>
+                                    <ref bean="Toolbar.Item.Import"/>
+                                    <ref bean="Toolbar.Item.Lock"/>
+                                    <ref bean="Toolbar.Item.Unlock"/>
                                 </list>
                             </property>
                         </bean>
@@ -886,6 +896,11 @@
                                     <ref bean="Toolbar.Item.Cut"/>
                                     <ref bean="Toolbar.Item.Paste"/>
                                     <ref bean="Toolbar.Item.PasteReference"/>
+                                    <ref bean="Toolbar.Item.Translate"/>
+                                    <ref bean="Toolbar.Item.Export"/>
+                                    <ref bean="Toolbar.Item.Import"/>
+                                    <ref bean="Toolbar.Item.Lock"/>
+                                    <ref bean="Toolbar.Item.Unlock"/>
                                 </list>
                             </property>
                         </bean>
@@ -1026,22 +1041,6 @@
                             <entry key="limit" value="100"/>
                         </map>
                     </property>
-                    <property name="treeContextMenu">
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
-                            <property name="items">
-                                <list>
-                                    <ref bean="Toolbar.Item.NewFolder"/>
-                                    <ref bean="Toolbar.Item.NewContent"/>
-                                    <ref bean="Toolbar.Item.Rename"/>
-                                    <ref bean="Toolbar.Item.Delete"/>
-                                    <ref bean="Toolbar.Item.Copy"/>
-                                    <ref bean="Toolbar.Item.Cut"/>
-                                    <ref bean="Toolbar.Item.Paste"/>
-                                    <ref bean="Toolbar.Item.PasteReference"/>
-                                </list>
-                            </property>
-                        </bean>
-                    </property>
                     <property name="tableColumns">
                         <list>
                             <value>icon,40</value>
@@ -1060,6 +1059,11 @@
                                     <ref bean="Toolbar.Item.Cut"/>
                                     <ref bean="Toolbar.Item.Paste"/>
                                     <ref bean="Toolbar.Item.PasteReference"/>
+                                    <ref bean="Toolbar.Item.Translate"/>
+                                    <ref bean="Toolbar.Item.Export"/>
+                                    <ref bean="Toolbar.Item.Import"/>
+                                    <ref bean="Toolbar.Item.Lock"/>
+                                    <ref bean="Toolbar.Item.Unlock"/>
                                 </list>
                             </property>
                         </bean>

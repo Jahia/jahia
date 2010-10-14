@@ -41,6 +41,7 @@ import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.URLGenerator;
 import org.jahia.services.sites.JahiaSite;
@@ -87,17 +88,15 @@ public class GWTInitializer {
 
     private static String generateInitializerStructure(HttpServletRequest request, HttpSession session) {
         StringBuilder buf = new StringBuilder();
-        Locale uilocale = (Locale) session.getAttribute(ParamBean.SESSION_UI_LOCALE);
-        if (uilocale == null) {
-            uilocale = Locale.ENGLISH;
-        }
+        Locale sessionLocale = (Locale) session.getAttribute(ProcessingContext.SESSION_UI_LOCALE);
+        String uilocale = sessionLocale != null ? UserPreferencesHelper.getPreferredLocale((JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER), sessionLocale).toString() : UserPreferencesHelper.getPreferredLocale((JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER)).toString();
         Locale locale = (Locale) session.getAttribute(ParamBean.SESSION_LOCALE);
         if (locale == null) {
             locale = Locale.ENGLISH;
         }
 
         String context = request.getContextPath();
-        buf.append("<meta name=\"gwt:property\" content=\"locale=").append(uilocale.toString()).append("\"/>");
+        buf.append("<meta name=\"gwt:property\" content=\"locale=").append(uilocale).append("\"/>");
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/").append(SettingsBean.getInstance().getJahiaCkEditorDiskPath()).append("/contents.css\" rel=\"stylesheet\"/>\n");
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/jahia-ext-all.css\" rel=\"stylesheet\"/>\n");
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/xtheme-jahia.css\" rel=\"stylesheet\"/>\n");

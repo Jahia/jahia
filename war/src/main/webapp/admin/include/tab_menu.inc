@@ -10,6 +10,7 @@
                     org.jahia.utils.LanguageCodeConverters,
                     org.jahia.services.preferences.user.UserPreferencesHelper"
         %>
+<%@ page import="org.apache.commons.lang.WordUtils" %>
 <%
     JahiaSitesService siteService = ServicesRegistry.getInstance().getJahiaSitesService();
     JahiaSite theSite = (JahiaSite) session.getAttribute(ProcessingContext.SESSION_SITE);
@@ -122,7 +123,7 @@
                 <%
                     for (Locale theLocale : LanguageCodeConverters.getAvailableBundleLocalesSorted()) {%>
                 <option value="<%=theLocale.toString() %>"
-                        <% if (theLocale.toString().equals(userLocale)) { %>selected="selected"<% } %>><%= theLocale.getDisplayName(theLocale) %>
+                        <% if (theLocale.toString().equals(userLocale)) { %>selected="selected"<% } %>><%= WordUtils.capitalizeFully(theLocale.getDisplayName(theLocale)) %>
                 </option>
                 <% } %>
             </select>

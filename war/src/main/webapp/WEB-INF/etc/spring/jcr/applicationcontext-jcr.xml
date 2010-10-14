@@ -121,6 +121,7 @@
                                 <list/>
                             </property>
                         </bean>
+                        <bean class="org.jahia.services.content.JCRUserPropertyModificationListener"/>
                     </list>
                 </entry>
                 <entry key="live">
@@ -149,6 +150,7 @@
                             <property name="jcrTemplate" ref="jcrTemplate"/>
                             <property name="availableDuringPublish" value="true"/>
                         </bean>
+                        <bean class="org.jahia.services.content.JCRUserPropertyModificationListener"/>
                     </list>
                 </entry>
             </map>

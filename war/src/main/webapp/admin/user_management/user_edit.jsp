@@ -5,7 +5,6 @@
 <%@page import="org.jahia.data.viewhelper.principal.PrincipalViewHelper" %>
 <%@page import="org.jahia.params.ProcessingContext" %>
 <%@ page import="org.jahia.utils.LanguageCodeConverters" %>
-<%@page import="org.jahia.utils.i18n.JahiaResourceBundle" %>
 <%@page import="org.jahia.services.preferences.user.UserPreferencesHelper"%>
 <%@page import="org.jahia.services.pwdpolicy.JahiaPasswordPolicyService" %>
 <%@page import="org.jahia.services.usermanager.JahiaUser,org.jahia.services.usermanager.UserProperties,org.jahia.services.usermanager.UserProperty" %>
@@ -13,9 +12,8 @@
 <%@ page import="java.security.Principal" %>
 <%@ page import="java.util.Iterator" %>
 <%@ page import="java.util.Locale" %>
-<%@ page import="java.util.MissingResourceException" %>
-<%@ page import="java.util.ResourceBundle" %>
 <%@ page import="java.util.Set" %>
+<%@ page import="org.apache.commons.lang.WordUtils" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic" %>
 <%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
@@ -249,7 +247,7 @@
             <%
                 for (Locale theLocale : LanguageCodeConverters.getAvailableBundleLocalesSorted(jParams.getUILocale())) {%>
             <option value="<%=theLocale %>"
-                    <% if (theLocale.toString().equals(propValue)) { %>selected="selected"<% } %>><%= theLocale.getDisplayName(jParams.getUILocale()) %>
+                    <% if (theLocale.toString().equals(propValue)) { %>selected="selected"<% } %>><%= WordUtils.capitalizeFully(theLocale.getDisplayName(jParams.getUILocale())) %>
             </option>
             <% } %>
         </select>

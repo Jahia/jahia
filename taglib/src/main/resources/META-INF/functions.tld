@@ -378,4 +378,16 @@
         <function-class>org.jahia.taglibs.functions.Functions</function-class>
         <function-signature>java.lang.String displayLocaleNameWith(java.util.Locale,java.util.Locale)</function-signature>
     </function>
+
+    <function>
+		<description>
+			Capitalize a string "i am FINE" to "I Am Fine" as an example.
+		</description>
+		<name>capitalize</name>
+		<function-class>org.apache.commons.lang.WordUtils</function-class>
+		<function-signature>java.lang.String capitalizeFully(java.lang.String)</function-signature>
+		<example>
+			${functions:capitalize(field.value)}
+		</example>
+	</function>
 </taglib>

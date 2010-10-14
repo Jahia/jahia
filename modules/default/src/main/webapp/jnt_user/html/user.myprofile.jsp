@@ -279,16 +279,16 @@
                                             <c:forEach items='${functions:availableAdminBundleLocale(renderContext.mainResourceLocale)}' var="adLocale" varStatus="status">
                                                 <c:choose>
                                                     <c:when test="${status.first}">
-                                                        if (value=="${adLocale}") return "${functions:displayLocaleNameWith(adLocale,renderContext.mainResourceLocale)}";
+                                                        if (value=="${adLocale}") return "${functions:capitalize(functions:displayLocaleNameWith(adLocale,adLocale))}";
                                                     </c:when>
                                             <c:otherwise>
-                                            else if (value=="${adLocale}") return "${functions:displayLocaleNameWith(adLocale,renderContext.mainResourceLocale)}";
+                                            else if (value=="${adLocale}") return "${functions:capitalize(functions:displayLocaleNameWith(adLocale,adLocale))}";
                                             </c:otherwise>
                                                 </c:choose>
                                             </c:forEach>
                                         }, {
                                             type    : 'select',
-                                            data   : "{<c:forEach items='${functions:availableAdminBundleLocale(renderContext.mainResourceLocale)}' var="adLocale" varStatus="status"><c:if test="${not status.first}">,</c:if>'${adLocale}':'${functions:displayLocaleNameWith(adLocale,renderContext.mainResourceLocale)}'</c:forEach>}",
+                                            data   : "{<c:forEach items='${functions:availableAdminBundleLocale(renderContext.mainResourceLocale)}' var="adLocale" varStatus="status"><c:if test="${not status.first}">,</c:if>'${adLocale}':'${functions:capitalize(functions:displayLocaleNameWith(adLocale,adLocale))}'</c:forEach>}",
                                             onblur : 'ignore',
                                             submit : 'OK',
                                             cancel : 'Cancel',
@@ -301,7 +301,7 @@
                             <div class="prefEdit" id="preferredLanguage">
                                 <c:choose>
                                     <c:when test="${not empty fields.preferredLanguage}">
-                                        ${functions:displayLocaleNameWith(functions:toLocale(fields.preferredLanguage),renderContext.mainResourceLocale)}
+                                        ${functions:capitalize(functions:displayLocaleNameWith(functions:toLocale(fields.preferredLanguage),functions:toLocale(fields.preferredLanguage)))}
                                     </c:when>
                                 </c:choose>
                             </div>

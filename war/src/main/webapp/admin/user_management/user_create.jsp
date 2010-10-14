@@ -11,6 +11,7 @@
 <%@ page import="org.jahia.params.ProcessingContext" %>
 <%@ page import="org.jahia.bin.*,org.jahia.admin.users.*" %>
 <%@page import="org.jahia.services.preferences.user.UserPreferencesHelper"%>
+<%@ page import="org.apache.commons.lang.WordUtils" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <utility:setBundle basename="JahiaInternalResources" useUILocale="true"/>
@@ -188,7 +189,7 @@
             <%
                 for (Locale theLocale : LanguageCodeConverters.getAvailableBundleLocalesSorted(jParams.getUILocale())) {%>
             <option value="<%=theLocale %>"
-                    <% if (theLocale.toString().equals(propValue)) { %>selected="selected"<% } %>><%= theLocale.getDisplayName(jParams.getUILocale()) %>
+                    <% if (theLocale.toString().equals(propValue)) { %>selected="selected"<% } %>><%= WordUtils.capitalizeFully(theLocale.getDisplayName(jParams.getUILocale())) %>
             </option>
             <% } %>
         </select>

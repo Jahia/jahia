@@ -53,9 +53,7 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
-import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.form.Validator;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.CheckColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -125,25 +123,6 @@ public class UrlMappingEditor extends LayoutContainer {
         text.setRegex("^/?(?!.*/{2,})[a-zA-Z_0-9\\-\\./]+$");
         text.setMaxLength(250);
         text.getMessages().setRegexText(Messages.get("failure.invalid.urlmapping.label", "The vanity URL can only contain letters, digits, dots (.), dashes (-) and no consecutive slashes (/)"));
-        text.setValidator(new Validator() {
-            public String validate(Field<?> field, String value) {
-                boolean isDuplicate = false;
-                if (!value.startsWith("/")) {
-                    value = "/" + value;
-                }
-                for (GWTJahiaUrlMapping mapping : getMappings()) {
-                    String url = mapping.getUrl();
-                    if (!url.startsWith("/")) {
-                        url = "/" + url;
-                    }
-                    if (url.equals(value)) {
-                        isDuplicate = true;
-                        break;
-                    }
-                }
-                return !isDuplicate ? null: Messages.getWithArgs("failure.duplicate.urlmapping", "The vanity URL {0} already exists", new Object[]{value});
-            }
-        });
         CellEditor ce = new CellEditor(text);
         ce.addListener(Events.BeforeComplete, new Listener<EditorEvent>() {
             public void handleEvent(EditorEvent be) {
@@ -189,8 +168,6 @@ public class UrlMappingEditor extends LayoutContainer {
                 GWTJahiaUrlMapping urlMapping = store.getModels().get(ree.getRowIndex());
                 if (urlMapping.getUrl().length() == 0) {
                     store.remove(ree.getRowIndex());
-                } else {
-                    //TODO: just reject current edit
                 }
             }
         });

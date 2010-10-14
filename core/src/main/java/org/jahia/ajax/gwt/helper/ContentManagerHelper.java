@@ -696,12 +696,16 @@ public class ContentManagerHelper {
                     new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
         }
 
-//        node.revokeAllPermissions();
+        Set<String> existingAclKeys = node.getAclEntries().keySet();
         for (GWTJahiaNodeACE ace : acl.getAce()) {
             String user = ace.getPrincipalType() + ":" + ace.getPrincipal();
             if (!ace.isInherited()) {
                 node.changePermissions(user, ace.getPermissions());
             }
+            existingAclKeys.remove(user);
+        }
+        for (String user : existingAclKeys) {
+            node.revokePermissions(user);
         }
         try {
             currentUserSession.save();

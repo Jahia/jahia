@@ -1,7 +1,10 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <template:addResources type="javascript" resources="jquery.min.js, textsizer.js"/>
 
 <!-- shortcuts -->
@@ -27,9 +30,12 @@
             <li>
                 <span class="currentUser"><c:choose><c:when test="${not empty currentUser.properties['j:firstName']}">${currentUser.properties['j:firstName']} ${currentUser.properties['j:lastName']}</c:when><c:otherwise>${currentUser.username}</c:otherwise></c:choose><c:if test="${not empty currentAliasUser}">(&nbsp;<fmt:message key="as.user"/>&nbsp;${currentAliasUser.username})</c:if></span>
             </li>
-            <li class="topshortcuts-mysettings">
-                <a href="${url.base}${renderContext.site.path}/my-profile.html"><fmt:message key="userProfile.link"/></a>
-            </li>
+            <jcr:node var="nodeSite" path="${renderContext.site.path}/my-profile"/>
+            <c:if test="${!empty nodeSite}">
+                <li class="topshortcuts-mysettings">
+                    <a href="${url.base}${renderContext.site.path}/my-profile.html"><fmt:message key="userProfile.link"/></a>
+                </li>
+            </c:if>
             <li>
                 <a href="${url.edit}"><fmt:message key="edit"/></a>
             </li>
@@ -38,7 +44,7 @@
             </li>
         </c:if>
         <li><a href="#"
-                                          onclick="javascript:window.print();return false">
+               onclick="javascript:window.print();return false">
             <fmt:message key="print"/></a>
         </li>
         <li>

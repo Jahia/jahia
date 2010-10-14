@@ -96,7 +96,9 @@ public class JCRUserPropertyModificationListener extends DefaultEventListener {
                         String username = StringUtils.substringAfterLast(StringUtils.substringBeforeLast(path,"/"), "/");
                         JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(
                                 username);
-                        ServicesRegistry.getInstance().getJahiaUserManagerService().updateCache(jahiaUser);
+                        if (jahiaUser != null) {
+                            ServicesRegistry.getInstance().getJahiaUserManagerService().updateCache(jahiaUser);
+                        }
                     }
                     return null;
                 }

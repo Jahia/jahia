@@ -83,7 +83,6 @@ public class ContentTypeWindow extends Window {
         setResizable(true);
         setModal(true);
         setMaximizable(true);
-        setIcon(StandardIconsProvider.STANDARD_ICONS.engineLogoJahia());
         contentTypeTree = new ContentTypeTree(types);
         TreeGrid treeGrid = contentTypeTree.getTreeGrid();
         treeGrid.sinkEvents(Event.ONDBLCLICK + Event.ONCLICK);

@@ -58,7 +58,6 @@ public class EngineWindow extends Window implements EngineContainer {
         setResizable(true);
         setModal(true);
         setMaximizable(true);
-        setIcon(StandardIconsProvider.STANDARD_ICONS.engineLogoJahia());
         setLayout(new FitLayout());
     }
 

@@ -60,9 +60,6 @@ public interface StandardIconsImageBundle extends ImageBundle {
     @Resource("engine-button-ok.png")
     public AbstractImagePrototype engineButtonOK();
 
-    @Resource("logo-jahia.gif")
-    public AbstractImagePrototype engineLogoJahia();
-
     @Resource("text_tree.png")
     public AbstractImagePrototype navMenu();
 

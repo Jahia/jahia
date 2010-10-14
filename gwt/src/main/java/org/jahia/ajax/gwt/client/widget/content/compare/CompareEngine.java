@@ -84,7 +84,6 @@ public class CompareEngine extends Window {
         setResizable(true);
         setModal(true);
         setMaximizable(true);
-        setIcon(StandardIconsProvider.STANDARD_ICONS.engineLogoJahia());
         setHeading(Messages.get("label_compare " + node.getPath(), "Compare " + node.getPath()));
         ContentPanel panel = new ContentPanel();
         panel.setLayout(new RowLayout(Style.Orientation.HORIZONTAL));

@@ -14,7 +14,7 @@ import org.jahia.test.TestHelper;
  *
  *
  */
-public class ContentManagerTest extends SeleneseTestCase {
+public class SiteManagerTest extends SeleneseTestCase {
     private static Logger logger = Logger.getLogger(CreateCategories.class);
     private JahiaSite site;
     private final static String TESTSITE_NAME = "mySite";
@@ -70,10 +70,10 @@ public class ContentManagerTest extends SeleneseTestCase {
                 }
             }
         }
-        contentManager();
+        siteManager();
     }
 
-    public void contentManager() {
+    public void siteManager() {
 
         //click on "Managers"
         new Wait("wait") {
@@ -83,25 +83,17 @@ public class ContentManagerTest extends SeleneseTestCase {
         };
         selenium.click("//button[text()='Managers']");
 
-        //Click on "Content Manager"
+        //Click on "Site Manager"
         new Wait("wait") {
             public boolean until() {
-                return selenium.isElementPresent("Link=Content manager");
+                return selenium.isElementPresent("Link=Site manager");
             }
         };
-        selenium.click("Link=Content manager");
+        selenium.click("Link=Site manager");
 
         //Select Window "Content manager"
-        selenium.waitForPopUp("Content_manager", "3000");
-        selenium.selectWindow("Content manager");
-
-        //Open "root" tree
-        new Wait("wait") {
-            public boolean until() {
-                return selenium.isElementPresent("//span[text()='root']");
-            }
-        };
-        selenium.doubleClick("//span[text()='root']");
+        selenium.waitForPopUp("Site_manager", "3000");
+        selenium.selectWindow("Site manager");
 
         //Click on "site"
         new Wait("wait") {
@@ -120,16 +112,16 @@ public class ContentManagerTest extends SeleneseTestCase {
         selenium.doubleClick("//span[text()='mySite']");
 
 
-        //Right click on My profile
+        //Right click on Home
         new Wait("wait") {
             public boolean until() {
-                return selenium.isElementPresent("//span[text()='My Profile']");
+                return selenium.isElementPresent("//span[text()='Home']");
             }
         };
-        selenium.doubleClickAt("//span[text()='My Profile']", "5,5");
+        selenium.doubleClickAt("//span[text()='Home']", "5,5");
 
-        selenium.mouseOver("//span[text()='My Profile']");
-        selenium.contextMenuAt("//span[text()='My Profile']", "5,5");
+        selenium.mouseOver("//span[text()='Home']");
+        selenium.contextMenuAt("//span[text()='Home']", "5,5");
 
         //Click on "New Page"
         new Wait("wait") {
@@ -145,7 +137,7 @@ public class ContentManagerTest extends SeleneseTestCase {
                 return selenium.isElementPresent("//input[@name='jcr:title']");
             }
         };
-        selenium.type("//input[@name='jcr:title']", "Page 1");
+        selenium.type("//input[@name='jcr:title']", "My Page");
         selenium.type("//input[@name='j:templateNode']", "base");
         selenium.click("//button[text()='Save And Add New']");
 
@@ -154,39 +146,39 @@ public class ContentManagerTest extends SeleneseTestCase {
                 return selenium.isElementPresent("//input[@name='jcr:title']");
             }
         };
-        selenium.type("//input[@name='jcr:title']", "Page 2");
+        selenium.type("//input[@name='jcr:title']", "An other page");
         selenium.type("//input[@name='j:templateNode']", "base");
         selenium.click("//div[@class=' x-small-editor x-panel-btns-center x-panel-fbar x-component x-toolbar-layout-ct']/table/tbody/tr/td[1]/table/tbody/tr/td[1]/table");
 
 
-        //Cut page 1
-        selenium.doubleClickAt("//span[text()='Page 1']", "5,5");
-        selenium.mouseOver("//span[text()='Page 1']");
-        selenium.contextMenuAt("//span[text()='Page 1']", "5,5");
+        //Cut My Page
+        selenium.doubleClickAt("//span[text()='My Page']", "5,5");
+        selenium.mouseOver("//span[text()='My Page']");
+        selenium.contextMenuAt("//span[text()='My Page']", "5,5");
         selenium.click("Link=Cut");
 
-        //Paste Page 1
+        //Paste My Page
         selenium.doubleClickAt("//span[text()='mySite']", "5,5");
         selenium.mouseOver("//span[text()='mySite']");
         selenium.contextMenuAt("//span[text()='mySite']", "5,5");
         selenium.click("Link=Paste");
 
-        //Delete Page 1
-        selenium.doubleClickAt("//span[text()='Page 1']", "5,5");
-        selenium.mouseOver("//span[text()='Page 1']");
-        selenium.contextMenuAt("//span[text()='Page 1']", "5,5");
+        //Delete My Page
+        selenium.doubleClickAt("//span[text()='My Page']", "5,5");
+        selenium.mouseOver("//span[text()='My Page']");
+        selenium.contextMenuAt("//span[text()='My Page']", "5,5");
         selenium.click("Link=Remove");
         if (selenium.isElementPresent("//button[text()='Yes']")) {
             selenium.click("//button[text()='Yes']");
         }
 
-        //Copy page 2
-        selenium.doubleClickAt("//span[text()='Page 2']", "5,5");
-        selenium.mouseOver("//span[text()='Page 2']");
-        selenium.contextMenuAt("//span[text()='Page 2']", "5,5");
+        //Copy An other page
+        selenium.doubleClickAt("//span[text()='An other page']", "5,5");
+        selenium.mouseOver("//span[text()='An other page']");
+        selenium.contextMenuAt("//span[text()='An other page']", "5,5");
         selenium.click("Link=Copy");
 
-        //Paste as reference page 2
+        //Paste as reference An other page
         selenium.doubleClickAt("//span[text()='mySite']", "5,5");
         selenium.mouseOver("//span[text()='mySite']");
         selenium.contextMenuAt("//span[text()='mySite']", "5,5");
@@ -197,21 +189,21 @@ public class ContentManagerTest extends SeleneseTestCase {
             }
         };
 
-        selenium.type("//input[@name='jcr:title']", "Reference Page 2");
+        selenium.type("//input[@name='jcr:title']", "Reference An other page");
 
         selenium.click("//div[@class=' x-small-editor x-panel-btns-center x-panel-fbar x-component x-toolbar-layout-ct']/table/tbody/tr/td[1]/table/tbody/tr/td[1]/table");
 
-        //Delete Page 2, reference to page 2
-        selenium.doubleClickAt("//span[text()='Page 2']", "5,5");
-        selenium.mouseOver("//span[text()='Page 2']");
-        selenium.contextMenuAt("//span[text()='Page 2']", "5,5");
+        //Delete An other page, reference to An other page
+        selenium.doubleClickAt("//span[text()='An other page']", "5,5");
+        selenium.mouseOver("//span[text()='An other page']");
+        selenium.contextMenuAt("//span[text()='An other page']", "5,5");
         selenium.click("Link=Remove");
         if (selenium.isElementPresent("//button[text()='Yes']")) {
             selenium.click("//button[text()='Yes']");
         }
-        selenium.doubleClickAt("//span[text()='Reference Page 2']", "5,5");
-        selenium.mouseOver("//span[text()='Reference Page 2']");
-        selenium.contextMenuAt("//span[text()='Reference Page 2']", "5,5");
+        selenium.doubleClickAt("//span[text()='Reference An other page']", "5,5");
+        selenium.mouseOver("//span[text()='Reference An other page']");
+        selenium.contextMenuAt("//span[text()='Reference An other page']", "5,5");
         selenium.click("Link=Remove");
         if (selenium.isElementPresent("//button[text()='Yes']")) {
             selenium.click("//button[text()='Yes']");

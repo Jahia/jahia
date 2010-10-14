@@ -26,7 +26,7 @@ public class CreatePortlet extends SeleneseTestCase {
         try {
             final JahiaSite mySite = ServicesRegistry.getInstance().getJahiaSitesService().getSite("localhost");
             if (mySite == null) {
-                site = TestHelper.createSite(TESTSITE_NAME, "localhost",  "templates-web");
+                site = TestHelper.createSite(TESTSITE_NAME, "localhost", "templates-web");
                 assertNotNull(site);
             } else {
                 logger.warn("can't create mySite for running tests, because already exist...");
@@ -40,7 +40,7 @@ public class CreatePortlet extends SeleneseTestCase {
 
     @Override
     public void tearDown() throws Exception {
-                selenium.setSpeed(TEST_SPEED);
+        selenium.setSpeed(TEST_SPEED);
         try {
             selenium.stop();
             // TestHelper.deleteSite(TESTSITE_NAME);
@@ -70,19 +70,9 @@ public class CreatePortlet extends SeleneseTestCase {
                 }
             }
         }
-        deleteContentCreated();
-        addPortlet();
-        deleteContentCreated();
-    }
 
-         public void deleteContentCreated(){
-        selenium.mouseOver("//span[text()='Area : listA']");
-        selenium.contextMenuAt("//span[text()='Area : listA']", "0,0");
-        selenium.click("link=Remove");
-        if (selenium.isElementPresent("//button[text()='Yes']")){
-            selenium.click("//button[text()='Yes']");
-        }
-        selenium.refresh();
+        addPortlet();
+      
     }
 
     public void addPortlet() {
@@ -125,7 +115,6 @@ public class CreatePortlet extends SeleneseTestCase {
         selenium.click("Link=New RSS");
 
 
-
         //Fill name
         new Wait("wait") {
             public boolean until() {
@@ -138,45 +127,61 @@ public class CreatePortlet extends SeleneseTestCase {
         selenium.type("//input[@name='url']", "http://www.lemonde.fr/rss/une.xml");
         selenium.click("//html/body/div[4]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[2]/td[2]/em/button");
 
-        selenium.selectWindow("Home");
-        /*/click on "Any content"
-              new Wait("wait") {
-                  public boolean until() {
-                      return selenium.isElementPresent("//div[@path='/sites/mySite/home/listA']/div/div[2]/div/div/div/div/table/tbody/tr/td[2]/button");
-                  }
-              };
-              selenium.click("//div[@path='/sites/mySite/home/listA']/div/div[2]/div/div/div/div/table/tbody/tr/td[2]/button");
+        selenium.doubleClickAt("//span[text()='portlets']", "5,5");
+        selenium.mouseOver("//span[text()='portlets']");
+        selenium.contextMenuAt("//span[text()='portlets']", "5,5");
 
-
-
-        //click on the image for sort"
+        //Click on New Google Gadget
         new Wait("wait") {
             public boolean until() {
-                return selenium.isElementPresent("//td[@class='x-grid3-header x-grid3-hd x-grid3-cell x-grid3-td-label']/div/span");
+                return selenium.isElementPresent("Link=New Google Gadget");
             }
         };
-        selenium.click("//td[@class='x-grid3-header x-grid3-hd x-grid3-cell x-grid3-td-label']/div/span");
+        selenium.click("Link=New Google Gadget");
 
 
-        //doubleClick on "Editorial content"
+        //Fill name
         new Wait("wait") {
             public boolean until() {
-                return selenium.isElementPresent("//img[@src='/modules/default/icons/jmix_editorialContent.png']");
+                return selenium.isElementPresent("//input[@name='name']");
             }
         };
-        selenium.doubleClick("//img[@src='/modules/default/icons/jmix_editorialContent.png']");
+        selenium.type("//input[@name='name']", "Test script google spider brrr");
 
-        //doubleClick on "Portlet Reference"
-        new Wait("wait") {
-            public boolean until() {
-                return selenium.isElementPresent("//img[@src='/modules/default/icons/jnt_portletReference.png']");
-            }
-        };
-        selenium.doubleClick("//img[@src='/modules/default/icons/jnt_portletReference.png']");        */
+        //Fill script
+        selenium.type("//textarea[@class=' x-form-field x-form-textarea']", "<script src=\"http://www.gmodules.com/ig/ifr?url=http://hosting.gmodules.com/ig/gadgets/file/112581010116074801021/spider.xml&amp;up_spiderName=Spider&amp;up_backgroundImage=http%3A%2F%2F&amp;up_headColor=666666&amp;up_bellyColor=666666&amp;up_legColor=333333&amp;up_backgroundColor=FFFFFF&amp;up_size=1&amp;up_speed=1&amp;up_originalLook=0&amp;up_userColor1=&amp;up_userColor2=&amp;up_userColor3=&amp;up_userColor4=&amp;synd=open&amp;w=320&amp;h=200&amp;title=__UP_spiderName__&amp;border=%23ffffff%7C3px%2C1px+solid+%23999999&amp;output=js\"></script>");
+        selenium.click("//html/body/div[5]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[2]/td[2]/em/button");
 
+        //Copy rss portlet
+        selenium.doubleClickAt("//div[@id='Flux RSS lemonde.fr']", "5,5");
+        selenium.mouseOver("//div[@id='Flux RSS lemonde.fr']");
+        selenium.contextMenuAt("//div[@id='Flux RSS lemonde.fr']", "5,5");
+        selenium.click("Link=Copy");
+
+        //Paste rss portlet
+        selenium.doubleClickAt("//span[text()='portlets']", "5,5");
+        selenium.mouseOver("//span[text()='portlets']");
+        selenium.contextMenuAt("//span[text()='portlets']", "5,5");
+        selenium.click("Link=Paste");
+
+        //Remove all portlets
+        deleteElement("//div[@id='Flux RSS lemonde.fr']");
+        deleteElement("//div[@id='Test script google spider brrr']");
+        deleteElement("//div[Flux RSS lemonde-1.fr]");
 
 
 
 
     }
+
+    public void deleteElement(String element)
+    {
+        selenium.doubleClickAt(element,"5,5");
+        selenium.mouseOver(element);
+        selenium.contextMenuAt(element,"5,5");
+        selenium.click("Link=Remove");
+        if (selenium.isElementPresent("//button[text()='Yes']")) {
+            selenium.click("//button[text()='Yes']");
+        }    }
 }
+

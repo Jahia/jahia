@@ -74,6 +74,7 @@ public class RichtextTest extends SeleneseTestCase {
                 }
             }
         }
+        deleteContentCreated();
         for (int i = 1; i < numberOfNodes; i++) {
             //click on "Any content"
             new Wait("wait") {

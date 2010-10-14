@@ -71,6 +71,7 @@ public class CategoriesThisArticle extends SeleneseTestCase {
                 }
             }
         }
+        deleteContentCreated();
         CreateAnArticle();
         addCategories();
         checkAndRemoveCategoriesSaved();

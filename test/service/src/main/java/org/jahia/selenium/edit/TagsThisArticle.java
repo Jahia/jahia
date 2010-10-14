@@ -68,6 +68,7 @@ public class TagsThisArticle extends SeleneseTestCase {
                 }
             }
         }
+        deleteContentCreated();
         CreateAnArticle();
         TagsArticle();
         checkAndRemoveTags();

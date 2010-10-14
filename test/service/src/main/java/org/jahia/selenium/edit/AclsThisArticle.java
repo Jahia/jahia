@@ -12,8 +12,8 @@ import java.util.ArrayList;
 /**
  * this test create an Article in edit, déselect all Acl on this and save, after that, select all Acl and Save, and to finish add add manys tags
  */
-public class AclTagThisArticle extends SeleneseTestCase {
-    private static Logger logger = Logger.getLogger(AclTagThisArticle.class);
+public class AclsThisArticle extends SeleneseTestCase {
+    private static Logger logger = Logger.getLogger(AclsThisArticle.class);
     public int tags = 10;
     private JahiaSite site;
     private final static String TESTSITE_NAME = "mySite";
@@ -70,7 +70,6 @@ public class AclTagThisArticle extends SeleneseTestCase {
         }
         CreateAnArticle();
         AclThisArticle();
-        TagThisArticle(tags);
         deleteContentCreated();
     }
 
@@ -86,18 +85,18 @@ public class AclTagThisArticle extends SeleneseTestCase {
         //doubleClick on "Editorial content"
         new Wait("wait") {
             public boolean until() {
-                return selenium.isElementPresent("//img[@src='/modules/default/icons/jmix_editorialContent.png']");
+                return selenium.isElementPresent("//div[text()='Editorial content']");
             }
         };
-        selenium.doubleClick("//img[@src='/modules/default/icons/jmix_editorialContent.png']");
+        selenium.doubleClick("//div[text()='Editorial content']");
 
         //doubleClick on "Article"
         new Wait("wait") {
             public boolean until() {
-                return selenium.isElementPresent("//img[@src='/modules/article/icons/jnt_article.png']");
+                return selenium.isElementPresent("//div[text()='Article (title and introduction)']");
             }
         };
-        selenium.doubleClick("//img[@src='/modules/article/icons/jnt_article.png']");
+        selenium.doubleClick("//div[text()='Article (title and introduction)']");
 
         //fill Title
         new Wait("wait") {
@@ -177,48 +176,6 @@ public class AclTagThisArticle extends SeleneseTestCase {
         }
         selenium.click("//div[@class=' x-small-editor x-panel-btns-center x-panel-fbar x-component x-toolbar-layout-ct']/table/tbody/tr/td[1]/table/tbody/tr/td[1]/table");
 
-    }
-
-    public void TagThisArticle(int numberOfTags) {
-        // wait article pop in the page, on double click on it
-        new Wait("wait") {
-            public boolean until() {
-                return selenium.isTextPresent("Acl Article body test");
-            }
-        };
-        new Wait("wait") {
-            public boolean until() {
-                return selenium.isTextPresent("Add tags");
-            }
-        };
-        selenium.mouseOver("j:newTag"); //tips in order to click on a element in edit mode.
-        selenium.doubleClick("j:newTag");
-
-        //click on Tags
-        new Wait("wait") {
-            public boolean until() {
-                return selenium.isElementPresent("link=Tags");
-            }
-        };
-        selenium.click("link=Tags");
-        addTags(numberOfTags);
-        selenium.click("//div[@class=' x-small-editor x-panel-btns-center x-panel-fbar x-component x-toolbar-layout-ct']/table/tbody/tr/td[1]/table/tbody/tr/td[1]/table");
-    }
-
-    public void addTags(int i) {
-        for (int j = 0; j < i; j++) {
-            selenium.setSpeed("200");
-            String Tag = "Tag" + j;
-            selenium.type("tagName", Tag);
-            new Wait("wait") {
-                public boolean until() {
-                    return selenium.isElementPresent("//table[@class='x-toolbar-right-ct']/tbody/tr/td[1]/table/tbody/tr/td[3]/table/tbody");
-                }
-            };
-            selenium.click("//table[@class='x-toolbar-right-ct']/tbody/tr/td[1]/table/tbody/tr/td[3]/table/tbody");
-            Tag = "Tag";
-        }
-        selenium.setSpeed(TEST_SPEED);
     }
 
     public String[] getRights() {

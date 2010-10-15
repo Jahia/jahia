@@ -36,7 +36,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
-import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.Formatter;
@@ -53,17 +52,14 @@ import java.util.Date;
  * To change this template use File | Settings | File Templates.
  */
 public class InfoTabItem extends EditEngineTabItem {
-    private FlowPanel infoPanel;
+    private transient FlowPanel infoPanel;
 
-    public InfoTabItem(NodeHolder engine) {
-        super(Messages.get("label.information"), engine);
-    }
 
-    public void create(String locale) {
-        if (!isProcessed()) {
+    public void init(String locale) {
+        if (!tab.isProcessed()) {
             infoPanel = new FlowPanel();
             infoPanel.addStyleName("infoPane");
-            add(infoPanel);
+            tab.add(infoPanel);
 
             Grid g = new Grid(1, 2);
             g.setCellSpacing(10);
@@ -128,7 +124,7 @@ public class InfoTabItem extends EditEngineTabItem {
             }
             g.setWidget(0, 1, flowPanel);
             infoPanel.add(g);
-            setProcessed(true);
+            tab.setProcessed(true);
         }
     }
 

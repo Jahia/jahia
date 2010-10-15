@@ -43,12 +43,10 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
-import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.widget.content.ImagePopup;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
@@ -63,20 +61,13 @@ import java.util.List;
  *        Created : 6 sept. 2010
  */
 public class VersioningTabItem extends EditEngineTabItem {
-    private JahiaContentManagementServiceAsync service;
-
-    public VersioningTabItem(NodeHolder nodeHolder) {
-        super(Messages.get("label.engineTab.versioning", "Versions"), nodeHolder);
-        service = JahiaContentManagementService.App.getInstance();
-    }
 
     /**
      * Create the tab item
      */
     @Override
-    public void create(final String locale) {
-        final VersioningTabItem tabItem = this;
-        service.getVersions(engine.getNode().getPath(), new BaseAsyncCallback<List<GWTJahiaNodeVersion>>() {
+    public void init(final String locale) {
+        JahiaContentManagementService.App.getInstance().getVersions(engine.getNode().getPath(), new BaseAsyncCallback<List<GWTJahiaNodeVersion>>() {
             public void onSuccess(List<GWTJahiaNodeVersion> result) {
                 final ListStore<GWTJahiaNodeVersion> all = new ListStore<GWTJahiaNodeVersion>();
                 all.add(result);
@@ -132,11 +123,11 @@ public class VersioningTabItem extends EditEngineTabItem {
                             button.addSelectionListener(new SelectionListener<ButtonEvent>() {
                                 @Override
                                 public void componentSelected(ButtonEvent ce) {
-                                    mask(Messages.get("label.restoring","Restoring")+"...", "x-mask-loading");
-                                    service.restoreNode(version, false, new BaseAsyncCallback() {
+                                    tab.mask(Messages.get("label.restoring","Restoring")+"...", "x-mask-loading");
+                                    JahiaContentManagementService.App.getInstance().restoreNode(version, false, new BaseAsyncCallback() {
                                         public void onSuccess(Object result) {
-                                            tabItem.removeAll();
-                                            create(locale);
+                                            tab.removeAll();
+                                            init(locale);
                                             engine.getLinker().refresh(EditLinker.REFRESH_MAIN + EditLinker.REFRESH_PAGES);
                                             engine.close();
                                         }
@@ -178,7 +169,7 @@ public class VersioningTabItem extends EditEngineTabItem {
                                     }
                                 }
                             } else {
-                                service.getNodeURL(null, el.getPath(), version.getDate(), version.getLabel(), "default", locale, new BaseAsyncCallback<String>() {
+                                JahiaContentManagementService.App.getInstance().getNodeURL(null, el.getPath(), version.getDate(), version.getLabel(), "default", locale, new BaseAsyncCallback<String>() {
                                             public void onSuccess(String result) {
                                                 final com.extjs.gxt.ui.client.widget.Window dl =
                                                         new com.extjs.gxt.ui.client.widget.Window();
@@ -198,9 +189,9 @@ public class VersioningTabItem extends EditEngineTabItem {
                         }
                     }
                 });
-                add(grid);
-                layout();
-                show();
+                tab.add(grid);
+                tab.layout();
+                tab.show();
             }
         });
     }

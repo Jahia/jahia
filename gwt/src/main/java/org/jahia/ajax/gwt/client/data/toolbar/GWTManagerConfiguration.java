@@ -52,7 +52,7 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
     private List<String> tableColumnKeys;
 
     private List<GWTRepository> repositories;
-    private List<String> tabs;
+    private List<GWTEngineTab> tabs;
     private String selectedAccordion = null;
     private boolean hideLeftPanel = false;
 
@@ -87,7 +87,7 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
         tableColumns = new ArrayList<GWTColumn>();
         tableColumnKeys = new ArrayList<String>();
         repositories = new ArrayList<GWTRepository>();
-        tabs = new ArrayList<String>();
+        tabs = new ArrayList<GWTEngineTab>();
     }
 
     public void addTableColumn(GWTColumn col) {
@@ -108,11 +108,11 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
         selectedAccordion = accordion;
     }
 
-    public List<String> getTabs() {
+    public List<GWTEngineTab> getTabs() {
         return tabs;
     }
 
-    public void addTab(String tab) {
+    public void addTab(GWTEngineTab tab) {
         tabs.add(tab);
     }
 

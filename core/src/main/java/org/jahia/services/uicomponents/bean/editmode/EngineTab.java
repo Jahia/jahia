@@ -32,8 +32,8 @@
 
 package org.jahia.services.uicomponents.bean.editmode;
 
+import org.jahia.ajax.gwt.client.widget.contentengine.EditEngineTabItem;
 import org.jahia.services.uicomponents.bean.Visibility;
-import org.springframework.beans.factory.BeanNameAware;
 
 import java.io.Serializable;
 
@@ -44,32 +44,46 @@ import java.io.Serializable;
  * Time: 12:37:29 PM
  * To change this template use File | Settings | File Templates.
  */
-public class EngineTab implements Serializable, BeanNameAware {
-    private String name;
-    private String key;
+public class EngineTab implements Serializable {
+    private String id;
+    private String title;
+    private String titleKey;
     private Visibility visibility;
+    private EditEngineTabItem tabItem;
 
     public EngineTab() {
     }
 
-    public String getName() {
-        return name;
+    public String getId() {
+        return id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getKey() {
-        return key;
+    public String getTitle() {
+        return title;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public void setBeanName(String name) {
-        this.name = name;
+    public String getTitleKey() {
+        return titleKey;
+    }
+
+    public void setTitleKey(String titleKey) {
+        this.titleKey = titleKey;
+    }
+
+    public EditEngineTabItem getTabItem() {
+        return tabItem;
+    }
+
+    public void setTabItem(EditEngineTabItem item) {
+        this.tabItem = item;
     }
 
     public Visibility getVisibility() {

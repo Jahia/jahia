@@ -58,14 +58,12 @@ import java.util.Arrays;
  */
 public class UsagesTabItem extends EditEngineTabItem {
 
-    public UsagesTabItem(NodeHolder engine) {
-        super(Messages.get("label.engineTab.usages", "Usages"), engine);
-        //setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabContent());
-    }
+
 
     @Override
-    public void create(String locale) {
-        setLayout(new RowLayout());
+    public void init(String locale) {
+        tab.setLayout(new RowLayout());
+
         if (engine.getNode() != null) {
             Grid<GWTJahiaNodeUsage> grid = NodeUsagesGrid.createUsageGrid(Arrays.asList(engine.getNode()));
             Button button = new Button(Messages.get("label.usages.clean"), new SelectionListener<ButtonEvent>() {
@@ -86,10 +84,10 @@ public class UsagesTabItem extends EditEngineTabItem {
             });
             RowData layoutData1 = new RowData(200, 30);
             layoutData1.setMargins(new Margins(3));
-            add(button, layoutData1);
-            add(grid, new RowData(1, 1));
-            setProcessed(true);
+            tab.add(button, layoutData1);
+            tab.add(grid, new RowData(1, 1));
+            tab.setProcessed(true);
         }
-        layout();
+        tab.layout();
     }
 }

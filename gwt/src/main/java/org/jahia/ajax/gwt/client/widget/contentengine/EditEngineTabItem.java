@@ -35,9 +35,13 @@ package org.jahia.ajax.gwt.client.widget.contentengine;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.InfoTabItem;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -47,71 +51,48 @@ import java.util.List;
  * Time: 6:31:49 PM
  * To change this template use File | Settings | File Templates.
  */
-public abstract class EditEngineTabItem extends AsyncTabItem {
-    protected NodeHolder engine;
+public abstract class EditEngineTabItem implements Serializable {
+    protected GWTEngineTab gwtEngineTab;
 
-    protected EditEngineTabItem(NodeHolder engine) {
-        this.engine = engine;
-        setLayout(new FitLayout());
-        setStyleName("x-panel-mc");
+    protected transient AsyncTabItem tab;
+    protected transient NodeHolder engine;
+
+    protected EditEngineTabItem() {
     }
 
-    protected EditEngineTabItem(String title, NodeHolder engine) {
-        super(title);
+    public AsyncTabItem create(GWTEngineTab engineTab, NodeHolder engine) {
+        this.gwtEngineTab = engineTab;
         this.engine = engine;
-        setLayout(new FitLayout());
-        setStyleName("x-panel-mc");
+
+        tab = new AsyncTabItem(gwtEngineTab.getTitle()) {
+            @Override public void setProcessed(boolean processed) {
+                EditEngineTabItem.this.setProcessed(processed);
+                super.setProcessed(processed);
+            }
+        };
+
+        tab.setLayout(new FitLayout());
+        tab.setStyleName("x-panel-mc");
+        tab.setData("item", this);
+        return tab;
     }
 
     /**
      * Create the tab item
      */
-    public abstract void create(String language);
+    public abstract void init(String language);
 
+    public void setProcessed(boolean processed) {
+    }
 
     public boolean handleMultipleSelection() {
         return false;
     }
 
-    public static void addTabs(final List<String> tabsConfig, final TabPanel tabs, final NodeHolder nodeHolder) {
-        for (String tab : tabsConfig) {
-            if (tab.equals("info")) {
-                tabs.add(new InfoTabItem(nodeHolder));
-            } else if (tab.equals("listOrderingContent")) {
-                tabs.add(new ListOrderingContentTabItem(nodeHolder));
-            } else if (tab.equals("content")) {
-                tabs.add(new ContentTabItem(nodeHolder));
-            } else if (tab.equals("template")) {
-                tabs.add(new TemplateOptionsTabItem(nodeHolder));
-            } else if (tab.equals("layout")) {
-                tabs.add(new LayoutTabItem(nodeHolder));
-            } else if (tab.equals("metadata")) {
-                tabs.add(new MetadataTabItem(nodeHolder));
-            } else if (tab.equals("tags")) {
-                tabs.add(new TagsTabItem(nodeHolder));
-            } else if (tab.equals("categories")) {
-                tabs.add(new CategoriesTabItem(nodeHolder));
-            } else if (tab.equals("options")) {
-                tabs.add(new OptionsTabItem(nodeHolder));
-            } else if (tab.equals("rights")) {
-                tabs.add(new RightsTabItem(nodeHolder));
-            } else if (tab.equals("usages")) {
-                tabs.add(new UsagesTabItem(nodeHolder));
-            } else if (tab.equals("workflow")) {
-                tabs.add(new WorkflowTabItem(nodeHolder));
-            } else if (tab.equals("seo")) {
-                tabs.add(new SeoTabItem(nodeHolder));
-            } else if (tab.equals("analytics")) {
-                tabs.add(new AnalyticsTabItem(nodeHolder));
-            } else if (tab.equals("rolePrincipals")) {
-                tabs.add(new RolePrincipalsTabItem(nodeHolder));
-            } else if (tab.equals("portlets")) {
-                tabs.add(new PortletsTabItem(nodeHolder));
-            } else if (tab.equals("versioning")) {
-                tabs.add(new VersioningTabItem(nodeHolder));
-            } else if (tab.equals("history")) {
-                tabs.add(new HistoryTabItem(nodeHolder));
-            }
+    public static void addTabs(final List<GWTEngineTab> tabsConfig, final TabPanel tabs, final NodeHolder nodeHolder) {
+        for (GWTEngineTab tabConfig : tabsConfig) {
+            EditEngineTabItem tabItem = tabConfig.getTabItem();
+            tabs.add(tabItem.create(tabConfig, nodeHolder));
         }
     }
 }

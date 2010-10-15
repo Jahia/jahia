@@ -47,8 +47,10 @@ import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 import java.util.HashMap;
@@ -62,10 +64,11 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public class LayoutTabItem extends PropertiesTabItem {
-    private LayoutContainer htmlPreview;
+    private transient LayoutContainer htmlPreview;
 
-    public LayoutTabItem(NodeHolder engine) {
-        super(Messages.get("label.engineTab.layout", "Layout"), engine, GWTJahiaItemDefinition.LAYOUT);
+    @Override public AsyncTabItem create(GWTEngineTab engineTab, NodeHolder engine) {
+        this.dataType = GWTJahiaItemDefinition.LAYOUT;
+        return super.create(engineTab,engine);
     }
 
     @Override
@@ -97,8 +100,8 @@ public class LayoutTabItem extends PropertiesTabItem {
             }
             listener.selectionChanged(null);
 
-            setLayout(new FillLayout());
-            add(propertiesEditor);
+            tab.setLayout(new FillLayout());
+            tab.add(propertiesEditor);
 
             htmlPreview = new ContentPanel(new FitLayout());
             htmlPreview.setTitle(Messages.get("label.preview", "Preview"));
@@ -106,7 +109,7 @@ public class LayoutTabItem extends PropertiesTabItem {
             htmlPreview.setStyleAttribute("background-color", "white");
             htmlPreview.addStyleName("x-panel");
             htmlPreview.setScrollMode(Style.Scroll.AUTO);
-            add(htmlPreview);
+            tab.add(htmlPreview);
         } else {
             super.attachPropertiesEditor();
         }
@@ -125,7 +128,7 @@ public class LayoutTabItem extends PropertiesTabItem {
                     HTML html = new HTML(result.getResult());
 
                     setHTML(html);
-                    layout();
+                    tab.layout();
                 }
             });
         } else {

@@ -40,12 +40,13 @@ import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.definition.FormFieldCreator;
+import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
@@ -59,20 +60,19 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class PropertiesTabItem extends EditEngineTabItem {
-    protected PropertiesEditor propertiesEditor;
-    protected Map<String, PropertiesEditor> langPropertiesEditorMap;
     protected String dataType;
     protected List<String> excludedTypes;
-    protected boolean multiLang = false;
 
+    protected transient PropertiesEditor propertiesEditor;
+    protected transient Map<String, PropertiesEditor> langPropertiesEditorMap;
+    protected transient boolean multiLang = false;
 
-
-    protected PropertiesTabItem(String title, NodeHolder engine, String dataType) {
-        super(title, engine);
-        this.dataType = dataType;
+    @Override public AsyncTabItem create(GWTEngineTab engineTab, NodeHolder engine) {
+        AsyncTabItem tab = super.create(engineTab, engine);
         langPropertiesEditorMap = new HashMap<String, PropertiesEditor>();
-        setLayout(new FitLayout());
-        setScrollMode(Style.Scroll.AUTO);
+        tab.setLayout(new FitLayout());
+        tab.setScrollMode(Style.Scroll.AUTO);
+        return tab;
     }
 
     /**
@@ -101,7 +101,7 @@ public class PropertiesTabItem extends EditEngineTabItem {
     /**
      * set properties editor by lang
      *
-     * @param locale
+     * @param language
      */
     private void setPropertiesEditorByLang(String language) {
         if (langPropertiesEditorMap == null || language == null) {
@@ -111,14 +111,14 @@ public class PropertiesTabItem extends EditEngineTabItem {
     }
 
     @Override
-    public void create(String language) {
+    public void init(String language) {
         // do not re-process the view if it's already done and the tabItem is not multilang
-        if (!isMultiLang() && isProcessed()) {
+        if (!isMultiLang() && tab.isProcessed()) {
             return;
         }
-        mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
+        tab.mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
         if (engine.getMixin() != null) {
-            unmask();
+            tab.unmask();
             boolean addSharedLangLabel = true;
             List<GWTJahiaNodeProperty> previousNon18nProperties = null;
 
@@ -143,7 +143,7 @@ public class PropertiesTabItem extends EditEngineTabItem {
                         Label label = new Label(Messages.get("warning.sharedNode", "Important : This is a shared node, editing it will modify its value for all its usages"));
                         label.setStyleAttribute("color", "rgb(200,80,80)");
                         label.setStyleAttribute("font-size", "14px");
-                        add(label);
+                        tab.add(label);
                     }
                 }
 
@@ -210,7 +210,7 @@ public class PropertiesTabItem extends EditEngineTabItem {
             }
             propertiesEditor.setVisible(true);
 
-            layout();
+            tab.layout();
         }
     }
 
@@ -222,8 +222,8 @@ public class PropertiesTabItem extends EditEngineTabItem {
      * call after created:
      */
     public void attachPropertiesEditor() {
-        add(propertiesEditor);
-        layout();
+        tab.add(propertiesEditor);
+        tab.layout();
     }
 
     public boolean isMultiLang() {
@@ -258,5 +258,13 @@ public class PropertiesTabItem extends EditEngineTabItem {
 
     @Override public boolean handleMultipleSelection() {
         return true;
+    }
+
+    public void setDataType(String dataType) {
+        this.dataType = dataType;
+    }
+
+    public void setExcludedTypes(List<String> excludedTypes) {
+        this.excludedTypes = excludedTypes;
     }
 }

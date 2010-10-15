@@ -52,6 +52,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServiceAsync;
+import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
 import java.util.*;
@@ -212,10 +213,11 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     protected void fillCurrentTab() {
         TabItem currentTab = tabs.getSelectedItem();
 
-        if (currentTab instanceof EditEngineTabItem) {
-            EditEngineTabItem engineTabItem = (EditEngineTabItem) currentTab;
-            if (!engineTabItem.isProcessed()) {
-                engineTabItem.create(getSelectedLanguage());
+        if (currentTab != null && currentTab.getData("item") instanceof EditEngineTabItem) {
+            EditEngineTabItem engineTabItem = (EditEngineTabItem) currentTab.getData("item");
+
+            if (!((AsyncTabItem)currentTab).isProcessed()) {
+                engineTabItem.init(getSelectedLanguage());
             }
         }
     }

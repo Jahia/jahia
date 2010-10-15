@@ -38,7 +38,9 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 
 /**
  * Created by IntelliJ IDEA.
@@ -48,28 +50,24 @@ import org.jahia.ajax.gwt.client.messages.Messages;
  * To change this template use File | Settings | File Templates.
  */
 public class ContentTabItem extends PropertiesTabItem {
-    private boolean isNodeNameFieldDisplayed = false;
-    private TextField<String> name = new TextField<String>();
+    private transient boolean isNodeNameFieldDisplayed = false;
+    private transient TextField<String> name;
 
     public TextField<String> getName() {
         return name;
     }
 
-    public ContentTabItem(NodeHolder engine) {
-        super(Messages.get("label.engineTab.content", "Content"), engine, GWTJahiaItemDefinition.CONTENT);
+    @Override public AsyncTabItem create(GWTEngineTab engineTab, NodeHolder engine) {
         setMultiLang(true);
-    }
-
-    public ContentTabItem(NodeHolder engine, boolean multilangue) {
-        this(engine);
-        setMultiLang(multilangue);
+        this.dataType = GWTJahiaItemDefinition.CONTENT;
+        return super.create(engineTab, engine);
     }
 
     @Override
     public void attachPropertiesEditor() {
         // handle jcr:title property
         if (!propertiesEditor.getFieldsMap().containsKey("jcr:title") && !engine.isMultipleSelection()) {
-                setLayout(new RowLayout());
+                tab.setLayout(new RowLayout());
             FieldSet fSet = new FieldSet();
             fSet.add(createNamePanel());
             isNodeNameFieldDisplayed = true;
@@ -96,11 +94,12 @@ public class ContentTabItem extends PropertiesTabItem {
         formPanel.setBorders(false);
         formPanel.setBodyBorder(false);
         formPanel.setHeaderVisible(false);
+        name = new TextField<String>();
         name.setFieldLabel("Name");
         name.setName("name");
         if (engine.isExistingNode()) {
             name.setValue(engine.getNode().getName());
-            setData("NodeName", engine.getNode().getName());
+            tab.setData("NodeName", engine.getNode().getName());
             if(!engine.getNode().isWriteable()) {
                 name.setReadOnly(true);
             }

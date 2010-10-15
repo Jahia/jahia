@@ -331,7 +331,7 @@ public class UIConfigHelper {
                 // add tabs
                 for (EngineTab item : config.getTabs()) {
                     if (checkVisibility(site, jahiaUser, locale, request, item.getVisibility())) {
-                        gwtConfig.addTab(item.getKey());
+                        gwtConfig.addTab(createGWTEngineTab(item, site, locale, uiLocale));
                     }
 
                 }
@@ -353,8 +353,8 @@ public class UIConfigHelper {
                     }
                 }
 
-                gwtConfig.setCreateEngines(createGWTEngineList(site, jahiaUser, locale, request, config.getCreateEngines()));
-                gwtConfig.setEditEngines(createGWTEngineList(site, jahiaUser, locale, request, config.getEditEngines()));
+                gwtConfig.setCreateEngines(createGWTEngineList(site, jahiaUser, locale, uiLocale, request, config.getCreateEngines()));
+                gwtConfig.setEditEngines(createGWTEngineList(site, jahiaUser, locale, uiLocale, request, config.getEditEngines()));
 
                 return gwtConfig;
             } else {
@@ -562,8 +562,8 @@ public class UIConfigHelper {
                 gwtConfig.setTopToolbar(createGWTToolbar(site, jahiaUser, locale, uiLocale, request, config.getTopToolbar()));
                 gwtConfig.setContextMenu(createGWTToolbar(site, jahiaUser, locale, uiLocale, request, config.getContextMenu()));
                 gwtConfig.setTabs(createGWTSidePanelTabList(site, jahiaUser, locale, uiLocale, request, config.getTabs()));
-                gwtConfig.setCreateEngines(createGWTEngineList(site, jahiaUser, locale, request, config.getCreateEngines()));
-                gwtConfig.setEditEngines(createGWTEngineList(site, jahiaUser, locale, request, config.getEditEngines()));
+                gwtConfig.setCreateEngines(createGWTEngineList(site, jahiaUser, locale, uiLocale, request, config.getCreateEngines()));
+                gwtConfig.setEditEngines(createGWTEngineList(site, jahiaUser, locale, uiLocale, request, config.getEditEngines()));
                 return gwtConfig;
             } else {
                 throw new GWTJahiaServiceException("Bean. 'editconfig'  not found in spring config file");
@@ -631,7 +631,7 @@ public class UIConfigHelper {
      * @param engines
      * @return
      */
-    private List<GWTEngine> createGWTEngineList(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, HttpServletRequest request, List<Engine> engines) {
+    private List<GWTEngine> createGWTEngineList(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, List<Engine> engines) {
         // edit engine
         List<GWTEngine> gwtEngineList = new ArrayList<GWTEngine>();
         for (Engine engine : engines) {
@@ -639,10 +639,11 @@ public class UIConfigHelper {
                 final GWTEngine gwtEngine = new GWTEngine();
                 gwtEngine.setNodeType(engine.getNodeType());
 
-                final List<String> engineTabs = new ArrayList<String>();
+                final List<GWTEngineTab> engineTabs = new ArrayList<GWTEngineTab>();
                 for (EngineTab engineTab : engine.getTabs()) {
                     if (checkVisibility(site, jahiaUser, locale, request, engineTab.getVisibility())) {
-                        engineTabs.add(engineTab.getKey());
+                        GWTEngineTab gwtTab = createGWTEngineTab(engineTab, site, locale, uiLocale);
+                        engineTabs.add(gwtTab);
                     }
                 }
                 gwtEngine.setTabs(engineTabs);
@@ -650,6 +651,18 @@ public class UIConfigHelper {
             }
         }
         return gwtEngineList;
+    }
+
+    private GWTEngineTab createGWTEngineTab(EngineTab engineTab, JCRSiteNode site, Locale locale, Locale uiLocale) {
+        GWTEngineTab gwtTab = new GWTEngineTab();
+
+        if (engineTab.getTitleKey() != null) {
+            gwtTab.setTitle(getResources(engineTab.getTitleKey(), uiLocale != null ? uiLocale : locale, site));
+        } else {
+            gwtTab.setTitle(engineTab.getTitle());
+        }
+        gwtTab.setTabItem(engineTab.getTabItem());
+        return gwtTab;
     }
 
     /**

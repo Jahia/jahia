@@ -32,17 +32,9 @@
 
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
-import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
-import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 
@@ -54,16 +46,12 @@ import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
  * To change this template use File | Settings | File Templates.
  */
 public class RightsTabItem extends EditEngineTabItem {
-    private AclEditor rightsEditor;
-
-    public RightsTabItem(NodeHolder engine) {
-        super(Messages.get("label.engineTab.rights", "Rights"), engine);
-    }
+    private transient AclEditor rightsEditor;
 
     @Override
-    public void create(String locale) {
+    public void init(String locale) {
         if (engine.getAcl() != null) {
-            setProcessed(true);
+            tab.setProcessed(true);
 
             GWTJahiaNode node;
             if (engine.getNode() != null) {
@@ -81,8 +69,8 @@ public class RightsTabItem extends EditEngineTabItem {
                 rightsEditor.setReadOnly(!node.isWriteable() || node.isLocked());
             }
 
-            setLayout(new FitLayout());
-            rightsEditor.addNewAclPanel(RightsTabItem.this);
+            tab.setLayout(new FitLayout());
+            rightsEditor.addNewAclPanel(tab);
         }
     }
 

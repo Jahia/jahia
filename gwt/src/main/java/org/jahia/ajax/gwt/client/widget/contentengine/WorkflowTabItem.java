@@ -43,7 +43,6 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
-import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
@@ -62,34 +61,20 @@ import java.util.*;
  * @author Sergiy Shyrkov
  */
 public class WorkflowTabItem extends EditEngineTabItem {
-    private LayoutContainer container;
+    private transient LayoutContainer container;
 
-    private WorkflowHistoryPanel activePanel;
+    private transient WorkflowHistoryPanel activePanel;
 
-    private Map<String, WorkflowHistoryPanel> panelsByLanguage;
-    private LayoutContainer aclPanel;
-    private final JahiaContentManagementServiceAsync service;
+    private transient Map<String, WorkflowHistoryPanel> panelsByLanguage = new HashMap<String, WorkflowHistoryPanel>(1);
+    private transient LayoutContainer aclPanel;
 
-    private GWTJahiaWorkflowType previousType = null;
-    private GWTJahiaWorkflowDefinition previousSelection = null;
-    private AclEditor rightsEditor;
-    private Map<GWTJahiaWorkflowType, Map<GWTJahiaWorkflowDefinition,GWTJahiaNodeACL>> workflowRules;
-
-
-    /**
-     * Initializes an instance of this class.
-     *
-     * @param engine reference to the owner
-     */
-    public WorkflowTabItem(NodeHolder engine) {
-        super(Messages.get("label.engineTab.workflow", "Workflow"), engine);
-        //setIcon(ContentModelIconProvider.CONTENT_ICONS.workflow());
-        panelsByLanguage = new HashMap<String, WorkflowHistoryPanel>(1);
-        service = JahiaContentManagementService.App.getInstance();
-    }
+    private transient GWTJahiaWorkflowType previousType = null;
+    private transient GWTJahiaWorkflowDefinition previousSelection = null;
+    private transient AclEditor rightsEditor;
+    private transient Map<GWTJahiaWorkflowType, Map<GWTJahiaWorkflowDefinition,GWTJahiaNodeACL>> workflowRules;
 
     @Override
-    public void create(String locale) {
+    public void init(String locale) {
         if (engine.getNode() == null) {
             return;
         }
@@ -100,9 +85,9 @@ public class WorkflowTabItem extends EditEngineTabItem {
         if (container == null) {
             container = new LayoutContainer(new RowLayout());
         }
-        add(container);
+        tab.add(container);
 
-        setProcessed(true);
+        tab.setProcessed(true);
 
         WorkflowHistoryPanel next = getPanel(locale);
         if (activePanel != null) {
@@ -114,7 +99,7 @@ public class WorkflowTabItem extends EditEngineTabItem {
 
         activePanel = next;
 
-        service.getWorkflowRules(engine.getNode().getPath(),
+        JahiaContentManagementService.App.getInstance().getWorkflowRules(engine.getNode().getPath(),
                 new BaseAsyncCallback<Map<GWTJahiaWorkflowType,Map<GWTJahiaWorkflowDefinition,GWTJahiaNodeACL>>>() {
                     public void onSuccess(final Map<GWTJahiaWorkflowType,Map<GWTJahiaWorkflowDefinition,GWTJahiaNodeACL>> result) {
                         HorizontalPanel horizontalPanel = new HorizontalPanel();
@@ -182,7 +167,7 @@ public class WorkflowTabItem extends EditEngineTabItem {
                                 }
                                 previousSelection = event.getSelectedItem();
                                 previousType = typesCombo.getValue();
-                                layout();
+                                tab.layout();
                             }
                         });
 
@@ -196,7 +181,7 @@ public class WorkflowTabItem extends EditEngineTabItem {
                             typesCombo.setReadOnly(true);
                         }
 
-                        layout();
+                        tab.layout();
                     }
                 });
 

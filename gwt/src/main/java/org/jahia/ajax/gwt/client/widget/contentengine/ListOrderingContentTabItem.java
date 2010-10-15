@@ -53,20 +53,14 @@ import java.util.List;
  * Time: 10:33:26 AM
  */
 public class ListOrderingContentTabItem extends ContentTabItem {
-    private CheckBox useManualRanking;
-    private ManualListOrderingEditor manualListOrderingEditor = null;
+    private transient CheckBox useManualRanking;
+    private transient ManualListOrderingEditor manualListOrderingEditor = null;
     private static final String JMIX_ORDERED_LIST = "jmix:orderedList";
-
-
-    public ListOrderingContentTabItem(NodeHolder engine) {
-        super(engine);
-        setTitle(Messages.get("label.engineTab.contentList", "Content"));
-    }
 
     @Override
     public void attachPropertiesEditor() {
-        setLayout(new RowLayout());
-        add(propertiesEditor);
+        tab.setLayout(new RowLayout());
+        tab.add(propertiesEditor);
         if (!engine.isMultipleSelection()) {
             attachManualListOrderingEditor(propertiesEditor);
         }
@@ -136,7 +130,7 @@ public class ListOrderingContentTabItem extends ContentTabItem {
 
         fieldSet.add(useManualRanking);
         fieldSet.add(manualListOrderingEditor);
-        add(fieldSet);
+        tab.add(fieldSet);
     }
 
     /**

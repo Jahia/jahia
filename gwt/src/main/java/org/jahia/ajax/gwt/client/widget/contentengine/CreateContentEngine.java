@@ -168,8 +168,8 @@ public class CreateContentEngine extends AbstractContentEngine {
                 if (!changedI18NProperties.containsKey(lang)) {
                     changedI18NProperties.put(lang, new ArrayList<GWTJahiaNodeProperty>());
                 }
-                if (item instanceof PropertiesTabItem) {
-                    PropertiesTabItem propertiesTabItem = (PropertiesTabItem) item;
+                if (item.getData("item") instanceof PropertiesTabItem) {
+                    PropertiesTabItem propertiesTabItem = (PropertiesTabItem) item.getData("item");
                     changedI18NProperties.get(lang).addAll(propertiesTabItem.getLanguageProperties(true, lang));
                 }
             }
@@ -220,7 +220,8 @@ public class CreateContentEngine extends AbstractContentEngine {
         final List<String> mixin = new ArrayList<String>();
         mask(Messages.get("label.saving","Saving..."), "x-mask-loading");
         setButtonsEnabled(false);
-        for (TabItem item : tabs.getItems()) {
+        for (TabItem tab : tabs.getItems()) {
+            EditEngineTabItem item = tab.getData("item");
             if (item instanceof PropertiesTabItem) {
                 PropertiesTabItem propertiesTabItem = (PropertiesTabItem) item;
                 PropertiesEditor pe = ((PropertiesTabItem) item).getPropertiesEditor();

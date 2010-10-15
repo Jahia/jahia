@@ -74,18 +74,13 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class TagsTabItem extends EditEngineTabItem {
-    private String locale;
-    private Map<String, GWTJahiaNodeProperty> oldValues;
-    private Map<String, GWTJahiaNodeProperty> newValues;
-    private TreeStore<GWTJahiaNode> tagStore;
-    private TreeLoader<GWTJahiaNode> tagLoader;
-//    private TreeStore<GWTJahiaNode> tagStore;
+    private transient String locale;
+    private transient Map<String, GWTJahiaNodeProperty> oldValues;
+    private transient Map<String, GWTJahiaNodeProperty> newValues;
+    private transient TreeStore<GWTJahiaNode> tagStore;
+    private transient TreeLoader<GWTJahiaNode> tagLoader;
 
-    public TagsTabItem(NodeHolder engine) {
-        super(Messages.get("label.engineTab.tags", "Tags"), engine);
-    }
-
-    public void create(String locale) {
+    public void init(String locale) {
         if (!engine.isExistingNode() || (engine.getNode() != null)) {
 //            setProcessed(true);
             if (newValues == null) {
@@ -93,7 +88,7 @@ public class TagsTabItem extends EditEngineTabItem {
                 this.oldValues = new HashMap<String, GWTJahiaNodeProperty>();
                 this.newValues = new HashMap<String, GWTJahiaNodeProperty>();
                 init();
-                layout();
+                tab.layout();
             } else {
                 this.locale = locale;
                 tagStore.removeAll();
@@ -103,7 +98,7 @@ public class TagsTabItem extends EditEngineTabItem {
     }
 
     private void init() {
-        setLayout(new BorderLayout());
+        tab.setLayout(new BorderLayout());
         final GWTJahiaNode node = engine.getNode();
         tagLoader = new BaseTreeLoader<GWTJahiaNode>(new RpcProxy<List<GWTJahiaNode>>() {
             @Override
@@ -207,7 +202,7 @@ public class TagsTabItem extends EditEngineTabItem {
             bar.add(new Text(Messages.get("label.add", "Add Tag") + ":"));
             bar.add(autoCompleteComboBox);
             bar.add(addTag);
-            add(bar, new BorderLayoutData(Style.LayoutRegion.NORTH, 45));
+            tab.add(bar, new BorderLayoutData(Style.LayoutRegion.NORTH, 45));
         }
 
         // Sub grid
@@ -224,7 +219,7 @@ public class TagsTabItem extends EditEngineTabItem {
         tagGrid.setAutoExpandColumn("name");
         tagGrid.getTreeView().setRowHeight(25);
         tagGrid.getTreeView().setForceFit(true);
-        add(tagGrid, new BorderLayoutData(Style.LayoutRegion.CENTER));
+        tab.add(tagGrid, new BorderLayoutData(Style.LayoutRegion.CENTER));
     }
 
     public void updateProperties(Map<String,List<GWTJahiaNodeProperty>> list, List<String> mixin) {

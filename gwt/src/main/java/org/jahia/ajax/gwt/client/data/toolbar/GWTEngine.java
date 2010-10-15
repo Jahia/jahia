@@ -48,7 +48,7 @@ public class GWTEngine  implements Serializable {
 
     private String nodeType;
 
-    private List<String> tabs;
+    private List<GWTEngineTab> tabs;
 
     public String getNodeType() {
         return nodeType;
@@ -58,11 +58,11 @@ public class GWTEngine  implements Serializable {
         this.nodeType = nodeType;
     }
 
-    public List<String> getTabs() {
+    public List<GWTEngineTab> getTabs() {
         return tabs;
     }
 
-    public void setTabs(List<String> tabs) {
+    public void setTabs(List<GWTEngineTab> tabs) {
         this.tabs = tabs;
     }
 

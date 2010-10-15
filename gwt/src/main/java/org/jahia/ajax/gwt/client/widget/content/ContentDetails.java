@@ -55,6 +55,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
+import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 import org.jahia.ajax.gwt.client.widget.contentengine.*;
 import org.jahia.ajax.gwt.client.widget.tripanel.BottomRightComponent;
@@ -141,7 +142,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
         m_component.setHeading("&nbsp;");
         selectedNodes = null;
         for (TabItem item : tabs.getItems()) {
-            ((EditEngineTabItem) item).setProcessed(false);
+            ((AsyncTabItem) item).setProcessed(false);
             item.setEnabled(false);
         }
     }
@@ -223,7 +224,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                 });
 
                 for (TabItem item : tabs.getItems()) {
-                    if (((EditEngineTabItem) item).handleMultipleSelection()) {
+                    if (((EditEngineTabItem) item.getData("item")).handleMultipleSelection()) {
                         item.setEnabled(true);
                     }
                 }
@@ -239,10 +240,11 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
     private void fillCurrentTab() {
         TabItem currentTab = tabs.getSelectedItem();
 
-        if (currentTab instanceof EditEngineTabItem) {
-            EditEngineTabItem engineTabItem = (EditEngineTabItem) currentTab;
-            if (!engineTabItem.isProcessed()) {
-                engineTabItem.create(language.getLanguage());
+        if (currentTab.getData("item") instanceof EditEngineTabItem) {
+            EditEngineTabItem engineTabItem = (EditEngineTabItem) currentTab.getData("item");
+
+            if (!((AsyncTabItem)currentTab).isProcessed()) {
+                engineTabItem.init(language.getLanguage());
                 m_component.layout();
             }
         }
@@ -315,7 +317,8 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
             // node
             List<GWTJahiaNode> orderedChildrenNodes = null;
 
-            for (TabItem item : tabs.getItems()) {
+            for (TabItem tab : tabs.getItems()) {
+                EditEngineTabItem item = (EditEngineTabItem) tab.getData("item");
                 if (item instanceof PropertiesTabItem) {
                     PropertiesTabItem propertiesTabItem = (PropertiesTabItem) item;
                     PropertiesEditor pe = propertiesTabItem.getPropertiesEditor();

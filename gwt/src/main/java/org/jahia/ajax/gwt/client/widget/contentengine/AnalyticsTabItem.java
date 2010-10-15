@@ -39,9 +39,7 @@ import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsData;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsQuery;
-import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.widget.analytics.AnalyticsDataVisualizer;
 
 import java.util.Date;
@@ -55,20 +53,11 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class AnalyticsTabItem extends EditEngineTabItem {
-    private static JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
-    private AnalyticsDataVisualizer dataVisualizer;
-    private GWTJahiaAnalyticsQuery lastQuery;
-
-    public AnalyticsTabItem(NodeHolder engine) {
-        super(Messages.get("label.engineTab.analytics", "Analytics"), engine);
-    }
-
-    public AnalyticsTabItem(String title, AbstractContentEngine engine) {
-        super(title, engine);
-    }
+    private transient AnalyticsDataVisualizer dataVisualizer;
+    private transient GWTJahiaAnalyticsQuery lastQuery;
 
     @Override
-    public void create(final String locale) {
+    public void init(final String locale) {
         GWT.runAsync(new RunAsyncCallback() {
             public void onFailure(Throwable reason) {
                 Window.alert("Code download failed");
@@ -85,7 +74,7 @@ public class AnalyticsTabItem extends EditEngineTabItem {
                     //lastQuery.setFilters("ga:pagePath==" + engine.getNode());
                     display();
                 }
-                layout();
+                tab.layout();
             }
         });
     }
@@ -121,7 +110,7 @@ public class AnalyticsTabItem extends EditEngineTabItem {
                     loadData(lastQuery);
                 }
             };
-            add(dataVisualizer);
+            tab.add(dataVisualizer);
         }
 
         // load date
@@ -134,7 +123,7 @@ public class AnalyticsTabItem extends EditEngineTabItem {
      */
     private void loadData(GWTJahiaAnalyticsQuery query) {
         // get data
-        service.getAnalyticsData(query, new BaseAsyncCallback<List<GWTJahiaAnalyticsData>>() {
+        JahiaContentManagementService.App.getInstance().getAnalyticsData(query, new BaseAsyncCallback<List<GWTJahiaAnalyticsData>>() {
             public void onSuccess(List<GWTJahiaAnalyticsData> dataList) {
                 dataVisualizer.setDataList(dataList);
                 dataVisualizer.refreshUI();

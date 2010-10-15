@@ -7,9 +7,6 @@
     <bean name="editmodeEditorConfigurer" class="org.springframework.beans.factory.config.CustomEditorConfigurer">
         <property name="customEditors">
             <map>
-                <entry key="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                    <bean class="org.jahia.services.uicomponents.bean.editmode.EngineTabPropertyEditor"/>
-                </entry>
                 <entry key="org.jahia.services.uicomponents.bean.Visibility">
                     <bean class="org.jahia.services.uicomponents.bean.VisibilityPropertyEditor"/>
                 </entry>
@@ -163,11 +160,11 @@
                     <property name="nodeType" value="jmix:list"/>
                     <property name="tabs">
                         <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                            <value>listOrderingContent,$site/edit-mode/list-management</value>
-                            <value>layout,$site/edit-mode/layout</value>
-                            <value>options,$site/edit-mode/options</value>
-                            <value>rights,$site/edit-mode/rights</value>
-                            <value>usages,$site/edit-mode/usages</value>
+                            <ref bean="Engine.Tab.ListOrdering" />
+                            <ref bean="Engine.Tab.Layout" />
+                            <ref bean="Engine.Tab.Options" />
+                            <ref bean="Engine.Tab.Rights" />
+                            <ref bean="Engine.Tab.Usages" />
                         </list>
                     </property>
                 </bean>
@@ -175,11 +172,11 @@
                     <property name="nodeType" value="nt:base"/>
                     <property name="tabs">
                         <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                            <value>content,$site/edit-mode/content</value>
-                            <value>layout,$site/edit-mode/layout</value>
-                            <value>options,$site/edit-mode/options</value>
-                            <value>rights,$site/edit-mode/rights</value>
-                            <value>usages,$site/edit-mode/usages</value>
+                            <ref bean="Engine.Tab.Content" />
+                            <ref bean="Engine.Tab.Layout" />
+                            <ref bean="Engine.Tab.Options" />
+                            <ref bean="Engine.Tab.Rights" />
+                            <ref bean="Engine.Tab.Usages" />
                         </list>
                     </property>
                 </bean>
@@ -193,9 +190,9 @@
                     <property name="nodeType" value="jnt:page"/>
                     <property name="tabs">
                         <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                            <value>content,$site/edit-mode/content</value>
-                            <value>options,$site/edit-mode/options</value>
-                            <value>rights,$site/edit-mode/rights</value>
+                            <ref bean="Engine.Tab.Content" />
+                            <ref bean="Engine.Tab.Options" />
+                            <ref bean="Engine.Tab.Rights" />
                         </list>
                     </property>
                 </bean>
@@ -203,9 +200,9 @@
                     <property name="nodeType" value="nt:base"/>
                     <property name="tabs">
                         <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                            <value>content,$site/edit-mode/content</value>
-                            <value>layout,$site/edit-mode/layout</value>
-                            <value>options,$site/edit-mode/options</value>
+                            <ref bean="Engine.Tab.Content" />
+                            <ref bean="Engine.Tab.Layout" />
+                            <ref bean="Engine.Tab.Options" />
                         </list>
                     </property>
                 </bean>
@@ -705,19 +702,19 @@
                     <property name="nodeType" value="jmix:list"/>
                     <property name="tabs">
                         <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                            <value>listOrderingContent,$site/edit-mode/list-management</value>
-                            <value>layout,$site/edit-mode/layout</value>
-                            <value>metadata,$site/edit-mode/metadata</value>
-                            <value>tags,$site/edit-mode/tags</value>
-                            <value>categories,$site/edit-mode/categories</value>
-                            <value>options,$site/edit-mode/options</value>
-                            <value>rights,$site/edit-mode/rights</value>
-                            <value>usages,$site/edit-mode/usages</value>
-                            <value>workflow,$site/edit-mode/workflow</value>
-                            <value>history,$site/edit-mode/history</value>
-                            <value>versioning</value>
-                            <value>seo,$site/edit-mode/seo</value>
-                            <ref bean="analyticsEngineTab"/>
+                            <ref bean="Engine.Tab.ListOrdering" />
+                            <ref bean="Engine.Tab.Layout" />
+                            <ref bean="Engine.Tab.Metadata" />
+                            <ref bean="Engine.Tab.Tags" />
+                            <ref bean="Engine.Tab.Categories" />
+                            <ref bean="Engine.Tab.Options" />
+                            <ref bean="Engine.Tab.Rights" />
+                            <ref bean="Engine.Tab.Usages" />
+                            <ref bean="Engine.Tab.Workflow" />
+                            <ref bean="Engine.Tab.History" />
+                            <ref bean="Engine.Tab.Versioning" />
+                            <ref bean="Engine.Tab.Seo" />
+                            <ref bean="Engine.Tab.Analytics"/>
                         </list>
                     </property>
                 </bean>
@@ -725,19 +722,19 @@
                     <property name="nodeType" value="nt:base"/>
                     <property name="tabs">
                         <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                            <value>content,$site/edit-mode/content</value>
-                            <value>layout,$site/edit-mode/layout</value>
-                            <value>metadata,$site/edit-mode/metadata</value>
-                            <value>tags,$site/edit-mode/tags</value>
-                            <value>categories,$site/edit-mode/categories</value>
-                            <value>options,$site/edit-mode/options</value>
-                            <value>rights,$site/edit-mode/rights</value>
-                            <value>usages,$site/edit-mode/usages</value>
-                            <value>workflow,$site/edit-mode/workflow</value>
-                            <value>history,$site/edit-mode/history</value>
-                            <value>versioning</value>
-                            <value>seo,$site/edit-mode/seo</value>
-                            <ref bean="analyticsEngineTab"/>
+                            <ref bean="Engine.Tab.Content"/>
+                            <ref bean="Engine.Tab.Layout" />
+                            <ref bean="Engine.Tab.Metadata" />
+                            <ref bean="Engine.Tab.Tags" />
+                            <ref bean="Engine.Tab.Categories" />
+                            <ref bean="Engine.Tab.Options" />
+                            <ref bean="Engine.Tab.Rights" />
+                            <ref bean="Engine.Tab.Usages" />
+                            <ref bean="Engine.Tab.Workflow" />
+                            <ref bean="Engine.Tab.History" />
+                            <ref bean="Engine.Tab.Versioning" />
+                            <ref bean="Engine.Tab.Seo" />
+                            <ref bean="Engine.Tab.Analytics"/>
                         </list>
                     </property>
                 </bean>
@@ -751,12 +748,12 @@
                     <property name="nodeType" value="jnt:page"/>
                     <property name="tabs">
                         <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                            <value>content,$site/edit-mode/content</value>
-                            <value>metadata,$site/edit-mode/metadata</value>
-                            <value>tags,$site/edit-mode/tags</value>
-                            <value>categories,$site/edit-mode/categories</value>
-                            <value>options,$site/edit-mode/options</value>
-                            <value>rights,$site/edit-mode/rights</value>
+                            <ref bean="Engine.Tab.Content" />
+                            <ref bean="Engine.Tab.Metadata" />
+                            <ref bean="Engine.Tab.Tags" />
+                            <ref bean="Engine.Tab.Categories" />
+                            <ref bean="Engine.Tab.Options" />
+                            <ref bean="Engine.Tab.Rights" />
                         </list>
                     </property>
                 </bean>
@@ -764,13 +761,13 @@
                     <property name="nodeType" value="nt:base"/>
                     <property name="tabs">
                         <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                            <value>content,$site/edit-mode/content</value>
-                            <value>layout,$site/edit-mode/layout</value>
-                            <value>metadata,$site/edit-mode/metadata</value>
-                            <value>tags,$site/edit-mode/tags</value>
-                            <value>categories,$site/edit-mode/categories</value>
-                            <value>options,$site/edit-mode/options</value>
-                            <value>rights,$site/edit-mode/rights</value>
+                            <ref bean="Engine.Tab.Content" />
+                            <ref bean="Engine.Tab.Layout" />
+                            <ref bean="Engine.Tab.Metadata" />
+                            <ref bean="Engine.Tab.Tags" />
+                            <ref bean="Engine.Tab.Categories" />
+                            <ref bean="Engine.Tab.Options" />
+                            <ref bean="Engine.Tab.Rights" />
                         </list>
                     </property>
                 </bean>
@@ -1094,14 +1091,6 @@
         </property>
     </bean>
 
-    <bean name="analyticsEngineTab" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-        <property name="key" value="analytics"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.uicomponents.bean.contentmanager.AnalyticsVisibility">
-                <property name="siteActionPermission" value="edit-mode/analytics"/>
-            </bean>
-        </property>
-    </bean>
 
     <!-- side tabs-->
 
@@ -1144,4 +1133,178 @@
         </property>
         <property name="visibility" value="$site/actions/edit-mode"/>
     </bean>
+
+    <bean id="Engine.Tab.Content" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+        <property name="id" value="content"/>
+        <property name="titleKey" value="label.engineTab.content"/>
+        <property name="visibility" value="$site/edit-mode/content"/>
+        <property name="tabItem" >
+            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.ContentTabItem"/>
+        </property>
+    </bean>
+    
+    <bean id="Engine.Tab.ListOrdering" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+        <property name="id" value="listOrdering"/>
+        <property name="titleKey" value="label.engineTab.listOrdering"/>
+        <property name="visibility" value="$site/edit-mode/listOrdering"/>
+        <property name="tabItem" >
+            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.ListOrderingContentTabItem"/>
+        </property>
+    </bean>
+
+    <bean id="Engine.Tab.Layout" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+        <property name="id" value="layout"/>
+        <property name="titleKey" value="label.engineTab.layout"/>
+        <property name="visibility" value="$site/edit-mode/layout"/>
+        <property name="tabItem" >
+            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.LayoutTabItem"/>
+        </property>
+    </bean>
+
+    <bean id="Engine.Tab.Metadata" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+        <property name="id" value="metadata"/>
+        <property name="titleKey" value="label.engineTab.metadata"/>
+        <property name="visibility" value="$site/edit-mode/metadata"/>
+        <property name="tabItem" >
+            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.PropertiesTabItem">
+                <property name="dataType" value="metadata" />
+                <property name="excludedTypes">
+                    <list>
+                        <value>jmix:categorized</value>
+                        <value>jmix:tagged</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="Engine.Tab.Options" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+        <property name="id" value="options"/>
+        <property name="titleKey" value="label.engineTab.options"/>
+        <property name="visibility" value="$site/edit-mode/options"/>
+        <property name="tabItem" >
+            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.PropertiesTabItem">
+                <property name="dataType" value="options" />
+                <property name="excludedTypes">
+                    <list>
+                        <value>jmix:categorized</value>
+                        <value>jmix:tagged</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="Engine.Tab.Tags" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+        <property name="id" value="tags"/>
+        <property name="titleKey" value="label.engineTab.tags"/>
+        <property name="visibility" value="$site/edit-mode/tags"/>
+        <property name="tabItem" >
+            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.TagsTabItem"/>
+        </property>
+    </bean>
+
+    <bean id="Engine.Tab.Categories" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+        <property name="id" value="categories"/>
+        <property name="titleKey" value="label.engineTab.categories"/>
+        <property name="visibility" value="$site/edit-mode/categories"/>
+        <property name="tabItem" >
+            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.CategoriesTabItem"/>
+        </property>
+    </bean>
+
+    <bean id="Engine.Tab.Versioning" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+        <property name="id" value="versioning"/>
+        <property name="titleKey" value="label.engineTab.versioning"/>
+        <property name="visibility" value="$site/edit-mode/versioning"/>
+        <property name="tabItem" >
+            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.VersioningTabItem"/>
+        </property>
+    </bean>
+
+    <bean id="Engine.Tab.History" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+        <property name="id" value="history"/>
+        <property name="titleKey" value="label.engineTab.history"/>
+        <property name="visibility" value="$site/edit-mode/history"/>
+        <property name="tabItem" >
+            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.HistoryTabItem"/>
+        </property>
+    </bean>
+
+    <bean id="Engine.Tab.Usages" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+        <property name="id" value="usages"/>
+        <property name="titleKey" value="label.engineTab.usages"/>
+        <property name="visibility" value="$site/edit-mode/usages"/>
+        <property name="tabItem" >
+            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.UsagesTabItem"/>
+        </property>
+    </bean>
+
+    <bean id="Engine.Tab.Seo" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+        <property name="id" value="seo"/>
+        <property name="titleKey" value="label.engineTab.seo"/>
+        <property name="visibility" value="$site/edit-mode/seo"/>
+        <property name="tabItem" >
+            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.SeoTabItem"/>
+        </property>
+    </bean>
+
+    <bean id="Engine.Tab.Workflow" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+        <property name="id" value="workflow"/>
+        <property name="titleKey" value="label.engineTab.workflow"/>
+        <property name="visibility" value="$site/edit-mode/workflow"/>
+        <property name="tabItem" >
+            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.WorkflowTabItem"/>
+        </property>
+    </bean>
+
+    <bean id="Engine.Tab.Portlets" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+        <property name="id" value="portlets"/>
+        <property name="titleKey" value="label.engineTab.portlets"/>
+        <property name="visibility" value="$site/edit-mode/portlets"/>
+        <property name="tabItem" >
+            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.PortletsTabItem"/>
+        </property>
+    </bean>
+
+    <bean id="Engine.Tab.Info" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+        <property name="id" value="info"/>
+        <property name="titleKey" value="label.engineTab.info"/>
+        <property name="visibility" value="$site/edit-mode/info"/>
+        <property name="tabItem" >
+            <bean class="org.jahia.ajax.gwt.client.widget.content.InfoTabItem"/>
+        </property>
+    </bean>
+
+    <bean id="Engine.Tab.Rights" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+        <property name="id" value="rights"/>
+        <property name="titleKey" value="label.engineTab.rights"/>
+        <property name="visibility" value="$site/edit-mode/rights"/>
+        <property name="tabItem" >
+            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.RightsTabItem"/>
+        </property>
+    </bean>
+
+    <bean id="Engine.Tab.RolePrincipals" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+        <property name="id" value="rolePrincipals"/>
+        <property name="titleKey" value="label.engineTab.rolePrincipals"/>
+        <property name="tabItem" >
+            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.RolePrincipalsTabItem"/>
+        </property>
+    </bean>
+
+    <bean id="Engine.Tab.Analytics" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+        <property name="id" value="analytics"/>
+        <property name="titleKey" value="label.engineTab.analytics"/>
+        <property name="visibility">
+            <bean class="org.jahia.services.uicomponents.bean.contentmanager.AnalyticsVisibility">
+                <property name="siteActionPermission" value="edit-mode/analytics"/>
+            </bean>
+        </property>
+        <property name="tabItem" >
+            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.AnalyticsTabItem"/>
+        </property>
+    </bean>
+    
+
 </beans>

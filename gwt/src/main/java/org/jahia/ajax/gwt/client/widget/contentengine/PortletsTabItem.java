@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
-import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaPortletDefinition;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -55,18 +54,9 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
  */
 public class PortletsTabItem extends EditEngineTabItem {
 
-    /**
-     * Initializes an instance of this class.
-     * 
-     * @param engine reference to the owner
-     */
-    public PortletsTabItem(NodeHolder engine) {
-        super(Messages.get("label.engineTab.portlets", "Portlets"), engine);
-    }
-
     @Override
-    public void create(String locale) {
-        if (engine.getNode() == null || isProcessed()) {
+    public void init(String locale) {
+        if (engine.getNode() == null || tab.isProcessed()) {
             return;
         }
 
@@ -88,9 +78,9 @@ public class PortletsTabItem extends EditEngineTabItem {
         grid.setBorders(true);
         grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
-        add(grid);
+        tab.add(grid);
 
-        setProcessed(true);
+        tab.setProcessed(true);
     }
 
 }

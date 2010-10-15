@@ -32,7 +32,6 @@
 
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
-import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.security.PrincipalRolePanel;
@@ -44,18 +43,10 @@ import org.jahia.ajax.gwt.client.widget.security.PrincipalRolePanel;
  */
 public class RolePrincipalsTabItem extends EditEngineTabItem {
 
-    /**
-     * Initializes an instance of this class.
-     * 
-     * @param engine reference to the owner
-     */
-    public RolePrincipalsTabItem(NodeHolder engine) {
-        super(Messages.get("label.engineTab.rolePrincipals", "Principals"), engine);
-    }
 
     @Override
-    public void create(String locale) {
-        if (engine.getNode() == null || isProcessed()) {
+    public void init(String locale) {
+        if (engine.getNode() == null || tab.isProcessed()) {
             return;
         }
 
@@ -65,8 +56,8 @@ public class RolePrincipalsTabItem extends EditEngineTabItem {
             site = path.substring("/sites/".length(), path.indexOf("/", "/sites/".length()));
         }
         GWTJahiaRole role = new GWTJahiaRole(engine.getNode().getName(), site);
-        add(new PrincipalRolePanel(role));
-        setProcessed(true);
+        tab.add(new PrincipalRolePanel(role));
+        tab.setProcessed(true);
     }
 
 }

@@ -1,6 +1,5 @@
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
-import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.messages.Messages;
 
 /**
@@ -12,22 +11,17 @@ import org.jahia.ajax.gwt.client.messages.Messages;
  */
 public class HistoryTabItem extends EditEngineTabItem {
 
-    private HistoryPanel historyPanel;
-
-    public HistoryTabItem(NodeHolder engine) {
-        super(Messages.get("label.engineTab.history", "History"), engine);
-        //setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabContent());
-    }
+    private transient HistoryPanel historyPanel;
 
     @Override
-    public void create(String locale) {
+    public void init(String locale) {
         if (engine.getNode() == null) {
             return;
         }
 
         historyPanel = new HistoryPanel(engine.getNode());
-        add(historyPanel);
+        tab.add(historyPanel);
 
-        layout();
+        tab.layout();
     }
 }

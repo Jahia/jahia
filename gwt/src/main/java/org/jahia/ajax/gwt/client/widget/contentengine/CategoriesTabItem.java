@@ -72,31 +72,26 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class CategoriesTabItem extends EditEngineTabItem {
-    private TreeStore<GWTJahiaNode> catStore;
-    private GWTJahiaNodeProperty categoryProperty;
-
-    public CategoriesTabItem(NodeHolder engine) {
-        super(Messages.get("label.engineTab.categories", "Categories"), engine);
-        //setIcon(ContentModelIconProvider.CONTENT_ICONS.engineTabClassification());
-    }
+    private transient TreeStore<GWTJahiaNode> catStore;
+    private transient GWTJahiaNodeProperty categoryProperty;
 
     @Override
-    public void create(String locale) {
+    public void init(String locale) {
         if (!engine.isExistingNode() || (engine.getNode() != null)) {
-            setProcessed(true);
+            tab.setProcessed(true);
             init();
-            layout();
+            tab.layout();
         }
     }
 
     private void init() {
-        setLayout(new BorderLayout());
+        tab.setLayout(new BorderLayout());
         final GWTJahiaNode node = engine.getNode();
         initCategoriesStoreA(node);
         if (!engine.isExistingNode() || (node.isWriteable() && !node.isLocked())) {
-            add(createCategoriedPickerPanel(), new BorderLayoutData(Style.LayoutRegion.NORTH, 250));
+            tab.add(createCategoriedPickerPanel(), new BorderLayoutData(Style.LayoutRegion.NORTH, 250));
         }
-        add(createSelectedCategoriesPanel(), new BorderLayoutData(Style.LayoutRegion.CENTER));
+        tab.add(createSelectedCategoriesPanel(), new BorderLayoutData(Style.LayoutRegion.CENTER));
     }
 
     /**

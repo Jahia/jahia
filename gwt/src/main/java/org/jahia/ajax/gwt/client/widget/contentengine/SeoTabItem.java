@@ -39,7 +39,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
 import org.jahia.ajax.gwt.client.messages.Messages;
 
@@ -51,22 +50,12 @@ import org.jahia.ajax.gwt.client.messages.Messages;
  */
 public class SeoTabItem extends EditEngineTabItem {
 
-    private UrlMappingEditor activeEditor;
+    private transient UrlMappingEditor activeEditor;
 
-    private Map<String, UrlMappingEditor> editorsByLanguage;
-
-    /**
-     * Initializes an instance of this class.
-     * 
-     * @param engine reference to the owner
-     */
-    public SeoTabItem(NodeHolder engine) {
-        super(Messages.get("label.engineTab.seo", "SEO"), engine);
-        editorsByLanguage = new HashMap<String, UrlMappingEditor>(1);
-    }
+    private transient Map<String, UrlMappingEditor> editorsByLanguage = new HashMap<String, UrlMappingEditor>(1);
 
     @Override
-    public void create(String locale) {
+    public void init(String locale) {
         if (engine.getNode() == null) {
             return;
         }
@@ -83,7 +72,7 @@ public class SeoTabItem extends EditEngineTabItem {
         next.layout();
         activeEditor = next;
 
-        layout();
+        tab.layout();
     }
 
     private UrlMappingEditor getEditor(String locale) {
@@ -92,7 +81,7 @@ public class SeoTabItem extends EditEngineTabItem {
             editor = new UrlMappingEditor(engine.getNode(), locale);
             editor.setVisible(false);
             editorsByLanguage.put(locale, editor);
-            add(editor);
+            tab.add(editor);
         }
         return editor;
     }

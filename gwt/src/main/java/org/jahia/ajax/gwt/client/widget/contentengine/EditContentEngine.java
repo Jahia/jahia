@@ -230,8 +230,8 @@ public class EditContentEngine extends AbstractContentEngine {
                 if (!changedI18NProperties.containsKey(lang)) {
                     changedI18NProperties.put(lang, new ArrayList<GWTJahiaNodeProperty>());
                 }
-                if (item instanceof PropertiesTabItem) {
-                    PropertiesTabItem propertiesTabItem = (PropertiesTabItem) item;
+                if (item.getData("item") instanceof PropertiesTabItem) {
+                    PropertiesTabItem propertiesTabItem = (PropertiesTabItem) item.getData("item");
                     changedI18NProperties.get(lang).addAll(propertiesTabItem.getLanguageProperties(true, lang));
                 }
             }
@@ -261,7 +261,8 @@ public class EditContentEngine extends AbstractContentEngine {
             // node
             List<GWTJahiaNode> orderedChildrenNodes = null;
 
-            for (TabItem item : tabs.getItems()) {
+            for (TabItem tab : tabs.getItems()) {
+                EditEngineTabItem item = tab.getData("item");
                 if (item instanceof PropertiesTabItem) {
                     PropertiesTabItem propertiesTabItem = (PropertiesTabItem) item;
                     PropertiesEditor pe = propertiesTabItem.getPropertiesEditor();

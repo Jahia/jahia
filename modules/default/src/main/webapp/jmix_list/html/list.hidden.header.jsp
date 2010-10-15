@@ -23,7 +23,7 @@
             <c:remove var="subNodesTemplate" scope="request" />
         </c:when>
         <c:when test="${jcr:isNodeType(currentNode, 'jmix:renderableList')}">
-            <c:set target="${moduleMap}" property="subNodesTemplate" value="${currentNode.properties['j:subNodesTemplate'].string}"/>
+            <c:set target="${moduleMap}" property="subNodesTemplate" value="${currentNode.properties['j:subNodesView'].string}"/>
         </c:when>
     </c:choose>
     <c:choose>

@@ -320,7 +320,7 @@
 [jmix:renderable] mixin
  extends = jnt:content, jnt:template
  itemtype = layout
- - j:template (string, choicelist[templates,resourceBundle,image]) nofulltext
+ - j:view (string, choicelist[templates,resourceBundle,image]) nofulltext
 
 [jmix:hasDefaultTemplateNode] mixin
  extends = jnt:page
@@ -369,7 +369,7 @@
 
 [jmix:renderableList] mixin
  itemtype = layout
- - j:subNodesTemplate (string, choicelist[templates=subnodes,resourceBundle,image]) nofulltext
+ - j:subNodesView (string, choicelist[templates=subnodes,resourceBundle,image]) nofulltext
 
 [jmix:renderableArea] > jmix:renderableList mixin
  itemtype = layout

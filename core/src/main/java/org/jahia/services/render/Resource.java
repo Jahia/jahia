@@ -149,8 +149,8 @@ public class Resource {
     public String getTemplate() {
         if (StringUtils.isEmpty(template)) {
             try {
-                if (node.isNodeType("jmix:renderable") && node.hasProperty("j:template")) {
-                    template = node.getProperty("j:template").getString();
+                if (node.isNodeType("jmix:renderable") && node.hasProperty("j:view")) {
+                    template = node.getProperty("j:view").getString();
                 } else {
                     template = "default";
                 }

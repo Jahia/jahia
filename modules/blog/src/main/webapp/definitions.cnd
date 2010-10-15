@@ -10,12 +10,12 @@
 [jnt:blogEntryFormEdition] > jnt:content, jmix:blogContent, mix:title
 
 [jnt:topBlog] > jnt:content, jmix:blogContent, jmix:list, jmix:pager, mix:title, jmix:renderableList
- - j:subNodesTemplate (string, choicelist[templates=jnt:page,resourceBundle,image]) nofulltext  itemtype = layout
+ - j:subNodesView (string, choicelist[templates=jnt:page,resourceBundle,image]) nofulltext  itemtype = layout
 
 [jnt:topBlogContent] > jnt:content, jmix:blogContent, jmix:list, jmix:pager, mix:title, jmix:renderableList
- - j:subNodesTemplate (string, choicelist[templates=jnt:blogContent,resourceBundle,image]) nofulltext  itemtype = layout
+ - j:subNodesView (string, choicelist[templates=jnt:blogContent,resourceBundle,image]) nofulltext  itemtype = layout
 
 [jnt:topBlogComment] > jnt:content, jmix:blogContent, jmix:list, jmix:pager, mix:title, jmix:renderableList
- - j:subNodesTemplate (string, choicelist[templates=jnt:post,resourceBundle,image]) nofulltext  itemtype = layout
+ - j:subNodesView (string, choicelist[templates=jnt:post,resourceBundle,image]) nofulltext  itemtype = layout
 
 [jnt:addBlogLink] > jnt:content,jmix:blogContent

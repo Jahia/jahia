@@ -53,7 +53,7 @@
         <footer jcr:primaryType="jnt:contentList" />
       </home>
       <templates jcr:primaryType="jnt:templatesFolder">
-        <base jcr:mixinTypes="jmix:renderable" j:template="intranet" jcr:primaryType="jnt:masterTemplate">
+        <base jcr:mixinTypes="jmix:renderable" j:view="intranet" jcr:primaryType="jnt:masterTemplate">
           <logo jcr:primaryType="jnt:contentList">
             <logo j:basenode="/templateSets/templates-intranet/home" jcr:primaryType="jnt:absoluteArea" />
           </logo>
@@ -120,7 +120,7 @@
                 </col1>
                 <col2 jcr:primaryType="jnt:contentList">
                   <docspaceFormCreation jcr:primaryType="jnt:docspaceFormCreation" />
-                  <contentList jcr:mixinTypes="jmix:renderable jmix:column" j:template="columns" jcr:primaryType="jnt:contentList" j:columns="2">
+                  <contentList jcr:mixinTypes="jmix:renderable jmix:column" j:view="columns" jcr:primaryType="jnt:contentList" j:columns="2">
                     <lastDocspace jcr:primaryType="jnt:lastDocspace" />
                     <lastDocspaceDoc jcr:primaryType="jnt:lastDocspaceDoc" />
                   </contentList>
@@ -136,7 +136,7 @@
                     <document-history j:skin="skins.box2" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
                       <j:translation_en j:skin="skins.box2" jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Document History" jcr:primaryType="jnt:translation" />
                       <commentable jcr:primaryType="jnt:commentable" j:bindedComponent="/templateSets/templates-intranet/templates/base/docspace/file/wrappercontent/row/col1/mainResourceDisplay" />
-                      <commentable-1 jcr:mixinTypes="jmix:renderable" j:template="addcomment" jcr:primaryType="jnt:commentable" j:bindedComponent="/templateSets/templates-intranet/templates/base/docspace/file/wrappercontent/row/col1/mainResourceDisplay" />
+                      <commentable-1 jcr:mixinTypes="jmix:renderable" j:view="addcomment" jcr:primaryType="jnt:commentable" j:bindedComponent="/templateSets/templates-intranet/templates/base/docspace/file/wrappercontent/row/col1/mainResourceDisplay" />
                     </document-history>
                   </col1>
                   <col2 jcr:primaryType="jnt:contentList">
@@ -147,7 +147,7 @@
                       <tag-this-document jcr:primaryType="jnt:tagging" j:bindedComponent="/templateSets/templates-intranet/templates/base/docspace/file/wrappercontent/row/col1/mainResourceDisplay">
                         <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Tag This Document" jcr:primaryType="jnt:translation" />
                       </tag-this-document>
-                      <tag-this-document-1 jcr:mixinTypes="jmix:renderable" j:template="addtag" jcr:primaryType="jnt:tagging" j:bindedComponent="/templateSets/templates-intranet/templates/base/docspace/file/wrappercontent/row/col1/mainResourceDisplay">
+                      <tag-this-document-1 jcr:mixinTypes="jmix:renderable" j:view="addtag" jcr:primaryType="jnt:tagging" j:bindedComponent="/templateSets/templates-intranet/templates/base/docspace/file/wrappercontent/row/col1/mainResourceDisplay">
                         <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Tag this document" jcr:primaryType="jnt:translation" />
                       </tag-this-document-1>
                     </extras>
@@ -163,7 +163,7 @@
                   </col1>
                   <col2 jcr:primaryType="jnt:contentList">
                     <aclUsers jcr:primaryType="jnt:aclUsers" j:bindedComponent="/templateSets/templates-intranet/templates/base/docspace/folder/wrappercontent/row/col1/mainResourceDisplay" />
-                    <aclUsers-1 jcr:mixinTypes="jmix:renderable" j:template="add" jcr:primaryType="jnt:aclUsers" j:bindedComponent="/templateSets/templates-intranet/templates/base/docspace/folder/wrappercontent/row/col1/mainResourceDisplay" />
+                    <aclUsers-1 jcr:mixinTypes="jmix:renderable" j:view="add" jcr:primaryType="jnt:aclUsers" j:bindedComponent="/templateSets/templates-intranet/templates/base/docspace/folder/wrappercontent/row/col1/mainResourceDisplay" />
                     <lastDocspace jcr:primaryType="jnt:lastDocspace" />
                   </col2>
                 </row>
@@ -180,7 +180,7 @@
               <tabs jcr:primaryType="jnt:tabularList">
                 <last-pages jcr:primaryType="jnt:contentList">
                   <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Latest Wiki Pages" jcr:primaryType="jnt:translation" />
-                  <latestContent j:criteria="lastModified" jcr:mixinTypes="jmix:renderable" j:template="linkList" j:type="jnt:wikiPage" j:nbOfResult="20" jcr:primaryType="jnt:latestContent" />
+                  <latestContent j:criteria="lastModified" jcr:mixinTypes="jmix:renderable" j:view="linkList" j:type="jnt:wikiPage" j:nbOfResult="20" jcr:primaryType="jnt:latestContent" />
                 </last-pages>
                 <create-new-page jcr:primaryType="jnt:contentList">
                   <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Create new page" jcr:primaryType="jnt:translation" />
@@ -300,7 +300,7 @@
                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="New Blog" jcr:primaryType="jnt:translation" />
                   </new-blog>
                   <topBlog pageSize="10" jcr:primaryType="jnt:topBlog" />
-                  <list jcr:mixinTypes="jmix:renderable jmix:column" j:template="columns" jcr:primaryType="jnt:contentList" j:columns="2">
+                  <list jcr:mixinTypes="jmix:renderable jmix:column" j:view="columns" jcr:primaryType="jnt:contentList" j:columns="2">
                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="list" jcr:primaryType="jnt:translation" />
                     <topBlogContent pageSize="10" jcr:primaryType="jnt:topBlogContent" />
                     <topBlogComment pageSize="10" jcr:primaryType="jnt:topBlogComment" />
@@ -314,7 +314,7 @@
             <wrappercontent jcr:primaryType="jnt:contentList">
               <row column="2col115" jcr:primaryType="jnt:row">
                 <col1 j:skin="skins.box6" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
-                  <blog-content j:subNodesTemplate="short" jcr:primaryType="jnt:mainResourceArea" j:allowedTypes="jnt:blogContent" />
+                  <blog-content j:subNodesView="short" jcr:primaryType="jnt:mainResourceArea" j:allowedTypes="jnt:blogContent" />
                 </col1>
                 <col2 jcr:primaryType="jnt:contentList">
                   <addBlogLink jcr:primaryType="jnt:addBlogLink" />
@@ -350,7 +350,7 @@
                     <document-history j:skin="skins.box2" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
                       <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Comments" jcr:primaryType="jnt:translation" />
                       <commentable jcr:primaryType="jnt:commentable" j:bindedComponent="/templateSets/templates-intranet/templates/base/blog/blog-content/wrappercontent/row/col1/mainResourceDisplay" />
-                      <commentable-1 jcr:mixinTypes="jmix:renderable" j:template="addcomment" jcr:primaryType="jnt:commentable" j:bindedComponent="/templateSets/templates-intranet/templates/base/blog/blog-content/wrappercontent/row/col1/mainResourceDisplay" />
+                      <commentable-1 jcr:mixinTypes="jmix:renderable" j:view="addcomment" jcr:primaryType="jnt:commentable" j:bindedComponent="/templateSets/templates-intranet/templates/base/blog/blog-content/wrappercontent/row/col1/mainResourceDisplay" />
                     </document-history>
                   </col1>
                   <col2 jcr:primaryType="jnt:contentList">

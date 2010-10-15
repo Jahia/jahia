@@ -63,9 +63,9 @@
             <template:wrappedContent template="${currentNode.properties['j:referenceTemplate'].string}"
                                      path="${node.path}/${currentNode.name}"
                                      nodeTypes="${nodeTypes}">
-                <c:if test="${not empty currentNode.properties['j:subNodesTemplate'].string}">
+                <c:if test="${not empty currentNode.properties['j:subNodesView'].string}">
                     <template:param name="subNodesTemplate"
-                                    value="${currentNode.properties['j:subNodesTemplate'].string}"/>
+                                    value="${currentNode.properties['j:subNodesView'].string}"/>
                 </c:if>
                 <c:if test="${not empty currentNode.properties['j:mockupStyle'].string}">
                     <template:param name="mockupStyle" value="${currentNode.properties['j:mockupStyle'].string}"/>

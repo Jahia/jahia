@@ -24,9 +24,9 @@
         <footer jcr:primaryType="jnt:contentList" />
       </home>
       <templates jcr:primaryType="jnt:templatesFolder">
-        <base jcr:mixinTypes="jmix:renderable" j:template="web" jcr:primaryType="jnt:masterTemplate">
+        <base jcr:mixinTypes="jmix:renderable" j:view="web" jcr:primaryType="jnt:masterTemplate">
           <header jcr:primaryType="jnt:contentList">
-            <shortcuts jcr:mixinTypes="jmix:renderable" j:template="inline" jcr:primaryType="jnt:shortcuts" />
+            <shortcuts jcr:mixinTypes="jmix:renderable" j:view="inline" jcr:primaryType="jnt:shortcuts" />
           </header>
           <logo jcr:primaryType="jnt:contentList">
             <logo j:basenode="/templateSets/templates-web/home" jcr:primaryType="jnt:absoluteArea" />

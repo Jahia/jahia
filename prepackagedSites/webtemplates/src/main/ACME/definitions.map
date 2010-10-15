@@ -56,7 +56,7 @@
  - newsDate = date
 
 [web_templates:lastNewsContainer] = jnt:lastNews
- - display = j:subNodesTemplate
+ - display = j:subNodesView
    large = default
    medium = medium
 
@@ -110,7 +110,7 @@
 
 [web_templates:introductionContainer] = jnt:bigText
    { addMixin jmix:renderable }
-   { setProperty [j:template=introduction] }
+   { setProperty [j:view=introduction] }
  - introduction = text
 
 [web_templates:logoContainer] = jnt:imageReference
@@ -138,7 +138,7 @@
 ## Pages
 
 [jnt:page] = jnt:page
- - jahia:template = j:template
+ - jahia:template = j:view
     Home = base/home
     simple = base/simple
     double = base/simple
@@ -155,7 +155,7 @@
  + banner = listA
  + promo = listA/promo
     { addMixin jmix:columns}
-   { setProperty [jmix:renderable|j:template=columns] }
+   { setProperty [jmix:renderable|j:view=columns] }
    { setProperty [jmix:columns|j:columns=introduction] }
  + promoLarge = #skip
  + columnA_box = listA

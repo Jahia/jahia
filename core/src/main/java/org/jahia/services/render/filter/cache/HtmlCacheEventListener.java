@@ -89,7 +89,7 @@ public class HtmlCacheEventListener extends DefaultEventListener {
                 if (!path.startsWith("/jcr:system")) {
                     boolean flushParent = false;
                     boolean flushRoles = false;
-                    if (path.contains("j:template")) {
+                    if (path.contains("j:view")) {
                         flushParent = true;
                     }
                     final int type = event.getType();

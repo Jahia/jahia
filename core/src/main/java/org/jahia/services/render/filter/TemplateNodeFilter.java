@@ -127,7 +127,7 @@ public class TemplateNodeFilter extends AbstractFilter {
                     templateNode = (JCRNodeWrapper) current.getProperty("j:templateNode").getNode();
                     template = addDerivedTemplates(resource, template, templateNode);
                     if (template == null && current == node) {
-                        template = new Template(templateNode.hasProperty("j:template") ? templateNode.getProperty("j:template").getString() :
+                        template = new Template(templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
                             templateName!=null?templateName:"fullpage", templateNode, template);
                     }
                 }
@@ -135,7 +135,7 @@ public class TemplateNodeFilter extends AbstractFilter {
                     templateNode = (JCRNodeWrapper) current.getProperty("j:defaultTemplateNode").getNode();
                     template = addDerivedTemplates(resource, template, templateNode);
                     if (template == null) {
-                        template = new Template(templateNode.hasProperty("j:template") ? templateNode.getProperty("j:template").getString() :
+                        template = new Template(templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
                             "fullpage", templateNode, template);
                     }
                 }
@@ -146,7 +146,7 @@ public class TemplateNodeFilter extends AbstractFilter {
             if (templateNode != null) {
                 templateNode = templateNode.getParent();
                 while (!(templateNode.isNodeType("jnt:templatesFolder"))) {
-                    template = new Template(templateNode.hasProperty("j:template") ? templateNode.getProperty("j:template").getString() :
+                    template = new Template(templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
                             "fullpage", templateNode, template);
                     templateNode = templateNode.getParent();
                 }
@@ -206,7 +206,7 @@ public class TemplateNodeFilter extends AbstractFilter {
         }
         if (ok) {
             template = new Template(
-                    templateNode.hasProperty("j:template") ? templateNode.getProperty("j:template").getString() :
+                    templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
                             "fullpage", templateNode, template);
         }
         return template;

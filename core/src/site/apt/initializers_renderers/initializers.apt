@@ -48,7 +48,7 @@ Jahia Crazy Jane - Core Module - ChoiceList Initializers
 
 --------------------------------------
 [jmix:renderable] > jmix:layout, jmix:contentMixin mixin
- - j:template (string, choicelist[templates,resourceBundle,image])
+ - j:view (string, choicelist[templates,resourceBundle,image])
 --------------------------------------
 
   This means that for displaying this dropdown list we first call the <<<templates>>> initializer that is responsible for filling the available values.\

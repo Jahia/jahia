@@ -289,7 +289,7 @@
                                 onParentVersion="COPY" protected="false" requiredType="String"/>
             <propertyDefinition autoCreated="false" mandatory="false" multiple="false" name="j:comments"
                                 onParentVersion="COPY" protected="false" requiredType="String"/>
-            <propertyDefinition autoCreated="false" mandatory="false" multiple="false" name="j:template"
+            <propertyDefinition autoCreated="false" mandatory="false" multiple="false" name="j:view"
                                 onParentVersion="COPY" protected="false" requiredType="String"/>
             <propertyDefinition autoCreated="false" mandatory="false" multiple="false" name="j:wordLastAuthor"
                                 onParentVersion="COPY" protected="false" requiredType="String"/>

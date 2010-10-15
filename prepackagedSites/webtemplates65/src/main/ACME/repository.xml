@@ -324,7 +324,7 @@
                 <j:translation_en cast="ACME International is the largest construction group, with more than 40’000 employees around the world, deploying its expertise across the full spectrum of building and infrastructure construction." jcr:lastModifiedBy="root" jcr:language="en" jcr:title="A World Wide Construction Leader" background="/sites/ACME/files/Pictures/BannerTeaser/img-home-us.jpg" jcr:lastModified="2010-10-07T17:20:35.359+02:00" jcr:primaryType="jnt:translation" />
                 <j:translation_fr cast="Avec plus de 40 000 collaborateurs, ACME International est l'un des plus grands groupes de construction mondial, mettant en oeuvre toute son expertise durable au service des projets d'infrastructure les plus ambitieux." jcr:lastModifiedBy="root" jcr:language="fr" jcr:title="Un Leader Mondial de la Construction" background="/sites/ACME/files/Pictures/BannerTeaser/img-home-fr.jpg" jcr:lastModified="2010-10-07T17:20:45.752+02:00" jcr:primaryType="jnt:translation" />
               </banner_2>
-              <lastNews_3 j:subNodesTemplate="default" maxNews="3" j:skin="skins.box2" jcr:mixinTypes="jmix:skinnable" jcr:created="2010-10-07T17:20:25.210+02:00" jcr:primaryType="jnt:lastNews" jcr:lastModifiedBy="root" filter="/categories/project" jcr:createdBy="root" jcr:lastModified="2010-10-07T17:20:45.752+02:00">
+              <lastNews_3 j:subNodesView="default" maxNews="3" j:skin="skins.box2" jcr:mixinTypes="jmix:skinnable" jcr:created="2010-10-07T17:20:25.210+02:00" jcr:primaryType="jnt:lastNews" jcr:lastModifiedBy="root" filter="/categories/project" jcr:createdBy="root" jcr:lastModified="2010-10-07T17:20:45.752+02:00">
                 <j:translation_en jcr:lastModifiedBy="root" jcr:language="en" jcr:title="Last Project News" jcr:lastModified="2010-10-07T17:20:35.359+02:00" jcr:primaryType="jnt:translation" />
                 <j:translation_fr jcr:lastModifiedBy="root" jcr:language="fr" jcr:title="Derniers Projets ACME" jcr:lastModified="2010-10-07T17:20:45.752+02:00" jcr:primaryType="jnt:translation" />
               </lastNews_3>
@@ -368,7 +368,7 @@
                 </fileReference_65>
                 <j:translation_fr jcr:lastModifiedBy="root" jcr:language="fr" jcr:title="Livres Blancs" jcr:lastModified="2010-10-07T17:20:45.752+02:00" jcr:primaryType="jnt:translation" />
               </fileContainer>
-              <lastNews_66 j:subNodesTemplate="medium" maxNews="3" j:skin="skins.box2" jcr:mixinTypes="jmix:skinnable" jcr:created="2010-10-07T17:20:26.027+02:00" jcr:primaryType="jnt:lastNews" jcr:lastModifiedBy="root" filter="/categories/business" jcr:createdBy="root" jcr:lastModified="2010-10-07T17:20:45.752+02:00">
+              <lastNews_66 j:subNodesView="medium" maxNews="3" j:skin="skins.box2" jcr:mixinTypes="jmix:skinnable" jcr:created="2010-10-07T17:20:26.027+02:00" jcr:primaryType="jnt:lastNews" jcr:lastModifiedBy="root" filter="/categories/business" jcr:createdBy="root" jcr:lastModified="2010-10-07T17:20:45.752+02:00">
                 <j:translation_en jcr:lastModifiedBy="root" jcr:language="en" jcr:title="Last Business News" jcr:lastModified="2010-10-07T17:20:35.359+02:00" jcr:primaryType="jnt:translation" />
                 <j:translation_fr jcr:lastModifiedBy="root" jcr:language="fr" jcr:title="Actualités ACME" jcr:lastModified="2010-10-07T17:20:45.752+02:00" jcr:primaryType="jnt:translation" />
               </lastNews_66>

@@ -133,11 +133,11 @@ ChildNodeMapping ::= NodeWithOptionalNodeTypeName | '#skip' | '#shareableSource'
 +------------------------------------------------------  
 [web_templates:introductionContainer] = jnt:bigText
  { addMixin jmix:renderable }
- { setProperty [j:template=introduction] }
+ { setProperty [j:view=introduction] }
 +------------------------------------------------------
   
   This definition does not only map to the new standard definition name, but it also automatically on the target
-  object adds a mixin node type (jmix:renderable) and sets the property j:template to the value 'introduction'. 
+  object adds a mixin node type (jmix:renderable) and sets the property j:view to the value 'introduction'.
   What was previously solved with a distinct container definition in Jahia 6.5 is now mapped to a standard Jahia 
   node definition, but now having a distinct template.
 
@@ -156,14 +156,14 @@ ChildNodeMapping ::= NodeWithOptionalNodeTypeName | '#skip' | '#shareableSource'
   
 +------------------------------------------------------
 [web_templates:home] = jnt:page  
- { setProperty [j:template=Home] }
+ { setProperty [j:view=Home] }
 +------------------------------------------------------
   
   Alternatively you can make all template mappings at one place in the definition mapping for jnt:page, like this:
   
 +------------------------------------------------------  
 [jnt:page] = jnt:page
- - jahia:template = j:template
+ - jahia:template = j:view
     Home = default
     simple = simple
     double = simple
@@ -176,7 +176,7 @@ ChildNodeMapping ::= NodeWithOptionalNodeTypeName | '#skip' | '#shareableSource'
 +------------------------------------------------------
 
   This example shows that when the node type name is unchanged, the left and the right side of the node type definition
-  can be the same. What changed is the property field name (from jahia:template to j:template) and the possible values,
+  can be the same. What changed is the property field name (from jahia:template to j:view) and the possible values,
   where you can make the mapping from the previous template name to the new template name. You can see that in Jahia 6.5
   you can use fewer templates to achieve the same as before. This is because container lists are no longer strongly 
   typed and can contain containers of different types.  
@@ -374,16 +374,16 @@ ChildNodeMapping ::= NodeWithOptionalNodeTypeName | '#skip' | '#shareableSource'
 +-------------------------------------------------------  
 [web_templates:introductionContainer] = jnt:bigText
    { addMixin jmix:renderable }
-   { setProperty [j:template=introduction] } 
+   { setProperty [j:view=introduction] }
 +-------------------------------------------------------
 
   The above example will map an introductionContainer to jnt:bigText and will add the mixin node type 
-  jmix:renderable and then also set the j:template property. As setProperty also allows to directly 
+  jmix:renderable and then also set the j:view property. As setProperty also allows to directly
   specify a mixin type, the following statement would actually do the same as the above example:
   
 +-------------------------------------------------------  
 [web_templates:introductionContainer] = jnt:bigText
-   { setProperty [jmix:renderable|j:template=introduction] } 
+   { setProperty [jmix:renderable|j:view=introduction] }
 +-------------------------------------------------------  
   
   [[3]] Set property action 
@@ -395,7 +395,7 @@ ChildNodeMapping ::= NodeWithOptionalNodeTypeName | '#skip' | '#shareableSource'
 [web_templates:home] = jnt:page
  ...
  + promo = pagecontent/row1/col1/promo
-   { setProperty [jmix:renderable|j:template=twoColumns] }
+   { setProperty [jmix:renderable|j:view=columns] }
 +-------------------------------------------------------
 
   This example will add a mixin and set a property on the promo node.    
@@ -482,7 +482,7 @@ ChildNodeMapping ::= NodeWithOptionalNodeTypeName | '#skip' | '#shareableSource'
 ## Pages
 
 [jnt:page] = jnt:page
- - jahia:template = j:template
+ - jahia:template = j:view
     Home = default
     simple = simple
     double = simple
@@ -497,7 +497,7 @@ ChildNodeMapping ::= NodeWithOptionalNodeTypeName | '#skip' | '#shareableSource'
  + logo = ../wrapperContent/logo
  + banner = pagecontent/row1/col1/banner
  + promo = pagecontent/row1/col1/promo
-   { setProperty [jmix:renderable|j:template=twoColumns] }
+   { setProperty [jmix:renderable|j:view=columns] }
  + promoLarge = #skip
  + columnA_box = pagecontent/row1/col1
  + columnB_box = pagecontent/row1/col2

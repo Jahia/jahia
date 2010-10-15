@@ -291,9 +291,11 @@ public abstract class BaseActionItem implements ActionItem {
         }
         if (menuItem != null) {
             menuItem.setText(title);
+            contextMenuItem.getParentMenu().recalculate();
         }
         if (contextMenuItem != null) {
             contextMenuItem.setText(title);
+            contextMenuItem.getParentMenu().recalculate();
         }
     }
 

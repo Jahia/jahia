@@ -57,7 +57,7 @@ public class PublishAllActionItem extends PublishActionItem {
     public void handleNewLinkerSelection() {
         gwtJahiaNode = linker.getSelectionContext().getSingleSelection();
         if (gwtJahiaNode != null) {
-            updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getName());
+            updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getName() + " - " + JahiaGWTParameters.getLanguageDisplayName());
         }
     }
 

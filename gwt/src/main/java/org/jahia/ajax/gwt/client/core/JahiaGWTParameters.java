@@ -50,7 +50,9 @@ public class JahiaGWTParameters {
     public static final String CURRENT_USER_NAME = "currentUser";
     public static final String COPYRIGHT = "copyright";
     public static final String UI_LANGUAGE = "uilang";
+    public static final String UI_LANGUAGE_DISPLAY_NAME = "uilangdisplayname";
     public static final String LANGUAGE = "lang";
+    public static final String LANGUAGE_DISPLAY_NAME = "langdisplayname";
     public static final String SITE_UUID = "siteUuid";
     public static final String SITE_KEY = "siteKey";
     public static final String WORKSPACE = "workspace";
@@ -92,6 +94,14 @@ public class JahiaGWTParameters {
 
     public static String getUILanguage() {
         return jahiaParamDictionary.get(UI_LANGUAGE);
+    }
+
+    public static String getUILanguageDisplayName() {
+        return jahiaParamDictionary.get(UI_LANGUAGE_DISPLAY_NAME);
+    }
+
+    public static String getLanguageDisplayName() {
+        return jahiaParamDictionary.get(LANGUAGE_DISPLAY_NAME);
     }
     
     public static String getLanguage() {

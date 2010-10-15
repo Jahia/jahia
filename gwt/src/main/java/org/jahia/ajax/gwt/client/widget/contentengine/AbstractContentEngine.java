@@ -48,6 +48,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngine;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
@@ -199,7 +200,10 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
      * Creates and initializes all window tabs.
      */
     protected void initTabs() {
-        EditEngineTabItem.addTabs(config.getTabs(), tabs, this);
+        for (GWTEngineTab tabConfig : config.getTabs()) {
+            EditEngineTabItem tabItem = tabConfig.getTabItem();
+            tabs.add(tabItem.create(tabConfig, this));
+        }
     }
 
     /**

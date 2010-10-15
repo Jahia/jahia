@@ -71,48 +71,6 @@
             </list>
         </property>
 
-        <!-- create engine-->
-        <property name="createEngines">
-            <list>
-                <bean class="org.jahia.services.uicomponents.bean.editmode.Engine">
-                    <property name="nodeType" value="jnt:page"/>
-                    <property name="tabs">
-                        <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                            <ref bean="Engine.Tab.Content" />
-                            <ref bean="Engine.Tab.Metadata" />
-                            <ref bean="Engine.Tab.Tags" />
-                            <ref bean="Engine.Tab.Categories" />
-                            <ref bean="Engine.Tab.Options" />
-                            <ref bean="Engine.Tab.Rights" />
-                        </list>
-                    </property>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.editmode.Engine">
-                    <property name="nodeType" value="jnt:category"/>
-                    <property name="tabs">
-                        <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                            <ref bean="Engine.Tab.Content" />
-                            <ref bean="Engine.Tab.Rights" />
-                        </list>
-                    </property>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.editmode.Engine">
-                    <property name="nodeType" value="nt:base"/>
-                    <property name="tabs">
-                        <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                            <ref bean="Engine.Tab.Content" />
-                            <ref bean="Engine.Tab.Layout" />
-                            <ref bean="Engine.Tab.Metadata" />
-                            <ref bean="Engine.Tab.Tags" />
-                            <ref bean="Engine.Tab.Categories" />
-                            <ref bean="Engine.Tab.Options" />
-                            <ref bean="Engine.Tab.Rights" />
-                        </list>
-                    </property>
-                </bean>
-            </list>
-        </property>
-
     </bean>
 
     <!-- file manager -->

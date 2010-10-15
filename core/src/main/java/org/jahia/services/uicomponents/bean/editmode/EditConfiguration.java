@@ -53,7 +53,6 @@ public class EditConfiguration implements Serializable, BeanNameAware {
 
     private List<SidePanelTab> tabs;
 
-    private List<Engine> createEngines;
     private List<Engine> editEngines;
 
 
@@ -91,14 +90,6 @@ public class EditConfiguration implements Serializable, BeanNameAware {
 
     public void setTabs(List<SidePanelTab> tabs) {
         this.tabs = tabs;
-    }
-
-    public List<Engine> getCreateEngines() {
-        return createEngines;
-    }
-
-    public void setCreateEngines(List<Engine> createEngines) {
-        this.createEngines = createEngines;
     }
 
     public List<Engine> getEditEngines() {

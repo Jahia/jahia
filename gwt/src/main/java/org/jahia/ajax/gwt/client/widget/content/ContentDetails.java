@@ -49,6 +49,7 @@ import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -130,7 +131,10 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
      * Creates and initializes all window tabs.
      */
     protected void initTabs() {
-        EditEngineTabItem.addTabs(config.getTabs(), tabs, this);
+        for (GWTEngineTab tabConfig : config.getTabs()) {
+            EditEngineTabItem tabItem = tabConfig.getTabItem();
+            tabs.add(tabItem.create(tabConfig, this));
+        }
     }
 
     public Component getComponent() {
@@ -224,7 +228,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                 });
 
                 for (TabItem item : tabs.getItems()) {
-                    if (((EditEngineTabItem) item.getData("item")).handleMultipleSelection()) {
+                    if (((EditEngineTabItem) item.getData("item")).isHandleMultipleSelection()) {
                         item.setEnabled(true);
                     }
                 }

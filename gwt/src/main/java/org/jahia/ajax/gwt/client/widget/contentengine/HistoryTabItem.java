@@ -1,6 +1,8 @@
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
+import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,6 +14,11 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 public class HistoryTabItem extends EditEngineTabItem {
 
     private transient HistoryPanel historyPanel;
+
+    @Override public AsyncTabItem create(GWTEngineTab engineTab, NodeHolder engine) {
+        setHandleCreate(false);
+        return super.create(engineTab, engine);
+    }
 
     @Override
     public void init(String locale) {

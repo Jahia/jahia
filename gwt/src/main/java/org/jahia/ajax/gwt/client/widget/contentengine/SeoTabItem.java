@@ -40,7 +40,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 
 /**
  * Represents a dedicated tab for configuring URL mapping for content objects
@@ -53,6 +55,12 @@ public class SeoTabItem extends EditEngineTabItem {
     private transient UrlMappingEditor activeEditor;
 
     private transient Map<String, UrlMappingEditor> editorsByLanguage = new HashMap<String, UrlMappingEditor>(1);
+
+
+    @Override public AsyncTabItem create(GWTEngineTab engineTab, NodeHolder engine) {
+        setHandleCreate(false);
+        return super.create(engineTab,engine);
+    }
 
     @Override
     public void init(String locale) {

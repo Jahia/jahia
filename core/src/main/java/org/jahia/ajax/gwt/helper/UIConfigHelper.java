@@ -353,7 +353,6 @@ public class UIConfigHelper {
                     }
                 }
 
-                gwtConfig.setCreateEngines(createGWTEngineList(site, jahiaUser, locale, uiLocale, request, config.getCreateEngines()));
                 gwtConfig.setEditEngines(createGWTEngineList(site, jahiaUser, locale, uiLocale, request, config.getEditEngines()));
 
                 return gwtConfig;
@@ -562,7 +561,6 @@ public class UIConfigHelper {
                 gwtConfig.setTopToolbar(createGWTToolbar(site, jahiaUser, locale, uiLocale, request, config.getTopToolbar()));
                 gwtConfig.setContextMenu(createGWTToolbar(site, jahiaUser, locale, uiLocale, request, config.getContextMenu()));
                 gwtConfig.setTabs(createGWTSidePanelTabList(site, jahiaUser, locale, uiLocale, request, config.getTabs()));
-                gwtConfig.setCreateEngines(createGWTEngineList(site, jahiaUser, locale, uiLocale, request, config.getCreateEngines()));
                 gwtConfig.setEditEngines(createGWTEngineList(site, jahiaUser, locale, uiLocale, request, config.getEditEngines()));
                 return gwtConfig;
             } else {

@@ -47,7 +47,6 @@ import java.util.List;
  */
 public class GWTConfiguration implements IsSerializable, Serializable {
     protected String name;
-    private List<GWTEngine> createEngines;
     private List<GWTEngine> editEngines;
     private List<GWTJahiaPermission> permissions;
 
@@ -60,14 +59,6 @@ public class GWTConfiguration implements IsSerializable, Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public List<GWTEngine> getCreateEngines() {
-        return createEngines;
-    }
-
-    public void setCreateEngines(List<GWTEngine> createEngines) {
-        this.createEngines = createEngines;
     }
 
     public List<GWTEngine> getEditEngines() {

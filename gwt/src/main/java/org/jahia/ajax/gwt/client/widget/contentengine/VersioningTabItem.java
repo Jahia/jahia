@@ -45,8 +45,10 @@ import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.content.ImagePopup;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
@@ -61,6 +63,11 @@ import java.util.List;
  *        Created : 6 sept. 2010
  */
 public class VersioningTabItem extends EditEngineTabItem {
+
+    @Override public AsyncTabItem create(GWTEngineTab engineTab, NodeHolder engine) {
+        setHandleCreate(false);
+        return super.create(engineTab,engine);
+    }
 
     /**
      * Create the tab item

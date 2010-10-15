@@ -65,7 +65,6 @@ public class ManagerConfiguration implements Serializable {
     private boolean enableFileDoubleClick = true;
     private boolean useCheckboxForSelection = true;
 
-    private List<Engine> createEngines;
     private List<Engine> editEngines;
 
     private List<Toolbar> toolbars;
@@ -250,14 +249,6 @@ public class ManagerConfiguration implements Serializable {
 
     public void setDisplaySearchInContent(boolean displaySearchInContent) {
         this.displaySearchInContent = displaySearchInContent;
-    }
-
-    public List<Engine> getCreateEngines() {
-        return createEngines;
-    }
-
-    public void setCreateEngines(List<Engine> createEngines) {
-        this.createEngines = createEngines;
     }
 
     public List<Engine> getEditEngines() {

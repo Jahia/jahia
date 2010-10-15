@@ -48,6 +48,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngine;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
@@ -116,7 +117,7 @@ public class CreateContentEngine extends AbstractContentEngine {
     }
 
     public static GWTEngine getCreateConfig(GWTJahiaNodeType type, GWTConfiguration config) {
-        for (GWTEngine engine : config.getCreateEngines()) {
+        for (GWTEngine engine : config.getEditEngines()) {
             if (type.getName().equals(engine.getNodeType()) || type.getSuperTypes().contains(engine.getNodeType())) {
                 return engine;
             }
@@ -124,6 +125,17 @@ public class CreateContentEngine extends AbstractContentEngine {
         return null;
     }
 
+    /**
+     * Creates and initializes all window tabs.
+     */
+    protected void initTabs() {
+        for (GWTEngineTab tabConfig : config.getTabs()) {
+            EditEngineTabItem tabItem = tabConfig.getTabItem();
+            if (tabItem.isHandleCreate()) {
+                tabs.add(tabItem.create(tabConfig, this));
+            }
+        }
+    }
 
     /**
      * init buttons

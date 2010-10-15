@@ -53,6 +53,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -67,7 +68,9 @@ public class LayoutTabItem extends PropertiesTabItem {
     private transient LayoutContainer htmlPreview;
 
     @Override public AsyncTabItem create(GWTEngineTab engineTab, NodeHolder engine) {
-        this.dataType = GWTJahiaItemDefinition.LAYOUT;
+        if (dataType == null) {
+            dataType = Arrays.asList(GWTJahiaItemDefinition.LAYOUT);
+        }
         return super.create(engineTab,engine);
     }
 

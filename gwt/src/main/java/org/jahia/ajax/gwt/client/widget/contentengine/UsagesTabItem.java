@@ -41,9 +41,11 @@ import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
+import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.NodeUsagesGrid;
 
@@ -58,7 +60,10 @@ import java.util.Arrays;
  */
 public class UsagesTabItem extends EditEngineTabItem {
 
-
+    @Override public AsyncTabItem create(GWTEngineTab engineTab, NodeHolder engine) {
+        setHandleCreate(false);
+        return super.create(engineTab, engine);
+    }
 
     @Override
     public void init(String locale) {

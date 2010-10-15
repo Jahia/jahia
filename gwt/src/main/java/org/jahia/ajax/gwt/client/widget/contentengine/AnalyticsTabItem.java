@@ -39,7 +39,9 @@ import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsData;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsQuery;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.analytics.AnalyticsDataVisualizer;
 
 import java.util.Date;
@@ -55,6 +57,11 @@ import java.util.List;
 public class AnalyticsTabItem extends EditEngineTabItem {
     private transient AnalyticsDataVisualizer dataVisualizer;
     private transient GWTJahiaAnalyticsQuery lastQuery;
+
+    @Override public AsyncTabItem create(GWTEngineTab engineTab, NodeHolder engine) {
+        setHandleCreate(false);
+        return super.create(engineTab, engine);
+    }
 
     @Override
     public void init(final String locale) {

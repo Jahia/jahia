@@ -42,6 +42,8 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 
+import java.util.Arrays;
+
 /**
  * Created by IntelliJ IDEA.
  * User: toto
@@ -59,7 +61,9 @@ public class ContentTabItem extends PropertiesTabItem {
 
     @Override public AsyncTabItem create(GWTEngineTab engineTab, NodeHolder engine) {
         setMultiLang(true);
-        this.dataType = GWTJahiaItemDefinition.CONTENT;
+        if (dataType == null) {
+        dataType = Arrays.asList(GWTJahiaItemDefinition.CONTENT);
+        }
         return super.create(engineTab, engine);
     }
 

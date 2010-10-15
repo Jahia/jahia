@@ -60,7 +60,7 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class PropertiesTabItem extends EditEngineTabItem {
-    protected String dataType;
+    protected List<String> dataType;
     protected List<String> excludedTypes;
 
     protected transient PropertiesEditor propertiesEditor;
@@ -147,7 +147,7 @@ public class PropertiesTabItem extends EditEngineTabItem {
                     }
                 }
 
-                propertiesEditor = new PropertiesEditor(engine.getNodeTypes(), engine.getProperties(), dataType);
+                propertiesEditor = new PropertiesEditor(engine.getNodeTypes(), engine.getProperties(), dataType.get(0));
                 propertiesEditor.setMixin(engine.getMixin());
                 propertiesEditor.setInitializersValues(engine.getInitializersValues());
                 propertiesEditor.setWriteable(!engine.isExistingNode() || (engine.getNode().isWriteable() && !engine.getNode().isLocked()));
@@ -256,11 +256,11 @@ public class PropertiesTabItem extends EditEngineTabItem {
         super.setProcessed(processed);
     }
 
-    @Override public boolean handleMultipleSelection() {
+    @Override public boolean isHandleMultipleSelection() {
         return true;
     }
 
-    public void setDataType(String dataType) {
+    public void setDataType(List<String> dataType) {
         this.dataType = dataType;
     }
 

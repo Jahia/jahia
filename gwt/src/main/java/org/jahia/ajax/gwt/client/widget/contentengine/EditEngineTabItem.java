@@ -54,6 +54,8 @@ import java.util.List;
 public abstract class EditEngineTabItem implements Serializable {
     protected GWTEngineTab gwtEngineTab;
 
+    protected boolean handleCreate = true;
+
     protected transient AsyncTabItem tab;
     protected transient NodeHolder engine;
 
@@ -85,14 +87,15 @@ public abstract class EditEngineTabItem implements Serializable {
     public void setProcessed(boolean processed) {
     }
 
-    public boolean handleMultipleSelection() {
+    public boolean isHandleMultipleSelection() {
         return false;
     }
 
-    public static void addTabs(final List<GWTEngineTab> tabsConfig, final TabPanel tabs, final NodeHolder nodeHolder) {
-        for (GWTEngineTab tabConfig : tabsConfig) {
-            EditEngineTabItem tabItem = tabConfig.getTabItem();
-            tabs.add(tabItem.create(tabConfig, nodeHolder));
-        }
+    public boolean isHandleCreate() {
+        return handleCreate;
+    }
+
+    public void setHandleCreate(boolean handleCreate) {
+        this.handleCreate = handleCreate;
     }
 }

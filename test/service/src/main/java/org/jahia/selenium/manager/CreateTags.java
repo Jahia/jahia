@@ -65,7 +65,13 @@ public class CreateTags extends SeleneseTestCase{
                 }
             }
         }
-        //open Category manager
+       createTag();
+        deleteContentCreated();
+    }
+
+    public void createTag()
+    {
+                   //open Category manager
         selenium.click("//button[text()='Managers']");
         selenium.click("link=Tag manager");
         selenium.waitForPopUp("Tag_manager", "34000");
@@ -78,7 +84,6 @@ public class CreateTags extends SeleneseTestCase{
             selenium.answerOnNextPrompt("TestTag" + i);
             selenium.getPrompt();
         }
-        deleteContentCreated();
     }
 
     public void deleteContentCreated() {

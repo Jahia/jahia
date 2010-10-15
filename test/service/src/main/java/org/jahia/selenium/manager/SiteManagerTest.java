@@ -152,19 +152,19 @@ public class SiteManagerTest extends SeleneseTestCase {
 
 
         //Cut My Page
-        selenium.doubleClickAt("//span[text()='My Page']", "5,5");
+        selenium.clickAt("//span[text()='My Page']", "5,5");
         selenium.mouseOver("//span[text()='My Page']");
         selenium.contextMenuAt("//span[text()='My Page']", "5,5");
         selenium.click("Link=Cut");
 
         //Paste My Page
-        selenium.doubleClickAt("//span[text()='mySite']", "5,5");
+        selenium.clickAt("//span[text()='mySite']", "5,5");
         selenium.mouseOver("//span[text()='mySite']");
         selenium.contextMenuAt("//span[text()='mySite']", "5,5");
         selenium.click("Link=Paste");
 
         //Delete My Page
-        selenium.doubleClickAt("//span[text()='My Page']", "5,5");
+        selenium.clickAt("//span[text()='My Page']", "5,5");
         selenium.mouseOver("//span[text()='My Page']");
         selenium.contextMenuAt("//span[text()='My Page']", "5,5");
         selenium.click("Link=Remove");
@@ -173,25 +173,28 @@ public class SiteManagerTest extends SeleneseTestCase {
         }
 
         //Copy An other page
-        selenium.doubleClickAt("//span[text()='An other page']", "5,5");
+        selenium.clickAt("//span[text()='An other page']", "5,5");
         selenium.mouseOver("//span[text()='An other page']");
         selenium.contextMenuAt("//span[text()='An other page']", "5,5");
         selenium.click("Link=Copy");
 
         //Paste as reference An other page
-        selenium.doubleClickAt("//span[text()='mySite']", "5,5");
+        selenium.clickAt("//span[text()='mySite']", "5,5");
         selenium.mouseOver("//span[text()='mySite']");
         selenium.contextMenuAt("//span[text()='mySite']", "5,5");
         selenium.click("Link=Paste reference");
-        new Wait("wait") {
-            public boolean until() {
-                return selenium.isElementPresent("//button[text()='Save']");
-            }
-        };
-
-        selenium.type("//input[@name='jcr:title']", "Reference An other page");
-
+        selenium.type("//input[@name='jcr:title']", "Reference to an other page");
         selenium.click("//div[@class=' x-small-editor x-panel-btns-center x-panel-fbar x-component x-toolbar-layout-ct']/table/tbody/tr/td[1]/table/tbody/tr/td[1]/table");
+
+        //Rename page
+        selenium.clickAt("//span[text()='An other page']", "5,5");
+        selenium.mouseOver("//span[text()='An other page']");
+        selenium.contextMenuAt("//span[text()='An other page']", "5,5");
+        selenium.answerOnNextPrompt("Page Renamed");
+        selenium.click("Link=Rename");
+        selenium.getPrompt();
+
+
 
         //Delete An other page, reference to An other page
         selenium.doubleClickAt("//span[text()='An other page']", "5,5");
@@ -201,9 +204,9 @@ public class SiteManagerTest extends SeleneseTestCase {
         if (selenium.isElementPresent("//button[text()='Yes']")) {
             selenium.click("//button[text()='Yes']");
         }
-        selenium.doubleClickAt("//span[text()='Reference An other page']", "5,5");
-        selenium.mouseOver("//span[text()='Reference An other page']");
-        selenium.contextMenuAt("//span[text()='Reference An other page']", "5,5");
+        selenium.doubleClickAt("//span[text()='Reference to an other page']", "5,5");
+        selenium.mouseOver("//span[text()='Reference to an other page']");
+        selenium.contextMenuAt("//span[text()='Reference to an other page']", "5,5");
         selenium.click("Link=Remove");
         if (selenium.isElementPresent("//button[text()='Yes']")) {
             selenium.click("//button[text()='Yes']");

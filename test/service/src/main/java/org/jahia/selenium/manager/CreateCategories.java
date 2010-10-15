@@ -15,14 +15,15 @@ public class CreateCategories extends SeleneseTestCase {
     private JahiaSite site;
     private final static String TESTSITE_NAME = "mySite";
     private final static String TEST_SPEED = "3000"; //speed between selenium commands
-    private final int numberOfCategories = 10;
+    private int numberOfCategories = 5;
+    private String elementPath;
 
     @Override
     public void setUp() throws Exception {
         try {
             final JahiaSite mySite = ServicesRegistry.getInstance().getJahiaSitesService().getSite("localhost");
             if (mySite == null) {
-                site = TestHelper.createSite(TESTSITE_NAME, "localhost",  "templates-web");
+                site = TestHelper.createSite(TESTSITE_NAME, "localhost", "templates-web");
                 assertNotNull(site);
             } else {
                 logger.warn("can't create mySite for running tests, because already exist...");
@@ -33,6 +34,7 @@ public class CreateCategories extends SeleneseTestCase {
         }
         setUp("http://localhost:8080", "*firefox");
     }
+
     @Override
     public void tearDown() throws Exception {
         try {
@@ -44,7 +46,7 @@ public class CreateCategories extends SeleneseTestCase {
     }
 
     public void test() throws InterruptedException {
-                selenium.setSpeed(TEST_SPEED);
+        selenium.setSpeed(TEST_SPEED);
         try {
             selenium.open("/cms/edit/default/en/sites/mySite/home.html");
         } catch (Exception e) {
@@ -65,6 +67,11 @@ public class CreateCategories extends SeleneseTestCase {
                 }
             }
         }
+        createCategory();
+        deleteContentCreated();
+    }
+
+    public void createCategory() {
         //open Category manager
         selenium.click("//button[text()='Managers']");
         selenium.click("link=Category manager");
@@ -75,8 +82,27 @@ public class CreateCategories extends SeleneseTestCase {
         selenium.clickAt("//span[text()='categories']", "1,1");
         selenium.contextMenuAt("//span[text()='categories']", "1,1");
         selenium.click("link=New category");
+        selenium.type("jcr:title", "myFirstMainCategory");
+
+
+        //Click on save
+        elementPath = "//div[@class=' x-small-editor x-panel-btns-center x-panel-fbar x-component x-toolbar-layout-ct']/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[2]/td[2]/em/button[text()='Save']";
+        if (selenium.isElementPresent(elementPath)) {
+            selenium.click(elementPath);
+        } else fail("Unable to found save button during the creation of the firstCategory");
+
+
+        selenium.clickAt("//span[text()='myFirstMainCategory']", "1,1");
+        selenium.contextMenuAt("//span[text()='myFirstMainCategory']", "1,1");
+        selenium.click("link=Edit");
         selenium.type("jcr:title", "myMainCategory");
-        selenium.click("//div[@class=' x-small-editor x-panel-btns-center x-panel-fbar x-component x-toolbar-layout-ct']/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[2]/td[2]/em/button[text()='Save']");
+
+        elementPath = "//div[@class=' x-small-editor x-panel-btns-center x-panel-fbar x-component x-toolbar-layout-ct']/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[2]/td[2]/em/button[text()='Save']";
+        if (selenium.isElementPresent(elementPath)) {
+            selenium.click(elementPath);
+        } else fail("Unable to found save button during the rename of the firstCategory");
+
+        if (numberOfCategories < 3) numberOfCategories = 3;
 
         for (int i = 0; i < numberOfCategories; i++) {
             //Create new Category
@@ -84,16 +110,38 @@ public class CreateCategories extends SeleneseTestCase {
             selenium.contextMenuAt("//span[text()='myMainCategory']", "1,1");
             selenium.click("link=New category");
             selenium.type("jcr:title", "myCategory" + i);
-            selenium.click("//div[@class=' x-small-editor x-panel-btns-center x-panel-fbar x-component x-toolbar-layout-ct']/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[2]/td[2]/em/button[text()='Save']");
+            elementPath = "//div[@class=' x-small-editor x-panel-btns-center x-panel-fbar x-component x-toolbar-layout-ct']/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[2]/td[2]/em/button[text()='Save']";
+            if (selenium.isElementPresent(elementPath)) {
+                selenium.click(elementPath);
+            } else fail("Unable to found save button");
 
             //Create new Category under myCategory
             selenium.clickAt("//span[text()='myCategory" + i + "']", "1,1");
             selenium.contextMenuAt("//span[text()='myCategory" + i + "']", "1,1");
             selenium.click("link=New category");
             selenium.type("jcr:title", "myUnderCategory" + i);
-            selenium.click("//div[@class=' x-small-editor x-panel-btns-center x-panel-fbar x-component x-toolbar-layout-ct']/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[2]/td[2]/em/button[text()='Save']");
+            elementPath = "//div[@class=' x-small-editor x-panel-btns-center x-panel-fbar x-component x-toolbar-layout-ct']/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[2]/td[2]/em/button[text()='Save']";
+            if (selenium.isElementPresent(elementPath)) {
+                selenium.click(elementPath);
+            } else fail("Unable to found save button");
         }
-        deleteContentCreated();
+
+        selenium.clickAt("//span[text()='myCategory0']", "1,1");
+        selenium.contextMenuAt("//span[text()='myCategory0']", "1,1");
+        selenium.click("link=Copy");
+        selenium.clickAt("//span[text()='myCategory1']", "1,1");
+        selenium.contextMenuAt("//span[text()='myCategory1']", "1,1");
+        selenium.click("link=Paste");
+        selenium.clickAt("//span[text()='myCategory0']", "1,1");
+        selenium.contextMenuAt("//span[text()='myCategory0']", "1,1");
+        selenium.click("link=Cut");
+        selenium.clickAt("//span[text()='myCategory2']", "1,1");
+        selenium.contextMenuAt("//span[text()='myCategory2']", "1,1");
+        selenium.click("link=Paste");
+        selenium.answerOnNextPrompt("myFavoriteCategory");
+        selenium.getPrompt();
+
+
     }
 
     public void deleteContentCreated() {

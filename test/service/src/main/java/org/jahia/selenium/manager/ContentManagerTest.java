@@ -19,7 +19,8 @@ public class ContentManagerTest extends SeleneseTestCase {
     private JahiaSite site;
     private final static String TESTSITE_NAME = "mySite";
     private final static String TEST_SPEED = "3000"; //speed between selenium commands
-    private final int numberOfCategories = 10;
+
+    private final int numberOfFolders = 1;
 
     @Override
     public void setUp() throws Exception {
@@ -120,16 +121,16 @@ public class ContentManagerTest extends SeleneseTestCase {
         selenium.doubleClick("//span[text()='mySite']");
 
 
-        //Right click on My profile
+        //Right click on Home
         new Wait("wait") {
             public boolean until() {
-                return selenium.isElementPresent("//span[text()='My Profile']");
+                return selenium.isElementPresent("//span[text()='Home']");
             }
         };
-        selenium.doubleClickAt("//span[text()='My Profile']", "5,5");
+        selenium.doubleClickAt("//span[text()='Home']", "5,5");
 
-        selenium.mouseOver("//span[text()='My Profile']");
-        selenium.contextMenuAt("//span[text()='My Profile']", "5,5");
+        selenium.mouseOver("//span[text()='Home']");
+        selenium.contextMenuAt("//span[text()='Home']", "5,5");
 
         //Click on "New Page"
         new Wait("wait") {
@@ -166,19 +167,21 @@ public class ContentManagerTest extends SeleneseTestCase {
         selenium.click("Link=Cut");
 
         //Paste Page 1
-        selenium.doubleClickAt("//span[text()='mySite']", "5,5");
-        selenium.mouseOver("//span[text()='mySite']");
-        selenium.contextMenuAt("//span[text()='mySite']", "5,5");
+        selenium.clickAt("//span[text()='My Profile']", "5,5");
+        selenium.mouseOver("//span[text()='My Profile']");
+        selenium.contextMenuAt("//span[text()='My Profile']", "5,5");
         selenium.click("Link=Paste");
 
-        //Delete Page 1
+        //Rename Page1
         selenium.doubleClickAt("//span[text()='Page 1']", "5,5");
         selenium.mouseOver("//span[text()='Page 1']");
         selenium.contextMenuAt("//span[text()='Page 1']", "5,5");
-        selenium.click("Link=Remove");
-        if (selenium.isElementPresent("//button[text()='Yes']")) {
-            selenium.click("//button[text()='Yes']");
-        }
+        selenium.answerOnNextPrompt("Renamed Page");
+        selenium.click("Link=Rename");
+        selenium.getPrompt();
+
+        //Delete Renamed Page
+        deleteElement("//span[text()='Page 1']");
 
         //Copy page 2
         selenium.doubleClickAt("//span[text()='Page 2']", "5,5");
@@ -187,9 +190,9 @@ public class ContentManagerTest extends SeleneseTestCase {
         selenium.click("Link=Copy");
 
         //Paste as reference page 2
-        selenium.doubleClickAt("//span[text()='mySite']", "5,5");
-        selenium.mouseOver("//span[text()='mySite']");
-        selenium.contextMenuAt("//span[text()='mySite']", "5,5");
+        selenium.clickAt("//span[text()='My Profile']", "5,5");
+        selenium.mouseOver("//span[text()='My Profile']");
+        selenium.contextMenuAt("//span[text()='My Profile']", "5,5");
         selenium.click("Link=Paste reference");
         new Wait("wait") {
             public boolean until() {
@@ -201,22 +204,61 @@ public class ContentManagerTest extends SeleneseTestCase {
 
         selenium.click("//div[@class=' x-small-editor x-panel-btns-center x-panel-fbar x-component x-toolbar-layout-ct']/table/tbody/tr/td[1]/table/tbody/tr/td[1]/table");
 
-        //Delete Page 2, reference to page 2
-        selenium.doubleClickAt("//span[text()='Page 2']", "5,5");
-        selenium.mouseOver("//span[text()='Page 2']");
-        selenium.contextMenuAt("//span[text()='Page 2']", "5,5");
-        selenium.click("Link=Remove");
-        if (selenium.isElementPresent("//button[text()='Yes']")) {
-            selenium.click("//button[text()='Yes']");
-        }
-        selenium.doubleClickAt("//span[text()='Reference Page 2']", "5,5");
-        selenium.mouseOver("//span[text()='Reference Page 2']");
-        selenium.contextMenuAt("//span[text()='Reference Page 2']", "5,5");
-        selenium.click("Link=Remove");
-        if (selenium.isElementPresent("//button[text()='Yes']")) {
-            selenium.click("//button[text()='Yes']");
+        //Delete reference to page 2
+        deleteElement("//span[text()='Reference Page 2']");
+
+        selenium.clickAt("//span[text()='mySite']", "5,5");
+        selenium.mouseOver("//span[text()='mySite']");
+        selenium.contextMenuAt("//span[text()='mySite']", "5,5");
+        selenium.click("Link=Export");
+
+        if(!selenium.isElementPresent("//a[@href='/cms/export/default/sites/mySite.xml?cleanup=simple']")||!selenium.isElementPresent("//a[@href='/cms/export/default/sites/mySite.zip?cleanup=simple']"))
+        {
+            fail("Error on the export. Links missing ");
         }
 
+        selenium.click("//button[text()='Cancel']");
+
+        //Delete page 2
+        deleteElement("//span[text()='Page 2']");
+
+        //Create a new folder
+        selenium.clickAt("//span[text()='files']", "5,5");
+        selenium.mouseOver("//span[text()='files']");
+        selenium.contextMenuAt("//span[text()='files']", "5,5");
+        selenium.answerOnNextPrompt("My folder");
+        selenium.click("Link=New directory");
+        selenium.getPrompt();
+
+        //Create new folders and under folders
+        for (int i = 0; i < numberOfFolders; i++) {
+            selenium.clickAt("//span[text()='My folder']", "5,5");
+            selenium.mouseOver("//span[text()='My folder']");
+            selenium.contextMenuAt("//span[text()='My folder']", "5,5");
+            selenium.answerOnNextPrompt("folder" + i);
+            selenium.click("Link=New directory");
+            selenium.getPrompt();
+            selenium.clickAt("//span[text()='folder" + i + "']", "5,5");
+            selenium.mouseOver("//span[text()='folder" + i + "']");
+            selenium.contextMenuAt("//span[text()='folder" + i + "']", "5,5");
+            selenium.answerOnNextPrompt("under folder" + i);
+            selenium.click("Link=New directory");
+            selenium.getPrompt();
+        }
+
+        deleteElement("//span[text()='My folder']");
+
+
+    }
+
+    public void deleteElement(String element) {
+        selenium.doubleClickAt(element, "5,5");
+        selenium.mouseOver(element);
+        selenium.contextMenuAt(element, "5,5");
+        selenium.click("Link=Remove");
+        if (selenium.isElementPresent("//button[text()='Yes']")) {
+            selenium.click("//button[text()='Yes']");
+        }
     }
 
 }

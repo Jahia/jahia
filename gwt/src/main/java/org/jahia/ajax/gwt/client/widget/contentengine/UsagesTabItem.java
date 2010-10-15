@@ -32,11 +32,19 @@
 
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.util.Margins;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
+import com.extjs.gxt.ui.client.widget.layout.RowData;
+import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.NodeUsagesGrid;
 
 import java.util.Arrays;
@@ -57,10 +65,29 @@ public class UsagesTabItem extends EditEngineTabItem {
 
     @Override
     public void create(String locale) {
-        setLayout(new FitLayout());
+        setLayout(new RowLayout());
         if (engine.getNode() != null) {
             Grid<GWTJahiaNodeUsage> grid = NodeUsagesGrid.createUsageGrid(Arrays.asList(engine.getNode()));
-            add(grid);
+            Button button = new Button(Messages.get("label.usages.clean"), new SelectionListener<ButtonEvent>() {
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                    final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
+                    service.cleanReferences(engine.getNode().getPath(), new BaseAsyncCallback() {
+                        /**
+                         * Called when an asynchronous call completes successfully.
+                         *
+                         * @param result the return value of the remote produced call
+                         */
+                        public void onSuccess(Object result) {
+                            engine.getLinker().refresh(Linker.REFRESH_ALL);
+                        }
+                    });
+                }
+            });
+            RowData layoutData1 = new RowData(200, 30);
+            layoutData1.setMargins(new Margins(3));
+            add(button, layoutData1);
+            add(grid, new RowData(1, 1));
             setProcessed(true);
         }
         layout();

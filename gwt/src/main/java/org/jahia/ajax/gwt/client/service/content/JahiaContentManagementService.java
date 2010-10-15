@@ -325,6 +325,8 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
      */
     BasePagingLoadResult<GWTJahiaContentHistoryEntry> getContentHistory(String nodeIdentifier, int offset, int limit) throws GWTJahiaServiceException;
 
+    public void cleanReferences(String path) throws GWTJahiaServiceException;
+
     // -------------------------- INNER CLASSES --------------------------
 
     public static class App {

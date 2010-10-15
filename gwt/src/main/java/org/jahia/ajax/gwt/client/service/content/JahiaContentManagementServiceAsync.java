@@ -36,6 +36,7 @@ import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
@@ -290,4 +291,6 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
     void getAllJobGroupNames(AsyncCallback<List<String>> async);
 
     void getContentHistory(String nodeIdentifier, int offset, int limit, AsyncCallback<BasePagingLoadResult<GWTJahiaContentHistoryEntry>> async);
+
+    void cleanReferences(String path, AsyncCallback callback);
 }

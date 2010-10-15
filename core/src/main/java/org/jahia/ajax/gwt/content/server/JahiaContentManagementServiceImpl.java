@@ -1742,4 +1742,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
     }
 
+    public void cleanReferences(String path) throws GWTJahiaServiceException {
+        contentManager.deleteReferences(path, getUser(), retrieveCurrentSession());
+    }
 }

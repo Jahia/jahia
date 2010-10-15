@@ -1140,4 +1140,74 @@ public class ContentManagerHelper {
         return result;
     }
 
+    public void deleteReferences(String path, JahiaUser user, JCRSessionWrapper currentUserSession)
+            throws GWTJahiaServiceException {
+        List<String> missedPaths = new ArrayList<String>();
+        JCRNodeWrapper referencedNode = null;
+        try {
+            referencedNode = currentUserSession.getNode(path);
+        } catch (RepositoryException e) {
+            missedPaths.add(new StringBuilder(path).append(" could not be accessed : ").append(
+                    e.toString()).toString());
+        }
+        if (referencedNode != null) {
+            if (!user.isRoot() && referencedNode.isLocked() && !referencedNode.getLockOwner().equals(user.getUsername())) {
+                missedPaths.add(new StringBuilder(referencedNode.getPath()).append(" - locked by ").append(
+                        referencedNode.getLockOwner()).toString());
+            }
+            if (!referencedNode.hasPermission(JCRNodeWrapper.WRITE)) {
+                missedPaths.add(new StringBuilder(referencedNode.getPath()).append(" - ACCESS DENIED").toString());
+            } else if (!getRecursedLocksAndFileUsages(referencedNode, missedPaths, user.getUsername())) {
+                try {
+                    String referenceToRemove = referencedNode.getIdentifier();
+                    PropertyIterator r = referencedNode.getReferences();
+                    while (r.hasNext()) {
+                        JCRPropertyWrapper reference = (JCRPropertyWrapper) r.next();
+                        if (!reference.getPath().startsWith("/referencesKeeper")) {
+                            if(!reference.getDefinition().isMandatory()) {
+                                if(reference.getDefinition().isMultiple()) {
+                                    Value[] values = reference.getValues();
+                                    if(values.length>1) {
+                                        Value[] valuesCopy = new Value[values.length-1];
+                                        int i=0;
+                                        for (Value value : values) {
+                                            if(!value.getString().equals(referenceToRemove)) {
+                                                valuesCopy[i++] = value;
+                                            }
+                                        }
+                                        reference.setValue(valuesCopy);
+                                    } else {
+                                        reference.remove();
+                                    }
+                                } else {
+                                    reference.remove();
+                                }
+                            } else {
+                                missedPaths.add(new StringBuilder(referencedNode.getPath()).append(
+                                        " - is use in a mandatory property of ").append(
+                                        reference.getParent().getPath()).toString());
+                            }
+                        }
+                    }
+                    currentUserSession.save();
+                } catch (AccessDeniedException e) {
+                    missedPaths.add(new StringBuilder(referencedNode.getPath()).append(" - ACCESS DENIED").toString());
+                } catch (ReferentialIntegrityException e) {
+                    missedPaths.add(new StringBuilder(referencedNode.getPath()).append(" - is in use").toString());
+                } catch (RepositoryException e) {
+                    logger.error("error", e);
+                    missedPaths.add(new StringBuilder(referencedNode.getPath()).append(" - UNSUPPORTED").toString());
+                }
+            }
+        }
+        if (missedPaths.size() > 0) {
+            StringBuilder errors = new StringBuilder(JahiaResourceBundle.getJahiaInternalResource(
+                    "label.error.nodes.not.deleted", currentUserSession.getLocale()));
+            for (String err : missedPaths) {
+                errors.append("\n").append(err);
+            }
+            throw new GWTJahiaServiceException(errors.toString());
+        }
+    }
+
 }

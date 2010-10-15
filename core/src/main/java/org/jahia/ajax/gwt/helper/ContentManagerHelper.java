@@ -550,7 +550,7 @@ public class ContentManagerHelper {
             }
         }
         if (missedPaths.size() > 0) {
-            StringBuilder errors = new StringBuilder("The following files could not be deleted:");
+            StringBuilder errors = new StringBuilder(JahiaResourceBundle.getJahiaInternalResource("label.error.nodes.not.deleted",currentUserSession.getLocale()));
             for (String err : missedPaths) {
                 errors.append("\n").append(err);
             }

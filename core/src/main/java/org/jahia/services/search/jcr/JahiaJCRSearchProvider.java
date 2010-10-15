@@ -40,7 +40,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
-import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.query.InvalidQueryException;
@@ -68,7 +67,6 @@ import org.jahia.services.search.AbstractHit;
 import org.jahia.services.search.FileHit;
 import org.jahia.services.search.Hit;
 import org.jahia.services.search.JCRNodeHit;
-import org.jahia.services.search.PageHit;
 import org.jahia.services.search.SearchCriteria;
 import org.jahia.services.search.SearchProvider;
 import org.jahia.services.search.SearchResponse;
@@ -244,8 +242,8 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     }
     
     private String getNodeType(SearchCriteria params) {
-        return StringUtils.isEmpty(params.getNodeType()) ? isFileSearch(params) ? Constants.NT_HIERARCHYNODE
-                : Constants.NT_BASE
+        return StringUtils.isEmpty(params.getNodeType()) ? (isFileSearch(params) ? Constants.NT_HIERARCHYNODE
+                : Constants.NT_BASE)
                 : params.getNodeType();
     }
 
@@ -498,7 +496,9 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                                             : getSearchExpressionForMatchType(textSearch.getTerm()
                                                     + "*", textSearch.getMatch())) + ")");
                 }
-                if (searchFields.isTags() && getTaggingService() != null && (params.getSites().getValue() != null || params.getOriginSiteKey() != null)) {
+                if (searchFields.isTags() && getTaggingService() != null
+                        && (params.getSites().getValue() != null || params.getOriginSiteKey() != null)
+                        && !StringUtils.containsAny(textSearch.getTerm(), "?*")) {
                     try {
                         JCRNodeWrapper tag = getTaggingService().getTag(textSearch.getTerm(),  params.getSites().getValue() != null ? params.getSites().getValue() : params.getOriginSiteKey(), session);
                         if (tag != null) {

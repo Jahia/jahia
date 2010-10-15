@@ -194,6 +194,7 @@ class SearchTabItem extends SidePanelTabItem {
                 EngineLoader.showEditEngine(editLinker, (GWTJahiaNode) ((GridEvent)be).getModel());
             }
         });
+        grid.setContextMenu(createContextMenu(config.getTableContextMenu(), grid.getSelectionModel()));
     }
 
     @Override

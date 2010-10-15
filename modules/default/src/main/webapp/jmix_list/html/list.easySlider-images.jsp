@@ -21,34 +21,23 @@
     <template:addResources type="css" resources="jquery.easySlider1.7.css"/>
 </c:if>
 
-<c:if test="${empty editable}">
-    <c:set var="editable" value="false"/>
-</c:if>
-
-<!-- recuperer une liste d'items de type teasers et boucler dessus -->
-
 <div id="slider">
-	<ul>
+    <ul>
         <c:forEach items="${moduleMap.currentList}" var="child" varStatus="status">
             <jcr:node var="image" uuid="${child.properties['j:node'].string}"/>
-            <c:choose>
-            	<c:when test="${jcr:isNodeType(child, 'jnt:nodeLinkImageReference')}">
-                    <li>
+            <li>
+                <c:if test="${!renderContext.editMode}">
+                    <c:choose>
+                        <c:when test="${jcr:isNodeType(image, 'jmix:thumbnail')}">
+                            <img src="${url.context}/repository/default${image.path}" alt="">
+                        </c:when>
+                    </c:choose>
+                </c:if>
+                <c:if test="${renderContext.editMode}">
                     <template:module node="${child}" template="default"/>
-                    </li>
-				</c:when>
-                <c:when test="${jcr:isNodeType(child, 'jnt:externalLinkImageReference')}">
-                    <li>
-                    <template:module node="${child}" template="default"/>
-                    </li>
-				</c:when>
-             <c:when test="${jcr:isNodeType(image, 'jmix:thumbnail')}">
-                    <li>
-						<img src="${url.context}/repository/default${image.path}" alt="">
-                    </li>
-			</c:when>            
-            </c:choose>
+                </c:if>
+            </li>
         </c:forEach>
         <template:module path="*"/>
-	</ul>
+    </ul>
 </div>

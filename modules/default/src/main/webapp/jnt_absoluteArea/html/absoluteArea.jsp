@@ -38,7 +38,7 @@
             <c:set var="path" value="${currentNode.properties['j:basenode'].node.path}"/>
         </c:if>
 
-        <template:wrappedContent template="${currentNode.properties['j:referenceTemplate'].string}"
+        <template:wrappedContent template="${currentNode.properties['j:referenceView'].string}"
                                  path="${path}/${currentNode.name}"
                                  nodeTypes="${nodeTypes}">
             <c:if test="${not empty currentNode.properties['j:subNodesView'].string}">

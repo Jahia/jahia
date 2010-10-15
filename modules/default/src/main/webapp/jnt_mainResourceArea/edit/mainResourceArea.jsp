@@ -60,7 +60,7 @@
                 </c:if>
             </c:forEach>
         </c:if>
-        <template:wrappedContent template="${currentNode.properties['j:areaTemplate'].string}"
+        <template:wrappedContent template="${currentNode.properties['j:areaView'].string}"
                                  path="${currentNode.name}" nodeTypes="${nodeTypes}">
             <c:if test="${not empty currentNode.properties['j:subNodesView'].string}">
                 <template:param name="subNodesTemplate" value="${currentNode.properties['j:subNodesView'].string}"/>

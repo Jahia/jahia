@@ -373,12 +373,12 @@
 
 [jmix:renderableArea] > jmix:renderableList mixin
  itemtype = layout
- - j:areaTemplate (string, choicelist[templates=jnt:contentList,resourceBundle,image]) nofulltext
+ - j:areaView (string, choicelist[templates=jnt:contentList,resourceBundle,image]) nofulltext
 
 [jmix:renderableReference] mixin
  extends = jmix:nodeReference
  itemtype = layout
- - j:referenceTemplate (string, choicelist[templates=reference,resourceBundle,image]) nofulltext
+ - j:referenceView (string, choicelist[templates=reference,resourceBundle,image]) nofulltext
 
 [jmix:theme] mixin
  extends = jnt:page, jnt:template

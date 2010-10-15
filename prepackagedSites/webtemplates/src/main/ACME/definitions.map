@@ -19,7 +19,7 @@
 # + file = #shareableSource
 [jnt:fileContainer] = jnt:fileReference
  - file = j:node
- - fileDisplayDetails = jmix:renderableReference|j:referenceTemplate
+ - fileDisplayDetails = jmix:renderableReference|j:referenceView
    true = detail
    false = link
 
@@ -42,7 +42,7 @@
 # + file = #shareableSource
 [web_templates:fileContainer] = jnt:fileReference
  - file = j:node 
- - fileDisplayDetails = jmix:renderableReference|j:referenceTemplate
+ - fileDisplayDetails = jmix:renderableReference|j:referenceView
    true = detail
    false = link
 

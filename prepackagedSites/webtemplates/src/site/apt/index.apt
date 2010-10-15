@@ -252,7 +252,7 @@ ChildNodeMapping ::= NodeWithOptionalNodeTypeName | '#skip' | '#shareableSource'
 +------------------------------------------------------
 [web_templates:fileContainer] = jnt:fileReference
  - file = j:node 
- - fileDisplayDetails = jmix:renderableReference|j:referenceTemplate
+ - fileDisplayDetails = jmix:renderableReference|j:referenceView
    true = details
    false = link
 +------------------------------------------------------
@@ -470,7 +470,7 @@ ChildNodeMapping ::= NodeWithOptionalNodeTypeName | '#skip' | '#shareableSource'
 
 [jnt:fileContainer] = jnt:fileReference
  - file = j:node
- - fileDisplayDetails = jmix:renderableReference|j:referenceTemplate
+ - fileDisplayDetails = jmix:renderableReference|j:referenceView
    true = details
    false = link
 

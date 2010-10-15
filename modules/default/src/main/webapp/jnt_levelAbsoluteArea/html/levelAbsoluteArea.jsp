@@ -60,7 +60,7 @@
         </c:forEach>
 
         <c:if test="${not empty node}">
-            <template:wrappedContent template="${currentNode.properties['j:referenceTemplate'].string}"
+            <template:wrappedContent template="${currentNode.properties['j:referenceView'].string}"
                                      path="${node.path}/${currentNode.name}"
                                      nodeTypes="${nodeTypes}">
                 <c:if test="${not empty currentNode.properties['j:subNodesView'].string}">

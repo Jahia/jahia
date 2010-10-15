@@ -307,6 +307,8 @@ public class UIConfigHelper {
                 gwtConfig.setDisplaySearchInTag(config.isDisplaySearchInTag());
                 gwtConfig.setDisplaySearchInFile(config.isDisplaySearchInFile());
                 gwtConfig.setDisplaySearchInContent(config.isDisplaySearchInContent());
+                gwtConfig.setSearchInFile(config.isSearchInFile());
+                gwtConfig.setSearchInContent(config.isSearchInContent());                
 
                 // set toolbar
                 gwtConfig.setToolbars(createGWTToolbarSet(site, jahiaUser, locale, uiLocale, request, config.getToolbars()));

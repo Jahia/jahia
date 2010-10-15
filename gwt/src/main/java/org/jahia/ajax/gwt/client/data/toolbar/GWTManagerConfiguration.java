@@ -77,6 +77,8 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
     private boolean displaySearchInTag = true;
     private boolean displaySearchInFile = true;
     private boolean displaySearchInContent = true;
+    private boolean searchInFile = true;
+    private boolean searchInContent = true;    
 
 
     public GWTManagerConfiguration() {
@@ -284,5 +286,21 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
 
     public void setDisplaySearchInContent(boolean displaySearchInContent) {
         this.displaySearchInContent = displaySearchInContent;
+    }
+
+    public boolean isSearchInFile() {
+        return searchInFile;
+    }
+
+    public void setSearchInFile(boolean searchInFile) {
+        this.searchInFile = searchInFile;
+    }
+
+    public boolean isSearchInContent() {
+        return searchInContent;
+    }
+
+    public void setSearchInContent(boolean searchInContent) {
+        this.searchInContent = searchInContent;
     }
 }

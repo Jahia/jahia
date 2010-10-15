@@ -254,7 +254,7 @@ public class ContentSearchForm extends ContentPanel {
         field.setFieldLabel(Messages.get("label.content", "Content"));
         field.setBoxLabel(field.getFieldLabel());
         field.setName("content");
-        field.setValue(true);
+        field.setValue(config.isSearchInContent() ? true : false);
         if (!config.isDisplaySearchInContent()) {
             field.hide();
         }
@@ -271,7 +271,7 @@ public class ContentSearchForm extends ContentPanel {
         field.setFieldLabel(Messages.get("fileMenu.label", "File"));
         field.setBoxLabel(field.getFieldLabel());        
         field.setName("file");
-        field.setValue(true);
+        field.setValue(config.isSearchInFile() ? true : false);
         if (!config.isDisplaySearchInFile()) {
             field.hide();
         }

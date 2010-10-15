@@ -80,6 +80,8 @@ public class ManagerConfiguration implements Serializable {
     private boolean displaySearchInTag = true;
     private boolean displaySearchInFile = true;
     private boolean displaySearchInContent = true;
+    private boolean searchInFile = true;
+    private boolean searchInContent = true;    
 
 
 
@@ -264,6 +266,22 @@ public class ManagerConfiguration implements Serializable {
 
     public void setEditEngines(List<Engine> editEngines) {
         this.editEngines = editEngines;
+    }
+
+    public boolean isSearchInFile() {
+        return searchInFile;
+    }
+
+    public void setSearchInFile(boolean searchInFile) {
+        this.searchInFile = searchInFile;
+    }
+
+    public boolean isSearchInContent() {
+        return searchInContent;
+    }
+
+    public void setSearchInContent(boolean searchInContent) {
+        this.searchInContent = searchInContent;
     }
 
 }

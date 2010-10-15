@@ -8,6 +8,7 @@
 <template:addResources type="css" resources="files.css"/>
 
 <jcr:nodeProperty node="${currentNode}" name="jcr:created" var="created"/>
+<jcr:nodeProperty node="${currentNode}" name="jcr:title" var="title"/>
 <fmt:formatDate value="${created.time}" dateStyle="full" var="displayDate"/>
 <c:choose>
     <c:when test="${fn:startsWith(currentNode.fileContent.contentType,'image/')}">

@@ -196,6 +196,7 @@
 
 [jnt:category] > nt:base, jmix:basemetadata, mix:title, jmix:nodenameInfo, jmix:publication
 + * (jnt:category) version
+- * (reference) multiple < jnt:category
 
 //---------------------------------------------------------
 // Tags

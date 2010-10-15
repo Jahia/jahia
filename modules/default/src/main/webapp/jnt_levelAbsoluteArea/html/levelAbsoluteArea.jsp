@@ -15,7 +15,7 @@
     <c:when test="${not empty inWrapper and inWrapper eq false}">
         <div class="mainResourceAbsoluteArea<c:if test="${not empty currentNode.properties['j:mockupStyle']}"> ${currentNode.properties['j:mockupStyle'].string}</c:if>">
             <div class="mainResourceAbsoluteAreaTemplate">
-                <span>Absolute list : ${currentNode.name}</span>
+                <span>Absolute Area : ${currentNode.name}</span>
             </div>
             <div class="loremipsum">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed dignissim tellus in metus viverra pharetra.

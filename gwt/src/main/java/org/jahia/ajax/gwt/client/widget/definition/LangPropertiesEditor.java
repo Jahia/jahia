@@ -76,7 +76,7 @@ public class LangPropertiesEditor extends LayoutContainer {
     private List<String> excludedTypes;
 
     // current node contex variables
-    private String dataType;
+    private List<String> dataType;
     private List<GWTJahiaNodeType> nodeTypes;
     private List<GWTJahiaNodeType> mixin;
     private Map<String, List<GWTJahiaValueDisplayBean>> initializersValues;
@@ -87,7 +87,7 @@ public class LangPropertiesEditor extends LayoutContainer {
     private boolean editable = true;
     private GWTJahiaLanguage displayedLocale = null;
 
-    public LangPropertiesEditor(GWTJahiaNode node, String dataType, boolean editable) {
+    public LangPropertiesEditor(GWTJahiaNode node, List<String> dataType, boolean editable) {
         this.node = node;
         this.dataType = dataType;
         langPropertiesEditorMap = new HashMap<String, PropertiesEditor>();

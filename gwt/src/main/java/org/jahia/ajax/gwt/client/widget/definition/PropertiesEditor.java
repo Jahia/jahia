@@ -68,7 +68,7 @@ public class PropertiesEditor extends FormPanel {
     private boolean viewInheritedItems = true;
     private List<String> excludedItems;
     private List<String> excludedTypes;
-    private String dataType;
+    private List<String> dataType;
     private boolean isWriteable = true;
     private boolean isI18NWriteable = true;
     private boolean fieldSetGrouping = false;
@@ -77,7 +77,7 @@ public class PropertiesEditor extends FormPanel {
     private Set<String> externalMixin = new HashSet<String>();
 
     public PropertiesEditor(List<GWTJahiaNodeType> nodeTypes, Map<String, GWTJahiaNodeProperty> properties,
-                            String datatype) {
+                            List<String> datatype) {
         super();
         this.nodeTypes = nodeTypes;
         this.dataType = datatype;
@@ -111,10 +111,6 @@ public class PropertiesEditor extends FormPanel {
 
     public void setExcludedTypes(List<String> excludedTypes) {
         this.excludedTypes = excludedTypes;
-    }
-
-    public void setDataType(String dataType) {
-        this.dataType = dataType;
     }
 
     public void setWriteable(boolean writeable) {
@@ -196,7 +192,7 @@ public class PropertiesEditor extends FormPanel {
                     (excludedItems != null && excludedItems.contains(definition.getName()))) {
                 continue;
             }
-            if (dataType != null && !dataType.equals(definition.getDataType())) {
+            if (dataType != null && !dataType.isEmpty() && !dataType.contains(definition.getDataType())) {
                 continue;
             }
 

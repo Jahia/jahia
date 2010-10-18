@@ -33,8 +33,7 @@
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -46,8 +45,6 @@ import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTEngine;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -89,7 +86,7 @@ public class CreateContentEngine extends AbstractContentEngine {
      * @param createInParentAndMoveBefore
      */
     public CreateContentEngine(Linker linker, GWTJahiaNode parent, GWTJahiaNodeType type, Map<String, GWTJahiaNodeProperty> props, String targetName, boolean createInParentAndMoveBefore, EngineContainer engineContainer) {
-        super(getCreateConfig(type, linker.getConfig()), linker);
+        super(linker.getConfig().getEngineTabs(), linker);
         this.existingNode = false;
         this.targetNode = parent;
         this.type = type;
@@ -116,25 +113,19 @@ public class CreateContentEngine extends AbstractContentEngine {
         container.closeEngine();
     }
 
-    public static GWTEngine getCreateConfig(GWTJahiaNodeType type, GWTConfiguration config) {
-        for (GWTEngine engine : config.getEditEngines()) {
-            if (type.getName().equals(engine.getNodeType()) || type.getSuperTypes().contains(engine.getNodeType())) {
-                return engine;
-            }
-        }
-        return null;
-    }
-
     /**
      * Creates and initializes all window tabs.
      */
     protected void initTabs() {
-        for (GWTEngineTab tabConfig : config.getTabs()) {
+        for (GWTEngineTab tabConfig : config) {
             EditEngineTabItem tabItem = tabConfig.getTabItem();
-            if (tabItem.isHandleCreate()) {
+            if (tabItem.isHandleCreate() &&
+                    (tabItem.getHideForTypes().isEmpty() || !tabItem.getHideForTypes().contains(type.getName())) &&
+                    (tabItem.getShowForTypes().isEmpty() || tabItem.getShowForTypes().contains(type.getName()))) {
                 tabs.add(tabItem.create(tabConfig, this));
             }
         }
+        tabs.setSelection(tabs.getItem(0));
     }
 
     /**
@@ -205,8 +196,16 @@ public class CreateContentEngine extends AbstractContentEngine {
                 setAvailableLanguages(languages);
                 setButtonsEnabled(true);
 
-                fillCurrentTab();
+                initTabs();
 
+                tabs.addListener(Events.Select, new Listener<ComponentEvent>() {
+                    public void handleEvent(ComponentEvent event) {
+                        fillCurrentTab();
+                    }
+                });
+
+                fillCurrentTab();
+                unmask();                
             }
 
             public void onApplicationFailure(Throwable caught) {

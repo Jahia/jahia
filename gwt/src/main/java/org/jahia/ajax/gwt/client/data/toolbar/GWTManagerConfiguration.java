@@ -108,14 +108,6 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
         selectedAccordion = accordion;
     }
 
-    public List<GWTEngineTab> getTabs() {
-        return tabs;
-    }
-
-    public void addTab(GWTEngineTab tab) {
-        tabs.add(tab);
-    }
-
     public void setHideLeftPanel(boolean hide) {
         this.hideLeftPanel = hide;
     }

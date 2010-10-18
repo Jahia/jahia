@@ -21,53 +21,19 @@
     <bean id="abstractmanager" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration"
           abstract="true">
         <!-- edit engine -->
-        <property name="editEngines">
+        <property name="engineTabs">
             <list>
-                <bean class="org.jahia.services.uicomponents.bean.editmode.Engine">
-                    <property name="nodeType" value="jnt:category"/>
-                    <property name="tabs">
-                        <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                            <ref bean="Engine.Tab.Content" />
-                            <ref bean="Engine.Tab.Rights" />
-                        </list>
-                    </property>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.editmode.Engine">
-                    <property name="nodeType" value="jmix:list"/>
-                    <property name="tabs">
-                        <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                            <ref bean="Engine.Tab.ListOrdering" />
-                            <ref bean="Engine.Tab.Layout" />
-                            <ref bean="Engine.Tab.Metadata" />
-                            <ref bean="Engine.Tab.Tags" />
-                            <ref bean="Engine.Tab.Categories" />
-                            <ref bean="Engine.Tab.Options" />
-                            <ref bean="Engine.Tab.Rights" />
-                            <ref bean="Engine.Tab.Usages" />
-                            <ref bean="Engine.Tab.Workflow" />
-                            <ref bean="Engine.Tab.Seo" />
-                            <ref bean="Engine.Tab.Analytics" />
-                        </list>
-                    </property>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.editmode.Engine">
-                    <property name="nodeType" value="nt:base"/>
-                    <property name="tabs">
-                        <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                            <ref bean="Engine.Tab.Content" />
-                            <ref bean="Engine.Tab.Layout" />
-                            <ref bean="Engine.Tab.Metadata" />
-                            <ref bean="Engine.Tab.Tags" />
-                            <ref bean="Engine.Tab.Categories" />
-                            <ref bean="Engine.Tab.Options" />
-                            <ref bean="Engine.Tab.Rights" />
-                            <ref bean="Engine.Tab.Usages" />
-                            <ref bean="Engine.Tab.Workflow" />
-                            <ref bean="Engine.Tab.Seo" />
-                            <ref bean="Engine.Tab.Analytics" />
-                        </list>
-                    </property>
-                </bean>
+                <ref bean="Engine.Tab.Content" />
+                <ref bean="Engine.Tab.Layout" />
+                <ref bean="Engine.Tab.Metadata" />
+                <ref bean="Engine.Tab.Tags" />
+                <ref bean="Engine.Tab.Categories" />
+                <ref bean="Engine.Tab.Options" />
+                <ref bean="Engine.Tab.Rights" />
+                <ref bean="Engine.Tab.Usages" />
+                <ref bean="Engine.Tab.Workflow" />
+                <ref bean="Engine.Tab.Seo" />
+                <ref bean="Engine.Tab.Analytics" />
             </list>
         </property>
 
@@ -209,7 +175,7 @@
             </list>
         </property>
         <!-- tabs -->
-        <property name="tabs">
+        <property name="engineTabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
                 <ref bean="Engine.Tab.Info" />
                 <ref bean="Engine.Tab.Metadata" />
@@ -341,7 +307,7 @@
             </list>
         </property>
         <!-- tabs -->
-        <property name="tabs">
+        <property name="engineTabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
                 <ref bean="Engine.Tab.Info" />
                 <ref bean="Engine.Tab.Content" />
@@ -455,7 +421,7 @@
             </list>
         </property>
         <!-- tabs -->
-        <property name="tabs">
+        <property name="engineTabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
                 <ref bean="Engine.Tab.Content" />
                 <ref bean="Engine.Tab.Rights" />
@@ -561,7 +527,7 @@
             </list>
         </property>
         <!-- tabs -->
-        <property name="tabs">
+        <property name="engineTabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
                 <ref bean="Engine.Tab.Rights" />
                 <ref bean="Engine.Tab.Usages" />
@@ -629,7 +595,7 @@
             </list>
         </property>
         <!-- tabs -->
-        <property name="tabs">
+        <property name="engineTabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
                 <ref bean="Engine.Tab.Portlets" />
                 <ref bean="Engine.Tab.Rights" />
@@ -774,7 +740,7 @@
         </property>
 
         <!-- tabs -->
-        <property name="tabs">
+        <property name="engineTabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
                 <ref bean="Engine.Tab.Info" />
                 <ref bean="Engine.Tab.Content" />
@@ -917,7 +883,7 @@
 
 
         <!-- tabs -->
-        <property name="tabs">
+        <property name="engineTabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
                 <ref bean="Engine.Tab.Info" />
                 <ref bean="Engine.Tab.Rights" />
@@ -983,7 +949,7 @@
             </list>
         </property>
         <!-- tabs -->
-        <property name="tabs">
+        <property name="engineTabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
                 <ref bean="Engine.Tab.RolePrincipals" />
             </list>
@@ -1028,7 +994,7 @@
             </list>
         </property>
         <!-- tabs -->
-        <property name="tabs">
+        <property name="engineTabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
                 <ref bean="Engine.Tab.RolePrincipals" />
             </list>
@@ -1598,7 +1564,7 @@
         </property>
 
         <!-- tabs -->
-        <property name="tabs">
+        <property name="engineTabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
                 <ref bean="Engine.Tab.Info" />
                 <ref bean="Engine.Tab.Content" />

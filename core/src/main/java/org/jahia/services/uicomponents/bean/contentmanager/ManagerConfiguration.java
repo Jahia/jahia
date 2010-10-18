@@ -52,7 +52,6 @@ public class ManagerConfiguration implements Serializable {
     private List<Column> treeColumns;
     private List<Column> tableColumns;
     private List<Repository> repositories;
-    private List<EngineTab> tabs;
 
     private boolean hideLeftPanel = false;
 
@@ -65,7 +64,7 @@ public class ManagerConfiguration implements Serializable {
     private boolean enableFileDoubleClick = true;
     private boolean useCheckboxForSelection = true;
 
-    private List<Engine> editEngines;
+    private List<EngineTab> engineTabs;
 
     private List<Toolbar> toolbars;
     private Toolbar contextMenu;
@@ -88,15 +87,7 @@ public class ManagerConfiguration implements Serializable {
         tableColumns = new ArrayList<Column>();
         treeColumns = new ArrayList<Column>();
         repositories = new ArrayList<Repository>();
-        tabs = new ArrayList<EngineTab>();
-    }
-
-    public List<EngineTab> getTabs() {
-        return tabs;
-    }
-
-    public void setTabs(List<EngineTab> tabs) {
-        this.tabs = tabs;
+        engineTabs = new ArrayList<EngineTab>();
     }
 
     public void setHideLeftPanel(boolean hide) {
@@ -251,12 +242,12 @@ public class ManagerConfiguration implements Serializable {
         this.displaySearchInContent = displaySearchInContent;
     }
 
-    public List<Engine> getEditEngines() {
-        return editEngines;
+    public List<EngineTab> getEngineTabs() {
+        return engineTabs;
     }
 
-    public void setEditEngines(List<Engine> editEngines) {
-        this.editEngines = editEngines;
+    public void setEngineTabs(List<EngineTab> engineTabs) {
+        this.engineTabs = engineTabs;
     }
 
     public boolean isSearchInFile() {

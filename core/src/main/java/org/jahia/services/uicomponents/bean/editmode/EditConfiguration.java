@@ -53,7 +53,7 @@ public class EditConfiguration implements Serializable, BeanNameAware {
 
     private List<SidePanelTab> tabs;
 
-    private List<Engine> editEngines;
+    private List<EngineTab> engineTabs;
 
 
     public void setBeanName(String name) {
@@ -92,11 +92,11 @@ public class EditConfiguration implements Serializable, BeanNameAware {
         this.tabs = tabs;
     }
 
-    public List<Engine> getEditEngines() {
-        return editEngines;
+    public List<EngineTab> getEngineTabs() {
+        return engineTabs;
     }
 
-    public void setEditEngines(List<Engine> editEngines) {
-        this.editEngines = editEngines;
+    public void setEngineTabs(List<EngineTab> engineTabs) {
+        this.engineTabs = engineTabs;
     }
 }

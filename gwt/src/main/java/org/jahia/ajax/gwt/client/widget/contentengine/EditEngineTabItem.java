@@ -32,16 +32,12 @@
 
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
-import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
-import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.content.InfoTabItem;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -55,6 +51,8 @@ public abstract class EditEngineTabItem implements Serializable {
     protected GWTEngineTab gwtEngineTab;
 
     protected boolean handleCreate = true;
+    private List<String> showForTypes = new ArrayList<String>();
+    private List<String> hideForTypes = new ArrayList<String>();
 
     protected transient AsyncTabItem tab;
     protected transient NodeHolder engine;
@@ -97,5 +95,21 @@ public abstract class EditEngineTabItem implements Serializable {
 
     public void setHandleCreate(boolean handleCreate) {
         this.handleCreate = handleCreate;
+    }
+
+    public List<String> getShowForTypes() {
+        return showForTypes;
+    }
+
+    public void setShowForTypes(List<String> showForTypes) {
+        this.showForTypes = showForTypes;
+    }
+
+    public List<String> getHideForTypes() {
+        return hideForTypes;
+    }
+
+    public void setHideForTypes(List<String> hideForTypes) {
+        this.hideForTypes = hideForTypes;
     }
 }

@@ -34,8 +34,11 @@ package org.jahia.services.uicomponents.bean.editmode;
 
 import org.jahia.ajax.gwt.client.widget.contentengine.EditEngineTabItem;
 import org.jahia.services.uicomponents.bean.Visibility;
+import org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -44,12 +47,13 @@ import java.io.Serializable;
  * Time: 12:37:29 PM
  * To change this template use File | Settings | File Templates.
  */
-public class EngineTab implements Serializable {
+public class EngineTab implements Serializable, Comparable {
     private String id;
     private String title;
     private String titleKey;
     private Visibility visibility;
     private EditEngineTabItem tabItem;
+    private int order;
 
     public EngineTab() {
     }
@@ -92,5 +96,25 @@ public class EngineTab implements Serializable {
 
     public void setVisibility(Visibility visibility) {
         this.visibility = visibility;
+    }
+
+    public void setParentEditConfiguration(EditConfiguration config) {
+        config.getEngineTabs().add(this);
+    }
+
+    public void setParentManagerConfiguration(ManagerConfiguration config) {
+        config.getEngineTabs().add(this);
+    }
+
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
+    }
+
+    public int compareTo(Object o) {
+        return getOrder() - ((EngineTab) o).getOrder();
     }
 }

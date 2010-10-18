@@ -192,7 +192,7 @@ public class WorkflowActionDialog extends Window {
                                     workflow != null ? workflow.getVariables() :
                                             new HashMap<String, GWTJahiaNodeProperty>();
                             propertiesEditor = new PropertiesEditor(Arrays.asList(result), variables,
-                                    GWTJahiaItemDefinition.CONTENT);
+                                    Arrays.asList(GWTJahiaItemDefinition.CONTENT));
                             propertiesEditor.setViewInheritedItems(true);
                             propertiesEditor.renderNewFormPanel();
                             propertiesEditor.setFrame(true);

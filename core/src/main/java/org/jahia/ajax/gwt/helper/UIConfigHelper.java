@@ -51,7 +51,6 @@ import org.jahia.services.uicomponents.bean.contentmanager.Column;
 import org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration;
 import org.jahia.services.uicomponents.bean.contentmanager.Repository;
 import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
-import org.jahia.services.uicomponents.bean.editmode.Engine;
 import org.jahia.services.uicomponents.bean.editmode.EngineTab;
 import org.jahia.services.uicomponents.bean.editmode.SidePanelTab;
 import org.jahia.services.uicomponents.bean.toolbar.*;
@@ -330,14 +329,6 @@ public class UIConfigHelper {
                     }
                 }
 
-                // add tabs
-                for (EngineTab item : config.getTabs()) {
-                    if (checkVisibility(site, jahiaUser, locale, request, item.getVisibility())) {
-                        gwtConfig.addTab(createGWTEngineTab(item, site, locale, uiLocale));
-                    }
-
-                }
-
                 // add accordion panels
                 for (Repository item : config.getRepositories()) {
                     if (checkVisibility(site, jahiaUser, locale, request, item.getVisibility())) {
@@ -356,7 +347,7 @@ public class UIConfigHelper {
                     }
                 }
 
-                gwtConfig.setEditEngines(createGWTEngineList(site, jahiaUser, locale, uiLocale, request, config.getEditEngines()));
+                gwtConfig.setEngineTabs(createGWTEngineList(site, jahiaUser, locale, uiLocale, request, config.getEngineTabs()));
 
                 return gwtConfig;
             } else {
@@ -566,7 +557,7 @@ public class UIConfigHelper {
                 gwtConfig.setTopToolbar(createGWTToolbar(site, jahiaUser, locale, uiLocale, request, config.getTopToolbar()));
                 gwtConfig.setContextMenu(createGWTToolbar(site, jahiaUser, locale, uiLocale, request, config.getContextMenu()));
                 gwtConfig.setTabs(createGWTSidePanelTabList(site, jahiaUser, locale, uiLocale, request, config.getTabs()));
-                gwtConfig.setEditEngines(createGWTEngineList(site, jahiaUser, locale, uiLocale, request, config.getEditEngines()));
+                gwtConfig.setEngineTabs(createGWTEngineList(site, jahiaUser, locale, uiLocale, request, config.getEngineTabs()));
                 return gwtConfig;
             } else {
                 throw new GWTJahiaServiceException("Bean. 'editconfig'  not found in spring config file");
@@ -635,26 +626,15 @@ public class UIConfigHelper {
      * @param engines
      * @return
      */
-    private List<GWTEngine> createGWTEngineList(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, List<Engine> engines) {
-        // edit engine
-        List<GWTEngine> gwtEngineList = new ArrayList<GWTEngine>();
-        for (Engine engine : engines) {
-            if (checkVisibility(site, jahiaUser, locale, request, engine.getVisibility())) {
-                final GWTEngine gwtEngine = new GWTEngine();
-                gwtEngine.setNodeType(engine.getNodeType());
-
-                final List<GWTEngineTab> engineTabs = new ArrayList<GWTEngineTab>();
-                for (EngineTab engineTab : engine.getTabs()) {
-                    if (checkVisibility(site, jahiaUser, locale, request, engineTab.getVisibility())) {
-                        GWTEngineTab gwtTab = createGWTEngineTab(engineTab, site, locale, uiLocale);
-                        engineTabs.add(gwtTab);
-                    }
-                }
-                gwtEngine.setTabs(engineTabs);
-                gwtEngineList.add(gwtEngine);
+    private List<GWTEngineTab> createGWTEngineList(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, List<EngineTab> engines) {
+        final List<GWTEngineTab> engineTabs = new ArrayList<GWTEngineTab>();
+        for (EngineTab engineTab : engines) {
+            if (checkVisibility(site, jahiaUser, locale, request, engineTab.getVisibility())) {
+                GWTEngineTab gwtTab = createGWTEngineTab(engineTab, site, locale, uiLocale);
+                engineTabs.add(gwtTab);
             }
         }
-        return gwtEngineList;
+        return engineTabs;
     }
 
     private GWTEngineTab createGWTEngineTab(EngineTab engineTab, JCRSiteNode site, Locale locale, Locale uiLocale) {

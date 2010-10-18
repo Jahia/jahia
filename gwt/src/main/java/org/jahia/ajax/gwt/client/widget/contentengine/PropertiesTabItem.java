@@ -147,7 +147,7 @@ public class PropertiesTabItem extends EditEngineTabItem {
                     }
                 }
 
-                propertiesEditor = new PropertiesEditor(engine.getNodeTypes(), engine.getProperties(), dataType.get(0));
+                propertiesEditor = new PropertiesEditor(engine.getNodeTypes(), engine.getProperties(), dataType);
                 propertiesEditor.setMixin(engine.getMixin());
                 propertiesEditor.setInitializersValues(engine.getInitializersValues());
                 propertiesEditor.setWriteable(!engine.isExistingNode() || (engine.getNode().isWriteable() && !engine.getNode().isLocked()));

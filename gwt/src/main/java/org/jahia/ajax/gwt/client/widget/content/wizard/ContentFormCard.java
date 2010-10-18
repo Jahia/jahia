@@ -47,10 +47,7 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.wizard.AddContentWizardWindow.ContentWizardCard;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Wizard card responsible for displaying a form for entering content data.
@@ -85,7 +82,7 @@ public class ContentFormCard extends ContentWizardCard {
                         Map<String, GWTJahiaNodeProperty> defaultValues = new HashMap<String, GWTJahiaNodeProperty>();
 
                         formEditor =
-                                new PropertiesEditor(types, defaultValues, GWTJahiaItemDefinition.CONTENT);
+                                new PropertiesEditor(types, defaultValues, Arrays.asList(GWTJahiaItemDefinition.CONTENT));
                         formEditor.renderNewFormPanel();
                         setFormPanel(formEditor);
                         layout();

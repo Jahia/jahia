@@ -33,8 +33,7 @@
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -44,8 +43,7 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTEngine;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
@@ -77,7 +75,7 @@ public class EditContentEngine extends AbstractContentEngine {
      * @param linker the edit linker for refresh purpose
      */
     public EditContentEngine(GWTJahiaNode node, Linker linker, EngineContainer engineContainer) {
-        super(getEditConfig(node, linker.getConfig()), linker);
+        super(linker.getConfig().getEngineTabs(), linker);
         contentPath = node.getPath();
         nodeName = node.getName();
         init(engineContainer);
@@ -96,15 +94,20 @@ public class EditContentEngine extends AbstractContentEngine {
         container.closeEngine();
     }
 
-    public static GWTEngine getEditConfig(GWTJahiaNode node, GWTConfiguration config) {
-        for (GWTEngine engine : config.getEditEngines()) {
-            if (node.getNodeTypes().contains(engine.getNodeType()) ||
-                    node.getInheritedNodeTypes().contains(engine.getNodeType())) {
-                return engine;
+    /**
+     * Creates and initializes all window tabs.
+     */
+    protected void initTabs() {
+        for (GWTEngineTab tabConfig : config) {
+            EditEngineTabItem tabItem = tabConfig.getTabItem();
+            if ((tabItem.getHideForTypes().isEmpty() || !tabItem.getHideForTypes().contains(node.getNodeTypes().get(0))) &&
+                    (tabItem.getShowForTypes().isEmpty() || tabItem.getShowForTypes().contains(node.getNodeTypes().get(0)))) {
+                tabs.add(tabItem.create(tabConfig, this));
             }
         }
-        return null;
+        tabs.setSelection(tabs.getItem(0));
     }
+
 
     /**
      * init buttons
@@ -203,10 +206,20 @@ public class EditContentEngine extends AbstractContentEngine {
 
                 mixin = result.getMixin();
                 initializersValues = result.getInitializersValues();
+                initTabs();
+
+                tabs.addListener(Events.Select, new Listener<ComponentEvent>() {
+                    public void handleEvent(ComponentEvent event) {
+                        fillCurrentTab();
+                    }
+                });
+
                 fillCurrentTab();
+
                 if (node.isWriteable() && !node.isLocked()) {
                     ok.setEnabled(true);
                 }
+                unmask();
             }
 
             public void onApplicationFailure(Throwable throwable) {

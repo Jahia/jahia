@@ -53,6 +53,7 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.definition.LangPropertiesEditor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -106,9 +107,9 @@ public class TranslateContentEngine extends Window {
         panel.setCollapsible(false);
         panel.setHeaderVisible(false);
 
-        sourceLangPropertiesEditor = new LangPropertiesEditor(node, GWTJahiaItemDefinition.CONTENT, false);
+        sourceLangPropertiesEditor = new LangPropertiesEditor(node, Arrays.asList(GWTJahiaItemDefinition.CONTENT), false);
         sourceLangPropertiesEditor.setSize(650, 750);
-        targetLangPropertiesEditor = new LangPropertiesEditor(node, GWTJahiaItemDefinition.CONTENT, true);
+        targetLangPropertiesEditor = new LangPropertiesEditor(node, Arrays.asList(GWTJahiaItemDefinition.CONTENT), true);
         targetLangPropertiesEditor.setSize(650, 750);
 
         panel.add(sourceLangPropertiesEditor, new RowData(1, 1, new Margins(4, 0, 4, 0)));

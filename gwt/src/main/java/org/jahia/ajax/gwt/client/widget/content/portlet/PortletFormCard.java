@@ -94,7 +94,7 @@ public class PortletFormCard extends PortletWizardCard {
                     defaultValues.put("j:cacheScope", new GWTJahiaNodeProperty("j:cacheScope", value));
                 }
 
-                pe = new PropertiesEditor(list, defaultValues, GWTJahiaItemDefinition.CONTENT);
+                pe = new PropertiesEditor(list, defaultValues, Arrays.asList(GWTJahiaItemDefinition.CONTENT));
                 pe.setMixin(result.getMixin());
                 pe.setExcludedTypes(Arrays.asList("jnt:portlet", "mix:lastModified", "mix:created", "jmix:lastPublished"));
                 pe.renderNewFormPanel();

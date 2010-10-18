@@ -154,32 +154,14 @@
         </property>
 
         <!-- edit engine -->
-        <property name="editEngines">
+        <property name="engineTabs">
             <list>
-                <bean class="org.jahia.services.uicomponents.bean.editmode.Engine">
-                    <property name="nodeType" value="jmix:list"/>
-                    <property name="tabs">
-                        <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                            <ref bean="Engine.Tab.ListOrdering" />
-                            <ref bean="Engine.Tab.Layout" />
-                            <ref bean="Engine.Tab.Options" />
-                            <ref bean="Engine.Tab.Rights" />
-                            <ref bean="Engine.Tab.Usages" />
-                        </list>
-                    </property>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.editmode.Engine">
-                    <property name="nodeType" value="nt:base"/>
-                    <property name="tabs">
-                        <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                            <ref bean="Engine.Tab.Content" />
-                            <ref bean="Engine.Tab.Layout" />
-                            <ref bean="Engine.Tab.Options" />
-                            <ref bean="Engine.Tab.Rights" />
-                            <ref bean="Engine.Tab.Usages" />
-                        </list>
-                    </property>
-                </bean>
+                <ref bean="Engine.Tab.Content" />
+                <ref bean="Engine.Tab.ListOrdering" />
+                <ref bean="Engine.Tab.Layout" />
+                <ref bean="Engine.Tab.Options" />
+                <ref bean="Engine.Tab.Rights" />
+                <ref bean="Engine.Tab.Usages" />
             </list>
         </property>
 
@@ -670,48 +652,22 @@
         </property>
 
         <!-- edit engine -->
-        <property name="editEngines">
+        <property name="engineTabs">
             <list>
-                <bean class="org.jahia.services.uicomponents.bean.editmode.Engine">
-                    <property name="nodeType" value="jmix:list"/>
-                    <property name="tabs">
-                        <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                            <ref bean="Engine.Tab.ListOrdering" />
-                            <ref bean="Engine.Tab.Layout" />
-                            <ref bean="Engine.Tab.Metadata" />
-                            <ref bean="Engine.Tab.Tags" />
-                            <ref bean="Engine.Tab.Categories" />
-                            <ref bean="Engine.Tab.Options" />
-                            <ref bean="Engine.Tab.Rights" />
-                            <ref bean="Engine.Tab.Usages" />
-                            <ref bean="Engine.Tab.Workflow" />
-                            <ref bean="Engine.Tab.History" />
-                            <ref bean="Engine.Tab.Versioning" />
-                            <ref bean="Engine.Tab.Seo" />
-                            <ref bean="Engine.Tab.Analytics"/>
-                        </list>
-                    </property>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.editmode.Engine">
-                    <property name="nodeType" value="nt:base"/>
-                    <property name="tabs">
-                        <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-                            <ref bean="Engine.Tab.Content"/>
-                            <ref bean="Engine.Tab.Layout" />
-                            <ref bean="Engine.Tab.Metadata" />
-                            <ref bean="Engine.Tab.Tags" />
-                            <ref bean="Engine.Tab.Categories" />
-                            <ref bean="Engine.Tab.Options" />
-                            <ref bean="Engine.Tab.Rights" />
-                            <ref bean="Engine.Tab.Usages" />
-                            <ref bean="Engine.Tab.Workflow" />
-                            <ref bean="Engine.Tab.History" />
-                            <ref bean="Engine.Tab.Versioning" />
-                            <ref bean="Engine.Tab.Seo" />
-                            <ref bean="Engine.Tab.Analytics"/>
-                        </list>
-                    </property>
-                </bean>
+                <ref bean="Engine.Tab.Content"/>
+                <ref bean="Engine.Tab.ListOrdering" />
+                <ref bean="Engine.Tab.Layout" />
+                <ref bean="Engine.Tab.Metadata" />
+                <ref bean="Engine.Tab.Tags" />
+                <ref bean="Engine.Tab.Categories" />
+                <ref bean="Engine.Tab.Options" />
+                <ref bean="Engine.Tab.Rights" />
+                <ref bean="Engine.Tab.Usages" />
+                <ref bean="Engine.Tab.Workflow" />
+                <ref bean="Engine.Tab.History" />
+                <ref bean="Engine.Tab.Versioning" />
+                <ref bean="Engine.Tab.Seo" />
+                <ref bean="Engine.Tab.Analytics"/>
             </list>
         </property>
 
@@ -1080,7 +1036,13 @@
         <property name="titleKey" value="label.engineTab.content"/>
         <property name="visibility" value="$site/edit-mode/content"/>
         <property name="tabItem" >
-            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.ContentTabItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.ContentTabItem">
+                <property name="hideForTypes">
+                    <list>
+                        <value>jnt:contentList</value>
+                    </list>
+                </property>
+            </bean>
         </property>
     </bean>
     
@@ -1089,7 +1051,13 @@
         <property name="titleKey" value="label.engineTab.content"/>
         <property name="visibility" value="$site/edit-mode/content"/>
         <property name="tabItem" >
-            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.ListOrderingContentTabItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.ListOrderingContentTabItem">
+                <property name="showForTypes" >
+                    <list>
+                        <value>jnt:contentList</value>
+                    </list>
+                </property>
+            </bean>
         </property>
     </bean>
 
@@ -1143,7 +1111,14 @@
         <property name="titleKey" value="label.engineTab.tags"/>
         <property name="visibility" value="$site/edit-mode/tags"/>
         <property name="tabItem" >
-            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.TagsTabItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.TagsTabItem">
+                <property name="hideForTypes">
+                    <list>
+                        <value>jnt:category</value>
+                        <value>jnt:tag</value>
+                    </list>
+                </property>
+            </bean>
         </property>
     </bean>
 
@@ -1152,7 +1127,14 @@
         <property name="titleKey" value="label.engineTab.categories"/>
         <property name="visibility" value="$site/edit-mode/categories"/>
         <property name="tabItem" >
-            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.CategoriesTabItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.CategoriesTabItem">
+                <property name="hideForTypes">
+                    <list>
+                        <value>jnt:category</value>
+                        <value>jnt:tag</value>
+                    </list>
+                </property>
+            </bean>
         </property>
     </bean>
 
@@ -1197,7 +1179,13 @@
         <property name="titleKey" value="label.engineTab.workflow"/>
         <property name="visibility" value="$site/edit-mode/workflow"/>
         <property name="tabItem" >
-            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.WorkflowTabItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.WorkflowTabItem">
+                <property name="hideForTypes">
+                    <list>
+                        <value>jnt:category</value>
+                    </list>
+                </property>
+            </bean>
         </property>
     </bean>
 
@@ -1248,6 +1236,6 @@
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.AnalyticsTabItem"/>
         </property>
     </bean>
-    
+
 
 </beans>

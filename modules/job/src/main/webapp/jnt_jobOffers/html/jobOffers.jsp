@@ -5,6 +5,15 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="query" uri="http://www.jahia.org/tags/queryLib" %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
+<%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
+<%--@elvariable id="out" type="java.io.PrintWriter"--%>
+<%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
+<%--@elvariable id="scriptInfo" type="java.lang.String"--%>
+<%--@elvariable id="workspace" type="java.lang.String"--%>
+<%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
+<%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
+<%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="job.css"/>
 <!--start jobsSearchForm -->
 <div class="jobsSearchForm">
@@ -18,7 +27,8 @@
             </p>
 
             <div class="divButton">
-                <input type="submit" name="submit" id="submit" class="button" value="<fmt:message key="jnt_jobOffers.search.form.label"/>"
+                <input type="submit" name="submit" id="submit" class="button"
+                       value="<fmt:message key="jnt_jobOffers.search.form.label"/>"
                        tabindex="5"/>
             </div>
         </fieldset>
@@ -26,7 +36,7 @@
 </div>
 <jcr:jqom var="results">
     <query:selector nodeTypeName="jnt:job"/>
-    <query:childNode path="${currentNode.path}"/>
+    <jcr:nodeProperty node="${currentNode}" name="searchPath" var="path"/>
     <c:if test="${not empty param.jobsSearchKeyword}">
         <query:fullTextSearch searchExpression="${param.jobsSearchKeyword}"
                               propertyName="description"/>
@@ -55,17 +65,21 @@
     </thead>
     <tbody>
     <c:forEach items="${results.nodes}" var="job" varStatus="status">
-        <template:module node="${job}" template="list"/>
-        <c:if test="${status.last}">
-            <template:module node="${job.placeholder}" template="list" editable="true"/>
-        </c:if>
+        <c:choose>
+            <c:when test="${status.last}">
+                <template:module node="${job.placeholder}" template="list" editable="true"/>
+            </c:when>
+            <c:otherwise>
+                <template:module node="${job}" template="list"/>
+            </c:otherwise>
+        </c:choose>
     </c:forEach>
-    <c:if test="${results.nodes.size == 0 && empty param.jobsSearchKeyword}">
+    <c:if test="${functions:length(results.nodes) == 0 && empty param.jobsSearchKeyword}">
         <c:forEach items="${currentNode.nodes}" var="job">
             <template:module node="${job}" template="list" editable="true"/>
         </c:forEach>
     </c:if>
-    <c:if test="${results.nodes.size == 0 && not empty param.jobsSearchKeyword}">
+    <c:if test="${functions:length(results.nodes) == 0 && not empty param.jobsSearchKeyword}">
         <tr>
             <td><fmt:message key="jnt_jobOffers.no.job.offers.found"/></td>
         </tr>

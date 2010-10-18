@@ -230,8 +230,9 @@ public class EditContentEngine extends AbstractContentEngine {
                 if (!changedI18NProperties.containsKey(lang)) {
                     changedI18NProperties.put(lang, new ArrayList<GWTJahiaNodeProperty>());
                 }
-                if (item.getData("item") instanceof PropertiesTabItem) {
-                    PropertiesTabItem propertiesTabItem = (PropertiesTabItem) item.getData("item");
+                Object itemData = item.getData("item");
+                if (itemData instanceof PropertiesTabItem) {
+                    PropertiesTabItem propertiesTabItem = (PropertiesTabItem) itemData;
                     changedI18NProperties.get(lang).addAll(propertiesTabItem.getLanguageProperties(true, lang));
                 }
             }

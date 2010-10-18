@@ -17,7 +17,7 @@
  - j:maxDepth (long) = 2
  - j:startLevel (long) = 0
  - j:menuType (string,choicelist) = 'primary' autocreated nofulltext < 'primary','secondary'
- - j:menuItemTemplate (string,choicelist[templates='jmix:navMenuItem,menuItem',resourceBundle,image]) = menuElement
+ - j:menuItemView (string,choicelist[templates='jmix:navMenuItem,menuItem',resourceBundle,image]) = menuElement
  - j:styleName (string) nofulltext
 
 

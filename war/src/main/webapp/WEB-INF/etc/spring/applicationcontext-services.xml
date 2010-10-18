@@ -229,7 +229,7 @@
                 <value>jcr:language</value>
                 <value>j:hidden</value>
                 <value>j:inherit</value>
-                <value>j:userTemplate</value>
+                <value>j:userView</value>
                 <value>j:aceType</value>
                 <value>j:nodename</value>
                 <value>j:fullpath</value>

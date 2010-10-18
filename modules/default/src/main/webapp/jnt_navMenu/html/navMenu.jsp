@@ -22,7 +22,7 @@
 <jcr:nodeProperty name="j:maxDepth" node="${currentNode}" var="maxDepth"/>
 <jcr:nodeProperty name="j:startLevel" node="${currentNode}" var="startLevel"/>
 <jcr:nodeProperty name="j:styleName" node="${currentNode}" var="styleName"/>
-<jcr:nodeProperty name="j:menuItemTemplate" node="${currentNode}" var="menuItemTemplate"/>
+<jcr:nodeProperty name="j:menuItemView" node="${currentNode}" var="menuItemTemplate"/>
 <c:if test="${not empty menuItemTemplate}">
     <c:set var="menuItemTemplate" value="${menuItemTemplate.string}" />
 </c:if>

@@ -11,13 +11,13 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="css" resources="mainresource.css"/>
-<c:set var="mainTemplate" value="${currentNode.properties['j:userTemplate'].string}"/>
+<c:set var="mainTemplate" value="${currentNode.properties['j:userView'].string}"/>
 <c:choose>
     <c:when test="${not empty inWrapper and inWrapper eq false}">
         <div class="mainResourceArea <c:if test="${not empty currentNode.properties['j:mockupStyle']}">${currentNode.properties['j:mockupStyle'].string}</c:if>">
-            <c:if test="${not empty currentNode.properties['j:userTemplate'].string}">
+            <c:if test="${not empty currentNode.properties['j:userView'].string}">
                 <div class="mainResourceAreaTemplate">
-                    <span>${currentNode.properties['j:userTemplate'].string}</span>
+                    <span>${currentNode.properties['j:userView'].string}</span>
                 </div>
             </c:if>
             <div class="AreaInformation">

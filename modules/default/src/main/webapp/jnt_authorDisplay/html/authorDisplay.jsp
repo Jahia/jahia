@@ -13,13 +13,13 @@
 <template:addResources type="css" resources="mainresource.css"/>
 
 <c:set var="user" value="${renderContext.mainResource.node.properties['jcr:createdBy'].string}"/>
-<c:set var="mainTemplate" value="${currentNode.properties['j:userTemplate'].string}"/>
+<c:set var="mainTemplate" value="${currentNode.properties['j:userView'].string}"/>
 <c:choose>
     <c:when test="${renderContext.editMode}">
         <div class="authorDisplayArea<c:if test="${not empty currentNode.properties['j:mockupStyle']}"> ${currentNode.properties['j:mockupStyle'].string}</c:if>">
-            <c:if test="${not empty currentNode.properties['j:userTemplate'].string}">
+            <c:if test="${not empty currentNode.properties['j:userView'].string}">
                 <div class="authorDisplayTemplate">
-                    <span>${currentNode.properties['j:userTemplate'].string}</span>
+                    <span>${currentNode.properties['j:userView'].string}</span>
                 </div>
             </c:if>
         </div>

@@ -365,7 +365,7 @@
 
 [jmix:renderableUser] mixin
  itemtype = layout
- - j:userTemplate (string, choicelist[templates=jnt:user,resourceBundle,image]) nofulltext
+ - j:userView (string, choicelist[templates=jnt:user,resourceBundle,image]) nofulltext
 
 [jmix:renderableList] mixin
  itemtype = layout

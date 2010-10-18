@@ -794,7 +794,7 @@
                 <wrappercontent jcr:created="2010-10-07T17:19:45.068+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00">
                   <my-portal jcr:created="2010-10-07T17:19:45.070+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00">
                     <j:translation_en jcr:lastModifiedBy=" system " jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="My Portal" jcr:lastModified="2010-10-07T17:19:50.099+02:00" jcr:primaryType="jnt:translation" />
-                    <currentUserDisplay j:userTemplate="portal" jcr:created="2010-10-07T17:19:45.075+02:00" jcr:primaryType="jnt:currentUserDisplay" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
+                    <currentUserDisplay j:userView="portal" jcr:created="2010-10-07T17:19:45.075+02:00" jcr:primaryType="jnt:currentUserDisplay" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
                   </my-portal>
                 </wrappercontent>
               </my-portal>
@@ -841,35 +841,35 @@
                   <tabularList jcr:created="2010-10-07T17:19:45.121+02:00" jcr:primaryType="jnt:tabularList" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00">
                     <my-profile jcr:created="2010-10-07T17:19:45.122+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00">
                       <j:translation_en jcr:lastModifiedBy=" system " jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="My Profile" jcr:lastModified="2010-10-07T17:19:50.099+02:00" jcr:primaryType="jnt:translation" />
-                      <user-profile j:userTemplate="myprofile" jcr:created="2010-10-07T17:19:45.125+02:00" jcr:primaryType="jnt:currentUserDisplay" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
+                      <user-profile j:userView="myprofile" jcr:created="2010-10-07T17:19:45.125+02:00" jcr:primaryType="jnt:currentUserDisplay" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
                     </my-profile>
                     <my-content jcr:created="2010-10-07T17:19:45.126+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00">
                       <j:translation_en jcr:lastModifiedBy=" system " jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="My Content" jcr:lastModified="2010-10-07T17:19:50.099+02:00" jcr:primaryType="jnt:translation" />
-                      <currentUserDisplay j:userTemplate="mycontent" jcr:created="2010-10-07T17:19:45.129+02:00" jcr:primaryType="jnt:currentUserDisplay" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
+                      <currentUserDisplay j:userView="mycontent" jcr:created="2010-10-07T17:19:45.129+02:00" jcr:primaryType="jnt:currentUserDisplay" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
                     </my-content>
                     <my-docspaces jcr:created="2010-10-07T17:19:45.130+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00">
                       <j:translation_en jcr:lastModifiedBy=" system " jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="My Docspaces" jcr:lastModified="2010-10-07T17:19:50.099+02:00" jcr:primaryType="jnt:translation" />
-                      <currentUserDisplay j:userTemplate="mydocspaces" jcr:created="2010-10-07T17:19:45.133+02:00" jcr:primaryType="jnt:currentUserDisplay" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
+                      <currentUserDisplay j:userView="mydocspaces" jcr:created="2010-10-07T17:19:45.133+02:00" jcr:primaryType="jnt:currentUserDisplay" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
                     </my-docspaces>
                     <my-tasks jcr:created="2010-10-07T17:19:45.135+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00">
                       <j:translation_en jcr:lastModifiedBy=" system " jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="My Tasks" jcr:lastModified="2010-10-07T17:19:50.099+02:00" jcr:primaryType="jnt:translation" />
-                      <currentUserDisplay j:userTemplate="tasklist" jcr:created="2010-10-07T17:19:45.138+02:00" jcr:primaryType="jnt:currentUserDisplay" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
+                      <currentUserDisplay j:userView="tasklist" jcr:created="2010-10-07T17:19:45.138+02:00" jcr:primaryType="jnt:currentUserDisplay" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
                     </my-tasks>
                     <my-bookmarks jcr:created="2010-10-07T17:19:45.139+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00">
                       <j:translation_en jcr:lastModifiedBy=" system " jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="My Bookmarks" jcr:lastModified="2010-10-07T17:19:50.099+02:00" jcr:primaryType="jnt:translation" />
-                      <currentUserDisplay j:userTemplate="bookmarks" jcr:created="2010-10-07T17:19:45.142+02:00" jcr:primaryType="jnt:currentUserDisplay" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
+                      <currentUserDisplay j:userView="bookmarks" jcr:created="2010-10-07T17:19:45.142+02:00" jcr:primaryType="jnt:currentUserDisplay" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
                     </my-bookmarks>
                     <my-portal jcr:created="2010-10-07T17:19:45.143+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00">
                       <j:translation_en jcr:lastModifiedBy=" system " jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="My Portal" jcr:lastModified="2010-10-07T17:19:50.099+02:00" jcr:primaryType="jnt:translation" />
-                      <currentUserDisplay j:userTemplate="portal" jcr:created="2010-10-07T17:19:45.146+02:00" jcr:primaryType="jnt:currentUserDisplay" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
+                      <currentUserDisplay j:userView="portal" jcr:created="2010-10-07T17:19:45.146+02:00" jcr:primaryType="jnt:currentUserDisplay" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
                     </my-portal>
                     <my-connections jcr:created="2010-10-07T17:19:45.147+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00">
                       <j:translation_en jcr:lastModifiedBy=" system " jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="My Connections" jcr:lastModified="2010-10-07T17:19:50.099+02:00" jcr:primaryType="jnt:translation" />
-                      <currentUserDisplay j:userTemplate="myconnections" jcr:created="2010-10-07T17:19:45.149+02:00" jcr:primaryType="jnt:currentUserDisplay" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
+                      <currentUserDisplay j:userView="myconnections" jcr:created="2010-10-07T17:19:45.149+02:00" jcr:primaryType="jnt:currentUserDisplay" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
                     </my-connections>
                     <my-messages jcr:created="2010-10-07T17:19:45.151+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00">
                       <j:translation_en jcr:lastModifiedBy=" system " jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="My Messages" jcr:lastModified="2010-10-07T17:19:50.099+02:00" jcr:primaryType="jnt:translation" />
-                      <currentUserDisplay j:userTemplate="mymessages" jcr:created="2010-10-07T17:19:45.154+02:00" jcr:primaryType="jnt:currentUserDisplay" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
+                      <currentUserDisplay j:userView="mymessages" jcr:created="2010-10-07T17:19:45.154+02:00" jcr:primaryType="jnt:currentUserDisplay" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
                     </my-messages>
                     <my-thinkbox jcr:created="2010-10-07T17:19:45.155+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00">
                       <j:translation_en jcr:lastModifiedBy=" system " jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="My ThinkBox" jcr:lastModified="2010-10-07T17:19:50.099+02:00" jcr:primaryType="jnt:translation" />

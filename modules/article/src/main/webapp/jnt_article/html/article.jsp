@@ -18,7 +18,7 @@
 <c:if test="${renderContext.editMode}">
     <template:module path="*"/>
 </c:if>
-<div class="tagthisarticle">
+<!-- <div class="tagthisarticle">
 	<fmt:message key="tag.this.article"/>:&nbsp;<template:option node="${currentNode}" nodetype="jmix:tagged" template="hidden.tags"/>
 	<template:option node="${currentNode}"  nodetype="jmix:tagged" template="hidden.addTag"/>
-</div>
+</div>   -->

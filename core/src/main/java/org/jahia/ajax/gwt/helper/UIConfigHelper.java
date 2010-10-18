@@ -58,7 +58,9 @@ import org.jahia.services.uicomponents.bean.toolbar.*;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
+import javax.script.*;
 import javax.servlet.http.HttpServletRequest;
+import java.io.StringWriter;
 import java.util.*;
 
 /**
@@ -230,7 +232,7 @@ public class UIConfigHelper {
         // create gwtTollbar
         GWTJahiaToolbar gwtToolbar = new GWTJahiaToolbar();
         gwtToolbar.setName(toolbar.getName());
-        gwtToolbar.setTitle(getResources(toolbar.getTitleKey(), uiLocale != null ? uiLocale : locale, site));
+        gwtToolbar.setTitle(getResources(toolbar.getTitleKey(), uiLocale != null ? uiLocale : locale, site, jahiaUser));
         gwtToolbar.setDisplayTitle(toolbar.isDisplayTitle());
 
         // load items-group
@@ -342,7 +344,8 @@ public class UIConfigHelper {
                         GWTRepository repository  = new GWTRepository();
                         repository.setKey(item.getKey());
                         if (item.getTitleKey() != null) {
-                            repository.setTitle(getResources(item.getTitleKey(), uiLocale != null ? uiLocale : locale, site));
+                            repository.setTitle(getResources(item.getTitleKey(), uiLocale != null ? uiLocale : locale, site,
+                                    jahiaUser));
                         } else if (item.getTitle() != null) {
                             repository.setTitle(item.getTitle());
                         } else {
@@ -370,7 +373,7 @@ public class UIConfigHelper {
         GWTColumn col = new GWTColumn();
         col.setKey(item.getKey());
         if (item.getTitleKey() != null) {
-            col.setTitle(getResources(item.getTitleKey(), uiLocale != null ? uiLocale : locale, site));
+            col.setTitle(getResources(item.getTitleKey(), uiLocale != null ? uiLocale : locale, site, null));
         } else if (item.getDeclaringNodeType() != null) {
             try {
                 ExtendedPropertyDefinition epd = NodeTypeRegistry.getInstance().getNodeType(item.getDeclaringNodeType()).getPropertyDefinition(item.getKey());
@@ -428,7 +431,7 @@ public class UIConfigHelper {
 
         gwtToolbarMenu.setIcon(menu.getIcon());
         if (menu.getTitleKey() != null) {
-            gwtToolbarMenu.setItemsGroupTitle(getResources(menu.getTitleKey(), uiLocale != null ? uiLocale : locale, site));
+            gwtToolbarMenu.setItemsGroupTitle(getResources(menu.getTitleKey(), uiLocale != null ? uiLocale : locale, site, jahiaUser));
         } else {
             gwtToolbarMenu.setItemsGroupTitle(menu.getTitle());
         }
@@ -504,13 +507,15 @@ public class UIConfigHelper {
         GWTJahiaToolbarItem gwtToolbarItem = new GWTJahiaToolbarItem();
         gwtToolbarItem.setId(item.getId());
         if (item.getTitleKey() != null) {
-            gwtToolbarItem.setTitle(getResources(item.getTitleKey(), uiLocale != null ? uiLocale : locale, site));
+            gwtToolbarItem.setTitle(getResources(item.getTitleKey(), uiLocale != null ? uiLocale : locale, site,
+                    jahiaUser));
         } else {
             gwtToolbarItem.setTitle(item.getTitle());
         }
         gwtToolbarItem.setDisplayTitle(item.isDisplayTitle());
         if (item.getDescriptionKey() != null) {
-            gwtToolbarItem.setDescription(getResources(item.getDescriptionKey(), uiLocale != null ? uiLocale : locale, site));
+            gwtToolbarItem.setDescription(getResources(item.getDescriptionKey(), uiLocale != null ? uiLocale : locale, site,
+                    jahiaUser));
         } else {
             gwtToolbarItem.setDescription(gwtToolbarItem.getTitle());
         }
@@ -589,7 +594,8 @@ public class UIConfigHelper {
         for (SidePanelTab sidePanelTab : tabs) {
             if (checkVisibility(site, jahiaUser, locale, request, sidePanelTab.getVisibility())) {
                 final GWTSidePanelTab gwtSidePanel = new GWTSidePanelTab(sidePanelTab.getKey());
-                gwtSidePanel.setTooltip(getResources("label.selectorTab." + sidePanelTab.getKey(), uiLocale, site));
+                gwtSidePanel.setTooltip(getResources("label.selectorTab." + sidePanelTab.getKey(), uiLocale, site,
+                        jahiaUser));
                 gwtSidePanel.setTreeContextMenu(createGWTToolbar(site, jahiaUser, locale, uiLocale, request, sidePanelTab.getTreeContextMenu()));
                 gwtSidePanel.setTableContextMenu(createGWTToolbar(site, jahiaUser, locale, uiLocale, request, sidePanelTab.getTableContextMenu()));
                 gwtSidePanel.setParams(sidePanelTab.getParams());
@@ -655,7 +661,7 @@ public class UIConfigHelper {
         GWTEngineTab gwtTab = new GWTEngineTab();
 
         if (engineTab.getTitleKey() != null) {
-            gwtTab.setTitle(getResources(engineTab.getTitleKey(), uiLocale != null ? uiLocale : locale, site));
+            gwtTab.setTitle(getResources(engineTab.getTitleKey(), uiLocale != null ? uiLocale : locale, site, null));
         } else {
             gwtTab.setTitle(engineTab.getTitle());
         }
@@ -669,9 +675,10 @@ public class UIConfigHelper {
      * @param key
      * @param locale
      * @param site
+     * @param jahiaUser
      * @return
      */
-    private String getResources(String key, Locale locale, JCRSiteNode site) {
+    private String getResources(String key, Locale locale, JCRSiteNode site, JahiaUser jahiaUser) {
         if (logger.isDebugEnabled()) {
             logger.debug("Resources key: " + key);
         }
@@ -685,7 +692,23 @@ public class UIConfigHelper {
         if (logger.isDebugEnabled()) {
             logger.debug("Resources value: " + value);
         }
-
+        if (value.contains("${")) {
+            try {
+                ScriptEngineManager engineManager = new ScriptEngineManager();
+                ScriptEngine byName = engineManager.getEngineByName("velocity");
+                ScriptContext scriptContext = byName.getContext();
+                final Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+                bindings.put("currentSite", site);
+                bindings.put("currentUser", jahiaUser);
+                scriptContext.setWriter(new StringWriter());
+                scriptContext.setErrorWriter(new StringWriter());
+                byName.eval(value, bindings);
+                String error = scriptContext.getErrorWriter().toString();
+                return scriptContext.getWriter().toString().trim();
+            } catch (ScriptException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
         return value;
     }
 

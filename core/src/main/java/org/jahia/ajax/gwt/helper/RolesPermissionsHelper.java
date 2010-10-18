@@ -144,7 +144,9 @@ public class RolesPermissionsHelper {
                     }
                 }
             }
-            logger.info("Checking user granted permissions took " + (System.currentTimeMillis() - timer) + " ms");
+            if (logger.isDebugEnabled()) {
+            	logger.debug("Checking user granted permissions took " + (System.currentTimeMillis() - timer) + " ms");
+            }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());

@@ -23,3 +23,5 @@
                 <fmt:message key='label.categories'/> : <c:forEach items="${pressReleaseContainerCatKeys}" var="category" varStatus="status"><c:if test="${not status.first}">,</c:if><jcr:nodeProperty node="${category.node}" name="jcr:title" var="title"/><c:choose><c:when test="${not empty title}">${title}</c:when><c:otherwise>${category.node.name}</c:otherwise></c:choose></c:forEach>
             </span>
 </c:if>
+<br/>
+<span><a class="returnLink" href="${url.base}${jcr:getParentOfType(currentNode, 'jnt:page').path}.html" title='<fmt:message key="backToPreviousPage"/>'><fmt:message key='backToPreviousPage'/></a></span>

@@ -65,14 +65,7 @@
     </thead>
     <tbody>
     <c:forEach items="${results.nodes}" var="job" varStatus="status">
-        <c:choose>
-            <c:when test="${status.last}">
-                <template:module node="${job.placeholder}" template="list" editable="true"/>
-            </c:when>
-            <c:otherwise>
-                <template:module node="${job}" template="list"/>
-            </c:otherwise>
-        </c:choose>
+        <template:module node="${job}" template="list"/>
     </c:forEach>
     <c:if test="${functions:length(results.nodes) == 0 && empty param.jobsSearchKeyword}">
         <c:forEach items="${currentNode.nodes}" var="job">

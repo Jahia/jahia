@@ -382,32 +382,36 @@ public class JCRGroup extends JahiaGroup implements JCRPrincipal {
 
         output.append("  - ID : ").append(getIdentifier()).append("\n");
 
-        output.append("  - properties :");
-
-        Properties properties = getProperties();
-        if (properties != null && !properties.isEmpty()) {
-            output.append("\n");
-            for (Map.Entry<Object, Object> property : properties.entrySet()) {
-                output.append("       ").append(property.getKey()).append(" -> [").append(property.getValue()).append(
-                        "]\n");
-            }
-        } else {
-            output.append(" -no properties-\n");
-        }
-
-        // Add the user members useranames detail
-        output.append("  - members : ");
-
-        if (mMembers != null) {
-            if (mMembers.size() > 0) {
-                for (String member : mMembers.keySet()) {
-                    output.append(member).append("/");
+        try {
+            Properties properties = getProperties();
+            output.append("  - properties :");
+            if (properties != null && !properties.isEmpty()) {
+                output.append("\n");
+                for (Map.Entry<Object, Object> property : properties.entrySet()) {
+                    output.append("       ").append(property.getKey()).append(" -> [").append(property.getValue()).append(
+                            "]\n");
                 }
             } else {
-                output.append(" -no members-\n");
+                output.append(" -no properties-\n");
             }
-        } else {
-            output.append(" -preloading of members disabled-\n");
+
+            // Add the user members useranames detail
+            output.append("  - members : ");
+
+            if (mMembers != null) {
+                if (mMembers.size() > 0) {
+                    for (String member : mMembers.keySet()) {
+                        output.append(member).append("/");
+                    }
+                } else {
+                    output.append(" -no members-\n");
+                }
+            } else {
+                output.append(" -preloading of members disabled-\n");
+            }
+        } catch (Exception e) {
+            // Group might be already deleted
+            logger.debug(e.getMessage(), e);
         }
 
         return output.toString();

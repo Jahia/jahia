@@ -289,7 +289,7 @@ public class JCRSitesProvider {
 
     public void deleteSite(final String siteKey) {
         try {
-            JCRCallback<Boolean> deleteCacllback = new JCRCallback<Boolean>() {
+            JCRCallback<Boolean> deleteCallback = new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     JCRNodeWrapper sites = session.getNode("/sites");
                     if (!sites.isCheckedOut()) {
@@ -307,9 +307,9 @@ public class JCRSitesProvider {
                     return true;
                 }
             };
-            JCRTemplate.getInstance().doExecuteWithSystemSession(deleteCacllback);
+            JCRTemplate.getInstance().doExecuteWithSystemSession(deleteCallback);
             // Now let's delete the live workspace site.
-            JCRTemplate.getInstance().doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, deleteCacllback);
+            JCRTemplate.getInstance().doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, deleteCallback);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

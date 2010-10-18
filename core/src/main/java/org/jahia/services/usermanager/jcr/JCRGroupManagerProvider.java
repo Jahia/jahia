@@ -168,17 +168,9 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
         if (group instanceof JCRGroup) {
             final JCRGroup jcrGroup = (JCRGroup) group;
             try {
-                return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Boolean>() {
-                    public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        Node node = jcrGroup.getNode(session);
-                        session.checkout(node.getParent());
-                        session.checkout(node);
-                        node.remove();
-                        session.save();
-                        return true;
-                    }
-                });
-
+                Boolean aBoolean = jcrTemplate.doExecuteWithSystemSession(deleteCallback(jcrGroup));
+                aBoolean = aBoolean && jcrTemplate.doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, deleteCallback(jcrGroup));
+                return aBoolean;
             } catch (RepositoryException e) {
                 logger.error("Error while deleting group", e);
             } finally {
@@ -186,6 +178,19 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
             }
         }
         return false;
+    }
+
+    private JCRCallback<Boolean> deleteCallback(final JCRGroup jcrGroup) {
+        return new JCRCallback<Boolean>() {
+            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                Node node = jcrGroup.getNode(session);
+                session.checkout(node.getParent());
+                session.checkout(node);
+                node.remove();
+                session.save();
+                return true;
+            }
+        };
     }
 
     /**

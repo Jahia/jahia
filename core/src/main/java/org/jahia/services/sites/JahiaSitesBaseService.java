@@ -436,14 +436,13 @@ public class JahiaSitesBaseService extends JahiaSitesService {
      * @param site the JahiaSite bean
      */
     public synchronized void removeSite(JahiaSite site) throws JahiaException {
-        JahiaGroupManagerService groupManagerService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
-        List<String> groups = groupManagerService.getGroupList(site.getID());
+        List<String> groups = groupService.getGroupList(site.getID());
         for (String group : groups) {
-            groupManagerService.deleteGroup(groupService.lookupGroup(group));
+            groupService.deleteGroup(groupService.lookupGroup(group.replace("{jcr}","")));
         }
         siteProvider.deleteSite(site.getSiteKey());
 
-        siteCacheByID.remove(new Integer(site.getID()));
+        siteCacheByID.remove(site.getID());
         siteCacheByName.remove(site.getServerName());
         siteCacheByKey.remove(site.getSiteKey());
 

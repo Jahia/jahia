@@ -139,6 +139,9 @@ class QueryWrapper implements Query {
         String path = StringUtils.substringBeforeLast(s, "/");
         String name = StringUtils.substringAfterLast(s, "/");
         Node n = (Node) session.getItem(path);
+        if(!n.isCheckedOut()) {
+            n.checkout();
+        }
         node = n.addNode(name, "jnt:query");
 
         node.setProperty("jcr:statement", statement);

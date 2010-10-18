@@ -7,10 +7,10 @@
 <%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <jcr:nodeProperty node="${currentNode}" name="j:defaultCategory" var="pressReleaseContainerCatKeys"/>
 
-<h4><jcr:nodeProperty node="${currentNode}" name='jcr:title'/></h4>
+<h3><jcr:nodeProperty node="${currentNode}" name='jcr:title'/></h3>
 
 <jcr:nodeProperty node="${currentNode}" name='date' var="datePress"/>
-<span class="pressRealeseDate"><fmt:formatDate value="${currentNode.properties.date.time}" pattern="dd/MM/yyyy"/></span>
+<h4 class="pressRealeseDate"><fmt:formatDate value="${currentNode.properties.date.time}" pattern="dd/MM/yyyy"/></h4>
 
 <div>${currentNode.properties.body.string}</div>
 <jcr:nodeProperty node="${currentNode}" name="pdfVersion" var="pdfVersion"/>

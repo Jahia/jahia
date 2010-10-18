@@ -277,7 +277,6 @@ public class ContentActions {
                                 EngineLoader.showCreateEngine(linker, parent,
                                         result.values().iterator().next().iterator().next(), new HashMap<String, GWTJahiaNodeProperty>(),
                                         null, false);
-                                        ;
                             } else {
                                 new ContentTypeWindow(linker, parent, result, false).show();
                             }

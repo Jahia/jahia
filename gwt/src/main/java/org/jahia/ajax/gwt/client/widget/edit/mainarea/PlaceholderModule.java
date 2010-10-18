@@ -84,7 +84,6 @@ public class PlaceholderModule extends Module {
         panel.addStyleName("x-panel-header");
         panel.addStyleName("x-panel-placeholder");
 
-//        html = new HTML("<img src=\""+JahiaGWTParameters.getContextPath() + "/modules/default/images/add.png"+"\" /> Add new content here");
         html = new HTML(Messages.get("label.add") + " : &nbsp;");
         panel.add(html);
         add(panel);
@@ -92,36 +91,6 @@ public class PlaceholderModule extends Module {
 
     @Override
     public void onParsed() {
-/*
-        DropTarget target = new ModuleDropTarget(this, EditModeDNDListener.PLACEHOLDER_TYPE);
-        target.setOperation(DND.Operation.COPY);
-        target.setFeedback(DND.Feedback.INSERT);
-
-        target.addDNDListener(mainModule.getEditLinker().getDndListener());
-        if (getParentModule() != null && getParentModule().getNodeTypes() != null) {
-        String[] nodeTypesArray = getParentModule().getNodeTypes().split(" ");
-//        HorizontalPanel buttonsPanel = new HorizontalPanel();
-//        buttonsPanel.setStyleName("listEditToolbar");
-        for (String s : nodeTypesArray) {
-            Button button = new Button(ModuleHelper.getNodeType(s)!= null ? ModuleHelper.getNodeType(s).getLabel():s);
-            button.setStyleName("button-placeholder");
-            button.addClickHandler(new ClickHandler() {
-                public void onClick(ClickEvent event) {
-                    ContentActions.showContentWizard(mainModule.getEditLinker(), parentModule.getNodeTypes(), getParentModule().getNode());
-                }
-            });
-            panel.add(button);
-        }
-        }
-*/
-//        add(buttonsPanel);
-//        html.setHTML("Drop here : " + getParentModule().getNodeTypes());
-//        button.addSelectionListener(new SelectionListener<ButtonEvent>() {
-//            @Override
-//            public void componentSelected(ButtonEvent ce) {
-//                ContentActions.showContentWizard(mainModule.getEditLinker(), parentModule.getNodeTypes());
-//            }
-//        });
     }
 
     public void onNodeTypesLoaded() {
@@ -131,23 +100,22 @@ public class PlaceholderModule extends Module {
 
         target.addDNDListener(mainModule.getEditLinker().getDndListener());
         if (getParentModule() != null && getParentModule().getNodeTypes() != null) {
-        String[] nodeTypesArray = getParentModule().getNodeTypes().split(" ");
-//        HorizontalPanel buttonsPanel = new HorizontalPanel();
-//        buttonsPanel.setStyleName("listEditToolbar");
-        for (String s : nodeTypesArray) {
-            Button button = new Button(ModuleHelper.getNodeType(s)!= null ? ModuleHelper.getNodeType(s).getLabel():s);
-            button.setStyleName("button-placeholder");
-            button.addClickHandler(new ClickHandler() {
-                public void onClick(ClickEvent event) {
-                    final GWTJahiaNode parentNode = getParentModule().getNode();
-                    if (parentNode != null && parentNode.isWriteable() && !parentNode.isLocked()) {
-                        ContentActions.showContentWizard(mainModule.getEditLinker(), parentModule.getNodeTypes(), parentNode);
+            String[] nodeTypesArray = getParentModule().getNodeTypes().split(" ");
+            for (final String s : nodeTypesArray) {
+                Button button = new Button(ModuleHelper.getNodeType(s) != null ? ModuleHelper.getNodeType(
+                        s).getLabel() : s);
+                button.setStyleName("button-placeholder");
+                button.addClickHandler(new ClickHandler() {
+                    public void onClick(ClickEvent event) {
+                        final GWTJahiaNode parentNode = getParentModule().getNode();
+                        if (parentNode != null && parentNode.isWriteable() && !parentNode.isLocked()) {
+                            ContentActions.showContentWizard(mainModule.getEditLinker(), s, parentNode);
+                        }
                     }
-                }
-            });
-            panel.add(button);
-            panel.layout();
-        }
+                });
+                panel.add(button);
+                panel.layout();
+            }
         }
 
     }

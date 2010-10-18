@@ -217,8 +217,9 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     protected void fillCurrentTab() {
         TabItem currentTab = tabs.getSelectedItem();
 
-        if (currentTab != null && currentTab.getData("item") instanceof EditEngineTabItem) {
-            EditEngineTabItem engineTabItem = (EditEngineTabItem) currentTab.getData("item");
+        Object currentTabItem = currentTab.getData("item");
+        if (currentTab != null && currentTabItem instanceof EditEngineTabItem) {
+            EditEngineTabItem engineTabItem = (EditEngineTabItem) currentTabItem;
 
             if (!((AsyncTabItem)currentTab).isProcessed()) {
                 engineTabItem.init(getSelectedLanguage());

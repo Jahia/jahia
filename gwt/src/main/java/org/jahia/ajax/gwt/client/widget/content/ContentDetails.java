@@ -244,8 +244,9 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
     private void fillCurrentTab() {
         TabItem currentTab = tabs.getSelectedItem();
 
-        if (currentTab.getData("item") instanceof EditEngineTabItem) {
-            EditEngineTabItem engineTabItem = (EditEngineTabItem) currentTab.getData("item");
+        Object currentTabItem = currentTab.getData("item");
+        if (currentTabItem instanceof EditEngineTabItem) {
+            EditEngineTabItem engineTabItem = (EditEngineTabItem) currentTabItem;
 
             if (!((AsyncTabItem)currentTab).isProcessed()) {
                 engineTabItem.init(language.getLanguage());

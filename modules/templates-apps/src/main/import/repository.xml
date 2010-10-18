@@ -44,10 +44,10 @@
                   <login jcr:primaryType="jnt:loginForm" j:displayRememberMeButton="false" j:displayLoginButton="false">
                     <j:translation_en jcr:title="Login" jcr:language="en" jcr:primaryType="jnt:translation"/>
                   </login>
-                  <List_x0020_B j:allowedTypes="" jcr:primaryType="jnt:mainResourceArea"/>
+                  <List_x0020_B j:allowedTypes="" jcr:primaryType="jnt:area"/>
                 </col2>
                 <col1 jcr:primaryType="jnt:contentList">
-                  <List_x0020_A j:allowedTypes="" jcr:primaryType="jnt:mainResourceArea"/>
+                  <List_x0020_A j:allowedTypes="" jcr:primaryType="jnt:area"/>
                 </col1>
               </row>
             </wrappercontent>

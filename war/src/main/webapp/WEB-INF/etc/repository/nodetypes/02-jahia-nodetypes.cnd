@@ -347,13 +347,13 @@
 
 [jnt:mainResourceDisplay] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata, jmix:renderableMainResource, jmix:siteComponentContent, jmix:mockupStyle
 
-[jnt:mainResourceArea] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata, jmix:renderableArea, jmix:siteComponentContent, jmix:listRestrictions, jmix:mockupStyle
+[jnt:area] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata, jmix:renderableArea, jmix:siteComponentContent, jmix:listRestrictions, jmix:mockupStyle
  + * (jmix:droppableContent) = jmix:droppableContent version
 
-[jnt:absoluteArea] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata, jmix:renderableArea, jmix:siteComponentContent, jmix:listRestrictions, jmix:mockupStyle
+[jnt:absoluteArea] > jnt:area
  - j:basenode (weakreference,picker[type='page'])
 
-[jnt:levelAbsoluteArea] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata, jmix:renderableArea, jmix:siteComponentContent, jmix:listRestrictions, jmix:mockupStyle
+[jnt:levelAbsoluteArea] > jnt:area
  - j:level (long)
 
 [jnt:currentUserDisplay] > jnt:content, jmix:renderableUser, jmix:siteComponentContent, jmix:mockupStyle
@@ -361,7 +361,7 @@
 [jnt:authorDisplay] > jnt:content, jmix:renderableUser, jmix:siteComponentContent, jmix:mockupStyle
 
 [jmix:renderableMainResource] mixin
- - j:mainResourceTemplate (string, choicelist[templates=mainresource,resourceBundle,image]) nofulltext
+ - j:mainResourceView (string, choicelist[templates=mainresource,resourceBundle,image]) nofulltext
 
 [jmix:renderableUser] mixin
  itemtype = layout
@@ -548,7 +548,7 @@
 //---------------------------------------------------------
 
 [jmix:contributeMode] mixin
- extends = jnt:contentList, jnt:folder, jnt:mainResourceArea
+ extends = jnt:contentList, jnt:folder, jnt:area
  - j:editableInContribution (boolean)
  - j:canOrderInContribution (boolean)
  - j:canDeleteInContribution (boolean)

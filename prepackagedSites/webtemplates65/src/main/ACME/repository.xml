@@ -328,7 +328,7 @@
                 <j:translation_en jcr:lastModifiedBy="root" jcr:language="en" jcr:title="Last Project News" jcr:lastModified="2010-10-07T17:20:35.359+02:00" jcr:primaryType="jnt:translation" />
                 <j:translation_fr jcr:lastModifiedBy="root" jcr:language="fr" jcr:title="Derniers Projets ACME" jcr:lastModified="2010-10-07T17:20:45.752+02:00" jcr:primaryType="jnt:translation" />
               </lastNews_3>
-              <promo jcr:mixinTypes="jmix:renderable jmix:columns" j:template="columns" jcr:created="2010-10-07T17:20:25.965+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy="root" jcr:createdBy="root" jcr:lastModified="2010-10-07T17:20:45.752+02:00">
+              <promo jcr:mixinTypes="jmix:renderable jmix:columns" j:view="columns" jcr:created="2010-10-07T17:20:25.965+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy="root" jcr:createdBy="root" jcr:lastModified="2010-10-07T17:20:45.752+02:00">
                 <teaser_59 image="/sites/ACME/files/Pictures/BannerTeaser/teaser1.jpg" jcr:created="2010-10-07T17:20:25.999+02:00" jcr:primaryType="jnt:teaser" jcr:lastModifiedBy="root" jcr:createdBy="root" jcr:lastModified="2010-10-07T17:20:48.307+02:00" link="/sites/ACME/home/activities">
                   <j:translation_en jcr:lastModifiedBy="root" abstract="Acme is the main player in Europe and USA, deploying its construction expertise across countries." jcr:language="en" jcr:title="ACME Activities" jcr:lastModified="2010-10-07T17:20:35.359+02:00" jcr:primaryType="jnt:translation" />
                   <j:translation_fr jcr:lastModifiedBy="root" abstract="Le groupe ACME est un leader international tant en Europe qu'aux Etats Unis, utilisant son expertise dans tous les pays où il intervient." jcr:language="fr" jcr:title="Activités du groupe ACME" jcr:lastModified="2010-10-07T17:20:45.752+02:00" jcr:primaryType="jnt:translation" />
@@ -447,7 +447,7 @@
                 </event_16>
               </events>
               <listA jcr:created="2010-10-07T17:20:25.596+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system root" jcr:createdBy="root" jcr:lastModified="2010-10-07T17:20:36.501+02:00">
-                <bigText_11 jcr:mixinTypes="jmix:renderable" j:template="introduction" jcr:created="2010-10-07T17:20:25.598+02:00" jcr:primaryType="jnt:bigText" jcr:lastModifiedBy=" system root" jcr:createdBy="root" jcr:lastModified="2010-10-07T17:20:36.501+02:00">
+                <bigText_11 jcr:mixinTypes="jmix:renderable" j:view="introduction" jcr:created="2010-10-07T17:20:25.598+02:00" jcr:primaryType="jnt:bigText" jcr:lastModifiedBy=" system root" jcr:createdBy="root" jcr:lastModified="2010-10-07T17:20:36.501+02:00">
                   <j:translation_en jcr:lastModifiedBy="root" jcr:language="en" jcr:lastModified="2010-10-07T17:20:35.359+02:00" text="&lt;div&gt;Acme participates in a large number of national and international events. The objective: to contribute to discussions on urbanism, architecture and sustainable construction.&lt;/div&gt; " jcr:primaryType="jnt:translation" />
                   <j:translation_fr jcr:lastModifiedBy="root" jcr:language="fr" jcr:lastModified="2010-10-07T17:20:45.752+02:00" text="&lt;p&gt;Acme participe &amp;agrave; de nombreux &amp;eacute;v&amp;eacute;nements nationaux et internationaux. Objectifs : prendre part aux r&amp;eacute;flexions sur l'urbanisme, l'architecture et la construction durable.&lt;/p&gt; " jcr:primaryType="jnt:translation" />
                 </bigText_11>
@@ -457,7 +457,7 @@
             </events>
             <publications jcr:mixinTypes="jmix:sitemap" jcr:created="2010-10-07T17:20:25.721+02:00" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" j:templateNode="/sites/ACME/templates/base/simple" jcr:lastModifiedBy=" system root" jcr:createdBy="root" priority="0.5" jcr:lastModified="2010-10-07T17:20:41.748+02:00">
               <listA jcr:created="2010-10-07T17:20:25.729+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system root" jcr:createdBy="root" jcr:lastModified="2010-10-07T17:20:36.501+02:00">
-                <bigText_17 jcr:mixinTypes="jmix:renderable" j:template="introduction" jcr:created="2010-10-07T17:20:25.731+02:00" jcr:primaryType="jnt:bigText" jcr:lastModifiedBy=" system root" jcr:createdBy="root" jcr:lastModified="2010-10-07T17:20:36.501+02:00">
+                <bigText_17 jcr:mixinTypes="jmix:renderable" j:view="introduction" jcr:created="2010-10-07T17:20:25.731+02:00" jcr:primaryType="jnt:bigText" jcr:lastModifiedBy=" system root" jcr:createdBy="root" jcr:lastModified="2010-10-07T17:20:36.501+02:00">
                   <j:translation_en jcr:lastModifiedBy="root" jcr:language="en" jcr:lastModified="2010-10-07T17:20:35.359+02:00" text="&lt;p&gt;ACME provides instant access to the latest documentation, White Papers, Customer cases studies and much more. Search and select the document you would like to read and just download it.&lt;/p&gt; " jcr:primaryType="jnt:translation" />
                   <j:translation_fr jcr:lastModifiedBy="root" jcr:language="fr" jcr:lastModified="2010-10-07T17:20:45.752+02:00" text="&lt;p&gt;ACME fournit un acc&amp;egrave;s instantan&amp;eacute; &amp;agrave; sa documentation la plus r&amp;eacute;cente, les Livres blancs, &amp;eacute;tudes de cas clients et bien plus encore. Faites une recherche puis s&amp;eacute;lectionnez simplement le document choisi afin de le t&amp;eacute;l&amp;eacute;charger.&lt;/p&gt; " jcr:primaryType="jnt:translation" />
                 </bigText_17>
@@ -747,7 +747,7 @@
               <j:translation_en jcr:lastModifiedBy="root" jcr:language="en" jcr:title="My Portal" jcr:lastModified="2010-10-07T17:20:35.359+02:00" jcr:primaryType="jnt:translation" />
               <columnA_box jcr:created="2010-10-07T17:20:25.961+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system root" jcr:createdBy="root" jcr:lastModified="2010-10-07T17:20:36.501+02:00" />
               <introduction jcr:created="2010-10-07T17:20:25.962+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system root" jcr:createdBy="root" jcr:lastModified="2010-10-07T17:20:36.501+02:00">
-                <bigText_58 jcr:mixinTypes="jmix:renderable" j:template="introduction" jcr:created="2010-10-07T17:20:25.963+02:00" jcr:primaryType="jnt:bigText" jcr:lastModifiedBy=" system root" jcr:createdBy="root" jcr:lastModified="2010-10-07T17:20:36.501+02:00">
+                <bigText_58 jcr:mixinTypes="jmix:renderable" j:view="introduction" jcr:created="2010-10-07T17:20:25.963+02:00" jcr:primaryType="jnt:bigText" jcr:lastModifiedBy=" system root" jcr:createdBy="root" jcr:lastModified="2010-10-07T17:20:36.501+02:00">
                   <j:translation_en jcr:lastModifiedBy="root" jcr:language="en" jcr:lastModified="2010-10-07T17:20:35.359+02:00" text="Welcome on your personal ACME Portal. You will be able to build your personal portal in this page. Click on &quot;Add Portlet&quot; and select an RSS feed or a Google (c) Gadget in the Portlet navigation tree on the left side of the page. By clicking on &quot;My Portal&quot;, you will be able to see the result. You also will be able to modify the number of column available and drag &amp;amp; drop the different applications boxes from one column to another. " jcr:primaryType="jnt:translation" />
                   <j:translation_fr jcr:lastModifiedBy="root" jcr:language="fr" jcr:lastModified="2010-10-07T17:20:45.752+02:00" text="Bienvenue sur votre portail personnel ACME. Vous pourrez construire ici votre portail personnalisé. Cliquez sur &quot;Ajouter une Portlet&quot; et sélectionnez dans l'arbre des &quot;Portlet&quot;, les flux RSS&amp;nbsp;où les applications Google (c) qui vous intéressent. Par ailleurs vous pouvez en cliquant sur &quot;Ma Config.&quot; modifier le nombre des colonnes disponibles. Vous pouvez enfin glisser-déposer les boites applicatives d'une colonne à l'autre. " jcr:primaryType="jnt:translation" />
                 </bigText_58>
@@ -757,9 +757,9 @@
             <j:translation_fr jcr:lastModifiedBy="root" jcr:language="fr" jcr:title="Accueil" jcr:lastModified="2010-10-07T17:20:45.752+02:00" jcr:primaryType="jnt:translation" />
           </home>
           <templates jcr:created="2010-10-07T17:19:45.024+02:00" jcr:primaryType="jnt:templatesFolder" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00">
-            <base jcr:mixinTypes="jmix:renderable" j:template="web" jcr:created="2010-10-07T17:19:45.026+02:00" jcr:primaryType="jnt:masterTemplate" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00">
+            <base jcr:mixinTypes="jmix:renderable" j:view="web" jcr:created="2010-10-07T17:19:45.026+02:00" jcr:primaryType="jnt:masterTemplate" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00">
               <header jcr:created="2010-10-07T17:19:45.028+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00">
-                <shortcuts jcr:mixinTypes="jmix:renderable" j:template="inline" jcr:created="2010-10-07T17:19:45.030+02:00" jcr:primaryType="jnt:shortcuts" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
+                <shortcuts jcr:mixinTypes="jmix:renderable" j:view="inline" jcr:created="2010-10-07T17:19:45.030+02:00" jcr:primaryType="jnt:shortcuts" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
               </header>
               <logo jcr:created="2010-10-07T17:19:45.032+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00">
                 <logo jcr:created="2010-10-07T17:19:45.033+02:00" j:basenode="/sites/ACME/home" jcr:primaryType="jnt:absoluteArea" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
@@ -774,18 +774,18 @@
                 <footer jcr:created="2010-10-07T17:19:45.043+02:00" j:basenode="/sites/ACME/home" jcr:primaryType="jnt:absoluteArea" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
               </footer>
               <wrappercontent jcr:created="2010-10-07T17:19:45.045+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00">
-                <mainResourceDisplay jcr:created="2010-10-07T17:19:45.046+02:00" jcr:primaryType="jnt:mainResourceDisplay" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" j:mainResourceTemplate="fullpage" />
+                <mainResourceDisplay jcr:created="2010-10-07T17:19:45.046+02:00" jcr:primaryType="jnt:mainResourceDisplay" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" j:mainResourceView="fullpage" />
               </wrappercontent>
               <home jcr:mixinTypes="jmix:hasTemplateNode" jcr:created="2010-10-07T17:19:45.047+02:00" jcr:primaryType="jnt:masterTemplate" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00">
                 <wrappercontent jcr:created="2010-10-07T17:19:45.048+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00">
                   <row column="2col115" jcr:created="2010-10-07T17:19:45.050+02:00" jcr:primaryType="jnt:row" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00">
                     <col1 jcr:created="2010-10-07T17:19:45.052+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00">
-                      <listA jcr:created="2010-10-07T17:19:45.054+02:00" jcr:primaryType="jnt:mainResourceArea" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
+                      <listA jcr:created="2010-10-07T17:19:45.054+02:00" jcr:primaryType="jnt:area" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
                     </col1>
                     <col2 jcr:created="2010-10-07T17:19:45.057+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00">
                       <simple-search j:node="/sites/ACME/contents/site_components/simple-search" jcr:created="2010-10-07T17:19:45.060+02:00" jcr:primaryType="jnt:contentReference" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
                       <loginForm jcr:created="2010-10-07T17:19:45.061+02:00" jcr:primaryType="jnt:loginForm" j:displayRememberMeButton="true" jcr:lastModifiedBy=" system " jcr:createdBy=" system " j:displayLoginButton="true" jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
-                      <listB jcr:created="2010-10-07T17:19:45.063+02:00" jcr:primaryType="jnt:mainResourceArea" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
+                      <listB jcr:created="2010-10-07T17:19:45.063+02:00" jcr:primaryType="jnt:area" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
                     </col2>
                   </row>
                 </wrappercontent>
@@ -804,8 +804,8 @@
                     <col1 jcr:created="2010-10-07T17:19:45.080+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00">
                       <pageTitle jcr:created="2010-10-07T17:19:45.082+02:00" jcr:primaryType="jnt:pageTitle" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
                       <breadcrumb jcr:created="2010-10-07T17:19:45.083+02:00" jcr:primaryType="jnt:pageBreadcrumb" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
-                      <listA jcr:created="2010-10-07T17:19:45.085+02:00" jcr:primaryType="jnt:mainResourceArea" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
-                      <events jcr:created="2010-10-07T17:19:45.087+02:00" jcr:primaryType="jnt:mainResourceArea" jcr:lastModifiedBy=" system " j:allowedTypes="jnt:event" jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
+                      <listA jcr:created="2010-10-07T17:19:45.085+02:00" jcr:primaryType="jnt:area" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
+                      <events jcr:created="2010-10-07T17:19:45.087+02:00" jcr:primaryType="jnt:area" jcr:lastModifiedBy=" system " j:allowedTypes="jnt:event" jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
                     </col1>
                     <col2 jcr:created="2010-10-07T17:19:45.089+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00">
                       <simple-search j:node="/sites/ACME/contents/site_components/simple-search" jcr:created="2010-10-07T17:19:45.091+02:00" jcr:primaryType="jnt:contentReference" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
@@ -826,12 +826,12 @@
                     <col1 jcr:created="2010-10-07T17:19:45.106+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00">
                       <pageTitle jcr:created="2010-10-07T17:19:45.107+02:00" jcr:primaryType="jnt:pageTitle" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
                       <breadcrumb jcr:created="2010-10-07T17:19:45.108+02:00" jcr:primaryType="jnt:pageBreadcrumb" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
-                      <listA jcr:created="2010-10-07T17:19:45.110+02:00" jcr:primaryType="jnt:mainResourceArea" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
+                      <listA jcr:created="2010-10-07T17:19:45.110+02:00" jcr:primaryType="jnt:area" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
                     </col1>
                     <col2 jcr:created="2010-10-07T17:19:45.111+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00">
                       <simple-search j:node="/sites/ACME/contents/site_components/simple-search" jcr:created="2010-10-07T17:19:45.112+02:00" jcr:primaryType="jnt:contentReference" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
                       <side-menu j:node="/sites/ACME/contents/site_components/side-menu" jcr:created="2010-10-07T17:19:45.113+02:00" jcr:primaryType="jnt:contentReference" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
-                      <listB jcr:created="2010-10-07T17:19:45.115+02:00" jcr:primaryType="jnt:mainResourceArea" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
+                      <listB jcr:created="2010-10-07T17:19:45.115+02:00" jcr:primaryType="jnt:area" jcr:lastModifiedBy=" system " jcr:createdBy=" system " jcr:lastModified="2010-10-07T17:19:50.554+02:00" />
                     </col2>
                   </row>
                 </wrappercontent>

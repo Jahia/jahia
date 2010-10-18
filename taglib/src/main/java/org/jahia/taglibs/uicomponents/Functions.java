@@ -36,7 +36,6 @@ import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -65,7 +64,7 @@ public class Functions {
                 if (bindedComponentNode != null) {
                     if (bindedComponentNode.isNodeType(Constants.JAHIANT_MAINRESOURCE_DISPLAY)) {
                         bindedComponentNode = renderContext.getMainResource().getNode();
-                    } else if (bindedComponentNode.isNodeType(Constants.JAHIANT_MAINRESOURCE_AREA)) {
+                    } else if (bindedComponentNode.isNodeType(Constants.JAHIANT_AREA)) {
                         String areaName = bindedComponentNode.getName();
                         bindedComponentNode = renderContext.getMainResource().getNode();
                         if (bindedComponentNode.hasNode(areaName)) {

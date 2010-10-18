@@ -41,18 +41,18 @@
             <footer j:basenode="/templateSets/templates-web/home" jcr:primaryType="jnt:absoluteArea" />
           </footer>
           <wrappercontent jcr:primaryType="jnt:contentList">
-            <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:mainResourceTemplate="fullpage" />
+            <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:mainResourceView="fullpage" />
           </wrappercontent>
           <home jcr:primaryType="jnt:masterTemplate">
             <wrappercontent jcr:primaryType="jnt:contentList">
               <row column="2col115" jcr:primaryType="jnt:row">
                 <col1 jcr:primaryType="jnt:contentList">
-                  <listA jcr:primaryType="jnt:mainResourceArea" />
+                  <listA jcr:primaryType="jnt:area" />
                 </col1>
                 <col2 jcr:primaryType="jnt:contentList">
                   <simple-search j:node="/templateSets/templates-web/contents/site_components/simple-search" jcr:primaryType="jnt:contentReference" />
                   <loginForm jcr:primaryType="jnt:loginForm" j:displayRememberMeButton="true" j:displayLoginButton="true" />
-                  <listB jcr:primaryType="jnt:mainResourceArea" />
+                  <listB jcr:primaryType="jnt:area" />
                 </col2>
               </row>
             </wrappercontent>
@@ -71,8 +71,8 @@
                 <col1 jcr:primaryType="jnt:contentList">
                   <pageTitle jcr:primaryType="jnt:pageTitle" />
                   <breadcrumb jcr:primaryType="jnt:pageBreadcrumb" />
-                  <listA jcr:primaryType="jnt:mainResourceArea" />
-                  <events jcr:primaryType="jnt:mainResourceArea" j:allowedTypes="jnt:event" />
+                  <listA jcr:primaryType="jnt:area" />
+                  <events jcr:primaryType="jnt:area" j:allowedTypes="jnt:event" />
                 </col1>
                 <col2 jcr:primaryType="jnt:contentList">
                   <simple-search j:node="/templateSets/templates-web/contents/site_components/simple-search" jcr:primaryType="jnt:contentReference" />
@@ -93,12 +93,12 @@
                 <col1 jcr:primaryType="jnt:contentList">
                   <pageTitle jcr:primaryType="jnt:pageTitle" />
                   <breadcrumb jcr:primaryType="jnt:pageBreadcrumb" />
-                  <listA jcr:primaryType="jnt:mainResourceArea" />
+                  <listA jcr:primaryType="jnt:area" />
                 </col1>
                 <col2 jcr:primaryType="jnt:contentList">
                   <simple-search j:node="/templateSets/templates-web/contents/site_components/simple-search" jcr:primaryType="jnt:contentReference" />
                   <side-menu j:node="/templateSets/templates-web/contents/site_components/side-menu" jcr:primaryType="jnt:contentReference" />
-                  <listB jcr:primaryType="jnt:mainResourceArea" />
+                  <listB jcr:primaryType="jnt:area" />
                 </col2>
               </row>
             </wrappercontent>

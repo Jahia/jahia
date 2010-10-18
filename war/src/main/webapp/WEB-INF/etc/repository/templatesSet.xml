@@ -28,7 +28,7 @@
     <templates jcr:primaryType="jnt:templatesFolder">
         <base jcr:mixinTypes="jmix:renderable jmix:theme" j:view="default" jcr:primaryType="jnt:masterTemplate" j:theme="/templatesSet/themes/default">
             <wrappercontent jcr:primaryType="jnt:contentList">
-                <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:mainResourceTemplate="fullpage"/>
+                <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" j:mainResourceView="fullpage"/>
             </wrappercontent>
             <home jcr:primaryType="jnt:masterTemplate">
                 <wrappercontent jcr:primaryType="jnt:contentList"/>

@@ -450,7 +450,7 @@ public class LegacyImportHandler extends DefaultHandler {
             node = parent.addNode(nodeName, Constants.JAHIANT_PAGE);
             if (template != null) {
                 node.setProperty("j:templateNode",template);
-                Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:mainResourceArea] as a where isdescendantnode(a,['"+template.getPath()+"'])", Query.JCR_SQL2);
+                Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:area] as a where isdescendantnode(a,['"+template.getPath()+"'])", Query.JCR_SQL2);
                 NodeIterator ni = q.execute().getNodes();
                 while (ni.hasNext()) {
                     JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) ni.next();

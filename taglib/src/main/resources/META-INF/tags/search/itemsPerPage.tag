@@ -12,7 +12,7 @@
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
 <c:set var="display" value="${functions:default(display, true)}"/>
 <c:set var="value" value="${functions:default(param['src_itemsPerPage'], functions:default(value, '10'))}"/>
-<c:set var="options" value="${functions:default(options, '5,10,20,30,50,100')}"/>
+<c:set var="options" value="${functions:default(options, '5,10,25,50,100')}"/>
 <c:set target="${attributes}" property="name" value="src_itemsPerPage"/>
 <c:if test="${display}">
     <select ${functions:attributes(attributes)} name="src_itemsPerPage">

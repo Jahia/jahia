@@ -71,7 +71,8 @@ public class SimpleModuleDragSource extends EditModeDragSource {
 
     @Override
     protected void onDragCancelled(DNDEvent dndEvent) {
-        super.onDragCancelled(dndEvent);    //To change body of overridden methods use File | Settings | File Templates.
+        DOM.setStyleAttribute(module.getHtml().getElement(), "display", "block");
+        super.onDragCancelled(dndEvent);
     }
 
     @Override

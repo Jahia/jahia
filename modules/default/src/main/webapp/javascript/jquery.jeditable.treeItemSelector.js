@@ -44,5 +44,6 @@ $.editable.addInputType('treeItemSelector', {
                 }, 'null'));
             }
         }, 'null'));
+        $("#treeItemSelectorJeditable-treeItemSelectorTrigger").click();
     }
 });

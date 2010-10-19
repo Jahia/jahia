@@ -423,7 +423,7 @@ public class PropertiesEditor extends FormPanel {
                         ((GWTJahiaPropertyDefinition) definition).isInternationalized());
                 if ((includeI18N && i18nProp) || (includeNonI18N && !i18nProp)) {
                     if ((definition.isHidden() && originalProperties.get(definition.getName()) != null) ||
-                            (dataType != null && !dataType.isEmpty() && dataType.contains(definition.getDataType()))) {
+                            (dataType != null && (dataType.isEmpty() || dataType.contains(definition.getDataType())))) {
                         if (!definition.isProtected()) {
                             Field<?> f = fields.get(definition.getName());
                             GWTJahiaNodeProperty prop = currentProperties.get(definition.getName());

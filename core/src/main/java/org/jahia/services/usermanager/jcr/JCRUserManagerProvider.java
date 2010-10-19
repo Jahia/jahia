@@ -70,7 +70,7 @@ import java.util.*;
  *        Created : 7 juil. 2009
  */
 public class JCRUserManagerProvider extends JahiaUserManagerProvider implements ServletContextAware, ApplicationListener {
-	private static final String ROOT_PWD_RESET_FILE = "WEB-INF/etc/config/root.pwd";
+	private static final String ROOT_PWD_RESET_FILE = "/WEB-INF/etc/config/root.pwd";
     private transient static Logger logger = Logger.getLogger(JCRUserManagerProvider.class);
     private transient JCRTemplate jcrTemplate;
     private static JCRUserManagerProvider mUserManagerService;

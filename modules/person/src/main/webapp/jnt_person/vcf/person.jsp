@@ -1,5 +1,6 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%><c:set target="${renderContext}" property="contentType" value="text/vcard"/>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr"%>
+
 <jcr:nodeProperty var="picture" node="${currentNode}" name="picture"/>
 BEGIN:VCARD
 VERSION:3.0

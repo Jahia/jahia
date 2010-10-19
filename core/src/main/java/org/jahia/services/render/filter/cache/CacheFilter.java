@@ -86,7 +86,7 @@ public class CacheFilter extends AbstractFilter {
             } catch (LockTimeoutException e) {
                 logger.warn(e.getMessage(), e);
             }
-            if (element != null) {
+            if (element != null && element.getValue() != null) {
                 if (debugEnabled) {
                     logger.debug("Content retrieved from cache for node with key: " + perUserKey);
                 }

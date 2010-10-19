@@ -140,3 +140,5 @@
 [jnt:relatedTagging] > jnt:content, jmix:list, mix:title, jmix:queryContent
  - j:type (string, choicelist[nodetypes=nt:base,resourceBundle])
  - j:nbOfResult (long) = 5  autocreated
+
+[jnt:introduction] > jnt:bigText, jmix:siteComponentContent

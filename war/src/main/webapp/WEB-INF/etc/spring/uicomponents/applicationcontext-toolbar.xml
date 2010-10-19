@@ -280,7 +280,7 @@
             <list>
 				<bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
 					<property name="name" value="url" />
-					<property name="value" value="$context/" />
+					<property name="value" value="$context/welcome/edit" />
 				</bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="no-options"/>

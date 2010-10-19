@@ -98,28 +98,35 @@ public class WelcomeServlet extends HttpServlet {
 
                 final String jcrPath = "/sites/" + site.getSiteKey() + "/home";
 
-                try {
-                    JCRStoreService.getInstance().getSessionFactory()
-                            .getCurrentUserSession(Constants.LIVE_WORKSPACE).getNode(jcrPath);
-                    base = request.getContextPath() + Render.getRenderServletPath() + "/"
-                            + Constants.LIVE_WORKSPACE + "/" + language;
-                } catch (PathNotFoundException e) {
-                    try {
-                        JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession()
-                                .getNode(jcrPath);
-                        base = request.getContextPath() + Edit.getEditServletPath() + "/"
-                                + Constants.EDIT_WORKSPACE + "/" + language;
-                    } catch (PathNotFoundException e2) {
-                        JCRTemplate.getInstance().doExecuteWithSystemSession(
-                                new JCRCallback<Object>() {
-                                    public Object doInJCR(JCRSessionWrapper session)
-                                            throws RepositoryException {
-                                        session.getNode(jcrPath);
-                                        throw new AccessDeniedException();
-                                    }
-                                });
-                        throw new AccessDeniedException();
-                    }
+                String pathInfo = request.getPathInfo();
+                if (pathInfo != null && "/edit".equals(pathInfo)) {
+                	// edit mode was requested
+					base = request.getContextPath() + Edit.getEditServletPath() + "/"
+					        + Constants.EDIT_WORKSPACE + "/" + language;
+                } else {
+	                try {
+	                    JCRStoreService.getInstance().getSessionFactory()
+	                            .getCurrentUserSession(Constants.LIVE_WORKSPACE).getNode(jcrPath);
+	                    base = request.getContextPath() + Render.getRenderServletPath() + "/"
+	                            + Constants.LIVE_WORKSPACE + "/" + language;
+	                } catch (PathNotFoundException e) {
+	                    try {
+	                        JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession()
+	                                .getNode(jcrPath);
+	                        base = request.getContextPath() + Edit.getEditServletPath() + "/"
+	                                + Constants.EDIT_WORKSPACE + "/" + language;
+	                    } catch (PathNotFoundException e2) {
+	                        JCRTemplate.getInstance().doExecuteWithSystemSession(
+	                                new JCRCallback<Object>() {
+	                                    public Object doInJCR(JCRSessionWrapper session)
+	                                            throws RepositoryException {
+	                                        session.getNode(jcrPath);
+	                                        throw new AccessDeniedException();
+	                                    }
+	                                });
+	                        throw new AccessDeniedException();
+	                    }
+	                }
                 }
 
                 response.sendRedirect(base + jcrPath + ".html");

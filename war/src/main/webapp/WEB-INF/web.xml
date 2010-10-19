@@ -702,6 +702,10 @@
         <servlet-name>WelcomeServlet</servlet-name>
         <url-pattern>/welcome</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>WelcomeServlet</servlet-name>
+        <url-pattern>/welcome/*</url-pattern>
+    </servlet-mapping>
 
     <servlet-mapping>
         <servlet-name>JahiaAdministration</servlet-name>

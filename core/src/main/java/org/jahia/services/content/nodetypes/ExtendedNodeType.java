@@ -354,27 +354,33 @@ public class ExtendedNodeType implements NodeType {
         return Collections.unmodifiableList(res);
     }
 
-    public synchronized Map<String, ExtendedPropertyDefinition> getPropertyDefinitionsAsMap() {
+    public Map<String, ExtendedPropertyDefinition> getPropertyDefinitionsAsMap() {
         if (allProperties == null) {
-            allProperties = new LinkedHashMap<String, ExtendedPropertyDefinition>();
-
-            allProperties.putAll(properties);
-
-            ExtendedNodeType[] supertypes = getSupertypes();
-            for (int i = supertypes.length-1; i >=0 ; i--) {
-                ExtendedNodeType nodeType = supertypes[i];
-                Map<String, ExtendedPropertyDefinition> c = new HashMap<String, ExtendedPropertyDefinition>(nodeType.getDeclaredPropertyDefinitionsAsMap());
-                Map<String, ExtendedPropertyDefinition> over = new HashMap<String, ExtendedPropertyDefinition>(properties);
-                over.keySet().retainAll(c.keySet());
-                for (ExtendedPropertyDefinition s : over.values()) {
-                    s.setOverride(true);
-                }
-                c.keySet().removeAll(over.keySet());
-                allProperties.putAll(c);
-            }
+        	synchronized (this) {
+        		if (allProperties == null) {
+        			LinkedHashMap<String, ExtendedPropertyDefinition> props = new LinkedHashMap<String, ExtendedPropertyDefinition>();
+		
+		            props.putAll(properties);
+		
+		            ExtendedNodeType[] supertypes = getSupertypes();
+		            for (int i = supertypes.length-1; i >=0 ; i--) {
+		                ExtendedNodeType nodeType = supertypes[i];
+		                Map<String, ExtendedPropertyDefinition> c = new HashMap<String, ExtendedPropertyDefinition>(nodeType.getDeclaredPropertyDefinitionsAsMap());
+		                Map<String, ExtendedPropertyDefinition> over = new HashMap<String, ExtendedPropertyDefinition>(properties);
+		                over.keySet().retainAll(c.keySet());
+		                for (ExtendedPropertyDefinition s : over.values()) {
+		                    s.setOverride(true);
+		                }
+		                c.keySet().removeAll(over.keySet());
+		                props.putAll(c);
+		            }
+		            
+		            allProperties = Collections.unmodifiableMap(props);
+        		}
+        	}
         }
 
-        return Collections.unmodifiableMap(allProperties);
+        return allProperties;
     }
 
     public Map<Integer,ExtendedPropertyDefinition> getUnstructuredPropertyDefinitions() {

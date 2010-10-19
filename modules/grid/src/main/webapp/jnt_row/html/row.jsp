@@ -16,8 +16,8 @@
         <c:set target="${colMap}" property="col2" value="4"/>
     </c:when>
         <c:when test="${column.string == '2col511'}">
-        <c:set target="${colMap}" property="col1" value="11"/>
-        <c:set target="${colMap}" property="col2" value="5"/>
+        <c:set target="${colMap}" property="col1" value="5"/>
+        <c:set target="${colMap}" property="col2" value="11"/>
     </c:when>
     <c:when test="${column.string == '2col115'}">
         <c:set target="${colMap}" property="col1" value="11"/>

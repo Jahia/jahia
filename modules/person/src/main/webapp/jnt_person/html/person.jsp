@@ -5,6 +5,8 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <template:addResources type="css" resources="person.css"/>
+<template:addResources type="javascript" resources="jquery.fancybox-1.3.1.js"/>
+<template:addResources type="css" resources="jquery.fancybox.css"/>
 <script type="text/javascript">
     function ShowHideLayer(boxID) {
 	/* Obtain reference for the selected boxID layer and its button */
@@ -36,7 +38,7 @@
         <p class="personEmail"><a href='mailto:${currentNode.properties.email.string}'>${currentNode.properties.email.string}</a></p>
 
         <div class="personAction">
-			<a class="personEnlarge" href="${picture.node.url}" rel="facebox"> <fmt:message key='FullSizePicture'/></a>
+			<a class="personEnlarge" id="apict${currentNode.identifier}" href="#pict${currentNode.identifier}"> <fmt:message key='FullSizePicture'/></a>
             <a class="personBiographiy" href="javascript:;" onclick="ShowHideLayer('${currentNode.identifier}');"><fmt:message
                     key='jnt_person.biography'/></a>
             <a class="personBiographiy" href="${url.base}${currentNode.path}.vcf"><fmt:message
@@ -51,3 +53,29 @@
     <!--stop personBody -->
     <div class="clear"></div>
 </div>
+<div style="display:none"><div id="pict${currentNode.identifier}"><img src="${picture.node.url}" width="350"/></div></div>
+<script type="text/javascript">
+    $(document).ready(function() {
+
+	/* This is basic - uses default settings */
+
+	$("a#single_image").fancybox();
+
+	/* Using custom settings */
+
+	$("a#apict${currentNode.identifier}").fancybox({
+		'hideOnContentClick': true
+	});
+
+	/* Apply fancybox to multiple items */
+
+	$("a.group").fancybox({
+		'transitionIn'	:	'elastic',
+		'transitionOut'	:	'elastic',
+		'speedIn'		:	600,
+		'speedOut'		:	200,
+		'overlayShow'	:	false
+	});
+
+});
+</script>

@@ -151,6 +151,7 @@
 		                    <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
                             <package-name>${project.name}</package-name>
                             <root-folder>${artifactId}</root-folder>
+                            <depends>Jahia Static Assets</depends>
                         </manifestEntries>
                     </archive>
                 </configuration>

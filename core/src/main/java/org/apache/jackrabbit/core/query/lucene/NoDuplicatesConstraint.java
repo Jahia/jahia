@@ -22,9 +22,8 @@ public class NoDuplicatesConstraint implements Constraint {
             if (sn == null) {
                 id += "null";
             } else {
-                sn.getDoc(context.getIndexReader());
-                Document doc = context.getIndexReader().document(
-                        sn.getDoc(context.getIndexReader()));
+                int docNb = sn.getDoc(context.getIndexReader());
+                Document doc = context.getIndexReader().document(docNb);
                 if (doc.getField(JahiaNodeIndexer.TRANSLATED_NODE_PARENT) != null) {
                     id += doc.getField(FieldNames.PARENT).stringValue();
                 } else {

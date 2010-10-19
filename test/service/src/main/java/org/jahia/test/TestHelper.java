@@ -32,8 +32,11 @@
 
 package org.jahia.test;
 
+import org.apache.axis.utils.StringUtils;
+import org.apache.commons.codec.binary.Base64;
 import org.jahia.admin.database.DatabaseScripts;
 import org.jahia.bin.Jahia;
+import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
@@ -43,12 +46,9 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaAdminUser;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.exceptions.JahiaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
-import org.apache.axis.utils.StringUtils;
-import org.apache.commons.codec.binary.Base64;
 
 import javax.jcr.ItemExistsException;
 import javax.jcr.Node;
@@ -59,22 +59,18 @@ import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.version.VersionException;
 import javax.sql.DataSource;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
-import java.sql.Statement;
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.sql.Timestamp;
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -91,11 +87,11 @@ public class TestHelper {
     public static final String INTRANET_TEMPLATES = "templates-intranet";
 
     public static JahiaSite createSite(String name) throws Exception {
-        return createSite(name, "localhost"+System.currentTimeMillis(), ACME_TEMPLATES, null, null);
+        return createSite(name, "localhost" + System.currentTimeMillis(), ACME_TEMPLATES, null, null);
     }
-    
+
     public static JahiaSite createSite(String name, Set<String> languages, Set<String> mandatoryLanguages, boolean mixLanguagesActive) throws Exception {
-        JahiaSite site = createSite(name, "localhost"+System.currentTimeMillis(), ACME_TEMPLATES, null, null);
+        JahiaSite site = createSite(name, "localhost" + System.currentTimeMillis(), ACME_TEMPLATES, null, null);
         JahiaSitesService service = ServicesRegistry.getInstance().getJahiaSitesService();
         if (!CollectionUtils.isEmpty(languages) && !languages.equals(site.getLanguages())) {
             site.setLanguages(languages);
@@ -113,9 +109,9 @@ public class TestHelper {
     public static JahiaSite createSite(String name, String serverName, String templateSet) throws Exception {
         return createSite(name, serverName, templateSet, null, null);
     }
-    
+
     public static JahiaSite createSite(String name, String serverName, String templateSet,
-            String prepackedZIPFile, String siteZIPName) throws Exception {
+                                       String prepackedZIPFile, String siteZIPName) throws Exception {
 
         ProcessingContext ctx = Jahia.getThreadParamBean();
         JahiaUser admin = JahiaAdminUser.getAdminUser(0);
@@ -194,7 +190,7 @@ public class TestHelper {
 
         return site;
     }
-    
+
     public static void removeAllSites(JahiaSitesService service) throws JahiaException {
         final Iterator<JahiaSite> sites = service.getSites();
         while (sites.hasNext()) {
@@ -206,8 +202,8 @@ public class TestHelper {
     public static void deleteSite(String name) throws Exception {
         JahiaSitesService service = ServicesRegistry.getInstance().getJahiaSitesService();
         JahiaSite site = service.getSiteByKey(name);
-        if(site!=null)
-        service.removeSite(site);
+        if (site != null)
+            service.removeSite(site);
     }
 
     public static void cleanDatabase() throws Exception {
@@ -234,7 +230,7 @@ public class TestHelper {
         script.append(File.separator);
         final DataSource bean = (DataSource) SpringContextSingleton.getInstance().getContext().getBean("dataSource");
         final Connection db = bean.getConnection();
-        script.append(File.separator+db.getMetaData().getDatabaseProductName().toLowerCase()+".script");
+        script.append(File.separator + db.getMetaData().getDatabaseProductName().toLowerCase() + ".script");
 
 // get script runtime...
         try {
@@ -284,23 +280,23 @@ public class TestHelper {
         insertDBCustomContent(db);
     }
 
-    private static String encryptPassword (String password) {
+    private static String encryptPassword(String password) {
         if (password == null) {
             return null;
         }
 
-        if (password.length () == 0) {
+        if (password.length() == 0) {
             return null;
         }
 
         String result = null;
 
         try {
-            MessageDigest md = MessageDigest.getInstance ("SHA-1");
+            MessageDigest md = MessageDigest.getInstance("SHA-1");
             if (md != null) {
-                md.reset ();
-                md.update (password.getBytes ());
-                result = new String (Base64.encodeBase64 (md.digest ()));
+                md.reset();
+                md.update(password.getBytes());
+                result = new String(Base64.encodeBase64(md.digest()));
             }
         } catch (NoSuchAlgorithmException ex) {
 
@@ -324,63 +320,67 @@ public class TestHelper {
         final String rootKey = rootName + ":" + siteID0;
         final String grpKey0 = "administrators:" + siteID0;
 // query insert root user...
-        queryPreparedStatement(con,"INSERT INTO jahia_users(id_jahia_users, name_jahia_users, password_jahia_users, key_jahia_users) VALUES(0,?,?,?)",
-                new Object[] { rootName, encryptPassword("root1234"), rootKey } );
+        queryPreparedStatement(con, "INSERT INTO jahia_users(id_jahia_users, name_jahia_users, password_jahia_users, key_jahia_users) VALUES(0,?,?,?)",
+                new Object[]{rootName, encryptPassword("root1234"), rootKey});
 
 // query insert root first name...
-        queryPreparedStatement(con,"INSERT INTO jahia_user_prop(id_jahia_users, name_jahia_user_prop, value_jahia_user_prop, provider_jahia_user_prop, userkey_jahia_user_prop) VALUES(0, 'firstname', ?, 'jahia',?)",
-                new Object[] { "", rootKey } );
+        queryPreparedStatement(con, "INSERT INTO jahia_user_prop(id_jahia_users, name_jahia_user_prop, value_jahia_user_prop, provider_jahia_user_prop, userkey_jahia_user_prop) VALUES(0, 'firstname', ?, 'jahia',?)",
+                new Object[]{"", rootKey});
 
 // query insert root last name...
-        queryPreparedStatement(con,"INSERT INTO jahia_user_prop(id_jahia_users, name_jahia_user_prop, value_jahia_user_prop, provider_jahia_user_prop, userkey_jahia_user_prop) VALUES(0, 'lastname', ?, 'jahia',?)",
-                new Object[] { "", rootKey } );
+        queryPreparedStatement(con, "INSERT INTO jahia_user_prop(id_jahia_users, name_jahia_user_prop, value_jahia_user_prop, provider_jahia_user_prop, userkey_jahia_user_prop) VALUES(0, 'lastname', ?, 'jahia',?)",
+                new Object[]{"", rootKey});
 
 // query insert root e-mail address...
-        queryPreparedStatement(con,"INSERT INTO jahia_user_prop(id_jahia_users, name_jahia_user_prop, value_jahia_user_prop, provider_jahia_user_prop, userkey_jahia_user_prop) VALUES(0, 'email', ?, 'jahia',?)",
-                new Object[] {"", rootKey } );
+        queryPreparedStatement(con, "INSERT INTO jahia_user_prop(id_jahia_users, name_jahia_user_prop, value_jahia_user_prop, provider_jahia_user_prop, userkey_jahia_user_prop) VALUES(0, 'email', ?, 'jahia',?)",
+                new Object[]{"", rootKey});
 
 // query insert administrators group...
-        queryPreparedStatement(con,"INSERT INTO jahia_grps(id_jahia_grps, name_jahia_grps, key_jahia_grps, siteid_jahia_grps) VALUES(?,?,?,null)",
-                new Object[] {siteID0, "administrators", grpKey0 } );
+        queryPreparedStatement(con, "INSERT INTO jahia_grps(id_jahia_grps, name_jahia_grps, key_jahia_grps, siteid_jahia_grps) VALUES(?,?,?,null)",
+                new Object[]{siteID0, "administrators", grpKey0});
 
 // query insert administrators group access...
-        queryPreparedStatement(con,"INSERT INTO jahia_grp_access(id_jahia_member, id_jahia_grps, membertype_grp_access) VALUES(?,?,1)",
-                new Object[] { rootKey,grpKey0 } );
+        queryPreparedStatement(con, "INSERT INTO jahia_grp_access(id_jahia_member, id_jahia_grps, membertype_grp_access) VALUES(?,?,1)",
+                new Object[]{rootKey, grpKey0});
 
 // create guest user
-        queryPreparedStatement(con,"INSERT INTO jahia_users(id_jahia_users, name_jahia_users, password_jahia_users, key_jahia_users) VALUES(1,?,?,?)",
-                new Object[] {"guest", "*", "guest:0" } );
+        queryPreparedStatement(con, "INSERT INTO jahia_users(id_jahia_users, name_jahia_users, password_jahia_users, key_jahia_users) VALUES(1,?,?,?)",
+                new Object[]{"guest", "*", "guest:0"});
 
-        queryPreparedStatement(con,"INSERT INTO jahia_version(install_number, build, release_number, install_date) VALUES(0, ?,?,?)",
-                new Object[] { new Integer("12346789"), "132456" + "." + "123456", new Timestamp(System.currentTimeMillis()) } );
+        queryPreparedStatement(con, "INSERT INTO jahia_version(install_number, build, release_number, install_date) VALUES(0, ?,?,?)",
+                new Object[]{new Integer("12346789"), "132456" + "." + "123456", new Timestamp(System.currentTimeMillis())});
 
 
     }
 
-    private static void queryPreparedStatement(Connection theConnection,String sqlCode, Object[] params)
-        throws Exception {
+    private static void queryPreparedStatement(Connection theConnection, String sqlCode, Object[] params)
+            throws Exception {
         PreparedStatement ps = theConnection.prepareStatement(sqlCode);
         for (int i = 0; i < params.length; i++) {
-            ps.setObject(i+1,params[i]);
+            ps.setObject(i + 1, params[i]);
         }
         ps.execute();
         ps.close();
     } // end query
 
 
-    public static void createSubPages(Node currentNode, int level, int nbChildren) throws RepositoryException, LockException, ConstraintViolationException, NoSuchNodeTypeException, ItemExistsException, VersionException {
-        if (level <= 0) return;
-        if(!currentNode.isCheckedOut()) {
+    public static int createSubPages(Node currentNode, int level, int nbChildren) throws RepositoryException, LockException, ConstraintViolationException, NoSuchNodeTypeException, ItemExistsException, VersionException {
+        int pagesCreated = 0;
+        if (level <= 0) return pagesCreated;
+        if (!currentNode.isCheckedOut()) {
             currentNode.checkout();
         }
-        for (int i=0; i < nbChildren; i++) {
+        for (int i = 0; i < nbChildren; i++) {
             Node newSubPage = currentNode.addNode("child" + Integer.toString(i), "jnt:page");
-            createSubPages(newSubPage, level-1, nbChildren);
+            pagesCreated++;
+            pagesCreated += createSubPages(newSubPage, level - 1, nbChildren);
         }
+        return pagesCreated;
     }
 
     /**
      * Little utility method to easily create lists of content.
+     *
      * @param parentNode
      * @param listName
      * @param elementCount
@@ -395,7 +395,7 @@ public class TestHelper {
     public static JCRNodeWrapper createList(JCRNodeWrapper parentNode, String listName, int elementCount, String textPrefix) throws RepositoryException, LockException, ConstraintViolationException, NoSuchNodeTypeException, ItemExistsException, VersionException {
         JCRNodeWrapper contentList = parentNode.addNode(listName, "jnt:contentList");
 
-        for (int i=0; i < elementCount; i++) {
+        for (int i = 0; i < elementCount; i++) {
             JCRNodeWrapper textNode = contentList.addNode(listName + "_text" + Integer.toString(i), "jnt:mainContent");
             textNode.setProperty("jcr:title", textPrefix + Integer.toString(i));
             textNode.setProperty("body", textPrefix + Integer.toString(i));
@@ -405,15 +405,16 @@ public class TestHelper {
 
     /**
      * Utility method to dump a part of a content tree into a String.
+     *
      * @param stringBuilder
      * @param startNode
-     * @param depth usually 0 when called initially, it is incremented to mark the current depth in the tree.
+     * @param depth         usually 0 when called initially, it is incremented to mark the current depth in the tree.
      * @param logAsError
      * @return
      * @throws RepositoryException
      */
     public static StringBuilder dumpTree(StringBuilder stringBuilder, Node startNode, int depth, boolean logAsError) throws RepositoryException {
-        for (int i=0; i < depth; i++) {
+        for (int i = 0; i < depth; i++) {
             if (i == 0) {
                 stringBuilder.append("+-");
             } else {

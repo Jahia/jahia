@@ -86,7 +86,7 @@
             <div>
                 <div>
                     <c:url var="editUrl" value="/cms/edit/default/${theSite.defaultLanguage}/sites/${theSite.siteKey}/home.html"/>
-                    <span class="tab-icon ico-quit"><a href="${editUrl}"
+                    <span class="tab-icon ico-edit-mode"><a href="${editUrl}"
                                                        title="<fmt:message key='org.jahia.admin.exit.label'/>" ><fmt:message key="org.jahia.admin.exit.label"/></a></span>
                 </div>
             </div>
@@ -103,7 +103,7 @@
             <c:url value="/cms/logout" var="logoutUrl">
                 <c:param name="redirect" value="${pageContext.request.contextPath}/administration"/>
             </c:url>
-            <span style="margin-right: 10px"><a href="${logoutUrl}"><img src="${pageContext.request.contextPath}/css/images/andromeda/logout.png" alt=" " height="16" width="16" align="top"/>&nbsp;<fmt:message key="label.logout"/></a></span>
+            <span style="margin-right: 10px"><a href="${logoutUrl}"><img src="${pageContext.request.contextPath}/icons/logout.png" alt=" " height="16" width="16" align="top"/>&nbsp;<fmt:message key="label.logout"/></a></span>
             <%
                 Locale sessionLocale = (Locale) session.getAttribute(ProcessingContext.SESSION_UI_LOCALE);
                 String userLocale = sessionLocale != null ? UserPreferencesHelper.getPreferredLocale((JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER), sessionLocale).toString() : UserPreferencesHelper.getPreferredLocale((JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER)).toString();

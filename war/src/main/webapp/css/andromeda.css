@@ -1082,8 +1082,8 @@ li.section a:hover {
     background: url(../icons/studio.png) no-repeat  0 -1px;
 }
 
-.ico-quit {
-    background: url(../icons/logout.png) no-repeat 0 -1px;
+.ico-edit-mode {
+    background: url(../icons/editMode.png) no-repeat 0 -1px;
 }
 
 

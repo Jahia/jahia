@@ -92,8 +92,10 @@ public class ContentManagerTest extends SeleneseTestCase {
         };
         selenium.click("Link=Content manager");
 
-        //Select Window "Content manager"
+        //Wait for page loading
         selenium.waitForPopUp("Content_manager", "3000");
+
+        //Select the content manager window
         selenium.selectWindow("Content manager");
 
         //Open "root" tree
@@ -127,8 +129,7 @@ public class ContentManagerTest extends SeleneseTestCase {
                 return selenium.isElementPresent("//span[text()='Home']");
             }
         };
-        selenium.doubleClickAt("//span[text()='Home']", "5,5");
-
+        selenium.clickAt("//span[text()='Home']", "5,5");
         selenium.mouseOver("//span[text()='Home']");
         selenium.contextMenuAt("//span[text()='Home']", "5,5");
 
@@ -156,12 +157,17 @@ public class ContentManagerTest extends SeleneseTestCase {
             }
         };
         selenium.type("//input[@name='jcr:title']", "Page 2");
-        selenium.type("//input[@name='j:templateNode']", "base");
+        selenium.type("//input[@name='j:templateNode']", "base");    
         selenium.click("//div[@class=' x-small-editor x-panel-btns-center x-panel-fbar x-component x-toolbar-layout-ct']/table/tbody/tr/td[1]/table/tbody/tr/td[1]/table");
 
 
+
+        if(!selenium.isElementPresent("//span[text()='Page 1']"))
+        {
+            selenium.doubleClickAt("//span[text()='Home']", "5,5");
+        }
         //Cut page 1
-        selenium.doubleClickAt("//span[text()='Page 1']", "5,5");
+        selenium.clickAt("//span[text()='Page 1']", "5,5");
         selenium.mouseOver("//span[text()='Page 1']");
         selenium.contextMenuAt("//span[text()='Page 1']", "5,5");
         selenium.click("Link=Cut");
@@ -173,7 +179,7 @@ public class ContentManagerTest extends SeleneseTestCase {
         selenium.click("Link=Paste");
 
         //Rename Page1
-        selenium.doubleClickAt("//span[text()='Page 1']", "5,5");
+        selenium.clickAt("//span[text()='Page 1']", "5,5");
         selenium.mouseOver("//span[text()='Page 1']");
         selenium.contextMenuAt("//span[text()='Page 1']", "5,5");
         selenium.answerOnNextPrompt("Renamed Page");
@@ -183,8 +189,106 @@ public class ContentManagerTest extends SeleneseTestCase {
         //Delete Renamed Page
         deleteElement("//span[text()='Page 1']");
 
+        if(!selenium.isElementPresent("//span[text()='Page 2']"))
+        {
+            selenium.doubleClickAt("//span[text()='Home']", "5,5");
+        }
+
+        //Zip Page2
+        selenium.clickAt("//span[text()='Page 2']", "5,5");
+        selenium.mouseOver("//span[text()='Page 2']");
+        selenium.contextMenuAt("//span[text()='Page 2']", "5,5");
+        selenium.answerOnNextPrompt("Zip de page2");
+        selenium.click("Link=Zip");
+        selenium.getPrompt();
+
+        //Delete the zip
+        deleteElement("//span[text()='Zip de page2.zip']");
+
+        //Create a new content list
+        selenium.clickAt("//span[text()='listA']", "5,5");
+        selenium.mouseOver("//span[text()='listA']");
+        selenium.contextMenuAt("//span[text()='listA']", "5,5");
+        selenium.click("Link=New content list");
+
+        new Wait("wait") {
+            public boolean until() {
+                return selenium.isElementPresent("//div[2]/div/div/div[2]/div/div/table/tbody/tr/td/div/div/div/table/tbody/tr/td[3]/img");
+            }
+        };
+        selenium.doubleClick("//div[2]/div/div/div[2]/div/div/table/tbody/tr/td/div/div/div/table/tbody/tr/td[3]/img");
+        selenium.doubleClick("//div[2]/div/div/div[2]/div/div[2]/table/tbody/tr/td/div/div/div/table/tbody/tr/td[5]/span/div/table/tbody/tr/td/img");
+
+        new Wait("wait") {
+            public boolean until() {
+                return selenium.isElementPresent("//input[@name='jcr:title']");
+            }
+        };
+        selenium.type("//input[@name='jcr:title']","test list");
+        //Click on save
+        selenium.click("//div[@class=' x-small-editor x-panel-btns-center x-panel-fbar x-component x-toolbar-layout-ct']/table/tbody/tr/td[1]/table/tbody/tr/td[1]/table");
+
+        //Create a new content
+        selenium.clickAt("//span[text()='test list']", "5,5");
+        selenium.mouseOver("//span[text()='test list']");
+        selenium.contextMenuAt("//span[text()='test list']", "5,5");
+        selenium.click("Link=New content");
+
+          //click on the image for sort"
+        new Wait("wait") {
+            public boolean until() {
+                return selenium.isElementPresent("//td[@class='x-grid3-header x-grid3-hd x-grid3-cell x-grid3-td-label']/div/span");
+            }
+        };
+        selenium.click("//td[@class='x-grid3-header x-grid3-hd x-grid3-cell x-grid3-td-label']/div/span");
+
+
+        //doubleClick on "Editorial content"
+        new Wait("wait") {
+            public boolean until() {
+                return selenium.isElementPresent("//img[@src='/modules/default/icons/jmix_editorialContent.png']");
+            }
+        };
+        selenium.doubleClick("//img[@src='/modules/default/icons/jmix_editorialContent.png']");
+
+        //doubleClick on "RichText"
+        new Wait("wait") {
+            public boolean until() {
+                return selenium.isElementPresent("//img[@src='/modules/default/icons/jnt_bigText.png']");
+            }
+        };
+        selenium.doubleClick("//img[@src='/modules/default/icons/jnt_bigText.png']");
+
+                //fill name
+        new Wait("wait") {
+            public boolean until() {
+                return selenium.isTextPresent("Name");
+            }
+        };
+        selenium.type("//input[@name='name']", "Test rich text");
+
+        //Click on "source"
+        new Wait("wait") {
+            public boolean until() {
+                return selenium.isElementPresent("//span[@class='cke_label']");
+            }
+        };
+        selenium.click("//span[@class='cke_label']");
+
+        //Fill in source content
+        new Wait("wait") {
+            public boolean until() {
+                return selenium.isElementPresent("//textarea[@class='cke_source cke_enable_context_menu']");
+            }
+        };
+        selenium.type("//textarea[@class='cke_source cke_enable_context_menu']", "<p>blabla</p>");
+
+        selenium.click("//div[@class=' x-small-editor x-panel-btns-center x-panel-fbar x-component x-toolbar-layout-ct']/table/tbody/tr/td[1]/table/tbody/tr/td[1]/table");
+
+        deleteElement("//span[text()='test list']");
+
         //Copy page 2
-        selenium.doubleClickAt("//span[text()='Page 2']", "5,5");
+        selenium.clickAt("//span[text()='Page 2']", "5,5");
         selenium.mouseOver("//span[text()='Page 2']");
         selenium.contextMenuAt("//span[text()='Page 2']", "5,5");
         selenium.click("Link=Copy");
@@ -220,7 +324,7 @@ public class ContentManagerTest extends SeleneseTestCase {
         selenium.click("//button[text()='Cancel']");
 
         //Delete page 2
-        deleteElement("//span[text()='Page 2']");
+        //deleteElement("//span[text()='Page 2']");
 
         //Create a new folder
         selenium.clickAt("//span[text()='files']", "5,5");
@@ -252,7 +356,7 @@ public class ContentManagerTest extends SeleneseTestCase {
     }
 
     public void deleteElement(String element) {
-        selenium.doubleClickAt(element, "5,5");
+        selenium.clickAt(element, "5,5");
         selenium.mouseOver(element);
         selenium.contextMenuAt(element, "5,5");
         selenium.click("Link=Remove");

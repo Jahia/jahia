@@ -173,20 +173,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.jahia.server</groupId>
-            <artifactId>jahia-impl</artifactId>
-            <version>${jahia.package.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jahia.modules</groupId>
-            <artifactId>remotepublish</artifactId>
-            <version>${jahia.package.version}</version>
-            <classifier>classes</classifier>
-            <scope>provided</scope>
-            <type>jar</type>
-        </dependency>
-        <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>social-service</artifactId>
             <version>${jahia.package.version}</version>

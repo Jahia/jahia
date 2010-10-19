@@ -64,8 +64,10 @@ import java.io.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -86,7 +88,6 @@ public class TestServlet extends HttpServlet implements Controller, ServletConte
     
     private ServletContext servletContext;
     
-    @SuppressWarnings("unchecked")
     protected void handleGet(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
 
 //    should be protected in production
@@ -154,18 +155,13 @@ public class TestServlet extends HttpServlet implements Controller, ServletConte
             } else {
                 PrintWriter pw = httpServletResponse.getWriter();
                 // Return the lists of available tests
-                InputStream is = getClass().getClassLoader().getResourceAsStream("Test.properties");
-
-                if (is != null) {
-                    List<String> lines = IOUtils.readLines(is);
-                    IOUtils.closeQuietly(is);
-                    for (String line : lines) {
-                        Class<?> c = getTestClass(line);
-                        if (c != null) {
-                            pw.println(c.getName());
-                        }
-                    }
-                }
+                List<String> tests = new LinkedList<String>();
+                tests.addAll(readTests("Test.properties", true));
+                tests.addAll(readTests("TestEE.properties", true));
+                tests.addAll(readTests("TestLast.properties", true));
+				for (String c : tests) {
+					pw.println(c);
+				}
             }
         } finally {
             try {
@@ -224,18 +220,9 @@ public class TestServlet extends HttpServlet implements Controller, ServletConte
     
     private Set<String> getIgnoreTests() {
         Set<String> ignoreTests = new HashSet<String>();
-        try {
-            InputStream is = getClass().getClassLoader().getResourceAsStream("IgnoreTest.properties");
-            if (is != null) {
-                List<String> lines = IOUtils.readLines(is);
-                IOUtils.closeQuietly(is);
-                for (String line : lines) {
-                    ignoreTests.add(line);
-                }
-            }
-        } catch (IOException e) {
-            logger.warn("Cannot read IgnoreTest.properties", e);
-        }
+    	ignoreTests.addAll(readTests("IgnoreTest.properties", false));
+    	ignoreTests.addAll(readTests("IgnoreTestEE.properties", false));
+
         return ignoreTests;
     }
 
@@ -286,5 +273,36 @@ public class TestServlet extends HttpServlet implements Controller, ServletConte
 
     public void setServletContext(ServletContext servletContext) {
         this.servletContext = servletContext;
+    }
+    
+    private List<String> readTests(String resource, boolean verify) {
+        InputStream is = getClass().getClassLoader().getResourceAsStream(resource);
+        List<String> tests = Collections.emptyList();
+        try {
+	        if (is != null) {
+	        	tests = new LinkedList<String>();
+	            @SuppressWarnings("unchecked")
+                List<String> lines = IOUtils.readLines(is);
+	            for (String line : lines) {
+	            	if (verify) {
+	            		// check the class
+		                Class<?> c = getTestClass(line);
+		                if (c != null) {
+		                    tests.add(c.getName());
+		                }
+	            	} else if (StringUtils.isNotBlank(line) && !line.trim().startsWith("#") && !line.trim().startsWith("//")){
+	            		// just add an non-empty line
+	            		tests.add(line);
+	            	}
+	            }
+	        }
+        }
+        catch (Exception e) {
+        	logger.warn("Unable to read class names from the resource " + resource);
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
+        
+        return tests;
     }
 }

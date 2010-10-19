@@ -38,12 +38,10 @@
  - thirdField (string, choicelist[sortableFieldnames]) indexed=no
  - thirdDirection (string, choicelist[resourceBundle]) = 'asc' autocreated indexed=no < 'asc','desc'
 
-[jmix:advancedContent] > jmix:editorialContent
-
 [jnt:fileList] > jnt:content, jmix:editorialContent
  - folder (weakreference, picker[type='folder'])
 
-[jnt:frame] > jnt:content, mix:title, jmix:advancedContent
+[jnt:frame] > jnt:content, mix:title, jmix:editorialContent
  - source (string) indexed=no
  - name (string) indexed=no
  - width (long) indexed=no
@@ -54,7 +52,7 @@
  - scrolling (string, choicelist[resourceBundle]) indexed=no < 'yes','no','auto'
  - alt (string) i18n indexed=no
 
-[jnt:video] > jnt:content, mix:title, jmix:advancedContent
+[jnt:video] > jnt:content, mix:title, jmix:editorialContent
  - name (string)
  - source (weakreference, picker[type='file'])
  - width (long) = '0'
@@ -70,7 +68,7 @@
  - displaysize (long) = '0' analyzer='keyword' nofulltext
  - loop (string, choicelist[resourceBundle]) analyzer='keyword' nofulltext < 'true','false'
 
-[jnt:flash] > jnt:content, mix:title, jmix:advancedContent
+[jnt:flash] > jnt:content, mix:title, jmix:editorialContent
  - flashSource (weakreference, picker[type='file'])
  - width (string) analyzer='keyword' nofulltext
  - height (string) analyzer='keyword' nofulltext

@@ -200,8 +200,8 @@
         <panel classname="PacksPanel" id="packsPanel" condition="cnd.installation.type.advanced"/>
         <panel classname="UserInputPanel" condition="cnd.installation.type.advanced+!cnd.pack.tomcat" id="serverType"/>
         <panel classname="UserInputPanel" condition="cnd.installation.type.advanced" id="dbMode"/>
-        <panel classname="UserInputPanel" condition="cnd.db.mode.standalone" id="dbType"/>
-        <panel classname="UserInputPanel" condition="cnd.db.mode.standalone" id="dbSettings">
+        <panel classname="UserInputPanel" condition="cnd.installation.type.advanced+cnd.db.mode.standalone" id="dbType"/>
+        <panel classname="UserInputPanel" condition="cnd.installation.type.advanced+cnd.db.mode.standalone" id="dbSettings">
         	<actions>
         		<action stage="postvalidate" classname="org.jahia.izpack.DbConnectionValidationPanelAction"/>
         	</actions>

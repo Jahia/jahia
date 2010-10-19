@@ -328,6 +328,7 @@
  - j:defaultTemplateNode (weakreference,choicelist[templatesNode]) < jnt:template
 
 [jmix:hasTemplateNode] mixin
+ itemtype = layout
  - j:templateNode (weakreference,choicelist[templatesNode]) < jnt:template
 
 [jnt:template] > nt:base, jmix:nodenameInfo, jmix:basemetadata
@@ -361,6 +362,7 @@
 [jnt:authorDisplay] > jnt:content, jmix:renderableUser, jmix:siteComponentContent, jmix:mockupStyle
 
 [jmix:renderableMainResource] mixin
+ itemtype = layout
  - j:mainResourceView (string, choicelist[templates=mainresource,resourceBundle,image]) nofulltext
 
 [jmix:renderableUser] mixin

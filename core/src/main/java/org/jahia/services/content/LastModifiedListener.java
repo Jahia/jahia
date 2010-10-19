@@ -90,7 +90,9 @@ public class LastModifiedListener extends DefaultEventListener {
                                 continue;
                             }
                         }
-                        logger.debug("Receiving event for lastModified date for : " + path);
+                        if (logger.isDebugEnabled()) {
+                        	logger.debug("Receiving event for lastModified date for : " + path);
+                        }
                         if (event.getType() == Event.NODE_ADDED) {
                             addedNodes.add(path);
                             if(!path.contains("j:translation")) {

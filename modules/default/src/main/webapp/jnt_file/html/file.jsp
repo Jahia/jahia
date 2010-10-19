@@ -19,7 +19,7 @@
         <span class="icon <%=FileUtils.getFileIcon( ((JCRNodeWrapper)pageContext.findAttribute("currentNode")).getName()) %>"></span>
         <a href="${currentNode.url}"
            title="${fn:escapeXml(not empty title.string ? title.string : currentNode.name)}">
-                ${fn:escapeXml(not empty title.string ? title.string : currentNode.name)}
+                ${fn:escapeXml(not empty refTitle ? refTitle : not empty title.string ? title.string : currentNode.name)}
         </a>
     </c:otherwise>
 </c:choose>

@@ -474,7 +474,7 @@
 
 [jmix:nodeReference] mixin
 
-[jnt:fileReference] > jnt:content, jmix:nodeReference, jmix:editorialContent
+[jnt:fileReference] > jnt:content, jmix:nodeReference, mix:title, jmix:editorialContent
  - j:node (weakreference,picker[type='file']) < jnt:file
 
 [jnt:imageReference] > jnt:content, jmix:nodeReference, jmix:editorialContent

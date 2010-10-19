@@ -223,11 +223,14 @@ public class ExtractionService {
                         String content = textExtractionService.parse(stream, metadata);
                         if (extractionNodePath != null && extractionNodePath.length() > 0) {
                             n = session.getNode(extractionNodePath);
+                            session.checkout(n);
                             try {
                                 n.setProperty(Constants.ORIGINAL_UUID, file.getIdentifier());
                             } catch (UnsupportedRepositoryOperationException e) {
                                 // ignore
                             }
+                        } else {
+                            session.checkout(n);
                         }
                         n.setProperty(Constants.EXTRACTED_TEXT, new BinaryImpl(content.getBytes(SettingsBean
                                 .getInstance().getCharacterEncoding())));

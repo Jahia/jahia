@@ -23,19 +23,25 @@
 <template:addResources type="javascript" resources="ajaxreplace.js"/>
 <c:if test="${not empty moduleMap.paginationActive and moduleMap.totalSize > 0 and moduleMap.nbPages > 1}">
     <c:set target="${moduleMap}" property="usePagination" value="true"/>
-    <c:set var="searchUrl" value="${url.current}"/>
-    <c:if test="${not empty currentResource.moduleParams.displaySearchParams}">
+    <c:choose>
+    <c:when test="${not empty currentResource.moduleParams.displaySearchParams}">
         <c:set var="searchUrl"><search:searchUrl/></c:set>
-    </c:if>
-    <c:set var="searchUrl" value="${searchUrl}.ajax"/>
+    </c:when>
+    <c:otherwise>
+        <c:set var="searchUrl" value="${url.current}.ajax"/>
+        <c:if test="${!fn:endsWith(searchUrl, '.ajax')}">
+            <c:set var="searchUrl" value="${searchUrl}.ajax"/>
+        </c:if>
+    </c:otherwise>
+    </c:choose>
     <c:url value="${searchUrl}" context="/" var="basePaginationUrl"/>
     <c:set target="${moduleMap}" property="basePaginationUrl" value="${basePaginationUrl}"/>
     <div class="pagination"><!--start pagination-->
 
-        <div class="paginationPosition"><span>Page ${moduleMap.currentPage} of ${moduleMap.nbPages} (${moduleMap.totalSize} results)</span>
+        <div class="paginationPosition"><span><fmt:message key="pagination.pageOf.withTotal"><fmt:param value="${moduleMap.currentPage}"/><fmt:param value="${moduleMap.nbPages}"/><fmt:param value="${moduleMap.totalSize}"/></fmt:message></span>
         </div>
         <div class="paginationNavigation">
-            <label for="pageSizeSelector">Nb of items:</label>
+            <label for="pageSizeSelector"><fmt:message key="pagination.itemsPerPage"/>:</label>
             <select id="pageSizeSelector"
                     onchange="jreplace('${currentNode.UUID}','${basePaginationUrl}',{begin:${moduleMap.begin},pagesize:$('#pageSizeSelector').val()},'${currentResource.moduleParams.callback}')">
                 <c:if test="${empty moduleMap.nbItemsList}">
@@ -48,7 +54,7 @@
             &nbsp;
             <c:if test="${moduleMap.currentPage>1}">
                 <a class="previousLink"
-                   onclick="jreplace('${currentNode.UUID}','${moduleMap.basePaginationUrl}',{begin:${ (moduleMap.currentPage-2) * moduleMap.pageSize },end:${ (moduleMap.currentPage-1)*moduleMap.pageSize-1},pagesize:${moduleMap.pageSize}},'${currentResource.moduleParams.callback}')">Previous</a>
+                   onclick="jreplace('${currentNode.UUID}','${moduleMap.basePaginationUrl}',{begin:${ (moduleMap.currentPage-2) * moduleMap.pageSize },end:${ (moduleMap.currentPage-1)*moduleMap.pageSize-1},pagesize:${moduleMap.pageSize}},'${currentResource.moduleParams.callback}')"><fmt:message key="pagination.previous"/></a>
             </c:if>
             <c:forEach begin="1" end="${moduleMap.nbPages}" var="i">
                 <c:if test="${i != moduleMap.currentPage}">
@@ -62,7 +68,7 @@
 
             <c:if test="${moduleMap.currentPage<moduleMap.nbPages}">
                 <a class="nextLink"
-                   onclick="jreplace('${currentNode.UUID}','${moduleMap.basePaginationUrl}',{begin:${ moduleMap.currentPage * moduleMap.pageSize },end:${ (moduleMap.currentPage+1)*moduleMap.pageSize-1},pagesize:${moduleMap.pageSize}},'${currentResource.moduleParams.callback}')">Next</a>
+                   onclick="jreplace('${currentNode.UUID}','${moduleMap.basePaginationUrl}',{begin:${ moduleMap.currentPage * moduleMap.pageSize },end:${ (moduleMap.currentPage+1)*moduleMap.pageSize-1},pagesize:${moduleMap.pageSize}},'${currentResource.moduleParams.callback}')"><fmt:message key="pagination.next"/></a>
             </c:if>
         </div>
 

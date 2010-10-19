@@ -488,12 +488,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public JCRNodeWrapper uploadFile(String name, final InputStream is, final String contentType) throws RepositoryException {
-        if (!isCheckedOut()) {
-            checkout();
-        }
         JCRNodeWrapper file = null;
         try {
             file = getNode(name);
+            if (!file.isCheckedOut()) {
+            	file.getSession().checkout(file);
+            }
         } catch (PathNotFoundException e) {
             logger.debug("file " + name + " does not exist, creating...");
             file = addNode(name, JNT_FILE);

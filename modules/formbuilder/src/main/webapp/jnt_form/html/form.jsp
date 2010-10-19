@@ -25,7 +25,7 @@
                     <c:forEach items="${jcr:getNodes(fieldset,'jnt:formElement')}" var="formElement" varStatus="status">
                     <c:set var="validations" value="${jcr:getNodes(formElement,'jnt:formElementValidation')}"/>
                     <c:if test="${fn:length(validations) > 0}">
-                    ${formElement.name} : {
+                    '${formElement.name}' : {
                         <c:forEach items="${jcr:getNodes(formElement,'jnt:formElementValidation')}" var="formElementValidation" varStatus="val">
                         <template:module node="${formElementValidation}" template="default" editable="true"/><c:if test="${not val.last}">,</c:if>
                         </c:forEach>

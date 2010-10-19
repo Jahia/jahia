@@ -6,4 +6,3 @@
  - answer (string, richtext) i18n
 
 [jnt:faqList] > jnt:content, jmix:editorialContent
- + * (jnt:faq)

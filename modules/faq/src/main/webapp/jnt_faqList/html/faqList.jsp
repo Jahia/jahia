@@ -3,28 +3,18 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib prefix="query" uri="http://www.jahia.org/tags/queryLib" %>
 <template:addResources type="css" resources="faq.css"/>
 
 <div class="summary faqSummary">
     <h3>Summary</h3>
+    <jcr:jqom var="results">
+        <query:selector nodeTypeName="jnt:faq"/>
+        <query:descendantNode path="${renderContext.mainResource.node.path}"/>
+    </jcr:jqom>
     <ol>
-        <c:forEach items="${currentNode.nodes}" var="subchild">
+        <c:forEach items="${results.nodes}" var="subchild">
             <template:module node="${subchild}" template="summary" />
         </c:forEach>
-    </ol>
-    <c:if test="${renderContext.editMode}">
-        <li><template:module path="*" /></li>
-    </c:if>
-</div>
-
-<div class="faqList">
-    <h3>Answers</h3>
-    <ol>
-        <c:forEach items="${currentNode.nodes}" var="subchild">
-            <li><template:module node="${subchild}"/></li>
-        </c:forEach>
-        <c:if test="${renderContext.editMode}">
-            <li><template:module path="*" /></li>
-        </c:if>
     </ol>
 </div>

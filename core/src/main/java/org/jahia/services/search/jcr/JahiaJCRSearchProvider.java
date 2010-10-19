@@ -109,8 +109,12 @@ public class JahiaJCRSearchProvider implements SearchProvider {
 
         List<Hit<?>> results = new LinkedList<Hit<?>>();
         try {
-            JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory()
-                    .getCurrentUserSession(null, context.getMainResource().getLocale(), context.getFallbackLocale());
+            JCRSessionWrapper session = ServicesRegistry
+                    .getInstance()
+                    .getJCRStoreService()
+                    .getSessionFactory()
+                    .getCurrentUserSession(context.getMainResource().getWorkspace(),
+                            context.getMainResource().getLocale(), context.getFallbackLocale());
             Query query = buildQuery(criteria, session);
             if (query != null) {
                 QueryResult queryResult = query.execute();
@@ -608,15 +612,17 @@ public class JahiaJCRSearchProvider implements SearchProvider {
             
             Query query = qm.createQuery(xpath.toString(), Query.XPATH);
             RowIterator rows = query.execute().getRows();
-            Row r = rows.nextRow();
-            Value v = r.getValue("rep:spellcheck()");
-            if (v != null) {
-                suggestion = new Suggestion(originalQuery, v.getString());
-            }
-            if (logger.isDebugEnabled()) {
-                logger.debug("Making spell check suggestion for '" + originalQuery + "' site '" + siteKey
-                        + "' and locale '" + locale + "' using XPath query [" + xpath.toString()
-                        + "]. Result suggestion: " + suggestion);
+            if (rows.hasNext()) {
+                Row r = rows.nextRow();
+                Value v = r.getValue("rep:spellcheck()");
+                if (v != null) {
+                    suggestion = new Suggestion(originalQuery, v.getString());
+                }
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Making spell check suggestion for '" + originalQuery + "' site '"
+                            + siteKey + "' and locale '" + locale + "' using XPath query ["
+                            + xpath.toString() + "]. Result suggestion: " + suggestion);
+                }
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

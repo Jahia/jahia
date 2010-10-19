@@ -198,6 +198,7 @@ public class AclEditor {
             }
             col = new ColumnConfig(s, columnName, 80);
             col.setAlignment(Style.HorizontalAlignment.CENTER);
+            col.setSortable(false);
             col.setRenderer(new GridCellRenderer() {
                 public Object render(final ModelData model, final String perm, ColumnData config, final int rowIndex, final int colIndex,
                                      ListStore listStore, final Grid grid) {

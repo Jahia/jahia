@@ -5,14 +5,17 @@ import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.widget.selection.AbstractStoreSelectionModel;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.util.Collator;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -81,6 +84,17 @@ public abstract class AbstractView extends TopRightComponent {
                 Log.error("Error listing directory content ", loadEvent.exception);
             }
         };
+
+        store.setStoreSorter(new StoreSorter<GWTJahiaNode>(new Comparator<Object>() {
+            public int compare(Object o1, Object o2) {
+                if (o1 instanceof String && o2 instanceof String) {
+                    String s1 = (String) o1;
+                    String s2 = (String) o2;
+                    return Collator.getInstance().localeCompare(s1,s2);
+                }
+                return 0;
+            }
+        }));
     }
 
     public List<GWTJahiaNode> getSelection() {
@@ -151,5 +165,5 @@ public abstract class AbstractView extends TopRightComponent {
             }
         });
 
-    }
+    }    
 }

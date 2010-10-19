@@ -22,11 +22,12 @@
 <s:results var="resultsHits">
 	<jcr:nodeProperty name="jcr:title" node="${currentNode}" var="title"/>
 	<jcr:nodeProperty name="autoSuggest" node="${currentNode}" var="autoSuggest"/>
+	<div id="${currentNode.UUID}">
 	<c:if test="${not empty title.string}">
 		<h3>${fn:escapeXml(title.string)}</h3>
 	</c:if>
 	<div class="resultsList">
-        <c:if test="${autoSuggest.boolean}">
+        <c:if test="${moduleMap.begin == 0 && autoSuggest.boolean}">
         	<%-- spelling auto suggestions are enabled --%>
         	<jcr:nodeProperty name="autoSuggestMinimumHitCount" node="${currentNode}" var="autoSuggestMinimumHitCount"/>
         	<jcr:nodeProperty name="autoSuggestHitCount" node="${currentNode}" var="autoSuggestHitCount"/>
@@ -53,27 +54,26 @@
         </c:if>
 		<c:if test="${count > 0}">
 	    	<h4><fmt:message key="search.results.found"><fmt:param value="${count}"/></fmt:message></h4>
-            <div id="${currentNode.UUID}">
-                <c:set target="${moduleMap}" property="listTotalSize" value="${count}" />
-                <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.init"/>
-                <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.end">
-                    <template:param name="displaySearchParams" value="true"/>
-                </template:option>
-        	<ol start="${begin+1}">
+            <c:set target="${moduleMap}" property="listTotalSize" value="${count}" />
+            <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.init"/>
+            <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.end">
+                <template:param name="displaySearchParams" value="true"/>
+            </template:option>
+        	<ol start="${moduleMap.begin+1}">
 				<s:resultIterator begin="${moduleMap.begin}" end="${moduleMap.end}" varStatus="status">
 					<li><%--<span>${status.index+1}.</span>--%><%@ include file="searchHit.jspf" %></li>
 				</s:resultIterator>
 	        </ol>
-                <div class="clear"></div>
-                <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.end">
-                    <template:param name="displaySearchParams" value="true"/>
-                </template:option>
-            </div>
+            <div class="clear"></div>
+            <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.end">
+                <template:param name="displaySearchParams" value="true"/>
+            </template:option>
             <template:removePager id="${currentNode.identifier}"/>
 		</c:if>
         <c:if test="${count == 0}">
         	<h4><fmt:message key="search.results.no.results"/></h4>
 		</c:if>
+    </div>
     </div>
 </s:results>
 <c:if test="${renderContext.editMode}">

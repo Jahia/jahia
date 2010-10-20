@@ -202,7 +202,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         TabItem currentTab = tabs.getSelectedItem();
         if (currentTab != null) {
             Object currentTabItem = currentTab.getData("item");
-            if (currentTab != null && currentTabItem instanceof EditEngineTabItem) {
+            if (currentTabItem != null && currentTabItem instanceof EditEngineTabItem) {
                 EditEngineTabItem engineTabItem = (EditEngineTabItem) currentTabItem;
 
                 if (!((AsyncTabItem)currentTab).isProcessed()) {

@@ -131,4 +131,9 @@ public class InfoTabItem extends EditEngineTabItem {
     public boolean isHandleMultipleSelection() {
         return true;
     }
+
+    @Override
+    public boolean isHandleCreate() {
+        return false;
+    }
 }

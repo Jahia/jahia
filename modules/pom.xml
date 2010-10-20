@@ -119,6 +119,7 @@
 		<module>socialsharing</module>
         <module>shindig</module>
         <module>sitemap</module>
+        <module>summary</module>
         <module>skins</module>
         <module>staticHTML</module>
         <module>tabularList</module>

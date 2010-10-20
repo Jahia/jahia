@@ -4,5 +4,3 @@
 [jnt:faq] > jnt:content, jmix:editorialContent
  - question (string) i18n
  - answer (string, richtext) i18n
-
-[jnt:faqList] > jnt:content, jmix:editorialContent

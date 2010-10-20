@@ -32,6 +32,7 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
@@ -47,16 +48,15 @@ import com.extjs.gxt.ui.client.widget.button.Button;
  * To change this template use File | Settings | File Templates.
  */
 public class LockActionItem extends BaseActionItem   {
-    private boolean locked;
 
     public void onComponentSelection() {
-        ContentActions.lock(locked, linker);
-        locked = !locked;
+        ContentActions.lock(true, linker);
     }
 
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.getMultipleSelection().size() > 0 && lh.isLockable() && lh.isWriteable() && !lh.isLocked() && !lh.isSecondarySelection());
+        GWTJahiaNode singleSelection = lh.getSingleSelection();
+        setEnabled(singleSelection!=null && singleSelection.isLockable() && singleSelection.isWriteable() && !lh.getSingleSelection().isLocked() && singleSelection.getLockOwner() == null && !lh.isSecondarySelection());                
     }
 }

@@ -291,11 +291,9 @@ public class ContentActions {
             List<String> selectedPaths = new ArrayList<String>(selectedItems.size());
             List<String> lockedBySystem = new LinkedList<String>();
             for (GWTJahiaNode node : selectedItems) {
-                if (lock && !node.isLocked() || !lock && node.isLocked()) {
-                    if (!lock
-                            && node.getLockOwner() != null
-                            && node.getLockOwner().equals(
-                            JahiaGWTParameters.SYSTEM_USER)) {
+                if ((lock && !node.isLocked()) || (!lock && (node.isLocked()||(node.getLockOwner()!=null&&node.getLockOwner().equals(JahiaGWTParameters.getCurrentUser()))))) {
+                    if (!lock && node.getLockOwner() != null &&
+                        node.getLockOwner().equals( JahiaGWTParameters.SYSTEM_USER)) {
                         lockedBySystem.add(node.getPath());
                     }
                     selectedPaths.add(node.getPath());

@@ -5,6 +5,5 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<a name="${currentNode.UUID}"></a>
 <h4 class="faqQuestion">${currentNode.properties.question.string}</h4>
 <div class="faqAnswer">${currentNode.properties.answer.string}</div>

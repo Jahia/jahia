@@ -39,6 +39,7 @@ import org.jahia.services.render.TemplateNotFoundException;
 import org.jahia.services.render.URLGenerator;
 import org.jahia.services.render.scripting.Script;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -65,6 +66,16 @@ public class BaseAttributesFilter extends AbstractFilter {
                     chain.pushAttribute(request, "script", script);
                     chain.pushAttribute(request, "scriptInfo", script.getTemplate().getInfo());
                 } catch (TemplateNotFoundException ex) {
+                    chain.pushAttribute(request, "script", null);
+                    chain.pushAttribute(request, "scriptInfo", null);
+                }
+            } else if (context.isContributionMode()) {
+                try {
+                    resource.setTemplate("default");
+                    final Script script = service.resolveScript(resource, context);
+                    chain.pushAttribute(request, "script", script);
+                    chain.pushAttribute(request, "scriptInfo", script.getTemplate().getInfo());
+                } catch (TemplateNotFoundException e1) {
                     chain.pushAttribute(request, "script", null);
                     chain.pushAttribute(request, "scriptInfo", null);
                 }

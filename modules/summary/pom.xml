@@ -34,8 +34,8 @@
 
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
@@ -135,22 +135,25 @@
                     <warSourceExcludes>resources/*.properties</warSourceExcludes>
                     <webResources>
                         <resource>
-                          <directory>${project.build.directory}/native2ascii</directory>
-                          <targetPath>resources</targetPath>
+                            <directory>${project.build.directory}/native2ascii</directory>
+                            <targetPath>resources</targetPath>
                         </resource>
                     </webResources>
                     <archive>
                         <manifestEntries>
-		                	<Implementation-Title>${project.name}</Implementation-Title>
-		                    <Implementation-Version>${project.version}</Implementation-Version>
-		                    <Implementation-Vendor>${jahia.manifest.vendor.name}</Implementation-Vendor>
-		                    <Implementation-Vendor-Id>${jahia.manifest.vendor.id}</Implementation-Vendor-Id>
-		                    <Implementation-URL>${jahia.manifest.vendor.url}</Implementation-URL>
-		                    <Specification-Title>${project.name}</Specification-Title>
-		                    <Specification-Version>${project.version}</Specification-Version>
-		                    <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
+                            <Implementation-Title>${project.name}</Implementation-Title>
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                            <Implementation-Vendor>${jahia.manifest.vendor.name}</Implementation-Vendor>
+                            <Implementation-Vendor-Id>${jahia.manifest.vendor.id}</Implementation-Vendor-Id>
+                            <Implementation-URL>${jahia.manifest.vendor.url}</Implementation-URL>
+                            <Specification-Title>${project.name}</Specification-Title>
+                            <Specification-Version>${project.version}</Specification-Version>
+                            <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
                             <package-name>${project.name}</package-name>
+                            <depends>Jahia Static Assets</depends>
+                            <depends>Default Jahia Templates</depends>
                             <root-folder>${artifactId}</root-folder>
+
                         </manifestEntries>
                     </archive>
                 </configuration>

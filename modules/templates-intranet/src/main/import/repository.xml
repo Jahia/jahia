@@ -375,6 +375,25 @@
               </wrappercontent>
             </blog-new>
           </blog>
+            <summary jcr:primaryType="jnt:masterTemplate">
+                <wrappercontent jcr:primaryType="jnt:contentList">
+                    <row column="2col115" jcr:primaryType="jnt:row">
+                        <col1 j:skin="skins.box3style1" jcr:mixinTypes="jmix:skinnable"
+                              jcr:primaryType="jnt:contentList">
+                            <summary jcr:primaryType="jnt:summary"
+                                     j:bindedComponent="/templateSets/templates-intranet/templates/base/summary/wrappercontent/row/col1/listA">
+                                <j:translation_en jcr:title="Summary" jcr:primaryType="jnt:translation"
+                                                  jcr:language="en"/>
+                            </summary>
+                            <listA jcr:primaryType="jnt:area" j:areaView="anchor" j:allowedTypes=""/>
+                        </col1>
+                        <col2 j:skin="skins.box5" jcr:mixinTypes="jmix:style jmix:skinnable"
+                              jcr:primaryType="jnt:contentList">
+                            <listB jcr:primaryType="jnt:area" j:allowedTypes=""/>
+                        </col2>
+                    </row>
+                </wrappercontent>
+          </summary>
         </base>
       </templates>
       <search-results jcr:mixinTypes="jmix:sitemap" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" j:templateNode="/templateSets/templates-intranet/templates/base" priority="0.5">

@@ -828,7 +828,8 @@ public class JahiaAdministration extends HttpServlet {
         request.setAttribute("sitesList", grantedSites);
         request.setAttribute("siteID", session.getAttribute(CLASS_NAME + "manageSiteID"));
         request.setAttribute("isSuperAdmin", session.getAttribute(CLASS_NAME + "isSuperAdmin"));
-        request.setAttribute("configJahia", session.getAttribute(CLASS_NAME + "configJahia"));
+        Object attribute = session.getAttribute(CLASS_NAME + "configJahia");
+        request.setAttribute("configJahia", attribute!=null?attribute:Boolean.TRUE);
 
         doRedirect(request, response, session, JSP_PATH + "menu.jsp");
     } // end displayMenu

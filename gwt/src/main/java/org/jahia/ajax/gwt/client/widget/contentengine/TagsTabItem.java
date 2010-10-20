@@ -185,7 +185,15 @@ public class TagsTabItem extends EditEngineTabItem {
                     public void onSuccess(GWTJahiaNode result) {
                         if (tagStore.findModel(result) == null) {
                             tagStore.add(result, false);
-                            newValues.get(locale).getValues().add(new GWTJahiaNodePropertyValue(result,
+                            GWTJahiaNodeProperty gwtJahiaNodeProperty = newValues.get(locale);
+                            if (gwtJahiaNodeProperty == null) {
+                                gwtJahiaNodeProperty = new GWTJahiaNodeProperty();
+                                gwtJahiaNodeProperty.setMultiple(true);
+                                gwtJahiaNodeProperty.setValues(new ArrayList<GWTJahiaNodePropertyValue>());
+                                gwtJahiaNodeProperty.setName("j:tags");
+                                newValues.put(locale, gwtJahiaNodeProperty);
+                            }
+                            gwtJahiaNodeProperty.getValues().add(new GWTJahiaNodePropertyValue(result,
                                     GWTJahiaNodePropertyType.WEAKREFERENCE));
                         }
                     }

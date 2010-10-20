@@ -4,7 +4,7 @@
 #bodywrapper div.jobsSearchForm{
 	clear:both;
 	margin:1em auto;
-	background:#fff url(img/jobform.png) repeat-x bottom left;
+	background:#fff url(img/jobform.png) repeat-x top left;
 	border:1px solid #ccc;
 	padding:0.5em 0;
 }

@@ -38,6 +38,7 @@ import org.apache.taglibs.standard.tag.common.core.ParamParent;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.nodetypes.ConstraintsHelper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.RenderContext;
@@ -48,6 +49,8 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Set;
 
 /**
@@ -62,17 +65,25 @@ public class WrappedContentTag extends ModuleTag implements ParamParent {
 
     private String areaType = "jnt:contentList";
 
+    private String moduleType = "area";
+
+    private String mockupStyle;
+
     public void setAreaType(String areaType) {
         this.areaType = areaType;
     }
 
+    public void setModuleType(String moduleType) {
+        this.moduleType = moduleType;
+    }
+
+    public void setMockupStyle(String mockupStyle) {
+        this.mockupStyle = mockupStyle;
+    }
+
     @Override
-    protected String getModuleType() throws RepositoryException {
-//        if (!path.startsWith("/")) {
-        return "area";
-//        } else {
-//            return "absolutearea";
-//        }
+    protected String getModuleType(RenderContext renderContext) throws RepositoryException {
+        return moduleType;
     }
 
     protected void missingResource(RenderContext renderContext, Resource mainResource, Resource resource)
@@ -115,6 +126,18 @@ public class WrappedContentTag extends ModuleTag implements ParamParent {
         } catch (RepositoryException e) {
             logger.error("Cannot create area", e);
         }
+// todo : do not create node, create it when dropping content
+//        if (renderContext.isEditMode()) {
+//            try {
+//                constraints = ConstraintsHelper.getConstraints(Arrays.asList(NodeTypeRegistry.getInstance().getNodeType(areaType)));
+//            } catch (RepositoryException e) {
+//                logger.error("Error when getting list constraints", e);
+//            }
+//
+//            printModuleStart(getModuleType(renderContext), path, null, "Script not found");
+//            printModuleEnd();
+//        }
+//
     }
 
     private void applyContributeModeOptions(JCRNodeWrapper nodeWrapper, boolean nodeAlreadyExist)

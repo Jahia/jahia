@@ -18,8 +18,8 @@
 
         <c:set value="${currentNode.nodes}" var="currentList" scope="request"/>
 
-        <div class="mainResourceArea<c:if test="${not empty currentNode.properties['j:mockupStyle']}"> ${currentNode.properties['j:mockupStyle'].string}</c:if>">
-            <div class="mainResourceAreaTemplate">
+        <div class="area<c:if test="${not empty currentNode.properties['j:mockupStyle']}"> ${currentNode.properties['j:mockupStyle'].string}</c:if>">
+            <div class="areaTemplate">
                 <span>List : ${currentNode.name}</span>
             </div>
             <c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}"

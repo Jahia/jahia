@@ -13,8 +13,8 @@
 <template:addResources type="css" resources="mainresource.css"/>
 <c:choose>
     <c:when test="${not empty inWrapper and inWrapper eq false}">
-        <div class="mainResourceAbsoluteArea<c:if test="${not empty currentNode.properties['j:mockupStyle']}"> ${currentNode.properties['j:mockupStyle'].string}</c:if>">
-            <div class="mainResourceAbsoluteAreaTemplate">
+        <div class="absoluteArea<c:if test="${not empty currentNode.properties['j:mockupStyle']}"> ${currentNode.properties['j:mockupStyle'].string}</c:if>">
+            <div class="absoluteAreaTemplate">
                 <span>Absolute Area : ${currentNode.name}</span>
             </div>
             <div class="loremipsum">
@@ -62,7 +62,7 @@
         <c:if test="${not empty node}">
             <template:wrappedContent template="${currentNode.properties['j:referenceView'].string}"
                                      path="${node.path}/${currentNode.name}"
-                                     nodeTypes="${nodeTypes}">
+                                     nodeTypes="${nodeTypes}" moduleType="absoluteArea">
                 <c:if test="${not empty currentNode.properties['j:subNodesView'].string}">
                     <template:param name="subNodesTemplate"
                                     value="${currentNode.properties['j:subNodesView'].string}"/>

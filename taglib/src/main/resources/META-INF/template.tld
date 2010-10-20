@@ -390,6 +390,18 @@
         </attribute>
         <attribute>
             <description>The template type to use. By default, inherited from parent module, or HTML.</description>
+            <name>moduleType</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>The template type to use. By default, inherited from parent module, or HTML.</description>
+            <name>mockupStyle</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>The template type to use. By default, inherited from parent module, or HTML.</description>
             <name>templateType</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>

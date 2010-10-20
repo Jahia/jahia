@@ -60,7 +60,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
     }
 
     @Override
-    protected String getModuleType() throws RepositoryException {
+    protected String getModuleType(RenderContext renderContext) throws RepositoryException {
         return "area";
     }
 

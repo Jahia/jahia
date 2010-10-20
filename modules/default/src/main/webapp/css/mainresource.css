@@ -1,4 +1,4 @@
-#bodywrapper .mainResourceArea { 
+#bodywrapper .area {
 	height:200px; 
 	overflow: hidden; 
 	background-color:#d8effb; 
@@ -7,7 +7,7 @@
 	position:relative;
 	border: 1px dashed #99ccff;
 }
-#bodywrapper .mainResourceAreaTemplate{
+#bodywrapper .areaTemplate{
 	background-color: #336699;
 	border:1px solid #003366;
 	color:#fff;
@@ -30,7 +30,7 @@
 #bodywrapper .AreaInformation{
 	color:#666;
 }
-#bodywrapper .mainResourceAbsoluteArea { 
+#bodywrapper .absoluteArea {
 	height:200px; 
 	overflow: hidden; 
 	background-color:#ffcccc; 
@@ -39,7 +39,7 @@
 	position:relative;
 	border: 1px dashed #cc6666;
 }
-#bodywrapper .mainResourceAbsoluteAreaTemplate{
+#bodywrapper .absoluteAreaTemplate{
 	background-color: #c30;
 	border:1px solid #990000;
 	color:#fff;
@@ -116,4 +116,9 @@
 	-moz-box-shadow: 0 1px 3px #999;
 	-webkit-box-shadow: 0 1px 3px #999;
 	box-shadow: 0 1px 3px #999;
+}
+
+#bodywrapper .dashedArea {
+    background : url(img/placeholder-area.png) top left;
+    height:200px;
 }

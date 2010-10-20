@@ -18,17 +18,17 @@
 
         <c:set value="${currentNode.nodes}" var="currentList" scope="request"/>
 
-        <div class="mainResourceArea<c:if test="${not empty currentNode.properties['j:mockupStyle']}"> ${currentNode.properties['j:mockupStyle'].string}</c:if>">
-            <div class="mainResourceAreaTemplate">
+        <div class="area<c:if test="${not empty currentNode.properties['j:mockupStyle']}"> ${currentNode.properties['j:mockupStyle'].string}</c:if>">
+            <div class="areaTemplate">
                 <span>Area : ${currentNode.name}</span>
             </div>
-            <c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}"
-                       end="${moduleMap.end}">
-                <template:module node="${subchild}"/>
-            </c:forEach>
-            <c:if test="${renderContext.editMode}">
-                <fmt:message key="label.studio.add.archetype" /> <template:module path="*"/>
-            </c:if>
+            <%--<c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}"--%>
+                       <%--end="${moduleMap.end}">--%>
+                <%--<template:module node="${subchild}"/>--%>
+            <%--</c:forEach>--%>
+            <%--<c:if test="${renderContext.editMode}">--%>
+                <%--<fmt:message key="label.studio.add.archetype" /> <template:module path="*"/>--%>
+            <%--</c:if>--%>
         </div>
 
 
@@ -46,7 +46,7 @@
             </c:forEach>
         </c:if>
         <template:wrappedContent template="${currentNode.properties['j:areaView'].string}"
-                                 path="${currentNode.name}" nodeTypes="${nodeTypes}">
+                                 path="${currentNode.name}" nodeTypes="${nodeTypes}" mockupStyle="${currentNode.properties['j:mockupStyle'].string}">
             <c:if test="${not empty currentNode.properties['j:subNodesView'].string}">
                 <template:param name="subNodesTemplate" value="${currentNode.properties['j:subNodesView'].string}"/>
             </c:if>

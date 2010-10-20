@@ -123,4 +123,8 @@ public class PlaceholderModule extends Module {
     public boolean isDraggable() {
         return false;
     }
+
+    public void setParentModule(Module parentModule) {
+        this.parentModule = parentModule;
+    }
 }

@@ -160,7 +160,7 @@ public class EditModeDNDListener extends DNDListener {
                 GWTJahiaNodeType type = e.getStatus().getData(SOURCE_NODETYPE);
                 e.getStatus().setData(OPERATION_CALLED, "true");
                 if ((type.getItems() == null || type.getItems().size() == 0) && (type.getInheritedItems() == null || type.getInheritedItems().size() == 0)) {
-                    async.createNode(parent.getPath(), null,
+                    async.createNode(parentPath, null,
                             type.getName(), null, null,
                             new ArrayList<GWTJahiaNodeProperty>(),null, 
                             new BaseAsyncCallback<GWTJahiaNode>() {

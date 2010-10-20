@@ -61,6 +61,7 @@ public abstract class Module extends LayoutContainer {
     protected int depth;
     protected boolean selectable;
     protected Header head;
+    protected boolean hasChildren = false;
 
     public Module() {
     }
@@ -100,8 +101,15 @@ public abstract class Module extends LayoutContainer {
         return parentModule;
     }
 
+    public void setHasChildren(boolean hasChildren) {
+        this.hasChildren = hasChildren;
+    }
+
     public void setParentModule(Module parentModule) {
         this.parentModule = parentModule;
+        if (parentModule != null) {
+            parentModule.setHasChildren(true);
+        }
     }
 
     public String getModuleId() {

@@ -93,15 +93,18 @@ public class ModuleHelper {
                 String referenceTypes = DOM.getElementAttribute(divElement, "referenceTypes");
                 String scriptInfo = DOM.getElementAttribute(divElement, "scriptInfo");
                 Module module = null;
-                if (type.equals("area")) {
+                if (type.equals("area") || type.equals("absoluteArea")) {
                     module = new AreaModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes,
-                            referenceTypes, m);
+                            referenceTypes, type, m);
                 } else if (type.equals("list")) {
                     module = new ListModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes,
                             referenceTypes, m);
                 } else if (type.equals("existingNode")) {
                     module = new SimpleModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes,
-                            referenceTypes, m);
+                            referenceTypes, m, false);
+                } else if (type.equals("existingNodeWithHeader")) {
+                    module = new SimpleModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes,
+                            referenceTypes, m, true);
                 } else if (type.equals("placeholder")) {
                     module = new PlaceholderModule(id, path, nodetypes, referenceTypes, m);
                 } else if (type.equals("linker")) {

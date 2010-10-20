@@ -27,7 +27,7 @@
         </div>
     </c:when>
     <c:otherwise>
-        <template:wrappedContent template="${mainTemplate}"/>
+        <template:wrappedContent template="${mainTemplate}" mockupStyle="${currentNode.properties['j:mockupStyle'].string}"/>
     </c:otherwise>
 </c:choose>
 

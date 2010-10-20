@@ -64,10 +64,10 @@ public class SimpleModule extends Module {
     }
 
     public SimpleModule(String id, final String path, String s, String template, String scriptInfo, String nodeTypes,
-                        String referenceType, final MainModule mainModule) {
+                        String referenceType, final MainModule mainModule, boolean header) {
         super(id, path, template, scriptInfo, nodeTypes, referenceType, mainModule);
 
-        if (mainModule.getConfig().getName().equals("studiomode")) {
+        if (header) {
             head = new Header();
             add(head);
             setHeaderText(Messages.get("label.content") + " : " + path.substring(path.lastIndexOf('/') + 1));

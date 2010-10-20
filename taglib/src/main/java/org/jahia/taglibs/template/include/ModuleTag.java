@@ -35,6 +35,7 @@ package org.jahia.taglibs.template.include;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
+import org.jahia.bin.Studio;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ConstraintsHelper;
@@ -234,7 +235,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
                 try {
                     if (canEdit(renderContext)) {
-                        String type = getModuleType();
+                        String type = getModuleType(renderContext);
 
                         Script script = null;
                         try {
@@ -436,9 +437,12 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     }
 
-    protected String getModuleType() throws RepositoryException {
+    protected String getModuleType(RenderContext renderContext) throws RepositoryException {
         String type = "existingNode";
-        if (node.isNodeType("jmix:listContent")) {
+
+        if (renderContext.getEditModeConfigName().equals(Studio.STUDIO_MODE) && !node.isNodeType("jmix:layoutComponentContent")) {
+            type = "existingNodeWithHeader";
+        } else if (node.isNodeType("jmix:listContent")) {
             type = "list";
         }
         return type;

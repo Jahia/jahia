@@ -32,9 +32,22 @@
 
 package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
+import com.extjs.gxt.ui.client.dnd.DND;
+import com.extjs.gxt.ui.client.dnd.DropTarget;
 import com.extjs.gxt.ui.client.widget.Header;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
+import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 
 /**
  * Created by IntelliJ IDEA.
@@ -45,23 +58,95 @@ import org.jahia.ajax.gwt.client.messages.Messages;
  */
 public class AreaModule extends SimpleModule {
 
+    private String moduleType;
+    private String areaType = "jnt:contentList";
+
     public AreaModule(String id, String path, String s, String template, String scriptInfo, String nodeTypes, String referenceType,
-                      MainModule mainModule) {
+                      String moduleType, MainModule mainModule) {
         super(id, path, template, scriptInfo, nodeTypes, referenceType, mainModule);
         hasDragDrop = false;
         head = new Header();
         add(head);
-
+        this.moduleType = moduleType;
         if (path.contains("/")) {
-            head.setText(Messages.get("org.jahia.jcr.edit.area.label") + " : " + path.substring(path.lastIndexOf('/') + 1));
+            head.setText(Messages.get("label."+moduleType) + " : " + path.substring(path.lastIndexOf('/') + 1));
         } else {
-            head.setText(Messages.get("org.jahia.jcr.edit.area.label")+" : "+ path);
+            head.setText(Messages.get("label."+moduleType)+" : "+ path);
         }
-        setBorders(false);
 //        setBodyBorder(false);
         head.addStyleName("x-panel-header");
-        head.addStyleName("x-panel-header-areamodule");
+        head.addStyleName("x-panel-header-"+moduleType+"module");
         html = new HTML(s);
         add(html);
     }
+
+    LayoutContainer ctn;
+
+    @Override public void onParsed() {
+        super.onParsed();
+        if (!hasChildren) {
+            addStyleName(moduleType);
+            removeAll();
+
+            LayoutContainer dash = new LayoutContainer();
+            dash.addStyleName("dashedArea");
+
+            ctn = new LayoutContainer();
+            ctn.addStyleName(moduleType+"Template");
+            ctn.addText(head.getText());
+            dash.add(ctn);
+
+            add(dash);
+        } else {
+            setBorders(false);
+        }
+    }
+
+    @Override public void onNodeTypesLoaded() {
+        if (!hasChildren) {
+            DropTarget target = new ModuleDropTarget(this, EditModeDNDListener.PLACEHOLDER_TYPE);
+            target.setOperation(DND.Operation.COPY);
+            target.setFeedback(DND.Feedback.INSERT);
+            target.addDNDListener(mainModule.getEditLinker().getDndListener());
+
+            if (getNodeTypes() != null) {
+                String[] nodeTypesArray = getNodeTypes().split(" ");
+                for (final String s : nodeTypesArray) {
+                    Button button = new Button(ModuleHelper.getNodeType(s) != null ? ModuleHelper.getNodeType(
+                            s).getLabel() : s);
+                    button.setStyleName("button-placeholder");
+                    button.addClickHandler(new ClickHandler() {
+                        public void onClick(ClickEvent event) {
+//                            createNode(new BaseAsyncCallback<GWTJahiaNode>() {   // todo create node now ?
+//                                public void onSuccess(GWTJahiaNode result) {
+                                    if (node != null && node.isWriteable() && !node.isLocked()) {
+                                        ContentActions.showContentWizard(mainModule.getEditLinker(), s, node);
+                                    }
+//                                }
+//                            });
+                        }
+                    });
+                    ctn.add(button);
+                    ctn.layout();
+                }
+            }
+
+
+        }                
+    }
+
+
+//    private void createNode(final AsyncCallback<GWTJahiaNode> callback) {
+//        if (node == null) {
+//            JahiaContentManagementService.App.getInstance().createNode(ModuleHelper.getModules().get(0).getPath(), path.substring(path.lastIndexOf('/') + 1),
+//                    areaType, null,null,null,null,new BaseAsyncCallback<GWTJahiaNode>() {
+//                        public void onSuccess(GWTJahiaNode result) {
+//                            node = result;
+//                            callback.onSuccess(result);
+//                        }
+//                    });
+//        } else {
+//            callback.onSuccess(node);
+//        }
+//    }
 }

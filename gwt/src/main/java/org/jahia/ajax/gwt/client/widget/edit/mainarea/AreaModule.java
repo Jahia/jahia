@@ -34,6 +34,7 @@ package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
 import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.dnd.DropTarget;
+import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.widget.Header;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -59,7 +60,7 @@ import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 public class AreaModule extends SimpleModule {
 
     private String moduleType;
-    private String areaType = "jnt:contentList";
+    private String areaType = "jnt:contentList";  // todo set the areatype
 
     public AreaModule(String id, String path, String s, String template, String scriptInfo, String nodeTypes, String referenceType,
                       String moduleType, MainModule mainModule) {
@@ -104,7 +105,7 @@ public class AreaModule extends SimpleModule {
 
     @Override public void onNodeTypesLoaded() {
         if (!hasChildren) {
-            DropTarget target = new ModuleDropTarget(this, EditModeDNDListener.PLACEHOLDER_TYPE);
+            DropTarget target = new ModuleDropTarget(this, node == null ? EditModeDNDListener.EMPTYAREA_TYPE : EditModeDNDListener.PLACEHOLDER_TYPE);
             target.setOperation(DND.Operation.COPY);
             target.setFeedback(DND.Feedback.INSERT);
             target.addDNDListener(mainModule.getEditLinker().getDndListener());
@@ -117,13 +118,13 @@ public class AreaModule extends SimpleModule {
                     button.setStyleName("button-placeholder");
                     button.addClickHandler(new ClickHandler() {
                         public void onClick(ClickEvent event) {
-//                            createNode(new BaseAsyncCallback<GWTJahiaNode>() {   // todo create node now ?
-//                                public void onSuccess(GWTJahiaNode result) {
+                            createNode(new BaseAsyncCallback<GWTJahiaNode>() {
+                                public void onSuccess(GWTJahiaNode result) {
                                     if (node != null && node.isWriteable() && !node.isLocked()) {
                                         ContentActions.showContentWizard(mainModule.getEditLinker(), s, node);
                                     }
-//                                }
-//                            });
+                                }
+                            });
                         }
                     });
                     ctn.add(button);
@@ -135,18 +136,25 @@ public class AreaModule extends SimpleModule {
         }                
     }
 
+    @Override public String getPath() {
+        return "*";
+    }
 
-//    private void createNode(final AsyncCallback<GWTJahiaNode> callback) {
-//        if (node == null) {
-//            JahiaContentManagementService.App.getInstance().createNode(ModuleHelper.getModules().get(0).getPath(), path.substring(path.lastIndexOf('/') + 1),
-//                    areaType, null,null,null,null,new BaseAsyncCallback<GWTJahiaNode>() {
-//                        public void onSuccess(GWTJahiaNode result) {
-//                            node = result;
-//                            callback.onSuccess(result);
-//                        }
-//                    });
-//        } else {
-//            callback.onSuccess(node);
-//        }
-//    }
+    public void createNode(final AsyncCallback<GWTJahiaNode> callback) {
+        if (node == null) {
+            JahiaContentManagementService.App.getInstance().createNode(path.substring(0, path.lastIndexOf('/')), path.substring(path.lastIndexOf('/') + 1),
+                    areaType, null,null,null,null,new AsyncCallback<GWTJahiaNode>() {
+                        public void onSuccess(GWTJahiaNode result) {
+                            node = result;
+                            callback.onSuccess(result);
+                        }
+
+                        public void onFailure(Throwable caught) {
+                            callback.onFailure(caught);
+                        }
+                    });
+        } else {
+            callback.onSuccess(node);
+        }
+    }
 }

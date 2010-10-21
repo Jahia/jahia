@@ -148,21 +148,27 @@ public class ModuleDropTarget extends DropTarget {
                 e.getStatus().setData(EditModeDNDListener.TARGET_REFERENCE_TYPE, null);
                 e.getStatus().setData(EditModeDNDListener.TARGET_PATH, module.getPath());
                 e.getStatus().setData(EditModeDNDListener.TARGET_NODE, module.getNode() != null ? module.getNode() : jahiaNode);
-            } else if (module.getParentModule().getReferenceTypes().length() > 0 && e.getStatus().getData(EditModeDNDListener.SOURCE_NODES) != null) {
-                String[] refs = module.getParentModule().getReferenceTypes().split(" ");
-                List<String> allowedRefs = new ArrayList<String>();
-                for (String ref : refs) {
-                    String[] types = ref.split("\\[|\\]");
-                    if (checkNodeType(e, types[1])) {
-                        allowedRefs.add(types[0]);
-                    }
+            } else {
+                String refTypes = module.getParentModule().getReferenceTypes();
+                if (targetType.equals(EditModeDNDListener.EMPTYAREA_TYPE)) {
+                    refTypes = module.getReferenceTypes();
                 }
-                if (allowedRefs.size() > 0) {
-                    allowed = true;
-                    e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, targetType);
-                    e.getStatus().setData(EditModeDNDListener.TARGET_REFERENCE_TYPE, allowedRefs);
-                    e.getStatus().setData(EditModeDNDListener.TARGET_PATH, module.getPath());
-                    e.getStatus().setData(EditModeDNDListener.TARGET_NODE, module.getNode() != null ? module.getNode() : jahiaNode);
+                if (refTypes.length() > 0 && e.getStatus().getData(EditModeDNDListener.SOURCE_NODES) != null) {
+                    String[] refs = refTypes.split(" ");
+                    List<String> allowedRefs = new ArrayList<String>();
+                    for (String ref : refs) {
+                        String[] types = ref.split("\\[|\\]");
+                        if (checkNodeType(e, types[1])) {
+                            allowedRefs.add(types[0]);
+                        }
+                    }
+                    if (allowedRefs.size() > 0) {
+                        allowed = true;
+                        e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, targetType);
+                        e.getStatus().setData(EditModeDNDListener.TARGET_REFERENCE_TYPE, allowedRefs);
+                        e.getStatus().setData(EditModeDNDListener.TARGET_PATH, module.getPath());
+                        e.getStatus().setData(EditModeDNDListener.TARGET_NODE, module.getNode() != null ? module.getNode() : jahiaNode);
+                    }
                 }
             }
             e.getStatus().setStatus(allowed);

@@ -88,56 +88,20 @@ public class WrappedContentTag extends ModuleTag implements ParamParent {
 
     protected void missingResource(RenderContext renderContext, Resource mainResource, Resource resource)
             throws RepositoryException, IOException {
-        node = null;
-        try {
-            if (renderContext.isEditMode()) {
-                JCRSessionWrapper session = resource.getNode().getSession();
-                if (!path.startsWith("/")) {
-                    JCRNodeWrapper nodeWrapper = resource.getNode();
-                    if (!nodeWrapper.isLocked()) {
-                        if (!nodeWrapper.isCheckedOut()) {
-                            nodeWrapper.checkout();
-                        }
-                        node = nodeWrapper.addNode(path, areaType);
-                        if(mainResource!=null)
-                        applyContributeModeOptions(mainResource.getNode(), false);
-                    }
-                } else {
-                    // Absolute area
-                    JCRNodeWrapper parent = session.getNode(StringUtils.substringBeforeLast(path, "/"));
-                    if (!parent.isLocked()) {
-                        if (!parent.isCheckedOut()) {
-                            parent.checkout();
-                        }
-                        node = parent.addNode(StringUtils.substringAfterLast(path, "/"), areaType);
-                        if(mainResource!=null)
-                        applyContributeModeOptions(mainResource.getNode(), false);
-                    }
-                }
-                NodeIterator ni = mainResource.getNode().getNodes();
-                while (ni.hasNext()) {
-                    JCRNodeWrapper subNode = (JCRNodeWrapper) ni.next();
-                    subNode.copy(node.getPath());
-                }
-                session.save();
+        if (renderContext.isEditMode()) {
+            try {
+                constraints = ConstraintsHelper.getConstraints(Arrays.asList(NodeTypeRegistry.getInstance().getNodeType(areaType)));
+            } catch (RepositoryException e) {
+                logger.error("Error when getting list constraints", e);
             }
-        } catch (ConstraintViolationException e) {
-            super.missingResource(renderContext, resource);
-        } catch (RepositoryException e) {
-            logger.error("Cannot create area", e);
+
+            String areaPath = path;
+            if (!path.startsWith("/")) {
+                areaPath = renderContext.getMainResource().getNode().getPath() + "/" + path;
+            }
+            printModuleStart(getModuleType(renderContext), areaPath, null, "No script");
+            printModuleEnd();
         }
-// todo : do not create node, create it when dropping content
-//        if (renderContext.isEditMode()) {
-//            try {
-//                constraints = ConstraintsHelper.getConstraints(Arrays.asList(NodeTypeRegistry.getInstance().getNodeType(areaType)));
-//            } catch (RepositoryException e) {
-//                logger.error("Error when getting list constraints", e);
-//            }
-//
-//            printModuleStart(getModuleType(renderContext), path, null, "Script not found");
-//            printModuleEnd();
-//        }
-//
     }
 
     private void applyContributeModeOptions(JCRNodeWrapper nodeWrapper, boolean nodeAlreadyExist)

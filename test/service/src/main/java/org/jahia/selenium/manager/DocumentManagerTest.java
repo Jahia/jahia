@@ -19,6 +19,7 @@ public class DocumentManagerTest extends SeleneseTestCase {
     private JahiaSite site;
     private final static String TESTSITE_NAME = "mySite";
     private final static String TEST_SPEED = "1500"; //speed between selenium commands
+    private final static String path="/home/bamboo/doc_selenium_test/";
 
             private final int numberOfFolders = 10;
 
@@ -75,7 +76,6 @@ public class DocumentManagerTest extends SeleneseTestCase {
 
     }
 
-
     public void createNewFolder() {
 
 
@@ -99,14 +99,40 @@ public class DocumentManagerTest extends SeleneseTestCase {
         selenium.waitForPopUp("Document_manager", "3000");
         selenium.selectWindow("Document manager");
 
-
         //Create a new folder
         selenium.clickAt("//span[text()='files']", "5,5");
+        if(selenium.isElementPresent("//div[text()='My folder']"))
+        {
+            deleteElement("//div[text()='My folder']");
+        }
+
+        if(selenium.isElementPresent("//div[text()='My second folder']"))
+        {
+            deleteElement("//div[text()='My second folder']");
+        }
+
+
         selenium.mouseOver("//span[text()='files']");
         selenium.contextMenuAt("//span[text()='files']", "5,5");
         selenium.answerOnNextPrompt("My folder");
         selenium.click("Link=New directory");
         selenium.getPrompt();
+
+        if(!selenium.isElementPresent("//span[text()='My folder']"))
+        {
+            fail("Creation of folder by right click on the left panel fails");
+        }
+
+        selenium.mouseOver("//html/body/div/div/div/div[2]/div[2]/div/div[2]/div[2]/div/div/div/div[2]");
+        selenium.contextMenuAt("//html/body/div/div/div/div[2]/div[2]/div/div[2]/div[2]/div/div/div/div[2]","5,5");
+        selenium.answerOnNextPrompt("My second folder");
+        selenium.click("Link=New directory");
+        selenium.getPrompt();
+
+        if(!selenium.isElementPresent("//div[text()='My second folder']"))
+        {
+            fail("Creation of folder by right click on the central panel fails");
+        }
 
         //Create new folders and under folders
         for (int i = 0; i < numberOfFolders; i++) {
@@ -125,15 +151,76 @@ public class DocumentManagerTest extends SeleneseTestCase {
         }
 
 
-        //upload documents
+        //upload picture
         selenium.clickAt("//span[text()='My folder']", "5,5");
         selenium.mouseOver("//span[text()='My folder']");
         selenium.contextMenuAt("//span[text()='My folder']", "5,5");
         selenium.click("Link=Upload");
-        selenium.type("//input[@type='file']","/Users/sophiabatata/Downloads/paysage.jpg");
+        selenium.type("//input[@type='file']",path+"paysage.jpg");
         selenium.click("//button[text()='OK']");
 
-        //Download picture
+        if(!selenium.isElementPresent("//div[text()='paysage.jpg']"))
+        {
+            fail("Upload of image fails (by right click on left panel)");
+        }
+
+        deleteElement("//div[text()='paysage.jpg']");
+
+        //upload picture
+        selenium.clickAt("//html/body/div/div/div/div[2]/div[2]/div/div[2]/div[2]/div/div/div/div[2]", "5,5");
+        selenium.mouseOver("//html/body/div/div/div/div[2]/div[2]/div/div[2]/div[2]/div/div/div/div[2]");
+        selenium.contextMenuAt("//html/body/div/div/div/div[2]/div[2]/div/div[2]/div[2]/div/div/div/div[2]", "5,5");
+        selenium.click("Link=Upload");
+        selenium.type("//input[@type='file']",path+"paysage.jpg");
+        selenium.click("//button[text()='OK']");
+
+        if(!selenium.isElementPresent("//div[text()='paysage.jpg']"))
+        {
+            fail("Upload of image fails (by right click on left panel)");
+        }
+
+
+        //upload docx
+        selenium.clickAt("//span[text()='My folder']", "5,5");
+        selenium.mouseOver("//span[text()='My folder']");
+        selenium.contextMenuAt("//span[text()='My folder']", "5,5");
+        selenium.click("Link=Upload");
+        selenium.type("//input[@type='file']",path+"doc.docx");
+        selenium.click("//button[text()='OK']");
+
+        if(!selenium.isElementPresent("//div[text()='doc.docx']"))
+        {
+            fail("Upload of docx fails");
+        }
+
+
+        //upload doc
+        selenium.clickAt("//span[text()='My folder']", "5,5");
+        selenium.mouseOver("//span[text()='My folder']");
+        selenium.contextMenuAt("//span[text()='My folder']", "5,5");
+        selenium.click("Link=Upload");
+        selenium.type("//input[@type='file']",path+"doc.doc");
+        selenium.click("//button[text()='OK']");
+
+        if(!selenium.isElementPresent("//div[text()='doc.doc']"))
+        {
+            fail("Upload of doc fails");
+        }
+
+        //Upload PDF
+        selenium.clickAt("//span[text()='My folder']", "5,5");
+        selenium.mouseOver("//span[text()='My folder']");
+        selenium.contextMenuAt("//span[text()='My folder']", "5,5");
+        selenium.click("Link=Upload");
+        selenium.type("//input[@type='file']",path+"pdf.pdf");
+        selenium.click("//button[text()='OK']");
+
+        if(!selenium.isElementPresent("//div[text()='pdf.pdf']"))
+        {
+            fail("Upload of doc fails");
+        }
+
+       //Download picture
         selenium.clickAt("//div[text()='paysage.jpg']","5,5");
         selenium.mouseOver("//div[text()='paysage.jpg']");
         selenium.contextMenuAt("//div[text()='paysage.jpg']", "5,5");
@@ -172,37 +259,51 @@ public class DocumentManagerTest extends SeleneseTestCase {
         selenium.mouseOver("//div[text()='paysage.jpg']");
         selenium.contextMenuAt("//div[text()='paysage.jpg']", "5,5");
         selenium.click("Link=Crop image");
+        selenium.mouseDownAt("//div[@class='jcrop-holder']","5,5");
+        selenium.mouseUpAt("//div[@class='jcrop-holder']","30,30");
         selenium.type("//input[@name='newname']","crop picture.jpg");
-        selenium.click("//button[text()='OK']");
+        selenium.click("//button[text()='Cancel']");
 
         //Resize picture
         selenium.clickAt("//div[text()='paysage.jpg']","5,5");
         selenium.mouseOver("//div[text()='paysage.jpg']");
         selenium.contextMenuAt("//div[text()='paysage.jpg']", "5,5");
         selenium.click("Link=Resize");
-        selenium.type("//input[@type='width']","400");
+        selenium.type("//input[@name='width']","400");
         selenium.click("//button[text()='OK']");
 
+        //Rotate picture
+        selenium.clickAt("//div[text()='paysage.jpg']","5,5");
+        selenium.mouseOver("//div[text()='paysage.jpg']");
+        selenium.contextMenuAt("//div[text()='paysage.jpg']", "5,5");
+        selenium.click("Link=Rotate");
+        selenium.type("//input[@name='newname']","paysage_rotate.jpg");
+        selenium.click("//button[text()='Rotate left']");
+
+        if(!selenium.isElementPresent("//div[text()='paysage_rotate.jpg']"))
+        {
+            fail("Rotation fails");
+        }
 
 
          //Rename the crop picture
-        selenium.clickAt("//div[text()='crop picture.jpg']","5,5");
-        selenium.mouseOver("//div[text()='crop picture.jpg']");
-        selenium.contextMenuAt("//div[text()='crop picture.jpg']","5,5");
+        selenium.clickAt("//div[text()='pdf.pdf']","5,5");
+        selenium.mouseOver("//div[text()='pdf.pdf']");
+        selenium.contextMenuAt("//div[text()='pdf.pdf']","5,5");
         selenium.answerOnNextPrompt("renamed");
         selenium.click("Link=Rename");
         selenium.getPrompt();
 
-        //Copy renamed picture
+        //Copy paysage picture
         selenium.clickAt("//div[text()='paysage.jpg']","5,5");
         selenium.mouseOver("//div[text()='paysage.jpg']");
         selenium.contextMenuAt("//div[text()='paysage.jpg']","5,5");
         selenium.click("Link=Copy");
 
-        //Paste on files
-        selenium.clickAt("//span[text()='files']", "5,5");
-        selenium.mouseOver("//span[text()='files']");
-        selenium.contextMenuAt("//span[text()='files']", "5,5");
+        //Paste on My second folder
+        selenium.clickAt("//span[text()='My second folder']", "5,5");
+        selenium.mouseOver("//span[text()='My second folder']");
+        selenium.contextMenuAt("//span[text()='My second folder']", "5,5");
         selenium.click("Link=Paste");
 
         selenium.clickAt("//span[text()='My folder']", "5,5");
@@ -213,19 +314,20 @@ public class DocumentManagerTest extends SeleneseTestCase {
         selenium.contextMenuAt("//div[text()='renamed']","5,5");
         selenium.click("Link=Cut");
 
-        //Paste on files
-        selenium.clickAt("//span[text()='files']", "5,5");
-        selenium.mouseOver("//span[text()='files']");
-        selenium.contextMenuAt("//span[text()='files']", "5,5");
+        //Paste on My second folder
+        selenium.clickAt("//span[text()='My second folder']", "5,5");
+        selenium.mouseOver("//span[text()='My second folder']");
+        selenium.contextMenuAt("//span[text()='My second folder']", "5,5");
         selenium.click("Link=Paste");
 
 
         deleteElement("//span[text()='My folder']");
-
+        deleteElement("//span[text()='My second folder']");
 
 
     }
-          public void deleteElement(String element) {
+
+      public void deleteElement(String element) {
         selenium.clickAt(element, "5,5");
         selenium.mouseOver(element);
         selenium.contextMenuAt(element, "5,5");

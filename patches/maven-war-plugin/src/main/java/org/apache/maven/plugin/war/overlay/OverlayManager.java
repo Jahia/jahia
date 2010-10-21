@@ -236,7 +236,8 @@ public class OverlayManager
         return ( StringUtils.equals( overlay.getGroupId(), artifact.getGroupId() )
             && StringUtils.equals( overlay.getArtifactId(), artifact.getArtifactId() )
             && StringUtils.equals( overlay.getType(), artifact.getType() )
-            && StringUtils.equals( overlay.getClassifier(), artifact.getClassifier() ) );
+            && (StringUtils.isEmpty(overlay.getClassifier()) && StringUtils.isEmpty(artifact.getClassifier())
+            || StringUtils.equals( overlay.getClassifier(), artifact.getClassifier() ) ));
     }
 
     /**

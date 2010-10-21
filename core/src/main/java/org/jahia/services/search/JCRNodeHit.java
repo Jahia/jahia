@@ -42,8 +42,11 @@ import javax.jcr.ItemNotFoundException;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 
+import net.htmlparser.jericho.Source;
+import net.htmlparser.jericho.TextExtractor;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
+import org.apache.commons.lang.WordUtils;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -130,7 +133,18 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
 
     public String getTitle() {
         String title = resource.getPropertyAsString(Constants.JCR_TITLE);
-        return title != null ? title : getName();
+        //Search for primary field if present
+        if(title==null) {
+            try {
+                String itemName = resource.getPrimaryNodeType().getPrimaryItemName();
+                if (itemName!=null) {
+                    title = new TextExtractor(new Source(resource.getPropertyAsString(itemName))).toString();
+                }
+            } catch (RepositoryException e) {
+                title = null;
+            }
+        }
+        return title != null ? WordUtils.abbreviate(title,70,90,"...") : getName();
     }
 
     /**

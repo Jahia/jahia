@@ -958,6 +958,23 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         ExtendedNodeType nt = NodeTypeRegistry.getInstance().getNodeType(definition.getDeclaringNodeType().getName());
         if (definition.getName().equals("*")) {
             for (ExtendedNodeDefinition d : nt.getUnstructuredChildNodeDefinitions().values()) {
+                ExtendedNodeType[] requiredPrimaryTypes = d.getRequiredPrimaryTypes();
+                NodeType[] a2 = definition.getRequiredPrimaryTypes();
+                boolean valid = true;
+                for (ExtendedNodeType extendedNodeType : requiredPrimaryTypes) {
+                    boolean found = false;
+                    for (NodeType nodeType : a2) {
+                        if(nodeType.getName().equals(extendedNodeType.getName())) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if(!found) {
+                        valid = false;
+                        break;
+                    }
+                }
+                if(valid)
                 return d;
             }
 

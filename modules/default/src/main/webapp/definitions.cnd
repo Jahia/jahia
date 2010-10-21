@@ -85,7 +85,7 @@
  - text (string) i18n
 
 [jnt:bigText] > jnt:content, jmix:editorialContent
- - text (string, richtext) i18n
+ - text (string, richtext) i18n primary
 
 [jnt:mainContent] > jnt:content, mix:title, jmix:editorialContent
  - body (string, richtext) i18n

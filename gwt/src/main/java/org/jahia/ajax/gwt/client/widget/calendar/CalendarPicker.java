@@ -178,7 +178,7 @@ public class CalendarPicker extends DatePicker {
         HorizontalPanel hPanel = new HorizontalPanel();
         hPanel.setLayout(new FitLayout());
         hPanel.setHorizontalAlign(Style.HorizontalAlignment.LEFT);
-        hPanel.setStyleName("x-date-hours-panel-inner");
+        hPanel.setStyleName("x-date-bottom");
 
         hours = new ComboBox() {
           @Override

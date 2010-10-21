@@ -79,7 +79,7 @@ public class CalendarMenu extends Menu {
     }
 
     protected void onClick(ComponentEvent ce) {
-        hide(true);
+//        hide(true);
     }
 
     public void setDate(Date date) {

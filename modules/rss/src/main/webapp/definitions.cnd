@@ -5,4 +5,4 @@
  - nbEntries (long) = 10 indexed=no
 
 
-[jnt:rssable] > jnt:content, jmix:siteComponentContent, jmix:bindedComponent
+[jnt:rssable] > jnt:content, jmix:siteComponent, jmix:bindedComponent

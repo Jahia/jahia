@@ -32,7 +32,7 @@ itemtype = template
 
         [jmix:editorialContent]  appears in editorial contents list
 
-        [jmix:siteComponentContent]  appears in site component list
+        [jmix:siteComponent]  appears in site component list
 
         [jmix:queryContent]   appears in the Query component list
 

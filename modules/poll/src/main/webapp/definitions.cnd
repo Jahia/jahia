@@ -8,7 +8,7 @@
  orderable
  + * (jnt:answer) = jnt:answer
 
-[jnt:poll] > jnt:content, mix:title, jmix:siteComponentContent
+[jnt:poll] > jnt:content, mix:title, jmix:siteComponent
  - question (string) mandatory
  + answers (jnt:answersList)
  - totalOfVotes (long) = 0  hidden autocreated

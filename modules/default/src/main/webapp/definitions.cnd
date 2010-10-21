@@ -52,7 +52,7 @@
  - scrolling (string, choicelist[resourceBundle]) indexed=no < 'yes','no','auto'
  - alt (string) i18n indexed=no
 
-[jnt:video] > jnt:content, mix:title, jmix:editorialContent
+[jnt:video] > jnt:content, mix:title, jmix:multimediaContent
  - name (string)
  - source (weakreference, picker[type='file'])
  - width (long) = '0'
@@ -61,7 +61,7 @@
  - autoplay (boolean)
  - showcontrols (boolean)
 
-[jnt:flash] > jnt:content, mix:title, jmix:editorialContent
+[jnt:flash] > jnt:content, mix:title, jmix:multimediaContent
  - flashSource (weakreference, picker[type='file'])
  - width (string) analyzer='keyword' nofulltext
  - height (string) analyzer='keyword' nofulltext
@@ -81,10 +81,10 @@
  - base (string) indexed=no
  - flashvars (string) indexed=no
 
-[jnt:text] > jnt:content, jmix:editorialContent
+[jnt:text] > jnt:content, jmix:basicContent
  - text (string) i18n
 
-[jnt:bigText] > jnt:content, jmix:editorialContent
+[jnt:bigText] > jnt:content, jmix:basicContent
  - text (string, richtext) i18n primary
 
 [jnt:mainContent] > jnt:content, mix:title, jmix:editorialContent
@@ -92,15 +92,15 @@
  - image (weakreference, picker[type='image']) i18n
  - align (string,choicelist[resourceBundle]) = left indexed=no < left,right,default
 
-[jnt:pageTagging] > jnt:content, mix:title, jmix:siteComponentContent
+[jnt:pageTagging] > jnt:content, mix:title, jmix:siteComponent
 
-[jnt:tagging] > jnt:content, mix:title, jmix:siteComponentContent, jmix:bindedComponent
+[jnt:tagging] > jnt:content, mix:title, jmix:siteComponent, jmix:bindedComponent
 
-[jnt:loginForm] > jnt:content, mix:title, jmix:siteComponentContent
+[jnt:loginForm] > jnt:content, mix:title, jmix:siteComponent
  - j:displayRememberMeButton (boolean)
  - j:displayLoginButton (boolean)
 
-[jnt:shortcuts] > jnt:content, jmix:siteComponentContent
+[jnt:shortcuts] > jnt:content, jmix:siteComponent
 
 [jnt:banner] > jnt:content, mix:title, jmix:editorialContent
  - background (weakreference, picker[type='image']) i18n
@@ -108,18 +108,18 @@
  - positionTop (long) indexed=no
  - positionLeft (long) indexed=no
 
-[jnt:pageTitle] > jnt:content, jmix:siteComponentContent
+[jnt:pageTitle] > jnt:content, jmix:siteComponent
 
-[jnt:pageBreadcrumb] > jnt:content, jmix:siteComponentContent
+[jnt:pageBreadcrumb] > jnt:content, jmix:siteComponent
 
-[jnt:languageSwitcher] > jnt:content, jmix:siteComponentContent
+[jnt:languageSwitcher] > jnt:content, jmix:siteComponent
  - typeOfDisplay (string,choicelist[resourceBundle]) = isoLocaleCountryCode mandatory indexed=no < isoLocaleCountryCode,languageCode,doubleLetter,letter,nameInLocale,nameCurrentLocale,flag
 
-[jnt:tree] > jnt:content, jmix:siteComponentContent
+[jnt:tree] > jnt:content, jmix:siteComponent
  - nodeType (string, choicelist[subnodetypes = 'jnt:page,jnt:contentList,jnt:folder',resourceBundle]) mandatory
  - templateForLink (string, choicelist[templates,resourceBundle]) mandatory
 
-[jnt:pageFormCreation] > jnt:content, jmix:siteComponentContent, mix:title
+[jnt:pageFormCreation] > jnt:content, jmix:siteComponent, mix:title
  - templateNode (weakreference) mandatory
  - buttonLabel (string)
 
@@ -128,10 +128,10 @@
  + * (jmix:link) = jmix:link version
 
 
-[jnt:backToParentPage] > jnt:content, jmix:siteComponentContent, mix:title
+[jnt:backToParentPage] > jnt:content, jmix:siteComponent, mix:title
 
 [jnt:relatedTagging] > jnt:content, jmix:list, mix:title, jmix:queryContent
  - j:type (string, choicelist[nodetypes=nt:base,resourceBundle])
  - j:nbOfResult (long) = 5  autocreated
 
-[jnt:introduction] > jnt:bigText, jmix:siteComponentContent
+[jnt:introduction] > jnt:bigText, jmix:editorialContent

@@ -9,5 +9,5 @@
  - conversionSucceeded (boolean)
  - conversionFailedMessage (string)
 
-[jnt:documentConversion] > jnt:content, jmix:siteComponentContent
+[jnt:documentConversion] > jnt:content, jmix:siteComponent
  

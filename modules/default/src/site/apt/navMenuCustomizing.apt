@@ -5,8 +5,8 @@ Creating custom menu items
   
   The menu component must have a <<<jmix:navMenuItem>>> mixin to be able to act as
   a menu item (being able to drop it into the placeholder area of the <<<jnt:nevMenu>>> component)
-  and <<<jmix:siteComponentContent>>> mixin to list this custom component in the selector (left-side) panel:
+  and <<<jmix:siteComponent>>> mixin to list this custom component in the selector (left-side) panel:
 
 +-------------
-[jnt:navMenuCutomItem] > jnt:content, jmix:navMenuItem, jmix:siteComponentContent
+[jnt:navMenuCutomItem] > jnt:content, jmix:navMenuItem, jmix:siteComponent
 +-------------

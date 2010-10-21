@@ -359,7 +359,7 @@
 
 [jnt:currentUserDisplay] > jnt:content, jmix:renderableUser, jmix:layoutComponentContent, jmix:mockupStyle
 
-[jnt:authorDisplay] > jnt:content, jmix:renderableUser, jmix:siteComponentContent, jmix:mockupStyle
+[jnt:authorDisplay] > jnt:content, jmix:renderableUser, jmix:siteComponent, jmix:mockupStyle
 
 [jmix:renderableMainResource] mixin
  itemtype = layout
@@ -435,11 +435,17 @@
 
 [jmix:listContent] > jmix:droppableContent mixin
 
+[jmix:basicContent] > jmix:droppableContent mixin
+
 [jmix:editorialContent] > jmix:droppableContent mixin
+
+[jmix:socialComponent] > jmix:droppableContent mixin
+
+[jmix:multimediaContent] > jmix:droppableContent mixin
 
 [jmix:layoutComponentContent] > jmix:droppableContent mixin
 
-[jmix:siteComponentContent] > jmix:droppableContent mixin
+[jmix:siteComponent] > jmix:droppableContent mixin
 
 [jmix:queryContent] > jmix:droppableContent mixin
 
@@ -474,10 +480,10 @@
 
 [jmix:nodeReference] mixin
 
-[jnt:fileReference] > jnt:content, jmix:nodeReference, mix:title, jmix:editorialContent
+[jnt:fileReference] > jnt:content, jmix:nodeReference, mix:title, jmix:basicContent
  - j:node (weakreference,picker[type='file']) < jnt:file
 
-[jnt:imageReference] > jnt:content, jmix:nodeReference, jmix:editorialContent
+[jnt:imageReference] > jnt:content, jmix:nodeReference, jmix:basicContent
  - j:node (weakreference,picker[type='image']) < jmix:image
  - j:alternateText (string)
 
@@ -487,7 +493,7 @@
 [jnt:externalLinkImageReference] > jnt:imageReference, jmix:link
  - j:url (string)
 
-[jnt:contentReference] > jnt:content, jmix:nodeReference, jmix:editorialContent
+[jnt:contentReference] > jnt:content, jmix:nodeReference, jmix:basicContent
  - j:node (weakreference) < jmix:droppableContent
 
 [jnt:nodeLink] > jnt:content, jmix:nodeReference, jmix:link, jmix:navMenuItem
@@ -583,7 +589,7 @@
  - j:cacheScope (string, choicelist) nofulltext < 'private','public'
  - j:expirationTime (long)
 
-[jnt:portletList] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:listContent, mix:title, jmix:list, jmix:publication
+[jnt:portletList] > nt:base, jmix:nodenameInfo, jmix:basemetadata, mix:title, jmix:list, jmix:publication
  + * (jnt:portlet) = jnt:portlet
  + * (jnt:portletList)
 

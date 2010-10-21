@@ -27,7 +27,7 @@
  - j:latitude (string)
  - j:longitude (string)
 
-[jnt:staticMap] > jnt:content, mix:title, jmix:bindedComponent, jmix:siteComponentContent
+[jnt:staticMap] > jnt:content, mix:title, jmix:bindedComponent, jmix:siteComponent
  - j:maptype (string,choicelist[resourceBundle]) = 'roadmap' indexed=no < 'roadmap','satellite','terrain','hybrid'
  - j:zoom (string,choicelist) = 'auto' indexed=no < 'auto','0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21'
  - j:imagetype (string,choicelist[resourceBundle]) = 'png8' indexed=no < 'png8','png32','gif','jpg','jpg-baseline'
@@ -36,7 +36,7 @@
  - j:markerSize (string,choicelist) = 'normal' indexed=no < 'normal','mid','small','tiny' 
  - j:markerColor (string,choicelist[resourceBundle]) = 'normal' indexed=no < 'normal','black','brown','green','purple','yellow','blue','gray','orange','red','white'
 
-[jnt:map] > jnt:content, mix:title, jmix:bindedComponent, jmix:siteComponentContent
+[jnt:map] > jnt:content, mix:title, jmix:bindedComponent, jmix:siteComponent
  - j:maptype (string,choicelist[resourceBundle]) = 'roadmap' indexed=no < 'roadmap','satellite','terrain','hybrid'
  - j:zoom (long) mandatory indexed=no
  - j:height (long) = 300 indexed=no

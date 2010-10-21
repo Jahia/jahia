@@ -1,12 +1,12 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
-[jnt:twitterFeed] > jmix:siteComponentContent
+[jnt:twitterFeed] > jmix:socialComponent
 - userName (string)
 - numberOfTweets (string, choicelist) = '15' indexed=no < '5', '10', '15', '20', '25', '30'
 - timeUpdate (long) = 15
 
-[jnt:twitterSearch] > jmix:siteComponentContent
+[jnt:twitterSearch] > jmix:socialComponent
 - search (string)
 - numberOfTweets (string, choicelist) = '15' indexed=no < '5', '10', '15', '20', '25', '30'
 - timeUpdate (long) = 15

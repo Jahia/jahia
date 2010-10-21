@@ -24,7 +24,7 @@ BindedComponents
   A usage example :
 
 +----------------------------------------------
-[jnt:tagging] > jnt:content, mix:title, jmix:siteComponentContent, jmix:bindedComponent
+[jnt:tagging] > jnt:content, mix:title, jmix:siteComponent, jmix:bindedComponent
 +----------------------------------------------
 
     This definition only define that the tagging element has to be bound to be effective

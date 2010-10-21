@@ -1,6 +1,6 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
-[jnt:portal] > jnt:content, mix:title, jmix:siteComponentContent
+[jnt:portal] > jnt:content, mix:title, jmix:siteComponent
 - columns (long) = 3 autocreated
  + * (nt:base) = nt:base version
 

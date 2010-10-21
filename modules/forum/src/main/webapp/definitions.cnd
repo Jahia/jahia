@@ -1,20 +1,22 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
+[jmix:forumContent] > jmix:droppableContent
+
 [jnt:post] > jnt:content, jmix:rating, mix:title
  - content (string,richtext) i18n
 
-[jnt:thread] > jnt:content, jmix:siteComponentContent, jmix:pager
+[jnt:thread] > jnt:content, jmix:forumContent, jmix:pager
  - threadSubject (string)
  + * (jnt:post)
 
-[jnt:topic] > jnt:content, jmix:siteComponentContent
+[jnt:topic] > jnt:content, jmix:forumContent
  - topicSubject (string)
  + * (jnt:thread)
 
-[jnt:dynamicTopicList] > jnt:content, jmix:siteComponentContent
+[jnt:dynamicTopicList] > jnt:content, jmix:forumContent
 
-[jnt:boardIndex] > jnt:content, jmix:siteComponentContent
+[jnt:boardIndex] > jnt:content, jmix:forumContent
  - boardSubject (string)
  - boardDescription (string)
  + * (jnt:topic)
@@ -23,4 +25,4 @@
  - shortView (boolean) = false autocreated
  + comments (jnt:thread) = jnt:thread autocreated hidden
 
-[jnt:commentable] > jnt:content, jmix:bindedComponent, jmix:siteComponentContent
+[jnt:commentable] > jnt:content, jmix:bindedComponent, jmix:forumContent

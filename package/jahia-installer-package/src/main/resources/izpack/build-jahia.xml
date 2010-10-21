@@ -2,6 +2,8 @@
 
 <project name="jahia" default="jahia-configure" basedir="${INSTALL_PATH}">
 
+	<available file="${INSTALL_PATH}" type="dir" property="cnd.install.dir.exists"/>
+
 	<target name="jahia-configure">
 		<echo>Configuring Jahia...</echo>
 		<java jar="${INSTALL_PATH}/configurators.jar" fork="true" failonerror="true" maxmemory="512m">
@@ -23,27 +25,33 @@
 	<target name="jahia-package" if="cnd.no.tomcat">
 		<echo>Tomcat bundle is not selected. Packaging Jahia into a WAR file...</echo>
 		<java jar="${INSTALL_PATH}/archivers.jar" fork="true" failonerror="true" maxmemory="512m">
-            <arg value="-cm"/>
-            <arg value="${INSTALL_PATH}/build"/>
-            <arg value="${INSTALL_PATH}/ROOT.war"/>
-            <arg value="${server.type}"/>
+			<arg value="-cm"/>
+			<arg value="${INSTALL_PATH}/build"/>
+			<arg value="${INSTALL_PATH}/ROOT.war"/>
+			<arg value="${server.type}"/>
 		</java>
 		<echo>...packaging done.</echo>
 	</target>
-	
+
 	<target name="jboss-sar" if="cnd.jboss">
 		<echo>JBoss is selected as target application server. Package SAR file...</echo>
 		<java jar="${INSTALL_PATH}/archivers.jar" fork="true" failonerror="true" maxmemory="512m">
-            <arg value="-cm"/>
-            <arg value="${INSTALL_PATH}/jahia-jboss-config"/>
-            <arg value="${INSTALL_PATH}/jahia-jboss-config.sar"/>
+			<arg value="-cm"/>
+			<arg value="${INSTALL_PATH}/jahia-jboss-config"/>
+			<arg value="${INSTALL_PATH}/jahia-jboss-config.sar"/>
 		</java>
 		<echo>...packaging done.</echo>
 	</target>
-	
+
 	<target name="cleanup">
 		<delete file="${INSTALL_PATH}/archivers.jar" />
 		<delete file="${INSTALL_PATH}/configurators.jar" />
+	</target>
+
+	<target name="jahia-cleanup-install-dir" if="cnd.install.dir.exists">
+		<delete includeemptydirs="true" verbose="true">
+			<fileset dir="${INSTALL_PATH}" includes="**/*" excludes="logs/**"/>
+		</delete>
 	</target>
 
 </project>

@@ -85,6 +85,7 @@
                     </execution>
                 </executions>
             </plugin>
+            <!--
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>attach-artifact-maven-plugin</artifactId>
@@ -101,14 +102,14 @@
                                     <file>${project.build.directory}/${jahia.patch.artifactId}-${jahia.patch.version}-jahia.jar</file>
                                     <groupId>${jahia.patch.groupId}</groupId>
                                     <artifactId>${jahia.patch.artifactId}</artifactId>
-                                    <version>${jahia.patch.version}</version>
-                                    <classifier>jahia</classifier>
+                                    <version>${jahia.patch.version}-jahia</version>
                                 </artifact>
                             </artifacts>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
+            -->
         </plugins>
     </build>
     

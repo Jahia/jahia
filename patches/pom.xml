@@ -18,6 +18,7 @@
         <module>concurrent</module>
         <module>jbpm</module>
         <module>jodconverter</module>
+        <module>maven-war-plugin</module>
     </modules>
 
 </project>

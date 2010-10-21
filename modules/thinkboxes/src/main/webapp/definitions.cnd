@@ -1,16 +1,16 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
-[jmix:thinkBoxContent] > jmix:droppableContent
+[jmix:thinkBoxComponents] > jmix:droppableContent
 
-[jnt:thinkBoxCreation] > jnt:content, jmix:thinkBoxContent, mix:title
+[jnt:thinkBoxCreation] > jnt:content, jmix:thinkBoxComponents, mix:title
 
-[jnt:thinkBoxItem] > jnt:content, jmix:thinkBoxContent, jmix:tagged
+[jnt:thinkBoxItem] > jnt:content, jmix:thinkBoxComponents, jmix:tagged
  - title (string)
  - url (string)
  - description (string, text[multiline])
  - note (string, text[multiline])
  - tag (string)
  
-[jnt:thinkBoxItemList] > jnt:content, jmix:thinkBoxContent
+[jnt:thinkBoxItemList] > jnt:content, jmix:thinkBoxComponents
 

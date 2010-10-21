@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+    <bean id="communityJiraAdministrationModule" class="org.jahia.admin.PlaceholderAdministrationModule" parent="abstractAdministrationModule">
+        <property name="urlKey" value="community-jira" />
+        <property name="permissionName" value="global/issue-tracking" />        
+        <property name="name" value="community-jira" />
+        <property name="icon" value="debug_view" />
+        <property name="label" value="Report a problem" />
+        <property name="urlType" value="external" />
+        <property name="urlAction" value="http://jira.jahia.org/" />
+        <property name="rank" value="98"/>
+    </bean>
+    <bean id="jahiaPediaAdministrationModule" class="org.jahia.admin.PlaceholderAdministrationModule" parent="abstractAdministrationModule">
+        <property name="urlKey" value="pedia" />
+        <property name="permissionName" value="global/documentation" />        
+        <property name="name" value="pedia" />
+        <property name="icon" value="books" />
+        <property name="label" value="Jahiapedia" />
+        <property name="urlType" value="external" />
+        <property name="urlAction" value="http://www.jahia.org/cms/home/jahiapedia" />
+        <property name="rank" value="99"/>
+    </bean>
+
+</beans>

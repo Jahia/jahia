@@ -107,47 +107,6 @@
     </bean>
 -->    
 
-    <bean id="communityJiraAdministrationModule" class="org.jahia.admin.PlaceholderAdministrationModule" parent="abstractAdministrationModule">
-        <property name="urlKey" value="community-jira" />
-        <property name="permissionName" value="global/issue-tracking" />        
-        <property name="name" value="community-jira" />
-        <property name="icon" value="debug_view" />
-        <property name="label" value="Issue tracking" />
-        <property name="urlType" value="external" />
-        <property name="urlAction" value="http://jira.jahia.org/" />
-    </bean>
-    <!--
-    <bean id="enterpriseJiraAdministrationModule" class="org.jahia.admin.PlaceholderAdministrationModule" parent="abstractAdministrationModule">
-        <property name="urlKey" value="enterprise-jira" />
-        <property name="permissionName" value="global/issue-tracking" />        
-        <property name="name" value="enterprise-jira" />
-        <property name="icon" value="debug_view" />
-        <property name="label" value="Issue tracking" />
-        <property name="urlType" value="external" />
-        <property name="urlAction" value="http://support.jahia.com/" />
-    </bean>
-    -->
-    <bean id="jahiaPediaAdministrationModule" class="org.jahia.admin.PlaceholderAdministrationModule" parent="abstractAdministrationModule">
-        <property name="urlKey" value="pedia" />
-        <property name="permissionName" value="global/documentation" />        
-        <property name="name" value="pedia" />
-        <property name="icon" value="books" />
-        <property name="label" value="Jahiapedia" />
-        <property name="urlType" value="external" />
-        <property name="urlAction" value="http://www.jahia.org/cms/home/jahiapedia" />
-    </bean>
-    <!--
-    <bean id="docsAdministrationModule" class="org.jahia.admin.PlaceholderAdministrationModule" parent="abstractAdministrationModule">
-        <property name="urlKey" value="docs" />
-        <property name="permissionName" value="global/documentation" />        
-        <property name="name" value="docs" />
-        <property name="icon" value="books" />
-        <property name="label" value="Documentation" />
-        <property name="urlType" value="external" />
-        <property name="urlAction" value="http://extranet.jahia.com/jahia/Jahia/documentation" />
-    </bean>
-    -->
-
     <bean id="infoAdministrationModule" class="org.jahia.admin.info.LicenseInfo" parent="abstractAdministrationModule">
         <property name="urlKey" value="info" />
         <property name="permissionName" value="global/about" />
@@ -156,6 +115,7 @@
         <property name="label" value="label.aboutJahia" />
         <property name="urlAction" value="info" />
         <property name="urlParams" value="" />
+        <property name="rank" value="100"/>
     </bean>
 
     <!-- Site settings administration modules -->
@@ -193,32 +153,6 @@
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
 
-<!--
-    <bean id="htmlEditorsAdministrationModule" class="org.jahia.admin.PlaceholderAdministrationModule" parent="abstractAdministrationModule">
-        <property name="serverModule" value="false"/>
-        <property name="urlKey" value="htmlsettings" />
-        <property name="permissionName" value="admin/html-editors-admin" />
-        <property name="name" value="htmlsettings" />
-        <property name="icon" value="text_rich_colored" />
-        <property name="label" value="org.jahia.admin.htmlsettings.label" />
-        <property name="urlType" value="struts" />
-        <property name="urlAction" value="HtmlSettings" />
-        <property name="urlParams" value="&amp;group=htmlsettings&amp;method=display" />
-    </bean>
-
-    <bean id="integrityChecksAdministrationModule" class="org.jahia.admin.PlaceholderAdministrationModule" parent="abstractAdministrationModule">
-        <property name="serverModule" value="false"/>
-        <property name="urlKey" value="integrity" />
-        <property name="permissionName" value="admin/integrity-checks" />
-        <property name="name" value="integrity" />
-        <property name="icon" value="text_ok" />
-        <property name="label" value="label.integrityCheck" />
-        <property name="urlType" value="struts" />
-        <property name="urlAction" value="IntegrityChecks" />
-        <property name="urlParams" value="&amp;group=integrity&amp;method=display" />
-    </bean>
-  -->
-  
     <bean id="analyticsAdministrationModule" class="org.jahia.admin.analytics.ManageAnalytics" parent="abstractAdministrationModule">
         <property name="serverModule" value="false"/>
         <property name="urlKey" value="analytics" />

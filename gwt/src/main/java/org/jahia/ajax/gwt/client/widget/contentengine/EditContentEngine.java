@@ -63,7 +63,6 @@ public class EditContentEngine extends AbstractContentEngine {
     private String contentPath;
 
     private Button ok;
-    private Button cancel;
     private String nodeName;
     private Map<String, GWTJahiaGetPropertiesResult> langCodeGWTJahiaGetPropertiesResultMap =
             new HashMap<String, GWTJahiaGetPropertiesResult>();
@@ -134,7 +133,7 @@ public class EditContentEngine extends AbstractContentEngine {
             });
             addButton(this.restore);
         }*/
-        cancel = new Button(Messages.get("label.cancel"));
+        Button cancel = new Button(Messages.get("label.cancel"));
         cancel.setHeight(BUTTON_HEIGHT);
         cancel.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonCancel());
         cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {

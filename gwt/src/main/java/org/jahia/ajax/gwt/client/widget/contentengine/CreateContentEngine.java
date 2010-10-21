@@ -69,7 +69,6 @@ public class CreateContentEngine extends AbstractContentEngine {
     protected boolean createInParentAndMoveBefore = false;
     private Button ok;
     private Button okAndNew;
-    private Button cancel;
     private String parentPath;
 
     /**
@@ -143,7 +142,7 @@ public class CreateContentEngine extends AbstractContentEngine {
         okAndNew.addSelectionListener(new CreateAndAddNewSelectionListener());
         buttonBar.add(okAndNew);
 
-        cancel = new Button(Messages.get("label.cancel"));
+        Button cancel = new Button(Messages.get("label.cancel"));
         cancel.setHeight(BUTTON_HEIGHT);
         cancel.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonCancel());
         cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -289,6 +288,8 @@ public class CreateContentEngine extends AbstractContentEngine {
             public void onApplicationFailure(Throwable throwable) {
                 com.google.gwt.user.client.Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
                 Log.error("failed", throwable);
+                unmask();
+                setButtonsEnabled(true);
             }
 
             public void onSuccess(GWTJahiaNode node) {

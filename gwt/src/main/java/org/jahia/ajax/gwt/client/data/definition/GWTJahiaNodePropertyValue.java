@@ -45,6 +45,8 @@ import java.util.Date;
  */
 public class GWTJahiaNodePropertyValue extends BaseTreeModel implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+    
     private String value;
     private int type;
     private GWTJahiaNode reference;
@@ -94,7 +96,7 @@ public class GWTJahiaNodePropertyValue extends BaseTreeModel implements Serializ
     }
 
     public Boolean getBoolean() {
-        if (type == GWTJahiaNodePropertyType.BOOLEAN) {
+        if (type == GWTJahiaNodePropertyType.BOOLEAN && value != null) {
             return Boolean.valueOf(value);
         } else {
             return null;
@@ -102,7 +104,7 @@ public class GWTJahiaNodePropertyValue extends BaseTreeModel implements Serializ
     }
 
     public Date getDate() {
-        if (type == GWTJahiaNodePropertyType.DATE) {
+        if (type == GWTJahiaNodePropertyType.DATE && value != null) {
             return new Date(Long.valueOf(value));
         } else {
             return null;
@@ -110,7 +112,7 @@ public class GWTJahiaNodePropertyValue extends BaseTreeModel implements Serializ
     }
 
     public Float getDecimal() {
-        if (type == GWTJahiaNodePropertyType.DECIMAL) {
+        if (type == GWTJahiaNodePropertyType.DECIMAL && value != null) {
             return Float.valueOf(value);
         } else {
             return null;
@@ -118,7 +120,7 @@ public class GWTJahiaNodePropertyValue extends BaseTreeModel implements Serializ
     }
 
     public Double getDouble() {
-        if (type == GWTJahiaNodePropertyType.DOUBLE) {
+        if (type == GWTJahiaNodePropertyType.DOUBLE && value != null) {
             return Double.valueOf(value);
         } else {
             return null;
@@ -126,7 +128,7 @@ public class GWTJahiaNodePropertyValue extends BaseTreeModel implements Serializ
     }
 
     public Long getLong() {
-        if (type == GWTJahiaNodePropertyType.LONG) {
+        if (type == GWTJahiaNodePropertyType.LONG && value != null) {
             return Double.valueOf(value).longValue();
         } else {
             return null;

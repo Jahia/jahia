@@ -233,6 +233,7 @@ public class CreateContentEngine extends AbstractContentEngine {
         boolean allValid = true;
         TabItem firstErrorTab = null;
         Field<?> firstErrorField = null;
+        GWTJahiaLanguage firstErrorLang = null;
         for (TabItem tab : tabs.getItems()) {
             EditEngineTabItem item = tab.getData("item");
             if (item instanceof PropertiesTabItem) {
@@ -252,6 +253,8 @@ public class CreateContentEngine extends AbstractContentEngine {
                     if (!allValid) {
                         continue;
                     }
+                }
+                if (pe != null) {                    
                     // props.addAll(pe.getProperties());
                     mixin.addAll(pe.getAddedTypes());
                     mixin.addAll(pe.getExternalMixin());
@@ -267,6 +270,33 @@ public class CreateContentEngine extends AbstractContentEngine {
                         }
 
                         changedI18NProperties.get(lang).addAll(propertiesTabItem.getLanguageProperties(true, lang));
+                        
+                        for (String language : changedI18NProperties.keySet()) {
+                            if (!lang.equals(language)) {
+                                PropertiesEditor lpe = propertiesTabItem.getPropertiesEditorByLang(language);
+                                if (lpe != null) {
+                                    for (Field<?> field : lpe.getFields()) {
+                                        if (field.isEnabled() && !field.validate()) {
+                                            if (allValid || tab.equals(tabs.getSelectedItem())
+                                                    && !tab.equals(firstErrorTab)) {
+                                                firstErrorTab = tab;
+                                                firstErrorField = field;
+                                            }
+                                            allValid = false;
+                                        }
+                                    }
+                                    if (!allValid) {
+                                        for (GWTJahiaLanguage gwtLang : languageSwitcher.getStore().getModels()) {
+                                            if (language.equals(gwtLang.getLanguage())) {
+                                                firstErrorLang = gwtLang;
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+                        }
                     }
 
                     if (pe != null) {
@@ -303,7 +333,17 @@ public class CreateContentEngine extends AbstractContentEngine {
             }
         }
         if (!allValid) {
-            Window.alert(Messages.get("failure.invalid.constraint.label"));
+            if (firstErrorLang != null) {
+                Window.alert(Messages
+                        .getWithArgs(
+                                "failure.invalid.constraint.lang.label",
+                                "There are some validation errors in the content for language {0}! Please switch to that language, click on the information icon next to the highlighted field(s), correct the input and save again.",
+                                new Object[] { firstErrorLang.getDisplayName() }));
+             // Unfortunately automatic switching lead to exceptions
+             //                languageSwitcher.select(firstErrorLang);                
+            } else {
+                Window.alert(Messages.get("failure.invalid.constraint.label"));                
+            }
             if (firstErrorTab != null && !tabs.getSelectedItem().equals(firstErrorTab)) {
                 tabs.setSelection(firstErrorTab);
             }
@@ -317,7 +357,7 @@ public class CreateContentEngine extends AbstractContentEngine {
                     closeAfterSave);
         }
     }
-
+    
     protected void doSave(String nodeName, List<GWTJahiaNodeProperty> props, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<String> mixin, GWTJahiaNodeACL newNodeACL, final boolean closeAfterSave) {
         final AsyncCallback<GWTJahiaNode> callback = new BaseAsyncCallback<GWTJahiaNode>() {
             public void onApplicationFailure(Throwable throwable) {

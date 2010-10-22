@@ -44,6 +44,7 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
 import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
 import org.jahia.ajax.gwt.client.widget.form.CKEditorField;
@@ -261,12 +262,16 @@ public class FormFieldCreator {
                     if (GWTJahiaNodeSelectorType.CHOICELIST != definition.getSelector()
                             && propDefinition.getValueConstraints() != null
                             && propDefinition.getValueConstraints().size() == 1) {
-                        ((TextField<?>) field)
-                                .setRegex(propDefinition.getValueConstraints().get(0));
-                        if (propDefinition.getConstraintErrorMessage() != null) {
-                            ((TextField<?>) field).getMessages().setRegexText(
-                                    propDefinition.getConstraintErrorMessage());
-                        }
+                        String regex = propDefinition.getValueConstraints().get(0);
+                        ((TextField<?>) field).setRegex(regex);
+                        ((TextField<?>) field).getMessages().setRegexText(
+                            propDefinition.getConstraintErrorMessage() != null
+                            && propDefinition.getConstraintErrorMessage().length() > 0 ? 
+                                    propDefinition.getConstraintErrorMessage(): 
+                                    Messages.getWithArgs("failure.invalid.regexp.constraint.label",
+                                        "The field does not match the following regular expression: {0}",
+                                        new Object[] { regex }));
+
                     }
                     break;
                     

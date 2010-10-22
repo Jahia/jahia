@@ -267,7 +267,7 @@
  - j:functionPublic (boolean)=true
  - j:about (string,richtext)
  - j:aboutPublic (boolean)=true
- - j:email (string)
+ - j:email (string) < '^[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+(\\.[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@([A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+(\\.[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+)*|\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])$'
  - j:emailPublic (boolean)=true
  - j:skypeID (string)
  - j:skipeIDPublic (boolean)=true

@@ -276,7 +276,8 @@ public class EditContentEngine extends AbstractContentEngine {
             ok.setEnabled(false);
             boolean allValid = true;
             TabItem firstErrorTab = null;
-            Field<?> firstErrorField = null;            
+            Field<?> firstErrorField = null;          
+            GWTJahiaLanguage firstErrorLang = null;
             
             // node
             List<GWTJahiaNode> orderedChildrenNodes = null;
@@ -300,7 +301,8 @@ public class EditContentEngine extends AbstractContentEngine {
                         if (!allValid) {
                             continue;
                         }
-                        
+                    }
+                    if (pe != null) {                        
                         //properties.addAll(pe.getProperties());
                         node.getNodeTypes().removeAll(pe.getRemovedTypes());
                         node.getNodeTypes().addAll(pe.getAddedTypes());
@@ -317,6 +319,33 @@ public class EditContentEngine extends AbstractContentEngine {
                             }
 
                             changedI18NProperties.get(lang).addAll(propertiesTabItem.getLanguageProperties(true, lang));
+                            
+                            for (String language : changedI18NProperties.keySet()) {
+                                if (!lang.equals(language)) {
+                                    PropertiesEditor lpe = propertiesTabItem.getPropertiesEditorByLang(language);
+                                    if (lpe != null) {
+                                        for (Field<?> field : lpe.getFields()) {
+                                            if (field.isEnabled() && !field.validate()) {
+                                                if (allValid || tab.equals(tabs.getSelectedItem())
+                                                        && !tab.equals(firstErrorTab)) {
+                                                    firstErrorTab = tab;
+                                                    firstErrorField = field;
+                                                }
+                                                allValid = false;
+                                            }
+                                        }
+                                        if (!allValid) {
+                                            for (GWTJahiaLanguage gwtLang : languageSwitcher.getStore().getModels()) {
+                                                if (language.equals(gwtLang.getLanguage())) {
+                                                    firstErrorLang = gwtLang;
+                                                    break;
+                                                }
+                                            }
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
                         }
                         if (pe != null) {
                             changedProperties.addAll(pe.getProperties(false, true, true));
@@ -332,8 +361,6 @@ public class EditContentEngine extends AbstractContentEngine {
                         if (((ContentTabItem) item).isNodeNameFieldDisplayed()) {
                             nodeName = ((ContentTabItem) item).getName().getValue();
                         }
-
-
                     }
 
                     // case od contentTabItem
@@ -370,7 +397,17 @@ public class EditContentEngine extends AbstractContentEngine {
             }
 
             if (!allValid) {
-                Window.alert(Messages.get("failure.invalid.constraint.label"));
+                if (firstErrorLang != null) {
+                    Window.alert(Messages
+                            .getWithArgs(
+                                    "failure.invalid.constraint.lang.label",
+                                    "There are some validation errors in the content for language {0}! Please switch to that language, click on the information icon next to the highlighted field(s), correct the input and save again.",
+                                    new Object[] { firstErrorLang.getDisplayName() }));
+// Unfortunately automatic switching lead to exceptions
+//                    languageSwitcher.setValue(firstErrorLang);
+                } else {
+                    Window.alert(Messages.get("failure.invalid.constraint.label"));
+                }
                 if (firstErrorTab != null && !tabs.getSelectedItem().equals(firstErrorTab)) {
                     tabs.setSelection(firstErrorTab);
                 }

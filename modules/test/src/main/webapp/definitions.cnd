@@ -73,7 +73,7 @@ orderable
 - boolean (boolean)
 - stringWithDefault (string) = 'string test'
 - protectedString (string) protected
-- alphanumericString (string) < '[a-zA-Z0-9]*'
+- alphanumericString (string) i18n < '[a-zA-Z0-9]*'
 - longBetween1and10 (long) < '[1,10]'
 - stringText (string, text) indexed=no
 - stringTextMultiline (string, text[multiline]) indexed=no
@@ -81,8 +81,8 @@ orderable
 - mandatoryString (string) mandatory
 - nofulltextString (string) nofulltext
 - multipleString (string) multiple
-
-
+- mandatoryLongBetween1and10Excl (long) mandatory < '(1,10)'
+- email (string) < '^[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+(\\.[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@([A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+(\\.[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+)*|\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])$'
 
 /*
 

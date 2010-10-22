@@ -1029,13 +1029,8 @@ public class NavigationHelper {
                 }
             }
         }
-
-        try {
-            if (node.hasProperty("jcr:title")) {
-                n.setDisplayName(node.getProperty("jcr:title").getString());
-            }
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
+        if (!node.getPath().equals("/")) {
+            n.setDisplayName(node.getDisplayableName());
         }
         n.setNormalizedName(removeDiacritics(n.getName()));
 

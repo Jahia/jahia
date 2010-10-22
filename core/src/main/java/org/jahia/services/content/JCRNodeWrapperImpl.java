@@ -32,9 +32,12 @@
 
 package org.jahia.services.content;
 
+import net.htmlparser.jericho.Source;
+import net.htmlparser.jericho.TextExtractor;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
 import org.apache.jackrabbit.commons.iterator.PropertyIteratorAdapter;
 import org.apache.jackrabbit.core.JahiaSessionImpl;
 import org.apache.jackrabbit.core.NodeImpl;
@@ -3115,4 +3118,20 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return new PropertyIteratorAdapter(matchingProperties.iterator());
     }
 
+
+    public String getDisplayableName() {
+        String title = getPropertyAsString(Constants.JCR_TITLE);
+        //Search for primary field if present
+        if(title==null) {
+            try {
+                String itemName = getPrimaryNodeType().getPrimaryItemName();
+                if (itemName!=null) {
+                    title = new TextExtractor(new Source(getPropertyAsString(itemName))).toString();
+                }
+            } catch (RepositoryException e) {
+                title = null;
+            }
+        }
+        return title != null ? WordUtils.abbreviate(title,70,90,"...") : getName();
+    }
 }

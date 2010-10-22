@@ -84,7 +84,7 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void search(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, AsyncCallback<List<GWTJahiaNode>> async);
 
-    void searchSQL(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, AsyncCallback<List<GWTJahiaNode>> async);
+    void searchSQL(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, boolean sortOnDisplayName, AsyncCallback<List<GWTJahiaNode>> async);
 
     void searchSQLForLoad(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, AsyncCallback<ListLoadResult<GWTJahiaNode>> async);
 

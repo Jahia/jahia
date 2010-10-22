@@ -720,4 +720,8 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
     public List<Version> getVersionsAsVersion() {
         return node.getVersionsAsVersion();
     }
+
+    public String getDisplayableName() {
+        return node.getDisplayableName();
+    }
 }

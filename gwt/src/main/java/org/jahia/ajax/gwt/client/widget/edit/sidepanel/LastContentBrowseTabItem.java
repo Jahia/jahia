@@ -153,7 +153,7 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
         contentStore.removeAll();
         JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
         async.searchSQL(config.getParams().get("search"), Integer.valueOf(config.getParams().get("limit")),
-                        JCRClientUtils.CONTENT_NODETYPES, null, null, Arrays.asList(GWTJahiaNode.ICON,"jcr:lastModified"), new BaseAsyncCallback<List<GWTJahiaNode>>() {
+                        JCRClientUtils.CONTENT_NODETYPES, null, null, Arrays.asList(GWTJahiaNode.ICON,"jcr:lastModified"),false, new BaseAsyncCallback<List<GWTJahiaNode>>() {
                     public void onSuccess(List<GWTJahiaNode> gwtJahiaNodes) {
                         contentStore.add(gwtJahiaNodes);
                         contentContainer.layout(true);

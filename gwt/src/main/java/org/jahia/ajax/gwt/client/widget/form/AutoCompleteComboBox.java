@@ -65,11 +65,11 @@ public class AutoCompleteComboBox extends ComboBox<GWTJahiaNode> {
                         if (field.equals("name")) {
                             JahiaContentManagementService.App.getInstance().searchSQL("select * from [" + nodeType.get(
                                     0) + "] as content where name(content) like '" + getRawValue() + "%'", maxResult,
-                                    nodeType, null, null, null, asyncCallback);
+                                    nodeType, null, null, null,true, asyncCallback);
                         } else {
                             JahiaContentManagementService.App.getInstance().searchSQL("select * from [" + nodeType.get(
                                     0) + "] as content where content.'"+field+"' like '" + getRawValue() + "%'", maxResult,
-                                    nodeType, null, null, null, asyncCallback);
+                                    nodeType, null, null, null,true, asyncCallback);
                         }
                     }
                 }));

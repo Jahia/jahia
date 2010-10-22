@@ -91,6 +91,7 @@ import javax.validation.ConstraintViolationException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.text.Collator;
 import java.util.*;
 
 /**
@@ -361,8 +362,18 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public List<GWTJahiaNode> searchSQL(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes,
-                                        List<String> filters, List<String> fields) throws GWTJahiaServiceException {
-        return search.searchSQL(searchString, limit, nodeTypes, mimeTypes, filters, fields, retrieveCurrentSession());
+                                        List<String> filters, List<String> fields,boolean sortOnDisplayName) throws GWTJahiaServiceException {
+        List<GWTJahiaNode> gwtJahiaNodes = search.searchSQL(searchString, limit, nodeTypes, mimeTypes, filters, fields,
+                retrieveCurrentSession());
+        if (sortOnDisplayName) {
+            final Collator collator = Collator.getInstance(retrieveCurrentSession().getLocale());
+            Collections.sort(gwtJahiaNodes, new Comparator<GWTJahiaNode>() {
+                public int compare(GWTJahiaNode o1, GWTJahiaNode o2) {
+                    return collator.compare(o1.getDisplayName(), o2.getDisplayName());
+                }
+            });
+        }
+        return gwtJahiaNodes;
     }
 
     public ListLoadResult<GWTJahiaNode> searchSQLForLoad(String searchString, int limit, List<String> nodeTypes,

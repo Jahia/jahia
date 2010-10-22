@@ -132,19 +132,7 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
     }
 
     public String getTitle() {
-        String title = resource.getPropertyAsString(Constants.JCR_TITLE);
-        //Search for primary field if present
-        if(title==null) {
-            try {
-                String itemName = resource.getPrimaryNodeType().getPrimaryItemName();
-                if (itemName!=null) {
-                    title = new TextExtractor(new Source(resource.getPropertyAsString(itemName))).toString();
-                }
-            } catch (RepositoryException e) {
-                title = null;
-            }
-        }
-        return title != null ? WordUtils.abbreviate(title,70,90,"...") : getName();
+        return resource.getDisplayableName();
     }
 
     /**

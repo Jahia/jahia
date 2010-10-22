@@ -855,4 +855,6 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
 
     boolean checkI18nAndMandatoryPropertiesForLocale(Locale locale) throws RepositoryException;
 
+    String getDisplayableName();
+
 }

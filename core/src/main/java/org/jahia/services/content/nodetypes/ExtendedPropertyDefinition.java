@@ -255,7 +255,7 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
             JahiaTemplatesPackage aPackage = getDeclaringNodeType().getTemplatePackage();
             message = new JahiaResourceBundle(getResourceBundleId(), locale, aPackage!=null ? aPackage.getName(): null, JahiaTemplatesRBLoader
                     .getInstance(Thread.currentThread().getContextClassLoader(), null)).getString(
-                    getResourceBundleKey() + (!StringUtils.isEmpty(msgKeySuffix) ? "." + msgKeySuffix : ""));
+                    getResourceBundleKey() + (!StringUtils.isEmpty(msgKeySuffix) ? "." + msgKeySuffix : ""), "");
             messageMap.put(msgKeySuffix, message);
         }
         return message;

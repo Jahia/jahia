@@ -168,7 +168,7 @@ public class ContentDefinitionHelper {
                                 break;
                                 
                             case GWTJahiaNodePropertyType.STRING:
-                                if (prop.getValueConstraints().size() == 1) {
+                                if (prop.getValueConstraints().size() == 1 && GWTJahiaNodeSelectorType.CHOICELIST != def.getSelector()) {
                                     prop.setConstraintErrorMessage(epd.getMessage("constraint.error.message", uiLocale));
                                 }
                                 break;

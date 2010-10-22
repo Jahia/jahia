@@ -15,11 +15,11 @@ import org.jahia.test.TestHelper;
  *
  */
 public class SiteManagerTest extends SeleneseTestCase {
-    private static Logger logger = Logger.getLogger(CreateCategories.class);
+    private static Logger logger = Logger.getLogger(SiteManagerTest.class);
     private JahiaSite site;
     private final static String TESTSITE_NAME = "mySite";
     private final static String TEST_SPEED = "3000"; //speed between selenium commands
-    private final int numberOfCategories = 10;
+  
 
     @Override
     public void setUp() throws Exception {

@@ -14,8 +14,8 @@ import org.jahia.test.TestHelper;
  *
  *
  */
-public class ContentManagerTest extends SeleneseTestCase {
-    private static Logger logger = Logger.getLogger(CreateCategories.class);
+public class ContentManager extends SeleneseTestCase {
+    private static Logger logger = Logger.getLogger(ContentManager.class);
     private JahiaSite site;
     private final static String TESTSITE_NAME = "mySite";
     private final static String TEST_SPEED = "3000"; //speed between selenium commands

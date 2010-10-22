@@ -10,27 +10,27 @@ import org.jahia.test.TestHelper;
 import java.util.ArrayList;
 
 /**
- * Created by IntelliJ IDEA.
- * User: sophiabatata
- * Date: Oct 8, 2010
- * Time: 1:32:04 PM
- * To change this template use File | Settings | File Templates.
+ * - Create a richtext
+ * - save
+ * - open the engine
+ * - add a keyword
+ * - save
+ * - search the keyword
+ * - Verify the result
  */
-public class KeywordRichtextTest extends SeleneseTestCase {
+public class KeywordRichtext extends SeleneseTestCase {
 
 
-    private static Logger logger = Logger.getLogger(DescriptionRichtextTest.class);
+    private static Logger logger = Logger.getLogger(KeywordRichtext.class);
     private JahiaSite site;
     private final static String TESTSITE_NAME = "mySite";
     private final static String TEST_SPEED = "3000";  //speed between selenium commands
-    private ArrayList<String> defaultAcl = new ArrayList<String>();
-    private ArrayList<String> defaultAclAfterRestore = new ArrayList<String>();
 
     public void setUp() throws Exception {
         try {
             final JahiaSite mySite = ServicesRegistry.getInstance().getJahiaSitesService().getSite("localhost");
             if (mySite == null) {
-                site = TestHelper.createSite(TESTSITE_NAME, "localhost",  "templates-web");
+                site = TestHelper.createSite(TESTSITE_NAME, "localhost", "templates-web");
                 assertNotNull(site);
             } else {
                 logger.warn("can't create mySite for running tests, because already exist...");
@@ -75,39 +75,29 @@ public class KeywordRichtextTest extends SeleneseTestCase {
                 }
             }
         }
+        CreateRichtext();
+        AddAndSearchKeyword();
+        deleteContentCreated();
 
-        deleteContentCreated();
-        CreateAnRichtextwithKeywords();
-        deleteContentCreated();
 
     }
 
-    public void CreateAnRichtextwithKeywords() {
-        //click on "Any content"
+    public void CreateRichtext() {
+        //click on "Any Content"
         new Wait("wait") {
             public boolean until() {
-                return selenium.isElementPresent("//div[@path='/sites/mySite/home/listA']/div/div[2]/div/div/div/div/table/tbody/tr/td[2]/button");
+                return selenium.isElementPresent("//div[2]/div[2]/div/div/div/div/div/div/div/button");
             }
         };
-        selenium.click("//div[@path='/sites/mySite/home/listA']/div/div[2]/div/div/div/div/table/tbody/tr/td[2]/button");
-        pause(800);
+        selenium.click("//div[2]/div[2]/div/div/div/div/div/div/div/button");
 
-        //click on the image for sort"
+        //doubleClick on "Basic content"
         new Wait("wait") {
             public boolean until() {
-                return selenium.isElementPresent("//td[@class='x-grid3-header x-grid3-hd x-grid3-cell x-grid3-td-label']/div/span");
+                return selenium.isElementPresent("//div[text()='Basic Content']");
             }
         };
-        selenium.click("//td[@class='x-grid3-header x-grid3-hd x-grid3-cell x-grid3-td-label']/div/span");
-
-
-        //doubleClick on "Editorial content"
-        new Wait("wait") {
-            public boolean until() {
-                return selenium.isElementPresent("//img[@src='/modules/default/icons/jmix_editorialContent.png']");
-            }
-        };
-        selenium.doubleClick("//img[@src='/modules/default/icons/jmix_editorialContent.png']");
+        selenium.doubleClick("//div[text()='Basic Content']");
 
         //doubleClick on "RichText"
         new Wait("wait") {
@@ -124,7 +114,7 @@ public class KeywordRichtextTest extends SeleneseTestCase {
                 return selenium.isTextPresent("Name");
             }
         };
-        selenium.type("//input[@name='name']", "Test Metadata");
+        selenium.type("//input[@name='name']", "Test Richtext");
 
         //Click on "source"
         new Wait("wait") {
@@ -140,25 +130,9 @@ public class KeywordRichtextTest extends SeleneseTestCase {
                 return selenium.isElementPresent("//textarea[@class='cke_source cke_enable_context_menu']");
             }
         };
-        selenium.type("//textarea[@class='cke_source cke_enable_context_menu']", "<p>first richtext by root with a keyword</p>");
+        selenium.type("//textarea[@class='cke_source cke_enable_context_menu']", "<p>first richtext by root with a blabla</p>");
 
-
-//Open Metadata
-        selenium.click("link=Metadata");
-
-//Select the checkbox
-        selenium.click("//input[@type='checkbox']");
-
-//Add a keyword
-        new Wait("wait") {
-            public boolean until() {
-                return selenium.isElementPresent("//textarea[@class='cke_source cke_enable_context_menu']");
-            }
-        };
-        selenium.type("//input[@name='j:keywords']", "tototo");
-
-
-//click on "Save"
+        //click on "Save"
         new Wait("wait") {
             public boolean until() {
                 return selenium.isTextPresent("Save");
@@ -167,7 +141,50 @@ public class KeywordRichtextTest extends SeleneseTestCase {
         selenium.click("//div[@class=' x-small-editor x-panel-btns-center x-panel-fbar x-component x-toolbar-layout-ct']/table/tbody/tr/td[1]/table/tbody/tr/td[1]/table");
 
 
-//Click on Search
+    }
+
+    public void AddAndSearchKeyword() {
+
+
+        new Wait("wait") {
+            public boolean until() {
+                return selenium.isElementPresent("//p[text()='first richtext by root with a blabla']");
+            }
+        };
+        //Open the richtext
+        selenium.mouseOver("//p[text()='first richtext by root with a blabla']");
+        selenium.doubleClick("//p[text()='first richtext by root with a blabla']");
+
+        //Open Metadata
+        new Wait("wait") {
+            public boolean until() {
+                return selenium.isElementPresent("link=Metadata");
+            }
+        };
+        selenium.click("link=Metadata");
+
+        //Select the checkbox
+        selenium.click("//input[@type='checkbox']");
+
+        //Add a keyword
+        new Wait("wait") {
+            public boolean until() {
+                return selenium.isElementPresent("//input[@name='j:keywords']");
+            }
+        };
+        selenium.type("//input[@name='j:keywords']", "tototo");
+
+
+        //click on "Save"
+        new Wait("wait") {
+            public boolean until() {
+                return selenium.isTextPresent("Save");
+            }
+        };
+        selenium.click("//div[@class=' x-small-editor x-panel-btns-center x-panel-fbar x-component x-toolbar-layout-ct']/table/tbody/tr/td[1]/table/tbody/tr/td[1]/table");
+
+
+        //Click on Search
         new Wait("wait") {
             public boolean until() {
                 return selenium.isElementPresent("searchTerm");
@@ -175,42 +192,26 @@ public class KeywordRichtextTest extends SeleneseTestCase {
         };
         selenium.click("searchTerm");
 
-//Search Tototo
+        //Search tototo
         selenium.type("searchTerm", "tototo");
         selenium.click("//input[@value='']");
 
 
-//Return to home
+        //Return to home
         new Wait("wait") {
             public boolean until() {
-                return selenium.isTextPresent("Appears in:");
+                return selenium.isElementPresent("link=Home");
             }
         };
         selenium.click("link=Home");
 
+        //Verify is the rich text is present
         new Wait("wait") {
             public boolean until() {
-                return selenium.isTextPresent("first richtext by root with a keyword");
+                return selenium.isElementPresent("//p[text()='first richtext by root with a blabla']");
             }
         };
-        selenium.mouseOver("//span[text()='Area : listA']");
-        selenium.click("//span[text()='Area : listA']");
-        selenium.doubleClick("//p[text()='first richtext by root with a keyword']");
 
-//Open Metadata
-        new Wait("wait") {
-            public boolean until() {
-                return selenium.isTextPresent("Metadata");
-            }
-        };
-        selenium.click("link=Metadata");
-
-        new Wait("wait") {
-            public boolean until() {
-                return selenium.isTextPresent("tototo");
-            }
-        };
-        selenium.click("//button[text()='Cancel']");
 
     }
 

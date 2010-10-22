@@ -8,18 +8,20 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
 
 /**
- * Created by IntelliJ IDEA.
- * User: sophiabatata
- * Date: Oct 12, 2010
- * Time: 6:24:51 PM
- * To change this template use File | Settings | File Templates.
+ * Test right click on portlet manager
+ * - Create RSS portlet
+ * - Create google gadget
+ * - Create new portlet
+ * - Copy/Cut/Paste Portlets
+ * - Rename Portlets
+ * 
  */
 public class CreatePortlet extends SeleneseTestCase {
-    private static Logger logger = Logger.getLogger(CreateCategories.class);
+    private static Logger logger = Logger.getLogger(CreatePortlet.class);
     private JahiaSite site;
     private final static String TESTSITE_NAME = "mySite";
-    private final static String TEST_SPEED = "3000"; //speed between selenium commands
-    private final int numberOfCategories = 10;
+    private final static String TEST_SPEED = "3200"; //speed between selenium commands
+
 
     @Override
     public void setUp() throws Exception {

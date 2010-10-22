@@ -8,8 +8,15 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
 
 /**
- * this test open the category manager, and create categories, and creates categories under that first created.
- */
+ *  - open the category manager
+ * - create categories
+ * - create categories under that first created.
+ * - Rename categories
+ * - Copy / cut / paste categories
+ * - Delete categories
+ *
+ *
+ * */
 public class CreateCategories extends SeleneseTestCase {
     private static Logger logger = Logger.getLogger(CreateCategories.class);
     private JahiaSite site;
@@ -138,8 +145,7 @@ public class CreateCategories extends SeleneseTestCase {
         selenium.clickAt("//span[text()='myCategory2']", "1,1");
         selenium.contextMenuAt("//span[text()='myCategory2']", "1,1");
         selenium.click("link=Paste");
-        selenium.answerOnNextPrompt("myFavoriteCategory");
-        selenium.getPrompt();
+
 
 
     }

@@ -77,10 +77,10 @@ public class AclsThisArticle extends SeleneseTestCase {
         //click on "Any content"
         new Wait("wait") {
             public boolean until() {
-                return selenium.isElementPresent("//div[@path='/sites/mySite/home/listA']/div/div[2]/div/div/div/div/table/tbody/tr/td[2]/button");
+                return selenium.isElementPresent("//div[2]/div[2]/div/div/div/div/div/div/div/button");
             }
         };
-        selenium.click("//div[@path='/sites/mySite/home/listA']/div/div[2]/div/div/div/div/table/tbody/tr/td[2]/button");
+        selenium.click("//div[2]/div[2]/div/div/div/div/div/div/div/button");
 
         //doubleClick on "Editorial content"
         new Wait("wait") {
@@ -178,14 +178,24 @@ public class AclsThisArticle extends SeleneseTestCase {
 
     }
 
+    public void deleteContentCreated() {
+        selenium.mouseOver("//span[text()='Area : listA']");
+        selenium.contextMenuAt("//span[text()='Area : listA']", "0,0");
+        selenium.click("link=Remove");
+        if (selenium.isElementPresent("//button[text()='Yes']")) {
+            selenium.click("//button[text()='Yes']");
+        }
+        selenium.refresh();
+    }
+
     public String[] getRights() {
-        new Wait("wait") {
+       new Wait("wait") {
             public boolean until() {
-                return selenium.isElementPresent("j:newTag");
+                return selenium.isElementPresent("//div[@class='intro']");
             }
         };
-        selenium.mouseOver("j:newTag"); //tips in order to click on a element in edit mode.
-        selenium.doubleClick("j:newTag");
+        selenium.mouseOver("//div[@class='intro']");
+        selenium.doubleClick("//div[@class='intro']");
         //click on Rights
         new Wait("wait") {
             public boolean until() {
@@ -195,16 +205,6 @@ public class AclsThisArticle extends SeleneseTestCase {
         selenium.click("link=Rights");
         String[] ids = selenium.getEval(getAllCheckBoxAcl()).split(",");
         return ids;
-    }
-
-    public void deleteContentCreated() {
-        selenium.mouseOver("//span[text()='Area : listA']");
-        selenium.contextMenuAt("//span[text()='Area : listA']", "0,0");
-        selenium.click("link=Remove");
-        if (selenium.isElementPresent("//button[text()='Yes']")) {
-            selenium.click("//button[text()='Yes']");
-        }
-        selenium.refresh();
     }
 
     public String getAllCheckBoxAcl() {

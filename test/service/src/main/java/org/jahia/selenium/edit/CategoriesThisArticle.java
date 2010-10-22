@@ -10,11 +10,18 @@ import org.jahia.test.TestHelper;
 import java.util.ArrayList;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Dorth
- * Date: 14 oct. 2010
- * Time: 13:59:43
- * To change this template use File | Settings | File Templates.
+ *
+ * - create an article
+ * - reopen the engine
+ * - add categories
+ * - save
+ * - reopen the engine
+ * - remove all categories
+ * - save
+ * - reopen the engine
+ * - verify if all categories are removes
+ * - delete the article
+ *
  */
 public class CategoriesThisArticle extends SeleneseTestCase {
     private static Logger logger = Logger.getLogger(CategoriesThisArticle.class);
@@ -71,7 +78,6 @@ public class CategoriesThisArticle extends SeleneseTestCase {
                 }
             }
         }
-        deleteContentCreated();
         CreateAnArticle();
         addCategories();
         checkAndRemoveCategoriesSaved();
@@ -83,10 +89,10 @@ public class CategoriesThisArticle extends SeleneseTestCase {
         //click on "Any content"
         new Wait("wait") {
             public boolean until() {
-                return selenium.isElementPresent("//div[@path='/sites/mySite/home/listA']/div/div[2]/div/div/div/div/table/tbody/tr/td[2]/button");
+                return selenium.isElementPresent("//div[2]/div[2]/div/div/div/div/div/div/div/button");
             }
         };
-        selenium.click("//div[@path='/sites/mySite/home/listA']/div/div[2]/div/div/div/div/table/tbody/tr/td[2]/button");
+        selenium.click("//div[2]/div[2]/div/div/div/div/div/div/div/button");
 
         //doubleClick on "Editorial content"
         new Wait("wait") {
@@ -146,16 +152,16 @@ public class CategoriesThisArticle extends SeleneseTestCase {
         };
         new Wait("wait") {
             public boolean until() {
-                return selenium.isTextPresent("Add tags");
+                return selenium.isElementPresent("//div[@class='intro']");
             }
         };
-        selenium.mouseOver("j:newTag"); //tips in order to click on a element in edit mode.
-        selenium.doubleClick("j:newTag");
+        selenium.mouseOver("//div[@class='intro']"); //tips in order to click on a element in edit mode.
+        selenium.doubleClick("//div[@class='intro']");
 
-        //click on Tags
+        //click on Categories
         new Wait("wait") {
             public boolean until() {
-                return selenium.isElementPresent("link=Tags");
+                return selenium.isElementPresent("link=Categories");
             }
         };
         selenium.click("link=Categories");
@@ -194,16 +200,16 @@ public class CategoriesThisArticle extends SeleneseTestCase {
         };
         new Wait("wait") {
             public boolean until() {
-                return selenium.isTextPresent("Add tags");
+                return selenium.isElementPresent("//div[@class='intro']");
             }
         };
-        selenium.mouseOver("j:newTag"); //tips in order to click on a element in edit mode.
-        selenium.doubleClick("j:newTag");
+        selenium.mouseOver("//div[@class='intro']"); //tips in order to click on a element in edit mode.
+        selenium.doubleClick("//div[@class='intro']");
 
-        //click on Tags
+        //click on Categories
         new Wait("wait") {
             public boolean until() {
-                return selenium.isElementPresent("link=Tags");
+                return selenium.isElementPresent("link=Categories");
             }
         };
         selenium.click("link=Categories");
@@ -226,7 +232,7 @@ public class CategoriesThisArticle extends SeleneseTestCase {
     }
 
     public void checkRemovedCategories() {
-         // wait article pop in the page, on double click on it
+        // wait article pop in the page, on double click on it
         new Wait("wait") {
             public boolean until() {
                 return selenium.isTextPresent("Acl Article body test");
@@ -234,21 +240,21 @@ public class CategoriesThisArticle extends SeleneseTestCase {
         };
         new Wait("wait") {
             public boolean until() {
-                return selenium.isTextPresent("Add tags");
+                return selenium.isElementPresent("//div[@class='intro']");
             }
         };
-        selenium.mouseOver("j:newTag"); //tips in order to click on a element in edit mode.
-        selenium.doubleClick("j:newTag");
+        selenium.mouseOver("//div[@class='intro']"); //tips in order to click on a element in edit mode.
+        selenium.doubleClick("//div[@class='intro']");
 
-        //click on Tags
+        //click on Categories
         new Wait("wait") {
             public boolean until() {
-                return selenium.isElementPresent("link=Tags");
+                return selenium.isElementPresent("link=Categories");
             }
         };
         selenium.click("link=Categories");
 
-        if(selenium.isElementPresent("//button[text()='Remove']")){
+        if (selenium.isElementPresent("//button[text()='Remove']")) {
             fail("error, when save after delete categories, one or more are already set");
         } else {
             //click on "Save"

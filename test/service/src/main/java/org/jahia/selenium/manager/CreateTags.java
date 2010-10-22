@@ -11,7 +11,7 @@ import org.jahia.test.TestHelper;
  this test open tags manager and create many tags
  */
 public class CreateTags extends SeleneseTestCase{
-    private static Logger logger = Logger.getLogger(CreateCategories.class);
+    private static Logger logger = Logger.getLogger(CreateTags.class);
     private JahiaSite site;
     private final static String TESTSITE_NAME = "mySite";
     private final static String TEST_SPEED = "3000"; //speed between selenium commands

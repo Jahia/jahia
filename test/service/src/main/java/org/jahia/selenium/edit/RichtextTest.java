@@ -13,14 +13,14 @@ import org.jahia.test.TestHelper;
 import javax.jcr.Node;
 
 /**
- * this test, create RichText un ListA of mySite
+ * - create several RichText un ListA of mySite
  */
 public class RichtextTest extends SeleneseTestCase {
     private static Logger logger = Logger.getLogger(RichtextTest.class);
     private JahiaSite site;
     private final static String TESTSITE_NAME = "mySite";
     private final static String TEST_SPEED = "3000"; //speed between selenium commands
-    private final static int numberOfNodes = 3;
+    private final static int numberOfNodes = 10;
 
     /*  protected DefaultSelenium createSeleniumClient(String url) throws Exception {
     return new DefaultSelenium("localhost", 4444, "*firefox", url);
@@ -74,31 +74,31 @@ public class RichtextTest extends SeleneseTestCase {
                 }
             }
         }
+
+
+        TabRichtext(numberOfNodes);
         deleteContentCreated();
+
+    }
+
+
+    public void TabRichtext(int numberOfNodes) {
         for (int i = 1; i < numberOfNodes; i++) {
-            //click on "Any content"
-            new Wait("wait") {
-                public boolean until() {
-                    return selenium.isElementPresent("//div[@path='/sites/mySite/home/listA']/div/div[2]/div/div/div/div/table/tbody/tr/td[2]/button");
-                }
-            };
-            selenium.click("//div[@path='/sites/mySite/home/listA']/div/div[2]/div/div/div/div/table/tbody/tr/td[2]/button");
+            //click on "Any Content"
+            if (selenium.isElementPresent("//div[3]/div/div/table/tbody/tr/td[2]/button")) {
+                selenium.click("//div[3]/div/div/table/tbody/tr/td[2]/button");
+            } else {
+                selenium.click("//div[2]/div[2]/div/div/div/div/div/div/div/button");
+            }
 
-            //click on the image for sort"
-            new Wait("wait") {
-                public boolean until() {
-                    return selenium.isElementPresent("//td[@class='x-grid3-header x-grid3-hd x-grid3-cell x-grid3-td-label']/div/span");
-                }
-            };
-            selenium.click("//td[@class='x-grid3-header x-grid3-hd x-grid3-cell x-grid3-td-label']/div/span");
 
-            //Double click on "Editorial content"
+            //doubleClick on "Basic content"
             new Wait("wait") {
                 public boolean until() {
-                    return selenium.isElementPresent("//img[@src='/modules/default/icons/jmix_editorialContent.png']");
+                    return selenium.isElementPresent("//div[text()='Basic Content']");
                 }
             };
-            selenium.doubleClick("//img[@src='/modules/default/icons/jmix_editorialContent.png']");
+            selenium.doubleClick("//div[text()='Basic Content']");
 
             //Double click on "Rich Text"
             new Wait("wait") {
@@ -134,9 +134,6 @@ public class RichtextTest extends SeleneseTestCase {
         }
         deleteContentCreated();
     }
-
-
-
 
     public void deleteContentCreated() {
         selenium.mouseOver("//span[text()='Area : listA']");

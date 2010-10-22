@@ -1017,6 +1017,7 @@
                         <ref bean="Toolbar.Item.Export"/>
                         <ref bean="Toolbar.Item.Lock"/>
                         <ref bean="Toolbar.Item.Unlock"/>
+                        <ref bean="Toolbar.Item.OpenInContentManager"/>
                     </list>
                 </property>
             </bean>

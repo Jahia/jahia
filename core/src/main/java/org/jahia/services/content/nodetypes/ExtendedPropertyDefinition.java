@@ -32,15 +32,20 @@
 
 package org.jahia.services.content.nodetypes;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.spi.commons.nodetype.InvalidConstraintException;
 import org.apache.jackrabbit.spi.commons.nodetype.constraint.ValueConstraint;
 import org.apache.log4j.Logger;
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
 
 import javax.jcr.Value;
 import javax.jcr.RepositoryException;
 import javax.jcr.PropertyType;
 import javax.jcr.nodetype.PropertyDefinition;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by IntelliJ IDEA.
@@ -78,6 +83,8 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
     private boolean fulltextSearchable = true;
     private boolean facetable = false;
     private String[] availableQueryOperators = Lexer.ALL_OPERATORS;
+    
+    private Map<Locale, Map<String, String>> messageMaps = new ConcurrentHashMap<Locale, Map<String, String>>(1);
 
     public ExtendedPropertyDefinition(NodeTypeRegistry registry) {
         this.registry = registry;
@@ -235,5 +242,22 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
 
     public void setAvailableQueryOperators(String[] availableQueryOperators) {
         this.availableQueryOperators = availableQueryOperators;
+    }
+    
+    public String getMessage(String msgKeySuffix, Locale locale) {
+        Map<String, String> messageMap = messageMaps.get(locale);
+        if (messageMap == null) {
+            messageMap = new HashMap<String, String>();
+            messageMaps.put(locale, messageMap);
+        }
+        String message = messageMap.get(msgKeySuffix);
+        if (message == null) {
+            JahiaTemplatesPackage aPackage = getDeclaringNodeType().getTemplatePackage();
+            message = new JahiaResourceBundle(getResourceBundleId(), locale, aPackage!=null ? aPackage.getName(): null, JahiaTemplatesRBLoader
+                    .getInstance(Thread.currentThread().getContextClassLoader(), null)).getString(
+                    getResourceBundleKey() + (!StringUtils.isEmpty(msgKeySuffix) ? "." + msgKeySuffix : ""));
+            messageMap.put(msgKeySuffix, message);
+        }
+        return message;
     }
 }

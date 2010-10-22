@@ -37,6 +37,9 @@ import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.Field;
+import com.google.gwt.user.client.Window;
+
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
@@ -84,7 +87,7 @@ public class EditContentEngine extends AbstractContentEngine {
     }
 
     public void close() {
-        contentService.setLock(Arrays.asList(contentPath),false,new BaseAsyncCallback() {
+        contentService.setLock(Arrays.asList(contentPath),false,new BaseAsyncCallback<Object>() {
             public void onSuccess(Object result) {
                 String s = Messages.get("label.unlocked", "Nodes has been unlocked");
                 Info.display(s,s);
@@ -271,6 +274,10 @@ public class EditContentEngine extends AbstractContentEngine {
         public void componentSelected(ButtonEvent event) {
             mask(Messages.get("label.saving","Saving..."), "x-mask-loading");
             ok.setEnabled(false);
+            boolean allValid = true;
+            TabItem firstErrorTab = null;
+            Field<?> firstErrorField = null;            
+            
             // node
             List<GWTJahiaNode> orderedChildrenNodes = null;
 
@@ -280,6 +287,20 @@ public class EditContentEngine extends AbstractContentEngine {
                     PropertiesTabItem propertiesTabItem = (PropertiesTabItem) item;
                     PropertiesEditor pe = propertiesTabItem.getPropertiesEditor();
                     if (pe != null) {
+                        for (Field<?> field : pe.getFields()) {
+                            if (field.isVisible() && field.isEnabled() && !field.validate()) {
+                                if (allValid || tab.equals(tabs.getSelectedItem())
+                                        && !tab.equals(firstErrorTab)) {
+                                    firstErrorTab = tab;
+                                    firstErrorField = field;
+                                }
+                                allValid = false;
+                            }
+                        }
+                        if (!allValid) {
+                            continue;
+                        }
+                        
                         //properties.addAll(pe.getProperties());
                         node.getNodeTypes().removeAll(pe.getRemovedTypes());
                         node.getNodeTypes().addAll(pe.getAddedTypes());
@@ -343,23 +364,37 @@ public class EditContentEngine extends AbstractContentEngine {
                 }
             }
 
-            // Ajax call to update values
-            JahiaContentManagementService.App.getInstance().saveNode(node, orderedChildrenNodes, newNodeACL,
-                    changedI18NProperties, changedProperties, new BaseAsyncCallback() {
-                        public void onApplicationFailure(Throwable throwable) {
-                            com.google.gwt.user.client.Window.alert(Messages.get("saved_prop_failed",
-                                    "Properties save failed\n\n") + throwable.getLocalizedMessage());
-                            Log.error("failed", throwable);
-                            unmask();
-                            ok.setEnabled(true);
-                        }
+            if (!allValid) {
+                Window.alert(Messages.get("failure.invalid.constraint.label"));
+                if (firstErrorTab != null && !tabs.getSelectedItem().equals(firstErrorTab)) {
+                    tabs.setSelection(firstErrorTab);
+                }
+                if (firstErrorField != null) {
+                    firstErrorField.focus();
+                }
+                unmask();
+                ok.setEnabled(true);
+            } else {
+                // Ajax call to update values
+                JahiaContentManagementService.App.getInstance().saveNode(node,
+                        orderedChildrenNodes, newNodeACL, changedI18NProperties, changedProperties,
+                        new BaseAsyncCallback<Object>() {
+                            public void onApplicationFailure(Throwable throwable) {
+                                com.google.gwt.user.client.Window.alert(Messages.get(
+                                        "saved_prop_failed", "Properties save failed\n\n")
+                                        + throwable.getLocalizedMessage());
+                                Log.error("failed", throwable);
+                                unmask();
+                                ok.setEnabled(true);
+                            }
 
-                        public void onSuccess(Object o) {
-                            Info.display("", Messages.get("saved_prop", "Properties saved\n\n"));
-                            EditContentEngine.this.container.closeEngine();
-                            linker.refresh(Linker.REFRESH_MAIN);
-                        }
-                    });
+                            public void onSuccess(Object o) {
+                                Info.display("", Messages.get("saved_prop", "Properties saved\n\n"));
+                                EditContentEngine.this.container.closeEngine();
+                                linker.refresh(Linker.REFRESH_MAIN);
+                            }
+                        });
+            }
         }
 
     }

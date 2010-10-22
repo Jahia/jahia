@@ -35,8 +35,6 @@ package org.jahia.ajax.gwt.client.data.definition;
 import java.io.Serializable;
 import java.util.List;
 
-import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
-
 /**
  * Property definition GWT bean. 
  *
@@ -44,6 +42,8 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
  * Date: Aug 26, 2008 - 7:37:53 PM
  */
 public class GWTJahiaPropertyDefinition extends GWTJahiaItemDefinition implements Serializable {
+
+    private static final long serialVersionUID = -7766550549947629084L;
 
     private int requiredType = 0;
 
@@ -53,6 +53,10 @@ public class GWTJahiaPropertyDefinition extends GWTJahiaItemDefinition implement
     private boolean constrained ;
     private List<String> valueConstraints ;
     private List<GWTJahiaNodePropertyValue> defaultValues;
+    private String constraintErrorMessage;
+    
+    private String minValue;
+    private String maxValue;
 
     public GWTJahiaPropertyDefinition() {
     }
@@ -104,5 +108,29 @@ public class GWTJahiaPropertyDefinition extends GWTJahiaItemDefinition implement
 
     public void setDefaultValues(List<GWTJahiaNodePropertyValue> defaultValues) {
         this.defaultValues = defaultValues;
+    }
+
+    public String getMinValue() {
+        return minValue;
+    }
+
+    public void setMinValue(String minValue) {
+        this.minValue = minValue;
+    }
+
+    public String getMaxValue() {
+        return maxValue;
+    }
+
+    public void setMaxValue(String maxValue) {
+        this.maxValue = maxValue;
+    }
+    
+    public String getConstraintErrorMessage() {
+        return constraintErrorMessage;
+    }
+
+    public void setConstraintErrorMessage(String constraintErrorMessage) {
+        this.constraintErrorMessage = constraintErrorMessage;
     }
 }

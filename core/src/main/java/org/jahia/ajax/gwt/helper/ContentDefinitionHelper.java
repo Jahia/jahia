@@ -49,12 +49,13 @@ import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializer;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListValue;
-import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeTypeIterator;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Helper class for accessing node types and definitions.
@@ -151,10 +152,27 @@ public class ContentDefinitionHelper {
                     prop.setRequiredType(epd.getRequiredType());
                     prop.setMultiple(epd.isMultiple());
                     String[] constr = epd.getValueConstraints();
-                    boolean constrained = constr != null && constr.length > 0;
-                    prop.setConstrained(constrained);
-                    if (constrained) {
+                    if (constr != null && constr.length > 0) {
+                        prop.setConstrained(true);
                         prop.setValueConstraints(Arrays.asList(constr));
+                        switch (prop.getRequiredType()) {
+                            case GWTJahiaNodePropertyType.LONG:
+                            case GWTJahiaNodePropertyType.DOUBLE:
+                            case GWTJahiaNodePropertyType.DECIMAL:
+                            case GWTJahiaNodePropertyType.BINARY:
+                                resolveNumericConstraint(prop);
+                                break;
+
+                            case GWTJahiaNodePropertyType.DATE:
+                                resolveDateConstraint(prop);
+                                break;
+                                
+                            case GWTJahiaNodePropertyType.STRING:
+                                if (prop.getValueConstraints().size() == 1) {
+                                    prop.setConstraintErrorMessage(epd.getMessage("constraint.error.message", uiLocale));
+                                }
+                                break;
+                        }
                     }
                     List<GWTJahiaNodePropertyValue> gwtValues = new ArrayList<GWTJahiaNodePropertyValue>();
                     for (Value value : epd.getDefaultValues()) {
@@ -208,7 +226,138 @@ public class ContentDefinitionHelper {
 
         return gwt;
     }
+    
+    public static void resolveNumericConstraint(GWTJahiaPropertyDefinition prop) {
+        for (String valueConstraint : prop.getValueConstraints()) {
+            final boolean lowerInclusive;
+            Double lowerLimit = null;
+            final boolean upperInclusive;
+            Double upperLimit = null;
+            Pattern pattern = Pattern
+                    .compile("([\\(\\[]) *(\\-?\\d+\\.?\\d*)? *, *(\\-?\\d+\\.?\\d*)? *([\\)\\]])");
+            Matcher matcher = pattern.matcher(valueConstraint);
+            if (matcher.matches()) {
+                try {
+                    // group 1 is lower inclusive/exclusive
+                    String s = matcher.group(1);
+                    lowerInclusive = s.equals("[");
+                    // group 2 is lower limit
+                    s = matcher.group(2);
+                    if (s == null || s.length() == 0) {
+                        lowerLimit = null;
+                    } else {
+                        lowerLimit = Double.valueOf(matcher.group(2));
+                    }
+                    // group 3 is upper limit
+                    s = matcher.group(3);
+                    if (s == null || s.length() == 0) {
+                        upperLimit = null;
+                    } else {
+                        upperLimit = Double.valueOf(matcher.group(3));
+                    }
+                    // group 4 is lower inclusive/exclusive
+                    s = matcher.group(4);
+                    upperInclusive = s.equals("]");
+                    if (lowerLimit == null && upperLimit == null) {
+                        String msg = "'"
+                                + valueConstraint
+                                + "' is not a valid value constraint"
+                                + " format for numeric types: neither lower- nor upper-limit specified";
+                        logger.debug(msg);
+                        continue;
+                    }
+                    if (lowerLimit != null && upperLimit != null) {
+                        if (lowerLimit > upperLimit) {
+                            String msg = "'"
+                                    + valueConstraint
+                                    + "' is not a valid value constraint format for numeric types: lower-limit exceeds upper-limit";
+                            logger.debug(msg);
+                            continue;
+                        }
+                    }
+                } catch (NumberFormatException nfe) {
+                    String msg = "'" + valueConstraint
+                            + "' is not a valid value constraint format for numeric types";
+                    logger.debug(msg);
+                    continue;
+                }
+                if (upperLimit != null) {
+                    prop.setMaxValue((upperInclusive ? upperLimit : --upperLimit).toString());
+                }
+                if (lowerLimit != null) {
+                    prop.setMinValue((lowerInclusive ? lowerLimit : ++lowerLimit).toString());
+                }
+            }
+        }
+    }
 
+    public static void resolveDateConstraint(GWTJahiaPropertyDefinition prop) {
+        for (String valueConstraint : prop.getValueConstraints()) {
+            final boolean lowerInclusive;
+            Calendar lowerLimit;
+            final boolean upperInclusive;
+            Calendar upperLimit;            
+        
+            Pattern pattern = Pattern.compile("([\\(\\[]) *([0-9TZ\\.\\+-:]*)? *, *([0-9TZ\\.\\+-:]*)? *([\\)\\]])");
+            Matcher matcher = pattern.matcher(valueConstraint);
+            if (matcher.matches()) {
+                try {
+                    // group 1 is lower inclusive/exclusive
+                    String s = matcher.group(1);
+                    lowerInclusive = s.equals("[");
+                    // group 2 is lower limit
+                    s = matcher.group(2);
+                    if (s == null || s.length() == 0) {
+                        lowerLimit = null;
+                    } else {
+                        lowerLimit = DateValue.valueOf(matcher.group(2)).getDate();
+                    }
+                    // group 3 is upper limit
+                    s = matcher.group(3);
+                    if (s == null || s.length() == 0) {
+                        upperLimit = null;
+                    } else {
+                        upperLimit = DateValue.valueOf(matcher.group(3)).getDate();
+                    }
+                    // group 4 is upper inclusive/exclusive
+                    s = matcher.group(4);
+                    upperInclusive = s.equals("]");
+
+                    if (lowerLimit == null && upperLimit == null) {
+                        String msg = "'" + valueConstraint
+                                + "' is not a valid value constraint format for dates: neither min- nor max-date specified";
+                        logger.debug(msg);
+                        continue;
+                    }
+                    if (lowerLimit != null && upperLimit != null) {
+                        if (lowerLimit.after(upperLimit)) {
+                            String msg = "'" + valueConstraint
+                                    + "' is not a valid value constraint format for dates: min-date > max-date";
+                            logger.debug(msg);
+                            continue;
+                        }
+                    }
+                    if (upperLimit != null) {
+                        prop.setMaxValue(String.valueOf(upperInclusive ? upperLimit.getTimeInMillis() : upperLimit.getTimeInMillis()-1));
+                    }
+                    if (lowerLimit != null) {
+                        prop.setMinValue(String.valueOf(lowerInclusive ? lowerLimit.getTimeInMillis() : lowerLimit.getTimeInMillis() + 1));
+                    }
+                } catch (ValueFormatException vfe) {
+                    String msg = "'" + valueConstraint
+                            + "' is not a valid value constraint format for dates";
+                    logger.debug(msg);
+                    continue;
+                } catch (RepositoryException re) {
+                    String msg = "'" + valueConstraint
+                            + "' is not a valid value constraint format for dates";
+                    logger.debug(msg);
+                    continue;
+                }
+            }
+        }
+    }
+    
     public List<GWTJahiaNodeType> getNodeTypes(List<String> names, Locale uiLocale) {
         try {
             List<GWTJahiaNodeType> list = new ArrayList<GWTJahiaNodeType>();

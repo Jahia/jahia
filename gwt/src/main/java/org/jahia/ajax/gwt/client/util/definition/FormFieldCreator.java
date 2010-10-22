@@ -39,6 +39,7 @@ import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Element;
+
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.*;
@@ -69,9 +70,9 @@ public class FormFieldCreator {
      * @param initializerValues
      * @return
      */
-    public static Field createField(GWTJahiaItemDefinition definition, GWTJahiaNodeProperty property,
+    public static Field<?> createField(GWTJahiaItemDefinition definition, GWTJahiaNodeProperty property,
                                     List<GWTJahiaValueDisplayBean> initializerValues) {
-        Field field = null;
+        Field<?> field = null;
         if (definition.isHidden()) {
             return null;
         }
@@ -96,7 +97,7 @@ public class FormFieldCreator {
                             if (propDefinition.getSelectorOptions().get("multiline") != null) {
                                 field = new TextArea();
                             } else {
-                                field = new TextField();
+                                field = new TextField<String>();
                             }
                             break;
                     }
@@ -196,7 +197,7 @@ public class FormFieldCreator {
                                 getSelectorOptionAsList(definition, "mime"), ManagerConfigurationFactory.EDITORIALCONTENTPICKER,
                                 propDefinition.isMultiple());
                     } else {
-                        field = new TextField();
+                        field = new TextField<String>();
                     }
                     break;
             }
@@ -244,13 +245,51 @@ public class FormFieldCreator {
         field.setFieldLabel(definition.getLabel());
         field.setReadOnly(field.isReadOnly() || definition.isProtected());
         if (field instanceof TextField) {
-            TextField tField = (TextField) field;
+            TextField<?> tField = (TextField<?>) field;
             tField.setAllowBlank(!definition.isMandatory());
         }
 
         if (field instanceof CheckBox) {
             field.setHideLabel(true);
             ((CheckBox) field).setBoxLabel(field.getFieldLabel());
+        }
+        if (!definition.isNode()) {
+            GWTJahiaPropertyDefinition propDefinition = (GWTJahiaPropertyDefinition) definition;
+            switch (propDefinition.getRequiredType()) {
+                case GWTJahiaNodePropertyType.STRING:
+                case GWTJahiaNodePropertyType.URI:
+                    if (GWTJahiaNodeSelectorType.CHOICELIST != definition.getSelector()
+                            && propDefinition.getValueConstraints() != null
+                            && propDefinition.getValueConstraints().size() == 1) {
+                        ((TextField<?>) field)
+                                .setRegex(propDefinition.getValueConstraints().get(0));
+                        if (propDefinition.getConstraintErrorMessage() != null) {
+                            ((TextField<?>) field).getMessages().setRegexText(
+                                    propDefinition.getConstraintErrorMessage());
+                        }
+                    }
+                    break;
+                    
+                case GWTJahiaNodePropertyType.LONG:
+                case GWTJahiaNodePropertyType.DOUBLE: 
+                case GWTJahiaNodePropertyType.DECIMAL:                    
+                    if (propDefinition.getMaxValue() != null) {
+                        ((NumberField) field).setMaxValue(Double.parseDouble(propDefinition.getMaxValue()));
+                    }
+                    if (propDefinition.getMinValue() != null) {
+                        ((NumberField) field).setMinValue(Double.parseDouble(propDefinition.getMinValue()));
+                    }
+                    break;
+                    
+                case GWTJahiaNodePropertyType.DATE:
+                    if (propDefinition.getMaxValue() != null) {
+                        ((DateField) field).setMaxValue(new Date(Long.parseLong(propDefinition.getMaxValue())));
+                    }
+                    if (propDefinition.getMinValue() != null) {
+                        ((DateField) field).setMinValue(new Date(Long.parseLong(propDefinition.getMinValue())));
+                    }
+                    break;
+            }
         }
     }
 

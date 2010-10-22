@@ -4,7 +4,7 @@
  - url (string)
  - user (string)
  - password (string)
- - type (string) < newsml
+ - type (string, choicelist) < newsml
  - syncro (string)
  + medias (jnt:folder)
 

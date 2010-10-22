@@ -37,6 +37,8 @@ import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.Field;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaCreateEngineInitBean;
@@ -228,12 +230,28 @@ public class CreateContentEngine extends AbstractContentEngine {
         final List<String> mixin = new ArrayList<String>();
         mask(Messages.get("label.saving","Saving..."), "x-mask-loading");
         setButtonsEnabled(false);
+        boolean allValid = true;
+        TabItem firstErrorTab = null;
+        Field<?> firstErrorField = null;
         for (TabItem tab : tabs.getItems()) {
             EditEngineTabItem item = tab.getData("item");
             if (item instanceof PropertiesTabItem) {
                 PropertiesTabItem propertiesTabItem = (PropertiesTabItem) item;
                 PropertiesEditor pe = ((PropertiesTabItem) item).getPropertiesEditor();
                 if (pe != null) {
+                    for (Field<?> field : pe.getFields()) {
+                        if (field.isVisible() && field.isEnabled() && !field.validate()) {
+                            if (allValid || tab.equals(tabs.getSelectedItem())
+                                    && !tab.equals(firstErrorTab)) {
+                                firstErrorTab = tab;
+                                firstErrorField = field;
+                            }
+                            allValid = false;
+                        }
+                    }
+                    if (!allValid) {
+                        continue;
+                    }
                     // props.addAll(pe.getProperties());
                     mixin.addAll(pe.getAddedTypes());
                     mixin.addAll(pe.getExternalMixin());
@@ -279,14 +297,26 @@ public class CreateContentEngine extends AbstractContentEngine {
                 ((TagsTabItem) item).updateProperties(changedI18NProperties, mixin);
             }
         }
-
-        doSave(nodeName, changedProperties, changedI18NProperties, mixin, newNodeACL, closeAfterSave);
+        if (!allValid) {
+            Window.alert(Messages.get("failure.invalid.constraint.label"));
+            if (firstErrorTab != null && !tabs.getSelectedItem().equals(firstErrorTab)) {
+                tabs.setSelection(firstErrorTab);
+            }
+            if (firstErrorField != null) {
+                firstErrorField.focus();
+            }
+            unmask();
+            setButtonsEnabled(true);
+        } else {
+            doSave(nodeName, changedProperties, changedI18NProperties, mixin, newNodeACL,
+                    closeAfterSave);
+        }
     }
 
     protected void doSave(String nodeName, List<GWTJahiaNodeProperty> props, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<String> mixin, GWTJahiaNodeACL newNodeACL, final boolean closeAfterSave) {
         final AsyncCallback<GWTJahiaNode> callback = new BaseAsyncCallback<GWTJahiaNode>() {
             public void onApplicationFailure(Throwable throwable) {
-                com.google.gwt.user.client.Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
+                Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
                 Log.error("failed", throwable);
                 unmask();
                 setButtonsEnabled(true);

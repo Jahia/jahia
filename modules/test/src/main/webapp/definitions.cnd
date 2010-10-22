@@ -73,7 +73,7 @@ orderable
 - boolean (boolean)
 - stringWithDefault (string) = 'string test'
 - protectedString (string) protected
-- alphanumericString (string) < '[a-zA-Z1-9]*'
+- alphanumericString (string) < '[a-zA-Z0-9]*'
 - longBetween1and10 (long) < '[1,10]'
 - stringText (string, text) indexed=no
 - stringTextMultiline (string, text[multiline]) indexed=no

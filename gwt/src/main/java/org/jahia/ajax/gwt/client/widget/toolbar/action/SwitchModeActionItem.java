@@ -51,7 +51,7 @@ public class SwitchModeActionItem extends BaseActionItem {
         final String workspace = getPropertyValue(getGwtToolbarItem(), "workspace");
         if (workspace.equalsIgnoreCase("live")) {
             final GWTJahiaNode node = linker.getSelectionContext().getMainNode();
-            if (node.getPublicationInfo().getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED
+            if (node == null || node.getPublicationInfo().getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED
                     || node.getPublicationInfo().getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
                 setEnabled(false);
             } else {

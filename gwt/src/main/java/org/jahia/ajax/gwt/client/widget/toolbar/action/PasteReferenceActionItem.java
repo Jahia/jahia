@@ -94,11 +94,11 @@ public class PasteReferenceActionItem extends BaseActionItem  {
         LinkerSelectionContext lh = linker.getSelectionContext();
         boolean b = lh.getSingleSelection() != null && lh.isWriteable() && lh.isPasteAllowed();
 
-        String refTypes;
+        String refTypes = null;
         if (linker instanceof EditLinker && b) {
             final Module module = ((EditLinker) linker).getSelectedModule();
             refTypes = module.getReferenceTypes();
-        } else {
+        } else if (lh.getSingleSelection() != null) {
             refTypes = lh.getSingleSelection().get("referenceTypes");
         }
         if (refTypes != null && refTypes.length() > 0) {

@@ -56,6 +56,7 @@ public class CopyActionItem extends BaseActionItem{
 
     public void handleNewLinkerSelection() {
         final LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.getMultipleSelection().size() > 0 && !lh.isSecondarySelection());
+        setEnabled(lh.getMultipleSelection() != null && lh.getMultipleSelection().size() > 0
+                && !lh.isSecondarySelection());
     }
 }

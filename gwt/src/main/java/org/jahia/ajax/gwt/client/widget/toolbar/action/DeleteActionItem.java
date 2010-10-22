@@ -180,6 +180,16 @@ public class DeleteActionItem extends BaseActionItem {
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.getMultipleSelection().size() > 0 && lh.isWriteable() && !lh.isSecondarySelection() && !lh.getMultipleSelection().get(0).getPath().equals("/sites/"+lh.getMultipleSelection().get(0).getSiteKey()+"/"+lh.getMultipleSelection().get(0).getName()) && !lh.getMultipleSelection().get(0).getPath().equals("/"+lh.getMultipleSelection().get(0).getName()));
+        setEnabled(lh.getMultipleSelection() != null
+                && lh.getMultipleSelection().size() > 0
+                && lh.isWriteable()
+                && !lh.isSecondarySelection()
+                && !lh.getMultipleSelection()
+                        .get(0)
+                        .getPath()
+                        .equals("/sites/" + lh.getMultipleSelection().get(0).getSiteKey() + "/"
+                                + lh.getMultipleSelection().get(0).getName())
+                && !lh.getMultipleSelection().get(0).getPath()
+                        .equals("/" + lh.getMultipleSelection().get(0).getName()));
     }
 }

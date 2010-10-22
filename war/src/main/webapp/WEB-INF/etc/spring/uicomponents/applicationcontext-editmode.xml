@@ -1169,6 +1169,7 @@
                         <value>jnt:tag</value>
                     </list>
                 </property>
+                <property name="tagAreI15d" value="false"/>
             </bean>
         </property>
     </bean>

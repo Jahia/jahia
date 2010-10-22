@@ -369,7 +369,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                 else if (item instanceof CategoriesTabItem) {
                     ((CategoriesTabItem) item).updateProperties(changedProperties, getNode().getNodeTypes());
                 } else if (item instanceof TagsTabItem) {
-                        ((TagsTabItem) item).updateProperties(changedI18NProperties, getNode().getNodeTypes());
+                        ((TagsTabItem) item).updateI18NProperties(changedI18NProperties, getNode().getNodeTypes());
                 } else if (item instanceof SeoTabItem) {
                     ((SeoTabItem) item).doSave();
                 } else if (item instanceof WorkflowTabItem) {

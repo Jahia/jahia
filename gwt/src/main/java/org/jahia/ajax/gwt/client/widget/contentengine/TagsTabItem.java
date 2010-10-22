@@ -74,23 +74,28 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class TagsTabItem extends EditEngineTabItem {
-    private transient String locale;
+    private transient String locale = "en";
     private transient Map<String, GWTJahiaNodeProperty> oldValues;
     private transient Map<String, GWTJahiaNodeProperty> newValues;
     private transient TreeStore<GWTJahiaNode> tagStore;
     private transient TreeLoader<GWTJahiaNode> tagLoader;
+    private transient boolean tagAreI15d;
 
     public void init(String locale) {
         if (!engine.isExistingNode() || (engine.getNode() != null)) {
 //            setProcessed(true);
             if (newValues == null) {
-                this.locale = locale;
+                if(tagAreI15d) {
+                    this.locale = locale;
+                }
                 this.oldValues = new HashMap<String, GWTJahiaNodeProperty>();
                 this.newValues = new HashMap<String, GWTJahiaNodeProperty>();
                 init();
                 tab.layout();
             } else {
-                this.locale = locale;
+                if(tagAreI15d) {
+                    this.locale = locale;
+                }
                 tagStore.removeAll();
                 tagLoader.load();
             }
@@ -230,7 +235,7 @@ public class TagsTabItem extends EditEngineTabItem {
         tab.add(tagGrid, new BorderLayoutData(Style.LayoutRegion.CENTER));
     }
 
-    public void updateProperties(Map<String,List<GWTJahiaNodeProperty>> list, List<String> mixin) {
+    public void updateI18NProperties(Map<String,List<GWTJahiaNodeProperty>> list, List<String> mixin) {
         boolean noTag = true;
         if (newValues != null) {
             for (Map.Entry<String, GWTJahiaNodeProperty> entry : newValues.entrySet()) {
@@ -263,6 +268,43 @@ public class TagsTabItem extends EditEngineTabItem {
         }
     }
 
+    public void updateProperties(List<GWTJahiaNodeProperty> list, List<String> mixin) {
+        boolean noTag = true;
+        if (newValues != null) {
+            for (Map.Entry<String, GWTJahiaNodeProperty> entry : newValues.entrySet()) {
+                GWTJahiaNodeProperty newTag = entry.getValue();
+                GWTJahiaNodeProperty oldTag = oldValues.get(entry.getKey());
+                GWTJahiaNodeProperty tags = null;
+
+                for (GWTJahiaNodeProperty property : list) {
+                    if (property.getName().equals("j:tags")) {
+                        tags = property;
+                    }
+                }
+
+                if (!newTag.equals(oldTag)) {
+
+                    if (!newTag.getValues().isEmpty()) {
+                        noTag = false;
+                    }
+                    if(tags!=null) {
+                        list.remove(tags);
+                    }
+                    list.add(newTag);
+                } else if (oldTag != null) {
+                    if (!oldTag.getValues().isEmpty()) {
+                        noTag = false;
+                    }
+                }
+            }
+        }
+        if (noTag) {
+            mixin.remove("jmix:tagged");
+        } else if (!mixin.contains("jmix:tagged")) {
+            mixin.add("jmix:tagged");
+        }
+    }
+
     public void setProcessed(boolean processed) {
         if (!processed && newValues != null) {
             newValues = null;
@@ -270,4 +312,11 @@ public class TagsTabItem extends EditEngineTabItem {
         super.setProcessed(processed);
     }
 
+    public void setTagAreI15d(boolean tagAreI15d) {
+        this.tagAreI15d = tagAreI15d;
+    }
+
+    public boolean isTagAreI15d() {
+        return tagAreI15d;
+    }
 }

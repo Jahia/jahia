@@ -294,7 +294,12 @@ public class CreateContentEngine extends AbstractContentEngine {
             } else if (item instanceof CategoriesTabItem) {
                 ((CategoriesTabItem) item).updateProperties(changedProperties, mixin);
             } else if (item instanceof TagsTabItem) {
-                ((TagsTabItem) item).updateProperties(changedI18NProperties, mixin);
+                final TagsTabItem tabItem = (TagsTabItem) item;
+                if(tabItem.isTagAreI15d()) {
+                    tabItem.updateI18NProperties(changedI18NProperties, mixin);
+                } else {
+                    tabItem.updateProperties(changedProperties, mixin);
+                }
             }
         }
         if (!allValid) {

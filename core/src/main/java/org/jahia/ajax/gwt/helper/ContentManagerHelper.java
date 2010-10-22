@@ -953,7 +953,8 @@ public class ContentManagerHelper {
                             keepReference(destinationNode, references, property, property.getValue().getString());
                         }
                     } else if (property.getDefinition().isMultiple() && (property.isMultiple())) {
-                        if (!Arrays.equals(destinationNode.getProperty(property.getName()).getValues(), property.getValues())) {
+                        if (!destinationNode.hasProperty(property.getName()) ||
+                            !Arrays.equals(destinationNode.getProperty(property.getName()).getValues(), property.getValues())) {
                             destinationNode.setProperty(property.getName(), property.getValues());
                         }
                     } else if (!destinationNode.hasProperty(property.getName()) ||

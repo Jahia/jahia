@@ -42,6 +42,7 @@ import org.jahia.services.render.URLResolver;
 import org.json.JSONObject;
 
 import javax.jcr.NodeIterator;
+import javax.jcr.version.VersionManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
@@ -69,23 +70,49 @@ public class VoteAction implements Action {
         this.name = name;
     }
 
+    // Vote action
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
                                   Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
 
         String answerUUID = req.getParameter("answerUUID");
-	    
+
+
+
+
+
+        // Poll Node management
+        // Get the pollNode
         JCRNodeWrapper pollNode = renderContext.getMainResource().getNode();
 
-        JCRNodeWrapper answerNode = pollNode.getSession().getNodeByUUID(answerUUID);
+        // Get a version manager
+        VersionManager versionManager = pollNode.getSession().getWorkspace().getVersionManager();
 
+        // Check out poll node
+        if(!versionManager.isCheckedOut(pollNode.getPath()))
+            versionManager.checkout(pollNode.getPath());
+                        
+        // Update total of votes (poll node)
         long totalOfVotes = pollNode.getProperty("totalOfVotes").getLong();
         pollNode.setProperty("totalOfVotes", totalOfVotes+1);
-               
 
+
+
+        // Answer node management
+        // Get the answer node
+        JCRNodeWrapper answerNode = pollNode.getSession().getNodeByUUID(answerUUID);
+        // Check out answerNode
+        if(!versionManager.isCheckedOut(answerNode.getPath()))
+           versionManager.checkout(answerNode.getPath());
+        // Increment nb votes
         long nbOfVotes = answerNode.getProperty("nbOfVotes").getLong();
         answerNode.setProperty("nbOfVotes", nbOfVotes+1);
 
+        // Save
         pollNode.getSession().save();
+        // Check in
+        versionManager.checkin(pollNode.getPath());
+        // Check in poll node
+        versionManager.checkin(answerNode.getPath());
 
         return new ActionResult(HttpServletResponse.SC_OK, null, generateJSONObject(pollNode));
     }

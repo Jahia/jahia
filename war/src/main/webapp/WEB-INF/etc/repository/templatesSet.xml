@@ -26,14 +26,14 @@
     </home>
 
     <templates jcr:primaryType="jnt:templatesFolder">
-        <base jcr:mixinTypes="jmix:renderable jmix:theme" j:view="default" jcr:primaryType="jnt:masterTemplate" j:theme="/templatesSet/themes/default">
+        <base jcr:mixinTypes="jmix:renderable jmix:theme" j:view="default" jcr:primaryType="jnt:pageTemplate" j:theme="/templatesSet/themes/default">
             <pagecontent jcr:primaryType="jnt:contentList">
                 <pagecontent jcr:primaryType="jnt:area"/>
             </pagecontent>
-            <home jcr:primaryType="jnt:masterTemplate">
+            <home jcr:primaryType="jnt:pageTemplate">
                 <pagecontent jcr:primaryType="jnt:contentList"/>
             </home>
-            <simple jcr:primaryType="jnt:masterTemplate">
+            <simple jcr:primaryType="jnt:pageTemplate">
                 <pagecontent jcr:primaryType="jnt:contentList"/>
             </simple>
         </base>

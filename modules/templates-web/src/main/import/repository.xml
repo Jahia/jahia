@@ -35,7 +35,7 @@
                 <footer jcr:primaryType="jnt:contentList"/>
             </home>
             <templates jcr:primaryType="jnt:templatesFolder">
-                <base jcr:mixinTypes="jmix:renderable" j:view="web" jcr:primaryType="jnt:masterTemplate">
+                <base jcr:mixinTypes="jmix:renderable" j:view="web" jcr:primaryType="jnt:pageTemplate">
                     <header jcr:primaryType="jnt:contentList">
                         <shortcuts jcr:mixinTypes="jmix:renderable" j:view="inline" jcr:primaryType="jnt:shortcuts"/>
                     </header>
@@ -55,7 +55,7 @@
                     <pagecontent jcr:primaryType="jnt:contentList">
                         <pagecontent jcr:primaryType="jnt:area"/>
                     </pagecontent>
-                    <home jcr:primaryType="jnt:masterTemplate">
+                    <home jcr:primaryType="jnt:pageTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row column="2col115" jcr:primaryType="jnt:row">
                             </row>
@@ -72,7 +72,7 @@
                             <listB jcr:primaryType="jnt:area"/>
                         </row-col2>
                     </home>
-                    <my-portal jcr:primaryType="jnt:masterTemplate">
+                    <my-portal jcr:primaryType="jnt:pageTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <my-portal jcr:primaryType="jnt:contentList">
                                 <j:translation_en jcr:title="My Portal" jcr:language="en"
@@ -81,7 +81,7 @@
                             </my-portal>
                         </pagecontent>
                     </my-portal>
-                    <events jcr:primaryType="jnt:masterTemplate">
+                    <events jcr:primaryType="jnt:pageTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row1 column="2col115" jcr:primaryType="jnt:row">
                             </row1>
@@ -112,7 +112,7 @@
                             </facets>
                         </row1-col2>
                     </events>
-                    <simple jcr:primaryType="jnt:masterTemplate">
+                    <simple jcr:primaryType="jnt:pageTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row column="2col115" jcr:primaryType="jnt:row">
                             </row>
@@ -131,7 +131,7 @@
                             <listB jcr:primaryType="jnt:area"/>
                         </row-col2>
                     </simple>
-                    <my-profile jcr:primaryType="jnt:masterTemplate">
+                    <my-profile jcr:primaryType="jnt:pageTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <tabularList jcr:primaryType="jnt:tabularList">
                                 <my-profile jcr:primaryType="jnt:contentList">
@@ -194,7 +194,7 @@
                             </tabularList>
                         </pagecontent>
                     </my-profile>
-                    <news-template jcr:primaryType="jnt:derivedTemplate" j:applyOn="jnt:news">
+                    <news-template jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:news">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row column="1col16" jcr:primaryType="jnt:row" />
                         </pagecontent>
@@ -202,7 +202,7 @@
                             <mainResourceDisplay j:mainResourceView="fullpage" jcr:primaryType="jnt:mainResourceDisplay" />
                         </row-col1>
                     </news-template>
-                    <note j:templateKey="thinkboxitem" jcr:primaryType="jnt:derivedTemplate"
+                    <note j:templateKey="thinkboxitem" jcr:primaryType="jnt:contentTemplate"
                           j:applyOn="jnt:thinkBoxItem">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row column="2col115" jcr:primaryType="jnt:row">

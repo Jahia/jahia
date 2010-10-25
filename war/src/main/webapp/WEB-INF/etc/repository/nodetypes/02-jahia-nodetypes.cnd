@@ -334,11 +334,11 @@
 [jnt:template] > nt:base, jmix:nodenameInfo, jmix:basemetadata
  + * (jnt:content)
 
-[jnt:masterTemplate] > jnt:template, jmix:publication
+[jnt:pageTemplate] > jnt:template, jmix:publication
  + * (jnt:template)
- + * (jnt:derivedTemplate)
+ + * (jnt:contentTemplate)
 
-[jnt:derivedTemplate] > jnt:template
+[jnt:contentTemplate] > jnt:template
  - j:applyOn (string, choicelist[subnodetypes = 'jnt:page,jnt:content,jnt:contentList,jnt:folder,jnt:file',resourceBundle]) multiple
  - j:templateKey (string)
 

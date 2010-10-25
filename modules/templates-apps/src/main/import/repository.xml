@@ -18,7 +18,7 @@
                 <default jcr:primaryType="jnt:folder"/>
             </themes>
             <templates jcr:primaryType="jnt:templatesFolder">
-                <base jcr:mixinTypes="jmix:renderable" j:view="apps" jcr:primaryType="jnt:masterTemplate">
+                <base jcr:mixinTypes="jmix:renderable" j:view="apps" jcr:primaryType="jnt:pageTemplate">
                     <logo jcr:primaryType="jnt:contentList"/>
                     <pagetitle jcr:primaryType="jnt:contentList"/>
                     <simpleSearch jcr:primaryType="jnt:contentList"/>
@@ -42,7 +42,7 @@
                     <pagecontent jcr:primaryType="jnt:contentList">
                         <pagecontent jcr:primaryType="jnt:area"/>
                     </pagecontent>
-                    <home jcr:primaryType="jnt:masterTemplate">
+                    <home jcr:primaryType="jnt:pageTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row column="2col115" jcr:primaryType="jnt:row">
                             </row>

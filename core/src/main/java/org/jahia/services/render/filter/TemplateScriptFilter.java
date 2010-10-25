@@ -70,7 +70,7 @@ public class TemplateScriptFilter extends AbstractFilter {
                 logger.debug("Render " + script.getTemplate().getPath() + " for resource: " + resource +
                              " with mainResource " + renderContext.getMainResource());
             }
-            if (SettingsBean.getInstance().isDevelopmentMode() && Boolean.valueOf(renderContext.getRequest().getParameter("moduleinfo")) && !resource.getNode().isNodeType("jnt:masterTemplate")) {
+            if (SettingsBean.getInstance().isDevelopmentMode() && Boolean.valueOf(renderContext.getRequest().getParameter("moduleinfo")) && !resource.getNode().isNodeType("jnt:pageTemplate")) {
                 output.append("\n<span class='hidden' script='").append(script.getTemplate().getInfo()).append("' node='").append(resource.getNode().getPath()).append("'></span>\n");
             }
             output.append(script.execute(resource, renderContext));

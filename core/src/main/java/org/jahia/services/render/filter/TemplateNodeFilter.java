@@ -137,7 +137,7 @@ public class TemplateNodeFilter extends AbstractFilter {
                     template = new Template(templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
                             templateName, templateNode, template);
                 } else {
-                    template = addDerivedTemplates(resource, null, templatesNode);
+                    template = addContentTemplates(resource, null, templatesNode);
                 }
 
                 if (template != null) {
@@ -163,16 +163,16 @@ public class TemplateNodeFilter extends AbstractFilter {
         return template;
     }
 
-    private Template addDerivedTemplates(Resource resource, Template template,
+    private Template addContentTemplates(Resource resource, Template template,
                                          JCRNodeWrapper templateNode) throws RepositoryException {
         Query q = templateNode.getSession().getWorkspace().getQueryManager().createQuery(
-                "select * from [jnt:derivedTemplate] as w where isdescendantnode(w, ['" + templateNode.getPath() + "'])",
+                "select * from [jnt:contentTemplate] as w where isdescendantnode(w, ['" + templateNode.getPath() + "'])",
                 Query.JCR_SQL2);
         QueryResult result = q.execute();
         NodeIterator ni = result.getNodes();
         while (ni.hasNext()) {
-            final JCRNodeWrapper derivedTemplateNode = (JCRNodeWrapper) ni.nextNode();
-            template = addTemplate(resource, template, derivedTemplateNode);
+            final JCRNodeWrapper contentTemplateNode = (JCRNodeWrapper) ni.nextNode();
+            template = addTemplate(resource, template, contentTemplateNode);
         }
         return template;
     }

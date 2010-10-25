@@ -66,7 +66,7 @@
                 <footer jcr:primaryType="jnt:contentList"/>
             </home>
             <templates jcr:primaryType="jnt:templatesFolder">
-                <base jcr:mixinTypes="jmix:renderable" j:view="intranet" jcr:primaryType="jnt:masterTemplate">
+                <base jcr:mixinTypes="jmix:renderable" j:view="intranet" jcr:primaryType="jnt:pageTemplate">
                     <logo jcr:primaryType="jnt:contentList">
                         <logo j:basenode="/templateSets/templates-intranet/home" jcr:primaryType="jnt:absoluteArea"/>
                     </logo>
@@ -90,7 +90,7 @@
                     <pagecontent jcr:primaryType="jnt:contentList">
                         <pagecontent jcr:primaryType="jnt:area"/>
                     </pagecontent>
-                    <home jcr:primaryType="jnt:masterTemplate">
+                    <home jcr:primaryType="jnt:pageTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row1 column="2col106" jcr:primaryType="jnt:row">
                             </row1>
@@ -107,7 +107,7 @@
                             <listB jcr:primaryType="jnt:area"/>
                         </row1-col2>
                     </home>
-                    <simple jcr:primaryType="jnt:masterTemplate">
+                    <simple jcr:primaryType="jnt:pageTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row1 column="2col124" jcr:primaryType="jnt:row">
                             </row1>
@@ -121,7 +121,7 @@
                             <listB jcr:primaryType="jnt:area"/>
                         </row1-col2>
                     </simple>
-                    <double jcr:primaryType="jnt:masterTemplate">
+                    <double jcr:primaryType="jnt:pageTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row1 column="3col664" jcr:primaryType="jnt:row">
                             </row1>
@@ -139,7 +139,7 @@
                             <listC jcr:primaryType="jnt:area"/>
                         </row1-col3>
                     </double>
-                    <docspace jcr:primaryType="jnt:masterTemplate">
+                    <docspace jcr:primaryType="jnt:pageTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row column="2col88" jcr:primaryType="jnt:row">
                             </row>
@@ -156,7 +156,7 @@
                             </contentList>
                         </row-col2>
                     </docspace>
-                    <file jcr:primaryType="jnt:derivedTemplate" j:applyOn="jnt:file">
+                    <file jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:file">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row column="2col124" jcr:primaryType="jnt:row">
                             </row>
@@ -204,7 +204,7 @@
                             </extras>
                         </row-col2>
                     </file>
-                    <folder jcr:primaryType="jnt:derivedTemplate" j:applyOn="jnt:folder">
+                    <folder jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:folder">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row column="2col124" jcr:primaryType="jnt:row">
                             </row>
@@ -229,7 +229,7 @@
                         </row1-col1>
                     </folder>
 
-                    <wiki jcr:primaryType="jnt:masterTemplate">
+                    <wiki jcr:primaryType="jnt:pageTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <tabs jcr:primaryType="jnt:tabularList">
                                 <last-pages jcr:primaryType="jnt:contentList">
@@ -251,7 +251,7 @@
                             </tabs>
                         </pagecontent>
                     </wiki>
-                    <wiki-content jcr:primaryType="jnt:derivedTemplate" j:applyOn="jnt:wikiPage">
+                    <wiki-content jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:wikiPage">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row column="2col124" jcr:primaryType="jnt:row">
                             </row>
@@ -283,7 +283,7 @@
                         </row-col1>
                         <rol-col2 jcr:primaryType="jnt:contentList"/>
                     </wiki-content>
-                    <forum jcr:primaryType="jnt:masterTemplate">
+                    <forum jcr:primaryType="jnt:pageTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row column="2col124" jcr:primaryType="jnt:row">
                             </row>
@@ -297,7 +297,7 @@
                         <row-col2 jcr:primaryType="jnt:contentList"/>
 
                     </forum>
-                    <forum-content jcr:primaryType="jnt:derivedTemplate" j:applyOn="jnt:topic jnt:thread">
+                    <forum-content jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:topic jnt:thread">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row column="2col124" jcr:primaryType="jnt:row">
                             </row>
@@ -308,7 +308,7 @@
                         </row-col1>
                         <row-col2 jcr:primaryType="jnt:contentList"/>
                     </forum-content>
-                    <my-profile jcr:primaryType="jnt:masterTemplate">
+                    <my-profile jcr:primaryType="jnt:pageTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <tabularList jcr:primaryType="jnt:tabularList">
                                 <my-profile jcr:primaryType="jnt:contentList">
@@ -359,7 +359,7 @@
                             </tabularList>
                         </pagecontent>
                     </my-profile>
-                    <events jcr:primaryType="jnt:masterTemplate">
+                    <events jcr:primaryType="jnt:pageTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row1 column="2col115" jcr:primaryType="jnt:row">
                             </row1>
@@ -385,7 +385,7 @@
                             </facets>
                         </row1-col2>
                     </events>
-                    <blog-home jcr:primaryType="jnt:masterTemplate">
+                    <blog-home jcr:primaryType="jnt:pageTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row column="2col115" jcr:primaryType="jnt:row">
                             </row>
@@ -407,7 +407,7 @@
                             </list>
                         </row-col1>
                     </blog-home>
-                    <blog jcr:primaryType="jnt:masterTemplate">
+                    <blog jcr:primaryType="jnt:pageTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row column="2col115" jcr:primaryType="jnt:row">
                             </row>
@@ -434,7 +434,7 @@
                             </facets>
                         </row-col2>
                     </blog>
-                    <blog-edit j:templateKey="blogEdit" jcr:primaryType="jnt:derivedTemplate"
+                    <blog-edit j:templateKey="blogEdit" jcr:primaryType="jnt:contentTemplate"
                                j:applyOn="jnt:blogContent">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row column="2col115" jcr:primaryType="jnt:row">
@@ -451,7 +451,7 @@
                             <authorDisplay j:userView="blog" jcr:primaryType="jnt:authorDisplay"/>
                         </row-col2>
                     </blog-edit>
-                    <blog-content jcr:primaryType="jnt:derivedTemplate" j:applyOn="jnt:blogContent">
+                    <blog-content jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:blogContent">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row column="2col115" jcr:primaryType="jnt:row">
                             </row>
@@ -479,7 +479,7 @@
                             <authorDisplay j:userView="blog" jcr:primaryType="jnt:authorDisplay"/>
                         </row-col2>
                     </blog-content>
-                    <blog-new j:templateKey="blogNew" jcr:primaryType="jnt:derivedTemplate" j:applyOn="jnt:page">
+                    <blog-new j:templateKey="blogNew" jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:page">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row column="2col115" jcr:primaryType="jnt:row">
                             </row>
@@ -493,7 +493,7 @@
                         </row-col2>
                     </blog-new>
 
-                    <summary jcr:primaryType="jnt:masterTemplate">
+                    <summary jcr:primaryType="jnt:pageTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row column="2col115" jcr:primaryType="jnt:row">
                             </row>

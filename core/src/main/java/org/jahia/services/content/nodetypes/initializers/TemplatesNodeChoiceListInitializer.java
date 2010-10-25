@@ -72,7 +72,7 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
             JCRNodeWrapper site = node.getResolveSite();
             final JCRSessionWrapper session = site.getSession();
             final QueryManager queryManager = session.getWorkspace().getQueryManager();
-            QueryResult result = queryManager.createQuery("select * from [jnt:masterTemplate] as n where isdescendantnode(n,['"+site.getPath()+"'])", Query.JCR_SQL2).execute();
+            QueryResult result = queryManager.createQuery("select * from [jnt:pageTemplate] as n where isdescendantnode(n,['"+site.getPath()+"'])", Query.JCR_SQL2).execute();
             final NodeIterator iterator = result.getNodes();
             while (iterator.hasNext()) {
                 JCRNodeWrapper tpl = (JCRNodeWrapper) iterator.next();

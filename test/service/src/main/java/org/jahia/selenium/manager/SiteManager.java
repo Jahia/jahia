@@ -18,8 +18,10 @@ public class SiteManager extends SeleneseTestCase {
     private static Logger logger = Logger.getLogger(SiteManager.class);
     private JahiaSite site;
     private final static String TESTSITE_NAME = "mySite";
-    private final static String TEST_SPEED = "3000"; //speed between selenium commands
-  
+    private final static String TEST_SPEED = "3100"; //speed between selenium commands
+
+
+                         
 
     @Override
     public void setUp() throws Exception {

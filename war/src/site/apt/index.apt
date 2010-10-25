@@ -1,4 +1,7 @@
 Jahia Crazy Jane - Web Module
 
  * {{{multilang.html}Internationalized Web Site}}
+ 
  * {{{apachehttpserver.html}Using an Apache HTTP Server in Front of JAHIA}}
+ 
+ * {{{input_validations.html}Define input validations}}

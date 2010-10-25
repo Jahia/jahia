@@ -1,0 +1,66 @@
+Jahia - Input validation
+
+  Jahia 6.5 for now supports the most important value constraints, which can be defined in the standard CND (Compact Namespace and Node Type Definition). Built-in property editors will not allow saving values, which are violating these constraints and will guide the authors by showing, how to make valid input.
+
+  JCR definitions gives the ability to define mandatory fields, ranges and to add regex contraints. 
+
+  For example, the following field is mandatory and must only contain letters :
+
+--------------------
+[jnt:example] > jnt:content
+- j:mandatoryStringWithConstraint (string) mandatory < '[a-zA-Z]*'
+-------------------- 
+
+  ** mandatory constraint 
+  
+  <mandatory> is one of the predefined attributes, which can be set in the property definition.
+  
+  ** regular expression constraint
+  
+  Value constraints are denoted by a "\<" (less than) and should (albeit can) be single quoted '...'. A single quote within the regular expression needs to be escaped with a backslash: \\ \
+  The JCR specification says that multiple constraints can be specified delimited with comma, but when using regular expression Jahia only supports setting a single regular expression.
+  
+  As the syntax of regular expression can be very complex and not understood by the majority of authors, Jahia allows to specify a custom validation error message, which will be shown to the authors, if the entered content does not match the regular expression. You can set this message in the module's resource bundle, where the nodetype is defined. 
+  
+  The key of the message in the resource bundle must be <\<nodeTypeName\>.\<propertyName\>.constraint.error.message> where colons need to be replaced with underscores. For the above example the resource bundle entry would be:
+
+--------------------
+jnt_example.j_mandatoryStringWithConstraint.constraint.error.message=The input value must only contain letters. 
+--------------------   
+  
+  ** range constraint  
+  
+   For numeric and date properties, the value constraint denoted by "\<" (less than) specify a valid range, which looks like: <'\[min, max\]'>, <'(min, max)'>, <'(min, max\]'> or <'\[min, max)'>.
+   
+   \[ ... means including the following <min> value itself
+   
+   ( ... means excluding the following <min> value itself
+   
+   \] ... means including the <max> value itself
+   
+   ) ... means excluding the <max> value itself
+   
+   For long and double property types <min> and <max> are numbers. For the date property type <min> and <max> must be date strings must be in the ISO 8601:2000-compliant format: sYYYY-MM-DDThh:mm:ss.sssTZD
+   
+   <min> or <max> can also be left empty, which means that there is no bound in that direction.
+   
+   Like with the regular expression constraint Jahia supports only one range setting per property.
+   
+   <<Examples>>
+   
+   From 0 inclusive to five inclusive:[0,5]
+
+   From 0 inclusive to five exclusive:[0,5)
+
+   From no minimum to fire inclusive: [,5] or (,5]   
+   
+  ** multiple constraints 
+
+   As already mentioned JCR allows to set multiple constraints, but for regular expression and ranges, Jahia only allows one setting. Multiple constraints are still supported for choicelists, where the value constraints specify the possible values, from which the author can choose from. For that please always specify the choicelist selector, so that Jahia will draw a combobox or list in the property editor, from which the author will be able to chose the value(s) from.  
+  
+--------------------
+[jnt:example] > jnt:content
+ - j:exampleWithSelection (string, choicelist) mandatory < 'one', 'two', 'three'
+-------------------- 
+
+  The value must then match one of the three possible values.

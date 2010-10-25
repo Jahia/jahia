@@ -58,7 +58,7 @@
     </div>
     <c:if test="${not empty displayList}">
         <div class="tabContainer"><!--start tabContainer-->
-            <template:area path="${displayList.path}"/>
+            <template:module node="${displayList}"/>
             <div class="clear"></div>
         </div>
     </c:if>

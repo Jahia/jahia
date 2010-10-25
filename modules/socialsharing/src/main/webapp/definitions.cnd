@@ -1,7 +1,7 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
 //Possible improvement : use a choicelist initializer to dynamically load the list of services from a file
-[jnt:socialsharing] > jnt:content, jmix:siteComponent
+[jnt:socialsharing] > jnt:content, jmix:socialComponent
  - socialNetworks (string,choicelist[resourceBundle]) = facebook,twitter,evernote,linkedin indexed=no multiple < bebo,bitly,delicious,digg,dzone,email,evernote,facebook,friendfeed,google,linkedin,live,myspace,netvibes,ping,reddit,scoopeo,slashdot,stumbleupon,technorati,twitter,yahoo,yahoobuzz
 
 

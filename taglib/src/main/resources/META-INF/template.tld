@@ -329,8 +329,8 @@
     <tag>
         <description>Define an area for containing sub modules.
         </description>
-        <name>area</name>
-        <tag-class>org.jahia.taglibs.template.include.AreaTag</tag-class>
+        <name>list</name>
+        <tag-class>org.jahia.taglibs.template.include.ListTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
             <description>Relative or absolute path to the node to include</description>
@@ -364,7 +364,7 @@
         </attribute>
         <attribute>
             <description>Content type .</description>
-            <name>areaType</name>
+            <name>listType</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>

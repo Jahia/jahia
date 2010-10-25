@@ -37,6 +37,8 @@ import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
@@ -69,13 +71,10 @@ public class LinkerModule extends Module {
     private String property;
     private String mixinType;
 
-    public LinkerModule(String id, String path, String property, String mixinType, MainModule m) {
-        super(id, path, null, null, null, null, m);
-        this.id = id;
-        this.path = path;
-        this.property = property;
-        this.mixinType = mixinType;
-        this.mainModule = m;
+    public LinkerModule(String id, String path, Element divElement, MainModule m) {
+        super(id, path, divElement, m);
+        property = DOM.getElementAttribute(divElement, "property");
+        mixinType = DOM.getElementAttribute(divElement, "mixinType");
         setBorders(false);
         panel = new HorizontalPanel();
         panel.setHorizontalAlign(Style.HorizontalAlignment.CENTER);

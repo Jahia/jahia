@@ -97,7 +97,7 @@ function doVote(answers) {
                 <span><fmt:message key="jnt_poll.addAnswers"/></span>
             </c:if>
 
-            <template:area path="answers" areaType="jnt:answersList" editable="true"/>
+            <template:list path="answers" listType="jnt:answersList" editable="true"/>
 
             <c:if test="${renderContext.editMode}">
                 </div>

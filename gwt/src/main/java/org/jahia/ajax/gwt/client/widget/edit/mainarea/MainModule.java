@@ -85,7 +85,7 @@ public class MainModule extends Module {
     protected LayoutContainer scrollContainer;
 
     public MainModule(final String html, final String path, final String template, String nodeTypes, GWTEditConfiguration config) {
-        super("main", path, template, null, nodeTypes, null, null, new FlowLayout());
+        super("main", path, template, nodeTypes, new FlowLayout());
         setScrollMode(Style.Scroll.NONE);
 
         this.id = "main";

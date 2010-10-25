@@ -98,7 +98,13 @@ public class WrappedContentTag extends ModuleTag implements ParamParent {
             if (!path.startsWith("/")) {
                 areaPath = renderContext.getMainResource().getNode().getPath() + "/" + path;
             }
-            printModuleStart(getModuleType(renderContext), areaPath, null, "No script");
+
+            String additionalParameters = "missingList=\"true\"";
+            if (mockupStyle != null) {
+                additionalParameters += " mockupStyle=\""+mockupStyle+"\"";
+            }
+
+            printModuleStart(getModuleType(renderContext), areaPath, null, "No script", additionalParameters);
             if (getBodyContent() != null) {
                 getPreviousOut().write(getBodyContent().getString());
             }

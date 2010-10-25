@@ -85,7 +85,4 @@
     <c:if test="${not empty moduleMap.paginationActive}">
         <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.init"/>
     </c:if>
-<c:if test="${renderContext.editMode && empty moduleMap.currentList}">
-    <p><fmt:message key="search.results.no.results"/></p>
-</c:if>
 

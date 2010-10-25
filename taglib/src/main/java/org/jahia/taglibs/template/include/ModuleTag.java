@@ -243,9 +243,10 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                         try {
                             script = RenderService.getInstance().resolveScript(resource, renderContext);
                             printModuleStart(type, node.getPath(), resource.getTemplate(),
-                                    script.getTemplate().getInfo());
+                                    script.getTemplate().getInfo(), null);
                         } catch (TemplateNotFoundException e) {
-                            printModuleStart(type, node.getPath(), resource.getTemplate(), "Script not found");
+                            printModuleStart(type, node.getPath(), resource.getTemplate(), "Script not found",
+                                    null);
                         }
 
                         render(renderContext, resource);
@@ -323,7 +324,8 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 renderContext.getRequest().getAttribute("inArea") == null ;
     }
 
-    protected void printModuleStart(String type, String path, String resolvedTemplate, String scriptInfo)
+    protected void printModuleStart(String type, String path, String resolvedTemplate, String scriptInfo,
+                                    String additionalParameters)
             throws RepositoryException, IOException {
 
         buffer.append("<div class=\"jahia-template-gxt\" jahiatype=\"module\" ").append("id=\"module")
@@ -341,6 +343,10 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         if (constraints != null) {
             String referenceTypes = ConstraintsHelper.getReferenceTypes(constraints, nodeTypes);
             buffer.append((referenceTypes != null) ? " referenceTypes=\"" + referenceTypes + "\"" : "");
+        }
+
+        if (additionalParameters != null) {
+            buffer.append(" ").append(additionalParameters);
         }
 
         buffer.append((resolvedTemplate != null) ? " template=\"" + resolvedTemplate + "\"" : "").append(">");
@@ -462,7 +468,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
         if (canEdit(renderContext)) {
             if (currentResource.getNode().isWriteable()) {
-                printModuleStart("placeholder", path, null, null);
+                printModuleStart("placeholder", path, null, null, null);
                 printModuleEnd();
             }
         }

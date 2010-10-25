@@ -35,6 +35,8 @@ package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 import com.extjs.gxt.ui.client.widget.Header;
 import com.extjs.gxt.ui.client.widget.Layout;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
@@ -66,27 +68,38 @@ public abstract class Module extends LayoutContainer {
     public Module() {
     }
 
-    protected Module(String id, String path, String template, String scriptInfo, String nodeTypes, String referenceTypes,
-                     MainModule mainModule) {
+    protected Module(String id, String path, Element divElement, MainModule mainModule) {
         super();
         this.id = id;
         this.path = path;
-        this.template = template;
-        this.scriptInfo = scriptInfo;
-        this.nodeTypes = nodeTypes;
-        this.referenceTypes = referenceTypes;
+
+        template = DOM.getElementAttribute(divElement, "template");
+        nodeTypes = DOM.getElementAttribute(divElement, "nodetypes");
+        referenceTypes = DOM.getElementAttribute(divElement, "referenceTypes");
+        scriptInfo = DOM.getElementAttribute(divElement, "scriptInfo");
+
         this.mainModule = mainModule;
     }
 
-    protected Module(String id, String path, String template, String scriptInfo, String nodeTypes, String referenceTypes, MainModule mainModule, Layout layout) {
+    protected Module(String id, String path, Element divElement, MainModule mainModule, Layout layout) {
+        super(layout);
+        this.id = id;
+        this.path = path;
+
+        template = DOM.getElementAttribute(divElement, "template");
+        nodeTypes = DOM.getElementAttribute(divElement, "nodetypes");
+        referenceTypes = DOM.getElementAttribute(divElement, "referenceTypes");
+        scriptInfo = DOM.getElementAttribute(divElement, "scriptInfo");
+
+        this.mainModule = mainModule;
+    }
+
+    protected Module(String id, String path, String template, String nodeTypes, Layout layout) {
         super(layout);
         this.id = id;
         this.path = path;
         this.template = template;
-        this.scriptInfo = scriptInfo;
         this.nodeTypes = nodeTypes;
-        this.referenceTypes = referenceTypes;
-        this.mainModule = mainModule;
     }
 
     public void onParsed() {

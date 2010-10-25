@@ -39,6 +39,7 @@ import com.extjs.gxt.ui.client.widget.Header;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
@@ -49,6 +50,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
+import com.google.gwt.user.client.Element;
 
 /**
  * Created by IntelliJ IDEA.
@@ -60,24 +62,36 @@ import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 public class AreaModule extends SimpleModule {
 
     private String moduleType;
+    private String mockupStyle;
     private String areaType = "jnt:contentList";  // todo set the areatype
+    private boolean missingList;
 
-    public AreaModule(String id, String path, String s, String template, String scriptInfo, String nodeTypes, String referenceType,
-                      String moduleType, MainModule mainModule) {
-        super(id, path, template, scriptInfo, nodeTypes, referenceType, mainModule);
+    public AreaModule(String id, String path, Element divElement, String moduleType, MainModule mainModule) {
+        super(id, path, divElement, mainModule);
         hasDragDrop = false;
         head = new Header();
+
+        this.mockupStyle = DOM.getElementAttribute(divElement, "mockupStyle");
+        this.missingList = "true".equals(DOM.getElementAttribute(divElement, "missingList"));
+
         add(head);
         this.moduleType = moduleType;
+        String headerText;
         if (path.contains("/")) {
-            head.setText(Messages.get("label."+moduleType) + " : " + path.substring(path.lastIndexOf('/') + 1));
+            headerText = Messages.get("label."+moduleType) + " : " + path.substring(path.lastIndexOf('/') + 1);
         } else {
-            head.setText(Messages.get("label."+moduleType)+" : "+ path);
+            headerText = Messages.get("label."+moduleType)+" : " + path;
         }
+        if (missingList) {
+            headerText += " (" + Messages.get("label.notCreated", "not created")+ ")";
+        } else if (!hasChildren) {
+            headerText += " (" + Messages.get("label.empty", "empty")+ ")";
+        }
+        head.setText(headerText);
 //        setBodyBorder(false);
         head.addStyleName("x-panel-header");
         head.addStyleName("x-panel-header-"+moduleType+"module");
-        html = new HTML(s);
+        html = new HTML(divElement.getInnerHTML());
         add(html);
     }
 
@@ -87,6 +101,9 @@ public class AreaModule extends SimpleModule {
         super.onParsed();
         if (!hasChildren) {
             addStyleName(moduleType);
+            if (mockupStyle != null) {
+                addStyleName(mockupStyle);
+            }
             removeAll();
 
             LayoutContainer dash = new LayoutContainer();
@@ -96,6 +113,7 @@ public class AreaModule extends SimpleModule {
             ctn.addStyleName(moduleType+"Template");
             ctn.addText(head.getText());
             dash.add(ctn);
+            dash.add(html);
 
             add(dash);
         } else {
@@ -131,9 +149,7 @@ public class AreaModule extends SimpleModule {
                     ctn.layout();
                 }
             }
-
-
-        }                
+        }
     }
 
     @Override public String getPath() {

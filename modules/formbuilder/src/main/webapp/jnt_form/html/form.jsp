@@ -68,7 +68,7 @@
     <div class="addaction">
         <span><fmt:message key="form.addAction"/> </span>
         <c:set var="editable" value="${not empty actionNode.nodes}"/>
-        <template:area path="action" areaType="jnt:actionList" editable="true"/>
+        <template:list path="action" listType="jnt:actionList" editable="true"/>
     </div>
 </c:if>
 <div class="Form FormBuilder">
@@ -86,7 +86,7 @@
         <div class="addfieldsets">
             <span><fmt:message key="form.addFieldSet"/></span>
             </c:if>
-            <template:area path="fieldsets" areaType="jnt:fieldsetstList" editable="true"/>
+            <template:list path="fieldsets" listType="jnt:fieldsetstList" editable="true"/>
             <c:if test="${renderContext.editMode}">
         </div>
         </c:if>
@@ -94,7 +94,7 @@
             <c:if test="${renderContext.editMode}">
                 <span><fmt:message key="form.addButtons"/></span>
             </c:if>
-            <template:area path="formButtons" areaType="jnt:formButtonsList" editable="true"/>
+            <template:list path="formButtons" listType="jnt:formButtonsList" editable="true"/>
         </div>
 
         <c:if test="${not renderContext.editMode}">
@@ -106,6 +106,6 @@
 
 <div>
     <h2><fmt:message key="form.responses"/> (<a href="<c:url value='${currentNode.path}.csv' context='${url.base}'/>" target="_blank">CSV</a>)</h2>
-    <template:area path="responses" areaType="jnt:responsesList" editable="true" />
+    <template:list path="responses" listType="jnt:responsesList" editable="true" />
 </div>
 

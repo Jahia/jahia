@@ -42,6 +42,7 @@ import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
@@ -63,12 +64,8 @@ import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 public class PlaceholderModule extends Module {
     private HorizontalPanel panel;
 
-    public PlaceholderModule(String id, String path, String nodeTypes, String referenceType, MainModule mainModule) {
-        super(id, path, null, null, nodeTypes, referenceType, mainModule, new FlowLayout());
-        this.id = id;
-        this.path = path;
-        this.mainModule = mainModule;
-        this.nodeTypes = nodeTypes;
+    public PlaceholderModule(String id, String path, Element divElement, MainModule mainModule) {
+        super(id, path, divElement, mainModule, new FlowLayout());
 
         if (path.endsWith("*")) {
             setBorders(false);

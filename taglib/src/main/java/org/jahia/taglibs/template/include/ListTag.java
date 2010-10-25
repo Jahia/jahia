@@ -48,15 +48,14 @@ import java.io.IOException;
  * Date: May 14, 2009
  * Time: 7:18:15 PM
  */
-public class AreaTag extends ModuleTag implements ParamParent {
+public class ListTag extends ModuleTag implements ParamParent {
 
-    private static Logger logger = Logger.getLogger(AreaTag.class);
+    private static Logger logger = Logger.getLogger(ListTag.class);
 
-    private String areaType = "jnt:contentList";
-    private boolean forceCreation;
+    private String listType = "jnt:contentList";
 
-    public void setAreaType(String areaType) {
-        this.areaType = areaType;
+    public void setListType(String listType) {
+        this.listType = listType;
     }
 
     @Override
@@ -73,14 +72,14 @@ public class AreaTag extends ModuleTag implements ParamParent {
                     JCRNodeWrapper nodeWrapper = currentResource.getNode();
                     if(!nodeWrapper.isCheckedOut())
                         nodeWrapper.checkout();
-                    node = nodeWrapper.addNode(path, areaType);
+                    node = nodeWrapper.addNode(path, listType);
                     session.save();
                 } else {
 
                     JCRNodeWrapper parent = session.getNode(StringUtils.substringBeforeLast(path, "/"));
                     if(!parent.isCheckedOut())
                         parent.checkout();
-                    node = parent.addNode(StringUtils.substringAfterLast(path, "/"), areaType);
+                    node = parent.addNode(StringUtils.substringAfterLast(path, "/"), listType);
                     session.save();
                 }
             }

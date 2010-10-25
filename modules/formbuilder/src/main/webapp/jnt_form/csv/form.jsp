@@ -18,4 +18,4 @@
 		${fieldsetStatus.index + fieldStatus.index > 0 ? ',' : ''}${field.name}
 	</c:forEach>
 </c:forEach><%= System.getProperty("line.separator") %>
-<template:area path="responses" areaType="jnt:responsesList" editable="false" templateType="csv"/>
+<template:list path="responses" listType="jnt:responsesList" editable="false" templateType="csv"/>

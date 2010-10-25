@@ -41,6 +41,7 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.Header;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -58,14 +59,12 @@ import org.jahia.ajax.gwt.client.widget.contentengine.EditContentEnginePopupList
 public class SimpleModule extends Module {
     protected boolean hasDragDrop = true;
 
-    public SimpleModule(String id, String path, String template, String scriptInfo, String nodeTypes, String referenceType,
-                        MainModule mainModule) {
-        super(id, path, template, scriptInfo, nodeTypes, referenceType, mainModule);
+    public SimpleModule(String id, String path, Element divElement, MainModule mainModule) {
+        super(id, path, divElement, mainModule);
     }
 
-    public SimpleModule(String id, final String path, String s, String template, String scriptInfo, String nodeTypes,
-                        String referenceType, final MainModule mainModule, boolean header) {
-        super(id, path, template, scriptInfo, nodeTypes, referenceType, mainModule);
+    public SimpleModule(String id, final String path, Element divElement, final MainModule mainModule, boolean header) {
+        super(id, path, divElement, mainModule);
 
         if (header) {
             head = new Header();
@@ -76,7 +75,7 @@ public class SimpleModule extends Module {
             setBorders(false);
         }
 
-        html = new HTML(s);
+        html = new HTML(divElement.getInnerHTML());
         add(html);
     }
 

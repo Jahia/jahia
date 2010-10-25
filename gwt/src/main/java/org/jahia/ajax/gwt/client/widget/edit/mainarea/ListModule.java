@@ -33,6 +33,7 @@
 package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
 import com.extjs.gxt.ui.client.widget.Header;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.messages.Messages;
 
@@ -45,9 +46,8 @@ import org.jahia.ajax.gwt.client.messages.Messages;
  */
 public class ListModule extends SimpleModule {
 
-    public ListModule(String id, String path, String s, String template, String scriptInfo, String nodeTypes, String referenceType,
-                      MainModule mainModule) {
-        super(id, path, template, scriptInfo, nodeTypes, referenceType, mainModule);
+    public ListModule(String id, String path, Element divElement, MainModule mainModule) {
+        super(id, path, divElement, mainModule);
         head = new Header();
         add(head);
 
@@ -60,7 +60,7 @@ public class ListModule extends SimpleModule {
 //        setBodyBorder(false);
         head.addStyleName("x-panel-header");
         head.addStyleName("x-panel-header-areamodule");
-        html = new HTML(s);
+        html = new HTML(divElement.getInnerHTML());
         add(html);
     }
 }

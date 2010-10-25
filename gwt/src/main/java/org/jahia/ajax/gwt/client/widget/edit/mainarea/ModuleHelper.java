@@ -88,29 +88,20 @@ public class ModuleHelper {
                 String id = DOM.getElementAttribute(divElement, "id");
                 String type = DOM.getElementAttribute(divElement, "type");
                 String path = DOM.getElementAttribute(divElement, "path");
-                String template = DOM.getElementAttribute(divElement, "template");
                 String nodetypes = DOM.getElementAttribute(divElement, "nodetypes");
-                String referenceTypes = DOM.getElementAttribute(divElement, "referenceTypes");
-                String scriptInfo = DOM.getElementAttribute(divElement, "scriptInfo");
                 Module module = null;
                 if (type.equals("area") || type.equals("absoluteArea")) {
-                    module = new AreaModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes,
-                            referenceTypes, type, m);
+                    module = new AreaModule(id, path, divElement, type, m);
                 } else if (type.equals("list")) {
-                    module = new ListModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes,
-                            referenceTypes, m);
+                    module = new ListModule(id, path, divElement, m);
                 } else if (type.equals("existingNode")) {
-                    module = new SimpleModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes,
-                            referenceTypes, m, false);
+                    module = new SimpleModule(id, path, divElement, m, false);
                 } else if (type.equals("existingNodeWithHeader")) {
-                    module = new SimpleModule(id, path, divElement.getInnerHTML(), template, scriptInfo, nodetypes,
-                            referenceTypes, m, true);
+                    module = new SimpleModule(id, path, divElement, m, true);
                 } else if (type.equals("placeholder")) {
-                    module = new PlaceholderModule(id, path, nodetypes, referenceTypes, m);
+                    module = new PlaceholderModule(id, path, divElement, m);
                 } else if (type.equals("linker")) {
-                    String property = DOM.getElementAttribute(divElement, "property");
-                    String mixinType = DOM.getElementAttribute(divElement, "mixinType");
-                    module = new LinkerModule(id, path, property, mixinType, m);
+                    module = new LinkerModule(id, path, divElement, m);
                 }
                 allNodetypes.addAll(Arrays.asList(nodetypes.split(" ")));
                 if (module != null) {

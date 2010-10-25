@@ -4,4 +4,4 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <template:addResources type="css" resources="tasks.css"/>
-<template:area path="myportal" areaType="jnt:portal" editable="false"/> 
+<template:list path="myportal" listType="jnt:portal" editable="false"/>

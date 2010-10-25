@@ -3071,7 +3071,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             String path = getPath();
             if (path.startsWith("/sites/")) {
                 int index = path.indexOf('/', 7);
-                return (site = (JCRSiteNode) (getSession().getNode(index == -1 ? path : path.substring(0, index))));
+                try {
+                    return (site = (JCRSiteNode) (getSession().getNode(index == -1 ? path : path.substring(0, index))));
+                } catch (ClassCastException e) {
+                    // if node is not a site ( eg ACL / workflow )
+                    return null;
+                }
             }
 
             if (path.startsWith("/templateSets/")) {

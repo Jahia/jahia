@@ -6,6 +6,13 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <utility:useConstants var="jcrPropertyTypes" className="org.jahia.services.content.nodetypes.ExtendedPropertyType" scope="application"/>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+<title>${fn:escapeXml(currentNode.name)}</title>
+</head>
+<body style="color:#36393D; font-family:Arial,Helvetica,sans-serif; font-size:80%; line-height:160%;">
 <fieldset>
     <legend><strong>${fn:escapeXml(currentNode.name)}</strong></legend>
     <c:if test="${not empty currentNode.parent}">
@@ -56,3 +63,5 @@
         </ul>
     </c:if>
 </fieldset>
+</body>
+</html>

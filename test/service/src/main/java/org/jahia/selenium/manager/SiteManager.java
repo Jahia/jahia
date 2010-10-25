@@ -138,7 +138,7 @@ public class SiteManager extends SeleneseTestCase {
             }
         };
         selenium.type("//input[@name='jcr:title']", "My Page");
-        selenium.type("//input[@name='j:templateNode']", "base");
+       // selenium.type("//input[@name='j:templateNode']", "base");
         selenium.click("//button[text()='Save And Add New']");
 
         new Wait("wait") {
@@ -147,7 +147,7 @@ public class SiteManager extends SeleneseTestCase {
             }
         };
         selenium.type("//input[@name='jcr:title']", "An other page");
-        selenium.type("//input[@name='j:templateNode']", "base");
+       // selenium.type("//input[@name='j:templateNode']", "base");
         selenium.click("//div[@class=' x-small-editor x-panel-btns-center x-panel-fbar x-component x-toolbar-layout-ct']/table/tbody/tr/td[1]/table/tbody/tr/td[1]/table");
 
 

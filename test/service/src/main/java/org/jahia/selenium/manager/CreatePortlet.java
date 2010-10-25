@@ -20,7 +20,7 @@ public class CreatePortlet extends SeleneseTestCase {
     private static Logger logger = Logger.getLogger(CreatePortlet.class);
     private JahiaSite site;
     private final static String TESTSITE_NAME = "mySite";
-    private final static String TEST_SPEED = "3200"; //speed between selenium commands
+    private final static String TEST_SPEED = "3500"; //speed between selenium commands
 
 
     @Override
@@ -77,7 +77,7 @@ public class CreatePortlet extends SeleneseTestCase {
       
     }
 
-    public void addPortlet() {
+        public void addPortlet() {
         //click on "Managers"
         new Wait("wait") {
             public boolean until() {
@@ -235,10 +235,11 @@ public class CreatePortlet extends SeleneseTestCase {
 
 
         //Remove all portlets
+        deleteElement("//div[text()='HTML portlet']");
         deleteElement("//div[@id='Flux RSS lemonde.fr']");
         deleteElement("//div[@id='Test script google spider brrr']");
         deleteElement("//span[text()='My portlets']");
-        deleteElement("//div[text()='HTML portlet']");
+
 
 
     }

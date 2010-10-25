@@ -19,7 +19,7 @@ public class RichtextTest extends SeleneseTestCase {
     private static Logger logger = Logger.getLogger(RichtextTest.class);
     private JahiaSite site;
     private final static String TESTSITE_NAME = "mySite";
-    private final static String TEST_SPEED = "3500"; //speed between selenium commands
+    private final static String TEST_SPEED = "3700"; //speed between selenium commands
     private final static int numberOfNodes = 10;
 
     /*  protected DefaultSelenium createSeleniumClient(String url) throws Exception {

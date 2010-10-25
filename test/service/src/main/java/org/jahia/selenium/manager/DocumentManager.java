@@ -68,11 +68,11 @@ public class DocumentManager extends SeleneseTestCase {
                 }
             }
         }
-        createNewFolder();
+        documentManager();
 
     }
 
-    public void createNewFolder() {
+    public void  documentManager() {
 
 
         //click on "Managers"
@@ -151,10 +151,11 @@ public class DocumentManager extends SeleneseTestCase {
         selenium.type("//input[@type='file']", path + "paysage.jpg");
         selenium.click("//button[text()='OK']");
 
-        if (!selenium.isElementPresent("//div[text()='paysage.jpg']")) {
-            fail("Upload of image fails (by right click on left panel)");
-        }
-
+        new Wait("wait") {
+            public boolean until() {
+                return selenium.isElementPresent("//div[text()='paysage.jpg']");
+            }
+        };
         deleteElement("//div[text()='paysage.jpg']");
 
         //upload picture
@@ -178,9 +179,11 @@ public class DocumentManager extends SeleneseTestCase {
         selenium.type("//input[@type='file']", path + "doc.docx");
         selenium.click("//button[text()='OK']");
 
-        if (!selenium.isElementPresent("//div[text()='doc.docx']")) {
-            fail("Upload of docx fails");
-        }
+        new Wait("wait") {
+            public boolean until() {
+                return selenium.isElementPresent("//div[text()='doc.docx']");
+            }
+        };
 
 
         //upload doc
@@ -191,9 +194,12 @@ public class DocumentManager extends SeleneseTestCase {
         selenium.type("//input[@type='file']", path + "doc.doc");
         selenium.click("//button[text()='OK']");
 
-        if (!selenium.isElementPresent("//div[text()='doc.doc']")) {
-            fail("Upload of doc fails");
-        }
+
+        new Wait("wait") {
+            public boolean until() {
+                return selenium.isElementPresent("//div[text()='doc.doc']");
+            }
+        };
 
         //Upload PDF
         selenium.clickAt("//span[text()='My folder']", "5,5");
@@ -203,18 +209,23 @@ public class DocumentManager extends SeleneseTestCase {
         selenium.type("//input[@type='file']", path + "pdf.pdf");
         selenium.click("//button[text()='OK']");
 
-        if (!selenium.isElementPresent("//div[text()='pdf.pdf']")) {
-            fail("Upload of doc fails");
-        }
+        new Wait("wait") {
+            public boolean until() {
+                return selenium.isElementPresent("//div[text()='pdf.pdf']");
+            }
+        };
+
 
         //Download picture
         selenium.clickAt("//div[text()='paysage.jpg']", "5,5");
         selenium.mouseOver("//div[text()='paysage.jpg']");
         selenium.contextMenuAt("//div[text()='paysage.jpg']", "5,5");
         selenium.click("Link=Download");
-        if (!selenium.isElementPresent("Link=paysage.jpg")) {
-            fail("There is no link to download paysage.jpg");
-        }
+        new Wait("wait") {
+            public boolean until() {
+                return selenium.isElementPresent("Link=paysage.jpg");
+            }
+        };
 
         selenium.click("//div[@class=' x-nodrag x-tool-close x-tool x-component']");
 
@@ -234,9 +245,14 @@ public class DocumentManager extends SeleneseTestCase {
         selenium.mouseOver("//div[text()='paysage.jpg']");
         selenium.contextMenuAt("//div[text()='paysage.jpg']", "5,5");
         selenium.click("Link=Preview");
-        if (!selenium.isElementPresent("//img[@src='/files/default/sites/mySite/files/My folder/paysage.jpg']")) {
-            fail("Impossible to display preview");
-        }
+
+        new Wait("wait") {
+            public boolean until() {
+                return selenium.isElementPresent("//img[@src='/files/default/sites/mySite/files/My folder/paysage.jpg']");
+            }
+        };
+
+
         selenium.click("//div[@class=' x-nodrag x-tool-close x-tool x-component']");
 
         //Crop picture
@@ -265,9 +281,11 @@ public class DocumentManager extends SeleneseTestCase {
         selenium.type("//input[@name='newname']", "paysage_rotate.jpg");
         selenium.click("//button[text()='Rotate left']");
 
-        if (!selenium.isElementPresent("//div[text()='paysage_rotate.jpg']")) {
-            fail("Rotation fails");
-        }
+        new Wait("wait") {
+            public boolean until() {
+                return selenium.isElementPresent("//div[text()='paysage_rotate.jpg']");
+            }
+        };
 
 
         //Rename the crop picture

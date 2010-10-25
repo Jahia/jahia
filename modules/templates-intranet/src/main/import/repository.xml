@@ -143,18 +143,18 @@
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row column="2col88" jcr:primaryType="jnt:row">
                             </row>
-                            <row-col1 jcr:primaryType="jnt:contentList">
-                                <docspaceTree jcr:primaryType="jnt:docspaceTree"/>
-                            </row-col1>
-                            <row-col2 jcr:primaryType="jnt:contentList">
-                                <docspaceFormCreation jcr:primaryType="jnt:docspaceFormCreation"/>
-                                <contentList jcr:mixinTypes="jmix:renderable jmix:columns" j:view="columns"
-                                             jcr:primaryType="jnt:contentList" j:columns="2">
-                                    <lastDocspace jcr:primaryType="jnt:lastDocspace"/>
-                                    <lastDocspaceDoc jcr:primaryType="jnt:lastDocspaceDoc"/>
-                                </contentList>
-                            </row-col2>
                         </pagecontent>
+                        <row-col1 jcr:primaryType="jnt:contentList">
+                            <docspaceTree jcr:primaryType="jnt:docspaceTree"/>
+                        </row-col1>
+                        <row-col2 jcr:primaryType="jnt:contentList">
+                            <docspaceFormCreation jcr:primaryType="jnt:docspaceFormCreation"/>
+                            <contentList jcr:mixinTypes="jmix:renderable jmix:columns" j:view="columns"
+                                         jcr:primaryType="jnt:contentList" j:columns="2">
+                                <lastDocspace jcr:primaryType="jnt:lastDocspace"/>
+                                <lastDocspaceDoc jcr:primaryType="jnt:lastDocspaceDoc"/>
+                            </contentList>
+                        </row-col2>
                     </docspace>
                     <file jcr:primaryType="jnt:derivedTemplate" j:applyOn="jnt:file">
                         <pagecontent jcr:primaryType="jnt:contentList">
@@ -208,8 +208,8 @@
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row column="2col124" jcr:primaryType="jnt:row">
                             </row>
-                            <row-1 column="1col16" jcr:primaryType="jnt:row">
-                            </row-1>
+                            <row1 column="1col16" jcr:primaryType="jnt:row">
+                            </row1>
                         </pagecontent>
                         <row-col1 jcr:primaryType="jnt:contentList">
                             <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay"

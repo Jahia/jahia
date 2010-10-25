@@ -157,7 +157,6 @@ public class SettingsBean {
     private String freeMemoryLimit= new Double((Runtime.getRuntime().maxMemory()*0.2)/ (1024*1024)).longValue() + "MB";
 
     private int clusterCacheMaxBatchSize = 100000;
-    private String cacheClusterUnderlyingImplementation = "jahiaReferenceCache";
 
     private int cacheMaxGroups = 10000;
 
@@ -390,8 +389,6 @@ public class SettingsBean {
             if(tmp.indexOf("MB")>=0) {
                 freeMemoryLimit = tmp;
             }
-            // configures underlying cache implementation used in jahia's cluster cache
-            cacheClusterUnderlyingImplementation = getString("cacheClusterUnderlyingImplementation", "jahiaReferenceCache");
 
             clusterCacheMaxBatchSize = getInt("clusterCacheMaxBatchSize", 100000);
             cacheMaxGroups = getInt("cacheMaxGroups", 10000);
@@ -927,15 +924,6 @@ public class SettingsBean {
     public boolean getSiteErrorEnabled() {
         return isSiteErrorEnabled;
     }
-
-    public String getCacheClusterUnderlyingImplementation() {
-		return cacheClusterUnderlyingImplementation;
-	}
-
-	public void setCacheClusterUnderlyingImplementation(
-			String cacheClusterUnderlyingImplementation) {
-		this.cacheClusterUnderlyingImplementation = cacheClusterUnderlyingImplementation;
-	}
 
     public int getCacheMaxGroups() {
         return cacheMaxGroups;

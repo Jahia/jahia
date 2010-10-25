@@ -44,20 +44,20 @@
     	<description>
 	      The following filter to use NTLM Domain authentication is
 	      configured in applicationcontext-ntlmfilter.xml.
-	      It can be enabled in the jahia.properties.
+	      It can be enabled in the jahia.advanced.properties.
     	</description>
         <filter-name>NtlmHttpFilter</filter-name>
-        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+        <filter-class>org.jahia.bin.filters.FallbackDelegatingFilterProxy</filter-class>
     </filter>
 
     <filter>
     	<description>
 	      The following filter to use SPNEGO authentication is
 	      configured in applicationcontext-spnegofilter.xml.
-	      It can be enabled in the jahia.properties.
+	      It can be enabled in the jahia.advanced.properties.
     	</description>
         <filter-name>SpnegoHttpFilter</filter-name>
-        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+        <filter-class>org.jahia.bin.filters.FallbackDelegatingFilterProxy</filter-class>
     </filter>
 
     <filter>

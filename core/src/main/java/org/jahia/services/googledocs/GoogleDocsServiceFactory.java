@@ -37,8 +37,7 @@ import java.io.UnsupportedEncodingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import jcifs.util.Base64;
-
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaUnauthorizedException;
 
@@ -67,7 +66,7 @@ public class GoogleDocsServiceFactory {
             String header = request.getHeader("Authorization");
             if (StringUtils.isNotEmpty(header) && header.startsWith("Basic ")) {
                 try {
-                    header = new String(Base64.decode(header.substring("Basic ".length())), "US-ASCII");
+                    header = new String(Base64.decodeBase64(header.substring("Basic ".length())), "US-ASCII");
                 } catch (UnsupportedEncodingException e) {
                     throw new IllegalArgumentException(e);
                 }

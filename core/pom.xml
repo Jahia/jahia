@@ -430,21 +430,6 @@
             <version>${jackrabbit.version}</version>
         </dependency>
         <dependency>
-            <groupId>exo</groupId>
-            <artifactId>exo.jcr.applications.rmi-client</artifactId>
-            <version>1.7</version>
-        </dependency>
-        <dependency>
-            <groupId>exo</groupId>
-            <artifactId>exo.jcr.component.core</artifactId>
-            <version>1.7</version>
-        </dependency>
-        <dependency>
-            <groupId>exo</groupId>
-            <artifactId>exo.jcr.component.rmi</artifactId>
-            <version>1.7</version>
-        </dependency>
-        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.5.11</version>
@@ -483,11 +468,6 @@
                     <artifactId>jdom</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>jcifs</groupId>
-            <artifactId>jcifs</artifactId>
-            <version>1.2.11</version>
         </dependency>
         <dependency>
             <groupId>org.jdom</groupId>

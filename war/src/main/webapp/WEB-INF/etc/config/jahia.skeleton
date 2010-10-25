@@ -5,8 +5,8 @@
 #  This file contains some of the most important settings for configuring
 #  it's behavior.
 #  Other interesting files can be found elsewhere in the WEB-INF/etc
-#  directory, such as WEB-INF/etc/spring for LDAP connector activation,
-#  cache implementation configuration, Hibernate configuration, etc.
+#  directory, such as WEB-INF/etc/spring for cache implementation
+#  configuration, Hibernate configuration, etc.
 
 ######################################################################
 ### Web application context path #####################################
@@ -123,15 +123,6 @@ characterEncoding                                      =   UTF-8
 # this limit must be express in MB size
 freeMemoryLimit = 64MB
 
-# The following setting allows to select the underlying cache implementation used
-# in the Jahia's cluster cache implementations. Possible values are :
-# - jahiaReferenceCache : a cache implementation that uses SoftReferences to
-#   hold references to the cached objects. This cache will free memory in order
-#   to avoid OutOfMemory errors.
-# - jahiaSimpleCache : an LRU cache implementation that uses the freeMemoryLimit
-#   trigger to flush elements from memory
-cacheClusterUnderlyingImplementation = jahiaReferenceCache
-
 # caches may use groups that work like categories on cache entries. By default
 # groups are limited in numbers of 20000, with an LRU (least recently used)
 # algorithm for removing a group. When a group is removed, so are all the
@@ -200,36 +191,6 @@ considerDefaultJVMLocale                               =   false
 # Language switch takes place only if the current site has entries
 # in the user's preferred language  
 considerPreferredLanguageAfterLogin                    =   false
-
-######################################################################
-### NTLM Authentication config #######################################
-######################################################################
-# Enable the NtlmHttpFilter and adjust its configuration in the
-# applicationcontext-ntlmfilter.xml file
-ntlmFilter.enabled                                     = false
-
-######################################################################
-### SPNEGO Authentication config #####################################
-######################################################################
-# Enable the SpnegoHttpFilter and adjust its configuration in the
-# applicationcontext-spnegofilter.xml file
-spnegoFilter.enabled                                   = false
-
-######################################################################
-### CAS Authentication config ########################################
-######################################################################
-# You can configure here the CAS authentication sub-system. First
-# you must add the CAS valve in the WEB-INF/etc/spring/auth/applicationcontext-auth-pipeline.xml
-# file in the authPipeline with the following section, add the end
-# of the pipeline :
-# <bean class="org.jahia.params.valves.CASAuthValveImpl" />
-#
-# The following setting configures the redirect URL to the CAS server
-# for login
-cas.loginUrl                                           = https://localhost:8443/cas/login
-# The following setting configures the URL on which we validate the
-# ticket.
-cas.validateUrl                                        = https://localhost:8443/cas/serviceValidate
 
 ######################################################################
 ### Cookie authentication valve config #############################
@@ -319,67 +280,6 @@ siteServerNameTestConnectTimeout                       = 500
 # issues with cookies, or if you plan to access Jahia through multiple
 # front-end machines.
 siteURLPortOverride                                    = 0
-
-######################################################################
-### Cluster settings  ################################################
-######################################################################
-
-# Use this setting to activate most of the clustering communicating
-cluster.activated                                      = false
-
-# the serverId MUST be different for each node of the cluster.
-cluster.node.serverId                                  = jahiaServer1
-
-# The processingServer setting specifies whether this instance of Jahia
-# will execute long-running operations such as activation jobs, XML imports,
-# etc. In the current implementation only one cluster node may be a
-# processing server, while all others must have this settings to the
-# value "false".
-processingServer                                       = true
-
-# The following settings may be changed in order to avoid conflicts with
-# existing multicast IP broadcasts on a network, or to change them to
-# address ranges that are properly routed by the network hardware. The
-# default values comply with the IANA address space
-# (http://www.iana.org/assignments/multicast-addresses).
-# Check out the assignment ranges to see if they may conflict with
-# something that might be present on your network.
-
-# The cluster communication protocol: either TCP or UDP 
-cluster.communication.protocol                         = TCP
-
-# Here a default configuration for UDP Clustering
-# You will have to comment the TCP configuration and uncomment the UDP settings in the
-# following file: WEB-INF/classes/ehcache-hibernate-cluster.xml and ehcache-jahia-cluster.xml 
-
-cluster.service.multicast.ip_address                   = 231.12.21.130
-cluster.service.multicast.port                         = 45000
-cluster.hibernate.multicast.ip_address                 = 231.12.21.134
-cluster.hibernate.multicast.port                       = 45050
-
-# Here a default configuration for TCP Clustering
-# The example below uses two-nodes cluster: 192.168.1.100 and 192.168.1.200
-# Current node is 192.168.1.100
-#
-# Here your local ip address
-cluster.tcp.start.ip_address                           =   192.168.1.100
-# Here the minimum numbers of members in the group to be contacted for initial membership
-#(if your cluster is higher than two nodes then upgrade this to at least 3)
-cluster.tcp.num_initial_members                        =   2
-# Here the list of all members ip and port, and local port for each channel
-cluster.tcp.service.nodes.ip_address                   =   192.168.1.100[7840],192.168.1.200[7840]
-cluster.tcp.service.port                               =   7840
-cluster.tcp.ehcache.hibernate.nodes.ip_address         =   192.168.1.100[7860],192.168.1.200[7860]
-cluster.tcp.ehcache.hibernate.port                     =   7860
-cluster.tcp.ehcache.jahia.nodes.ip_address             =   192.168.1.100[7870],192.168.1.200[7870]
-cluster.tcp.ehcache.jahia.port                         =   7870
-
-# For clustered caches, we use batching to avoid sending individual
-# messages for each invalidation. Normally the messages are batched
-# by transaction, but we can also specify a limit that if reached
-# will send the batch anyway, in order to avoid consuming too much
-# memory as well as sending huge messages through the network.
-clusterCacheMaxBatchSize                               = 100000
 
 ######################################################################
 ### Development Mode #################################################

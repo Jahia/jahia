@@ -53,7 +53,6 @@ import org.jahia.services.query.QueryService;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.search.SearchService;
 import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.services.sso.CasService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaSiteUserManagerService;
@@ -126,10 +125,6 @@ public class ServicesRegistry {
     private static final String IMPORTEXPORT_SERVICE = "ImportExportService";
 
     private static final String PREFERENCES_SERVICE = "JahiaPreferencesService";
-
-    // BEGIN [added by Pascal Aubry for CAS authentication]
-    private static final String CAS_SERVICE = "CasService";
-    // END [added by Pascal Aubry for CAS authentication]
 
     // This map is an optimization to avoid synchronization issues.
     private Map<String, JahiaService> servicesCache = new HashMap<String, JahiaService>();
@@ -275,15 +270,6 @@ public class ServicesRegistry {
     public JCRVersionService getJCRVersionService() {
         return (JCRVersionService) getService(JCRVERSION_SERVICE);
     }
-
-    // BEGIN [added by Pascal Aubry for CAS authentication]
-    /**
-     * Return a reference to the CAS service.
-     */
-    public CasService getCasService() {
-        return (CasService) getService(CAS_SERVICE);
-    }
-    // END [added by Pascal Aubry for CAS authentication]
 
     public ImportExportService getImportExportService() {
         return (ImportExportService) getService(IMPORTEXPORT_SERVICE);

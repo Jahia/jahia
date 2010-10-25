@@ -1,0 +1,21 @@
+# +---------------------------------------------------------------------------+
+# | Jahia advanced configuration file.                                        |
+# +---------------------------------------------------------------------------+
+
+######################################################################
+### Cluster settings  ################################################
+######################################################################
+
+# Use this setting to activate most of the clustering communicating
+cluster.activated                                      = false
+
+# the serverId MUST be different for each node of the cluster.
+cluster.node.serverId                                  = jahiaServer1
+
+# The processingServer setting specifies whether this instance of Jahia
+# will execute long-running operations such as XML imports, text extraction,
+# etc. In the current implementation only one cluster node may be a
+# processing server, while all others must have this settings to the
+# value "false".
+processingServer                                       = true
+

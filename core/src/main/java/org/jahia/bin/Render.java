@@ -447,6 +447,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                                 if (fileNode != null && isVersionActivated) {
                                     session.checkout(fileNode);
                                 }
+                                // checkout parent directory
+                                session.getWorkspace().getVersionManager().checkout(targetDirectory.getPath());
                                 final JCRNodeWrapper wrapper = targetDirectory
                                         .uploadFile(name,
                                                 itemEntry.getValue().getInputStream(),

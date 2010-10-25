@@ -102,9 +102,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
     private static Logger logger = Logger.getLogger(Jahia.class);
     private static Logger accessLogger = Logger.getLogger("accessLogger");
 
-    /** license filename */
-    static private final String LICENSE_FILENAME = "license.xml";
-
     static private final String INIT_PARAM_SUPPORTED_JDK_VERSIONS =
         "supported_jdk_versions";
 
@@ -130,8 +127,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
 
     static private boolean mInitiated = false;
     
-    static protected String mLicenseFilename;
-
     static protected String jahiaBasicFileName;
     static protected String jahiaPropertiesPath;
     static protected String jahiaTemplatesScriptsPath;
@@ -234,9 +229,7 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
 	
 	        // set default paths...
 	        jahiaPropertiesPath = context.getRealPath("/WEB-INF/etc/config/");
-	        mLicenseFilename = jahiaPropertiesPath + File.separator +
-	                           LICENSE_FILENAME;
-	
+
 	        jahiaBaseFilesPath = context.getRealPath("/WEB-INF/var");
 	        jahiaTemplatesScriptsPath = jahiaBaseFilesPath + File.separator +
 	                                    "templates";
@@ -251,15 +244,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
 	        
 	        Jahia.setMaintenance(SettingsBean.getInstance().isMaintenanceMode());
 	        
-	        // Check if the license file exists.
-	        final File licenseFile = new File(mLicenseFilename);
-	        if (!licenseFile.exists()) {
-	            logger.fatal(
-	                "Could not find jahia.license file (was looking for it at " +
-	                licenseFile.toString() + ")");
-	            throw new JahiaInitializationException("Could not find jahia.license file (was looking for it at " + licenseFile.toString() + ")");
-	        }
-	
 	        try {
 	            // retrieve the jSettings object...
 	            Jahia.jSettings = SettingsBean.getInstance();

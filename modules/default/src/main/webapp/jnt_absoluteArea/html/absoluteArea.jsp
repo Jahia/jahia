@@ -37,7 +37,7 @@
             <c:set var="path" value="${currentNode.properties['j:basenode'].node.path}"/>
         </c:if>
 
-        <template:wrappedContent template="${currentNode.properties['j:referenceView'].string}"
+        <template:areaTag template="${currentNode.properties['j:referenceView'].string}"
                                  path="${path}/${currentNode.name}"
                                  nodeTypes="${nodeTypes}" moduleType="absoluteArea" mockupStyle="${currentNode.properties['j:mockupStyle'].string}">
             <c:if test="${not empty currentNode.properties['j:subNodesView'].string}">
@@ -46,7 +46,7 @@
             <c:if test="${not empty currentNode.properties['j:mockupStyle'].string}">
                 <template:param name="mockupStyle" value="${currentNode.properties['j:mockupStyle'].string}"/>
             </c:if>
-        </template:wrappedContent>
+        </template:areaTag>
     </c:otherwise>
 </c:choose>
 

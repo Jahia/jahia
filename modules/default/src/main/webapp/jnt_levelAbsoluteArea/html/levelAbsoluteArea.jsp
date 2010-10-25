@@ -59,7 +59,7 @@
         </c:forEach>
 
         <c:if test="${not empty node}">
-            <template:wrappedContent template="${currentNode.properties['j:referenceView'].string}"
+            <template:areaTag template="${currentNode.properties['j:referenceView'].string}"
                                      path="${node.path}/${currentNode.name}"
                                      nodeTypes="${nodeTypes}" moduleType="absoluteArea">
                 <c:if test="${not empty currentNode.properties['j:subNodesView'].string}">
@@ -69,7 +69,7 @@
                 <c:if test="${not empty currentNode.properties['j:mockupStyle'].string}">
                     <template:param name="mockupStyle" value="${currentNode.properties['j:mockupStyle'].string}"/>
                 </c:if>
-            </template:wrappedContent>
+            </template:areaTag>
         </c:if>
     </c:otherwise>
 </c:choose>

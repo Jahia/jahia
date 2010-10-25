@@ -35,7 +35,7 @@
     <div id="header" class="colorResource1 imgResource1">
         <div class="container container_16">
             <div class="grid_16">
-                <template:wrappedContent path="header" nodeTypes="jnt:row" />
+                <template:areaTag path="header" nodeTypes="jnt:row" />
             </div>
         </div>
         <div class="clear"></div>
@@ -43,7 +43,7 @@
     <div id="content">
         <div class="container container_16">
             <div class="grid_16">
-                <template:wrappedContent path="pagecontent"/>
+                <template:areaTag path="pagecontent"/>
             </div>
         </div>
         <div class="clear"></div>
@@ -51,7 +51,7 @@
     <div id="footer" class="colorResource2 imgResource2 noprint">
         <div class="container container_16">
             <div class="grid_16">
-                <template:wrappedContent path="footer" nodeTypes="jnt:row" />
+                <template:areaTag path="footer" nodeTypes="jnt:row" />
                 <div class="clear"></div></div>
             <div class="clear"></div></div>
     </div>

@@ -11,5 +11,5 @@
     <span id="waHeadTitle"><fmt:message key='iphone.label.home'/></span>
 </div>
 <div id="iGroup">
-    <template:wrappedContent path="pagecontent"/>
+    <template:areaTag path="pagecontent"/>
 </div>

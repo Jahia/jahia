@@ -56,9 +56,9 @@ import java.util.*;
  * Date: May 14, 2009
  * Time: 7:18:15 PM
  */
-public class WrappedContentTag extends ModuleTag implements ParamParent {
+public class AreaTag extends ModuleTag implements ParamParent {
 
-    private static Logger logger = Logger.getLogger(WrappedContentTag.class);
+    private static Logger logger = Logger.getLogger(AreaTag.class);
 
     private String areaType = "jnt:contentList";
 

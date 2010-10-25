@@ -379,8 +379,8 @@
     <tag>
         <description>Define an area for containing sub modules.
         </description>
-        <name>wrappedContent</name>
-        <tag-class>org.jahia.taglibs.template.include.WrappedContentTag</tag-class>
+        <name>areaTag</name>
+        <tag-class>org.jahia.taglibs.template.include.AreaTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
             <description>Relative or absolute path to the node to include</description>

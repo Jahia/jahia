@@ -15,8 +15,8 @@
     </c:when>
     <c:otherwise>
         <c:set target="${moduleMap}" property="editable" value="true" />
-        <c:set target="${moduleMap}" property="currentList" value="${currentNode.nodes}" />
-        <c:set target="${moduleMap}" property="end" value="${fn:length(currentNode.nodes)}" />
+        <c:set target="${moduleMap}" property="currentList" value="${jcr:getChildrenOfType(currentNode, jcr:getConstraints(currentNode))}" />
+        <c:set target="${moduleMap}" property="end" value="${fn:length(moduleMap.currentList)}" />
         <c:set target="${moduleMap}" property="listTotalSize" value="${moduleMap.end}" />
     </c:otherwise>
 </c:choose>

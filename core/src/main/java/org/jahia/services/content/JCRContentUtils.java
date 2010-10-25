@@ -507,17 +507,17 @@ public final class JCRContentUtils {
         return matchingParent;
     }
 
-    public static NodeIterator getChildrenOfType(JCRNodeWrapper node, String type) {
-        NodeIterator children = null;
+    public static List<JCRNodeWrapper> getChildrenOfType(JCRNodeWrapper node, String type) {
+        List<JCRNodeWrapper> children = null;
         if (type.contains(",")) {
             String[] typesToCheck = type.split(",");
-            List<Node> matchingChildren = new LinkedList<Node>();
+            List<JCRNodeWrapper> matchingChildren = new LinkedList<JCRNodeWrapper>();
             try {
                 for (NodeIterator iterator = node.getNodes(); iterator.hasNext();) {
                     Node child = iterator.nextNode();
                     for (String matchType : typesToCheck) {
                         if (child.isNodeType(matchType)) {
-                            matchingChildren.add(child);
+                            matchingChildren.add((JCRNodeWrapper) child);
                             break;
                         }
                     }
@@ -525,14 +525,14 @@ public final class JCRContentUtils {
             } catch (RepositoryException e) {
                 logger.warn(e.getMessage(), e);
             }
-            children = new NodeIteratorImpl(matchingChildren.iterator(), matchingChildren.size());
+            children = matchingChildren;
         } else {
             children = getNodes(node, type);
         }
         return children;
     }
 
-    public static NodeIterator getNodes(JCRNodeWrapper node, String type) {
+    public static List<JCRNodeWrapper> getNodes(JCRNodeWrapper node, String type) {
         try {
             List<JCRNodeWrapper> res = new ArrayList<JCRNodeWrapper>();
             NodeIterator ni = node.getNodes();
@@ -542,7 +542,7 @@ public final class JCRContentUtils {
                     res.add(child);
                 }
             }
-            return new NodeIteratorImpl(res.iterator(), res.size());
+            return res;
 //            return node.getSession().getWorkspace().getQueryManager().createQuery("select * from ["+type+"] as sel where ischildnode(sel,['"+node.getPath()+"'])",
 //                                                                                  Query.JCR_SQL2).execute().getNodes();
         } catch (InvalidQueryException e) {
@@ -550,7 +550,7 @@ public final class JCRContentUtils {
         } catch (RepositoryException e) {
             logger.error("Error while retrieving nodes", e);
         }
-        return NodeIteratorImpl.EMPTY;
+        return new LinkedList<JCRNodeWrapper>();
     }
 
     public static NodeIterator getDescendantNodes(JCRNodeWrapper node, String type) {

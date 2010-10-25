@@ -48,6 +48,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.List;
 
 /**
  * Wiki page creation handler.
@@ -77,7 +78,7 @@ public class NewWikiPageHandler implements ErrorHandler {
                 if (parentOfType == null) {
                     return false;
                 }
-                NodeIterator nodeIterator = JCRContentUtils.getChildrenOfType(parentOfType, "jnt:template");
+                List<JCRNodeWrapper> nodeIterator = JCRContentUtils.getChildrenOfType(parentOfType, "jnt:template");
                 NodeIterator iterator = JCRContentUtils.getDescendantNodes(parentOfType, "jnt:wikiPageFormCreation");
                 boolean searchForExistingPages = false;
                 JCRNodeWrapper pageForSearch = parentOfType;
@@ -87,8 +88,7 @@ public class NewWikiPageHandler implements ErrorHandler {
                 } else {
                     parentOfType = null;
                 }
-                while (nodeIterator.hasNext()) {
-                    JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) nodeIterator.nextNode();
+                for (JCRNodeWrapper nodeWrapper : nodeIterator) {
                     NodeIterator descendantNodes = JCRContentUtils.getDescendantNodes(nodeWrapper,
                                                                                       "jnt:wikiPageFormCreation");
                     if (descendantNodes.hasNext()) {

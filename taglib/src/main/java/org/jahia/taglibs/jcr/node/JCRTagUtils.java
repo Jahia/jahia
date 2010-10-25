@@ -40,6 +40,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
+import org.jahia.services.content.nodetypes.ConstraintsHelper;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
@@ -65,7 +66,7 @@ public class JCRTagUtils {
     /**
      * Get the node or property display name depending on the locale
      *
-     * @param item the item to get the label for
+     * @param nodeObject the item to get the label for
      * @param locale current locale
      * @return the node or property display name depending on the locale
      */
@@ -116,7 +117,7 @@ public class JCRTagUtils {
         return hasType;
     }
 
-    public static NodeIterator getNodes(JCRNodeWrapper node, String type) {
+    public static List<JCRNodeWrapper> getNodes(JCRNodeWrapper node, String type) {
         return JCRContentUtils.getNodes(node, type);
     }
 
@@ -161,7 +162,7 @@ public class JCRTagUtils {
      * @return an iterator with the child nodes of the current node, which match
      *         the specified node type name
      */
-    public static NodeIterator getChildrenOfType(JCRNodeWrapper node, String type) {
+    public static List<JCRNodeWrapper> getChildrenOfType(JCRNodeWrapper node, String type) {
         return JCRContentUtils.getChildrenOfType(node, type);
     }
 
@@ -179,10 +180,9 @@ public class JCRTagUtils {
     }
 
     public static Map<String, String> getPropertiesAsStringFromNodeNameOfThatType(JCRNodeWrapper nodeContainingProperties,JCRNodeWrapper nodeContainingNodeNames, String type) {
-        NodeIterator nodeNames = getNodes(nodeContainingNodeNames,type);
+        List<JCRNodeWrapper> nodeNames = getNodes(nodeContainingNodeNames,type);
         Map<String, String> props = new LinkedHashMap<String, String>();
-        while (nodeNames.hasNext()) {
-            JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) nodeNames.next();
+        for (JCRNodeWrapper nodeWrapper : nodeNames) {
             final String name = nodeWrapper.getName();
             try {
                 JCRPropertyWrapper property = nodeContainingProperties.getProperty(name);
@@ -338,7 +338,16 @@ public class JCRTagUtils {
             return false;
         }
     }
-    
+
+    public static String getConstraints(JCRNodeWrapper node) {
+        try {
+            return ConstraintsHelper.getConstraints(node).replace(" ", ",");
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            return "";
+        }
+    }
+
     /**
      * @see org.apache.jackrabbit.util.Text#escapeIllegalJcrChars(String)
      */    

@@ -495,7 +495,7 @@
      	</description>
         <name>getChildrenOfType</name>
         <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
-        <function-signature>javax.jcr.NodeIterator getChildrenOfType(org.jahia.services.content.JCRNodeWrapper,java.lang.String)</function-signature>
+        <function-signature>java.util.List getChildrenOfType(org.jahia.services.content.JCRNodeWrapper,java.lang.String)</function-signature>
         <example>
             ${jcr:getChildrenOfType(currentNode,'jnt:page,jnt:folder')}
         </example>
@@ -516,7 +516,7 @@
         <description>Returns childNodes of a certain type</description>
         <name>getNodes</name>
         <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
-        <function-signature>javax.jcr.NodeIterator getNodes(org.jahia.services.content.JCRNodeWrapper,java.lang.String)</function-signature>
+        <function-signature>java.util.List getNodes(org.jahia.services.content.JCRNodeWrapper,java.lang.String)</function-signature>
         <example>
             ${jcr:getNodes(currentNode,'jnt:page')}
         </example>
@@ -614,19 +614,29 @@
     </function>
     <function>
         <description>Escapes illegal JCR chars</description>
-        <name>escapeIllegalJcrChars</name>
+        <name>getConstraints</name>
         <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
-        <function-signature>String escapeIllegalJcrChars(java.lang.String)
+        <function-signature>java.lang.String getConstraints(org.jahia.services.content.JCRNodeWrapper)
         </function-signature>
         <example>
-            ${jcr:escapeIllegalJcrChars(facet.key)}        
+            ${jcr:getConstraints(currentNode)}
         </example>
-    </function>      
+    </function>
+    <function>
+        <description>Escapes illegal JCR chars</description>
+        <name>escapeIllegalJcrChars</name>
+        <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
+        <function-signature>java.lang.String escapeIllegalJcrChars(java.lang.String)
+        </function-signature>
+        <example>
+            ${jcr:escapeIllegalJcrChars(facet.key)}
+        </example>
+    </function>
     <function>
         <description>Escapes illegal JCR chars</description>
         <name>userFullName</name>
         <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
-        <function-signature>String userFullName(org.jahia.services.content.JCRNodeWrapper)
+        <function-signature>java.lang.String userFullName(org.jahia.services.content.JCRNodeWrapper)
         </function-signature>
         <example>
             &lt;c:out value="${jcr:userFullName(currentUserNode)}"/&gt;        

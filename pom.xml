@@ -32,7 +32,7 @@
         <jahia.package.version>6.5-SNAPSHOT</jahia.package.version>
         <jahia.project.structure.version>2</jahia.project.structure.version>
         <jahia.archivers.version>2.2</jahia.archivers.version>
-        <jahia.configurators.version>2.5</jahia.configurators.version>
+        <jahia.configurators.version>2.6</jahia.configurators.version>
         <jahia.deployers.version>2.1</jahia.deployers.version>
 
         <jahia.war.classifier></jahia.war.classifier>

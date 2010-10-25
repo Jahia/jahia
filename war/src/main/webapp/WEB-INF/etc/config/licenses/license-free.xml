@@ -1,7 +1,0 @@
-<jahia-licenses>
-  <license-package format="1.1" product="Jahia" release="6.5" edition="pro">
-    <license component="org.jahia.core" licensee="Jahia 6.5 R&amp;D GPL License" signature="MC0CFQCPFLsaK0/UiVqIs86kQUbLOsnkGgIUUY+Y+aN6BIMcFF6GCucZmflEdOg=" certAlias="jahiaCert">
-      <limit class="org.jahia.security.license.ReleaseNumberValidator" name="release" value="6.5 to 7.0"/>
-    </license>
-  </license-package>
-</jahia-licenses>

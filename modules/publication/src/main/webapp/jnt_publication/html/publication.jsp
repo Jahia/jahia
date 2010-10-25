@@ -23,10 +23,10 @@
             <h5><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h5>
 
             <p class="publicationAuthor"><c:if test="${!empty currentNode.properties.author.string}"><fmt:message
-                    key="publication.author"/>: ${currentNode.properties.author.string}</c:if></p>
+                    key="jnt_publication.author"/>: ${currentNode.properties.author.string}</c:if></p>
 
             <p class="publicationSource"><c:if test="${!empty currentNode.properties.source.string}"><fmt:message
-                    key="publication.source"/>: ${currentNode.properties.source.string}</c:if></p>
+                    key="jnt_publication.source"/>: ${currentNode.properties.source.string}</c:if></p>
 
             <p class="publicationDate"><c:if
                     test="${!empty currentNode.properties.date.string && currentNode.properties.date.string !=''}">${currentNode.properties.date.string}</c:if></p>
@@ -36,7 +36,7 @@
                 <c:if test="${file.node.fileContent.contentLength > 0}">
                     <fmt:formatNumber var="num" pattern="### ### ###.##" type="number"
                                       value="${(file.node.fileContent.contentLength/1024)}"/>
-                    <a class="publicationDownload" href="${file.node.url}"><fmt:message key="publication.download"/></a>
+                    <a class="publicationDownload" href="${file.node.url}"><fmt:message key="jnt_publication.download"/></a>
                     <span class="publicationDocSize">(${num} KB) </span>
                 </c:if>
             </div>

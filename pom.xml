@@ -120,6 +120,12 @@
             <organizationUrl>http://www.ca-suisse.com/</organizationUrl>
         </developer>
         <developer>
+        	<name>Kevan Jahanshahi</name>
+            <email>kevan.jahanshahi@jahia.com</email>
+            <organization>Jahia Solutions Group SA</organization>
+            <organizationUrl>http://www.jahia.org/</organizationUrl>
+        </developer>
+        <developer>
             <name>Khaled Tlili</name>
         </developer>
         <developer>
@@ -152,6 +158,12 @@
             <name>Sergiy Shyrkov</name>
             <email>sergiy.shyrkov@jahia.com</email>
             <organization>Jahia Solutions GmbH</organization>
+            <organizationUrl>http://www.jahia.org/</organizationUrl>
+        </developer>
+        <developer>
+        	<name>Sophia Batata</name>
+            <email>sophia.batata@jahia.com</email>
+            <organization>Jahia Solutions Group SA</organization>
             <organizationUrl>http://www.jahia.org/</organizationUrl>
         </developer>
         <developer>

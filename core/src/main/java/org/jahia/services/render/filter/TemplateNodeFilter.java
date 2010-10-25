@@ -127,7 +127,7 @@ public class TemplateNodeFilter extends AbstractFilter {
                 JCRNodeWrapper parent = current.getParent();
                 while (!(parent.isNodeType("jnt:templatesFolder"))) {
                     template = new Template(parent.hasProperty("j:view") ? parent.getProperty("j:view").getString() :
-                            templateName!=null?templateName:"fullpage", parent, template);
+                            templateName, parent, template);
                     parent = parent.getParent();
                 }
             } else {
@@ -135,7 +135,7 @@ public class TemplateNodeFilter extends AbstractFilter {
                     // A template node is specified on the current node
                     JCRNodeWrapper templateNode = (JCRNodeWrapper) current.getProperty("j:templateNode").getNode();
                     template = new Template(templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
-                            templateName!=null?templateName:"fullpage", templateNode, template);
+                            templateName, templateNode, template);
                 } else {
                     template = addDerivedTemplates(resource, null, templatesNode);
                 }
@@ -145,7 +145,7 @@ public class TemplateNodeFilter extends AbstractFilter {
                     JCRNodeWrapper templateNode = template.getNode().getParent();
                     while (!(templateNode.isNodeType("jnt:templatesFolder"))) {
                         template = new Template(templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
-                                "fullpage", templateNode, template);
+                                null, templateNode, template);
                         templateNode = templateNode.getParent();
                     }
                 } else {
@@ -203,7 +203,7 @@ public class TemplateNodeFilter extends AbstractFilter {
         if (ok) {
             template = new Template(
                     templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
-                            "fullpage", templateNode, template);
+                            null, templateNode, template);
         }
         return template;
     }

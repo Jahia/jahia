@@ -28,7 +28,6 @@
             <description align="left" txt="Choose target application server type" id="server.type"/>
             <spec>
                 <choice txt="Apache Tomcat 6.0.x" id="server.type.tomcat" value="tomcat" set="true"/>
-                <choice txt="IBM WebSphere 6.1" id="server.type.was" value="was"/>
                 <choice txt="Red Hat JBoss 4.2.x" id="server.type.jboss" value="jboss"/>
             </spec>
         </field>

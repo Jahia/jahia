@@ -90,11 +90,6 @@
             <value>jboss</value>
         </condition>
         
-        <condition type="variable" id="cnd.server.type.was">
-            <name>server.type</name>
-            <value>was</value>
-        </condition>
-        
         <condition type="or" id="cnd.skip.shared.libs">
             <condition type="ref" refid="cnd.pack.tomcat"/>
             <condition type="ref" refid="cnd.server.type.jboss"/>
@@ -263,7 +258,6 @@
                 <include name="jahia.png"/>
             </fileset>
             <singlefile override="true" src="../scripts/openUrl.sh" target="$INSTALL_PATH/bin/openUrl.sh"/>
-            <singlefile override="true" src="../artifacts/jahia/WEB-INF/lib/juel-api-2.2.1.jar" target="${jahia.war.target.path}/juel-api-2.2.1.jar" condition="cnd.server.type.was"/>
             <fileset dir="../artifacts/jahia-jboss-config" targetdir="$INSTALL_PATH/jahia-jboss-config" condition="cnd.server.type.jboss" override="true"/>
             <singlefile override="true" src="install.properties" target="$INSTALL_PATH/logs/install.properties"/>
             <singlefile override="true" src="../dependency/configurators-standalone.jar" target="$INSTALL_PATH/configurators.jar"/>

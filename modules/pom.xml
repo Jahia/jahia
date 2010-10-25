@@ -98,7 +98,6 @@
         <module>forum</module>
         <module>job</module>
         <module>latestPages</module>
-        <module>ldap</module>
         <module>location</module>
         <module>metrics</module>
         <module>news</module>

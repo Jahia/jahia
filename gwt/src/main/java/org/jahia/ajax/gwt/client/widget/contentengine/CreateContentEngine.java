@@ -38,6 +38,7 @@ import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.Field;
+import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
@@ -241,7 +242,7 @@ public class CreateContentEngine extends AbstractContentEngine {
                 PropertiesEditor pe = ((PropertiesTabItem) item).getPropertiesEditor();
                 if (pe != null) {
                     for (Field<?> field : pe.getFields()) {
-                        if (field.isVisible() && field.isEnabled() && !field.validate()) {
+                        if (field.isVisible() && field.isEnabled() && !field.validate() && ((FieldSet)field.getParent()).isExpanded()) {
                             if (allValid || tab.equals(tabs.getSelectedItem())
                                     && !tab.equals(firstErrorTab)) {
                                 firstErrorTab = tab;
@@ -276,7 +277,7 @@ public class CreateContentEngine extends AbstractContentEngine {
                                 PropertiesEditor lpe = propertiesTabItem.getPropertiesEditorByLang(language);
                                 if (lpe != null) {
                                     for (Field<?> field : lpe.getFields()) {
-                                        if (field.isEnabled() && !field.validate()) {
+                                        if (field.isEnabled() && !field.validate() && ((FieldSet)field.getParent()).isExpanded()) {
                                             if (allValid || tab.equals(tabs.getSelectedItem())
                                                     && !tab.equals(firstErrorTab)) {
                                                 firstErrorTab = tab;

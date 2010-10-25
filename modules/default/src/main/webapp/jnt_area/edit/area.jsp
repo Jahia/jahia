@@ -11,7 +11,6 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<template:addResources type="css" resources="mainresource.css"/>
 
 <c:choose>
     <c:when test="${not empty inWrapper and inWrapper eq false}">
@@ -22,28 +21,13 @@
             <div class="areaTemplate">
                 <span>List : ${currentNode.name}</span>
             </div>
-            <c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}"
-                       end="${moduleMap.end}">
-                <template:module node="${subchild}"/>
-            </c:forEach>
-            <c:if test="${currentList.size == 0}">
-                <div class="loremipsum">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed dignissim tellus in metus viverra
-                    pharetra. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos
-                    himenaeos. Mauris eu risus elit. Donec nibh diam, commodo in adipiscing et, euismod sed orci. Donec
-                    eu metus eget mauris fringilla pretium. Mauris vehicula, arcu malesuada malesuada varius, est leo
-                    porttitor lacus, id fermentum lacus eros ac sem. Proin non nunc magna, nec euismod diam. Ut faucibus
-                    dignissim erat sit amet sagittis. Aenean vestibulum, odio a imperdiet semper, diam lacus egestas
-                    velit, non lobortis libero massa et risus. Nunc quis sagittis est. Duis non orci vel quam posuere
-                    rutrum. Fusce et fringilla lorem. Nam tempus, dolor pretium consequat bibendum, odio leo feugiat
-                    odio, vitae pulvinar velit ipsum sit amet augue. Fusce ultrices ultricies tortor. Nunc vel pulvinar
-                    ipsum. Cras et nibh turpis, ac ornare leo. Cras elementum magna et risus porta accumsan. Duis dui
-                    leo, tincidunt at blandit non, euismod eu odio.
-                </div>
-            </c:if>
-            <c:if test="${renderContext.editMode}">
-                <fmt:message key="label.studio.add.archetype" /> <template:module path="*"/>
-            </c:if>
+            <%--<c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}"--%>
+                       <%--end="${moduleMap.end}">--%>
+                <%--<template:module node="${subchild}"/>--%>
+            <%--</c:forEach>--%>
+            <%--<c:if test="${renderContext.editMode}">--%>
+                <%--<fmt:message key="label.studio.add.archetype" /> <template:module path="*"/>--%>
+            <%--</c:if>--%>
         </div>
 
 

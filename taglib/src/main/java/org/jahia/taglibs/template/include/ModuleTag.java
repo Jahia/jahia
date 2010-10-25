@@ -234,7 +234,9 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 }
 
                 try {
-                    if (canEdit(renderContext)) {
+                    final boolean canEdit = canEdit(renderContext);
+                    pageContext.getRequest().setAttribute("editableModule", canEdit);
+                    if (canEdit) {
                         String type = getModuleType(renderContext);
 
                         Script script = null;
@@ -317,7 +319,8 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     protected boolean canEdit(RenderContext renderContext) {
         return renderContext.isEditMode() && editable &&
-                !Boolean.TRUE.equals(renderContext.getRequest().getAttribute("inWrapper"));
+                !Boolean.TRUE.equals(renderContext.getRequest().getAttribute("inWrapper")) &&
+                renderContext.getRequest().getAttribute("inArea") == null ;
     }
 
     protected void printModuleStart(String type, String path, String resolvedTemplate, String scriptInfo)

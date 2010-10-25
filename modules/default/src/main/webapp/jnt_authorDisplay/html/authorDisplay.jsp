@@ -10,7 +10,6 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<template:addResources type="css" resources="mainresource.css"/>
 
 <c:set var="user" value="${renderContext.mainResource.node.properties['jcr:createdBy'].string}"/>
 <c:set var="mainTemplate" value="${currentNode.properties['j:userView'].string}"/>

@@ -37,7 +37,7 @@
         <div class="container container_16">
             <div class="grid_16">
                 <div id="headerPart1"><!--start headerPart1-->
-                    <template:area path="header"/>
+                    <template:wrappedContent path="header"/>
                     <div class="clear"></div>
                 </div>
                 <div class="clear"></div>
@@ -53,10 +53,10 @@
             <div class="container container_16">
                 <h1 class="hide noprint">Nom du site</h1>
 
-                <div class="logotop"><template:area path="logo"/></div>
+                <div class="logotop"><template:wrappedContent path="logo"/></div>
             </div>
             <div class="container container_16 noprint">
-                <template:area path="topMenu"/><!--Include MENU-->
+                <template:wrappedContent path="topMenu"/><!--Include MENU-->
             </div>
             <div class="clear"></div>
         </div>
@@ -64,7 +64,7 @@
         <div id="content"><!--start content-->
             <div class="container container_16">
                 <div class="grid_16">
-                    <template:area path="wrappercontent"/>
+                    <template:wrappedContent path="pagecontent"/>
                 </div>
             </div>
             <!--stop content-->
@@ -74,11 +74,11 @@
             <div id="footerPart3"><!--start footerPart3-->
                 <div class="container container_16">
                     <div class='grid_2'><!--start grid_2-->
-                        <template:area path="logoFooter"/>
+                        <template:wrappedContent path="logoFooter"/>
                     </div>
                     <!--stop grid_2-->
                     <div class='grid_14'><!--start grid_14-->
-                        <template:area path="footer"/>
+                        <template:wrappedContent path="footer"/>
                     </div>
                     <!--stop grid_12-->
 

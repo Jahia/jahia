@@ -10,7 +10,6 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<template:addResources type="css" resources="mainresource.css"/>
 <c:set var="mainTemplate" value="${renderContext.mainResource.template}"/>
 <c:if test="${(not empty currentNode.properties['j:mainResourceView'].string) and
 (not (currentNode.properties['j:mainResourceView'].string eq 'default') and (empty mainTemplate or mainTemplate eq 'default'))}">

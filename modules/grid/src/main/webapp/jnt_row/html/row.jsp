@@ -71,13 +71,13 @@
         <c:set target="${colMap}" property="col2" value="6"/>
     </c:otherwise>
 </c:choose>
-<c:if test="${renderContext.editMode and (renderContext.editModeConfigName eq 'studiomode')}">
+<c:if test="${editableModule}">
     <div class="grid_16 alpha omega">${jcr:label(currentNode.primaryNodeType,currentResource.locale)} ${currentNode.name} : ${column.string}</div>
 </c:if>
 <c:forEach items="${colMap}" var="col" varStatus="count">
     <!--start grid_${col.value}-->
     <div class='grid_${col.value} <c:if test="${count.first}"> alpha</c:if> <c:if test="${count.last}"> omega</c:if>'>
-        <template:area path="${col.key}"/>
+        <template:wrappedContent path="${currentNode.name}-${col.key}"/>
         <div class='clear'></div>
     </div>
     <!--stop grid_${col.value}-->

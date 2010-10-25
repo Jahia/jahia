@@ -32,7 +32,6 @@
 
 package org.jahia.taglibs.template.include;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -43,15 +42,13 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
+import org.jahia.services.render.filter.TemplateNodeFilter;
 
-import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
-import javax.jcr.nodetype.ConstraintViolationException;
+import javax.servlet.jsp.JspException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Handler for the &lt;template:module/&gt; tag, used to render content objects.
@@ -68,6 +65,8 @@ public class WrappedContentTag extends ModuleTag implements ParamParent {
     private String moduleType = "area";
 
     private String mockupStyle;
+
+    private TemplateNodeFilter.Template templateNode;
 
     public void setAreaType(String areaType) {
         this.areaType = areaType;
@@ -100,6 +99,9 @@ public class WrappedContentTag extends ModuleTag implements ParamParent {
                 areaPath = renderContext.getMainResource().getNode().getPath() + "/" + path;
             }
             printModuleStart(getModuleType(renderContext), areaPath, null, "No script");
+            if (getBodyContent() != null) {
+                getPreviousOut().write(getBodyContent().getString());
+            }
             printModuleEnd();
         }
     }
@@ -135,7 +137,7 @@ public class WrappedContentTag extends ModuleTag implements ParamParent {
     @Override protected boolean canEdit(RenderContext renderContext) {
         if (path != null) {
             boolean stillInWrapper = false;
-            return renderContext.isEditMode() && editable && !stillInWrapper;
+            return renderContext.isEditMode() && editable && !stillInWrapper && renderContext.getRequest().getAttribute("inArea") == null;
         } else {
             return super.canEdit(renderContext);
         }
@@ -147,19 +149,50 @@ public class WrappedContentTag extends ModuleTag implements ParamParent {
         if (renderContext.isAjaxRequest() && renderContext.getAjaxResource() != null) {
             resource = renderContext.getAjaxResource();
         }
-        node = resource.getNode();
         renderContext.getRequest().removeAttribute("skipWrapper");
+        renderContext.getRequest().removeAttribute("inArea");
 
         if (path != null) {
             try {
                 if (!path.startsWith("/")) {
-                    if (!path.equals("*") && node.hasNode(path)) {
-                        node = node.getNode(path);
-                        applyContributeModeOptions(currentResource.getNode(),true);
-                    } else {
+                    List<JCRNodeWrapper> nodes = new ArrayList<JCRNodeWrapper>();
+                    TemplateNodeFilter.Template t = (TemplateNodeFilter.Template)renderContext.getRequest().getAttribute("previousTemplate");
+                    if (t != null) {
+                        for (TemplateNodeFilter.Template currentTemplate : t.getNextTemplates()) {
+                            nodes.add(0,currentTemplate.getNode());
+                        }
+                    }
+                    nodes.add(resource.getNode());
+
+                    templateNode = t;
+
+                    boolean found = false;
+                    boolean currentMain = false;
+                    for (JCRNodeWrapper node : nodes) {
+                        if (!path.equals("*") && node.hasNode(path)) {
+                            currentMain = resource.getNode() != node;
+                            this.node = node.getNode(path);
+                            applyContributeModeOptions(currentResource.getNode(),true);
+                            if (currentResource.getNode().getParent().getPath().equals(this.node.getPath())) {
+                                this.node = null;
+                            } else {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (t != null) {
+                            t = t.getNext();
+                        }
+                    }
+                    renderContext.getRequest().setAttribute("previousTemplate",t);
+                    if (currentMain) {
+                        renderContext.getRequest().setAttribute("inArea", Boolean.TRUE);
+                    }
+                    if (!found) {
                         missingResource(renderContext, currentResource, resource);
                     }
                 } else if (path.startsWith("/")) {
+                    node = resource.getNode();            
                     JCRSessionWrapper session = node.getSession();
                     try {
                         node = (JCRNodeWrapper) session.getItem(path);
@@ -172,6 +205,20 @@ public class WrappedContentTag extends ModuleTag implements ParamParent {
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
             }
+        } else {
+            renderContext.getRequest().removeAttribute("skipWrapper");
+            node = resource.getNode();
+        }
+    }
+
+    @Override public int doEndTag() throws JspException {
+        Object o = pageContext.getRequest().getAttribute("inArea");
+        try {
+            return super.doEndTag();
+        } finally {
+            pageContext.getRequest().setAttribute("previousTemplate", templateNode);
+            templateNode = null;
+            pageContext.getRequest().setAttribute("inArea",o);
         }
     }
 }

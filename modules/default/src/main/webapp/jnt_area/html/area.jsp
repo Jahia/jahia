@@ -11,7 +11,6 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<template:addResources type="css" resources="mainresource.css"/>
 
 <c:choose>
     <c:when test="${not empty inWrapper and inWrapper eq false}">

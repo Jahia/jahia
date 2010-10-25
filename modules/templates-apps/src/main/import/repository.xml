@@ -1,88 +1,119 @@
 <content xmlns:jcr="http://www.jcp.org/jcr/1.0">
-  <templateSets>
-    <templates-apps xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" jcr:mixinTypes="jmix:sitemap jmix:accessControlled" jcr:primaryType="jnt:virtualsite" changefreq="monthly" j:installedModules="templates-apps" priority="0.5">
-      <contents jcr:primaryType="jnt:contentList">
-        <site_components jcr:primaryType="jnt:contentList">
-          <login-to-jahia jcr:primaryType="jnt:loginForm">
-            <j:translation_en jcr:title="Login to Jahia" jcr:language="en" jcr:primaryType="jnt:translation"/>
-          </login-to-jahia>
-        </site_components>
-      </contents>
-      <portlets jcr:primaryType="jnt:portletList"/>
-        <themes jcr:primaryType="jnt:folder" >
-            <default jcr:primaryType="jnt:folder"/>
-        </themes>
-      <templates jcr:primaryType="jnt:templatesFolder">
-        <base jcr:mixinTypes="jmix:renderable" j:view="apps" jcr:primaryType="jnt:masterTemplate">
-          <logo jcr:primaryType="jnt:contentList"/>
-          <pagetitle jcr:primaryType="jnt:contentList"/>
-          <simpleSearch jcr:primaryType="jnt:contentList"/>
-          <topMenu jcr:primaryType="jnt:contentList"/>
-          <topfooter jcr:primaryType="jnt:contentList"/>
-          <footer jcr:primaryType="jnt:contentList">
-            <row column="1col16" jcr:primaryType="jnt:row">
-              <col1 jcr:primaryType="jnt:contentList">
-                <footer j:allowedTypes="jnt:bigText" jcr:primaryType="jnt:absoluteArea"/>
-              </col1>
-            </row>
-          </footer>
-          <header jcr:primaryType="jnt:contentList">
-            <row column="1col16" jcr:primaryType="jnt:row">
-              <col1 jcr:primaryType="jnt:contentList">
-                <header j:allowedTypes="" jcr:primaryType="jnt:absoluteArea"/>
-              </col1>
-              <col2 jcr:primaryType="jnt:contentList"/>
-            </row>
-          </header>
-          <wrappercontent jcr:primaryType="jnt:contentList">
-            <Main_x0020_ressoure_x0020_Display jcr:primaryType="jnt:mainResourceDisplay"/>
-          </wrappercontent>
-          <home jcr:primaryType="jnt:masterTemplate">
-            <wrappercontent jcr:primaryType="jnt:contentList">
-              <row column="2col115" jcr:primaryType="jnt:row">
-                <col2 jcr:primaryType="jnt:contentList">
-                  <login jcr:primaryType="jnt:loginForm" j:displayRememberMeButton="false" j:displayLoginButton="false">
-                    <j:translation_en jcr:title="Login" jcr:language="en" jcr:primaryType="jnt:translation"/>
-                  </login>
-                  <List_x0020_B j:allowedTypes="" jcr:primaryType="jnt:area"/>
-                </col2>
-                <col1 jcr:primaryType="jnt:contentList">
-                  <List_x0020_A j:allowedTypes="" jcr:primaryType="jnt:area"/>
-                </col1>
-              </row>
-            </wrappercontent>
-          </home>
-        </base>
-      </templates>
-      <j:acl jcr:primaryType="jnt:acl">
-        <GRANT_r_editor j:privileges="jcr:read jcr:read_live jcr:write" j:protected="false" j:principal="r:editor" j:aceType="GRANT" jcr:primaryType="jnt:ace"/>
-        <DENY_r_editor j:privileges="jcr:write_live jcr:modifyAccessControl" j:protected="false" j:principal="r:editor" j:aceType="DENY" jcr:primaryType="jnt:ace"/>
+    <templateSets>
+        <templates-apps xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0"
+                        xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0"
+                        xmlns:mix="http://www.jcp.org/jcr/mix/1.0" jcr:mixinTypes="jmix:sitemap jmix:accessControlled"
+                        jcr:primaryType="jnt:virtualsite" changefreq="monthly" j:installedModules="templates-apps"
+                        priority="0.5">
+            <contents jcr:primaryType="jnt:contentList">
+                <site_components jcr:primaryType="jnt:contentList">
+                    <login-to-jahia jcr:primaryType="jnt:loginForm">
+                        <j:translation_en jcr:title="Login to Jahia" jcr:language="en"
+                                          jcr:primaryType="jnt:translation"/>
+                    </login-to-jahia>
+                </site_components>
+            </contents>
+            <portlets jcr:primaryType="jnt:portletList"/>
+            <themes jcr:primaryType="jnt:folder">
+                <default jcr:primaryType="jnt:folder"/>
+            </themes>
+            <templates jcr:primaryType="jnt:templatesFolder">
+                <base jcr:mixinTypes="jmix:renderable" j:view="apps" jcr:primaryType="jnt:masterTemplate">
+                    <logo jcr:primaryType="jnt:contentList"/>
+                    <pagetitle jcr:primaryType="jnt:contentList"/>
+                    <simpleSearch jcr:primaryType="jnt:contentList"/>
+                    <topMenu jcr:primaryType="jnt:contentList"/>
+                    <topfooter jcr:primaryType="jnt:contentList"/>
+                    <footer jcr:primaryType="jnt:contentList">
+                        <footer-row column="1col16" jcr:primaryType="jnt:row">
+                        </footer-row>
+                    </footer>
+                    <footer-row-col1 jcr:primaryType="jnt:contentList">
+                        <footer j:allowedTypes="jnt:bigText" jcr:primaryType="jnt:absoluteArea"/>
+                    </footer-row-col1>
+                    <header jcr:primaryType="jnt:contentList">
+                        <header-row column="1col16" jcr:primaryType="jnt:row">
+                        </header-row>
+                    </header>
+                    <header-row-col1 jcr:primaryType="jnt:contentList">
+                        <header j:allowedTypes="" jcr:primaryType="jnt:absoluteArea"/>
+                    </header-row-col1>
+                    <header-row-col2 jcr:primaryType="jnt:contentList"/>
+                    <pagecontent jcr:primaryType="jnt:contentList">
+                        <pagecontent jcr:primaryType="jnt:area"/>
+                    </pagecontent>
+                    <home jcr:primaryType="jnt:masterTemplate">
+                        <pagecontent jcr:primaryType="jnt:contentList">
+                            <row column="2col115" jcr:primaryType="jnt:row">
+                            </row>
+                        </pagecontent>
+                        <row-col2 jcr:primaryType="jnt:contentList">
+                            <login jcr:primaryType="jnt:loginForm" j:displayRememberMeButton="false"
+                                   j:displayLoginButton="false">
+                                <j:translation_en jcr:title="Login" jcr:language="en"
+                                                  jcr:primaryType="jnt:translation"/>
+                            </login>
+                            <listB j:allowedTypes="" jcr:primaryType="jnt:area"/>
+                        </row-col2>
+                        <row-col1 jcr:primaryType="jnt:contentList">
+                            <listA j:allowedTypes="" jcr:primaryType="jnt:area"/>
+                        </row-col1>
+                    </home>
+                </base>
+            </templates>
+            <j:acl jcr:primaryType="jnt:acl">
+                <GRANT_r_editor j:privileges="jcr:read jcr:read_live jcr:write" j:protected="false"
+                                j:principal="r:editor" j:aceType="GRANT" jcr:primaryType="jnt:ace"/>
+                <DENY_r_editor j:privileges="jcr:write_live jcr:modifyAccessControl" j:protected="false"
+                               j:principal="r:editor" j:aceType="DENY" jcr:primaryType="jnt:ace"/>
 
-        <GRANT_r_editor-in-chief j:privileges="jcr:read jcr:write_live jcr:modifyAccessControl jcr:read_live jcr:write" j:protected="false" j:principal="r:editor-in-chief" j:aceType="GRANT" jcr:primaryType="jnt:ace"/>
-        <DENY_r_editor-in-chief j:privileges="" j:protected="false" j:principal="r:editor-in-chief" j:aceType="DENY" jcr:primaryType="jnt:ace"/>
-        <GRANT_r_publisher j:privileges="jcr:read jcr:write_live jcr:read_live jcr:write" j:protected="false" j:principal="r:publisher" j:aceType="GRANT" jcr:primaryType="jnt:ace"/>
-        <DENY_r_publisher j:privileges="jcr:modifyAccessControl" j:protected="false" j:principal="r:publisher" j:aceType="DENY" jcr:primaryType="jnt:ace"/>
-        <GRANT_r_seo-manager j:privileges="jcr:read jcr:read_live jcr:write" j:protected="false" j:principal="r:seo-manager" j:aceType="GRANT" jcr:primaryType="jnt:ace"/>
-        <DENY_r_seo-manager j:privileges="jcr:write_live jcr:modifyAccessControl" j:protected="false" j:principal="r:seo-manager" j:aceType="DENY" jcr:primaryType="jnt:ace"/>
-        <GRANT_r_site-administrator j:privileges="jcr:read jcr:write_live jcr:modifyAccessControl jcr:read_live jcr:write" j:protected="false" j:principal="r:site-administrator" j:aceType="GRANT" jcr:primaryType="jnt:ace"/>
-        <DENY_r_site-administrator j:privileges="" j:protected="false" j:principal="r:site-administrator" j:aceType="DENY" jcr:primaryType="jnt:ace"/>
-        <GRANT_r_translator j:privileges="jcr:read jcr:read_live jcr:write" j:protected="false" j:principal="r:translator" j:aceType="GRANT" jcr:primaryType="jnt:ace"/>
-        <DENY_r_translator j:privileges="jcr:write_live jcr:modifyAccessControl" j:protected="false" j:principal="r:translator" j:aceType="DENY" jcr:primaryType="jnt:ace"/>
-        <GRANT_r_web-designer j:privileges="jcr:read jcr:read_live jcr:write" j:protected="false" j:principal="r:web-designer" j:aceType="GRANT" jcr:primaryType="jnt:ace"/>
-        <DENY_r_web-designer j:privileges="jcr:write_live jcr:modifyAccessControl" j:protected="false" j:principal="r:web-designer" j:aceType="DENY" jcr:primaryType="jnt:ace"/>
-      </j:acl>
-      <workflowrules jcr:primaryType="jnt:workflowRules">
-        <nt_base_jBPM_1-step-publication j:nodeType="nt:base" j:workflow="jBPM:1-step-publication" jcr:primaryType="jnt:workflowRule">
-          <GRANT_r_editor-in-chief j:privileges="review start" j:protected="false" j:principal="r:editor-in-chief" j:aceType="GRANT" jcr:primaryType="jnt:ace"/>
-          <GRANT_r_editor j:privileges="start" j:protected="false" j:principal="r:editor" j:aceType="GRANT" jcr:primaryType="jnt:ace"/>
-          <GRANT_r_publisher j:privileges="review" j:protected="false" j:principal="r:publisher" j:aceType="GRANT" jcr:primaryType="jnt:ace"/>
-        </nt_base_jBPM_1-step-publication>
-      </workflowrules>
-      <home j:displayInMenu="primary" jcr:primaryType="jnt:page" j:templateNode="/templateSets/templates-apps/templates/base/home">
-        <j:translation_en jcr:title="Home" jcr:language="en" jcr:primaryType="jnt:translation"/>
-        <List_x0020_A jcr:primaryType="jnt:contentList"/>
-        <List_x0020_B jcr:primaryType="jnt:contentList"/>
-      </home>
-    </templates-apps>
-  </templateSets>
+                <GRANT_r_editor-in-chief
+                        j:privileges="jcr:read jcr:write_live jcr:modifyAccessControl jcr:read_live jcr:write"
+                        j:protected="false" j:principal="r:editor-in-chief" j:aceType="GRANT"
+                        jcr:primaryType="jnt:ace"/>
+                <DENY_r_editor-in-chief j:privileges="" j:protected="false" j:principal="r:editor-in-chief"
+                                        j:aceType="DENY" jcr:primaryType="jnt:ace"/>
+                <GRANT_r_publisher j:privileges="jcr:read jcr:write_live jcr:read_live jcr:write" j:protected="false"
+                                   j:principal="r:publisher" j:aceType="GRANT" jcr:primaryType="jnt:ace"/>
+                <DENY_r_publisher j:privileges="jcr:modifyAccessControl" j:protected="false" j:principal="r:publisher"
+                                  j:aceType="DENY" jcr:primaryType="jnt:ace"/>
+                <GRANT_r_seo-manager j:privileges="jcr:read jcr:read_live jcr:write" j:protected="false"
+                                     j:principal="r:seo-manager" j:aceType="GRANT" jcr:primaryType="jnt:ace"/>
+                <DENY_r_seo-manager j:privileges="jcr:write_live jcr:modifyAccessControl" j:protected="false"
+                                    j:principal="r:seo-manager" j:aceType="DENY" jcr:primaryType="jnt:ace"/>
+                <GRANT_r_site-administrator
+                        j:privileges="jcr:read jcr:write_live jcr:modifyAccessControl jcr:read_live jcr:write"
+                        j:protected="false" j:principal="r:site-administrator" j:aceType="GRANT"
+                        jcr:primaryType="jnt:ace"/>
+                <DENY_r_site-administrator j:privileges="" j:protected="false" j:principal="r:site-administrator"
+                                           j:aceType="DENY" jcr:primaryType="jnt:ace"/>
+                <GRANT_r_translator j:privileges="jcr:read jcr:read_live jcr:write" j:protected="false"
+                                    j:principal="r:translator" j:aceType="GRANT" jcr:primaryType="jnt:ace"/>
+                <DENY_r_translator j:privileges="jcr:write_live jcr:modifyAccessControl" j:protected="false"
+                                   j:principal="r:translator" j:aceType="DENY" jcr:primaryType="jnt:ace"/>
+                <GRANT_r_web-designer j:privileges="jcr:read jcr:read_live jcr:write" j:protected="false"
+                                      j:principal="r:web-designer" j:aceType="GRANT" jcr:primaryType="jnt:ace"/>
+                <DENY_r_web-designer j:privileges="jcr:write_live jcr:modifyAccessControl" j:protected="false"
+                                     j:principal="r:web-designer" j:aceType="DENY" jcr:primaryType="jnt:ace"/>
+            </j:acl>
+            <workflowrules jcr:primaryType="jnt:workflowRules">
+                <nt_base_jBPM_1-step-publication j:nodeType="nt:base" j:workflow="jBPM:1-step-publication"
+                                                 jcr:primaryType="jnt:workflowRule">
+                    <GRANT_r_editor-in-chief j:privileges="review start" j:protected="false"
+                                             j:principal="r:editor-in-chief" j:aceType="GRANT"
+                                             jcr:primaryType="jnt:ace"/>
+                    <GRANT_r_editor j:privileges="start" j:protected="false" j:principal="r:editor" j:aceType="GRANT"
+                                    jcr:primaryType="jnt:ace"/>
+                    <GRANT_r_publisher j:privileges="review" j:protected="false" j:principal="r:publisher"
+                                       j:aceType="GRANT" jcr:primaryType="jnt:ace"/>
+                </nt_base_jBPM_1-step-publication>
+            </workflowrules>
+            <home j:displayInMenu="primary" jcr:primaryType="jnt:page"
+                  j:templateNode="/templateSets/templates-apps/templates/base/home">
+                <j:translation_en jcr:title="Home" jcr:language="en" jcr:primaryType="jnt:translation"/>
+                <listA jcr:primaryType="jnt:contentList"/>
+                <listB jcr:primaryType="jnt:contentList"/>
+            </home>
+        </templates-apps>
+    </templateSets>
 </content>

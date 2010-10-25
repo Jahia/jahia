@@ -4,5 +4,5 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 
 
-<template:area path="pagecontent"/>
+<template:wrappedContent path="content"/>
 

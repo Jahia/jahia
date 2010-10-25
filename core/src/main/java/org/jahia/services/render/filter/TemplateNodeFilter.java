@@ -36,7 +36,6 @@ import org.apache.log4j.Logger;
 import org.jahia.services.content.*;
 import org.jahia.services.render.*;
 
-import javax.jcr.ItemNotFoundException;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
@@ -56,6 +55,7 @@ public class TemplateNodeFilter extends AbstractFilter {
 
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         if (renderContext.getRequest().getAttribute("skipWrapper") == null) {
+            chain.pushAttribute(renderContext.getRequest(), "inWrapper", Boolean.TRUE);
             Template template = null;
             Template previousTemplate = null;
             if (renderContext.getRequest().getAttribute("templateSet") == null) {
@@ -74,9 +74,8 @@ public class TemplateNodeFilter extends AbstractFilter {
                     renderContext.getRequest().setAttribute("previousTemplate", template);
                     renderContext.getRequest().setAttribute("wrappedResource", resource);
                     Resource wrapperResource = new Resource(templateNode,
-                            resource.getTemplateType().equals("edit") ? "html" : resource.getTemplateType(), template.templateName, Resource.CONFIGURATION_WRAPPER);
-                    if (service.hasTemplate(templateNode, template.templateName)) {
-                        chain.pushAttribute(renderContext.getRequest(), "inWrapper", Boolean.TRUE);
+                            resource.getTemplateType().equals("edit") ? "html" : resource.getTemplateType(), template.view, Resource.CONFIGURATION_WRAPPER);
+                    if (service.hasTemplate(templateNode, template.view)) {
 
                         Integer currentLevel =
                                 (Integer) renderContext.getRequest().getAttribute("org.jahia.modules.level");
@@ -100,7 +99,8 @@ public class TemplateNodeFilter extends AbstractFilter {
             }
         }
         chain.pushAttribute(renderContext.getRequest(), "inWrapper",
-                (renderContext.isAjaxRequest()) ? Boolean.TRUE : Boolean.FALSE);
+                (renderContext.isAjaxRequest()) ? Boolean.TRUE :
+                        renderContext.getRequest().getAttribute("inArea") != null ? Boolean.TRUE : Boolean.FALSE);
         return null;
     }
 
@@ -112,50 +112,49 @@ public class TemplateNodeFilter extends AbstractFilter {
             templateName = null;
         }
         JCRNodeWrapper current = node;
+
+
         Template template = null;
         try {
-            if (current.isNodeType("jnt:derivedTemplate")) {
-                current = current.getParent();
+            JCRNodeWrapper site = node.getResolveSite();
+            JCRNodeWrapper templatesNode = null;
+            if (site != null && site.hasNode("templates")) {
+                templatesNode = site.getNode("templates");
             }
 
-            JCRNodeWrapper templateNode = null;
-            List<JCRItemWrapper> ancestors = current.getAncestors();
-            ancestors.add(current);
-            for (int i = ancestors.size() -1 ; i >= 0 && templateNode == null; i--) {
-                current = (JCRNodeWrapper) ancestors.get(i);
-                if (current.hasProperty("j:templateNode")) {
-                    templateNode = (JCRNodeWrapper) current.getProperty("j:templateNode").getNode();
-                    template = addDerivedTemplates(resource, template, templateNode);
-                    if (template == null && current == node) {
-                        template = new Template(templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
-                            templateName!=null?templateName:"fullpage", templateNode, template);
-                    }
-                }
-                if (template == null && current.hasProperty("j:defaultTemplateNode")) {
-                    templateNode = (JCRNodeWrapper) current.getProperty("j:defaultTemplateNode").getNode();
-                    template = addDerivedTemplates(resource, template, templateNode);
-                    if (template == null) {
-                        template = new Template(templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
-                            "fullpage", templateNode, template);
-                    }
-                }
-                if (template == null && current.isNodeType("jnt:template")) {
-                    templateNode = current;
-                }
-            }
-            if (templateNode != null) {
-                templateNode = templateNode.getParent();
-                while (!(templateNode.isNodeType("jnt:templatesFolder"))) {
-                    template = new Template(templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
-                            "fullpage", templateNode, template);
-                    templateNode = templateNode.getParent();
+            if (current.isNodeType("jnt:template")) {
+                // Display a template node in studio
+                JCRNodeWrapper parent = current.getParent();
+                while (!(parent.isNodeType("jnt:templatesFolder"))) {
+                    template = new Template(parent.hasProperty("j:view") ? parent.getProperty("j:view").getString() :
+                            templateName!=null?templateName:"fullpage", parent, template);
+                    parent = parent.getParent();
                 }
             } else {
-                // default
-                try {
-                    template = new Template("system", node.getSession().getNode("/systemTemplate"), null);
-                } catch (RepositoryException e) {
-                    logger.error("Cannot find default template", e);
+                if (current.hasProperty("j:templateNode")) {
+                    // A template node is specified on the current node
+                    JCRNodeWrapper templateNode = (JCRNodeWrapper) current.getProperty("j:templateNode").getNode();
+                    template = new Template(templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
+                            templateName!=null?templateName:"fullpage", templateNode, template);
+                } else {
+                    template = addDerivedTemplates(resource, null, templatesNode);
+                }
+
+                if (template != null) {
+                    // Add cascade of parent templates
+                    JCRNodeWrapper templateNode = template.getNode().getParent();
+                    while (!(templateNode.isNodeType("jnt:templatesFolder"))) {
+                        template = new Template(templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
+                                "fullpage", templateNode, template);
+                        templateNode = templateNode.getParent();
+                    }
+                } else {
+                    // No template defined, use system display
+                    try {
+                        template = new Template("system", node.getSession().getNode("/systemTemplate"), null);
+                    } catch (RepositoryException e) {
+                        logger.error("Cannot find default template", e);
+                    }
                 }
             }
         } catch (RepositoryException e) {
@@ -167,7 +166,7 @@ public class TemplateNodeFilter extends AbstractFilter {
     private Template addDerivedTemplates(Resource resource, Template template,
                                          JCRNodeWrapper templateNode) throws RepositoryException {
         Query q = templateNode.getSession().getWorkspace().getQueryManager().createQuery(
-                "select * from [jnt:derivedTemplate] as w where ischildnode(w, ['" + templateNode.getPath() + "'])",
+                "select * from [jnt:derivedTemplate] as w where isdescendantnode(w, ['" + templateNode.getPath() + "'])",
                 Query.JCR_SQL2);
         QueryResult result = q.execute();
         NodeIterator ni = result.getNodes();
@@ -199,9 +198,6 @@ public class TemplateNodeFilter extends AbstractFilter {
                 ok = !templateNode.hasProperty("j:templateKey");
             } else {
                 ok = templateNode.hasProperty("j:templateKey") && resource.getTemplate().equals(templateNode.getProperty("j:templateKey").getString());
-                /*if (ok && !resource.getContextConfiguration().equals("page")) {
-                    resource.setTemplate(null);
-                }*/
             }
         }
         if (ok) {
@@ -213,23 +209,23 @@ public class TemplateNodeFilter extends AbstractFilter {
     }
 
     public class Template {
-        public String templateName;
+        public String view;
         public JCRNodeWrapper node;
         public Template next;
 
-        Template(String templateName, JCRNodeWrapper node, Template next) {
-            this.templateName = templateName;
+        Template(String view, JCRNodeWrapper node, Template next) {
+            this.view = view;
             this.node = node;
             this.next = next;
         }
 
         @Override
         public String toString() {
-            return templateName + " for node " + node.getPath();
+            return view + " for node " + node.getPath();
         }
 
-        public String getTemplateName() {
-            return templateName;
+        public String getView() {
+            return view;
         }
 
         public JCRNodeWrapper getNode() {

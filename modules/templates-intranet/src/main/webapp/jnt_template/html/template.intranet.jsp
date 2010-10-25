@@ -45,7 +45,7 @@
     <div id="topheader"><!--start topheader-->
         <div class="container container_16">
             <div class="grid_16">
-                <div class="logotop"><a href="#"><template:area path="logo"/></a></div>
+                <div class="logotop"><a href="#"><template:wrappedContent path="logo"/></a></div>
             </div>
         </div>
         <div class="clear"></div>
@@ -55,16 +55,18 @@
         <div class="container container_16">
             <div class="grid_10">
                 <div id="banner"><!--start banner-->
-                    <template:area path="pagetitle"/>
+                    <template:wrappedContent path="pagetitle">
+                        Put your page title element here                    
+                    </template:wrappedContent>
                 </div>
                 <div class="clear"></div></div>
             <div class="grid_6">
                 <div id="search-bar">
-                    <template:area path="simpleSearch"/>
+                    <template:wrappedContent path="simpleSearch"/>
                 </div>
                 <div class="clear"></div></div>
             <div class="grid_16">
-                <template:area path="topMenu"/>
+                <template:wrappedContent path="topMenu"/>
             </div>
         </div>
         <div class="clear"></div>
@@ -73,7 +75,7 @@
     <div id="content"><!--start content-->
         <div class="container container_16">
             <div class="grid_16">
-                <template:area path="wrappercontent"/>
+                <template:wrappedContent path="pagecontent"/>
             </div>
         </div>
         <div class="clear"></div>
@@ -84,7 +86,9 @@
     <div id="topfooter" class="noprint"><!--start topfooter-->
         <div class="container container_16"> <!--start container_16-->
             <div class="grid_16">
-                <template:area path="topfooter" nodeTypes="jnt:row" />
+                <template:wrappedContent path="topfooter" nodeTypes="jnt:row" >
+                     Put your footer here
+                </template:wrappedContent>
                 <div class="clear"></div></div>
             <div class="clear"></div></div> <!--stop container_16-->
         <div class="clear"></div></div><!--stop topfooter-->
@@ -92,7 +96,7 @@
     <div id="bottomfooter" class="noprint"><!--start bottomfooter-->
         <div class="container container_16"> <!--start container_16-->
             <div class="grid_16">
-                <template:area path="footer" nodeTypes="jnt:row" />
+                <template:wrappedContent path="footer" nodeTypes="jnt:row" />
                 <div class="clear"></div></div>
             <div class="clear"></div></div> <!--stop container_16-->
     </div>

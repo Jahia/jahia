@@ -75,6 +75,8 @@ public class KeywordRichtext extends SeleneseTestCase {
                 }
             }
         }
+
+        if (selenium.isElementPresent("//span[text()='Area : listA']")) deleteContentCreated();
         CreateRichtext();
         AddAndSearchKeyword();
         deleteContentCreated();

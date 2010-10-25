@@ -68,6 +68,8 @@ public class AclsThisArticle extends SeleneseTestCase {
                 }
             }
         }
+
+        if (selenium.isElementPresent("//span[text()='Area : listA']")) deleteContentCreated();
         CreateAnArticle();
         AclThisArticle();
         deleteContentCreated();

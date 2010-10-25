@@ -78,6 +78,7 @@ public class CategoriesThisArticle extends SeleneseTestCase {
                 }
             }
         }
+        if (selenium.isElementPresent("//span[text()='Area : listA']")) deleteContentCreated();
         CreateAnArticle();
         addCategories();
         checkAndRemoveCategoriesSaved();

@@ -77,7 +77,7 @@ public class DescriptionRichtext extends SeleneseTestCase {
                 }
             }
         }
-
+        if (selenium.isElementPresent("//span[text()='Area : listA']")) deleteContentCreated();
         CreateRichtext();
         AddAndSearchDescription();
         deleteContentCreated();

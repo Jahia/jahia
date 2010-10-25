@@ -58,7 +58,6 @@ import javax.naming.directory.SearchResult;
 
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.security.license.LicenseActionChecker;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
@@ -637,9 +636,6 @@ public class JahiaUserManagerLDAPProvider extends JahiaUserManagerProvider {
      * @return a reference on a new created jahiaUser object.
      */
     public JahiaUser lookupUserByKey(String userKey, String searchAttributeName) {
-        if (!LicenseActionChecker.isAuthorizedByLicense("org.jahia.services.usermanager.JahiaUserManagerLDAPProvider", 0)) {
-            return null;
-        }
         if (!userKey.startsWith("{"+getKey()+"}")) {
             return null;
         }
@@ -1017,10 +1013,6 @@ public class JahiaUserManagerLDAPProvider extends JahiaUserManagerProvider {
      * @return a reference on a new created jahiaUser object.
      */
     public JahiaUser lookupUserByKey(String userKey) {
-        if (!LicenseActionChecker.isAuthorizedByLicense("org.jahia.services.usermanager.JahiaUserManagerLDAPProvider", 0)) {
-            return null;
-        }
-
         /* 2004-16-06 : update by EP
         new cache to use : cross providers only based upon names... */
         JahiaUser user = mProvidersUserCache.get ("k"+userKey);
@@ -1158,10 +1150,6 @@ public class JahiaUserManagerLDAPProvider extends JahiaUserManagerProvider {
      * @return Return a reference on a new created jahiaUser object.
      */
     public JahiaUser lookupUser(String name) {
-        if (!LicenseActionChecker.isAuthorizedByLicense("org.jahia.services.usermanager.JahiaUserManagerLDAPProvider", 0)) {
-            return null;
-        }
-
         JahiaUser user = lookupUserByKey("{"+getKey()+"}"+name);
         if (user != null) {
             // user.setSiteID (siteID);

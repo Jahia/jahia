@@ -36,7 +36,6 @@ import org.apache.commons.id.IdentifierGenerator;
 import org.apache.commons.id.IdentifierGeneratorFactory;
 import org.apache.log4j.Logger;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.hibernate.cache.JahiaBatchingClusterCacheHibernateProvider;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaUser;
@@ -155,7 +154,6 @@ public abstract class BackgroundJob implements StatefulJob {
         } finally {
 
             ServicesRegistry.getInstance().getCacheService().syncClusterNow();
-            JahiaBatchingClusterCacheHibernateProvider.syncClusterNow();
 
             data.putAsString(JOB_END, System.currentTimeMillis());
             // job begin is set by trigger listener in SchedulerService

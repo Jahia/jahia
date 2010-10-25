@@ -41,7 +41,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.jahia.bin.JahiaAdministration;
-import org.jahia.hibernate.cache.JahiaBatchingClusterCacheHibernateProvider;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
@@ -131,9 +130,8 @@ public class ManageStatus extends AbstractAdministrationModule {
             throws IOException, ServletException {
 
         if (request.getParameter ("flushAllCaches") != null) {
-            logger.debug ("Flushing all caches");
+            logger.info("Flushing all caches");
             ServicesRegistry.getInstance().getCacheService().flushAllCaches();
-            JahiaBatchingClusterCacheHibernateProvider.flushAllCaches();
         }
 
         // get the cache factory instance
@@ -151,7 +149,7 @@ public class ManageStatus extends AbstractAdministrationModule {
             if (request.getParameter ("flush_" + curCacheName) != null) {
                 Cache cache = ServicesRegistry.getInstance().getCacheService().getCache (curCacheName);
                 if (cache != null) {
-                    logger.debug ("Flushing cache : " + curCacheName);
+                    logger.info("Flushing cache: " + curCacheName);
                     cache.flush();
                 }
             }

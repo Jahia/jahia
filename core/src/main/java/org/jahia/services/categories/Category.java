@@ -34,7 +34,6 @@
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.jahia.bin.Jahia;
 import org.jahia.content.CategoryKey;
 import org.jahia.content.JahiaObject;
 import org.jahia.content.ObjectKey;
@@ -380,15 +379,6 @@ public class Category extends JahiaObject {
         List<Category> foundCategories = categoryService.findCategoriesByPropNameAndValue (propName, propValue, p);
 
         return foundCategories;
-    }
-
-    /**
-     * Returns the date of last modification of *any* category. This is useful
-     * notably to invalidate trees of categories if any category was modified.
-     * @return Date the date of the last modification on any category.
-     */
-    static public Date getLastModificationDate() {
-        return categoryService.getLastModificationDate();
     }
 
     public static Category getChildInstance (String IDInType, JahiaUser p) {

@@ -40,7 +40,6 @@ import org.jahia.services.applications.ApplicationsManagerService;
 import org.jahia.services.applications.DispatchingService;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.categories.CategoryService;
-import org.jahia.services.cluster.ClusterService;
 import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.JCRVersionService;
@@ -109,9 +108,6 @@ public class ServicesRegistry {
     // Jahia Multi Sites Manager Service
     private static final String JAHIA_SITES_SERVICE = "JahiaSitesService";
 
-    // Jahia Versioning Service
-    private static final String JAHIA_VERSION_SERVICE = "JahiaVersionService";
-
     // Jahia Cache factory for every cache except the HTML one
     private static final String JAHIA_CACHE_SERVICE = "JahiaCacheService";
 
@@ -135,8 +131,6 @@ public class ServicesRegistry {
     private static final String CAS_SERVICE = "CasService";
     // END [added by Pascal Aubry for CAS authentication]
 
-    private static final String CLUSTER_SERVICE = "clusterService";
-
     // This map is an optimization to avoid synchronization issues.
     private Map<String, JahiaService> servicesCache = new HashMap<String, JahiaService>();
 
@@ -153,23 +147,15 @@ public class ServicesRegistry {
      * Initialize the Services registry.
      *
      * @param jSettings the Jahia settings
-     * @throws JahiaException when a service could not be loaded and instanciated.
+     * @throws JahiaException when a service could not be loaded and instantiated.
      */
     public void init(SettingsBean jSettings)
             throws JahiaException {
         getServiceNames();
-
-//        while (serviceNameIter.hasNext()) {
-//            String curServiceName = (String) serviceNameIter.next();
-//            initService(curServiceName);
-//        }
     }
 
     public void shutdown() throws JahiaException {
-//        while (serviceNameIter.hasNext()) {
-//            String curServiceName = (String) serviceNameIter.next();
-//            shutdown(curServiceName);
-//        }
+    	// do nothing
     }
 
     @SuppressWarnings("unchecked")
@@ -298,10 +284,6 @@ public class ServicesRegistry {
         return (CasService) getService(CAS_SERVICE);
     }
     // END [added by Pascal Aubry for CAS authentication]
-
-    public ClusterService getClusterService() {
-        return (ClusterService) getService(CLUSTER_SERVICE);
-    }
 
     public ImportExportService getImportExportService() {
         return (ImportExportService) getService(IMPORTEXPORT_SERVICE);

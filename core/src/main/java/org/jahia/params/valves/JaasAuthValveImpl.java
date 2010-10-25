@@ -36,7 +36,6 @@ import org.apache.log4j.Logger;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.security.license.LicenseActionChecker;
 import org.jahia.services.usermanager.JahiaUser;
 
 import javax.security.auth.Subject;
@@ -60,10 +59,6 @@ public class JaasAuthValveImpl extends BaseAuthValve {
     private static final transient Logger logger = Logger.getLogger(JaasAuthValveImpl.class);
 
     public void invoke(Object context, ValveContext valveContext) throws PipelineException {
-
-        if (!LicenseActionChecker.isAuthorizedByLicense("org.jahia.params.valves.JaasAuthValve", 0)) {
-            valveContext.invokeNext(context);
-        }
 
         AuthValveContext authContext = (AuthValveContext) context;
         try {

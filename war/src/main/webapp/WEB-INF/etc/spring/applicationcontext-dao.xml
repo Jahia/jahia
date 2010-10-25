@@ -21,7 +21,6 @@
         <!-- Any changes of this values need to clean the whole-->
         <property name="hibernateSequenceOptimizer" value="org.jahia.hibernate.dao.IDGeneratorDAO.JahiaPooledOptimizer"/>
         <property name="hibernateSequenceIncrementSize" value="20"/>
-        <!--<property name="clusterName" value="idGenerator" />-->
     		<property name="dbSequences">
     		  <!-- For DB sequences, the key is the table name, and the value is the column name that we use as initial max values
     		       The sequence name will be table_name.column_name -->

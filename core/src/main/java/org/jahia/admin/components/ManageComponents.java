@@ -55,7 +55,6 @@ import org.jahia.bin.JahiaAdministration;
 import org.jahia.data.JahiaData;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
-import org.jahia.security.license.License;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
@@ -85,8 +84,6 @@ public class ManageComponents extends AbstractAdministrationModule {
     private JahiaSite site;
     private JahiaUser user;
 
-    private License coreLicense;
-
     /**
      * Default constructor.
      *
@@ -96,16 +93,6 @@ public class ManageComponents extends AbstractAdministrationModule {
     public void service(HttpServletRequest request,
                         HttpServletResponse response)
             throws Exception {
-
-        coreLicense = Jahia.getCoreLicense();
-        if (coreLicense == null) {
-            // set request attributes...
-            String dspMsg = getMessage("org.jahia.admin.JahiaDisplayMessage.invalidLicense.label");
-            request.setAttribute("jahiaDisplayMessage", dspMsg);
-            // redirect...
-            JahiaAdministration.doRedirect(request, response, request.getSession(), JSP_PATH + "menu.jsp");
-            return;
-        }
 
         userRequestDispatcher(request, response, request.getSession());
     } // end constructor

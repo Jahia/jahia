@@ -295,22 +295,6 @@ public abstract class CategoryService extends JahiaService {
             throws JahiaException;
 
     /**
-     * Returns the date of the last modification on *any* category.
-     * @return Date the date of last modification on *any* category. Note that
-     * if this method returns null, it can mean either that no category was
-     * ever modified during this instance of Jahia, or that we received a
-     * flush from another node in the cluster !
-     */
-    public abstract Date getLastModificationDate ();
-
-    /**
-     * Sets the date of last modification for *any* category to the date
-     * right now. Use this if you need to set this manually. Normally this
-     * should only be called from the Category facade, never elsewhere.
-     */
-    public abstract void setLastModificationDate();
-
-    /**
      * Retrieves the list of categories which have a categoryKey that starts with a given prefix.
      *
      * @param keyPrefix the key prefix to search for

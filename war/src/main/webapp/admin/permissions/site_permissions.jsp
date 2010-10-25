@@ -2,7 +2,6 @@
 <%@page import="org.jahia.admin.roles.ManageSiteRoles" %>
 <%@page import="org.jahia.data.viewhelper.principal.PrincipalViewHelper" %>
 <%@ page import="org.jahia.registries.ServicesRegistry" %>
-<%@ page import="org.jahia.security.license.LicenseActionChecker" %>
 <%@ page import="org.jahia.services.usermanager.JahiaGroup" %>
 <%@ page import="org.jahia.services.usermanager.JahiaUser" %>
 <%@ page import="org.jahia.utils.LanguageCodeConverters" %>

@@ -1,6 +1,5 @@
 <%@include file="/admin/include/header.inc" %>
 <%@page import = "java.util.*" %>
-<%@page import = "org.jahia.security.license.*" %>
 <%@page import="org.jahia.bin.*" %>
 <%@page import="org.jahia.resourcebundle.*" %>
 <%@page import="org.jahia.params.*" %>
@@ -45,115 +44,6 @@ stretcherToOpen   = 0; %>
                 <div class="object-title">
                   <fmt:message key="org.jahia.admin.info.LicenceInfo.jahiaRelease.label"/>&nbsp;${release},&nbsp;${jahiaEditionTitle},&nbsp;<fmt:message key="org.jahia.admin.build.label"/>&nbsp;${build}
                 </div>
-              </div>
-              <div class="content-body">
-                <span style="padding: 5px;display:block;border-bottom: 1px solid #B7CBD8;">
-                  <fmt:message key="org.jahia.admin.info.LicenceInfo.licenceIsValid.label"/>
-                </span>
-                <table class="evenOddTable" border="0" cellpadding="5" cellspacing="0" width="100%">
-                  <thead>
-                    <tr>
-                      <th width="50%">
-                        <fmt:message key="org.jahia.admin.info.LicenceInfo.resourceType.label"/>
-                      </th>
-                      <th width="25%">
-                        <fmt:message key="org.jahia.admin.info.LicenceInfo.current.label"/>
-                      </th>
-                      <th class="lastCol" width="25%">
-                        <fmt:message key="org.jahia.admin.info.LicenceInfo.maximun.label"/>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr class="evenLine">
-                      <td width="50%">
-                        <fmt:message key="org.jahia.admin.info.LicenceInfo.numberOfSites.label"/>
-                      </td>
-                      <td width="25%">
-                        <b>${nbCurrentSites}</b>
-                      </td>
-                      <td width="25%" class="lastCol">
-                        <b>${nbMaxSites}</b>
-                      </td>
-                    </tr>
-                    <tr class="oddLine">
-                      <td width="50%">
-                        <fmt:message key="org.jahia.admin.info.LicenceInfo.numberOfUsers.label"/>
-                      </td>
-                      <td width="25%">
-                        <b>${nbCurrentUsers}</b>
-                      </td>
-                      <td width="25%" class="lastCol">
-                        <b>${nbMaxUsers}</b>
-                      </td>
-                    </tr>
-                    <tr class="evenLine">
-                      <td width="50%">
-                        <fmt:message key="org.jahia.admin.info.LicenceInfo.numberOfTemplates.label"/>
-                      </td>
-                      <td width="25%">
-                        <b>${nbCurrentTemplates}</b>
-                      </td>
-                      <td width="25%" class="lastCol">
-                        <b>${nbMaxTemplates}</b>
-                      </td>
-                    </tr>
-                    <tr class="oddLine">
-                      <td width="50%">
-                        <fmt:message key="org.jahia.admin.info.LicenceInfo.numberOfPages.label"/>
-                      </td>
-                      <td width="25%">
-                        <b>${nbCurrentPages}</b>
-                      </td>
-                      <td width="25%" class="lastCol">
-                        <b>${nbMaxPages}</b>
-                      </td>
-                    </tr>
-                    <% if (expirationDate != null) { %>
-                    <tr class="evenLine">
-                      <td width="50%">
-                        <fmt:message key="org.jahia.admin.info.LicenceInfo.expirationDate.label"/>
-                      </td>
-                      <td width="25%">
-                        <b><%=dateFormatter.format(new Date()) %></b>
-                      </td>
-                      <td width="25%" class="lastCol">
-                        <b><%=dateFormatter.format(expirationDate) %></b>
-                      </td>
-                    </tr>
-                    <% } %>
-                    <% Iterator licenseIter = licenses.iterator();
-                    String lineClass = "oddLine";
-                    while (licenseIter.hasNext()) {
-                    License curLicense = (License) licenseIter.next();
-                    boolean activated = curLicense.checkLimits();
-                    String componentTitle = JahiaResourceBundle.getJahiaInternalResource(curLicense.getComponentName() + ".label",
-                                                                                         jData.getProcessingContext().getUILocale());
-                    if (componentTitle == null) {
-                    componentTitle = curLicense.getComponentName();
-                    } %>
-                    <tr class="<%=lineClass%>">
-                      <td width="50%">
-                        <b><%=componentTitle %></b>
-                      </td>
-                      <td width="25%">
-                        <% if (activated) { %>
-                        <fmt:message key="org.jahia.admin.info.LicenceInfo.licenseActivated.label"/><% } else { %>
-                        <fmt:message key="org.jahia.admin.info.LicenceInfo.licenseDeactivated.label"/><% } %>
-                      </td>
-                      <td width="25%" class="lastCol">
-                        &nbsp;
-                      </td>
-                    </tr>
-                    <%
-                    if ("oddLine".equals(lineClass)) {
-                    lineClass = "evenLine";
-                    } else {
-                    lineClass = "oddLine";
-                    }
-                    } %>
-                  </tbody>
-                </table>
               </div>
               <div class="content-body">
                 <table class="evenOddTable" border="0" cellpadding="5" cellspacing="0" width="100%">

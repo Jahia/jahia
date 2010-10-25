@@ -39,7 +39,6 @@ import org.jahia.bin.JahiaAdministration;
 import org.jahia.data.JahiaData;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.security.license.License;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -73,8 +72,6 @@ public class ManageAnalytics extends AbstractAdministrationModule {
     private static ServicesRegistry servicesRegistry = ServicesRegistry.getInstance();
     private static JahiaSitesService jahiaSitesService = servicesRegistry.getJahiaSitesService();
 
-    private License coreLicense;
-
     private String gaUserAccount = "";
     private String gaProfile = "";
     private String gaLogin = "";
@@ -89,15 +86,6 @@ public class ManageAnalytics extends AbstractAdministrationModule {
     public void service(HttpServletRequest request, HttpServletResponse response)
             throws Exception {
 
-        coreLicense = Jahia.getCoreLicense();
-        if (coreLicense == null) {
-            // set request attributes...
-            String dspMsg = getMessage("org.jahia.admin.JahiaDisplayMessage.invalidLicenseKey.label");
-            request.setAttribute("jahiaDisplayMessage", dspMsg);
-            // redirect...
-            JahiaAdministration.doRedirect(request, response, request.getSession(), JSP_PATH + "menu.jsp");
-            return;
-        }
         userRequestDispatcher(request, response, request.getSession());
     } // end constructor
 

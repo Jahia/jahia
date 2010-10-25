@@ -34,40 +34,31 @@
             </list>
         </property>
         <property name="hibernateProperties">
-            <props>
-                <prop key="hibernate.dialect">${hibernate.dialect}</prop>
-                <prop key="hibernate.hbm2ddl.auto">none</prop>
-                <prop key="hibernate.show_sql">false</prop>
-                <!-- prop key="hibernate.cache.provider_class">org.jahia.hibernate.cache.JahiaClusterCacheHibernateProvider</prop-->
-                <!--prop key="hibernate.cache.provider_class">org.jahia.hibernate.cache.JahiaBatchingClusterCacheHibernateProvider</prop-->
-                <!--prop key="hibernate.cache.provider_class">net.sf.ehcache.hibernate.EhCacheProvider</prop-->
-                <prop key="hibernate.cache.provider_class">net.sf.ehcache.hibernate.EhCacheProvider</prop>
-                <!-- If you use an invalidation-based cache, make sure you turn the query cache off ! -->
-                <prop key="hibernate.cache.use_query_cache">false</prop>
-                <!-- put the batch size property to 0 if you need to debug -->
-                <prop key="hibernate.jdbc.batch_size">16</prop>
-                <prop key="hibernate.default_batch_fetch_size">16</prop>
-                <prop key="hibernate.max_fetch_depth">3</prop>
-                <prop key="hibernate.query.substitutions">true 1, false 0</prop>
-                <prop key="hibernate.generate_statistics">false</prop>
-                <prop key="hibernate.cache.use_structured_entries">false</prop>
-                <!-- uncomment this to use JTA transactions.
-                <prop key="hibernate.transaction.factory_class">org.hibernate.transaction.JTATransactionFactory</prop>
-                <prop key="hibernate.transaction.manager_lookup_class">	org.hibernate.transaction.JOTMTransactionManagerLookup</prop>
-                -->
-                <!-- Uncomment to use other provider than net.sf.ehcache.hibernate.EhCacheProvider -->
-                <!--<prop key="activated">${cluster.activated}</prop>
-                <prop key="serverId">${cluster.node.serverId}</prop>
-                <prop key="channelGroupName">JahiaHibernateCluster</prop>
-                --><!--<prop key="channelProperties">UDP(mcast_addr=${cluster.hibernate.multicast.ip_address};mcast_port=${cluster.hibernate.multicast.port};ip_ttl=32;ip_mcast=true;mcast_send_buf_size=1000000;mcast_recv_buf_size=1000000):PING(timeout=2000;num_initial_members=2):MERGE2(min_interval=5000;max_interval=10000):FD_SOCK:VERIFY_SUSPECT(timeout=1500):pbcast.NAKACK(gc_lag=50;retransmit_timeout=300,600,1200,2400,4800):pbcast.STABLE(desired_avg_gossip=20000):UNICAST(timeout=5000):FRAG(frag_size=8096;down_thread=false;up_thread=false):pbcast.GMS(join_timeout=5000;join_retry_timeout=2000;shun=true;print_local_addr=true)</prop>--><!--
-                <prop key="channelProperties">TCP(start_port=${cluster.tcp.hibernate.port};bind_addr=${cluster.tcp.start.ip_address}):TCPPING(initial_hosts=${cluster.tcp.hibernate.nodes.ip_address};port_range=1;timeout=3000;num_initial_members=${cluster.tcp.num_initial_members};up_thread=true;down_thread=true):FD(shun=true;up_thread=true;down_thread=true;timeout=2500;max_tries=5):VERIFY_SUSPECT(timeout=1500;up_thread=false;down_thread=false):pbcast.NAKACK(gc_lag=100;retransmit_timeout=3000;up_thread=true;down_thread=true):pbcast.STABLE(desired_avg_gossip=20000;up_thread=false;down_thread=false):pbcast.GMS(join_timeout=5000;join_retry_timeout=2000;shun=false;print_local_addr=false;down_thread=true;up_thread=true):pbcast.STATE_TRANSFER(up_thread=true;down_thread=true)</prop>
-
-                <prop key="freeMemoryLimit">${freeMemoryLimit}</prop>
-                <prop key="cacheClusterUnderlyingImplementation">${cacheClusterUnderlyingImplementation}</prop>
-                <prop key="cacheMaxGroups">${cacheMaxGroups}</prop>-->
-                <!-- Configure WEB-INF/classes/ehcache-hibernate.xml to activate cluster-->
-                <prop key="net.sf.ehcache.configurationResourceName">/${ehcache.hibernate.file}</prop>
-            </props>
+			<bean class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+				<property name="properties">
+					<map>
+						<entry key="hibernate.dialect" value="${hibernate.dialect}"/>
+						<entry key="hibernate.hbm2ddl.auto" value="none"/>
+						<entry key="hibernate.show_sql" value="false"/>
+						<entry key="hibernate.cache.provider_class" value="net.sf.ehcache.hibernate.EhCacheProvider"/>
+		                <!-- If you use an invalidation-based cache, make sure you turn the query cache off ! -->
+						<entry key="hibernate.cache.use_query_cache" value="false"/>
+		                <!-- put the batch size property to 0 if you need to debug -->
+						<entry key="hibernate.jdbc.batch_size" value="16"/>
+						<entry key="hibernate.default_batch_fetch_size" value="16"/>
+						<entry key="hibernate.max_fetch_depth" value="3"/>
+						<entry key="hibernate.query.substitutions" value="true 1, false 0"/>
+						<entry key="hibernate.generate_statistics" value="false"/>
+						<entry key="hibernate.cache.use_structured_entries" value="false"/>
+						<entry key="net.sf.ehcache.configurationResourceName">
+							<bean class="org.jahia.settings.EhCacheConfigFactoryBean">
+								<constructor-arg index="0" value="/ehcache-hibernate.xml"/>
+								<constructor-arg index="1" value="${cluster.activated}"/>
+							</bean>
+						</entry>
+					</map>
+				</property>
+			</bean>
         </property>
         <property name="eventListeners">
             <map>
@@ -78,13 +69,6 @@
         </property>
         <property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration"/>
     </bean>
-
-    <!-- Uncomment this to use JOTM Transaction Manager with Tomcat and comment the other
-    <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
-        <property name="userTransactionName" value="java:comp/UserTransaction" />
-        <property name="nestedTransactionAllowed" value="${nested.transaction.allowed}" />
-    </bean>
-    -->
 
     <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
         <property name="sessionFactory">

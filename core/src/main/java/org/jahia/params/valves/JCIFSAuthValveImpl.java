@@ -35,7 +35,6 @@ package org.jahia.params.valves;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.security.license.LicenseActionChecker;
 import org.jahia.services.usermanager.JahiaUser;
 
 import javax.servlet.http.HttpServletRequest;
@@ -52,10 +51,6 @@ public class JCIFSAuthValveImpl extends BaseAuthValve {
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(JCIFSAuthValveImpl.class);
 
     public void invoke(Object context, ValveContext valveContext) throws PipelineException {
-
-        if (!LicenseActionChecker.isAuthorizedByLicense("org.jahia.params.valves.JCIFSAuthValve", 0)) {
-            valveContext.invokeNext(context);
-        }
 
         AuthValveContext authContext = (AuthValveContext) context;
         HttpServletRequest request = authContext.getRequest();

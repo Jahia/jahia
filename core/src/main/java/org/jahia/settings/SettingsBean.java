@@ -171,8 +171,6 @@ public class SettingsBean {
     
     private boolean considerDefaultJVMLocale;
 
-    private String ehCacheJahiaFile;
-
     private boolean permanentMoveForVanityURL = true;
 
     private boolean dumpErrorsToFiles = true;
@@ -418,7 +416,6 @@ public class SettingsBean {
             settings.put("templates.modules.onError", getString("templates.modules.onError", "compact"));
 
             settings.setFast(true);
-            ehCacheJahiaFile = getString("ehcache.jahia.file","ehcache-jahia.xml");
             // If cluster is activated then try to expose some properties as system properties for JGroups
             boolean clusterActivated = getBoolean("cluster.activated",false);
             if(clusterActivated) {
@@ -954,10 +951,6 @@ public class SettingsBean {
 
     public void setWrapperBufferFlushingActivated(boolean wrapperBufferFlushingActivated) {
         this.wrapperBufferFlushingActivated = wrapperBufferFlushingActivated;
-    }
-
-    public String getEhCacheJahiaFile() {
-        return ehCacheJahiaFile;
     }
 
     public boolean isConsiderDefaultJVMLocale() {

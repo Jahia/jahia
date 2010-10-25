@@ -39,7 +39,6 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.security.license.LicenseActionChecker;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 
@@ -63,8 +62,6 @@ public abstract class SsoValve extends BaseAuthValve {
      */
     protected static final Logger logger = Logger.getLogger(SsoValve.class);
     
-    protected boolean isAuthorizedByLicense;
-
     /**
      * Retrieve the credentials from the request.
      *
@@ -77,7 +74,6 @@ public abstract class SsoValve extends BaseAuthValve {
     @Override
     public void initialize() {
         super.initialize();
-        isAuthorizedByLicense = LicenseActionChecker.isAuthorizedByLicense("org.jahia.params.valves.SsoValve", 0);
     }
     
     /**
@@ -94,11 +90,6 @@ public abstract class SsoValve extends BaseAuthValve {
      * @see org.jahia.pipelines.valves.Valve#invoke(java.lang.Object, org.jahia.pipelines.valves.ValveContext)
      */
     public void invoke(Object context, ValveContext valveContext) throws PipelineException {
-
-        if (!isAuthorizedByLicense) {
-            valveContext.invokeNext(context);
-            return;
-        }
 
         if (logger.isDebugEnabled()) {
             logger.debug("starting " + this.getClass().getName() + ".invoke()...");

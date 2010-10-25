@@ -36,7 +36,6 @@ import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.hibernate.cache.JahiaBatchingClusterCacheHibernateProvider;
 import org.jahia.hibernate.manager.JahiaInstalledPatchManager;
 import org.jahia.hibernate.manager.JahiaVersionManager;
 import org.jahia.hibernate.model.JahiaInstalledPatch;
@@ -125,7 +124,6 @@ public class VersionService extends JahiaService {
 
                     int result = patcher.execute(patch);
                     ServicesRegistry.getInstance().getCacheService().flushAllCaches();
-                    JahiaBatchingClusterCacheHibernateProvider.flushAllCaches();
 
                     s.result = result;
 

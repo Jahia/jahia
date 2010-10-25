@@ -119,7 +119,6 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaSessionExpirationException;
 import org.jahia.exceptions.JahiaSiteNotFoundException;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.security.license.LicenseActionChecker;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.sites.JahiaSite;
@@ -252,7 +251,6 @@ public class ProcessingContext {
 
     private boolean forceAppendSiteKey = false;
     private boolean siteResolvedByKeyOrPageId;
-    private boolean siteResolvedByServername;
     private boolean contentPageLoadedWhileTryingToFindSiteByPageID;
     
     static {
@@ -330,13 +328,6 @@ public class ProcessingContext {
                 throw new JahiaSiteNotFoundException(
                         "400 Bad Request : No site specified or site not found",
                         JahiaException.CRITICAL_SEVERITY);
-            }
-
-            if (!LicenseActionChecker.isAuthorizedByLicense(
-                    "org.jahia.actions.server.admin.sites.ManageSites", 0)) {
-                // we don't have the right to add sites, so we can only use the default site, so
-                // we force the site resolution to the default site.
-                setSite(getDefaultSite());
             }
 
             if (getSite() != null) {
@@ -993,9 +984,6 @@ public class ProcessingContext {
      */
     protected boolean findSiteFromWhatWeHave() throws JahiaException {
         if (findSiteByItsKey()) {
-            if (getSite().equals(getSiteByHostName())) {
-                setSiteResolvedByServername(true);
-            }
             return true;
         } if (findSiteByHostName()) {
             return true;
@@ -1049,7 +1037,6 @@ public class ProcessingContext {
      */
     private boolean findSiteByHostName() throws JahiaException {
         setSite(getSiteByHostName());
-        setSiteResolvedByServername(getSite() != null);
         return (getSite() != null);
     }
 
@@ -1500,17 +1487,6 @@ public class ProcessingContext {
         // let's try to get the current locale if it was in the session.
         String languageCode = getParameter(LANGUAGE_CODE);
 
-        if (languageCode != null
-                && !LicenseActionChecker
-                .isAuthorizedByLicense(
-                        "org.jahia.actions.sites.*.admin.languages.ManageSiteLanguages",
-                        0)) {
-            // if language management is not authorized by the license then we
-            // don't allow language
-            // switching.
-            languageCode = null;
-        }
-
         if (languageCode != null) {
             final Locale previousLocale = (Locale) getSessionState()
                     .getAttribute(SESSION_LOCALE);
@@ -1837,10 +1813,6 @@ public class ProcessingContext {
     protected void setSiteResolvedByKeyOrPageId(
             boolean siteResolvedByKeyOrPageIdFlag) {
         this.siteResolvedByKeyOrPageId = siteResolvedByKeyOrPageIdFlag;
-    }
-
-    protected void setSiteResolvedByServername(boolean siteResolvedByServername) {
-        this.siteResolvedByServername = siteResolvedByServername;
     }
 
     public Locale getUILocale() {

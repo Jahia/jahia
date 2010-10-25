@@ -8,7 +8,6 @@
 <%@ page import="java.util.Date" %>
 <%@page import="org.jahia.registries.ServicesRegistry" %>
 <%@page import="org.jahia.services.rbac.PermissionIdentity"%>
-<%@ page import="org.jahia.security.license.LicenseActionChecker" %>
 <%@ page import="org.jahia.admin.sites.ManageSites" %>
 <%@ page import="java.io.File" %>
 <%@ page import="org.jahia.bin.Export" %>
@@ -303,8 +302,7 @@
                     </td>
 
                     <td>
-                        <% if (jParams.getUser().isPermitted(new PermissionIdentity("import", "actions", site.getSiteKey()))
-                                && LicenseActionChecker.isAuthorizedByLicense("org.jahia.actions.sites.*.engines.importexport.ManageImport", 0)) { %>
+                        <% if (jParams.getUser().isPermitted(new PermissionIdentity("import", "actions", site.getSiteKey()))) { %>
                                             <span class="dex-PushButton">
                                               <span class="first-child">
                                                 <a class="ico-import"
@@ -447,8 +445,7 @@ else { %>
                     </td>
 
                     <td>
-                        <% if (jParams.getUser().isPermitted(new PermissionIdentity("import", "actions", null))
-                                && LicenseActionChecker.isAuthorizedByLicense("org.jahia.actions.sites.*.engines.importexport.ManageImport", 0)) { %>
+                        <% if (jParams.getUser().isPermitted(new PermissionIdentity("import", "actions", null))) { %>
                                             <span class="dex-PushButton">
                                               <span class="first-child">
                                                 <a class="ico-import"

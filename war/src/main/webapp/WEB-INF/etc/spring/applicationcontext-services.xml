@@ -115,7 +115,6 @@
         <property name="target">
             <bean class="org.jahia.services.categories.CategoryServiceImpl" parent="jahiaServiceTemplate"
                   factory-method="getInstance">
-                <property name="cacheService" ref="JahiaCacheService"/>
                 <property name="categoryProvider" ref="org.jahia.services.categories.jcr.JCRCategoryProvider"/>
             </bean>
         </property>

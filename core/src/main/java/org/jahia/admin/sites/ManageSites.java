@@ -58,15 +58,11 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.admin.AbstractAdministrationModule;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.JahiaAdministration;
-import org.jahia.engines.EngineMessage;
 import org.jahia.engines.EngineMessages;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.security.license.License;
-import org.jahia.security.license.LicenseActionChecker;
-import org.jahia.security.license.LicenseManager;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.importexport.ImportExportBaseService;
@@ -136,7 +132,6 @@ public class ManageSites extends AbstractAdministrationModule {
 
     private static JahiaSitesService sMgr;
 
-    private License coreLicense;
     private ProcessingContext jParams;
 
 // --------------------------- CONSTRUCTORS ---------------------------
@@ -156,16 +151,6 @@ public class ManageSites extends AbstractAdministrationModule {
 
         this.jParams = (ProcessingContext) request.getAttribute("org.jahia.params.ParamBean");
 
-        coreLicense = Jahia.getCoreLicense();
-        if (coreLicense == null) {
-            // set request attributes...
-            String dspMsg = 
-                    getMessage("org.jahia.admin.JahiaDisplayMessage.invalidLicenseKey.label");
-            request.setAttribute("jahiaDisplayMessage", dspMsg);
-            // redirect...
-            JahiaAdministration.doRedirect(request, response, request.getSession(), JSP_PATH + "menu.jsp");
-            return;
-        }
         userRequestDispatcher(request, response, request.getSession());
     } // end constructor
 
@@ -389,7 +374,7 @@ public class ManageSites extends AbstractAdministrationModule {
             request.setAttribute("nbSites", new Integer(nbSites));
 
             // set license info
-            request.setAttribute("siteLimit", new Integer(Jahia.getSiteLimit()));
+            request.setAttribute("siteLimit", Integer.valueOf(-1));
 
             //logger.debug(" let go in ");
 
@@ -432,14 +417,6 @@ public class ManageSites extends AbstractAdministrationModule {
         String warningMsg = "";
 //        boolean enforcePasswordPolicy = (request.getParameter(JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY) != null);
         session.setAttribute(CLASS_NAME + "defaultSite", defaultSite);
-
-        // check license limitation again
-        // get the number of sites in db
-        if (!Jahia.checkSiteLimit()) {
-            // redirect...
-            JahiaAdministration.doRedirect(request, response, session, JSP_PATH + "sites_management.jsp");
-            return;
-        }
 
         // create jahia site object if checks are in green light...
         try {
@@ -1969,24 +1946,17 @@ public class ManageSites extends AbstractAdministrationModule {
 
             JahiaAdministration.doRedirect(request, response, session, JSP_PATH + "import_choose.jsp");
         } else {
-            boolean license =
-                    LicenseActionChecker.isAuthorizedByLicense("org.jahia.actions.server.admin.sites.ManageSites", 0);
-            boolean noMoreSite = false;
-
-            boolean authorizedForServerPermissions = LicenseActionChecker
-                    .isAuthorizedByLicense("org.jahia.actions.server.admin.permissions.ManageServerPermissions", 0);
 
             boolean doImportServerPermissions = false;
-            if (authorizedForServerPermissions) {
-                for (Map<Object, Object> infos : importsInfos) {
-                    File file = (File) infos.get("importFile");
-                    if (request.getParameter(file.getName() + "selected") != null &&
-                            infos.get("importFileName").equals("serverPermissions.xml")) {
-                        doImportServerPermissions = true;
-                        break;
-                    }
-                }
-            }
+			for (Map<Object, Object> infos : importsInfos) {
+				File file = (File) infos.get("importFile");
+				if (request.getParameter(file.getName() + "selected") != null
+				        && infos.get("importFileName").equals("serverPermissions.xml")) {
+					doImportServerPermissions = true;
+					break;
+				}
+			}
+
             request.setAttribute("doImportServerPermissions", Boolean.valueOf(doImportServerPermissions));
 
             for (Map<Object, Object> infos : importsInfos) {
@@ -2026,17 +1996,12 @@ public class ManageSites extends AbstractAdministrationModule {
                         }
                         Locale defaultLocale = determineDefaultLocale(jParams, infos);
                         try {
-                            if (!noMoreSite) {
                                 ServicesRegistry.getInstance().getJahiaSitesService()
                                         .addSite(jParams.getUser(), (String) infos.get("sitetitle"),
                                                 (String) infos.get("siteservername"), (String) infos.get("sitekey"), "",
                                                 defaultLocale, tpl, "fileImport", file,
                                                 (String) infos.get("importFileName"), false, false, (String) infos.get("originatingJahiaRelease"), jParams);
 
-//                                createSite(jParams.getUser(), (String) infos.get("sitetitle"),
-//                                        (String) infos.get("siteservername"), (String) infos.get("sitekey"), "", false, jParams.getLocale(), tpl, "fileImport", file, (String) infos.get("importFileName"),true);
-                                noMoreSite = !license;
-                            }
                         } catch (Exception e) {
                             logger.error("Cannot create site " + infos.get("sitetitle"), e);
                         }
@@ -2111,22 +2076,9 @@ public class ManageSites extends AbstractAdministrationModule {
 
     private void redirectAfterAdd(HttpServletRequest request, HttpServletResponse response, HttpSession session)
             throws IOException, ServletException {
-//        JahiaSite site = (JahiaSite) session.getAttribute(CLASS_NAME + "newJahiaSite");
-//        ContentPage page = site.getHomeContentPage();
-//
-//        try {
-//            JCRNodeWrapper source = page.getJCRNode(Jahia.getThreadParamBean());
-//            source.copyFile("/sites/"+site.getSiteKey());
-//        } catch (JahiaException e) {
-//            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-//        } catch (RepositoryException e) {
-//            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-//        }
-//
         if (session.getAttribute(CLASS_NAME + "redirectToJahia") != null) {
             session.removeAttribute(CLASS_NAME + "redirectToJahia");
             try {
-                setAllowedDayRequestAttr(request);
                 List<?> l = ServicesRegistry.getInstance().getSchedulerService().getAllActiveJobsDetails();
                 if (!l.isEmpty()) {
                     JahiaAdministration.doRedirect(request, response, session, JSP_PATH + "import_wait.jsp");
@@ -2139,26 +2091,6 @@ public class ManageSites extends AbstractAdministrationModule {
             }
         } else {
             displayList(request, response, session);
-        }
-    }
-// -------------------------- OTHER METHODS --------------------------
-
-    /**
-     * set allowed day attribute of the request
-     *
-     * @param request
-     */
-    private void setAllowedDayRequestAttr(HttpServletRequest request) {
-        try {
-            int maxDays = LicenseManager.getInstance().getJahiaMaxUsageDays();
-            if (maxDays > 0) {
-                Integer limit = Integer.valueOf(maxDays);
-                request.setAttribute("allowedDays", limit);
-                request.setAttribute("allowedDaysMsg", new EngineMessage(
-                        "org.jahia.bin.JahiaConfigurationWizard.congratulations.daysLeftInLicense.label", limit));
-            }
-        } catch (Exception e) {
-            logger.error("Enable to compute allowed days.");
         }
     }
 }

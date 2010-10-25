@@ -7,18 +7,16 @@
          caches. For DB caches, this is now managed by the Hibernate implementation, and is configured in the
          applicationcontext-hibernate.xml file.
     -->
-    <!--bean id="org.jahia.services.cache.CacheProvider" class="org.jahia.services.cache.jboss.cache.TreeCacheProvider" /-->
-    <!--bean id="org.jahia.services.cache.CacheProvider" class="org.jahia.services.cache.ehcache.EhCacheProvider" /-->
-    <!-- For no cache use this provider -->
-    <!--bean id="org.jahia.services.cache.CacheProvider" class="org.jahia.services.cache.dummy.DummyCacheProvider" /-->
-    <bean id="org.jahia.services.cache.CacheProvider" class="org.jahia.services.cache.clusterservice.batch.BatchingClusterServiceCacheProvider">
-        <property name="clusterService" ref="clusterService"/>
-    </bean>
     <bean id="ehCacheProvider" class="org.jahia.services.cache.ehcache.EhCacheProvider">
+    	<property name="configurationResource">
+			<bean class="org.jahia.settings.EhCacheConfigFactoryBean">
+				<constructor-arg index="0" value="/ehcache-jahia.xml" />
+				<constructor-arg index="1" value="${cluster.activated}" />
+			</bean>
+    	</property>
         <!-- This property allows to fix a limit for cache entries dependencies management,
 if an entry have more than this value of dependencies then
 when we flush this entry we will flush the whole cache-->
-        <!-- Configure WEB-INF/classes/ehcache-hibernate.xml to activate cluster-->
         <property name="groupsSizeLimit" value="100"/>
     </bean>
     <bean id="JahiaCacheService" parent="proxyTemplate">

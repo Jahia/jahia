@@ -37,7 +37,6 @@ import org.apache.log4j.Logger;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.security.license.LicenseActionChecker;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerLDAPProvider;
 import org.jahia.services.usermanager.JahiaUserManagerProvider;
@@ -59,10 +58,6 @@ public class LemonLdapAuthValveImpl extends BaseAuthValve {
     }
 
     public void invoke(Object context, ValveContext valveContext) throws PipelineException {
-
-        if (!LicenseActionChecker.isAuthorizedByLicense("org.jahia.params.valves.LemonLdapAuthValve", 0)) {
-            valveContext.invokeNext(context);
-        }
 
         AuthValveContext authContext = (AuthValveContext) context;
         HttpServletRequest request = authContext.getRequest();

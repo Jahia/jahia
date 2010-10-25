@@ -40,13 +40,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.jahia.bin.Jahia;
 import org.jahia.bin.JahiaAdministration;
 import org.jahia.data.JahiaData;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.utils.i18n.JahiaResourceBundle;
-import org.jahia.security.license.License;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.sites.JahiaSite;
@@ -71,8 +69,6 @@ public class ManageTemplates extends AbstractAdministrationModule {
 
     private ServicesRegistry sReg;
 
-    private License coreLicense;
-
     private ContentManagerHelper contentManager;
 
     /**
@@ -90,17 +86,6 @@ public class ManageTemplates extends AbstractAdministrationModule {
         ProcessingContext jParams = null;
         if (jData != null) {
             jParams = jData.getProcessingContext();
-        }
-
-        coreLicense = Jahia.getCoreLicense();
-        if (coreLicense == null) {
-            // set request attributes...
-            String dspMsg = JahiaResourceBundle.getJahiaInternalResource(
-                    "org.jahia.admin.JahiaDisplayMessage.invalidLicenseKey.label", jParams.getLocale());
-            request.setAttribute("jahiaDisplayMessage", dspMsg);
-            // redirect...
-            JahiaAdministration.doRedirect(request, response, request.getSession(), JSP_PATH + "menu.jsp");
-            return;
         }
 
         userRequestDispatcher(request, response, request.getSession());

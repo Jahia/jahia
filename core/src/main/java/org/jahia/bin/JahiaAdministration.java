@@ -68,13 +68,11 @@ import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.data.JahiaData;
 import org.jahia.data.beans.MenuItem;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.hibernate.cache.JahiaBatchingClusterCacheHibernateProvider;
 import org.jahia.params.AdminParamBean;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.ServletURLGeneratorImpl;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.security.license.LicenseManager;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.applications.ServletIncludeRequestWrapper;
 import org.jahia.services.applications.ServletIncludeResponseWrapper;
@@ -139,8 +137,6 @@ public class JahiaAdministration extends HttpServlet {
     public static final String CLASS_NAME = "org.jahia.bin.JahiaAdministration";
     public static final String JSP_PATH = "/admin/";
     private static final int SUPERADMIN_SITE_ID = 0;
-
-    private static final long DAY_MILLIS = 1000L * 60L * 60L * 24L;
 
     private static ServicesRegistry sReg;
     private static JahiaUserManagerService uMgr;
@@ -238,21 +234,14 @@ public class JahiaAdministration extends HttpServlet {
                                      Jahia.ADMIN_MODE);
                 logger.debug("Running mode : " + Jahia.ADMIN_MODE);
 
-                if (Jahia.getCoreLicense() == null) {
-                    session.setAttribute(CLASS_NAME + "jahiaDisplayMessage",
-                            "Invalid License");
-                    displayLogin(request, response, session);
-                } else {
                     try {
                         userRequestDispatcher(request, response, session); // ok continue admin...
                         ServicesRegistry.getInstance().getCacheService().syncClusterNow();
-                        JahiaBatchingClusterCacheHibernateProvider.syncClusterNow();
                     } catch (JahiaException je) {
                         DefaultErrorHandler.getInstance().handle(je, request, response);
                     } catch (Exception t) {
                         DefaultErrorHandler.getInstance().handle(t, request, response);
                     }
-                }
             } else {
                 request.setAttribute("jahiaLaunch", "installation"); // call jahia to init and launch install...
                 doRedirect(request, response, session, contentServletPath);
@@ -815,13 +804,6 @@ public class JahiaAdministration extends HttpServlet {
         if (theSite != null) {
             session.setAttribute(CLASS_NAME + "manageSiteID", theSite.getID());
             session.setAttribute(ProcessingContext.SESSION_SITE, theSite);
-        }
-
-        long expirationTime = LicenseManager.getInstance().getJahiaExpirationDate();
-        if (expirationTime > 0) {
-            long timeLeft = expirationTime - System.currentTimeMillis();
-            timeLeft = timeLeft < 0 ? 0 : timeLeft;
-            request.setAttribute("daysLeft", (int) (timeLeft / DAY_MILLIS));
         }
 
         request.setAttribute("site", theSite);

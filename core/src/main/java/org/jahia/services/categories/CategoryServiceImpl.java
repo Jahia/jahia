@@ -37,8 +37,6 @@ import org.jahia.content.ObjectKey;
 import org.jahia.content.ObjectLink;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.services.cache.Cache;
-import org.jahia.services.cache.CacheService;
 import org.jahia.services.categories.jcr.JCRCategoryProvider;
 import org.jahia.services.usermanager.JahiaUser;
 
@@ -67,28 +65,12 @@ import java.util.*;
 
 public class CategoryServiceImpl extends CategoryService {
 
-    final private static org.apache.log4j.Logger logger = org.apache.log4j.Logger
-            .getLogger(CategoryServiceImpl.class);
-
     private static CategoryServiceImpl singletonInstance;
 
     private JCRCategoryProvider categoryProvider;
-    // we use a cache in a special way. Basically we use it to synchronize
-    // last modification dates on all the nodes of the cluster. For sync
-    // messages we use the flush() event.
-    // Cache that holds the last modification information on all categories
-    public static final String CATEGORY_LASTMODIF_STATUS_CACHE = "CategoryLastModifStatusCache";
-    private Cache<?, ?> lastModifCache = null;
-    private Date lastModifDate = null;
 
     private static final String CATEGORY_LINKTYPE = "category";
     private static final String CATEGORY_CHILD_PREFIX = "Category_%";
-
-    private CacheService cacheService;
-
-    public void setCacheService(CacheService cacheService) {
-        this.cacheService = cacheService;
-    }
 
     public void setCategoryProvider(JCRCategoryProvider categoryProvider) {
         this.categoryProvider = categoryProvider;
@@ -102,7 +84,7 @@ public class CategoryServiceImpl extends CategoryService {
      * 
      * @return The unique service instance.
      */
-    public synchronized static CategoryServiceImpl getInstance() {
+    public static CategoryServiceImpl getInstance() {
         if (singletonInstance == null) {
             singletonInstance = new CategoryServiceImpl();
         }
@@ -110,18 +92,11 @@ public class CategoryServiceImpl extends CategoryService {
     }
 
     public void start() throws JahiaInitializationException {
-        try {
-            lastModifCache = cacheService
-                    .createCacheInstance(CATEGORY_LASTMODIF_STATUS_CACHE);
-            Category.categoryService = this;
-        } catch (JahiaException je) {
-            logger.error("Error while checking existence of root category", je);
-            throw new JahiaInitializationException(
-                    "Error while checking existence of root category", je);
-        }
+        Category.categoryService = this;
     }
 
     public void stop() {
+    	// do nothing
     }
 
     public Node getCategoriesRoot() throws JahiaException {
@@ -184,7 +159,6 @@ public class CategoryServiceImpl extends CategoryService {
     public Category addCategory(String key, Category parentCategory)
             throws JahiaException {
         Category newCategory = categoryProvider.createCategory(key, parentCategory);
-        lastModifCache.flush();
         return newCategory;
     }
 
@@ -201,7 +175,6 @@ public class CategoryServiceImpl extends CategoryService {
         }
         // now we can remove the category
         categoryProvider.removeCategory(category.getJahiaCategory());
-        lastModifCache.flush();
     }
 
     public void addObjectKeyToCategory(Category parentCategory,
@@ -215,7 +188,6 @@ public class CategoryServiceImpl extends CategoryService {
 
             ObjectLink.createLink(parentCategory.getObjectKey(), childKey,
                     CATEGORY_LINKTYPE, new HashMap<String, String>());
-            lastModifCache.flush();
         }
     }
 
@@ -233,7 +205,6 @@ public class CategoryServiceImpl extends CategoryService {
             for (ObjectLink curLink : resultList) {
                 curLink.remove();
             }
-            lastModifCache.flush();
         }
     }
 
@@ -275,14 +246,6 @@ public class CategoryServiceImpl extends CategoryService {
         categoryProvider.removeTitleForCategory(category, locale);
     }
 
-    public Date getLastModificationDate() {
-        return lastModifDate;
-    }
-
-    public void setLastModificationDate() {
-        lastModifCache.flush();
-    }
-
     public List<Category> getCategoryStartingByKeyPrefix(final String keyPrefix)
             throws JahiaException {
         return categoryProvider.findCategoriesStartingByKey(keyPrefix);
@@ -298,22 +261,6 @@ public class CategoryServiceImpl extends CategoryService {
             final String string, final String languageCode)
             throws JahiaException {
         return categoryProvider.findCategoriesContainingTitleString(string, languageCode);        
-    }
-
-    /**
-     * This method is called each time the cache flushes its items.
-     * 
-     * @param cacheName
-     *            the name of the cache which flushed its items.
-     */
-    public void onCacheFlush(String cacheName) {
-        if (CATEGORY_LASTMODIF_STATUS_CACHE.equals(cacheName)) {
-            lastModifDate = new Date();
-        }
-    }
-
-    public void onCachePut(String cacheName, Object entryKey, Object entryValue) {
-        // do nothing;
     }
 
     public List<Category> findCategoriesByPropNameAndValue(String propName, String propValue, JahiaUser user) {

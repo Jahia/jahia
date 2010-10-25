@@ -145,6 +145,7 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
     }
 
     private void registerCustomNodeTypes(NodeTypeIterator nti, Workspace ws) throws RepositoryException {
+    	long timer = System.currentTimeMillis();
         NodeTypeManager jntm  = ws.getNodeTypeManager();
         NamespaceRegistry namespaceRegistry = ws.getNamespaceRegistry();
         List<NodeTypeDefinition> nts = new ArrayList<NodeTypeDefinition>();
@@ -160,6 +161,7 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
             }
         }
         jntm.registerNodeTypes(nts.toArray(new NodeTypeDefinition[nts.size()]), true);
+        logger.info("registerCustomNodeTypes took " + (System.currentTimeMillis() - timer) + " ms");
     }
 
     protected boolean canRegisterCustomNodeTypes() {

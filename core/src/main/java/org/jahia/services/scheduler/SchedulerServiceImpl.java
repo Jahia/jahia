@@ -36,14 +36,9 @@ import org.apache.log4j.Logger;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.cluster.ClusterListener;
-import org.jahia.services.cluster.ClusterMessage;
-import org.jahia.services.cluster.ClusterService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jgroups.Address;
 import org.quartz.*;
-import org.quartz.listeners.SchedulerListenerSupport;
 import org.quartz.simpl.SimpleJobFactory;
 import org.quartz.spi.TriggerFiredBundle;
 
@@ -54,7 +49,7 @@ import java.util.*;
  */
 
 
-public class SchedulerServiceImpl extends SchedulerService implements ClusterListener {
+public class SchedulerServiceImpl extends SchedulerService {
 
     private static Logger logger = Logger.getLogger(SchedulerServiceImpl.class);
 
@@ -64,14 +59,12 @@ public class SchedulerServiceImpl extends SchedulerService implements ClusterLis
     private Scheduler ramscheduler = null;
 
     private boolean schedulerRunning = false;
-    //private List executingProcesses;
 
-    private ClusterService clusterService;
-
-    // private static final String[] JOBTYPES = {"import", "copypaste", "pickercopy", "workflow", "picked", "propagate1", "propagate2", "production"};
     //last job's time
     public long lastJobCompletedTime = 0;
     private JobDetail lastCompletedJobDetail = null;
+    
+    private String serverId;
 
     protected SchedulerServiceImpl() {
     }
@@ -108,7 +101,6 @@ public class SchedulerServiceImpl extends SchedulerService implements ClusterLis
 
         try {
             schedulerRunning = true;
-            clusterService.addListener(this);
             scheduler.setJobFactory(new SimpleJobFactory() {
                 public Job newJob(TriggerFiredBundle triggerFiredBundle) throws SchedulerException {
                     JobDetail jobDetail = triggerFiredBundle.getJobDetail();
@@ -141,7 +133,7 @@ public class SchedulerServiceImpl extends SchedulerService implements ClusterLis
 
                         data.putAsString(BackgroundJob.JOB_BEGIN, System.currentTimeMillis());//execution begin
                         data.put(BackgroundJob.JOB_STATUS, BackgroundJob.STATUS_RUNNING);//status
-                        data.put(BackgroundJob.JOB_SERVER, clusterService.getServerId());
+                        data.put(BackgroundJob.JOB_SERVER, serverId);
 
                         // Hack to update datamap inside quartz store
                         scheduler.addJob(jobDetail, true);
@@ -190,7 +182,7 @@ public class SchedulerServiceImpl extends SchedulerService implements ClusterLis
 
                     data.putAsString(BackgroundJob.JOB_BEGIN, System.currentTimeMillis());//execution begin
                     data.put(BackgroundJob.JOB_STATUS, BackgroundJob.STATUS_RUNNING);//status
-                    data.put(BackgroundJob.JOB_SERVER, clusterService.getServerId());
+                    data.put(BackgroundJob.JOB_SERVER, serverId);
 
                     try {
                         // Hack to update datamap inside quartz store
@@ -213,15 +205,6 @@ public class SchedulerServiceImpl extends SchedulerService implements ClusterLis
 
             scheduler.addGlobalTriggerListener(triggerListener);
             ramscheduler.addGlobalTriggerListener(ramTriggerListener);
-            scheduler.addSchedulerListener(new SchedulerListenerSupport() {
-                @Override
-                public void jobScheduled(Trigger trigger) {
-                    if (!settingsBean.isProcessingServer()) {
-                        clusterService.sendMessage(new ClusterMessage(new QueuedJobMessage(trigger)));
-                    }
-                }
-            });
-
         } catch (SchedulerException se) {
             if (se.getUnderlyingException() != null) {
                 throw new JahiaInitializationException(
@@ -235,10 +218,6 @@ public class SchedulerServiceImpl extends SchedulerService implements ClusterLis
         }
     }
 
-    public void setClusterService(ClusterService clusterService) {
-        this.clusterService = clusterService;
-    }
-
     public void startSchedulers() throws SchedulerException {
         // here we remove the zombies process
         // maybe we can flag them as stopped later?
@@ -249,13 +228,13 @@ public class SchedulerServiceImpl extends SchedulerService implements ClusterLis
                 JobDataMap data = jd.getJobDataMap();
                 //data.clearDirtyFlag();
                 if (BackgroundJob.STATUS_RUNNING.equalsIgnoreCase(data.getString(BackgroundJob.JOB_STATUS)) &&
-                        (data.getString(BackgroundJob.JOB_SERVER) == null || data.getString(BackgroundJob.JOB_SERVER).equals(clusterService.getServerId()))) {
+                        (data.getString(BackgroundJob.JOB_SERVER) == null || data.getString(BackgroundJob.JOB_SERVER).equals(serverId))) {
                     data.put(BackgroundJob.JOB_STATUS, BackgroundJob.STATUS_FAILED);
                     scheduler.addJob(jd, true);
                     unscheduleJob(jd);
                 }
                 if (BackgroundJob.STATUS_WAITING.equalsIgnoreCase(data.getString(BackgroundJob.JOB_STATUS)) &&
-                        (data.getString(BackgroundJob.JOB_SERVER) == null || data.getString(BackgroundJob.JOB_SERVER).equals(clusterService.getServerId()))) {
+                        (data.getString(BackgroundJob.JOB_SERVER) == null || data.getString(BackgroundJob.JOB_SERVER).equals(serverId))) {
                     SimpleTrigger trigger = new SimpleTrigger(jd.getName() + "_Trigger", INSTANT_TRIGGER_GROUP);
                     trigger.setVolatility(jd.isVolatile());
                     trigger.setJobName(jd.getName());
@@ -857,24 +836,6 @@ public class SchedulerServiceImpl extends SchedulerService implements ClusterLis
 
     private int[][] groupAverages;//in-memory process averages
 
-    public void messageReceived(ClusterMessage message) {
-        Object o = message.getObject();
-        if (o instanceof QueuedJobMessage) {
-            QueuedJobMessage m = (QueuedJobMessage) o;
-            try {
-                scheduler.resumeTrigger(m.trigger.getName(), m.trigger.getGroup());
-            } catch (SchedulerException e) {
-                logger.error(e.getMessage(), e);
-            }
-        }
-    }
-
-    public void memberJoined(Address address) {
-    }
-
-    public void memberLeft(Address address) {
-    }
-
     public Scheduler getScheduler() {
         return scheduler;
     }
@@ -893,5 +854,9 @@ public class SchedulerServiceImpl extends SchedulerService implements ClusterLis
 
     public void setScheduler(Scheduler scheduler) {
         this.scheduler = scheduler;
+    }
+
+	public void setServerId(String serverId) {
+    	this.serverId = serverId;
     }
 }

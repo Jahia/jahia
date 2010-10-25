@@ -42,7 +42,6 @@ import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.params.ProcessingContext;
-import org.jahia.security.license.LicenseActionChecker;
 import org.jahia.services.JahiaService;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
@@ -156,12 +155,6 @@ public class Service extends JahiaService {
                             return;
                         }
                         if (!siteKeyEx && !serverNameEx) {
-                            if (!LicenseActionChecker.isAuthorizedByLicense(
-                                    "org.jahia.actions.server.admin.sites.ManageSites", 0)) {
-                                if (sitesService.getNbSites() > 0) {
-                                    return;
-                                }
-                            }
                             // site import
                             String tpl = (String) infos.get("templatePackageName");
                             if ("".equals(tpl)) {
@@ -373,17 +366,7 @@ public class Service extends JahiaService {
 
     private void processFileImport(List<Map<Object, Object>> importsInfos, JahiaUser user)
             throws IOException, ServletException, JahiaException {
-        boolean license = LicenseActionChecker.isAuthorizedByLicense("org.jahia.actions.server.admin.sites.ManageSites",
-                0);
-        boolean noMoreSite = false;
 
-        boolean authorizedForServerPermissions = LicenseActionChecker.isAuthorizedByLicense(
-                "org.jahia.actions.server.admin.permissions.ManageServerPermissions", 0);
-
-        boolean doImportServerPermissions = false;
-        if (authorizedForServerPermissions) {
-            doImportServerPermissions = true;
-        }
         ProcessingContext ctx = new ProcessingContext(System.currentTimeMillis(), null,
                 user, ProcessingContext.EDIT);
 
@@ -413,7 +396,6 @@ public class Service extends JahiaService {
                     tpl = null;
                 }
                 try {
-                    if (!noMoreSite) {
                         sitesService.addSite(user, (String) infos.get(
                                 "sitetitle"), (String) infos.get("siteservername"), (String) infos.get("sitekey"), "",
                                 ctx.getLocale(), tpl,
@@ -421,8 +403,6 @@ public class Service extends JahiaService {
                                 (String) infos.get(
                                         "importFileName"), true,
                                 false, (String) infos.get("originatingJahiaRelease"), ctx);
-                        noMoreSite = !license;
-                    }
                 } catch (Exception e) {
                     logger.error("Cannot create site " + infos.get("sitetitle"), e);
                 }
@@ -431,16 +411,14 @@ public class Service extends JahiaService {
         }
 
         // import serverPermissions.xml
-        if (doImportServerPermissions) {
-            for (Map<Object, Object> infos : importsInfos) {
-                File file = (File) infos.get("importFile");
-                if (infos.get("importFileName").equals("serverPermissions.xml")) {
-                    // pass the old-new site key information for server permissions
-                    ImportExportBaseService.getInstance().importServerPermissions(new FileInputStream(file));
-                }
-
-            }
-        }
+		for (Map<Object, Object> infos : importsInfos) {
+			File file = (File) infos.get("importFile");
+			if (infos.get("importFileName").equals("serverPermissions.xml")) {
+				// pass the old-new site key information for server permissions
+				ImportExportBaseService.getInstance().importServerPermissions(
+				        new FileInputStream(file));
+			}
+		}
 
     }
 

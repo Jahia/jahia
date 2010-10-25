@@ -49,7 +49,6 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.security.license.License;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.pwdpolicy.PolicyEnforcementResult;
 import org.jahia.services.usermanager.*;
@@ -115,16 +114,6 @@ public class ManageUsers extends AbstractAdministrationModule {
 
         JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
         this.jParams = jData.getProcessingContext();
-
-        License coreLicense = Jahia.getCoreLicense();
-        if ( coreLicense == null ){
-            // set request attributes...
-            String dspMsg = getMessage("org.jahia.admin.JahiaDisplayMessage.invalidLicenseKey.label");
-            request.setAttribute("jahiaDisplayMessage", dspMsg);
-            // redirect...
-            doRedirect( request, response, request.getSession(), JSP_PATH + "menu.jsp" );
-            return;
-        }
 
         // continue the execution of user request...
         userRequestDispatcher( request, response, request.getSession() );
@@ -292,17 +281,6 @@ public class ManageUsers extends AbstractAdministrationModule {
     throws IOException, ServletException, JahiaException
     {
         logger.debug("Started");
-        // Check user limitation according to license.
-        int nbUserSite = ServicesRegistry.getInstance().getJahiaUserManagerService().getNbUsers();
-        int nbUserLic = Jahia.getUserLimit();
-        /** @todo  >= because default user 'root' is not considerated as a real user. */
-        if (!(nbUserLic == -1 || nbUserLic >= nbUserSite)) {
-          userMessage = getMessage("org.jahia.admin.userMessage.licenseLimited.label");
-          userMessage += " " + nbUserLic + " ";
-          userMessage += getMessage("org.jahia.admin.userMessage.users.label");
-            displayUsers(request, response, session);
-            return;
-        }
         Map<String,String> userProperties = new HashMap<String, String>();
         userProperties.put("username", JahiaTools.nnString(request.getParameter("username")));
         userProperties.put("passwd", JahiaTools.nnString(request.getParameter("passwd")));

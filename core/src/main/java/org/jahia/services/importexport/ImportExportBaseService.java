@@ -44,7 +44,6 @@ import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.security.license.LicenseActionChecker;
 import org.jahia.services.JahiaService;
 import org.jahia.services.categories.Category;
 import org.jahia.services.categories.CategoryService;
@@ -724,7 +723,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         Properties p = new Properties();
         p.load(is);
         Set<Object> keys = p.keySet();
-        boolean isMultiLang = LicenseActionChecker.isAuthorizedByLicense("org.jahia.actions.sites.*.admin.languages.ManageSiteLanguages", 0);
+        boolean isMultiLang = true;
         final Map<Integer, String> languages = new TreeMap<Integer, String>();
         final Set<String> mandatoryLanguages = site.getMandatoryLanguages();
         mandatoryLanguages.clear();

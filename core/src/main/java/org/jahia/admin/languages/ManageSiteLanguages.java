@@ -39,7 +39,6 @@ import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.security.license.License;
 import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
@@ -73,8 +72,6 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
     private JahiaUser user;
     private ServicesRegistry sReg;
 
-    private License coreLicense;
-
     /**
      * @param request  Servlet request.
      * @param response Servlet response.
@@ -87,15 +84,7 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
         if (jData != null) {
             jParams = jData.getProcessingContext();
         }
-        coreLicense = Jahia.getCoreLicense();
-        if (coreLicense == null) {
-            // set request attributes...
-            String dspMsg = getMessage("org.jahia.admin.JahiaDisplayMessage.invalidLicenseKey.label");
-            request.setAttribute("jahiaDisplayMessage", dspMsg);
-            // redirect...
-            JahiaAdministration.doRedirect(request, response, request.getSession(), JSP_PATH + "menu.jsp");
-            return;
-        }
+
         userRequestDispatcher(request, response, request.getSession());
     } // end constructor
 

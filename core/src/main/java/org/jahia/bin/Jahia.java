@@ -59,28 +59,19 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.exceptions.JahiaPageNotFoundException;
 import org.jahia.exceptions.JahiaSiteNotFoundException;
-import org.jahia.hibernate.cache.JahiaBatchingClusterCacheHibernateProvider;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.ProcessingContextFactory;
 import org.jahia.pipelines.Pipeline;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.resourcebundle.ResourceMessage;
-import org.jahia.security.license.License;
-import org.jahia.security.license.LicenseConstants;
-import org.jahia.security.license.LicenseManager;
-import org.jahia.security.license.Limit;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.JahiaConsole;
-import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Version;
-import org.jahia.utils.i18n.JahiaResourceBundle;
-import org.xml.sax.SAXException;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -90,7 +81,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.text.MessageFormat;
 import java.util.Properties;
 
 /**
@@ -141,8 +131,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
     static private boolean mInitiated = false;
     
     static protected String mLicenseFilename;
-    static private String publicKeyStoreResourceName = "/jahiapublickeystore";
-    static private String publicKeyStorePassword = "jahiapublickeystore";
 
     static protected String jahiaBasicFileName;
     static protected String jahiaPropertiesPath;
@@ -156,9 +144,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
     static private int jahiaHttpPort = -1;
 
     static private String jahiaInitAdminServletPath;
-
-    static private License coreLicense;
-    static private ResourceMessage[] licenseErrorMessages;
 
     static private ThreadLocal<ProcessingContext> paramBeanThreadLocal = new ThreadLocal<ProcessingContext>();
     static private ThreadLocal<HttpServlet> servletThreadLocal = new ThreadLocal<HttpServlet>();
@@ -275,12 +260,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
 	            throw new JahiaInitializationException("Could not find jahia.license file (was looking for it at " + licenseFile.toString() + ")");
 	        }
 	
-	        // Check the license file
-	        if (!checkLicense()) {
-	            logger.fatal("Invalid License!");
-	            throw new JahiaInitializationException("Invalid License");
-	        }
-	
 	        try {
 	            // retrieve the jSettings object...
 	            Jahia.jSettings = SettingsBean.getInstance();
@@ -295,18 +274,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
 	        // Initialize all the registered services.
             if (initServicesRegistry()) {
                 ServicesRegistry.getInstance().getSchedulerService().startSchedulers();
-            }
-
-            // Check the license file
-            if (!checkLicenseLimit()) {
-                String licenseErrors = processLicenseErrorMessages();
-                if (licenseErrors == null) {
-                	logger.fatal("License Limit Violation");
-                    throw new JahiaInitializationException("License Limit Violation");
-                } else {
-                	logger.fatal("licenseErrors");
-                    throw new JahiaInitializationException(licenseErrors);
-                }
             }
 
             // Activate the JMS synchronization if needed
@@ -524,7 +491,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
             paramBeanThreadLocal.set(null);
             servletThreadLocal.set(null);
             ServicesRegistry.getInstance().getCacheService().syncClusterNow();
-            JahiaBatchingClusterCacheHibernateProvider.syncClusterNow();
         } catch (Exception e) {
             DefaultErrorHandler.getInstance().handle(e, request, response);
         } finally {
@@ -687,96 +653,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
     } // end jahiaLaunch
 
     //-------------------------------------------------------------------------
-    private boolean checkLicense () {
-
-        if (coreLicense == null) {
-            try {
-                final LicenseManager licenseManager = LicenseManager.getInstance();
-                licenseManager.load(mLicenseFilename);
-                coreLicense = licenseManager.getJahiaLicensePackage().getLicense(LicenseConstants.CORE_COMPONENT);
-                final InputStream keystoreIn =
-                    Jahia.class.getResourceAsStream(
-                        publicKeyStoreResourceName);
-                if (keystoreIn != null) {
-                    final String keystorePassword = publicKeyStorePassword;
-                    boolean signaturesOk =
-                        licenseManager.verifyAllSignatures(keystoreIn,
-                        keystorePassword);
-                    if (signaturesOk) {
-                        logger.debug("Signatures are valid");
-                    } else {
-                        logger.error("Invalid license signatures !");
-                        coreLicense = null;
-                        return false;
-                    }
-                } else {
-                    logger.error("Error while loading public key store file [" + publicKeyStoreResourceName + "] from classpath");
-                    coreLicense = null;
-                    return false;
-                }
-
-            } catch (IOException ioe) {
-                coreLicense = null;
-                logger.error("Error during license check ", ioe);
-                return false;
-            } catch (SAXException saxe) {
-                coreLicense = null;
-                logger.error("Error during license check ", saxe);
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    //-------------------------------------------------------------------------
-    private boolean checkLicenseLimit() {
-
-        if (coreLicense == null) {
-            if (! checkLicense()) {
-                return false;
-            }
-        }
-
-        if (coreLicense != null) {
-            // could still be null if load failed.
-            final boolean result = coreLicense.checkLimits();
-            if (! result) {
-                licenseErrorMessages = coreLicense.getErrorMessages();
-            }
-            return result;
-        } else {
-            return false;
-        }
-    }
-
-    private String processLicenseErrorMessages() {
-        final StringBuffer result = new StringBuffer();
-        if (licenseErrorMessages == null) {
-            return null;
-        }
-        for (int i=0; i < licenseErrorMessages.length; i++) {
-            final String resource = JahiaResourceBundle.getJahiaInternalResource(licenseErrorMessages[i].
-                    getResourceKey(), LanguageCodeConverters.languageCodeToLocale(getSettings().
-                    getDefaultLanguageCode()));
-            if (resource != null) {
-                String formatted = resource;
-                if (licenseErrorMessages[i].getParameters() != null) {
-                    formatted = MessageFormat.format(resource,
-                        licenseErrorMessages[i].getParameters());
-                }
-                result.append(formatted);
-                if (i < (licenseErrorMessages.length - 1)) {
-                    result.append(",");
-                }
-            } else {
-            logger.error("Could not find resource " + licenseErrorMessages[i].getResourceKey() + " in system resource bundle");
-            }
-        }
-        return result.toString();
-    }
-
-    //-------------------------------------------------------------------------
     /**
      * Return the private settings
      *
@@ -786,78 +662,10 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
         return jSettings;
     }
 
-    //-------------------------------------------------------------------------
-    /**
-     * Return the License Key
-     *
-     */
-    public static License getCoreLicense () {
-        if (coreLicense == null) {
-            return null;
-        }
-        return coreLicense;
-    }
-
-    public static boolean checkCoreLimit(final String limitName) {
-        if (coreLicense == null) {
-            return false;
-        }
-        final Limit limit = coreLicense.getLimit(limitName);
-        if (limit == null) {
-            return true;
-        }
-        return limit.check();
-    }
-
-    public static boolean checkSiteLimit() {
-        return checkCoreLimit(LicenseConstants.SITE_LIMIT_NAME);
-    }
-
-    public static boolean checkUserLimit() {
-        return checkCoreLimit(LicenseConstants.USER_LIMIT_NAME);
-    }
-
-    public static boolean checkTemplateLimit() {
-        return checkCoreLimit(LicenseConstants.TEMPLATE_LIMIT_NAME);
-    }
-
-    public static boolean checkPageLimit() {
-        return checkCoreLimit(LicenseConstants.PAGE_LIMIT_NAME);
-    }
-
-    public static int getCoreIntLimit(final String limitName) {
-        if (coreLicense == null) {
-            return 0;
-        }
-        Limit limit = coreLicense.getLimit(limitName);
-        if (limit == null) {
-            return -1;
-        }
-        String valueStr = limit.getValueStr();
-        return Integer.parseInt(valueStr);
-    }
-
-    public static int getUserLimit() {
-        return getCoreIntLimit(LicenseConstants.USER_LIMIT_NAME);
-    }
-
-    public static int getSiteLimit() {
-        return getCoreIntLimit(LicenseConstants.SITE_LIMIT_NAME);
-    }
-
-    public static int getPageLimit() {
-        return getCoreIntLimit(LicenseConstants.PAGE_LIMIT_NAME);
-    }
-
-    public static int getTemplateLimit() {
-        return getCoreIntLimit(LicenseConstants.TEMPLATE_LIMIT_NAME);
-    }
-
-    //-------------------------------------------------------------------------
     /**
      * Return true if this class has been fully initiated
      *
-     * @return boolean true if this class has been fully initaited
+     * @return boolean true if this class has been fully initiated
      */
     public static boolean isInitiated () {
         return mInitiated;

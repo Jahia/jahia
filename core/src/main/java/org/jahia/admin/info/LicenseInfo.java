@@ -52,13 +52,8 @@ import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.security.license.License;
-import org.jahia.security.license.LicenseManager;
-import org.jahia.security.license.LicensePackage;
 import org.jahia.settings.SettingsBean;
 import org.jahia.admin.AbstractAdministrationModule;
-
-import java.util.Date;
 
 
 /**
@@ -78,10 +73,6 @@ public class LicenseInfo extends AbstractAdministrationModule {
     private static final String     CLASS_NAME              =  JahiaAdministration.CLASS_NAME;
     private static final String     JSP_PATH                =  JahiaAdministration.JSP_PATH;
 
-    private              License                 coreLicense;
-
-
-
     /**
     * Default constructor.
     *
@@ -98,15 +89,6 @@ public class LicenseInfo extends AbstractAdministrationModule {
       if (jData != null) {
           jParams = jData.getProcessingContext();
       }
-        coreLicense = Jahia.getCoreLicense();
-        if ( coreLicense == null ){
-            // set request attributes...
-            String dspMsg = getMessage("org.jahia.admin.JahiaDisplayMessage.invalidLicenseKey.label");
-            request.setAttribute("jahiaDisplayMessage", dspMsg);
-            // redirect...
-            JahiaAdministration.doRedirect( request, response, request.getSession(), JSP_PATH + "menu.jsp" );
-            return;
-        }
 
         displayLicenseInfo( request, response, request.getSession() );
     } // end constructor
@@ -137,26 +119,20 @@ public class LicenseInfo extends AbstractAdministrationModule {
             try {
                 String unlimited = getMessage("org.jahia.admin.status.ManageStatus.unlimited.label");
                 int nbCurrentSites     = sReg.getJahiaSitesService().getNbSites();
-                int nbMaxSites         = Jahia.getSiteLimit();
+                int nbMaxSites         = -1;
                 int nbCurrentUsers     = sReg.getJahiaUserManagerService().getNbUsers();
-                int nbMaxUsers         = Jahia.getUserLimit();
+                int nbMaxUsers         = -1;
                 int nbCurrentTemplates = 0;
-                int nbMaxTemplates     = Jahia.getTemplateLimit();
+                int nbMaxTemplates     = -1;
                 int nbCurrentPages     = 0;
-                int nbMaxPages         = Jahia.getPageLimit();
+                int nbMaxPages         = -1;
 
                 String maxSites     = (nbMaxSites == -1)     ? unlimited : Integer.toString(nbMaxSites);
                 String maxUsers     = (nbMaxUsers == -1)     ? unlimited : Integer.toString(nbMaxUsers);
                 String maxTemplates = (nbMaxTemplates == -1) ? unlimited : Integer.toString(nbMaxTemplates);
                 String maxPages     = (nbMaxPages == -1)     ? unlimited : Integer.toString(nbMaxPages);
 
-                LicensePackage licensePackage = LicenseManager.getInstance().getJahiaLicensePackage();
-
-                req.setAttribute("allowedDays", Integer.valueOf((LicenseManager.getInstance().getJahiaMaxUsageDays())));
-                long expirationDate = LicenseManager.getInstance().getJahiaExpirationDate();
-                if (expirationDate > 0) {
-                    req.setAttribute("expirationDate", new Date(expirationDate));
-                }
+                req.setAttribute("allowedDays", Integer.valueOf(0));
 
                 req.setAttribute("nbCurrentSites",     Integer.toString(nbCurrentSites)      );
                 req.setAttribute("nbMaxSites",         maxSites                              );
@@ -168,8 +144,8 @@ public class LicenseInfo extends AbstractAdministrationModule {
                 req.setAttribute("nbMaxPages",         maxPages                              );
                 req.setAttribute("release", SettingsBean.getInstance().getPropertiesFile().getProperty("release"));
                 req.setAttribute("build", Integer.toString(Jahia.getBuildNumber())  );
-                req.setAttribute("jahiaEdition", licensePackage.getEdition());
-                req.setAttribute("licenses", licensePackage.getLicenses());
+                req.setAttribute("jahiaEdition", "na");
+                req.setAttribute("licenses", null);
                 JahiaAdministration.doRedirect( req, res, sess, JSP_PATH + "show_info.jsp" );
 
             } catch (JahiaException je) {

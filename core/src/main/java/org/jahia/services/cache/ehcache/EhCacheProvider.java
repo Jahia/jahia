@@ -32,13 +32,13 @@
 
 package org.jahia.services.cache.ehcache;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.jahia.services.cache.CacheProvider;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.cache.CacheImplementation;
 import org.jahia.settings.SettingsBean;
 import org.jahia.exceptions.JahiaInitializationException;
-
-import java.net.URL;
 
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.management.ManagementService;
@@ -47,27 +47,26 @@ import javax.management.MBeanServer;
 import javax.management.MBeanServerFactory;
 
 /**
- * Created by IntelliJ IDEA.
+ * EHCache based cache provider implementation.
  * User: Serge Huber
  * Date: 29 mars 2007
  * Time: 17:25:33
- * To change this template use File | Settings | File Templates.
  */
 public class EhCacheProvider implements CacheProvider {
 
-    final private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger (EhCacheProvider.class);
+    final private static Logger logger = Logger.getLogger (EhCacheProvider.class);
 
     CacheManager cacheManager = null;
     private int groupsSizeLimit = 100;
-    public EhCacheProvider() {
-    }
-
+    private String configurationResource = "/ehcache-jahia.xml";
+    private String managedBeanServerName = "SimpleAgent";
+    
     public void init(SettingsBean settingsBean, CacheService cacheService) throws JahiaInitializationException {
-        URL url = getClass().getResource("/"+settingsBean.getEhCacheJahiaFile());
-        cacheManager = CacheManager.create(url);
-        MBeanServer mBeanServer = MBeanServerFactory.createMBeanServer("SimpleAgent");
-        ManagementService.registerMBeans(cacheManager, mBeanServer, false, false, false, true);
+   		cacheManager = CacheManager.create(getClass().getResource(configurationResource));
+    	if (StringUtils.isNotEmpty(managedBeanServerName)) {
+	        MBeanServer mBeanServer = MBeanServerFactory.createMBeanServer(managedBeanServerName);
+	        ManagementService.registerMBeans(cacheManager, mBeanServer, false, false, false, true);
+    	}
     }
 
     public void shutdown() {
@@ -88,7 +87,7 @@ public class EhCacheProvider implements CacheProvider {
     }
 
     public boolean isClusterCache() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return false;
     }
 
     public CacheImplementation newCacheImplementation(String name) {
@@ -105,5 +104,13 @@ public class EhCacheProvider implements CacheProvider {
 
     public void setGroupsSizeLimit(int groupsSizeLimit) {
         this.groupsSizeLimit = groupsSizeLimit;
+    }
+
+	public void setConfigurationResource(String configurationResource) {
+    	this.configurationResource = configurationResource;
+    }
+
+	public void setManagedBeanServerName(String managedBeanServerName) {
+    	this.managedBeanServerName = managedBeanServerName;
     }
 }

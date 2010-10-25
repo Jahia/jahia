@@ -30,42 +30,46 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
- package org.jahia.security.license;
+package org.jahia.settings;
 
-import org.jahia.utils.JahiaTools;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.config.AbstractFactoryBean;
 
 /**
- * Utility class to provide a checker for action in the license file.
- * User: Serge Huber
- * Date: 29 juin 2006
- * Time: 17:14:12
- * Copyright (C) Jahia Inc.
+ * Factory bean for obtaining the EhCache configuration resource from the base
+ * name and taking into consideration if the cluster is activated.
+ * 
+ * @author Sergiy Shyrkov
  */
-public class LicenseActionChecker {
-    static Map checks = new HashMap();
+public class EhCacheConfigFactoryBean extends AbstractFactoryBean {
 
-    static public boolean isAuthorizedByLicense(String objectName, int siteID) {
-        if (checks.containsKey(objectName+siteID)) {
-            return ((Boolean) checks.get(objectName+siteID)).booleanValue();
-        }
-        String licenseObjectName = objectName;
-        if (siteID > 0) {
-            int siteIDPos = objectName.indexOf(Integer.toString(siteID));
-            if (siteIDPos > -1) {
-                licenseObjectName = JahiaTools.replacePattern(objectName, Integer.toString(siteID), "*");
-            }
-        }
-        boolean licenseAuthorized = true;
-        LicenseManager lm = LicenseManager.getInstance();
-        License license = lm.getLicenseByComponentName(licenseObjectName);
-        if (license != null) {
-            licenseAuthorized = license.checkLimits();
-        }
-        checks.put(objectName+siteID, Boolean.valueOf(licenseAuthorized));
-        return licenseAuthorized;
-    }
+	private String baseResource;
 
+	private boolean clusterActivated;
+
+	/**
+	 * Initializes an instance of this class.
+	 * 
+	 * @param baseResource
+	 *            the resource path to use if the cluster is not activated.
+	 * 
+	 * @param clusterActivated
+	 *            <code>true</code> if the cluster is activated
+	 */
+	public EhCacheConfigFactoryBean(String baseResource, boolean clusterActivated) {
+		super();
+		this.baseResource = baseResource;
+		this.clusterActivated = clusterActivated;
+	}
+
+	@Override
+	protected Object createInstance() throws Exception {
+		return clusterActivated ? StringUtils.substringBeforeLast(baseResource, ".") + "-cluster."
+		        + StringUtils.substringAfterLast(baseResource, ".") : baseResource;
+	}
+
+	@Override
+	public Class<?> getObjectType() {
+		return String.class;
+	}
 }

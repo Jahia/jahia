@@ -1,0 +1,15 @@
+/*mockupStyle*/
+
+#bodywrapper .mockupStyle {
+background-color:#FBEC88;
+border:1px dashed #FAD42E;
+color:#333;
+height:800px;
+overflow:hidden;
+padding:5px;
+position:relative;
+background: url(img/mockup.png) no-repeat 50% 0%;
+}
+#bodywrapper .mockupStyle:before {
+content: "hello this his your mockupStyle with a css text";
+}

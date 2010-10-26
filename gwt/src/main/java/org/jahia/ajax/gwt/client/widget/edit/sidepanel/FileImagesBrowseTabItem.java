@@ -42,6 +42,7 @@ import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
+import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
@@ -68,13 +69,13 @@ import java.util.List;
  * Time: 2:22:24 PM
  */
 class FileImagesBrowseTabItem extends BrowseTabItem {
-    protected LayoutContainer contentContainer;
-    protected ListLoader<ListLoadResult<GWTJahiaNode>> listLoader;
-    protected ListStore<GWTJahiaNode> contentStore;
-    protected ImageDragSource dragSource;
+    protected transient LayoutContainer contentContainer;
+    protected transient ListLoader<ListLoadResult<GWTJahiaNode>> listLoader;
+    protected transient ListStore<GWTJahiaNode> contentStore;
+    protected transient ImageDragSource dragSource;
 
-    public FileImagesBrowseTabItem(GWTSidePanelTab config) {
-        super(config);
+    public TabItem create(GWTSidePanelTab config) {
+        super.create(config);
 
         contentContainer = new LayoutContainer();
         contentContainer.setId("images-view");
@@ -125,7 +126,7 @@ class FileImagesBrowseTabItem extends BrowseTabItem {
 
         VBoxLayoutData contentVBoxData = new VBoxLayoutData();
         contentVBoxData.setFlex(2);
-        add(contentContainer, contentVBoxData);
+        tab.add(contentContainer, contentVBoxData);
 
         listView.addListener(Events.DoubleClick, new Listener<ListViewEvent<GWTJahiaNode>>() {
             public void handleEvent(ListViewEvent<GWTJahiaNode> be) {
@@ -152,6 +153,7 @@ class FileImagesBrowseTabItem extends BrowseTabItem {
         listView.setContextMenu(createContextMenu(config.getTableContextMenu(), listView.getSelectionModel()));
 
         dragSource = new ImageDragSource(listView);
+        return tab;
     }
 
     @Override

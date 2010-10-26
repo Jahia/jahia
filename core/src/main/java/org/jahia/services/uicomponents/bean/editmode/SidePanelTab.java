@@ -32,6 +32,7 @@
 
 package org.jahia.services.uicomponents.bean.editmode;
 
+import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem;
 import org.jahia.services.uicomponents.bean.Visibility;
 import org.jahia.services.uicomponents.bean.contentmanager.Column;
 import org.jahia.services.uicomponents.bean.toolbar.Toolbar;
@@ -56,14 +57,10 @@ public class SidePanelTab implements Serializable, BeanNameAware {
     private Toolbar tableContextMenu;
     private Map<String, String> params;
     private Visibility visibility;
-    private List<String> paths = new ArrayList<String>();
-    private List<String> folderTypes = new ArrayList<String>();
-    private List<String> nodeTypes = new ArrayList<String>();
-    private List<String> filters = new ArrayList<String>();
-    private List<String> mimeTypes = new ArrayList<String>();
     private List<Column> treeColumns;
     private List<Column> tableColumns;
     private String icon;
+    private SidePanelTabItem tabItem;
 
     public SidePanelTab() {
         tableColumns = new ArrayList<Column>();
@@ -122,46 +119,6 @@ public class SidePanelTab implements Serializable, BeanNameAware {
         this.visibility = visibility;
     }
 
-    public List<String> getPaths() {
-        return paths;
-    }
-
-    public void setPaths(List<String> paths) {
-        this.paths = paths;
-    }
-
-    public List<String> getFolderTypes() {
-        return folderTypes;
-    }
-
-    public void setFolderTypes(List<String> folderTypes) {
-        this.folderTypes = folderTypes;
-    }
-
-    public List<String> getNodeTypes() {
-        return nodeTypes;
-    }
-
-    public void setNodeTypes(List<String> nodeTypes) {
-        this.nodeTypes = nodeTypes;
-    }
-
-    public List<String> getFilters() {
-        return filters;
-    }
-
-    public void setFilters(List<String> filters) {
-        this.filters = filters;
-    }
-
-    public List<String> getMimeTypes() {
-        return mimeTypes;
-    }
-
-    public void setMimeTypes(List<String> mimeTypes) {
-        this.mimeTypes = mimeTypes;
-    }
-
     public List<Column> getTableColumns() {
         return tableColumns;
     }
@@ -184,6 +141,14 @@ public class SidePanelTab implements Serializable, BeanNameAware {
 
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    public SidePanelTabItem getTabItem() {
+        return tabItem;
+    }
+
+    public void setTabItem(SidePanelTabItem tabItem) {
+        this.tabItem = tabItem;
     }
 }
 

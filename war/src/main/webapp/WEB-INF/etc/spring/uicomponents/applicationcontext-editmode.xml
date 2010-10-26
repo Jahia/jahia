@@ -172,15 +172,19 @@
                 <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                     <property name="key" value="templates"/>
                     <property name="icon" value="tab-templates"/>
-                    <property name="paths">
-                        <list>
-                            <value>$site/templates</value>
-                        </list>
-                    </property>
-                    <property name="folderTypes">
-                        <list>
-                            <value>jnt:template</value>
-                        </list>
+                    <property name="tabItem">
+                        <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.TemplatesTabItem">
+                            <property name="paths">
+                                <list>
+                                    <value>$site/templates</value>
+                                </list>
+                            </property>
+                            <property name="folderTypes">
+                                <list>
+                                    <value>jnt:template</value>
+                                </list>
+                            </property>
+                        </bean>
                     </property>
                     <property name="treeColumns">
                         <list>
@@ -241,16 +245,20 @@
                 <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                     <property name="key" value="themes"/>
                     <property name="icon" value="tab-themes"/>
-                    <property name="paths">
-                        <list>
-                            <value>$site/themes</value>
-                        </list>
-                    </property>
-                    <property name="folderTypes">
-                        <list>
-                            <value>nt:folder</value>
-                            <value>jnt:mountPoint</value>
-                        </list>
+                    <property name="tabItem">
+                        <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.FileImagesBrowseTabItem">
+                            <property name="paths">
+                                <list>
+                                    <value>$site/themes</value>
+                                </list>
+                            </property>
+                            <property name="folderTypes">
+                                <list>
+                                    <value>nt:folder</value>
+                                    <value>jnt:mountPoint</value>
+                                </list>
+                            </property>
+                        </bean>
                     </property>
                     <property name="treeColumns">
                         <list>
@@ -290,12 +298,16 @@
                 <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                     <property name="key" value="pages"/>
                     <property name="icon" value="tab-pages"/>
-                    <property name="paths">
-                        <list>
-                            <value>$site</value>
-                        </list>
+                    <property name="tabItem">
+                        <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.PagesTabItem">
+                            <property name="paths">
+                                <list>
+                                    <value>$site</value>
+                                </list>
+                            </property>
+                            <property name="folderTypes" value="jmix:navMenuItem"/>
+                        </bean>
                     </property>
-                    <property name="folderTypes" value="jmix:navMenuItem"/>
                     <property name="treeColumns">
                         <list>
                             <value>displayName,*,label.title</value>
@@ -348,17 +360,26 @@
                 <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                     <property name="key" value="createContent"/>
                     <property name="icon" value="tab-createcontent"/>
+                    <property name="tabItem">
+                        <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.CreateContentTabItem">
+                        </bean>
+                    </property>
+
                     <property name="visibility" value="$site/selector/create"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                     <property name="key" value="content"/>
                     <property name="icon" value="tab-content"/>
-                    <property name="paths">
-                        <list>
-                            <value>$site/contents</value>
-                        </list>
+                    <property name="tabItem">
+                        <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.ContentBrowseTabItem">
+                            <property name="paths">
+                                <list>
+                                    <value>$site/contents</value>
+                                </list>
+                            </property>
+                            <property name="folderTypes" value="jnt:contentList"/>
+                        </bean>
                     </property>
-                    <property name="folderTypes" value="jnt:contentList"/>
                     <property name="treeColumns">
                         <list>
                             <value>displayName,*,label.title</value>
@@ -400,16 +421,20 @@
                 <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                     <property name="key" value="filesimages"/>
                     <property name="icon" value="tab-filesimages"/>
-                    <property name="paths">
-                        <list>
-                            <value>$site/files</value>
-                        </list>
-                    </property>
-                    <property name="folderTypes">
-                        <list>
-                            <value>nt:folder</value>
-                            <value>jnt:mountPoint</value>
-                        </list>
+                    <property name="tabItem">
+                        <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.FileImagesBrowseTabItem">
+                            <property name="paths">
+                                <list>
+                                    <value>$site/files</value>
+                                </list>
+                            </property>
+                            <property name="folderTypes">
+                                <list>
+                                    <value>nt:folder</value>
+                                    <value>jnt:mountPoint</value>
+                                </list>
+                            </property>
+                        </bean>
                     </property>
                     <property name="treeColumns">
                         <list>
@@ -449,12 +474,16 @@
                 <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                     <property name="key" value="portlets"/>
                     <property name="icon" value="tab-portlets"/>
-                    <property name="paths">
-                        <list>
-                            <value>$site/portlets</value>
-                        </list>
+                    <property name="tabItem">
+                        <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.PortletBrowseTabItem">
+                            <property name="paths">
+                                <list>
+                                    <value>$site/portlets</value>
+                                </list>
+                            </property>
+                            <property name="folderTypes" value="jnt:portletList"/>
+                        </bean>
                     </property>
-                    <property name="folderTypes" value="jnt:portletList"/>
                     <property name="treeColumns">
                         <list>
                             <value>displayName,*,label.title</value>
@@ -679,12 +708,16 @@
                 <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                     <property name="key" value="pages"/>
                     <property name="icon" value="tab-pages"/>
-                    <property name="paths">
-                        <list>
-                            <value>/sites/*</value>
-                        </list>
+                    <property name="tabItem">
+                        <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.PagesTabItem">
+                            <property name="paths">
+                                <list>
+                                    <value>/sites/*</value>
+                                </list>
+                            </property>
+                            <property name="folderTypes" value="jmix:navMenuItem"/>
+                        </bean>
                     </property>
-                    <property name="folderTypes" value="jmix:navMenuItem"/>
                     <property name="treeColumns">
                         <list>
                             <value>displayName,*,label.title</value>
@@ -739,19 +772,27 @@
                 <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                     <property name="key" value="createContent"/>
                     <property name="icon" value="tab-createcontent"/>
+                    <property name="tabItem">
+                        <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.CreateContentTabItem">
+                        </bean>
+                    </property>
                     <property name="visibility" value="$site/selector/create"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                     <property name="key" value="content"/>
                     <property name="icon" value="tab-content"/>
-                    <property name="paths">
-                        <list>
-                            <value>/shared/contents</value>
-                            <value>$site/contents</value>
-                            <value>$user/contents</value>
-                        </list>
+                    <property name="tabItem">
+                        <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.ContentBrowseTabItem">
+                            <property name="paths">
+                                <list>
+                                    <value>/shared/contents</value>
+                                    <value>$site/contents</value>
+                                    <value>$user/contents</value>
+                                </list>
+                            </property>
+                            <property name="folderTypes" value="jnt:contentList"/>
+                        </bean>
                     </property>
-                    <property name="folderTypes" value="jnt:contentList"/>
                     <property name="treeColumns">
                         <list>
                             <value>displayName,*,label.title</value>
@@ -806,18 +847,22 @@
                 <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                     <property name="key" value="filesimages"/>
                     <property name="icon" value="tab-filesimages"/>
-                    <property name="paths">
-                        <list>
-                            <value>/shared/files</value>
-                            <value>$site/files</value>
-                            <value>$user/files</value>
-                        </list>
-                    </property>
-                    <property name="folderTypes">
-                        <list>
-                            <value>nt:folder</value>
-                            <value>jnt:mountPoint</value>
-                        </list>
+                    <property name="tabItem">
+                        <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.FileImagesBrowseTabItem">
+                            <property name="paths">
+                                <list>
+                                    <value>/shared/files</value>
+                                    <value>$site/files</value>
+                                    <value>$user/files</value>
+                                </list>
+                            </property>
+                            <property name="folderTypes">
+                                <list>
+                                    <value>nt:folder</value>
+                                    <value>jnt:mountPoint</value>
+                                </list>
+                            </property>
+                        </bean>
                     </property>
                     <property name="treeColumns">
                         <list>
@@ -858,14 +903,19 @@
                 <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                     <property name="key" value="portlets"/>
                     <property name="icon" value="tab-portlets"/>
-                    <property name="paths">
-                        <list>
-                            <value>/shared/portlets</value>
-                            <value>$site/portlets</value>
-                            <value>$user/portlets</value>
-                        </list>
+                    <property name="tabItem">
+                        <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.PortletBrowseTabItem">
+                            <property name="paths">
+                                <list>
+                                    <value>/shared/portlets</value>
+                                    <value>$site/portlets</value>
+                                    <value>$user/portlets</value>
+                                </list>
+                            </property>
+                            <property name="folderTypes" value="jnt:portletList"/>
+                        </bean>
                     </property>
-                    <property name="folderTypes" value="jnt:portletList"/>
+
                     <property name="treeColumns">
                         <list>
                             <value>displayName,*,label.title</value>
@@ -910,13 +960,13 @@
                 <ref bean="sidePanelTab.search"/>
                 <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                     <property name="key" value="categories"/>
-                    <property name="folderTypes" value="jnt:category"/>
-                    <property name="paths" value="/categories"/>
                     <property name="icon" value="tab-categories"/>
-                    <property name="params">
-                        <map>
-                            <entry key="limit" value="500"/>
-                        </map>
+                    <property name="tabItem">
+                        <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.CategoryBrowseTabItem">
+                            <property name="folderTypes" value="jnt:category"/>
+                            <property name="paths" value="/categories"/>
+                            <property name="limit" value="500"/>
+                        </bean>
                     </property>
                     <property name="tableColumns">
                         <list>
@@ -930,13 +980,14 @@
                 <bean class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
                     <property name="key" value="lastContent"/>
                     <property name="icon" value="tab-lastcontent"/>
-                    <property name="params">
-                        <map>
-                            <entry key="search"
+                    <property name="tabItem">
+                        <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.LastContentBrowseTabItem">
+                            <property name="search"
                                    value="select * from [jnt:content] as content where not content.[jcr:primaryType] = 'jnt:socialActivity' order by content.['jcr:lastModified'] desc"/>
-                            <entry key="limit" value="100"/>
-                        </map>
+                            <property name="limit" value="100"/>
+                        </bean>
                     </property>
+
                     <property name="tableColumns">
                         <list>
                             <value>icon,40</value>
@@ -996,10 +1047,10 @@
     <bean id="sidePanelTab.search" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
         <property name="key" value="search"/>
         <property name="icon" value="tab-search"/>
-        <property name="params">
-            <map>
-                <entry key="numberResults" value="20"/>
-            </map>
+        <property name="tabItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.SearchTabItem">
+                <property name="numberResults" value="20"/>
+            </bean>
         </property>
         <property name="visibility" value="$site/selector/search"/>
         <property name="tableContextMenu">
@@ -1056,7 +1107,7 @@
             </bean>
         </property>
     </bean>
-    
+
     <bean id="Engine.Tab.ContentAndLayout" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
         <property name="id" value="content"/>
         <property name="titleKey" value="label.engineTab.content"/>

@@ -39,12 +39,12 @@ import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -60,7 +60,6 @@ import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactor
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
-import org.jahia.ajax.gwt.client.widget.contentengine.EditContentEngine;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
@@ -78,21 +77,22 @@ import java.util.Map;
  * Time: 3:14:11 PM
  */
 class SearchTabItem extends SidePanelTabItem {
-    protected ListStore<GWTJahiaNode> contentStore;
-    protected DisplayGridDragSource displayGridSource;
-    private TextField<String> searchField;
-    private ContentPickerField pagePickerField;
-    private ComboBox<GWTJahiaLanguage> langPickerField;
-    private ComboBox<GWTJahiaNodeType> defPicker;
-    final PagingLoader<PagingLoadResult<GWTJahiaNode>> loader;
+    protected int numberResults = 15;
 
-    public SearchTabItem(GWTSidePanelTab config) {
-        super(config);
-        final String nbResultsAsStrg = config.getParams() == null ? null :config.getParams().get("numberResults");
-        final int nbResults = nbResultsAsStrg == null? 15 : Integer.parseInt(nbResultsAsStrg);
+
+    protected transient ListStore<GWTJahiaNode> contentStore;
+    protected transient DisplayGridDragSource displayGridSource;
+    private transient TextField<String> searchField;
+    private transient ContentPickerField pagePickerField;
+    private transient ComboBox<GWTJahiaLanguage> langPickerField;
+    private transient ComboBox<GWTJahiaNodeType> defPicker;
+    protected transient PagingLoader<PagingLoadResult<GWTJahiaNode>> loader;
+
+    public TabItem create(GWTSidePanelTab config) {
+        super.create(config);
         VBoxLayout l = new VBoxLayout();
         l.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
-        setLayout(new FitLayout());
+        tab.setLayout(new FitLayout());
         final FormPanel searchForm = new FormPanel();
         searchForm.setHeaderVisible(false);
         searchForm.setBorders(false);
@@ -104,14 +104,14 @@ class SearchTabItem extends SidePanelTabItem {
             public void handleEvent(ComponentEvent be) {
                 // grid.mask("Loading", "x-mask-loading");
                 contentStore.removeAll();
-                loader.load(0,nbResults);
+                loader.load(0,numberResults);
             }
         });
         final Button ok = new Button(Messages.get("label.search"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent e) {
                 //  grid.mask("Loading", "x-mask-loading");
                 contentStore.removeAll();
-                loader.load(0, nbResults);
+                loader.load(0, numberResults);
             }
         });
         ok.setIcon(StandardIconsProvider.STANDARD_ICONS.search());
@@ -165,7 +165,7 @@ class SearchTabItem extends SidePanelTabItem {
         // loader
         loader = new BasePagingLoader<PagingLoadResult<GWTJahiaNode>>(proxy);
         loader.setRemoteSort(true);
-        final PagingToolBar toolBar = new PagingToolBar(nbResults);
+        final PagingToolBar toolBar = new PagingToolBar(numberResults);
         toolBar.bind(loader);
         contentStore = new ListStore<GWTJahiaNode>(loader);
 
@@ -187,7 +187,7 @@ class SearchTabItem extends SidePanelTabItem {
         gridPanel.add(grid);
 
         panel.add(gridPanel, new RowData(1, 1, new Margins(0, 0, 20, 0)));
-        add(panel);
+        tab.add(panel);
         displayGridSource = new DisplayGridDragSource(grid);
         grid.addListener(Events.OnDoubleClick, new Listener<BaseEvent>() {
             public void handleEvent(BaseEvent be) {
@@ -195,6 +195,7 @@ class SearchTabItem extends SidePanelTabItem {
             }
         });
         grid.setContextMenu(createContextMenu(config.getTableContextMenu(), grid.getSelectionModel()));
+        return tab;
     }
 
     @Override
@@ -307,6 +308,14 @@ class SearchTabItem extends SidePanelTabItem {
             gwtJahiaSearchQuery.setNodeTypes(list);
         }
         return gwtJahiaSearchQuery;
+    }
+
+    public int getNumberResults() {
+        return numberResults;
+    }
+
+    public void setNumberResults(int numberResults) {
+        this.numberResults = numberResults;
     }
 
     /**

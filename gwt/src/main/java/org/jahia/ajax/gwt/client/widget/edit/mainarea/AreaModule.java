@@ -82,11 +82,6 @@ public class AreaModule extends SimpleModule {
         } else {
             headerText = Messages.get("label."+moduleType)+" : " + path;
         }
-        if (missingList) {
-            headerText += " (" + Messages.get("label.notCreated", "not created")+ ")";
-        } else if (!hasChildren) {
-            headerText += " (" + Messages.get("label.empty", "empty")+ ")";
-        }
         head.setText(headerText);
 //        setBodyBorder(false);
         head.addStyleName("x-panel-header");
@@ -99,6 +94,13 @@ public class AreaModule extends SimpleModule {
 
     @Override public void onParsed() {
         super.onParsed();
+        String headerText = head.getText();
+        if (missingList) {
+            headerText += " (" + Messages.get("label.notCreated", "not created")+ ")";
+        } else if (!hasChildren) {
+            headerText += " (" + Messages.get("label.empty", "empty")+ ")";
+        }
+        head.setText(headerText);
         if (!hasChildren) {
             addStyleName(moduleType);
             if (mockupStyle != null) {

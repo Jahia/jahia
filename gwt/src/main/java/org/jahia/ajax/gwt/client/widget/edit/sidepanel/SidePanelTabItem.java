@@ -32,15 +32,18 @@
 
 package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
+import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
@@ -57,16 +60,24 @@ import com.extjs.gxt.ui.client.widget.selection.AbstractStoreSelectionModel;
  * Date: Dec 21, 2009
  * Time: 2:21:40 PM
  */
-public class SidePanelTabItem extends TabItem {
-
-    protected EditLinker editLinker;
+public class SidePanelTabItem implements Serializable {
     protected GWTSidePanelTab config;
 
-    public SidePanelTabItem(GWTSidePanelTab config) {
-        super("&nbsp;");
-        this.config = config;
-        setIcon(ToolbarIconProvider.getInstance().getIcon(config.getIcon()));
-        getHeader().setToolTip(config.getTooltip());
+    protected transient TabItem tab;
+    protected transient EditLinker editLinker;
+
+    public SidePanelTabItem() {
+    }
+
+    public TabItem create(GWTSidePanelTab sidePanelTab) {
+        this.config = sidePanelTab;
+
+        tab = new TabItem("&nbsp;");
+        tab.setIcon(ToolbarIconProvider.getInstance().getIcon(config.getIcon()));
+        tab.getHeader().setToolTip(config.getTooltip());
+        tab.getHeader().addStyleName("x-tab-strip-iconOnly");
+
+        return tab;
     }
 
     public void initWithLinker(EditLinker linker) {

@@ -37,12 +37,12 @@ import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTRenderResult;
@@ -53,7 +53,6 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
-import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
@@ -68,15 +67,18 @@ import java.util.List;
  * Time: 2:22:24 PM
  */
 class LastContentBrowseTabItem extends SidePanelTabItem {
-    protected LayoutContainer contentContainer;
-    protected ListStore<GWTJahiaNode> contentStore;
-    protected DisplayGridDragSource displayGridSource;
+    protected String search;
+    protected int limit;
 
-    public LastContentBrowseTabItem(final GWTSidePanelTab config) {
-        super(config);
+    protected transient LayoutContainer contentContainer;
+    protected transient ListStore<GWTJahiaNode> contentStore;
+    protected transient DisplayGridDragSource displayGridSource;
+
+    public TabItem create(final GWTSidePanelTab config) {
+        super.create(config);
         VBoxLayout l = new VBoxLayout();
         l.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
-        setLayout(l);
+        tab.setLayout(l);
         contentContainer = new LayoutContainer();
         contentContainer.setBorders(true);
         contentContainer.setScrollMode(Style.Scroll.AUTO);
@@ -129,11 +131,12 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
 
         VBoxLayoutData contentVBoxData = new VBoxLayoutData();
         contentVBoxData.setFlex(2);
-        add(contentContainer, contentVBoxData);
+        tab.add(contentContainer, contentVBoxData);
         contentVBoxData.setFlex(1);
-        add(previewLayoutContainer, contentVBoxData);
+        tab.add(previewLayoutContainer, contentVBoxData);
 
         displayGridSource = new DisplayGridDragSource(grid);
+        return tab;
     }
 
     @Override
@@ -142,17 +145,17 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
         displayGridSource.addDNDListener(editLinker.getDndListener());
     }
 
-    @Override
-    protected void onRender(Element parent, int index) {
-        super.onRender(parent, index);
-        fillStore();
-    }
+//    @Override
+//    protected void onRender(Element parent, int index) {
+//        super.onRender(parent, index);
+//        fillStore();
+//    }
 
     private void fillStore() {
         contentContainer.mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
         contentStore.removeAll();
         JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
-        async.searchSQL(config.getParams().get("search"), Integer.valueOf(config.getParams().get("limit")),
+        async.searchSQL(search, limit,
                         JCRClientUtils.CONTENT_NODETYPES, null, null, Arrays.asList(GWTJahiaNode.ICON,"jcr:lastModified"),false, new BaseAsyncCallback<List<GWTJahiaNode>>() {
                     public void onSuccess(List<GWTJahiaNode> gwtJahiaNodes) {
                         contentStore.add(gwtJahiaNodes);
@@ -168,5 +171,21 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
             fillStore();
         }
 
+    }
+
+    public String getSearch() {
+        return search;
+    }
+
+    public void setSearch(String search) {
+        this.search = search;
+    }
+
+    public int getLimit() {
+        return limit;
+    }
+
+    public void setLimit(int limit) {
+        this.limit = limit;
     }
 }

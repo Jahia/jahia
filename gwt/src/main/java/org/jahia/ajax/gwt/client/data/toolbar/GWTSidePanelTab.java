@@ -33,6 +33,8 @@
 package org.jahia.ajax.gwt.client.data.toolbar;
 
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.widget.contentengine.EditEngineTabItem;
+import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -49,14 +51,13 @@ import java.util.Map;
 public class GWTSidePanelTab  implements Serializable {
     private String name;
     private String tooltip;
+
+    private SidePanelTabItem tabItem;
+
+
+
     private GWTJahiaToolbar treeContextMenu;
     private GWTJahiaToolbar tableContextMenu;
-    private Map<String, String> params;
-    private List<String> paths = new ArrayList<String>();
-    private List<String> folderTypes = new ArrayList<String>();
-    private List<String> nodeTypes = new ArrayList<String>();
-    private List<String> filters = new ArrayList<String>();
-    private List<String> mimeTypes = new ArrayList<String>();
 
     private List<GWTColumn> treeColumns;
     private List<String> treeColumnKeys;
@@ -94,6 +95,24 @@ public class GWTSidePanelTab  implements Serializable {
         this.tooltip = tooltip;
     }
 
+    public SidePanelTabItem getTabItem() {
+        return tabItem;
+    }
+
+    public void setTabItem(SidePanelTabItem tabItem) {
+        this.tabItem = tabItem;
+    }
+
+
+
+
+
+
+
+
+
+
+
     public GWTJahiaToolbar getTreeContextMenu() {
         return treeContextMenu;
     }
@@ -108,54 +127,6 @@ public class GWTSidePanelTab  implements Serializable {
 
     public void setTableContextMenu(GWTJahiaToolbar tableContextMenu) {
         this.tableContextMenu = tableContextMenu;
-    }
-
-    public Map<String, String> getParams() {
-        return params;
-    }
-
-    public void setParams(Map<String, String> params) {
-        this.params = params;
-    }
-
-    public List<String> getPaths() {
-        return paths;
-    }
-
-    public void setPaths(List<String> paths) {
-        this.paths = paths;
-    }
-
-    public List<String> getFolderTypes() {
-        return folderTypes;
-    }
-
-    public void setFolderTypes(List<String> folderTypes) {
-        this.folderTypes = folderTypes;
-    }
-
-    public List<String> getNodeTypes() {
-        return nodeTypes;
-    }
-
-    public void setNodeTypes(List<String> nodeTypes) {
-        this.nodeTypes = nodeTypes;
-    }
-
-    public List<String> getFilters() {
-        return filters;
-    }
-
-    public void setFilters(List<String> filters) {
-        this.filters = filters;
-    }
-
-    public List<String> getMimeTypes() {
-        return mimeTypes;
-    }
-
-    public void setMimeTypes(List<String> mimeTypes) {
-        this.mimeTypes = mimeTypes;
     }
 
     public void addTableColumn(GWTColumn col) {

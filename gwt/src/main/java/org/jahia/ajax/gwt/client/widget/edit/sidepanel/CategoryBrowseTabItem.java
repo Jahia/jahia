@@ -37,6 +37,7 @@ import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
@@ -61,13 +62,15 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class CategoryBrowseTabItem extends BrowseTabItem {
-    protected LayoutContainer contentContainer;
-    protected ListLoader<ListLoadResult<GWTJahiaNode>> listLoader;
-    protected ListStore<GWTJahiaNode> contentStore;
-    protected DisplayGridDragSource displayGridSource;
+    protected int limit = 500;
 
-    public CategoryBrowseTabItem(final GWTSidePanelTab config) {
-        super(config);
+    protected transient LayoutContainer contentContainer;
+    protected transient ListLoader<ListLoadResult<GWTJahiaNode>> listLoader;
+    protected transient ListStore<GWTJahiaNode> contentStore;
+    protected transient DisplayGridDragSource displayGridSource;
+
+    public TabItem create(final GWTSidePanelTab config) {
+        super.create(config);
 
         contentContainer = new LayoutContainer();
         contentContainer.setBorders(true);
@@ -78,9 +81,9 @@ public class CategoryBrowseTabItem extends BrowseTabItem {
         RpcProxy<PagingLoadResult<GWTJahiaNode>> listProxy = new RpcProxy<PagingLoadResult<GWTJahiaNode>>() {
             @Override
             protected void load(Object gwtJahiaCategory, AsyncCallback<PagingLoadResult<GWTJahiaNode>> listAsyncCallback) {
-                final String limitAsStrg = config.getParams() == null ? null : config.getParams().get("limit");
-                final int limit = limitAsStrg == null ? 500 : Integer.parseInt(limitAsStrg);
-                JahiaContentManagementService.App.getInstance().getNodesByCategory((GWTJahiaNode) gwtJahiaCategory, limit, 0, listAsyncCallback);
+                if (gwtJahiaCategory != null) {
+                    JahiaContentManagementService.App.getInstance().getNodesByCategory((GWTJahiaNode) gwtJahiaCategory, limit, 0, listAsyncCallback);
+                }
             }
         };
 
@@ -125,9 +128,10 @@ public class CategoryBrowseTabItem extends BrowseTabItem {
 
         VBoxLayoutData contentVBoxData = new VBoxLayoutData();
         contentVBoxData.setFlex(2);
-        add(contentContainer, contentVBoxData);
+        tab.add(contentContainer, contentVBoxData);
 
         displayGridSource = new DisplayGridDragSource(grid);
+        return tab;
     }
 
     @Override
@@ -139,5 +143,13 @@ public class CategoryBrowseTabItem extends BrowseTabItem {
     @Override
     protected boolean acceptNode(GWTJahiaNode node) {
         return node.getInheritedNodeTypes().contains("jnt:content");
+    }
+
+    public int getLimit() {
+        return limit;
+    }
+
+    public void setLimit(int limit) {
+        this.limit = limit;
     }
 }

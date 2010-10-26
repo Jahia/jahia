@@ -37,6 +37,7 @@ import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.dnd.TreeGridDropTarget;
 import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -55,6 +56,7 @@ import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -65,25 +67,26 @@ import java.util.List;
  * Time: 2:22:30 PM
  */
 abstract class BrowseTabItem extends SidePanelTabItem {
-    protected LayoutContainer treeContainer;
-    protected TreeGrid<GWTJahiaNode> tree;
-    protected TreeGridDropTarget treeDropTarget;
-    protected String repositoryType;
-    protected List<String> folderTypes;
-    private GWTJahiaNodeTreeFactory factory;
+    protected List<String> folderTypes = new ArrayList<String>();
+    private List<String> paths = new ArrayList<String>();
 
-    public BrowseTabItem(GWTSidePanelTab config) {
-        super(config);
-        this.folderTypes = config.getFolderTypes();
+    protected transient LayoutContainer treeContainer;
+    protected transient TreeGrid<GWTJahiaNode> tree;
+    protected transient TreeGridDropTarget treeDropTarget;
+    protected transient String repositoryType;
+    private transient GWTJahiaNodeTreeFactory factory;
+
+    public TabItem create(GWTSidePanelTab config) {
+        super.create(config);
         VBoxLayout l = new VBoxLayout();
         l.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
-        setLayout(l);
+        tab.setLayout(l);
 
         treeContainer = new LayoutContainer();
         treeContainer.setBorders(false);
         treeContainer.setScrollMode(Style.Scroll.AUTO);
         treeContainer.setLayout(new FitLayout());
-        factory = new GWTJahiaNodeTreeFactory(config.getPaths());
+        factory = new GWTJahiaNodeTreeFactory(paths);
         factory.setNodeTypes(this.folderTypes);
 
         NodeColumnConfigList columns = new NodeColumnConfigList(config.getTreeColumns());
@@ -102,10 +105,10 @@ abstract class BrowseTabItem extends SidePanelTabItem {
         VBoxLayoutData treeVBoxData = new VBoxLayoutData();
         treeVBoxData.setFlex(1);
 
-        add(treeContainer, treeVBoxData);
+        tab.add(treeContainer, treeVBoxData);
 
         treeDropTarget = new BrowseTreeGridDropTarget();
-
+        return tab;
     }
 
     @Override
@@ -167,4 +170,20 @@ abstract class BrowseTabItem extends SidePanelTabItem {
     }
 
     protected abstract boolean acceptNode(GWTJahiaNode node);
+
+    public List<String> getFolderTypes() {
+        return folderTypes;
+    }
+
+    public void setFolderTypes(List<String> folderTypes) {
+        this.folderTypes = folderTypes;
+    }
+
+    public List<String> getPaths() {
+        return paths;
+    }
+
+    public void setPaths(List<String> paths) {
+        this.paths = paths;
+    }
 }

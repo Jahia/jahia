@@ -42,6 +42,7 @@ import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
+import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -65,13 +66,13 @@ import java.util.List;
  * Time: 2:22:24 PM
  */
 class PortletBrowseTabItem extends BrowseTabItem {
-    protected LayoutContainer contentContainer;
-    protected ListLoader<ListLoadResult<GWTJahiaNode>> listLoader;
-    protected ListStore<GWTJahiaNode> contentStore;
-    protected ImageDragSource dragSource;
+    protected transient LayoutContainer contentContainer;
+    protected transient ListLoader<ListLoadResult<GWTJahiaNode>> listLoader;
+    protected transient ListStore<GWTJahiaNode> contentStore;
+    protected transient ImageDragSource dragSource;
 
-    public PortletBrowseTabItem(GWTSidePanelTab config) {
-        super(config);
+    public TabItem create(GWTSidePanelTab config) {
+        super.create(config);
 
         contentContainer = new LayoutContainer();
         contentContainer.setBorders(true);
@@ -123,9 +124,10 @@ class PortletBrowseTabItem extends BrowseTabItem {
 
         VBoxLayoutData contentVBoxData = new VBoxLayoutData();
         contentVBoxData.setFlex(2);
-        add(contentContainer, contentVBoxData);
+        tab.add(contentContainer, contentVBoxData);
 
         dragSource = new ImageDragSource(listView);
+        return tab;
     }
 
     @Override

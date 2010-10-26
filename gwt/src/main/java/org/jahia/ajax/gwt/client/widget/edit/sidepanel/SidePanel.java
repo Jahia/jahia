@@ -69,41 +69,14 @@ public class SidePanel extends ContentPanel {
         }));
         tabs = new ArrayList<SidePanelTabItem>();
 
-        for (GWTSidePanelTab tab : config.getTabs()) {
-            SidePanelTabItem tabItem;
-            if (tab.getName().equals("pages")) {
-                tabItem = new PagesTabItem(tab);
-            } else if (tab.getName().equals("templates")) {
-                tabItem = new TemplatesTabItem(tab);
-                templatesTabItem = tabItem;
-            } else if (tab.getName().equals("createContent")) {
-                tabItem = new CreateContentTabItem(tab);
-            } else if (tab.getName().equals("content")) {
-                tabItem = new ContentBrowseTabItem(tab);
-            } else if (tab.getName().equals("filesimages")) {
-                tabItem = new FileImagesBrowseTabItem(tab);
-            } else if (tab.getName().equals("themes")) {
-                tabItem = new FileImagesBrowseTabItem(tab);
-            } else if (tab.getName().equals("portlets")) {
-                tabItem = new PortletBrowseTabItem(tab);
-            } else if (tab.getName().equals("search")) {
-                tabItem = new SearchTabItem(tab);
-            } else if (tab.getName().equals("categories")) {
-                tabItem = new CategoryBrowseTabItem(tab);
-            } else if (tab.getName().equals("lastContent")) {
-                tabItem = new LastContentBrowseTabItem(tab);
-            }
-
-            else {
-                continue;
-            }
-            tabItem.getHeader().addStyleName("x-tab-strip-iconOnly");
-            tabs.add(tabItem);
-        }
         TabPanel tabPanel = new TabPanel();
-        for (TabItem tab : tabs) {
-            tabPanel.add(tab);
+
+        for (GWTSidePanelTab tabConfig : config.getTabs()) {
+            SidePanelTabItem tabItem = tabConfig.getTabItem();
+            tabs.add(tabItem);
+            tabPanel.add(tabItem.create(tabConfig));
         }
+
         add(tabPanel);
     }
 

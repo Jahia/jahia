@@ -32,27 +32,22 @@
 
 package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.dnd.TreeGridDropTarget;
 import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
-import com.extjs.gxt.ui.client.widget.treegrid.TreeGridSelectionModel;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
-import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
-import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.edit.*;
@@ -70,38 +65,43 @@ import java.util.List;
  * Time: 2:22:37 PM
  */
 public class PagesTabItem extends SidePanelTabItem {
+    protected List<String> folderTypes = new ArrayList<String>();
+    private List<String> paths = new ArrayList<String>();
 
-    protected TreeGrid<GWTJahiaNode> tree;
-    protected String path;
-    protected GWTJahiaNodeTreeFactory factory;
+    protected transient TreeGrid<GWTJahiaNode> pageTree;
+    protected transient GWTJahiaNodeTreeFactory pageFactory;
+    protected transient TreeGrid<GWTJahiaNode> contentTree;
+    protected transient GWTJahiaNodeTreeFactory contentFactory;
+    protected transient String path;
 
-    public PagesTabItem(GWTSidePanelTab config) {
-        super(config);
+    public TabItem create(GWTSidePanelTab config) {
+        super.create(config);
         VBoxLayout l = new VBoxLayout();
         l.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
-        setLayout(new FitLayout());
+        tab.setLayout(new FitLayout());
+        return tab;
     }
 
-    private void initTree() {
-        GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(config.getPaths());
-        factory.setNodeTypes(config.getFolderTypes());
+    private void initPageTree() {
+        GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(paths);
+        factory.setNodeTypes(folderTypes);
         factory.setFields(config.getTreeColumnKeys());
-        this.factory = factory;
-        this.factory.setSelectedPath(path);
+        this.pageFactory = factory;
+        this.pageFactory.setSelectedPath(path);
 
         NodeColumnConfigList columns = new NodeColumnConfigList(config.getTreeColumns());
         columns.init();
         columns.get(0).setRenderer(new TreeGridCellRenderer());
 
-        tree = factory.getTreeGrid(new ColumnModel(columns));
+        pageTree = factory.getTreeGrid(new ColumnModel(columns));
 
-        tree.setAutoExpandColumn(columns.getAutoExpand());
-        tree.getTreeView().setRowHeight(25);
-        tree.getTreeView().setForceFit(true);
-        tree.setHeight("100%");
-        tree.setIconProvider(ContentModelIconProvider.getInstance());
+        pageTree.setAutoExpandColumn(columns.getAutoExpand());
+        pageTree.getTreeView().setRowHeight(25);
+        pageTree.getTreeView().setForceFit(true);
+        pageTree.setHeight("100%");
+        pageTree.setIconProvider(ContentModelIconProvider.getInstance());
         
-        this.tree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
+        this.pageTree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             @Override public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {
                 final GWTJahiaNode node = se.getSelectedItem();
                 if (node != null && !node.getPath().equals(editLinker.getMainModule().getPath()) &&
@@ -111,16 +111,53 @@ public class PagesTabItem extends SidePanelTabItem {
                 }
             }
         });
-        this.tree.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
+        this.pageTree.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
         
-        tree.setContextMenu(createContextMenu(config.getTreeContextMenu(), tree.getSelectionModel()));
+        pageTree.setContextMenu(createContextMenu(config.getTreeContextMenu(), pageTree.getSelectionModel()));
 
-        add(tree);
+        tab.add(pageTree);
+    }
+
+    private void initContentTree() {
+        GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(paths);
+        factory.setNodeTypes(folderTypes);
+        factory.setFields(config.getTreeColumnKeys());
+        this.pageFactory = factory;
+        this.pageFactory.setSelectedPath(path);
+
+        NodeColumnConfigList columns = new NodeColumnConfigList(config.getTreeColumns());
+        columns.init();
+        columns.get(0).setRenderer(new TreeGridCellRenderer());
+
+        pageTree = factory.getTreeGrid(new ColumnModel(columns));
+
+        pageTree.setAutoExpandColumn(columns.getAutoExpand());
+        pageTree.getTreeView().setRowHeight(25);
+        pageTree.getTreeView().setForceFit(true);
+        pageTree.setHeight("100%");
+        pageTree.setIconProvider(ContentModelIconProvider.getInstance());
+
+        this.pageTree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
+            @Override public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {
+                final GWTJahiaNode node = se.getSelectedItem();
+                if (node != null && !node.getPath().equals(editLinker.getMainModule().getPath()) &&
+                    !node.getNodeTypes().contains("jnt:virtualsite") &&
+                        !node.getInheritedNodeTypes().contains("jmix:link")) {
+                    editLinker.onMainSelection(node.getPath(), null, null);
+                }
+            }
+        });
+        this.pageTree.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
+
+        pageTree.setContextMenu(createContextMenu(config.getTreeContextMenu(), pageTree.getSelectionModel()));
+
+        tab.add(pageTree);
     }
 
     @Override public void handleNewMainSelection(String path) {
-        if (tree != null && (tree.getSelectionModel().getSelectedItem() == null || !path.equals(tree.getSelectionModel().getSelectedItem().getPath()))) {
-            factory.setSelectedPath(Arrays.asList(path));
+        if (pageTree != null && (pageTree.getSelectionModel().getSelectedItem() == null || !path.equals(
+                pageTree.getSelectionModel().getSelectedItem().getPath()))) {
+            pageFactory.setSelectedPath(Arrays.asList(path));
         }
     }
 
@@ -140,25 +177,25 @@ public class PagesTabItem extends SidePanelTabItem {
     public void initWithLinker(EditLinker linker) {
         super.initWithLinker(linker);
         path = linker.getMainModule().getPath();
-        initTree();
+        initPageTree();
         initDND();
     }
 
     @Override
     public void refresh(int flag) {
         if ((flag & Linker.REFRESH_PAGES) != 0) {
-            tree.getTreeStore().removeAll();
-            tree.getTreeStore().getLoader().load();
+            pageTree.getTreeStore().removeAll();
+            pageTree.getTreeStore().getLoader().load();
         }
     }
 
     public void addOpenPath(String path) {
-        factory.setOpenPath(path);        
+        pageFactory.setOpenPath(path);
     }
 
     public class PageTreeGridDropTarget extends TreeGridDropTarget {
         public PageTreeGridDropTarget() {
-            super(PagesTabItem.this.tree);
+            super(PagesTabItem.this.pageTree);
         }
 
         @Override
@@ -167,9 +204,9 @@ public class PagesTabItem extends SidePanelTabItem {
             e.getStatus().setData("type", status);
             if (activeItem != null) {
                 GWTJahiaNode activeNode = (GWTJahiaNode) activeItem.getModel();
-                GWTJahiaNode parent = tree.getTreeStore().getParent(activeNode);
+                GWTJahiaNode parent = pageTree.getTreeStore().getParent(activeNode);
                 if (status == 1) {
-                    List<GWTJahiaNode> children = tree.getTreeStore().getChildren(parent);
+                    List<GWTJahiaNode> children = pageTree.getTreeStore().getChildren(parent);
                     int next = children.indexOf(activeNode) + 1;
                     if (next < children.size()) {
                         GWTJahiaNode n = children.get(next);
@@ -219,7 +256,7 @@ public class PagesTabItem extends SidePanelTabItem {
 
     private class PageTreeGridDragSource extends EditModeTreeGridDragSource {
         public PageTreeGridDragSource() {
-            super(PagesTabItem.this.tree);
+            super(PagesTabItem.this.pageTree);
         }
 
         @Override
@@ -228,7 +265,7 @@ public class PagesTabItem extends SidePanelTabItem {
             Selection.getInstance().hide();
 
             List<GWTJahiaNode> l = new ArrayList<GWTJahiaNode>();
-            final GWTJahiaNode node = PagesTabItem.this.tree.getSelectionModel().getSelectedItem();
+            final GWTJahiaNode node = PagesTabItem.this.pageTree.getSelectionModel().getSelectedItem();
             if (node.getInheritedNodeTypes().contains("jmix:navMenuItem") && node.isWriteable() && !node.isLocked()) {
                 l.add(node);
                 e.getStatus().setData(EditModeDNDListener.SOURCE_TYPE, EditModeDNDListener.PAGETREE_TYPE);
@@ -247,4 +284,19 @@ public class PagesTabItem extends SidePanelTabItem {
         }
     }
 
+    public List<String> getFolderTypes() {
+        return folderTypes;
+    }
+
+    public void setFolderTypes(List<String> folderTypes) {
+        this.folderTypes = folderTypes;
+    }
+
+    public List<String> getPaths() {
+        return paths;
+    }
+
+    public void setPaths(List<String> paths) {
+        this.paths = paths;
+    }
 }

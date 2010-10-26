@@ -40,6 +40,7 @@ import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
@@ -61,13 +62,13 @@ import java.util.Arrays;
  * Time: 2:22:24 PM
  */
 class ContentBrowseTabItem extends BrowseTabItem {
-    protected LayoutContainer contentContainer;
-    protected ListLoader<ListLoadResult<GWTJahiaNode>> listLoader;
-    protected ListStore<GWTJahiaNode> contentStore;
-    protected DisplayGridDragSource displayGridSource;
+    protected transient LayoutContainer contentContainer;
+    protected transient ListLoader<ListLoadResult<GWTJahiaNode>> listLoader;
+    protected transient ListStore<GWTJahiaNode> contentStore;
+    protected transient DisplayGridDragSource displayGridSource;
 
-    public ContentBrowseTabItem(final GWTSidePanelTab config) {
-        super(config);
+    public TabItem create(final GWTSidePanelTab config) {
+        super.create(config);
 
         contentContainer = new LayoutContainer();
         contentContainer.setBorders(true);
@@ -118,9 +119,10 @@ class ContentBrowseTabItem extends BrowseTabItem {
 
         VBoxLayoutData contentVBoxData = new VBoxLayoutData();
         contentVBoxData.setFlex(2);
-        add(contentContainer, contentVBoxData);
+        tab.add(contentContainer, contentVBoxData);
 
         displayGridSource = new DisplayGridDragSource(grid);
+        return tab;
     }
 
     @Override

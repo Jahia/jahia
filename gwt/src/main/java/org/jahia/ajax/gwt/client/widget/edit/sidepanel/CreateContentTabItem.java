@@ -32,8 +32,8 @@
 
 package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
-import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
@@ -54,12 +54,12 @@ import java.util.Map;
  */
 class CreateContentTabItem extends SidePanelTabItem {
 
-    private ContentTypeTree contentTypeTree;
-    private CreateGridDragSource gridDragSource;
+    private transient ContentTypeTree contentTypeTree;
+    private transient CreateGridDragSource gridDragSource;
 
-    CreateContentTabItem(GWTSidePanelTab config) {
-        super(config);
-        setLayout(new FitLayout());
+    public TabItem create(GWTSidePanelTab config) {
+        super.create(config);
+        tab.setLayout(new FitLayout());
 
         contentTypeTree = new ContentTypeTree(null);
 
@@ -74,8 +74,9 @@ class CreateContentTabItem extends SidePanelTabItem {
                         contentTypeTree.filldataStore(result);
                     }
                 });
-        add(contentTypeTree);
+        tab.add(contentTypeTree);
         gridDragSource = new CreateGridDragSource(contentTypeTree.getTreeGrid());
+        return tab;
     }
 
     @Override

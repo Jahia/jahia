@@ -14,18 +14,18 @@ import java.util.Map;
 
 /**
  * Jackrabbit XASession extension for jahia
- *
  */
 public class JahiaSessionImpl extends XASessionImpl {
     private JahiaNodeTypeInstanceHandler myNtInstanceHandler;
-    private Map<String,Object> jahiaAttributes;
-    public JahiaSessionImpl(RepositoryImpl rep, AuthContext loginContext, WorkspaceConfig wspConfig) throws AccessDeniedException, RepositoryException {
-        super(rep, loginContext, wspConfig);
+    private Map<String, Object> jahiaAttributes;
+
+    public JahiaSessionImpl(RepositoryContext repositoryContext, AuthContext loginContext, WorkspaceConfig wspConfig) throws AccessDeniedException, RepositoryException {
+        super(repositoryContext, loginContext, wspConfig);
         init();
     }
 
-    public JahiaSessionImpl(RepositoryImpl rep, Subject subject, WorkspaceConfig wspConfig) throws AccessDeniedException, RepositoryException {
-        super(rep, subject, wspConfig);
+    public JahiaSessionImpl(RepositoryContext repositoryContext, Subject subject, WorkspaceConfig wspConfig) throws AccessDeniedException, RepositoryException {
+        super(repositoryContext, subject, wspConfig);
         init();
     }
 
@@ -34,16 +34,17 @@ public class JahiaSessionImpl extends XASessionImpl {
         jahiaAttributes = new HashMap<String, Object>();
     }
 
-    @Override
+    // @Override
+
     public JahiaNodeTypeInstanceHandler getNodeTypeInstanceHandler() {
         return myNtInstanceHandler;
     }
-    
+
     public String getPrefix(String uri) throws NamespaceException {
         try {
             return getNamespacePrefix(uri);
         } catch (NamespaceException e) {
-            return rep.getNamespaceRegistry().getPrefix(uri);
+            return repositoryContext.getNamespaceRegistry().getPrefix(uri);
         } catch (RepositoryException e) {
             throw new NamespaceException("Namespace not found: " + uri, e);
         }
@@ -53,14 +54,14 @@ public class JahiaSessionImpl extends XASessionImpl {
         try {
             return getNamespaceURI(prefix);
         } catch (NamespaceException e) {
-            return rep.getNamespaceRegistry().getURI(prefix);
+            return repositoryContext.getNamespaceRegistry().getURI(prefix);
         } catch (RepositoryException e) {
             throw new NamespaceException("Namespace not found: " + prefix, e);
         }
     }
 
-    public void setJahiaAttributes(String attributeName,Object attributeValue) {
-        jahiaAttributes.put(attributeName,attributeValue);
+    public void setJahiaAttributes(String attributeName, Object attributeValue) {
+        jahiaAttributes.put(attributeName, attributeValue);
     }
 
     /**
@@ -71,7 +72,7 @@ public class JahiaSessionImpl extends XASessionImpl {
     @Override
     public AccessManager getAccessManager() {
         JahiaAccessManager accessManager = (JahiaAccessManager) super.getAccessManager();
-        if(jahiaAttributes.containsKey("isAliasedUser") && (Boolean)jahiaAttributes.get("isAliasedUser")) {
+        if (jahiaAttributes.containsKey("isAliasedUser") && (Boolean) jahiaAttributes.get("isAliasedUser")) {
             accessManager.setAliased(true);
         }
         return accessManager;

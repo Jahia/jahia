@@ -1,7 +1,5 @@
 package org.apache.jackrabbit.core.query.lucene;
 
-import java.util.Map;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.HierarchyManager;
 import org.apache.jackrabbit.core.SessionImpl;
@@ -16,22 +14,22 @@ import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.SortComparatorSource;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.query.qom.Literal;
 import javax.jcr.query.qom.StaticOperand;
+import java.util.Map;
 
-public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactoryImpl {
+public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
     private static final Logger logger = Logger.getLogger(JahiaFilterMultiColumnQueryHits.class);
     private final SessionImpl session;
 
-    public JahiaLuceneQueryFactoryImpl(SessionImpl session, SortComparatorSource scs, HierarchyManager hmgr,
+    public JahiaLuceneQueryFactoryImpl(SessionImpl session, HierarchyManager hmgr,
                                        NamespaceMappings nsMappings, Analyzer analyzer, SynonymProvider synonymProvider,
-                                       IndexFormatVersion version, Map<Name, Value> bindVariables) {
-        super(session, scs, hmgr, nsMappings, analyzer, synonymProvider, version, bindVariables);
+                                       IndexFormatVersion version, Map<String, Value> bindVariables) throws RepositoryException {
+        super(session, hmgr, nsMappings, analyzer, synonymProvider, version, bindVariables);
         this.session = session;
     }
 
@@ -80,7 +78,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactoryImpl {
                     new Term(JahiaNodeIndexer.ANCESTOR, session.getNode(dn.getAncestorPath()).getIdentifier()));
         } catch (PathNotFoundException e) {
             logger.debug("Path given in query cannot be found: " + dn.getAncestorPath(), e);
-        }        
+        }
         return query;
     }
 
@@ -177,7 +175,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactoryImpl {
                         BooleanQuery and = new BooleanQuery();
                         and.add(adapter.getQuery(), BooleanClause.Occur.MUST);
                         and.add(q, areAllClausesProhibited(q) ? BooleanClause.Occur.SHOULD
-                                        : BooleanClause.Occur.MUST);
+                                : BooleanClause.Occur.MUST);
                         adapter.setQuery(and);
                     }
                 }

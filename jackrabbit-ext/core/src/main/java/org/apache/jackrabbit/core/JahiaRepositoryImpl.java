@@ -10,9 +10,8 @@ import javax.security.auth.Subject;
 
 /**
  * Jackrabbit repository extension
- *
+ * <p/>
  * Used to return session extension
- *
  */
 public class JahiaRepositoryImpl extends RepositoryImpl {
     public JahiaRepositoryImpl(RepositoryConfig repConfig) throws RepositoryException {
@@ -34,11 +33,15 @@ public class JahiaRepositoryImpl extends RepositoryImpl {
 
     @Override
     protected SessionImpl createSessionInstance(AuthContext loginContext, WorkspaceConfig wspConfig) throws AccessDeniedException, RepositoryException {
-        return new JahiaSessionImpl(this, loginContext, wspConfig);
+        return new JahiaSessionImpl(context, loginContext, wspConfig);
     }
 
     @Override
     protected SessionImpl createSessionInstance(Subject subject, WorkspaceConfig wspConfig) throws AccessDeniedException, RepositoryException {
-        return new JahiaSessionImpl(this, subject, wspConfig);
+        return new JahiaSessionImpl(context, subject, wspConfig);
+    }
+
+    public RepositoryContext getContext() {
+        return context;
     }
 }

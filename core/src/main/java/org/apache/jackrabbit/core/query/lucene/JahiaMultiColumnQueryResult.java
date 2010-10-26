@@ -1,28 +1,8 @@
 package org.apache.jackrabbit.core.query.lucene;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
-
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.NamespaceException;
-import javax.jcr.NodeIterator;
-import javax.jcr.RepositoryException;
-import javax.jcr.query.RowIterator;
-import javax.jcr.query.qom.Column;
-import javax.jcr.query.qom.Selector;
-
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.core.ItemManager;
-import org.apache.jackrabbit.core.SessionImpl;
 import org.apache.jackrabbit.core.security.AccessManager;
+import org.apache.jackrabbit.core.session.SessionContext;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.apache.jackrabbit.spi.commons.query.qom.ColumnImpl;
@@ -46,14 +26,24 @@ import org.jahia.services.search.facets.SimpleJahiaJcrFacets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.NamespaceException;
+import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
+import javax.jcr.query.RowIterator;
+import javax.jcr.query.qom.Column;
+import javax.jcr.query.qom.Selector;
+import java.io.IOException;
+import java.util.*;
+
 public class JahiaMultiColumnQueryResult extends QueryResultImpl {
 
     /**
      * The logger instance for this class
      */
     private static final Logger log = LoggerFactory.getLogger(JahiaMultiColumnQueryResult.class);
-    
-    private static final String RANGEFROM_INCLUSIVE_PREFIX = ":["; 
+
+    private static final String RANGEFROM_INCLUSIVE_PREFIX = ":[";
     private static final String RANGEFROM_EXCLUSIVE_PREFIX = ":{";
 
     /**
@@ -130,14 +120,13 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
      */
     private static final Name REP_FACET_LPAR = NameFactoryImpl.getInstance().create(
             Name.NS_REP_URI, FACET_FUNC_LPAR);
-    
+
     private static final String FIELD_SPECIFIC_PREFIX = "f.";
 
-    public JahiaMultiColumnQueryResult(SearchIndex index, ItemManager itemMgr, SessionImpl session,
-            AccessManager accessMgr, AbstractQueryImpl queryImpl, MultiColumnQuery query,
-            SpellSuggestion spellSuggestion, ColumnImpl[] columns, OrderingImpl[] orderings,
-            boolean documentOrder, long offset, long limit) throws RepositoryException {
-        super(index, itemMgr, session, accessMgr, queryImpl, spellSuggestion, columns,
+    public JahiaMultiColumnQueryResult(SearchIndex index, SessionContext sessionContext, AbstractQueryImpl queryImpl, MultiColumnQuery query,
+                                       SpellSuggestion spellSuggestion, ColumnImpl[] columns, OrderingImpl[] orderings,
+                                       boolean documentOrder, long offset, long limit) throws RepositoryException {
+        super(index, sessionContext, queryImpl, spellSuggestion, columns,
                 documentOrder, offset, limit);
         this.offset = offset;
         this.limit = limit;
@@ -151,18 +140,18 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
      * {@inheritDoc}
      */
     protected MultiColumnQueryHits executeQuery(long resultFetchHint) throws IOException {
-        return ((JahiaSearchIndex) index).executeQuery(session, query, orderings, resultFetchHint,
+        return ((JahiaSearchIndex) index).executeQuery(sessionContext.getSessionImpl(), query, orderings, resultFetchHint,
                 true);
     }
 
     /**
      * Creates a {@link ScoreNodeIterator} over the query result.
-     * 
+     *
      * @return a {@link ScoreNodeIterator} over the query result.
      */
     private ScoreNodeIterator getScoreNodes() {
         if (docOrder) {
-            return new DocOrderScoreNodeIterator(itemMgr, displayedResultNodes, 0);
+            return new DocOrderScoreNodeIterator(sessionContext.getItemManager(), displayedResultNodes, 0);
         } else {
             return new LazyScoreNodeIteratorImpl();
         }
@@ -171,20 +160,15 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
     /**
      * Collect score nodes from <code>hits</code> into the <code>collector</code> list until the size of <code>collector</code> reaches
      * <code>maxResults</code> or there are not more results.
-     * 
-     * @param hits
-     *            the raw hits.
-     * @param collector
-     *            where the access checked score nodes are collected.
-     * @param maxResults
-     *            the maximum number of results in the collector.
-     * @throws IOException
-     *             if an error occurs while reading from hits.
-     * @throws RepositoryException
-     *             if an error occurs while checking access rights.
+     *
+     * @param hits       the raw hits.
+     * @param collector  where the access checked score nodes are collected.
+     * @param maxResults the maximum number of results in the collector.
+     * @throws IOException         if an error occurs while reading from hits.
+     * @throws RepositoryException if an error occurs while checking access rights.
      */
     private void collectScoreNodes(MultiColumnQueryHits hits, List<ScoreNode[]> collector,
-            long maxResults) throws IOException, RepositoryException {
+                                   long maxResults) throws IOException, RepositoryException {
         while (collector.size() < maxResults) {
             ScoreNode[] sn = hits.nextScoreNodes();
             if (sn == null) {
@@ -204,11 +188,9 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
      * Attempts to get <code>size</code> results and puts them into {@link #displayedResultNodes}. If the size of
      * {@link #displayedResultNodes} is less than <code>size</code> then there are no more than <code>resultNodes.size()</code> results for
      * this query.
-     * 
-     * @param size
-     *            the number of results to fetch for the query.
-     * @throws RepositoryException
-     *             if an error occurs while executing the query.
+     *
+     * @param size the number of results to fetch for the query.
+     * @throws RepositoryException if an error occurs while executing the query.
      */
     protected void getResults(long size) throws RepositoryException {
         if (log.isDebugEnabled()) {
@@ -259,12 +241,12 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
             // handle faceting
             if (result instanceof JahiaFilterMultiColumnQueryHits && hasFacetFunctions()
                     && !facetsResolved) {
-                time = System.currentTimeMillis();                
+                time = System.currentTimeMillis();
                 handleFacets(((JahiaFilterMultiColumnQueryHits) result)
                         .getReader());
-                long r4 = IOCounters.getReads();                
+                long r4 = IOCounters.getReads();
                 log.debug("handle facets in {} ms ({})", System.currentTimeMillis() - time, r4
-                        - r3);                
+                        - r3);
                 facetsResolved = true;
             }
 
@@ -287,7 +269,7 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
     private void handleFacets(IndexReader reader) {
         IndexSearcher searcher = new IndexSearcher(reader);
         try {
-            String facetFunctionPrefix = session.getJCRName(REP_FACET_LPAR);
+            String facetFunctionPrefix = sessionContext.getJCRName(REP_FACET_LPAR);
             NamedList<Object> parameters = new NamedList<Object>();
             int counter = 0;
             Set<Integer> selectorIndexes = new HashSet<Integer>();
@@ -297,18 +279,18 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
                             .indexOf(column.getColumnName(), facetFunctionPrefix)
                             + facetFunctionPrefix.length(), StringUtils.lastIndexOf(column
                             .getColumnName(), ")"));
-                   
+
                     String propertyName = null;
                     if (!StringUtils.isEmpty(propertyName = StringUtils.substringAfter(facetOptions, FacetParams.FACET_FIELD + "=")) ||
                             !StringUtils.isEmpty(propertyName = StringUtils.substringAfter(facetOptions, "field="))) {
                         propertyName = StringUtils.substring(propertyName, 0, StringUtils.indexOfAny(
                                 propertyName, "&)") >= 0 ? StringUtils.indexOfAny(propertyName,
-                                "&)") : propertyName.length()) + SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR + counter; 
+                                "&)") : propertyName.length()) + SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR + counter;
                     } else if (!StringUtils.isEmpty(propertyName = StringUtils.substringAfter(facetOptions, FacetParams.FACET_DATE + "=")) ||
                             !StringUtils.isEmpty(propertyName = StringUtils.substringAfter(facetOptions, "date="))) {
                         propertyName = StringUtils.substring(propertyName, 0, StringUtils.indexOfAny(
                                 propertyName, "&)") >= 0 ? StringUtils.indexOfAny(propertyName,
-                                "&)") : propertyName.length()) + SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR + counter;                        
+                                "&)") : propertyName.length()) + SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR + counter;
                     } else if (!StringUtils.contains(facetOptions, FacetParams.FACET_QUERY)) {
                         propertyName = column.getPropertyName() + SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR + counter;
                         parameters.add((facetOptions.indexOf("&date.") >= 0 || facetOptions
@@ -319,12 +301,12 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
                     String nodeType = null;
                     for (String option : StringUtils.split(facetOptions, "&")) {
                         String key = StringUtils.substringBefore(option, "=");
-                        String value = StringUtils.substringAfter(option, "=");                        
+                        String value = StringUtils.substringAfter(option, "=");
                         if ("key".equals(key)) {
                             //facetKey = value;
                         } else if ("nodetype".equals(key)) {
                             nodeType = value;
-                        }                        
+                        }
                     }
                     for (String option : StringUtils.split(facetOptions, "&")) {
                         String key = StringUtils.substringBefore(option, "=");
@@ -339,10 +321,10 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
                             index = FacetParams.FACET.length() + 1;
                         }
                         String facetOption = FacetParams.FACET + "." + StringUtils.substring(key, index);
-                        if (facetOption.equals(FacetParams.FACET_QUERY)) {           
+                        if (facetOption.equals(FacetParams.FACET_QUERY)) {
                             if (value.split("(?<!\\\\):").length == 1
                                     && !StringUtils.isEmpty(column.getPropertyName())
-                                    && !StringUtils.isEmpty(nodeType)                                    
+                                    && !StringUtils.isEmpty(nodeType)
                                     && !column.getPropertyName().equals("rep:facet()")) {
                                 ExtendedPropertyDefinition epd = NodeTypeRegistry.getInstance().getNodeType(nodeType).getPropertyDefinition(column.getPropertyName());
                                 if (epd != null) {
@@ -351,13 +333,13 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
                                     value = QueryParser.escape(fieldNameInIndex) + ":" + value;
                                 }
                             }
-                            parameters.add(facetOption, value);                            
+                            parameters.add(facetOption, value);
                         } else if (facetOption.equals(FacetParams.FACET_FIELD) || facetOption.equals(FacetParams.FACET_DATE)) {
-                            parameters.add(facetOption, propertyName);                            
+                            parameters.add(facetOption, propertyName);
                         } else {
                             parameters.add(FIELD_SPECIFIC_PREFIX + propertyName + "."
                                     + facetOption, value);
-                        }                       
+                        }
                     }
                     if (!StringUtils.isEmpty(propertyName)) {
                         String nodeTypeParam = FIELD_SPECIFIC_PREFIX + propertyName + "."
@@ -382,7 +364,7 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
             SimpleJahiaJcrFacets facets = new SimpleJahiaJcrFacets(
                     ((JahiaQueryObjectModelImpl) queryImpl).getQomTree(), searcher,
                     transformToDocIdSet(allResultNodes, reader, selectorIndexes), SolrParams
-                            .toSolrParams(parameters), index, session);
+                            .toSolrParams(parameters), index, sessionContext.getSessionImpl());
             extractFacetInfo(facets.getFacetCounts());
         } catch (Exception ex) {
             log.warn("Problem creating facets: ", ex);
@@ -395,36 +377,36 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
         }
         return;
     }
-    
+
     public String getFieldNameInIndex(String field, ExtendedPropertyDefinition epd, String langCode) {
         String fieldName = field;
         try {
-            fieldName = NamePathResolverImpl.create(index.getNamespaceMappings()).getJCRName(NameFactoryImpl.getInstance().create(session.getNamespaceURI(epd.getPrefix()),
+            fieldName = NamePathResolverImpl.create(index.getNamespaceMappings()).getJCRName(NameFactoryImpl.getInstance().create(sessionContext.getSessionImpl().getNamespaceURI(epd.getPrefix()),
                     epd.getLocalName()));
             int idx = fieldName.indexOf(':');
             fieldName = fieldName.substring(0, idx + 1)
                     + (epd != null && epd.isFacetable() ? JahiaNodeIndexer.FACET_PREFIX
-                            : FieldNames.FULLTEXT_PREFIX)
+                    : FieldNames.FULLTEXT_PREFIX)
                     + fieldName.substring(idx + 1);
         } catch (RepositoryException e) {
             // will never happen
         }
         return fieldName;
-    }    
-    
+    }
+
     private String getNodeTypeFromSelector(String selectorName,
-            String propertyName) throws RepositoryException {
-        selectorName = StringUtils.removeEnd(selectorName, "translationAdded"); 
+                                           String propertyName) throws RepositoryException {
+        selectorName = StringUtils.removeEnd(selectorName, "translationAdded");
         Selector foundSelector = null;
         for (SelectorImpl selector : ((SourceImpl) ((JahiaQueryObjectModelImpl) queryImpl).getQomTree().getSource()).getSelectors()) {
             if (StringUtils.isEmpty(selectorName) || selectorName.equals(selector.getSelectorName())) {
                 foundSelector = selector;
                 break;
             }
-        }        
+        }
         return foundSelector.getNodeTypeName();
     }
-    
+
     private OpenBitSet transformToDocIdSet(List<ScoreNode[]> scoreNodeArrays, IndexReader reader, Set<Integer> selectorIndexes) {
         OpenBitSet docIds = null;
         try {
@@ -449,7 +431,7 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
      * Returns the total number of hits. This is the number of results you will get get if you don't set any limit or offset. Keep in mind
      * that this number may get smaller if nodes are found in the result set which the current session has no permission to access. This
      * method may return <code>-1</code> if the total size is unknown.
-     * 
+     *
      * @return the total number of hits.
      */
     public int getTotalSize() {
@@ -462,18 +444,16 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
 
     /**
      * Checks if access is granted to all <code>nodes</code>.
-     * 
-     * @param nodes
-     *            the nodes to check.
+     *
+     * @param nodes the nodes to check.
      * @return <code>true</code> if read access is granted to all <code>nodes</code>.
-     * @throws RepositoryException
-     *             if an error occurs while checking access rights.
+     * @throws RepositoryException if an error occurs while checking access rights.
      */
     private boolean isAccessGranted(ScoreNode[] nodes) throws RepositoryException {
         for (ScoreNode node : nodes) {
             try {
                 // TODO: rather use AccessManager.canRead(Path)
-                if (node != null && !accessMgr.isGranted(node.getNodeId(), AccessManager.READ)) {
+                if (node != null && !sessionContext.getAccessManager().isGranted(node.getNodeId(), AccessManager.READ)) {
                     return false;
                 }
             } catch (ItemNotFoundException e) {
@@ -487,7 +467,7 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
      * {@inheritDoc}
      */
     public NodeIterator getNodes() throws RepositoryException {
-        return new NodeIteratorImpl(itemMgr, getScoreNodes(), 0);
+        return new NodeIteratorImpl(sessionContext, getScoreNodes(), 0);
     }
 
     /**
@@ -501,8 +481,8 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
                 throw new RepositoryException(e);
             }
         }
-        return new RowIteratorImpl(getScoreNodes(), columns, selectorNames, itemMgr, index
-                .getContext().getHierarchyManager(), session, session.getValueFactory(),
+        return new RowIteratorImpl(getScoreNodes(), columns, selectorNames, sessionContext.getItemManager(), index
+                .getContext().getHierarchyManager(), sessionContext, sessionContext.getValueFactory(),
                 excerptProvider, spellSuggestion);
     }
 
@@ -512,7 +492,7 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
     public String[] getSelectorNames() throws RepositoryException {
         String[] names = new String[selectorNames.length];
         for (int i = 0; i < selectorNames.length; i++) {
-            names[i] = session.getJCRName(selectorNames[i]);
+            names[i] = sessionContext.getJCRName(selectorNames[i]);
         }
         return names;
     }
@@ -598,8 +578,7 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
         }
 
         /**
-         * @throws UnsupportedOperationException
-         *             always.
+         * @throws UnsupportedOperationException always.
          */
         public void remove() {
             throw new UnsupportedOperationException("remove");
@@ -681,13 +660,12 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
     }
 
     /**
-     * @param name
-     *            a String.
+     * @param name a String.
      * @return <code>true</code> if <code>name</code> is the rep:facet function, <code>false</code> otherwise.
      */
     private boolean isFacetFunction(String name) {
         try {
-            return name.trim().startsWith(session.getJCRName(REP_FACET_LPAR));
+            return name.trim().startsWith(sessionContext.getJCRName(REP_FACET_LPAR));
         } catch (NamespaceException e) {
             // will never happen
             return false;
@@ -751,7 +729,7 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
                         String key = StringUtils.substringBeforeLast(entry.getKey(),
                                 SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR);
                         String query = StringUtils.substringAfterLast(entry.getKey(),
-                                SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR);                                     
+                                SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR);
                         f.add(key, Long.parseLong(entry.getValue().toString()));
                         if (!StringUtils.isEmpty(query)) {
                             String rangePrefix = null;
@@ -792,9 +770,8 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
 
     /**
      * get
-     * 
-     * @param name
-     *            the name of the
+     *
+     * @param name the name of the
      * @return the FacetField by name or null if it does not exist
      */
     public FacetField getFacetField(String name) {

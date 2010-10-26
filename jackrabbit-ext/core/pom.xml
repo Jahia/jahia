@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>org.jahia.server</groupId>
@@ -28,12 +28,12 @@
         <dependency>
             <groupId>org.apache.jackrabbit</groupId>
             <artifactId>jackrabbit-core</artifactId>
-            <version>${jackrabbit.version}-${jackrabbit.patch.version}</version>
+            <version>${jackrabbit.version}</version>
             <exclusions>
-            	<exclusion>
-            		<groupId>org.apache.tika</groupId>
+                <exclusion>
+                    <groupId>org.apache.tika</groupId>
                     <artifactId>tika-parsers</artifactId>
-            	</exclusion>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -61,10 +61,10 @@
             <artifactId>jackrabbit-jcr-server</artifactId>
             <version>${jackrabbit.version}</version>
             <exclusions>
-            	<exclusion>
-            		<groupId>org.apache.tika</groupId>
+                <exclusion>
+                    <groupId>org.apache.tika</groupId>
                     <artifactId>tika-core</artifactId>
-            	</exclusion>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>

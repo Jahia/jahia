@@ -33,9 +33,15 @@
 package org.jahia.services.query;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.SessionImpl;
+import org.apache.jackrabbit.core.query.lucene.join.QueryEngine;
+import org.apache.jackrabbit.spi.Name;
+import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
@@ -44,6 +50,7 @@ import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
+import javax.jcr.query.qom.Column;
 import javax.jcr.query.qom.QueryObjectModel;
 import javax.jcr.version.VersionException;
 import java.util.*;
@@ -54,6 +61,13 @@ import java.util.*;
  * @author Thomas Draier
  */
 class QueryWrapper implements Query {
+
+    public static final Logger logger = LoggerFactory.getLogger(QueryWrapper.class);
+
+    private static final String FACET_FUNC_LPAR = "facet(";
+    private static final Name REP_FACET_LPAR = NameFactoryImpl.getInstance().create(
+            Name.NS_REP_URI, FACET_FUNC_LPAR);
+
     private String statement;
     private String language;
     private long limit = -1;
@@ -103,6 +117,36 @@ class QueryWrapper implements Query {
         }
     }
 
+    /*
+    // @todo This is an ugly copy & paste from JahiaMultiColumnQueryResult, we should put these methods in a utility class somewhere and avoid code duplication.
+    private boolean isFacetFunction(String columnName, SessionImpl sessionImpl) {
+        try {
+            return columnName.trim().startsWith(sessionImpl.getJCRName(REP_FACET_LPAR));
+        } catch (NamespaceException e) {
+            // will never happen
+            return false;
+        }
+    }
+
+    public void setImplicitLimit(QueryObjectModel qom, SessionImpl sessionImpl) {
+        // first let's check if faceted search is being used, because we cannot set an implicit limit if faceting
+        // is active.
+        boolean hasFacetRequest = false;
+        for (Column column : qom.getColumns()) {
+            if ((column.getColumnName() != null) && isFacetFunction(column.getColumnName(), sessionImpl)) {
+                hasFacetRequest = true;
+                break;
+            }
+        }
+        // We only set the limit if the limit has not been set and offset neither. Setting the limit to -2 for example
+        // will avoid this behavior.
+        if ((!hasFacetRequest) && (limit == -1) && (offset == 0)) {
+            qom.setLimit(100);
+            logger.warn("No limit set, will limit to 100 query results by default !");
+        }
+    }
+    */
+
     public QueryResult execute() throws RepositoryException {
         List<QueryResultWrapper> results = new LinkedList<QueryResultWrapper>();
         for (Map.Entry<JCRStoreProvider, Query> entry : queries.entrySet()) {
@@ -114,7 +158,21 @@ class QueryWrapper implements Query {
             if (offset > 0) {
                 query.setOffset(offset);
             }
-            QueryResultWrapper subResults = new QueryResultWrapper(query.execute(), entry.getKey(), session);
+            QueryResultWrapper subResults = null;
+            /*
+            if (query instanceof QueryObjectModel) {
+                QueryObjectModel qom = (QueryObjectModel) query;
+                Session providerSession = session.getProviderSession(entry.getKey());
+                if (providerSession instanceof SessionImpl) {
+                    setImplicitLimit(qom, (SessionImpl) providerSession);
+                }
+                subResults = new QueryResultWrapper(query.execute(), entry.getKey(), session);
+            } else {
+            */
+                subResults = new QueryResultWrapper(query.execute(), entry.getKey(), session);
+            /*
+            }
+            */
             results.add(subResults);
         }
         return MultipleQueryResultAdapter.decorate(results);
@@ -139,7 +197,7 @@ class QueryWrapper implements Query {
         String path = StringUtils.substringBeforeLast(s, "/");
         String name = StringUtils.substringAfterLast(s, "/");
         Node n = (Node) session.getItem(path);
-        if(!n.isCheckedOut()) {
+        if (!n.isCheckedOut()) {
             n.checkout();
         }
         node = n.addNode(name, "jnt:query");

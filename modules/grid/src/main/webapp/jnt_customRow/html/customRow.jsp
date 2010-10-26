@@ -4,6 +4,7 @@
 
 <jcr:nodeProperty node="${currentNode}" name="customColumn" var="customColumn"/>
 <jcr:nodeProperty node="${currentNode}" name="principalColumn" var="principalColumn"/>
+<c:set var="nbCols" value="0"/>
 <c:forTokens items="${customColumn.string}" delims="," varStatus="vs" var="col">
     <c:if test="${vs.count eq principalColumn.string}">
         <c:set target="${colMap}" property="colContent" value="${col}"/>
@@ -11,18 +12,48 @@
     <c:if test="${!(vs.count eq principalColumn.string)}">
         <c:set target="${colMap}" property="col${vs.count}" value="${col}"/>
     </c:if>
+    <c:if test="${fn:contains(col,' ')}">
+        <c:forTokens items="${col}" delims=" " varStatus="vs" var="c">
+            <c:if test="${vs.count eq 1}">
+                <c:set var="col" value="${c}"/>
+            </c:if>
+        </c:forTokens>
+    </c:if>
+    <c:set var="nbCols" value="${nbCols + col}"/>
 </c:forTokens>
 
-<c:if test="${editableModule}">
-    <div class="grid_16 alpha omega">${jcr:label(currentNode.primaryNodeType,currentResource.locale)} ${currentNode.name} : ${column.string}</div>
+<c:if test="${!empty currentNode.properties.divClass || !empty currentNode.properties.divID}">
+    <div class='container container_${nbCols} <c:if test="${!empty currentNode.properties.divClass}">${currentNode.properties.divClass.string}"</c:if>'
+    <c:if test='${!empty currentNode.properties.divID}'>id="${currentNode.properties.divID.string}"</c:if>
+    >
 </c:if>
+<c:if test="${editableModule}">
+    <div class="grid_${nbCols}">${jcr:label(currentNode.primaryNodeType,currentResource.locale)} ${currentNode.name} : ${column.string}</div>
+    <div class='clear'></div>
+</c:if>
+
 <c:forEach items="${colMap}" var="col" varStatus="count">
-    <!--start grid_${col.value}-->
-    <div class='grid_${col.value} <c:if test="${count.first}"> alpha</c:if> <c:if test="${count.last}"> omega</c:if>'>
+    <c:set var="column" value="${col.value}"/>
+    <c:set var="colCss" value=""/>
+    <c:if test="${fn:contains(column,' ')}">
+        <c:forTokens items="${column}" delims=" " varStatus="vs" var="c">
+            <c:if test="${vs.count eq 1}">
+                <c:set var="column" value="${c}"/>
+            </c:if>
+            <c:if test="${!(vs.count eq 1)}">
+                <c:set var="colCss" value="${colCss} ${c}"/>
+            </c:if>
+        </c:forTokens>
+    </c:if>
+    <!--start grid_${column}-->
+    <div
+            class='${colCss} grid_${column}'>
         <template:area path="${currentNode.name}-${col.key}"/>
         <div class='clear'></div>
     </div>
-    <!--stop grid_${col.value}-->
+    <!--stop grid_${column}-->
 </c:forEach>
 <div class='clear'></div>
-
+<c:if test="${!empty currentNode.properties.divClass || !empty currentNode.properties.divID}">
+    </div>
+</c:if>

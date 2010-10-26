@@ -4,6 +4,8 @@
 [jnt:customRow] > jnt:content, jmix:layoutComponentContent
 - customColumn (string)
 - principalColumn (long)
+- divID (string)
+- divClass (string)
 
 [jnt:row]  > jnt:content, jmix:layoutComponentContent
 - column (string,choicelist[resourceBundle,moduleImage='png']) = '1col16' < '1col16','2col412','2col124','2col511','2col115','2col610','2col106','2col88','3col448','3col466','3col484','3col664','3col844','4col4444'

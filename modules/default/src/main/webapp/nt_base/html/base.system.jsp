@@ -11,8 +11,12 @@
     <tr>
         <th width="5%" align="center">
             <c:if test="${jcr:isNodeType(currentNode.parent,'jnt:contentList') || jcr:isNodeType(currentNode.parent,'jnt:folder')}">
-            <a title="parent" href="${url.base}${currentNode.parent.path}.html"><img height="16" width="16" border="0" style="cursor: pointer;" title="parent" alt="parent" src="${url.currentModule}/images/icons/folder_up.png"></a></div></th>
-        </c:if>
+                <a title="parent" href="${url.base}${currentNode.parent.path}.html"><img height="16" width="16"
+                                                                                         border="0"
+                                                                                         style="cursor: pointer;"
+                                                                                         title="parent" alt="parent"
+                                                                                         src="${url.currentModule}/images/icons/folder_up.png"/></a>
+            </c:if>
         </th>
     </tr>
     </thead>

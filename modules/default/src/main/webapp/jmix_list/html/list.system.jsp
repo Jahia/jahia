@@ -14,9 +14,6 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
-<template:addResources type="css" resources="960-fluid-admin-jahia.css"/>
-<template:addResources type="css" resources="jahia-admin.css"/>
-
 <template:include template="hidden.header"/>
 
 <table width="100%" cellspacing="0" cellpadding="5" border="0" class="evenOddTable">

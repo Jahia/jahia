@@ -30,7 +30,7 @@
 <div id="bodywrapper"><!--start bodywrapper-->
     <div class="container container_16">
         <div class="grid_16">
-            <template:areaTag path="pagecontent"/>
+            <template:area path="pagecontent"/>
         </div>
     </div>
 </div>

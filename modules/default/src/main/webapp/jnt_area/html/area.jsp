@@ -44,7 +44,7 @@
                 </c:if>
             </c:forEach>
         </c:if>
-        <template:areaTag template="${currentNode.properties['j:areaView'].string}"
+        <template:area template="${currentNode.properties['j:areaView'].string}"
                                  path="${currentNode.name}" nodeTypes="${nodeTypes}" mockupStyle="${currentNode.properties['j:mockupStyle'].string}">
             <c:if test="${not empty currentNode.properties['j:subNodesView'].string}">
                 <template:param name="subNodesTemplate" value="${currentNode.properties['j:subNodesView'].string}"/>
@@ -52,7 +52,7 @@
             <c:if test="${not empty currentNode.properties['j:mockupStyle'].string}">
                 <template:param name="mockupStyle" value="${currentNode.properties['j:mockupStyle'].string}"/>
             </c:if>
-        </template:areaTag>
+        </template:area>
     </c:otherwise>
 </c:choose>
 

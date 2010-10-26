@@ -379,7 +379,7 @@
     <tag>
         <description>Define an area for containing sub modules.
         </description>
-        <name>areaTag</name>
+        <name>area</name>
         <tag-class>org.jahia.taglibs.template.include.AreaTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>

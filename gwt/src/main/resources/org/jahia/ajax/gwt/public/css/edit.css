@@ -401,4 +401,5 @@
 
 #bodywrapper .dashedArea {
     background : url(images/placeholder-area.png) top left;
+    height:100%;
 }

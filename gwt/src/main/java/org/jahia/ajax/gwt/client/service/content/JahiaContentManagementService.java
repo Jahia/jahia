@@ -236,7 +236,7 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
      */
     List<GWTJahiaAnalyticsData> getAnalyticsData(GWTJahiaAnalyticsQuery query) throws GWTJahiaServiceException;
 
-    void synchro(Map<String, String> pathsToSyncronize) throws GWTJahiaServiceException;
+    void deployTemplates(String templatesPath, String sitePath) throws GWTJahiaServiceException;
 
     GWTJahiaNode createTemplateSet(String key, String baseSet) throws GWTJahiaServiceException;
 

@@ -45,6 +45,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.importexport.ImportExportBaseService;
@@ -347,64 +348,64 @@ public class JahiaSitesBaseService extends JahiaSitesService {
 
             if ("importRepositoryFile".equals(firstImport) || (initialZip != null && initialZip.exists() && !"noImport".equals(firstImport))) {
                 // enable admin group to admin the page
-                if (asAJob == null || asAJob.booleanValue()) {
-
-                    // check if we need to import users synchronously
-                    if (doImportServerPermissions != null
-                            && doImportServerPermissions.booleanValue()) {
-                        // import users and groups
-                        try {
-                            ImportExportBaseService.getInstance()
-                                    .importUsersFromZip(initialZip, jParams.getSite());
-                        } catch (Exception e) {
-                            logger.error(
-                                    "Unable to import users for the site '"
-                                            + site.getTitle() + "'["
-                                            + site.getSiteKey() + "]", e);
-                        }
-                    }
-
-                    JobDetail jobDetail = BackgroundJob.createJahiaJob("Initial import for site " + site.getSiteKey(), ImportJob.class);
-                    JobDataMap jobDataMap;
-                    jobDataMap = jobDetail.getJobDataMap();
-
-                    if ("importRepositoryFile".equals(firstImport)) {
-                        jobDataMap.put(ImportJob.URI, fileImportName);
-                        jobDataMap.put(ImportJob.FILENAME, fileImportName.substring(fileImportName.lastIndexOf('/') + 1));
-                    } else {
-                        String dateOfExport = ImportExportBaseService.DATE_FORMAT.format(new Date());
-                        String uploadname = "initialImport_" + dateOfExport.replaceAll(":", "-") + ".zip";
-                        List<JCRNodeWrapper> l = ServicesRegistry.getInstance().getJCRStoreService().getImportDropBoxes(null, jParams.getUser());
-                        JCRNodeWrapper importFolder = l.iterator().next();
-                        try {
-                            importFolder.uploadFile(uploadname, new FileInputStream(
-                                    initialZip),
-                                    "application/zip");
-                            importFolder.save();
-                        } catch (RepositoryException e) {
-                            logger.error("cannot upload file", e);
-                        }
-                        jobDataMap.put(ImportJob.URI, importFolder.getPath() + "/" + uploadname);
-                        if (initialZipName == null) {
-                            initialZipName = initialZip.getName();
-                        }
-                        jobDataMap.put(ImportJob.FILENAME, initialZipName);
-                    }
-                    jobDataMap.put(ImportJob.JOB_SITEKEY, site.getSiteKey());
-                    jobDataMap.put(ImportJob.CONTENT_TYPE, "application/zip");
-                    jobDataMap.put(BackgroundJob.JOB_DESTINATION_SITE, site.getID());
-                    jobDataMap.put(ImportJob.DELETE_FILE, Boolean.TRUE);
-                    jobDataMap.put(ImportJob.COPY_TO_JCR, Boolean.TRUE);
-                    jobDataMap.put(ImportJob.ORIGINATING_JAHIA_RELEASE, originatingJahiaRelease);
-
-                    ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail);
-                } else {
-                    try {
-                        ServicesRegistry.getInstance().getImportExportService().importSiteZip(initialZip, jParams.getSite(), Collections.emptyMap());
-                    } catch (RepositoryException e) {
-                        logger.warn("Error importing site ZIP", e);
-                    }
+//                if (asAJob == null || asAJob.booleanValue()) {
+//
+//                    // check if we need to import users synchronously
+//                    if (doImportServerPermissions != null
+//                            && doImportServerPermissions.booleanValue()) {
+//                        // import users and groups
+//                        try {
+//                            ImportExportBaseService.getInstance()
+//                                    .importUsersFromZip(initialZip, jParams.getSite());
+//                        } catch (Exception e) {
+//                            logger.error(
+//                                    "Unable to import users for the site '"
+//                                            + site.getTitle() + "'["
+//                                            + site.getSiteKey() + "]", e);
+//                        }
+//                    }
+//
+//                    JobDetail jobDetail = BackgroundJob.createJahiaJob("Initial import for site " + site.getSiteKey(), ImportJob.class);
+//                    JobDataMap jobDataMap;
+//                    jobDataMap = jobDetail.getJobDataMap();
+//
+//                    if ("importRepositoryFile".equals(firstImport)) {
+//                        jobDataMap.put(ImportJob.URI, fileImportName);
+//                        jobDataMap.put(ImportJob.FILENAME, fileImportName.substring(fileImportName.lastIndexOf('/') + 1));
+//                    } else {
+//                        String dateOfExport = ImportExportBaseService.DATE_FORMAT.format(new Date());
+//                        String uploadname = "initialImport_" + dateOfExport.replaceAll(":", "-") + ".zip";
+//                        List<JCRNodeWrapper> l = ServicesRegistry.getInstance().getJCRStoreService().getImportDropBoxes(null, jParams.getUser());
+//                        JCRNodeWrapper importFolder = l.iterator().next();
+//                        try {
+//                            importFolder.uploadFile(uploadname, new FileInputStream(
+//                                    initialZip),
+//                                    "application/zip");
+//                            importFolder.save();
+//                        } catch (RepositoryException e) {
+//                            logger.error("cannot upload file", e);
+//                        }
+//                        jobDataMap.put(ImportJob.URI, importFolder.getPath() + "/" + uploadname);
+//                        if (initialZipName == null) {
+//                            initialZipName = initialZip.getName();
+//                        }
+//                        jobDataMap.put(ImportJob.FILENAME, initialZipName);
+//                    }
+//                    jobDataMap.put(ImportJob.JOB_SITEKEY, site.getSiteKey());
+//                    jobDataMap.put(ImportJob.CONTENT_TYPE, "application/zip");
+//                    jobDataMap.put(BackgroundJob.JOB_DESTINATION_SITE, site.getID());
+//                    jobDataMap.put(ImportJob.DELETE_FILE, Boolean.TRUE);
+//                    jobDataMap.put(ImportJob.COPY_TO_JCR, Boolean.TRUE);
+//                    jobDataMap.put(ImportJob.ORIGINATING_JAHIA_RELEASE, originatingJahiaRelease);
+//
+//                    ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail);
+//                } else {
+                try {
+                    ServicesRegistry.getInstance().getImportExportService().importSiteZip(initialZip, jParams.getSite(), Collections.emptyMap());
+                } catch (RepositoryException e) {
+                    logger.warn("Error importing site ZIP", e);
                 }
+//                }
             } else {
                 try {
                     JCRSessionWrapper session = sessionFactory.getCurrentUserSession(null, jParams.getLocale());
@@ -420,8 +421,17 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                 }
             }
 
-            logger.debug("Site updated with Home Page");
+            try {
+                JCRSessionWrapper session = sessionFactory.getCurrentUserSession(null, jParams.getLocale());
+                JCRNodeWrapper nodeWrapper = session.getNode("/sites/" + site.getSiteKey());
+                if (nodeWrapper.hasNode("templates")) {
+                    JCRPublicationService.getInstance().publish(nodeWrapper.getNode("templates").getIdentifier(),"default","live",null,true, null);
+                }
+            } catch (RepositoryException e) {
+                logger.warn("Error adding home node", e);
+            }
 
+            logger.debug("Site updated with Home Page");
         } else {
             removeSite(site);      // remove site because the process generate error(s)...
             return null;

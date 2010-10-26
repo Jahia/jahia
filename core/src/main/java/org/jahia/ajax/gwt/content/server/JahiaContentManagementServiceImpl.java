@@ -1314,8 +1314,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return analytics.queryData(login, pwd, gaAccount, query);
     }
 
-    public void synchro(Map<String, String> pathsToSyncronize) throws GWTJahiaServiceException {
-        contentManager.synchro(pathsToSyncronize, retrieveCurrentSession());
+    public void deployTemplates(String templatesPath, String sitePath) throws GWTJahiaServiceException {
+        contentManager.deployTemplates(templatesPath, sitePath, retrieveCurrentSession());
     }
 
     public GWTJahiaNode createTemplateSet(String key, String baseSet) throws GWTJahiaServiceException {

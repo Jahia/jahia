@@ -23,8 +23,8 @@
             <themes jcr:primaryType="jnt:folder">
                 <default jcr:primaryType="jnt:folder"/>
             </themes>
-            <home jcr:mixinTypes="jmix:sitemap jmix:hasDefaultTemplateNode"
-                  j:defaultTemplateNode="/templateSets/templates-web/templates/base" j:displayInMenu="primary"
+            <home jcr:mixinTypes="jmix:sitemap"
+                  j:displayInMenu="primary"
                   jcr:primaryType="jnt:page" changefreq="monthly"
                   j:templateNode="/templateSets/templates-web/templates/base/home" priority="0.5">
                 <j:translation_en jcr:title="Home" jcr:language="en" jcr:primaryType="jnt:translation"/>
@@ -52,9 +52,6 @@
                     <footer jcr:primaryType="jnt:contentList">
                         <footer j:basenode="/templateSets/templates-web/home" jcr:primaryType="jnt:absoluteArea"/>
                     </footer>
-                    <pagecontent jcr:primaryType="jnt:contentList">
-                        <pagecontent jcr:primaryType="jnt:area"/>
-                    </pagecontent>
                     <home jcr:primaryType="jnt:pageTemplate">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row column="2col115" jcr:primaryType="jnt:row">

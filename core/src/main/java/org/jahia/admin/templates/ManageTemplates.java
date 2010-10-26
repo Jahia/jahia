@@ -169,11 +169,8 @@ public class ManageTemplates extends AbstractAdministrationModule {
             throws Exception {
         String nodePath = "/templateSets/" + site.getTemplateFolder();
 
-        Map<String, String> pathsToSyncronize = new LinkedHashMap<String, String>();
-        pathsToSyncronize.put(nodePath, site.getJCRLocalPath());
-
         try {
-            getContentManagementService().synchro(pathsToSyncronize, retrieveCurrentSession(request, locale));
+            getContentManagementService().deployTemplates(nodePath, site.getJCRLocalPath(), retrieveCurrentSession(request, locale));
 
             request.setAttribute("processedSynchronize", new Integer(1));
             session.setAttribute(JahiaAdministration.CLASS_NAME + "jahiaDisplayMessage", getMessage("org.jahia.admin.site.ManageTemplates.templatesDeployed"));            

@@ -37,7 +37,6 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaSite;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -83,11 +82,9 @@ public class DeployTemplatesActionItem extends BaseActionItem {
                                 final String[] parts = nodePath.split("/");
                                 String destinationPath = "/sites/" + site.getSiteKey();
                                 nodePath = "/" + parts[1] + "/" + parts[2];
-                                Map<String, String> pathsToSyncronize = new LinkedHashMap<String, String>();
-                                pathsToSyncronize.put(nodePath, destinationPath);
 
                                 JahiaContentManagementService.App.getInstance()
-                                        .synchro(pathsToSyncronize, new BaseAsyncCallback() {
+                                        .deployTemplates(nodePath, destinationPath, new BaseAsyncCallback() {
                                             public void onApplicationFailure(Throwable caught) {
                                                 Info.display("Deploy Templates", "Error during your templates deployment");
                                             }

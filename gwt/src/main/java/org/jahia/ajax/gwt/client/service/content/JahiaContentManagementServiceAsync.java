@@ -240,7 +240,7 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
      */
     void getAnalyticsData(GWTJahiaAnalyticsQuery query, AsyncCallback<List<GWTJahiaAnalyticsData>> async);
 
-    void synchro(Map<String, String> pathsToSyncronize, AsyncCallback asyncCallback);
+    void deployTemplates(String templatesPath, String sitePath, AsyncCallback asyncCallback);
 
     void createTemplateSet(String key, String baseSet, AsyncCallback<GWTJahiaNode> asyncCallback);
 

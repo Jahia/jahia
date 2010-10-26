@@ -854,28 +854,23 @@ public class ContentManagerHelper {
         }
     }
 
-    public void synchro(final Map<String, String> pathsToSyncronize, JCRSessionWrapper currentUserSession)
+    public void deployTemplates(final String templatesPath, final String sitePath, JCRSessionWrapper currentUserSession)
             throws GWTJahiaServiceException {
         try {
             JCRTemplate.getInstance()
                     .doExecuteWithSystemSession(currentUserSession.getUser().getUsername(), new JCRCallback<Object>() {
                         public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                             HashMap<String, List<String>> references = new HashMap<String, List<String>>();
-                            for (Map.Entry<String, String> entry : pathsToSyncronize.entrySet()) {
-                                JCRNodeWrapper originalNode = session.getNode(entry.getKey());
-                                JCRNodeWrapper destinationNode = null;
-                                try {
-                                    destinationNode = session.getNode(entry.getValue());
-                                    synchro(originalNode, destinationNode, session, references);
-                                } catch (PathNotFoundException e) {
-                                    destinationNode =
-                                            session.getNode(StringUtils.substringBeforeLast(entry.getValue(), "/"));
-                                    originalNode.copy(destinationNode,
-                                            StringUtils.substringAfterLast(entry.getValue(), "/"), false);
-                                }
-                            }
+
+                            JCRNodeWrapper originalNode = session.getNode(templatesPath);
+                            JCRNodeWrapper destinationNode = session.getNode(sitePath);
+                            synchro(originalNode, destinationNode, session, references);
+
                             ReferencesHelper.resolveCrossReferences(session, references);
                             session.save();
+
+                            JCRPublicationService.getInstance().publish(destinationNode.getNode("templates").getUUID(), "default", "live", null, true, null);
+
                             return null;
                         }
                     });
@@ -1038,12 +1033,14 @@ public class ContentManagerHelper {
             if (path.exists()) {
                 InputStream is = null;
                 try {
+                    String shortName = JCRContentUtils.generateNodeName(key, 20);
                     is = new FileInputStream(path);
-                    JCRNodeWrapper templateSet = session.getNode("/templateSets").addNode(key, "jnt:virtualsite");
+                    JCRNodeWrapper templateSet = session.getNode("/templateSets").addNode(shortName, "jnt:virtualsite");
                     templateSet.setProperty("j:installedModules", new Value[]{session.getValueFactory().createValue(key)});
-                    session.importXML("/templateSets/" + key, is, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
+                    session.importXML("/templateSets/" + shortName, is, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
+                    templateSet.getNode("templates/base").setProperty("j:view", shortName);
                     session.save();
-                    ServicesRegistry.getInstance().getJahiaTemplateManagerService().createModule(key);
+                    ServicesRegistry.getInstance().getJahiaTemplateManagerService().createModule(shortName);
 
                     return navigation.getGWTJahiaNode(templateSet);
                 } catch (Exception e) {

@@ -322,21 +322,15 @@
  itemtype = layout
  - j:view (string, choicelist[templates,resourceBundle,image]) nofulltext
 
-[jmix:hasDefaultTemplateNode] mixin
- extends = jnt:page
- itemtype = layout
- - j:defaultTemplateNode (weakreference,choicelist[templatesNode]) < jnt:template
-
 [jmix:hasTemplateNode] mixin
  itemtype = layout
  - j:templateNode (weakreference,choicelist[templatesNode]) < jnt:template
 
-[jnt:template] > nt:base, jmix:nodenameInfo, jmix:basemetadata
+[jnt:template] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:publication
+ + * (jnt:template)
  + * (jnt:content)
 
-[jnt:pageTemplate] > jnt:template, jmix:publication
- + * (jnt:template)
- + * (jnt:contentTemplate)
+[jnt:pageTemplate] > jnt:template
 
 [jnt:contentTemplate] > jnt:template
  - j:applyOn (string, choicelist[subnodetypes = 'jnt:page,jnt:content,jnt:contentList,jnt:folder,jnt:file',resourceBundle]) multiple

@@ -369,7 +369,16 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             new File(tmplRootFolder, "WEB-INF").mkdirs();
             new File(tmplRootFolder, "resources").mkdirs();
             new File(tmplRootFolder, "css").mkdirs();
-
+            new File(tmplRootFolder, "jnt_template/html").mkdirs();
+            File defaultTpl = new File(settingsBean.getJahiaTemplatesDiskPath() + "/default/jnt_template/html/template.jsp");
+            if (defaultTpl.exists()) {
+                File out = new File(tmplRootFolder, "jnt_template/html/template."+moduleName+".jsp");
+                try {
+                    IOUtils.copy(new FileInputStream(defaultTpl), new FileOutputStream(out));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
             try {
                 File manifest = new File(tmplRootFolder + "/META-INF/MANIFEST.MF");
 

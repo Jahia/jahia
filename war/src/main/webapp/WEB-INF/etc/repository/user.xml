@@ -25,7 +25,7 @@
 
     <portlets jcr:primaryType="jnt:portletList"/>
 
-    <contents jcr:primaryType="jnt:contentList"/>
+    <contents jcr:primaryType="jnt:contentFolder"/>
 
     <preferences jcr:primaryType="jnt:preferences" jcr:mixinTypes="jmix:accessControlled" >
         <j:acl jcr:primaryType="jnt:acl">

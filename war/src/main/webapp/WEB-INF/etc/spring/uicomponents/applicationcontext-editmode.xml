@@ -305,7 +305,12 @@
                                     <value>$site</value>
                                 </list>
                             </property>
-                            <property name="folderTypes" value="jmix:navMenuItem"/>
+                            <property name="folderTypes">
+                                <list>
+                                    <value>jmix:navMenuItem</value>
+                                    <value>jnt:contentFolder</value>
+                                </list>
+                            </property>
                         </bean>
                     </property>
                     <property name="treeColumns">
@@ -715,7 +720,12 @@
                                     <value>/sites/*</value>
                                 </list>
                             </property>
-                            <property name="folderTypes" value="jmix:navMenuItem"/>
+                            <property name="folderTypes">
+                                <list>
+                                    <value>jmix:navMenuItem</value>
+                                    <value>jnt:contentFolder</value>
+                                </list>
+                            </property>
                         </bean>
                     </property>
                     <property name="treeColumns">

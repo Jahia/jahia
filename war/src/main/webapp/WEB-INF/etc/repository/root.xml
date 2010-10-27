@@ -18,9 +18,9 @@
 
         <files jcr:primaryType="jnt:folder"/>
         <portlets jcr:primaryType="jnt:portletList"/>
-        <portalComponents jcr:primaryType="jnt:contentList"/>
-        <contents jcr:primaryType="jnt:contentList"/>
-        <conversions jcr:primaryType="jnt:contentList"/>
+        <portalComponents jcr:primaryType="jnt:contentFolder"/>
+        <contents jcr:primaryType="jnt:contentFolder"/>
+        <conversions jcr:primaryType="jnt:contentFolder"/>
     </shared>
 
     <users jcr:primaryType="jnt:usersFolder" j:usersFolderSkeleton="user.xml">

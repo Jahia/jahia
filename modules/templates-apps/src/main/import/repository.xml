@@ -5,8 +5,14 @@
                         xmlns:mix="http://www.jcp.org/jcr/mix/1.0" jcr:mixinTypes="jmix:sitemap jmix:accessControlled"
                         jcr:primaryType="jnt:virtualsite" changefreq="monthly" j:installedModules="templates-apps"
                         priority="0.5">
-            <contents jcr:primaryType="jnt:contentList">
-                <site_components jcr:primaryType="jnt:contentList">
+            <home j:displayInMenu="primary" jcr:primaryType="jnt:page"
+                  j:templateNode="/templateSets/templates-apps/templates/base/home">
+                <j:translation_en jcr:title="Home" jcr:language="en" jcr:primaryType="jnt:translation"/>
+                <listA jcr:primaryType="jnt:contentList"/>
+                <listB jcr:primaryType="jnt:contentList"/>
+            </home>
+            <contents jcr:primaryType="jnt:contentFolder">
+                <site_components jcr:primaryType="jnt:contentFolder">
                     <login-to-jahia jcr:primaryType="jnt:loginForm">
                         <j:translation_en jcr:title="Login to Jahia" jcr:language="en"
                                           jcr:primaryType="jnt:translation"/>
@@ -108,12 +114,6 @@
                                        j:aceType="GRANT" jcr:primaryType="jnt:ace"/>
                 </nt_base_jBPM_1-step-publication>
             </workflowrules>
-            <home j:displayInMenu="primary" jcr:primaryType="jnt:page"
-                  j:templateNode="/templateSets/templates-apps/templates/base/home">
-                <j:translation_en jcr:title="Home" jcr:language="en" jcr:primaryType="jnt:translation"/>
-                <listA jcr:primaryType="jnt:contentList"/>
-                <listB jcr:primaryType="jnt:contentList"/>
-            </home>
         </templates-apps>
     </templateSets>
 </content>

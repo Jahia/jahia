@@ -537,6 +537,10 @@
  orderable
  + * (jmix:droppableContent) = jmix:droppableContent version
 
+[jnt:contentFolder] > jnt:content, mix:title, jmix:list
+ + * (jmix:droppableContent) = jmix:droppableContent version
+ + * (jnt:contentFolder) = jnt:contentFolder version
+
 [jnt:templateSets] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:list
  + * (jnt:virtualsite)
 

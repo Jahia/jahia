@@ -17,7 +17,7 @@
         </administrators>
     </groups>    
 
-    <contents jcr:primaryType="jnt:contentList" />
+    <contents jcr:primaryType="jnt:contentFolder" />
 
     <themes jcr:primaryType="jnt:folder"/>
 

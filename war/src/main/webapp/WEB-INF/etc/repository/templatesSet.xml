@@ -5,8 +5,14 @@
               xmlns:mix="http://www.jcp.org/jcr/mix/1.0" jcr:mixinTypes="jmix:sitemap jmix:accessControlled"
               jcr:primaryType="jnt:virtualsite" changefreq="monthly" j:installedModules="templates-web" priority="0.5">
 
-    <contents jcr:primaryType="jnt:contentList">
-        <site_components jcr:primaryType="jnt:contentList"/>
+    <home jcr:mixinTypes="jmix:sitemap"
+          j:displayInMenu="primary"
+          jcr:primaryType="jnt:page" changefreq="monthly"
+          j:templateNode="/templatesSet/templates/base/home" priority="0.5">
+    </home>
+
+    <contents jcr:primaryType="jnt:contentFolder">
+        <site_components jcr:primaryType="jnt:contentFolder"/>
     </contents>
 
     <files jcr:primaryType="jnt:folder"/>
@@ -18,12 +24,6 @@
 
         </default>
     </themes>
-
-    <home jcr:mixinTypes="jmix:sitemap"
-          j:displayInMenu="primary"
-          jcr:primaryType="jnt:page" changefreq="monthly"
-          j:templateNode="/templatesSet/templates/base/home" priority="0.5">
-    </home>
 
     <templates jcr:primaryType="jnt:templatesFolder">
         <base jcr:mixinTypes="jmix:renderable jmix:theme" j:view="default" jcr:primaryType="jnt:pageTemplate" j:theme="/templatesSet/themes/default">

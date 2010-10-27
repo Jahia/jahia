@@ -348,7 +348,7 @@ public class URLGenerator {
         String scheme = context.getRequest().getScheme();
         String host = context.getSite().getServerName();
         int port = 0;
-        if (host.contains(":")) {
+        if (host !=null && host.contains(":")) {
             // the server name of the site already has
             host = StringUtils.substringBefore(host, ":");
             port = Integer.valueOf(StringUtils.substringAfterLast(host, ":"));

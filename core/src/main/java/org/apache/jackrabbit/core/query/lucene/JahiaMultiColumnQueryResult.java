@@ -1,7 +1,6 @@
 package org.apache.jackrabbit.core.query.lucene;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.core.security.AccessManager;
 import org.apache.jackrabbit.core.session.SessionContext;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
@@ -453,7 +452,7 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
         for (ScoreNode node : nodes) {
             try {
                 // TODO: rather use AccessManager.canRead(Path)
-                if (node != null && !sessionContext.getAccessManager().isGranted(node.getNodeId(), AccessManager.READ)) {
+                if (node != null && !sessionContext.getAccessManager().canRead(null, node.getNodeId())) {
                     return false;
                 }
             } catch (ItemNotFoundException e) {
@@ -482,7 +481,7 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
             }
         }
         return new RowIteratorImpl(getScoreNodes(), columns, selectorNames, sessionContext.getItemManager(), index
-                .getContext().getHierarchyManager(), sessionContext, sessionContext.getValueFactory(),
+                .getContext().getHierarchyManager(), sessionContext, sessionContext.getSessionImpl().getValueFactory(),
                 excerptProvider, spellSuggestion);
     }
 
@@ -561,7 +560,7 @@ public class JahiaMultiColumnQueryResult extends QueryResultImpl {
             if (total == -1) {
                 return -1;
             }
-            long size = total - offset;
+            long size = offset > total ? 0 : total - offset;
             if (limit >= 0 && size > limit) {
                 return limit;
             } else {

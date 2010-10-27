@@ -1,6 +1,9 @@
-package org.apache.jackrabbit.core.query.lucene;
+package org.apache.jackrabbit.core.query.lucene.constraint;
 
 import org.apache.jackrabbit.core.id.NodeId;
+import org.apache.jackrabbit.core.query.lucene.FieldNames;
+import org.apache.jackrabbit.core.query.lucene.JahiaNodeIndexer;
+import org.apache.jackrabbit.core.query.lucene.ScoreNode;
 import org.apache.jackrabbit.core.query.lucene.constraint.ChildNodeConstraint;
 import org.apache.jackrabbit.core.query.lucene.constraint.EvaluationContext;
 import org.apache.jackrabbit.spi.Name;

@@ -30,7 +30,7 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
-package org.apache.jackrabbit.core.query.lucene;
+package org.apache.jackrabbit.core.query.lucene.constraint;
 
 import java.io.IOException;
 
@@ -39,6 +39,7 @@ import javax.jcr.RepositoryException;
 import org.apache.jackrabbit.core.NodeImpl;
 import org.apache.jackrabbit.core.SessionImpl;
 import org.apache.jackrabbit.core.id.NodeId;
+import org.apache.jackrabbit.core.query.lucene.ScoreNode;
 import org.apache.jackrabbit.core.query.lucene.constraint.DescendantNodeConstraint;
 import org.apache.jackrabbit.core.query.lucene.constraint.EvaluationContext;
 import org.apache.jackrabbit.spi.Name;

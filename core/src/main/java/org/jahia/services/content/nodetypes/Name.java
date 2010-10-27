@@ -34,6 +34,8 @@ package org.jahia.services.content.nodetypes;
 
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * Created by IntelliJ IDEA.
  * User: toto
@@ -53,15 +55,34 @@ public class Name {
     }
 
     public Name(String qualifiedName, Map<String,String> namespaceMapping) {
-        String s[] = qualifiedName.split(":");
-        if (s.length == 2) {
-            prefix = s[0];
-            localName = s[1];
-            uri = namespaceMapping.get(prefix);
-        } else {
-            prefix = "";
-            localName = s[0];
-            uri = namespaceMapping.get("");
+        if (qualifiedName.startsWith("{")) {
+            int endUri = qualifiedName.indexOf("}");
+            if (endUri != -1 && qualifiedName.length() > endUri) {
+                uri = StringUtils.substringBetween(qualifiedName, "{", "}");
+                for (Map.Entry<String, String> entry : namespaceMapping.entrySet()) {
+                    if (entry.getValue().equals(uri)) {
+                        prefix = entry.getKey();
+                        break;
+                    }
+                }
+                localName = qualifiedName.substring(endUri + 1);
+            } else {
+                localName = qualifiedName;
+                prefix = "";
+                uri = namespaceMapping.get("");
+            }
+        }
+        if (localName == null) {
+            String s[] = qualifiedName.split(":");
+            if (s.length == 2) {
+                prefix = s[0];
+                localName = s[1];
+                uri = namespaceMapping.get(prefix);
+            } else {
+                prefix = "";
+                localName = s[0];
+                uri = namespaceMapping.get("");
+            }
         }
     }
 

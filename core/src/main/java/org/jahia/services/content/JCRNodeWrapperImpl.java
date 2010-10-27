@@ -1313,10 +1313,21 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return setProperty(name, v);
     }
 
+    private String ensurePrefixedName(String name) {
+        if (!name.startsWith("{")) {
+            return name;
+        }
+        org.jahia.services.content.nodetypes.Name nameObj = new org.jahia.services.content.nodetypes.Name(
+                name, NodeTypeRegistry.getInstance().getNamespaces());
+        return StringUtils.isEmpty(nameObj.getPrefix()) ? nameObj.getLocalName() : nameObj
+                .getPrefix() + ":" + nameObj.getLocalName();
+    }
+    
     /**
      * {@inheritDoc}
      */
     public JCRPropertyWrapper setProperty(String name, Value value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        name = ensurePrefixedName(name);
         final Locale locale = getSession().getLocale();
         ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
 
@@ -1350,6 +1361,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public JCRPropertyWrapper setProperty(String name, Value value, int type) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         final Locale locale = getSession().getLocale();
+        name = ensurePrefixedName(name);
         ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
         value = JCRStoreService.getInstance().getInterceptorChain().beforeSetValue(this, name, epd, value);
 
@@ -1377,6 +1389,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public JCRPropertyWrapper setProperty(String name, Value[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         final Locale locale = getSession().getLocale();
+        name = ensurePrefixedName(name);
         ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
         if (values != null) {
             for (int i = 0; i < values.length; i++) {
@@ -1403,6 +1416,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public JCRPropertyWrapper setProperty(String name, Value[] values, int type) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         final Locale locale = getSession().getLocale();
+        name = ensurePrefixedName(name);
         ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
 
         values = JCRStoreService.getInstance().getInterceptorChain().beforeSetValues(this, name, epd, values);

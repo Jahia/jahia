@@ -13,6 +13,7 @@ import javax.jcr.Value;
 import javax.jcr.ValueFactory;
 import javax.jcr.nodetype.NodeType;
 
+import org.apache.jackrabbit.commons.JcrUtils;
 import org.apache.jackrabbit.core.NodeImpl;
 import org.apache.jackrabbit.core.TestContentLoader;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -112,6 +113,11 @@ public class JahiaTestContentLoader extends TestContentLoader {
         Node multiReference = node.addNode("multiReference");
         multiReference.setProperty("ref",
                 new Value[] { factory.createValue(resource), factory.createValue(resReference) });
+        
+        // NodeDefTest requires a test node with a mandatory child node
+        JcrUtils.putFile(
+                node, "testFile", "text/plain",
+                new ByteArrayInputStream("Hello, World!".getBytes("UTF-8")));        
     }
 
     /**

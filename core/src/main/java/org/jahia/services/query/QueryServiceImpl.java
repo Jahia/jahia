@@ -275,15 +275,17 @@ public class QueryServiceImpl extends QueryService {
         info.setMode(MODIFY_MODE);
 
         try {
-            Ordering[] newOrderings = new Ordering[orderings.length];
             int i = 0;
-            for (Ordering ordering : orderings) {
-                Ordering newOrdering = ordering;
+            Ordering[] newOrderings = null;
+            if (orderings != null) {
+                newOrderings = new Ordering[orderings.length];
+                for (Ordering ordering : orderings) {
+                    Ordering newOrdering = ordering;
 
-                newOrdering = (Ordering) ((OrderingImpl) ordering).accept(visitor, null);
-                newOrderings[i++] = newOrdering;
+                    newOrdering = (Ordering) ((OrderingImpl) ordering).accept(visitor, null);
+                    newOrderings[i++] = newOrdering;
+                }
             }
-
             Column[] newColumns = new Column[columns.length];
             i = 0;
             for (Column column : columns) {

@@ -158,7 +158,7 @@
 // Query
 //---------------------------------------------------------
 
-[jnt:query] > nt:query, mix:title, jmix:publication, jmix:list, jmix:queryContent,  jmix:renderableList
+[jnt:query] > nt:query, mix:title, jmix:publication, jmix:list, jmix:queryContent,  jmix:renderableList, jmix:basemetadata
  - maxItems (long) = 10 indexed=no
 
 //---------------------------------------------------------

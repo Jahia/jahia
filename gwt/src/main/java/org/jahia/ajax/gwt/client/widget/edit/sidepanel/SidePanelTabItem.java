@@ -111,6 +111,9 @@ public class SidePanelTabItem implements Serializable {
      */
     protected final Menu createContextMenu(GWTJahiaToolbar toolbarBean, AbstractStoreSelectionModel<GWTJahiaNode> selectionModel) {
         if (toolbarBean != null) {
+            if (selectionModel instanceof TreeGridClickSelectionModel) {
+                selectionModel = ((TreeGridClickSelectionModel)selectionModel).getRightClickSelectionModel();
+            }
             final SidePanelLinker linker = new SidePanelLinker(selectionModel);
             return new ActionContextMenu(toolbarBean, linker);
         }

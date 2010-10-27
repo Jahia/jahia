@@ -70,8 +70,6 @@ public class PagesTabItem extends SidePanelTabItem {
 
     protected transient TreeGrid<GWTJahiaNode> pageTree;
     protected transient GWTJahiaNodeTreeFactory pageFactory;
-    protected transient TreeGrid<GWTJahiaNode> contentTree;
-    protected transient GWTJahiaNodeTreeFactory contentFactory;
     protected transient String path;
 
     public TabItem create(GWTSidePanelTab config) {
@@ -100,7 +98,7 @@ public class PagesTabItem extends SidePanelTabItem {
         pageTree.getTreeView().setForceFit(true);
         pageTree.setHeight("100%");
         pageTree.setIconProvider(ContentModelIconProvider.getInstance());
-        
+        pageTree.setSelectionModel(new TreeGridClickSelectionModel());
         this.pageTree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             @Override public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {
                 final GWTJahiaNode node = se.getSelectedItem();
@@ -113,42 +111,6 @@ public class PagesTabItem extends SidePanelTabItem {
         });
         this.pageTree.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
         
-        pageTree.setContextMenu(createContextMenu(config.getTreeContextMenu(), pageTree.getSelectionModel()));
-
-        tab.add(pageTree);
-    }
-
-    private void initContentTree() {
-        GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(paths);
-        factory.setNodeTypes(folderTypes);
-        factory.setFields(config.getTreeColumnKeys());
-        this.pageFactory = factory;
-        this.pageFactory.setSelectedPath(path);
-
-        NodeColumnConfigList columns = new NodeColumnConfigList(config.getTreeColumns());
-        columns.init();
-        columns.get(0).setRenderer(new TreeGridCellRenderer());
-
-        pageTree = factory.getTreeGrid(new ColumnModel(columns));
-
-        pageTree.setAutoExpandColumn(columns.getAutoExpand());
-        pageTree.getTreeView().setRowHeight(25);
-        pageTree.getTreeView().setForceFit(true);
-        pageTree.setHeight("100%");
-        pageTree.setIconProvider(ContentModelIconProvider.getInstance());
-
-        this.pageTree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
-            @Override public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {
-                final GWTJahiaNode node = se.getSelectedItem();
-                if (node != null && !node.getPath().equals(editLinker.getMainModule().getPath()) &&
-                    !node.getNodeTypes().contains("jnt:virtualsite") &&
-                        !node.getInheritedNodeTypes().contains("jmix:link")) {
-                    editLinker.onMainSelection(node.getPath(), null, null);
-                }
-            }
-        });
-        this.pageTree.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
-
         pageTree.setContextMenu(createContextMenu(config.getTreeContextMenu(), pageTree.getSelectionModel()));
 
         tab.add(pageTree);
@@ -299,4 +261,5 @@ public class PagesTabItem extends SidePanelTabItem {
     public void setPaths(List<String> paths) {
         this.paths = paths;
     }
+
 }

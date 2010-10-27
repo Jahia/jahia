@@ -117,8 +117,11 @@ public class TemplateHelper {
             stringSet = new LinkedHashSet<String>();
             stringSet.addAll(copy);
             map.put("css",stringSet);
-            result = new GWTRenderResult(res, new HashMap<String, Set<String>>(map),
-                    ConstraintsHelper.getConstraints(node));
+            String constraints = ConstraintsHelper.getConstraints(node);
+            if (constraints == null) {
+                constraints = "";
+            }
+            result = new GWTRenderResult(res, new HashMap<String, Set<String>>(map), constraints);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         } catch (RenderException e) {

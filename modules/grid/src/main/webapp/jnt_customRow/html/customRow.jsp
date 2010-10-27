@@ -23,9 +23,8 @@
 </c:forTokens>
 
 <c:if test="${!empty currentNode.properties.divClass || !empty currentNode.properties.divID}">
-    <div class='container container_${nbCols} <c:if test="${!empty currentNode.properties.divClass}">${currentNode.properties.divClass.string}"</c:if>'
-    <c:if test='${!empty currentNode.properties.divID}'>id="${currentNode.properties.divID.string}"</c:if>
-    >
+    <c:if test='${!empty currentNode.properties.divID}'><div id="${currentNode.properties.divID.string}"></c:if>
+    <div class='container container_${nbCols} <c:if test="${!empty currentNode.properties.divClass}">${currentNode.properties.divClass.string}"</c:if>'>
 </c:if>
 <c:if test="${editableModule}">
     <div class="grid_${nbCols}">${jcr:label(currentNode.primaryNodeType,currentResource.locale)} ${currentNode.name} : ${column.string}</div>
@@ -56,4 +55,5 @@
 <div class='clear'></div>
 <c:if test="${!empty currentNode.properties.divClass || !empty currentNode.properties.divID}">
     </div>
+    <c:if test='${!empty currentNode.properties.divID}'></div></c:if>    
 </c:if>

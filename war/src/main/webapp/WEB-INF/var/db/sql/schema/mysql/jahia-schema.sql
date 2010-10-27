@@ -17,8 +17,6 @@
 
     drop table if exists jahia_pwd_policy_rules;
 
-    drop table if exists jahia_subscriptions;
-
     drop table if exists jahia_version;
 
     create table jahia_db_test (
@@ -63,24 +61,6 @@
         last_rule bit not null,
         periodical bit not null,
         primary key (jahia_pwd_policy_rule_id)
-    ) ENGINE=InnoDB;
-
-    create table jahia_subscriptions (
-        id_jahia_subscriptions integer not null,
-        object_key varchar(40),
-        include_children bit not null,
-        event_type varchar(50) not null,
-        channel char(1) not null,
-        notification_type char(1) not null,
-        username varchar(255) not null,
-        user_registered bit not null,
-        site_id integer not null,
-        enabled bit not null,
-        suspended bit not null,
-        confirmation_key varchar(32),
-        confirmation_request_timestamp bigint,
-        properties longtext,
-        primary key (id_jahia_subscriptions)
     ) ENGINE=InnoDB;
 
     create table jahia_version (

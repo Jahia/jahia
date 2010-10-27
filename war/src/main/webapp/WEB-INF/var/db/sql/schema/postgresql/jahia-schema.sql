@@ -15,8 +15,6 @@
 
     drop table jahia_pwd_policy_rules;
 
-    drop table jahia_subscriptions;
-
     drop table jahia_version;
 
     create table jahia_db_test (
@@ -61,24 +59,6 @@
         last_rule bool not null,
         periodical bool not null,
         primary key (jahia_pwd_policy_rule_id)
-    );
-
-    create table jahia_subscriptions (
-        id_jahia_subscriptions int4 not null,
-        object_key varchar(40),
-        include_children bool not null,
-        event_type varchar(50) not null,
-        channel char(1) not null,
-        notification_type char(1) not null,
-        username varchar(255) not null,
-        user_registered bool not null,
-        site_id int4 not null,
-        enabled bool not null,
-        suspended bool not null,
-        confirmation_key varchar(32),
-        confirmation_request_timestamp int8,
-        properties text,
-        primary key (id_jahia_subscriptions)
     );
 
     create table jahia_version (

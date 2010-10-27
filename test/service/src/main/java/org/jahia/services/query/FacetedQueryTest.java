@@ -359,20 +359,19 @@ public class FacetedQueryTest {
                 LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE));
 
         // test i18n facets
-        QueryResultWrapper res = doQuery(session, "eventsType", "rep:facet(facet.query=1\\:FACET\\:eventsType:[a TO p]&facet.query=1\\:FACET\\:eventsType:[p TO z])");
+        QueryResultWrapper res = doQuery(session, "eventsType", "rep:facet(facet.query=0\\:FACET\\:eventsType:[a TO p]&facet.query=0\\:FACET\\:eventsType:[p TO z])");
         Map<String,Long> queryFacet = res.getFacetQuery();
         assertNotNull("Query facet result is null",queryFacet);
         assertEquals("Query did not return correct number of facets", 2, queryFacet.size());
 
-        assertEquals("Facet count is incorrect", 10, queryFacet.get("1\\:FACET\\:eventsType:[a TO p]").longValue());
-        assertEquals("Facet count is incorrect", 17, queryFacet.get("1\\:FACET\\:eventsType:[p TO z]").longValue());
+        assertEquals("Facet count is incorrect", 10, queryFacet.get("0\\:FACET\\:eventsType:[a TO p]").longValue());
+        assertEquals("Facet count is incorrect", 17, queryFacet.get("0\\:FACET\\:eventsType:[p TO z]").longValue());
         
         
-        QueryResultWrapper resCheck = doQuery(session, "rep:filter()", "1\\:FACET\\:eventsType:[a TO p]");
+        QueryResultWrapper resCheck = doQuery(session, "rep:filter()", "0\\:FACET\\:eventsType:[a TO p]");
         checkResultSize(resCheck, 10);
-        resCheck = doQuery(session, "rep:filter()", "1\\:FACET\\:eventsType:[p TO z]");
+        resCheck = doQuery(session, "rep:filter()", "0\\:FACET\\:eventsType:[p TO z]");
         checkResultSize(resCheck, 17);                
-
     }
 
     private static void initContent(JCRSessionWrapper session) throws RepositoryException {

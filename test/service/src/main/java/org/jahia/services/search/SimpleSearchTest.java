@@ -254,7 +254,7 @@ public class SimpleSearchTest {
             List<Hit<?>> hits = searchService.search(criteria, context)
                     .getResults();
             assertEquals("Unexpected number of search results for: " + criteria.toString(),
-                    12, hits.size());
+                    14, hits.size());
 
             criteria.setFileType("pdf");
             hits = searchService.search(criteria, context).getResults();

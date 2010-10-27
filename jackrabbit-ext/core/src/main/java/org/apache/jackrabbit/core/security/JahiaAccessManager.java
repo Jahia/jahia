@@ -253,7 +253,6 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
                 return true;
             }
 
-            /* @todo This was deactivated when integrating with Jackrabbit 2.2-SNAPSHOT, we should review and activate this.
             // Always deny write access on system folders
             if (getSecuritySession().itemExists(jcrPath)) {
                 Item i = getSecuritySession().getItem(jcrPath);
@@ -265,7 +264,7 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
                     }
                 }
             }
-            */
+            
 
             JahiaUserService service = getJahiaUserService();
 

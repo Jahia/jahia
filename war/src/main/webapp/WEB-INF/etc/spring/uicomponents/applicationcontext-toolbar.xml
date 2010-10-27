@@ -729,9 +729,12 @@
         <property name="icon" value="newRole"/>
     </bean>
 
-    <bean id="Toolbar.Item.NewContentList" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+    <bean id="Toolbar.Item.NewContentFolder" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentListActionItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
+                <property name="nodeTypes" value="jnt:contentFolder"/>
+                <property name="parentTypes" value="jnt:contentFolder"/>
+            </bean>
         </property>
         <property name="titleKey" value="label.newContentList"/>
         <property name="icon" value="newContentList"/>

@@ -136,7 +136,7 @@ public class TemplateNodeFilter extends AbstractFilter {
                     JCRNodeWrapper templateNode = (JCRNodeWrapper) current.getProperty("j:templateNode").getNode();
                     template = new Template(templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
                             templateName, templateNode, template);
-                } else {
+                } else if (templatesNode != null) {
                     template = addContentTemplates(resource, null, templatesNode);
                 }
 

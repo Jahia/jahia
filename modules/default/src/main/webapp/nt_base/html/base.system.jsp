@@ -10,7 +10,7 @@
     <thead>
     <tr>
         <th width="5%" align="center">
-            <c:if test="${jcr:isNodeType(currentNode.parent,'jnt:contentList') || jcr:isNodeType(currentNode.parent,'jnt:folder')}">
+            <c:if test="${jcr:isNodeType(currentNode.parent,'jnt:contentFolder') || jcr:isNodeType(currentNode.parent,'jnt:folder')}">
                 <a title="parent" href="${url.base}${currentNode.parent.path}.html"><img height="16" width="16"
                                                                                          border="0"
                                                                                          style="cursor: pointer;"
@@ -21,4 +21,4 @@
     </tr>
     </thead>
 </table>
-<template:module node="${currentNode}" template="default"/> 
+<template:module node="${currentNode}" template="default" editable="false"/> 

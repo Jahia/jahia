@@ -796,7 +796,7 @@ public class ExtendedNodeType implements NodeType {
         return mixinExtend;
     }
 
-    protected JahiaTemplatesPackage getTemplatePackage() {
+    public JahiaTemplatesPackage getTemplatePackage() {
         JahiaTemplatesPackage pkg = null;
         if (!getSystemId().startsWith("system-")) {
             try {

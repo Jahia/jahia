@@ -36,7 +36,7 @@
         <thead>
         <tr>
             <th width="5%" align="center">
-                <c:if test="${jcr:isNodeType(currentNode.parent,'jnt:contentList') || jcr:isNodeType(currentNode.parent,'jnt:folder')}">
+                <c:if test="${jcr:isNodeType(currentNode.parent,'jnt:contentFolder') || jcr:isNodeType(currentNode.parent,'jnt:folder')}">
                     <a title="parent" href="${url.base}${currentNode.parent.path}.html"><img height="16" width="16"
                                                                                              border="0"
                                                                                              style="cursor: pointer;"
@@ -61,18 +61,18 @@
                 <td align="center">
                 </td>
                 <td>
-                    <c:if test="${jcr:isNodeType(child, 'jnt:contentList')}">
+                    <c:if test="${jcr:isNodeType(child, 'jnt:contentFolder')}">
                         <img height="24" width="24" border="0" style="cursor: pointer;"
                              src="${url.currentModule}/images/icons/folder-contenu.png"/>
                     </c:if>
-                    <c:if test="${!jcr:isNodeType(child, 'jnt:contentList')}">
+                    <c:if test="${!jcr:isNodeType(child, 'jnt:contentFolder')}">
                         <img src="${url.currentModule}/icons/${fn:replace(":","_",fn:escapeXml(child.primaryNodeType.name))}.png"/>
 
                     </c:if>
                 </td>
                 <td>
                     <c:choose>
-                    <c:when test="${jcr:isNodeType(child, 'jnt:contentList')}">
+                    <c:when test="${jcr:isNodeType(child, 'jnt:contentFolder')}">
                     <a href="${url.base}${child.path}.html">
                         </c:when>
                         <c:otherwise>
@@ -98,7 +98,7 @@
                                     pattern="yyyy-MM-dd HH:mm"/>
                 </td>
                 <td>
-                    <%@include file="workflow.jspf" %>
+                    <%@include file="../../jnt_contentList/edit/workflow.jspf" %>
                 </td>
                 <td>
                     <c:if test="${child.locked}">
@@ -107,10 +107,7 @@
                     </c:if>
                 </td>
                 <td class="lastCol">
-                        <%--
-                                <a title="Editer" href="#"><img height="16" width="16" border="0" style="cursor: pointer;" title="Editer" alt="Editer" src="${url.currentModule}/images/icons/edit.png"></a>&nbsp;
-                        --%>
-                    <%@include file="edit.jspf" %>
+                    <%@include file="../../jnt_contentList/edit/edit.jspf" %>
                 </td>
             </tr>
         </c:forEach>

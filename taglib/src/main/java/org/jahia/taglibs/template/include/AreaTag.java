@@ -160,17 +160,17 @@ public class AreaTag extends ModuleTag implements ParamParent {
 
         if (path != null) {
             try {
+                TemplateNodeFilter.Template t = (TemplateNodeFilter.Template)renderContext.getRequest().getAttribute("previousTemplate");
+                templateNode = t;
+
                 if (!path.startsWith("/")) {
                     List<JCRNodeWrapper> nodes = new ArrayList<JCRNodeWrapper>();
-                    TemplateNodeFilter.Template t = (TemplateNodeFilter.Template)renderContext.getRequest().getAttribute("previousTemplate");
                     if (t != null) {
                         for (TemplateNodeFilter.Template currentTemplate : t.getNextTemplates()) {
                             nodes.add(0,currentTemplate.getNode());
                         }
                     }
                     nodes.add(resource.getNode());
-
-                    templateNode = t;
 
                     boolean found = false;
                     boolean currentMain = false;

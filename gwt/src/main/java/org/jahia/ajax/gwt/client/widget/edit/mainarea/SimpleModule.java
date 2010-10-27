@@ -41,6 +41,7 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.Header;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.HTML;
@@ -65,6 +66,8 @@ public class SimpleModule extends Module {
 
     public SimpleModule(String id, final String path, Element divElement, final MainModule mainModule, boolean header) {
         super(id, path, divElement, mainModule);
+
+        hasDragDrop = !"false".equals(DOM.getElementAttribute(divElement, "dragdrop"));
 
         if (header) {
             head = new Header();

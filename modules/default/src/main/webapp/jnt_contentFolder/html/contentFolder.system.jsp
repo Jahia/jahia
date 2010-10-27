@@ -56,7 +56,7 @@
         </td>
         <td>
             <div class="jahia-template-gxt" jahiatype="module" id="module${child.identifier}" type="existingNode"
-                 scriptInfo="" path="${child.path}" template="system">
+                 scriptInfo="" path="${child.path}" template="system" dragdrop="false">
                 <c:if test="${child.locked}">
                     <img height="16" width="16" border="0" style="cursor: pointer;" title="Locked" alt="Supprimer"
                          src="${url.currentModule}/images/icons/locked.gif">

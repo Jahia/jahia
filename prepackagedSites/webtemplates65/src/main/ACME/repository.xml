@@ -1431,5 +1431,10 @@ exercising activities with strong recurring profits. 
             </roles>
         </ACME>
     </sites>
+    <users>
+        <author j:roles="/sites/ACME/roles/editor /sites/ACME/roles/seo-manager"/>
+        <publisher j:roles="/sites/ACME/roles/publisher"/>
+        <siteadmin j:roles="/sites/ACME/roles/site-administrator"/>
+    </users>
 </content>
 

@@ -203,9 +203,11 @@ public class JahiaJCRSearchProvider implements SearchProvider {
             query.append(ISO9075.encodePath(jcrPath.toString())).append("element(").append(
                     lastFolder).append(",").append(
                     getNodeType(params)).append(")");
-        } else if (!params.getSites().isEmpty() && (params.getSites().getValues().length > 1 || !"-all-".equals(params.getSites().getValue()))) {
+        } else if (!params.getSites().isEmpty()) {
             query.append("/jcr:root/sites/");
-            if (params.getSites().getValues().length == 1) {
+            if ("-all-".equals(params.getSites().getValue())) {
+                query.append("*");
+            } else if (params.getSites().getValues().length == 1) {
                 query.append(params.getSites().getValue());
             } else {
                 query.append("*[");

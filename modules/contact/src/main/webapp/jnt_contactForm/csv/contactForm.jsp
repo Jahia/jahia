@@ -19,5 +19,4 @@
 <c:forEach items="${currentNode.nodes}" var="subchild" varStatus="status" end="20">
 <c:if test="${status.first}">
 <template:module node="${subchild}" template="headers"/>
-</c:if><template:module node="${subchild}"/><% out.println(); %>
-</c:forEach>
+</c:if><template:module node="${subchild}"/></c:forEach>

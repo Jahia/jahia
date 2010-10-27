@@ -188,7 +188,7 @@ public class MainModule extends Module {
                             public void onSuccess(GWTRenderResult result) {
                                 int i = scrollContainer.getVScrollPosition();
                                 head.setText("Page : " + path);
-
+                                nodeTypes = result.getNodeTypes();
                                 Selection.getInstance().hide();
                                 Hover.getInstance().removeAll();
                                 infoLayers.removeAll();

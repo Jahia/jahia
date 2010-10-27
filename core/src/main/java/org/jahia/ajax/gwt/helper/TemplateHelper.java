@@ -34,13 +34,13 @@ package org.jahia.ajax.gwt.helper;
 
 import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.api.Constants;
 import org.jahia.bin.Edit;
 import org.jahia.bin.Render;
 import org.jahia.bin.Studio;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.nodetypes.ConstraintsHelper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.render.*;
 
@@ -117,7 +117,8 @@ public class TemplateHelper {
             stringSet = new LinkedHashSet<String>();
             stringSet.addAll(copy);
             map.put("css",stringSet);
-            result = new GWTRenderResult(res, new HashMap<String, Set<String>>(map));
+            result = new GWTRenderResult(res, new HashMap<String, Set<String>>(map),
+                    ConstraintsHelper.getConstraints(node));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         } catch (RenderException e) {

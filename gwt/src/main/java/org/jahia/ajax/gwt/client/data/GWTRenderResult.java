@@ -43,13 +43,15 @@ import java.util.Set;
 public class GWTRenderResult implements Serializable {
     private String result;
     private Map<String,Set<String>> staticAssets;
+    private String nodeTypes;
 
     public GWTRenderResult() {
     }
 
-    public GWTRenderResult(String result, Map<String, Set<String>> staticAssets) {
+    public GWTRenderResult(String result, Map<String, Set<String>> staticAssets, String nodeTypes) {
         this.result = result;
         this.staticAssets = staticAssets;
+        this.nodeTypes = nodeTypes;               
     }
 
     public String getResult() {
@@ -58,5 +60,9 @@ public class GWTRenderResult implements Serializable {
 
     public Map<String, Set<String>> getStaticAssets() {
         return staticAssets;
+    }
+
+    public String getNodeTypes() {
+        return nodeTypes;
     }
 }

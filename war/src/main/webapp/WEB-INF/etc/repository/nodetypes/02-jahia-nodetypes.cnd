@@ -318,7 +318,7 @@
 //---------------------------------------------------------
 
 [jmix:renderable] mixin
- extends = jnt:content, jnt:template
+ extends = jnt:content, jnt:template, jnt:query
  itemtype = layout
  - j:view (string, choicelist[templates,resourceBundle,image]) nofulltext
 

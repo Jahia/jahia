@@ -36,6 +36,8 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.dnd.TreeGridDropTarget;
 import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -98,6 +100,18 @@ public class PagesTabItem extends SidePanelTabItem {
         pageTree.getTreeView().setForceFit(true);
         pageTree.setHeight("100%");
         pageTree.setIconProvider(ContentModelIconProvider.getInstance());
+        pageTree.getTreeStore().setStoreSorter(new StoreSorter<GWTJahiaNode>() {
+            @Override public int compare(Store<GWTJahiaNode> gwtJahiaNodeStore, GWTJahiaNode m1, GWTJahiaNode m2,
+                                         String property) {
+                if (m1.getNodeTypes().contains("jnt:contentFolder")) {
+                    return 1;
+                } else if (m2.getNodeTypes().contains("jnt:contentFolder")) {
+                    return -1;
+                } else {
+                    return gwtJahiaNodeStore.getModels().indexOf(m2) - gwtJahiaNodeStore.getModels().indexOf(m1);
+                }
+            }
+        });
         pageTree.setSelectionModel(new TreeGridClickSelectionModel());
         this.pageTree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             @Override public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {

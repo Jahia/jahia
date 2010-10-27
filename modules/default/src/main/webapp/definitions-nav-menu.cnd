@@ -19,6 +19,7 @@
  - j:menuType (string,choicelist) = 'primary' autocreated nofulltext < 'primary','secondary'
  - j:menuItemView (string,choicelist[templates='jmix:navMenuItem,menuItem',resourceBundle,image]) = menuElement
  - j:styleName (string) nofulltext
+ - j:layoutID (string) nofulltext
 
 
 [jnt:navMenuText] > jnt:text, jmix:navMenuItem

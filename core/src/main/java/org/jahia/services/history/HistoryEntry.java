@@ -1,24 +1,24 @@
 package org.jahia.services.history;
 
-import org.apache.log4j.Logger;
-
 import javax.persistence.*;
+
+import org.hibernate.annotations.GenericGenerator;
+
 import java.util.Date;
 import java.util.Locale;
 
 /**
- * Created by IntelliJ IDEA.
+ * Represent a content change event entry.
  * User: loom
  * Date: Oct 5, 2010
  * Time: 11:32:15 AM
- * To change this template use File | Settings | File Templates.
  */
 @Entity
 @Table(name = "jahia_contenthistory",
-        uniqueConstraints = {@UniqueConstraint(columnNames = {"date", "uuid", "propertyName"})}
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"entry_date", "uuid", "property_name"})}
 )
 public class HistoryEntry {
-    private transient static Logger logger = Logger.getLogger(HistoryEntry.class);
+
     private Long id = 0l;
     private Date date;
     private String path;
@@ -30,7 +30,8 @@ public class HistoryEntry {
     private transient Locale locale;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "jahia")
+    @GenericGenerator(name ="jahia", strategy = "org.jahia.hibernate.dao.JahiaIdentifierGenerator")
     public Long getId() {
         return id;
     }
@@ -40,6 +41,7 @@ public class HistoryEntry {
     }
 
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "entry_date")
     public Date getDate() {
         return date;
     }
@@ -59,7 +61,7 @@ public class HistoryEntry {
     }
 
     @Basic
-    @Column(length = 50)
+    @Column(length = 50, name = "property_name")
     public String getPropertyName() {
         return propertyName;
     }
@@ -69,6 +71,7 @@ public class HistoryEntry {
     }
 
     @Lob
+    @Column(name = "entry_path")
     public String getPath() {
         return path;
     }
@@ -78,6 +81,7 @@ public class HistoryEntry {
     }
 
     @Basic
+    @Column(name = "entry_action")
     public String getAction() {
         return action;
     }
@@ -87,6 +91,7 @@ public class HistoryEntry {
     }
 
     @Basic
+    @Column(name = "user_key")
     public String getUserKey() {
         return userKey;
     }
@@ -115,7 +120,7 @@ public class HistoryEntry {
 
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         sb.append("HistoryEntry");
         sb.append("{action='").append(action).append('\'');
         sb.append(", id=").append(id);

@@ -14,14 +14,10 @@ import org.hibernate.Transaction;
 import org.hibernate.classic.Session;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.impl.SessionFactoryImpl;
-import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.context.ApplicationContext;
-import org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -38,15 +34,13 @@ import java.util.regex.Pattern;
  * User: loom
  * Date: Oct 5, 2010
  * Time: 11:29:45 AM
- * To change this template use File | Settings | File Templates.
  *
  * @todo generate SQL DDL scripts for each DB.
  */
-public class ContentHistoryService implements Processor, InitializingBean, CamelContextAware {
+public class ContentHistoryService implements Processor, CamelContextAware {
     private transient static Logger logger = Logger.getLogger(ContentHistoryService.class);
 
     private org.hibernate.impl.SessionFactoryImpl sessionFactoryBean;
-    private Class mappingClass;
     private long processedCount = 0;
     private long ignoredCount = 0;
     private long insertedCount = 0;
@@ -65,10 +59,6 @@ public class ContentHistoryService implements Processor, InitializingBean, Camel
 
     public void setSessionFactoryBean(SessionFactoryImpl sessionFactoryBean) {
         this.sessionFactoryBean = sessionFactoryBean;
-    }
-
-    public void setMappingClass(Class mappingClass) {
-        this.mappingClass = mappingClass;
     }
 
     public void setIgnoreProperties(Set<String> ignoreProperties) {
@@ -98,11 +88,11 @@ public class ContentHistoryService implements Processor, InitializingBean, Camel
             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
             final Date date = dateFormat.parse(dateStr);
             final String userKey = matcher.group(2);
-            final String ipAddress = matcher.group(3);
-            final String httpSessionId = matcher.group(4);
+//            final String ipAddress = matcher.group(3);
+//            final String httpSessionId = matcher.group(4);
             final String nodeIdentifier = matcher.group(5);
             final String path = matcher.group(6);
-            final String nodeType = matcher.group(7);
+//            final String nodeType = matcher.group(7);
             final String args = matcher.group(8);
             String propertyName = null;
             String[] argList = args.split(" ");
@@ -121,7 +111,9 @@ public class ContentHistoryService implements Processor, InitializingBean, Camel
             }
 
             if ((propertyName != null) && ignoreProperties.contains(propertyName)) {
-                logger.debug("Ignoring property " + propertyName + " as configured.");
+            	if (logger.isDebugEnabled()) {
+            		logger.debug("Ignoring property " + propertyName + " as configured.");
+            	}
                 ignoredCount++;
                 return;
             }
@@ -145,12 +137,16 @@ public class ContentHistoryService implements Processor, InitializingBean, Camel
                     });
                     if (matchingNodeType != null) {
                         ignoredCount++;
-                        logger.debug("Ignoring node type " + matchingNodeType + " as configured.");
+                        if (logger.isDebugEnabled()) {
+                        	logger.debug("Ignoring node type " + matchingNodeType + " as configured.");
+                        }
                         return;
                     }
                 } catch (RepositoryException e) {
                     // Node not found might be due to old logs so fail silently
-                    logger.debug("Couldn't find node " + nodeIdentifier + " will not insert log entry. This could be due to parsing an old log.");
+                	if (logger.isDebugEnabled()) {
+                		logger.debug("Couldn't find node " + nodeIdentifier + " will not insert log entry. This could be due to parsing an old log.");
+                	}
                     ignoredCount++;
                     return;
                 }
@@ -217,6 +213,7 @@ public class ContentHistoryService implements Processor, InitializingBean, Camel
         }
     }
 
+    @SuppressWarnings("unchecked")
     public List<HistoryEntry> getNodeHistory(JCRNodeWrapper node, boolean withLanguageNodes) {
         Session session = sessionFactoryBean.openSession();
         Criteria criteria = session.createCriteria(HistoryEntry.class);
@@ -266,17 +263,6 @@ public class ContentHistoryService implements Processor, InitializingBean, Camel
             session.close();
         }
     }
-
-    public void afterPropertiesSet() throws Exception {
-        ApplicationContext context = SpringContextSingleton.getInstance().getContext();
-        AnnotationSessionFactoryBean localSessionFactoryBean = (AnnotationSessionFactoryBean) context.getBeansOfType(
-                AnnotationSessionFactoryBean.class).get("&sessionFactory");
-        localSessionFactoryBean.setAnnotatedClasses(new Class[]{mappingClass});
-        localSessionFactoryBean.afterPropertiesSet();
-        localSessionFactoryBean.updateDatabaseSchema();
-        sessionFactoryBean = (SessionFactoryImpl) localSessionFactoryBean.getObject();
-    }
-
 
     public void setCamelContext(final CamelContext camelContext) {
         this.camelContext = camelContext;

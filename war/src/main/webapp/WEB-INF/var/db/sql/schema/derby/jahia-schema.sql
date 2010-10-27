@@ -5,6 +5,8 @@
     alter table jahia_pwd_policy_rules 
         drop constraint FK2BC650026DA1D1E6;
 
+    drop table jahia_contenthistory;
+
     drop table jahia_db_test;
 
     drop table jahia_installedpatch;
@@ -16,6 +18,18 @@
     drop table jahia_pwd_policy_rules;
 
     drop table jahia_version;
+
+    create table jahia_contenthistory (
+        id bigint not null,
+        entry_action varchar(255),
+        entry_date timestamp,
+        message varchar(255),
+        entry_path clob(255),
+        property_name varchar(50),
+        user_key varchar(255),
+        uuid varchar(50),
+        primary key (id)
+    );
 
     create table jahia_db_test (
         testfield varchar(255) not null,

@@ -13,3 +13,6 @@ insert into seq_version values ( 1 );
 drop table if exists seq_installedpatch;
 create table seq_installedpatch ( next_val bigint );
 insert into seq_installedpatch values ( 1 );
+drop table if exists seq_contenthistory;
+create table seq_contenthistory ( next_val bigint );
+insert into seq_contenthistory values ( 1 );

@@ -8,3 +8,5 @@ drop sequence seq_version;
 create sequence seq_version start 1 increment 20;
 drop sequence seq_installedpatch;
 create sequence seq_installedpatch start 1 increment 20;
+drop sequence seq_contenthistory;
+create sequence seq_contenthistory start 1 increment 20;

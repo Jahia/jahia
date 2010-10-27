@@ -33,6 +33,8 @@
                     <entry key="org.jahia.hibernate.model.JahiaVersion" value="jahia_version.install_number"/>
                     <entry key="org.jahia.hibernate.model.JahiaInstalledPatch"
                            value="jahia_installedpatch.install_number"/>
+                    <entry key="org.jahia.services.history.HistoryEntry"
+                           value="jahia_contenthistory.id"/>
                 </map>
             </property>
     </bean>

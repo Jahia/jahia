@@ -201,7 +201,7 @@
             </build>
         </profile>
         <profile>
-            <id>generate-sequences</id>
+            <id>generate-ddl</id>
             <activation>
                 <property>
                     <name>jahia.generate.ddl</name>
@@ -210,6 +210,87 @@
             </activation>
             <build>
                 <plugins>
+		            <plugin>
+		                <groupId>org.apache.maven.plugins</groupId>
+		                <artifactId>maven-antrun-plugin</artifactId>
+		                <version>1.3</version>
+		                <dependencies>
+		                    <dependency>
+		                        <groupId>org.hibernate</groupId>
+		                        <artifactId>hibernate-core</artifactId>
+		                        <version>${hibernate.version}</version>
+		                    </dependency>
+		                    <dependency>
+		                        <groupId>org.hibernate</groupId>
+		                        <artifactId>hibernate-tools</artifactId>
+		                        <version>3.2.3.GA</version>
+		                    </dependency>
+		                    <dependency>
+		                        <groupId>org.slf4j</groupId>
+		                        <artifactId>slf4j-log4j12</artifactId>
+		                        <version>1.5.11</version>
+		                    </dependency>
+		                    <dependency>
+		                        <groupId>org.jahia.server</groupId>
+		                        <artifactId>jahia-impl</artifactId>
+		                        <version>${jahia.package.version}</version>
+		                    </dependency>
+		                </dependencies>
+		                <executions>
+		                    <execution>
+		                        <id>generate-ddl</id>
+		                        <phase>generate-resources</phase>
+		                        <goals>
+		                            <goal>run</goal>
+		                        </goals>
+		                        <configuration>
+		                            <tasks if="jahia.generate.ddl">
+		                                <echo message="Generating DDL schemata..."/>
+		                                <unzip src="${project.build.directory}/${project.build.finalName}/WEB-INF/lib/jahia-impl-${jahia.package.version}.jar"
+		                                       dest="${project.build.directory}/xdoclet">
+		                                    <patternset>
+		                                        <include name="**/*.hbm.xml"/>
+		                                    </patternset>
+		                                </unzip>
+		
+		                                <taskdef name="hibernatetool"
+		                                         classname="org.hibernate.tool.ant.HibernateToolTask">
+		                                    <classpath>
+		                                        <path refid="maven.dependency.classpath"/>
+		                                        <pathelement path="${maven.build.dest}"/>
+		                                        <pathelement path="${maven.test.dest}"/>
+		                                    </classpath>
+		                                </taskdef>
+										<hibernatetool destdir="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/derby/">
+											<annotationconfiguration configurationfile="${basedir}/tools/derby.hibernate.cfg.xml">
+			                                    <fileset dir="${project.build.directory}/xdoclet">
+			                                        <include name="**/*.hbm.xml"/>
+			                                    </fileset>
+											</annotationconfiguration>
+											<hbm2ddl outputfilename="jahia-schema.sql" format="true" export="false" drop="true" />
+									  	</hibernatetool>
+										<hibernatetool destdir="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/mysql/">
+											<annotationconfiguration configurationfile="${basedir}/tools/mysql.hibernate.cfg.xml">
+			                                    <fileset dir="${project.build.directory}/xdoclet">
+			                                        <include name="**/*.hbm.xml"/>
+			                                    </fileset>
+											</annotationconfiguration>
+											<hbm2ddl outputfilename="jahia-schema.sql" format="true" export="false" drop="true" />
+									  	</hibernatetool>
+										<hibernatetool destdir="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/postgresql/">
+											<annotationconfiguration configurationfile="${basedir}/tools/postgresql.hibernate.cfg.xml">
+			                                    <fileset dir="${project.build.directory}/xdoclet">
+			                                        <include name="**/*.hbm.xml"/>
+			                                    </fileset>
+											</annotationconfiguration>
+											<hbm2ddl outputfilename="jahia-schema.sql" format="true" export="false" drop="true" />
+									  	</hibernatetool>
+		                                <delete dir="${project.build.directory}/xdoclet"/>
+		                            </tasks>
+		                        </configuration>
+		                    </execution>
+		                </executions>
+		            </plugin>
                     <plugin>
                         <groupId>org.codehaus.groovy.maven</groupId>
                         <artifactId>gmaven-plugin</artifactId>
@@ -232,11 +313,104 @@
                                     <goal>execute</goal>
                                 </goals>
                                 <configuration>
-                                    <source>${pom.basedir}/generateSequences.groovy</source>
+                                    <source>${pom.basedir}/tools/generateSequences.groovy</source>
                                 </configuration>
                             </execution>
                         </executions>
                     </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>generate-jbpm-ddl</id>
+            <activation>
+                <property>
+                    <name>jahia.generate.jbpm.ddl</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+		            <plugin>
+		                <groupId>org.apache.maven.plugins</groupId>
+		                <artifactId>maven-antrun-plugin</artifactId>
+		                <version>1.3</version>
+		                <dependencies>
+		                    <dependency>
+		                        <groupId>org.hibernate</groupId>
+		                        <artifactId>hibernate-core</artifactId>
+		                        <version>${hibernate.version}</version>
+		                    </dependency>
+		                    <dependency>
+		                        <groupId>org.hibernate</groupId>
+		                        <artifactId>hibernate-tools</artifactId>
+		                        <version>3.2.3.GA</version>
+		                    </dependency>
+		                    <dependency>
+		                        <groupId>org.slf4j</groupId>
+		                        <artifactId>slf4j-log4j12</artifactId>
+		                        <version>1.5.11</version>
+		                    </dependency>
+		                    <dependency>
+		                        <groupId>org.jahia.server</groupId>
+		                        <artifactId>jahia-impl</artifactId>
+		                        <version>${jahia.package.version}</version>
+		                    </dependency>
+		                </dependencies>
+		                <executions>
+		                    <execution>
+		                        <id>generate-jbpm-ddl</id>
+		                        <phase>generate-resources</phase>
+		                        <goals>
+		                            <goal>run</goal>
+		                        </goals>
+		                        <configuration>
+		                            <tasks if="jahia.generate.jbpm.ddl">
+		                                <echo message="Generating DDL schemata for jBPM..."/>
+		                                <unzip src="${project.build.directory}/${project.build.finalName}/WEB-INF/lib/jbpm-pvm-${jbpm.version}.jar"
+		                                       dest="${project.build.directory}/jbpm">
+		                                    <patternset>
+		                                        <include name="*.hbm.xml"/>
+		                                    </patternset>
+		                                </unzip>
+		                                <taskdef name="hibernatetool"
+		                                         classname="org.hibernate.tool.ant.HibernateToolTask">
+		                                    <classpath>
+		                                        <path refid="maven.dependency.classpath"/>
+		                                        <pathelement path="${maven.build.dest}"/>
+		                                        <pathelement path="${maven.test.dest}"/>
+		                                    </classpath>
+		                                </taskdef>
+										<hibernatetool destdir="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/derby/">
+											<configuration propertyfile="${basedir}/tools/derby.hibernate.properties">
+			                                    <fileset dir="${project.build.directory}/jbpm">
+			                                        <include name="*.hbm.xml"/>
+			                                    </fileset>
+											</configuration>
+											<hbm2ddl outputfilename="jbpm-schema.sql" format="true" export="false" drop="true" />
+									  	</hibernatetool>
+										<hibernatetool destdir="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/mysql/">
+											<configuration propertyfile="${basedir}/tools/mysql.hibernate.properties">
+			                                    <fileset dir="${project.build.directory}/jbpm">
+			                                        <include name="*.hbm.xml"/>
+			                                    </fileset>
+											</configuration>
+											<hbm2ddl outputfilename="jbpm-schema.sql" format="true" export="false" drop="true" />
+									  	</hibernatetool>
+										<hibernatetool destdir="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/postgresql/">
+											<configuration propertyfile="${basedir}/tools/postgresql.hibernate.properties">
+			                                    <fileset dir="${project.build.directory}/jbpm">
+			                                        <include name="*.hbm.xml"/>
+			                                    </fileset>
+											</configuration>
+											<hbm2ddl outputfilename="jbpm-schema.sql" format="true" export="false" drop="true" />
+									  	</hibernatetool>
+		                                <delete dir="${project.build.directory}/jbpm"/>
+		                            </tasks>
+		                        </configuration>
+		                    </execution>
+		                </executions>
+		            </plugin>
                 </plugins>
             </build>
         </profile>
@@ -1360,6 +1534,11 @@
                         <version>${hibernate.version}</version>
                     </dependency>
                     <dependency>
+                        <groupId>org.hibernate</groupId>
+                        <artifactId>hibernate-tools</artifactId>
+                        <version>3.2.3.GA</version>
+                    </dependency>
+                    <dependency>
                         <groupId>org.slf4j</groupId>
                         <artifactId>slf4j-log4j12</artifactId>
                         <version>1.5.11</version>
@@ -1390,102 +1569,6 @@
                         <goals>
                             <goal>run</goal>
                         </goals>
-                    </execution>
-                    <execution>
-                        <id>generate-ddl</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <tasks if="jahia.generate.ddl">
-                                <echo message="Generating DDL schemata..."/>
-                                <taskdef name="schemaexport"
-                                         classname="org.hibernate.tool.hbm2ddl.SchemaExportTask">
-                                    <classpath>
-                                        <path refid="maven.dependency.classpath"/>
-                                        <pathelement path="${maven.build.dest}"/>
-                                        <pathelement path="${maven.test.dest}"/>
-                                    </classpath>
-                                </taskdef>
-                                <unzip src="${project.build.directory}/${project.build.finalName}/WEB-INF/lib/jahia-impl-${jahia.package.version}.jar"
-                                       dest="${project.build.directory}/xdoclet">
-                                    <patternset>
-                                        <include name="**/*.hbm.xml"/>
-                                    </patternset>
-                                </unzip>
-                                <schemaexport properties="${basedir}/derby.hibernate.properties"
-                                              quiet="yes" text="yes" drop="no" delimiter=";"
-                                              output="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/derby/jahia-schema.sql">
-                                    <fileset dir="${project.build.directory}/xdoclet">
-                                        <include name="**/*.hbm.xml"/>
-                                    </fileset>
-                                </schemaexport>
-                                <schemaexport properties="${basedir}/mysql.hibernate.properties"
-                                              quiet="yes" text="yes" drop="no" delimiter=";"
-                                              output="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/mysql/jahia-schema.sql">
-                                    <fileset dir="${project.build.directory}/xdoclet">
-                                        <include name="**/*.hbm.xml"/>
-                                    </fileset>
-                                </schemaexport>
-                                <schemaexport properties="${basedir}/postgresql.hibernate.properties"
-                                              quiet="yes" text="yes" drop="no" delimiter=";"
-                                              output="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/postgresql/jahia-schema.sql">
-                                    <fileset dir="${project.build.directory}/xdoclet">
-                                        <include name="**/*.hbm.xml"/>
-                                    </fileset>
-                                </schemaexport>
-                                <delete dir="${project.build.directory}/xdoclet"/>
-                            </tasks>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>generate-jbpm-ddl</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <tasks if="jahia.generate.jbpm.ddl">
-                                <echo message="Generating DDL schemata for jBPM..."/>
-                                <taskdef name="schemaexport"
-                                         classname="org.hibernate.tool.hbm2ddl.SchemaExportTask">
-                                    <classpath>
-                                        <path refid="maven.dependency.classpath"/>
-                                        <pathelement path="${maven.build.dest}"/>
-                                        <pathelement path="${maven.test.dest}"/>
-                                    </classpath>
-                                </taskdef>
-                                <unzip src="${project.build.directory}/${project.build.finalName}/WEB-INF/lib/jbpm-pvm-${jbpm.version}.jar"
-                                       dest="${project.build.directory}/jbpm">
-                                    <patternset>
-                                        <include name="*.hbm.xml"/>
-                                    </patternset>
-                                </unzip>
-                                <schemaexport properties="${basedir}/derby.hibernate.properties"
-                                              quiet="yes" text="yes" drop="no" delimiter=";"
-                                              output="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/derby/jbpm-schema.sql">
-                                    <fileset dir="${project.build.directory}/jbpm">
-                                        <include name="*.hbm.xml"/>
-                                    </fileset>
-                                </schemaexport>
-                                <schemaexport properties="${basedir}/mysql.hibernate.properties"
-                                              quiet="yes" text="yes" drop="no" delimiter=";"
-                                              output="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/mysql/jbpm-schema.sql">
-                                    <fileset dir="${project.build.directory}/jbpm">
-                                        <include name="*.hbm.xml"/>
-                                    </fileset>
-                                </schemaexport>
-                                <schemaexport properties="${basedir}/postgresql.hibernate.properties"
-                                              quiet="yes" text="yes" drop="no" delimiter=";"
-                                              output="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/postgresql/jbpm-schema.sql">
-                                    <fileset dir="${project.build.directory}/jbpm">
-                                        <include name="*.hbm.xml"/>
-                                    </fileset>
-                                </schemaexport>
-                                <delete dir="${project.build.directory}/jbpm"/>
-                            </tasks>
-                        </configuration>
                     </execution>
                     <execution>
                         <id>delete-gwt-temp</id>

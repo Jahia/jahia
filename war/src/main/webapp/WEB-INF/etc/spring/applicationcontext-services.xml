@@ -208,7 +208,6 @@
     <bean id="ContentHistoryService" class="org.jahia.services.history.ContentHistoryService"
           init-method="start" factory-method="getInstance">
         <property name="sessionFactoryBean" ref="sessionFactory"/>
-        <property name="mappingClass" value="org.jahia.services.history.HistoryEntry"/>
         <property name="from" value="seda:logMsgs?size=10000&amp;concurrentConsumers=5"/>
         <property name="ignoreProperties">
             <set>

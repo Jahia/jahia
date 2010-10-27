@@ -7,6 +7,8 @@
         drop 
         foreign key FK2BC650026DA1D1E6;
 
+    drop table if exists jahia_contenthistory;
+
     drop table if exists jahia_db_test;
 
     drop table if exists jahia_installedpatch;
@@ -18,6 +20,19 @@
     drop table if exists jahia_pwd_policy_rules;
 
     drop table if exists jahia_version;
+
+    create table jahia_contenthistory (
+        id bigint not null,
+        entry_action varchar(255),
+        entry_date datetime,
+        message varchar(255),
+        entry_path longtext,
+        property_name varchar(50),
+        user_key varchar(255),
+        uuid varchar(50),
+        primary key (id),
+        unique (entry_date, uuid, property_name)
+    ) ENGINE=InnoDB;
 
     create table jahia_db_test (
         testfield varchar(255) not null,

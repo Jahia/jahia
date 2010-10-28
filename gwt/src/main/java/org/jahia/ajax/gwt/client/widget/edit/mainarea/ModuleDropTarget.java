@@ -141,6 +141,10 @@ public class ModuleDropTarget extends DropTarget {
         final GWTJahiaNode jahiaNode = module.getParentModule().getNode();
         if (jahiaNode.isWriteable() && !jahiaNode.isLocked()) {
             String nodetypes = module.getParentModule().getNodeTypes();
+            if (EditModeDNDListener.EMPTYAREA_TYPE.equals(targetType)) {
+                nodetypes = module.getNodeTypes();
+            }
+
             boolean allowed = !EditModeDNDListener.CONTENT_SOURCE_TYPE.equals(e.getStatus().getData(EditModeDNDListener.SOURCE_TYPE)) &&  checkNodeType(e, nodetypes);
 
             if (allowed) {                

@@ -1,25 +1,18 @@
 package org.jahia.modules.pagehit;
 
-import org.apache.log4j.Logger;
-
 import javax.persistence.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * Represents page hits entry.
  * User: Dorth
  * Date: 26 août 2010
  * Time: 13:28:57
- * To change this template use File | Settings | File Templates.
  */
 @Entity
-@Table(name = "jahia_pagehit",
-        uniqueConstraints = {@UniqueConstraint(columnNames = {"uuid"})}
-)
+@Table(name = "jahia_pagehit")
 public class PageHit {
 
-    private transient static Logger logger = Logger.getLogger(PageHit.class);
-    private Long id = 0l;
-    private Long hit;
+    private Long hits;
     private String path;
     private String uuid;
 
@@ -28,23 +21,13 @@ public class PageHit {
 
     }
 
-    public PageHit(Long hit, String path, String uuid) {
-        this.hit = hit;
+    public PageHit(Long hits, String path, String uuid) {
+        this.hits = hits;
         this.path = path;
         this.uuid = uuid;
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    @Basic
     public String getUuid() {
         return uuid;
     }
@@ -54,15 +37,16 @@ public class PageHit {
     }
 
     @Basic
-    public Long getHit() {
-        return hit;
+    public Long getHits() {
+        return hits;
     }
 
-    public void setHit(Long hit) {
-        this.hit = hit;
+    public void setHits(Long hits) {
+        this.hits = hits;
     }
 
     @Lob
+    @Column (name = "page_path")
     public String getPath() {
         return path;
     }

@@ -111,6 +111,100 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>generate-ddl</id>
+            <activation>
+                <property>
+                    <name>jahia.generate.ddl</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+		            <plugin>
+		                <groupId>org.apache.maven.plugins</groupId>
+		                <artifactId>maven-antrun-plugin</artifactId>
+		                <version>1.3</version>
+		                <dependencies>
+					        <dependency>
+					            <groupId>org.jahia.server</groupId>
+					            <artifactId>jahia-impl</artifactId>
+					            <version>${jahia.package.version}</version>
+					            <scope>provided</scope>
+					        </dependency>
+		                    <dependency>
+		                        <groupId>org.hibernate</groupId>
+		                        <artifactId>hibernate-core</artifactId>
+		                        <version>${hibernate.version}</version>
+		                    </dependency>
+		                    <dependency>
+		                        <groupId>org.hibernate</groupId>
+		                        <artifactId>hibernate-tools</artifactId>
+		                        <version>3.2.3.GA</version>
+		                    </dependency>
+		                    <dependency>
+		                        <groupId>org.slf4j</groupId>
+		                        <artifactId>slf4j-log4j12</artifactId>
+		                        <version>1.5.11</version>
+		                    </dependency>
+		                </dependencies>
+		                <executions>
+		                    <execution>
+		                        <id>generate-ddl</id>
+		                        <phase>process-classes</phase>
+		                        <goals>
+		                            <goal>run</goal>
+		                        </goals>
+		                        <configuration>
+		                            <tasks if="jahia.generate.ddl">
+		                                <echo message="Generating DDL schemata..."/>
+                						<property name="runtime_classpath" refid="maven.runtime.classpath"/>
+		                                <taskdef name="hibernatetool"
+		                                         classname="org.hibernate.tool.ant.HibernateToolTask">
+		                                    <classpath>
+		                                        <path refid="maven.dependency.classpath"/>
+		                                        <pathelement path="${maven.build.dest}"/>
+		                                        <pathelement path="${maven.test.dest}"/>
+		                                    </classpath>
+		                                </taskdef>
+		                                <mkdir dir="${basedir}/src/main/webapp/META-INF/db/derby"/>
+										<hibernatetool destdir="${basedir}/src/main/webapp/META-INF/db/derby/">
+											<classpath path="${runtime_classpath}"/>
+											<annotationconfiguration configurationfile="${basedir}/tools/derby.hibernate.cfg.xml"/>
+											<hbm2ddl outputfilename="jahia-pagehit-schema.sql" format="true" export="false" drop="true" />
+									  	</hibernatetool>
+		                                <mkdir dir="${basedir}/src/main/webapp/META-INF/db/mssql"/>
+										<hibernatetool destdir="${basedir}/src/main/webapp/META-INF/db/mssql/">
+											<classpath path="${runtime_classpath}"/>
+											<annotationconfiguration configurationfile="${basedir}/tools/mssql.hibernate.cfg.xml"/>
+											<hbm2ddl outputfilename="jahia-pagehit-schema.sql" format="true" export="false" drop="true" />
+									  	</hibernatetool>
+		                                <mkdir dir="${basedir}/src/main/webapp/META-INF/db/mysql"/>
+										<hibernatetool destdir="${basedir}/src/main/webapp/META-INF/db/mysql/">
+											<classpath path="${runtime_classpath}"/>
+											<annotationconfiguration configurationfile="${basedir}/tools/mysql.hibernate.cfg.xml"/>
+											<hbm2ddl outputfilename="jahia-pagehit-schema.sql" format="true" export="false" drop="true" />
+									  	</hibernatetool>
+		                                <mkdir dir="${basedir}/src/main/webapp/META-INF/db/oracle"/>
+										<hibernatetool destdir="${basedir}/src/main/webapp/META-INF/db/oracle/">
+											<classpath path="${runtime_classpath}"/>
+											<annotationconfiguration configurationfile="${basedir}/tools/oracle.hibernate.cfg.xml"/>
+											<hbm2ddl outputfilename="jahia-pagehit-schema.sql" format="true" export="false" drop="true" />
+									  	</hibernatetool>
+		                                <mkdir dir="${basedir}/src/main/webapp/META-INF/db/postgresql"/>
+										<hibernatetool destdir="${basedir}/src/main/webapp/META-INF/db/postgresql/">
+											<classpath path="${runtime_classpath}"/>
+											<annotationconfiguration configurationfile="${basedir}/tools/postgresql.hibernate.cfg.xml"/>
+											<hbm2ddl outputfilename="jahia-pagehit-schema.sql" format="true" export="false" drop="true" />
+									  	</hibernatetool>
+		                            </tasks>
+		                        </configuration>
+		                    </execution>
+		                </executions>
+		            </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
     <dependencies>
         <dependency>

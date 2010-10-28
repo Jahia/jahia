@@ -6,7 +6,6 @@
     <bean id="pageHitService" class="org.jahia.modules.pagehit.PageHitService"
           init-method="start" factory-method="getInstance">
         <property name="sessionFactoryBean" ref="sessionFactory"/>
-        <property name="mappingClass" value="org.jahia.modules.pagehit.PageHit"/>
         <property name="from" value="seda:logMsgs?size=10000&amp;concurrentConsumers=5"/>
     </bean>
 

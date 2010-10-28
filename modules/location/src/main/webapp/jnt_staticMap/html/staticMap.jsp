@@ -20,8 +20,8 @@
                 <c:param name="zoom" value="${props['j:zoom']}"/>
             </c:if>
             <c:param name="size" value="${props['j:width']}x${props['j:height']}"/>
-            <c:if test="${not empty props['j:maptype']}">
-                <c:param name="maptype" value="${props['j:maptype']}"/>
+            <c:if test="${not empty props['j:mapType']}">
+                <c:param name="maptype" value="${props['j:mapType']}"/>
             </c:if>
             <c:param name="language" value="${currentResource.locale.language}"/>
             <c:choose>
@@ -36,6 +36,7 @@
                     <c:set var="location" value="${location}${not empty location ? ',' : ''}${country.displayName}"/>
                 </c:otherwise>
             </c:choose>
+            <c:param name="imagetype" value="${props['j:imageType']}"/>
             <c:set var="markers" value="${location}"/>
             <c:if test="${not empty props['j:markerColor'] && props['j:markerColor'] != 'normal'}">
                 <c:set var="markers" value="color:${props['j:markerColor']}|${markers}"/>

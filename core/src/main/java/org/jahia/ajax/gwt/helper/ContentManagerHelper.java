@@ -1036,7 +1036,7 @@ public class ContentManagerHelper {
                     String shortName = JCRContentUtils.generateNodeName(key, 20);
                     is = new FileInputStream(path);
                     JCRNodeWrapper templateSet = session.getNode("/templateSets").addNode(shortName, "jnt:virtualsite");
-                    templateSet.setProperty("j:installedModules", new Value[]{session.getValueFactory().createValue(key)});
+                    templateSet.setProperty("j:installedModules", new Value[]{session.getValueFactory().createValue(shortName)});
                     session.importXML("/templateSets/" + shortName, is, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
                     templateSet.getNode("templates/base").setProperty("j:view", shortName);
                     session.save();

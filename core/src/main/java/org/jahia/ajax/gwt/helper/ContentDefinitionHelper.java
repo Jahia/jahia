@@ -134,12 +134,17 @@ public class ContentDefinitionHelper {
         List<GWTJahiaItemDefinition> inheritedItems = new ArrayList<GWTJahiaItemDefinition>();
 
         for (ExtendedItemDefinition def : defs) {
+            ExtendedItemDefinition overrideDef = def;
             if (!excludedTypes.contains(def.getDeclaringNodeType().getName()) &&
                     !excludedItems.contains(def.getName())) {
                 GWTJahiaItemDefinition item;
                 if (def.isNode()) {
                     GWTJahiaNodeDefinition node = new GWTJahiaNodeDefinition();
-                    ExtendedNodeDefinition end = (ExtendedNodeDefinition) def;
+                    overrideDef = nodeType.getChildNodeDefinitionsAsMap().get(def.getName());
+                    if (overrideDef == null) {
+                        overrideDef = def;
+                    }
+                    ExtendedNodeDefinition end = (ExtendedNodeDefinition) overrideDef;
                     item = node;
                     node.setRequiredPrimaryTypes(end.getRequiredPrimaryTypeNames());
                     node.setDefaultPrimaryType(end.getDefaultPrimaryTypeName());
@@ -147,7 +152,11 @@ public class ContentDefinitionHelper {
                     node.setWorkflow(end.getWorkflow());
                 } else {
                     GWTJahiaPropertyDefinition prop = new GWTJahiaPropertyDefinition();
-                    ExtendedPropertyDefinition epd = (ExtendedPropertyDefinition) def;
+                    overrideDef = nodeType.getPropertyDefinitionsAsMap().get(def.getName());
+                    if (overrideDef == null) {
+                        overrideDef = def;
+                    }
+                    ExtendedPropertyDefinition epd = (ExtendedPropertyDefinition) overrideDef;
                     prop.setInternationalized(epd.isInternationalized());
                     prop.setRequiredType(epd.getRequiredType());
                     prop.setMultiple(epd.isMultiple());
@@ -188,21 +197,21 @@ public class ContentDefinitionHelper {
                     prop.setDefaultValues(gwtValues);
                     item = prop;
                 }
-                item.setAutoCreated(def.isAutoCreated());
+                item.setAutoCreated(overrideDef.isAutoCreated());
                 item.setLabel(def.getLabel(uiLocale));
-                item.setMandatory(def.isMandatory());
-                item.setHidden(def.isHidden());
-                item.setName(def.getName());
-                item.setProtected(def.isProtected());
+                item.setMandatory(overrideDef.isMandatory());
+                item.setHidden(overrideDef.isHidden());
+                item.setName(overrideDef.getName());
+                item.setProtected(overrideDef.isProtected());
                 item.setDeclaringNodeType(def.getDeclaringNodeType().getName());
                 if ("jcr:description".equals(def.getName())) {
                     item.setDeclaringNodeTypeLabel(def.getLabel(uiLocale));
                 } else {
                     item.setDeclaringNodeTypeLabel(def.getDeclaringNodeType().getLabel(uiLocale));
                 }
-                item.setSelector(def.getSelector());
-                item.setSelectorOptions(new HashMap<String, String>(def.getSelectorOptions()));
-                item.setDataType(def.getItemType());
+                item.setSelector(overrideDef.getSelector());
+                item.setSelectorOptions(new HashMap<String, String>(overrideDef.getSelectorOptions()));
+                item.setDataType(overrideDef.getItemType());
                 if (def.getDeclaringNodeType().getName().equals(nodeType.getName())) {
                     items.add(item);
                 } else {

@@ -61,7 +61,7 @@ public class ContentImport extends Window {
 
         m_linker = linker;
 
-        setHeading(Messages.get("label.export"));
+        setHeading(Messages.get("label.import"));
         setSize(500, 150);
         setResizable(false);
         setModal(true);

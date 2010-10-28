@@ -41,8 +41,6 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * WrapperFilter
@@ -70,7 +68,7 @@ public class TemplateNodeFilter extends AbstractFilter {
 
             if (template != null && !renderContext.isAjaxRequest()) {
                 try {
-                    JCRNodeWrapper templateNode = template.node;
+                    JCRNodeWrapper templateNode = resource.getNode().getSession().getNodeByIdentifier(template.node);
                     renderContext.getRequest().setAttribute("previousTemplate", template);
                     renderContext.getRequest().setAttribute("wrappedResource", resource);
                     Resource wrapperResource = new Resource(templateNode,
@@ -127,7 +125,7 @@ public class TemplateNodeFilter extends AbstractFilter {
                 JCRNodeWrapper parent = current.getParent();
                 while (!(parent.isNodeType("jnt:templatesFolder"))) {
                     template = new Template(parent.hasProperty("j:view") ? parent.getProperty("j:view").getString() :
-                            templateName, parent, template);
+                            templateName, parent.getIdentifier(), template);
                     parent = parent.getParent();
                 }
             } else {
@@ -135,23 +133,23 @@ public class TemplateNodeFilter extends AbstractFilter {
                     // A template node is specified on the current node
                     JCRNodeWrapper templateNode = (JCRNodeWrapper) current.getProperty("j:templateNode").getNode();
                     template = new Template(templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
-                            templateName, templateNode, template);
+                            templateName, templateNode.getIdentifier(), template);
                 } else if (templatesNode != null) {
                     template = addContentTemplates(resource, null, templatesNode);
                 }
 
                 if (template != null) {
                     // Add cascade of parent templates
-                    JCRNodeWrapper templateNode = template.getNode().getParent();
+                    JCRNodeWrapper templateNode = resource.getNode().getSession().getNodeByIdentifier(template.getNode()).getParent();
                     while (!(templateNode.isNodeType("jnt:templatesFolder"))) {
                         template = new Template(templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
-                                null, templateNode, template);
+                                null, templateNode.getIdentifier(), template);
                         templateNode = templateNode.getParent();
                     }
                 } else {
                     // No template defined, use system display
                     try {
-                        template = new Template("system", node.getSession().getNode("/systemTemplate"), null);
+                        template = new Template("system", node.getSession().getNode("/systemTemplate").getIdentifier(), null);
                     } catch (RepositoryException e) {
                         logger.error("Cannot find default template", e);
                     }
@@ -203,49 +201,9 @@ public class TemplateNodeFilter extends AbstractFilter {
         if (ok) {
             template = new Template(
                     templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
-                            null, templateNode, template);
+                            null, templateNode.getIdentifier(), template);
         }
         return template;
-    }
-
-    public class Template {
-        public String view;
-        public JCRNodeWrapper node;
-        public Template next;
-
-        Template(String view, JCRNodeWrapper node, Template next) {
-            this.view = view;
-            this.node = node;
-            this.next = next;
-        }
-
-        @Override
-        public String toString() {
-            return view + " for node " + node.getPath();
-        }
-
-        public String getView() {
-            return view;
-        }
-
-        public JCRNodeWrapper getNode() {
-            return node;
-        }
-
-        public Template getNext() {
-            return next;
-        }
-
-        public List<Template> getNextTemplates() {
-            List<Template> t;
-            if (next == null) {
-                 t = new ArrayList<Template>();
-            } else {
-                t = next.getNextTemplates();
-            }
-            t.add(this);
-            return t;
-        }
     }
 
 }

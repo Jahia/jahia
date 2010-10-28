@@ -42,7 +42,7 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
-import org.jahia.services.render.filter.TemplateNodeFilter;
+import org.jahia.services.render.filter.Template;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
@@ -66,7 +66,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
 
     private String mockupStyle;
 
-    private TemplateNodeFilter.Template templateNode;
+    private Template templateNode;
 
     public void setAreaType(String areaType) {
         this.areaType = areaType;
@@ -160,14 +160,14 @@ public class AreaTag extends ModuleTag implements ParamParent {
 
         if (path != null) {
             try {
-                TemplateNodeFilter.Template t = (TemplateNodeFilter.Template)renderContext.getRequest().getAttribute("previousTemplate");
+                Template t = (Template)renderContext.getRequest().getAttribute("previousTemplate");
                 templateNode = t;
 
                 if (!path.startsWith("/")) {
                     List<JCRNodeWrapper> nodes = new ArrayList<JCRNodeWrapper>();
                     if (t != null) {
-                        for (TemplateNodeFilter.Template currentTemplate : t.getNextTemplates()) {
-                            nodes.add(0,currentTemplate.getNode());
+                        for (Template currentTemplate : t.getNextTemplates()) {
+                            nodes.add(0,resource.getNode().getSession().getNodeByIdentifier(currentTemplate.getNode()));
                         }
                     }
                     nodes.add(resource.getNode());

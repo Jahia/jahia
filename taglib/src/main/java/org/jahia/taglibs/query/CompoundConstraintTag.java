@@ -122,8 +122,13 @@ public abstract class CompoundConstraintTag extends ConstraintTag {
     protected Constraint getConstraint() throws Exception {
         Constraint compoundConstraint = null;
         if (!constraints.isEmpty()) {
-            for (Constraint constraint : constraints) {
-                compoundConstraint = compoundConstraint != null ? doLogic(compoundConstraint, constraint) : constraint;
+            if (constraints.size() == 1) {
+                compoundConstraint = constraints.get(0);
+            } else {
+                for (Constraint constraint : constraints) {
+                    compoundConstraint = compoundConstraint != null ? doLogic(compoundConstraint,
+                            constraint) : constraint;
+                }
             }
         }
         return compoundConstraint;

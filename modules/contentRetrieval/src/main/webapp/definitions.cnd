@@ -1,0 +1,11 @@
+<j = 'http://www.jahia.org/jahia/1.0'>
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+<jmix = 'http://www.jahia.org/jahia/mix/1.0'>
+
+[jnt:contentRetrieval] > jnt:content, jmix:list, jmix:renderableList, jmix:queryContent, mix:title, jmix:cache
+- j:type (string, choicelist[subnodetypes = 'jnt:page,jmix:basicContent,jmix:editorialContent',resourceBundle]) indexed=no mandatory
+- j:criteria (string,choicelist[resourceBundle]) = 'jcr:created' autocreated indexed=no < 'jcr:created','jcr:lastModified','j:lastPublished'
+- j:sortDirection (string, choicelist[resourceBundle]) = 'asc' autocreated indexed=no < 'asc','desc'
+- j:startNode (weakreference)
+- j:filter (reference, category[autoSelectParent=false]) multiple
+- j:noResultsMessage (string) i18n indexed=no

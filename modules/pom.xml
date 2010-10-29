@@ -87,6 +87,7 @@
         <module>bookmarks</module>
         <module>calendar</module>
         <module>contact</module>
+        <module>contentRetrieval</module>        
         <module>cssPage</module>
         <module>default</module>
         <module>docConverter</module>
@@ -97,7 +98,6 @@
         <module>formbuilder</module>
         <module>forum</module>
         <module>job</module>
-        <module>latestPages</module>
         <module>location</module>
         <module>metrics</module>
         <module>news</module>

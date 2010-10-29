@@ -171,7 +171,7 @@
                             <tabs jcr:primaryType="jnt:tabularList">
                                 <last-pages jcr:primaryType="jnt:contentList">
                                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Latest Wiki Pages" jcr:primaryType="jnt:translation" />
-                                    <latestContent j:criteria="lastModified" jcr:mixinTypes="jmix:renderable" j:type="jnt:wikiPage" j:nbOfResult="20" jcr:primaryType="jnt:latestContent" j:view="linkList" />
+                                    <contentRetrieval j:criteria="jcr:lastModified" jcr:mixinTypes="jmix:renderable" j:type="jnt:wikiPage" maxItems="20" jcr:primaryType="jnt:contentRetrieval" j:view="linkList" />
                                 </last-pages>
                                 <create-new-page jcr:primaryType="jnt:contentList">
                                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Create new page" jcr:primaryType="jnt:translation" />

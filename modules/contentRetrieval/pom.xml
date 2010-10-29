@@ -44,10 +44,10 @@
         <version>6.5-SNAPSHOT</version>
     </parent>
     <groupId>org.jahia.modules</groupId>
-    <artifactId>latestPages</artifactId>
-    <name>Jahia Latest Pages</name>
+    <artifactId>contentRetrieval</artifactId>
+    <name>Jahia Content retrieval</name>
     <packaging>war</packaging>
-    <description>These is a custom module (latestPages) for running on a Jahia server.</description>
+    <description>These is a custom module (contentRetrieval) for running on a Jahia server.</description>
     <repositories>
         <repository>
             <id>jahiaRepository</id>

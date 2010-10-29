@@ -4,6 +4,3 @@
  - body (string, richtext) i18n
  - date (date)
  - pdfVersion (weakreference, picker[type='file']) i18n
-
-[jnt:pressReleases] > jnt:content, jmix:queryContent
- - searchPath (weakreference) mandatory

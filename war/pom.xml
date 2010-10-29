@@ -978,7 +978,7 @@
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
-            <artifactId>latestPages</artifactId>
+            <artifactId>contentRetrieval</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>
             <scope>runtime</scope>

@@ -17,7 +17,3 @@
  - description (string, richtext) i18n
  - skills (string, richtext) i18n
  + * (jnt:jobApplication)
-
-[jnt:jobOffers] > jnt:content, jmix:editorialContent, mix:title
- orderable
- + * (jnt:job)

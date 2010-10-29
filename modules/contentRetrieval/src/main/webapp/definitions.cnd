@@ -6,6 +6,7 @@
 - j:type (string, choicelist[subnodetypes = 'jnt:page,jmix:basicContent,jmix:editorialContent',resourceBundle]) indexed=no mandatory
 - j:criteria (string,choicelist[resourceBundle]) = 'jcr:created' autocreated indexed=no < 'jcr:created','jcr:lastModified','j:lastPublished'
 - j:sortDirection (string, choicelist[resourceBundle]) = 'asc' autocreated indexed=no < 'asc','desc'
+- maxItems (long) = 10 indexed=no
 - j:startNode (weakreference)
 - j:filter (reference, category[autoSelectParent=false]) multiple
 - j:noResultsMessage (string) i18n indexed=no

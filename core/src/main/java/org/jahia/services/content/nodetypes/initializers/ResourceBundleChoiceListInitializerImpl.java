@@ -63,7 +63,7 @@ public class ResourceBundleChoiceListInitializerImpl extends AbstractChoiceListR
             List<ChoiceListValue> l = new ArrayList<ChoiceListValue>();
             String[] constr = epd.getValueConstraints();
             for (String s : constr) {
-                ChoiceListValue bean = new ChoiceListValue(rb.get(epd.getResourceBundleKey() + "." + s, s), new HashMap<String, Object>(),
+                ChoiceListValue bean = new ChoiceListValue(rb.get(epd.getResourceBundleKey() + "." + s.replace(':', '_'), s), new HashMap<String, Object>(),
                                                            new ValueImpl(s, PropertyType.STRING, false));
 
                 l.add(bean);
@@ -72,7 +72,7 @@ public class ResourceBundleChoiceListInitializerImpl extends AbstractChoiceListR
         } else {
             for (ChoiceListValue choiceListValue : values) {
                 final String displayName = choiceListValue.getDisplayName();
-                choiceListValue.setDisplayName(rb.get(epd.getResourceBundleKey() + "." + displayName,
+                choiceListValue.setDisplayName(rb.get(epd.getResourceBundleKey() + "." + displayName.replace(':', '_'),
                                                       displayName));
             }
             return values;
@@ -88,7 +88,7 @@ public class ResourceBundleChoiceListInitializerImpl extends AbstractChoiceListR
                 getTemplatePackageName((ExtendedPropertyDefinition) propertyWrapper.getDefinition()));
 
         return rb.get(((ExtendedPropertyDefinition) propertyWrapper.getDefinition()).getResourceBundleKey()
-                + "." + propValue, propValue);
+                + "." + propValue.replace(':', '_'), propValue);
     }
 
     private String getTemplatePackageName(ExtendedPropertyDefinition definition) {

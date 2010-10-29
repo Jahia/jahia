@@ -207,17 +207,17 @@ public class DocumentViewImportHandler extends DefaultHandler {
 
                     String uuid = atts.getValue("jcr:uuid");
                     String share = atts.getValue("j:share");
-                    if (!StringUtils.isEmpty(uuid) && uuidMapping.containsKey(uuid)) {
-                        child = nodes.peek().clone(session.getNodeByUUID(uuidMapping.get(uuid)), decodedQName);
-                    } else if (!StringUtils.isEmpty(share)) {
-                        for (Map.Entry<String, String> entry : pathMapping.entrySet()) {
-                            if (share.startsWith(entry.getKey())) {
-                                share = entry.getValue() + StringUtils.substringAfter(share, entry.getKey());
-                                break;
-                            }
-                        }
-                        child = nodes.peek().clone(session.getNode(share), decodedQName);
-                    } else {
+//                    if (!StringUtils.isEmpty(uuid) && uuidMapping.containsKey(uuid)) {
+//                        child = nodes.peek().clone(session.getNodeByUUID(uuidMapping.get(uuid)), decodedQName);
+//                    } else if (!StringUtils.isEmpty(share)) {
+//                        for (Map.Entry<String, String> entry : pathMapping.entrySet()) {
+//                            if (share.startsWith(entry.getKey())) {
+//                                share = entry.getValue() + StringUtils.substringAfter(share, entry.getKey());
+//                                break;
+//                            }
+//                        }
+//                        child = nodes.peek().clone(session.getNode(share), decodedQName);
+//                    } else {
                         if (!StringUtils.isEmpty(uuid)) {
                             switch (uuidBehavior) {
                                 case ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW:
@@ -275,7 +275,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
                         if (child.isFile() && currentFilePath == null) {
                             currentFilePath = child.getPath();
                         }
-                    }
+//                    }
                 }
             } else {
                 if (child.isWriteable() && child.isCheckedOut()) {

@@ -43,7 +43,7 @@
 <c:forEach items="${moduleMap.currentList}" var="subchild">
     <p>
         <c:if test="${empty param.categorykey}">
-            <template:module node="${subchild}" template="${moduleMap.subNodesTemplate}" editable="${moduleMap.editable}" />
+            <template:module node="${subchild}" template="${moduleMap.subNodesView}" editable="${moduleMap.editable}" />
         </c:if>
 
         <c:if test="${not empty param.categorykey}">
@@ -56,7 +56,7 @@
                 </c:if>
             </c:forEach>
             <c:if test="${contains eq true}">
-                <template:module node="${subchild}" template="${moduleMap.subNodesTemplate}"  editable="${moduleMap.editable}" />
+                <template:module node="${subchild}" template="${moduleMap.subNodesView}"  editable="${moduleMap.editable}" />
             </c:if>
         </c:if>
     </p>

@@ -79,15 +79,15 @@ public class LayoutTabItem extends PropertiesTabItem {
         if (engine.getNode() != null && engine.getLinker() instanceof EditLinker) {
             final ComboBox<GWTJahiaValueDisplayBean> templateField = (ComboBox<GWTJahiaValueDisplayBean>) propertiesEditor.getFieldsMap().get("j:view");
             final ComboBox<GWTJahiaValueDisplayBean> skinField = (ComboBox<GWTJahiaValueDisplayBean>) propertiesEditor.getFieldsMap().get("j:skin");
-            final ComboBox<GWTJahiaValueDisplayBean> subNodesTemplateField = (ComboBox<GWTJahiaValueDisplayBean>) propertiesEditor.getFieldsMap().get("j:subNodesView");
+            final ComboBox<GWTJahiaValueDisplayBean> subNodesViewField = (ComboBox<GWTJahiaValueDisplayBean>) propertiesEditor.getFieldsMap().get("j:subNodesView");
             final SelectionChangedListener<GWTJahiaValueDisplayBean> listener = new SelectionChangedListener<GWTJahiaValueDisplayBean>() {
                 public void selectionChanged(SelectionChangedEvent<GWTJahiaValueDisplayBean> se) {
                     Map<String, String> contextParams = new HashMap<String, String>();
                     if (skinField != null && skinField.getValue() != null) {
                         contextParams.put("forcedSkin", skinField.getValue().getValue());
                     }
-                    if (subNodesTemplateField != null && subNodesTemplateField.getValue() != null) {
-                        contextParams.put("forcedSubNodesTemplate", subNodesTemplateField.getValue().getValue());
+                    if (subNodesViewField != null && subNodesViewField.getValue() != null) {
+                        contextParams.put("forcedSubNodesTemplate", subNodesViewField.getValue().getValue());
                     }
                     updatePreview((templateField != null && templateField.getValue() != null) ? templateField.getValue().getValue() : null, contextParams);
                 }
@@ -98,8 +98,8 @@ public class LayoutTabItem extends PropertiesTabItem {
             if (skinField != null) {
                 skinField.addSelectionChangedListener(listener);
             }
-            if (subNodesTemplateField != null) {
-                subNodesTemplateField.addSelectionChangedListener(listener);
+            if (subNodesViewField != null) {
+                subNodesViewField.addSelectionChangedListener(listener);
             }
             listener.selectionChanged(null);
 

@@ -63,7 +63,7 @@
                                      path="${node.path}/${currentNode.name}"
                                      nodeTypes="${nodeTypes}" moduleType="absoluteArea">
                 <c:if test="${not empty currentNode.properties['j:subNodesView'].string}">
-                    <template:param name="subNodesTemplate"
+                    <template:param name="subNodesView"
                                     value="${currentNode.properties['j:subNodesView'].string}"/>
                 </c:if>
                 <c:if test="${not empty currentNode.properties['j:mockupStyle'].string}">

@@ -16,7 +16,7 @@
 <template:include template="hidden.header"/>
 <ol class="${currentNode.properties['j:className'].string}">
 <c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}" end="${moduleMap.end}">
-    <li><template:module node="${subchild}" template="${moduleMap.subNodesTemplate}" editable="${moduleMap.editable}"/></li>
+    <li><template:module node="${subchild}" template="${moduleMap.subNodesView}" editable="${moduleMap.editable}"/></li>
 </c:forEach>
 <c:if test="${moduleMap.editable and renderContext.editMode}">
     <li><template:module path="*"/></li>

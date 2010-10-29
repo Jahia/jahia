@@ -28,7 +28,7 @@
         </c:if>
         <div class="column-item">
             <div class="spacer">
-                <template:module node="${subchild}" template="${moduleMap.subNodesTemplate}" editable="${moduleMap.editable}"/>
+                <template:module node="${subchild}" template="${moduleMap.subNodesView}" editable="${moduleMap.editable}"/>
             </div>
         </div>
     </c:forEach>

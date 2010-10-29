@@ -17,7 +17,7 @@
 <c:if test="${children.size > 0}">
     <c:set value="${functions:randomInt(children.size)}" var="itemToDisplay"/>
     <c:forEach items="${children}" var="subchild" begin="${itemToDisplay}" end="${itemToDisplay}">
-        <template:module node="${subchild}" template="${moduleMap.subNodesTemplate}"
+        <template:module node="${subchild}" template="${moduleMap.subNodesView}"
                          editable="true"/>
     </c:forEach>
 </c:if>

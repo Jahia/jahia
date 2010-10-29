@@ -21,4 +21,4 @@
 <c:set target="${moduleMap}" property="editable" value="false" />
 <c:set target="${moduleMap}" property="emptyListMessage" value="No news found" />
 <c:set target="${moduleMap}" property="listQuery" value="${listQuery}" />
-<c:set target="${moduleMap}" property="subNodesTemplate" value="${currentNode.properties['j:subNodesView'].string}" />
+<c:set target="${moduleMap}" property="subNodesView" value="${currentNode.properties['j:subNodesView'].string}" />

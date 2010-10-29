@@ -21,7 +21,7 @@
            value="${jcr:hasChildrenOfType(subchild,'jnt:navMenu,jmix:navMenuItem') ? 'hasChildren' : 'noChildren'}${(menuStatus.first and firstInLevel) ? ' firstInLevel' : ''}${(menuStatus.last and lastInLevel) ? ' lastInLevel' : ''}"
            scope="request"/>
     <c:set var="statusNavMenu" value="${menuStatus}" scope="request"/>
-    <template:module node="${subchild}" template="${moduleMap.subNodesTemplate}"
+    <template:module node="${subchild}" template="${moduleMap.subNodesView}"
                      editable="${moduleMap.editable}"/>
 </c:forEach>
 <c:if test="${not omitFormatting}">

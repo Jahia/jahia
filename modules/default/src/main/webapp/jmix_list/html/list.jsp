@@ -16,7 +16,7 @@
 <template:include template="hidden.header"/>
 <c:set var="isEmpty" value="true"/>
 <c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}" end="${moduleMap.end}">
-    <template:module node="${subchild}" template="${moduleMap.subNodesTemplate}" editable="${moduleMap.editable}"/>
+    <template:module node="${subchild}" template="${moduleMap.subNodesView}" editable="${moduleMap.editable}"/>
     <c:set var="isEmpty" value="false"/>
 </c:forEach>
 <c:if test="${not omitFormatting}"><div class="clear"></div></c:if>

@@ -465,7 +465,7 @@ public class ContentTest {
         if (!provider.isSearchAvailable()) {
             return;
         }
-
+        JCRNodeWrapper testFile = null;
         try {
             JCRNodeWrapper rootNode = session.getNode(providerRoot);
 
@@ -475,7 +475,7 @@ public class ContentTest {
             InputStream is = new ByteArrayInputStream(value.getBytes("UTF-8"));
 
             String name = "testSearch" + System.currentTimeMillis() + ".txt";
-            JCRNodeWrapper testFile = rootNode.uploadFile(name, is, mimeType);
+            testFile = rootNode.uploadFile(name, is, mimeType);
             session.save();
             // nodes.add(testFile.getIdentifier());
 
@@ -484,7 +484,7 @@ public class ContentTest {
 
             // Do the query
             QueryManager qm = JCRSessionFactory.getInstance().getCurrentUserSession().getWorkspace().getQueryManager();
-            Query query = qm.createQuery("select * from [jnt:file] as f where contains(f.[jcr:content], '456bcd')",
+            Query query = qm.createQuery("select * from [jnt:file] as f where contains(f.*, '456bcd')",
                     Query.JCR_SQL2);
             QueryResult queryResult = query.execute();
             RowIterator it = queryResult.getRows();
@@ -501,29 +501,27 @@ public class ContentTest {
             // now let's use our search service to do the same query.
             GWTJahiaSearchQuery gwtJahiaSearchQuery = new GWTJahiaSearchQuery();
             gwtJahiaSearchQuery.setQuery("456bcd");
-            gwtJahiaSearchQuery.setInContents(true);
-            gwtJahiaSearchQuery.setInTags(true);
+            gwtJahiaSearchQuery.setInFiles(true);
             gwtJahiaSearchQuery.setOriginSiteUuid(null);
             gwtJahiaSearchQuery.setPages(null);
             gwtJahiaSearchQuery.setLanguage(null);
-            List<String> list = new ArrayList<String>();
-            /*
-            if (defPicker.getValue() != null) {
-                list.add(defPicker.getValue().getName());
-                gwtJahiaSearchQuery.setNodeTypes(list);
-            }
-            */
             SearchHelper searchHelper = (SearchHelper) SpringContextSingleton.getInstance().getContext().getBean("SearchHelper");
             List<GWTJahiaNode> result = searchHelper.search(gwtJahiaSearchQuery, 0, 0, session);
             assertEquals("Invalid number of results for query ", 1, result.size());
             String path = result.iterator().next().getPath();
             assertEquals(providerRoot + " : Wrong file found ('" + path + "' instead of '" + testFile.getPath() + "')",
                     testFile.getPath(), path);
-
-            Node removeTestFile = session.getNodeByIdentifier(testFile.getIdentifier());
-            removeTestFile.remove();
-            session.save();
         } finally {
+            if (testFile != null) {
+                try {
+                    Node removeTestFile = session.getNodeByIdentifier(testFile.getIdentifier());
+                    removeTestFile.remove();
+                    session.save();
+                } catch (Exception e) {
+                    logger.warn("Cant remove uploaded file", e);
+                }
+            }
+
             session.logout();
         }
     }

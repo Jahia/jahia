@@ -452,7 +452,7 @@ body {
 	vertical-align: bottom;
 }
 /******************************************************************************
-*  Float Right Links List ordered or unordered 
+*  Float Right Links List ordered or unordered
 ******************************************************************************/
 #bodywrapper ul.FloatRightList {
 	text-align:right;
@@ -678,6 +678,10 @@ body {
 	color:#999;
 	text-decoration:underline;
 }
+#bodywrapper ul.breadcrumb li:last-child a {
+    background-image:none;
+}
+
 #bodywrapper ul.breadcrumb a:hover,
 #bodywrapper ul.breadcrumb a:active {
 	color:#900;
@@ -1191,7 +1195,7 @@ background-color:#eaeaea
 	font-size:2em;
 	margin:0 ;
 	padding:0;
-	
+
 }
 #bodywrapper .table, #bodywrapper .table th, #bodywrapper .table td
 {
@@ -1433,16 +1437,16 @@ display:none
 	margin:0.5em 0;
 	padding:0px
 }
-#bodywrapper .Form { 
+#bodywrapper .Form {
 	margin:1em 0 0 0;
 	overflow:hidden;
 }
-#bodywrapper .formMarginLeft{ 
+#bodywrapper .formMarginLeft{
 	margin:0 0 0 25%;
 	padding:0 1em 0 2.3em;
 }
 #bodywrapper .Form label.left {
-	float:left; 
+	float:left;
 	width:25%;
 	margin:0 1em 0 1em;
 	padding:2px;

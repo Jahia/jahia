@@ -85,7 +85,7 @@
                         </pagecontent>
                         <row1-col1 jcr:primaryType="jnt:contentList">
                             <pageTitle jcr:primaryType="jnt:pageTitle"/>
-                            <breadcrumb jcr:primaryType="jnt:pageBreadcrumb"/>
+                            <breadcrumb jcr:primaryType="jnt:pageBreadcrumb"displayCurrentPage="true" displayHome="true" displayLinkOnCurrentPage="false" />
                             <listA jcr:primaryType="jnt:area"/>
                             <events jcr:primaryType="jnt:area" j:allowedTypes="jnt:event"/>
                         </row1-col1>
@@ -116,7 +116,7 @@
                         </pagecontent>
                         <row-col1 jcr:primaryType="jnt:contentList">
                             <pageTitle jcr:primaryType="jnt:pageTitle"/>
-                            <breadcrumb jcr:primaryType="jnt:pageBreadcrumb"/>
+                            <breadcrumb jcr:primaryType="jnt:pageBreadcrumb"displayCurrentPage="true" displayHome="true" displayLinkOnCurrentPage="false" />
                             <listA jcr:primaryType="jnt:area"/>
                         </row-col1>
                         <row-col2 jcr:primaryType="jnt:contentList">

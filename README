@@ -327,6 +327,10 @@ The plugin will use the url set in the parameter " <jahia.test.url> " in your se
 
 - Open the file target/site/surefire-report.html and look at the result.
 
+- To excecute selenium tests, server selenium is require. You have to download selenium RC here : http://seleniumhq.org/download/
+ This tests are configure to be run through http://localhost:8080/cms
+
+
  Code coverage generation
 ------------------------------------------------------------------------------
 Jahia's maven project structure is now integrated with the Atlassian Clover

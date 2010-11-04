@@ -56,7 +56,7 @@ public abstract class SearchField extends ToolBar {
 
         LabelToolItem label = new LabelToolItem(name);
         field = new TextField<String>();
-        field.setWidth(300);
+        field.setWidth(150);
         field.setFieldLabel(name);
         field.addKeyListener(new KeyListener() {
             public void componentKeyPress(ComponentEvent event) {

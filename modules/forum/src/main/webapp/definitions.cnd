@@ -3,10 +3,10 @@
 
 [jmix:forumContent] > jmix:droppableContent
 
-[jnt:post] > jnt:content, jmix:rating, mix:title
+[jnt:post] > jnt:content, jmix:rating, mix:title livecontent
  - content (string,richtext) i18n
 
-[jnt:thread] > jnt:content, jmix:forumContent, jmix:pager
+[jnt:thread] > jnt:content, jmix:forumContent, jmix:pager livecontent
  - threadSubject (string)
  + * (jnt:post)
 
@@ -25,4 +25,6 @@
  - shortView (boolean) = false autocreated
  + comments (jnt:thread) = jnt:thread autocreated hidden
 
-[jnt:commentable] > jnt:content, jmix:bindedComponent, jmix:forumContent
+[jnt:commentsList] > jnt:content, jmix:bindedComponent, jmix:forumContent
+
+[jnt:addComment] > jnt:content, jmix:bindedComponent, jmix:forumContent

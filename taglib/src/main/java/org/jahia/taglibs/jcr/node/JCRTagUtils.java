@@ -36,17 +36,22 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.Text;
 import org.apache.log4j.Logger;
+import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.nodetypes.ConstraintsHelper;
+import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.*;
+import javax.jcr.security.Privilege;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -277,20 +282,21 @@ public class JCRTagUtils {
 
     public static boolean hasPermission(JCRNodeWrapper node,String permission) {
         String perm = permission.toLowerCase();
-        if("read_live".equals(perm)) {
-            return node.hasPermission(JCRNodeWrapper.READ_LIVE);
+//        if("read_live".equals(perm)) {
+//            return node.hasPermission(Constants.JCR_READ_RIGHTS_LIVE);
+//        }
+//        else
+        if("read".equals(perm)) {
+            return node.hasPermission(Privilege.JCR_READ);
         }
-        else if("read".equals(perm)) {
-            return node.hasPermission(JCRNodeWrapper.READ);
-        }
-        else if("write_live".equals(perm)) {
-            return node.hasPermission(JCRNodeWrapper.WRITE_LIVE);
-        }
+//        else if("write_live".equals(perm)) {
+//            return node.hasPermission(Constants.JCR_WRITE_RIGHTS_LIVE);
+//        }
         else if("write".equals(perm)) {
-            return node.hasPermission(JCRNodeWrapper.WRITE);
+            return node.hasPermission(Privilege.JCR_WRITE);
         }
         else if("modify_acls".equals(perm)) {
-            return node.hasPermission(JCRNodeWrapper.MODIFY_ACL);
+            return node.hasPermission(Privilege.JCR_MODIFY_ACCESS_CONTROL);
         }
         return false;
     }
@@ -383,4 +389,21 @@ public class JCRTagUtils {
 
         return name.toString();
     }
+
+
+    public static boolean canAddSubNode(JCRNodeWrapper node, String name, String type) {
+        try {
+            if (!node.hasPermission(Privilege.JCR_ADD_CHILD_NODES)) {
+                return false;
+            }
+            ExtendedNodeType nodeType = NodeTypeRegistry.getInstance().getNodeType(type);
+            ExtendedNodeDefinition def = node.getApplicableChildNodeDefinition(name, type);
+            return (def != null && (nodeType.isLiveContent() | def.isLiveContent()) == Constants.LIVE_WORKSPACE.equals(node.getSession().getWorkspace().getName()));
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            return false;
+        }
+    }
+
+
 }

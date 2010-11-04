@@ -107,6 +107,8 @@ public class Lexer {
     public static final String[] IGNORE = new String[]{"ignore", "Ignore", "IGNORE"};
     public static final String[] ABORT = new String[]{"abort", "Abort", "ABORT"};
 
+    public static final String[] LIVECONTENT = new String[]{"livecontent", "LiveContent", "LIVECONTENT"};
+
     public static final String[] WORKFLOW = new String[]{"workflow", "Workflow", "WORKFLOW"};
 
     public static final String[] PROP_ATTRIBUTE;
@@ -165,6 +167,7 @@ public class Lexer {
         attr.addAll(Arrays.asList(WORKFLOW));
         attr.addAll(Arrays.asList(HIDDEN));
         attr.addAll(Arrays.asList(ITEMTYPE));
+        attr.addAll(Arrays.asList(LIVECONTENT));
         NODE_ATTRIBUTE = attr.toArray(new String[attr.size()]);
     }
 
@@ -202,22 +205,6 @@ public class Lexer {
     public static final String[] CHECKBOX = {"checkbox", "Checkbox", "CHECKBOX"};
 
     public static final String[] UNDEFINED = new String[]{"undefined", "Undefined", "UNDEFINED", "*"};
-
-    public static final String[] JAHIA_CONTAINERLIST = {"containerList"};
-    public static final String[] JAHIA_SINGLECONTAINER = {"singleContainer"};
-
-    public static final String[] JAHIA_SMALLTEXTFIELD = {"smallText"};
-    public static final String[] JAHIA_SHAREDSMALLTEXTFIELD = {"sharedSmallText"};
-    public static final String[] JAHIA_BIGTEXTFIELD = {"bigText"};
-    public static final String[] JAHIA_DATEFIELD = {"date"};
-    public static final String[] JAHIA_PAGEFIELD = {"page"};
-    public static final String[] JAHIA_FILEFIELD = {"file"};
-    public static final String[] JAHIA_PORTLETFIELD = {"portlet"};
-    public static final String[] JAHIA_INTEGERFIELD = {"integer"};
-    public static final String[] JAHIA_FLOATFIELD = {"float"};
-    public static final String[] JAHIA_BOOLEANFIELD = {"boolean"};
-    public static final String[] JAHIA_CATEGORYFIELD = {"category"};
-    public static final String[] JAHIA_COLORFIELD = {"color"};
 
     public static final String EOF = "eof";
 

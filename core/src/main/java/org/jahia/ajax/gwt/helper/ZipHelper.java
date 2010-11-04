@@ -36,6 +36,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.api.Constants;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -251,11 +252,7 @@ public class ZipHelper {
                 missedPaths.add(new StringBuilder(path).append(" could not be accessed : ").append(e.toString()).toString());
                 continue;
             }
-            if (nodeToZip.hasPermission(JCRNodeWrapper.READ)) {
-                nodesToZip.add(nodeToZip);
-            } else {
-                missedPaths.add(nodeToZip.getName());
-            }
+            nodesToZip.add(nodeToZip);
         }
         if (nodesToZip.size() > 0) {
             String firstPath = nodesToZip.get(0).getPath();
@@ -308,11 +305,7 @@ public class ZipHelper {
                 missedPaths.add(new StringBuilder(path).append(" could not be accessed : ").append(e.toString()).toString());
                 continue;
             }
-            if (nodeToUnzip.hasPermission(JCRNodeWrapper.READ)) {
-                nodesToUnzip.add(nodeToUnzip);
-            } else {
-                missedPaths.add(nodeToUnzip.getName());
-            }
+            nodesToUnzip.add(nodeToUnzip);
         }
         if (nodesToUnzip.size() > 0) {
             String firstPath = nodesToUnzip.get(0).getPath();

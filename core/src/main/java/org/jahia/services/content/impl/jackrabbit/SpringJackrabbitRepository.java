@@ -68,10 +68,6 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
 
     private Resource configFile;
     private Resource homeDir;
-    private JahiaUserManagerService userService;
-    private JahiaGroupManagerService groupService;
-    private JahiaSitesService sitesService;
-
 
     private String servletContextAttributeName;
     private ServletContext servletContext;
@@ -90,30 +86,6 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
 
     public void setHomeDir(Resource homeDir) {
         this.homeDir = homeDir;
-    }
-
-    public JahiaUserManagerService getUserService() {
-        return userService;
-    }
-
-    public void setUserService(JahiaUserManagerService userService) {
-        this.userService = userService;
-    }
-
-    public JahiaGroupManagerService getGroupService() {
-        return groupService;
-    }
-
-    public void setGroupService(JahiaGroupManagerService groupService) {
-        this.groupService = groupService;
-    }
-
-    public JahiaSitesService getSitesService() {
-        return sitesService;
-    }
-
-    public void setSitesService(JahiaSitesService sitesService) {
-        this.sitesService = sitesService;
     }
 
     public String getServletContextAttributeName() {
@@ -148,9 +120,6 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
         repository = createRepository();
 
         JahiaAccessManager.setRepository(repository);
-        SpringJahiaUserService service = new SpringJahiaUserService();
-        JahiaAccessManager.setUserService(service);
-        JahiaLoginModule.setUserService(service);
 
         if ((servletContextAttributeName != null) &&
             (servletContext != null)) {
@@ -221,102 +190,6 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
             Runtime.getRuntime().removeShutdownHook(hook);
         } catch (IllegalStateException e) {
             // ignore. exception is thrown when hook itself calls shutdown
-        }
-    }
-
-    class SpringJahiaUserService implements JahiaUserService {
-        public boolean checkPassword(String username, String password) {
-            JahiaUser user = userService.lookupUser(username);
-            if (user != null) {
-                return user.verifyPassword(password);
-            }
-            return false;
-        }
-
-        public boolean isServerAdmin(String username) {
-            JahiaUser user = userService.lookupUser(username);
-            if (user != null) {
-                JahiaGroup admingroup = groupService.lookupGroup(0, JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME);
-                return admingroup.isMember(user);
-            }
-            return false;
-        }
-
-        public boolean isAdmin(String username, String site) {
-            JahiaSite s = null;
-            try {
-                s = sitesService.getSiteByKey(site);
-            } catch (JahiaException e) {
-                logger.error(e.getMessage(), e);
-            }
-            if (s == null ) {
-                return false;
-            }
-            JahiaUser user = userService.lookupUser(username);
-            if (user != null) {
-                JahiaGroup admingroup = groupService.lookupGroup(s.getID(), JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME);
-                return admingroup.isMember(user);
-            }
-            return false;
-        }
-
-        public boolean isUserMemberOf(String username, String groupname, String site) {
-            JahiaSite s = null;
-            if (JahiaGroupManagerService.GUEST_GROUPNAME.equals(groupname)) {
-                return true;
-            }
-            if (JahiaGroupManagerService.USERS_GROUPNAME.equals(groupname) && site == null && !JahiaUserManagerService.GUEST_USERNAME.equals(username)) {
-                return true;
-            }
-            int siteId = 0;
-            try {
-                s = sitesService.getSiteByKey(site);
-                if (s != null) {
-                    siteId = s.getID();
-                }
-            } catch (JahiaException e) {
-                logger.error(e.getMessage(), e);
-            }
-            JahiaUser user = userService.lookupUser(username);
-            JahiaGroup group = groupService.lookupGroup(siteId, groupname);
-            return (user != null) && (group != null) && group.isMember(user);
-        }
-
-        public boolean hasRole(String roleName, org.jahia.jaas.JahiaPrincipal principal, String site) {
-            long timer = System.currentTimeMillis();
-            Boolean cachedResult = null;
-            String siteCachKey = site != null ? site : "_server_";
-            Map<String, Boolean> roles = principal.getRoleCache().get(siteCachKey); 
-            if (roles != null) {
-                cachedResult = roles.get(roleName);
-            }
-            if (cachedResult != null) {
-                return cachedResult;
-            }
-            
-            JahiaPrincipal user = userService.lookupUser(principal.getName());
-            JahiaSite s = null;
-            if (user == null) {
-                int siteId = 0;
-                try {
-                    s = sitesService.getSiteByKey(site);
-                    if (s != null) {
-                        siteId = s.getID();
-                    }
-                } catch (JahiaException e) {
-                    logger.error(e.getMessage(), e);
-                }
-                user = groupService.lookupGroup(siteId, principal.getName());
-            }
-            boolean hasRole = user != null && user.hasRole(new RoleIdentity(roleName, site));
-            if (roles == null) {
-                roles = new HashMap<String, Boolean>();
-                principal.getRoleCache().put(siteCachKey, roles);
-            }
-            roles.put(roleName, Boolean.valueOf(hasRole));
-            
-            logger.debug("Checking role " + roleName + " for " + principal.getName() + " in site " + site + " took " + (System.currentTimeMillis() - timer) + " ms");
-            return hasRole;
         }
     }
 

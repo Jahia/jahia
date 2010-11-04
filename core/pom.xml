@@ -405,16 +405,6 @@
             <version>${jackrabbit.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.jahia.server</groupId>
-            <artifactId>jackrabbit-core-ext</artifactId>
-            <version>${jahia.package.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jahia.server</groupId>
-            <artifactId>jackrabbit-server-ext</artifactId>
-            <version>${jahia.package.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.jackrabbit</groupId>
             <artifactId>jackrabbit-webdav</artifactId>
             <version>${jackrabbit.version}</version>

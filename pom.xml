@@ -378,7 +378,6 @@
         <module>public-api</module>
         <module>bridges</module>
         <module>taglib</module>
-        <module>jackrabbit-ext</module>
         <module>core</module>
         <module>gwt</module>
         <module>modules</module>

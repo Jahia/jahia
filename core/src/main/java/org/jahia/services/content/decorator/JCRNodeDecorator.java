@@ -315,6 +315,10 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getApplicablePropertyDefinition(propertyName);
     }
 
+    public ExtendedNodeDefinition getApplicableChildNodeDefinition(String childName, String nodeType) throws ConstraintViolationException, RepositoryException {
+        return node.getApplicableChildNodeDefinition(childName, nodeType);
+    }
+
     public JCRNodeWrapper addNode(String s) throws ItemExistsException, PathNotFoundException, VersionException, ConstraintViolationException, LockException, RepositoryException {
         return node.addNode(s);
     }

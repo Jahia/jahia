@@ -342,6 +342,9 @@ public class JahiaCndReader {
                 } else {
                     lexer.fail("Invalid validator");
                 }
+            } else if (currentTokenEquals(Lexer.LIVECONTENT)) {
+                nextToken();
+                ntd.setLiveContent(true);
             } else {
                 hasOption = false;
             }
@@ -368,189 +371,6 @@ public class JahiaCndReader {
                 nextToken();
                 doChildNodeDefinition(ndi, ntd);
                 ndi.setDeclaringNodeType(ntd);
-            } else if (currentTokenEquals(Lexer.JAHIA_CONTAINERLIST)) {
-                ExtendedNodeDefinition listNodeDef = new ExtendedNodeDefinition(registry);
-                nextToken();
-                doChildNodeDefinition(listNodeDef, ntd);
-                ExtendedNodeType[] ctnTypes = listNodeDef.getRequiredPrimaryTypes();
-                StringBuffer ctnListTypeName = new StringBuffer(ntd.getNameObject().getPrefix()+":");
-                for (ExtendedNodeType ctnType : ctnTypes) {
-                    ctnListTypeName.append(ctnType.getNameObject().getLocalName());
-                }
-                String aliasName = ctnListTypeName + "List";
-                if (listNodeDef.isMandatory()) {
-                    ctnListTypeName.append("Mandatory");
-                }
-                ctnListTypeName.append("List");
-                String append = "";
-                if (listNodeDef.getSelectorOptions().get("availableTypes")!=null) {
-                    append+= listNodeDef.getSelectorOptions().get("availableTypes").replace(':','_');
-                }
-                if (listNodeDef.getSelectorOptions().get("addMixin")!=null) {
-                    append+= listNodeDef.getSelectorOptions().get("addMixin").replace(':','_');
-                }
-                if (append.length()>0) {
-                    ctnListTypeName.append(Integer.toHexString(append.hashCode()));
-                }
-                listNodeDef.setRequiredPrimaryTypes(new String[] {ctnListTypeName.toString()});
-//
-//                if (listNodeDef.getSelectorOptions().get("availableTypes")!=null) {
-//                    ExtendedNodeType typeSelectorType = new ExtendedNodeType(registry, systemId);
-//                    typeSelectorType.setName(parseName(ctnListTypeName+"Types"));
-//
-//                }
-//
-
-                try {
-                    registry.getNodeType(ctnListTypeName.toString());
-                } catch (NoSuchNodeTypeException e) {
-                    ExtendedNodeType listType = new ExtendedNodeType(registry, systemId);
-                    listType.setName(parseName(ctnListTypeName.toString()));
-                    listType.setAlias(aliasName);
-                    listType.setDeclaredSupertypes(new String[] {Constants.JAHIANT_CONTENTLIST});
-                    listType.setHasOrderableChildNodes(true);
-                    ExtendedNodeDefinition def = new ExtendedNodeDefinition(registry);
-                    def.setName(parseName("*"));
-                    String names[] = new String[ctnTypes.length];
-                    for (int i = 0; i < ctnTypes.length; i++) {
-                        names[i] = ctnTypes[i].getName();
-                    }        
-                    def.setRequiredPrimaryTypes(names);
-                    def.setAllowsSameNameSiblings(true);
-                    def.setDeclaringNodeType(listType);
-                    def.setMandatory(listNodeDef.isMandatory());
-                    def.setSelectorOptions(listNodeDef.getSelectorOptions());
-                    registry.addNodeType(listType.getNameObject(),listType);
-                    nodeTypesList.add(listType);
-                }
-//                listNodeDef.setAutoCreated(true);
-//                listNodeDef.setMandatory(true);
-                listNodeDef.setDeclaringNodeType(ntd);
-            } else if (currentTokenEquals(Lexer.JAHIA_SINGLECONTAINER)) {
-                ExtendedNodeDefinition listNodeDef = new ExtendedNodeDefinition(registry);
-                nextToken();
-                doChildNodeDefinition(listNodeDef, ntd);
-                ExtendedNodeType[] ctnTypes = listNodeDef.getRequiredPrimaryTypes();
-                StringBuffer ctnListTypeName = new StringBuffer(ctnTypes[0].getNameObject().getPrefix()+":");
-                for (ExtendedNodeType ctnType : ctnTypes) {
-                    ctnListTypeName.append(ctnType.getNameObject().getLocalName());
-                }
-                if (listNodeDef.isMandatory()) {
-                    ctnListTypeName.append("Mandatory");
-                }
-                ctnListTypeName.append("Single");
-                listNodeDef.setRequiredPrimaryTypes(new String[] {ctnListTypeName.toString()});
-                try {
-                    registry.getNodeType(ctnListTypeName.toString());
-                } catch (NoSuchNodeTypeException e) {
-                    ExtendedNodeType listType = new ExtendedNodeType(registry, systemId);
-                    listType.setName(parseName(ctnListTypeName.toString()));
-                    listType.setDeclaredSupertypes(new String[] {Constants.JAHIANT_CONTENTLIST});
-                    listType.setHasOrderableChildNodes(true);
-                    ExtendedNodeDefinition def = new ExtendedNodeDefinition(registry);
-                    def.setName(parseName("*"));
-                    String names[] = new String[ctnTypes.length];
-                    for (int i = 0; i < ctnTypes.length; i++) {
-                        names[i] = ctnTypes[i].getName();
-                    }
-                    def.setRequiredPrimaryTypes(names);
-                    def.setAllowsSameNameSiblings(false);
-                    def.setDeclaringNodeType(listType);
-                    def.setMandatory(listNodeDef.isMandatory());
-                    registry.addNodeType(listType.getNameObject(),listType);
-                    nodeTypesList.add(listType);
-                }
-//                listNodeDef.setAutoCreated(true);
-//                listNodeDef.setMandatory(true);
-                listNodeDef.setDeclaringNodeType(ntd);
-            } else if (currentTokenEquals(Lexer.JAHIA_SMALLTEXTFIELD)) {
-                ExtendedPropertyDefinition pdi = new ExtendedPropertyDefinition(registry);
-                pdi.setRequiredType(PropertyType.STRING);
-                pdi.setSelector(SelectorType.SMALLTEXT);
-                pdi.setInternationalized(true);
-                nextToken();
-                doPropertyDefinition(pdi, ntd);
-                pdi.setDeclaringNodeType(ntd);
-            } else if (currentTokenEquals(Lexer.JAHIA_SHAREDSMALLTEXTFIELD)) {
-                ExtendedPropertyDefinition pdi = new ExtendedPropertyDefinition(registry);
-                pdi.setRequiredType(PropertyType.STRING);
-                pdi.setSelector(SelectorType.SMALLTEXT);
-                pdi.setInternationalized(false);
-                nextToken();
-                doPropertyDefinition(pdi, ntd);
-                pdi.setDeclaringNodeType(ntd);
-            } else if (currentTokenEquals(Lexer.JAHIA_BIGTEXTFIELD)) {
-                ExtendedPropertyDefinition pdi = new ExtendedPropertyDefinition(registry);
-                pdi.setRequiredType(PropertyType.STRING);
-                pdi.setSelector(SelectorType.RICHTEXT);
-                pdi.setInternationalized(true);
-                nextToken();
-                doPropertyDefinition(pdi, ntd);
-                pdi.setDeclaringNodeType(ntd);
-            } else if (currentTokenEquals(Lexer.JAHIA_DATEFIELD)) {
-                ExtendedPropertyDefinition pdi = new ExtendedPropertyDefinition(registry);
-                pdi.setRequiredType(PropertyType.DATE);
-                pdi.setSelector(SelectorType.DATETIMEPICKER);
-                nextToken();
-                doPropertyDefinition(pdi, ntd);
-                pdi.setDeclaringNodeType(ntd);
-            } else if (currentTokenEquals(Lexer.JAHIA_PAGEFIELD)) {
-                ExtendedNodeDefinition ndi = new ExtendedNodeDefinition(registry);
-                ndi.setRequiredPrimaryTypes(new String[]{Constants.JAHIANT_PAGE_LINK});
-                nextToken();
-                doChildNodeDefinition(ndi, ntd);
-                ndi.setDeclaringNodeType(ntd);
-            } else if (currentTokenEquals(Lexer.JAHIA_FILEFIELD)) {
-                ExtendedPropertyDefinition pdi = new ExtendedPropertyDefinition(registry);
-                pdi.setRequiredType(ExtendedPropertyType.WEAKREFERENCE);
-                pdi.setSelector(SelectorType.CONTENTPICKER);
-                pdi.setInternationalized(true);
-                nextToken();
-                doPropertyDefinition(pdi, ntd);
-                pdi.setDeclaringNodeType(ntd);
-            } else if (currentTokenEquals(Lexer.JAHIA_PORTLETFIELD)) {
-                ExtendedPropertyDefinition pdi = new ExtendedPropertyDefinition(registry);
-                pdi.setRequiredType(PropertyType.REFERENCE);
-                pdi.setSelector(SelectorType.CONTENTPICKER);
-                pdi.setInternationalized(false);
-                nextToken();
-                doPropertyDefinition(pdi, ntd);
-                pdi.setDeclaringNodeType(ntd);
-            } else if (currentTokenEquals(Lexer.JAHIA_INTEGERFIELD)) {
-                ExtendedPropertyDefinition pdi = new ExtendedPropertyDefinition(registry);
-                pdi.setRequiredType(PropertyType.LONG);
-                pdi.setSelector(SelectorType.SMALLTEXT);
-                nextToken();
-                doPropertyDefinition(pdi, ntd);
-                pdi.setDeclaringNodeType(ntd);
-            } else if (currentTokenEquals(Lexer.JAHIA_FLOATFIELD)) {
-                ExtendedPropertyDefinition pdi = new ExtendedPropertyDefinition(registry);
-                pdi.setRequiredType(PropertyType.DOUBLE);
-                pdi.setSelector(SelectorType.SMALLTEXT);
-                nextToken();
-                doPropertyDefinition(pdi, ntd);
-                pdi.setDeclaringNodeType(ntd);
-            } else if (currentTokenEquals(Lexer.JAHIA_BOOLEANFIELD)) {
-                ExtendedPropertyDefinition pdi = new ExtendedPropertyDefinition(registry);
-                pdi.setRequiredType(PropertyType.BOOLEAN);
-                pdi.setSelector(SelectorType.CHECKBOX);
-                nextToken();
-                doPropertyDefinition(pdi, ntd);
-                pdi.setDeclaringNodeType(ntd);
-            } else if (currentTokenEquals(Lexer.JAHIA_CATEGORYFIELD)) {
-                ExtendedPropertyDefinition pdi = new ExtendedPropertyDefinition(registry);
-                pdi.setRequiredType(PropertyType.REFERENCE);
-                pdi.setSelector(SelectorType.CATEGORY);
-                nextToken();
-                doPropertyDefinition(pdi, ntd);
-                pdi.setDeclaringNodeType(ntd);
-            } else if (currentTokenEquals(Lexer.JAHIA_COLORFIELD)) {
-                ExtendedPropertyDefinition pdi = new ExtendedPropertyDefinition(registry);
-                pdi.setRequiredType(PropertyType.STRING);
-                pdi.setSelector(SelectorType.COLOR);
-                nextToken();
-                doPropertyDefinition(pdi, ntd);
-                pdi.setDeclaringNodeType(ntd);
             } else {
                 return;
             }
@@ -1011,6 +831,8 @@ public class JahiaCndReader {
                 } else {
                     lexer.fail("Invalid value for workflow " + currentToken);
                 }
+            } else if (currentTokenEquals(Lexer.LIVECONTENT)) {
+                ndi.setLiveContent(true);
             }
 
             //todo : handle new attributes

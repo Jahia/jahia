@@ -37,27 +37,40 @@ import org.apache.jackrabbit.core.RepositoryContext;
 import org.apache.jackrabbit.core.config.WorkspaceConfig;
 import org.apache.jackrabbit.core.id.ItemId;
 import org.apache.jackrabbit.core.id.PropertyId;
-import org.apache.jackrabbit.core.security.authorization.AccessControlProvider;
-import org.apache.jackrabbit.core.security.authorization.Permission;
-import org.apache.jackrabbit.core.security.authorization.WorkspaceAccessManager;
+import org.apache.jackrabbit.core.security.authorization.*;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.Path;
 import org.apache.jackrabbit.spi.commons.conversion.DefaultNamePathResolver;
+import org.apache.jackrabbit.spi.commons.conversion.NamePathResolver;
 import org.apache.jackrabbit.spi.commons.conversion.PathResolver;
 import org.apache.jackrabbit.spi.commons.namespace.NamespaceResolver;
 import org.apache.jackrabbit.spi.commons.namespace.SessionNamespaceResolver;
+import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
-import org.jahia.api.user.JahiaUserService;
+import org.jahia.exceptions.JahiaException;
 import org.jahia.jaas.JahiaPrincipal;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.rbac.RoleIdentity;
+import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.sites.JahiaSitesService;
+import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
+import sun.print.PeekGraphics;
 
 import javax.jcr.*;
-import javax.jcr.lock.LockException;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.nodetype.NodeDefinition;
 import javax.jcr.security.*;
 import javax.jcr.version.Version;
-import javax.jcr.version.VersionException;
 import javax.jcr.version.VersionHistory;
 import javax.naming.NamingException;
 import javax.security.auth.Subject;
+import java.security.Principal;
 import java.util.*;
 
 /**
@@ -77,28 +90,36 @@ import java.util.*;
  * Time: 17:58:41
  * To change this template use File | Settings | File Templates.
  */
-public class JahiaAccessManager implements AccessManager, AccessControlManager {
+public class JahiaAccessManager extends AbstractAccessControlManager implements AccessManager, AccessControlManager {
+    public static final Logger logger = Logger.getLogger(JahiaAccessManager.class);
+
     /**
      * Subject whose access rights this AccessManager should reflect
      */
     protected Subject subject;
 
     private static Repository repository;
-    private static JahiaUserService userservice;
 
     /**
      * hierarchy manager used for ACL-based access control model
      */
     protected HierarchyManager hierMgr;
+    protected NamePathResolver resolver;
     private WorkspaceAccessManager wspAccessMgr;
     private AccessControlProvider acProviderMgr;
+    private PrivilegeRegistry privilegeRegistry;
     private boolean initialized;
     protected String workspaceName;
 
+    private JahiaUserManagerService userService;
+    private JahiaGroupManagerService groupService;
+    private JahiaSitesService sitesService;
+
     protected JahiaPrincipal jahiaPrincipal;
 
-    private Map<String, Integer> permissions;
+    private static Map<String, Integer> permissions;
 
+    private Session session;
     private Session securitySession;
     private RepositoryContext repositoryContext;
     private WorkspaceConfig workspaceConfig;
@@ -111,6 +132,18 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
 
     public static void setDeniedPaths(Collection<String> denied) {
         JahiaAccessManager.deniedPathes.set(denied);
+    }
+
+    static {
+        permissions = new HashMap<String, Integer>();
+        permissions.put(Constants.JCR_READ_RIGHTS, Permission.READ);
+        permissions.put("jcr:setProperties", Permission.SET_PROPERTY);
+        permissions.put("jcr:addChildNodes", Permission.ADD_NODE);
+        permissions.put("jcr:removeChildNodes", Permission.REMOVE_NODE);
+        permissions.put(Constants.JCR_WRITE_RIGHTS, Permission.SET_PROPERTY + Permission.REMOVE_PROPERTY + Permission.ADD_NODE + Permission.REMOVE_NODE + Permission.NODE_TYPE_MNGMT + Permission.LOCK_MNGMT + Permission.VERSION_MNGMT);
+        permissions.put("jcr:getAccessControlPolicy", Permission.READ);
+        permissions.put("jcr:setAccessControlPolicy", Permission.SET_PROPERTY + Permission.REMOVE_PROPERTY);
+        permissions.put("jcr:all", Permission.ALL);
     }
 
     /**
@@ -159,27 +192,25 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
             throw new IllegalStateException("already initialized");
         }
 //        super.init(context, acProvider, wspAccessManager);
-
+        session = context.getSession();
         subject = context.getSubject();
+        resolver = context.getNamePathResolver();
         hierMgr = context.getHierarchyManager();
         workspaceName = context.getWorkspaceName();
         this.repositoryContext = repositoryContext;
         this.workspaceConfig = workspaceConfig;
+        privilegeRegistry = new PrivilegeRegistry(resolver);
 
         Set principals = subject.getPrincipals(JahiaPrincipal.class);
         if (!principals.isEmpty()) {
             jahiaPrincipal = (JahiaPrincipal) principals.iterator().next();
         }
 
-        permissions = new HashMap<String, Integer>();
-        permissions.put(Constants.JCR_READ_RIGHTS, Permission.READ);
-        permissions.put("jcr:setProperties", Permission.SET_PROPERTY);
-        permissions.put("jcr:addChildNodes", Permission.ADD_NODE);
-        permissions.put("jcr:removeChildNodes", Permission.REMOVE_NODE);
-        permissions.put(Constants.JCR_WRITE_RIGHTS, Permission.SET_PROPERTY + Permission.REMOVE_PROPERTY + Permission.ADD_NODE + Permission.REMOVE_NODE + Permission.NODE_TYPE_MNGMT + Permission.LOCK_MNGMT + Permission.VERSION_MNGMT);
-        permissions.put("jcr:getAccessControlPolicy", Permission.READ);
-        permissions.put("jcr:setAccessControlPolicy", Permission.SET_PROPERTY + Permission.REMOVE_PROPERTY);
-        permissions.put("jcr:all", Permission.ALL);
+        userService = ServicesRegistry.getInstance().getJahiaUserManagerService();
+        groupService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
+        sitesService = ServicesRegistry.getInstance().getJahiaSitesService();
+
+        initialized = true;
     }
 
     public void close() throws Exception {
@@ -188,8 +219,11 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
         }
     }
 
-    public void checkPermission(ItemId id, int permissions) throws AccessDeniedException, ItemNotFoundException, RepositoryException {
-        if (!isGranted(id, permissions)) {
+    /**
+     * @deprecated
+     */
+    public void checkPermission(ItemId id, int actions) throws AccessDeniedException, ItemNotFoundException, RepositoryException {
+        if (!isGranted(id, actions)) {
             throw new AccessDeniedException("Not sufficient privileges for permissions : " + permissions + " on " + id);
         }
     }
@@ -200,6 +234,74 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
         }
     }
 
+    protected void checkPermission(String absPath, int permission)
+            throws AccessDeniedException, PathNotFoundException, RepositoryException {
+        checkValidNodePath(absPath);
+        checkPermission(resolver.getQPath(absPath), permission);
+    }
+
+
+    public boolean hasPrivileges(String absPath, Set<Principal> principals, Privilege[] privileges)
+            throws PathNotFoundException, AccessDeniedException, RepositoryException {
+        checkInitialized();
+        checkValidNodePath(absPath);
+        checkPermission(absPath, Permission.READ_AC);
+
+        if (privileges == null || privileges.length == 0) {
+            // null or empty privilege array -> return true
+            logger.debug("No privileges passed -> allowed.");
+            return true;
+        } else {
+            int privs = PrivilegeRegistry.getBits(privileges);
+            Path p = resolver.getQPath(absPath);
+            return isGranted(p, privs);
+        }
+    }
+
+    @Override protected void checkInitialized() throws IllegalStateException {
+        if (!initialized) {
+            throw new IllegalStateException("not initialized");
+        }
+    }
+
+    /**
+     * @see AbstractAccessControlManager#getPrivilegeRegistry()
+     */
+    @Override
+    protected PrivilegeRegistry getPrivilegeRegistry() throws RepositoryException {
+        checkInitialized();
+        return privilegeRegistry;
+    }
+
+
+    /**
+     * @see AbstractAccessControlManager#checkValidNodePath(String)
+     */
+    @Override
+    protected void checkValidNodePath(String absPath) throws PathNotFoundException, RepositoryException {
+        Path p = resolver.getQPath(absPath);
+        if (!p.isAbsolute()) {
+            throw new RepositoryException("Absolute path expected.");
+        }
+        if (hierMgr.resolveNodePath(p) == null) {
+            throw new PathNotFoundException("No such node " + absPath);
+        }
+    }
+
+    public AccessControlPolicy[] getEffectivePolicies(Set<Principal> principals)
+            throws AccessDeniedException, AccessControlException, UnsupportedRepositoryOperationException,
+            RepositoryException {
+        return new AccessControlPolicy[0];
+    }
+
+    public Privilege[] getPrivileges(String absPath, Set<Principal> principals)
+            throws PathNotFoundException, AccessDeniedException, RepositoryException {
+        return new Privilege[0];
+    }
+
+    /*
+    * @deprecated
+    */
     public boolean isGranted(ItemId id, int actions) throws ItemNotFoundException, RepositoryException {
         int perm = 0;
         if ((actions & READ) == READ) {
@@ -221,7 +323,6 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
         return isGranted(path, perm);
     }
 
-
     public boolean isGranted(Path absPath, int permissions) throws RepositoryException {
 
         String absPathStr = absPath.toString();
@@ -229,7 +330,7 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
             return true;
         }
 
-        if (permissions == READ && absPathStr.equals("{}")) {
+        if (permissions == Permission.READ && absPathStr.equals("{}")) {
             return true;
         }
 
@@ -265,18 +366,60 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
                 }
             }
             
+            boolean newItem = !getSecuritySession().itemExists(jcrPath); // Jackrabbit checks the ADD_NODE permission on non-existing nodes
 
-            JahiaUserService service = getJahiaUserService();
+            if ((Permission.SET_PROPERTY | permissions) == Permission.SET_PROPERTY ||
+                    ((Permission.ADD_NODE | permissions) == Permission.ADD_NODE && newItem) ||
+                    (Permission.REMOVE_NODE | permissions) == Permission.REMOVE_NODE ||
+                    (Permission.REMOVE_PROPERTY | permissions) == Permission.REMOVE_PROPERTY) {
+                Item i;
+                if (getSecuritySession().itemExists(jcrPath)) {
+                    i = getSecuritySession().getItem(jcrPath);
+                } else {
+                    i = session.getItem(jcrPath);
+                }
 
+                if (!i.isNode()) {
+                    i = i.getParent();
+                }
+
+                final NodeDefinition definition = ((Node) i).getDefinition();
+
+                try {
+                    final String primaryTypeName = ((Node) i).getPrimaryNodeType().getName();
+                    if (!primaryTypeName.equals("jnt:translation")) {
+                        boolean live = NodeTypeRegistry.getInstance().getNodeType(primaryTypeName).isLiveContent();
+                        ExtendedNodeType t = NodeTypeRegistry.getInstance().getNodeType(definition.getDeclaringNodeType().getName());
+                        ExtendedNodeDefinition extendedDefinition;
+                        if (definition.getName().equals("*")) {
+                            StringBuffer s = new StringBuffer("");
+                            for (String s1 : definition.getRequiredPrimaryTypeNames()) {
+                                s.append(s1).append(" ");
+                            }
+                            extendedDefinition = t.getUnstructuredChildNodeDefinitions().get(s.toString().trim());
+                        } else {
+                            extendedDefinition = t.getChildNodeDefinitionsAsMap().get(definition.getName());
+                        }
+                        if (extendedDefinition != null) {
+//                            System.out.println("---> "+jcrPath+ " - "+permissions + "  - isLiveContent1 = "+extendedDefinition.isLiveContent()+ "  - isLiveContent2 = "+ t.isLiveContent());
+                            live |= extendedDefinition.isLiveContent();
+                        }
+                        if (live != Constants.LIVE_WORKSPACE.equals(workspaceName)) {
+                            return false;
+                        }
+                    }
+                } catch (NoSuchNodeTypeException e) {
+                    // ..
+                }
+            }
+           
             // Administrators are always granted
             if (jahiaPrincipal != null) {
-                if (service.isServerAdmin(jahiaPrincipal.getName())) {
+                if (isAdmin(jahiaPrincipal.getName(),0)) {
                     cache.put(absPathStr + " : " + permissions, true);
                     return true;
                 }
             }
-
-            String site = null;
 
             int depth = 1;
             while (!getSecuritySession().itemExists(jcrPath)) {
@@ -297,22 +440,27 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
                 }
             }
 
+            int siteId = 0;
+
+            String site = null;
+
             try {
                 while (!i.isNode() || !((Node) i).isNodeType("jnt:virtualsite")) {
                     i = i.getParent();
                 }
                 site = i.getName();
+                siteId = (int) ((Node)i).getProperty("j:siteId").getLong();
             } catch (ItemNotFoundException e) {
             }
 
             if (jahiaPrincipal != null) {
-                if (service.isAdmin(jahiaPrincipal.getName(), site)) {
+                if (isAdmin(jahiaPrincipal.getName(), siteId)) {
                     cache.put(absPathStr + " : " + permissions, true);
                     return true;
                 }
             }
 
-            return recurseonACPs(jcrPath, getSecuritySession(), permissions, site, service);
+            return recurseonACPs(jcrPath, getSecuritySession(), permissions, site);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -328,7 +476,7 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
 
     public boolean canRead(Path path, ItemId itemId) throws RepositoryException {
         if (itemId != null) {
-            return isGranted(itemId, Permission.READ);
+            return isGranted(itemId, JahiaAccessManager.READ);
         } else if (path != null) {
             return isGranted(path, Permission.READ);
         }
@@ -365,9 +513,9 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
         return path;
     }
 
-    private boolean recurseonACPs(String jcrPath, Session s, int permissions, String site, JahiaUserService service) throws RepositoryException {
+    private boolean recurseonACPs(String jcrPath, Session s, int permissions, String site) throws RepositoryException {
         boolean result = false;
-        Set groups = new HashSet();
+        Set<String> groups = new HashSet<String>();
         while (jcrPath.length() > 0) {
             if (s.itemExists(jcrPath)) {
                 Item i = s.getItem(jcrPath);
@@ -392,14 +540,14 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
                                             return type.equals("GRANT");
                                         }
                                     } else if (principal.charAt(0) == 'g') {
-                                        if (principalName.equals("guest") || !jahiaPrincipal.isGuest() && service.isUserMemberOf(jahiaPrincipal.getName(), principalName, site)) {
+                                        if (principalName.equals("guest") || !jahiaPrincipal.isGuest() && isUserMemberOf(jahiaPrincipal.getName(), principalName, site)) {
                                             if (!groups.contains(principalName)) {
                                                 result |= type.equals("GRANT");
                                                 groups.add(principalName);
                                             }
                                         }
                                     } else if (principal.charAt(0) == 'r') {
-                                        boolean b = service.hasRole(principalName, jahiaPrincipal, site);
+                                        boolean b = hasRole(principalName, jahiaPrincipal, site);
                                         if (b) {
                                             if (!groups.contains(principalName)) {
                                                 result |= type.equals("GRANT");
@@ -429,14 +577,14 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
                                             return type.equals("GRANT");
                                         }
                                     } else if (principal.charAt(0) == 'g') {
-                                        if (principalName.equals("guest") || !jahiaPrincipal.isGuest() && service.isUserMemberOf(jahiaPrincipal.getName(), principalName, site)) {
+                                        if (principalName.equals("guest") || !jahiaPrincipal.isGuest() && isUserMemberOf(jahiaPrincipal.getName(), principalName, site)) {
                                             if (!groups.contains(principalName)) {
                                                 result |= type.equals("GRANT");
                                                 groups.add(principalName);
                                             }
                                         }
                                     } else if (principal.charAt(0) == 'r') {
-                                        boolean b = service.hasRole(principalName, jahiaPrincipal, site);
+                                        boolean b = hasRole(principalName, jahiaPrincipal, site);
                                         if (b) {
                                             if (!groups.contains(principalName)) {
                                                 result |= type.equals("GRANT");
@@ -480,59 +628,107 @@ public class JahiaAccessManager implements AccessManager, AccessControlManager {
 
     // todo : implements methods ..
 
-    public Privilege[] getSupportedPrivileges(String absPath) throws PathNotFoundException, RepositoryException {
-        return new Privilege[0];  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public Privilege privilegeFromName(String privilegeName) throws AccessControlException, RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
     public boolean hasPrivileges(String absPath, Privilege[] privileges) throws PathNotFoundException, RepositoryException {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        checkInitialized();
+        checkValidNodePath(absPath);
+        if (privileges == null || privileges.length == 0) {
+            // null or empty privilege array -> return true
+            logger.debug("No privileges passed -> allowed.");
+            return true;
+        } else {
+            int privs = PrivilegeRegistry.getBits(privileges);
+            Path p = resolver.getQPath(absPath);
+            return isGranted(p, privs);
+        }
     }
 
     public Privilege[] getPrivileges(String absPath) throws PathNotFoundException, RepositoryException {
         return new Privilege[0];  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public AccessControlPolicy[] getPolicies(String absPath) throws PathNotFoundException, AccessDeniedException, RepositoryException {
-        return new AccessControlPolicy[0];  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
     public AccessControlPolicy[] getEffectivePolicies(String absPath) throws PathNotFoundException, AccessDeniedException, RepositoryException {
         return new AccessControlPolicy[0];  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public AccessControlPolicyIterator getApplicablePolicies(String absPath) throws PathNotFoundException, AccessDeniedException, RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public void setPolicy(String absPath, AccessControlPolicy policy) throws PathNotFoundException, AccessControlException, AccessDeniedException, LockException, VersionException, RepositoryException {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public void removePolicy(String absPath, AccessControlPolicy policy) throws PathNotFoundException, AccessControlException, AccessDeniedException, LockException, VersionException, RepositoryException {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public static synchronized Repository getRepository() throws NamingException {
         return repository;
     }
 
-    public static synchronized JahiaUserService getJahiaUserService() throws NamingException {
-        return userservice;
-    }
-
     public static void setRepository(Repository arepository) {
         repository = arepository;
-    }
-
-    public static void setUserService(JahiaUserService service) {
-        userservice = service;
     }
 
     public void setAliased(boolean aliased) {
         isAliased = aliased;
     }
+
+    public boolean isAdmin(String username, int siteId) {
+        JahiaUser user = userService.lookupUser(username);
+        if (user != null) {
+            return user.isAdminMember(siteId);
+        }
+        return false;
+    }
+
+
+    private boolean isUserMemberOf(String username, String groupname, String site) {
+        JahiaSite s = null;
+        if (JahiaGroupManagerService.GUEST_GROUPNAME.equals(groupname)) {
+            return true;
+        }
+        if (JahiaGroupManagerService.USERS_GROUPNAME.equals(groupname) && site == null && !JahiaUserManagerService.GUEST_USERNAME.equals(username)) {
+            return true;
+        }
+        int siteId = 0;
+        try {
+            s = sitesService.getSiteByKey(site);
+            if (s != null) {
+                siteId = s.getID();
+            }
+        } catch (JahiaException e) {
+            logger.error(e.getMessage(), e);
+        }
+        JahiaUser user = userService.lookupUser(username);
+        JahiaGroup group = groupService.lookupGroup(siteId, groupname);
+        return (user != null) && (group != null) && group.isMember(user);
+    }
+
+    private boolean hasRole(String roleName, JahiaPrincipal principal, String site) {
+        long timer = System.currentTimeMillis();
+        Boolean cachedResult = null;
+        String siteCachKey = site != null ? site : "_server_";
+        Map<String, Boolean> roles = principal.getRoleCache().get(siteCachKey);
+        if (roles != null) {
+            cachedResult = roles.get(roleName);
+        }
+        if (cachedResult != null) {
+            return cachedResult;
+        }
+
+        org.jahia.services.usermanager.JahiaPrincipal user = userService.lookupUser(principal.getName());
+        JahiaSite s = null;
+        if (user == null) {
+            int siteId = 0;
+            try {
+                s = sitesService.getSiteByKey(site);
+                if (s != null) {
+                    siteId = s.getID();
+                }
+            } catch (JahiaException e) {
+                logger.error(e.getMessage(), e);
+            }
+            user = groupService.lookupGroup(siteId, principal.getName());
+        }
+        boolean hasRole = user != null && user.hasRole(new RoleIdentity(roleName, site));
+        if (roles == null) {
+            roles = new HashMap<String, Boolean>();
+            principal.getRoleCache().put(siteCachKey, roles);
+        }
+        roles.put(roleName, Boolean.valueOf(hasRole));
+
+        logger.debug("Checking role " + roleName + " for " + principal.getName() + " in site " + site + " took " + (System.currentTimeMillis() - timer) + " ms");
+        return hasRole;
+    }
+
+
 }

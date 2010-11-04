@@ -63,77 +63,6 @@ import java.util.*;
  * @author toto
  */
 public interface JCRNodeWrapper extends Node, JCRItemWrapper {
-    /**
-     * The OK.
-     */
-    public static final int OK = 0;
-    /**
-     * The INVALID_FILE.
-     */
-    public static final int INVALID_FILE = 1;
-    /**
-     * The ACCESS_DENIED.
-     */
-    public static final int ACCESS_DENIED = 2;
-    /**
-     * The UNSUPPORTED_ERROR.
-     */
-    public static final int UNSUPPORTED_ERROR = 98;
-    /**
-     * The UNKNOWN_ERROR.
-     */
-    public static final int UNKNOWN_ERROR = 99;
-
-    /**
-     * The READ.
-     */
-    public static final String READ = Constants.JCR_READ_RIGHTS;
-    /**
-     * The WRITE.
-     */
-    public static final String WRITE = Constants.JCR_WRITE_RIGHTS;
-    /**
-     * The READ_LIVE.
-     */
-    public static final String READ_LIVE = Constants.JCR_READ_RIGHTS_LIVE;
-    /**
-     * The WRITE_LIVE.
-     */
-    public static final String WRITE_LIVE = Constants.JCR_WRITE_RIGHTS_LIVE;
-    /**
-     * The MODIFY_ACL.
-     */
-    public static final String MODIFY_ACL = Constants.JCR_MODIFYACCESSCONTROL_RIGHTS;
-
-    /**
-     * The UNSET.
-     */
-    public static final int UNSET = 0;
-    /**
-     * The GRANTED.
-     */
-    public static final int GRANTED = 1;
-    /**
-     * The DENIED.
-     */
-    public static final int DENIED = 2;
-    /**
-     * The INHERITED.
-     */
-    public static final int INHERITED = 4;
-    /**
-     * The SET.
-     */
-    public static final int SET = 8;
-
-    /**
-     * The JNT_FILE.
-     */
-    public static final String JNT_FILE = Constants.JAHIANT_FILE;
-    /**
-     * The JNT_FOLDER.
-     */
-    public static final String JNT_FOLDER = Constants.JAHIANT_FOLDER;
 
     /**
      * Gets the real <code>Node</code> wrapped by this <code>JCRNodeWrapper</code>
@@ -768,6 +697,17 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * @throws RepositoryException
      */
     ExtendedPropertyDefinition getApplicablePropertyDefinition(String propertyName) throws ConstraintViolationException, RepositoryException;
+
+    /**
+     * Get the child node definition object applicable to the given child name
+     *
+     * @param childName the name of the property to find the corresponding definition
+     * @param nodeType
+     * @return the <code>ExtendedPropertyDefinition</code> for the given property
+     * @throws ConstraintViolationException
+     * @throws RepositoryException
+     */
+    ExtendedNodeDefinition getApplicableChildNodeDefinition(String childName, String nodeType) throws ConstraintViolationException, RepositoryException;
 
     /**
      * Check whether the current node is of mixin type mix:lockable

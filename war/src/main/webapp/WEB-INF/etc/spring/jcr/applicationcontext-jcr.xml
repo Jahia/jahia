@@ -183,9 +183,6 @@
           init-method="start" destroy-method="stop" depends-on="JahiaTemplateManagerService,DefaulJCRStoreProvider">
         <property name="configFile" value="WEB-INF/etc/repository/jackrabbit/repository.xml"/>
         <property name="homeDir" value="WEB-INF/var/repository"/>
-        <property name="userService" ref="JahiaUserManagerService"/>
-        <property name="groupService" ref="JahiaGroupManagerService"/>
-        <property name="sitesService" ref="JahiaSitesService"/>
         <property name="servletContextAttributeName"
                   value="org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository"/>
     </bean>

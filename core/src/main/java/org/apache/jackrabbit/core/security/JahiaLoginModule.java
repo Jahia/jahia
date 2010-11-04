@@ -35,8 +35,10 @@ package org.apache.jackrabbit.core.security;
 import org.apache.commons.id.IdentifierGenerator;
 import org.apache.commons.id.IdentifierGeneratorFactory;
 import org.apache.jackrabbit.core.security.principal.AdminPrincipal;
-import org.jahia.api.user.JahiaUserService;
 import org.jahia.jaas.JahiaPrincipal;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 
 import javax.jcr.Credentials;
 import javax.jcr.SimpleCredentials;
@@ -62,7 +64,7 @@ public class JahiaLoginModule implements LoginModule {
     private static IdentifierGenerator idGen = IdentifierGeneratorFactory.newInstance().uuidVersionFourGenerator();
     private static Map<String, Token> systemPass = new HashMap<String, Token>();
 
-    private static JahiaUserService userService;
+    private JahiaUserManagerService userService;
 
     private Subject subject;
     private Set<Principal> principals = new HashSet<Principal>();
@@ -75,6 +77,7 @@ public class JahiaLoginModule implements LoginModule {
         this.callbackHandler = callbackHandler;
         this.sharedState = sharedState;
         this.options = options;
+        this.userService = ServicesRegistry.getInstance().getJahiaUserManagerService();
     }
 
     public boolean login() throws LoginException {
@@ -105,9 +108,12 @@ public class JahiaLoginModule implements LoginModule {
                 } else {
                     String key = new String(pass);
                     Token token = removeToken(name, key);
-                    if ((token != null) || getUserService().checkPassword(name,key)) {
+
+                    JahiaUser user = userService.lookupUser(name);
+
+                    if ((token != null) || user.verifyPassword(key)) {
                         principals.add(new JahiaPrincipal(name));
-                        if (getUserService().isServerAdmin(name)) {
+                        if (user.isAdminMember(0)) {
                             principals.add(new AdminPrincipal(name));
                         }
                     }
@@ -199,26 +205,6 @@ public class JahiaLoginModule implements LoginModule {
 
     public static Credentials getCredentials(String username, List<String> deniedPathes) {
         return new SimpleCredentials(username, getSystemPass(username, deniedPathes).toCharArray());
-    }
-
-//    public JahiaUserService getJahiaUserService() throws NamingException {
-//        String serviceName = "jahia/users";
-//        Hashtable env = new Hashtable();
-//        InitialContext initctx = new InitialContext(env);
-//        try {
-//            Context ctx = (Context) initctx.lookup("java:comp/env");
-//            return (JahiaUserService) ctx.lookup(serviceName);
-//        } catch (NamingException e) {
-//            return (JahiaUserService) initctx.lookup("java:jahia/users");
-//        }
-//    }
-
-    public static JahiaUserService getUserService() {
-        return userService;
-    }
-
-    public static void setUserService(JahiaUserService userService) {
-        JahiaLoginModule.userService = userService;
     }
 
     public static class Token {

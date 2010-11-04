@@ -53,6 +53,7 @@ public class ExtendedNodeDefinition extends ExtendedItemDefinition implements No
     private String[] requiredPrimaryTypes;
     private String defaultPrimaryType;
     private boolean allowsSameNameSiblings;
+    private boolean liveContent = false;
     private String workflow;
 
     public ExtendedNodeDefinition(NodeTypeRegistry registry) {
@@ -121,6 +122,14 @@ public class ExtendedNodeDefinition extends ExtendedItemDefinition implements No
 
     public void setWorkflow(String workflow) {
         this.workflow = workflow;
+    }
+
+    public boolean isLiveContent() {
+        return liveContent;
+    }
+
+    public void setLiveContent(boolean liveContent) {
+        this.liveContent = liveContent;
     }
 
     public boolean isNode() {

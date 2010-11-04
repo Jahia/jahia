@@ -92,6 +92,7 @@ public class ExtendedNodeType implements NodeType {
     private String itemsType;
     private List<String> mixinExtendNames = new ArrayList<String>();
     private List<ExtendedNodeType> mixinExtend = new ArrayList<ExtendedNodeType>();
+    private boolean liveContent = false;
 
     private Map<Locale, String> labels = new ConcurrentHashMap<Locale, String>(1);
     private Map<Locale, String> descriptions = new ConcurrentHashMap<Locale, String>(1);
@@ -139,6 +140,14 @@ public class ExtendedNodeType implements NodeType {
 
     public void setMixin(boolean mixin) {
         isMixin = mixin;
+    }
+
+    public boolean isLiveContent() {
+        return liveContent;
+    }
+
+    public void setLiveContent(boolean liveContent) {
+        this.liveContent = liveContent;
     }
 
     public boolean hasOrderableChildNodes() {

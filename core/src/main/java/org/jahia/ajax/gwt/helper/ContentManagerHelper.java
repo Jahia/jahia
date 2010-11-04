@@ -33,7 +33,6 @@
 package org.jahia.ajax.gwt.helper;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.tika.io.IOUtils;
 import org.jahia.ajax.gwt.client.data.GWTJahiaContentHistoryEntry;
@@ -63,7 +62,9 @@ import org.quartz.JobDetail;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
+import javax.jcr.security.Privilege;
 import java.io.*;
+import java.security.Permissions;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -115,7 +116,7 @@ public class ContentManagerHelper {
 
     public JCRNodeWrapper addNode(JCRNodeWrapper parentNode, String name, String nodeType, List<String> mixin,
                                   List<GWTJahiaNodeProperty> props) throws GWTJahiaServiceException {
-        if (!parentNode.hasPermission(JCRNodeWrapper.WRITE)) {
+        if (!parentNode.hasPermission(Privilege.JCR_ADD_CHILD_NODES)) {
             throw new GWTJahiaServiceException(
                     new StringBuilder(parentNode.getPath()).append(" - ACCESS DENIED").toString());
         }
@@ -391,7 +392,7 @@ public class ContentManagerHelper {
                         .append(e.toString()).toString());
                 continue;
             }
-            if (!node.hasPermission(JCRNodeWrapper.WRITE)) {
+            if (!node.hasPermission(Privilege.JCR_ADD_CHILD_NODES)) {
                 missedPaths.add(new StringBuilder("User ").append(user.getUsername()).append(" has no write access to ")
                         .append(node.getName()).toString());
             } else if (node.isLocked() && !node.getLockOwner().equals(user.getUsername())) {
@@ -433,34 +434,29 @@ public class ContentManagerHelper {
             for (String aNode : pathsToCopy) {
                 JCRNodeWrapper node = currentUserSession.getNode(aNode);
                 String name = newName != null ? newName : node.getName();
-                if (node.hasPermission(JCRNodeWrapper.READ)) {
-                    try {
-                        name = findAvailableName(targetParent, name, currentUserSession);
-                        if (targetParent.isWriteable() && !targetParent.isLocked()) {
-                            final JCRNodeWrapper copy = doPaste(targetParent, node, name, cut, reference);
+                try {
+                    name = findAvailableName(targetParent, name, currentUserSession);
+                    if (targetParent.isWriteable() && !targetParent.isLocked()) {
+                        final JCRNodeWrapper copy = doPaste(targetParent, node, name, cut, reference);
 
-                            if (moveOnTop && targetParent.getPrimaryNodeType().hasOrderableChildNodes()) {
-                                targetParent.orderBefore(name, targetNode.getName());
-                            }
-                            currentUserSession.save();
-                            res.add(navigation.getGWTJahiaNode(copy));
-                        } else {
-                            missedPaths
-                                    .add(new StringBuilder("File ").append(name).append(" could not be referenced in ")
-                                            .append(targetParent.getPath()).toString());
+                        if (moveOnTop && targetParent.getPrimaryNodeType().hasOrderableChildNodes()) {
+                            targetParent.orderBefore(name, targetNode.getName());
                         }
-                    } catch (RepositoryException e) {
-                        logger.error("Exception", e);
-                        missedPaths.add(new StringBuilder("File ").append(name).append(" could not be referenced in ")
-                                .append(targetParent.getPath()).toString());
-                    } catch (JahiaException e) {
-                        logger.error("Exception", e);
-                        missedPaths.add(new StringBuilder("File ").append(name).append(" could not be referenced in ")
-                                .append(targetParent.getPath()).toString());
+                        currentUserSession.save();
+                        res.add(navigation.getGWTJahiaNode(copy));
+                    } else {
+                        missedPaths
+                                .add(new StringBuilder("File ").append(name).append(" could not be referenced in ")
+                                        .append(targetParent.getPath()).toString());
                     }
-                } else {
-                    missedPaths.add(new StringBuilder("Source file ").append(name).append(" could not be read ")
-                            .append(" - ACCESS DENIED").toString());
+                } catch (RepositoryException e) {
+                    logger.error("Exception", e);
+                    missedPaths.add(new StringBuilder("File ").append(name).append(" could not be referenced in ")
+                            .append(targetParent.getPath()).toString());
+                } catch (JahiaException e) {
+                    logger.error("Exception", e);
+                    missedPaths.add(new StringBuilder("File ").append(name).append(" could not be referenced in ")
+                            .append(targetParent.getPath()).toString());
                 }
             }
         } catch (RepositoryException e) {
@@ -529,7 +525,7 @@ public class ContentManagerHelper {
                 missedPaths.add(new StringBuilder(nodeToDelete.getPath()).append(" - locked by ")
                         .append(nodeToDelete.getLockOwner()).toString());
             }
-            if (!nodeToDelete.hasPermission(JCRNodeWrapper.WRITE)) {
+            if (!nodeToDelete.hasPermission(Privilege.JCR_REMOVE_NODE)) {
                 missedPaths.add(new StringBuilder(nodeToDelete.getPath()).append(" - ACCESS DENIED").toString());
             } else if (!getRecursedLocksAndFileUsages(nodeToDelete, missedPaths, user.getUsername())) {
                 try {
@@ -572,7 +568,7 @@ public class ContentManagerHelper {
             if (node.isLocked() && !node.getLockOwner().equals(currentUserSession.getUser().getUsername())) {
                 throw new GWTJahiaServiceException(new StringBuilder(node.getName()).append(" is locked by ")
                         .append(currentUserSession.getUser().getUsername()).toString());
-            } else if (!node.hasPermission(JCRNodeWrapper.WRITE)) {
+            } else if (!node.hasPermission(Privilege.JCR_WRITE)) {
                 throw new GWTJahiaServiceException(
                         new StringBuilder(node.getName()).append(" - ACCESS DENIED").toString());
             } else if (!node.rename(newName)) {
@@ -750,7 +746,7 @@ public class ContentManagerHelper {
                         .append(e.toString()).toString());
                 continue;
             }
-            if (!node.hasPermission(JCRNodeWrapper.WRITE)) {
+            if (!node.hasPermission(Privilege.JCR_LOCK_MANAGEMENT)) {
                 missedPaths.add(new StringBuilder(node.getName()).append(": write access denied").toString());
             } else if (node.isLocked()) {
                 if (!locked) {
@@ -1153,7 +1149,7 @@ public class ContentManagerHelper {
                 missedPaths.add(new StringBuilder(referencedNode.getPath()).append(" - locked by ").append(
                         referencedNode.getLockOwner()).toString());
             }
-            if (!referencedNode.hasPermission(JCRNodeWrapper.WRITE)) {
+            if (!referencedNode.hasPermission(Privilege.JCR_REMOVE_NODE)) {
                 missedPaths.add(new StringBuilder(referencedNode.getPath()).append(" - ACCESS DENIED").toString());
             } else if (!getRecursedLocksAndFileUsages(referencedNode, missedPaths, user.getUsername())) {
                 try {

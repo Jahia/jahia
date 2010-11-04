@@ -274,7 +274,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
             // Initialize this to make sure we call it in Jahia's context instead of a portlet's context, as
             // portlets also use Jackrabbit-stored preferences.
             JahiaAccessManager.getRepository();
-            JahiaAccessManager.getJahiaUserService();
 
             mInitiated = true;
         } catch (Exception je) {

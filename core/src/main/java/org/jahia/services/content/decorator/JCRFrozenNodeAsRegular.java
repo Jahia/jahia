@@ -36,6 +36,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ChildrenCollectorFilter;
 import org.jahia.api.Constants;
 import org.jahia.services.content.*;
+import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -662,6 +663,22 @@ public class JCRFrozenNodeAsRegular extends JCRNodeWrapperImpl {
                 return definitionMap.get(propertyName);
             }
             throw new ConstraintViolationException("Cannot find definition for " + propertyName + " on node " + getName() + " (" + getPrimaryNodeTypeName() + ")");
+        }
+    }
+
+    public ExtendedNodeDefinition getApplicableChildNodeDefinition(String childName, String nodeType)
+            throws ConstraintViolationException, RepositoryException {
+        try {
+            return super.getApplicableChildNodeDefinition(childName, nodeType);
+        } catch (ConstraintViolationException e) {
+
+
+            ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType(Constants.NT_FROZENNODE);
+            final Map<String, ExtendedNodeDefinition> definitionMap = type.getChildNodeDefinitionsAsMap();
+            if (definitionMap.containsKey(childName)) {
+                return definitionMap.get(childName);
+            }
+            throw new ConstraintViolationException("Cannot find definition for " + childName + " on node " + getName() + " (" + getPrimaryNodeTypeName() + ")");
         }
     }
 

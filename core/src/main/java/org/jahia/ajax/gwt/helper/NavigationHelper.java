@@ -139,11 +139,6 @@ public class NavigationHelper {
         if (node.isFile()) {
             throw new GWTJahiaServiceException("Can't list the children of a file");
         }
-        if (!node.hasPermission(JCRNodeWrapper.READ)) {
-            throw new GWTJahiaServiceException(
-                    new StringBuilder("User ").append(currentUserSession.getUser().getUsername())
-                            .append(" has no read access to ").append(node.getName()).toString());
-        }
         final List<GWTJahiaNode> gwtNodeChildren = new ArrayList<GWTJahiaNode>();
         try {
             getMatchingChilds(nodeTypes, mimeTypes, nameFilters, fields, node, gwtNodeChildren, checkSubChild);
@@ -468,11 +463,6 @@ public class NavigationHelper {
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(
                     new StringBuilder(path).append(" could not be accessed :\n").append(e.toString()).toString());
-        }
-        if (!node.hasPermission(JCRNodeWrapper.READ)) {
-            throw new GWTJahiaServiceException(
-                    new StringBuilder("User ").append(currentUserSession.getUser().getUsername())
-                            .append(" has no read access to ").append(node.getName()).toString());
         }
         return node.getAbsoluteWebdavUrl(request);
     }

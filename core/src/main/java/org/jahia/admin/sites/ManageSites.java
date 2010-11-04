@@ -479,12 +479,7 @@ public class ManageSites extends AbstractAdministrationModule {
                 session.setAttribute(CLASS_NAME + "newJahiaSite", site);
                 request.setAttribute("newJahiaSite", site);
                 request.setAttribute("warningMsg", warningMsg);
-
-                if (session.getAttribute(CLASS_NAME + "noSites") != null) {
-                    displayList(request, response, session);
-                } else {
-                    displayAdd(request, response, session);
-                }
+                displayAdd(request, response, session);
             }
         } catch (JahiaException ex) {
             warningMsg = 

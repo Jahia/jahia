@@ -97,7 +97,7 @@ public class NewContentActionItem extends BaseActionItem  {
         if (n != null) {
             boolean isValidParent = false;
             for (String s : parentTypesAsList) {
-                isValidParent = n.getNodeTypes().contains(s);
+                isValidParent = n.getNodeTypes().contains(s) || n.getInheritedNodeTypes().contains(s);
                 if (isValidParent) {
                     break;
                 }

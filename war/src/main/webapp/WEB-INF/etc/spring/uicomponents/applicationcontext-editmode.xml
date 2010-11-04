@@ -384,7 +384,7 @@
                                     <value>$site/contents</value>
                                 </list>
                             </property>
-                            <property name="folderTypes" value="jnt:contentList"/>
+                            <property name="folderTypes" value="jnt:contentFolder"/>
                         </bean>
                     </property>
                     <property name="treeColumns">
@@ -396,7 +396,7 @@
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                             <property name="items">
                                 <list>
-                                    <ref bean="Toolbar.Item.NewFolder"/>
+                                    <ref bean="Toolbar.Item.NewContentFolder"/>
                                     <ref bean="Toolbar.Item.NewContent"/>
                                     <ref bean="Toolbar.Item.Rename"/>
                                     <ref bean="Toolbar.Item.Delete"/>
@@ -803,7 +803,7 @@
                                     <value>$user/contents</value>
                                 </list>
                             </property>
-                            <property name="folderTypes" value="jnt:contentList"/>
+                            <property name="folderTypes" value="jnt:contentFolder"/>
                         </bean>
                     </property>
                     <property name="treeColumns">
@@ -815,7 +815,7 @@
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                             <property name="items">
                                 <list>
-                                    <ref bean="Toolbar.Item.NewFolder"/>
+                                    <ref bean="Toolbar.Item.NewContentFolder"/>
                                     <ref bean="Toolbar.Item.NewContent"/>
                                     <ref bean="Toolbar.Item.Rename"/>
                                     <ref bean="Toolbar.Item.Delete"/>

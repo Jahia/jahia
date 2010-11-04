@@ -697,8 +697,8 @@ public class ContentManagerHelper {
             String user = ace.getPrincipalType() + ":" + ace.getPrincipal();
             if (!ace.isInherited()) {
                 node.changePermissions(user, ace.getPermissions());
+                existingAclKeys.remove(user);
             }
-            existingAclKeys.remove(user);
         }
         for (String user : existingAclKeys) {
             node.revokePermissions(user);

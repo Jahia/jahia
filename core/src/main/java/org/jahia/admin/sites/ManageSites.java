@@ -732,16 +732,8 @@ public class ManageSites extends AbstractAdministrationModule {
 
         // get current user...
         JahiaUserManagerService userManager = ServicesRegistry.getInstance().getJahiaUserManagerService();
-        JahiaUser currentUser = userManager.
-                lookupUser(adminUsername);
 
-        if (currentUser != null) {
-            warningMsg = getMessage("label.user");
-            warningMsg += " [" + adminUsername + "] ";
-            warningMsg += 
-                    getMessage("org.jahia.admin.userMessage.alreadyExist.label") +
-                    " ";
-        } else if (adminUsername.length() == 0) {
+         if (adminUsername.length() == 0) {
             warningMsg = 
                     getMessage("org.jahia.admin.userMessage.specifyUserName.label");
         } else if (!adminPassword.equals(adminConfirm)) {
@@ -753,6 +745,12 @@ public class ManageSites extends AbstractAdministrationModule {
         } else if (!userManager.isUsernameSyntaxCorrect(adminUsername)) {
             warningMsg = StringUtils.capitalize(getMessage(
                     "org.jahia.admin.users.ManageUsers.onlyCharacters.label"));
+        } else if ( userManager.lookupUser(adminUsername) != null) {
+            warningMsg = getMessage("label.user");
+            warningMsg += " [" + adminUsername + "] ";
+            warningMsg +=
+                    getMessage("org.jahia.admin.userMessage.alreadyExist.label") +
+                    " ";
         } else {
             JahiaPasswordPolicyService pwdPolicyService =
                     ServicesRegistry.getInstance().getJahiaPasswordPolicyService();

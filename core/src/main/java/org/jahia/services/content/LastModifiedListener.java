@@ -36,10 +36,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
+import javax.jcr.*;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 
@@ -114,10 +111,7 @@ public class LastModifiedListener extends DefaultEventListener {
                         for (String node : nodes) {
                             try {
                                 JCRNodeWrapper n = session.getNode(node);
-                                if (n.isNodeType(Constants.MIX_LAST_MODIFIED) && n.isCheckedOut()) {
-                                    n.setProperty("jcr:lastModified",c);
-                                    n.setProperty("jcr:lastModifiedBy",userId);
-                                }
+                                updateProperty(n, c, userId);
                             } catch (PathNotFoundException e) {
                                 // node has been removed
                             }
@@ -128,10 +122,7 @@ public class LastModifiedListener extends DefaultEventListener {
                                 if (!n.hasProperty("j:originWS") && n.isNodeType("jmix:originWS")) {
                                     n.setProperty("j:originWS", workspace);
                                 }
-                                if (n.isNodeType(Constants.MIX_LAST_MODIFIED) && n.isCheckedOut()) {
-                                    n.setProperty("jcr:lastModified", c);
-                                    n.setProperty("jcr:lastModifiedBy", userId);
-                                }
+                                updateProperty(n, c, userId);
                             } catch (PathNotFoundException e) {
                                 // node has been removed
                             }
@@ -145,6 +136,21 @@ public class LastModifiedListener extends DefaultEventListener {
             logger.error(e.getMessage(), e);
         }
 
+    }
+
+    private void updateProperty(JCRNodeWrapper n, Calendar c, String userId) throws RepositoryException {
+        while (!n.isNodeType(Constants.MIX_LAST_MODIFIED)) {
+            try {
+                n = n.getParent();
+            } catch (ItemNotFoundException e) {
+                return;
+            }
+        }
+        if (n.isCheckedOut()) {
+            n.checkout();
+        }
+        n.setProperty("jcr:lastModified",c);
+        n.setProperty("jcr:lastModifiedBy",userId);
     }
 
     private void handleTranslationNodes(final JCRNodeWrapper node, final Calendar c,

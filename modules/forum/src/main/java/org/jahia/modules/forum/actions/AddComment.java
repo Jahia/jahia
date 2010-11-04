@@ -74,6 +74,7 @@ public class AddComment extends DefaultPostAction {
         JCRSessionWrapper jcrSessionWrapper = resource.getNode().getSession();
         JCRNodeWrapper node = resource.getNode();
         if(!node.isNodeType("jmix:comments")) {
+            node.checkout();
             node.addMixin("jmix:comments");
             jcrSessionWrapper.save();
         }

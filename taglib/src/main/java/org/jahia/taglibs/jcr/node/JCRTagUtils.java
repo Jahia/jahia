@@ -281,24 +281,7 @@ public class JCRTagUtils {
     }
 
     public static boolean hasPermission(JCRNodeWrapper node,String permission) {
-        String perm = permission.toLowerCase();
-//        if("read_live".equals(perm)) {
-//            return node.hasPermission(Constants.JCR_READ_RIGHTS_LIVE);
-//        }
-//        else
-        if("read".equals(perm)) {
-            return node.hasPermission(Privilege.JCR_READ);
-        }
-//        else if("write_live".equals(perm)) {
-//            return node.hasPermission(Constants.JCR_WRITE_RIGHTS_LIVE);
-//        }
-        else if("write".equals(perm)) {
-            return node.hasPermission(Privilege.JCR_WRITE);
-        }
-        else if("modify_acls".equals(perm)) {
-            return node.hasPermission(Privilege.JCR_MODIFY_ACCESS_CONTROL);
-        }
-        return false;
+        return node.hasPermission("{http://www.jcp.org/jcr/1.0}"+permission);
     }
 
     public static String humanReadableFileLength(JCRNodeWrapper node) {
@@ -391,19 +374,20 @@ public class JCRTagUtils {
     }
 
 
-    public static boolean canAddSubNode(JCRNodeWrapper node, String name, String type) {
-        try {
-            if (!node.hasPermission(Privilege.JCR_ADD_CHILD_NODES)) {
-                return false;
-            }
-            ExtendedNodeType nodeType = NodeTypeRegistry.getInstance().getNodeType(type);
-            ExtendedNodeDefinition def = node.getApplicableChildNodeDefinition(name, type);
-            return (def != null && (nodeType.isLiveContent() | def.isLiveContent()) == Constants.LIVE_WORKSPACE.equals(node.getSession().getWorkspace().getName()));
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-            return false;
-        }
-    }
+//    public static boolean canAddSubNode(JCRNodeWrapper node, String name, String type) {
+////        try {
+//            if (!node.hasPermission(Privilege.JCR_ADD_CHILD_NODES)) {
+//                return false;
+//            }
+//            return true;
+////            ExtendedNodeType nodeType = NodeTypeRegistry.getInstance().getNodeType(type);
+////            ExtendedNodeDefinition def = node.getApplicableChildNodeDefinition(name, type);
+////            return (def != null && (nodeType.isLiveContent() | def.isLiveContent()) == Constants.LIVE_WORKSPACE.equals(node.getSession().getWorkspace().getName()));
+////        } catch (RepositoryException e) {
+////            logger.error(e.getMessage(), e);
+////            return false;
+////        }
+//    }
 
 
 }

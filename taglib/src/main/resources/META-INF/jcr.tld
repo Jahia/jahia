@@ -582,15 +582,6 @@
             ${jcr:hasPermission(currentNode,'read')}
         </example>
     </function>
-    <function>
-        <description>Returns true if the current user can add a sub node with speicfied type and name.</description>
-        <name>canAddSubNode</name>
-        <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
-        <function-signature>boolean canAddSubNode(org.jahia.services.content.JCRNodeWrapper,java.lang.String,java.lang.String)</function-signature>
-        <example>
-            ${jcr:canAddSubNode(currentNode,'post','jnt:post')}
-        </example>
-    </function>
 
     <function>
         <description>Returns a human readable string for the length of a file.</description>

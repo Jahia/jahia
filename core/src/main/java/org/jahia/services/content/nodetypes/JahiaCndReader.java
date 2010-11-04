@@ -342,9 +342,9 @@ public class JahiaCndReader {
                 } else {
                     lexer.fail("Invalid validator");
                 }
-            } else if (currentTokenEquals(Lexer.LIVECONTENT)) {
-                nextToken();
-                ntd.setLiveContent(true);
+//            } else if (currentTokenEquals(Lexer.LIVECONTENT)) {
+//                nextToken();
+//                ntd.setLiveContent(true);
             } else {
                 hasOption = false;
             }
@@ -831,8 +831,8 @@ public class JahiaCndReader {
                 } else {
                     lexer.fail("Invalid value for workflow " + currentToken);
                 }
-            } else if (currentTokenEquals(Lexer.LIVECONTENT)) {
-                ndi.setLiveContent(true);
+//            } else if (currentTokenEquals(Lexer.LIVECONTENT)) {
+//                ndi.setLiveContent(true);
             }
 
             //todo : handle new attributes

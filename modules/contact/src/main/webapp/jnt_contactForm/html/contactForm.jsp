@@ -6,7 +6,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <template:addResources type="css" resources="contactform.css"/>
 <div class="Form contactForm">
-    <c:set var="writeable" value="${jcr:canAddSubNode(currentNode,'*','jnt:contact')}" />
+    <c:set var="writeable" value="${jcr:hasPermission(currentNode,'addChildNodes') and currentResource.workspace eq 'live'}" />
     <c:if test='${not writeable}'>
         <c:set var="disabled" value='disabled="true"' />
     </c:if>

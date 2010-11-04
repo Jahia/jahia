@@ -17,6 +17,11 @@
 <c:if test="${renderContext.editMode}">
     Add comment
 </c:if>
+<c:set var="writeable" value="${jcr:hasPermission(currentNode,'addChildNodes') and currentResource.workspace eq 'live'}" />
+<c:if test='${not writeable}'>
+    <c:set var="disabled" value='disabled="true"' />
+</c:if>
+
 <c:set var="bindedComponent" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 <c:if test="${not empty bindedComponent}">
     <a name="addComments"></a>
@@ -33,20 +38,20 @@
                             <label class="left" for="comment-title"><fmt:message key="comment.title"/></label>
                             <input class="" value=""
                                    type="text" size="35" id="comment-title" name="jcr:title"
-                                   tabindex="1"/>
+                                   tabindex="1" ${disabled}/>
                         </p>
 
                         <p class="field">
                         <label class="left" for="jahia-comment-${bindedComponent.identifier}"><fmt:message key="comment.body"/></label>
                             <textarea rows="7" cols="35" id="jahia-comment-${bindedComponent.identifier}"
                                       name="content"
-                                      tabindex="2"></textarea>
+                                      tabindex="2" ${disabled}></textarea>
                         </p>
 
                         <p>
-                            <input type="reset" value="<fmt:message key='label.reset'/>" class="button" tabindex="3"/>
+                            <input type="reset" value="<fmt:message key='label.reset'/>" class="button" tabindex="3"  ${disabled}/>
 
-                            <input type="submit" value="<fmt:message key='label.submit'/>" class="button" tabindex="4"/>
+                            <input type="submit" value="<fmt:message key='label.submit'/>" class="button" tabindex="4"  ${disabled}/>
                         </p>
                     </fieldset>
                 </div>

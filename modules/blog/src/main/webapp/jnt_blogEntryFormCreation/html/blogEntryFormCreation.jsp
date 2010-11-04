@@ -23,7 +23,8 @@
     });
 </script>
 
-<c:set var="writeable" value="${jcr:canAddSubNode(renderContext.mainResource.node,'*','jnt:blogContent')}" />
+<c:set var="writeable" value="${jcr:hasPermission(currentNode,'addChildNodes') and currentResource.workspace eq 'live'}" />
+<%--<c:set var="writeable" value="${jcr:canAddSubNode(renderContext.mainResource.node,'*','jnt:blogContent')}" />--%>
 <c:if test='${not writeable}'>
     <c:set var="disabled" value='disabled="true"' />
 </c:if>
@@ -40,7 +41,7 @@
     	<label><fmt:message key="title"/> </label>
         <input type="text" value="" name="jcr:title" ${disabled}/>
     </p>
-    
+
     <ul class="post-tags">
         <jcr:nodeProperty node="${currentNode}" name="j:tags" var="assignedTags"/>
         <c:forEach items="${assignedTags}" var="tag" varStatus="status">

@@ -20,6 +20,7 @@
 <c:set var="bindedComponent" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 <c:if test="${not empty bindedComponent}">
     <jcr:node var="comments" path="${bindedComponent.path}/comments"/>
+    <template:addDependency node="${comments}"/>
     <c:if test="${not empty comments}">
 		<template:module node="${comments}" template="comments"/>
     </c:if>

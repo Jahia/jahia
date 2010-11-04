@@ -107,7 +107,7 @@ public class Lexer {
     public static final String[] IGNORE = new String[]{"ignore", "Ignore", "IGNORE"};
     public static final String[] ABORT = new String[]{"abort", "Abort", "ABORT"};
 
-    public static final String[] LIVECONTENT = new String[]{"livecontent", "LiveContent", "LIVECONTENT"};
+//    public static final String[] LIVECONTENT = new String[]{"livecontent", "LiveContent", "LIVECONTENT"};
 
     public static final String[] WORKFLOW = new String[]{"workflow", "Workflow", "WORKFLOW"};
 
@@ -167,7 +167,7 @@ public class Lexer {
         attr.addAll(Arrays.asList(WORKFLOW));
         attr.addAll(Arrays.asList(HIDDEN));
         attr.addAll(Arrays.asList(ITEMTYPE));
-        attr.addAll(Arrays.asList(LIVECONTENT));
+//        attr.addAll(Arrays.asList(LIVECONTENT));
         NODE_ATTRIBUTE = attr.toArray(new String[attr.size()]);
     }
 

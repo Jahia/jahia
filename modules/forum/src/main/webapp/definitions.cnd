@@ -3,10 +3,10 @@
 
 [jmix:forumContent] > jmix:droppableContent
 
-[jnt:post] > jnt:content, jmix:rating, mix:title livecontent
+[jnt:post] > jnt:content, jmix:rating, mix:title
  - content (string,richtext) i18n
 
-[jnt:thread] > jnt:content, jmix:forumContent, jmix:pager livecontent
+[jnt:thread] > jnt:content, jmix:forumContent, jmix:pager
  - threadSubject (string)
  + * (jnt:post)
 

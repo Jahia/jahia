@@ -137,7 +137,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         permissions = new HashMap<String, Integer>();
         permissions.put(Constants.JCR_READ_RIGHTS, Permission.READ);
         permissions.put("jcr:setProperties", Permission.SET_PROPERTY);
-        permissions.put("jcr:addChildNodes", Permission.ADD_NODE);
+        permissions.put("jcr:addChildNodes", Permission.ADD_NODE + Permission.NODE_TYPE_MNGMT + Permission.VERSION_MNGMT);
         permissions.put("jcr:removeChildNodes", Permission.REMOVE_NODE);
         permissions.put(Constants.JCR_WRITE_RIGHTS, Permission.SET_PROPERTY + Permission.REMOVE_PROPERTY + Permission.ADD_NODE + Permission.REMOVE_NODE + Permission.NODE_TYPE_MNGMT + Permission.LOCK_MNGMT + Permission.VERSION_MNGMT);
         permissions.put("jcr:getAccessControlPolicy", Permission.READ);
@@ -333,6 +333,8 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             return true;
         }
 
+        boolean res = false;
+
         if (cache.containsKey(absPathStr + " : " + permissions)) {
             return cache.get(absPathStr + " : " + permissions);
         }
@@ -366,50 +368,10 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             }
             
             boolean newItem = !getSecuritySession().itemExists(jcrPath); // Jackrabbit checks the ADD_NODE permission on non-existing nodes
-
-            if ((Permission.SET_PROPERTY | permissions) == Permission.SET_PROPERTY ||
-                    ((Permission.ADD_NODE | permissions) == Permission.ADD_NODE && newItem) ||
-                    (Permission.REMOVE_NODE | permissions) == Permission.REMOVE_NODE ||
-                    (Permission.REMOVE_PROPERTY | permissions) == Permission.REMOVE_PROPERTY) {
-                Item i;
-                if (getSecuritySession().itemExists(jcrPath)) {
-                    i = getSecuritySession().getItem(jcrPath);
-                } else {
-                    i = session.getItem(jcrPath);
-                }
-
-                if (!i.isNode()) {
-                    i = i.getParent();
-                }
-
-                final NodeDefinition definition = ((Node) i).getDefinition();
-
-                try {
-                    final String primaryTypeName = ((Node) i).getPrimaryNodeType().getName();
-                    if (!primaryTypeName.equals("jnt:translation")) {
-                        boolean live = NodeTypeRegistry.getInstance().getNodeType(primaryTypeName).isLiveContent();
-                        ExtendedNodeType t = NodeTypeRegistry.getInstance().getNodeType(definition.getDeclaringNodeType().getName());
-                        ExtendedNodeDefinition extendedDefinition;
-                        if (definition.getName().equals("*")) {
-                            StringBuffer s = new StringBuffer("");
-                            for (String s1 : definition.getRequiredPrimaryTypeNames()) {
-                                s.append(s1).append(" ");
-                            }
-                            extendedDefinition = t.getUnstructuredChildNodeDefinitions().get(s.toString().trim());
-                        } else {
-                            extendedDefinition = t.getChildNodeDefinitionsAsMap().get(definition.getName());
-                        }
-                        if (extendedDefinition != null) {
-//                            System.out.println("---> "+jcrPath+ " - "+permissions + "  - isLiveContent1 = "+extendedDefinition.isLiveContent()+ "  - isLiveContent2 = "+ t.isLiveContent());
-                            live |= extendedDefinition.isLiveContent();
-                        }
-                        if (live != Constants.LIVE_WORKSPACE.equals(workspaceName)) {
-                            return false;
-                        }
-                    }
-                } catch (NoSuchNodeTypeException e) {
-                    // ..
-                }
+            if (newItem && permissions != Permission.ADD_NODE) {
+                // If node is new (local to the session), always grant permission
+                cache.put(absPathStr + " : " + permissions, true);
+                return true;
             }
            
             // Administrators are always granted
@@ -459,12 +421,12 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 }
             }
 
-            return recurseonACPs(jcrPath, getSecuritySession(), permissions, site);
+            res = recurseonACPs(jcrPath, getSecuritySession(), permissions, site);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        cache.put(absPathStr + " : " + permissions, false);
-        return false;
+        cache.put(absPathStr + " : " + permissions, res);
+        return res;
     }
 
     public boolean isGranted(Path parentPath, Name childName, int permissions) throws RepositoryException {

@@ -5,7 +5,9 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <jcr:nodeProperty node="${currentNode}" name="jcr:createdBy" var="createdBy"/>
 <jcr:nodeProperty node="${currentNode}" name="content" var="content"/>
-<jcr:node var="userNode" path="/users/${createdBy.string}"/>
+<c:if test="${createdBy.string ne ' guest '}">
+    <jcr:node var="userNode" path="/users/${createdBy.string}"/>
+</c:if>
 <li class="genericListCommentLi">
     <div class="image">
         <div class="itemImage itemImageLeft">
@@ -30,7 +32,9 @@
 
     <p>
         <span class="author">
-        <a href="${url.base}${renderContext.site.path}/users/${createdBy.string}.html">${createdBy.string}</a>:&nbsp;</span>
+            <c:if test="${createdBy.string ne ' guest '}">
+            <a href="${url.base}/users/${createdBy.string}.html">${createdBy.string}</a></c:if>
+            <c:if test="${createdBy.string eq ' guest '}">guest</c:if>:&nbsp;</span>
         ${content.string}
     </p>
 

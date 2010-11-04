@@ -565,6 +565,14 @@ public class JCRPublicationService extends JahiaService {
         logger.debug("Cloning node : " + sourceNodePath + " parent path " + parent.getPath());
         final String destinationWorkspaceName = destinationSession.getWorkspace().getName();
         final String destinationParentPath = parent.getCorrespondingNodePath(destinationWorkspaceName);
+        JCRNodeWrapper destinationParent = destinationSession.getNode(destinationParentPath);
+
+        if (destinationParent.hasNode(sourceNode.getName())) {
+            logger.error("Node " + sourceNode.getName() +" already exist under "+destinationParent.getPath() + " - live node is going to be removed !");
+            destinationParent.checkout();
+            destinationParent.getNode(sourceNode.getName()).remove();
+            destinationSession.save();
+        }
 
         final VersionManager destinationVersionManager = destinationSession.getWorkspace().getVersionManager();
 
@@ -633,7 +641,6 @@ public class JCRPublicationService extends JahiaService {
                         .clone(sourceSession.getWorkspace().getName(), sourceNodePath,
                                 destinationPath, false);
             }
-            JCRNodeWrapper destinationParent = destinationSession.getNode(destinationParentPath);
             if (destinationParent.getPrimaryNodeType().hasOrderableChildNodes()) {
                 NodeIterator ni = sourceNode.getParent().getNodes();
                 boolean found = false;

@@ -2,7 +2,7 @@
 
 [jmix:blogContent] > jmix:droppableContent
 
-[jnt:blogContent] > jnt:content, jmix:blogContent, mix:title, jmix:tagged, jmix:comments livecontent
+[jnt:blogContent] > jnt:content, jmix:blogContent, mix:title, jmix:tagged, jmix:comments
  - text (string, richtext) i18n
 
 [jnt:blogEntryFormCreation] > jnt:content, jmix:blogContent, mix:title

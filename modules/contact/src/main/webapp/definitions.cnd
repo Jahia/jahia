@@ -1,6 +1,6 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
-[jnt:contact] > jnt:content livecontent
+[jnt:contact] > jnt:content
  - firstname (string) i18n
  - lastname (string) i18n
  - title (string, choicelist[resourceBundle]) analyzer='keyword' < 'undefined', 'master', 'doctor', 'professor'

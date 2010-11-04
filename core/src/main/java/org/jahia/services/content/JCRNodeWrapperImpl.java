@@ -459,14 +459,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public JCRNodeWrapper addNode(String name, String type) throws RepositoryException {
-//        final String wsName = getSession().getWorkspace().getName();
-//        if (!getPath().equals("/") && !Constants.LIVE_WORKSPACE.equals(wsName)) {
-//            ExtendedNodeDefinition def = getApplicableChildNodeDefinition(name, type);
-//            if (def.isLiveContent() != Constants.LIVE_WORKSPACE.equals(wsName)) {
-//                throw new AccessDeniedException("Cannot create content, invalid space");
-//            }
-//        }
-//
         Node n = objectNode.addNode(name, type);
         return provider.getNodeWrapper(n, buildSubnodePath(name), this, session);
     }
@@ -481,10 +473,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             jrSession.getNodeTypeInstanceHandler().setLastModifiedBy(lastModifiedBy);
             try {
                 if (identifier != null) {
-                    ExtendedNodeDefinition def = getApplicableChildNodeDefinition(name, type);
-                    if (def.isLiveContent() != Constants.LIVE_WORKSPACE.equals(getSession().getWorkspace().getName())) {
-                        throw new AccessDeniedException("Cannot create content, invalid space");
-                    }
 
                     org.jahia.services.content.nodetypes.Name jahiaName = new org.jahia.services.content.nodetypes.Name(name, NodeTypeRegistry.getInstance().getNamespaces());
                     Name qname = NameFactoryImpl.getInstance().create(jahiaName.getUri() == null ? "" : jahiaName.getUri(), jahiaName.getLocalName());

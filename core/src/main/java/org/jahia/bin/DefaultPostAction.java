@@ -105,6 +105,9 @@ public class DefaultPostAction implements Action {
                     node = session.getNode(realPath.toString());
                 } catch (PathNotFoundException e) {
                     if (node != null) {
+                        if (!node.isCheckedOut()) {
+                            node.checkout();
+                        }
                         node = node.addNode(subPath, "jnt:contentList");
                     }
                 }

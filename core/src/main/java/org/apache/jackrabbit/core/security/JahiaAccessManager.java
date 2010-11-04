@@ -60,7 +60,6 @@ import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
-import sun.print.PeekGraphics;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NoSuchNodeTypeException;

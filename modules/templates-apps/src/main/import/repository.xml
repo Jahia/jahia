@@ -24,7 +24,7 @@
                 <default jcr:primaryType="jnt:folder"/>
             </themes>
             <templates jcr:primaryType="jnt:templatesFolder">
-                <base jcr:mixinTypes="jmix:renderable" j:view="apps" jcr:primaryType="jnt:pageTemplate">
+                <base jcr:mixinTypes="jmix:renderable" j:view="apps" jcr:primaryType="jnt:template">
                     <logo jcr:primaryType="jnt:contentList"/>
                     <pagetitle jcr:primaryType="jnt:contentList"/>
                     <simpleSearch jcr:primaryType="jnt:contentList"/>

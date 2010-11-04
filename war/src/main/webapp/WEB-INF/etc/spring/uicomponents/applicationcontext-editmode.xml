@@ -202,21 +202,22 @@
                                             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
                                                 <property name="nodeTypes" value="jnt:pageTemplate"/>
                                                 <property name="parentTypes"
-                                                          value="jnt:templatesFolder jnt:pageTemplate"/>
+                                                          value="jnt:templatesFolder jnt:template"/>
                                             </bean>
                                         </property>
-                                        <property name="titleKey" value="label.newTemplate"/>
-                                        <property name="icon" value="newTemplate"/>
+                                        <property name="titleKey" value="label.newPageTemplate"/>
+                                        <property name="icon" value="newPageTemplate"/>
                                     </bean>
                                     <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
                                         <property name="actionItem">
                                             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
-                                                <property name="nodeTypes" value="jnt:contentTemplate"/>
-                                                <property name="parentTypes" value="jnt:pageTemplate"/>
+                                                <property name="nodeTypes" value="jnt:template"/>
+                                                <property name="parentTypes"
+                                                          value="jnt:templatesFolder jnt:template"/>
                                             </bean>
                                         </property>
-                                        <property name="titleKey" value="label.newContentTemplate"/>
-                                        <property name="icon" value="newContentTemplate"/>
+                                        <property name="titleKey" value="label.newTemplate"/>
+                                        <property name="icon" value="newTemplate"/>
                                     </bean>
                                     <ref bean="Toolbar.Item.EditContent"/>
                                     <ref bean="Toolbar.Item.Rename"/>

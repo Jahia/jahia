@@ -320,21 +320,21 @@
 [jmix:renderable] mixin
  extends = jnt:content, jnt:template, jnt:query
  itemtype = layout
- - j:view (string, choicelist[templates,resourceBundle,image]) nofulltext
+ - j:view (string, choicelist[templates,resourceBundle,image]) nofulltext mandatory
 
 [jmix:hasTemplateNode] mixin
  itemtype = layout
  - j:templateNode (weakreference,choicelist[templatesNode]) < jnt:template
 
 [jnt:template] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:publication
+ - j:hiddenTemplate (boolean)
  + * (jnt:template)
  + * (jnt:content)
 
 [jnt:pageTemplate] > jnt:template
 
 [jnt:contentTemplate] > jnt:template
- - j:applyOn (string, choicelist[subnodetypes = 'jnt:page,jnt:content,jnt:contentList,jnt:folder,jnt:file',resourceBundle]) multiple
- - j:templateKey (string)
+ - j:applyOn (string, choicelist[subnodetypes = 'jnt:content,jnt:contentList,jnt:folder,jnt:file',resourceBundle]) multiple
 
 [jmix:mockupStyle] mixin
  itemtype = layout
@@ -556,7 +556,7 @@
 //---------------------------------------------------------
 
 [jmix:contributeMode] mixin
- extends = jnt:contentList, jnt:folder, jnt:area
+ extends = jnt:contentList, jnt:folder, jnt:contentFolder, jnt:area
  - j:editableInContribution (boolean)
  - j:canOrderInContribution (boolean)
  - j:canDeleteInContribution (boolean)

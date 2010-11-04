@@ -1149,7 +1149,7 @@ exercising activities with strong recurring profits. 
                 <default jcr:uuid="345c4cec-ef21-4684-916a-26f061dc2a93" jcr:created="2010-10-25T15:48:58.576+02:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy=" system " jcr:createdBy=" system " j:fullpath="/sites/ACME/themes/default" jcr:lastModified="2010-10-25T15:49:05.747+02:00"></default>
             </themes>
             <templates jcr:uuid="5884a814-3c26-4026-b97f-7dcb717727ce" jcr:created="2010-10-25T15:48:58.584+02:00" jcr:primaryType="jnt:templatesFolder" jcr:lastModifiedBy=" system " jcr:createdBy=" system " j:fullpath="/sites/ACME/templates" jcr:lastModified="2010-10-25T15:49:05.747+02:00">
-                <base jcr:uuid="1e0e71c6-81de-451e-bf8d-440d42638b4a" jcr:mixinTypes="jmix:renderable" jcr:created="2010-10-25T15:48:58.585+02:00" jcr:primaryType="jnt:pageTemplate" j:view="web" jcr:lastModifiedBy=" system " jcr:createdBy=" system " j:fullpath="/sites/ACME/templates/base" jcr:lastModified="2010-10-25T15:49:05.747+02:00">
+                <base jcr:uuid="1e0e71c6-81de-451e-bf8d-440d42638b4a" jcr:mixinTypes="jmix:renderable" jcr:created="2010-10-25T15:48:58.585+02:00" jcr:primaryType="jnt:template" j:view="web" jcr:lastModifiedBy=" system " jcr:createdBy=" system " j:fullpath="/sites/ACME/templates/base" jcr:lastModified="2010-10-25T15:49:05.747+02:00">
                     <header jcr:uuid="14b7230c-6810-4908-b382-0fbaa56e12dd" jcr:created="2010-10-25T15:48:58.586+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system " jcr:createdBy=" system " j:fullpath="/sites/ACME/templates/base/header" jcr:lastModified="2010-10-25T15:49:05.747+02:00">
                         <shortcuts jcr:uuid="daf21856-2358-4807-aa51-8c34adfeed36" jcr:mixinTypes="jmix:renderable" jcr:created="2010-10-25T15:48:58.587+02:00" jcr:primaryType="jnt:shortcuts" j:view="inline" jcr:lastModifiedBy=" system " jcr:createdBy=" system " j:fullpath="/sites/ACME/templates/base/header/shortcuts" jcr:lastModified="2010-10-25T15:49:05.747+02:00"></shortcuts>
                     </header>
@@ -1282,7 +1282,7 @@ exercising activities with strong recurring profits. 
                             <mainResourceDisplay jcr:uuid="61f7f155-8e63-4763-a8bd-709a099bf114" j:mainResourceView="fullpage" jcr:created="2010-10-25T15:48:58.685+02:00" jcr:primaryType="jnt:mainResourceDisplay" jcr:lastModifiedBy=" system " jcr:createdBy=" system " j:fullpath="/sites/ACME/templates/base/news-template/row-col1/mainDisplay" jcr:lastModified="2010-10-25T15:49:05.747+02:00"></mainResourceDisplay>
                         </row-col1>
                     </news-template>
-                    <note j:templateKey="thinkboxitem" jcr:uuid="02bdf7ca-03bd-4978-863b-f4d23dd13adc" jcr:created="2010-10-25T15:48:58.686+02:00" jcr:primaryType="jnt:contentTemplate" jcr:lastModifiedBy=" system " jcr:createdBy=" system " j:fullpath="/sites/ACME/templates/base/note" j:applyOn="jnt:thinkBoxItem" jcr:lastModified="2010-10-25T15:49:05.747+02:00">
+                    <thinkboxitem jcr:uuid="02bdf7ca-03bd-4978-863b-f4d23dd13adc" jcr:created="2010-10-25T15:48:58.686+02:00" jcr:primaryType="jnt:contentTemplate" jcr:lastModifiedBy=" system " jcr:createdBy=" system " j:fullpath="/sites/ACME/templates/base/note" j:applyOn="jnt:thinkBoxItem" jcr:lastModified="2010-10-25T15:49:05.747+02:00">
                         <pagecontent jcr:uuid="b46973ec-a6a1-4150-8e81-ec4d604fd0ee" jcr:created="2010-10-25T15:48:58.687+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system " jcr:createdBy=" system " j:fullpath="/sites/ACME/templates/base/note/pagecontent" jcr:lastModified="2010-10-25T15:49:05.747+02:00">
                             <row column="2col115" jcr:uuid="dabffd63-5223-4caf-b7b7-ca91c7c11221" jcr:created="2010-10-25T15:48:58.688+02:00" jcr:primaryType="jnt:row" jcr:lastModifiedBy=" system " jcr:createdBy=" system " j:fullpath="/sites/ACME/templates/base/note/pagecontent/row" jcr:lastModified="2010-10-25T15:49:05.747+02:00"></row>
                         </pagecontent>
@@ -1292,7 +1292,7 @@ exercising activities with strong recurring profits. 
                         <row-col2 jcr:uuid="46a09e18-c3a1-4edf-9837-0797dbac87a4" jcr:created="2010-10-25T15:48:58.690+02:00" jcr:primaryType="jnt:contentList" jcr:lastModifiedBy=" system " jcr:createdBy=" system " j:fullpath="/sites/ACME/templates/base/note/row-col2" jcr:lastModified="2010-10-25T15:49:05.747+02:00">
                             <rateable jcr:uuid="3be0ccdf-2d08-49ec-9661-86a7df78b633" jcr:created="2010-10-25T15:48:58.691+02:00" jcr:primaryType="jnt:rateable" jcr:lastModifiedBy=" system " jcr:createdBy=" system " j:fullpath="/sites/ACME/templates/base/note/row-col2/rateable" jcr:lastModified="2010-10-25T15:49:05.747+02:00"></rateable>
                         </row-col2>
-                    </note>
+                    </thinkboxitem>
                 </base>
             </templates>
             <j:acl jcr:primaryType="jnt:acl">

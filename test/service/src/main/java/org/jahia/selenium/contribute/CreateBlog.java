@@ -83,7 +83,7 @@ public class CreateBlog extends SeleneseTestCase{
         selenium.click("//input[@value='create']");
 
         //Add post to this blog
-        selenium.open("http://localhost:8080/cms/render/default/en/sites/mySite/home/my-blog-home/myfirstblog.blogNew.html");
+        selenium.open("http://localhost:8080/cms/render/default/en/sites/mySite/home/my-blog-home/myfirstblog.blog-new.html");
         selenium.type("jcr:title", "my first post");
         selenium.click("//html/body/div/div[3]/div/div/div/div/div/div/div/form/div/p/span/span[2]/span/table/tbody/tr/td/div/span[4]/span[2]/span/a/span");
         selenium.type("//input[@class='cke_dialog_ui_input_text']", "www.jahia.org/cms");

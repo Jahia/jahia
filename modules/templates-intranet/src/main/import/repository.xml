@@ -53,7 +53,7 @@
                 </theme-yellow>
             </themes>
             <templates jcr:primaryType="jnt:templatesFolder">
-                <base jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:pageTemplate" j:view="intranet">
+                <base jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:template" j:view="intranet">
                     <logo jcr:primaryType="jnt:contentList">
                         <logo j:basenode="/templateSets/templates-intranet/home" jcr:primaryType="jnt:absoluteArea" />
                     </logo>
@@ -131,8 +131,8 @@
                             <mainResourceDisplay-1 j:mainResourceView="updateFile" jcr:primaryType="jnt:mainResourceDisplay" />
                             <document-history j:skin="skins.box2" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
                                 <j:translation_en j:skin="skins.box2" jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Document History" jcr:primaryType="jnt:translation" />
-                                <commentable jcr:primaryType="jnt:commentable" j:bindedComponent="/templateSets/templates-intranet/templates/base/file/row-col1/mainResourceDisplay-1" />
-                                <commentable-1 jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:commentable" j:bindedComponent="/templateSets/templates-intranet/templates/base/file/row-col1/mainResourceDisplay-1" j:view="addcomment" />
+                                <commentsList jcr:primaryType="jnt:commentsList" j:bindedComponent="/templateSets/templates-intranet/templates/base/file/row-col1/mainResourceDisplay-1" />
+                                <addComment jcr:primaryType="jnt:addComment" j:bindedComponent="/templateSets/templates-intranet/templates/base/file/row-col1/mainResourceDisplay-1" />
                             </document-history>
                         </row-col1>
                         <row-col2 jcr:primaryType="jnt:contentList">
@@ -311,7 +311,7 @@
                             </facets>
                         </row-col2>
                     </blog>
-                    <blog-edit j:templateKey="blogEdit" jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:blogContent">
+                    <blog-edit jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:blogContent">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row column="2col115" jcr:primaryType="jnt:row" />
                         </pagecontent>
@@ -332,8 +332,8 @@
                             <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" />
                             <document-history j:skin="skins.box2" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
                                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Comments" jcr:primaryType="jnt:translation" />
-                                <commentable jcr:primaryType="jnt:commentable" j:bindedComponent="/templateSets/templates-intranet/templates/base/blog-content/row-col1/mainResourceDisplay" />
-                                <commentable-1 jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:commentable" j:bindedComponent="/templateSets/templates-intranet/templates/base/blog-content/row-col1/mainResourceDisplay" j:view="addcomment" />
+                                <commentsList jcr:primaryType="jnt:commentsList" j:bindedComponent="/templateSets/templates-intranet/templates/base/blog-content/row-col1/mainResourceDisplay" />
+                                <addComment jcr:primaryType="jnt:addComment" j:bindedComponent="/templateSets/templates-intranet/templates/base/blog-content/row-col1/mainResourceDisplay" />
                             </document-history>
                         </row-col1>
                         <row-col2 jcr:primaryType="jnt:contentList">
@@ -343,7 +343,7 @@
                             <authorDisplay j:userView="blog" jcr:primaryType="jnt:authorDisplay" />
                         </row-col2>
                     </blog-content>
-                    <blog-new j:templateKey="blogNew" jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:page">
+                    <blog-new jcr:primaryType="jnt:pageTemplate" j:hiddenTemplate="true" >
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row column="2col115" jcr:primaryType="jnt:row" />
                         </pagecontent>

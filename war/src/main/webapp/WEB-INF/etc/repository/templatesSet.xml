@@ -26,7 +26,7 @@
     </themes>
 
     <templates jcr:primaryType="jnt:templatesFolder">
-        <base jcr:mixinTypes="jmix:renderable jmix:theme" j:view="default" jcr:primaryType="jnt:pageTemplate" j:theme="/templatesSet/themes/default">
+        <base jcr:mixinTypes="jmix:renderable jmix:theme" j:view="default" jcr:primaryType="jnt:template" j:theme="/templatesSet/themes/default">
             <home jcr:primaryType="jnt:pageTemplate">
                 <pagecontent jcr:primaryType="jnt:contentList"/>
             </home>

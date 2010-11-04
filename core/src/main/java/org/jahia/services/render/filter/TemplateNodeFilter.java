@@ -129,13 +129,13 @@ public class TemplateNodeFilter extends AbstractFilter {
                     parent = parent.getParent();
                 }
             } else {
-                if (current.hasProperty("j:templateNode")) {
+                if (resource.getTemplate().equals("default") && current.hasProperty("j:templateNode")) {
                     // A template node is specified on the current node
                     JCRNodeWrapper templateNode = (JCRNodeWrapper) current.getProperty("j:templateNode").getNode();
                     template = new Template(templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
                             templateName, templateNode.getIdentifier(), template);
                 } else if (templatesNode != null) {
-                    template = addContentTemplates(resource, null, templatesNode);
+                    template = addTemplates(resource, null, templatesNode);
                 }
 
                 if (template != null) {
@@ -161,16 +161,28 @@ public class TemplateNodeFilter extends AbstractFilter {
         return template;
     }
 
-    private Template addContentTemplates(Resource resource, Template template,
+    private Template addTemplates(Resource resource, Template template,
                                          JCRNodeWrapper templateNode) throws RepositoryException {
-        Query q = templateNode.getSession().getWorkspace().getQueryManager().createQuery(
-                "select * from [jnt:contentTemplate] as w where isdescendantnode(w, ['" + templateNode.getPath() + "'])",
+        String type = "contentTemplate";
+        if (resource.getNode().isNodeType("jnt:page")) {
+            type = "pageTemplate";
+        }
+
+        String query =
+                "select * from [jnt:" + type + "] as w where isdescendantnode(w, ['" + templateNode.getPath() + "'])";
+        if (resource.getTemplate() != null) {
+            query += " and name(w)='"+ resource.getTemplate()+"'";
+        }
+        Query q = templateNode.getSession().getWorkspace().getQueryManager().createQuery(query,
                 Query.JCR_SQL2);
         QueryResult result = q.execute();
         NodeIterator ni = result.getNodes();
         while (ni.hasNext()) {
             final JCRNodeWrapper contentTemplateNode = (JCRNodeWrapper) ni.nextNode();
             template = addTemplate(resource, template, contentTemplateNode);
+            if (template != null) {
+                return template;
+            }
         }
         return template;
     }
@@ -191,13 +203,13 @@ public class TemplateNodeFilter extends AbstractFilter {
                 ok = true;
             }
         }
-        if (ok) {
-            if (resource.getTemplate() == null || resource.getTemplate().equals("default")) {
-                ok = !templateNode.hasProperty("j:templateKey");
-            } else {
-                ok = templateNode.hasProperty("j:templateKey") && resource.getTemplate().equals(templateNode.getProperty("j:templateKey").getString());
-            }
-        }
+//        if (ok) {
+//            if (resource.getTemplate() == null || resource.getTemplate().equals("default")) {
+//                ok = !templateNode.hasProperty("j:templateKey");
+//            } else {
+//                ok = templateNode.hasProperty("j:templateKey") && resource.getTemplate().equals(templateNode.getProperty("j:templateKey").getString());
+//            }
+//        }
         if (ok) {
             template = new Template(
                     templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :

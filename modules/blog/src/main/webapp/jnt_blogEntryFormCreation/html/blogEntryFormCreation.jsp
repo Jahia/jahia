@@ -23,6 +23,11 @@
     });
 </script>
 
+<c:set var="writeable" value="${jcr:canAddSubNode(renderContext.mainResource.node,'*','jnt:blogContent')}" />
+<c:if test='${not writeable}'>
+    <c:set var="disabled" value='disabled="true"' />
+</c:if>
+
 <form id="formPost" method="post" action="${renderContext.mainResource.node.name}/" name="blogPost">
     <input type="hidden" name="nodeType" value="jnt:blogContent"/>
     <input type="hidden" name="normalizeNodeName" value="true"/>
@@ -33,7 +38,7 @@
     </p>
     <p>
     	<label><fmt:message key="title"/> </label>
-        <input type="text" value="" name="jcr:title"/>
+        <input type="text" value="" name="jcr:title" ${disabled}/>
     </p>
     
     <ul class="post-tags">
@@ -45,11 +50,11 @@
     <div class="post-content">
         <p>
         	<label><fmt:message key="blog.post"/> </label>
-        	<textarea name="text" rows="10" cols="70" id="editContent"></textarea>
+        	<textarea name="text" rows="10" cols="70" id="editContent" ${disabled}></textarea>
         </p>
         <p>
 			<label> <fmt:message key="jnt_blog.tagThisBlogPost"/> :</label>
-            <input type="text" name="j:newTag" value=""/>
+            <input type="text" name="j:newTag" value="" ${disabled}/>
 		</p>
         <p>
             <fmt:message key='jnt_blog.noTitle' var="noTitle"/>
@@ -58,6 +63,7 @@
                     type="button"
                     tabindex="16"
                     value="<fmt:message key='blog.label.save'/>"
+                    ${disabled}
                     onclick="
                         if (document.blogPost.elements['jcr:title'].value == '') {
                             alert('${noTitle}');

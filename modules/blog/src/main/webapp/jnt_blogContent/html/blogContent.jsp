@@ -33,7 +33,7 @@
 </c:if>
 
 <div class="post">
-	<a class="postedit" href="${url.base}${currentResource.node.path}.blogEdit.html"><fmt:message key="blog.label.edit"/></a>
+	<a class="postedit" href="${url.base}${currentResource.node.path}.blog-edit.html"><fmt:message key="blog.label.edit"/></a>
     <div class="post-date"><span>${userCreatedMonth}</span>${userCreatedDay}</div>
     <h2 class="post-title"><a href="${url.base}${currentNode.path}.html"><c:out value="${title.string}"/></a></h2>
 

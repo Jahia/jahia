@@ -35,7 +35,7 @@
                 <default jcr:primaryType="jnt:folder"/>
             </themes>
             <templates jcr:primaryType="jnt:templatesFolder">
-                <base jcr:mixinTypes="jmix:renderable" j:view="web" jcr:primaryType="jnt:pageTemplate">
+                <base jcr:mixinTypes="jmix:renderable" j:view="web" jcr:primaryType="jnt:template">
                     <header jcr:primaryType="jnt:contentList">
                         <shortcuts jcr:mixinTypes="jmix:renderable" j:view="inline" jcr:primaryType="jnt:shortcuts"/>
                     </header>
@@ -199,7 +199,7 @@
                             <mainResourceDisplay j:mainResourceView="fullpage" jcr:primaryType="jnt:mainResourceDisplay" />
                         </row-col1>
                     </news-template>
-                    <note j:templateKey="thinkboxitem" jcr:primaryType="jnt:contentTemplate"
+                    <thinkboxitem jcr:primaryType="jnt:contentTemplate"
                           j:applyOn="jnt:thinkBoxItem">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <row column="2col115" jcr:primaryType="jnt:row">
@@ -212,7 +212,7 @@
                             <rateable jcr:primaryType="jnt:rateable"
                                       j:bindedComponent="/templateSets/templates-web/templates/base/my-profile/note/pagecontent/row/col1/mainResourceDisplay"/>
                         </row-col2>
-                    </note>
+                    </thinkboxitem>
                 </base>
             </templates>
             <search-results jcr:mixinTypes="jmix:sitemap" j:displayInMenu="primary" jcr:primaryType="jnt:page"

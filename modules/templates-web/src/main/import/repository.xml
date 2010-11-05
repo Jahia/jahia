@@ -213,6 +213,11 @@
                                       j:bindedComponent="/templateSets/templates-web/templates/base/my-profile/note/pagecontent/row/col1/mainResourceDisplay"/>
                         </row-col2>
                     </thinkboxitem>
+                    <systemTemplate jcr:primaryType="jnt:contentTemplate" j:hiddenTemplate="false" j:applyOn="jnt:content">
+                        <pagecontent jcr:primaryType="jnt:contentList">
+                            <mainResourceDisplay j:mainResourceView="system" jcr:primaryType="jnt:mainResourceDisplay" />
+                        </pagecontent>
+                    </systemTemplate>
                 </base>
             </templates>
             <search-results jcr:mixinTypes="jmix:sitemap" j:displayInMenu="primary" jcr:primaryType="jnt:page"

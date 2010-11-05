@@ -65,6 +65,11 @@
                             <listA j:allowedTypes="" jcr:primaryType="jnt:area"/>
                         </row-col1>
                     </home>
+                    <systemTemplate jcr:primaryType="jnt:contentTemplate" j:hiddenTemplate="false" j:applyOn="jnt:content">
+                        <pagecontent jcr:primaryType="jnt:contentList">
+                            <mainResourceDisplay j:mainResourceView="system" jcr:primaryType="jnt:mainResourceDisplay" />
+                        </pagecontent>
+                    </systemTemplate>
                 </base>
             </templates>
             <j:acl jcr:primaryType="jnt:acl">

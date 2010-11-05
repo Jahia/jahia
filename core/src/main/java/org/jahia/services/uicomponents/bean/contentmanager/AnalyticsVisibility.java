@@ -50,7 +50,10 @@ public class AnalyticsVisibility extends Visibility {
 
     @Override
     public boolean getRealValue(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, HttpServletRequest request) {
-        return site.hasGoogleAnalyticsProfile() && super.getRealValue(site, jahiaUser, locale, request);
+        if (site != null) {
+            return site.hasGoogleAnalyticsProfile() && super.getRealValue(site, jahiaUser, locale, request);
+        }
+        return false;
     }
 
 }

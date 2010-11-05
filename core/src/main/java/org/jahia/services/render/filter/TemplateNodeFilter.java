@@ -37,6 +37,7 @@ import org.jahia.services.content.*;
 import org.jahia.services.render.*;
 
 import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.query.Query;
@@ -118,6 +119,8 @@ public class TemplateNodeFilter extends AbstractFilter {
             JCRNodeWrapper templatesNode = null;
             if (site != null && site.hasNode("templates")) {
                 templatesNode = site.getNode("templates");
+            } else {
+                templatesNode = node.getSession().getNode("/templates");
             }
 
             if (current.isNodeType("jnt:template")) {
@@ -146,13 +149,6 @@ public class TemplateNodeFilter extends AbstractFilter {
                                 null, templateNode.getIdentifier(), template);
                         templateNode = templateNode.getParent();
                     }
-                } else {
-                    // No template defined, use system display
-                    try {
-                        template = new Template("system", node.getSession().getNode("/systemTemplate").getIdentifier(), null);
-                    } catch (RepositoryException e) {
-                        logger.error("Cannot find default template", e);
-                    }
                 }
             }
         } catch (RepositoryException e) {
@@ -170,7 +166,7 @@ public class TemplateNodeFilter extends AbstractFilter {
 
         String query =
                 "select * from [jnt:" + type + "] as w where isdescendantnode(w, ['" + templateNode.getPath() + "'])";
-        if (resource.getTemplate() != null) {
+        if (resource.getTemplate() != null && !resource.getTemplate().equals("default")) {
             query += " and name(w)='"+ resource.getTemplate()+"'";
         }
         Query q = templateNode.getSession().getWorkspace().getQueryManager().createQuery(query,

@@ -45,9 +45,7 @@ import org.jahia.ajax.gwt.client.service.JahiaService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Toolbar action item to copy template to selected site
@@ -70,33 +68,12 @@ public class DeployTemplatesActionItem extends BaseActionItem {
                 if (sites != null) {
                     for (GWTJahiaSite site : sites) {
                         MenuItem item = new MenuItem(site.getSiteKey());
-                        item.setData("site", site);
-                        item.addSelectionListener(new SelectionListener<MenuEvent>() {
-                            @Override
-                            public void componentSelected(MenuEvent ce) {
-                                Info.display("Deploy Templates", "Your templates are being deployed...");
-                                GWTJahiaNode node = linker.getSelectionContext().getMainNode();
-                                GWTJahiaSite site = ce.getItem().getData("site");
-                                String nodePath = node.getPath();
-
-                                final String[] parts = nodePath.split("/");
-                                String destinationPath = "/sites/" + site.getSiteKey();
-                                nodePath = "/" + parts[1] + "/" + parts[2];
-
-                                JahiaContentManagementService.App.getInstance()
-                                        .deployTemplates(nodePath, destinationPath, new BaseAsyncCallback() {
-                                            public void onApplicationFailure(Throwable caught) {
-                                                Info.display("Deploy Templates", "Error during your templates deployment");
-                                            }
-
-                                            public void onSuccess(Object result) {
-                                                Info.display("Deploy Templates", "Your templates deployment is successful");
-                                            }
-                                        });
-                            }
-                        });
+                        deploy(item, linker, "/sites/" + site.getSiteKey());
                         menu.add(item);
                     }
+                    MenuItem item = new MenuItem("System");
+                    deploy(item, linker, "/");
+                    menu.add(item);
                 }
                 setSubMenu(menu);
                 setEnabled(true);
@@ -104,6 +81,31 @@ public class DeployTemplatesActionItem extends BaseActionItem {
 
             public void onApplicationFailure(Throwable caught) {
 
+            }
+        });
+    }
+
+    private void deploy(MenuItem item, final Linker linker, final String destinationPath) {
+        item.addSelectionListener(new SelectionListener<MenuEvent>() {
+            @Override
+            public void componentSelected(MenuEvent ce) {
+                Info.display("Deploy Templates", "Your templates are being deployed...");
+                GWTJahiaNode node = linker.getSelectionContext().getMainNode();
+                String nodePath = node.getPath();
+
+                final String[] parts = nodePath.split("/");
+                nodePath = "/" + parts[1] + "/" + parts[2];
+
+                JahiaContentManagementService.App.getInstance()
+                        .deployTemplates(nodePath, destinationPath, new BaseAsyncCallback() {
+                            public void onApplicationFailure(Throwable caught) {
+                                Info.display("Deploy Templates", "Error during your templates deployment");
+                            }
+
+                            public void onSuccess(Object result) {
+                                Info.display("Deploy Templates", "Your templates deployment is successful");
+                            }
+                        });
             }
         });
     }

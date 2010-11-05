@@ -879,7 +879,7 @@ public class ContentManagerHelper {
 
     public void synchro(final JCRNodeWrapper source, final JCRNodeWrapper destinationNode, JCRSessionWrapper session,
                         Map<String, List<String>> references) throws RepositoryException {
-        if (source.isNodeType("jnt:template")) {
+        if (source.isNodeType("jnt:templatesFolder")) {
             templatesSynchro(source, destinationNode, session, references, true);
             return;
         }

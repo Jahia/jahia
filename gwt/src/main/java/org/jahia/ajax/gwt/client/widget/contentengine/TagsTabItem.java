@@ -298,9 +298,7 @@ public class TagsTabItem extends EditEngineTabItem {
                 }
             }
         }
-        if (noTag) {
-            mixin.remove("jmix:tagged");
-        } else if (!mixin.contains("jmix:tagged")) {
+        if (!noTag && !mixin.contains("jmix:tagged")) {
             mixin.add("jmix:tagged");
         }
     }

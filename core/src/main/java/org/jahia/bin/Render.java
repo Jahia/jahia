@@ -78,6 +78,7 @@ import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.net.URLDecoder;
 import java.util.*;
 
 /**
@@ -578,10 +579,12 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             renderedURL = stayOnPage + (!StringUtils.isEmpty(outputFormat) ? "." + outputFormat : "");
         } else if (!StringUtils.isEmpty(url)) {
             String requestedURL = req.getRequestURL().toString();
-            String encodedPath = URLEncoder.encode(path, "UTF-8").replace("%2F", "/").replace("+", "%20");
-            int index = requestedURL.indexOf(encodedPath);
+//            String encodedPath = URLEncoder.encode(path, "UTF-8").replace("%2F", "/").replace("+", "%20");
+            String decodedURL = URLDecoder.decode(requestedURL, "UTF-8");
 
-            renderedURL = requestedURL.substring(0, index) + url +
+            int index = decodedURL.indexOf(path);
+
+            renderedURL = decodedURL.substring(0, index) + url +
                     (!StringUtils.isEmpty(outputFormat) ? "." + outputFormat : "");
         }
         if (!StringUtils.isEmpty(renderedURL)) {

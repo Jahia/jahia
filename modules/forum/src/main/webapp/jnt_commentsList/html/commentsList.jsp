@@ -15,14 +15,29 @@
 <%--@elvariable id="acl" type="java.lang.String"--%>
 <template:addResources type="css" resources="commentable.css"/>
 <c:if test="${renderContext.editMode}">
-    Comments list
+    <fmt:message key="label.comments.list"/>
 </c:if>
-<c:set var="bindedComponent" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
+<c:set var="bindedComponent"
+       value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 <c:if test="${not empty bindedComponent}">
-    <jcr:node var="comments" path="${bindedComponent.path}/comments"/>
-    <template:addDependency node="${comments}"/>
-    <c:if test="${not empty comments}">
-		<template:module node="${comments}" template="comments"/>
-    </c:if>
+    <c:choose>
+        <c:when test="${not renderContext.liveMode}">
+            <template:addResources type="javascript" resources="jquery.min.js"/>
+            <div id="commentsList${bindedComponent.identifier}"></div>
+            <script type="text/javascript">
+                $('#commentsList${bindedComponent.identifier}').load('${url.baseLive}${bindedComponent.path}/comments.hidden.commentsoutoflivemode.html.ajax');
+            </script>
+        </c:when>
+        <c:otherwise>
+            <jcr:node var="comments" path="${bindedComponent.path}/comments"/>
+            <c:if test="${not empty comments}">
+                <template:addDependency node="${comments}"/>
+                <template:module node="${comments}" template="comments"/>
+            </c:if>
+            <c:if test="${empty comments}">
+                <template:addDependency node="${bindedComponent}"/>
+            </c:if>
+        </c:otherwise>
+    </c:choose>
 </c:if>
 <template:linker property="j:bindedComponent"/>

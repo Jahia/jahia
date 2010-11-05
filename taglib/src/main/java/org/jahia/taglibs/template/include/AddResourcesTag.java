@@ -61,6 +61,7 @@ public class AddResourcesTag extends AbstractJahiaTag {
     private String resources;
     private String title;
     private String key;
+    private String var;
     /**
      * Default processing of the end tag returning EVAL_PAGE.
      *
@@ -92,7 +93,7 @@ public class AddResourcesTag extends AbstractJahiaTag {
         for (JahiaTemplatesPackage pack : aPackage.getDependencies()) {
             lookupPaths.add(pack.getRootFolderPath() + "/" + type + "/");
         }
-
+        StringBuilder builder = new StringBuilder();
         for (String resource : strings) {
             boolean found = false;
             resource = resource.trim();
@@ -130,6 +131,10 @@ public class AddResourcesTag extends AbstractJahiaTag {
                                 }
                             }
                             found = true;
+                            if (builder.length() > 0) {
+                                builder.append(",");
+                            }
+                            builder.append(pathWithContext);
                             break;
                         }
                     } catch (MalformedURLException e) {
@@ -140,6 +145,9 @@ public class AddResourcesTag extends AbstractJahiaTag {
             if (!found) {
                 logger.warn("Unable to find resource '" + resource + "' in: " + lookupPaths);
             }
+        }
+        if(var!=null && !"".equals(var.trim())) {
+            pageContext.setAttribute(var,builder.toString());
         }
     }
 
@@ -194,5 +202,9 @@ public class AddResourcesTag extends AbstractJahiaTag {
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public void setVar(String var) {
+        this.var = var;
     }
 }

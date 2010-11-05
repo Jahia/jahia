@@ -146,7 +146,7 @@ public class LastModifiedListener extends DefaultEventListener {
                 return;
             }
         }
-        if (n.isCheckedOut()) {
+        if (!n.isCheckedOut()) {
             n.checkout();
         }
         n.setProperty("jcr:lastModified",c);

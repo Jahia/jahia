@@ -32,6 +32,8 @@
 
 package org.jahia.ajax.gwt.helper;
 
+import org.apache.commons.collections.OrderedMap;
+import org.apache.commons.collections.map.LinkedMap;
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -139,24 +141,31 @@ public class PublicationHelper {
         List<GWTJahiaPublicationInfo> gwtInfos = new ArrayList<GWTJahiaPublicationInfo>();
         List<String> mainTitles = new ArrayList<String>();
         for (PublicationInfo pubInfo : pubInfos) {
-            gwtInfos.addAll(convert(pubInfo, pubInfo.getRoot().getPath(), mainTitles, currentUserSession));
+            gwtInfos.addAll((Collection<GWTJahiaPublicationInfo>) convert(pubInfo, pubInfo.getRoot().getPath(), mainTitles, currentUserSession).values());
         }
         return gwtInfos;
     }
 
-    private List<GWTJahiaPublicationInfo> convert(PublicationInfo pubInfo, String mainTitle, List<String> mainTitles,
+    private OrderedMap convert(PublicationInfo pubInfo, String mainTitle, List<String> mainTitles,
                                                   JCRSessionWrapper currentUserSession) {
         PublicationInfoNode node = pubInfo.getRoot();
-        List<GWTJahiaPublicationInfo> gwtInfos = new ArrayList<GWTJahiaPublicationInfo>();
-        convert(gwtInfos, mainTitle, mainTitles, node, currentUserSession);
+        OrderedMap gwtInfos = new LinkedMap();
+        List<PublicationInfo> references = new ArrayList<PublicationInfo>();
+        convert(gwtInfos, mainTitle, mainTitles, node, references, currentUserSession);
+        for (PublicationInfo pi : references) {
+            if (!gwtInfos.containsKey(pi.getRoot().getUuid())) {
+                gwtInfos.putAll(convert(pi, pi.getRoot().getPath(), mainTitles, currentUserSession));
+            }
+        }
+
         return gwtInfos;
     }
 
-    private GWTJahiaPublicationInfo convert(List<GWTJahiaPublicationInfo> all, String mainTitle,
+    private GWTJahiaPublicationInfo convert(OrderedMap all, String mainTitle,
                                             List<String> mainTitles, PublicationInfoNode node,
-                                            JCRSessionWrapper currentUserSession) {
+                                            List<PublicationInfo> references, JCRSessionWrapper currentUserSession) {
         GWTJahiaPublicationInfo gwtInfo = convert(node, currentUserSession);
-        all.add(gwtInfo);
+        all.put(node.getUuid(), gwtInfo);
         gwtInfo.set("mainTitle", mainTitle);
         if (!mainTitles.contains(mainTitle)) {
             mainTitles.add(mainTitle);
@@ -183,24 +192,26 @@ public class PublicationHelper {
                         gwtInfo.setLocked(true);
                     }
                 }
-                for (PublicationInfo pi : sub.getReferences()) {
-                    if (!refUuids.contains(pi.getRoot().getUuid())) {
-                        refUuids.add(pi.getRoot().getUuid());
-                        all.addAll(convert(pi, pi.getRoot().getPath(), mainTitles, currentUserSession));
-                    }
-                }
+                references.addAll(sub.getReferences());
+//                for (PublicationInfo pi : sub.getReferences()) {
+//                    if (!refUuids.contains(pi.getRoot().getUuid())) {
+//                        refUuids.add(pi.getRoot().getUuid());
+//                        all.addAll(convert(pi, pi.getRoot().getPath(), mainTitles, currentUserSession));
+//                    }
+//                }
 
             } else if (sub.getPath().indexOf("/j:translation") == -1) {
-                GWTJahiaPublicationInfo lastPub = convert(all, mainTitle, mainTitles, sub, currentUserSession);
+                GWTJahiaPublicationInfo lastPub = convert(all, mainTitle, mainTitles, sub, references, currentUserSession);
                 gwtInfos.put(lastPub.getPath(), lastPub);
             }
         }
-        for (PublicationInfo pi : node.getReferences()) {
-            if (!refUuids.contains(pi.getRoot().getUuid())) {
-                refUuids.add(pi.getRoot().getUuid());
-                all.addAll(convert(pi, pi.getRoot().getPath(), mainTitles, currentUserSession));
-            }
-        }
+        references.addAll(node.getReferences());
+//        for (PublicationInfo pi : node.getReferences()) {
+//            if (!refUuids.contains(pi.getRoot().getUuid())) {
+//                refUuids.add(pi.getRoot().getUuid());
+//                all.addAll(convert(pi, pi.getRoot().getPath(), mainTitles, currentUserSession));
+//            }
+//        }
 
         return gwtInfo;
     }

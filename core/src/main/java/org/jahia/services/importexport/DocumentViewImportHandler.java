@@ -35,7 +35,7 @@ package org.jahia.services.importexport;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO8601;
 import org.apache.jackrabbit.util.ISO9075;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -64,7 +64,7 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class DocumentViewImportHandler extends DefaultHandler {
-    private static Logger logger = Logger.getLogger(DocumentViewImportHandler.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(DocumentViewImportHandler.class);
 
     private String siteKey;
 

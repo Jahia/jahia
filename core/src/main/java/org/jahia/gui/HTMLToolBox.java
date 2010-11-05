@@ -43,7 +43,7 @@
 package org.jahia.gui;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.apache.regexp.RE;
 import org.apache.regexp.RESyntaxException;
 import org.jahia.ajax.gwt.client.core.JahiaType;
@@ -75,7 +75,7 @@ public class HTMLToolBox {
 
     public static final String IMAGE_DIRECTORY = "/engines/images/actions";
 
-    private static final transient Logger logger = Logger.getLogger(HTMLToolBox.class);
+    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(HTMLToolBox.class);
 
     private static final int JS_WINDOW_WIDTH = 1020;
     private static final int JS_WINDOW_HEIGHT = 730;

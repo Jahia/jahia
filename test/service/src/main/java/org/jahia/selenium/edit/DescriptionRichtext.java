@@ -2,7 +2,7 @@ package org.jahia.selenium.edit;
 
 import com.thoughtworks.selenium.SeleneseTestCase;
 import com.thoughtworks.selenium.Wait;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 public class DescriptionRichtext extends SeleneseTestCase {
 
 
-    private static Logger logger = Logger.getLogger(DescriptionRichtext.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(DescriptionRichtext.class);
     private JahiaSite site;
     private final static String TESTSITE_NAME = "mySite";
     private final static String TEST_SPEED = "3000";  //speed between selenium commands

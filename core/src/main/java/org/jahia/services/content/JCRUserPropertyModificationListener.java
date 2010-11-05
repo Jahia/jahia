@@ -33,7 +33,7 @@
 package org.jahia.services.content;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.usermanager.JahiaUser;
@@ -50,7 +50,7 @@ import javax.jcr.observation.EventIterator;
  *        Created : 14 oct. 2010
  */
 public class JCRUserPropertyModificationListener extends DefaultEventListener {
-    private transient static Logger logger = Logger.getLogger(JCRUserPropertyModificationListener.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRUserPropertyModificationListener.class);
 
     @Override
     public int getEventTypes() {

@@ -34,7 +34,7 @@ package org.jahia.ajax.gwt.helper;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.api.Constants;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
@@ -58,7 +58,7 @@ import java.util.List;
  * Time: 09:33:04
  */
 public class ZipHelper {
-    private static Logger logger = Logger.getLogger(ZipHelper.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(ZipHelper.class);
 
     private static ZipHelper instance;
 
@@ -337,7 +337,7 @@ public class ZipHelper {
                         }
                     } catch (RepositoryException e) {
                         missedPaths.add(nodeToUnzip.getName());
-                        logger.error(e, e);
+                        logger.error(e.getMessage(), e);
                     }
                 }
             } else {

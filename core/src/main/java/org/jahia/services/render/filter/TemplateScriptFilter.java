@@ -32,7 +32,7 @@
 
 package org.jahia.services.render.filter;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderException;
 import org.jahia.services.render.Resource;
@@ -53,7 +53,7 @@ import java.io.StringWriter;
  */
 public class TemplateScriptFilter extends AbstractFilter {
 
-    private static Logger logger = Logger.getLogger(TemplateScriptFilter.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(TemplateScriptFilter.class);
 
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         Profiler profiler = (Profiler) renderContext.getRequest().getAttribute("profiler");

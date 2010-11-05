@@ -49,7 +49,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.StopWatch;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 import com.google.gdata.client.GoogleAuthTokenFactory.UserToken;
 import com.google.gdata.client.docs.DocsService;
@@ -140,7 +140,7 @@ public class GoogleDocsService {
         }
     }
 
-    private static Logger logger = Logger.getLogger(GoogleDocsService.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(GoogleDocsService.class);
 
     private String applicationName = "Jahia-xCM-v6.5";
 

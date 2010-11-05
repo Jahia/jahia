@@ -91,8 +91,8 @@ import java.util.*;
 @SuppressWarnings("serial")
 public class PortletModesTag extends TagSupport {
 
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(PortletModesTag.class);
+    private static org.slf4j.Logger logger =
+            org.slf4j.LoggerFactory.getLogger(PortletModesTag.class);
 
     private String namePostFix = "";
     private String name = null;

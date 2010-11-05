@@ -38,7 +38,7 @@ import org.apache.commons.lang.CharUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO9075;
 import org.apache.jackrabbit.util.Text;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -71,7 +71,7 @@ public final class JCRContentUtils {
     
     private static JCRContentUtils instance;
 
-    private static final Logger logger = Logger.getLogger(JCRContentUtils.class);
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JCRContentUtils.class);
 
     public static String cleanUpFilename(String name) {
         name = name.replaceAll("([\\*:/\\\\<>|?\"])"," ");
@@ -341,7 +341,7 @@ public final class JCRContentUtils {
                 }
             });
         } catch (Exception e) {
-            logger.error(e,e);
+            logger.error(e.getMessage(), e);
             return false;
         }
     }
@@ -390,7 +390,7 @@ public final class JCRContentUtils {
                     logger.error("Object must be a 'javax.jcr.Property' or 'javax.jcr.nodetype.NodeType'");
                 }
             } catch (RepositoryException e) {
-                logger.error(e, e);
+                logger.error(e.getMessage(), e);
             }
         }
         return null;

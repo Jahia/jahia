@@ -32,7 +32,7 @@
 
 package org.jahia.services.content;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.categories.Category;
 import org.jahia.services.content.nodetypes.ExtendedPropertyType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -53,7 +53,7 @@ import java.math.BigDecimal;
  * Last Modified : $Date$
  */
 public class JCRValueWrapperImpl implements JCRValueWrapper {
-    private transient static Logger logger = Logger.getLogger(JCRValueWrapperImpl.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRValueWrapperImpl.class);
     private Value value;
     private final ExtendedPropertyDefinition definition;
     private final JCRSessionWrapper session;

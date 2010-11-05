@@ -98,8 +98,8 @@ resourceBundle=\"jahiatemplates.Corporate_portal_templates\" <br>
 @SuppressWarnings("serial")
 public class WindowStatesTag extends TagSupport {
 
-    private static org.apache.log4j.Logger logger =
-        org.apache.log4j.Logger.getLogger(WindowStatesTag.class);
+    private static org.slf4j.Logger logger =
+        org.slf4j.LoggerFactory.getLogger(WindowStatesTag.class);
 
     private String namePostFix = "";
     private String name = null;

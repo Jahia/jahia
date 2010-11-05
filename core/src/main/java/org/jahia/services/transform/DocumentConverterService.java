@@ -39,7 +39,7 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.artofsolving.jodconverter.StandardConversionTask;
 import org.artofsolving.jodconverter.document.DefaultDocumentFormatRegistry;
 import org.artofsolving.jodconverter.document.DocumentFormat;
@@ -61,7 +61,7 @@ public class DocumentConverterService implements ApplicationContextAware {
 
     protected static final Map<String, Object> DEF_PROPS = new HashMap<String, Object>(2);
 
-    private static Logger logger = Logger.getLogger(DocumentConverterService.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(DocumentConverterService.class);
 
     static {
         DEF_PROPS.put("Hidden", true);
@@ -350,7 +350,7 @@ public class DocumentConverterService implements ApplicationContextAware {
         try {
             officeManager = (OfficeManager) applicationContext.getBean(officeManagerBeanName);
         } catch (Exception e) {
-            logger.fatal("OfficeManager factory exception. Cause: " + e.getMessage(), e);
+            logger.error("OfficeManager factory exception. Cause: " + e.getMessage(), e);
         }
         
         if (officeManager == null) {

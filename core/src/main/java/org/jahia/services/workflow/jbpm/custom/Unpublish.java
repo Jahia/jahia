@@ -32,7 +32,7 @@
 
 package org.jahia.services.workflow.jbpm.custom;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -53,7 +53,7 @@ import java.util.*;
  */
 public class Unpublish implements ExternalActivityBehaviour {
     private static final long serialVersionUID = 1L;
-    private transient static Logger logger = Logger.getLogger(Unpublish.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(Unpublish.class);
 
     public void execute(ActivityExecution execution) throws Exception {
         List<String> ids = (List<String>) execution.getVariable("nodeIds");

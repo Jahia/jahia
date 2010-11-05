@@ -32,7 +32,7 @@
 
 package org.jahia.taglibs.utility;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.taglibs.internal.date.AbstractDateTag;
 
 import java.text.SimpleDateFormat;
@@ -52,7 +52,7 @@ import java.text.ParseException;
 @SuppressWarnings("serial")
 public class DateUtilTag extends AbstractDateTag {
 
-    private static transient final Logger logger = Logger.getLogger(DateUtilTag.class);
+    private static transient final Logger logger = org.slf4j.LoggerFactory.getLogger(DateUtilTag.class);
 
     private int days = Integer.MIN_VALUE;
     private int months = Integer.MIN_VALUE;

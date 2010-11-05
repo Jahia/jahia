@@ -60,8 +60,8 @@ import org.springframework.web.context.ServletContextAware;
 public class ServletContextManager implements ServletContextAware {
 
     /** logging */
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger (ServletContextManager.class);
+    private static org.slf4j.Logger logger =
+            org.slf4j.LoggerFactory.getLogger (ServletContextManager.class);
 
     private static final String REGISTRY_CACHE_NAME = "ApplicationContextCache";
 

@@ -32,7 +32,7 @@
 
 package org.jahia.services.query;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.*;
 import org.jahia.test.TestHelper;
@@ -57,7 +57,7 @@ import java.util.*;
  * 
  */
 public class QueryModificationTest {
-    private static Logger logger = Logger.getLogger(QueryModificationTest.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(QueryModificationTest.class);
 
     private final static String TESTSITE_NAME = "jcrQueryModificationTest";
 

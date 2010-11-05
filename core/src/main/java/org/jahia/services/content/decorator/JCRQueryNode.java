@@ -32,7 +32,7 @@
 
 package org.jahia.services.content.decorator;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.NodeIteratorImpl;
@@ -53,7 +53,7 @@ import java.util.ArrayList;
  * To change this template use File | Settings | File Templates.
  */
 public class JCRQueryNode extends JCRNodeDecorator {
-    protected static final Logger logger = Logger.getLogger(JCRNodeWrapper.class);
+    protected static final Logger logger = org.slf4j.LoggerFactory.getLogger(JCRNodeWrapper.class);
 
     public JCRQueryNode(JCRNodeWrapper node) {
         super(node);

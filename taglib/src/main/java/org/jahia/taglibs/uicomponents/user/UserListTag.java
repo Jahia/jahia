@@ -44,7 +44,7 @@ import java.util.StringTokenizer;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspWriter;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.usermanager.JahiaUser;
@@ -64,7 +64,7 @@ import org.jahia.taglibs.AbstractJahiaTag;
  */
 @SuppressWarnings("serial")
 public class UserListTag extends AbstractJahiaTag {
-    private static final org.apache.log4j.Logger logger = Logger.getLogger(UserListTag.class);
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(UserListTag.class);
     private static JahiaUserManagerService userservice = ServicesRegistry.getInstance().getJahiaUserManagerService();
 
     private int displaylimit = 10;

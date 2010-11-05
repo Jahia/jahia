@@ -32,7 +32,7 @@
 
 package org.jahia.services.content.rules;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 
 /**

@@ -37,7 +37,7 @@ import org.apache.commons.io.FileCleaningTracker;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.DeferredFileOutputStream;
 import org.apache.jackrabbit.commons.xml.SystemViewExporter;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.apache.xerces.jaxp.SAXParserFactoryImpl;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
@@ -83,7 +83,7 @@ import java.util.*;
  */
 public class ImportExportBaseService extends JahiaService implements ImportExportService {
 
-    private static Logger logger = Logger.getLogger(ImportExportBaseService.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(ImportExportBaseService.class);
 
     private static ImportExportBaseService instance;
 

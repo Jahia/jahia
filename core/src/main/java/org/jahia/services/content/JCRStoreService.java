@@ -60,8 +60,8 @@ import java.util.Set;
  * @author toto
  */
 public class JCRStoreService extends JahiaService  {
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(JCRStoreService.class);
+    private static org.slf4j.Logger logger =
+            org.slf4j.LoggerFactory.getLogger(JCRStoreService.class);
 
     private Map<String, String> decorators = new HashMap<String, String>();
 

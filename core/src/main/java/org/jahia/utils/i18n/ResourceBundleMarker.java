@@ -40,7 +40,8 @@ import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -54,7 +55,7 @@ import org.apache.log4j.Logger;
  */
 public class ResourceBundleMarker {
     
-    private static final transient Logger logger = Logger
+    private static final transient Logger logger = LoggerFactory
             .getLogger(ResourceBundleMarker.class);
     private static Pattern pattern = Pattern.compile("<jahia-resource id=\"(.*)\" key=\"(.*)\" default-value=\"(.*)\"/>");
     /**

@@ -32,7 +32,7 @@
 
 package org.jahia.services.content.nodetypes.initializers;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -56,7 +56,7 @@ import java.util.*;
  *        Created : 17 nov. 2009
  */
 public class NodesChoiceListInitializerImpl implements ChoiceListInitializer {
-    private transient static Logger logger = Logger.getLogger(NodesChoiceListInitializerImpl.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(NodesChoiceListInitializerImpl.class);
     private JCRSessionFactory sessionFactory;
 
     public void setSessionFactory(JCRSessionFactory sessionFactory) {

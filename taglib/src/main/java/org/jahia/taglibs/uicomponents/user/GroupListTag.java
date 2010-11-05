@@ -32,7 +32,7 @@
 
 package org.jahia.taglibs.uicomponents.user;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -60,7 +60,7 @@ import java.util.*;
  */
 @SuppressWarnings("serial")
 public class GroupListTag extends AbstractJahiaTag {
-    private static final org.apache.log4j.Logger logger = Logger.getLogger(GroupListTag.class);
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(GroupListTag.class);
     private static final JahiaGroupManagerService GroupService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
 
     private int displaylimit = 10;

@@ -44,7 +44,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.SerializationException;
@@ -60,7 +60,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 public class GWTController extends RemoteServiceServlet implements Controller,
         ServletContextAware, ApplicationContextAware {
 
-    private final static Logger logger = Logger.getLogger(GWTController.class);
+    private final static Logger logger = org.slf4j.LoggerFactory.getLogger(GWTController.class);
 
     private String remoteServiceName;
 

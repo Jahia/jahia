@@ -46,7 +46,7 @@ import org.jahia.services.uicomponents.resolver.toolbar.ItemsResolver;
  * To change this template use File | Settings | File Templates.
  */
 public abstract class DefaultItemsResolver implements ItemsResolver {
-    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(DefaultItemsResolver.class);
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(DefaultItemsResolver.class);
 
     protected Item createJsRedirectItem(String itemTitle, String jsParamName) throws JahiaException {
         // to do resolve the node url

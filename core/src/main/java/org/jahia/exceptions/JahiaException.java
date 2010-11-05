@@ -37,8 +37,8 @@ import java.io.PrintWriter;
 
 public class JahiaException extends Exception
 {
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(JahiaException.class);
+    private static org.slf4j.Logger logger =
+            org.slf4j.LoggerFactory.getLogger(JahiaException.class);
 
     private static final long   serialVersionUID = -1837958722110615030L;
 

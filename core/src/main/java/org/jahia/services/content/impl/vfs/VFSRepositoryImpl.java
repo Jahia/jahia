@@ -36,7 +36,7 @@ import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.FileSystemManager;
 import org.apache.commons.vfs.VFS;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 import javax.jcr.*;
 import java.util.*;
@@ -50,7 +50,7 @@ import java.util.*;
  */
 public class VFSRepositoryImpl implements Repository {
 
-    private static final transient Logger logger = Logger.getLogger(VFSRepositoryImpl.class);
+    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(VFSRepositoryImpl.class);
 
     private String root;
     private String rootPath;

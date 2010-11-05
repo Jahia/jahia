@@ -54,8 +54,8 @@ public class CacheFactory extends CacheService {
     private static CacheFactory instance;
 
     /** logging. */
-    private static final org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger (CacheFactory.class);
+    private static final org.slf4j.Logger logger =
+            org.slf4j.LoggerFactory.getLogger (CacheFactory.class);
 
     /** caches table. */
     final private Map<String, Cache<?, ?>> caches = new ConcurrentHashMap<String, Cache<?, ?>> (53);

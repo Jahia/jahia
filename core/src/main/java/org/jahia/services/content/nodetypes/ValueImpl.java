@@ -42,7 +42,7 @@ import java.math.BigDecimal;
 import javax.jcr.*;
 
 import org.apache.jackrabbit.util.ISO8601;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 /**
  * Implementation of the JCR's {@link Value} interface for holding property
@@ -52,7 +52,7 @@ import org.apache.log4j.Logger;
  */
 public class ValueImpl implements Value {
     
-    private static final Logger logger = Logger.getLogger(ValueImpl.class);
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(ValueImpl.class);
     
     protected String value;
     protected int type;

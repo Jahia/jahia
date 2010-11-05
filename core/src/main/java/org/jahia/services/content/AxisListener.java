@@ -51,8 +51,8 @@
 // * To change this template use File | Settings | File Templates.
 // */
 //public class AxisListener extends DefaultEventListener {
-//    private static org.apache.log4j.Logger logger =
-//        org.apache.log4j.Logger.getLogger(AxisListener.class);
+//    private static org.slf4j.Logger logger =
+//        org.slf4j.LoggerFactory.getLogger(AxisListener.class);
 //
 //    public AxisListener(JCRStoreProvider provider) {
 //        this.provider = provider;

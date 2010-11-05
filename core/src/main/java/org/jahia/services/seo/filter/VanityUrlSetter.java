@@ -34,7 +34,8 @@ package org.jahia.services.seo.filter;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
@@ -50,7 +51,7 @@ import org.jahia.services.seo.jcr.VanityUrlService;
  *
  */
 public class VanityUrlSetter implements HtmlTagAttributeVisitor {
-    private transient static Logger logger = Logger
+    private transient static Logger logger = LoggerFactory
             .getLogger(VanityUrlSetter.class);
     private VanityUrlService vanityUrlService;
 

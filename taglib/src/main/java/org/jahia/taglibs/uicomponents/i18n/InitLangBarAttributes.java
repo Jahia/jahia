@@ -51,7 +51,7 @@ import java.util.*;
 @SuppressWarnings("serial")
 public class InitLangBarAttributes extends AbstractJahiaTag {
 
-    private static final transient org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(
+    private static final transient org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(
             InitLangBarAttributes.class);
 
 
@@ -138,7 +138,7 @@ public class InitLangBarAttributes extends AbstractJahiaTag {
                     logger.debug("lang[" + languageCode + "] not published");
                     return false;
                 } catch (Exception e) {
-                    logger.error(e, e);
+                    logger.error(e.getMessage(), e);
                     return false;
                 }
             } else {

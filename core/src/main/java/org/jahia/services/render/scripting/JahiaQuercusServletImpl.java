@@ -46,11 +46,12 @@ import com.caucho.vfs.WriteStream;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Enumeration;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Customized Quercus servlet implementation, as the default doesn't let us inject our
@@ -65,7 +66,7 @@ public class JahiaQuercusServletImpl extends QuercusServletImpl {
     private static final L10N L = new L10N(JahiaQuercusServletImpl.class);
     
     private static final Logger log
-      = Logger.getLogger(JahiaQuercusServletImpl.class.getName());
+      = org.slf4j.LoggerFactory.getLogger(JahiaQuercusServletImpl.class.getName());
 
     /**
      * Service.
@@ -85,7 +86,7 @@ public class JahiaQuercusServletImpl extends QuercusServletImpl {
           }
           catch (FileNotFoundException ex) {
             // php/2001
-            log.log(Level.FINER, ex.toString(), ex);
+            log.debug(ex.toString(), ex);
 
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
 
@@ -160,13 +161,13 @@ public class JahiaQuercusServletImpl extends QuercusServletImpl {
             throw e;
           }
           catch (QuercusLineRuntimeException e) {
-            log.log(Level.FINE, e.toString(), e);
+            log.debug(e.toString(), e);
 
             ws.println(e.getMessage());
             //  return;
           }
           catch (QuercusValueException e) {
-            log.log(Level.FINE, e.toString(), e);
+            log.debug(e.toString(), e);
 
             ws.println(e.toString());
 
@@ -191,15 +192,15 @@ public class JahiaQuercusServletImpl extends QuercusServletImpl {
         }
         catch (QuercusDieException e) {
           // normal exit
-          log.log(Level.FINE, e.toString(), e);
+          log.debug(e.toString(), e);
         }
         catch (QuercusExitException e) {
           // normal exit
-          log.log(Level.FINER, e.toString(), e);
+          log.debug(e.toString(), e);
         }
         catch (QuercusErrorException e) {
           // error exit
-          log.log(Level.FINE, e.toString(), e);
+          log.debug(e.toString(), e);
         }
         catch (RuntimeException e) {
           throw e;

@@ -35,7 +35,7 @@ package org.jahia.services.workflow.jbpm;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.component.mail.MailEndpoint;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.mail.MailServiceImpl;
 import org.jbpm.pvm.internal.email.spi.MailSession;
@@ -51,7 +51,7 @@ import java.util.Collection;
  *        Created : 14 sept. 2010
  */
 public class JBPMMailSession implements MailSession {
-    private transient static Logger logger = Logger.getLogger(JBPMMailSession.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JBPMMailSession.class);
     private MailServiceImpl mailService;
 
     public JBPMMailSession() {

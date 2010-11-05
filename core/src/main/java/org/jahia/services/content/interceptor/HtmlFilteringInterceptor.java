@@ -51,7 +51,7 @@ import net.htmlparser.jericho.StartTag;
 import net.htmlparser.jericho.StartTagType;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 
@@ -63,7 +63,7 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
  */
 public class HtmlFilteringInterceptor extends RichTextInterceptor {
 
-	private static Logger logger = Logger.getLogger(HtmlFilteringInterceptor.class);
+	private static Logger logger = org.slf4j.LoggerFactory.getLogger(HtmlFilteringInterceptor.class);
 
 	/**
 	 * Filters out configured "unwanted" HTML tags and returns the modified

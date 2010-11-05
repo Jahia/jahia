@@ -39,7 +39,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -53,8 +54,7 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class FilesDateImportHandler extends DefaultHandler {
     
-    private static final transient Logger logger = Logger
-            .getLogger(FilesDateImportHandler.class);
+    private static final transient Logger logger = LoggerFactory.getLogger(FilesDateImportHandler.class);
     
     private Map<String, Date> fileToDate = new HashMap<String, Date>();
     private DateFormat df = new SimpleDateFormat(ImportExportService.DATE_FORMAT);

@@ -47,7 +47,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -67,7 +67,7 @@ public class DocumentConverter extends HttpServlet implements Controller {
 
 	private static final long serialVersionUID = -3949472591925972005L;
 
-	private static Logger logger = Logger.getLogger(DocumentConverter.class);
+	private static Logger logger = org.slf4j.LoggerFactory.getLogger(DocumentConverter.class);
 
     private DocumentConverterService converterService;
 

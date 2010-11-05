@@ -32,7 +32,7 @@
 
 package org.jahia.services.usermanager.jcr;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -59,7 +59,7 @@ import java.util.Properties;
  *        Created : 8 juil. 2009
  */
 public class JCRGroup extends JahiaGroup implements JCRPrincipal {
-    private transient static Logger logger = Logger.getLogger(JCRGroup.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRGroup.class);
     private String nodeUuid;
     private final JCRTemplate jcrTemplate;
     private boolean external;

@@ -32,7 +32,7 @@
 
 package org.jahia.utils.i18n;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -52,7 +52,7 @@ import java.util.WeakHashMap;
 import java.util.regex.Pattern;
 
 public class JahiaTemplatesRBLoader extends ClassLoader {
-    private static transient Logger logger = Logger.getLogger(JahiaTemplatesRBLoader.class);
+    private static transient Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaTemplatesRBLoader.class);
     private static final Pattern NAME_PATTERN = Pattern.compile("\\\\.");
     private ClassLoader loader = ClassLoader.getSystemClassLoader();
     private JahiaTemplatesPackage aPackage;
@@ -156,7 +156,7 @@ public class JahiaTemplatesRBLoader extends ClassLoader {
                 try {
                     return new FileInputStream(new File(Jahia.getSettings().getClassDiskPath(), fileName));
                 } catch (FileNotFoundException e) {
-                    logger.warn(e);
+                    logger.warn(e.getMessage(), e);
                 }
             }
         }

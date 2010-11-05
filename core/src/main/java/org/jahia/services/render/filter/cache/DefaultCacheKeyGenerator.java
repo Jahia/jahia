@@ -38,7 +38,7 @@ import net.sf.ehcache.Element;
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -71,7 +71,7 @@ import java.util.*;
  */
 public class DefaultCacheKeyGenerator implements CacheKeyGenerator, InitializingBean {
 
-    private static transient Logger logger = Logger.getLogger(DefaultCacheKeyGenerator.class);
+    private static transient Logger logger = org.slf4j.LoggerFactory.getLogger(DefaultCacheKeyGenerator.class);
 
     private static final Set<String> KNOWN_FIELDS = new LinkedHashSet<String>(Arrays.asList("workspace", "language",
                                                                                             "path", "template",

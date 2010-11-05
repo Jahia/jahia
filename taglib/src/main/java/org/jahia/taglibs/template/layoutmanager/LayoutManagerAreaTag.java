@@ -47,7 +47,7 @@ import java.io.IOException;
  */
 @SuppressWarnings("serial")
 public class LayoutManagerAreaTag extends AbstractJahiaTag {
-    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(LayoutManagerAreaTag.class);
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(LayoutManagerAreaTag.class);
     private String width;
     private Node node;
 
@@ -65,7 +65,7 @@ public class LayoutManagerAreaTag extends AbstractJahiaTag {
             out.print("<div id='layout'  style='display:none;'>\n");
 
         } catch (Exception e) {
-            logger.error(e, e);
+            logger.error(e.getMessage(), e);
         }
 
         return EVAL_BODY_INCLUDE;
@@ -80,7 +80,7 @@ public class LayoutManagerAreaTag extends AbstractJahiaTag {
             this.width = null;
             this.node = null;
         } catch (IOException e) {
-            logger.error(e, e);
+            logger.error(e.getMessage(), e);
         }
 
         return SKIP_BODY;

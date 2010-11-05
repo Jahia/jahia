@@ -35,7 +35,7 @@ package org.jahia.services.content.rules;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
@@ -63,7 +63,7 @@ import java.util.*;
  * Time: 18:03:47
  */
 public class RulesListener extends DefaultEventListener {
-    private static Logger logger = Logger.getLogger(RulesListener.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(RulesListener.class);
 
     private static List<RulesListener> instances = new ArrayList<RulesListener>();
 

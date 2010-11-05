@@ -55,7 +55,7 @@ import java.util.*;
  * Time: 2:54:41 PM
  */
 public class TemplateHelper {
-    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(TemplateHelper.class);
+    private static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(TemplateHelper.class);
 
     private RenderService renderService;
     public static final int LIVE = 0;

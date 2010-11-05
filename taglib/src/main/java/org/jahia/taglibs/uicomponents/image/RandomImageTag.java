@@ -63,8 +63,8 @@ public class RandomImageTag extends AbstractJCRTag {
      *
      */
     private static final long serialVersionUID = 1L;
-    private static final org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(RandomImageTag.class);
+    private static final org.slf4j.Logger logger =
+            org.slf4j.LoggerFactory.getLogger(RandomImageTag.class);
 
     private String path = "";
     private String fileTypes = "jpg";
@@ -116,7 +116,7 @@ public class RandomImageTag extends AbstractJCRTag {
                 pageContext.getOut().print(js.toString());
 
             } catch (IOException e) {
-                logger.error(e, e);
+                logger.error(e.getMessage(), e);
             }
         }
 

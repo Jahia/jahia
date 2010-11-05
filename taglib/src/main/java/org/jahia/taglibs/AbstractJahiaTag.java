@@ -32,7 +32,7 @@
 
 package org.jahia.taglibs;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.apache.taglibs.standard.tag.common.fmt.BundleSupport;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
@@ -65,7 +65,7 @@ import java.util.*;
 @SuppressWarnings("serial")
 public class AbstractJahiaTag extends BodyTagSupport {
 
-    private static final transient Logger logger = Logger.getLogger(AbstractJahiaTag.class);
+    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(AbstractJahiaTag.class);
 
     /**
      * Name of the resourceBundle all tags derived from this class will use.

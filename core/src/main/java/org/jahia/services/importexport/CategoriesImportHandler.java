@@ -32,7 +32,7 @@
 
  package org.jahia.services.importexport;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
@@ -53,7 +53,7 @@ import java.util.*;
  * Time: 17:57:47
  */
 public class CategoriesImportHandler extends DefaultHandler {
-    private static Logger logger = Logger.getLogger(CategoriesImportHandler.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(CategoriesImportHandler.class);
     private Stack<Category> cats = new Stack<Category>();
     private CategoryService cs ;
     private List<String[]> uuidProps = new ArrayList<String[]>();

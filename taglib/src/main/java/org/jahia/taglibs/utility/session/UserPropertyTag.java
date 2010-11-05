@@ -35,7 +35,7 @@ package org.jahia.taglibs.utility.session;
 import org.jahia.data.JahiaData;
 import org.jahia.services.render.RenderContext;
 import org.jahia.taglibs.AbstractJahiaTag;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -51,7 +51,7 @@ import java.io.IOException;
 @SuppressWarnings("serial")
 public class UserPropertyTag extends AbstractJahiaTag {
 
-    private static final transient Logger logger = Logger.getLogger(UserPropertyTag.class);
+    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(UserPropertyTag.class);
     private String propertyName = null;
 
     public int doStartTag() throws JspException {

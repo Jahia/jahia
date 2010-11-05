@@ -38,8 +38,8 @@
  */
 public class Base64 {
 
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(Base64.class);
+    private static org.slf4j.Logger logger =
+            org.slf4j.LoggerFactory.getLogger(Base64.class);
 
     static char[] alphabet =
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="

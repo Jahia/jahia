@@ -46,8 +46,8 @@ import java.util.List;
  */
 public class JahiaSiteUserManagerDBService extends JahiaSiteUserManagerService {
 
-    private static final org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(JahiaSiteUserManagerDBService.class);
+    private static final org.slf4j.Logger logger =
+            org.slf4j.LoggerFactory.getLogger(JahiaSiteUserManagerDBService.class);
 
     private static JahiaSiteUserManagerDBService mInstance;
 

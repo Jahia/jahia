@@ -32,7 +32,7 @@
 
 package org.jahia.bin;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.rbac.PermissionIdentity;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.usermanager.JahiaUser;
@@ -48,7 +48,7 @@ import javax.servlet.http.HttpServletResponse;
  * @see Render
  */
 public class Edit extends Render {
-    private static Logger logger = Logger.getLogger(Edit.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(Edit.class);
     public static final String EDIT_MODE = "editmode";
 
     protected RenderContext createRenderContext(HttpServletRequest req, HttpServletResponse resp, JahiaUser user) {

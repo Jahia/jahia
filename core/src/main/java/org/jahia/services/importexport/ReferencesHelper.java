@@ -34,7 +34,7 @@ package org.jahia.services.importexport;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO9075;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -52,7 +52,7 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public class ReferencesHelper {
-    private static Logger logger = Logger.getLogger(LegacyImportHandler.class);    
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(LegacyImportHandler.class);    
 
     public static void resolveCrossReferences(JCRSessionWrapper session, Map<String, List<String>> references) throws RepositoryException {
         Map<String, String> uuidMapping = session.getUuidMapping();

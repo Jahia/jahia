@@ -44,7 +44,7 @@ import javax.servlet.jsp.PageContext;
 
 import org.apache.jackrabbit.commons.query.QueryObjectModelBuilder;
 import org.apache.jackrabbit.commons.query.QueryObjectModelBuilderRegistry;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.taglibs.jcr.AbstractJCRTag;
 
@@ -53,7 +53,7 @@ import org.jahia.taglibs.jcr.AbstractJCRTag;
  */
 public class JCRSQLTag extends AbstractJCRTag {
     private static final long serialVersionUID = 4183406665401018247L;
-    private static final Logger logger = Logger.getLogger(JCRSQLTag.class);
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JCRSQLTag.class);
     private int scope = PageContext.PAGE_SCOPE;
     private String var;
     private String statement;

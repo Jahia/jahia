@@ -86,8 +86,8 @@ import java.util.Set;
  */
 public class JCRStoreProvider {
 
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(JCRStoreProvider.class);
+    private static org.slf4j.Logger logger =
+            org.slf4j.LoggerFactory.getLogger(JCRStoreProvider.class);
 
     private String key;
     private String mountPoint;

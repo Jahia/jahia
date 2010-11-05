@@ -37,7 +37,7 @@ import java.util.List;
 import net.htmlparser.jericho.*;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.content.nodetypes.ConstraintsHelper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
@@ -51,7 +51,7 @@ import org.jahia.services.render.filter.cache.AggregateCacheFilter;
  */
 public class StaticAssetsFilter extends AbstractFilter {
 
-    private static Logger logger = Logger.getLogger(StaticAssetsFilter.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(StaticAssetsFilter.class);
 
     @Override
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)

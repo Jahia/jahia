@@ -32,7 +32,7 @@
 
 package org.jahia.taglibs.uicomponents.i18n;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.utils.LanguageCodeConverters;
@@ -48,7 +48,7 @@ import java.util.Locale;
 @SuppressWarnings("serial")
 public class DisplayLanguageFlagTag extends AbstractJahiaTag {
 
-    private static final transient Logger logger = Logger.getLogger(DisplayLanguageFlagTag.class);
+    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(DisplayLanguageFlagTag.class);
 
     private String languageCode;
     private String onLanguageSwitch;

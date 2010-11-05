@@ -32,7 +32,7 @@
 
 package org.jahia.services.render.filter;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderService;
@@ -321,7 +321,7 @@ public abstract class AbstractFilter implements RenderFilter {
         }
     }
 
-    private static final Logger logger = Logger.getLogger(AbstractFilter.class);
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(AbstractFilter.class);
 
     private List<ExecutionCondition> conditions = new LinkedList<ExecutionCondition>();
 

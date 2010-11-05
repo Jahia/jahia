@@ -35,7 +35,7 @@ package org.jahia.taglibs.utility;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.taglibs.internal.date.AbstractDateTag;
 
 /**
@@ -52,7 +52,7 @@ import org.jahia.taglibs.internal.date.AbstractDateTag;
 @SuppressWarnings("serial")
 public class DateCalcTag extends AbstractDateTag {
 
-    private static transient final Logger logger = Logger.getLogger(DateCalcTag.class);
+    private static transient final Logger logger = org.slf4j.LoggerFactory.getLogger(DateCalcTag.class);
 
     private int years = 0;
 

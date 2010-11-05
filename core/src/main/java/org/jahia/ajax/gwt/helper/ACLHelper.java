@@ -32,7 +32,7 @@
 
 package org.jahia.ajax.gwt.helper;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -48,7 +48,7 @@ import java.util.Map;
  * Date: Nov 26, 2008 - 7:40:56 PM
  */
 public class ACLHelper {
-    private final static Logger logger = Logger.getLogger(ACLHelper.class);
+    private final static Logger logger = org.slf4j.LoggerFactory.getLogger(ACLHelper.class);
 
     private JahiaGroupManagerService jahiaGroupManagerService;
     private JahiaUserManagerService jahiaUserManagerService;

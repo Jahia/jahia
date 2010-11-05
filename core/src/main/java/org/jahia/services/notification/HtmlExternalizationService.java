@@ -47,7 +47,7 @@ import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.StartTag;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.HtmlTagAttributeTraverser;
@@ -64,7 +64,7 @@ public class HtmlExternalizationService {
 
     protected static final Pattern CSS_URL_PATTERN = Pattern.compile("url *\\( *\"?([^\\:\" )]*)\"? *\\)");
 
-    private static final Logger logger = Logger.getLogger(HtmlExternalizationService.class);
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(HtmlExternalizationService.class);
 
     private HttpClientService httpClientService;
 

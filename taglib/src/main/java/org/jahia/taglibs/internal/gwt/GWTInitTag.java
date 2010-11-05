@@ -32,7 +32,7 @@
 
 package org.jahia.taglibs.internal.gwt;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.ajax.gwt.utils.GWTInitializer;
@@ -49,7 +49,7 @@ import java.io.IOException;
 @SuppressWarnings("serial")
 public class GWTInitTag extends AbstractJahiaTag {
 
-    private static final transient Logger logger = Logger.getLogger(GWTInitTag.class);
+    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(GWTInitTag.class);
     
     private String modules;
 
@@ -85,7 +85,7 @@ public class GWTInitTag extends AbstractJahiaTag {
                 }
             }
         } catch (IOException e) {
-            logger.error(e, e);
+            logger.error(e.getMessage(), e);
         }
         return SKIP_BODY;
     }

@@ -5,7 +5,7 @@ package org.jahia.modules.news.rules
 import org.jahia.services.content.rules.*
 import org.jahia.services.content.JCRContentUtils
 import org.jahia.modules.seo.rules.SeoService
-import org.apache.log4j.Logger
+import org.slf4j.Logger
 
 expander rules.dsl
 

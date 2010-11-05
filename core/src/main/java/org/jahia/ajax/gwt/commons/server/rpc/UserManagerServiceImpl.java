@@ -35,7 +35,7 @@ package org.jahia.ajax.gwt.commons.server.rpc;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
 import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
 import org.jahia.ajax.gwt.client.service.UserManagerService;
@@ -59,7 +59,7 @@ import java.util.*;
  */
 public class UserManagerServiceImpl extends JahiaRemoteService implements UserManagerService {
 
-    private static Logger logger = Logger.getLogger(UserManagerServiceImpl.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(UserManagerServiceImpl.class);
     
     private JahiaUserManagerService userManagerService;
     private JahiaGroupManagerService groupManagerService;

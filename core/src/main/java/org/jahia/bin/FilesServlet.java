@@ -35,7 +35,7 @@ package org.jahia.bin;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.Text;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.cache.Cache;
@@ -68,7 +68,7 @@ import java.util.Date;
  */
 public class FilesServlet extends HttpServlet {
 
-    private static Logger logger = Logger.getLogger(FilesServlet.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(FilesServlet.class);
 
     public static Cache<String, byte[]> cache;
 

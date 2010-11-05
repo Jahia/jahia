@@ -38,7 +38,7 @@ import groovy.util.GroovyScriptEngine;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 /**
  * Created by IntelliJ IDEA.
@@ -48,7 +48,7 @@ import org.apache.log4j.Logger;
  * To change this template use File | Settings | File Templates.
  */
 public class GroovyPatcher implements Patcher {
-    private Logger logger = Logger.getLogger(GroovyPatcher.class);
+    private Logger logger = org.slf4j.LoggerFactory.getLogger(GroovyPatcher.class);
     private GroovyScriptEngine scriptEngine;
 
     public GroovyPatcher() {

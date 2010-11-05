@@ -331,8 +331,8 @@ import org.jahia.utils.JahiaTools;
 @SuppressWarnings("serial")
 public class SessionViewerTag extends AbstractJahiaTag {
 
-    private static org.apache.log4j.Logger logger =
-        org.apache.log4j.Logger.getLogger(SessionViewerTag.class);
+    private static org.slf4j.Logger logger =
+        org.slf4j.LoggerFactory.getLogger(SessionViewerTag.class);
 
     public SessionViewerTag () {
     }

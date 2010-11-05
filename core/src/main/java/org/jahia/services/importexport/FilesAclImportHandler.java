@@ -32,7 +32,7 @@
 
 package org.jahia.services.importexport;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -55,7 +55,7 @@ import java.util.StringTokenizer;
  * To change this template use File | Settings | File Templates.
  */
 public class FilesAclImportHandler extends DefaultHandler {
-    private static Logger logger = Logger.getLogger(FilesAclImportHandler.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(FilesAclImportHandler.class);
 
     private JahiaSite site;
 

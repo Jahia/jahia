@@ -54,7 +54,7 @@ public class JahiaDBUser extends JahiaBasePrincipal implements JahiaUser {
 
     private static final int PWD_HISTORY_MAX_ENTRIES = 10;
 
-    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger
+    private static org.slf4j.Logger logger = org.slf4j.LoggerFactory
             .getLogger(JahiaDBUser.class);
     /** User unique identification number in the database. */
     private int mID;

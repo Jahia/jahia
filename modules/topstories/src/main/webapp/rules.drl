@@ -5,7 +5,7 @@ package org.jahia.modules.topstories.rules
 import org.jahia.services.content.rules.*
 import org.jahia.services.content.*
 import javax.jcr.observation.Event
-import org.apache.log4j.Logger
+import org.slf4j.Logger
 
 expander rules.dsl
 

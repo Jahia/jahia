@@ -65,8 +65,8 @@ public class Category extends JahiaObject {
 
     public static final String PATH_DELIMITER = "/";
 
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger (Category.class);
+    private static org.slf4j.Logger logger =
+            org.slf4j.LoggerFactory.getLogger (Category.class);
 
     private CategoryBean categoryBean = null;
     protected static CategoryService categoryService;

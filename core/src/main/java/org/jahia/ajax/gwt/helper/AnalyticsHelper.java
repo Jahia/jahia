@@ -36,7 +36,7 @@ import com.google.gdata.client.analytics.DataQuery;
 import com.google.gdata.data.analytics.DataEntry;
 import com.google.gdata.data.analytics.Dimension;
 import com.google.gdata.data.analytics.Metric;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsData;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsProfile;
 import org.jahia.ajax.gwt.client.data.analytics.GWTJahiaAnalyticsQuery;
@@ -61,7 +61,7 @@ import java.util.List;
  */
 public class AnalyticsHelper {
     final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
-    final static Logger logger = Logger.getLogger(AnalyticsHelper.class);
+    final static Logger logger = org.slf4j.LoggerFactory.getLogger(AnalyticsHelper.class);
     private GoogleAnalyticsService analyticsService = GoogleAnalyticsService.getInstance();
 
     /**

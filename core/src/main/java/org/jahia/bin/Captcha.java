@@ -34,7 +34,7 @@ package org.jahia.bin;
 
 import com.google.code.kaptcha.Constants;
 import com.google.code.kaptcha.impl.DefaultKaptcha;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
@@ -54,7 +54,7 @@ import java.awt.image.BufferedImage;
  *        Created : 10 mars 2010
  */
 public class Captcha extends HttpServlet implements Controller {
-    private transient static Logger logger = Logger.getLogger(Captcha.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(Captcha.class);
     private DefaultKaptcha captchaProducer;
 
     /**

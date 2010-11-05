@@ -34,7 +34,7 @@ package org.jahia.services.templates;
 
 import java.net.MalformedURLException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
@@ -47,7 +47,7 @@ import org.jahia.settings.SettingsBean;
  */
 public class TemplateUtils {
 
-    private static Logger logger = Logger.getLogger(TemplateUtils.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(TemplateUtils.class);
 
     public static String getTemplatesPath() {
         return SettingsBean.getInstance().getTemplatesContext()

@@ -1,6 +1,6 @@
 package org.jahia.selenium.edit;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import com.thoughtworks.selenium.SeleneseTestCase;
 import com.thoughtworks.selenium.Wait;
 import org.jahia.registries.ServicesRegistry;
@@ -16,7 +16,7 @@ import javax.jcr.Node;
  * - create several RichText un ListA of mySite
  */
 public class RichtextTest extends SeleneseTestCase {
-    private static Logger logger = Logger.getLogger(RichtextTest.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(RichtextTest.class);
     private JahiaSite site;
     private final static String TESTSITE_NAME = "mySite";
     private final static String TEST_SPEED = "3700"; //speed between selenium commands

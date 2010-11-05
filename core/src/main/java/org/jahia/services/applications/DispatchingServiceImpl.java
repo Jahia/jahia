@@ -58,8 +58,8 @@ import java.util.Map;
 public class DispatchingServiceImpl extends DispatchingService {
 
     /** logging */
-    private static org.apache.log4j.Logger logger =
-        org.apache.log4j.Logger.getLogger(DispatchingServiceImpl.class);
+    private static org.slf4j.Logger logger =
+        org.slf4j.LoggerFactory.getLogger(DispatchingServiceImpl.class);
 
     private static DispatchingServiceImpl singletonInstance = null;
 

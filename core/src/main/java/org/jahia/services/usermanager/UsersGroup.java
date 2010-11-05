@@ -49,8 +49,8 @@ import java.security.Principal;
  * To change this template use File | Settings | File Templates.
  */
 public class UsersGroup extends JCRGroup {
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(UsersGroup.class);
+    private static org.slf4j.Logger logger =
+            org.slf4j.LoggerFactory.getLogger(UsersGroup.class);
 
     public UsersGroup(Node nodeWrapper, JCRTemplate jcrTemplate, int siteID) {
         super(nodeWrapper, jcrTemplate, siteID);

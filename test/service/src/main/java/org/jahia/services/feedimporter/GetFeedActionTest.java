@@ -39,7 +39,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -65,7 +65,7 @@ import java.net.URL;
  */
 public class GetFeedActionTest extends TestCase {
 
-    private static Logger logger = Logger.getLogger(GetFeedActionTest.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(GetFeedActionTest.class);
     private JahiaSite site;
     private final static String TESTSITE_NAME = "jcrFeedImportTest";
 

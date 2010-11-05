@@ -62,8 +62,8 @@ import java.util.*;
  */
 
 public class ChangedPropertyFact implements Updateable {
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(ChangedPropertyFact.class);
+    private static org.slf4j.Logger logger =
+            org.slf4j.LoggerFactory.getLogger(ChangedPropertyFact.class);
 
     private String path;
     private JCRPropertyWrapper property;

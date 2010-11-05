@@ -32,7 +32,7 @@
 
 package org.jahia.modules.forum.actions;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
 import org.jahia.bin.DefaultPostAction;
@@ -57,7 +57,7 @@ import java.util.Map;
  *        Created : 3 juin 2010
  */
 public class AddComment extends DefaultPostAction {
-    private transient static Logger logger = Logger.getLogger(AddComment.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(AddComment.class);
 
     private String name;
 

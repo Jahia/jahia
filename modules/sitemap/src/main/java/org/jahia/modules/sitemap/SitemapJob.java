@@ -33,7 +33,7 @@
 package org.jahia.modules.sitemap;
 
 import net.htmlparser.jericho.Source;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -55,7 +55,7 @@ import java.util.List;
  *        Created : 17 févr. 2010
  */
 public class SitemapJob extends QuartzJobBean {
-    private transient static Logger logger = Logger.getLogger(SitemapJob.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(SitemapJob.class);
 
     /**
      * Execute the actual job. The job data map will already have been

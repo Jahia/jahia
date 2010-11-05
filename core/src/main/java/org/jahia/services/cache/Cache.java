@@ -74,8 +74,8 @@ import java.util.List;
 public class Cache<K, V> {
 
     /** logging. */
-    final private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger (Cache.class);
+    final private static org.slf4j.Logger logger =
+            org.slf4j.LoggerFactory.getLogger (Cache.class);
 
     /** cache map instance. */
     private CacheImplementation<K, CacheEntry<V>> cacheImplementation;

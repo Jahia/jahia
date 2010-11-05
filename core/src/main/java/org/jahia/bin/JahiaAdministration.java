@@ -60,7 +60,7 @@
 package org.jahia.bin;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.apache.struts.Globals;
 import org.jahia.admin.AdministrationModule;
 import org.jahia.admin.AdministrationModulesRegistry;
@@ -129,7 +129,7 @@ public class JahiaAdministration extends HttpServlet {
 
     private static final long serialVersionUID = 332486402871252316L;
 
-    private static Logger logger = Logger.getLogger(JahiaAdministration.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaAdministration.class);
     
     private static ServletConfig config;
     private static ServletContext context;

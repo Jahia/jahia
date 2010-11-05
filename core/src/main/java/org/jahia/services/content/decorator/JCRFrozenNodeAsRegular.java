@@ -63,7 +63,7 @@ import java.util.*;
  */
 public class JCRFrozenNodeAsRegular extends JCRNodeWrapperImpl {
 
-    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(JCRFrozenNodeAsRegular.class);
+    private static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(JCRFrozenNodeAsRegular.class);
 
     private Date versionDate = null;
     private String versionLabel = null;

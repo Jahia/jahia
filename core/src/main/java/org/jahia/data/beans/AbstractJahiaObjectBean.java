@@ -53,8 +53,8 @@ import org.jahia.params.ProcessingContext;
 
 public abstract class AbstractJahiaObjectBean {
 
-    private static org.apache.log4j.Logger logger =
-        org.apache.log4j.Logger.getLogger(AbstractJahiaObjectBean.class);
+    private static org.slf4j.Logger logger =
+        org.slf4j.LoggerFactory.getLogger(AbstractJahiaObjectBean.class);
 
     private static Map<String, String> jahiaObjectToBeanClassNames = new HashMap<String, String>();
 

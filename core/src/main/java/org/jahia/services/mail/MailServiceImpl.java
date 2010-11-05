@@ -53,7 +53,7 @@ import javax.script.ScriptException;
 import org.apache.camel.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.templates.TemplateUtils;
 import org.jahia.utils.i18n.JahiaResourceBundle;
@@ -66,7 +66,7 @@ import org.jahia.utils.i18n.JahiaResourceBundle;
  */
 public class MailServiceImpl extends MailService implements CamelContextAware {
 
-    private static Logger logger = Logger.getLogger(MailServiceImpl.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(MailServiceImpl.class);
 
     /**
      * Validates entered values for mail settings.

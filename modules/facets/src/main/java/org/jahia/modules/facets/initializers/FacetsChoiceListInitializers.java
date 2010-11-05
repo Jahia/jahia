@@ -32,7 +32,7 @@
 
 package org.jahia.modules.facets.initializers;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -53,7 +53,7 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class FacetsChoiceListInitializers implements ModuleChoiceListInitializer {
-    private transient static Logger logger = Logger.getLogger(FacetsChoiceListInitializers.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(FacetsChoiceListInitializers.class);
     private String key;
 
     public void setKey(String key) {

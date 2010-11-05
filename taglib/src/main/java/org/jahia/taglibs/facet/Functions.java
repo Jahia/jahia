@@ -47,7 +47,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.KeyValue;
 import org.apache.commons.collections.keyvalue.DefaultKeyValue;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.apache.solr.client.solrj.response.FacetField;
 
 /**
@@ -57,7 +57,7 @@ import org.apache.solr.client.solrj.response.FacetField;
  */
 public class Functions {
 
-    private static final Logger logger = Logger.getLogger(Functions.class);    
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(Functions.class);    
     
     private static final String FACET_PARAM_DELIM = "###";
     private static final String FACET_DELIM = "|||";

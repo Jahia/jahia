@@ -46,7 +46,7 @@ import org.apache.jackrabbit.core.security.authorization.Permission;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.Path;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.registries.ServicesRegistry;
@@ -87,7 +87,7 @@ import java.util.*;
  * @author toto
  */
 public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWrapper {
-    protected static final Logger logger = Logger.getLogger(JCRNodeWrapper.class);
+    protected static final Logger logger = org.slf4j.LoggerFactory.getLogger(JCRNodeWrapper.class);
 
     protected Node objectNode = null;
     protected JCRFileContent fileContent = null;
@@ -253,7 +253,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 current = inherited;
             }
         } catch (ItemNotFoundException e) {
-            logger.debug(e);
+            logger.debug(e.getMessage(), e);
         }
     }
 

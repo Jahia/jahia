@@ -37,7 +37,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.admin.database.DatabaseScripts;
 import org.jahia.hibernate.manager.JahiaVersionManager;
 import org.jahia.services.SpringContextSingleton;
@@ -50,7 +50,7 @@ import org.jahia.services.SpringContextSingleton;
  * To change this template use File | Settings | File Templates.
  */
 public class SqlPatcher implements Patcher {
-    private Logger logger = Logger.getLogger(SqlPatcher.class);
+    private Logger logger = org.slf4j.LoggerFactory.getLogger(SqlPatcher.class);
     private String dbSchema;
     private static Map<String, String> schemas;
     private DatabaseScripts scriptHelper = new DatabaseScripts();

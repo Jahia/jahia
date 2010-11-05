@@ -5,11 +5,11 @@ import java.util.Arrays;
 
 import org.apache.jackrabbit.core.query.lucene.constraint.Constraint;
 import org.apache.jackrabbit.core.query.lucene.constraint.EvaluationContext;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.apache.lucene.index.IndexReader;
 
 public class JahiaFilterMultiColumnQueryHits extends FilterMultiColumnQueryHits {
-    private static final Logger log = Logger.getLogger(JahiaFilterMultiColumnQueryHits.class);    
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(JahiaFilterMultiColumnQueryHits.class);    
     
     private Constraint constraint = null;
     private EvaluationContext context = null;

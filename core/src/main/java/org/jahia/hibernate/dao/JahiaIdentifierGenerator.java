@@ -34,7 +34,8 @@ package org.jahia.hibernate.dao;
 
 import java.io.Serializable;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.SessionImplementor;
 import org.hibernate.id.IdentifierGenerator;
@@ -54,7 +55,7 @@ public class JahiaIdentifierGenerator implements IdentifierGenerator,
 
 	private static BeanFactory beanFactory;
 
-	private static Logger logger = Logger
+	private static Logger logger = LoggerFactory
 	        .getLogger(JahiaIdentifierGenerator.class);
 
 	public void destroy() throws Exception {

@@ -46,7 +46,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.apache.struts.util.RequestUtils;
 import org.jahia.bin.JahiaAdministration;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
@@ -80,7 +80,7 @@ public class ManageServer extends AbstractAdministrationModule {
     private static final String CLASS_NAME  =  JahiaAdministration.CLASS_NAME;
     private static final String JSP_PATH    =  JahiaAdministration.JSP_PATH;
 
-    private static final transient Logger logger = Logger.getLogger(ManageServer.class);
+    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(ManageServer.class);
 
     /**
      * This method is used like a dispatcher for user requests.

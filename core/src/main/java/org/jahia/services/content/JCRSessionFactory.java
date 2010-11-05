@@ -57,7 +57,7 @@ import java.util.*;
  * @author toto
  */
 public class JCRSessionFactory implements Repository, ServletContextAware {
-    private static transient org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(
+    private static transient org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(
             JCRSessionFactory.class);
     protected ThreadLocal<Map<String, Map<String, JCRSessionWrapper>>> userSession = new ThreadLocal<Map<String, Map<String, JCRSessionWrapper>>>();
     private NamespaceRegistryWrapper namespaceRegistry;

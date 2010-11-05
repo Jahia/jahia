@@ -1,6 +1,6 @@
 package org.jahia.bin;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.BasicSessionState;
@@ -40,7 +40,7 @@ import java.util.Iterator;
 @SuppressWarnings("serial")
 public class TestCreateSiteServlet extends HttpServlet implements Controller, ServletContextAware {
 
-    private transient static Logger logger = Logger.getLogger(TestCreateSiteServlet.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(TestCreateSiteServlet.class);
 
     private ServletContext servletContext;
 

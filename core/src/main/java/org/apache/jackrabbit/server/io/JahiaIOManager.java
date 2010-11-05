@@ -32,7 +32,7 @@
 
 package org.apache.jackrabbit.server.io;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 
 import javax.jcr.Node;
@@ -43,7 +43,7 @@ import javax.jcr.RepositoryException;
  */
 public class JahiaIOManager extends IOManagerImpl {
 
-    private static Logger log = Logger.getLogger(JahiaIOManager.class);
+    private static Logger log = org.slf4j.LoggerFactory.getLogger(JahiaIOManager.class);
 
     /**
      * Creates a new <code>DefaultIOManager</code> and populates the internal

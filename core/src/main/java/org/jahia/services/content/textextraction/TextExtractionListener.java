@@ -32,7 +32,7 @@
 
 package org.jahia.services.content.textextraction;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.content.*;
@@ -59,7 +59,7 @@ import java.util.Calendar;
  */
 public class TextExtractionListener extends DefaultEventListener {
 
-    private static final transient Logger logger = Logger.getLogger(TextExtractionListener.class);
+    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(TextExtractionListener.class);
 
     private ExtractionService extractionService;
 

@@ -33,7 +33,7 @@
 package org.jahia.services.cache.ehcache;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.cache.CacheProvider;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.cache.CacheImplementation;
@@ -54,7 +54,7 @@ import javax.management.MBeanServerFactory;
  */
 public class EhCacheProvider implements CacheProvider {
 
-    final private static Logger logger = Logger.getLogger (EhCacheProvider.class);
+    final private static Logger logger = org.slf4j.LoggerFactory.getLogger (EhCacheProvider.class);
 
     CacheManager cacheManager = null;
     private int groupsSizeLimit = 100;

@@ -32,7 +32,7 @@
 
 package org.jahia.admin.patches;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.bin.JahiaAdministration;
 import org.jahia.version.VersionService;
 import org.jahia.admin.AbstractAdministrationModule;
@@ -53,7 +53,7 @@ import java.util.SortedMap;
  */
 public class ManagePatches extends AbstractAdministrationModule {
     
-    private static final transient Logger logger = Logger.getLogger(ManagePatches.class);
+    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(ManagePatches.class);
     
     /**
      * @param request

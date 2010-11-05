@@ -36,7 +36,7 @@ import org.apache.axis.utils.StringUtils;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.util.ISO9075;
 import org.apache.jackrabbit.value.ValueHelper;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
@@ -57,7 +57,7 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class DocumentViewExporter {
-    protected static final Logger logger = Logger.getLogger(DocumentViewExporter.class);
+    protected static final Logger logger = org.slf4j.LoggerFactory.getLogger(DocumentViewExporter.class);
     
     private static final String CDATA = "CDATA";
     private static final String NS_URI = "http://www.w3.org/2000/xmlns/";

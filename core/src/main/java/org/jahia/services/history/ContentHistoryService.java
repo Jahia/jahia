@@ -7,7 +7,7 @@ import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.ProcessorEndpoint;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
  * @todo generate SQL DDL scripts for each DB.
  */
 public class ContentHistoryService implements Processor, CamelContextAware {
-    private transient static Logger logger = Logger.getLogger(ContentHistoryService.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(ContentHistoryService.class);
 
     private org.hibernate.impl.SessionFactoryImpl sessionFactoryBean;
     private long processedCount = 0;

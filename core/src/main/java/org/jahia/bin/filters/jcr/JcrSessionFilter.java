@@ -32,7 +32,7 @@
 
 package org.jahia.bin.filters.jcr;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.valves.AuthValveContext;
@@ -55,7 +55,7 @@ import java.io.IOException;
  * To change this template use File | Settings | File Templates.
  */
 public class JcrSessionFilter implements Filter {
-    private static final transient Logger logger = Logger.getLogger(JcrSessionFilter.class);
+    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(JcrSessionFilter.class);
 
     public void init(FilterConfig filterConfig) throws ServletException {
 

@@ -32,7 +32,7 @@
 
 package org.jahia.services.workflow.jbpm.custom;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.PublicationInfo;
@@ -54,7 +54,7 @@ import java.util.Map;
  */
 public class Publish implements ExternalActivityBehaviour {
     private static final long serialVersionUID = 1L;
-    private transient static Logger logger = Logger.getLogger(Publish.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(Publish.class);
 
     public void execute(ActivityExecution execution) throws Exception {
         List<PublicationInfo> info = (List<PublicationInfo>) execution.getVariable("publicationInfos");

@@ -43,7 +43,7 @@ import java.util.HashMap;
  * Time: 15:06:47
  */
 public class JahiaPreferencesQueryHelper {
-    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(JahiaPreferencesQueryHelper.class);
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaPreferencesQueryHelper.class);
 
     public static String getSimpleSQL(String prefName) {
         Map<String, Object> properties = new HashMap<String, Object>();

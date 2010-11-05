@@ -32,7 +32,7 @@
 
 package org.jahia.services.render.filter;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
@@ -46,7 +46,7 @@ import javax.jcr.RepositoryException;
  * Time: 3:28:13 PM
  */
 public class ContributionFilter extends AbstractFilter {
-    private static Logger logger = Logger.getLogger(ContributionFilter.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(ContributionFilter.class);
 
     public String prepare(RenderContext context, Resource resource, RenderChain chain) throws Exception {
         JCRNodeWrapper node = resource.getNode();
@@ -60,7 +60,7 @@ public class ContributionFilter extends AbstractFilter {
                 resource.setTemplateType("edit");
             }
         } catch (RepositoryException e) {
-            logger.error(e,e);
+            logger.error(e.getMessage(), e);
         }
         return null;
     }

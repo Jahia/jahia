@@ -42,7 +42,7 @@ import javax.jcr.ValueFormatException;
 import javax.jcr.Binary;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.content.nodetypes.initializers.ValueInitializer;
 
 /**
@@ -54,7 +54,7 @@ import org.jahia.services.content.nodetypes.initializers.ValueInitializer;
  */
 public class DynamicValueImpl implements Value {
     
-    private static final transient Logger logger = Logger.getLogger(DynamicValueImpl.class);
+    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(DynamicValueImpl.class);
     
     private List<String> params;
     protected ExtendedPropertyDefinition declaringPropertyDefinition;

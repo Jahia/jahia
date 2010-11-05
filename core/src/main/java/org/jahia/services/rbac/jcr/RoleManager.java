@@ -49,7 +49,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -80,7 +80,7 @@ public class RoleManager {
 
     public static final String JAHIANT_ROLES = "jnt:roles";
 
-    private static Logger logger = Logger.getLogger(RoleManager.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(RoleManager.class);
 
     public static final String PROPERTY_PERMISSSIONS = "j:permissions";
 

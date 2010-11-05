@@ -33,7 +33,7 @@
 package org.jahia.services.content;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.decorator.JCRVersion;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -70,7 +70,7 @@ import java.util.List;
  * @author toto
  */
 public class JCRWorkspaceWrapper implements Workspace {
-    private static Logger logger = Logger.getLogger(JCRWorkspaceWrapper.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRWorkspaceWrapper.class);
     private JCRSessionFactory service;
     private String name;
     private JCRSessionWrapper session;

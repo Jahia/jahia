@@ -35,7 +35,7 @@ package org.jahia.ajax.gwt.helper;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
@@ -74,7 +74,7 @@ import java.util.*;
  * Time: 2:16:27 PM
  */
 public class NavigationHelper {
-    private static Logger logger = Logger.getLogger(NavigationHelper.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(NavigationHelper.class);
 
     public final static String SAVED_OPEN_PATHS = "org.jahia.contentmanager.savedopenpaths.";
     public final static String SELECTED_PATH = "org.jahia.contentmanager.selectedpath.";
@@ -145,7 +145,7 @@ public class NavigationHelper {
 
             return gwtNodeChildren;
         } catch (RepositoryException e) {
-            logger.error(e, e);
+            logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }
@@ -186,7 +186,7 @@ public class NavigationHelper {
             try {
                 hasNodes = childNode.getNodes().hasNext();
             } catch (RepositoryException e) {
-                logger.error(e, e);
+                logger.error(e.getMessage(), e);
             }
             // collection condition is available only if the parent node is not a nt:query. Else, the node has to match the node type condition
             if (matchVisibilityFilter && matchNodeType && (mimeTypeFilter || hasNodes) && nameFilter) {
@@ -649,7 +649,7 @@ public class NavigationHelper {
                     try {
                         hasNodes = n.getNodes().hasNext();
                     } catch (RepositoryException e) {
-                        logger.error(e, e);
+                        logger.error(e.getMessage(), e);
                     }
                     boolean matchFilter =
                             matchesFilters(n.getName(), filtersToApply) && matchesMimeTypeFilters(n, mimeTypesToMatch);
@@ -810,7 +810,7 @@ public class NavigationHelper {
                         hasChildren = true;
                     }
                 } catch (RepositoryException e) {
-                    logger.error(e, e);
+                    logger.error(e.getMessage(), e);
                 }
             }
             n.setHasChildren(hasChildren);
@@ -1294,7 +1294,7 @@ public class NavigationHelper {
             }
             return list;
         } catch (RepositoryException e) {
-            logger.error(e, e);
+            logger.error(e.getMessage(), e);
             return null;
         }
     }

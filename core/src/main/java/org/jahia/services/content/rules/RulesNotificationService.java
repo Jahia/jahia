@@ -34,7 +34,7 @@ package org.jahia.services.content.rules;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.registries.ServicesRegistry;
@@ -62,7 +62,7 @@ import java.util.ResourceBundle;
 public class RulesNotificationService {
 
     private static RulesNotificationService instance;
-    private static Logger logger = Logger.getLogger(RulesNotificationService.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(RulesNotificationService.class);
 
     public static synchronized RulesNotificationService getInstance() {
         if (instance == null) {

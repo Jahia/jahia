@@ -32,11 +32,11 @@
 
 package org.jahia.modules.wiki.filter;
 
-import org.jahia.services.render.filter.AbstractFilter;
-import org.jahia.services.render.filter.RenderChain;
+import org.jahia.modules.wiki.WikiRenderer;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
-import org.jahia.modules.wiki.WikiRenderer;
+import org.jahia.services.render.filter.AbstractFilter;
+import org.jahia.services.render.filter.RenderChain;
 import org.xwiki.rendering.syntax.SyntaxFactory;
 
 /**
@@ -47,7 +47,6 @@ import org.xwiki.rendering.syntax.SyntaxFactory;
  * To change this template use File | Settings | File Templates.
  */
 public class WikiFilter extends AbstractFilter {
-    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(WikiFilter.class);
 
     private SyntaxFactory syntaxFactory;
     private String inputSyntax;

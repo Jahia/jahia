@@ -32,7 +32,7 @@
 
 package org.jahia.services.render.filter;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.content.*;
 import org.jahia.services.render.*;
 
@@ -49,7 +49,7 @@ import javax.jcr.query.QueryResult;
  * Output is made available to the wrapper script through the "wrappedContent" request attribute.
  */
 public class TemplateNodeFilter extends AbstractFilter {
-    private static Logger logger = Logger.getLogger(TemplateNodeFilter.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(TemplateNodeFilter.class);
 
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         if (renderContext.getRequest().getAttribute("skipWrapper") == null) {

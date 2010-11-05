@@ -32,7 +32,7 @@
 
 package org.jahia.services.content.decorator;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.analytics.GoogleAnalyticsProfile;
@@ -51,7 +51,7 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class JCRSiteNode extends JCRNodeDecorator {
-    private static final Logger logger = Logger.getLogger(JCRSiteNode.class);
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JCRSiteNode.class);
 
     public JCRSiteNode(JCRNodeWrapper node) {
         super(node);

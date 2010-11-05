@@ -44,7 +44,7 @@ import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.bin.Render;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
@@ -82,7 +82,7 @@ public class URLResolver {
     
     private static final String VANITY_URL_NODE_PATH_SEGMENT = "/" + VanityUrlManager.VANITYURLMAPPINGS_NODE + "/";    
 
-    private static Logger logger = Logger.getLogger(URLResolver.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(URLResolver.class);
     
     private static String[] servletsAllowingUrlMapping = new String[] {
             StringUtils.substringAfterLast(Render.getRenderServletPath(), "/")

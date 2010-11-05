@@ -40,7 +40,7 @@ import java.util.Locale;
 import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
@@ -54,7 +54,7 @@ import org.jahia.utils.LanguageCodeConverters;
  */
 public final class UserPreferencesHelper {
 
-    private static Logger logger = Logger.getLogger(UserPreferencesHelper.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(UserPreferencesHelper.class);
     
     /**
      * Initializes an instance of this class.

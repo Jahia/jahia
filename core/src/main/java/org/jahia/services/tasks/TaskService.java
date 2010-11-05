@@ -32,7 +32,7 @@
 
 package org.jahia.services.tasks;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import static org.jahia.api.Constants.JAHIANT_TASK;
 import static org.jahia.api.Constants.JAHIANT_TASKS;
 import org.jahia.services.content.*;
@@ -51,7 +51,7 @@ import java.util.Set;
  */
 public class TaskService {
 
-    private static Logger logger = Logger.getLogger(TaskService.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(TaskService.class);
 
     private static String getTasksPath(String username) {
         if (username == null || username.length() == 0) {

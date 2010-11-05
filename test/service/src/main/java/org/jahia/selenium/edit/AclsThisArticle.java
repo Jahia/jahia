@@ -2,7 +2,7 @@ package org.jahia.selenium.edit;
 
 import com.thoughtworks.selenium.Wait;
 import com.thoughtworks.selenium.SeleneseTestCase;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * this test create an Article in edit, déselect all Acl on this and save, after that, select all Acl and Save, and to finish add add manys tags
  */
 public class AclsThisArticle extends SeleneseTestCase {
-    private static Logger logger = Logger.getLogger(AclsThisArticle.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(AclsThisArticle.class);
     public int tags = 10;
     private JahiaSite site;
     private final static String TESTSITE_NAME = "mySite";

@@ -56,8 +56,8 @@ import java.util.StringTokenizer;
 
 public class Version implements Comparable {
 
-    private static org.apache.log4j.Logger logger =
-        org.apache.log4j.Logger.getLogger(Version.class);
+    private static org.slf4j.Logger logger =
+        org.slf4j.LoggerFactory.getLogger(Version.class);
 
     private List orderedVersionNumbers = new ArrayList();
     private int betaNumber = -1;

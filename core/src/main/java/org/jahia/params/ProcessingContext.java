@@ -112,7 +112,7 @@
 
 package org.jahia.params;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.JahiaInterface;
 import org.jahia.exceptions.JahiaException;
@@ -139,7 +139,7 @@ import java.util.*;
  */
 public class ProcessingContext {
 
-    private static final transient Logger logger = Logger.getLogger(ProcessingContext.class);
+    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(ProcessingContext.class);
 
     public static final String ENGINE_NAME_PARAMETER = "engineName";
 

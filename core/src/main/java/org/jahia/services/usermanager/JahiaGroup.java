@@ -87,8 +87,8 @@ public abstract class JahiaGroup extends JahiaBasePrincipal implements Group {
 
     public static final String PROPERTY_ENFORCE_PASSWORD_POLICY = "enforcePasswordPolicy";
 
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(JahiaGroup.class);
+    private static org.slf4j.Logger logger =
+            org.slf4j.LoggerFactory.getLogger(JahiaGroup.class);
 
     /** Group unique identification name */
     protected String mGroupname;

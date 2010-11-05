@@ -35,7 +35,7 @@ package org.jahia.ajax.gwt.helper;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.SourceCompactor;
 import net.htmlparser.jericho.SourceFormatter;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.outerj.daisy.diff.HtmlCleaner;
@@ -63,7 +63,7 @@ import java.util.Locale;
  * Time: 3:29:13 PM
  */
 public class DiffHelper {
-    private static final transient Logger logger = Logger.getLogger(DiffHelper.class);
+    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(DiffHelper.class);
 
     public String getHighlighted(String original, String amendment) {
         final StringWriter sw = new StringWriter();
@@ -118,7 +118,7 @@ public class DiffHelper {
             postProcess.endDocument();
 
         } catch (Throwable e) {
-            logger.error(e, e);
+            logger.error(e.getMessage(), e);
         }
 
         return sw.toString();

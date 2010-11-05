@@ -2,7 +2,7 @@ package org.jahia.selenium.edit;
 
 import com.thoughtworks.selenium.SeleneseTestCase;
 import com.thoughtworks.selenium.Wait;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
@@ -15,7 +15,7 @@ import org.jahia.test.TestHelper;
  * To change this template use File | Settings | File Templates.
  */
 public class TagsThisArticle extends SeleneseTestCase {
-    private static Logger logger = Logger.getLogger(TagsThisArticle.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(TagsThisArticle.class);
     public int tags = 10;
     private JahiaSite site;
     private final static String TESTSITE_NAME = "mySite";

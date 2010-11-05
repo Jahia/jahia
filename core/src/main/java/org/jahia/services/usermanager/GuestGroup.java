@@ -50,8 +50,8 @@ import java.security.Principal;
  * To change this template use File | Settings | File Templates.
  */
 public class GuestGroup extends JCRGroup {
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(GuestGroup.class);
+    private static org.slf4j.Logger logger =
+            org.slf4j.LoggerFactory.getLogger(GuestGroup.class);
 
     public GuestGroup(Node nodeWrapper, JCRTemplate jcrTemplate, int siteID) {
         super(nodeWrapper, jcrTemplate, siteID);

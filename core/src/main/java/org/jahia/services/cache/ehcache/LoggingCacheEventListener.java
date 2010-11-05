@@ -36,8 +36,7 @@ import net.sf.ehcache.event.CacheEventListener;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.CacheException;
-import org.apache.log4j.Category;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 import java.util.Properties;
 
@@ -50,7 +49,7 @@ import java.util.Properties;
  *         Time: 3:54:36 PM
  */
 public class LoggingCacheEventListener implements CacheEventListener {
-    private static Category logger = Logger.getLogger(LoggingCacheEventListener.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(LoggingCacheEventListener.class);
     public LoggingCacheEventListener(Properties properties) {
     }
 

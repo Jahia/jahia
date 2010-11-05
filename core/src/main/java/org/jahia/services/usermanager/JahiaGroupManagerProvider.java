@@ -37,7 +37,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.services.JahiaService;
 import org.jahia.services.sites.JahiaSite;
 import org.springframework.beans.factory.InitializingBean;
@@ -55,7 +56,7 @@ import org.springframework.beans.factory.InitializingBean;
 public abstract class JahiaGroupManagerProvider extends JahiaService implements InitializingBean {
 // ------------------------------ FIELDS ------------------------------
 
-    private static Logger logger = Logger
+    private static Logger logger = LoggerFactory
 	        .getLogger(JahiaGroupManagerProvider.class);
 
 	private static Pattern groupNamePattern;

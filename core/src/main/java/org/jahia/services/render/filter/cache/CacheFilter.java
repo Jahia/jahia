@@ -36,7 +36,7 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.BlockingCache;
 import net.sf.ehcache.constructs.blocking.LockTimeoutException;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.decorator.JCRFrozenNodeAsRegular;
@@ -57,7 +57,7 @@ import java.util.*;
  *        Created : 8 janv. 2010
  */
 public class CacheFilter extends AbstractFilter {
-    private transient static Logger logger = Logger.getLogger(CacheFilter.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(CacheFilter.class);
     private ModuleCacheProvider cacheProvider;
     private PageGeneratorQueue generatorQueue;
 

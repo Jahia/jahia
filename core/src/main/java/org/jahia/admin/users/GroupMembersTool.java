@@ -144,7 +144,7 @@ public class GroupMembersTool
         doRedirect(request, response, session, JSP_PATH + "adminpopup.jsp");
     }
 
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(GroupMembersTool.class);
+    private static org.slf4j.Logger logger =
+            org.slf4j.LoggerFactory.getLogger(GroupMembersTool.class);
 
 }

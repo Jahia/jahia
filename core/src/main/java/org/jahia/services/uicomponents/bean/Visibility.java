@@ -47,7 +47,7 @@ import java.util.Locale;
  * Time: 09:19:13
  */
 public class Visibility {
-    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(Visibility.class);
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Visibility.class);
 
     //visibility parameter
     private String siteActionPermission;

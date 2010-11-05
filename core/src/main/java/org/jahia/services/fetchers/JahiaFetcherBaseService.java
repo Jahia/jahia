@@ -45,7 +45,7 @@ import java.io.IOException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
 import org.jahia.services.applications.ServletIncludeRequestWrapper;
@@ -164,6 +164,6 @@ public class JahiaFetcherBaseService extends JahiaFetcherService {
         return generatedOutput;
     } // end fetchServlet
 
-    private static Logger logger = Logger.getLogger(JahiaFetcherBaseService.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaFetcherBaseService.class);
 
 } // end JahiaFetcherBaseService

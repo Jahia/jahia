@@ -34,7 +34,7 @@ package org.jahia.services.sites.jcr;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
@@ -60,7 +60,7 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class JCRSitesProvider {
-    private static Logger logger = Logger.getLogger(JCRSitesProvider.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRSitesProvider.class);
     private JCRTemplate jcrTemplate;
 
     public void setJcrTemplate(JCRTemplate jcrTemplate) {

@@ -34,7 +34,7 @@ package org.jahia.services.scheduler;
 
 import org.apache.commons.id.IdentifierGenerator;
 import org.apache.commons.id.IdentifierGeneratorFactory;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionFactory;
@@ -52,7 +52,7 @@ import java.util.Date;
  * @version $Id$
  */
 public abstract class BackgroundJob implements StatefulJob {
-    private final static Logger logger = Logger.getLogger(BackgroundJob.class);
+    private final static Logger logger = org.slf4j.LoggerFactory.getLogger(BackgroundJob.class);
 
     private static IdentifierGenerator idGen = IdentifierGeneratorFactory.newInstance().uuidVersionFourGenerator();
 

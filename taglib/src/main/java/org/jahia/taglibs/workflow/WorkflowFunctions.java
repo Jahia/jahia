@@ -32,7 +32,7 @@
 
 package org.jahia.taglibs.workflow;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.workflow.WorkflowService;
 
@@ -44,7 +44,7 @@ import org.jahia.services.workflow.WorkflowService;
  *        Created : 21 mai 2010
  */
 public class WorkflowFunctions {
-    private transient static Logger logger = Logger.getLogger(WorkflowFunctions.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(WorkflowFunctions.class);
 
     public static boolean hasActivePublicationWorkflow(JCRNodeWrapper node) {
         return WorkflowService.getInstance().hasActivePublishWorkflow(node);

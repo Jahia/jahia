@@ -34,7 +34,7 @@ package org.jahia.bin;
 
 import org.apache.commons.io.FileCleaningTracker;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -66,7 +66,7 @@ import static org.jahia.api.Constants.LIVE_WORKSPACE;
  *        Created : 2 avr. 2010
  */
 public class Export extends HttpServlet implements Controller, ServletContextAware {
-    private transient static Logger logger = Logger.getLogger(Export.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(Export.class);
 
     private String defaultWorkspace = LIVE_WORKSPACE;
 

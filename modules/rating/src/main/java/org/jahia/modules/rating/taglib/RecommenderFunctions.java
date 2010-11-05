@@ -32,7 +32,7 @@
 
 package org.jahia.modules.rating.taglib;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.modules.rating.mahout.Recommender;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -49,7 +49,7 @@ import java.util.List;
  *        Created : 29 juil. 2010
  */
 public class RecommenderFunctions {
-    private transient static Logger logger = Logger.getLogger(RecommenderFunctions.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(RecommenderFunctions.class);
 
     public static List<Recommender.RecommendedItem> mostSimilarItems(JCRNodeWrapper node) {
         try {

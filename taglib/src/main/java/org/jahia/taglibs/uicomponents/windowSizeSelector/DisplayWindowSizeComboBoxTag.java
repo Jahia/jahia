@@ -44,8 +44,8 @@ import java.util.StringTokenizer;
 @SuppressWarnings("serial")
 public class DisplayWindowSizeComboBoxTag extends AbstractJahiaTag {
 
-    private static final org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(DisplayWindowSizeComboBoxTag.class);
+    private static final org.slf4j.Logger logger =
+            org.slf4j.LoggerFactory.getLogger(DisplayWindowSizeComboBoxTag.class);
 
     private String form;
     private String listName;
@@ -110,7 +110,7 @@ public class DisplayWindowSizeComboBoxTag extends AbstractJahiaTag {
             final JspWriter out = pageContext.getOut();
             out.print(buff.toString());
         } catch (Exception e) {
-            logger.error(e, e);
+            logger.error(e.getMessage(), e);
         }
         return SKIP_BODY;
     }

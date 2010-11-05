@@ -52,7 +52,7 @@ import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRContentUtils;
@@ -75,7 +75,7 @@ import org.jahia.services.workflow.WorkflowService;
  */
 public class SocialService {
 
-    private static Logger logger = Logger.getLogger(SocialService.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(SocialService.class);
     public static final String JNT_SOCIAL_ACTIVITY = "jnt:socialActivity";
     public static final String JNT_SOCIAL_MESSAGE = "jnt:socialMessage";
     public static final String JNT_SOCIAL_CONNECTION = "jnt:socialConnection";

@@ -33,7 +33,7 @@
 package org.jahia.bin;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -73,7 +73,7 @@ import static org.jahia.api.Constants.LIVE_WORKSPACE;
  *        Created : 8 mars 2010
  */
 public class Initializers extends HttpServlet implements Controller {
-    private transient static Logger logger = Logger.getLogger(Initializers.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(Initializers.class);
     private String defaultLocale = "en";
 
     private String defaultWorkspace = LIVE_WORKSPACE;

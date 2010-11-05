@@ -32,7 +32,7 @@
 
 package org.jahia.services.logging;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.content.DefaultEventListener;
 import org.json.JSONObject;
 
@@ -49,7 +49,7 @@ import java.util.List;
  *        Created : 24 nov. 2009
  */
 public class MetricsLoggingJCReventListener extends DefaultEventListener {
-    private transient static Logger logger = Logger.getLogger(MetricsLoggingJCReventListener.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(MetricsLoggingJCReventListener.class);
     private MetricsLoggingService loggingService;
     private List<String> nodeTypesList = null;
 

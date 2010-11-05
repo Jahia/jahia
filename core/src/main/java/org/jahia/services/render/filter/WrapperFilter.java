@@ -34,7 +34,7 @@ package org.jahia.services.render.filter;
 
 import org.jahia.services.render.*;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
 
@@ -46,7 +46,7 @@ import javax.jcr.RepositoryException;
  *
  */
 public class WrapperFilter extends AbstractFilter {
-    private static Logger logger = Logger.getLogger(WrapperFilter.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(WrapperFilter.class);
 
     private String wrapper;
 

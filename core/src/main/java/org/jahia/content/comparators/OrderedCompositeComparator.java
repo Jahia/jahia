@@ -53,8 +53,8 @@ import java.util.List;
 
 public class OrderedCompositeComparator implements Comparator {
 
-    private static org.apache.log4j.Logger logger =
-        org.apache.log4j.Logger.getLogger(OrderedCompositeComparator.class);
+    private static org.slf4j.Logger logger =
+        org.slf4j.LoggerFactory.getLogger(OrderedCompositeComparator.class);
 
     List orderedComparators = new ArrayList();
 

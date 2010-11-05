@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.bin.filters.MaintenanceFilter;
 import org.jahia.bin.filters.ResponseCacheControlFilter;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -59,7 +59,7 @@ import org.jahia.settings.SettingsBean;
  */
 public class ErrorServlet extends HttpServlet {
 
-	private static final Logger logger = Logger.getLogger(ErrorServlet.class);
+	private static final Logger logger = org.slf4j.LoggerFactory.getLogger(ErrorServlet.class);
 
 	private static final long serialVersionUID = -6990851339777685000L;
 

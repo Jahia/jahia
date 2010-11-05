@@ -63,8 +63,8 @@ import org.jahia.utils.zip.JahiaArchiveFileHandler;
  */
 public class JahiaEarFileHandler {
 
-    private static org.apache.log4j.Logger logger =
-        org.apache.log4j.Logger.getLogger(JahiaEarFileHandler.class);
+    private static org.slf4j.Logger logger =
+        org.slf4j.LoggerFactory.getLogger(JahiaEarFileHandler.class);
 
     /** The web.xml file **/
     private static final String APPLICATION_XML_FILE =

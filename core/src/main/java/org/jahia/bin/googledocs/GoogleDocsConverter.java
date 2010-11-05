@@ -39,7 +39,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.googledocs.GoogleDocsService;
@@ -55,7 +55,7 @@ import com.google.gdata.util.ServiceException;
  */
 public class GoogleDocsConverter extends GoogleDocsController {
 
-    private static Logger logger = Logger.getLogger(GoogleDocsConverter.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(GoogleDocsConverter.class);
 
     public static String getPath() {
         return "/cms/gconvert";

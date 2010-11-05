@@ -45,7 +45,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 
 /**
@@ -56,7 +56,7 @@ import org.springframework.beans.factory.InitializingBean;
  */
 public class ResponseCacheControlFilter implements Filter, InitializingBean {
 
-    private static final Logger logger = Logger.getLogger(ResponseCacheControlFilter.class);
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(ResponseCacheControlFilter.class);
 
     private Pattern cachedResources;
 

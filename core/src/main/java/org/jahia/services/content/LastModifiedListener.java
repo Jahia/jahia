@@ -33,7 +33,7 @@
 package org.jahia.services.content;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 
 import javax.jcr.*;
@@ -49,7 +49,7 @@ import java.util.*;
  * Time: 2:36:05 PM
  */
 public class LastModifiedListener extends DefaultEventListener {
-    private static Logger logger = Logger.getLogger(LastModifiedListener.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(LastModifiedListener.class);
 
     public int getEventTypes() {
         return Event.NODE_ADDED + Event.NODE_REMOVED + Event.PROPERTY_CHANGED + Event.PROPERTY_ADDED + Event.PROPERTY_REMOVED + Event.NODE_MOVED;

@@ -33,7 +33,7 @@
 package org.jahia.bin;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.content.JCRTemplate;
@@ -69,7 +69,7 @@ import static javax.servlet.http.HttpServletResponse.SC_METHOD_NOT_ALLOWED;
  */
 public class FindPrincipal extends HttpServlet implements Controller {
 
-    private static Logger logger = Logger.getLogger(FindPrincipal.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(FindPrincipal.class);
 
     private static final String PRINCIPALTYPE_PARAMNAME = "principalType";
     private static final String WILDCARDTERM_PARAMNAME = "wildcardTerm";

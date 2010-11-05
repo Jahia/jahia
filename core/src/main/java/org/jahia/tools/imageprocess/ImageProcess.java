@@ -59,11 +59,12 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ImageProcess {
     
-    private static final transient Logger logger = Logger
+    private static final transient Logger logger = LoggerFactory
             .getLogger(ImageProcess.class);
 
     /**

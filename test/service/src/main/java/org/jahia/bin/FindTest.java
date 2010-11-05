@@ -37,7 +37,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.valves.LoginEngineAuthValveImpl;
@@ -66,7 +66,7 @@ import static org.junit.Assert.*;
  */
 public class FindTest {
 
-    private static Logger logger = Logger.getLogger(FindTest.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(FindTest.class);
     
     private HttpClient client;
     private final static String TESTSITE_NAME = "findTestSite";

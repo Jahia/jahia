@@ -32,7 +32,7 @@
 
 package org.jahia.taglibs.template.include;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 
@@ -49,7 +49,7 @@ import java.util.UUID;
  */
 public class LinkerTag extends TagSupport {
 
-    private static Logger logger = Logger.getLogger(LinkerTag.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(LinkerTag.class);
 
     private String mixinType;
 

@@ -34,7 +34,7 @@ package org.jahia.ajax.gwt.helper;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.value.StringValue;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.apache.tika.io.IOUtils;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
@@ -63,7 +63,7 @@ import java.util.*;
  * Time: 2:45:42 PM
  */
 public class PropertiesHelper {
-    private static Logger logger = Logger.getLogger(PropertiesHelper.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(PropertiesHelper.class);
 
     private ContentDefinitionHelper contentDefinition;
     private ContentManagerHelper contentManager;

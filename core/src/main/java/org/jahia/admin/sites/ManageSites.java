@@ -123,7 +123,7 @@ public class ManageSites extends AbstractAdministrationModule {
     
 // ------------------------------ FIELDS ------------------------------
 
-    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(ManageSites.class);
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ManageSites.class);
 
     private static final String CLASS_NAME = JahiaAdministration.CLASS_NAME;
     private static final String JSP_PATH = JahiaAdministration.JSP_PATH;

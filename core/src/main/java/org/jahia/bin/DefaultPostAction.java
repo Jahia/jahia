@@ -34,7 +34,7 @@ package org.jahia.bin;
 
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -68,7 +68,7 @@ import java.util.*;
  */
 public class DefaultPostAction implements Action {
 
-    private static Logger logger = Logger.getLogger(DefaultPostAction.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(DefaultPostAction.class);
 
     public static final String ACTION_NAME = "default";
 

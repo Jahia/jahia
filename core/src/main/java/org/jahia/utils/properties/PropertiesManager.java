@@ -56,7 +56,7 @@ import java.util.regex.PatternSyntaxException;
 
 import org.jahia.utils.JahiaTools;
 import org.apache.commons.collections.iterators.EnumerationIterator;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 
 /**
@@ -77,7 +77,7 @@ import org.apache.log4j.Logger;
 public class PropertiesManager
 {
     private static final transient Logger logger =
-            Logger.getLogger (PropertiesManager.class);
+            org.slf4j.LoggerFactory.getLogger (PropertiesManager.class);
 
     public Properties properties =  new Properties();
     public String     propertiesFilePath;

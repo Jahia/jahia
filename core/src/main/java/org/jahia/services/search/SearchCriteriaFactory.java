@@ -50,7 +50,8 @@ import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.beanutils.ConvertUtilsBean;
 import org.apache.commons.beanutils.Converter;
 import org.apache.commons.beanutils.PropertyUtilsBean;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.nodetypes.ExtendedItemDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -81,7 +82,7 @@ public class SearchCriteriaFactory {
         }
     };
 
-    private static Logger logger = Logger
+    private static Logger logger = LoggerFactory
             .getLogger(SearchCriteriaFactory.class);
 
     private static final String PARAM_NAME_PREFIX = "src_";
@@ -135,7 +136,7 @@ public class SearchCriteriaFactory {
             }
 
             if (logger.isDebugEnabled()) {
-                logger.debug(searchParams);
+                logger.debug(searchParams.toString());
             }
 
             // initialize node properties

@@ -52,7 +52,6 @@ import org.jahia.services.usermanager.JahiaUser;
 import javax.portlet.MimeResponse;
 import javax.portlet.WindowState;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Iterator;
@@ -67,7 +66,7 @@ import java.util.Map;
  */
 public class PlutoDispatchingProvider implements DispatchingProvider {
 
-    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger
+    private static org.slf4j.Logger logger = org.slf4j.LoggerFactory
             .getLogger(PlutoDispatchingProvider.class);
 
     PortletContainer portletContainer;

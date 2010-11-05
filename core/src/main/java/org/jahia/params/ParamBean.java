@@ -113,7 +113,7 @@
 package org.jahia.params;
 
 import org.apache.commons.collections.iterators.EnumerationIterator;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.apache.struts.Globals;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
@@ -152,7 +152,7 @@ import java.util.Map.Entry;
  */
 public class ParamBean extends ProcessingContext {
 
-    private static final transient Logger logger = Logger.getLogger(ParamBean.class);
+    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(ParamBean.class);
 
     private HttpServletRequest mRealRequest;
     private ServletIncludeRequestWrapper mRequest;

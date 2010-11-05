@@ -37,7 +37,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.valves.LoginEngineAuthValveImpl;
 import org.jahia.services.content.JCRCallback;
@@ -63,7 +63,7 @@ import static org.junit.Assert.assertNotNull;
  */
 public class FindPrincipalTest {
 
-    private static Logger logger = Logger.getLogger(FindPrincipalTest.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(FindPrincipalTest.class);
 
     private HttpClient client;
     private final static String TESTSITE_NAME = "findPrincipalTestSite";

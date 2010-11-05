@@ -33,7 +33,7 @@
 package org.jahia.ajax.gwt.helper;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.apache.tika.io.IOUtils;
 import org.jahia.ajax.gwt.client.data.GWTJahiaContentHistoryEntry;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
@@ -78,7 +78,7 @@ import java.util.zip.ZipOutputStream;
 public class ContentManagerHelper {
 // ------------------------------ FIELDS ------------------------------
 
-    private static Logger logger = Logger.getLogger(ContentManagerHelper.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(ContentManagerHelper.class);
 
     private JahiaSitesService sitesService;
     private ImportExportBaseService importExport;
@@ -316,7 +316,7 @@ public class ContentManagerHelper {
             }
             currentUserSession.save();
         } catch (RepositoryException e) {
-            logger.error(e, e);
+            logger.error(e.getMessage(), e);
         }
 
     }

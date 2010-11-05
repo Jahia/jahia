@@ -39,7 +39,7 @@
 
 package org.jahia.gui;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.usermanager.JahiaUser;
 
@@ -51,7 +51,7 @@ import java.util.Enumeration;
  */
 public class GuiBean {
 
-    private static final transient Logger logger = Logger.getLogger(GuiBean.class);
+    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(GuiBean.class);
 
     private final ProcessingContext processingContext;
     private final HTMLToolBox html;

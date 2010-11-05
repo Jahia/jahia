@@ -32,7 +32,7 @@
 
 package org.jahia.modules.formbuilder.initializers;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.bin.Action;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ValueImpl;
@@ -51,7 +51,7 @@ import java.util.*;
  *        Created : 9 mars 2010
  */
 public class ChoiceListFormBuilderActionInitializers implements ModuleChoiceListInitializer {
-    private transient static Logger logger = Logger.getLogger(ChoiceListFormBuilderActionInitializers.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(ChoiceListFormBuilderActionInitializers.class);
     private String key;
     private Map<String, String> actionsMap;
     private JahiaTemplateManagerService templateService;

@@ -33,7 +33,7 @@
 package org.jahia.ajax.gwt.utils;
 
 import org.apache.commons.lang.WordUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.bin.Render;
 import org.jahia.exceptions.JahiaException;
@@ -62,7 +62,7 @@ import java.util.*;
  * @version 10 mars 2008 - 10:46:13
  */
 public class GWTInitializer {
-    private final static Logger logger = Logger.getLogger(GWTInitializer.class);
+    private final static Logger logger = org.slf4j.LoggerFactory.getLogger(GWTInitializer.class);
 
     public static String getInitString(PageContext pageContext) {
         return getInitString(pageContext, false);

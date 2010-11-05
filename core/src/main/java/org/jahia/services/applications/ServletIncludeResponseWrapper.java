@@ -44,7 +44,7 @@
 
 package org.jahia.services.applications;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
@@ -74,7 +74,7 @@ import java.io.UnsupportedEncodingException;
  */
 public class ServletIncludeResponseWrapper extends HttpServletResponseWrapper {
 
-    private static Logger logger = Logger.getLogger (ServletIncludeResponseWrapper.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger (ServletIncludeResponseWrapper.class);
 
     private PrintWriter strPrintWriter = null;
     private StringServletOutputStream strOutputStream = null;

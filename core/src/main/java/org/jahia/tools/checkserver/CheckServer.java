@@ -46,8 +46,8 @@ import org.jahia.utils.properties.PropertiesManager;
 
 public class CheckServer {
 
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(CheckServer.class);
+    private static org.slf4j.Logger logger =
+            org.slf4j.LoggerFactory.getLogger(CheckServer.class);
 
     /** time beetwen 2 tests [second] **/
     static private final int CHECKTIME = 60;

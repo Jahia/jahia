@@ -32,7 +32,7 @@
  */
 package org.jahia.performance.jackrabbit;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -64,7 +64,7 @@ import java.util.concurrent.Executors;
  *        Created : 8 oct. 2010
  */
 public class ConcurrentReadTest {
-    private transient static Logger logger = Logger.getLogger(ConcurrentReadTest.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(ConcurrentReadTest.class);
     private final static String TESTSITE_NAME = "jcrConcurrentReadTest";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
     private final static String INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE = "English text";
@@ -83,7 +83,7 @@ public class ConcurrentReadTest {
                     logger.info("Created " + pagesCreated + " page hierarchy.");
                     session.save();
                     stopWatch.stop();
-                    logger.fatal(stopWatch.prettyPrint());
+                    logger.error(stopWatch.prettyPrint());
                     return null;
                 }
             });
@@ -138,7 +138,7 @@ public class ConcurrentReadTest {
                     }
                 });
                 stopWatch.stop();
-//                logger.fatal(stopWatch.prettyPrint());
+//                logger.error(stopWatch.prettyPrint());
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
             }
@@ -184,7 +184,7 @@ public class ConcurrentReadTest {
                     }
                 });
                 stopWatch.stop();
-//                logger.fatal(stopWatch.prettyPrint());
+//                logger.error(stopWatch.prettyPrint());
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
             }
@@ -266,7 +266,7 @@ public class ConcurrentReadTest {
                 }
                 session.save();
                 stopWatch.stop();
-                logger.fatal(stopWatch.prettyPrint());
+                logger.error(stopWatch.prettyPrint());
                 return null;
             }
         });
@@ -285,7 +285,7 @@ public class ConcurrentReadTest {
                 }
                 session.save();
                 stopWatch.stop();
-                logger.fatal(stopWatch.prettyPrint());
+                logger.error(stopWatch.prettyPrint());
                 return null;
             }
         });
@@ -304,7 +304,7 @@ public class ConcurrentReadTest {
             Boolean aBoolean = service.take().get();
         }
         stopWatch.stop();
-        logger.fatal(stopWatch.prettyPrint());
+        logger.error(stopWatch.prettyPrint());
         executor.shutdown();
     }
 
@@ -325,7 +325,7 @@ public class ConcurrentReadTest {
             Boolean aBoolean = service.take().get();
         }
         stopWatch.stop();
-        logger.fatal(stopWatch.prettyPrint());
+        logger.error(stopWatch.prettyPrint());
         executor.shutdown();
     }
 
@@ -346,7 +346,7 @@ public class ConcurrentReadTest {
             Boolean aBoolean = service.take().get();
         }
         stopWatch.stop();
-        logger.fatal(stopWatch.prettyPrint());
+        logger.error(stopWatch.prettyPrint());
         executor.shutdown();
     }
 
@@ -367,7 +367,7 @@ public class ConcurrentReadTest {
             Boolean aBoolean = service.take().get();
         }
         stopWatch.stop();
-        logger.fatal(stopWatch.prettyPrint());
+        logger.error(stopWatch.prettyPrint());
         executor.shutdown();
     }
 
@@ -384,7 +384,7 @@ public class ConcurrentReadTest {
             Boolean aBoolean = service.take().get();
         }
         stopWatch.stop();
-        logger.fatal(stopWatch.prettyPrint());
+        logger.error(stopWatch.prettyPrint());
         executor.shutdown();
     }
 
@@ -401,7 +401,7 @@ public class ConcurrentReadTest {
             Boolean aBoolean = service.take().get();
         }
         stopWatch.stop();
-        logger.fatal(stopWatch.prettyPrint());
+        logger.error(stopWatch.prettyPrint());
         executor.shutdown();
     }
 
@@ -418,7 +418,7 @@ public class ConcurrentReadTest {
             Boolean aBoolean = service.take().get();
         }
         stopWatch.stop();
-        logger.fatal(stopWatch.prettyPrint());
+        logger.error(stopWatch.prettyPrint());
         executor.shutdown();
     }
 
@@ -435,7 +435,7 @@ public class ConcurrentReadTest {
             Boolean aBoolean = service.take().get();
         }
         stopWatch.stop();
-        logger.fatal(stopWatch.prettyPrint());
+        logger.error(stopWatch.prettyPrint());
         executor.shutdown();
     }
 
@@ -452,7 +452,7 @@ public class ConcurrentReadTest {
             Boolean aBoolean = service.take().get();
         }
         stopWatch.stop();
-        logger.fatal(stopWatch.prettyPrint());
+        logger.error(stopWatch.prettyPrint());
         executor.shutdown();
     }
 }

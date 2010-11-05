@@ -57,7 +57,7 @@ import org.jahia.api.Constants;
 
 public class ManageTemplates extends AbstractAdministrationModule {
 
-    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(ManageTemplates.class);
+    private static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ManageTemplates.class);
 
     private static final String JSP_PATH = JahiaAdministration.JSP_PATH;
 
@@ -202,7 +202,7 @@ public class ManageTemplates extends AbstractAdministrationModule {
         try {
             return JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE, locale, null);
         } catch (RepositoryException e) {
-            logger.error(e, e);
+            logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException("Cannot open user session");
         }
     }

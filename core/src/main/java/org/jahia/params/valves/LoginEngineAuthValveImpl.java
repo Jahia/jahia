@@ -33,7 +33,7 @@
 package org.jahia.params.valves;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.engines.EngineMessage;
 import org.jahia.engines.EngineMessages;
@@ -60,7 +60,7 @@ import java.util.Set;
  * @author Thomas Draier
  */
 public class LoginEngineAuthValveImpl extends BaseAuthValve {
-    private static final transient Logger logger = Logger.getLogger(LoginEngineAuthValveImpl.class);
+    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(LoginEngineAuthValveImpl.class);
     public static final String VALVE_RESULT = "login_valve_result";
     public static final String BAD_PASSWORD = "bad_password";
     public static final String UNKNOWN_USER = "unknown_user";

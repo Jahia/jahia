@@ -44,15 +44,12 @@
 
 package org.jahia.data;
 
-import org.apache.log4j.Category;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.gui.GuiBean;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 
 public class JahiaData {
-
-    private static transient final Category logger = org.apache.log4j.Logger.getLogger(JahiaData.class);
 
     public static final String JAHIA_DATA = "org.jahia.data.JahiaData";
 

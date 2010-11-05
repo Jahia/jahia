@@ -32,7 +32,7 @@
 
 package org.jahia.taglibs.template.include;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
@@ -58,7 +58,7 @@ import java.util.*;
  */
 public class AreaTag extends ModuleTag implements ParamParent {
 
-    private static Logger logger = Logger.getLogger(AreaTag.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(AreaTag.class);
 
     private String areaType = "jnt:contentList";
 

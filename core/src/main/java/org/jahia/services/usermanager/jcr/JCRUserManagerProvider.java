@@ -34,7 +34,7 @@ package org.jahia.services.usermanager.jcr;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
@@ -71,7 +71,7 @@ import java.util.*;
  */
 public class JCRUserManagerProvider extends JahiaUserManagerProvider implements ServletContextAware, ApplicationListener {
 	private static final String ROOT_PWD_RESET_FILE = "/WEB-INF/etc/config/root.pwd";
-    private transient static Logger logger = Logger.getLogger(JCRUserManagerProvider.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRUserManagerProvider.class);
     private transient JCRTemplate jcrTemplate;
     private static JCRUserManagerProvider mUserManagerService;
     private transient CacheService cacheService;
@@ -381,7 +381,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                 public Set<JahiaUser> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     Set<JahiaUser> users = new HashSet<JahiaUser>();
                     if (session.getWorkspace().getQueryManager() != null) {
-                        StringBuffer query = new StringBuffer("SELECT * FROM [" + Constants.JAHIANT_USER + "] as u WHERE u.[" + JCRUser.J_EXTERNAL + "] = 'false'");
+                        StringBuilder query = new StringBuilder("SELECT * FROM [" + Constants.JAHIANT_USER + "] as u WHERE u.[" + JCRUser.J_EXTERNAL + "] = 'false'");
                         if (searchCriterias != null && searchCriterias.size() > 0) {
                             // Avoid wildcard attribute
                             if (!(searchCriterias.containsKey(
@@ -421,7 +421,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                         }
                         query.append(" ORDER BY u.[j:nodename]");
                         if (logger.isDebugEnabled()) {
-                            logger.debug(query);
+                            logger.debug(query.toString());
                         }
                         Query q = session.getWorkspace().getQueryManager().createQuery(query.toString(),
                                                                                        Query.JCR_SQL2);

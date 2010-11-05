@@ -61,8 +61,8 @@ import org.jahia.admin.AbstractAdministrationModule;
 public class ManageStatus extends AbstractAdministrationModule {
 
     /** logging */
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger (ManageStatus.class);
+    private static org.slf4j.Logger logger =
+            org.slf4j.LoggerFactory.getLogger (ManageStatus.class);
 
     private static final String CLASS_NAME = JahiaAdministration.CLASS_NAME;
     private static final String JSP_PATH = JahiaAdministration.JSP_PATH;

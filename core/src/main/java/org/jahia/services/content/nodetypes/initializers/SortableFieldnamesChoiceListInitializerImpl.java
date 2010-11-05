@@ -34,7 +34,7 @@ package org.jahia.services.content.nodetypes.initializers;
 
 import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.map.LazyMap;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
@@ -57,7 +57,7 @@ import java.util.*;
  * @author Sergiy Shyrkov
  */
 public class SortableFieldnamesChoiceListInitializerImpl extends AbstractChoiceListRenderer implements ChoiceListInitializer {
-    private transient static Logger logger = Logger.getLogger(TemplatesChoiceListInitializerImpl.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(TemplatesChoiceListInitializerImpl.class);
 
     private Set<String> excludedNodeTypes = Collections.emptySet();
 

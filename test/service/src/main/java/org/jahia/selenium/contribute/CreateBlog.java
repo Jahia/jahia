@@ -2,7 +2,7 @@ package org.jahia.selenium.contribute;
 
 import com.thoughtworks.selenium.SeleneseTestCase;
 import com.thoughtworks.selenium.Wait;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
@@ -11,7 +11,7 @@ import org.jahia.test.TestHelper;
 this integration test, create a home-blog page in edit, and create a blog in contribute mode
  */
 public class CreateBlog extends SeleneseTestCase{
-    private static Logger logger = Logger.getLogger(CreateBlog.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(CreateBlog.class);
     private JahiaSite site;
     private final static String TESTSITE_NAME = "mySite";
     private final static String TEST_SPEED = "1500";  //speed between selenium commands

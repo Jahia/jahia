@@ -34,7 +34,7 @@ package org.jahia.ajax.gwt.helper;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.services.content.decorator.JCRSiteNode;
@@ -63,7 +63,7 @@ import java.util.Set;
  * Time: 4:15:49 PM
  */
 public class RolesPermissionsHelper {
-    private static Logger logger = Logger.getLogger(RolesPermissionsHelper.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(RolesPermissionsHelper.class);
 
     private JahiaGroupManagerService groupManagerService;
     private RoleBasedAccessControlService rbacService;

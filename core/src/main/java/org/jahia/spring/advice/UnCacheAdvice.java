@@ -34,7 +34,7 @@
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
@@ -47,7 +47,7 @@ import org.jahia.services.cache.CacheService;
  * To change this template use File | Settings | File Templates.
  */
 public class UnCacheAdvice implements MethodInterceptor {
-    private static final transient Logger log = Logger.getLogger(UnCacheAdvice.class);
+    private static final transient Logger log = org.slf4j.LoggerFactory.getLogger(UnCacheAdvice.class);
     private String[] cacheNames;
     private String cacheName;
 

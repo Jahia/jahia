@@ -32,7 +32,7 @@
 
 package org.jahia.services.content.nodetypes.initializers;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
@@ -53,7 +53,7 @@ import java.util.Map;
  *        Created : 18 nov. 2009
  */
 public class ModuleImageChoiceListInitializerImpl implements ChoiceListInitializer {
-    private transient static Logger logger = Logger.getLogger(ModuleImageChoiceListInitializerImpl.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(ModuleImageChoiceListInitializerImpl.class);
 
     /**
      * This Initializer allows to add an dimage to a dropdown list. It tries to find an image having the name of

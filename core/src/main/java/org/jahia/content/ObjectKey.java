@@ -32,7 +32,7 @@
 
 package org.jahia.content;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.data.applications.EntryPointObjectKey;
 
 import java.io.Serializable;
@@ -58,7 +58,7 @@ public abstract class ObjectKey implements
     ObjectKeyInterface,
     Serializable, Comparable<ObjectKey> {
 
-    private static final Logger logger = Logger.getLogger(ObjectKey.class);
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(ObjectKey.class);
 
     private static final long serialVersionUID = 7375719911472500146L;
 

@@ -36,7 +36,7 @@ import net.htmlparser.jericho.HTMLElementName;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.SourceFormatter;
 import net.htmlparser.jericho.StartTag;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.GWTJahiaPortletOutputBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaSite;
 import org.jahia.ajax.gwt.client.service.JahiaService;
@@ -61,7 +61,7 @@ import java.util.List;
  */
 public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService {
     private static final ServicesRegistry servicesRegistry = ServicesRegistry.getInstance();
-    private static final Logger logger = Logger.getLogger(JahiaServiceImpl.class);
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaServiceImpl.class);
 
     public GWTJahiaPortletOutputBean drawPortletInstanceOutput(String windowID, String entryPointIDStr, String pathInfo, String queryString) {
         GWTJahiaPortletOutputBean result = new GWTJahiaPortletOutputBean();

@@ -32,7 +32,7 @@
 
 package org.jahia.bin.errors;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -48,7 +48,7 @@ import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
  */
 public class ErrorEventFilter implements Filter {
 
-    private static Logger logger = Logger.getLogger(ErrorEventFilter.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(ErrorEventFilter.class);
 
     private int minimalErrorCode = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 

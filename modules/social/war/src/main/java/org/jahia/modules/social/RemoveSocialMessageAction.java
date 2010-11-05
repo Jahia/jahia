@@ -38,7 +38,7 @@ import java.util.Map;
 import javax.jcr.ItemNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.bin.ActionResult;
 import org.jahia.bin.BaseAction;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -55,7 +55,7 @@ import org.jahia.services.render.URLResolver;
  */
 public class RemoveSocialMessageAction extends BaseAction {
     
-    private static final Logger logger = Logger.getLogger(RemoveSocialMessageAction.class);
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(RemoveSocialMessageAction.class);
 
     /* (non-Javadoc)
      * @see org.jahia.bin.Action#doExecute(javax.servlet.http.HttpServletRequest, org.jahia.services.render.RenderContext, org.jahia.services.render.Resource, java.util.Map, org.jahia.services.render.URLResolver)

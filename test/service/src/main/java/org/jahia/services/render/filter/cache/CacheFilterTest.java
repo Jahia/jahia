@@ -36,7 +36,7 @@ import junit.framework.TestCase;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.BlockingCache;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ParamBean;
@@ -67,7 +67,7 @@ import java.util.*;
  *        Created : 12 janv. 2010
  */
 public class CacheFilterTest extends TestCase {
-    private transient static Logger logger = Logger.getLogger(CacheFilterTest.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(CacheFilterTest.class);
 
     private static class TestFilter extends AbstractFilter {
         @Override

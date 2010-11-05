@@ -46,7 +46,7 @@ import org.apache.commons.jexl.ExpressionFactory;
 import org.apache.commons.jexl.JexlContext;
 import org.apache.commons.jexl.JexlHelper;
 import org.apache.commons.lang.math.NumberUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
 import org.jahia.utils.i18n.ResourceBundleMarker;
@@ -84,7 +84,7 @@ public class JahiaTools {
     // used to convert time expression like 1w 2d 3h 5m to millisecond.
     private static Map<String, Long> milliSecondsMultiplier;
 
-    private static Logger logger = Logger.getLogger(JahiaTools.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaTools.class);
 
     private static List<String> structureHTMLTags = new ArrayList<String>();
 

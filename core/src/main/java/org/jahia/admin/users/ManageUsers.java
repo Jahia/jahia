@@ -808,7 +808,7 @@ public class ManageUsers extends AbstractAdministrationModule {
         displayUsers( request, response, session);
     }
 
-    private static org.apache.log4j.Logger logger =
-             org.apache.log4j.Logger.getLogger(ManageUsers.class);
+    private static org.slf4j.Logger logger =
+             org.slf4j.LoggerFactory.getLogger(ManageUsers.class);
 
 }

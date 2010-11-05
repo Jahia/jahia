@@ -47,7 +47,7 @@ import java.util.*;
  * Time: 9:03:31 PM
  */
 public class LanguageItemsResolver extends DefaultItemsResolver {
-    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(LanguageItemsResolver.class);
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(LanguageItemsResolver.class);
 
     public List<Item> getItems(JCRSiteNode currentSite, JahiaUser user, Locale selectedLang) {
         List<Item> items = new ArrayList<Item>();

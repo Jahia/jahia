@@ -37,7 +37,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.observation.*;
 import javax.jcr.observation.EventListener;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 import java.util.*;
 
@@ -59,7 +59,7 @@ public class JCRObservationManager implements ObservationManager {
     public static final int NODE_UPDATE = 1 << 11;
     public static final int NODE_MERGE = 1 << 12;
 
-    private static Logger logger = Logger.getLogger(JCRObservationManager.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRObservationManager.class);
 
     private static ThreadLocal<Boolean> eventsDisabled = new ThreadLocal<Boolean>();
     private static ThreadLocal<JCRSessionWrapper> currentSession = new ThreadLocal<JCRSessionWrapper>();

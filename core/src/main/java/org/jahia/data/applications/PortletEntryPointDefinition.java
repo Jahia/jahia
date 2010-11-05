@@ -61,8 +61,8 @@ public class PortletEntryPointDefinition implements Serializable, EntryPointDefi
     /**
      * logging
      */
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(PortletEntryPointDefinition.class);
+    private static org.slf4j.Logger logger =
+            org.slf4j.LoggerFactory.getLogger(PortletEntryPointDefinition.class);
 
     private String applicationID;
     private String context;

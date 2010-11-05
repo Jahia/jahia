@@ -16,7 +16,7 @@
  */
 package org.jahia.services.content.nodetypes;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 
 import javax.jcr.PropertyType;
@@ -105,7 +105,7 @@ import java.util.*;
  * </pre>
  */
 public class JahiaCndReaderLegacy {
-    private static Logger logger = Logger.getLogger(JahiaCndReader.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaCndReader.class);
 
     protected String systemId;
     protected String filename;

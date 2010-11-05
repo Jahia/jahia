@@ -33,7 +33,7 @@
 package org.jahia.services.workflow.jbpm;
 
 import org.apache.commons.lang.WordUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.apache.velocity.tools.generic.DateTool;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
@@ -75,7 +75,7 @@ import java.util.*;
  */
 public class JBPMMailProducer extends MailProducerImpl {
     private static final long serialVersionUID = -5084848266010688683L;
-    private transient static Logger logger = Logger.getLogger(JBPMMailProducer.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JBPMMailProducer.class);
     ScriptEngine scriptEngine;
     private Bindings bindings;
 

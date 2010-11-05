@@ -32,7 +32,7 @@
 
 package org.jahia.taglibs.template.include;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.render.RenderContext;
@@ -55,7 +55,7 @@ import java.util.List;
  */
 public class AddResourcesTag extends AbstractJahiaTag {
     private static final long serialVersionUID = -552052631291168495L;
-    private transient static Logger logger = Logger.getLogger(AddResourcesTag.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(AddResourcesTag.class);
     private boolean insert;
     private String type;
     private String resources;

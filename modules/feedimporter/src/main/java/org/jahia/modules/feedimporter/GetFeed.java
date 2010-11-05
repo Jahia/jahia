@@ -36,7 +36,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
 import org.jahia.registries.ServicesRegistry;
@@ -67,7 +67,7 @@ import java.util.*;
  * Update the feed from the url
  */
 public class GetFeed implements Action, BackgroundAction {
-    private static Logger logger = Logger.getLogger(GetFeed.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(GetFeed.class);
     private String name;
 
     public String getName() {

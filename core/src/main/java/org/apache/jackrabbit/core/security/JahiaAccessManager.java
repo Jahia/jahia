@@ -45,7 +45,7 @@ import org.apache.jackrabbit.spi.commons.conversion.NamePathResolver;
 import org.apache.jackrabbit.spi.commons.conversion.PathResolver;
 import org.apache.jackrabbit.spi.commons.namespace.NamespaceResolver;
 import org.apache.jackrabbit.spi.commons.namespace.SessionNamespaceResolver;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.jaas.JahiaPrincipal;
@@ -90,7 +90,7 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class JahiaAccessManager extends AbstractAccessControlManager implements AccessManager, AccessControlManager {
-    public static final Logger logger = Logger.getLogger(JahiaAccessManager.class);
+    public static final Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaAccessManager.class);
 
     /**
      * Subject whose access rights this AccessManager should reflect

@@ -32,7 +32,7 @@
 
 package org.jahia.services.content.rules;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRContentUtils;
@@ -54,7 +54,7 @@ import java.util.List;
  * Time: 11:53:45
  */
 public class AddedNodeFact implements Updateable {
-    private static Logger logger = Logger.getLogger(AddedNodeFact.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(AddedNodeFact.class);
 
     private AddedNodeFact parentNode;
     private String parentNodePath;

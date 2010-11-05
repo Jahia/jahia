@@ -33,7 +33,7 @@
 package org.jahia.services.publication;
 
 import junit.framework.TestCase;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
@@ -75,7 +75,7 @@ import java.util.*;
  *
  */
 public class PublicationTest extends TestCase {
-    private static Logger logger = Logger.getLogger(PublicationTest.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(PublicationTest.class);
     private JahiaSite site;
     private final static String TESTSITE_NAME = "jcrPublicationTest";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;

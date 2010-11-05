@@ -32,7 +32,7 @@
 
 package org.jahia.services.content;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
@@ -46,7 +46,7 @@ import javax.jcr.RepositoryException;
  * To change this template use File | Settings | File Templates.
  */
 public class PropertyIteratorImpl implements PropertyIterator {
-    private static Logger logger = Logger.getLogger(PropertyIteratorImpl.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(PropertyIteratorImpl.class);
     private JCRNodeWrapper node;
     private PropertyIterator iterator;
 

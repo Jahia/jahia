@@ -33,7 +33,7 @@
 package org.jahia.taglibs.template.include;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
 import org.jahia.services.content.*;
 import org.jahia.services.render.*;
@@ -50,7 +50,7 @@ import java.io.IOException;
  */
 public class ListTag extends ModuleTag implements ParamParent {
 
-    private static Logger logger = Logger.getLogger(ListTag.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(ListTag.class);
 
     private String listType = "jnt:contentList";
 

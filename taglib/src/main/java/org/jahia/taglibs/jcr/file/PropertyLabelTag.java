@@ -32,7 +32,8 @@
 
 package org.jahia.taglibs.jcr.file;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.struts.taglib.TagUtils;
 import org.jahia.data.JahiaData;
 import org.jahia.services.content.nodetypes.ExtendedItemDefinition;
@@ -54,7 +55,7 @@ import java.io.IOException;
 @SuppressWarnings("serial")
 public class PropertyLabelTag extends TagSupport {
     
-    private static final transient Logger logger = Logger
+    private static final transient Logger logger = LoggerFactory
             .getLogger(PropertyLabelTag.class);
     
     private String name = "propertyDefinition";

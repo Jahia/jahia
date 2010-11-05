@@ -61,8 +61,8 @@ public class DisplaySitePropertiesTag extends AbstractJahiaTag {
         this.dateFormat = dateFormat;
     }
 
-    private static final transient org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(DisplaySitePropertiesTag.class);
+    private static final transient org.slf4j.Logger logger =
+            org.slf4j.LoggerFactory.getLogger(DisplaySitePropertiesTag.class);
 
     public int doStartTag() {
         try {
@@ -126,7 +126,7 @@ public class DisplaySitePropertiesTag extends AbstractJahiaTag {
             out.print(buff.toString());
 
         } catch (final Exception e) {
-            logger.error(e, e);
+            logger.error(e.getMessage(), e);
         }
         return SKIP_BODY;
     }

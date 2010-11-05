@@ -32,7 +32,7 @@
 
 package org.jahia.modules.docspace;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.ActionResult;
 import org.jahia.services.content.JCRPublicationService;
@@ -54,7 +54,7 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class PublishFile implements org.jahia.bin.Action {
-    private static Logger logger = Logger.getLogger(SetACLAction.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(SetACLAction.class);
     private String name;
 
     public String getName() {

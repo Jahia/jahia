@@ -34,7 +34,7 @@ package org.jahia.services.content;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaAccessManager;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
@@ -61,7 +61,7 @@ public class JCRVersionService extends JahiaService {
 
     private static JCRVersionService instance;
 
-    private static transient Logger logger = Logger.getLogger(JCRVersionService.class);
+    private static transient Logger logger = org.slf4j.LoggerFactory.getLogger(JCRVersionService.class);
 
     /**
      * Get the singleton instance of the JCRPublicationService

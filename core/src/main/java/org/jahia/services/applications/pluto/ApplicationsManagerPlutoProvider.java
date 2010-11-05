@@ -39,7 +39,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.apache.pluto.container.PortletContainerException;
 import org.apache.pluto.container.PortletWindow;
 import org.apache.pluto.container.driver.PlutoServices;
@@ -66,7 +66,7 @@ import org.jahia.services.usermanager.JahiaUser;
  */
 public class ApplicationsManagerPlutoProvider implements ApplicationsManagerProvider {
 
-    private static final Logger logger = Logger.getLogger(ApplicationsManagerPlutoProvider.class);
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(ApplicationsManagerPlutoProvider.class);
 
     /**
      * Create an entryPointInstance from the entryPointDefinition

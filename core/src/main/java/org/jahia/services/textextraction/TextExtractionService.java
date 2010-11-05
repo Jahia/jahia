@@ -35,7 +35,7 @@ package org.jahia.services.textextraction;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.io.IOUtils;
@@ -58,7 +58,7 @@ import org.xml.sax.SAXException;
  */
 public class TextExtractionService implements InitializingBean {
 
-    private static Logger logger = Logger.getLogger(TextExtractionService.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(TextExtractionService.class);
 
     private static CompositeParser configureParser(Resource config, boolean autoDetectType) {
         CompositeParser parser = null;
@@ -154,7 +154,7 @@ public class TextExtractionService implements InitializingBean {
         logger.info("Starting the text extraction service...");
 
         if (!config.exists() || !configMetadata.exists()) {
-            logger.fatal("Text extraction configuration cannot be found. Disabling the service.");
+            logger.error("Text extraction configuration cannot be found. Disabling the service.");
             enabled = false;
             return;
         }

@@ -344,8 +344,8 @@ public class DisplayIconTag extends AbstractJahiaTag {
     private String _id = "";
     private String _lang = "";
 
-    private static org.apache.log4j.Logger logger =
-        org.apache.log4j.Logger.getLogger(DisplayIconTag.class);
+    private static org.slf4j.Logger logger =
+        org.slf4j.LoggerFactory.getLogger(DisplayIconTag.class);
     private void jbInit ()
         throws Exception {
     }

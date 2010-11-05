@@ -34,7 +34,7 @@ package org.jahia.services.content.rules;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.drools.FactException;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.api.Constants;
@@ -72,7 +72,7 @@ import java.util.zip.ZipInputStream;
  *         Time: 12:04:29
  */
 public class Service extends JahiaService {
-    private static Logger logger = Logger.getLogger(Service.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(Service.class);
     private static Service instance;
 
     private TaggingService taggingService;
@@ -194,11 +194,11 @@ public class Service extends JahiaService {
             try {
                 processFileImport(prepareFileImports(node, node.getName()), user.getJahiaUser());
             } catch (IOException e) {
-                logger.error(e);
+                logger.error(e.getMessage(), e);
             } catch (ServletException e) {
-                logger.error(e);
+                logger.error(e.getMessage(), e);
             } catch (JahiaException e) {
-                logger.error(e);
+                logger.error(e.getMessage(), e);
             }
         }
 
@@ -299,7 +299,7 @@ public class Service extends JahiaService {
         } catch (IOException e) {
             logger.error("Cannot read import file :" + e.getMessage());
         } catch (RepositoryException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
         }
         return new ArrayList<Map<Object, Object>>();
     }

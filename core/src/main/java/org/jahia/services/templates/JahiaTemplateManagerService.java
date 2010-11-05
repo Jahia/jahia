@@ -36,7 +36,8 @@ import java.io.*;
 import java.util.*;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.bin.Action;
 import org.jahia.bin.errors.ErrorHandler;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -72,7 +73,7 @@ import javax.jcr.RepositoryException;
  */
 public class JahiaTemplateManagerService extends JahiaService implements ApplicationListener {
 
-	private static Logger logger = Logger
+	private static Logger logger = LoggerFactory
             .getLogger(JahiaTemplateManagerService.class);
 
     private TemplatePackageDeployer templatePackageDeployer;

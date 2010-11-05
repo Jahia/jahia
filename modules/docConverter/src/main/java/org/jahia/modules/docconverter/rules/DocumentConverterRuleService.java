@@ -42,7 +42,7 @@ import javax.jcr.RepositoryException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.artofsolving.jodconverter.document.DocumentFormat;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.services.content.JCRContentUtils;
@@ -58,7 +58,7 @@ import org.jahia.services.transform.DocumentConverterService;
  */
 public class DocumentConverterRuleService {
 
-    private static Logger logger = Logger.getLogger(DocumentConverterRuleService.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(DocumentConverterRuleService.class);
 
     private DocumentConverterService converterService;
 

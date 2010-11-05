@@ -32,7 +32,7 @@
 
 package org.jahia.services.query;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.sites.JahiaSite;
@@ -60,7 +60,7 @@ import java.util.*;
  * 
  */
 public class IndexOptionsTest {
-    private static Logger logger = Logger.getLogger(IndexOptionsTest.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(IndexOptionsTest.class);
     private final static String TESTSITE_NAME = "jcrIndexOptionsTest";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
 

@@ -36,7 +36,7 @@ import org.apache.commons.collections.OrderedMap;
 import org.apache.commons.collections.map.LinkedMap;
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
@@ -65,7 +65,7 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class PublicationHelper {
-    private static Logger logger = Logger.getLogger(PublicationHelper.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(PublicationHelper.class);
 
     private JCRPublicationService publicationService;
     private WorkflowService workflowService;

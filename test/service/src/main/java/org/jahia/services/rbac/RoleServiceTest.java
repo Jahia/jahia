@@ -46,7 +46,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -69,7 +69,7 @@ import org.junit.Test;
  */
 public class RoleServiceTest {
 
-    private static Logger logger = Logger.getLogger(RoleServiceTest.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(RoleServiceTest.class);
 
     private static final String PERMISSION_PREFIX = "permission-test-";
 

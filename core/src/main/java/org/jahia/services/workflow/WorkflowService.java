@@ -34,7 +34,7 @@ package org.jahia.services.workflow;
 
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.registries.ServicesRegistry;
@@ -59,7 +59,7 @@ import java.util.*;
  *        Created : 2 févr. 2010
  */
 public class WorkflowService {
-    private transient static Logger logger = Logger.getLogger(WorkflowService.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(WorkflowService.class);
 
 
     private Map<String, WorkflowProvider> providers = new HashMap<String, WorkflowProvider>();
@@ -728,7 +728,7 @@ public class WorkflowService {
                 current = inherited;
             }
         } catch (ItemNotFoundException e) {
-            logger.debug(e);
+            logger.debug(e.getMessage(), e);
         }
     }
 

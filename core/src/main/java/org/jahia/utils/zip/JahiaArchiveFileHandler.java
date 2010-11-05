@@ -58,8 +58,8 @@ import java.util.zip.ZipInputStream;
  */
 public class JahiaArchiveFileHandler {
 
-    private static org.apache.log4j.Logger logger =
-        org.apache.log4j.Logger.getLogger(JahiaArchiveFileHandler.class);
+    private static org.slf4j.Logger logger =
+        org.slf4j.LoggerFactory.getLogger(JahiaArchiveFileHandler.class);
 
     private static final String CLASS_NAME = JahiaArchiveFileHandler.class.
                                              getName();

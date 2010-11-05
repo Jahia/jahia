@@ -32,7 +32,7 @@
 
 package org.jahia.services.content;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.test.TestHelper;
 import org.junit.*;
 import static org.junit.Assert.*;
@@ -51,7 +51,7 @@ import java.util.Date;
  */
 public class AutoSplittingTest {
 
-    private static Logger logger = Logger.getLogger(AutoSplittingTest.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(AutoSplittingTest.class);
 
     private final static String TESTSITE_NAME = "findTestSite";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;

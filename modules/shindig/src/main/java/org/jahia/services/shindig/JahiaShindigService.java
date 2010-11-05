@@ -36,7 +36,7 @@ import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.util.ImmediateFuture;
 import org.apache.shindig.protocol.DataCollection;
@@ -74,7 +74,7 @@ import java.util.concurrent.Future;
  */
 public class JahiaShindigService implements PersonService, ActivityService, AppDataService, MessageService {
 
-    private static Logger logger = Logger.getLogger(JahiaShindigService.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaShindigService.class);
 
     private static final Comparator<Person> NAME_COMPARATOR = new Comparator<Person>() {
         public int compare(Person person, Person person1) {

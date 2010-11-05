@@ -33,7 +33,7 @@
 package org.jahia.services.importexport;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.utils.i18n.ResourceBundleMarker;
 
@@ -49,7 +49,7 @@ import java.util.regex.Pattern;
  * Created by IntelliJ IDEA. User: toto Date: Oct 29, 2009 Time: 7:09:03 PM To change this template use File | Settings | File Templates.
  */
 public class DefinitionsMapping {
-    private static Logger logger = Logger.getLogger(LegacyImportHandler.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(LegacyImportHandler.class);
 
     public DefinitionsMapping() {
         metadataProperties.put("jahia:defaultCategory", new PropertyMapping(

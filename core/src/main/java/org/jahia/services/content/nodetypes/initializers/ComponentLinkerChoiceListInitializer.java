@@ -34,7 +34,7 @@ package org.jahia.services.content.nodetypes.initializers;
 
 import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.map.LazyMap;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -55,7 +55,7 @@ import java.util.*;
  *        Created : 11 mai 2010
  */
 public class ComponentLinkerChoiceListInitializer implements ChoiceListInitializer {
-    private transient static Logger logger = Logger.getLogger(ComponentLinkerChoiceListInitializer.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(ComponentLinkerChoiceListInitializer.class);
     private JCRSessionFactory sessionFactory;
 
     public void setSessionFactory(JCRSessionFactory sessionFactory) {

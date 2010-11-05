@@ -918,7 +918,7 @@ public class ManageGroups extends AbstractAdministrationModule {
         }
     }
 
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(ManageGroups.class);
+    private static org.slf4j.Logger logger =
+            org.slf4j.LoggerFactory.getLogger(ManageGroups.class);
 
 }

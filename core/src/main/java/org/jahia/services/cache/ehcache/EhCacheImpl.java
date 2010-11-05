@@ -53,8 +53,8 @@ import java.util.Iterator;
  */
 public class EhCacheImpl implements CacheImplementation {
 
-    final private static org.apache.log4j.Logger logger =
-        org.apache.log4j.Logger.getLogger (EhCacheImpl.class);
+    final private static org.slf4j.Logger logger =
+        org.slf4j.LoggerFactory.getLogger (EhCacheImpl.class);
 
     EhCacheProvider ehCacheProvider;
     String name;

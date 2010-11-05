@@ -33,7 +33,7 @@
 package org.jahia.taglibs.uicomponents.i18n;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.taglibs.ValueJahiaTag;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -48,7 +48,7 @@ import java.util.Locale;
 @SuppressWarnings("serial")
 public class DisplayLanguageSwitchLinkTag extends ValueJahiaTag {
 
-    private static final transient Logger logger = Logger.getLogger(DisplayLanguageSwitchLinkTag.class);
+    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(DisplayLanguageSwitchLinkTag.class);
 
     public static final String FLAG = "flag";
     public static final String NAME_CURRENT_LOCALE = "nameCurrentLocale";

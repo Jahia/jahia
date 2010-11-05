@@ -32,7 +32,7 @@
 
 package org.jahia.services.content.nodetypes.initializers;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.content.rules.BackgroundAction;
@@ -51,7 +51,7 @@ import java.util.*;
 public class BackgroundActionChoiceListInitializerImpl implements ChoiceListInitializer {
 
     private JahiaTemplateManagerService templateManagerService;
-    private transient static Logger logger = Logger.getLogger(BackgroundActionChoiceListInitializerImpl.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(BackgroundActionChoiceListInitializerImpl.class);
 
     public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, String param, List<ChoiceListValue> values, Locale locale,
                                                      Map<String, Object> context) {

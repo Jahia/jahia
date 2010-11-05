@@ -54,7 +54,7 @@ import java.util.*;
  */
 public class JahiaPortletPreferencesServiceImpl extends DefaultPortletPreferencesService {
 
-    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(JahiaPortletPreferencesServiceImpl.class);
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaPortletPreferencesServiceImpl.class);
 
     private JahiaPreferencesService jahiaPreferencesService;
 

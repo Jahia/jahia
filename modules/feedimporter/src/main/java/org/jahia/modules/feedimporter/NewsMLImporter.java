@@ -35,7 +35,7 @@ package org.jahia.modules.feedimporter;
 import org.apache.commons.vfs.*;
 import org.apache.commons.vfs.auth.StaticUserAuthenticator;
 import org.apache.commons.vfs.impl.DefaultFileSystemConfigBuilder;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.categories.CategoryService;
@@ -71,7 +71,7 @@ import java.util.*;
  */
 public class NewsMLImporter {
 
-    private static Logger logger = Logger.getLogger(NewsMLImporter.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(NewsMLImporter.class);
 
     private CategoryService categoryService;
     private Properties subjectCodeToCategoryKey;
@@ -153,13 +153,13 @@ public class NewsMLImporter {
     }
 
     public JCRNodeWrapper getCategoryNodeByKey(JCRSessionWrapper session, String categoryKey) throws RepositoryException {
-        StringBuffer query = new StringBuffer("SELECT * FROM ["
+        StringBuilder query = new StringBuilder("SELECT * FROM ["
                 + Constants.JAHIANT_CATEGORY);
         query.append("] as cat WHERE cat.[" + Constants.NODENAME + "] = '");
         query.append(categoryKey);
         query.append("' ");
         if (logger.isDebugEnabled()) {
-            logger.debug(query);
+            logger.debug(query.toString());
         }
         Query q = session.getWorkspace().getQueryManager().createQuery(
                 query.toString(), Query.JCR_SQL2);

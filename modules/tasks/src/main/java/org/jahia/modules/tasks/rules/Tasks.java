@@ -32,7 +32,7 @@
 
 package org.jahia.modules.tasks.rules;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.bin.Jahia;
 import org.jahia.services.tasks.Task;
@@ -49,7 +49,7 @@ import java.util.Date;
  *        Created : 5 janv. 2010
  */
 public class Tasks {
-    private transient static Logger logger = Logger.getLogger(Tasks.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(Tasks.class);
 
     private static Tasks instance;
     private TaskService taskService;

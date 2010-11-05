@@ -34,7 +34,7 @@ package org.jahia.services.templates;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.CamelContextAware;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -64,7 +64,7 @@ import java.util.*;
  */
 class TemplatePackageRegistry implements CamelContextAware {
 
-    private static Logger logger = Logger.getLogger(TemplatePackageRegistry.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(TemplatePackageRegistry.class);
     
     private final static String MODULES_ROOT_PATH = "modules.";
     private static CamelContext camelContext;

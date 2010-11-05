@@ -81,7 +81,7 @@ import org.jahia.services.applications.pluto.JahiaPortalServletRequest;
  * @since 09/22/2004
  */
 public class PortletServlet extends HttpServlet {
-    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(PortletServlet.class);
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(PortletServlet.class);
     private static final long serialVersionUID = -5096339022539360365L;
 
     static class NullPortlet implements EventPortlet, ResourceServingPortlet, Portlet {
@@ -221,9 +221,9 @@ public class PortletServlet extends HttpServlet {
                         try {
                             NodeTypeRegistry.getInstance().addDefinitionsFile(new File(realPath), portletConfig.getPortletName(), true);
                         } catch (ParseException e) {
-                            logger.error(e, e);
+                            logger.error(e.getMessage(), e);
                         } catch (IOException e) {
-                            logger.error(e, e);
+                            logger.error(e.getMessage(), e);
                         }
                     }
 

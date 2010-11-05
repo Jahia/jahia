@@ -32,7 +32,7 @@
 
 package org.jahia.services.usermanager.jcr;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
@@ -66,7 +66,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
     public static final String ADMINISTRATORS_GROUPNAME = "administrators";
     public static final String GUEST_GROUPNAME = "guest";
 
-    private transient static Logger logger = Logger.getLogger(JCRGroupManagerProvider.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRGroupManagerProvider.class);
     private transient JCRTemplate jcrTemplate;
     private static JCRGroupManagerProvider mGroupManagerProvider;
     private JCRUserManagerProvider userManagerProvider;
@@ -689,7 +689,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                         Set<JahiaGroup> users = new HashSet<JahiaGroup>();
                         if (session.getWorkspace().getQueryManager() != null) {
                             String siteName = sitesService.getSite(siteID).getSiteKey();
-                            StringBuffer query = new StringBuffer(
+                            StringBuilder query = new StringBuilder(
                                     "SELECT * FROM [" + Constants.JAHIANT_GROUP + "] as g WHERE g.[" +
                                             JCRGroup.J_EXTERNAL + "] = 'false' AND ISCHILDNODE(g, '/sites/" + siteName +
                                             "/groups')");
@@ -730,7 +730,7 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider {
                             }
                             query.append(" ORDER BY g.[j:nodename]");
                             if (logger.isDebugEnabled()) {
-                                logger.debug(query);
+                                logger.debug(query.toString());
                             }
                             Query q = session.getWorkspace().getQueryManager()
                                     .createQuery(query.toString(), Query.JCR_SQL2);

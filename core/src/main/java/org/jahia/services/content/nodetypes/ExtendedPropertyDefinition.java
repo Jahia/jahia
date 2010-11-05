@@ -35,7 +35,7 @@ package org.jahia.services.content.nodetypes;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.spi.commons.nodetype.InvalidConstraintException;
 import org.apache.jackrabbit.spi.commons.nodetype.constraint.ValueConstraint;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
@@ -55,7 +55,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * To change this template use File | Settings | File Templates.
  */
 public class ExtendedPropertyDefinition extends ExtendedItemDefinition implements PropertyDefinition {
-    private static Logger logger = Logger.getLogger(ExtendedPropertyDefinition.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(ExtendedPropertyDefinition.class);
 
     private NodeTypeRegistry registry;
 

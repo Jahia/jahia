@@ -67,8 +67,8 @@ import java.util.Observable;
  */
 public class FileWatcher extends Observable implements Serializable {
 
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(FileWatcher.class);
+    private static org.slf4j.Logger logger =
+            org.slf4j.LoggerFactory.getLogger(FileWatcher.class);
 
     /** The Full Real Path to the Folder to Watch **/
     private String m_FolderPath = "";

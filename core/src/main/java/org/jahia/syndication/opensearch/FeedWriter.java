@@ -58,8 +58,8 @@ import org.jahia.utils.DateUtils;
  */
 public class FeedWriter {
 
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger (FeedWriter.class);
+    private static org.slf4j.Logger logger =
+            org.slf4j.LoggerFactory.getLogger (FeedWriter.class);
 
     private static final DateFormat DATE_PARSER = new SimpleDateFormat(DateUtils.DEFAULT_DATETIME_FORMAT);
 

@@ -33,7 +33,7 @@
 package org.jahia.services.render;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 
@@ -54,7 +54,7 @@ public class Resource {
     public static final String CONFIGURATION_WRAPPER = "wrapper";
     public static final String CONFIGURATION_WRAPPEDCONTENT = "wrappedcontent";
 
-    private static Logger logger = Logger.getLogger(Resource.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(Resource.class);
     private JCRNodeWrapper node;
     private String templateType;
     private String template;

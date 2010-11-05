@@ -33,7 +33,7 @@
 package org.jahia.ajax.gwt.helper;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -65,7 +65,7 @@ import java.util.*;
  * Time: 3:48:28 PM
  */
 public class WorkflowHelper {
-    private static final transient Logger logger = Logger.getLogger(WorkflowHelper.class);
+    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(WorkflowHelper.class);
 
     private WorkflowService service;
 

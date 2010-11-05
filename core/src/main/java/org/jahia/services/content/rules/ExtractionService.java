@@ -45,7 +45,7 @@ import javax.jcr.UnsupportedRepositoryOperationException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.value.BinaryImpl;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.apache.tika.io.IOUtils;
 import org.apache.tika.metadata.Metadata;
 import org.drools.WorkingMemory;
@@ -70,7 +70,7 @@ public class ExtractionService {
 
     private static ExtractionService instance;
     
-    private static Logger logger = Logger.getLogger(ExtractionService.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(ExtractionService.class);
 
     public static ExtractionService getInstance() {
         if (instance == null) {

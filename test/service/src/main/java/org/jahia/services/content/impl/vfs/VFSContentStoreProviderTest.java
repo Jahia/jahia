@@ -1,6 +1,6 @@
 package org.jahia.services.content.impl.vfs;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.helper.ContentHubHelper;
@@ -36,7 +36,7 @@ import java.util.Locale;
  * To change this template use File | Settings | File Templates.
  */
 public class VFSContentStoreProviderTest {
-    private static Logger logger = Logger.getLogger(VFSContentStoreProviderTest.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(VFSContentStoreProviderTest.class);
     private static final String TESTSITE_NAME = "vfsContentProviderTest";
     private static final String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
     private static File dynamicMountDir;

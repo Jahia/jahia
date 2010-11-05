@@ -34,7 +34,7 @@ package org.jahia.bin;
 
 import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.bin.errors.ErrorHandler;
@@ -77,7 +77,7 @@ public class WelcomeServlet extends HttpServlet {
     /** The serialVersionUID. */
     private static final long serialVersionUID = -2055161334153523152L;
     
-    private static final transient Logger logger = Logger.getLogger(ProcessingContext.class);
+    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(ProcessingContext.class);
     
     private static final String DEFAULT_LOCALE = Locale.ENGLISH.toString();
 

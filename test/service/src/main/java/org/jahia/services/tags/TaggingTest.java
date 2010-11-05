@@ -42,7 +42,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.query.Query;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -60,7 +60,7 @@ import static org.junit.Assert.*;
  * @author Sergiy Shyrkov
  */
 public class TaggingTest {
-    private static Logger logger = Logger.getLogger(TaggingTest.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(TaggingTest.class);
     
     private static final int TAGS_TO_CREATE = 1000;
 

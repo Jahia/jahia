@@ -35,7 +35,7 @@ package org.jahia.services.render.filter.cache;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.content.*;
 
 import javax.jcr.NodeIterator;
@@ -54,7 +54,7 @@ import java.util.Set;
  *        Created : 12 janv. 2010
  */
 public class HtmlCacheEventListener extends DefaultEventListener {
-    private transient static Logger logger = Logger.getLogger(HtmlCacheEventListener.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(HtmlCacheEventListener.class);
 
     private ModuleCacheProvider cacheProvider;
     private JCRTemplate jcrTemplate;

@@ -33,7 +33,7 @@
 package org.jahia.ajax.gwt.helper;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.bin.Jahia;
 import org.jahia.services.content.decorator.JCRSiteNode;
@@ -50,7 +50,7 @@ import java.util.*;
  * Time: 2:16:33 PM
  */
 public class LanguageHelper {
-    private static Logger logger = Logger.getLogger(LanguageHelper.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(LanguageHelper.class);
 
     /**
      * Get available languages for the current site

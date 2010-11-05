@@ -42,7 +42,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.params.ParamBean;
 
 /**
@@ -50,7 +51,7 @@ import org.jahia.params.ParamBean;
 
 public class ServletIncludeRequestWrapper extends HttpServletRequestWrapper {
 
-    private static Logger logger = Logger
+    private static Logger logger = LoggerFactory
             .getLogger(ServletIncludeRequestWrapper.class);
 
     private String emulatedContextPath;

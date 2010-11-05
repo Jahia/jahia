@@ -32,7 +32,7 @@
 
 package org.jahia.taglibs.template.include;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.Resource;
 
@@ -47,7 +47,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  *        Created : 15 juil. 2010
  */
 public class AddDependencyTag extends TagSupport {
-    private transient static Logger logger = Logger.getLogger(AddDependencyTag.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(AddDependencyTag.class);
     protected JCRNodeWrapper node;
     protected String stringDependency;
 

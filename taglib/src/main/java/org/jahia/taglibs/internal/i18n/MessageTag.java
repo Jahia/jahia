@@ -94,7 +94,7 @@ import org.jahia.utils.i18n.JahiaResourceBundle;
 @SuppressWarnings("serial")
 public class MessageTag extends TagSupport {
 
-    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(MessageTag.class);
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(MessageTag.class);
 
     private String key = null;
     private String name = null;

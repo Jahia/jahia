@@ -32,7 +32,7 @@
 
 package org.jahia.taglibs.utility.i18n;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.render.RenderContext;
@@ -56,7 +56,7 @@ import java.util.ResourceBundle;
 @SuppressWarnings("serial")
 public class SetBundleTag extends AbstractJahiaTag {
     
-    private static final transient Logger logger = Logger.getLogger(SetBundleTag.class);
+    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(SetBundleTag.class);
     
     private String basename;
     private String var;

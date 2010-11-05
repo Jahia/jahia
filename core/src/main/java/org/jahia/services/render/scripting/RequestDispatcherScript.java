@@ -32,7 +32,7 @@
 
 package org.jahia.services.render.scripting;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.render.*;
 
 import javax.servlet.RequestDispatcher;
@@ -54,7 +54,7 @@ import java.util.Enumeration;
  */
 public class RequestDispatcherScript implements Script {
 
-    private static final Logger logger = Logger.getLogger(RequestDispatcherScript.class);
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(RequestDispatcherScript.class);
 
     private RequestDispatcher rd;
     private HttpServletRequest request;

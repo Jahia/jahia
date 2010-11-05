@@ -35,7 +35,7 @@ package org.jahia.services.content.nodetypes.initializers;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -53,7 +53,7 @@ import java.util.*;
  */
 public class SubNodeTypesChoiceListInitializerImpl implements ChoiceListInitializer {
     
-    private transient static Logger logger = Logger.getLogger(SubNodeTypesChoiceListInitializerImpl.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(SubNodeTypesChoiceListInitializerImpl.class);
 
     @SuppressWarnings("unchecked")
     public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, String param, List<ChoiceListValue> values, Locale locale,

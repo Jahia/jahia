@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.apache.tika.metadata.Metadata;
 import org.jahia.services.textextraction.TextExtractionService;
 import org.jahia.settings.SettingsBean;
@@ -60,7 +60,7 @@ public class TextExtractor extends HttpServlet implements Controller {
 
 	private static final long serialVersionUID = 7741046486853963555L;
 
-	private static Logger logger = Logger.getLogger(TextExtractor.class);
+	private static Logger logger = org.slf4j.LoggerFactory.getLogger(TextExtractor.class);
 
     private SettingsBean settingsBean;
 

@@ -32,7 +32,7 @@
 
 package org.jahia.services.importexport;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.apache.tika.io.IOUtils;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
@@ -58,7 +58,7 @@ import java.io.FileInputStream;
  */
 public class ImportJob extends BackgroundJob {
 
-    private final static Logger logger = Logger.getLogger(ImportJob.class);
+    private final static Logger logger = org.slf4j.LoggerFactory.getLogger(ImportJob.class);
 
     public static final String TARGET = "target";
     public static final String CONTENT_TYPE = "contentType";

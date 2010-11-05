@@ -40,7 +40,7 @@ import java.util.Set;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
@@ -60,7 +60,7 @@ import org.jahia.services.usermanager.JahiaPrincipal;
  */
 public class RoleBasedAccessControlService {
 
-    private static Logger logger = Logger.getLogger(RoleBasedAccessControlService.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(RoleBasedAccessControlService.class);
 
     private EnforcementPolicy policy = new GrantAllEnforcementPolicy();
 

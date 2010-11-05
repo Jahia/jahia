@@ -32,7 +32,7 @@
 
 package org.jahia.services.usermanager.jcr;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -59,7 +59,7 @@ import java.util.Properties;
  *        Created : 7 juil. 2009
  */
 public class JCRUser extends JahiaBasePrincipal implements JahiaUser, JCRPrincipal {
-    private transient static Logger logger = Logger.getLogger(JCRUser.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRUser.class);
     protected static final String ROOT_USER_UUID = "b32d306a-6c74-11de-b3ef-001e4fead50b";
     private static final String PROVIDER_NAME = "jcr";
     private final String nodeUuid;

@@ -33,7 +33,7 @@
 package org.jahia.params.valves;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Render;
 import org.jahia.engines.EngineMessage;
@@ -65,7 +65,7 @@ import java.util.Set;
  */
 
 public class CookieAuthValveImpl extends BaseAuthValve {
-    private static final transient Logger logger = Logger.getLogger(CookieAuthValveImpl.class);
+    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(CookieAuthValveImpl.class);
 
     private CookieAuthConfig cookieAuthConfig;
 

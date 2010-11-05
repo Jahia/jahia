@@ -37,7 +37,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
@@ -53,7 +53,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * Time: 17:57:36
  */
 public class PermissionsImportHandler extends DefaultHandler {
-    private static Logger logger = Logger.getLogger(PermissionsImportHandler.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(PermissionsImportHandler.class);
     private JahiaUserManagerService u;
     private JahiaGroupManagerService g;
     private JahiaSiteUserManagerService su;

@@ -37,7 +37,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.params.valves.LoginEngineAuthValveImpl;
 import org.jahia.registries.ServicesRegistry;
@@ -66,7 +66,7 @@ import java.util.Locale;
  */
 public class RenderTest extends TestCase {
 
-    private static Logger logger = Logger.getLogger(RenderTest.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(RenderTest.class);
     private JahiaSite site;
     private final static String TESTSITE_NAME = "renderTest";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;

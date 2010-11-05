@@ -32,7 +32,8 @@
 
 package org.jahia.services.uicomponents.bean.toolbar;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.usermanager.JahiaUser;
 
@@ -46,7 +47,7 @@ import java.util.Locale;
  */
 public class Selected implements Serializable {
     
-    private static final transient Logger logger = Logger
+    private static final transient Logger logger = LoggerFactory
             .getLogger(Selected.class);
     
     private boolean value;

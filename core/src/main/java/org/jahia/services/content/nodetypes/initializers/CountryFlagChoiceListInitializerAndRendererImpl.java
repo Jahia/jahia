@@ -32,7 +32,7 @@
 
 package org.jahia.services.content.nodetypes.initializers;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.content.JCRPropertyWrapper;
@@ -52,7 +52,7 @@ import java.util.*;
  *        Created : 18 nov. 2009
  */
 public class CountryFlagChoiceListInitializerAndRendererImpl implements ChoiceListInitializer, ChoiceListRenderer {
-    private transient static Logger logger = Logger.getLogger(CountryFlagChoiceListInitializerAndRendererImpl.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(CountryFlagChoiceListInitializerAndRendererImpl.class);
 
     public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, String param, List<ChoiceListValue> values, Locale locale,
                                                      Map<String, Object> context) {

@@ -35,7 +35,8 @@
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>Title: Small bean to manage provider info </p>
@@ -49,7 +50,7 @@ import org.apache.log4j.Logger;
 
 public class UserManagerProviderBean {
     
-    private static final transient Logger logger = Logger
+    private static final transient Logger logger = LoggerFactory
             .getLogger(UserManagerProviderBean.class);
 
     private String key;

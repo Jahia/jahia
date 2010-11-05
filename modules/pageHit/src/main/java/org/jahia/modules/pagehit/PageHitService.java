@@ -6,7 +6,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.ProcessorEndpoint;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.classic.Session;
@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
  * Time: 11:11:05
  */
 public class PageHitService implements Processor, CamelContextAware {
-    private transient static Logger logger = Logger.getLogger(PageHitService.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(PageHitService.class);
 
     private SessionFactoryImpl sessionFactoryBean;
 

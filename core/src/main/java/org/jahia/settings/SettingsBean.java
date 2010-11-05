@@ -51,7 +51,7 @@
 package org.jahia.settings;
 
 import org.apache.commons.collections.FastHashMap;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.utils.JahiaTools;
 import org.jahia.utils.PathResolver;
 import org.jahia.configuration.deployers.ServerDeploymentFactory;
@@ -66,7 +66,7 @@ import java.util.*;
 public class SettingsBean {
 
     private static final transient Logger logger =
-            Logger.getLogger (SettingsBean.class);
+            org.slf4j.LoggerFactory.getLogger (SettingsBean.class);
     
     public static final String JAHIA_PROPERTIES_FILE_PATH = "/WEB-INF/etc/config/jahia.properties";
     

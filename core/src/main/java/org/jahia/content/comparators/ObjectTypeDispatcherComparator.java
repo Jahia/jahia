@@ -56,8 +56,8 @@ import java.util.HashMap;
 
 public class ObjectTypeDispatcherComparator implements Comparator {
 
-    private static org.apache.log4j.Logger logger =
-        org.apache.log4j.Logger.getLogger(ObjectTypeDispatcherComparator.class);
+    private static org.slf4j.Logger logger =
+        org.slf4j.LoggerFactory.getLogger(ObjectTypeDispatcherComparator.class);
 
     private Map typeComparators = new HashMap();
 

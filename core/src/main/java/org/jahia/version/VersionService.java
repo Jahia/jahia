@@ -32,7 +32,7 @@
 
 package org.jahia.version;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
@@ -60,7 +60,7 @@ public class VersionService extends JahiaService {
 
     private static VersionService instance;
 
-    private static Logger logger = Logger.getLogger(VersionService.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(VersionService.class);
 
     private JahiaVersionManager manager;
     private JahiaInstalledPatchManager patchManager;

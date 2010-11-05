@@ -35,7 +35,8 @@ package org.jahia.services.content.nodetypes;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeDefinition;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by IntelliJ IDEA.
@@ -45,8 +46,7 @@ import org.apache.log4j.Logger;
  * To change this template use File | Settings | File Templates.
  */
 public class ExtendedNodeDefinition extends ExtendedItemDefinition implements NodeDefinition {
-    private static final transient Logger logger = Logger
-            .getLogger(ExtendedItemDefinition.class);
+    private static final transient Logger logger = LoggerFactory.getLogger(ExtendedItemDefinition.class);
 
     private NodeTypeRegistry registry;
 

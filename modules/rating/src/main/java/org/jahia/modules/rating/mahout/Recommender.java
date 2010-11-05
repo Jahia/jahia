@@ -38,7 +38,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.ProcessorEndpoint;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.apache.mahout.cf.taste.common.TasteException;
 import org.apache.mahout.cf.taste.impl.model.jdbc.MySQLJDBCDataModel;
 import org.apache.mahout.cf.taste.impl.neighborhood.NearestNUserNeighborhood;
@@ -76,7 +76,7 @@ import java.util.regex.Pattern;
  *        Created : 27 juil. 2010
  */
 public class Recommender implements Processor, InitializingBean, CamelContextAware {
-    private transient static Logger logger = Logger.getLogger(Recommender.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(Recommender.class);
     private Pattern pattern = Pattern.compile(
             "([0-9\\-]+ [0-9:,]+) user ([a-zA-Z@.0-9_\\-]+) ip ([0-9.:]+) session ([a-zA-Z@0-9_\\-\\/]+) path (.*) nodetype ([a-zA-Z:]+) node updated with (.*)");
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");

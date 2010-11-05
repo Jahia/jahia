@@ -41,7 +41,7 @@ import org.apache.jackrabbit.spi.commons.query.PathQueryNode;
 import org.apache.jackrabbit.spi.commons.query.QueryRootNode;
 import org.apache.jackrabbit.spi.commons.query.RelationQueryNode;
 import org.apache.jackrabbit.spi.commons.query.TraversingQueryNodeVisitor;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.apache.lucene.search.spell.JahiaExtendedSpellChecker;
 import org.apache.lucene.search.spell.LuceneDictionary;
 import org.apache.lucene.store.Directory;
@@ -83,7 +83,7 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
     /**
      * Logger instance for this class.
      */
-    private static final Logger logger = Logger.getLogger(CompositeSpellChecker.class);
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(CompositeSpellChecker.class);
 
     public static final class FiveSecondsRefreshInterval extends CompositeSpellChecker {
         public FiveSecondsRefreshInterval() {

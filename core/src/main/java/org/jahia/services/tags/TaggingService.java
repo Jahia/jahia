@@ -41,7 +41,7 @@ import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -56,7 +56,7 @@ import org.jahia.utils.ArrayUtils;
  */
 public class TaggingService {
 
-	private static Logger logger = Logger.getLogger(TaggingService.class);
+	private static Logger logger = org.slf4j.LoggerFactory.getLogger(TaggingService.class);
 
 	private static String getTagsPath(String siteKey) {
 		if (siteKey == null || siteKey.length() == 0) {

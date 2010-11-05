@@ -32,7 +32,7 @@
 
 package org.jahia.services.workflow.jbpm;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jbpm.pvm.internal.cal.BusinessCalendar;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
@@ -50,7 +50,7 @@ import java.util.Date;
  *        Created : 18 juin 2010
  */
 public class JahiaBusinessCalendar implements BusinessCalendar {
-    private transient static Logger logger = Logger.getLogger(JahiaBusinessCalendar.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaBusinessCalendar.class);
 
     public Date add(Date date, String duration) {
         try {

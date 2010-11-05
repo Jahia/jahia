@@ -50,7 +50,7 @@ import org.apache.commons.httpclient.StatusLine;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.ImportSupport;
 import org.jahia.utils.StringResponseWrapper;
 import org.springframework.web.context.ServletContextAware;
@@ -64,7 +64,7 @@ import org.springframework.web.context.ServletContextAware;
  */
 public class HttpClientService implements ServletContextAware {
 
-    private static final Logger logger = Logger.getLogger(HttpClientService.class);
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(HttpClientService.class);
 
     /**
      * Returns <tt>true</tt> if our current URL is absolute, <tt>false</tt>

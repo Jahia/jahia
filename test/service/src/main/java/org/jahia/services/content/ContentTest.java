@@ -34,7 +34,7 @@ package org.jahia.services.content;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.jackrabbit.JcrConstants;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.GWTJahiaSearchQuery;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
@@ -73,7 +73,7 @@ import static org.junit.Assert.*;
  */
 @RunWith(Parameterized.class)
 public class ContentTest {
-    private static final transient Logger logger = Logger.getLogger(ContentTest.class);
+    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(ContentTest.class);
     private final static String TESTSITE_NAME = "contentTestSite";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
     private static final String SIMPLE_REFERENCE_PROPERTY_NAME = "test:simpleNode";

@@ -33,7 +33,7 @@
 package org.jahia.services.query;
 
 import org.apache.jackrabbit.util.ISO8601;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -57,7 +57,7 @@ import java.util.*;
 import static org.junit.Assert.*;
 
 public class QueryResultTest {
-    private static Logger logger = Logger.getLogger(QueryResultTest.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(QueryResultTest.class);
 
     private static String DEFAULT_LANGUAGE = "en";
 

@@ -33,7 +33,7 @@
 package org.jahia.services.workflow.jbpm;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.rbac.RoleIdentity;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -70,7 +70,7 @@ import java.util.*;
  *        Created : 2 févr. 2010
  */
 public class JBPMProvider implements WorkflowProvider, InitializingBean {
-    private transient static Logger logger = Logger.getLogger(JBPMProvider.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JBPMProvider.class);
     private String key;
     private WorkflowService workflowService;
     private RepositoryService repositoryService;

@@ -35,7 +35,7 @@ package org.jahia.ajax.gwt.helper;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.jackrabbit.value.*;
 import org.apache.jackrabbit.value.StringValue;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -64,7 +64,7 @@ import java.util.regex.Pattern;
  *         Date: Sep 12, 2008 - 11:48:20 AM
  */
 public class ContentDefinitionHelper {
-    private static final Logger logger = Logger.getLogger(ContentDefinitionHelper.class);
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(ContentDefinitionHelper.class);
 
     private NavigationHelper navigation;
     private ChoiceListInitializerService choiceListInitializerService;

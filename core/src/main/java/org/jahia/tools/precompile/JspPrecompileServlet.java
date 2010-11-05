@@ -273,7 +273,7 @@ public class JspPrecompileServlet extends HttpServlet implements Servlet {
         templatesPath += templatesPath.endsWith("/") ? TEMPLATES_DIR : "/"+TEMPLATES_DIR;  // Fix for IBM SDK 1.5.0 SR6 (WAS 6.1.0.15)
         File templatesDir = new File(templatesPath);
         if (!templatesDir.exists()) {
-            org.apache.log4j.Logger.getLogger(getClass()).error("Cannot find templates directory: " + templatesPath);
+            org.slf4j.LoggerFactory.getLogger(getClass()).error("Cannot find templates directory: " + templatesPath);
         }
         else {
             File[] files = templatesDir.listFiles();

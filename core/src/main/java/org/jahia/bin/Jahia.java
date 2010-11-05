@@ -52,7 +52,7 @@ package org.jahia.bin;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.jackrabbit.core.security.JahiaAccessManager;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
@@ -99,8 +99,8 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
 
     private static final long serialVersionUID = -4811687571425897497L;
     
-    private static Logger logger = Logger.getLogger(Jahia.class);
-    private static Logger accessLogger = Logger.getLogger("accessLogger");
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(Jahia.class);
+    private static Logger accessLogger = org.slf4j.LoggerFactory.getLogger("accessLogger");
 
     static private final String INIT_PARAM_SUPPORTED_JDK_VERSIONS =
         "supported_jdk_versions";
@@ -238,7 +238,7 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
 	        boolean jahiaPropertiesExists = SettingsBean.getInstance() != null && context.getResourceAsStream(SettingsBean.JAHIA_PROPERTIES_FILE_PATH) != null;
 	
 	        if (!jahiaPropertiesExists) {
-	        	logger.fatal("Cannot find settings file under " + SettingsBean.JAHIA_PROPERTIES_FILE_PATH);
+	        	logger.error("Cannot find settings file under " + SettingsBean.JAHIA_PROPERTIES_FILE_PATH);
 	            throw new JahiaInitializationException("Cannot find settings file under " + SettingsBean.JAHIA_PROPERTIES_FILE_PATH);
 	        }
 	        
@@ -251,7 +251,7 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
 	            Jahia.jSettings.setBuildNumber(getBuildNumber());
 	           
 	        } catch (Exception e) {
-	        	logger.fatal("Unable to initialize Jahia settings and build number", e);
+	        	logger.error("Unable to initialize Jahia settings and build number", e);
 	        	throw new JahiaInitializationException("Unable to initialize Jahia settings and build number", e);
 	        }
 	
@@ -469,7 +469,7 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
                 }
             }
             if (accessLogger.isDebugEnabled()) {
-                accessLogger.debug(new StringBuffer(255).append(";").append(jParams.getRealRequest().getRemoteAddr()).append(";").append(jParams.getSiteID()).append(";").append(jParams.getPageID()).append(";").append(jParams.getLocale().toString()).append(";").append(jParams.getUser().getUsername()));
+                accessLogger.debug(new StringBuilder(255).append(";").append(jParams.getRealRequest().getRemoteAddr()).append(";").append(jParams.getSiteID()).append(";").append(jParams.getPageID()).append(";").append(jParams.getLocale().toString()).append(";").append(jParams.getUser().getUsername()).toString());
             }
             paramBeanThreadLocal.set(null);
             servletThreadLocal.set(null);
@@ -803,7 +803,7 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
             }
             ctxPath = (String) settings.get("jahia.contextPath");
             if (ctxPath == null || ctxPath.length() > 0 && !ctxPath.startsWith("/")) {
-                logger.fatal("Invalid value for the jahia.contextPath in the "
+                logger.error("Invalid value for the jahia.contextPath in the "
                         + SettingsBean.JAHIA_PROPERTIES_FILE_PATH + " resource. Unable to initialize Web application.");
                 throw new IllegalArgumentException("Invalid value for the jahia.contextPath in the "
                         + SettingsBean.JAHIA_PROPERTIES_FILE_PATH + " resource. Unable to initialize Web application.");

@@ -40,7 +40,7 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.helper.ZipHelper;
 import org.jahia.bin.Jahia;
@@ -73,7 +73,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
     public static final int BAD_LOCATION = 3;
     public static final int UNKNOWN_ERROR = 9;
 
-    private static Logger logger = Logger.getLogger(GWTFileManagerUploadServlet.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(GWTFileManagerUploadServlet.class);
 
     @SuppressWarnings("unchecked")
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

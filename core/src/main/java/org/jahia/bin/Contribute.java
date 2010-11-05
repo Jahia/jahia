@@ -32,7 +32,7 @@
 
 package org.jahia.bin;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.params.ParamBean;
 import org.jahia.services.rbac.Permission;
 import org.jahia.services.rbac.PermissionIdentity;
@@ -59,7 +59,7 @@ import java.io.IOException;
  * @see org.jahia.bin.Render
  */
 public class Contribute extends Render {
-    private static Logger logger = Logger.getLogger(Contribute.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(Contribute.class);
 
     
     protected RenderContext createRenderContext(HttpServletRequest req, HttpServletResponse resp, JahiaUser user) {

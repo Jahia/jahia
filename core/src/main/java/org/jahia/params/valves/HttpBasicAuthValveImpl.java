@@ -33,7 +33,8 @@
  package org.jahia.params.valves;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
@@ -48,7 +49,7 @@ import javax.servlet.http.HttpServletRequest;
  * Time: 13:03:08
  */
 public class HttpBasicAuthValveImpl extends BaseAuthValve {
-    private static final transient Logger logger = Logger
+    private static final transient Logger logger = LoggerFactory
             .getLogger(HttpBasicAuthValveImpl.class);
 
     public HttpBasicAuthValveImpl() {

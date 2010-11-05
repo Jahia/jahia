@@ -49,8 +49,8 @@ import java.util.Set;
  * Time: 14:36:14
  */
 public class FilesCacheListener extends DefaultEventListener {
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(FilesCacheListener.class);
+    private static org.slf4j.Logger logger =
+            org.slf4j.LoggerFactory.getLogger(FilesCacheListener.class);
 
     private Cache<String, ?> cache;
 

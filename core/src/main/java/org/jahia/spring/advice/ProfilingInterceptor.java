@@ -37,7 +37,7 @@ package org.jahia.spring.advice;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 import java.lang.reflect.Method;
 
@@ -47,7 +47,7 @@ import java.lang.reflect.Method;
 public class ProfilingInterceptor implements MethodInterceptor {
 
     private long executionTimeMinimum;
-    private Logger logger = Logger.getLogger(ProfilingInterceptor.class);
+    private Logger logger = org.slf4j.LoggerFactory.getLogger(ProfilingInterceptor.class);
     public void setExecutionTimeMinimum(long executionTimeMinimum) {
         this.executionTimeMinimum = executionTimeMinimum;
     }

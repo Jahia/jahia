@@ -39,7 +39,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.services.JahiaService;
 import org.jahia.utils.Base64;
 import org.springframework.beans.factory.InitializingBean;
@@ -56,7 +57,7 @@ import org.springframework.beans.factory.InitializingBean;
 public abstract class JahiaUserManagerProvider extends JahiaService implements InitializingBean {
 // ------------------------------ FIELDS ------------------------------
 
-    private static Logger logger = Logger
+    private static Logger logger = LoggerFactory
 	        .getLogger(JahiaUserManagerProvider.class);
 
 	private static Pattern userNamePattern;

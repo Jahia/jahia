@@ -32,7 +32,7 @@
 
 package org.jahia.ajax.gwt.helper;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -70,7 +70,7 @@ import java.util.Locale;
  * Time: 2:43:33 PM
  */
 public class PortletHelper {
-    private static Logger logger = Logger.getLogger(PortletHelper.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(PortletHelper.class);
 
     private ApplicationsManagerService applicationsManager;
 
@@ -210,7 +210,7 @@ public class PortletHelper {
             }
             return navigation.getGWTJahiaNode(node);
         } catch (RepositoryException e) {
-            logger.error(e, e);
+            logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException("error");
         }
     }

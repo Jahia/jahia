@@ -39,7 +39,7 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.constructs.blocking.BlockingCache;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.springframework.beans.factory.InitializingBean;
@@ -55,7 +55,7 @@ public class ModuleCacheProvider implements InitializingBean {
     private static final String CACHE_NAME = "CJHTMLCache";
     private static final String DEPS_CACHE_NAME = CACHE_NAME + "dependencies";
 
-    private static Logger logger = Logger.getLogger(ModuleCacheProvider.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(ModuleCacheProvider.class);
     
     /**
      * Returns an instance of this class

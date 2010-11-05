@@ -33,7 +33,7 @@
 package org.jahia.services.content.decorator;
 
 import org.apache.jackrabbit.value.BinaryImpl;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 
@@ -52,7 +52,7 @@ import java.util.Calendar;
  * Time: 11:53:30
  */
 public class JCRFileContent {
-    protected static final Logger logger = Logger.getLogger(JCRFileContent.class);
+    protected static final Logger logger = org.slf4j.LoggerFactory.getLogger(JCRFileContent.class);
     protected JCRNodeWrapper node;
     protected Node objectNode;
     protected Node contentNode;
@@ -86,7 +86,7 @@ public class JCRFileContent {
             try {
                 content.setProperty(Constants.JCR_DATA, new BinaryImpl(is));
             } catch (IOException e) {
-                logger.error(e);
+                logger.error(e.getMessage(), e);
             }
             if (contentType == null) {
                 contentType = "application/binary";

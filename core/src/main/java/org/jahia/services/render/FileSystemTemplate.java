@@ -36,7 +36,7 @@ import org.apache.commons.io.IOUtils;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 import java.util.Properties;
 import java.util.Map;
@@ -53,7 +53,7 @@ import javax.servlet.RequestDispatcher;
  * Time: 7:20:38 PM
  */
 public class FileSystemTemplate implements Comparable<FileSystemTemplate>, Template {
-    private static Logger logger = Logger.getLogger(FileSystemTemplate.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(FileSystemTemplate.class);
     private String path;
     private String fileExtension;
     private String key;

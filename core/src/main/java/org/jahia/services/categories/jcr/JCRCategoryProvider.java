@@ -32,7 +32,8 @@
 
 package org.jahia.services.categories.jcr;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.categories.Category;
@@ -54,7 +55,7 @@ import java.util.*;
  *
  */
 public class JCRCategoryProvider {
-    private transient static Logger logger = Logger
+    private transient static Logger logger = LoggerFactory
             .getLogger(JCRCategoryProvider.class);
     private transient JCRSessionFactory sessionFactory;
     private static JCRCategoryProvider mCategoryProvider;
@@ -234,13 +235,13 @@ public class JCRCategoryProvider {
         try {
             Session session = sessionFactory.getCurrentUserSession();
             if (session.getWorkspace().getQueryManager() != null) {
-                StringBuffer query = new StringBuffer("SELECT * FROM ["
-                        + Constants.JAHIANT_CATEGORY);
-                query.append("] as cat WHERE cat.[" + Constants.NODENAME + "] = '");
+				StringBuilder query = new StringBuilder("SELECT * FROM ["
+				        + Constants.JAHIANT_CATEGORY + "] as cat WHERE cat.[" + Constants.NODENAME
+				        + "] = '");
                 query.append(categoryKey);
                 query.append("' ");
                 if (logger.isDebugEnabled()) {
-                    logger.debug(query);
+                    logger.debug(query.toString());
                 }
                 Query q = session.getWorkspace().getQueryManager().createQuery(
                         query.toString(), Query.JCR_SQL2);
@@ -268,14 +269,14 @@ public class JCRCategoryProvider {
         try {
             Session session = sessionFactory.getCurrentUserSession();
             if (session.getWorkspace().getQueryManager() != null) {
-                StringBuffer query = new StringBuffer("SELECT * FROM ["
-                        + Constants.JAHIANT_CATEGORY);
-                query.append("] as cat WHERE cat.[" + Constants.NODENAME + "] LIKE '");
+            	StringBuilder query = new StringBuilder("SELECT * FROM ["
+                        + Constants.JAHIANT_CATEGORY
+                        + "] as cat WHERE cat.[" + Constants.NODENAME + "] LIKE '");
                 query.append(categoryKey);
                 query.append("%' ");
                 query.append(" ORDER BY cat.[" + Constants.NODENAME+"]");
                 if (logger.isDebugEnabled()) {
-                    logger.debug(query);
+                    logger.debug(query.toString());
                 }
                 Query q = session.getWorkspace().getQueryManager().createQuery(
                         query.toString(), Query.JCR_SQL2);

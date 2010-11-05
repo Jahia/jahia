@@ -34,7 +34,7 @@ package org.jahia.data.applications;
 
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.content.JCRContentUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 import javax.portlet.PortletMode;
 import java.io.Serializable;
@@ -58,7 +58,7 @@ import java.util.Locale;
  */
 
 public class EntryPointInstance implements Serializable {
-    private transient static final Logger logger = Logger.getLogger(EntryPointInstance.class);
+    private transient static final Logger logger = org.slf4j.LoggerFactory.getLogger(EntryPointInstance.class);
     private String ID;
     private String defName;
     private String contextName;

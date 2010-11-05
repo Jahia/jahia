@@ -35,7 +35,7 @@ package org.jahia.services.render.filter;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.SourceFormatter;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 
@@ -46,7 +46,7 @@ import org.jahia.services.render.Resource;
  */
 public class SourceFormatterFilter extends AbstractFilter {
     
-    private static final Logger logger = Logger.getLogger(SourceFormatterFilter.class);
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(SourceFormatterFilter.class);
 
     @Override
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)

@@ -63,8 +63,8 @@ import org.jahia.tools.files.FileWatcher;
  */
 public class JahiaFileWatcherBaseService extends JahiaFileWatcherService {
 
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger (JahiaFileWatcherBaseService.class);
+    private static org.slf4j.Logger logger =
+            org.slf4j.LoggerFactory.getLogger (JahiaFileWatcherBaseService.class);
 
     /** The singelton instance of this class * */
     private static JahiaFileWatcherBaseService m_Instance = null;

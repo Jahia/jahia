@@ -67,8 +67,8 @@ import org.jahia.admin.AbstractAdministrationModule;
  * @version 1.0
  */
 public class LicenseInfo extends AbstractAdministrationModule {
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(LicenseInfo.class);
+    private static org.slf4j.Logger logger =
+            org.slf4j.LoggerFactory.getLogger(LicenseInfo.class);
 
     private static final String     CLASS_NAME              =  JahiaAdministration.CLASS_NAME;
     private static final String     JSP_PATH                =  JahiaAdministration.JSP_PATH;

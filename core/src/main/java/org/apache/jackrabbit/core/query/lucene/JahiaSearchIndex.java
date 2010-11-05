@@ -41,7 +41,7 @@ import org.apache.jackrabbit.core.state.ChildNodeEntry;
 import org.apache.jackrabbit.core.state.NodeState;
 import org.apache.jackrabbit.spi.Path;
 import org.apache.jackrabbit.spi.commons.query.qom.QueryObjectModelTree;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
@@ -57,7 +57,7 @@ import java.util.*;
  * Implements a {@link org.apache.jackrabbit.core.query.QueryHandler} using Lucene and handling Jahia specific definitions.
  */
 public class JahiaSearchIndex extends SearchIndex {
-    private static final Logger log = Logger.getLogger(JahiaSearchIndex.class);
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(JahiaSearchIndex.class);
     private static final String TRANSLATION_LOCALNODENAME_PREFIX = "translation_";
 
     /**

@@ -32,7 +32,7 @@
 
 package org.jahia.ajax.gwt.helper;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.apache.tika.io.IOUtils;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
@@ -60,7 +60,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class VersioningHelper {
-    private static Logger logger = Logger.getLogger(VersioningHelper.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(VersioningHelper.class);
 
     private CacheService cacheService;
     private JCRVersionService versionService;
@@ -88,7 +88,7 @@ public class VersioningHelper {
                     currentUserSession.save();
                 }
             } catch (Throwable e) {
-                logger.error(e, e);
+                logger.error(e.getMessage(), e);
             }
         }
     }

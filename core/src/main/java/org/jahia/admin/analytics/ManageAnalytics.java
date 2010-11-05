@@ -62,8 +62,8 @@ import java.util.*;
 
 public class ManageAnalytics extends AbstractAdministrationModule {
 
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(ManageAnalytics.class);
+    private static org.slf4j.Logger logger =
+            org.slf4j.LoggerFactory.getLogger(ManageAnalytics.class);
 
     private static final String JSP_PATH = JahiaAdministration.JSP_PATH;
 
@@ -201,14 +201,14 @@ public class ManageAnalytics extends AbstractAdministrationModule {
                             site.setGoogleAnalyticsProfile(trackedUrls,true,gaPassword,gaLogin,gaProfile,gaUserAccount);
                             commitChanges(request, response, session);
                         } catch (Exception e) {
-                            logger.error(e, e);
+                            logger.error(e.getMessage(), e);
                         }
                     } else if (!gaValidity.get("validAccount")) {
                         logger.info("account  unavailable");
                         try {
                             displayAdd(request, response, session, "new");
                         } catch (Exception e) {
-                            logger.error(e, e);
+                            logger.error(e.getMessage(), e);
                         }
                     } else {
                         logger.info("profile  unavailable");
@@ -216,7 +216,7 @@ public class ManageAnalytics extends AbstractAdministrationModule {
                         try {
                             displayAdd(request, response, session, "new");
                         } catch (Exception e) {
-                            logger.error(e, e);
+                            logger.error(e.getMessage(), e);
                         }
                     }
                 } else {
@@ -225,7 +225,7 @@ public class ManageAnalytics extends AbstractAdministrationModule {
                     try {
                         displayAdd(request, response, session, "new");
                     } catch (Exception e) {
-                        logger.error(e, e);
+                        logger.error(e.getMessage(), e);
                     }
                 }
 
@@ -235,7 +235,7 @@ public class ManageAnalytics extends AbstractAdministrationModule {
                 try {
                     displayAdd(request, response, session, "new");
                 } catch (Exception e) {
-                    logger.error(e, e);
+                    logger.error(e.getMessage(), e);
                 }
             }
         }
@@ -304,7 +304,7 @@ public class ManageAnalytics extends AbstractAdministrationModule {
                 jahiaSitesService.updateSite(site);
                 displayAnalyticsParams(request, response, session);
             } catch (Exception e) {
-                logger.error(e, e);
+                logger.error(e.getMessage(), e);
             }
         }
 
@@ -347,7 +347,7 @@ public class ManageAnalytics extends AbstractAdministrationModule {
                 site.getGoogleAnalytics().delete();
                 displayAnalyticsParams(request, response, session);
             } catch (Exception e) {
-                logger.error(e, e);
+                logger.error(e.getMessage(), e);
             }
             JahiaAdministration.doRedirect(request,
                     response,

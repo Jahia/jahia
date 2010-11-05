@@ -62,7 +62,7 @@ import org.apache.commons.io.IOUtils;
 
 public class JahiaConsole {
 
-    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(JahiaConsole.class);
+    private static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaConsole.class);
 
     /**
      * Constants for logging levels {

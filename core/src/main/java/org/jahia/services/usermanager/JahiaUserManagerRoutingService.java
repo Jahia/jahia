@@ -32,7 +32,7 @@
 
  package org.jahia.services.usermanager;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 
@@ -55,7 +55,7 @@ import java.util.*;
 public class JahiaUserManagerRoutingService extends JahiaUserManagerService {
 // ------------------------------ FIELDS ------------------------------
 
-    private static Logger logger = Logger.getLogger (JahiaUserManagerRoutingService.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger (JahiaUserManagerRoutingService.class);
 
     // end EP
 

@@ -32,7 +32,7 @@
 
 package org.jahia.services.content;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import static org.jahia.api.Constants.*;
 
 import javax.jcr.Node;
@@ -50,7 +50,7 @@ import javax.jcr.query.QueryResult;
  * Time: 2:36:05 PM
  */
 public class FullpathListener extends DefaultEventListener {
-    private static Logger logger = Logger.getLogger(FullpathListener.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(FullpathListener.class);
 
     public int getEventTypes() {
         return Event.NODE_ADDED + Event.NODE_REMOVED;

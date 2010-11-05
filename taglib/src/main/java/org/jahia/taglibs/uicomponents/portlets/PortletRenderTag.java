@@ -55,7 +55,7 @@ import java.io.IOException;
  * Time: 10:46:15 AM
  */
 public class PortletRenderTag extends AbstractJahiaTag {
-    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(PortletRenderTag.class);
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(PortletRenderTag.class);
 
     private Node portletNode;
     private int windowId;
@@ -81,7 +81,7 @@ public class PortletRenderTag extends AbstractJahiaTag {
             drawPortlet(new JCRPortletNode((JCRNodeWrapper) portletNode), windowId, pageContext.getOut(), pageContext.getServletContext());
 
         } catch (Exception e) {
-            logger.error(e, e);
+            logger.error(e.getMessage(), e);
         }
         return SKIP_BODY;
     }

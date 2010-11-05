@@ -36,7 +36,7 @@ import org.apache.jackrabbit.commons.xml.SystemViewExporter;
 import org.apache.jackrabbit.core.JahiaSessionImpl;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.apache.jackrabbit.value.ValueFactoryImpl;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.apache.xerces.jaxp.SAXParserFactoryImpl;
 import org.jahia.api.Constants;
 import org.jahia.services.importexport.DocumentViewExporter;
@@ -84,7 +84,7 @@ import java.util.*;
  * @author toto
  */
 public class JCRSessionWrapper implements Session {
-    private static Logger logger = Logger.getLogger(JCRSessionWrapper.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRSessionWrapper.class);
 
     private JCRSessionFactory sessionFactory;
     private JahiaUser user;

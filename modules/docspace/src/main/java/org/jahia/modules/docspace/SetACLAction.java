@@ -32,7 +32,7 @@
 
 package org.jahia.modules.docspace;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.helper.ContentManagerHelper;
@@ -63,7 +63,7 @@ import java.util.StringTokenizer;
  * To change this template use File | Settings | File Templates.
  */
 public class SetACLAction implements org.jahia.bin.Action  {
-    private static Logger logger = Logger.getLogger(SetACLAction.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(SetACLAction.class);
     private String name;
 
     public String getName() {

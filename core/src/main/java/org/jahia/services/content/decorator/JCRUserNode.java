@@ -32,7 +32,7 @@
 
 package org.jahia.services.content.decorator;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -63,7 +63,7 @@ import java.util.*;
  *        Created : 17 juin 2010
  */
 public class JCRUserNode extends JCRNodeDecorator {
-    private transient static Logger logger = Logger.getLogger(JCRUserNode.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRUserNode.class);
     private JahiaUser user;
     private Map<String, ExtendedPropertyDefinition> propertyDefinitionMap;
     private Map<Integer, ExtendedPropertyDefinition> unstructuredPropertyDefinitions;

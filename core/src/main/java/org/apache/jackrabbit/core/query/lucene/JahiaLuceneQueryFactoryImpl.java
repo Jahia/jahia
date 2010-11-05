@@ -5,7 +5,7 @@ import org.apache.jackrabbit.core.HierarchyManager;
 import org.apache.jackrabbit.core.SessionImpl;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.query.qom.*;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.KeywordAnalyzer;
 import org.apache.lucene.index.Term;
@@ -23,7 +23,7 @@ import javax.jcr.query.qom.StaticOperand;
 import java.util.Map;
 
 public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
-    private static final Logger logger = Logger.getLogger(JahiaFilterMultiColumnQueryHits.class);
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaFilterMultiColumnQueryHits.class);
     private final SessionImpl session;
 
     public JahiaLuceneQueryFactoryImpl(SessionImpl session, HierarchyManager hmgr,

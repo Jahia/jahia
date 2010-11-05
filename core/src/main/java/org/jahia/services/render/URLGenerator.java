@@ -40,7 +40,7 @@ import javax.jcr.RepositoryException;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Captcha;
 import org.jahia.bin.Contribute;
@@ -66,7 +66,7 @@ import org.jahia.settings.SettingsBean;
  * @todo Ideally instances of this class should be created by a factory that is configured through Spring.
  */
 public class URLGenerator {
-    private static Logger logger = Logger.getLogger(URLGenerator.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(URLGenerator.class);
 
     private String base;
 

@@ -50,7 +50,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.apache.lucene.queryParser.QueryParser;
 import org.jahia.api.Constants;
 import org.jahia.bin.errors.DefaultErrorHandler;
@@ -78,7 +78,7 @@ public class Find extends HttpServlet implements Controller {
     /** The serialVersionUID. */
     private static final long serialVersionUID = -3537001082179204764L;
 
-    private static Logger logger = Logger.getLogger(Find.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(Find.class);
 
     private int defaultDepthLimit = 1;
 

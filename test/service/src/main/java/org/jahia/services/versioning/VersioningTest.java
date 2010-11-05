@@ -37,7 +37,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.params.valves.LoginEngineAuthValveImpl;
@@ -61,7 +61,7 @@ import java.util.*;
  * Unit test to test version listing created during publication
  */
 public class VersioningTest extends TestCase {
-    private static Logger logger = Logger.getLogger(VersioningTest.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(VersioningTest.class);
     private JahiaSite site;
     private final static String TESTSITE_NAME = "jcrVersioningTest_" + System.currentTimeMillis();
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;

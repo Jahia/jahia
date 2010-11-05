@@ -32,7 +32,7 @@
 
 package org.jahia.services.render.filter;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 
@@ -48,7 +48,7 @@ import java.util.*;
  * Time: 12:33:52 PM
  */
 public class RenderChain {
-    private static Logger logger = Logger.getLogger(RenderChain.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(RenderChain.class);
 
     private List<RenderFilter> filters = new ArrayList<RenderFilter>();
 

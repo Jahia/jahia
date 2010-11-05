@@ -72,8 +72,8 @@ import org.jahia.utils.PathResolver;
  */
 public class DatabaseScripts {
 
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(DatabaseScripts.class);
+    private static org.slf4j.Logger logger =
+            org.slf4j.LoggerFactory.getLogger(DatabaseScripts.class);
 
     /**
      * Default constructor.

@@ -35,7 +35,7 @@ package org.jahia.services.content;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
@@ -61,7 +61,7 @@ import java.util.*;
  * @author toto
  */
 public class JCRPublicationService extends JahiaService {
-    private static transient Logger logger = Logger.getLogger(JCRPublicationService.class);
+    private static transient Logger logger = org.slf4j.LoggerFactory.getLogger(JCRPublicationService.class);
     private JCRSessionFactory sessionFactory;
     private JCRVersionService jcrVersionService;
     private static JCRPublicationService instance;
@@ -961,7 +961,7 @@ public class JCRPublicationService extends JahiaService {
                 final PropertyIterator iterator = node.getProperties();
                 while (iterator.hasNext() && !hasProperty) {
                     Property property = (Property) iterator.next();
-                    hasProperty = ((ExtendedPropertyDefinition) property.getDefinition()).isInternationalized();
+                    hasProperty = ((ExtendedPropertyDefinition)property.getDefinition()).isInternationalized();
                 }
                 if (!hasProperty) {
                     info.setStatus(PublicationInfo.PUBLISHED);

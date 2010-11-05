@@ -33,7 +33,7 @@
 package org.jahia.modules.wiki.errors;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.bin.errors.ErrorHandler;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -57,7 +57,7 @@ import java.util.List;
  * Time: 4:11:46 PM
  */
 public class NewWikiPageHandler implements ErrorHandler {
-    private static final Logger logger = Logger.getLogger(NewWikiPageHandler.class);
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(NewWikiPageHandler.class);
 
     public boolean handle(Throwable e, HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
@@ -123,7 +123,7 @@ public class NewWikiPageHandler implements ErrorHandler {
                 return false;
             }
         } catch (Exception e1) {
-            logger.error(e1, e1);
+            logger.error(e1.getMessage(), e1);
         }
         return false;
     }

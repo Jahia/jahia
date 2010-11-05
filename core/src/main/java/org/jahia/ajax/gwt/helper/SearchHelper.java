@@ -32,7 +32,7 @@
 
 package org.jahia.ajax.gwt.helper;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.GWTJahiaSearchQuery;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
@@ -66,7 +66,7 @@ import java.util.List;
  * Time: 2:23:56 PM
  */
 public class SearchHelper {
-    private static Logger logger = Logger.getLogger(SearchHelper.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(SearchHelper.class);
 
     private JCRStoreService jcrService;
 

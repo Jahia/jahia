@@ -53,7 +53,8 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO8601;
 import org.apache.jackrabbit.util.ISO9075;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
@@ -96,8 +97,7 @@ import org.jahia.utils.JahiaTools;
  */
 public class JahiaJCRSearchProvider implements SearchProvider {
 
-    private static Logger logger = Logger
-            .getLogger(JahiaJCRSearchProvider.class);
+    private static Logger logger = LoggerFactory.getLogger(JahiaJCRSearchProvider.class);
     
     private TaggingService taggingService = null;
 
@@ -359,7 +359,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                         + "')");
             }
         } catch (IllegalStateException e) {
-            logger.warn(e);
+            logger.warn(e.getMessage(), e);
         }
     }
 

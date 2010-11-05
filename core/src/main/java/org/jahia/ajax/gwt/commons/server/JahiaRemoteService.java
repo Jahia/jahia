@@ -34,7 +34,7 @@ package org.jahia.ajax.gwt.commons.server;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.core.SessionExpirationException;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.api.Constants;
@@ -63,7 +63,7 @@ import java.util.Locale;
  */
 public abstract class JahiaRemoteService implements RemoteService, ServletContextAware, RequestResponseAware {
 
-    private static final transient Logger logger = Logger.getLogger(JahiaRemoteService.class);
+    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaRemoteService.class);
     private static final String ORG_JAHIA_DATA_JAHIA_DATA = "org.jahia.data.JahiaData";
     private static final String ORG_JAHIA_PARAMS_PARAM_BEAN = "org.jahia.params.ParamBean";
 
@@ -93,7 +93,7 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
         try {
             return JCRSessionFactory.getInstance().getCurrentUserSession(getWorkspace(), locale, null);
         } catch (RepositoryException e) {
-            logger.error(e, e);
+            logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException("Cannot open user session");
         }
     }
@@ -109,7 +109,7 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
         try {
             return JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale);
         } catch (RepositoryException e) {
-            logger.error(e, e);
+            logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException("Cannot open user session");
         }
     }

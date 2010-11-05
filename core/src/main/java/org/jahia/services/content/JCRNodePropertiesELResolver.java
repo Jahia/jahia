@@ -33,7 +33,7 @@
 package org.jahia.services.content;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 import javax.el.ELContext;
 import javax.el.ELResolver;
@@ -52,7 +52,7 @@ import java.util.Set;
  *        Created : 13 nov. 2009
  */
 public class JCRNodePropertiesELResolver extends ELResolver {
-    private transient static Logger logger = Logger.getLogger(JCRNodePropertiesELResolver.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRNodePropertiesELResolver.class);
 
     public Object getValue(ELContext elContext, Object base, Object property) {
         if (elContext == null) {
@@ -72,7 +72,7 @@ public class JCRNodePropertiesELResolver extends ELResolver {
                     }
                 }
             } catch (RepositoryException e) {
-                logger.error(e);
+                logger.error(e.getMessage(), e);
             }
         }
         return null;
@@ -94,7 +94,7 @@ public class JCRNodePropertiesELResolver extends ELResolver {
                     }
                 }
             } catch (RepositoryException e) {
-                logger.error(e);
+                logger.error(e.getMessage(), e);
             }
         }
         return null;
@@ -129,7 +129,7 @@ public class JCRNodePropertiesELResolver extends ELResolver {
                     descriptors.add(descriptor);
                 }
             } catch (RepositoryException e) {
-                logger.error(e);
+                logger.error(e.getMessage(), e);
             }
             return descriptors.iterator();
         } else {

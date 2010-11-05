@@ -32,7 +32,7 @@
 
 package org.jahia.bin;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.rbac.PermissionIdentity;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.usermanager.JahiaUser;
@@ -48,7 +48,7 @@ import javax.servlet.http.HttpServletResponse;
  * @see org.jahia.bin.Render
  */
 public class Studio extends Render {
-    private static Logger logger = Logger.getLogger(Studio.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(Studio.class);
 
     public static final String STUDIO_MODE = "studiomode";
 

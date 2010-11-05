@@ -32,7 +32,7 @@
 
 package org.jahia.services.shindig;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.apache.shindig.auth.AuthenticationHandler;
 import org.apache.shindig.auth.SecurityToken;
 import org.jahia.bin.Jahia;
@@ -52,7 +52,7 @@ import javax.servlet.http.HttpSession;
  */
 public class JahiaAuthentificationHandler implements AuthenticationHandler {
 
-    private static final transient Logger logger = Logger.getLogger(JahiaAuthentificationHandler.class);
+    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaAuthentificationHandler.class);
 
 
     public static final String AUTHENTICATION_HANDLER_NAME = "Jahia";

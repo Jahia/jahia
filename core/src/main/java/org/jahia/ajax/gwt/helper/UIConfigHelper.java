@@ -70,7 +70,7 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class UIConfigHelper {
-    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(UIConfigHelper.class);
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(UIConfigHelper.class);
     private static Map<String, Class<?>> CLASS_CACHE = new HashMap<String, Class<?>>();
     private static transient SchedulerService SCHEDULER_SERVICE;
     private LanguageHelper languages;
@@ -98,7 +98,7 @@ public class UIConfigHelper {
             }
 
         } catch (Exception e) {
-            logger.error(e, e);
+            logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException("Error during loading toolbars due to " + e.getMessage());
         }
     }

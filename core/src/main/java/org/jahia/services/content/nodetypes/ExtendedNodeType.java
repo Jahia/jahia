@@ -37,7 +37,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.jackrabbit.core.value.InternalValue;
 import org.apache.jackrabbit.spi.commons.nodetype.constraint.ValueConstraint;
 import org.apache.jackrabbit.spi.commons.value.QValueValue;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
@@ -60,7 +60,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ExtendedNodeType implements NodeType {
 
-    private static final transient Logger logger = Logger.getLogger(ExtendedNodeType.class);
+    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(ExtendedNodeType.class);
     public static final Name NT_BASE_NAME = new Name("base", org.apache.jackrabbit.spi.Name.NS_NT_PREFIX, org.apache.jackrabbit.spi.Name.NS_NT_URI);
     
     private NodeTypeRegistry registry;

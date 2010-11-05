@@ -38,7 +38,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.content.JCRContentUtils;
@@ -68,7 +68,7 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
  */
 public class RoleService {
 
-    private static Logger logger = Logger.getLogger(RoleService.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(RoleService.class);
 
     private JahiaGroupManagerService groupService;
 

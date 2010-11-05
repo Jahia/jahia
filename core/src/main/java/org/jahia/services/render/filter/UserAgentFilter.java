@@ -32,7 +32,7 @@
 
 package org.jahia.services.render.filter;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.TemplateNotFoundException;
@@ -49,7 +49,7 @@ import java.util.regex.Pattern;
  * Time: 3:28:13 PM
  */
 public class UserAgentFilter extends AbstractFilter {
-    private static Logger logger = Logger.getLogger(UserAgentFilter.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(UserAgentFilter.class);
 
     // Views may come from user-agent, query parameters or even form parameters.
     private Map<String, String> userAgentMatchingRules;

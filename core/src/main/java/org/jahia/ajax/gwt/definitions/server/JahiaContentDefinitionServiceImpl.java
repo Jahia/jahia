@@ -43,7 +43,7 @@ import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServic
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
 import java.util.*;
@@ -54,7 +54,7 @@ import java.util.*;
  * Time: 6:26:11 PM
  */
 public class JahiaContentDefinitionServiceImpl extends JahiaRemoteService implements JahiaContentDefinitionService {
-    private static final transient Logger logger = Logger.getLogger(JahiaContentDefinitionServiceImpl.class);
+    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaContentDefinitionServiceImpl.class);
 
     private ContentDefinitionHelper contentDefinition;
 

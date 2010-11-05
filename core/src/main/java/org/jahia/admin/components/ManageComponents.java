@@ -48,7 +48,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.admin.AbstractAdministrationModule;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.JahiaAdministration;
@@ -79,7 +79,7 @@ import org.springframework.web.bind.ServletRequestUtils;
  */
 public class ManageComponents extends AbstractAdministrationModule {
 
-    private static Logger logger = Logger.getLogger(ManageComponents.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(ManageComponents.class);
 
     private JahiaSite site;
     private JahiaUser user;
@@ -240,7 +240,7 @@ public class ManageComponents extends AbstractAdministrationModule {
                 } catch (Exception e) {
                     String dspMsg = getMessage("message.generalError");
                     response.getWriter().print(dspMsg);
-                    logger.error(e, e);
+                    logger.error(e.getMessage(), e);
                 } finally {
                     FileUtils.deleteQuietly(f);
                     if (!doPrepare || doDeploy) {

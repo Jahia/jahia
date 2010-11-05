@@ -33,7 +33,7 @@
 package org.jahia.services.content.interceptor;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.services.content.*;
@@ -68,7 +68,7 @@ import java.util.regex.Pattern;
  */
 public class URLInterceptor extends RichTextInterceptor implements InitializingBean {
 
-    private static Logger logger = Logger.getLogger(URLInterceptor.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(URLInterceptor.class);
 
     private String dmsContext;
     private String cmsContext;

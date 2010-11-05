@@ -98,7 +98,7 @@ import org.apache.jackrabbit.spi.commons.query.qom.SourceImpl;
 import org.apache.jackrabbit.spi.commons.query.qom.StaticOperandImpl;
 import org.apache.jackrabbit.spi.commons.query.qom.UpperCaseImpl;
 import org.apache.jackrabbit.value.ValueFactoryImpl;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -124,7 +124,7 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
  * @author Benjamin Papez
  */
 public class QueryServiceImpl extends QueryService {
-    private static transient Logger logger = Logger.getLogger(QueryService.class);
+    private static transient Logger logger = org.slf4j.LoggerFactory.getLogger(QueryService.class);
 
     private static QueryService singletonInstance = null;
 

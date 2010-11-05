@@ -44,7 +44,7 @@ import javax.jcr.RepositoryException;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 
 /**
@@ -56,7 +56,7 @@ import org.jahia.api.Constants;
  */
 public final class JCRAutoSplitUtils {
 
-    private static final Logger logger = Logger.getLogger(JCRAutoSplitUtils.class);
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JCRAutoSplitUtils.class);
 
     /**
      * Moves the specified node according to the auto-split policy set on the

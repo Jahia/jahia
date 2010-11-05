@@ -222,7 +222,7 @@ public class DisplayLanguageCodeTag extends AbstractJahiaTag {
     /** @todo FIXME : change harcoded debug information */
     private boolean debug = false;
 
-    private static org.apache.log4j.Logger logger =
-        org.apache.log4j.Logger.getLogger(DisplayLanguageCodeTag.class);
+    private static org.slf4j.Logger logger =
+        org.slf4j.LoggerFactory.getLogger(DisplayLanguageCodeTag.class);
 
 }

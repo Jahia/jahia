@@ -32,7 +32,7 @@
 
 package org.jahia.services.content.rules;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.scheduler.BackgroundJob;
@@ -43,7 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RuleJob extends BackgroundJob {
-    private static transient Logger logger = Logger.getLogger(RuleJob.class);
+    private static transient Logger logger = org.slf4j.LoggerFactory.getLogger(RuleJob.class);
 
     public static final String JOB_NODE_UUID = "node";
     public static final String JOB_RULE_TO_EXECUTE = "ruleToExecute";

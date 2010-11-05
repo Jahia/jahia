@@ -35,7 +35,7 @@ package org.jahia.modules.seo.rules;
 import javax.jcr.RepositoryException;
 import javax.validation.ConstraintViolationException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -51,7 +51,7 @@ import org.jahia.services.seo.jcr.VanityUrlService;
  */
 public class SeoService {
 
-    private static Logger logger = Logger.getLogger(SeoService.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(SeoService.class);
 
     private VanityUrlService urlService;
 

@@ -32,7 +32,7 @@
 
 package org.jahia.services.scheduler;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.quartz.CronTrigger;
 import org.quartz.JobDetail;
 import org.springframework.beans.factory.InitializingBean;
@@ -45,7 +45,7 @@ import org.springframework.beans.factory.InitializingBean;
  *        Created : 17 févr. 2010
  */
 public class ModuleJob implements InitializingBean {
-    private transient static Logger logger = Logger.getLogger(ModuleJob.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(ModuleJob.class);
     private CronTrigger trigger;
     private JobDetail jobDetail;
     private SchedulerService schedulerService;

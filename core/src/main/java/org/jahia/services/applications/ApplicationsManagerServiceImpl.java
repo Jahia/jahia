@@ -80,7 +80,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
     /**
      * logging
      */
-    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(
+    private static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(
             ApplicationsManagerServiceImpl.class);
 
     /**
@@ -220,7 +220,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
                     }
                 });
             } catch (RepositoryException e) {
-                logger.error(e, e);
+                logger.error(e.getMessage(), e);
             }
             if (app != null) {
                 applicationCache.put(APPLICATION_DEFINITION + appID, app);
@@ -376,7 +376,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
                 }
             });
         } catch (RepositoryException e) {
-            logger.error(e, e);
+            logger.error(e.getMessage(), e);
         }
         putInApplicationCache(app);
         return ret;
@@ -413,7 +413,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
             });
 
         } catch (RepositoryException e) {
-            logger.error(e, e);
+            logger.error(e.getMessage(), e);
         }
         putInApplicationCache(app);
         return ret;
@@ -440,7 +440,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
                 }
             });
         } catch (RepositoryException e) {
-            logger.error(e, e);
+            logger.error(e.getMessage(), e);
         }
         applicationCache.flush();
     }
@@ -592,7 +592,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
                 epInstance1.setID(wrapper.getUUID());
                 return epInstance1;
             } catch (RepositoryException e) {
-                logger.error(e, e);
+                logger.error(e.getMessage(), e);
             }
             entryPointCache.put(ENTRY_POINT_INSTANCE + epInstance.getID(), epInstance);
         }
@@ -662,7 +662,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
                 logger.debug("User " + JCRSessionFactory.getInstance().getCurrentUser().getName() + " could not load the portlet instance :" + epInstanceID);
                 return null;
             } catch (RepositoryException e) {
-                logger.error(e, e);
+                logger.error(e.getMessage(), e);
             }
         }
         return entryPointInstanceByID[0];
@@ -704,7 +704,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
                 entryPointCache.remove(ENTRY_POINT_INSTANCE + epInstanceID);
             }
         } catch (RepositoryException e) {
-            logger.error(e, e);
+            logger.error(e.getMessage(), e);
         }
     }
 

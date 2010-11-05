@@ -50,7 +50,7 @@ import java.util.Map;
  */
 @SuppressWarnings("serial")
 public class GWTJahiaModuleTag extends AbstractJahiaTag implements DynamicAttributes {
-    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(GWTJahiaModuleTag.class);
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(GWTJahiaModuleTag.class);
     private transient Map<String, Object> attributes = new HashMap<String, Object>();
 
     private String id;
@@ -97,7 +97,7 @@ public class GWTJahiaModuleTag extends AbstractJahiaTag implements DynamicAttrib
             out.print(GWTIncluder.generateJahiaModulePlaceHolder(templateUsage,getCssClassName(),jahiaType,id,attributes));
 
         } catch (final IOException e) {
-            logger.error(e, e);
+            logger.error(e.getMessage(), e);
         }
 
         id = null;

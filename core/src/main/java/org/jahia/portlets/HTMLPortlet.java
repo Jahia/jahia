@@ -32,7 +32,7 @@
 
 package org.jahia.portlets;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.data.applications.EntryPointInstance;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionFactory;
@@ -53,7 +53,7 @@ import java.io.PrintWriter;
  */
 public class HTMLPortlet extends JahiaPortlet {
 	
-	private static Logger logger = Logger.getLogger(HTMLPortlet.class);
+	private static Logger logger = org.slf4j.LoggerFactory.getLogger(HTMLPortlet.class);
 
     public void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws PortletException, IOException {
         renderResponse.setContentType("text/html");

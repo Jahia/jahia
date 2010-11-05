@@ -35,7 +35,7 @@ package org.jahia.taglibs.jcr.node;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.Text;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRContentUtils;
@@ -66,7 +66,7 @@ import java.util.Map;
  * Time: 15:46:07
  */
 public class JCRTagUtils {
-    private static final transient Logger logger = Logger.getLogger(JCRTagUtils.class);
+    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(JCRTagUtils.class);
 
     /**
      * Get the node or property display name depending on the locale
@@ -116,7 +116,7 @@ public class JCRTagUtils {
                 hasType = node.isNodeType(type);
             }
         } catch (RepositoryException e) {
-            logger.error(e, e);
+            logger.error(e.getMessage(), e);
         }
         
         return hasType;

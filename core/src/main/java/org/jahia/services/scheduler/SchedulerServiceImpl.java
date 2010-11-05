@@ -32,7 +32,7 @@
 
 package org.jahia.services.scheduler;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.registries.ServicesRegistry;
@@ -51,7 +51,7 @@ import java.util.*;
 
 public class SchedulerServiceImpl extends SchedulerService {
 
-    private static Logger logger = Logger.getLogger(SchedulerServiceImpl.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(SchedulerServiceImpl.class);
 
     private static SchedulerServiceImpl singletonInstance;
 
@@ -512,7 +512,7 @@ public class SchedulerServiceImpl extends SchedulerService {
             JobDetail jobDetail = getJobDetail(jobName, groupName);
             return scheduler.deleteJob(jobName, groupName);
         } catch (SchedulerException se) {
-            logger.debug(se);
+            logger.debug(se.getMessage(), se);
             throw getJahiaException(se);
         }
     }

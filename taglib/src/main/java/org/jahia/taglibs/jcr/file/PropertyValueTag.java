@@ -32,7 +32,8 @@
 
 package org.jahia.taglibs.jcr.file;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.struts.taglib.TagUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.categories.Category;
@@ -63,7 +64,7 @@ import java.util.Calendar;
 @SuppressWarnings("serial")
 public class PropertyValueTag extends TagSupport {
     
-    private static final transient Logger logger = Logger
+    private static final transient Logger logger = LoggerFactory
             .getLogger(PropertyValueTag.class);
     
     private String name = "propertyDefinition";

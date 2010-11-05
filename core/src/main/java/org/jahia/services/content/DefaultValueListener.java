@@ -53,7 +53,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class DefaultValueListener extends DefaultEventListener {
-    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(DefaultValueListener.class);
+    private static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(DefaultValueListener.class);
 
     public DefaultValueListener() {
     }

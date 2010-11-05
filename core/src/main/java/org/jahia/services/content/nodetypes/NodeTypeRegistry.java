@@ -33,7 +33,7 @@
 package org.jahia.services.content.nodetypes;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.settings.SettingsBean;
 
@@ -51,7 +51,7 @@ import java.util.*;
  */
 public class NodeTypeRegistry implements NodeTypeManager {
     public static final String SYSTEM = "system";
-    private static Logger logger = Logger.getLogger(NodeTypeRegistry.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(NodeTypeRegistry.class);
 
     private List<ExtendedNodeType> nodeTypesList = new ArrayList<ExtendedNodeType>();
     private Map<Name, ExtendedNodeType> nodetypes = new HashMap<Name, ExtendedNodeType>();

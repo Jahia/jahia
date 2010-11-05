@@ -42,7 +42,7 @@ import com.sun.syndication.fetcher.impl.HttpURLFeedFetcher;
 import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.SyndFeedInput;
 import com.sun.syndication.io.XmlReader;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -57,7 +57,7 @@ import java.net.URL;
  */
 public class RSSUtil {
 
-    private static final transient Logger logger = Logger.getLogger(RSSUtil.class);
+    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(RSSUtil.class);
 
     /**
      * Get a SyndFeed from an url
@@ -70,7 +70,7 @@ public class RSSUtil {
             return loadSyndFeed(new URL(url));
 
         } catch (MalformedURLException e) {
-           logger.error(e,e);
+           logger.error(e.getMessage(), e);
         }
         return null;
     }

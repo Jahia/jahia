@@ -32,7 +32,7 @@
 
 package org.jahia.services.categories.jcr;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.categories.CategoryBean;
 
 import javax.jcr.Node;
@@ -56,7 +56,7 @@ public class JCRCategory implements CategoryBean, Serializable {
 
     private static final long serialVersionUID = -7647957842076042700L;
 
-    private transient static Logger logger = Logger.getLogger(JCRCategory.class);    
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRCategory.class);    
 
     private String id;    
 
@@ -78,7 +78,7 @@ public class JCRCategory implements CategoryBean, Serializable {
             this.key =  categoryNode.getName();
             this.path = categoryNode.getPath();
         } catch (RepositoryException e) {
-            logger.warn(e, e);
+            logger.warn(e.getMessage(), e);
         }        
     }
 

@@ -59,8 +59,8 @@ import java.util.Map;
  * Time: 11:21:20 AM
  */
 public class SpringJackrabbitRepository extends AbstractRepository implements JackrabbitRepository, ServletContextAware {
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger (SpringJackrabbitRepository.class);
+    private static org.slf4j.Logger logger =
+            org.slf4j.LoggerFactory.getLogger (SpringJackrabbitRepository.class);
 
     private JackrabbitRepository repository;
 

@@ -33,7 +33,7 @@
 package org.jahia.taglibs.template.include;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
 import org.jahia.bin.Studio;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -62,7 +62,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     private static final long serialVersionUID = -8968618483176483281L;
 
-    private static Logger logger = Logger.getLogger(ModuleTag.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(ModuleTag.class);
 
     protected String path;
 
@@ -210,7 +210,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                         }
                     }
                 } catch (RepositoryException e) {
-                    logger.error(e, e);
+                    logger.error(e.getMessage(), e);
                 }
 
                 if (templateType == null) {

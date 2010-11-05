@@ -49,8 +49,8 @@ import java.security.Principal;
  */
 public class ContainerAuthValveImpl extends BaseAuthValve {
 
-    private static final org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(ContainerAuthValveImpl.class);
+    private static final org.slf4j.Logger logger =
+            org.slf4j.LoggerFactory.getLogger(ContainerAuthValveImpl.class);
 
     public ContainerAuthValveImpl() {
     }

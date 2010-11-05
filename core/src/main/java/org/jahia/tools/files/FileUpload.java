@@ -60,8 +60,8 @@ import java.util.*;
 public class FileUpload {
     public static final String FILEUPLOAD_ATTRIBUTE = "fileUpload";
 
-    private static final org.apache.log4j.Logger logger =
-        org.apache.log4j.Logger.getLogger (FileUpload.class);
+    private static final org.slf4j.Logger logger =
+        org.slf4j.LoggerFactory.getLogger (FileUpload.class);
     private static final String UTF_8 = "UTF-8";
 
     private Map<String, List<String>> params;

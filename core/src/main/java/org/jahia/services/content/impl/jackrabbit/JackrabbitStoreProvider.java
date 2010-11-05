@@ -63,8 +63,8 @@ import java.util.ArrayList;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public class JackrabbitStoreProvider extends JCRStoreProvider {
-    private static org.apache.log4j.Logger logger =
-        org.apache.log4j.Logger.getLogger(JackrabbitStoreProvider.class);
+    private static org.slf4j.Logger logger =
+        org.slf4j.LoggerFactory.getLogger(JackrabbitStoreProvider.class);
 
     public JackrabbitStoreProvider() {
     }                 

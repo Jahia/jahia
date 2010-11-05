@@ -63,7 +63,7 @@ import java.util.Map;
  * Time: 12:18:34
  */
 public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements JahiaPreferencesProvider<T> {
-    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(JahiaPreferencesJCRProviders.class);
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaPreferencesJCRProviders.class);
 
     // node name
     private static final String PREFERENCE = "preference";
@@ -131,7 +131,7 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
                 return null;
             }
         } catch (Exception e) {
-            logger.error(e, e);
+            logger.error(e.getMessage(), e);
             return null;
         }
     }
@@ -142,7 +142,7 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
             pref.setPrincipal(p);
             return pref;
         } catch (Exception e) {
-            logger.error(e, e);
+            logger.error(e.getMessage(), e);
             return null;
         }
     }
@@ -334,7 +334,7 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
                 preferencesNode.save();
             }
         } catch (RepositoryException e) {
-            logger.error(e, e);
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -344,7 +344,7 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
             return sessionFactory.getCurrentUserSession().getNode(nodePath);
         } catch (Exception e) {
             logger.error("Node path = [" + nodePath + "]");
-            logger.error(e, e);
+            logger.error(e.getMessage(), e);
         }
 
         return null;
@@ -363,7 +363,7 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
             }
             return preferences.getNode(getType());
         } catch (Exception e) {
-            logger.error(e, e);
+            logger.error(e.getMessage(), e);
         }
 
         return null;
@@ -419,12 +419,12 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
         } catch (javax.jcr.PathNotFoundException e) {
             logger.debug("javax.jcr.PathNotFoundException: Path[" + sqlRequest + "]");
         } catch (javax.jcr.ItemNotFoundException e) {
-            logger.debug(e, e);
+            logger.debug(e.getMessage(), e);
         } catch (javax.jcr.query.InvalidQueryException e) {
             logger.error("InvalidQueryException ---> [" + sqlRequest + "] is not valid.", e);
         }
         catch (RepositoryException e) {
-            logger.error(e, e);
+            logger.error(e.getMessage(), e);
         }
         return null;
     }

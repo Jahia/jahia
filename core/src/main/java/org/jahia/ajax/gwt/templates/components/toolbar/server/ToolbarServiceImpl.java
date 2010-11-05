@@ -47,7 +47,7 @@ import org.jahia.ajax.gwt.helper.UIConfigHelper;
  * Time: 17:29:58
  */
 public class ToolbarServiceImpl extends JahiaRemoteService implements ToolbarService {
-    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(ToolbarServiceImpl.class);
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ToolbarServiceImpl.class);
     private UIConfigHelper uiConfigHelper;
 
     public void setUiConfigHelper(UIConfigHelper uiConfigHelper) {

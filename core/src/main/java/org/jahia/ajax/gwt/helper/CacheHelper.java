@@ -34,7 +34,7 @@ package org.jahia.ajax.gwt.helper;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.cache.CacheFactory;
 import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 
@@ -48,7 +48,7 @@ import java.util.List;
  *        Created : 16 sept. 2010
  */
 public class CacheHelper {
-    private transient static Logger logger = Logger.getLogger(CacheHelper.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(CacheHelper.class);
     private ModuleCacheProvider cacheProvider;
     private CacheFactory cacheFactory;
     public void setCacheProvider(ModuleCacheProvider cacheProvider) {

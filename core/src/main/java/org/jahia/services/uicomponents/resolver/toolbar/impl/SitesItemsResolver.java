@@ -52,7 +52,7 @@ import java.util.Locale;
  * To change this template use File | Settings | File Templates.
  */
 public class SitesItemsResolver extends DefaultItemsResolver {
-    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(SitesItemsResolver.class);
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(SitesItemsResolver.class);
 
     public List<Item> getItems(JCRSiteNode currentsite, JahiaUser user, Locale locale) {
         List<Item> items = new ArrayList<Item>();

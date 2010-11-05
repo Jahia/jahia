@@ -32,7 +32,7 @@
 
 package org.jahia.ajax.gwt.helper;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRMountPointNode;
@@ -51,7 +51,7 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public class ContentHubHelper {
-    private static Logger logger = Logger.getLogger(ContentHubHelper.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(ContentHubHelper.class);
 
     private JCRSessionFactory sessionFactory;
 

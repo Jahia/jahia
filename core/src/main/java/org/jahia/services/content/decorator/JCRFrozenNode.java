@@ -32,7 +32,7 @@
 
 package org.jahia.services.content.decorator;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 
@@ -47,7 +47,7 @@ import javax.jcr.RepositoryException;
  *        Created : 6 juil. 2009
  */
 public class JCRFrozenNode extends JCRNodeDecorator {
-    private transient static Logger logger = Logger.getLogger(JCRFrozenNode.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRFrozenNode.class);
     private JCRSiteNode site;
 
     public JCRFrozenNode(JCRNodeWrapper node) {

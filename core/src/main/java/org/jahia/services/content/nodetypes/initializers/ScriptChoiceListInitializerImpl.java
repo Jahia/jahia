@@ -33,7 +33,7 @@
 package org.jahia.services.content.nodetypes.initializers;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -56,7 +56,7 @@ import java.util.Map;
  *        Created : 17 nov. 2009
  */
 public class ScriptChoiceListInitializerImpl implements ChoiceListInitializer {
-    private transient static Logger logger = Logger.getLogger(ScriptChoiceListInitializerImpl.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(ScriptChoiceListInitializerImpl.class);
 
     public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, String param, List<ChoiceListValue> values, Locale locale,
                                                      Map<String, Object> context) {

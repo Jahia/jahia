@@ -32,8 +32,7 @@
 
 package org.jahia.taglibs.utility;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.servlet.jsp.JspException;
@@ -47,7 +46,7 @@ import javax.servlet.jsp.JspException;
 @SuppressWarnings("serial")
 public class LoggerTag extends AbstractJahiaTag {
 
-    private static final transient Logger logger = Logger.getLogger("jsp.jahia.templates.Logger");
+    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger("jsp.jahia.templates.Logger");
 
     private String level;
     private String value;
@@ -61,8 +60,22 @@ public class LoggerTag extends AbstractJahiaTag {
     }
 
     public int doStartTag() throws JspException {
-        
-        logger.log(Level.toLevel(level), value);
+        if (level == null) {
+            logger.debug(value);
+        } else {
+        	level = level.toLowerCase();
+        	if ("fatal".equals(level) || "error".equals(level)) {
+        		logger.error(value);
+        	} else if ("warn".equals(level)) {
+        		logger.warn(value);
+        	} else if ("info".equals(level)) {
+        		logger.info(value);
+        	} else if ("trace".equals(level)) {
+        		logger.trace(value);
+        	} else {
+        		logger.debug(value);
+        	}
+        } 
         
         return SKIP_BODY;
     }

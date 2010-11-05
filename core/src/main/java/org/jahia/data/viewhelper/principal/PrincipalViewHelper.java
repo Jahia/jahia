@@ -92,7 +92,7 @@ public class PrincipalViewHelper implements Serializable {
     public static final String PROPERTIES = "Properties";
     public static final String INHERITANCE = "Inheritance";
 
-    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(PrincipalViewHelper.class);
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(PrincipalViewHelper.class);
     
     private static final Comparator<Principal> PRINCIPAL_COMPARATOR = new Comparator<Principal>() {
         public int compare(Principal o1, Principal o2) {
@@ -150,7 +150,7 @@ public class PrincipalViewHelper implements Serializable {
                     selectBoxFieldsMethod.add(PrincipalViewHelper.class.getMethod("get" + fieldToDisplay,
                             new Class[]{Principal.class, Integer.class}));
                 } catch (java.lang.NoSuchMethodException nsme) {
-                    logger.fatal("Internal class error ! Please check Jahia code", nsme);
+                    logger.error("Internal class error ! Please check Jahia code", nsme);
                 }
             }
         }
@@ -172,9 +172,9 @@ public class PrincipalViewHelper implements Serializable {
             try {
                 authUserText.append((String) m.invoke(this, args));
             } catch (java.lang.reflect.InvocationTargetException ite) {
-                logger.fatal("Internal class error !", ite);
+                logger.error("Internal class error !", ite);
             } catch (java.lang.IllegalAccessException iae) {
-                logger.fatal("Internal class error !", iae);
+                logger.error("Internal class error !", iae);
             }
             if (i + 1 < selectBoxFieldsHeading.size()) {
                 authUserText.append(" ");

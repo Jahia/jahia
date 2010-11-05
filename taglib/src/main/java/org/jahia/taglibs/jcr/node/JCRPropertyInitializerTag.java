@@ -32,7 +32,7 @@
 
 package org.jahia.taglibs.jcr.node;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializer;
@@ -52,7 +52,7 @@ import java.util.*;
  */
 public class JCRPropertyInitializerTag extends AbstractJahiaTag {
     private static final long serialVersionUID = 3235254134426302521L;
-    private transient static Logger logger = Logger.getLogger(JCRPropertyInitializerTag.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRPropertyInitializerTag.class);
     private JCRNodeWrapper node;
     private String nodeType;
     private String name;

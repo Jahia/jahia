@@ -36,7 +36,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.hibernate.manager.JahiaPasswordPolicyManager;
@@ -56,7 +57,7 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
  */
 public class JahiaPasswordPolicyService extends JahiaService {
 
-    private static Logger logger = Logger
+    private static Logger logger = LoggerFactory
             .getLogger(JahiaPasswordPolicyService.class);
 
     private static final String PROPERTY_SITE_ENFORCE_POLICY = "enforcePasswordPolicy";

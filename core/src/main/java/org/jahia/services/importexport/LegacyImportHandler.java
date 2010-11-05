@@ -35,7 +35,7 @@ package org.jahia.services.importexport;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.spi.Name;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
@@ -67,7 +67,7 @@ import java.util.*;
  * Created by IntelliJ IDEA. User: toto Date: Oct 28, 2009 Time: 2:31:18 PM To change this template use File | Settings | File Templates.
  */
 public class LegacyImportHandler extends DefaultHandler {
-    private static Logger logger = Logger.getLogger(LegacyImportHandler.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(LegacyImportHandler.class);
 
     private final static int CTX_PAGE = 0;
     private final static int CTX_CTN = 1;

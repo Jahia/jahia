@@ -61,7 +61,7 @@ public class JahiaRenderConfigServiceImpl extends RenderConfigServiceImpl {
         super(config);
     }
 
-    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(JahiaRenderConfigServiceImpl.class);
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaRenderConfigServiceImpl.class);
     private JCRSessionFactory sessionFactory;
     public final static String PAGE_CONFIG_ATTR = "org.jahia.services.applications.pluto.pageconfig";
     public final String DEFAULT_PAGE_NAME = "Portlet manager";

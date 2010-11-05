@@ -32,30 +32,27 @@
 
 package org.jahia.modules.wiki;
 
-import org.xwiki.component.annotation.Component;
-import org.xwiki.component.annotation.Requirement;
-import org.xwiki.component.annotation.InstantiationStrategy;
-import org.xwiki.component.manager.ComponentManager;
-import org.xwiki.component.manager.ComponentLookupException;
-import org.xwiki.component.phase.InitializationException;
-import org.xwiki.component.phase.Initializable;
-import org.xwiki.component.descriptor.ComponentInstantiationStrategy;
-import org.xwiki.rendering.renderer.LinkLabelGenerator;
-import org.xwiki.rendering.renderer.xhtml.XHTMLLinkRenderer;
-import org.xwiki.rendering.renderer.printer.XHTMLWikiPrinter;
-import org.xwiki.rendering.listener.Link;
-import org.xwiki.rendering.listener.LinkType;
-import org.xwiki.rendering.listener.Attachment;
-import org.xwiki.rendering.internal.renderer.xhtml.DefaultXHTMLLinkRenderer;
-import org.xwiki.rendering.wiki.WikiModel;
-import org.xwiki.rendering.parser.AttachmentParser;
-import org.apache.commons.lang.StringUtils;
-import org.jahia.services.render.RenderContext;
-import org.jahia.services.content.JCRNodeWrapper;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javax.jcr.RepositoryException;
-import java.util.Map;
-import java.util.LinkedHashMap;
+
+import org.apache.commons.lang.StringUtils;
+import org.jahia.services.render.RenderContext;
+import org.xwiki.component.annotation.InstantiationStrategy;
+import org.xwiki.component.annotation.Requirement;
+import org.xwiki.component.descriptor.ComponentInstantiationStrategy;
+import org.xwiki.component.manager.ComponentManager;
+import org.xwiki.component.phase.Initializable;
+import org.xwiki.component.phase.InitializationException;
+import org.xwiki.rendering.listener.Attachment;
+import org.xwiki.rendering.listener.Link;
+import org.xwiki.rendering.listener.LinkType;
+import org.xwiki.rendering.parser.AttachmentParser;
+import org.xwiki.rendering.renderer.LinkLabelGenerator;
+import org.xwiki.rendering.renderer.printer.XHTMLWikiPrinter;
+import org.xwiki.rendering.renderer.xhtml.XHTMLLinkRenderer;
+import org.xwiki.rendering.wiki.WikiModel;
 
 /**
  * User: ktlili
@@ -72,7 +69,6 @@ import java.util.LinkedHashMap;
 @org.xwiki.component.annotation.Component
 @InstantiationStrategy(ComponentInstantiationStrategy.PER_LOOKUP)
 public class CustomXHTMLLinkRenderer implements XHTMLLinkRenderer, Initializable {
-    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(CustomXHTMLLinkRenderer.class);
 
     /**
      * The XHTML element <code>class</code> parameter.

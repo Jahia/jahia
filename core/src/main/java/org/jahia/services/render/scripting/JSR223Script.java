@@ -33,7 +33,7 @@
 package org.jahia.services.render.scripting;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.render.*;
@@ -51,7 +51,7 @@ import java.util.Enumeration;
  */
 public class JSR223Script implements Script {
 
-    private static final Logger logger = Logger.getLogger(JSR223Script.class);
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JSR223Script.class);
 
     private Template template;
 

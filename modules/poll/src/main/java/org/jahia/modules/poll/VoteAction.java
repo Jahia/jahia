@@ -32,7 +32,7 @@
 
 package org.jahia.modules.poll;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
@@ -59,7 +59,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class VoteAction implements Action {
-     private transient static Logger logger = Logger.getLogger(VoteAction.class);
+     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(VoteAction.class);
     private String name;
 
     public String getName() {

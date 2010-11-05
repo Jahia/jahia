@@ -311,7 +311,7 @@ public class DisplayLanguageFlagTag extends AbstractJahiaTag {
     private boolean debug = false;
     private static long imgID = 0;
 
-    private static org.apache.log4j.Logger logger =
-        org.apache.log4j.Logger.getLogger(DisplayLanguageFlagTag.class);
+    private static org.slf4j.Logger logger =
+        org.slf4j.LoggerFactory.getLogger(DisplayLanguageFlagTag.class);
 
 }

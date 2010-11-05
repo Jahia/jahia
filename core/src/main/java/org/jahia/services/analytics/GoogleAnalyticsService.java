@@ -38,7 +38,7 @@ import com.google.gdata.data.analytics.AccountFeed;
 import com.google.gdata.data.analytics.DataEntry;
 import com.google.gdata.data.analytics.DataFeed;
 import com.google.gdata.util.AuthenticationException;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaService;
@@ -58,7 +58,7 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class GoogleAnalyticsService extends JahiaService {
-    final static Logger logger = Logger.getLogger(GoogleAnalyticsService.class);
+    final static Logger logger = org.slf4j.LoggerFactory.getLogger(GoogleAnalyticsService.class);
     // format must be "2006-04-01"
     private AnalyticsService analyticsService;
     private static GoogleAnalyticsService googleAnalyticsService = new GoogleAnalyticsService();
@@ -124,7 +124,7 @@ public class GoogleAnalyticsService extends JahiaService {
 
                 return dataFeed.getEntries();
             } catch (Exception e) {
-                logger.error(e, e);
+                logger.error(e.getMessage(), e);
             }
         }
         logger.debug("AccountEntry is null for parameter ["+ webPropertyId + "]");
@@ -146,7 +146,7 @@ public class GoogleAnalyticsService extends JahiaService {
             logger.debug("Credential parameters are valid");
         } catch (AuthenticationException e) {
             logger.debug("Credential parameters are not valid");
-            logger.warn(e, e);
+            logger.warn(e.getMessage(), e);
         }
         return analyticsService;
     }
@@ -207,7 +207,7 @@ public class GoogleAnalyticsService extends JahiaService {
                     }
                  }
             } catch (Exception e) {
-                logger.error(e, e);
+                logger.error(e.getMessage(), e);
             }
         } else {
             logger.debug("Account [" + webPropertyId + "] doesn't begin with 'UA-'.");

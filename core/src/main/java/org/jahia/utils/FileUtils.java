@@ -50,7 +50,7 @@ import java.util.Set;
 import org.apache.commons.collections.FastHashMap;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.artofsolving.jodconverter.document.DefaultDocumentFormatRegistry;
 import org.artofsolving.jodconverter.document.DocumentFamily;
 import org.artofsolving.jodconverter.document.DocumentFormat;
@@ -59,7 +59,7 @@ import org.jahia.services.SpringContextSingleton;
 
 public final class FileUtils {
 
-    private static Logger logger = Logger.getLogger(FileUtils.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(FileUtils.class);
 
     private static Map<String, String> fileExtensionIcons;
     private static String[] fileExtensionIconsMapping;

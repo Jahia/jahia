@@ -53,7 +53,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -84,7 +84,7 @@ import junit.framework.TestSuite;
 @SuppressWarnings("serial")
 public class TestServlet extends HttpServlet implements Controller, ServletContextAware {
     
-    private transient static Logger logger = Logger.getLogger(TestServlet.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(TestServlet.class);
     
     private ServletContext servletContext;
     

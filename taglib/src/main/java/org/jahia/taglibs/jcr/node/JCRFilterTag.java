@@ -32,7 +32,7 @@
 
 package org.jahia.taglibs.jcr.node;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
@@ -57,7 +57,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class JCRFilterTag extends AbstractJCRTag {
-    private static transient Logger logger = Logger.getLogger(JCRFilterTag.class);
+    private static transient Logger logger = org.slf4j.LoggerFactory.getLogger(JCRFilterTag.class);
     private Collection<JCRNodeWrapper> list;
 
     private String var;

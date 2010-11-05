@@ -37,7 +37,7 @@
 //
 package org.jahia.services.sites;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.params.ProcessingContext;
@@ -71,7 +71,7 @@ import java.util.*;
  * @author Khue ng
  */
 public class JahiaSitesBaseService extends JahiaSitesService {
-    private static Logger logger = Logger.getLogger(JahiaSitesBaseService.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaSitesBaseService.class);
 
     protected static JahiaSitesBaseService instance = null;
 

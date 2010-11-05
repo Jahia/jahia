@@ -32,7 +32,7 @@
 
 package org.jahia.services.workflow.jbpm;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -58,7 +58,7 @@ import java.util.List;
  *        Created : 4 févr. 2010
  */
 public class JBPMTaskAssignmentListener implements AssignmentHandler {
-    private transient static Logger logger = Logger.getLogger(JBPMTaskAssignmentListener.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JBPMTaskAssignmentListener.class);
 
     /**
      * sets the actorId and candidates for the given task.

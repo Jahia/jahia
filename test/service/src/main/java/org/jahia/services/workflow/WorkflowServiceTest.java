@@ -34,7 +34,7 @@ package org.jahia.services.workflow;
 
 import static org.junit.Assert.*;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -74,7 +74,7 @@ public class WorkflowServiceTest {
     private static JahiaGroup group;
     private HashMap<String, Object> emptyMap;
     private static final String PROVIDER = "jBPM";
-    private static Logger logger = Logger.getLogger(WorkflowServiceTest.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(WorkflowServiceTest.class);
     private static int nodeCounter;
     private JCRNodeWrapper stageNode;
     private static WorkflowService service;

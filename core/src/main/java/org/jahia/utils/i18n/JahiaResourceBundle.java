@@ -32,7 +32,7 @@
 
 package org.jahia.utils.i18n;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.settings.SettingsBean;
@@ -52,7 +52,7 @@ import java.util.concurrent.ConcurrentMap;
  * Time: 17:45:02
  */
 public class JahiaResourceBundle extends ResourceBundle {
-    private transient static Logger logger = Logger.getLogger(JahiaResourceBundle.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaResourceBundle.class);
     private static final Locale EMPTY_LOCALE = new Locale("", "");
     private final String basename;
     private final Locale locale;

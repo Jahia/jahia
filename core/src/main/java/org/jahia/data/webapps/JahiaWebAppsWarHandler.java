@@ -62,8 +62,8 @@ import org.jahia.utils.zip.JahiaArchiveFileHandler;
  */
 public class JahiaWebAppsWarHandler {
 
-    private static org.apache.log4j.Logger logger =
-        org.apache.log4j.Logger.getLogger(JahiaWebAppsWarHandler.class);
+    private static org.slf4j.Logger logger =
+        org.slf4j.LoggerFactory.getLogger(JahiaWebAppsWarHandler.class);
 
     /** The web.xml file **/
     private static final String WEB_XML_FILE = "WEB-INF/web.xml";

@@ -41,7 +41,7 @@ import ij.io.Opener;
 import ij.process.ImageProcessor;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
@@ -103,7 +103,7 @@ import java.util.*;
 public class JahiaContentManagementServiceImpl extends JahiaRemoteService implements JahiaContentManagementService {
 // ------------------------------ FIELDS ------------------------------
 
-    private static final transient Logger logger = Logger.getLogger(JahiaContentManagementServiceImpl.class);
+    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaContentManagementServiceImpl.class);
 
     private NavigationHelper navigation;
     private ContentManagerHelper contentManager;
@@ -303,7 +303,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 GWTJahiaNode gwtJahiaNode = navigation.getNode(path, fields, retrieveCurrentSession());
                 list.add(gwtJahiaNode);
             } catch (GWTJahiaServiceException e) {
-                logger.debug(e, e);
+                logger.debug(e.getMessage(), e);
             }
         }
         return list;

@@ -32,7 +32,7 @@
 
 package org.jahia.taglibs.template.include;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -60,7 +60,7 @@ import java.util.Map;
  *        Created : 27 oct. 2009
  */
 public class OptionTag extends BodyTagSupport implements ParamParent {
-    private transient static Logger logger = Logger.getLogger(OptionTag.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(OptionTag.class);
     private String nodetype;
     private JCRNodeWrapper node;
     private String template;

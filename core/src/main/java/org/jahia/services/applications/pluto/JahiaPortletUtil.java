@@ -53,7 +53,7 @@ import java.util.*;
  */
 public class JahiaPortletUtil {
     public static final String JAHIA_SHARED_MAP = "jahiaSharedMap";
-    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(JahiaPortletUtil.class);
+    private static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaPortletUtil.class);
     public static final String PLUTO_PREFIX = "__";
     public static final String PLUTO_ACTION = "ac";
     public static final String PLUTO_RESOURCE = "rs";
@@ -205,7 +205,7 @@ public class JahiaPortletUtil {
             }
 
         } catch (RepositoryException e) {
-            logger.error(e, e);
+            logger.error(e.getMessage(), e);
         }
     }
 

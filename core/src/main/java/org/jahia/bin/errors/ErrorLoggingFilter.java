@@ -34,7 +34,7 @@ package org.jahia.bin.errors;
 
 import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.bin.filters.MaintenanceFilter;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
@@ -60,7 +60,7 @@ import static javax.servlet.http.HttpServletResponse.*;
  */
 public class ErrorLoggingFilter implements Filter {
 
-    private static Logger logger = Logger.getLogger(ErrorLoggingFilter.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(ErrorLoggingFilter.class);
 
     private static Throwable lastMailedException = null;
     private static int lastMailedExceptionOccurences = 0;

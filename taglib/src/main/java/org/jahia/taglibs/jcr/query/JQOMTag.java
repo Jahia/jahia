@@ -40,7 +40,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.taglibs.query.QueryDefinitionTag;
 
 /**
@@ -49,7 +49,7 @@ import org.jahia.taglibs.query.QueryDefinitionTag;
  */
 @SuppressWarnings("serial")
 public class JQOMTag extends QueryDefinitionTag {
-    private static final Logger logger = Logger.getLogger(JQOMTag.class);
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JQOMTag.class);
 
     public int doEndTag() throws JspException {
         try {

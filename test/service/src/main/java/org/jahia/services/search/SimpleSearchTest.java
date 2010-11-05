@@ -32,7 +32,7 @@
 
 package org.jahia.services.search;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ParamBean;
@@ -66,7 +66,7 @@ import javax.jcr.RepositoryException;
  * 
  */
 public class SimpleSearchTest {
-    private static Logger logger = Logger.getLogger(SimpleSearchTest.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(SimpleSearchTest.class);
     private final static String FIRST_TESTSITE_NAME = "jcrSearchTest";
     private final static String SECOND_TESTSITE_NAME = "jcrSearchTest2";
     private final static String FIRST_SITECONTENT_ROOT_NODE = "/sites/"

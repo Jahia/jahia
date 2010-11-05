@@ -32,7 +32,7 @@
 
 package org.jahia.services.content;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.version.Version;
@@ -46,7 +46,7 @@ import javax.jcr.version.Version;
  */
 public class VersionInfo implements Comparable {
 
-    private static transient Logger logger = Logger.getLogger(VersionInfo.class);
+    private static transient Logger logger = org.slf4j.LoggerFactory.getLogger(VersionInfo.class);
 
     private Version version;
     private String label;

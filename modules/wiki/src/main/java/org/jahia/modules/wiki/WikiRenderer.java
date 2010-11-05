@@ -32,28 +32,20 @@
 
 package org.jahia.modules.wiki;
 
-import org.xwiki.rendering.syntax.SyntaxFactory;
-import org.xwiki.rendering.renderer.printer.WikiPrinter;
-import org.xwiki.rendering.renderer.printer.DefaultWikiPrinter;
-import org.xwiki.rendering.renderer.LinkLabelGenerator;
-import org.xwiki.rendering.renderer.BlockRenderer;
-import org.xwiki.rendering.renderer.xhtml.XHTMLLinkRenderer;
-import org.xwiki.rendering.parser.Parser;
-import org.xwiki.rendering.block.XDOM;
-import org.xwiki.rendering.block.LinkBlock;
-import org.xwiki.rendering.transformation.TransformationManager;
-import org.xwiki.rendering.listener.Link;
-import org.xwiki.rendering.listener.LinkType;
-import org.xwiki.component.embed.EmbeddableComponentManager;
-import org.xwiki.component.descriptor.ComponentDescriptor;
-import org.xwiki.component.descriptor.DefaultComponentDescriptor;
-import org.xwiki.component.manager.ComponentManager;
-import org.jahia.services.render.RenderContext;
-import org.jahia.services.content.JCRNodeWrapper;
-
-
 import java.io.StringReader;
-import java.util.List;
+
+import org.jahia.services.render.RenderContext;
+import org.xwiki.component.descriptor.DefaultComponentDescriptor;
+import org.xwiki.component.embed.EmbeddableComponentManager;
+import org.xwiki.component.manager.ComponentManager;
+import org.xwiki.rendering.block.XDOM;
+import org.xwiki.rendering.parser.Parser;
+import org.xwiki.rendering.renderer.BlockRenderer;
+import org.xwiki.rendering.renderer.printer.DefaultWikiPrinter;
+import org.xwiki.rendering.renderer.printer.WikiPrinter;
+import org.xwiki.rendering.renderer.xhtml.XHTMLLinkRenderer;
+import org.xwiki.rendering.syntax.SyntaxFactory;
+import org.xwiki.rendering.transformation.TransformationManager;
 
 /**
  * User: ktlili
@@ -61,7 +53,7 @@ import java.util.List;
  * Time: 3:13:47 PM
  */
 public class WikiRenderer {
-    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(WikiRenderer.class);
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(WikiRenderer.class);
     private static EmbeddableComponentManager componentManager;
 
 

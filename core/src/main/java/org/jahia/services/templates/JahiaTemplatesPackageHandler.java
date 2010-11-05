@@ -45,7 +45,8 @@ import org.apache.commons.io.IOCase;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 
 import java.io.File;
@@ -63,7 +64,7 @@ import java.util.jar.Manifest;
  */
 final class JahiaTemplatesPackageHandler {
 
-    private static final Logger logger = Logger
+    private static final Logger logger = LoggerFactory
             .getLogger(JahiaTemplatesPackageHandler.class);
 
     private JahiaTemplatesPackageHandler() {

@@ -32,7 +32,7 @@
  */
 package org.jahia.services.render.filter.cache;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.cache.GroupCacheKey;
 import org.jahia.settings.SettingsBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -51,7 +51,7 @@ import java.util.concurrent.Semaphore;
  *        Created : 12 oct. 2010
  */
 public class PageGeneratorQueue implements InitializingBean {
-    private transient static Logger logger = Logger.getLogger(PageGeneratorQueue.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(PageGeneratorQueue.class);
     private Map<String,String> notCacheablePage = new ConcurrentHashMap<String, String>(2503);
     private Map<String, CountDownLatch> generatingPages;
     private int maxPagesToGenerateInParallel;

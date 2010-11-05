@@ -35,7 +35,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.lang.SerializationUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.search.SearchCriteria;
@@ -48,7 +48,7 @@ import org.jahia.services.search.Suggestion;
  */
 public class SuggestionsTag extends ResultsTag {
 
-    private static Logger logger = Logger.getLogger(SuggestionsTag.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(SuggestionsTag.class);
 
     private static final long serialVersionUID = -4991766714209759529L;
 

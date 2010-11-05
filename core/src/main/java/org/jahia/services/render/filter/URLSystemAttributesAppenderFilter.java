@@ -32,7 +32,7 @@
  */
 package org.jahia.services.render.filter;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 
@@ -49,7 +49,7 @@ import java.util.Set;
  *        Created : 23 sept. 2010
  */
 public class URLSystemAttributesAppenderFilter extends AbstractFilter {
-    private transient static Logger logger = Logger.getLogger(URLSystemAttributesAppenderFilter.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(URLSystemAttributesAppenderFilter.class);
     private List<String> attributesToKeep;
     private HtmlTagAttributeTraverser traverser;
 

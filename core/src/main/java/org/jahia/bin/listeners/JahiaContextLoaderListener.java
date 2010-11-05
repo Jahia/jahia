@@ -32,7 +32,8 @@
 
 package org.jahia.bin.listeners;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.pluto.driver.PortalStartupListener;
 import org.jahia.bin.Jahia;
 import org.jahia.services.applications.ApplicationsManagerServiceImpl;
@@ -56,7 +57,7 @@ import java.util.Locale;
  */
 public class JahiaContextLoaderListener extends PortalStartupListener {
     
-    private static final transient Logger logger = Logger
+    private static final transient Logger logger = LoggerFactory
             .getLogger(JahiaContextLoaderListener.class);
 
     private static ServletContext servletContext;

@@ -35,7 +35,7 @@ package org.jahia.bin;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.bin.errors.ErrorHandler;
@@ -103,7 +103,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
     protected static final Set<String> reservedParameters;
 
-    private static Logger logger = Logger.getLogger(Render.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(Render.class);
 
     // Here we define the constants for the reserved keywords for post methods
     public static final String NODE_TYPE = "nodeType";

@@ -36,7 +36,7 @@ import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
@@ -48,7 +48,7 @@ import org.jahia.services.render.RenderContext;
  */
 public class Functions {
 
-    private static final Logger logger = Logger.getLogger(Functions.class);
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(Functions.class);
 
     /**
      *

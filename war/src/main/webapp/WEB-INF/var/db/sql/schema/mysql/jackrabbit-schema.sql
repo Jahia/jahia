@@ -1,8 +1,5 @@
 # DbFileSystem
 drop table if exists JR_FSG_FSENTRY;
-drop table if exists JR_FS_DEFAULT_FSENTRY;
-drop table if exists JR_FS_LIVE_FSENTRY;
-drop table if exists JR_FSV_FSENTRY;
 
 # PersistenceManager
 drop table if exists JR_DEFAULT_BUNDLE;
@@ -26,15 +23,6 @@ drop table if exists JR_J_LOCAL_REVISIONS;
 # DbFileSystem - global
 create table JR_FSG_FSENTRY (FSENTRY_PATH text not null, FSENTRY_NAME varchar(255) not null, FSENTRY_DATA longblob null, FSENTRY_LASTMOD bigint not null, FSENTRY_LENGTH bigint not null) ENGINE=InnoDB character set latin1;
 create unique index JR_FSG_FSENTRY_IDX on JR_FSG_FSENTRY (FSENTRY_PATH(245), FSENTRY_NAME);
-# DbFileSystem - default workspace
-create table JR_FS_DEFAULT_FSENTRY (FSENTRY_PATH text not null, FSENTRY_NAME varchar(255) not null, FSENTRY_DATA longblob null, FSENTRY_LASTMOD bigint not null, FSENTRY_LENGTH bigint not null) ENGINE=InnoDB character set latin1;
-create unique index JR_FS_DEFAULT_FSENTRY_IDX on JR_FS_DEFAULT_FSENTRY (FSENTRY_PATH(245), FSENTRY_NAME);
-# DbFileSystem - live workspace
-create table JR_FS_LIVE_FSENTRY (FSENTRY_PATH text not null, FSENTRY_NAME varchar(255) not null, FSENTRY_DATA longblob null, FSENTRY_LASTMOD bigint not null, FSENTRY_LENGTH bigint not null) ENGINE=InnoDB character set latin1;
-create unique index JR_FS_LIVE_FSENTRY_IDX on JR_FS_LIVE_FSENTRY (FSENTRY_PATH(245), FSENTRY_NAME);
-# DbFileSystem - versioning
-create table JR_FSV_FSENTRY (FSENTRY_PATH text not null, FSENTRY_NAME varchar(255) not null, FSENTRY_DATA longblob null, FSENTRY_LASTMOD bigint not null, FSENTRY_LENGTH bigint not null) ENGINE=InnoDB character set latin1;
-create unique index JR_FSV_FSENTRY_IDX on JR_FSV_FSENTRY (FSENTRY_PATH(245), FSENTRY_NAME);
 
 # PersistenceManager - default workspace
 create table JR_DEFAULT_BUNDLE (NODE_ID varbinary(16) not null, BUNDLE_DATA longblob not null) ENGINE=InnoDB;

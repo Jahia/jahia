@@ -1,8 +1,5 @@
 # DbFileSystem
 drop table JR_FSG_FSENTRY;
-drop table JR_FS_DEFAULT_FSENTRY;
-drop table JR_FS_LIVE_FSENTRY;
-drop table JR_FSV_FSENTRY;
 
 # PersistenceManager
 drop table JR_DEFAULT_BUNDLE;
@@ -26,15 +23,6 @@ drop table JR_J_LOCAL_REVISIONS;
 # DbFileSystem - global
 create table JR_FSG_FSENTRY (FSENTRY_PATH varchar(2048) not null, FSENTRY_NAME varchar(255) not null, FSENTRY_DATA blob(100M), FSENTRY_LASTMOD bigint not null, FSENTRY_LENGTH bigint not null);
 create unique index JR_FSG_FSENTRY_IDX on JR_FSG_FSENTRY (FSENTRY_PATH, FSENTRY_NAME);
-# DbFileSystem - default workspace
-create table JR_FS_DEFAULT_FSENTRY (FSENTRY_PATH varchar(2048) not null, FSENTRY_NAME varchar(255) not null, FSENTRY_DATA blob(100M), FSENTRY_LASTMOD bigint not null, FSENTRY_LENGTH bigint not null);
-create unique index JR_FS_DEFAULT_FSENTRY_IDX on JR_FS_DEFAULT_FSENTRY (FSENTRY_PATH, FSENTRY_NAME);
-# DbFileSystem - live workspace
-create table JR_FS_LIVE_FSENTRY (FSENTRY_PATH varchar(2048) not null, FSENTRY_NAME varchar(255) not null, FSENTRY_DATA blob(100M), FSENTRY_LASTMOD bigint not null, FSENTRY_LENGTH bigint not null);
-create unique index JR_FS_LIVE_FSENTRY_IDX on JR_FS_LIVE_FSENTRY (FSENTRY_PATH, FSENTRY_NAME);
-# DbFileSystem - versioning
-create table JR_FSV_FSENTRY (FSENTRY_PATH varchar(2048) not null, FSENTRY_NAME varchar(255) not null, FSENTRY_DATA blob(100M), FSENTRY_LASTMOD bigint not null, FSENTRY_LENGTH bigint not null);
-create unique index JR_FSV_FSENTRY_IDX on JR_FSV_FSENTRY (FSENTRY_PATH, FSENTRY_NAME);
 
 # PersistenceManager - default workspace
 create table JR_DEFAULT_BUNDLE (NODE_ID_HI bigint not null, NODE_ID_LO bigint not null, BUNDLE_DATA blob(2G) not null, PRIMARY KEY (NODE_ID_HI, NODE_ID_LO));

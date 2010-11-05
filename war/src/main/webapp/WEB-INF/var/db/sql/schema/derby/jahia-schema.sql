@@ -20,7 +20,7 @@
     drop table jahia_version;
 
     create table jahia_contenthistory (
-        id bigint not null,
+        id integer not null,
         entry_action varchar(255),
         entry_date timestamp,
         message varchar(255),

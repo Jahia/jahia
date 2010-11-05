@@ -19,7 +19,7 @@ import java.util.Locale;
 )
 public class HistoryEntry {
 
-    private Long id = 0l;
+    private Integer id;
     private Date date;
     private String path;
     private String uuid;
@@ -32,11 +32,11 @@ public class HistoryEntry {
     @Id
     @GeneratedValue(generator = "jahia")
     @GenericGenerator(name ="jahia", strategy = "org.jahia.hibernate.dao.JahiaIdentifierGenerator")
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

@@ -207,7 +207,7 @@ public class ManageServer extends AbstractAdministrationModule {
             mailSrv.stop();
             mailSrv.start();
             request.setAttribute("jahiaDisplayInfo", getMessage(
-                            "org.jahia.admin.warningMsg.changSaved.label"));
+                            "label.changeSaved"));
         } catch (JahiaException e) {
             logger
                     .error(

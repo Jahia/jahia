@@ -81,7 +81,7 @@ public class ManagePasswordPolicies extends AbstractAdministrationModule {
 			RequestUtils.populate(pwdPolicy, request);
 			service.updatePolicy(pwdPolicy);
 			request.setAttribute("confirmationMessage",
-			        "org.jahia.admin.warningMsg.changSaved.label");
+			        "label.changeSaved");
 		}
 
 		request.setAttribute("policy", pwdPolicy);

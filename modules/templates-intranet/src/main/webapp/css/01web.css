@@ -843,67 +843,7 @@ body {
 {
 	text-align:center;
 }
-/******************************************************************************
-*  idTabs
-******************************************************************************/
-#bodywrapper div.idTabsContainer{
-	margin:0 ;
-}
-#bodywrapper  ul.idTabs {
-	clear:both;
-	list-style-type:none;
-	overflow:hidden;
-	background:transparent url(img/tab-bg.png) repeat-x bottom left;
-	margin:0 0 10px 0;
-	padding:0;
 
-}
-#bodywrapper .idTabs li {
-	display:inline;
-	float:left;
-	margin:0;
-	padding:0;
-}
-#bodywrapper .idTabs li.spacing{
-	padding-left:20px;
-}
-#bodywrapper .idTabs li a {
-	background:transparent url(img/tab-left.png) no-repeat scroll 0 0;
-	color:#fff;
-	display:inline;
-	float:left;
-	height:29px;
-	line-height:29px;
-	padding-left:15px;
-	text-decoration:none;
-	margin-right:2px
-}
-#bodywrapper .idTabs li a.selected,
-#bodywrapper .idTabs li a:hover,
-#bodywrapper .idTabs li a.selected {
-	background-position:0 -29px;
-	color:#fff;
-	text-decoration:none;
-}
-#bodywrapper .idTabs li a span {
-	background:transparent url(img/tab-right.png) no-repeat scroll 100% 0;
-	color:#b9ddfa;
-	cursor:pointer;
-	display:inline;
-	float:left;
-	height:29px;
-	line-height:29px;
-	padding-right:15px;
-	text-decoration:none;
-
-}
-#bodywrapper .idTabs li a.selected span,
-#bodywrapper .idTabs li a:hover span,
-#bodywrapper .idTabs li a.idTabs span {
-	background-position:100% -29px;
-	color:#fff;
-	text-decoration:none;
-}
 /******************************************************************************
 *  Summary
 ******************************************************************************/
@@ -987,4 +927,32 @@ body {
 #bodywrapper a.returnLink {
     background: transparent url( img/returnlink.png ) no-repeat 0% 50%;
     padding-left: 16px;
+}
+/******************************************************************************
+*  idTabs
+******************************************************************************/
+
+#bodywrapper  ul.idTabs {
+	background:transparent url(img/mod//tab-bg.png) repeat-x bottom left;
+}
+
+
+#bodywrapper .idTabs li a {
+	background:transparent url(img/mod/tab-left.png) no-repeat scroll 0 0;
+	color:#fff;
+}
+#bodywrapper .idTabs li a.selected,
+#bodywrapper .idTabs li a:hover,
+#bodywrapper .idTabs li a.selected {
+	color:#fff;
+}
+#bodywrapper .idTabs li a span {
+	background:transparent url(img/mod/tab-right.png) no-repeat scroll 100% 0;
+	color:#b9ddfa;
+
+}
+#bodywrapper .idTabs li a.selected span,
+#bodywrapper .idTabs li a:hover span,
+#bodywrapper .idTabs li a.idTabs span {
+	color:#fff;
 }

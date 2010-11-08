@@ -180,3 +180,31 @@ Calendar
 #bodywrapper .fc-header h2 {
 	background:none
 }
+/******************************************************************************
+*  idTabs
+******************************************************************************/
+
+#bodywrapper  ul.idTabs {
+	background:transparent url(img/mod//tab-bg.png) repeat-x bottom left;
+}
+
+
+#bodywrapper .idTabs li a {
+	background:transparent url(img/mod/tab-left.png) no-repeat scroll 0 0;
+	color:#fff;
+}
+#bodywrapper .idTabs li a.selected,
+#bodywrapper .idTabs li a:hover,
+#bodywrapper .idTabs li a.selected {
+	color:#fff;
+}
+#bodywrapper .idTabs li a span {
+	background:transparent url(img/mod/tab-right.png) no-repeat scroll 100% 0;
+	color:#b9ddfa;
+
+}
+#bodywrapper .idTabs li a.selected span,
+#bodywrapper .idTabs li a:hover span,
+#bodywrapper .idTabs li a.idTabs span {
+	color:#fff;
+}

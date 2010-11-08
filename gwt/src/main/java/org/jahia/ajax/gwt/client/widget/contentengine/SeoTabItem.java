@@ -83,6 +83,14 @@ public class SeoTabItem extends EditEngineTabItem {
         tab.layout();
     }
 
+    public void setProcessed(boolean processed) {
+        if (!processed && editorsByLanguage != null) {
+            editorsByLanguage.clear();
+            activeEditor = null;
+        }
+        super.setProcessed(processed);
+    }    
+    
     private UrlMappingEditor getEditor(String locale) {
         UrlMappingEditor editor = editorsByLanguage.get(locale);
         if (editor == null) {

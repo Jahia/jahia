@@ -486,23 +486,6 @@ public class WorkflowService {
         ace.setProperty("j:privileges", grs);
     }
 
-    private String getPermissionKey(String rule, WorkflowDefinition workflow, String role) {
-        return rule + " - " + workflow.getName() + " - " + role;
-    }
-
-    public void removeWorkflowRule(final String key) throws RepositoryException {
-        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<String>() {
-            public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                if (session.itemExists("/workflowrules/" + key)) {
-                    JCRNodeWrapper rule = session.getNode("/workflowrules/" + key);
-                    rule.remove();
-                    session.save();
-                }
-                return null;
-            }
-        });
-    }
-
     public void addComment(String processId, String provider, String comment, String user) {
         lookupProvider(provider).addComment(processId, comment, user);
     }

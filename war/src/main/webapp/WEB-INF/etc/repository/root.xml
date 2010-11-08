@@ -80,8 +80,6 @@
         </administrators>
     </groups>
     
-    <workflowrules jcr:primaryType="jnt:workflowRules"/>
-
     <sites jcr:primaryType="jnt:virtualsitesFolder"
            j:virtualsitesFolderSkeleton="site.xml,/modules/roles/site-roles.xml"/>
 

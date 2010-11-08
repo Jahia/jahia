@@ -32,6 +32,7 @@
 
 package org.jahia.services.content.nodetypes;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 
@@ -279,6 +280,7 @@ public class JahiaCndReader {
         }
         do {
             nextToken();
+            parseName(currentToken); // check name validity
             supertypes.add(currentToken);
             nextToken();
         } while (currentTokenEquals(Lexer.LIST_DELIMITER));
@@ -923,7 +925,11 @@ public class JahiaCndReader {
         return currentToken.equals(s);
     }
 
-    protected Name parseName(String name) {
-        return new Name(name, registry.getNamespaces());
+    protected Name parseName(String name) throws ParseException {
+        Name res = new Name(name, registry.getNamespaces());
+        if (!StringUtils.isEmpty(res.getPrefix()) && res.getUri() == null) {
+            lexer.fail("Cannot parse name");
+        }
+        return res;
     }
 }

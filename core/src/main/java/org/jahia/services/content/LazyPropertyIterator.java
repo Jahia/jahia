@@ -138,6 +138,8 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
                     }
                 } while (true);
             }
+        } catch (ConstraintViolationException e) {
+            return nextProperty();
         } catch (RepositoryException e) {
             throw new RuntimeException("nextProperty",e);
         }
@@ -185,6 +187,8 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
                     }
                 } while (true);
             }
+        } catch (ConstraintViolationException e) {
+            return hasNext();
         } catch (NoSuchElementException e) {
             return false;
         } catch (RepositoryException e) {

@@ -41,6 +41,7 @@ import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 
 import java.util.List;
@@ -58,21 +59,22 @@ public class ListOrderingContentTabItem extends ContentTabItem {
     private static final String JMIX_ORDERED_LIST = "jmix:orderedList";
 
     @Override
-    public void attachPropertiesEditor() {
+    public void attachPropertiesEditor(NodeHolder engine, AsyncTabItem tab) {
         tab.setLayout(new RowLayout());
         tab.add(propertiesEditor);
         if (!engine.isMultipleSelection()) {
-            attachManualListOrderingEditor(propertiesEditor);
+            attachManualListOrderingEditor(engine, tab, propertiesEditor);
         }
     }
 
     /**
      * Create manual list ordering editor
      *
-     * @param propertiesEditor
-     * @return
+     * @param engine
+     * @param tab
+     * @param propertiesEditor  @return
      */
-    private void attachManualListOrderingEditor(final PropertiesEditor propertiesEditor) {
+    private void attachManualListOrderingEditor(NodeHolder engine, AsyncTabItem tab, final PropertiesEditor propertiesEditor) {
         manualListOrderingEditor = new ManualListOrderingEditor(engine.getNode());
         useManualRanking = new CheckBox();
 

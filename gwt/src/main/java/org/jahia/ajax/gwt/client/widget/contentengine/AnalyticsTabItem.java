@@ -64,7 +64,7 @@ public class AnalyticsTabItem extends EditEngineTabItem {
     }
 
     @Override
-    public void init(final String locale) {
+    public void init(final NodeHolder engine, final AsyncTabItem tab, final String locale) {
         GWT.runAsync(new RunAsyncCallback() {
             public void onFailure(Throwable reason) {
                 Window.alert("Code download failed");
@@ -79,50 +79,42 @@ public class AnalyticsTabItem extends EditEngineTabItem {
                     lastQuery.setMetrics("ga:pageviews");
                     lastQuery.setSort("-ga:pageviews");
                     //lastQuery.setFilters("ga:pagePath==" + engine.getNode());
-                    display();
+                    // init data visulaiser
+                    if (dataVisualizer == null) {
+                        dataVisualizer = new AnalyticsDataVisualizer() {
+                            public void oneDateChanged(Date newStartDate, Date newEndDate) {
+                                lastQuery.setStartDate(newStartDate);
+                                lastQuery.setEndDate(newEndDate);
+                                loadData(lastQuery);
+                            }
+                            @Override
+                            public void onTextButtonSelected() {
+                                lastQuery.setDimensions("ga:pagePath,ga:source,ga:country,ga:hostname,ga:networkDomain,ga:browser,ga:browserVersion");
+                                lastQuery.setMetrics("ga:visits");
+                                lastQuery.setSort("-ga:visits");
+                                loadData(lastQuery);
+                            }
+                            @Override
+                            public void oneGeoMapSelected() {
+                                lastQuery.setDimensions("ga:pageTitle,ga:pagePath,ga:country,ga:date");
+                                loadData(lastQuery);
+                            }
+                            @Override
+                            public void oneAnnotatedTimeLineSelected() {
+                                lastQuery.setDimensions("ga:pageTitle,ga:pagePath,ga:date");
+                                loadData(lastQuery);
+                            }
+                        };
+                        tab.add(dataVisualizer);
+                    }
+
+                    // load date
+                    loadData(lastQuery);
+
                 }
                 tab.layout();
             }
         });
-    }
-
-    /**
-     * render chart
-     *
-     */
-    private void display() {
-        // init data visulaiser
-        if (dataVisualizer == null) {
-            dataVisualizer = new AnalyticsDataVisualizer() {
-                public void oneDateChanged(Date newStartDate, Date newEndDate) {
-                    lastQuery.setStartDate(newStartDate);
-                    lastQuery.setEndDate(newEndDate);
-                    loadData(lastQuery);
-                }
-                @Override
-                public void onTextButtonSelected() {
-                    lastQuery.setDimensions("ga:pagePath,ga:source,ga:country,ga:hostname,ga:networkDomain,ga:browser,ga:browserVersion");
-                    lastQuery.setMetrics("ga:visits");
-                    lastQuery.setSort("-ga:visits");
-                    loadData(lastQuery);
-                }
-                @Override
-                public void oneGeoMapSelected() {
-                    lastQuery.setDimensions("ga:pageTitle,ga:pagePath,ga:country,ga:date");
-                    loadData(lastQuery);
-                }
-                @Override
-                public void oneAnnotatedTimeLineSelected() {
-                    lastQuery.setDimensions("ga:pageTitle,ga:pagePath,ga:date");
-                    loadData(lastQuery);
-                }
-            };
-            tab.add(dataVisualizer);
-        }
-
-        // load date
-        loadData(lastQuery);
-
     }
 
     /**

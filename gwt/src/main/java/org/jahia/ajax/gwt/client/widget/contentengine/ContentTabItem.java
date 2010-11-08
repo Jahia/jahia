@@ -39,7 +39,6 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
-import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 
 import java.util.Arrays;
@@ -68,27 +67,28 @@ public class ContentTabItem extends PropertiesTabItem {
     }
 
     @Override
-    public void attachPropertiesEditor() {
+    public void attachPropertiesEditor(NodeHolder engine, AsyncTabItem tab) {
         // handle jcr:title property
         if (!propertiesEditor.getFieldsMap().containsKey("jcr:title") && !engine.isMultipleSelection()) {
                 tab.setLayout(new RowLayout());
             FieldSet fSet = new FieldSet();
-            fSet.add(createNamePanel());
+            fSet.add(createNamePanel(engine, tab));
             isNodeNameFieldDisplayed = true;
             propertiesEditor.insert(fSet,0);
         }
 
         // attach properties node
-            super.attachPropertiesEditor();
+            super.attachPropertiesEditor(engine, tab);
         }
 
 
     /**
      * Get Form panel that contains the name of the nodes
      *
-     * @return
+     * @return  @param engine
+     * @param tab
      */
-    private FormPanel createNamePanel() {
+    private FormPanel createNamePanel(NodeHolder engine, AsyncTabItem tab) {
 
         FormPanel formPanel = new FormPanel();
         formPanel.setLabelAlign(FormPanel.LabelAlign.TOP);

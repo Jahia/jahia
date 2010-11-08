@@ -73,7 +73,7 @@ public class VersioningTabItem extends EditEngineTabItem {
      * Create the tab item
      */
     @Override
-    public void init(final String locale) {
+    public void init(final NodeHolder engine, final AsyncTabItem tab, final String locale) {
         JahiaContentManagementService.App.getInstance().getVersions(engine.getNode().getPath(), new BaseAsyncCallback<List<GWTJahiaNodeVersion>>() {
             public void onSuccess(List<GWTJahiaNodeVersion> result) {
                 final ListStore<GWTJahiaNodeVersion> all = new ListStore<GWTJahiaNodeVersion>();
@@ -134,7 +134,7 @@ public class VersioningTabItem extends EditEngineTabItem {
                                     JahiaContentManagementService.App.getInstance().restoreNode(version, false, new BaseAsyncCallback() {
                                         public void onSuccess(Object result) {
                                             tab.removeAll();
-                                            init(locale);
+                                            init(engine, (AsyncTabItem) tab, locale);
                                             engine.getLinker().refresh(EditLinker.REFRESH_MAIN + EditLinker.REFRESH_PAGES);
                                             engine.close();
                                         }

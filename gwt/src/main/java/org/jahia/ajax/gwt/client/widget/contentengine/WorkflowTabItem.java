@@ -48,9 +48,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowType;
-import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 
@@ -81,7 +79,7 @@ public class WorkflowTabItem extends EditEngineTabItem {
     }
 
     @Override
-    public void init(String locale) {
+    public void init(final NodeHolder engine, final AsyncTabItem tab, String locale) {
         if (engine.getNode() == null) {
             return;
         }
@@ -96,7 +94,7 @@ public class WorkflowTabItem extends EditEngineTabItem {
 
         tab.setProcessed(true);
 
-        WorkflowHistoryPanel next = getPanel(locale);
+        WorkflowHistoryPanel next = getPanel(locale, engine);
         if (activePanel != null) {
             if (activePanel != next) {
                 activePanel.removeFromParent();
@@ -168,7 +166,7 @@ public class WorkflowTabItem extends EditEngineTabItem {
                                     event.getSelectedItem().set("active", Boolean.TRUE);
                                     GWTJahiaNodeACL gwtJahiaNodeACL =
                                             workflowRules.get(typesCombo.getValue()).get(event.getSelectedItem());
-                                    displayACLEditor(gwtJahiaNodeACL, engine.getNode(), combo.getSelection());
+                                    displayACLEditor(gwtJahiaNodeACL, engine.getNode(), combo.getSelection(), engine);
                                 } else {
                                     aclPanel.removeAll();
                                 }
@@ -195,7 +193,7 @@ public class WorkflowTabItem extends EditEngineTabItem {
     }
 
     private void displayACLEditor(final GWTJahiaNodeACL gwtJahiaNodeACL, final GWTJahiaNode node,
-                                  final List<GWTJahiaWorkflowDefinition> selection) {
+                                  final List<GWTJahiaWorkflowDefinition> selection, NodeHolder engine) {
         rightsEditor = new AclEditor(gwtJahiaNodeACL, node.getAclContext());
         rightsEditor.setAclGroup("tasks");
         if (aclPanel != null) {
@@ -211,7 +209,7 @@ public class WorkflowTabItem extends EditEngineTabItem {
         container.add(aclPanel, new RowData(1, 0.43));
     }
 
-    private WorkflowHistoryPanel getPanel(String locale) {
+    private WorkflowHistoryPanel getPanel(String locale, NodeHolder engine) {
         WorkflowHistoryPanel panel = panelsByLanguage.get(locale);
         if (panel == null) {
             panel = new WorkflowHistoryPanel(engine.getNode().getUUID(), locale);
@@ -221,7 +219,7 @@ public class WorkflowTabItem extends EditEngineTabItem {
         return panel;
     }
 
-    public void doSave() {
+    public void doSave(NodeHolder engine) {
         Map<GWTJahiaWorkflowDefinition, GWTJahiaNodeACL>  activeWorkflows = new HashMap<GWTJahiaWorkflowDefinition, GWTJahiaNodeACL>();
         if (workflowRules == null) {
             return;

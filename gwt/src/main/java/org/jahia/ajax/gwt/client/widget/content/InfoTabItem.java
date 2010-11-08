@@ -39,6 +39,7 @@ import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.Formatter;
+import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.contentengine.EditEngineTabItem;
 import org.jahia.ajax.gwt.client.widget.contentengine.NodeHolder;
 
@@ -55,7 +56,7 @@ public class InfoTabItem extends EditEngineTabItem {
     private transient FlowPanel infoPanel;
 
 
-    public void init(String locale) {
+    public void init(NodeHolder engine, AsyncTabItem tab, String locale) {
         if (!tab.isProcessed()) {
             infoPanel = new FlowPanel();
             infoPanel.addStyleName("infoPane");

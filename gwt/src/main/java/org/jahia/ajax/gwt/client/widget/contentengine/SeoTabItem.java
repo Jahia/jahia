@@ -41,7 +41,6 @@ import java.util.Set;
 
 import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
-import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 
 /**
@@ -63,12 +62,12 @@ public class SeoTabItem extends EditEngineTabItem {
     }
 
     @Override
-    public void init(String locale) {
+    public void init(NodeHolder engine, AsyncTabItem tab, String locale) {
         if (engine.getNode() == null) {
             return;
         }
 
-        UrlMappingEditor next = getEditor(locale);
+        UrlMappingEditor next = getEditor(engine, tab, locale);
         if (activeEditor != null) {
             if (activeEditor == next) {
                 // same as current --> do nothing
@@ -91,7 +90,7 @@ public class SeoTabItem extends EditEngineTabItem {
         super.setProcessed(processed);
     }    
     
-    private UrlMappingEditor getEditor(String locale) {
+    private UrlMappingEditor getEditor(NodeHolder engine, AsyncTabItem tab, String locale) {
         UrlMappingEditor editor = editorsByLanguage.get(locale);
         if (editor == null) {
             editor = new UrlMappingEditor(engine.getNode(), locale);
@@ -102,7 +101,7 @@ public class SeoTabItem extends EditEngineTabItem {
         return editor;
     }
     
-    public void doSave() {
+    public void doSave(NodeHolder engine) {
         Set<String> langs = new HashSet<String>(editorsByLanguage.keySet());
         if (langs.isEmpty()) {
             return;

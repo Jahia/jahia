@@ -66,7 +66,7 @@ public class UsagesTabItem extends EditEngineTabItem {
     }
 
     @Override
-    public void init(String locale) {
+    public void init(final NodeHolder engine, AsyncTabItem tab, String locale) {
         tab.setLayout(new RowLayout());
 
         if (engine.getNode() != null) {

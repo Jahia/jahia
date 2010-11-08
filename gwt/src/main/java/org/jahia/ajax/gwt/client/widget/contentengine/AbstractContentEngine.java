@@ -47,7 +47,6 @@ import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTEngine;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -206,7 +205,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
                 EditEngineTabItem engineTabItem = (EditEngineTabItem) currentTabItem;
 
                 if (!((AsyncTabItem)currentTab).isProcessed()) {
-                    engineTabItem.init(getSelectedLanguage());
+                    engineTabItem.init(this, (AsyncTabItem) currentTab, getSelectedLanguage());
                 }
             }
         }

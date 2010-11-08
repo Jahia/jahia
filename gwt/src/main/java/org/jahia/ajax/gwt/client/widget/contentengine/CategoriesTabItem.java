@@ -58,6 +58,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
+import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
 
 import java.util.ArrayList;
@@ -76,22 +77,18 @@ public class CategoriesTabItem extends EditEngineTabItem {
     private transient GWTJahiaNodeProperty categoryProperty;
 
     @Override
-    public void init(String locale) {
+    public void init(NodeHolder engine, AsyncTabItem tab, String locale) {
         if (!engine.isExistingNode() || (engine.getNode() != null)) {
             tab.setProcessed(true);
-            init();
+            tab.setLayout(new BorderLayout());
+            final GWTJahiaNode node = engine.getNode();
+            initCategoriesStoreA(node, engine);
+            if (!engine.isExistingNode() || (node.isWriteable() && !node.isLocked())) {
+                tab.add(createCategoriedPickerPanel(), new BorderLayoutData(Style.LayoutRegion.NORTH, 250));
+            }
+            tab.add(createSelectedCategoriesPanel(engine), new BorderLayoutData(Style.LayoutRegion.CENTER));
             tab.layout();
         }
-    }
-
-    private void init() {
-        tab.setLayout(new BorderLayout());
-        final GWTJahiaNode node = engine.getNode();
-        initCategoriesStoreA(node);
-        if (!engine.isExistingNode() || (node.isWriteable() && !node.isLocked())) {
-            tab.add(createCategoriedPickerPanel(), new BorderLayoutData(Style.LayoutRegion.NORTH, 250));
-        }
-        tab.add(createSelectedCategoriesPanel(), new BorderLayoutData(Style.LayoutRegion.CENTER));
     }
 
     /**
@@ -145,8 +142,9 @@ public class CategoriesTabItem extends EditEngineTabItem {
      * init categories store
      *
      * @param node
+     * @param engine
      */
-    private void initCategoriesStoreA(final GWTJahiaNode node) {
+    private void initCategoriesStoreA(final GWTJahiaNode node, final NodeHolder engine) {
         TreeLoader<GWTJahiaNode> catLoader = new BaseTreeLoader<GWTJahiaNode>(new RpcProxy<List<GWTJahiaNode>>() {
             @Override
             protected void load(Object o, final AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
@@ -167,7 +165,7 @@ public class CategoriesTabItem extends EditEngineTabItem {
         catStore = new TreeStore<GWTJahiaNode>(catLoader);
     }
 
-    private Component createSelectedCategoriesPanel() {
+    private Component createSelectedCategoriesPanel(NodeHolder engine) {
         ColumnConfig columnConfig = new ColumnConfig("displayName", Messages.get("label.title"), 500);
         columnConfig.setFixed(true);
         columnConfig.setRenderer(new TreeGridCellRenderer<GWTJahiaNode>());

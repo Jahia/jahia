@@ -45,6 +45,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
+import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 
 /**
  * Represents a dedicated tab for viewing the list of portlet in a deployed Web
@@ -55,7 +56,7 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 public class PortletsTabItem extends EditEngineTabItem {
 
     @Override
-    public void init(String locale) {
+    public void init(NodeHolder engine, AsyncTabItem tab, String locale) {
         if (engine.getNode() == null || tab.isProcessed()) {
             return;
         }

@@ -54,17 +54,13 @@ public abstract class EditEngineTabItem implements Serializable {
     private List<String> showForTypes = new ArrayList<String>();
     private List<String> hideForTypes = new ArrayList<String>();
 
-    protected transient AsyncTabItem tab;
-    protected transient NodeHolder engine;
-
     protected EditEngineTabItem() {
     }
 
     public AsyncTabItem create(GWTEngineTab engineTab, NodeHolder engine) {
         this.gwtEngineTab = engineTab;
-        this.engine = engine;
 
-        tab = new AsyncTabItem(gwtEngineTab.getTitle()) {
+        AsyncTabItem tab = new AsyncTabItem(gwtEngineTab.getTitle()) {
             @Override public void setProcessed(boolean processed) {
                 EditEngineTabItem.this.setProcessed(processed);
                 super.setProcessed(processed);
@@ -80,7 +76,7 @@ public abstract class EditEngineTabItem implements Serializable {
     /**
      * Create the tab item
      */
-    public abstract void init(String language);
+    public abstract void init(NodeHolder engine, AsyncTabItem tab, String language);
 
     public void setProcessed(boolean processed) {
     }

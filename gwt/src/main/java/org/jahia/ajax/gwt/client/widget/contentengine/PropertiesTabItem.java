@@ -111,7 +111,7 @@ public class PropertiesTabItem extends EditEngineTabItem {
     }
 
     @Override
-    public void init(String language) {
+    public void init(final NodeHolder engine, final AsyncTabItem tab, String language) {
         // do not re-process the view if it's already done and the tabItem is not multilang
         if (!isMultiLang() && tab.isProcessed()) {
             return;
@@ -194,7 +194,7 @@ public class PropertiesTabItem extends EditEngineTabItem {
                     }
                 }
                 setPropertiesEditorByLang(language);
-                attachPropertiesEditor();
+                attachPropertiesEditor(engine, tab);
                 if (propertiesEditor.getFieldsMap().containsKey("jcr:title")) {
                     Field title = propertiesEditor.getFieldsMap().get("jcr:title");
                     title.focus();
@@ -224,8 +224,10 @@ public class PropertiesTabItem extends EditEngineTabItem {
      * See ContentTabItem as an example of overriding
      *
      * call after created:
+     * @param engine
+     * @param tab
      */
-    public void attachPropertiesEditor() {
+    public void attachPropertiesEditor(NodeHolder engine, AsyncTabItem tab) {
         tab.add(propertiesEditor);
         tab.layout();
     }

@@ -62,6 +62,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAs
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
+import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.form.AutoCompleteComboBox;
 
 import java.util.*;
@@ -81,7 +82,7 @@ public class TagsTabItem extends EditEngineTabItem {
     private transient TreeLoader<GWTJahiaNode> tagLoader;
     private transient boolean tagAreI15d;
 
-    public void init(String locale) {
+    public void init(final NodeHolder engine, final AsyncTabItem tab, String locale) {
         if (!engine.isExistingNode() || (engine.getNode() != null)) {
 //            setProcessed(true);
             if (newValues == null) {
@@ -90,7 +91,136 @@ public class TagsTabItem extends EditEngineTabItem {
                 }
                 this.oldValues = new HashMap<String, GWTJahiaNodeProperty>();
                 this.newValues = new HashMap<String, GWTJahiaNodeProperty>();
-                init();
+                tab.setLayout(new BorderLayout());
+                final GWTJahiaNode node = engine.getNode();
+                tagLoader = new BaseTreeLoader<GWTJahiaNode>(new RpcProxy<List<GWTJahiaNode>>() {
+                    @Override
+                    protected void load(Object o, final AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
+                        if (node != null) {
+                            final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
+                            if (newValues.containsKey(TagsTabItem.this.locale)) {
+                                final GWTJahiaNodeProperty gwtJahiaNodeProperty = newValues.get(TagsTabItem.this.locale);
+                                final List<GWTJahiaNodePropertyValue> propertyValues = gwtJahiaNodeProperty.getValues();
+                                List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>(propertyValues.size());
+                                for (GWTJahiaNodePropertyValue propertyValue : propertyValues) {
+                                    nodes.add(propertyValue.getNode());
+                                }
+                                listAsyncCallback.onSuccess(nodes);
+                            } else {
+                                GWTJahiaNodeProperty oldProperty = engine.getProperties().get("j:tags");
+
+                                GWTJahiaNodeProperty newProperty = new GWTJahiaNodeProperty();
+                                newProperty.setMultiple(true);
+                                newProperty.setValues(new ArrayList<GWTJahiaNodePropertyValue>());
+                                newProperty.setName("j:tags");
+
+                                if (oldProperty != null) {
+                                    final List<GWTJahiaNodePropertyValue> propertyValues = oldProperty.getValues();
+                                    List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>(propertyValues.size());
+                                    for (GWTJahiaNodePropertyValue propertyValue : propertyValues) {
+                                        nodes.add(propertyValue.getNode());
+                                    }
+                                    newProperty.getValues().addAll(oldProperty.getValues());
+                                    listAsyncCallback.onSuccess(nodes);
+                                } else {
+                                    listAsyncCallback.onSuccess(new ArrayList<GWTJahiaNode>());
+                                }
+                                oldValues.put(TagsTabItem.this.locale, oldProperty);
+                                newValues.put(TagsTabItem.this.locale, newProperty);
+                            }
+                        }
+                    }
+                });
+
+                tagStore = new TreeStore<GWTJahiaNode>(tagLoader);
+
+                ColumnConfig columnConfig;
+                columnConfig = new ColumnConfig("name", Messages.get("label.name"), 500);
+                columnConfig.setFixed(true);
+                columnConfig.setRenderer(new TreeGridCellRenderer<GWTJahiaNode>());
+
+                ColumnConfig action = new ColumnConfig("action", Messages.get("label.action"), 100);
+                action.setAlignment(Style.HorizontalAlignment.RIGHT);
+                action.setRenderer(new GridCellRenderer() {
+                    public Object render(ModelData modelData, String s, ColumnData columnData, int i, int i1,
+                                         ListStore listStore, Grid grid) {
+                        Button button = new Button(Messages.get("label.remove"), new SelectionListener<ButtonEvent>() {
+                            @Override
+                            public void componentSelected(ButtonEvent buttonEvent) {
+                                final GWTJahiaNode node1 = (GWTJahiaNode) buttonEvent.getButton().getData("associatedNode");
+                                tagStore.remove(node1);
+                                newValues.get(TagsTabItem.this.locale).getValues().remove(new GWTJahiaNodePropertyValue(node1,
+                                            GWTJahiaNodePropertyType.WEAKREFERENCE));
+                            }
+                        });
+                        button.setData("associatedNode", modelData);
+                        button.setIcon(StandardIconsProvider.STANDARD_ICONS.minusRound());
+                        return button;
+                    }
+                });
+
+                // Add a new tag
+                final AutoCompleteComboBox autoCompleteComboBox = new AutoCompleteComboBox(JCRClientUtils.TAG_NODETYPES, 15);
+                autoCompleteComboBox.setMaxLength(120);
+                autoCompleteComboBox.setWidth(200);
+                autoCompleteComboBox.setName("tagName");
+
+                //panel.add(name, data);
+                Button addTag = new Button(Messages.get("label.add", "Add"), new SelectionListener<ButtonEvent>() {
+                    @Override
+                    public void componentSelected(ButtonEvent buttonEvent) {
+                        final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
+                        async.getTagNode(autoCompleteComboBox.getRawValue(), true, new BaseAsyncCallback<GWTJahiaNode>() {
+                            /**
+                             * On success
+                             * @param result
+                             */
+                            public void onSuccess(GWTJahiaNode result) {
+                                if (tagStore.findModel(result) == null) {
+                                    tagStore.add(result, false);
+                                    GWTJahiaNodeProperty gwtJahiaNodeProperty = newValues.get(TagsTabItem.this.locale);
+                                    if (gwtJahiaNodeProperty == null) {
+                                        gwtJahiaNodeProperty = new GWTJahiaNodeProperty();
+                                        gwtJahiaNodeProperty.setMultiple(true);
+                                        gwtJahiaNodeProperty.setValues(new ArrayList<GWTJahiaNodePropertyValue>());
+                                        gwtJahiaNodeProperty.setName("j:tags");
+                                        newValues.put(TagsTabItem.this.locale, gwtJahiaNodeProperty);
+                                    }
+                                    gwtJahiaNodeProperty.getValues().add(new GWTJahiaNodePropertyValue(result,
+                                            GWTJahiaNodePropertyType.WEAKREFERENCE));
+                                }
+                            }
+
+
+                        });
+
+                    }
+                });
+
+                if (!engine.isExistingNode() || (node.isWriteable() && !node.isLocked())) {
+                    ButtonBar bar = new ButtonBar();
+                    bar.add(new FillToolItem());
+                    bar.add(new Text(Messages.get("label.add", "Add Tag") + ":"));
+                    bar.add(autoCompleteComboBox);
+                    bar.add(addTag);
+                    tab.add(bar, new BorderLayoutData(Style.LayoutRegion.NORTH, 45));
+                }
+
+                // Sub grid
+                List<ColumnConfig> configs;
+                if (!engine.isExistingNode() || (node.isWriteable() && !node.isLocked())) {
+                    configs = Arrays.asList(columnConfig, action);
+                } else {
+                    configs = Arrays.asList(columnConfig);
+                }
+
+                TreeGrid<GWTJahiaNode> tagGrid =
+                        new TreeGrid<GWTJahiaNode>(tagStore, new ColumnModel(configs));
+                tagGrid.setIconProvider(ContentModelIconProvider.getInstance());
+                tagGrid.setAutoExpandColumn("name");
+                tagGrid.getTreeView().setRowHeight(25);
+                tagGrid.getTreeView().setForceFit(true);
+                tab.add(tagGrid, new BorderLayoutData(Style.LayoutRegion.CENTER));
                 tab.layout();
             } else {
                 if(tagAreI15d) {
@@ -100,139 +230,6 @@ public class TagsTabItem extends EditEngineTabItem {
                 tagLoader.load();
             }
         }
-    }
-
-    private void init() {
-        tab.setLayout(new BorderLayout());
-        final GWTJahiaNode node = engine.getNode();
-        tagLoader = new BaseTreeLoader<GWTJahiaNode>(new RpcProxy<List<GWTJahiaNode>>() {
-            @Override
-            protected void load(Object o, final AsyncCallback<List<GWTJahiaNode>> listAsyncCallback) {
-                if (node != null) {
-                    final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
-                    if (newValues.containsKey(locale)) {
-                        final GWTJahiaNodeProperty gwtJahiaNodeProperty = newValues.get(locale);
-                        final List<GWTJahiaNodePropertyValue> propertyValues = gwtJahiaNodeProperty.getValues();
-                        List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>(propertyValues.size());
-                        for (GWTJahiaNodePropertyValue propertyValue : propertyValues) {
-                            nodes.add(propertyValue.getNode());
-                        }
-                        listAsyncCallback.onSuccess(nodes);
-                    } else {
-                        GWTJahiaNodeProperty oldProperty = engine.getProperties().get("j:tags");
-
-                        GWTJahiaNodeProperty newProperty = new GWTJahiaNodeProperty();
-                        newProperty.setMultiple(true);
-                        newProperty.setValues(new ArrayList<GWTJahiaNodePropertyValue>());
-                        newProperty.setName("j:tags");
-
-                        if (oldProperty != null) {
-                            final List<GWTJahiaNodePropertyValue> propertyValues = oldProperty.getValues();
-                            List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>(propertyValues.size());
-                            for (GWTJahiaNodePropertyValue propertyValue : propertyValues) {
-                                nodes.add(propertyValue.getNode());
-                            }
-                            newProperty.getValues().addAll(oldProperty.getValues());
-                            listAsyncCallback.onSuccess(nodes);
-                        } else {
-                            listAsyncCallback.onSuccess(new ArrayList<GWTJahiaNode>());
-                        }
-                        oldValues.put(locale, oldProperty);
-                        newValues.put(locale, newProperty);
-                    }
-                }
-            }
-        });
-
-        tagStore = new TreeStore<GWTJahiaNode>(tagLoader);
-
-        ColumnConfig columnConfig;
-        columnConfig = new ColumnConfig("name", Messages.get("label.name"), 500);
-        columnConfig.setFixed(true);
-        columnConfig.setRenderer(new TreeGridCellRenderer<GWTJahiaNode>());
-
-        ColumnConfig action = new ColumnConfig("action", Messages.get("label.action"), 100);
-        action.setAlignment(Style.HorizontalAlignment.RIGHT);
-        action.setRenderer(new GridCellRenderer() {
-            public Object render(ModelData modelData, String s, ColumnData columnData, int i, int i1,
-                                 ListStore listStore, Grid grid) {
-                Button button = new Button(Messages.get("label.remove"), new SelectionListener<ButtonEvent>() {
-                    @Override
-                    public void componentSelected(ButtonEvent buttonEvent) {
-                        final GWTJahiaNode node1 = (GWTJahiaNode) buttonEvent.getButton().getData("associatedNode");
-                        tagStore.remove(node1);
-                        newValues.get(locale).getValues().remove(new GWTJahiaNodePropertyValue(node1,
-                                    GWTJahiaNodePropertyType.WEAKREFERENCE));
-                    }
-                });
-                button.setData("associatedNode", modelData);
-                button.setIcon(StandardIconsProvider.STANDARD_ICONS.minusRound());
-                return button;
-            }
-        });
-
-        // Add a new tag
-        final AutoCompleteComboBox autoCompleteComboBox = new AutoCompleteComboBox(JCRClientUtils.TAG_NODETYPES, 15);
-        autoCompleteComboBox.setMaxLength(120);
-        autoCompleteComboBox.setWidth(200);
-        autoCompleteComboBox.setName("tagName");
-
-        //panel.add(name, data);
-        Button addTag = new Button(Messages.get("label.add", "Add"), new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent buttonEvent) {
-                final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
-                async.getTagNode(autoCompleteComboBox.getRawValue(), true, new BaseAsyncCallback<GWTJahiaNode>() {
-                    /**
-                     * On success
-                     * @param result
-                     */
-                    public void onSuccess(GWTJahiaNode result) {
-                        if (tagStore.findModel(result) == null) {
-                            tagStore.add(result, false);
-                            GWTJahiaNodeProperty gwtJahiaNodeProperty = newValues.get(locale);
-                            if (gwtJahiaNodeProperty == null) {
-                                gwtJahiaNodeProperty = new GWTJahiaNodeProperty();
-                                gwtJahiaNodeProperty.setMultiple(true);
-                                gwtJahiaNodeProperty.setValues(new ArrayList<GWTJahiaNodePropertyValue>());
-                                gwtJahiaNodeProperty.setName("j:tags");
-                                newValues.put(locale, gwtJahiaNodeProperty);
-                            }
-                            gwtJahiaNodeProperty.getValues().add(new GWTJahiaNodePropertyValue(result,
-                                    GWTJahiaNodePropertyType.WEAKREFERENCE));
-                        }
-                    }
-
-
-                });
-
-            }
-        });
-
-        if (!engine.isExistingNode() || (node.isWriteable() && !node.isLocked())) {
-            ButtonBar bar = new ButtonBar();
-            bar.add(new FillToolItem());
-            bar.add(new Text(Messages.get("label.add", "Add Tag") + ":"));
-            bar.add(autoCompleteComboBox);
-            bar.add(addTag);
-            tab.add(bar, new BorderLayoutData(Style.LayoutRegion.NORTH, 45));
-        }
-
-        // Sub grid
-        List<ColumnConfig> configs;
-        if (!engine.isExistingNode() || (node.isWriteable() && !node.isLocked())) {
-            configs = Arrays.asList(columnConfig, action);
-        } else {
-            configs = Arrays.asList(columnConfig);
-        }
-
-        TreeGrid<GWTJahiaNode> tagGrid =
-                new TreeGrid<GWTJahiaNode>(tagStore, new ColumnModel(configs));
-        tagGrid.setIconProvider(ContentModelIconProvider.getInstance());
-        tagGrid.setAutoExpandColumn("name");
-        tagGrid.getTreeView().setRowHeight(25);
-        tagGrid.getTreeView().setForceFit(true);
-        tab.add(tagGrid, new BorderLayoutData(Style.LayoutRegion.CENTER));
     }
 
     public void updateI18NProperties(Map<String,List<GWTJahiaNodeProperty>> list, List<String> mixin) {

@@ -33,7 +33,7 @@
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
 import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
-import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.security.PrincipalRolePanel;
 
 /**
@@ -45,7 +45,7 @@ public class RolePrincipalsTabItem extends EditEngineTabItem {
 
 
     @Override
-    public void init(String locale) {
+    public void init(NodeHolder engine, AsyncTabItem tab, String locale) {
         if (engine.getNode() == null || tab.isProcessed()) {
             return;
         }

@@ -40,8 +40,6 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.RowData;
-import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
@@ -75,7 +73,7 @@ public class LayoutTabItem extends PropertiesTabItem {
     }
 
     @Override
-    public void attachPropertiesEditor() {
+    public void attachPropertiesEditor(final NodeHolder engine, final AsyncTabItem tab) {
         if (engine.getNode() != null && engine.getLinker() instanceof EditLinker) {
             final ComboBox<GWTJahiaValueDisplayBean> templateField = (ComboBox<GWTJahiaValueDisplayBean>) propertiesEditor.getFieldsMap().get("j:view");
             final ComboBox<GWTJahiaValueDisplayBean> skinField = (ComboBox<GWTJahiaValueDisplayBean>) propertiesEditor.getFieldsMap().get("j:skin");
@@ -89,7 +87,20 @@ public class LayoutTabItem extends PropertiesTabItem {
                     if (subNodesViewField != null && subNodesViewField.getValue() != null) {
                         contextParams.put("forcedSubNodesTemplate", subNodesViewField.getValue().getValue());
                     }
-                    updatePreview((templateField != null && templateField.getValue() != null) ? templateField.getValue().getValue() : null, contextParams);
+                    String template = (templateField != null && templateField.getValue() != null) ? templateField.getValue().getValue() : null;
+                    if (engine.getNode() != null) {
+                        JahiaContentManagementService.App.getInstance().getRenderedContent(engine.getNode().getPath(), null, null,
+                                template, "preview", contextParams, false, null, new BaseAsyncCallback<GWTRenderResult>() {
+                            public void onSuccess(GWTRenderResult result) {
+                                HTML html = new HTML(result.getResult());
+
+                                setHTML(html);
+                                tab.layout();
+                            }
+                        });
+                    } else {
+                        setHTML(null);
+                    }
                 }
             };
             if (templateField != null) {
@@ -114,28 +125,7 @@ public class LayoutTabItem extends PropertiesTabItem {
             htmlPreview.setScrollMode(Style.Scroll.AUTO);
             tab.add(htmlPreview);
         } else {
-            super.attachPropertiesEditor();
-        }
-    }
-
-    /**
-     * Update preview
-     *
-     * @param template
-     * @param contextParams
-     */
-    private void updatePreview(String template, Map<String, String> contextParams) {
-        if (engine.getNode() != null) {
-            JahiaContentManagementService.App.getInstance().getRenderedContent(engine.getNode().getPath(), null, null, template, "preview", contextParams, false, null, new BaseAsyncCallback<GWTRenderResult>() {
-                public void onSuccess(GWTRenderResult result) {
-                    HTML html = new HTML(result.getResult());
-
-                    setHTML(html);
-                    tab.layout();
-                }
-            });
-        } else {
-            setHTML(null);
+            super.attachPropertiesEditor(engine, tab);
         }
     }
 

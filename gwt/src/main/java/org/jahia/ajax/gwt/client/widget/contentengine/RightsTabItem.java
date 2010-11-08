@@ -34,9 +34,9 @@ package org.jahia.ajax.gwt.client.widget.contentengine;
 
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
+import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 
 /**
  * Created by IntelliJ IDEA.
@@ -49,7 +49,7 @@ public class RightsTabItem extends EditEngineTabItem {
     private transient AclEditor rightsEditor;
 
     @Override
-    public void init(String locale) {
+    public void init(NodeHolder engine, AsyncTabItem tab, String locale) {
         if (engine.getAcl() != null) {
             tab.setProcessed(true);
 

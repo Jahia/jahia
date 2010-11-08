@@ -391,9 +391,9 @@ public class EditContentEngine extends AbstractContentEngine {
                         tabItem.updateProperties(changedProperties, node.getNodeTypes());
                     }
                 } else if (item instanceof SeoTabItem) {
-                    ((SeoTabItem) item).doSave();
+                    ((SeoTabItem) item).doSave(EditContentEngine.this);
                 } else if (item instanceof WorkflowTabItem) {
-                    ((WorkflowTabItem) item).doSave();
+                    ((WorkflowTabItem) item).doSave(EditContentEngine.this);
                 }
             }
 

@@ -1,7 +1,6 @@
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
-import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 
 /**
@@ -21,7 +20,7 @@ public class HistoryTabItem extends EditEngineTabItem {
     }
 
     @Override
-    public void init(String locale) {
+    public void init(NodeHolder engine, AsyncTabItem tab, String locale) {
         if (engine.getNode() == null) {
             return;
         }

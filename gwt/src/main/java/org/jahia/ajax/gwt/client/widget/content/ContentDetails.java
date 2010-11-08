@@ -202,13 +202,12 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                         ok.setEnabled(true);
                         acl = result.getAcl();
                         referencesWarnings = result.getReferencesWarnings();
+                        for (TabItem item : tabs.getItems()) {
+                            item.setEnabled(true);
+                        }
                         fillCurrentTab();
                     }
                 });
-
-                for (TabItem item : tabs.getItems()) {
-                    item.setEnabled(true);
-                }
             } else if (selectedNodes.size() > 1) {
                 List<String> paths = new ArrayList<String>();
                 for (GWTJahiaNode node : selectedNodes) {
@@ -223,21 +222,15 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                         mixin = result.getMixin();
                         initializersValues = result.getInitializersValues();
                         ok.setEnabled(true);
+                        for (TabItem item : tabs.getItems()) {
+                            if (((EditEngineTabItem) item.getData("item")).isHandleMultipleSelection()) {
+                                item.setEnabled(true);
+                            }
+                        }
                         fillCurrentTab();
                     }
                 });
-
-                for (TabItem item : tabs.getItems()) {
-                    if (((EditEngineTabItem) item.getData("item")).isHandleMultipleSelection()) {
-                        item.setEnabled(true);
-                    }
-                }
-
             }
-
-
-            fillCurrentTab();
-
         }
     }
 
@@ -249,7 +242,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
             EditEngineTabItem engineTabItem = (EditEngineTabItem) currentTabItem;
 
             if (!((AsyncTabItem)currentTab).isProcessed()) {
-                engineTabItem.init(language.getLanguage());
+                engineTabItem.init(this, (AsyncTabItem) currentTab, language.getLanguage());
                 m_component.layout();
             }
         }
@@ -371,9 +364,9 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                 } else if (item instanceof TagsTabItem) {
                         ((TagsTabItem) item).updateI18NProperties(changedI18NProperties, getNode().getNodeTypes());
                 } else if (item instanceof SeoTabItem) {
-                    ((SeoTabItem) item).doSave();
+                    ((SeoTabItem) item).doSave(ContentDetails.this);
                 } else if (item instanceof WorkflowTabItem) {
-                    ((WorkflowTabItem) item).doSave();
+                    ((WorkflowTabItem) item).doSave(ContentDetails.this);
                 }
             }
             // Ajax call to update values

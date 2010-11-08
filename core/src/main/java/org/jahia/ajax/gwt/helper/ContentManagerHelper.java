@@ -1094,7 +1094,7 @@ public class ContentManagerHelper {
         File[] files = dir.listFiles();
         for (File file : files) {
             if (file.isFile()) {
-                ZipEntry ze = new ZipEntry(file.getPath().substring(rootDir.getPath().length() + 1));
+                ZipEntry ze = new ZipEntry(file.getPath().substring(rootDir.getPath().length() + 1).replace("\\", "/"));
                 zos.putNextEntry(ze);
                 final FileInputStream input = new FileInputStream(file);
                 IOUtils.copy(input, zos);
@@ -1102,7 +1102,7 @@ public class ContentManagerHelper {
             }
 
             if (file.isDirectory()) {
-                ZipEntry ze = new ZipEntry(file.getPath().substring(rootDir.getPath().length() + 1) + "/");
+                ZipEntry ze = new ZipEntry(file.getPath().substring(rootDir.getPath().length() + 1).replace("\\", "/") + "/");
                 zos.putNextEntry(ze);
                 zip(file, rootDir, zos);
             }

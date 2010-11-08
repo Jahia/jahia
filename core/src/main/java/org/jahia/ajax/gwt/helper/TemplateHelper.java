@@ -110,13 +110,6 @@ public class TemplateHelper {
             renderContext.setSite(site);
             String res = renderService.render(r, renderContext);
             Map<String, Set<String>> map = renderContext.getStaticAssets();
-            Set<String> stringSet = map.get("css");
-            List<String> copy = new ArrayList<String>();
-            copy.addAll(stringSet);
-            Collections.reverse(copy);
-            stringSet = new LinkedHashSet<String>();
-            stringSet.addAll(copy);
-            map.put("css",stringSet);
             String constraints = ConstraintsHelper.getConstraints(node);
             if (constraints == null) {
                 constraints = "";

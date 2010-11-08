@@ -20,4 +20,4 @@
     var jahiaGWTParameters = {contextPath:"${url.context}",uilang:"${renderContext.mainResourceLocale}",siteUuid:"${renderContext.site.identifier}"}
     </script>
 </c:if>
-<template:includeResources invertCss="true"/>
+<template:includeResources />

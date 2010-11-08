@@ -21,12 +21,6 @@
 
 <body>
 
-<template:theme/>
-<template:addResources type="css" resources="960.css,01web.css"/>
-<c:if test="${renderContext.editMode}">
-    <template:addResources type="css" resources="edit.css" />
-</c:if>
-
 <div id="bodywrapper"><!--start bodywrapper-->
     <div class="container container_16">
         <div class="grid_16">
@@ -35,6 +29,12 @@
     </div>
 </div>
 <!--stop bodywrapper-->
+
+<c:if test="${renderContext.editMode}">
+    <template:addResources type="css" resources="edit.css" />
+</c:if>
+<template:addResources type="css" resources="960.css,01web.css"/>
+<template:theme/>
 
 </body>
 </html>

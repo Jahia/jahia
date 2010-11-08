@@ -9,19 +9,11 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%@ tag body-content="empty" description="Includes external resources (CSS, JavaScript, inline CSS styles, inline JavaScript), which are required for current page and were registered using addResources tag." %>
-<%@ attribute name="invertCss" required="false" type="java.lang.Boolean" description="Revert list of CSS" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <c:forEach items="${renderContext.staticAssets}" var="staticAsset">
-
-    <c:choose>
-        <c:when test="${staticAsset.key eq 'css' and invertCss}">
-            <c:set var="resources" value="${functions:reverse(renderContext.staticAssets[staticAsset.key])}"/>
-        </c:when>
-        <c:otherwise><c:set var="resources" value="${renderContext.staticAssets[staticAsset.key]}"/></c:otherwise>
-    </c:choose>
-    <c:forEach var="resource" items="${resources}" varStatus="var">
+    <c:forEach var="resource" items="${renderContext.staticAssets[staticAsset.key]}" varStatus="var">
     <c:choose>
         <c:when test="${'css' == staticAsset.key}">
             <link id="staticAsset${staticAsset.key}${var.index}" rel="stylesheet" href="${resource}" media="screen" type="text/css"/>

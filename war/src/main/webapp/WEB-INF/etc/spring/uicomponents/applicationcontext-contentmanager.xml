@@ -1712,7 +1712,7 @@
         <property name="key" value="sitesRepository"/>
         <property name="paths" value="$sites"/>
         <property name="titleKey"
-                  value="repository.sitesRepository.label"/>
+                  value="repository.siteRepository.label"/>
     </bean>
 
 

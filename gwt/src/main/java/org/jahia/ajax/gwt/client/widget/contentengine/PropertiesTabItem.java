@@ -172,17 +172,21 @@ public class PropertiesTabItem extends EditEngineTabItem {
                                             selectedNodes, new BaseAsyncCallback<Set<String>>() {
                                         public void onSuccess(Set<String> result) {
                                             if (!result.isEmpty()) {
-                                                field.setLabelSeparator(labelSep + " <img width='11px' height='11px' src='" + JahiaGWTParameters
+                                                field.setLabelSeparator(labelSep != null ? labelSep : "" + " <img width='11px' height='11px' src='" + JahiaGWTParameters
                                                         .getContextPath() + "/gwt/resources/images/default/shared/warning.gif'/> Warning : these users/groups might not view the reference "+result);
                                                 field.setFieldLabel(field.getFieldLabel());
                                             } else {
-                                                field.setLabelSeparator(labelSep);
+                                                if (labelSep != null) {
+                                                    field.setLabelSeparator(labelSep);
+                                                }
                                                 field.setFieldLabel(field.getFieldLabel());
                                             }
                                         }
                                     });
                                 } else {
-                                    field.setLabelSeparator(labelSep);
+                                    if (labelSep != null) {
+                                        field.setLabelSeparator(labelSep);
+                                    }    
                                     field.setFieldLabel(field.getFieldLabel());
                                 }
                             }

@@ -198,8 +198,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
                         missingResource(renderContext, currentResource, resource);
                     }
                 } else if (path.startsWith("/")) {
-                    node = resource.getNode();            
-                    JCRSessionWrapper session = node.getSession();
+                    JCRSessionWrapper session = resource.getNode().getSession();
                     try {
                         node = (JCRNodeWrapper) session.getItem(path);
                         applyContributeModeOptions(currentResource.getNode(),true);

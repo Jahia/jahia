@@ -55,6 +55,7 @@ rule "Init ACLs for new site"
         A new node is created
             - the node has the type jnt:virtualsite
     then
+        Assign permissions "r----" on the node to the group "users"
         Assign permissions "rew--" on the node to the role "editor"
         Assign permissions "rewap" on the node to the role "editor-in-chief"
         Assign permissions "rew-p" on the node to the role "publisher"

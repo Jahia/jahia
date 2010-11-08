@@ -34,8 +34,6 @@ import java.util.regex.Pattern;
  * User: loom
  * Date: Oct 5, 2010
  * Time: 11:29:45 AM
- *
- * @todo generate SQL DDL scripts for each DB.
  */
 public class ContentHistoryService implements Processor, CamelContextAware {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(ContentHistoryService.class);

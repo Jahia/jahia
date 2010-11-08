@@ -1,7 +1,11 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
 [jnt:portal] > jnt:content, mix:title, jmix:siteComponent
-- columns (long) = 3 autocreated
- + * (nt:base) = nt:base version
+ - columns (long) = 3 autocreated
+ + column1 (jnt:contentList) = jnt:contentList autocreated
+ + column2 (jnt:contentList) = jnt:contentList autocreated
+ + column3 (jnt:contentList) = jnt:contentList autocreated
+ + column4 (jnt:contentList) = jnt:contentList autocreated
+ + column5 (jnt:contentList) = jnt:contentList autocreated
 
 

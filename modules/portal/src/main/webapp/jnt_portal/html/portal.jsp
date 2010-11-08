@@ -5,6 +5,10 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="query" uri="http://www.jahia.org/tags/queryLib" %>
+
+<c:set var="writeable" value="${currentResource.workspace eq 'live'}" />
+
+<c:if test="${writeable}">
 <template:addResources type="css" resources="portal.css,slide.css"/>
 <template:addResources>
     <script type="text/javascript">
@@ -64,7 +68,7 @@
 <div id="columns">
     <c:forEach var="column" begin="1" end="${currentNode.properties.columns.string}">
         <ul id="column${column}" class="column">
-            <template:list path="column${column}" template="portal"/>
+            <template:module path="column${column}" template="portal"/>
         </ul>
     </c:forEach>
 </div>
@@ -73,4 +77,8 @@
         iNettuts.addWidgetControls();
         iNettuts.makeSortable();
     </script>
+</c:if>
+</c:if>
+<c:if test="${not writeable}">
+    Portal is only available in live
 </c:if>

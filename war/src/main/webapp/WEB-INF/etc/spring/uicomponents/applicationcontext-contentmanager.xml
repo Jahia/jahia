@@ -217,7 +217,7 @@
     <!-- portlet manager -->
     <bean id="portletmanager" parent="abstractmanager">
         <property name="nodeTypes" value="jnt:portlet"/>
-        <property name="folderTypes" value="jnt:portletList"/>
+        <property name="folderTypes" value="jnt:portletFolder"/>
         <property name="toolbars">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
@@ -1314,7 +1314,7 @@
         </property>
         <property name="folderTypes">
             <list>
-                <value>jnt:portletList</value>
+                <value>jnt:portletFolder</value>
             </list>
         </property>
 

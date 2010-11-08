@@ -73,6 +73,6 @@ public class NewRssActionItem extends BaseActionItem   {
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
 
-        setEnabled(lh.getSingleSelection() != null && lh.isWriteable() && lh.getSingleSelection().getNodeTypes().contains("jnt:portletList"));
+        setEnabled(lh.getSingleSelection() != null && lh.isWriteable() && lh.getSingleSelection().getNodeTypes().contains("jnt:portletFolder"));
     }
 }

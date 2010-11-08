@@ -23,7 +23,7 @@
         </private>
     </files>
 
-    <portlets jcr:primaryType="jnt:portletList"/>
+    <portlets jcr:primaryType="jnt:portletFolder"/>
 
     <contents jcr:primaryType="jnt:contentFolder"/>
 

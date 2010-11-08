@@ -488,7 +488,7 @@
                                     <value>$site/portlets</value>
                                 </list>
                             </property>
-                            <property name="folderTypes" value="jnt:portletList"/>
+                            <property name="folderTypes" value="jnt:portletFolder"/>
                         </bean>
                     </property>
                     <property name="treeColumns">
@@ -925,7 +925,7 @@
                                     <value>$user/portlets</value>
                                 </list>
                             </property>
-                            <property name="folderTypes" value="jnt:portletList"/>
+                            <property name="folderTypes" value="jnt:portletFolder"/>
                         </bean>
                     </property>
 

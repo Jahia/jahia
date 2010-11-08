@@ -46,7 +46,7 @@ public final class JCRClientUtils {
 
     public static final List<String> FOLDER_NODETYPES =  Arrays.asList("nt:folder","jnt:mountPoint");
     public static final List<String> CONTENTLIST_NODETYPES =  Arrays.asList("jnt:contentList");
-    public static final List<String> PORTLETLIST_NODETYPES =  Arrays.asList("jnt:portletList");
+    public static final List<String> PORTLETLIST_NODETYPES =  Arrays.asList("jnt:portletFolder");
     public static final List<String> FILE_NODETYPES = Arrays.asList("nt:file");
     public static final List<String> PORTLET_NODETYPES = Arrays.asList("jnt:portlet");
     public static final List<String> CATEGORY_NODETYPES =  Arrays.asList("jnt:category");

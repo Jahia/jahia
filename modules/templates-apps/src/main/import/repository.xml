@@ -19,7 +19,7 @@
                     </login-to-jahia>
                 </site_components>
             </contents>
-            <portlets jcr:primaryType="jnt:portletList"/>
+            <portlets jcr:primaryType="jnt:portletFolder"/>
             <themes jcr:primaryType="jnt:folder">
                 <default jcr:primaryType="jnt:folder"/>
             </themes>

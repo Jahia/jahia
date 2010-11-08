@@ -44,11 +44,11 @@ public class NewPortletFolderActionItem extends BaseActionItem {
     private static final long serialVersionUID = 5025003057041235936L;
 
     public void onComponentSelection() {
-        ContentActions.createNode(linker, getGwtToolbarItem().getTitle(), "jnt:portletList");
+        ContentActions.createNode(linker, getGwtToolbarItem().getTitle(), "jnt:portletFolder");
     }
 
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        setEnabled(lh.getSingleSelection() != null && lh.isWriteable() && lh.getSingleSelection().getNodeTypes().contains("jnt:portletList"));
+        setEnabled(lh.getSingleSelection() != null && lh.isWriteable() && lh.getSingleSelection().getNodeTypes().contains("jnt:portletFolder"));
     }
 }

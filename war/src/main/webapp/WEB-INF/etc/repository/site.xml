@@ -6,7 +6,7 @@
 
     <files jcr:primaryType="jnt:folder" />
 
-    <portlets jcr:primaryType="jnt:portletList" />
+    <portlets jcr:primaryType="jnt:portletFolder" />
 
     <groups jcr:primaryType="jnt:groupsFolder">
         <users jcr:primaryType="jnt:group" j:hidden="false">

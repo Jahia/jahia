@@ -587,9 +587,9 @@
  - j:cacheScope (string, choicelist) nofulltext < 'private','public'
  - j:expirationTime (long)
 
-[jnt:portletList] > nt:base, jmix:nodenameInfo, jmix:basemetadata, mix:title, jmix:list, jmix:publication
+[jnt:portletFolder] > nt:base, jmix:nodenameInfo, jmix:basemetadata, mix:title, jmix:list, jmix:publication
  + * (jnt:portlet) = jnt:portlet
- + * (jnt:portletList)
+ + * (jnt:portletFolder)
 
 [jnt:portletReference] > jnt:content,  jmix:nodeReference, jmix:editorialContent
  - j:node (weakreference,picker[type='portlet']) < jnt:portlet

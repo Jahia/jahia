@@ -17,7 +17,7 @@
                 </site_components>
             </contents>
             <files jcr:primaryType="jnt:folder" />
-            <portlets jcr:primaryType="jnt:portletList" />
+            <portlets jcr:primaryType="jnt:portletFolder" />
             <themes jcr:primaryType="jnt:folder">
                 <default jcr:primaryType="jnt:folder" />
                 <theme-yellow jcr:primaryType="jnt:folder">

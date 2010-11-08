@@ -14,51 +14,47 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
-    <title>${renderContext.mainResource.node.properties['jcr:title'].string}</title>
-    <link rel="stylesheet" type="text/css" href="${url.currentModule}/css/print.css" media="print" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>${renderContext.mainResource.node.properties['jcr:title'].string}</title>
+<link rel="stylesheet" type="text/css" href="${url.currentModule}/css/print.css" media="print" />
 </head>
-
 <body>
-
 <%@ include file="../../common/declarations.jspf" %>
-
 <jcr:node var="rootPage" path="/sites/${renderContext.site.siteKey}/home"/>
-
 <div id="bodywrapper">
-    <div id="header" class="colorResource1 imgResource1">
-        <div class="container container_16">
-            <div class="grid_16">
-                <template:area path="header" nodeTypes="jnt:row" />
-            </div>
-        </div>
-        <div class="clear"></div>
-    </div>
-    <div id="content">
-        <div class="container container_16">
-            <div class="grid_16">
-                <template:area path="pagecontent"/>
-            </div>
-        </div>
-        <div class="clear"></div>
-    </div>
-    <div id="footer" class="colorResource2 imgResource2 noprint">
-        <div class="container container_16">
-            <div class="grid_16">
-                <template:area path="footer" nodeTypes="jnt:row" />
-                <div class="clear"></div></div>
-            <div class="clear"></div></div>
+  <div id="header" class="colorResource1 imgResource1">
+    <div class="container container_16">
+      <div class="grid_16">
+        <template:area path="header" nodeTypes="jnt:row" />
+      </div>
     </div>
     <div class="clear"></div>
-
+  </div>
+  <div id="content">
+    <div class="container container_16">
+      <div class="grid_16">
+        <template:area path="pagecontent"/>
+      </div>
+    </div>
+    <div class="clear"></div>
+  </div>
+  <div id="footer" class="colorResource2 imgResource2 noprint">
+    <div class="container container_16">
+      <div class="grid_16">
+        <template:area path="footer" nodeTypes="jnt:row" />
+        <div class="clear"></div>
+      </div>
+      <div class="clear"></div>
+    </div>
+  </div>
+  <div class="clear"></div>
 </div>
+</body>
+</html>
 
+<!--ressources-->
 <c:if test="${renderContext.editMode}">
     <template:addResources type="css" resources="edit.css" />
 </c:if>
 <template:addResources type="css" resources="960.css,01web.css,02mod.css,navigation.css,navigationN1-1.css,navigationN1-2.css,navigationN1-3.css,navigationN1-4.css,navigationN2-1.css,navigationN2-2.css" />
 <template:theme/>
-
-</body>
-</html>

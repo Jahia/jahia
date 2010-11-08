@@ -138,3 +138,29 @@ shortcuts inline
 #bodywrapper .shortcuts-inline li.shortcuts-edit {
     background: transparent url( img/mod/shortcuts-edit.png ) no-repeat 0% 50% !important;
 }
+/******************************************************************************
+*  idTabs
+******************************************************************************/
+
+#bodywrapper  ul.idTabs {
+	background:transparent url(img/mod/tab-bg.png) repeat-x bottom left;
+}
+
+#bodywrapper .idTabs li a {
+	background:transparent url(img/mod/tab-left.png) no-repeat scroll 0 0;
+	color:#fff;
+}
+#bodywrapper .idTabs li a.selected,
+#bodywrapper .idTabs li a:hover,
+#bodywrapper .idTabs li a.selected {
+	color:#fff;
+}
+#bodywrapper .idTabs li a span {
+	background:transparent url(img/mod/tab-right.png) no-repeat scroll 100% 0;
+	color:#cccccc;
+}
+#bodywrapper .idTabs li a.selected span,
+#bodywrapper .idTabs li a:hover span,
+#bodywrapper .idTabs li a.idTabs span {
+	color:#fff;
+}

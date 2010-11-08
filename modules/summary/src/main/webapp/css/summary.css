@@ -1,0 +1,30 @@
+/******************************************************************************
+*  Summary
+******************************************************************************/
+#bodywrapper ul.summary, #bodywrapper .summary {
+	margin:10px 0;
+	line-height:130%;
+	padding: 10px;
+	background-color:#eaeaea;
+	border:1px solid #ccc;
+	list-style:none;
+}
+#bodywrapper .summary a,
+#bodywrapper .summary a:link,
+#bodywrapper .summary a:visited {
+	text-decoration:none;
+}
+#bodywrapper .summary a:hover,
+#bodywrapper .summary a:active {
+	text-decoration:underline;
+}
+
+#bodywrapper .summary ul {
+	margin:0;
+	padding:0 0 0 2em;
+	list-style:none;
+}
+#bodywrapper .summary li {
+	padding:0;
+	margin-bottom:10px
+}

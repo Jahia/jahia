@@ -15,13 +15,14 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="acl" type="java.lang.String"--%>
+<template:addResources type="css" resources="summary.css"/>
 <c:set var="bindedComponent"
        value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 <jcr:nodeProperty node="${currentNode}" name="startDate" var="startDate"/>
 <jcr:nodeProperty node="${currentNode}" name="endDate" var="endDate"/>
 
-<div class="summary faqSummary">
-    <h3><h2><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h2></h3>
+<div class="summary">
+    <h3><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h3>
     <ol>
 
         <c:forEach items="${bindedComponent.nodes}" var="subchild">

@@ -194,7 +194,7 @@ public class RepositoryTab extends ContentPanel {
      */
     public void openAndSelectItem(final Object item) {
         final GWTJahiaNode openItem = (GWTJahiaNode) item;
-        if (openItem.getPath().startsWith(getSelectedItem().getPath())) {
+        if (getSelectedItem() != null && openItem.getPath().startsWith(getSelectedItem().getPath())) {
             if (m_tree.isExpanded(getSelectedItem())) {
                 GWTJahiaNode gItem = store.findModel((GWTJahiaNode) item);
                 Log.debug("expand: " + gItem.getPath());                

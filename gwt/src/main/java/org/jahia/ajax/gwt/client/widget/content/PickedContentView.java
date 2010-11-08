@@ -168,8 +168,8 @@ public class PickedContentView extends BottomRightComponent {
         store.add(selectedNodes);
         store.setModelComparer(new ModelComparer<GWTJahiaNode>() {
             public boolean equals(GWTJahiaNode gwtJahiaNode, GWTJahiaNode gwtJahiaNode1) {
-                String path = gwtJahiaNode.getPath();
-                String path2 = gwtJahiaNode1.getPath();
+                String path = gwtJahiaNode != null ? gwtJahiaNode.getPath() : null;
+                String path2 = gwtJahiaNode1 != null ? gwtJahiaNode1.getPath() : null;
                 if (path == null && path2 == null) {
                     return true;
                 } else if (path == null) {

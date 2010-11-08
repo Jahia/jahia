@@ -161,7 +161,7 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
             }
         }
         jntm.registerNodeTypes(nts.toArray(new NodeTypeDefinition[nts.size()]), true);
-        logger.info("registerCustomNodeTypes took " + (System.currentTimeMillis() - timer) + " ms");
+        logger.info("Custom node types registered in " + (System.currentTimeMillis() - timer) + " ms");
     }
 
     protected boolean canRegisterCustomNodeTypes() {

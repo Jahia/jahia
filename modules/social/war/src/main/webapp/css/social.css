@@ -370,3 +370,7 @@ display:block
 #divSendMessage .formMessage button {
 	width:auto;
 }
+
+#searchUsersResult td {
+	border: 0 none red !important;
+}

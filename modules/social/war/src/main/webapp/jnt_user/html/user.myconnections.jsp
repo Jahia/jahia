@@ -6,6 +6,8 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="social" uri="http://www.jahia.org/tags/socialLib" %>
 <jsp:useBean id="now" class="java.util.Date"/>
+<template:addResources type="css" resources="jquery.autocomplete.css" />
+<template:addResources type="css" resources="simplesearchform.css" />
 <template:addResources type="css" resources="social.css"/>
 <template:addResources type="css" resources="jquery.fancybox.css"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
@@ -136,11 +138,28 @@
                 "j:lastName": "{$q}*",
                 removeDuplicatePropValues : "true"
             }
+        }).result(function(event, item, formatted) {
+			if (!item || !item.properties) {
+        		return;
+        	}
+            $("#searchUsersResult")
+            	.html("")
+            	.append(
+                    $("<tr/>").append($("<td/>").append($("<img/>").attr("src", item.properties['j:picture'])))
+                            .append($("<td/>").attr("title", item['username']).text(getUserDisplayName(item)))
+                            .append($("<td/>").attr("align", "center").append($("<a/>").attr("href", "#add")
+                            .attr("class", "social-add").attr("title", "<fmt:message key='addAsFriend'/>").click(function () {
+                        requestConnection('${url.base}${currentNode.path}.requestsocialconnection.do', item['userKey']);
+                        return false;
+                    })))
+                );
+            
         });
+        
         $("#searchUsersSubmit").click(function() {
             // validate and process form here
             var term = $("input#searchUsersTerm").val();
-            searchUsers('${url.findPrincipal}', '${url.base}${currentNode.path}', term);
+            searchUsers('${url.findPrincipal}', '${url.base}${currentNode.path}', term, "<fmt:message key='addAsFriend'/>");
             return false;
         });
         $("#statusUpdateSubmit").click(function() {

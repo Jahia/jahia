@@ -42,7 +42,7 @@ function format(result) {
 }
 
 
-function searchUsers(findPrincipalURL, userURL, term) {
+function searchUsers(findPrincipalURL, userURL, term, i18nAdd) {
 	$.ajax({
         url: findPrincipalURL,
         type: 'post',
@@ -64,10 +64,11 @@ function searchUsers(findPrincipalURL, userURL, term) {
                 $("#searchUsersResult").append(
                         $("<tr/>").append($("<td/>").append($("<img/>").attr("src", item.properties['j:picture'])))
                                 .append($("<td/>").attr("title", item['username']).text(getUserDisplayName(item)))
-                                .append($("<td/>").attr("align", "center").append($("<a/>").attr("href", "").attr("class", "social-add").click(function () {
+                                .append($("<td/>").attr("align", "center").append($("<a/>").attr("href", "#add")
+                                .attr("class", "social-add").attr("title", i18nAdd ? i18nAdd : '').click(function () {
                             requestConnection(userURL + '.requestsocialconnection.do', item['userKey']);
                             return false;
-                        }).append($("<span/>").text("<fmt:message key='addAsFriend'/>"))))
+                        })))
                         );
                 if (i == 10) return false;
             });

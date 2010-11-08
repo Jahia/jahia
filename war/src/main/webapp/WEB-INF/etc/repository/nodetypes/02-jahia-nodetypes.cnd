@@ -324,7 +324,7 @@
 
 [jmix:hasTemplateNode] mixin
  itemtype = layout
- - j:templateNode (weakreference,choicelist[templatesNode]) < jnt:template
+ - j:templateNode (weakreference,choicelist[templatesNode]) mandatory < jnt:template
 
 [jnt:template] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:publication
  - j:hiddenTemplate (boolean)

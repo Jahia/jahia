@@ -20,7 +20,7 @@ public class DuplicateTemplatesSetActionItem extends BaseActionItem {
             JahiaContentManagementService.App.getInstance().createTemplateSet(name, JahiaGWTParameters.getSiteKey(), new BaseAsyncCallback<GWTJahiaNode>() {
                 public void onSuccess(GWTJahiaNode result) {
                     linker.loaded();
-                    Info.display("Templates set created","Templates set created");
+                    Info.display(Messages.get("label.information", "Information"), Messages.get("message.templateSetCreated", "Templates set successfully created"));
                     JahiaGWTParameters.setSiteUUID(result.getUUID());
                     JahiaGWTParameters.setSiteKey(result.getName());
                     ((EditLinker) linker).getSidePanel().refresh(EditLinker.REFRESH_ALL);
@@ -30,7 +30,7 @@ public class DuplicateTemplatesSetActionItem extends BaseActionItem {
 
                 public void onApplicationFailure(Throwable caught) {
                     linker.loaded();
-                    Info.display("Templates set creation failed","Templates set creation failed");
+                    Info.display(Messages.get("label.error", "Error"), Messages.get("message.templateSetCreationFailed", "Templates set creation failed"));
                 }
             });
         }

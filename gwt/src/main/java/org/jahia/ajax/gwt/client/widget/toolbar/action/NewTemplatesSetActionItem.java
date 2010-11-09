@@ -2,7 +2,6 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.extjs.gxt.ui.client.widget.Info;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -21,7 +20,7 @@ public class NewTemplatesSetActionItem extends BaseActionItem {
             JahiaContentManagementService.App.getInstance().createTemplateSet(name, null, new BaseAsyncCallback<GWTJahiaNode>() {
                 public void onSuccess(GWTJahiaNode result) {
                     linker.loaded();
-                    Info.display("Templates set created","Templates set created");
+                    Info.display(Messages.get("label.information", "Information"), Messages.get("message.templateSetCreated", "Templates set successfully created"));
                     JahiaGWTParameters.setSiteUUID(result.getUUID());
                     JahiaGWTParameters.setSiteKey(result.getName());
                     ((EditLinker) linker).getSidePanel().refresh(EditLinker.REFRESH_ALL);
@@ -31,7 +30,7 @@ public class NewTemplatesSetActionItem extends BaseActionItem {
 
                 public void onApplicationFailure(Throwable caught) {
                     linker.loaded();
-                    Info.display("Templates set creation failed","Templates set creation failed");
+                    Info.display(Messages.get("label.error", "Error"), Messages.get("message.templateSetCreationFailed", "Templates set creation failed"));
                 }
             });
         }

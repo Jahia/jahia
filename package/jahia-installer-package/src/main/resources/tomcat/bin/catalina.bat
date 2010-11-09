@@ -83,7 +83,7 @@ rem
 rem
 rem $Id: catalina.bat 947714 2010-05-24 16:57:18Z markt $
 rem ---------------------------------------------------------------------------
-set CATALINA_OPTS=%CATALINA_OPTS% -Dsun.io.useCanonCaches=false -Xms1024m -Xmx1024m -XX:MaxPermSize=256m -server -Dhibernate.jdbc.use_streams_for_binary=true
+set CATALINA_OPTS=%CATALINA_OPTS% -Dsun.io.useCanonCaches=false -Xms1024m -Xmx1024m -XX:MaxPermSize=256m -server -Dhibernate.jdbc.use_streams_for_binary=true -verbose:gc
 
 rem Guess CATALINA_HOME if not defined
 set "CURRENT_DIR=%cd%"

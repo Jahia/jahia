@@ -564,7 +564,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     } else if (name.equals(SITE_PERMISSIONS_XML)) {
                         importSitePermissions(site, zis);
                     } else if (name.equals(DEFINITIONS_CND)) {
-                        reg = new NodeTypeRegistry(false);
+                        reg = new NodeTypeRegistry();
                         try {
                             if (legacyImport) {
                                 JahiaCndReaderLegacy r = new JahiaCndReaderLegacy(new InputStreamReader(zis, "UTF-8"),zipentry.getName(), file.getName(), reg);

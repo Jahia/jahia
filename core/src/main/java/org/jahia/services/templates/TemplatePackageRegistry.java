@@ -335,7 +335,7 @@ class TemplatePackageRegistry implements CamelContextAware {
                 for (String name : templatePackage.getDefinitionsFiles()) {
                     NodeTypeRegistry.getInstance().addDefinitionsFile(
                             new File(rootFolder, name),
-                            templatePackage.getName(), true);
+                            templatePackage.getName());
                 }
                 JCRStoreService.getInstance().deployDefinitions(templatePackage.getName());
             } catch (Exception e) {

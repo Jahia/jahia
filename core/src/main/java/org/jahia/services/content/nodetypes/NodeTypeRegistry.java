@@ -35,8 +35,6 @@ package org.jahia.services.content.nodetypes;
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
-import org.jahia.services.content.JCRStoreService;
-import org.jahia.settings.SettingsBean;
 
 import javax.jcr.nodetype.*;
 import javax.jcr.RepositoryException;
@@ -64,20 +62,20 @@ public class NodeTypeRegistry implements NodeTypeManager {
     private Map<ExtendedNodeType,Set<ExtendedNodeType>> mixinExtensions = new HashMap<ExtendedNodeType,Set<ExtendedNodeType>>();
     private Map<String,Set<ExtendedItemDefinition>> typedItems = new HashMap<String,Set<ExtendedItemDefinition>>();
 
-    private static final NodeTypeRegistry instance = new NodeTypeRegistry(true);
+    private static final NodeTypeRegistry instance = new NodeTypeRegistry();
 
     public static NodeTypeRegistry getInstance() {
         return instance;
     }
 
-    public NodeTypeRegistry(boolean deploy) {
+    public NodeTypeRegistry() {
         try {
             String cnddir = org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/nodetypes";
             try {
                 File f = new File(cnddir);
                 SortedSet<File> cndfiles = new TreeSet<File>(Arrays.asList(f.listFiles()));
                 for (File file : cndfiles) {
-                    addDefinitionsFile(file, SYSTEM + "-" + file.getName().split("-")[1], deploy);
+                    addDefinitionsFile(file, SYSTEM + "-" + file.getName().split("-")[1]);
                 }
             } catch (ParseException e) {
                 logger.error(e.getMessage(), e);
@@ -88,7 +86,7 @@ public class NodeTypeRegistry implements NodeTypeManager {
         }
     }
 
-    public void addDefinitionsFile(File file, String systemId, boolean redeploy) throws ParseException, IOException {
+    public void addDefinitionsFile(File file, String systemId) throws ParseException, IOException {
         String ext = file.getName().substring(file.getName().lastIndexOf('.'));
         if (ext.equalsIgnoreCase(".cnd")) {
             FileReader defsReader = null;
@@ -114,29 +112,6 @@ public class NodeTypeRegistry implements NodeTypeManager {
             files.put(systemId, new ArrayList<File>());
         }
         files.get(systemId).add(file);
-
-//        if (redeploy) {
-//            Properties p = new Properties();
-//            File f = new File(SettingsBean.getInstance().getJahiaVarDiskPath()+"/definitions.properties");
-//            if (f.exists()) {
-//                FileInputStream stream = new FileInputStream(f);
-//                try {
-//                    p.load(stream);
-//                } finally {
-//                    IOUtils.closeQuietly(stream);
-//                }
-//            }
-//            if (p.getProperty(file.getPath()) == null || Long.parseLong(p.getProperty(file.getPath())) < file.lastModified()) {
-//                JCRStoreService.getInstance().deployDefinitions(systemId);
-//                p.setProperty(file.getPath(), Long.toString(file.lastModified()));
-//            }
-//            FileOutputStream out = new FileOutputStream(f);
-//            try {
-//                p.store(out, "");
-//            } finally {
-//                IOUtils.closeQuietly(out);
-//            }
-//        }
     }
 
     public List<String> getSystemIds() {

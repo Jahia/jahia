@@ -124,7 +124,7 @@ public class JahiaGWTParameters {
             urlUpdater.updateEntryPointUrl();
         }
         baseUrl = getBaseUrl();
-        baseUrl = baseUrl.substring(0,baseUrl.lastIndexOf('/')+1) + newLanguage;
+        baseUrl = baseUrl.substring(0,baseUrl.lastIndexOf('/')+1) + language;
     }
 
     public static String getSiteUUID() {

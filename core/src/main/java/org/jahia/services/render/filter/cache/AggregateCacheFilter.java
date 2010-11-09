@@ -38,6 +38,7 @@ import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.BlockingCache;
 import net.sf.ehcache.constructs.blocking.LockTimeoutException;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.render.filter.Template;
 import org.slf4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
@@ -83,7 +84,7 @@ public class AggregateCacheFilter extends AbstractFilter {
 
     public static final Set<String> notCacheableFragment = new HashSet<String>(512);
     private static final String RESOURCES = "resources";
-    private static final String TEMPLATE = "template";
+//    private static final String TEMPLATE = "template";
 
     public static void clearNotCacheableFragmentCache() {
         notCacheableFragment.clear();
@@ -241,7 +242,7 @@ public class AggregateCacheFilter extends AbstractFilter {
                 cachedRenderContent = surroundWithCacheTag(key, output);
                 CacheEntry<String> cacheEntry = new CacheEntry<String>(cachedRenderContent);
                 cacheEntry.setProperty(RESOURCES, renderContext.getStaticAssets());
-                cacheEntry.setProperty(TEMPLATE, renderContext.getRequest().getAttribute("previousTemplate"));
+//                cacheEntry.setProperty(TEMPLATE, renderContext.getRequest().getAttribute("previousTemplate"));
                 Element cachedElement = new Element(perUserKey, cacheEntry);
                 if (expiration > 0) {
                     cachedElement.setTimeToLive(expiration.intValue() + 1);
@@ -334,9 +335,9 @@ public class AggregateCacheFilter extends AbstractFilter {
                         if (cacheEntry.getProperty(RESOURCES) != null) {
                             renderContext.addStaticAsset((Map<String, Set<String>>) cacheEntry.getProperty(RESOURCES));
                         }
-                        if (cacheEntry.getProperty(TEMPLATE) != null) {
-                            renderContext.getRequest().setAttribute("previousTemplate", cacheEntry.getProperty(TEMPLATE));
-                        }
+//                        if (cacheEntry.getProperty(TEMPLATE) != null) {
+//                            renderContext.getRequest().setAttribute("previousTemplate", cacheEntry.getProperty(TEMPLATE));
+//                        }
                         else {logger.warn("resource not found"); }
                     } else {
                         cache.put(new Element(mrCacheKey, null));
@@ -366,7 +367,11 @@ public class AggregateCacheFilter extends AbstractFilter {
                     keyAttrbs.get("path"));
 
             renderContext.getRequest().removeAttribute("areaNodeTypesRestriction" + renderContext.getRequest().getAttribute("org.jahia.modules.level"));
-
+            if (!StringUtils.isEmpty(keyAttrbs.get("templateNodes"))) {
+                renderContext.getRequest().setAttribute("previousTemplate", new Template(keyAttrbs.get("templateNodes")));
+            } else {
+                renderContext.getRequest().removeAttribute("previousTemplate");
+            }
             String content = RenderService.getInstance().render(new Resource(node, keyAttrbs.get("templateType"),
                                                                              keyAttrbs.get("template"),
                                                                              Resource.CONFIGURATION_MODULE),

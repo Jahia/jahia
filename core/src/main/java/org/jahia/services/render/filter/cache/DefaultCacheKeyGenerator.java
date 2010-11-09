@@ -38,6 +38,7 @@ import net.sf.ehcache.Element;
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.render.filter.Template;
 import org.slf4j.Logger;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.JCRCallback;
@@ -76,11 +77,11 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
     private static final Set<String> KNOWN_FIELDS = new LinkedHashSet<String>(Arrays.asList("workspace", "language",
                                                                                             "path", "template",
                                                                                             "templateType", "acls",
-                                                                                            "context","wrapped", "custom", "queryString"));
+                                                                                            "context","wrapped", "custom", "queryString", "templateNodes"));
     private static final String CACHE_NAME = "nodeusersacls";
     private List<String> fields = new LinkedList<String>(KNOWN_FIELDS);
 
-    private MessageFormat format = new MessageFormat("#{0}#{1}#{2}#{3}#{4}#{5}#{6}#{7}#{8}#{9}");
+    private MessageFormat format = new MessageFormat("#{0}#{1}#{2}#{3}#{4}#{5}#{6}#{7}#{8}#{9}#{10}");
 
     private JahiaGroupManagerService groupManagerService;
     private Set<JahiaGroup> aclGroups = null;
@@ -130,6 +131,9 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
                 args.add(String.valueOf(resource.getContextConfiguration()));
             } else if ("custom".equals(field)) {
                 args.add((String) resource.getModuleParams().get("module.cache.additional.key"));
+            } else if ("templateNodes".equals(field)) {
+                final Template t = (Template) renderContext.getRequest().getAttribute("previousTemplate");
+                args.add(t != null ? t.serialize() : "");
             }
         }
         return args.toArray(new String[KNOWN_FIELDS.size()]);

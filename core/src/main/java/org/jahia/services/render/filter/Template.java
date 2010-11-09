@@ -1,5 +1,7 @@
 package org.jahia.services.render.filter;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,10 +18,20 @@ public class Template implements Serializable {
     public String node;
     public Template next;
 
-    Template(String view, String node, Template next) {
+    public Template(String view, String node, Template next) {
         this.view = view;
         this.node = node;
         this.next = next;
+    }
+
+    public Template(String serialized) {
+        String[] s = StringUtils.substringBefore(serialized, "|").split("/");
+        this.view = s[0].equals("null") ? null : s[0];
+        this.node = s[1];
+        String n = StringUtils.substringAfter(serialized, "|");
+        if (!StringUtils.isEmpty(n)) {
+            this.next = new Template(n);
+        }
     }
 
     @Override
@@ -48,5 +60,13 @@ public class Template implements Serializable {
         }
         t.add(this);
         return t;
+    }
+
+    public String serialize() {
+        String r = view+"/"+node;
+        if (next != null) {
+            r += "|" + next.serialize();
+        }
+        return r;
     }
 }

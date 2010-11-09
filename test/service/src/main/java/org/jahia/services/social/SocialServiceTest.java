@@ -39,6 +39,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
 
 import javax.jcr.RepositoryException;
@@ -140,7 +141,7 @@ public class SocialServiceTest {
         // request a connection
         service.requestSocialConnection(from.getUserKey(), to.getUserKey(), connectionType);
 
-        List<WorkflowTask> tasks = workflowService.getTasksForUser(to, null);
+        List<WorkflowTask> tasks = workflowService.getTasksForUser(to, Locale.ENGLISH);
         assertEquals("No task for user '" + to.getName() + "' was created for accepting the social connection", 1,
                 tasks.size());
 
@@ -149,7 +150,7 @@ public class SocialServiceTest {
         workflowService.completeTask(task.getId(), task.getProvider(), doAccept ? "accept" : "reject",
                 new HashMap<String, Object>(), to);
 
-        tasks = workflowService.getTasksForUser(to, null);
+        tasks = workflowService.getTasksForUser(to, Locale.ENGLISH);
         assertEquals("There should be no pending tasks for user '" + to.getName() + "'", 0, tasks.size());
     }
 

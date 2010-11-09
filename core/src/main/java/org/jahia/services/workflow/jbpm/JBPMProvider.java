@@ -705,13 +705,18 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
     }
 
     public void deleteProcess(String processId) {
-        executionService.deleteProcessInstance(processId);
+        executionService.deleteProcessInstanceCascade(processId);
     }
 
     private ResourceBundle getResourceBundle(Locale locale, final String definitionKey) {
+    	try {
         return ResourceBundle
                 .getBundle(WorkflowService.class.getPackage().getName() + "." + definitionKey.replaceAll(" ", ""),
                         locale);
+    	} catch (Exception e) {
+    		logger.error(e.getMessage(), e);
+    		return null;
+    	}
     }
 
     private void i18nOfWorkflowAction(Locale displayLocale, WorkflowAction workflowAction, final String definitionKey) {

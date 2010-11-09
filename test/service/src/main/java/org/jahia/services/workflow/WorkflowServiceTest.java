@@ -46,6 +46,7 @@ import org.jahia.services.rbac.jcr.RoleBasedAccessControlService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.*;
 import org.jahia.test.TestHelper;
+import org.jbpm.api.JbpmException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -143,7 +144,6 @@ public class WorkflowServiceTest {
         assertTrue("There should be some active workflow in jBPM", activeWorkflows.size() > 0);
         assertTrue("There should be some active activities for the first workflow in jBPM", activeWorkflows.get(0)
                 .getAvailableActions().size() > 0);
-        service.deleteProcess(processId,PROVIDER);
     }
 
     @Test
@@ -179,15 +179,14 @@ public class WorkflowServiceTest {
         } else {
             service.signalProcess(processId, action.getName(), PROVIDER, emptyMap);
         }
-        final List<Workflow> newActiveWorkflows = service.getActiveWorkflows(stageNode, null);
+        final List<Workflow> newActiveWorkflows = service.getActiveWorkflows(stageNode, Locale.ENGLISH);
         assertTrue("There should be some active workflow in jBPM", newActiveWorkflows.size() > 0);
         final Set<WorkflowAction> newAvailableActions = newActiveWorkflows.get(0).getAvailableActions();
         assertTrue("There should be some active activities for the first workflow in jBPM",
                    availableActions.size() > 0);
         assertFalse("Available actions should not match", availableActions.equals(newAvailableActions));
         assertTrue("Available action should match between service.getActiveWorkflows and getAvailableActions",
-                   newAvailableActions.equals(service.getAvailableActions(processId, PROVIDER, null)));
-        service.deleteProcess(processId,PROVIDER);
+                   newAvailableActions.equals(service.getAvailableActions(processId, PROVIDER, Locale.ENGLISH)));
     }
 
     @Test
@@ -223,7 +222,6 @@ public class WorkflowServiceTest {
                 "accept") ? "accept" : "reject", emptyMap, johndoe);
         assertTrue(service.getTasksForUser(user, Locale.ENGLISH).size() < forUser.size());
         assertFalse(service.getActiveWorkflows(stageNode, Locale.ENGLISH).equals(actionSet));
-        service.deleteProcess(processId,PROVIDER);
     }
 
     @Test
@@ -258,7 +256,6 @@ public class WorkflowServiceTest {
         assertFalse("John Doe and John Smoe should not have same tasks list", johnDoeList.equals(johnSmoeList));
         service.completeTask(task.getId(), PROVIDER, task.getOutcomes().iterator().next(),
                              new HashMap<String, Object>(), johndoe);
-        service.deleteProcess(processId,PROVIDER);
     }
 
     @Test
@@ -294,10 +291,10 @@ public class WorkflowServiceTest {
         assertTrue(forUser.size() > 0);
         WorkflowTask workflowTask = forUser.get(0);
         service.completeTask(workflowTask.getId(), PROVIDER, "accept", emptyMap, johndoe);
-        assertTrue(service.getTasksForUser(johndoe, null).size() < forUser.size());
+        assertTrue(service.getTasksForUser(johndoe, Locale.ENGLISH).size() < forUser.size());
         assertFalse(service.getActiveWorkflows(stageNode, Locale.ENGLISH).equals(actionSet));
         // Assign john smoe to the next task
-        actionSet = service.getAvailableActions(processId, PROVIDER, null);
+        actionSet = service.getAvailableActions(processId, PROVIDER, Locale.ENGLISH);
         service.assignTask(((WorkflowTask)actionSet.iterator().next()).getId(), PROVIDER, johnsmoe);
         // Rollback to previous task
         forUser = service.getTasksForUser(johnsmoe, Locale.ENGLISH);
@@ -310,29 +307,32 @@ public class WorkflowServiceTest {
         service.completeTask(workflowTask.getId(), workflowTask.getProvider(), "correction needed", emptyMap,
                              johnsmoe);
         assertTrue("Current Task should be finish correction as we have asked for corrections", service.getAvailableActions(
-                processId, PROVIDER, null).iterator().next().getName().equals("finish correction"));
+                processId, PROVIDER, Locale.ENGLISH).iterator().next().getName().equals("finish correction"));
         // Assign john doe to task
-        service.assignTask(((WorkflowTask)service.getAvailableActions(processId, PROVIDER, null).iterator().next()).getId(),
+        service.assignTask(((WorkflowTask)service.getAvailableActions(processId, PROVIDER, Locale.ENGLISH).iterator().next()).getId(),
                            PROVIDER, johndoe);
         // Complete task
         service.completeTask(service.getTasksForUser(johndoe, Locale.ENGLISH).get(0).getId(), PROVIDER, "finished", emptyMap,
                              johnsmoe);
         // Assign john smoe to the next task
-        service.assignTask(((WorkflowTask)service.getAvailableActions(processId, PROVIDER, null).iterator().next()).getId(),
+        service.assignTask(((WorkflowTask)service.getAvailableActions(processId, PROVIDER, Locale.ENGLISH).iterator().next()).getId(),
                            PROVIDER, johnsmoe);
         // Complete Task with accept
-        service.completeTask(service.getTasksForUser(johnsmoe, null).get(0).getId(), PROVIDER, "accept", emptyMap,
+        service.completeTask(service.getTasksForUser(johnsmoe, Locale.ENGLISH).get(0).getId(), PROVIDER, "accept", emptyMap,
                              johnsmoe);
         // Verify we are at publish state
         assertTrue("Current Task should be final review as we have accepted the correction",
-                   service.getAvailableActions(processId, PROVIDER, null).iterator().next().getName().equals("final review"));
-        service.deleteProcess(processId,PROVIDER);
+                   service.getAvailableActions(processId, PROVIDER, Locale.ENGLISH).iterator().next().getName().equals("final review"));
     }
 
     @After
     public void tearDown() throws Exception {
         if(processId!=null){
-            service.deleteProcess(processId,PROVIDER);
+        	try {
+        		service.deleteProcess(processId,PROVIDER);
+        	} catch (JbpmException e) {
+        		// ignore it
+        	}
         }
     }
 
@@ -390,7 +390,7 @@ public class WorkflowServiceTest {
                 Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
         processId = service.startProcess(stageNode, workflow.getKey(), PROVIDER, map);
         assertNotNull("The startup of a process should have return an id", processId);
-        List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode, null);
+        List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode, Locale.ENGLISH);
         assertTrue("There should be some active workflow in jBPM", activeWorkflows.size() > 0);
         Set<WorkflowAction> actionSet = activeWorkflows.get(0).getAvailableActions();
         assertTrue("There should be some active activities for the first workflow in jBPM", actionSet.size() > 0);
@@ -418,7 +418,6 @@ public class WorkflowServiceTest {
         assertTrue(service.getTasksForUser(johndoe, Locale.ENGLISH).size() < forUser.size());
 
         assertTrue("The workflow process is not completed", service.getActiveWorkflows(stageNode, Locale.ENGLISH).isEmpty());
-        service.deleteProcess(processId,PROVIDER);
     }
 
     @Test
@@ -456,7 +455,6 @@ public class WorkflowServiceTest {
         service.completeTask(workflowTask.getId(), PROVIDER, "accept", emptyMap, johndoe);
         assertTrue(service.getTasksForUser(johndoe, Locale.ENGLISH).size() < forUser.size());
         assertTrue("The workflow process is not completed", service.getActiveWorkflows(stageNode, Locale.ENGLISH).isEmpty());
-        service.deleteProcess(processId,PROVIDER);
     }
 
     @Test
@@ -494,7 +492,6 @@ public class WorkflowServiceTest {
         service.completeTask(workflowTask.getId(), PROVIDER, "reject", emptyMap, johndoe);
         assertTrue(service.getTasksForUser(johndoe, Locale.ENGLISH).size() < forUser.size());
         assertTrue("The workflow process is not completed", service.getActiveWorkflows(stageNode, Locale.ENGLISH).isEmpty());
-        service.deleteProcess(processId,PROVIDER);
     }
 
     @Test
@@ -533,7 +530,7 @@ public class WorkflowServiceTest {
                 Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));        
         processId = service.startProcess(stageNode, workflow.getKey(), PROVIDER, map);
         assertNotNull("The startup of a process should have return an id", processId);
-        final List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode, null);
+        final List<Workflow> activeWorkflows = service.getActiveWorkflows(stageNode, Locale.ENGLISH);
         assertTrue("There should be some active workflow in jBPM", activeWorkflows.size() > 0);
         Set<WorkflowAction> actionSet = activeWorkflows.get(0).getAvailableActions();
         assertTrue("There should be some active activities for the first workflow in jBPM", actionSet.size() > 0);
@@ -543,15 +540,14 @@ public class WorkflowServiceTest {
         JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser("root");
         assertNotNull(user);
         service.assignTask(task.getId(), PROVIDER, user);
-        List<WorkflowTask> forUser = service.getTasksForUser(user, null);
+        List<WorkflowTask> forUser = service.getTasksForUser(user, Locale.ENGLISH);
         assertTrue(forUser.size() > 0);
         WorkflowTask workflowTask = forUser.get(0);
         service.completeTask(workflowTask.getId(), PROVIDER, workflowTask.getOutcomes().contains(
                 "accept") ? "accept" : "reject", map, johndoe);
-        assertTrue(service.getTasksForUser(user, null).size() < forUser.size());
-        List<Workflow> list = service.getActiveWorkflows(stageNode, null);
+        assertTrue(service.getTasksForUser(user, Locale.ENGLISH).size() < forUser.size());
+        List<Workflow> list = service.getActiveWorkflows(stageNode, Locale.ENGLISH);
         assertTrue(list.size()>0);
         assertNotNull(list.get(0).getDuedate().getTime());
-        service.deleteProcess(processId,PROVIDER);
     }
 }

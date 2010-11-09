@@ -46,6 +46,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by IntelliJ IDEA.
@@ -87,7 +88,7 @@ public class AvailableTasksTag extends AbstractJahiaTag {
                 }
             }
         } else if (user != null) {
-            tasks = WorkflowService.getInstance().getTasksForUser(user, null);
+            tasks = WorkflowService.getInstance().getTasksForUser(user, Locale.ENGLISH);
         }
 
         pageContext.setAttribute(var, tasks, scope);

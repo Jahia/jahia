@@ -43,6 +43,7 @@ import org.jahia.services.content.decorator.JCRFrozenNodeAsRegular;
 import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.impl.jackrabbit.JackrabbitStoreProvider;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -63,17 +64,11 @@ import javax.naming.Reference;
 import javax.naming.StringRefAddr;
 import javax.naming.spi.ObjectFactory;
 import javax.servlet.ServletRequest;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A store provider to handle different backend stores within a site. There are multiple
@@ -322,23 +317,43 @@ public class JCRStoreProvider {
     protected void initNodeTypes() throws RepositoryException, IOException {
 //        JahiaUser root = getGroupManagerService().getAdminUser(0);
         if (canRegisterCustomNodeTypes()) {
+
+            File f = new File(SettingsBean.getInstance().getJahiaVarDiskPath()+"/definitions.properties");
+            Properties p = new Properties();
+
             Session session = getSystemSession();
             try {
                 Workspace workspace = session.getWorkspace();
+                workspace.getNodeTypeManager().getNodeType("jmix:droppableContent");
 
-                try {
-                    workspace.getNodeTypeManager().getNodeType("jmix:droppableContent");
-                } catch (RepositoryException e) {
-                    File f = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/definitions.properties");
-                    f.delete();
+                if (f.exists()) {
+                    FileInputStream stream = new FileInputStream(f);
+                    try {
+                        p.load(stream);
+                    } finally {
+                        IOUtils.closeQuietly(stream);
+                    }
                 }
 
-                registerCustomNodeTypes(workspace);
-                session.save();
             } catch (RepositoryException e) {
-                logger.error("Cannot register nodetypes", e);
+                f.delete();
             } finally {
                 session.logout();
+            }
+
+            boolean needUpdate = false;
+            List<String> systemIds = NodeTypeRegistry.getInstance().getSystemIds();
+            for (String systemId : systemIds) {
+                needUpdate |= deployDefinitions(systemId, p);
+            }
+
+            if (needUpdate) {
+                FileOutputStream out = new FileOutputStream(f);
+                try {
+                    p.store(out, "");
+                } finally {
+                    IOUtils.closeQuietly(out);
+                }
             }
         }
     }
@@ -450,24 +465,60 @@ public class JCRStoreProvider {
 
     public void deployDefinitions(String systemId) {
         try {
-            repo = getRepository();
-            JahiaUser root = getGroupManagerService().getAdminUser(0);
-            Session session = getSystemSession(root.getUsername(), null);
-            try {
-                Workspace workspace = session.getWorkspace();
-
+            File f = new File(SettingsBean.getInstance().getJahiaVarDiskPath()+"/definitions.properties");
+            Properties p = new Properties();
+            if (f.exists()) {
+                FileInputStream stream = new FileInputStream(f);
                 try {
-                    registerCustomNodeTypes(systemId, workspace);
-                } catch (RepositoryException e) {
-                    logger.error("Cannot register nodetypes", e);
+                    p.load(stream);
+                } finally {
+                    IOUtils.closeQuietly(stream);
                 }
-                session.save();
-            } finally {
-                session.logout();
             }
-        } catch (Exception e) {
-            logger.error("Repository init error", e);
+
+            if (deployDefinitions(systemId, p)) {
+                FileOutputStream out = new FileOutputStream(f);
+                try {
+                    p.store(out, "");
+                } finally {
+                    IOUtils.closeQuietly(out);
+                }
+            }
+        } catch (IOException e) {
+            logger.error("Cannot save definitions timestamps",e);
         }
+    }
+
+    private boolean deployDefinitions(String systemId, Properties p) {
+        List<File> files = NodeTypeRegistry.getInstance().getFiles(systemId);
+        boolean needUpdate = false;
+        for (File file : files) {
+            if (p.getProperty(file.getPath()) == null || Long.parseLong(p.getProperty(file.getPath())) < file.lastModified()) {
+                needUpdate = true;
+                p.setProperty(file.getPath(), Long.toString(file.lastModified()));
+            }
+        }
+        if (needUpdate) {
+            try {
+                repo = getRepository();
+                Session session = getSystemSession();
+                try {
+                    Workspace workspace = session.getWorkspace();
+
+                    try {
+                        registerCustomNodeTypes(systemId, workspace);
+                    } catch (RepositoryException e) {
+                        logger.error("Cannot register nodetypes", e);
+                    }
+                    session.save();
+                } finally {
+                    session.logout();
+                }
+            } catch (Exception e) {
+                logger.error("Repository init error", e);
+            }
+        }
+        return needUpdate;
     }
 
     public synchronized Repository getRepository() {

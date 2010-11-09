@@ -32,6 +32,7 @@
 
 package org.jahia.services.content.nodetypes;
 
+import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.jahia.services.content.JCRStoreService;
@@ -58,7 +59,7 @@ public class NodeTypeRegistry implements NodeTypeManager {
 
     private Map<String,String> namespaces = new HashMap<String,String>();
 
-    private Map<String,List<File>> files = new HashMap<String,List<File>>();
+    private Map<String,List<File>> files = new ListOrderedMap();
 
     private Map<ExtendedNodeType,Set<ExtendedNodeType>> mixinExtensions = new HashMap<ExtendedNodeType,Set<ExtendedNodeType>>();
     private Map<String,Set<ExtendedItemDefinition>> typedItems = new HashMap<String,Set<ExtendedItemDefinition>>();
@@ -108,32 +109,42 @@ public class NodeTypeRegistry implements NodeTypeManager {
                 IOUtils.closeQuietly(defsReader);
             }
         }
-        if (redeploy) {
-            Properties p = new Properties();
-            File f = new File(SettingsBean.getInstance().getJahiaVarDiskPath()+"/definitions.properties");
-            if (f.exists()) {
-                FileInputStream stream = new FileInputStream(f);
-                try {
-                    p.load(stream);
-                } finally {
-                    IOUtils.closeQuietly(stream);
-                }
-            }
-            if (p.getProperty(file.getPath()) == null || Long.parseLong(p.getProperty(file.getPath())) < file.lastModified()) {
-                JCRStoreService.getInstance().deployDefinitions(systemId);
-                p.setProperty(file.getPath(), Long.toString(file.lastModified()));
-            }
-            FileOutputStream out = new FileOutputStream(f);
-            try {
-                p.store(out, "");
-            } finally {
-                IOUtils.closeQuietly(out);
-            }
+
+        if (!files.containsKey(systemId)) {
+            files.put(systemId, new ArrayList<File>());
         }
+        files.get(systemId).add(file);
+
+//        if (redeploy) {
+//            Properties p = new Properties();
+//            File f = new File(SettingsBean.getInstance().getJahiaVarDiskPath()+"/definitions.properties");
+//            if (f.exists()) {
+//                FileInputStream stream = new FileInputStream(f);
+//                try {
+//                    p.load(stream);
+//                } finally {
+//                    IOUtils.closeQuietly(stream);
+//                }
+//            }
+//            if (p.getProperty(file.getPath()) == null || Long.parseLong(p.getProperty(file.getPath())) < file.lastModified()) {
+//                JCRStoreService.getInstance().deployDefinitions(systemId);
+//                p.setProperty(file.getPath(), Long.toString(file.lastModified()));
+//            }
+//            FileOutputStream out = new FileOutputStream(f);
+//            try {
+//                p.store(out, "");
+//            } finally {
+//                IOUtils.closeQuietly(out);
+//            }
+//        }
     }
 
-    public List<File> getFiles(String type) {
-        return files.get(type);
+    public List<String> getSystemIds() {
+        return new ArrayList<String>(files.keySet());
+    }
+
+    public List<File> getFiles(String systemId) {
+        return files.get(systemId);
     }
 
     public ExtendedNodeType getNodeType(String name) throws NoSuchNodeTypeException {

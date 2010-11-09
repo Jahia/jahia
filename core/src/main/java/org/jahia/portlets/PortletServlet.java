@@ -69,6 +69,7 @@ import org.apache.pluto.container.PortletResponseContext;
 import org.apache.pluto.container.PortletWindow;
 import org.apache.pluto.driver.container.InitParameterApplicationIdResolver;
 import org.jahia.bin.Jahia;
+import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ParseException;
 import org.jahia.services.applications.pluto.JahiaPortalServletRequest;
@@ -220,6 +221,7 @@ public class PortletServlet extends HttpServlet {
                     if (new File(realPath).exists()) {
                         try {
                             NodeTypeRegistry.getInstance().addDefinitionsFile(new File(realPath), portletConfig.getPortletName(), true);
+                            JCRStoreService.getInstance().deployDefinitions(portletConfig.getPortletName());
                         } catch (ParseException e) {
                             logger.error(e.getMessage(), e);
                         } catch (IOException e) {

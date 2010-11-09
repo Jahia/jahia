@@ -135,8 +135,8 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
     }
 
     protected void registerCustomNodeTypes(Workspace ws) throws IOException, RepositoryException {
-        NodeTypeIterator nti = NodeTypeRegistry.getInstance().getAllNodeTypes();
-        registerCustomNodeTypes(nti, ws);
+//        NodeTypeIterator nti = NodeTypeRegistry.getInstance().getAllNodeTypes();
+//        registerCustomNodeTypes(nti, ws);
     }
 
     protected void registerCustomNodeTypes(String systemId, Workspace ws) throws IOException, RepositoryException {

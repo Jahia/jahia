@@ -32,6 +32,7 @@
 
 package org.jahia.services.content.nodetypes.initializers;
 
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -62,21 +63,25 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
     public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, String param,
                                                      List<ChoiceListValue> values, Locale locale,
                                                      Map<String, Object> context) {
-        JCRNodeWrapper node = (JCRNodeWrapper) context.get("contextNode");
-        if (node == null) {
-            node = (JCRNodeWrapper) context.get("contextParent");
-        }
-
         List<ChoiceListValue> vs = new ArrayList<ChoiceListValue>();
-
         try {
+            JCRNodeWrapper node = (JCRNodeWrapper) context.get("contextNode");
+            ExtendedNodeType nodetype;
+            if (node == null) {
+                node = (JCRNodeWrapper) context.get("contextParent");
+                nodetype = (ExtendedNodeType) context.get("contextType");
+            } else {
+                nodetype = node.getPrimaryNodeType();
+            }
+
+
             JCRNodeWrapper site = node.getResolveSite();
 
             final JCRSessionWrapper session = site.getSession();
             final QueryManager queryManager = session.getWorkspace().getQueryManager();
 
             String type = "contentTemplate";
-            if (node.isNodeType("jnt:page")) {
+            if (nodetype.isNodeType("jnt:page")) {
                 type = "pageTemplate";
             }                     
 

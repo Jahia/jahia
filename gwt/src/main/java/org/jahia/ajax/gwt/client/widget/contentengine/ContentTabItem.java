@@ -37,18 +37,18 @@ import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 
 import java.util.Arrays;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: Jan 6, 2010
  * Time: 8:10:21 PM
- * To change this template use File | Settings | File Templates.
  */
 public class ContentTabItem extends PropertiesTabItem {
     private transient boolean isNodeNameFieldDisplayed = false;
@@ -108,7 +108,7 @@ public class ContentTabItem extends PropertiesTabItem {
                 name.setReadOnly(true);
             }
         } else {
-            name.setValue("Automatically Created (you can type your name here if you want)");
+            name.setValue(Messages.get("label.nodeAutoName", "Automatically Created (you can type your name here if you want)"));
         }
         formPanel.add(name);
         return formPanel;

@@ -59,7 +59,6 @@ import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: Jan 7, 2010
  * Time: 1:55:28 PM
@@ -138,14 +137,14 @@ public class CreateContentEngine extends AbstractContentEngine {
 
         buttonBar.add(ok);
 
-        okAndNew = new Button(Messages.get("properties.saveAndNew.label"));
+        okAndNew = new Button(Messages.get("properties.saveAndNew.label", "Save and new"));
         okAndNew.setHeight(BUTTON_HEIGHT);
         okAndNew.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
 
         okAndNew.addSelectionListener(new CreateAndAddNewSelectionListener());
         buttonBar.add(okAndNew);
 
-        Button cancel = new Button(Messages.get("label.cancel"));
+        Button cancel = new Button(Messages.get("label.cancel", "Cancel"));
         cancel.setHeight(BUTTON_HEIGHT);
         cancel.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonCancel());
         cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -311,7 +310,7 @@ public class CreateContentEngine extends AbstractContentEngine {
                 if (item instanceof ContentTabItem) {
                     if (((ContentTabItem) item).isNodeNameFieldDisplayed()) {
                         String nodeNameValue = ((ContentTabItem) item).getName().getValue();
-                        nodeName = "Automatically Created (you can type your name here if you want)".equals(nodeNameValue) ? targetName : nodeNameValue;
+                        nodeName = Messages.get("label.nodeAutoName", "Automatically Created (you can type your name here if you want)").equals(nodeNameValue) ? targetName : nodeNameValue;
                     }
                 }
             } else if (item instanceof RightsTabItem) {
@@ -362,7 +361,7 @@ public class CreateContentEngine extends AbstractContentEngine {
     protected void doSave(String nodeName, List<GWTJahiaNodeProperty> props, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<String> mixin, GWTJahiaNodeACL newNodeACL, final boolean closeAfterSave) {
         final AsyncCallback<GWTJahiaNode> callback = new BaseAsyncCallback<GWTJahiaNode>() {
             public void onApplicationFailure(Throwable throwable) {
-                Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage());
+                Window.alert(Messages.get("failure.properties.save", "Properties save failed") + "\n\n" + throwable.getLocalizedMessage());
                 Log.error("failed", throwable);
                 unmask();
                 setButtonsEnabled(true);
@@ -370,7 +369,12 @@ public class CreateContentEngine extends AbstractContentEngine {
 
             public void onSuccess(GWTJahiaNode node) {
                 if (closeAfterSave) {
-                    Info.display("", "Node " + node.getName() + " created");
+					Info.display(
+					        Messages.get("label.information", "Information"),
+					        Messages.get(
+					                "org.jahia.engines.contentmanager.addContentWizard.formCard.success.save",
+					                "Content node created successfully:")
+					                + " " + node.getName());
                     CreateContentEngine.this.container.closeEngine();
                 } else {
                     CreateContentEngine.this.tabs.removeAll();

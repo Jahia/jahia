@@ -41,11 +41,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: Jan 6, 2010
  * Time: 6:31:49 PM
- * To change this template use File | Settings | File Templates.
  */
 public abstract class EditEngineTabItem implements Serializable {
     protected GWTEngineTab gwtEngineTab;

@@ -215,17 +215,15 @@ public class DefaultPostAction implements Action {
             String key = entry.getKey();
             if (!Render.reservedParameters.contains(key)) {
                 List<String> values = entry.getValue();
-                if (!values.get(0).equals("Submit")) {
-                    ExtendedPropertyDefinition propertyDefinition = newNode.getApplicablePropertyDefinition(key);
-                    if (propertyDefinition.isMultiple()) {
-                        newNode.setProperty(key, values.toArray(new String[values.size()]));
-                    } else if (values.get(0).length() > 0) {
-                        if (propertyDefinition.getRequiredType() == ExtendedPropertyType.DATE) {
-                            DateTime dateTime = ISODateTimeFormat.dateOptionalTimeParser().parseDateTime(values.get(0));
-                            newNode.setProperty(key, dateTime.toCalendar(Locale.ENGLISH));
-                        } else {
-                            newNode.setProperty(key, values.get(0));
-                        }
+                ExtendedPropertyDefinition propertyDefinition = newNode.getApplicablePropertyDefinition(key);
+                if (propertyDefinition.isMultiple()) {
+                    newNode.setProperty(key, values.toArray(new String[values.size()]));
+                } else if (values.get(0).length() > 0) {
+                    if (propertyDefinition.getRequiredType() == ExtendedPropertyType.DATE) {
+                        DateTime dateTime = ISODateTimeFormat.dateOptionalTimeParser().parseDateTime(values.get(0));
+                        newNode.setProperty(key, dateTime.toCalendar(Locale.ENGLISH));
+                    } else {
+                        newNode.setProperty(key, values.get(0));
                     }
                 }
             }

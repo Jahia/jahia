@@ -9,7 +9,7 @@
         <property name="permissionName" value="global/issue-tracking" />        
         <property name="name" value="community-jira" />
         <property name="icon" value="debug_view" />
-        <property name="label" value="Report a problem" />
+        <property name="label" value="label.jira" />
         <property name="urlType" value="external" />
         <property name="urlAction" value="http://jira.jahia.org/" />
         <property name="rank" value="98"/>

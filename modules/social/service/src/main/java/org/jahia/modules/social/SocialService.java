@@ -38,6 +38,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
@@ -445,7 +446,7 @@ public class SocialService {
         args.put("to", toUserKey);
         args.put("connectionType", connectionType);
 
-        execute(new JCRCallback<Boolean>() {
+        JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, Locale.ENGLISH, new JCRCallback<Boolean>() {
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 workflowService.startProcess(Arrays.asList(from.getIdentifier()), session, "user-connection", "jBPM", args);
                 return true;

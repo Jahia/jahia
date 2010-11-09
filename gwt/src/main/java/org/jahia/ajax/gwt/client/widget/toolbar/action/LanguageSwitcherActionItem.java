@@ -91,9 +91,9 @@ public class LanguageSwitcherActionItem extends BaseActionItem {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaLanguage> event) {
                 if (linker instanceof EditLinker) {
-                    ((EditLinker) linker).getMainModule().switchLanguage(event.getSelectedItem().getLanguage());
+                    ((EditLinker) linker).getMainModule().switchLanguage(event.getSelectedItem());
                 } else if (linker instanceof ManagerLinker) {
-                    ((ManagerLinker) linker).switchLanguage(event.getSelectedItem().getLanguage());
+                    ((ManagerLinker) linker).switchLanguage(event.getSelectedItem());
                 }
             }
         });

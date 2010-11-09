@@ -103,9 +103,9 @@ public class PagesTabItem extends SidePanelTabItem {
         pageTree.getTreeStore().setStoreSorter(new StoreSorter<GWTJahiaNode>() {
             @Override public int compare(Store<GWTJahiaNode> gwtJahiaNodeStore, GWTJahiaNode m1, GWTJahiaNode m2,
                                          String property) {
-                if (m1.getNodeTypes().contains("jnt:contentFolder")) {
+                if (!m1.getInheritedNodeTypes().contains("jmix:navMenuItem") && m2.getInheritedNodeTypes().contains("jmix:navMenuItem")) {
                     return 1;
-                } else if (m2.getNodeTypes().contains("jnt:contentFolder")) {
+                } else if (!m2.getInheritedNodeTypes().contains("jmix:navMenuItem") && m1.getInheritedNodeTypes().contains("jmix:navMenuItem")) {
                     return -1;
                 } else {
                     return gwtJahiaNodeStore.getModels().indexOf(m2) - gwtJahiaNodeStore.getModels().indexOf(m1);

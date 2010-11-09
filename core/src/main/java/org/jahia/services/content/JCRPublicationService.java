@@ -323,8 +323,8 @@ public class JCRPublicationService extends JahiaService {
         if (destinationSession.getWorkspace().getName().equals(Constants.LIVE_WORKSPACE)) {
             for (JCRNodeWrapper jcrNodeWrapper : toPublish) {
                 logger.debug("Publishing node " + jcrNodeWrapper.getPath());
-                if (!jcrNodeWrapper.hasProperty("j:published") ||
-                        !jcrNodeWrapper.getProperty("j:published").getBoolean()) {
+                if (jcrNodeWrapper.isNodeType("jmix:publication") && (!jcrNodeWrapper.hasProperty("j:published") ||
+                        !jcrNodeWrapper.getProperty("j:published").getBoolean())) {
                     if (!sourceVersionManager.isCheckedOut(jcrNodeWrapper.getPath())) {
                         sourceVersionManager.checkout(jcrNodeWrapper.getPath());
                     }
@@ -434,16 +434,17 @@ public class JCRPublicationService extends JahiaService {
         }
 
         for (JCRNodeWrapper node : modified) {
-            logger.debug("Setting last published : " + node.getPath());
+            if (node.isNodeType("jmix:lastPublished")) {
+                logger.debug("Setting last published : " + node.getPath());
 //            if (!sourceSession.getWorkspace().getName().equals(Constants.LIVE_WORKSPACE)) {
-            VersionManager versionManager = node.getSession().getWorkspace().getVersionManager();
-            if (!versionManager.isCheckedOut(node.getPath())) {
-                versionManager.checkout(node.getPath());
+                VersionManager versionManager = node.getSession().getWorkspace().getVersionManager();
+                if (!versionManager.isCheckedOut(node.getPath())) {
+                    versionManager.checkout(node.getPath());
+                }
+                node.setProperty("j:lastPublished", calendar);
+                node.setProperty("j:lastPublishedBy", destinationSession.getUserID());
+                jcrVersionService.setNodeCheckinDate(node, calendar);
             }
-            node.setProperty("j:lastPublished", calendar);
-            node.setProperty("j:lastPublishedBy", destinationSession.getUserID());
-
-            jcrVersionService.setNodeCheckinDate(node, calendar);
 //            }
         }
 
@@ -946,7 +947,10 @@ public class JCRPublicationService extends JahiaService {
             info.setStatus(PublicationInfo.UNPUBLISHED);
         } else if (publishedNode == null) {
             try {
-                destinationSession.getNodeByUUID(node.getParent().getUUID()).getNode(node.getName());
+                try {
+                    destinationSession.getNodeByUUID(node.getParent().getUUID()).getNode(node.getName());
+                } catch (UnsupportedRepositoryOperationException e) {
+                }
                 // Conflict , a node exists in live !
                 info.setStatus(PublicationInfo.CONFLICT);
                 info.setCanPublish(false);
@@ -971,8 +975,8 @@ public class JCRPublicationService extends JahiaService {
             if (node.hasProperty("jcr:mergeFailed") || publishedNode.hasProperty("jcr:mergeFailed")) {
                 info.setStatus(PublicationInfo.CONFLICT);
             } else if (node.getLastModifiedAsDate() == null) {
-                logger.error("Null modifieddate for staged node " + node.getPath());
-                info.setStatus(PublicationInfo.MODIFIED);
+                // No modification date - node is published
+                info.setStatus(PublicationInfo.PUBLISHED);
             } else {
                 Date modProp = node.getLastModifiedAsDate();
                 Date pubProp = node.getLastPublishedAsDate();

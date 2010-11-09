@@ -39,6 +39,7 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.google.gwt.user.client.ui.Widget;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
@@ -109,8 +110,12 @@ public class EditLinker implements Linker {
         return locale;
     }
 
-    public void setLocale(String locale) {
-        this.locale = locale;
+    public void setLocale(GWTJahiaLanguage locale) {
+        if (locale != null) {
+            this.locale = locale.getLanguage();
+        } else {
+            this.locale = null;
+        }
         JahiaGWTParameters.setLanguage(locale);
     }
 

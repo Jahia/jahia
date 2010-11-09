@@ -613,6 +613,14 @@
         <property name="icon" value="publishAll"/>
     </bean>
 
+    <bean id="Toolbar.Item.PublishSite" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishSiteActionItem"/>
+        </property>
+        <property name="titleKey" value="label.publishSite"/>
+        <property name="icon" value="publishSite"/>
+    </bean>
+
     <bean id="Toolbar.Item.ReversePublish" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ReversePublishActionItem"/>

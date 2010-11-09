@@ -132,7 +132,7 @@ public class GWTInitializer {
         }
 
         params.put(JahiaGWTParameters.LANGUAGE, locale.toString());
-        params.put(JahiaGWTParameters.LANGUAGE_DISPLAY_NAME, WordUtils.capitalizeFully(locale.getDisplayName(uilocale)));
+        params.put(JahiaGWTParameters.LANGUAGE_DISPLAY_NAME, WordUtils.capitalizeFully(locale.getDisplayName(locale)));
         params.put(JahiaGWTParameters.UI_LANGUAGE, uilocale.toString());
         params.put(JahiaGWTParameters.UI_LANGUAGE_DISPLAY_NAME, WordUtils.capitalizeFully(uilocale.getDisplayName(uilocale)));
         try {

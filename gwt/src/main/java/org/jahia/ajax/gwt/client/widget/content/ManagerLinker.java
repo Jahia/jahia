@@ -35,6 +35,7 @@ package org.jahia.ajax.gwt.client.widget.content;
 import com.extjs.gxt.ui.client.event.DNDListener;
 import com.extjs.gxt.ui.client.widget.Component;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
@@ -379,11 +380,11 @@ public class ManagerLinker implements Linker {
         return config;
     }
 
-    public void setLocale (String locale) {
+    public void setLocale (GWTJahiaLanguage locale) {
         JahiaGWTParameters.setLanguage(locale);
     }
 
-    public void switchLanguage(String locale) {
+    public void switchLanguage(GWTJahiaLanguage locale) {
         setLocale(locale);
         refresh();
     }

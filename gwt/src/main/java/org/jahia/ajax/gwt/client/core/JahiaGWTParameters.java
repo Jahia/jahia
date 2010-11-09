@@ -33,6 +33,7 @@
 package org.jahia.ajax.gwt.client.core;
 
 import com.google.gwt.i18n.client.Dictionary;
+import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +69,7 @@ public class JahiaGWTParameters {
     private static Dictionary jahiaParamDictionary = Dictionary.getDictionary(JAHIA_GWT_PARAMETERS);
     private static String baseUrl;
     private static String language;
+    private static String languageDisplayName;
     private static String siteUUID;
     private static String siteKey;
     private static String workspace;
@@ -101,7 +103,10 @@ public class JahiaGWTParameters {
     }
 
     public static String getLanguageDisplayName() {
-        return jahiaParamDictionary.get(LANGUAGE_DISPLAY_NAME);
+        if (languageDisplayName == null) {
+            languageDisplayName = jahiaParamDictionary.get(LANGUAGE_DISPLAY_NAME);
+        }
+        return languageDisplayName;
     }
     
     public static String getLanguage() {
@@ -111,8 +116,10 @@ public class JahiaGWTParameters {
         return language;
     }
 
-    public static void setLanguage(String newLanguage) {
-        language = newLanguage;
+    public static void setLanguage(GWTJahiaLanguage newLanguage) {
+        language = newLanguage.getLanguage();
+        languageDisplayName = newLanguage.getDisplayName();
+
         for (UrlUpdater urlUpdater : updaters) {
             urlUpdater.updateEntryPointUrl();
         }

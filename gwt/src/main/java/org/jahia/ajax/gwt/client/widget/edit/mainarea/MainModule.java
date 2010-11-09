@@ -47,6 +47,7 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.GWTJahiaPermission;
 import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -331,7 +332,7 @@ public class MainModule extends Module {
         staticGoTo(url, template, param);
     }
 
-    public void switchLanguage(String language) {
+    public void switchLanguage(GWTJahiaLanguage language) {
         mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
         editLinker.setLocale(language);
         editLinker.refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES);

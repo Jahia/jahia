@@ -41,10 +41,7 @@ import org.apache.commons.lang.WordUtils;
 import org.apache.jackrabbit.commons.iterator.PropertyIteratorAdapter;
 import org.apache.jackrabbit.core.JahiaSessionImpl;
 import org.apache.jackrabbit.core.NodeImpl;
-import org.apache.jackrabbit.core.SessionImpl;
-import org.apache.jackrabbit.core.security.authorization.Permission;
 import org.apache.jackrabbit.spi.Name;
-import org.apache.jackrabbit.spi.Path;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
@@ -1684,13 +1681,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public boolean rename(String newName) throws RepositoryException {
-        if (!isCheckedOut()) {
-            checkout();
-        }
+        getSession().checkout(this);
         JCRNodeWrapper parent = getParent();
-        if (!parent.isCheckedOut()) {
-            parent.checkout();
-        }
+        getSession().checkout(parent);
+
 
         // the following code is use to conserve the ordering when renaming a node, we do this only if the parent
         // node is orderable.
@@ -1761,9 +1755,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         try {
             copy = (JCRNodeWrapper) session
                     .getItem(dest.getPath() + "/" + name);
-            if (!copy.isCheckedOut()) {
-                copy.checkout();
-            }
+            getSession().checkout(copy);
         } catch (PathNotFoundException ex) {
             // node does not exist
         }
@@ -1771,7 +1763,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         final Map<String, String> uuidMapping = getSession().getUuidMapping();
 
         if (copy == null || copy.getDefinition().allowsSameNameSiblings()) {
-            if (!dest.isCheckedOut() && dest.isVersioned()) {
+            if (dest.isVersioned()) {
                 session.checkout(dest);
             }
             String typeName = getPrimaryNodeTypeName();
@@ -1903,9 +1895,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         Lock lock = objectNode.lock(false, false);
         if (lock.getLockToken() != null) {
             try {
-                if (!objectNode.isCheckedOut()) {
-                    objectNode.checkout();
-                }
+                getSession().checkout(objectNode);
                 objectNode.setProperty("j:locktoken", lock.getLockToken());
 //                objectNode.getSession().removeLockToken(lock.getLockToken());
             } catch (RepositoryException e) {
@@ -1918,9 +1908,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     private void addLockTypeValue(final Node objectNode, String l) throws RepositoryException {
-        if (!objectNode.isCheckedOut()) {
-            objectNode.checkout();
-        }
+        getSession().checkout(objectNode);
+        
         if (objectNode.hasProperty(Constants.JAHIA_LOCKTYPES)) {
             Property property = objectNode.getProperty(Constants.JAHIA_LOCKTYPES);
             Value[] oldValues = property.getValues();
@@ -2091,9 +2080,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                             valueList.put(v.getString(), v);
                         }
                         valueList.remove(value.getString());
-                        if (!objectNode.isCheckedOut()) {
-                            objectNode.checkout();
-                        }
+                        getSession().checkout(objectNode);
+
                         if (valueList.isEmpty()) {
                             objectNode.unlock();
                             property.remove();
@@ -2442,6 +2430,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (objectNode.hasNode("j:acl")) {
             return objectNode.getNode("j:acl");
         } else {
+            if (!objectNode.isCheckedOut()) {
+                objectNode.checkout();
+            }
             objectNode.addMixin("jmix:accessControlled");
             return objectNode.addNode("j:acl", "jnt:acl");
         }
@@ -2900,9 +2891,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             ConstraintViolationException, LockException,
             RepositoryException {
         if (!sharedNode.isNodeType("jmix:shareable")) {
-            if (!sharedNode.isCheckedOut()) {
-                sharedNode.checkout();
-            }
+            getSession().checkout(sharedNode);
             sharedNode.addMixin("jmix:shareable");
             sharedNode.getRealNode().getSession().save();
 
@@ -2911,7 +2900,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 JCRTemplate.getInstance().doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         JCRNodeWrapper n = session.getNode(path);
-                        n.checkout();
+                        getSession().checkout(n);
                         n.addMixin("jmix:shareable");
                         n.getRealNode().getSession().save();
                         return null;

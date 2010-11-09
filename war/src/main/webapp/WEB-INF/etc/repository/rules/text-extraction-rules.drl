@@ -1,4 +1,4 @@
-package org.jahia.services.content.rules
+package org.jahia.services.content.rules.extraction
 
 #list any import classes here.
 import org.jahia.services.content.rules.*

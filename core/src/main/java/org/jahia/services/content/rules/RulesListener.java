@@ -77,7 +77,6 @@ public class RulesListener extends DefaultEventListener {
     private String serverId;
 
     private ThreadLocal<Boolean> inRules = new ThreadLocal<Boolean>();
-    private PackageBuilder builder;
 
     private List<File> dslFiles = new LinkedList<File>();
     private Map<String, Object> globalObjects = new LinkedHashMap<String, Object>();
@@ -159,14 +158,6 @@ public class RulesListener extends DefaultEventListener {
             //conf.setRemoveIdentities( true );
             ruleBase = RuleBaseFactory.newRuleBase(conf);
 
-            Properties properties = new Properties();
-            properties.setProperty("drools.dialect.java.compiler", "JANINO");
-            PackageBuilderConfiguration cfg = new PackageBuilderConfiguration(properties);
-            JavaDialectConfiguration javaConf = (JavaDialectConfiguration) cfg.getDialectConfiguration("java");
-            javaConf.setCompiler(JavaDialectConfiguration.JANINO);
-
-            builder = new PackageBuilder(cfg);
-
             dslFiles.add(
                     new File(SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/rules/rules.dsl"));
 
@@ -202,6 +193,14 @@ public class RulesListener extends DefaultEventListener {
                 ruleBase.addPackage(pkg);
             } else {
                 drl = new InputStreamReader(new FileInputStream(dsrlFile));
+
+                Properties properties = new Properties();
+                properties.setProperty("drools.dialect.java.compiler", "JANINO");
+                PackageBuilderConfiguration cfg = new PackageBuilderConfiguration(properties);
+                JavaDialectConfiguration javaConf = (JavaDialectConfiguration) cfg.getDialectConfiguration("java");
+                javaConf.setCompiler(JavaDialectConfiguration.JANINO);
+
+                PackageBuilder builder = new PackageBuilder(cfg);
 
                 builder.addPackageFromDrl(drl, new StringReader(getDslFiles()));
 

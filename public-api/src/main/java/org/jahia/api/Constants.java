@@ -232,6 +232,8 @@ public class Constants {
     public static final String REVISION_NUMBER = "j:revisionNumber";
     public static final String CHECKIN_DATE = "j:checkinDate";
 
+    public static final String ORIGIN_WORKSPACE = "j:originWS";
+
     public static final String JAHIAMIX_WORKFLOW = "jmix:workflow";
 
     public static final String JAHIA_LOCKTYPES = "j:lockTypes";

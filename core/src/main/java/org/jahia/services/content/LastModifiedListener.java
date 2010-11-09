@@ -65,8 +65,12 @@ public class LastModifiedListener extends DefaultEventListener {
 
     public void onEvent(final EventIterator eventIterator) {
         try {
-            final String userId = ((JCREventIterator)eventIterator).getSession().getUserID();
-            JCRTemplate.getInstance().doExecuteWithSystemSession(userId, workspace, new JCRCallback<Object>() {
+            String userId = ((JCREventIterator)eventIterator).getSession().getUserID();
+            if (userId.startsWith(" system ")) {
+                userId = userId.substring(" system ".length());
+            }
+            final String finalUserId = userId;
+            JCRTemplate.getInstance().doExecuteWithSystemSession(finalUserId, workspace, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     Set<String> nodes = new HashSet<String>();
                     Set<String> addedNodes = new HashSet<String>();
@@ -111,7 +115,7 @@ public class LastModifiedListener extends DefaultEventListener {
                         for (String node : nodes) {
                             try {
                                 JCRNodeWrapper n = session.getNode(node);
-                                updateProperty(n, c, userId);
+                                updateProperty(n, c, finalUserId);
                             } catch (PathNotFoundException e) {
                                 // node has been removed
                             }
@@ -122,7 +126,7 @@ public class LastModifiedListener extends DefaultEventListener {
                                 if (!n.hasProperty("j:originWS") && n.isNodeType("jmix:originWS")) {
                                     n.setProperty("j:originWS", workspace);
                                 }
-                                updateProperty(n, c, userId);
+                                updateProperty(n, c, finalUserId);
                             } catch (PathNotFoundException e) {
                                 // node has been removed
                             }

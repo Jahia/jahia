@@ -398,20 +398,20 @@ public class RulesListener extends DefaultEventListener {
 
                         Map<String, Object> globals = getGlobals(userId, delayedUpdates);
 
-                        inRules.set(Boolean.TRUE);
-
-                        executeRules(list, globals);
-
-                        if (list.size() > 3) {
-                            logger.info("Rules executed for " + workspace + " " + list.subList(0, 3) + " ... and " +
-                                    (list.size() - 3) + " other nodes in " + (System.currentTimeMillis() - time) +
-                                    "ms");
-                        } else {
-                            logger.info("Rules executed for " + workspace + " " + list + " in " +
-                                    (System.currentTimeMillis() - time) + "ms");
-                        }
-
                         try {
+                            inRules.set(Boolean.TRUE);
+
+                            executeRules(list, globals);
+
+                            if (list.size() > 3) {
+                                logger.info("Rules executed for " + workspace + " " + list.subList(0, 3) + " ... and " +
+                                        (list.size() - 3) + " other nodes in " + (System.currentTimeMillis() - time) +
+                                        "ms");
+                            } else {
+                                logger.info("Rules executed for " + workspace + " " + list + " in " +
+                                        (System.currentTimeMillis() - time) + "ms");
+                            }
+
                             if (s.hasPendingChanges()) {
                                 s.save();
                             }

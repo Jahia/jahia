@@ -81,6 +81,7 @@ public abstract class DefaultEventListener implements EventListener {
         propertiesToIgnore.add(Constants.REVISION_NUMBER);
         propertiesToIgnore.add(Constants.CHECKIN_DATE);
         propertiesToIgnore.add(Constants.JCR_LASTLOGINDATE);
+        propertiesToIgnore.add(Constants.ORIGIN_WORKSPACE);
     }
 
     public void setWorkspace(String workspace) {

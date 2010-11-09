@@ -33,18 +33,37 @@
 package org.jahia.services.importexport;
 
 import org.slf4j.Logger;
-import org.jahia.params.ProcessingContext;
+import org.apache.commons.lang.StringUtils;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.SelectorType;
+import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.utils.i18n.ResourceBundleMarker;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import javax.jcr.Node;
+import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+import javax.jcr.nodetype.ConstraintViolationException;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 /**
@@ -56,11 +75,21 @@ import java.util.StringTokenizer;
  */
 public class FilesAclImportHandler extends DefaultHandler {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(FilesAclImportHandler.class);
-
+    
     private JahiaSite site;
+    private DefinitionsMapping mapping;
+    private JCRSessionWrapper session;
+    
+    private Map<String, String> davPropertiesMapping = initializeDavPropertiesMapping();
 
-    public FilesAclImportHandler(JahiaSite site) {
+    public FilesAclImportHandler(JahiaSite site, DefinitionsMapping mapping) {
         this.site = site;
+        this.mapping = mapping;
+        try {
+            this.session = ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getCurrentUserSession();
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
     }
 
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
@@ -113,11 +142,10 @@ public class FilesAclImportHandler extends DefaultHandler {
                     String attName = attributes.getLocalName(i);
                     if (!ImportExportBaseService.JAHIA_URI.equals(attUri)
                             || (!"path".equals(attName) && !"fileacl".equals(attName) && !"lastModification".equals(attName))) {
-                        String attValue = attributes.getValue(i);
                         try {
-                            f.setProperty(attUri, attName, attValue);
+                            setPropertyField(f.getPrimaryNodeType(), localName, f, getMappedProperty(f.getPrimaryNodeType(), attributes.getQName(i)), attributes.getValue(i));
                         } catch (RepositoryException e) {
-                            e.printStackTrace();
+                            logger.warn("Error importing " + localName + " " + path, e);
                         }
                     }
                 }
@@ -126,5 +154,151 @@ public class FilesAclImportHandler extends DefaultHandler {
                 logger.error("error", e);
             }
         }
+    }
+    
+    private String getMappedProperty(ExtendedNodeType baseType, String qName) {
+        String property = qName;
+        String mappedProperty = davPropertiesMapping.get(qName);
+        if (mappedProperty == null) {
+            mappedProperty = mapping.getMappedProperty(baseType, qName);
+        }
+        if (mappedProperty != null) {
+            property = mappedProperty;
+        }
+        return property;
+    }
+    
+    protected final Map<String, String> initializeDavPropertiesMapping() {
+        Map<String, String> davPropertiesMapping = new HashMap<String, String>(); 
+        davPropertiesMapping.put("dav:creationdate", "jcr:created");
+        davPropertiesMapping.put("dav:creationuser", "jcr:createdBy");
+        davPropertiesMapping.put("dav:getlastmodified", "jcr:lastModified");
+        davPropertiesMapping.put("dav:modificationdate", "jcr:lastModified");        
+        davPropertiesMapping.put("dav:modificationuser", "jcr:lastModifiedBy");
+        davPropertiesMapping.put("dav:getcontenttype", "jcr:content/jcr:mimeType");
+        davPropertiesMapping.put("dav:getcontentlanguage", "mix:language|jcr:content/jcr:language");
+        davPropertiesMapping.put("dav:owner", "#skip");
+        davPropertiesMapping.put("dav:displayname", "#skip");
+        return davPropertiesMapping;
+    }
+    
+    private boolean setPropertyField(ExtendedNodeType baseType, String localName,
+            JCRNodeWrapper node, String propertyName, String value) throws RepositoryException {
+        JCRNodeWrapper parent = node;
+        String mixinType = null;
+        if (propertyName.contains("|")) {
+            mixinType = StringUtils.substringBefore(propertyName, "|");
+            propertyName = StringUtils.substringAfter(propertyName, "|");
+        }
+        if (StringUtils.contains(propertyName, "/")) {
+            String parentPath = StringUtils.substringBeforeLast(propertyName, "/");
+            if (parent.hasNode(parentPath)) {
+                parent = parent.getNode(parentPath);
+            }
+            propertyName = StringUtils.substringAfterLast(propertyName, "/");
+        }
+        parent = checkoutNode(parent);
+        if (!StringUtils.isEmpty(mixinType) && !parent.isNodeType(mixinType)) {
+            parent.addMixin(mixinType);
+        }
+
+        ExtendedPropertyDefinition propertyDefinition = null;
+        try {
+            propertyDefinition = parent.getApplicablePropertyDefinition(propertyName);
+        } catch (ConstraintViolationException e) {
+            // System.out.println("Ignore/not found here : " + propertyName);
+            return false;
+        }
+        if (propertyDefinition.isProtected()) {
+            // System.out.println("protected : " + propertyName);
+            return false;
+        }
+        Node n = parent;
+
+        // System.out.println("setting " + propertyName);
+
+        if (value != null && value.length() != 0 && !value.equals("<empty>")) {
+            switch (propertyDefinition.getRequiredType()) {
+                case PropertyType.DATE:
+                    GregorianCalendar cal = new GregorianCalendar();
+                    try {
+                        DateFormat df = new SimpleDateFormat(ImportExportService.DATE_FORMAT);
+                        Date d = df.parse(value);
+                        cal.setTime(d);
+                        n.setProperty(propertyName, cal);
+                    } catch (java.text.ParseException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+
+                default:
+                    switch (propertyDefinition.getSelector()) {
+                        case SelectorType.RICHTEXT: {
+                            n.setProperty(propertyName, value);
+                            break;
+                        }
+                        default: {
+                            String[] vcs = propertyDefinition.getValueConstraints();
+                            List<String> constraints = Arrays.asList(vcs);
+                            if (!propertyDefinition.isMultiple()) {
+                                if (value.startsWith("<jahia-resource")) {
+                                    value = ResourceBundleMarker.parseMarkerValue(value)
+                                            .getResourceKey();
+                                    if (value.startsWith(propertyDefinition.getResourceBundleKey())) {
+                                        value = value.substring(propertyDefinition
+                                                .getResourceBundleKey().length() + 1);
+                                    }
+                                }
+                                value = baseType != null ? mapping.getMappedPropertyValue(baseType,
+                                        localName, value) : value;
+                                if (constraints.isEmpty() || constraints.contains(value)) {
+                                    try {
+                                        n.setProperty(propertyName, value);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            } else {
+                                String[] strings = value.split("\\$\\$\\$");
+                                List<Value> values = new ArrayList<Value>();
+                                for (int i = 0; i < strings.length; i++) {
+                                    String string = strings[i];
+
+                                    if (string.startsWith("<jahia-resource")) {
+                                        string = ResourceBundleMarker.parseMarkerValue(string)
+                                                .getResourceKey();
+                                        if (string.startsWith(propertyDefinition
+                                                .getResourceBundleKey())) {
+                                            string = string.substring(propertyDefinition
+                                                    .getResourceBundleKey().length() + 1);
+                                        }
+                                    }
+                                    value = baseType != null ? mapping.getMappedPropertyValue(
+                                            baseType, localName, value) : value;
+                                    if (constraints.isEmpty() || constraints.contains(value)) {
+                                        values.add(new ValueImpl(string, propertyDefinition
+                                                .getRequiredType()));
+                                    }
+                                }
+                                ;
+                                n.setProperty(propertyName,
+                                        values.toArray(new Value[values.size()]));
+                            }
+                            break;
+                        }
+                    }
+            }
+        } else {
+            return false;
+        }
+
+        return true;
+    }
+    
+    private JCRNodeWrapper checkoutNode(JCRNodeWrapper node) throws RepositoryException {
+        if (!node.isCheckedOut()) {
+            session.checkout(node);
+        }
+        return node;
     }
 }

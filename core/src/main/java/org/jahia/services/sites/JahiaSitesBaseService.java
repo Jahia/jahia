@@ -401,7 +401,9 @@ public class JahiaSitesBaseService extends JahiaSitesService {
 //                    ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail);
 //                } else {
                 try {
-                    ServicesRegistry.getInstance().getImportExportService().importSiteZip(initialZip, jParams.getSite(), Collections.emptyMap());
+                    Map<Object, Object> importInfos = new HashMap<Object, Object>();
+                    importInfos.put("originatingJahiaRelease", originatingJahiaRelease);
+                    ServicesRegistry.getInstance().getImportExportService().importSiteZip(initialZip, jParams.getSite(), importInfos);
                 } catch (RepositoryException e) {
                     logger.warn("Error importing site ZIP", e);
                 }

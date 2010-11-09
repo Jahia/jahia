@@ -600,7 +600,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     if (zipentry == null) break;
                     String name = zipentry.getName();
                     if (name.equals(FILESACL_XML)) {
-                        importFilesAcl(site, zis);
+                        importFilesAcl(site, zis, mapping);
                     } else if (name.startsWith("export")) {
                         String languageCode;
                         if (name.indexOf("_") != -1) {
@@ -714,8 +714,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     }
 
-    private void importFilesAcl(JahiaSite site, InputStream is) {
-        handleImport(is, new FilesAclImportHandler(site));
+    private void importFilesAcl(JahiaSite site, InputStream is, DefinitionsMapping mapping) {
+        handleImport(is, new FilesAclImportHandler(site, mapping));
     }
 
     private void importSiteProperties(InputStream is, JahiaSite site) throws IOException {

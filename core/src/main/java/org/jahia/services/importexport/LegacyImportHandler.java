@@ -48,8 +48,6 @@ import org.jahia.services.importexport.DefinitionsMapping.Action;
 import org.jahia.services.importexport.DefinitionsMapping.AddMixin;
 import org.jahia.services.importexport.DefinitionsMapping.AddNode;
 import org.jahia.services.importexport.DefinitionsMapping.SetProperties;
-import org.jahia.services.render.RenderService;
-import org.jahia.services.render.Resource;
 import org.jahia.utils.i18n.ResourceBundleMarker;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -214,21 +212,31 @@ public class LegacyImportHandler extends DefaultHandler {
                     }
                     break;
                 case CTX_BOX:
-                    if (localName.endsWith("List") && getCurrentContentType() != null &&
-                            getCurrentContentType().getChildNodeDefinitionsAsMap()
-                                    .containsKey(StringUtils.substringBeforeLast(localName, "List"))) {
-                        if (!isSingleContainerBox(localName)) {
-                            ExtendedNodeDefinition nodeDef = getCurrentContentType().getChildNodeDefinitionsAsMap()
-                                    .get(StringUtils.substringBeforeLast(localName, "List"));
+                    boolean isNode = false;
+                    if (localName.endsWith("List") && getCurrentContentType() != null) {
+                        String mappedName = mapping.getMappedItem(getCurrentContentType(),
+                                StringUtils.substringBeforeLast(localName, "List"));
 
-                            createContentList(nodeDef, uuid);
-                            setMetadata(attributes);
-                        } else {
-                            currentCtx.peek().pushBox(null);
+                        if (getCurrentContentType().getChildNodeDefinitionsAsMap().containsKey(
+                                mappedName)) {
+                            isNode = true;
+
+                            if (!isSingleContainerBox(mappedName)) {
+                                ExtendedNodeDefinition nodeDef = getCurrentContentType()
+                                        .getChildNodeDefinitionsAsMap().get(mappedName);
+
+                                createContentList(nodeDef, uuid);
+                                setMetadata(attributes);
+                            } else {
+                                currentCtx.peek().pushBox(null);
+                            }
                         }
-                    } else {
-                        String propertyName = mapping.getMappedProperty(getCurrentContentType(), localName);
-                        currentCtx.peek().boxProperties.peek().put(propertyName,
+                    }
+                    if (!isNode) {
+                        String propertyName = mapping.getMappedProperty(getCurrentContentType(),
+                                localName);
+                        currentCtx.peek().boxProperties.peek().put(
+                                propertyName,
                                 mapping.getMappedPropertyValue(getCurrentContentType(), localName,
                                         attributes.getValue("jahia:value")));
                         currentCtx.peek().pushField(propertyName);
@@ -287,11 +295,10 @@ public class LegacyImportHandler extends DefaultHandler {
 
     }
 
-    private boolean isSingleContainerBox(String localName) {
-        String listName = StringUtils.substringBeforeLast(localName, "List");
+    private boolean isSingleContainerBox(String listName) {
         boolean isSingleContainer = false;
         for (String requiredPrimaryType : getCurrentContentType().getChildNodeDefinitionsAsMap()
-                .get(StringUtils.substringBeforeLast(localName, "List")).getRequiredPrimaryTypeNames()) {
+                .get(listName).getRequiredPrimaryTypeNames()) {
             if (requiredPrimaryType.contains(listName) && requiredPrimaryType.endsWith("Single")) {
                 isSingleContainer = true;
                 break;

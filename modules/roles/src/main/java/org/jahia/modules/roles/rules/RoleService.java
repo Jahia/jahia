@@ -279,22 +279,26 @@ public class RoleService {
     public void createTranslatorRole(final AddedNodeFact node, String name, String base, KnowledgeHelper drools) throws RepositoryException {
         JCRNodeWrapper siteNode = node.getNode();
         final String siteKey = siteNode.getName();
-        Set<PermissionImpl> perms = roleService.getRole(new RoleIdentity(base, siteKey)).getPermissions();
-        final Value[] languages = siteNode.getProperty("j:languages").getValues();
-        for (Value language : languages) {
-            final RoleImpl role = new RoleImpl(name.replace("*",language.getString()), siteKey);
-            if (roleService.getRole(role) != null) {
-                continue;
+        RoleImpl translatorRole = roleService.getRole(new RoleIdentity(base, siteKey));
+        if (translatorRole != null) {
+            Set<PermissionImpl> perms = translatorRole.getPermissions();
+            final Value[] languages = siteNode.getProperty("j:languages").getValues();
+            for (Value language : languages) {
+                final RoleImpl role = new RoleImpl(name.replace("*", language.getString()), siteKey);
+                if (roleService.getRole(role) != null) {
+                    continue;
+                }
+                final Set<PermissionImpl> permissions = new HashSet<PermissionImpl>(perms);
+                for (PermissionImpl perm : perms) {
+                    if (perm.getGroup().equals("languages")) {
+                        permissions.remove(perm);
+                    }
+                }
+                permissions.add(roleService.getPermission(new PermissionImpl(language.getString(),
+                        "languages", siteKey)));
+                role.setPermissions(permissions);
+                roleService.saveRole(role);
             }
-            final Set<PermissionImpl> permissions = new HashSet<PermissionImpl>(perms);
-            for (PermissionImpl perm : perms) {
-                if (perm.getGroup().equals("languages")) {
-                    permissions.remove(perm);
-                }                                    
-            }
-            permissions.add(roleService.getPermission(new PermissionImpl(language.getString(), "languages", siteKey)));
-            role.setPermissions(permissions);
-            roleService.saveRole(role);
         }
     }
 

@@ -504,7 +504,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
                         documentViewImportHandler.setReferences(references);
                         documentViewImportHandler.setNoRoot(true);
-                        documentViewImportHandler.setResolveReferenceAtEnd(false);
 
                         handleImport(zis, documentViewImportHandler);
                         session.save();

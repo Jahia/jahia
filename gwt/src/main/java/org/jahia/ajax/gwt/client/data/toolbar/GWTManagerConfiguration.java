@@ -52,7 +52,7 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
     private List<String> tableColumnKeys;
 
     private List<GWTRepository> repositories;
-    private List<GWTEngineTab> tabs;
+    private List<GWTEngineTab> managerEngineTabs;
     private String selectedAccordion = null;
     private boolean hideLeftPanel = false;
 
@@ -82,12 +82,12 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
 
 
     public GWTManagerConfiguration() {
+    	super();
         treeColumns = new ArrayList<GWTColumn>();
         treeColumnKeys = new ArrayList<String>();
         tableColumns = new ArrayList<GWTColumn>();
         tableColumnKeys = new ArrayList<String>();
         repositories = new ArrayList<GWTRepository>();
-        tabs = new ArrayList<GWTEngineTab>();
     }
 
     public void addTableColumn(GWTColumn col) {
@@ -294,5 +294,13 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
 
     public void setSearchInContent(boolean searchInContent) {
         this.searchInContent = searchInContent;
+    }
+
+	public List<GWTEngineTab> getManagerEngineTabs() {
+    	return managerEngineTabs;
+    }
+
+	public void setManagerEngineTabs(List<GWTEngineTab> managerEngineTabs) {
+    	this.managerEngineTabs = managerEngineTabs;
     }
 }

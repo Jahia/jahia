@@ -32,11 +32,13 @@
 
 package org.jahia.ajax.gwt.helper;
 
+import org.apache.commons.beanutils.BeanUtilsBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.data.toolbar.*;
 import org.jahia.ajax.gwt.client.data.toolbar.monitor.GWTJahiaStateInfo;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.util.Constants;
+import org.jahia.ajax.gwt.client.widget.contentengine.EditEngineTabItem;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.LanguageSwitcherActionItem;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.SiteLanguageSwitcherActionItem;
@@ -60,14 +62,13 @@ import org.jahia.utils.i18n.JahiaResourceBundle;
 import javax.script.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.StringWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
  * User: ktlili
  * Date: Apr 13, 2010
  * Time: 5:25:09 PM
- * To change this template use File | Settings | File Templates.
  */
 public class UIConfigHelper {
     private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(UIConfigHelper.class);
@@ -347,20 +348,33 @@ public class UIConfigHelper {
                     }
                 }
 
-                gwtConfig.setEngineTabs(createGWTEngineList(site, jahiaUser, locale, uiLocale, request, config.getEngineTabs()));
+                List<GWTEngineTab> tabs = createGWTEngineList(site, jahiaUser, locale, uiLocale, request, config.getEngineTabs());
+                gwtConfig.setEngineTabs(tabs);
+                List<GWTEngineTab> managerTabs = new ArrayList<GWTEngineTab>(tabs.size());
+                for (GWTEngineTab gwtEngineTab : tabs) {
+	                managerTabs.add((GWTEngineTab) copy(gwtEngineTab));
+                }
+                gwtConfig.setManagerEngineTabs(managerTabs);
 
                 return gwtConfig;
             } else {
                 logger.error("Config. " + name + " not found.");
                 throw new GWTJahiaServiceException("Config. " + name + " not found.");
             }
-        } catch (GWTJahiaServiceException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }
 
-    private GWTColumn createGWTColumn(Column item, JCRSiteNode site, Locale locale, Locale uiLocale) {
+    private GWTEngineTab copy(GWTEngineTab original) throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
+    	GWTEngineTab copy = (GWTEngineTab) BeanUtilsBean.getInstance().cloneBean(original);
+    	copy.setTabItem((EditEngineTabItem) BeanUtilsBean.getInstance().cloneBean(original.getTabItem()));
+    	
+	    return copy;
+    }
+
+	private GWTColumn createGWTColumn(Column item, JCRSiteNode site, Locale locale, Locale uiLocale) {
         GWTColumn col = new GWTColumn();
         col.setKey(item.getKey());
         if (item.getTitleKey() != null) {

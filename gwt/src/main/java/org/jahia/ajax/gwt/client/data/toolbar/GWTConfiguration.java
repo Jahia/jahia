@@ -32,18 +32,17 @@
 
 package org.jahia.ajax.gwt.client.data.toolbar;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-import org.jahia.ajax.gwt.client.data.GWTJahiaPermission;
-
 import java.io.Serializable;
 import java.util.List;
 
+import org.jahia.ajax.gwt.client.data.GWTJahiaPermission;
+
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: Apr 20, 2010
  * Time: 6:27:19 PM
- * To change this template use File | Settings | File Templates.
  */
 public class GWTConfiguration implements IsSerializable, Serializable {
     protected String name;
@@ -51,6 +50,7 @@ public class GWTConfiguration implements IsSerializable, Serializable {
     private List<GWTJahiaPermission> permissions;
 
     public GWTConfiguration() {
+    	super();
     }
 
     public String getName() {

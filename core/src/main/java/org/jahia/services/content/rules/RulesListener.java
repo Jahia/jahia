@@ -158,6 +158,7 @@ public class RulesListener extends DefaultEventListener {
             //conf.setAssertBehaviour( AssertBehaviour.IDENTITY );
             //conf.setRemoveIdentities( true );
             ruleBase = RuleBaseFactory.newRuleBase(conf);
+
             Properties properties = new Properties();
             properties.setProperty("drools.dialect.java.compiler", "JANINO");
             PackageBuilderConfiguration cfg = new PackageBuilderConfiguration(properties);
@@ -165,30 +166,15 @@ public class RulesListener extends DefaultEventListener {
             javaConf.setCompiler(JavaDialectConfiguration.JANINO);
 
             builder = new PackageBuilder(cfg);
+
+            dslFiles.add(
+                    new File(SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/rules/rules.dsl"));
+
             for (String s : ruleFiles) {
-                InputStreamReader drl = new InputStreamReader(
-                        new FileInputStream(SettingsBean.getInstance().getJahiaEtcDiskPath() + s));
-                dslFiles.add(
-                        new File(SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/rules/rules.dsl"));
-                builder.addPackageFromDrl(drl, new StringReader(getDslFiles()));
-                drl.close();
+                addRules(new File(SettingsBean.getInstance().getJahiaEtcDiskPath() + s));
             }
 
-            //            builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.rfm" ) ) );
-
-            PackageBuilderErrors errors = builder.getErrors();
-
-            if (errors.getErrors().length == 0) {
-                Package pkg = builder.getPackage();
-                ruleBase.addPackage(pkg);
-            } else {
-                logger.error("---------------------------------------------------------------------------------");
-                logger.error("Errors when compiling rules : " + errors.toString());
-                logger.error("---------------------------------------------------------------------------------");
-            }
             lastRead = System.currentTimeMillis();
-        } catch (ClassNotFoundException e) {
-            logger.error(e.getMessage(), e);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -204,32 +190,44 @@ public class RulesListener extends DefaultEventListener {
 
     public void addRules(File dsrlFile) {
         InputStreamReader drl = null;
+        long start = System.currentTimeMillis();
         try {
-            Properties properties = new Properties();
-            properties.setProperty("drools.dialect.java.compiler", "JANINO");
-            PackageBuilderConfiguration cfg = new PackageBuilderConfiguration(properties);
-            JavaDialectConfiguration javaConf = (JavaDialectConfiguration) cfg.getDialectConfiguration("java");
-            javaConf.setCompiler(JavaDialectConfiguration.JANINO);
-
-            PackageBuilder packageBuilder = new PackageBuilder(cfg);
-
-            drl = new InputStreamReader(new FileInputStream(dsrlFile));
-
-            packageBuilder.addPackageFromDrl(drl, new StringReader(getDslFiles()));
-
-            PackageBuilderErrors errors = packageBuilder.getErrors();
-
-            if (errors.getErrors().length == 0) {
-                Package pkg = packageBuilder.getPackage();
+            File pkgFile = new File(dsrlFile.getPath() + ".pkg");
+            if (pkgFile.exists() && pkgFile.lastModified() > dsrlFile.lastModified()) {
+                final ObjectInputStream ois = new ObjectInputStream(new FileInputStream(pkgFile));
+                Package pkg = (Package) ois.readObject();
                 if (ruleBase.getPackage(pkg.getName()) != null) {
                     ruleBase.removePackage(pkg.getName());
                 }
                 ruleBase.addPackage(pkg);
-                logger.info("Rules for " + pkg.getName() + " updated.");
             } else {
-                logger.error("---------------------------------------------------------------------------------");
-                logger.error("Errors when compiling rules in " + dsrlFile + " : " + errors.toString());
-                logger.error("---------------------------------------------------------------------------------");
+                drl = new InputStreamReader(new FileInputStream(dsrlFile));
+
+                builder.addPackageFromDrl(drl, new StringReader(getDslFiles()));
+
+                PackageBuilderErrors errors = builder.getErrors();
+
+                if (errors.getErrors().length == 0) {
+                    Package pkg = builder.getPackage();
+
+                    try {
+                        final ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(pkgFile));
+                        oos.writeObject(pkg);
+                        oos.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    }
+
+                    if (ruleBase.getPackage(pkg.getName()) != null) {
+                        ruleBase.removePackage(pkg.getName());
+                    }
+                    ruleBase.addPackage(pkg);
+                    logger.info("Rules for " + pkg.getName() + " updated in "+ (System.currentTimeMillis() - start) + "ms.");
+                } else {
+                    logger.error("---------------------------------------------------------------------------------");
+                    logger.error("Errors when compiling rules in " + dsrlFile + " : " + errors.toString());
+                    logger.error("---------------------------------------------------------------------------------");
+                }
             }
         } catch (ClassNotFoundException e) {
             logger.error(e.getMessage(), e);

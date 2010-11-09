@@ -134,18 +134,9 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
     public void stop() {
     }
 
-    protected void registerCustomNodeTypes(Workspace ws) throws IOException, RepositoryException {
-//        NodeTypeIterator nti = NodeTypeRegistry.getInstance().getAllNodeTypes();
-//        registerCustomNodeTypes(nti, ws);
-    }
-
     protected void registerCustomNodeTypes(String systemId, Workspace ws) throws IOException, RepositoryException {
         NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes(systemId);
-        registerCustomNodeTypes(nti, ws);
-    }
-
-    private void registerCustomNodeTypes(NodeTypeIterator nti, Workspace ws) throws RepositoryException {
-    	long timer = System.currentTimeMillis();
+        long timer = System.currentTimeMillis();
         NodeTypeManager jntm  = ws.getNodeTypeManager();
         NamespaceRegistry namespaceRegistry = ws.getNamespaceRegistry();
         List<NodeTypeDefinition> nts = new ArrayList<NodeTypeDefinition>();
@@ -156,12 +147,12 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
                     namespaceRegistry.getURI(nodeType.getNameObject().getPrefix());
                 } catch (NamespaceException e) {
                     namespaceRegistry.registerNamespace(nodeType.getNameObject().getPrefix(), nodeType.getNameObject().getUri());
-                }                
+                }
                 nts.add(nodeType.getNodeTypeDefinition());
             }
         }
         jntm.registerNodeTypes(nts.toArray(new NodeTypeDefinition[nts.size()]), true);
-        logger.info("Custom node types registered in " + (System.currentTimeMillis() - timer) + " ms");
+        logger.info("Custom node types registered for " +systemId + " in " + (System.currentTimeMillis() - timer) + " ms");
     }
 
     protected boolean canRegisterCustomNodeTypes() {

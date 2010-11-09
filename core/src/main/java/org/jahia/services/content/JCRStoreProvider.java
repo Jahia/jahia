@@ -731,10 +731,6 @@ public class JCRStoreProvider {
         return false;
     }
 
-    protected void registerCustomNodeTypes(Workspace ws) throws IOException, RepositoryException {
-        return;
-    }
-
     protected void registerCustomNodeTypes(String systemId, Workspace ws) throws IOException, RepositoryException {
         return;
     }

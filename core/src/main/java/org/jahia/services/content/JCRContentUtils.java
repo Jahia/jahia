@@ -449,7 +449,7 @@ public final class JCRContentUtils {
         final char[] newChars = new char[chars.length];
         int j = 0;
         for (char aChar : chars) {
-            if (CharUtils.isAsciiAlphanumeric(aChar) || aChar == 32) {
+            if (CharUtils.isAsciiAlphanumeric(aChar) || aChar == 32 || aChar == '-') {
                 newChars[j++] = aChar;
             }
         }

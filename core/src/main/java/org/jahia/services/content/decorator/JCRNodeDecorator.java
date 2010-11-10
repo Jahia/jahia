@@ -319,6 +319,10 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getApplicablePropertyDefinition(propertyName);
     }
 
+    public List<ExtendedPropertyDefinition> getReferenceProperties() throws RepositoryException {
+        return node.getReferenceProperties();
+    }
+
     public ExtendedNodeDefinition getApplicableChildNodeDefinition(String childName, String nodeType) throws ConstraintViolationException, RepositoryException {
         return node.getApplicableChildNodeDefinition(childName, nodeType);
     }

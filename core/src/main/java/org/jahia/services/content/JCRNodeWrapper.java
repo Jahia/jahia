@@ -700,6 +700,8 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      */
     ExtendedPropertyDefinition getApplicablePropertyDefinition(String propertyName) throws ConstraintViolationException, RepositoryException;
 
+    List<ExtendedPropertyDefinition> getReferenceProperties() throws RepositoryException;
+
     /**
      * Get the child node definition object applicable to the given child name
      *

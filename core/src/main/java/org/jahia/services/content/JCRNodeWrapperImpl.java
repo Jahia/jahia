@@ -2708,6 +2708,38 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         throw new ConstraintViolationException("Cannot find definition for " + propertyName + " on node " + getName() + " (" + getPrimaryNodeTypeName() + ")");
     }
 
+    public List<ExtendedPropertyDefinition> getReferenceProperties() throws RepositoryException {
+
+        List<ExtendedPropertyDefinition> defs = new ArrayList<ExtendedPropertyDefinition>();
+        List<ExtendedNodeType> types = new ArrayList<ExtendedNodeType>();
+        Iterator<ExtendedNodeType> iterator = getNodeTypesIterator();
+
+        if (isNodeType(Constants.JAHIANT_TRANSLATION)) {
+            return getParent().getReferenceProperties();
+        }
+
+        while (iterator.hasNext()) {
+            ExtendedNodeType type = iterator.next();
+            final Map<String, ExtendedPropertyDefinition> definitionMap = type.getPropertyDefinitionsAsMap();
+            for (ExtendedPropertyDefinition definition : definitionMap.values()) {
+                if (definition.getRequiredType() == PropertyType.REFERENCE || definition.getRequiredType() == PropertyType.WEAKREFERENCE ) {
+                    defs.add(definition);
+                }
+            }
+
+            types.add(type);
+        }
+        for (ExtendedNodeType type : types) {
+            for (ExtendedPropertyDefinition definition : type.getUnstructuredPropertyDefinitions().values()) {
+                if (definition.getRequiredType() == PropertyType.REFERENCE || definition.getRequiredType() == PropertyType.WEAKREFERENCE ) {
+                    defs.add(definition);
+                }
+            }
+        }
+
+        return defs;
+    }
+
     public ExtendedNodeDefinition getApplicableChildNodeDefinition(String childName, String nodeType)
             throws ConstraintViolationException, RepositoryException {
         ExtendedNodeType requiredType = NodeTypeRegistry.getInstance().getNodeType(nodeType);

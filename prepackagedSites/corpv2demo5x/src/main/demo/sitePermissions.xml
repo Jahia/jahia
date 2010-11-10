@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jahia:sitePermissions xmlns:jahia="http://www.jahia.org/">
+    <jahia:sitePermission jahia:name="admin.JahiaAdministration"></jahia:sitePermission>
+    <jahia:sitePermission jahia:name="admin.clipBuilder.MenuBuilderAction"></jahia:sitePermission>
+    <jahia:sitePermission jahia:name="admin.homepages.ManageHomepages"></jahia:sitePermission>
+    <jahia:sitePermission jahia:name="admin.languages.ManageSiteLanguages"></jahia:sitePermission>
+    <jahia:sitePermission jahia:name="admin.pages.ManagePages"></jahia:sitePermission>
+    <jahia:sitePermission jahia:name="admin.permissions.ManageSitePermissions"></jahia:sitePermission>
+    <jahia:sitePermission jahia:name="admin.production.ManageSiteProduction"></jahia:sitePermission>
+    <jahia:sitePermission jahia:name="admin.search.ManageSearch"></jahia:sitePermission>
+    <jahia:sitePermission jahia:name="admin.templates.ManageTemplates"></jahia:sitePermission>
+    <jahia:sitePermission jahia:name="admin.users.ManageGroups"></jahia:sitePermission>
+    <jahia:sitePermission jahia:name="admin.users.ManageUsers"></jahia:sitePermission>
+    <jahia:sitePermission jahia:name="engines.actions.add" jahia:acl="g:users"></jahia:sitePermission>
+    <jahia:sitePermission jahia:name="engines.actions.editMode" jahia:acl="g:users"></jahia:sitePermission>
+    <jahia:sitePermission jahia:name="engines.actions.publishAll" jahia:acl="g:users"></jahia:sitePermission>
+    <jahia:sitePermission jahia:name="engines.actions.update" jahia:acl="g:users"></jahia:sitePermission>
+    <jahia:sitePermission jahia:name="engines.languages.en" jahia:acl="g:users"></jahia:sitePermission>
+</jahia:sitePermissions>
+

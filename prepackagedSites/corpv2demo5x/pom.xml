@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <parent>
+        <groupId>org.jahia.prepackagedsites</groupId>
+        <artifactId>prepackagedSites</artifactId>
+        <version>6.5-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>corpv2demo5x</artifactId>
+    <name>CorpV2 Demo 5.x to 6.5</name>
+    <packaging>pom</packaging>
+
+    <build>
+        <plugins>
+
+
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+
+                <executions>
+                    <execution>
+                        <id>demo</id>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/demo.xml</descriptor>
+                            </descriptors>
+                            <finalName>demo</finalName>
+                        </configuration>
+
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+
+                <executions>
+                    <execution>
+                        <id>shared</id>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/shared.xml</descriptor>
+                            </descriptors>
+                            <finalName>shared</finalName>
+                        </configuration>
+
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+
+                <executions>
+                    <execution>
+                        <id>root</id>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/root.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+        </plugins>
+    </build>
+</project>

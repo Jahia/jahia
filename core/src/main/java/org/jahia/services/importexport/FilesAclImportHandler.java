@@ -96,6 +96,11 @@ public class FilesAclImportHandler extends DefaultHandler {
         if ("file".equals(localName) && ImportExportBaseService.JAHIA_URI.equals(uri)) {
             String path = attributes.getValue(ImportExportBaseService.JAHIA_URI, "path");
             String acl = attributes.getValue(ImportExportBaseService.JAHIA_URI, "fileacl");
+            if (path.startsWith("/shared")) {
+                path = "/sites/" + site.getSiteKey() + "/files" + path;
+            } else if (path.startsWith("/users")) {
+                path = path.replaceFirst("/users/([^/]+)/", "/users/$1/files/");
+            }
             try {
                 JCRSessionWrapper session = ServicesRegistry.getInstance().getJCRStoreService().getSessionFactory().getCurrentUserSession();
                 JCRNodeWrapper f = session.getNode(path);

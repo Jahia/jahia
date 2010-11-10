@@ -897,7 +897,9 @@ public class LegacyImportHandler extends DefaultHandler {
                 default: {
                     if (value.startsWith("/")) {
                         try {
-                            if (pathMapping != null) {
+                            if (value.startsWith("/users")) {
+                                value = value.replaceFirst("/users/([^/]+)/", "/users/$1/files/");
+                            } else if (pathMapping != null) {
                                 for (String map : pathMapping.keySet()) {
                                     if (value.startsWith(map)) {
                                         value = pathMapping.get(map) + value.substring(map.length());

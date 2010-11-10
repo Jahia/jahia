@@ -38,6 +38,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.DeferredFileOutputStream;
 import org.apache.jackrabbit.commons.xml.SystemViewExporter;
 import org.slf4j.Logger;
+import org.springframework.util.StringUtils;
 import org.apache.xerces.jaxp.SAXParserFactoryImpl;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
@@ -517,7 +518,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         } else {
             // No repository descriptor - prepare to import files directly
             pathMapping = session.getPathMapping();
-            pathMapping.put("/", "/sites/"+site.getSiteKey()+"/");
+            pathMapping.put("/", "/sites/"+site.getSiteKey()+"/files/");
         }
 
         NodeTypeRegistry reg = null;
@@ -548,7 +549,19 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                             name = "/" + name;
                             if (!zipentry.isDirectory()) {
                                 try {
-                                    name = pathMapping.get("/") + name.substring(1);
+                                    if (name.startsWith("/content/sites")) {
+                                        name = pathMapping.get("/")
+                                                + StringUtils.trimLeadingCharacter(name
+                                                        .replaceFirst("/content/sites/[^/]+/files/", ""),
+                                                        '/');
+                                    } else if (name.startsWith("/content/users")) {
+                                        name = name.replaceFirst(
+                                                        "/content/users/([^/]+)/",
+                                                        "/users/$1/files/");
+                                    } else {
+                                        name = pathMapping.get("/")
+                                                + StringUtils.trimLeadingCharacter(name, '/');
+                                    }
                                     String filename = name.substring(name.lastIndexOf('/') + 1);
                                     String contentType = JahiaContextLoaderListener.getServletContext().getMimeType(filename);
                                     ensureFile(jcrStoreService.getSessionFactory().getCurrentUserSession(), name, zis, contentType, site);

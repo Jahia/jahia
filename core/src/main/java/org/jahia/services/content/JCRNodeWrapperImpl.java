@@ -2129,6 +2129,17 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             } else {
                 throw new LockException("Node locked.");
             }
+            if (session.getLocale() != null) {
+                Node i18n = getI18N(session.getLocale());
+                if (i18n.isLocked()) {
+                    owners = getLockOwners(i18n);
+                    if (owners.size() == 1 && owners.contains(session.getUserID())) {
+                        session.addLockToken(i18n.getProperty("j:locktoken").getString());
+                    } else {
+                        throw new LockException("Node locked.");
+                    }
+                }
+            }
         }
     }
 
@@ -2154,9 +2165,13 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     public List<String> getLockOwners() throws RepositoryException {
+        return getLockOwners(objectNode);
+    }
+
+    private List<String> getLockOwners(Node node) throws RepositoryException {
         List<String> r = new ArrayList<String>();
-        if (objectNode.hasProperty(Constants.JAHIA_LOCKTYPES)) {
-            Value[] values = objectNode.getProperty(Constants.JAHIA_LOCKTYPES).getValues();
+        if (node.hasProperty(Constants.JAHIA_LOCKTYPES)) {
+            Value[] values = node.getProperty(Constants.JAHIA_LOCKTYPES).getValues();
             for (Value value : values) {
                 String owner = StringUtils.substringBefore(value.getString(), ":");
                 if (!r.contains(owner)) {
@@ -2166,6 +2181,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
         return r;
     }
+
     /**
      * {@inheritDoc}
      */

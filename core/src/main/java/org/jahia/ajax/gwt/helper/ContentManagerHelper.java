@@ -736,16 +736,20 @@ public class ContentManagerHelper {
             throws GWTJahiaServiceException {
         JahiaUser user = currentUserSession.getUser();
         List<String> missedPaths = new ArrayList<String>();
+        List<JCRNodeWrapper> nodes = new ArrayList<JCRNodeWrapper>();
         for (String path : paths) {
             JCRNodeWrapper node;
             try {
                 node = currentUserSession.getNode(path);
+                addSub(nodes, node);
             } catch (RepositoryException e) {
                 logger.error(e.toString(), e);
                 missedPaths.add(new StringBuilder(path).append(" could not be accessed : ")
                         .append(e.toString()).toString());
                 continue;
             }
+        }
+        for (JCRNodeWrapper node : nodes) {
             if (!node.hasPermission(Privilege.JCR_LOCK_MANAGEMENT)) {
                 missedPaths.add(new StringBuilder(node.getName()).append(": write access denied").toString());
             } else if (node.isLocked()) {
@@ -798,6 +802,19 @@ public class ContentManagerHelper {
                 errors.append("\n").append(missedPath);
             }
             throw new GWTJahiaServiceException(errors.toString());
+        }
+    }
+
+    private void addSub(List<JCRNodeWrapper> nodes, JCRNodeWrapper node) throws RepositoryException {
+        if (!nodes.contains(node)) {
+            nodes.add(node);
+        }
+        NodeIterator ni = node.getNodes();
+        while (ni.hasNext()) {
+            JCRNodeWrapper subNode = (JCRNodeWrapper) ni.next();
+            if (!subNode.isNodeType("jnt:page") && subNode.isNodeType("jnt:content")) {
+                addSub(nodes, subNode);
+            }
         }
     }
 

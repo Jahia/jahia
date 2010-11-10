@@ -612,6 +612,8 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      */
     String getLockOwner();
 
+    List<String> getLockOwners() throws RepositoryException;
+
     /**
      * {@inheritDoc}
      */

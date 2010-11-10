@@ -418,6 +418,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public JCRNodeWrapper uploadFile(String name, final InputStream is, final String contentType) throws RepositoryException {
+        checkLock();
+
         JCRNodeWrapper file = null;
         try {
             file = getNode(name);
@@ -440,6 +442,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public JCRNodeWrapper addNode(String name) throws RepositoryException {
+        checkLock();
+
         Node n = objectNode.addNode(name);
         return provider.getNodeWrapper(n, buildSubnodePath(name), this, session);
     }
@@ -456,11 +460,15 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public JCRNodeWrapper addNode(String name, String type) throws RepositoryException {
+        checkLock();
+
         Node n = objectNode.addNode(name, type);
         return provider.getNodeWrapper(n, buildSubnodePath(name), this, session);
     }
 
     public JCRNodeWrapper addNode(String name, String type, String identifier, Calendar created, String createdBy, Calendar lastModified, String lastModifiedBy) throws ItemExistsException, PathNotFoundException, NoSuchNodeTypeException, LockException, VersionException, ConstraintViolationException, RepositoryException {
+        checkLock();
+
         if (objectNode instanceof NodeImpl) {
             JahiaSessionImpl jrSession = (JahiaSessionImpl) objectNode.getSession();
 
@@ -861,6 +869,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public void addMixin(String s) throws NoSuchNodeTypeException, VersionException, ConstraintViolationException, LockException, RepositoryException {
+        checkLock();
+
         objectNode.addMixin(s);
     }
 
@@ -868,6 +878,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public void removeMixin(String s) throws NoSuchNodeTypeException, VersionException, ConstraintViolationException, LockException, RepositoryException {
+        checkLock();
+
         objectNode.removeMixin(s);
     }
 
@@ -875,6 +887,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public boolean canAddMixin(String s) throws NoSuchNodeTypeException, RepositoryException {
+        checkLock();
+
         return objectNode.canAddMixin(s);
     }
 
@@ -1255,6 +1269,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public JCRPropertyWrapper setProperty(String name, Value value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        checkLock();
+
         name = ensurePrefixedName(name);
         final Locale locale = getSession().getLocale();
         ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
@@ -1288,6 +1304,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public JCRPropertyWrapper setProperty(String name, Value value, int type) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        checkLock();
+
         final Locale locale = getSession().getLocale();
         name = ensurePrefixedName(name);
         ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
@@ -1316,6 +1334,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public JCRPropertyWrapper setProperty(String name, Value[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        checkLock();
         final Locale locale = getSession().getLocale();
         name = ensurePrefixedName(name);
         ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
@@ -1681,6 +1700,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public boolean rename(String newName) throws RepositoryException {
+        checkLock();
+
         getSession().checkout(this);
         JCRNodeWrapper parent = getParent();
         getSession().checkout(parent);
@@ -2056,12 +2077,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
         }
 
-        if (!isNodeType(Constants.JAHIANT_TRANSLATION) && !getLockedLocales(type).isEmpty()) {
-            throw new LockException("Translations still locked");
+        if (isNodeType(Constants.JAHIANT_TRANSLATION) && !getLockedLocales(type).isEmpty()) {
+            return;
         }
 
         unlock(objectNode, type);
-
     }
 
     private void unlock(final Node objectNode, String type) throws RepositoryException {
@@ -2070,11 +2090,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             String token = property.getString();
             Value[] types = objectNode.getProperty(Constants.JAHIA_LOCKTYPES).getValues();
             for (Value value : types) {
-                objectNode.getSession().addLockToken(token);
                 String owner = StringUtils.substringBefore(value.getString(), ":");
                 String currentType = StringUtils.substringAfter(value.getString(), ":");
                 if (currentType.equals(type)) {
                     if (getSession().isSystem() || getSession().getUserID().equals(owner)) {
+                        objectNode.getSession().addLockToken(token);
                         final Map<String, Value> valueList = new HashMap<String, Value>();
                         for (Value v : types) {
                             valueList.put(v.getString(), v);
@@ -2101,6 +2121,17 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
     }
 
+    protected void checkLock() throws RepositoryException {
+        if (isLocked() && !session.isSystem()) {
+            List<String> owners = getLockOwners();
+            if (owners.size() == 1 && owners.contains(session.getUserID())) {
+                session.addLockToken(objectNode.getProperty("j:locktoken").getString());
+            } else {
+                throw new LockException("Node locked.");
+            }
+        }
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -2122,6 +2153,19 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
     }
 
+    public List<String> getLockOwners() throws RepositoryException {
+        List<String> r = new ArrayList<String>();
+        if (objectNode.hasProperty(Constants.JAHIA_LOCKTYPES)) {
+            Value[] values = objectNode.getProperty(Constants.JAHIA_LOCKTYPES).getValues();
+            for (Value value : values) {
+                String owner = StringUtils.substringBefore(value.getString(), ":");
+                if (!r.contains(owner)) {
+                    r.add(owner);
+                }
+            }
+        }
+        return r;
+    }
     /**
      * {@inheritDoc}
      */
@@ -2456,6 +2500,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public void orderBefore(String s, String s1) throws UnsupportedRepositoryOperationException, VersionException, ConstraintViolationException, ItemNotFoundException, LockException, RepositoryException {
+        checkLock();
         objectNode.orderBefore(s, s1);
     }
 

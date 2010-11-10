@@ -88,10 +88,8 @@ public class EditContentEngine extends AbstractContentEngine {
     }
 
     public void close() {
-        contentService.setLock(Arrays.asList(contentPath),false,new BaseAsyncCallback<Object>() {
+        contentService.closeEditEngine(contentPath,new BaseAsyncCallback<Object>() {
             public void onSuccess(Object result) {
-                String s = Messages.get("label.unlocked", "Nodes has been unlocked");
-                Info.display(s,s);
             }
         });
         container.closeEngine();
@@ -196,8 +194,11 @@ public class EditContentEngine extends AbstractContentEngine {
                 }
                 container.getPanel().setHeading(heading);
                 if (node.isLocked()) {
-                    heading = heading + Messages.getWithArgs("label.edit.engine.heading.locked.by","[ locked by {0} ]",new String[]{node.getLockOwner()});
+                    heading = heading + "&nbsp;" + Messages.getWithArgs("label.edit.engine.heading.locked.by","[ locked by {0} ]",new String[]{node.getLockOwner()});
                     container.getPanel().setHeading(heading);
+                } else if (node.getLockOwner() != null) {
+                    heading = heading + "&nbsp;" + Messages.get("label.edit.engine.heading.locked.by.you","[ locked by you ]");
+                    container.getPanel().setHeading(heading);                    
                 }
                 
                 setAvailableLanguages(result.getAvailabledLanguages());

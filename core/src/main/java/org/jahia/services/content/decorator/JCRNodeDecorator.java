@@ -274,6 +274,10 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getLockOwner();
     }
 
+    public List<String> getLockOwners()  throws RepositoryException {
+        return node.getLockOwners();
+    }
+
     public void versionFile() {
         node.versionFile();
     }

@@ -84,8 +84,10 @@ import org.jahia.tools.imageprocess.ImageProcess;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
+import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolationException;
 import java.io.File;
@@ -564,7 +566,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public void saveNode(GWTJahiaNode node, List<GWTJahiaNode> orderedChildrenNode, GWTJahiaNodeACL acl,
                          Map<String, List<GWTJahiaNodeProperty>> langCodeProperties,
                          List<GWTJahiaNodeProperty> sharedProperties) throws GWTJahiaServiceException {
-        setLock(Arrays.asList(node.getPath()), false);
+        closeEditEngine(node.getPath());
+
+//        setLock(Arrays.asList(node.getPath()), false);
         Iterator<String> langCode = langCodeProperties.keySet().iterator();
 
         // save shared properties
@@ -1445,8 +1449,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             JCRNodeWrapper nodeWrapper = sessionWrapper.getNode(nodepath);
             final GWTJahiaNode node = navigation.getGWTJahiaNode(nodeWrapper);
             if (tryToLockNode && !nodeWrapper.isLocked() && node.isWriteable()) {
-                setLock(Arrays.asList(nodepath), true);
+                nodeWrapper.lockAndStoreToken("engine");
             }
+
+            dumpLocks(nodeWrapper);
+
             // get node type
             final List<GWTJahiaNodeType> nodeTypes =
                     contentDefinition.getNodeTypes(nodeWrapper.getNodeTypes(), getUILocale());
@@ -1509,6 +1516,19 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
     }
 
+    public void closeEditEngine(String nodepath)
+            throws GWTJahiaServiceException {
+        final JCRSessionWrapper jcrSessionWrapper = retrieveCurrentSession();
+        try {
+            JCRNodeWrapper n = jcrSessionWrapper.getNode(nodepath);
+            n.unlock("engine");
+
+            dumpLocks(n);
+        } catch (RepositoryException e) {
+            throw new GWTJahiaServiceException("Cannot unlock node");
+        }
+    }
+
     public Set<String> compareAcl(GWTJahiaNodeACL nodeAcl, List<GWTJahiaNode> references)
             throws GWTJahiaServiceException {
         JCRSessionWrapper sessionWrapper = retrieveCurrentSession();
@@ -1547,10 +1567,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public GWTJahiaEditEngineInitBean initializeEditEngine(List<String> paths, boolean tryToLockNode)
             throws GWTJahiaServiceException {
         try {
-            if (tryToLockNode) {
-                setLock(paths, true);
-            }
-
             JCRSessionWrapper sessionWrapper = retrieveCurrentSession();
 
             List<GWTJahiaNodeType> nodeTypes = null;
@@ -1560,6 +1576,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             JCRNodeWrapper nodeWrapper = null;
             for (String path : paths) {
                 nodeWrapper = sessionWrapper.getNode(path);
+                if (tryToLockNode) {
+                    nodeWrapper.lockAndStoreToken("engine");
+                }
+
+                dumpLocks(nodeWrapper);
+
                 final GWTJahiaNode node = navigation.getGWTJahiaNode(nodeWrapper);
 
                 // get node type
@@ -1612,6 +1634,28 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             throw new GWTJahiaServiceException("Cannot get node");
         }
 
+    }
+
+    private void dumpLocks(JCRNodeWrapper nodeWrapper) throws RepositoryException {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Locks for " + nodeWrapper.getName() + " - " +nodeWrapper.isLocked());
+            if (nodeWrapper.hasProperty("j:lockTypes")) {
+                for (Value value : nodeWrapper.getProperty("j:lockTypes").getValues()) {
+                    logger.debug(value.getString());
+                }
+            }
+            NodeIterator ni = nodeWrapper.getNodes("j:translation*");
+            while (ni.hasNext()) {
+                JCRNodeWrapper jcrNodeWrapper = (JCRNodeWrapper) ni.next();
+                logger.debug("Locks for " + jcrNodeWrapper.getName() + " - " +jcrNodeWrapper.isLocked());
+                if (jcrNodeWrapper.hasProperty("j:lockTypes")) {
+                    for (Value value : jcrNodeWrapper.getProperty("j:lockTypes").getValues()) {
+                        logger.debug(value.getString());
+                    }
+                }
+
+            }
+        }
     }
 
     public Map<GWTJahiaWorkflowType, Map<GWTJahiaWorkflowDefinition, GWTJahiaNodeACL>> getWorkflowRules(String path)

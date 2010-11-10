@@ -264,7 +264,9 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     GWTJahiaEditEngineInitBean initializeEditEngine(List<String> paths, boolean tryToLockNode) throws GWTJahiaServiceException;
 
-    Set<String> compareAcl(GWTJahiaNodeACL nodeAcl, List<GWTJahiaNode> reference) throws GWTJahiaServiceException;        
+    void closeEditEngine(String nodepath) throws GWTJahiaServiceException;
+
+    Set<String> compareAcl(GWTJahiaNodeACL nodeAcl, List<GWTJahiaNode> reference) throws GWTJahiaServiceException;
 
     public PagingLoadResult<GWTJahiaRole> searchRolesInContext(String search, int offset, int limit, String context) throws GWTJahiaServiceException;
 

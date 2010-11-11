@@ -35,13 +35,21 @@ package org.jahia.hibernate.model;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * @hibernate.class table="jahia_version"
- * @hibernate.cache usage="nonstrict-read-write"
- */
-public class JahiaVersion implements Serializable, Comparable {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
-    private Integer installNumber;
+import org.hibernate.annotations.GenericGenerator;
+
+@Entity
+@Table(name = "jahia_version")
+public class JahiaVersion implements Serializable, Comparable<JahiaVersion> {
+
+    private static final long serialVersionUID = 1178763782219446594L;
+
+	private Integer installNumber;
 
     private Integer buildNumber;
 
@@ -58,10 +66,10 @@ public class JahiaVersion implements Serializable, Comparable {
         this.installationDate = installationDate;
     }
 
-    /**
-     * @hibernate.id generator-class="org.jahia.hibernate.dao.JahiaIdentifierGenerator"
-     * column="install_number"
-     */
+	@Id
+	@Column(name = "install_number", nullable = false)
+	@GeneratedValue(generator = "jahia-generator")
+	@GenericGenerator(name = "jahia-generator", strategy = "org.jahia.hibernate.dao.JahiaIdentifierGenerator")
     public Integer getInstallNumber() {
         return installNumber;
     }
@@ -70,10 +78,7 @@ public class JahiaVersion implements Serializable, Comparable {
         this.installNumber = installNumber;
     }
 
-    /**
-     * @hibernate.property column="build"
-     * length="11"
-     */
+	@Column(name = "build", length = 11)
     public Integer getBuildNumber() {
         return buildNumber;
     }
@@ -82,10 +87,7 @@ public class JahiaVersion implements Serializable, Comparable {
         this.buildNumber = buildNumber;
     }
 
-    /**
-     * @hibernate.property column="release_number"
-     * length="20"
-     */
+	@Column(name = "release_number", length = 20)
     public String getReleaseNumber() {
         return releaseNumber;
     }
@@ -94,9 +96,7 @@ public class JahiaVersion implements Serializable, Comparable {
         this.releaseNumber = releaseNumber;
     }
 
-    /**
-     * @hibernate.property column="install_date"
-     */
+	@Column(name = "install_date")
     public Date getInstallationDate() {
         return installationDate;
     }
@@ -105,7 +105,7 @@ public class JahiaVersion implements Serializable, Comparable {
         this.installationDate = installationDate;
     }
 
-    public int compareTo(Object o) {
-        return installNumber.compareTo(((JahiaVersion)o).getInstallNumber());
+    public int compareTo(JahiaVersion o) {
+        return installNumber.compareTo(o.getInstallNumber());
     }
 }

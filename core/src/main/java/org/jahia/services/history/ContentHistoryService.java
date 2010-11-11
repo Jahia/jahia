@@ -21,7 +21,7 @@ import org.jahia.services.content.JCRTemplate;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import java.text.DateFormat;
+
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -39,14 +39,15 @@ public class ContentHistoryService implements Processor, CamelContextAware {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(ContentHistoryService.class);
 
     private org.hibernate.impl.SessionFactoryImpl sessionFactoryBean;
-    private long processedCount = 0;
-    private long ignoredCount = 0;
-    private long insertedCount = 0;
+    private volatile long processedCount = 0;
+    private volatile long ignoredCount = 0;
+    private volatile long insertedCount = 0;
 
     private static ContentHistoryService instance;
 
-    private Pattern pattern = Pattern.compile(
+    private static final Pattern PATTERN = Pattern.compile(
             "([0-9\\-]+ [0-9:,]+) user ([\\sa-zA-Z@.0-9_\\-]*) ip ([0-9.:]*) session ([a-zA-Z@0-9_\\-\\/]*) identifier ([a-zA-Z@0-9_\\-\\/:]*) path (.*) nodetype ([a-zA-Z:]*) (.*)");
+    private static final Pattern ARG_SPLIT_PATTERN = Pattern.compile(" ");
     private CamelContext camelContext;
     private String from;
     private Set<String> ignoreProperties = new HashSet<String>();
@@ -54,7 +55,7 @@ public class ContentHistoryService implements Processor, CamelContextAware {
     public static final String WITH_COMMENTS_MESSAGE_PART = "with comments ";
     public static final String VIEWED_ACTION_NAME = "viewed";
     public static final String PUBLISHED_ACTION_NAME = "published";
-
+    
     public void setSessionFactoryBean(SessionFactoryImpl sessionFactoryBean) {
         this.sessionFactoryBean = sessionFactoryBean;
     }
@@ -79,12 +80,11 @@ public class ContentHistoryService implements Processor, CamelContextAware {
 
     public void process(Exchange exchange) throws Exception {
         final String message = (String) exchange.getIn().getBody();
-        final Matcher matcher = pattern.matcher(message);
+        final Matcher matcher = PATTERN.matcher(message);
         if (matcher.matches()) {
             processedCount++;
             final String dateStr = matcher.group(1);
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
-            final Date date = dateFormat.parse(dateStr);
+            final Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS").parse(dateStr);
             final String userKey = matcher.group(2);
 //            final String ipAddress = matcher.group(3);
 //            final String httpSessionId = matcher.group(4);
@@ -93,12 +93,17 @@ public class ContentHistoryService implements Processor, CamelContextAware {
 //            final String nodeType = matcher.group(7);
             final String args = matcher.group(8);
             String propertyName = null;
-            String[] argList = args.split(" ");
+            String[] argList = ARG_SPLIT_PATTERN.split(args);
             String objectType = null;
             String action = null;
             if (argList.length >= 2) {
                 objectType = argList[0].trim();
                 action = argList[1].trim();
+            }
+            
+            if (VIEWED_ACTION_NAME.equals(action)) {
+            	ignoredCount++;
+            	return;
             }
 
             if ("property".equals(objectType)) {
@@ -150,12 +155,15 @@ public class ContentHistoryService implements Processor, CamelContextAware {
                 }
 
             }
+            long timer = System.currentTimeMillis();
             Session session = sessionFactoryBean.openSession();
+            String whatDidWeDo = "inserted";
             try {
                 Criteria criteria = session.createCriteria(HistoryEntry.class);
                 criteria.add(Restrictions.eq("uuid", nodeIdentifier));
                 criteria.add(Restrictions.eq("date", date));
                 criteria.add(Restrictions.eq("propertyName", propertyName));
+                criteria.add(Restrictions.eq("action", action));
 
                 HistoryEntry historyEntry = (HistoryEntry) criteria.uniqueResult();
                 // Found update object
@@ -165,48 +173,52 @@ public class ContentHistoryService implements Processor, CamelContextAware {
                         logger.debug("Content history entry " + historyEntry + " already exists, ignoring...");
                     }
                     ignoredCount++;
+                    whatDidWeDo = "skipped";
                 }
                 // Not found new object
                 else {
-                    if (!VIEWED_ACTION_NAME.equals(action)) {
-                        historyEntry = new HistoryEntry();
-                        historyEntry.setDate(date);
-                        historyEntry.setPath(path);
-                        historyEntry.setUuid(nodeIdentifier);
-                        historyEntry.setUserKey(userKey);
-                        historyEntry.setAction(action);
-                        historyEntry.setPropertyName(propertyName);
-                        String historyMessage = "";
-                        if (PUBLISHED_ACTION_NAME.equals(action)) {
-                            if (argList.length >= 8) {
-                                String sourceWorkspace = argList[3].trim();
-                                String destinationWorkspace = argList[5].trim();
-                                String historyComments = "";
-                                int commentsPos = args.indexOf(WITH_COMMENTS_MESSAGE_PART);
-                                if (commentsPos > -1) {
-                                    String comment = args.substring(commentsPos + WITH_COMMENTS_MESSAGE_PART.length());
-                                    if ((comment != null) && (!StringUtils.isEmpty(comment.trim()))) {
-                                        historyComments = ";;" + comment.trim();
-                                    }
-                                }
-                                historyMessage = sourceWorkspace + ";;" + destinationWorkspace + historyComments;
-                            }
-                        }
-                        historyEntry.setMessage(historyMessage);
-                        session.save(historyEntry);
-                        insertedCount++;
-                    } else {
-                        ignoredCount++;
-                    }
+					historyEntry = new HistoryEntry();
+					historyEntry.setDate(date);
+					historyEntry.setPath(path);
+					historyEntry.setUuid(nodeIdentifier);
+					historyEntry.setUserKey(userKey);
+					historyEntry.setAction(action);
+					historyEntry.setPropertyName(propertyName);
+					String historyMessage = "";
+					if (PUBLISHED_ACTION_NAME.equals(action)) {
+						if (argList.length >= 8) {
+							String sourceWorkspace = argList[3].trim();
+							String destinationWorkspace = argList[5].trim();
+							String historyComments = "";
+							int commentsPos = args.indexOf(WITH_COMMENTS_MESSAGE_PART);
+							if (commentsPos > -1) {
+								String comment = args.substring(commentsPos
+								        + WITH_COMMENTS_MESSAGE_PART.length());
+								if ((comment != null) && (!StringUtils.isEmpty(comment.trim()))) {
+									historyComments = ";;" + comment.trim();
+								}
+							}
+							historyMessage = sourceWorkspace + ";;" + destinationWorkspace
+							        + historyComments;
+						}
+					}
+					historyEntry.setMessage(historyMessage);
+					session.save(historyEntry);
+	                session.flush();
+					insertedCount++;
                 }
             } catch (HibernateException e) {
+            	whatDidWeDo = "insertion failed";
                 logger.error(e.getMessage(), e);
             } finally {
-                session.flush();
                 session.close();
             }
+            if (logger.isDebugEnabled()) {
+            	logger.debug("Entry " + whatDidWeDo + " in " + (System.currentTimeMillis() - timer) + " ms");
+            }
+            
             if (processedCount % 2000 == 0) {
-                logger.info("Processed " + processedCount + " content history messages. Ignored=" + ignoredCount + " Inserted=" + insertedCount);
+				logger.info("Total count of processed content history messages: {}. Ignored: {}. Inserted: {}.", new Object[] {processedCount, ignoredCount, insertedCount});
             }
         }
     }
@@ -269,7 +281,7 @@ public class ContentHistoryService implements Processor, CamelContextAware {
             camelContext.addRoutes(new RouteBuilder() {
                 @Override
                 public void configure() throws Exception {
-                    from(from).to(new ProcessorEndpoint(
+                    from(from).filter("groovy", "!request.body.contains(\" viewed \")").to(new ProcessorEndpoint(
                             "contentHistoryService", camelContext, contentHistoryService));
                 }
             });

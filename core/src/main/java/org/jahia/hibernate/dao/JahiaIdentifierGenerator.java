@@ -34,8 +34,6 @@ package org.jahia.hibernate.dao;
 
 import java.io.Serializable;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.SessionImplementor;
 import org.hibernate.id.IdentifierGenerator;
@@ -45,8 +43,7 @@ import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.DisposableBean;
 
 /**
- * Implementation of the Hibernate ID generator using Jahia
- * {@link IDGeneratorDAO}.
+ * Implementation of the Hibernate ID generator using Jahia {@link IDGeneratorDAO}.
  * 
  * @author Sergiy Shyrkov
  */
@@ -54,9 +51,8 @@ public class JahiaIdentifierGenerator implements IdentifierGenerator,
         BeanFactoryAware, DisposableBean {
 
 	private static BeanFactory beanFactory;
-
-	private static Logger logger = LoggerFactory
-	        .getLogger(JahiaIdentifierGenerator.class);
+	
+	private IDGeneratorDAO generator;
 
 	public void destroy() throws Exception {
 		beanFactory = null;
@@ -70,21 +66,8 @@ public class JahiaIdentifierGenerator implements IdentifierGenerator,
 	 */
 	public Serializable generate(SessionImplementor session, Object object)
 	        throws HibernateException {
-		IDGeneratorDAO generatorDao = (IDGeneratorDAO) beanFactory
-		        .getBean("idGeneratorDAO");
-		if (generatorDao == null)
-			throw new HibernateException(
-			        "IdGeneratorDAO not found. Unable to generate an ID.");
 
-		Integer nextId;
-		try {
-			nextId = generatorDao.getNextInteger(object.getClass().getName());
-		} catch (Exception ex) {
-			logger.error("Unable to generate next ID", ex);
-			throw new HibernateException(ex);
-		}
-
-		return nextId;
+		return getGenerator().getNextInteger(object.getClass().getName());
 	}
 
 	public void setBeanFactory(BeanFactory theBeanFactory)
@@ -92,4 +75,14 @@ public class JahiaIdentifierGenerator implements IdentifierGenerator,
 		beanFactory = theBeanFactory;
 	}
 
+	private IDGeneratorDAO getGenerator() throws HibernateException {
+		if (generator == null) {
+			generator = (IDGeneratorDAO) beanFactory.getBean("idGeneratorDAO");
+			if (generator == null) {
+				throw new HibernateException("IdGeneratorDAO not found. Unable to generate an ID.");
+			}
+		}
+
+		return generator;
+	}
 }

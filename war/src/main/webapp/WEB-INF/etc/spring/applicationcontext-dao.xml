@@ -1,31 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-    <bean id="abstractGeneratorDAO" abstract="true" class="org.jahia.hibernate.dao.AbstractGeneratorDAO">
-        <property name="idGeneratorDAO" ref="idGeneratorDAO" />
+    <bean id="jahiaIdentifierGenerator" class="org.jahia.hibernate.dao.JahiaIdentifierGenerator"/>
+    
+    <bean id="abstractDAO" abstract="true" class="org.jahia.hibernate.JahiaHibernateDaoSupport">
         <property name="sessionFactory" ref="sessionFactory" />
     </bean>
 
-    <bean id="jahiaVersionDAO" class="org.jahia.hibernate.dao.JahiaVersionDAO" parent="abstractGeneratorDAO"/>
-    <bean id="jahiaInstalledPatchDAO" class="org.jahia.hibernate.dao.JahiaInstalledPatchDAO" parent="abstractGeneratorDAO"/>
-    <bean id="jahiaPasswordPolicyDAO" class="org.jahia.hibernate.dao.JahiaPasswordPolicyDAO" parent="abstractGeneratorDAO" depends-on="jahiaIdentifierGenerator"/>
+    <bean id="jahiaVersionDAO" class="org.jahia.hibernate.dao.JahiaVersionDAO" parent="abstractDAO" depends-on="jahiaIdentifierGenerator"/>
+    <bean id="jahiaInstalledPatchDAO" class="org.jahia.hibernate.dao.JahiaInstalledPatchDAO" parent="abstractDAO" depends-on="jahiaIdentifierGenerator"/>
+    <bean id="jahiaPasswordPolicyDAO" class="org.jahia.hibernate.dao.JahiaPasswordPolicyDAO" parent="abstractDAO" depends-on="jahiaIdentifierGenerator"/>
 
     <bean id="idGeneratorDAO" class="org.jahia.hibernate.dao.IDGeneratorDAO" init-method="start" destroy-method="stop">
         <property name="sessionFactory" ref="sessionFactory" />
-        <!-- hibernateSequenceOptimizer can take value none,hilo or pooled. -->
-        <!-- Pooled And none are the only value supported by jahia -->
-        <!-- Any changes of this values need to clean the whole-->
-        <property name="hibernateSequenceOptimizer" value="org.jahia.hibernate.dao.IDGeneratorDAO.JahiaPooledOptimizer"/>
+        <property name="hibernateSequenceOptimizer" value="org.jahia.hibernate.dao.IDGeneratorDAO$JahiaPooledOptimizer"/>
         <property name="hibernateSequenceIncrementSize" value="20"/>
     		<property name="dbSequences">
     		  <!-- For DB sequences, the key is the table name, and the value is the column name that we use as initial max values
     		       The sequence name will be table_name.column_name -->
     			<map>
-                    <entry key="org.jahia.hibernate.model.JahiaPwdPolicy" value="jahia_pwd_policies.jahia_pwd_policy_id"/>
+                    <entry key="org.jahia.hibernate.model.JahiaPwdPolicy"
+                           value="jahia_pwd_policies.jahia_pwd_policy_id"/>
                     <entry key="org.jahia.hibernate.model.JahiaPwdPolicyRule"
                            value="jahia_pwd_policy_rules.jahia_pwd_policy_rule_id"/>
                     <entry key="org.jahia.hibernate.model.JahiaPwdPolicyRuleParam"
@@ -33,12 +30,11 @@
                     <entry key="org.jahia.hibernate.model.JahiaVersion" value="jahia_version.install_number"/>
                     <entry key="org.jahia.hibernate.model.JahiaInstalledPatch"
                            value="jahia_installedpatch.install_number"/>
+                    <!-- 
                     <entry key="org.jahia.services.history.HistoryEntry"
                            value="jahia_contenthistory.id"/>
+					 -->                           
                 </map>
             </property>
     </bean>
-    
-
-    <bean id="jahiaIdentifierGenerator" class="org.jahia.hibernate.dao.JahiaIdentifierGenerator"/>
 </beans>

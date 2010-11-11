@@ -32,36 +32,36 @@
 
 package org.jahia.hibernate.dao;
 
+import org.jahia.hibernate.JahiaHibernateDaoSupport;
 import org.jahia.hibernate.model.JahiaVersion;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
- * User: toto
- * Date: 23 août 2007
- * Time: 17:30:55
- * To change this template use File | Settings | File Templates.
+ * DAO implementation for version information.
+ * 
+ * @author Thomas Draier
  */
-public class JahiaVersionDAO extends AbstractGeneratorDAO {
+public class JahiaVersionDAO extends JahiaHibernateDaoSupport {
 
+    @SuppressWarnings("unchecked")
     public List<JahiaVersion> findAll() {
-        HibernateTemplate template = getHibernateTemplate();
-        return template.find("from JahiaVersion order by installNumber");
+        return getHibernateTemplateForRead().find("from JahiaVersion order by installNumber");
     }
 
+    @SuppressWarnings("unchecked")
     public List<JahiaVersion> findByBuildNumber(int number) {
-        HibernateTemplate template = getHibernateTemplate();
-        return template.find("from JahiaVersion where build=? order by installNumber", new Object[] {new Integer(number)} );
+        return getHibernateTemplateForRead().find("from JahiaVersion where build=? order by installNumber", new Object[] {new Integer(number)} );
     }
 
     public void save(JahiaVersion version) {
         HibernateTemplate template = getHibernateTemplate();
-        template.setFlushMode(HibernateTemplate.FLUSH_AUTO);
         template.saveOrUpdate(version);
+        template.flush();
     }
     
+    @SuppressWarnings("unchecked")
     public <E> List<E> executeSqlStmt(String statement) {
         return this.getSession().createSQLQuery(statement).list();
     }      

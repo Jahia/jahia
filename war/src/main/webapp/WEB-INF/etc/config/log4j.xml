@@ -69,6 +69,19 @@
     <appender name="exceptionLogging" class="org.jahia.bin.errors.ExceptionAppender">
     </appender>
 
+    <appender name="camelNotification" class="org.jahia.services.notification.CamelAppender">
+        <param name="TargetUri" value="direct:logs"/>
+        <param name="Threshold" value="trace"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %m"/>
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelMatchFilter">
+            <param name="LevelToMatch" value="trace"/>
+            <param name="AcceptOnMatch" value="true"/>
+        </filter>
+        <filter class="org.apache.log4j.varia.DenyAllFilter"/>
+    </appender>
+
     <logger name="REQUEST">
         <appender-ref ref="ROLL"/>
     </logger>
@@ -153,11 +166,13 @@
 
     <category name="accessLogger" additivity="false">
         <appender-ref ref="hitAccess"/>
+        <appender-ref ref="camelNotification"/>
     </category>
 
     <category name="loggingService" additivity="false">
         <priority value="trace"/>
         <appender-ref ref="hitAccess"/>
+        <appender-ref ref="camelNotification"/>
     </category>
 
     <category name="profilerLoggingService" additivity="false">

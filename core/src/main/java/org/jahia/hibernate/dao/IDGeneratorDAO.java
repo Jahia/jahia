@@ -32,6 +32,7 @@
 
 package org.jahia.hibernate.dao;
 
+import org.apache.commons.collections.FastHashMap;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -44,15 +45,18 @@ import org.hibernate.id.enhanced.OptimizerFactory.PooledOptimizer;
 import org.hibernate.impl.SessionFactoryImpl;
 import org.hibernate.type.LongType;
 import org.jahia.exceptions.JahiaException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
 /**
- * User: Serge Huber Date: 3 nov. 2005 Time: 17:41:09 Copyright (C) Jahia Inc.
+ * Utility class for providing Hibernate persisted entities with a unique IDs.
+ * 
+ * @authot Serge Huber
  */
 public class IDGeneratorDAO extends HibernateDaoSupport {
     
@@ -75,7 +79,7 @@ public class IDGeneratorDAO extends HibernateDaoSupport {
         }
 
         public synchronized Serializable generate(AccessCallback callback) {
-            if (hiValue < 0 || value >= hiValue) {
+        	if (hiValue < 0 || value >= hiValue) {
                 value = callback.getNextValue();
                 hiValue = value + incrementSize;
             }
@@ -106,6 +110,8 @@ public class IDGeneratorDAO extends HibernateDaoSupport {
         }
     }
 
+    private static Logger logger = LoggerFactory.getLogger(IDGeneratorDAO.class);
+    
     Map<String, String> dbSequences;
 
     Map<String, SequenceStyleGenerator> sequences;
@@ -113,17 +119,15 @@ public class IDGeneratorDAO extends HibernateDaoSupport {
     private String hibernateSequenceOptimizer;
     private String hibernateSequenceIncrementSize;
 
-    public synchronized Long getNextLong(String sequenceName) throws Exception {
-        SequenceStyleGenerator generator = sequences.get(sequenceName);
-        return (Long) generator.generate((SessionImplementor) getSession(), null);
+    public Long getNextLong(String sequenceName) throws HibernateException {
+        return (Long) sequences.get(sequenceName).generate((SessionImplementor) getSession(), null);
     }
 
-    public synchronized Integer getNextInteger(String sequenceName)
-            throws Exception {
-        SequenceStyleGenerator generator = sequences.get(sequenceName);
-        return ((Long) generator.generate((SessionImplementor) getSession(), null)).intValue();
+    public Integer getNextInteger(String sequenceName) throws HibernateException {
+        return ((Long) sequences.get(sequenceName).generate((SessionImplementor) getSession(), null)).intValue();
     }
 
+    @SuppressWarnings("unchecked")
     public void start() throws Exception {
 
         // ok cache is alive, we must now initialize all the generators with the
@@ -131,7 +135,7 @@ public class IDGeneratorDAO extends HibernateDaoSupport {
         Session session = null;
         try {
             session = getSession();
-            sequences = new HashMap<String, SequenceStyleGenerator>(dbSequences.size());
+            FastHashMap generators = new FastHashMap(dbSequences.size());
             for (Map.Entry<String, String> stringStringEntry : dbSequences.entrySet()) {
                 String sequenceName = stringStringEntry.getKey();
                 String fqnID = stringStringEntry.getValue();
@@ -157,7 +161,7 @@ public class IDGeneratorDAO extends HibernateDaoSupport {
                     final Dialect dialect = ((SessionFactoryImpl) getSessionFactory()).getSettings().getDialect();
                     generator.configure(new LongType(), properties, dialect);
                     final String[] sqls = generator.sqlCreateStrings(dialect);
-                    sequences.put(sequenceName, generator);
+                    generators.put(sequenceName, generator);
                     boolean createTableSeq = false;
                     try {
                         generator.generate((SessionImplementor) session,null);
@@ -178,6 +182,8 @@ public class IDGeneratorDAO extends HibernateDaoSupport {
                     logger.error("Problem when creating sequence for " + sequenceName + " (" + fqnID + ")", e);
                 }
             }
+            generators.setFast(true);
+            sequences = generators;
             session.flush();
         } finally {
             releaseSession(session);
@@ -185,6 +191,7 @@ public class IDGeneratorDAO extends HibernateDaoSupport {
     }
 
     public void stop() throws JahiaException {
+    	// do nothing
     }
 
     public Map<String, String> getDbSequences() {

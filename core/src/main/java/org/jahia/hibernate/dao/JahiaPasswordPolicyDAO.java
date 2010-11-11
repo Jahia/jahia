@@ -39,6 +39,7 @@ import org.hibernate.FetchMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.jahia.hibernate.JahiaHibernateDaoSupport;
 import org.jahia.hibernate.model.JahiaPwdPolicy;
 import org.jahia.hibernate.model.JahiaPwdPolicyRule;
 import org.springframework.orm.hibernate3.HibernateCallback;
@@ -50,20 +51,16 @@ import org.springframework.orm.hibernate3.HibernateTemplate;
  * 
  * @author Sergiy Shyrkov
  */
-public class JahiaPasswordPolicyDAO extends AbstractGeneratorDAO {
+public class JahiaPasswordPolicyDAO extends JahiaHibernateDaoSupport {
 
 	/**
 	 * Returns a list of all available policies without related rules.
 	 * 
 	 * @return a list of all available policies without related rules
 	 */
-	public List findAllPolicies() {
-		HibernateTemplate template = getHibernateTemplate();
-		template.setCacheQueries(true);
-		template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
-		List policies = template.find("from JahiaPwdPolicy");
-
-		return policies;
+	@SuppressWarnings("unchecked")
+    public List<JahiaPwdPolicy> findAllPolicies() {
+		return getHibernateTemplateForRead().find("from JahiaPwdPolicy");
 	}
 
 	/**
@@ -77,10 +74,7 @@ public class JahiaPasswordPolicyDAO extends AbstractGeneratorDAO {
 	 *         the first found policy if the specified ID is <code>0</code>
 	 */
 	public JahiaPwdPolicy findPolicyById(final int id) {
-		HibernateTemplate template = getHibernateTemplate();
-		template.setCacheQueries(true);
-		template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
-		JahiaPwdPolicy policy = (JahiaPwdPolicy) template.execute(
+		return (JahiaPwdPolicy) getHibernateTemplateForRead().execute(
 		        new HibernateCallback() {
 			        public Object doInHibernate(Session session)
 			                throws HibernateException {
@@ -105,9 +99,7 @@ public class JahiaPasswordPolicyDAO extends AbstractGeneratorDAO {
 				        }
 				        return policy;
 			        }
-		        }, true);
-
-		return policy;
+		        });
 	}
 
 	/**
@@ -119,7 +111,6 @@ public class JahiaPasswordPolicyDAO extends AbstractGeneratorDAO {
 	 */
 	public void update(JahiaPwdPolicy policy) {
 		HibernateTemplate template = getHibernateTemplate();
-		template.setFlushMode(HibernateTemplate.FLUSH_AUTO);
 		template.saveOrUpdate(policy);
 		template.flush();
 		template.evict(policy);

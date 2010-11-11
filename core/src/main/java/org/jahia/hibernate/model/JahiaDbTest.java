@@ -38,12 +38,17 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 import java.io.Serializable;
 
-/**
- * @hibernate.class table="jahia_db_test"
- */
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "jahia_db_test")
 public class JahiaDbTest implements Serializable {
 
-    /**
+    private static final long serialVersionUID = 4666262312464819334L;
+	/**
      * identifier field
      */
     private String testfield;
@@ -61,11 +66,8 @@ public class JahiaDbTest implements Serializable {
     public JahiaDbTest() {
     }
 
-    /**
-     * @hibernate.id generator-class="assigned"
-     * type="java.lang.String"
-     * column="testfield"
-     */
+	@Id
+	@Column(name = "testfield", nullable = false)
     public String getTestfield() {
         return this.testfield;
     }

@@ -20,16 +20,15 @@
     drop table jahia_version;
 
     create table jahia_contenthistory (
-        id int4 not null,
+        id varchar(32) not null,
         entry_action varchar(255),
         entry_date timestamp,
         message varchar(255),
         entry_path text,
         property_name varchar(50),
         user_key varchar(255),
-        uuid varchar(50),
-        primary key (id),
-        unique (entry_date, uuid, property_name)
+        uuid varchar(36),
+        primary key (id)
     );
 
     create table jahia_db_test (
@@ -39,10 +38,10 @@
 
     create table jahia_installedpatch (
         install_number int4 not null,
-        name varchar(100),
         build int4,
-        result_code int4,
         install_date timestamp,
+        name varchar(100),
+        result_code int4,
         primary key (install_number)
     );
 
@@ -56,31 +55,31 @@
         jahia_pwd_policy_rule_param_id int4 not null,
         name varchar(50) not null,
         position_index int4 not null,
+        param_type char(1) not null,
+        param_value varchar(255),
         jahia_pwd_policy_rule_id int4 not null,
-        type char(1) not null,
-        value varchar(255),
         primary key (jahia_pwd_policy_rule_param_id)
     );
 
     create table jahia_pwd_policy_rules (
         jahia_pwd_policy_rule_id int4 not null,
-        action char(1) not null,
-        rule_condition text not null,
-        evaluator char(1) not null,
-        name varchar(255) not null,
-        jahia_pwd_policy_id int4 not null,
-        position_index int4 not null,
+        rule_action char(1) not null,
         active bool not null,
+        rule_condition varchar(1048576) not null,
+        evaluator char(1) not null,
         last_rule bool not null,
+        name varchar(255) not null,
         periodical bool not null,
+        position_index int4 not null,
+        jahia_pwd_policy_id int4 not null,
         primary key (jahia_pwd_policy_rule_id)
     );
 
     create table jahia_version (
         install_number int4 not null,
         build int4,
-        release_number varchar(20),
         install_date timestamp,
+        release_number varchar(20),
         primary key (install_number)
     );
 

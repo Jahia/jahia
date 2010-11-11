@@ -22,16 +22,15 @@
     drop table if exists jahia_version;
 
     create table jahia_contenthistory (
-        id integer not null,
+        id varchar(32) not null,
         entry_action varchar(255),
         entry_date datetime,
         message varchar(255),
         entry_path longtext,
         property_name varchar(50),
         user_key varchar(255),
-        uuid varchar(50),
-        primary key (id),
-        unique (entry_date, uuid, property_name)
+        uuid varchar(36),
+        primary key (id)
     ) ENGINE=InnoDB;
 
     create table jahia_db_test (
@@ -41,10 +40,10 @@
 
     create table jahia_installedpatch (
         install_number integer not null,
-        name varchar(100),
         build integer,
-        result_code integer,
         install_date datetime,
+        name varchar(100),
+        result_code integer,
         primary key (install_number)
     ) ENGINE=InnoDB;
 
@@ -58,31 +57,31 @@
         jahia_pwd_policy_rule_param_id integer not null,
         name varchar(50) not null,
         position_index integer not null,
+        param_type char(1) not null,
+        param_value varchar(255),
         jahia_pwd_policy_rule_id integer not null,
-        type char(1) not null,
-        value varchar(255),
         primary key (jahia_pwd_policy_rule_param_id)
     ) ENGINE=InnoDB;
 
     create table jahia_pwd_policy_rules (
         jahia_pwd_policy_rule_id integer not null,
-        action char(1) not null,
+        rule_action char(1) not null,
+        active bit not null,
         rule_condition longtext not null,
         evaluator char(1) not null,
-        name varchar(255) not null,
-        jahia_pwd_policy_id integer not null,
-        position_index integer not null,
-        active bit not null,
         last_rule bit not null,
+        name varchar(255) not null,
         periodical bit not null,
+        position_index integer not null,
+        jahia_pwd_policy_id integer not null,
         primary key (jahia_pwd_policy_rule_id)
     ) ENGINE=InnoDB;
 
     create table jahia_version (
         install_number integer not null,
         build integer,
-        release_number varchar(20),
         install_date datetime,
+        release_number varchar(20),
         primary key (install_number)
     ) ENGINE=InnoDB;
 

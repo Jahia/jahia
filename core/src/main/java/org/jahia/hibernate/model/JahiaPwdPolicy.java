@@ -36,25 +36,40 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.IndexColumn;
 
 /**
  * Password policy data object.
  * 
- * @hibernate.class table="jahia_pwd_policies"
- * @hibernate.cache usage="nonstrict-read-write"
  * @author Sergiy Shyrkov
  */
+@Entity
+@Table(name = "jahia_pwd_policies")
 public class JahiaPwdPolicy implements Serializable {
+
+	private static final long serialVersionUID = 6503157469310331233L;
 
 	private int id;
 
 	private String name;
 
-	private List rules = new LinkedList();
+	private List<JahiaPwdPolicyRule> rules = new LinkedList<JahiaPwdPolicyRule>();
 
 	/**
 	 * Initializes an instance of this class.
@@ -90,11 +105,12 @@ public class JahiaPwdPolicy implements Serializable {
 	/**
 	 * Returns the policy id.
 	 * 
-	 * @hibernate.id column="jahia_pwd_policy_id" type="int"
-	 *               generator-class="org.jahia.hibernate.dao.JahiaIdentifierGenerator"
-	 *               unsaved-value="0"
 	 * @return the policy id
 	 */
+	@Id
+	@Column(name = "jahia_pwd_policy_id", nullable = false)
+	@GeneratedValue(generator = "jahia-generator")
+	@GenericGenerator(name = "jahia-generator", strategy = "org.jahia.hibernate.dao.JahiaIdentifierGenerator")
 	public int getId() {
 		return id;
 	}
@@ -102,10 +118,9 @@ public class JahiaPwdPolicy implements Serializable {
 	/**
 	 * Returns the policy name.
 	 * 
-	 * @hibernate.property column="name" not-null="true" type="string"
-	 *                     length="255"
 	 * @return the policy name
 	 */
+	@Column(name = "name", nullable = false)
 	public String getName() {
 		return name;
 	}
@@ -122,15 +137,15 @@ public class JahiaPwdPolicy implements Serializable {
 	}
 
 	/**
-	 * Returns tehlist of rules for this policy.
+	 * Returns the list of rules for this policy.
 	 * 
-	 * @hibernate.list lazy="true" inverse="true" cascade="all-delete-orphan"
-	 * @hibernate.collection-one-to-many class="org.jahia.hibernate.model.JahiaPwdPolicyRule"
-	 * @hibernate.collection-key column="jahia_pwd_policy_id"
-	 * @hibernate.collection-index column="position_index"
 	 * @return the list of rules for this policy
 	 */
-	public List getRules() {
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "policy")
+	@JoinColumn(name = "jahia_pwd_policy_id")
+	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
+	@IndexColumn(name="position_index")
+	public List<JahiaPwdPolicyRule> getRules() {
 		return rules;
 	}
 
@@ -164,7 +179,7 @@ public class JahiaPwdPolicy implements Serializable {
 	 * @param rules
 	 *            the list of rules for this policy
 	 */
-	public void setRules(List rules) {
+	public void setRules(List<JahiaPwdPolicyRule> rules) {
 		this.rules = rules;
 	}
 

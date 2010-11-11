@@ -34,18 +34,30 @@ package org.jahia.hibernate.model;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.hibernate.annotations.GenericGenerator;
 
 /**
  * Rule parameter data object.
  * 
- * @hibernate.class table="jahia_pwd_policy_rule_params"
- * @hibernate.cache usage="nonstrict-read-write"
  * @author Sergiy Shyrkov
  */
+@Entity
+@Table(name = "jahia_pwd_policy_rule_params")
 public class JahiaPwdPolicyRuleParam implements Serializable {
+
+	private static final long serialVersionUID = 8384102508880087817L;
 
 	public static final char TYPE_ACTION_PARAM = 'A';
 
@@ -101,11 +113,12 @@ public class JahiaPwdPolicyRuleParam implements Serializable {
 	/**
 	 * Returns the parameter id.
 	 * 
-	 * @hibernate.id column="jahia_pwd_policy_rule_param_id" type="int"
-	 *               generator-class="org.jahia.hibernate.dao.JahiaIdentifierGenerator"
-	 *               unsaved-value="0"
 	 * @return the rule id
 	 */
+	@Id
+	@Column(name = "jahia_pwd_policy_rule_param_id", nullable = false)
+	@GeneratedValue(generator = "jahia-generator")
+	@GenericGenerator(name = "jahia-generator", strategy = "org.jahia.hibernate.dao.JahiaIdentifierGenerator")
 	public int getId() {
 		return id;
 	}
@@ -113,10 +126,9 @@ public class JahiaPwdPolicyRuleParam implements Serializable {
 	/**
 	 * Returns the parameter name.
 	 * 
-	 * @hibernate.property column="name" type="string" length="50"
-	 *                     not-null="true"
 	 * @return the parameter name
 	 */
+	@Column(name = "name", nullable = false, length = 50)
 	public String getName() {
 		return name;
 	}
@@ -125,9 +137,9 @@ public class JahiaPwdPolicyRuleParam implements Serializable {
 	 * Returns the position (zero-based) of this parameter in the list of rule
 	 * parameters.
 	 * 
-	 * @hibernate.property column="position_index" type="int" not-null="true"
 	 * @return the position of this parameter in the list of rule parameters
 	 */
+	@Column(name = "position_index", nullable = false)
 	public int getPosition() {
 		return position;
 	}
@@ -135,10 +147,10 @@ public class JahiaPwdPolicyRuleParam implements Serializable {
 	/**
 	 * Returns the corresponding rule.
 	 * 
-	 * @hibernate.many-to-one column="jahia_pwd_policy_rule_id" not-null="true"
-	 *                        outer-join="false"
 	 * @return the corresponding rule
 	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "jahia_pwd_policy_rule_id", nullable = false)
 	public JahiaPwdPolicyRule getRule() {
 		return rule;
 	}
@@ -146,9 +158,9 @@ public class JahiaPwdPolicyRuleParam implements Serializable {
 	/**
 	 * Returns the type.
 	 * 
-	 * @hibernate.property column="type" type="char" not-null="true"
 	 * @return the type
 	 */
+	@Column(name = "param_type", nullable = false)
 	public char getType() {
 		return type;
 	}
@@ -156,9 +168,9 @@ public class JahiaPwdPolicyRuleParam implements Serializable {
 	/**
 	 * Returns the value.
 	 * 
-	 * @hibernate.property column="value" type="string" length="255"
 	 * @return the value
 	 */
+	@Column(name = "param_value", length = 255)
 	public String getValue() {
 		return value;
 	}

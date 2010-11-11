@@ -47,7 +47,6 @@
     </bean>
 
     <camelContext id="jahiaNotificationContext" xmlns="http://camel.apache.org/schema/spring" depends-on="jahiaProperties">
-        <endpoint id="mailMy" uri="smtp://smtp.gmail.com:587?username=my.public.mailing@gmail.com&amp;password=taurus&amp;mail.smtp.auth=true&amp;mail.smtp.starttls.enable=true"/>
         <route>
             <!-- route for sending mails synchronously -->
             <from uri="direct:mailUsers"/>
@@ -85,8 +84,12 @@
         </route>
         <!-- route for parsing jahia log files filename can refer to a log4j appender or to a file on disk-->
         <route>
+            <!--
             <from uri="stream:file?fileName=log4j_accessLogger_hitAccess&amp;scanStream=true&amp;scanStreamDelay=100"/>
-            <to uri="seda:logMsgs?size=10000&amp;concurrentConsumers=5"/>
+            -->
+            <!-- direct:logs is an URI where the log4j appender is writing messages -->
+            <from uri="direct:logs"/>
+            <to uri="seda:logMsgs?size=10000&amp;concurrentConsumers=5&amp;multipleConsumers=true"/>
         </route>
     </camelContext>
 

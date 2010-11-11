@@ -30,23 +30,36 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
- package org.jahia.hibernate;
+package org.jahia.hibernate;
 
+import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
-import org.hibernate.Session;
 
 /**
- * Created by IntelliJ IDEA.
+ * Base Jahia DAO implementation
+ * 
  * User: hollis
- * Date: 12 d�c. 2005
- * Time: 14:49:55
- * To change this template use File | Settings | File Templates.
  */
 public class JahiaHibernateDaoSupport extends HibernateDaoSupport {
 
-    public void clearSession(){
-        Session session = this.getSession();
-        session.flush();
-        session.clear();
-    }
+	private HibernateTemplate hibernateTemplateForRead;
+
+	/**
+	 * Returns an instance of the {@link HibernateTemplate} that can be used for
+	 * read-only queries, i.e. the flush mode is set to "never".
+	 * 
+	 * @return an instance of the {@link HibernateTemplate} that can be used for
+	 *         read-only queries, i.e. the flush mode is set to "never"
+	 */
+	public HibernateTemplate getHibernateTemplateForRead() {
+		return hibernateTemplateForRead;
+	}
+
+	@Override
+	protected void initDao() throws Exception {
+		super.initDao();
+		hibernateTemplateForRead = createHibernateTemplate(getSessionFactory());
+		hibernateTemplateForRead.setFlushMode(HibernateTemplate.FLUSH_NEVER);
+	}
+
 }

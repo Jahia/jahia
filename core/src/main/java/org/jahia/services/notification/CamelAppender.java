@@ -30,37 +30,69 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.hibernate.dao;
+package org.jahia.services.notification;
 
-import java.util.List;
-
-import org.jahia.hibernate.JahiaHibernateDaoSupport;
-import org.jahia.hibernate.model.JahiaInstalledPatch;
+import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.spi.LoggingEvent;
+import org.jahia.services.SpringContextSingleton;
 
 /**
- * DAO for installed patches.
+ * Log4j appender that sends the message using {@link CamelNotificationService}.
  * 
- * @author Thomas Draier 
+ * @author Sergiy Shyrkov
  */
-public class JahiaInstalledPatchDAO extends JahiaHibernateDaoSupport {
+public class CamelAppender extends AppenderSkeleton {
 
-    @SuppressWarnings("unchecked")
-    public List<JahiaInstalledPatch> findAll() {
-        return getHibernateTemplateForRead().find("from JahiaInstalledPatch order by installNumber");
-    }
+	private CamelNotificationService notificationService;
+	private String targetUri = "direct:logs";
 
-    @SuppressWarnings("unchecked")
-    public List<JahiaInstalledPatch> findByBuildNumber(int number) {
-        return getHibernateTemplateForRead().find("from JahiaInstalledPatch where build=? order by installNumber", new Object[] {new Integer(number)} );
-    }
+	/**
+	 * Initializes an instance of this class.
+	 */
+	public CamelAppender() {
+		super();
+	}
 
-    @SuppressWarnings("unchecked")
-    public List<JahiaInstalledPatch> findByName(String name) {
-        return getHibernateTemplateForRead().find("from JahiaInstalledPatch where name=? order by installNumber", new Object[] {name} );
-    }
+	/**
+	 * Initializes an instance of this class.
+	 * 
+	 * @param isActive
+	 */
+	public CamelAppender(boolean isActive) {
+		super(isActive);
+	}
 
-    public void save(JahiaInstalledPatch patch) {
-    	getHibernateTemplate().saveOrUpdate(patch);
-    }
+	@Override
+	protected void append(LoggingEvent event) {
+		CamelNotificationService notificationService = getNotificationService();
+		if (notificationService != null) {
+			// sending formatted message to the configured URI
+			notificationService.sendMessagesWithBodyAndHeaders(targetUri,
+			        getLayout().format(event), null);
+		}
+	}
+
+	public void close() {
+		// do nothing
+	}
+
+	private CamelNotificationService getNotificationService() {
+		if (notificationService == null) {
+			SpringContextSingleton springCtx = SpringContextSingleton.getInstance();
+			if (springCtx.isInitialized()) {
+				notificationService = (CamelNotificationService) springCtx.getContext().getBean(
+				        "camelNotificationService");
+			}
+		}
+		return notificationService;
+	}
+
+	public boolean requiresLayout() {
+		return true;
+	}
+
+	public void setTargetUri(String targetUri) {
+		this.targetUri = targetUri;
+	}
 
 }

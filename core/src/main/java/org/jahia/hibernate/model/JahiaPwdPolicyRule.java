@@ -36,19 +36,35 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.IndexColumn;
 
 /**
  * Password policy rule data object.
  * 
- * @hibernate.class table="jahia_pwd_policy_rules"
- * @hibernate.cache usage="nonstrict-read-write"
  * @author Sergiy Shyrkov
  */
+@Entity
+@Table(name = "jahia_pwd_policy_rules")
 public class JahiaPwdPolicyRule implements Serializable {
+
+	private static final long serialVersionUID = 2228187967532571691L;
 
 	private char action;
 
@@ -64,7 +80,7 @@ public class JahiaPwdPolicyRule implements Serializable {
 
 	private String name;
 
-	private List parameters = new LinkedList();
+	private List<JahiaPwdPolicyRuleParam> parameters = new LinkedList<JahiaPwdPolicyRuleParam>();
 
 	private boolean periodical;
 
@@ -120,9 +136,9 @@ public class JahiaPwdPolicyRule implements Serializable {
 	/**
 	 * Returns the action type.
 	 * 
-	 * @hibernate.property column="action" type="char" not-null="true"
 	 * @return the action type
 	 */
+	@Column(name = "rule_action", nullable = false)
 	public char getAction() {
 		return action;
 	}
@@ -130,10 +146,9 @@ public class JahiaPwdPolicyRule implements Serializable {
 	/**
 	 * Returns the condition.
 	 * 
-	 * @hibernate.property column="rule_condition" type="text" length="1048576"
-	 *                     not-null="true"
 	 * @return the condition
 	 */
+	@Column(name = "rule_condition", nullable = false, length = 1048576)
 	public String getCondition() {
 		return condition;
 	}
@@ -141,9 +156,9 @@ public class JahiaPwdPolicyRule implements Serializable {
 	/**
 	 * Returns the evaluator type.
 	 * 
-	 * @hibernate.property column="evaluator" type="char" not-null="true"
 	 * @return the evaluator type
 	 */
+	@Column(name = "evaluator", nullable = false)
 	public char getEvaluator() {
 		return evaluator;
 	}
@@ -151,11 +166,12 @@ public class JahiaPwdPolicyRule implements Serializable {
 	/**
 	 * Returns the rule id.
 	 * 
-	 * @hibernate.id column="jahia_pwd_policy_rule_id" type="int"
-	 *               generator-class="org.jahia.hibernate.dao.JahiaIdentifierGenerator"
-	 *               unsaved-value="0"
 	 * @return the rule id
 	 */
+	@Id
+	@Column(name = "jahia_pwd_policy_rule_id", nullable = false)
+	@GeneratedValue(generator = "jahia-generator")
+	@GenericGenerator(name = "jahia-generator", strategy = "org.jahia.hibernate.dao.JahiaIdentifierGenerator")
 	public int getId() {
 		return id;
 	}
@@ -163,10 +179,9 @@ public class JahiaPwdPolicyRule implements Serializable {
 	/**
 	 * Returns the rule name.
 	 * 
-	 * @hibernate.property column="name" type="string" length="255"
-	 *                     not-null="true"
 	 * @return the rule name
 	 */
+	@Column(name = "name", nullable = false, length = 255)
 	public String getName() {
 		return name;
 	}
@@ -174,23 +189,23 @@ public class JahiaPwdPolicyRule implements Serializable {
 	/**
 	 * Returns the list of parameters.
 	 * 
-	 * @hibernate.list lazy="true" inverse="true" cascade="all-delete-orphan"
-	 * @hibernate.collection-one-to-many class="org.jahia.hibernate.model.JahiaPwdPolicyRuleParam"
-	 * @hibernate.collection-key column="jahia_pwd_policy_rule_id"
-	 * @hibernate.collection-index column="position_index"
 	 * @return the list of parameters
 	 */
-	public List getParameters() {
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "rule")
+	@JoinColumn(name = "jahia_pwd_policy_rule_id")
+	@Cascade({ CascadeType.ALL, CascadeType.DELETE_ORPHAN })
+	@IndexColumn(name = "position_index")
+	public List<JahiaPwdPolicyRuleParam> getParameters() {
 		return parameters;
 	}
 
 	/**
 	 * Returns the corresponding policy.
 	 * 
-	 * @hibernate.many-to-one column="jahia_pwd_policy_id" not-null="true"
-	 *                        outer-join="false"
 	 * @return the corresponding policy
 	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "jahia_pwd_policy_id", nullable = false)
 	public JahiaPwdPolicy getPolicy() {
 		return policy;
 	}
@@ -199,9 +214,9 @@ public class JahiaPwdPolicyRule implements Serializable {
 	 * Returns the position (zero-based) of this rule in the list of policy
 	 * rules.
 	 * 
-	 * @hibernate.property column="position_index" type="int" not-null="true"
 	 * @return the position of this rule in the list of policy rules
 	 */
+	@Column(name = "position_index", nullable = false)
 	public int getPosition() {
 		return position;
 	}
@@ -213,9 +228,9 @@ public class JahiaPwdPolicyRule implements Serializable {
 	/**
 	 * Returns <code>true</code> if this rule is active.
 	 * 
-	 * @hibernate.property column="active" type="boolean" not-null="true"
 	 * @return <code>true</code> if this rule is active
 	 */
+	@Column(name = "active", nullable = false)
 	public boolean isActive() {
 		return active;
 	}
@@ -225,23 +240,23 @@ public class JahiaPwdPolicyRule implements Serializable {
 	 * policy is stopped if this one is violated, thus it is possible to define
 	 * exclusive rules.
 	 * 
-	 * @hibernate.property column="last_rule" type="boolean" not-null="true"
 	 * @return the <code>true</code> if the processing of further rules in the
 	 *         policy is stopped if this one is violated, thus it is possible to
 	 *         define exclusive rules
 	 */
+	@Column(name = "last_rule", nullable = false)
 	public boolean isLastRule() {
 		return lastRule;
 	}
 
 	/**
-	 * Returns <code>true</code> if this is a reoccurring rule (e.g. on each
+	 * Returns <code>true</code> if this is a recurring rule (e.g. on each
 	 * user login).
 	 * 
-	 * @hibernate.property column="periodical" type="boolean" not-null="true"
-	 * @return <code>true</code> if this is a reoccurring rule (e.g. on each
+	 * @return <code>true</code> if this is a recurring rule (e.g. on each
 	 *         user login)
 	 */
+	@Column(name = "periodical", nullable = false)
 	public boolean isPeriodical() {
 		return periodical;
 	}
@@ -322,7 +337,7 @@ public class JahiaPwdPolicyRule implements Serializable {
 	 * @param parameters
 	 *            the parameters to set
 	 */
-	public void setParameters(List parameters) {
+	public void setParameters(List<JahiaPwdPolicyRuleParam> parameters) {
 		this.parameters = parameters;
 	}
 

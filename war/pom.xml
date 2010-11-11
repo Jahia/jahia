@@ -246,12 +246,6 @@
 		                        <configuration>
 		                            <tasks if="jahia.generate.ddl">
 		                                <echo message="Generating DDL schemata..."/>
-		                                <unzip src="${project.build.directory}/${project.build.finalName}/WEB-INF/lib/jahia-impl-${jahia.package.version}.jar"
-		                                       dest="${project.build.directory}/xdoclet">
-		                                    <patternset>
-		                                        <include name="**/*.hbm.xml"/>
-		                                    </patternset>
-		                                </unzip>
 		
 		                                <taskdef name="hibernatetool"
 		                                         classname="org.hibernate.tool.ant.HibernateToolTask">
@@ -262,30 +256,17 @@
 		                                    </classpath>
 		                                </taskdef>
 										<hibernatetool destdir="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/derby/">
-											<annotationconfiguration configurationfile="${basedir}/tools/derby.hibernate.cfg.xml">
-			                                    <fileset dir="${project.build.directory}/xdoclet">
-			                                        <include name="**/*.hbm.xml"/>
-			                                    </fileset>
-											</annotationconfiguration>
+											<annotationconfiguration configurationfile="${basedir}/tools/derby.hibernate.cfg.xml"/>
 											<hbm2ddl outputfilename="jahia-schema.sql" format="true" export="false" drop="true" />
 									  	</hibernatetool>
 										<hibernatetool destdir="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/mysql/">
-											<annotationconfiguration configurationfile="${basedir}/tools/mysql.hibernate.cfg.xml">
-			                                    <fileset dir="${project.build.directory}/xdoclet">
-			                                        <include name="**/*.hbm.xml"/>
-			                                    </fileset>
-											</annotationconfiguration>
+											<annotationconfiguration configurationfile="${basedir}/tools/mysql.hibernate.cfg.xml"/>
 											<hbm2ddl outputfilename="jahia-schema.sql" format="true" export="false" drop="true" />
 									  	</hibernatetool>
 										<hibernatetool destdir="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/postgresql/">
-											<annotationconfiguration configurationfile="${basedir}/tools/postgresql.hibernate.cfg.xml">
-			                                    <fileset dir="${project.build.directory}/xdoclet">
-			                                        <include name="**/*.hbm.xml"/>
-			                                    </fileset>
-											</annotationconfiguration>
+											<annotationconfiguration configurationfile="${basedir}/tools/postgresql.hibernate.cfg.xml"/>
 											<hbm2ddl outputfilename="jahia-schema.sql" format="true" export="false" drop="true" />
 									  	</hibernatetool>
-		                                <delete dir="${project.build.directory}/xdoclet"/>
 		                            </tasks>
 		                        </configuration>
 		                    </execution>

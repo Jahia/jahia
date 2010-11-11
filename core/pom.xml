@@ -1276,9 +1276,6 @@
                 </includes>
             </resource>
             <resource>
-                <directory>src/main/hibernate-resources</directory>
-            </resource>
-            <resource>
                 <directory>src/main/resources</directory>
                 <includes>
                     <include>**/*.txt</include>

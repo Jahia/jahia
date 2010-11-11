@@ -35,13 +35,21 @@ package org.jahia.hibernate.model;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * @hibernate.class table="jahia_installedpatch"
- * @hibernate.cache usage="nonstrict-read-write"
- */
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
+
+@Entity
+@Table(name = "jahia_installedpatch")
 public class JahiaInstalledPatch implements Serializable {
 
-    private Integer installNumber;
+    private static final long serialVersionUID = 2351064857159567232L;
+
+	private Integer installNumber;
 
     private String name;
 
@@ -61,10 +69,10 @@ public class JahiaInstalledPatch implements Serializable {
         this.installationDate = installationDate;
     }
 
-    /**
-     * @hibernate.id generator-class="org.jahia.hibernate.dao.JahiaIdentifierGenerator"
-     * column="install_number"
-     */
+	@Id
+	@Column(name = "install_number", nullable = false)
+	@GeneratedValue(generator = "jahia-generator")
+	@GenericGenerator(name = "jahia-generator", strategy = "org.jahia.hibernate.dao.JahiaIdentifierGenerator")
     public Integer getInstallNumber() {
         return installNumber;
     }
@@ -73,10 +81,7 @@ public class JahiaInstalledPatch implements Serializable {
         this.installNumber = installNumber;
     }
 
-    /**
-     * @hibernate.property column="name"
-     * length="100"
-     */
+	@Column(name = "name", length = 100)
     public String getName() {
         return name;
     }
@@ -85,10 +90,7 @@ public class JahiaInstalledPatch implements Serializable {
         this.name = name;
     }
 
-    /**
-     * @hibernate.property column="build"
-     * length="11"
-     */
+	@Column(name = "build", length = 11)
     public Integer getBuildNumber() {
         return buildNumber;
     }
@@ -97,10 +99,7 @@ public class JahiaInstalledPatch implements Serializable {
         this.buildNumber = buildNumber;
     }
 
-    /**
-     * @hibernate.property column="result_code"
-     * length="11"
-     */
+	@Column(name = "result_code", length = 11)
     public Integer getResultCode() {
         return resultCode;
     }
@@ -109,9 +108,7 @@ public class JahiaInstalledPatch implements Serializable {
         this.resultCode = resultCode;
     }
 
-    /**
-     * @hibernate.property column="install_date"
-     */
+	@Column(name = "install_date")
     public Date getInstallationDate() {
         return installationDate;
     }

@@ -14,12 +14,10 @@ import java.util.Locale;
  * Time: 11:32:15 AM
  */
 @Entity
-@Table(name = "jahia_contenthistory",
-        uniqueConstraints = {@UniqueConstraint(columnNames = {"entry_date", "uuid", "property_name"})}
-)
+@Table(name = "jahia_contenthistory")
 public class HistoryEntry {
 
-    private Integer id;
+    private String id;
     private Date date;
     private String path;
     private String uuid;
@@ -30,13 +28,14 @@ public class HistoryEntry {
     private transient Locale locale;
 
     @Id
-    @GeneratedValue(generator = "jahia")
-    @GenericGenerator(name ="jahia", strategy = "org.jahia.hibernate.dao.JahiaIdentifierGenerator")
-    public Integer getId() {
+    @Column(length = 32)
+    @GeneratedValue(generator="system-uuid")
+    @GenericGenerator(name="system-uuid", strategy = "uuid")
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -51,7 +50,7 @@ public class HistoryEntry {
     }
 
     @Basic
-    @Column(length = 50)
+    @Column(length = 36)
     public String getUuid() {
         return uuid;
     }

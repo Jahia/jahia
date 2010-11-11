@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `taste_users` (
 -->
     <!--<bean id="recommender" class="org.jahia.modules.rating.mahout.Recommender">
         <property name="dataSource" ref="dataSource"/>
-        <property name="from" value="seda:logMsgs?size=10000&amp;concurrentConsumers=5"/>
+        <property name="from" value="seda:logMsgs"/>
         &lt;!&ndash; Define when we need to refresh recommendations (here every 25 submissions of rating data) &ndash;&gt;
         <property name="refreshRecommendationsEvery" value="25"/>
     </bean>-->

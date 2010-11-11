@@ -408,7 +408,9 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                                         }
                                     }
                                     if ("*".equals(propertyKey)) {
-                                        query.append("CONTAINS(u.*,'" + propertyValue.replaceAll("%", "") + "')");
+                                        query.append("(CONTAINS(u.*,'" + propertyValue.replaceAll("%", "")
+                                                + "') OR LOWER(u.[j:nodename]) LIKE '")
+                                                .append(propertyValue.toLowerCase()).append("') ");
                                     } else {
                                         query.append("LOWER(u.[" + propertyKey + "])").append(
                                                 " LIKE '").append(propertyValue.toLowerCase()).append("'");

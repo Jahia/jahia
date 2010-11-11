@@ -6,12 +6,12 @@
     <bean id="pageHitService" class="org.jahia.modules.pagehit.PageHitService"
           init-method="start" factory-method="getInstance">
         <property name="sessionFactoryBean" ref="sessionFactory"/>
-        <property name="from" value="seda:logMsgs?size=10000&amp;concurrentConsumers=5"/>
+        <property name="from" value="seda:logMsgs"/>
     </bean>
 
     <!--<bean id="recommender" class="org.jahia.modules.rating.mahout.Recommender">
         <property name="dataSource" ref="dataSource"/>
-        <property name="from" value="seda:logMsgs?size=10000&amp;concurrentConsumers=5"/>
+        <property name="from" value="seda:logMsgs"/>
         &lt;!&ndash; Define when we need to refresh recommendations (here every 25 submissions of rating data) &ndash;&gt;
         <property name="refreshRecommendationsEvery" value="25"/>
     </bean>-->

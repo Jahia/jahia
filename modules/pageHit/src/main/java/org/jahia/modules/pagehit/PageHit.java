@@ -28,6 +28,7 @@ public class PageHit {
     }
 
     @Id
+    @Column(length = 36)
     public String getUuid() {
         return uuid;
     }

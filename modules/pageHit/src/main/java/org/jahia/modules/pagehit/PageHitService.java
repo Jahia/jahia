@@ -120,7 +120,7 @@ public class PageHitService implements Processor, CamelContextAware {
         try {
             criteria.add(Restrictions.eq("uuid", node.getIdentifier()));
             PageHit pageHit = (PageHit) criteria.uniqueResult();
-            return pageHit.getHits();
+            return pageHit != null ? pageHit.getHits() : 0;
         } catch (Exception e) {
             return 0;
         } finally {

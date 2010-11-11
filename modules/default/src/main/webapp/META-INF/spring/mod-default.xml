@@ -38,4 +38,8 @@
             </bean>
         </property>
     </bean>
+    
+    <bean class="org.apache.camel.spring.CamelBeanPostProcessor">
+    	<property name="camelContext" ref="jahiaNotificationContext"/>
+    </bean>
 </beans>

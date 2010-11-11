@@ -32,8 +32,6 @@
 
 package org.jahia.services.templates;
 
-import org.apache.camel.CamelContext;
-import org.apache.camel.CamelContextAware;
 import org.slf4j.Logger;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.content.*;
@@ -62,20 +60,11 @@ import java.util.*;
  *
  * @author Sergiy Shyrkov
  */
-class TemplatePackageRegistry implements CamelContextAware {
+class TemplatePackageRegistry {
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(TemplatePackageRegistry.class);
     
     private final static String MODULES_ROOT_PATH = "modules.";
-    private static CamelContext camelContext;
-
-    public void setCamelContext(CamelContext camelContext) {
-        TemplatePackageRegistry.camelContext = camelContext;
-    }
-
-    public CamelContext getCamelContext() {
-        return camelContext;
-    }
 
     static class ModuleRegistry implements BeanPostProcessor {
 
@@ -158,9 +147,6 @@ class TemplatePackageRegistry implements CamelContextAware {
                             "Registering Background Action '" + backgroundAction.getName() + "' (" + beanName + ")");
                 }
                 templatePackageRegistry.backgroundActions.put(backgroundAction.getName(), backgroundAction);
-            } else if(bean instanceof CamelContextAware) {
-                CamelContextAware contextAware = (CamelContextAware) bean;
-                contextAware.setCamelContext(camelContext);
             }
             return bean;
         }

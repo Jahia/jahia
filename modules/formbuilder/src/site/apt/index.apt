@@ -1,8 +1,8 @@
 Jahia Form Builder Module
 
- The form builder allows you to create form to interact with you visitors (contact, questions, support, etc.).
+ The form builder allows you to create forms to interact with you visitors (contact, questions, surveys, support, etc.).
 
- The form built using the form builder are fully customizable, they can have client side validation, captcha to ensure
+ The forms built using the form builder are fully customizable, they can have client side validation, captcha to ensure
  integrity of data. You can choose the actions you want to execute when the form is submited.
 
 * Create a form step-by-step

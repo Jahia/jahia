@@ -1,7 +1,13 @@
-Jahia Crazy Jane - Web Module
+Jahia Crazy Jane - CMS
 
  * {{{multilang.html}Internationalized Web Site}}
  
  * {{{apachehttpserver.html}Using an Apache HTTP Server in Front of JAHIA}}
  
  * {{{input_validations.html}Define input validations}}
+
+ * {{{notifications.html}Notifications}}
+
+ * {{{users_batch_creation.html}Create users using a batch}}
+
+ * {{{definitions.html}Jahia node types definitions}}

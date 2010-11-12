@@ -66,9 +66,9 @@
 		<variable name="dbSettings.dbms.storeFilesInDB" value="false" condition="cnd.installation.type.express"/>
 		
         <!-- mail settings -->
-        <variable name="mailSettings.administrator" value=""/>
-        <variable name="mailSettings.from" value=""/>
-        <variable name="mailSettings.server" value=""/>
+        <variable name="mailSettings.administrator" value="" condition="cnd.installation.type.express"/>
+        <variable name="mailSettings.from" value="" condition="cnd.installation.type.express"/>
+        <variable name="mailSettings.server" value="" condition="cnd.installation.type.express"/>
     </dynamicvariables>
     
     <conditions>

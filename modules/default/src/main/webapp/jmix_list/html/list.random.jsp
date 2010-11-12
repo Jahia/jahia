@@ -12,10 +12,18 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
+<template:include template="hidden.header"/>
+<c:set var="children" value="${moduleMap.currentList}"/>
 
-<c:set var="children" value="${currentNode.nodes}"/>
-<c:if test="${children.size > 0}">
-    <c:set value="${functions:randomInt(children.size)}" var="itemToDisplay"/>
+<c:if test="${children.size eq -1}">
+    <c:set var="count" value="${moduleMap.listTotalSize}"/>
+</c:if>
+<c:if test="${!(children.size eq -1)}">
+    <c:set var="count" value="${children.size}"/>
+</c:if>
+
+<c:if test="${count > 0}">
+    <c:set value="${functions:randomInt(count)}" var="itemToDisplay"/>
     <c:forEach items="${children}" var="subchild" begin="${itemToDisplay}" end="${itemToDisplay}">
         <template:module node="${subchild}" template="${moduleMap.subNodesView}"
                          editable="true"/>

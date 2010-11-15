@@ -101,4 +101,9 @@ public class RightsTabItem extends EditEngineTabItem {
         return rightsEditor;
     }
 
+    public void setProcessed(boolean processed) {
+        if (!processed) {
+            rightsEditor = null;
+        }
+    }
 }

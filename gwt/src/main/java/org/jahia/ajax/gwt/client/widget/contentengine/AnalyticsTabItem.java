@@ -134,5 +134,10 @@ public class AnalyticsTabItem extends EditEngineTabItem {
         });
     }
 
-
+    public void setProcessed(boolean processed) {
+        if (!processed) {
+            lastQuery = null;
+            dataVisualizer = null;
+        }
+    }
 }

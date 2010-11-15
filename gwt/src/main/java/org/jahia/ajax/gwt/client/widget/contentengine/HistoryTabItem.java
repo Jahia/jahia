@@ -30,4 +30,13 @@ public class HistoryTabItem extends EditEngineTabItem {
 
         tab.layout();
     }
+
+    public void setProcessed(boolean processed) {
+        if (!processed) {
+            historyPanel = null;
+        }
+
+        super.setProcessed(processed);
+    }
+
 }

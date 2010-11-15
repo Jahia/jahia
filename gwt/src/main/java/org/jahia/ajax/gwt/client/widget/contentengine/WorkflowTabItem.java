@@ -249,4 +249,19 @@ public class WorkflowTabItem extends EditEngineTabItem {
         engine.getNode().set("activeWorkflows", aclMap);
     }
 
+    public void setProcessed(boolean processed) {
+        if (!processed) {
+            container = null;
+            panelsByLanguage = new HashMap<String, WorkflowHistoryPanel>(1);
+            aclPanel = null;
+            previousType = null;
+            previousSelection = null;
+            rightsEditor = null;
+            workflowRules = null;
+        }
+
+        super.setProcessed(processed);
+    }
+
+
 }

@@ -235,4 +235,13 @@ public class CategoriesTabItem extends EditEngineTabItem {
             }
         }
     }
+
+    public void setProcessed(boolean processed) {
+        if (!processed && catStore != null) {
+            catStore = null;
+            categoryProperty = null;
+        }
+        super.setProcessed(processed);
+    }
+    
 }

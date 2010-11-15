@@ -21,4 +21,4 @@
     </tr>
     </thead>
 </table>
-<template:module node="${currentNode}" template="default" editable="false"/> 
+<template:include template="default"/> 

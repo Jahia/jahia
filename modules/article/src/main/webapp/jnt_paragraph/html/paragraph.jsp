@@ -4,25 +4,21 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<jcr:nodeProperty node="${currentNode}" name="insertPosition" var="insertPosition"/>
-<jcr:nodeProperty node="${currentNode}" name="insertType" var="insertType"/>
-<jcr:nodeProperty node="${currentNode}" name="insertWidth" var="insertWidth"/>
-<jcr:nodeProperty node="${currentNode}" name="insertText" var="insertText"/>
-<jcr:nodeProperty node="${currentNode}" name="image" var="image"/>
+<%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
+<%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 
-<h3><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h3>
-<c:if test="${not empty insertText}">
-<div class='${insertType.string}-top float${insertPosition.string}'
-     style='width:${insertWidth.string}px'>
-
-    <div class="${insertType.string}-bottom">
-        ${insertText.string}
+<h3>${currentNode.properties["jcr:title"].string}</h3>
+<c:if test="${not empty currentNode.properties.insertText.string}">
+    <div class='${currentNode.properties.insertType.string}-top float${currentNode.properties.insertPosition.string}'
+         style='width:${currentNode.properties.insertWidth.string}px'>
+        <div class="${currentNode.properties.insertType.string}-bottom">
+                ${currentNode.properties.insertText.string}
+        </div>
     </div>
-</div>
 </c:if>
 <div class="float${currentNode.properties.align.string}">
-    <c:if test="${!empty image}">
-        <img src="${image.node.url}" alt="${image.node.url}" align="${currentNode.properties.align.string}"/>
+    <c:if test="${!empty currentNode.properties.image}">
+        <img src="${currentNode.properties.image.node.url}" alt="${currentNode.properties.image.node.url}" align="${currentNode.properties.align.string}"/>
     </c:if>
 </div>
 <div>

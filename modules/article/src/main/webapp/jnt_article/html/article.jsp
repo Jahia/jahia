@@ -5,9 +5,10 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <template:addResources type="css" resources="article.css"/>
+<%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
+<%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 
-<h2><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h2>
-
+<h2>${currentNode.properties["jcr:title"].string}</h2>
 
 <div class="intro">
     ${currentNode.properties.intro.string}
@@ -18,7 +19,3 @@
 <c:if test="${renderContext.editMode}">
     <template:module path="*"/>
 </c:if>
-<!-- <div class="tagthisarticle">
-	<fmt:message key="tag.this.article"/>:&nbsp;<template:option node="${currentNode}" nodetype="jmix:tagged" template="hidden.tags"/>
-	<template:option node="${currentNode}"  nodetype="jmix:tagged" template="hidden.addTag"/>
-</div>   -->

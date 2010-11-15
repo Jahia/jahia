@@ -32,6 +32,7 @@
 
 package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -137,7 +138,13 @@ public class LinkerModule extends Module {
             }
         };
         addListener(Events.OnClick, listener);
-        addListener(Events.OnContextMenu, listener);
+        addListener(Events.OnContextMenu, new Listener<ComponentEvent>() {
+            public void handleEvent(ComponentEvent ce) {
+                if (selectable) {
+                    Log.info("click" + path + " : " + scriptInfo);
+                    mainModule.getEditLinker().onModuleSelection(LinkerModule.this);
+                }
+            }});
 //        addListener(Events.OnDoubleClick, new EditContentEnginePopupListener(this, mainModule.getEditLinker()));
 
         Listener<ComponentEvent> hoverListener = new Listener<ComponentEvent>() {

@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
- "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -13,20 +13,16 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
- <head>
+<head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-	<title>${renderContext.mainResource.node.properties['jcr:title'].string}</title>
- </head>
+    <title>${renderContext.mainResource.node.properties['jcr:title'].string}</title>
+</head>
 
 <body>
 
 <div id="bodywrapper"><!--start bodywrapper-->
-    <div class="container container_16">
-        <div class="grid_16">
-            <template:area path="pagecontent"/>
-        </div>
-    </div>
+    <template:area path="pagecontent"/>
 </div>
 <!--stop bodywrapper-->
 

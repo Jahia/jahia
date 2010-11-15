@@ -142,17 +142,6 @@
                             <mainResourceDisplay j:mainResourceView="fullpage" jcr:primaryType="jnt:mainResourceDisplay" />
                         </row-col1>
                     </news-template>
-                    <thinkboxitem jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:thinkBoxItem">
-                        <pagecontent jcr:primaryType="jnt:contentList">
-                            <row column="2col115" jcr:primaryType="jnt:row" />
-                        </pagecontent>
-                        <row-col1 jcr:primaryType="jnt:contentList">
-                            <mainResourceDisplay jcr:primaryType="jnt:mainResourceDisplay" />
-                        </row-col1>
-                        <row-col2 jcr:primaryType="jnt:contentList">
-                            <rateable jcr:primaryType="jnt:rateable" />
-                        </row-col2>
-                    </thinkboxitem>
                     <systemTemplate jcr:primaryType="jnt:contentTemplate" j:hiddenTemplate="false" j:applyOn="jnt:content">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <mainResourceDisplay j:mainResourceView="system" jcr:primaryType="jnt:mainResourceDisplay" />

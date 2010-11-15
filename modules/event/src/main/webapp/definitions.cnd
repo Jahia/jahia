@@ -1,6 +1,6 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
-[jnt:event] > jnt:content, jmix:editorialContent, mix:title
+[jnt:event] > jnt:content, jmix:editorialContent, mix:title, jmix:structuredContent
  - startDate (date) facetable
  - endDate (date) facetable
  - location (string) i18n facetable

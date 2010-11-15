@@ -422,6 +422,12 @@
  - j:root (string) nofulltext
 
 //---------------------------------------------------------
+// Definition Content
+//---------------------------------------------------------
+
+[jmix:editorialContent] mixin
+
+//---------------------------------------------------------
 // Definition organization (left panel)
 //---------------------------------------------------------
 
@@ -431,7 +437,7 @@
 
 [jmix:basicContent] > jmix:droppableContent mixin
 
-[jmix:editorialContent] > jmix:droppableContent mixin
+[jmix:structuredContent] > jmix:droppableContent mixin
 
 [jmix:socialComponent] > jmix:droppableContent mixin
 
@@ -474,10 +480,10 @@
 
 [jmix:nodeReference] mixin
 
-[jnt:fileReference] > jnt:content, jmix:nodeReference, mix:title, jmix:basicContent
+[jnt:fileReference] > jnt:content, jmix:nodeReference, mix:title, jmix:basicContent, jmix:editorialContent
  - j:node (weakreference,picker[type='file']) < jnt:file
 
-[jnt:imageReference] > jnt:content, jmix:nodeReference, jmix:basicContent
+[jnt:imageReference] > jnt:content, jmix:nodeReference, jmix:basicContent, jmix:editorialContent
  - j:node (weakreference,picker[type='image']) < jmix:image
  - j:alternateText (string)
 
@@ -487,7 +493,7 @@
 [jnt:externalLinkImageReference] > jnt:imageReference, jmix:link
  - j:url (string)
 
-[jnt:contentReference] > jnt:content, jmix:nodeReference, jmix:basicContent
+[jnt:contentReference] > jnt:content, jmix:nodeReference, jmix:basicContent, jmix:editorialContent
  - j:node (weakreference) < jmix:droppableContent
 
 [jnt:nodeLink] > jnt:content, jmix:nodeReference, jmix:link, jmix:navMenuItem
@@ -591,7 +597,7 @@
  + * (jnt:portlet) = jnt:portlet
  + * (jnt:portletFolder)
 
-[jnt:portletReference] > jnt:content,  jmix:nodeReference, jmix:editorialContent
+[jnt:portletReference] > jnt:content,  jmix:nodeReference, jmix:structuredContent
  - j:node (weakreference,picker[type='portlet']) < jnt:portlet
 
 //---------------------------------------------------------

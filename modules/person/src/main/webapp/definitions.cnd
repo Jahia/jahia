@@ -1,6 +1,6 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
-[jnt:person] > jnt:content, jmix:editorialContent
+[jnt:person] > jnt:content, jmix:editorialContent, jmix:structuredContent
  - firstname (string)
  - lastname (string) primary
  - function (string) i18n

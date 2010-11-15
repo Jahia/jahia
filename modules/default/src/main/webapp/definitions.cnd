@@ -38,10 +38,10 @@
  - thirdField (string, choicelist[sortableFieldnames]) indexed=no
  - thirdDirection (string, choicelist[resourceBundle]) = 'asc' autocreated indexed=no < 'asc','desc'
 
-[jnt:fileList] > jnt:content, jmix:editorialContent
+[jnt:fileList] > jnt:content, jmix:structuredContent, jmix:editorialContent
  - folder (weakreference, picker[type='folder'])
 
-[jnt:frame] > jnt:content, mix:title, jmix:editorialContent
+[jnt:frame] > jnt:content, mix:title, jmix:structuredContent, jmix:editorialContent
  - source (string) indexed=no
  - name (string) indexed=no
  - width (long) indexed=no
@@ -81,13 +81,13 @@
  - base (string) indexed=no
  - flashvars (string) indexed=no
 
-[jnt:text] > jnt:content, jmix:basicContent
+[jnt:text] > jnt:content, jmix:basicContent, jmix:editorialContent
  - text (string) i18n
 
-[jnt:bigText] > jnt:content, jmix:basicContent
+[jnt:bigText] > jnt:content, jmix:basicContent, jmix:editorialContent
  - text (string, richtext) i18n primary
 
-[jnt:mainContent] > jnt:content, mix:title, jmix:editorialContent
+[jnt:mainContent] > jnt:content, mix:title, jmix:structuredContent, jmix:editorialContent
  - body (string, richtext) i18n
  - image (weakreference, picker[type='image']) i18n
  - align (string,choicelist[resourceBundle]) = left indexed=no < left,right,default
@@ -102,7 +102,7 @@
 
 [jnt:shortcuts] > jnt:content, jmix:siteComponent
 
-[jnt:banner] > jnt:content, mix:title, jmix:editorialContent
+[jnt:banner] > jnt:content, mix:title, jmix:structuredContent, jmix:editorialContent
  - background (weakreference, picker[type='image']) i18n
  - cast (string, richtext) i18n
  - positionTop (long) indexed=no
@@ -137,4 +137,4 @@
  - j:type (string, choicelist[nodetypes=nt:base,resourceBundle])
  - j:nbOfResult (long) = 5  autocreated
 
-[jnt:introduction] > jnt:bigText, jmix:editorialContent
+[jnt:introduction] > jnt:bigText, jmix:structuredContent, jmix:editorialContent

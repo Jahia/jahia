@@ -6,6 +6,6 @@
  - insertPosition (string,choicelist[resourceBundle]) = left indexed=no < left, right
  - insertWidth (long) = "150" indexed=no
 
-[jnt:article] > jnt:content, jmix:editorialContent, mix:title, jmix:tagged
+[jnt:article] > jnt:content, jmix:editorialContent, mix:title, jmix:tagged, jmix:structuredContent
  - intro (string, richtext) i18n
  + * (jnt:paragraph)

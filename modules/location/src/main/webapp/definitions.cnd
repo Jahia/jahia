@@ -19,7 +19,7 @@
  - j:town (string) facetable
  - j:country (string,choicelist[country,flag]) facetable
 
-[jnt:location] > jnt:content, mix:title, jmix:editorialContent
+[jnt:location] > jnt:content, mix:title, jmix:editorialContent, jmix:structuredContent
  - j:street (string)
  - j:zipCode (string) analyzer='keyword'
  - j:town (string) facetable

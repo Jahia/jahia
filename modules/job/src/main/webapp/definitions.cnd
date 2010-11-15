@@ -6,7 +6,7 @@
  - email (string)
  - text (string, richtext) i18n
 
-[jnt:job] > jnt:content, mix:title, jmix:editorialContent
+[jnt:job] > jnt:content, mix:title, jmix:editorialContent, jmix:structuredContent
  - reference (string)
  - businessUnit (string) i18n facetable
  - contract (string, choicelist[resourceBundle]) facetable  < contract1, contract2, contract3, contract4

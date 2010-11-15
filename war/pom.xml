@@ -1057,13 +1057,6 @@
         </dependency>
         <dependency>
             <groupId>org.jahia.modules</groupId>
-            <artifactId>scriptlanguages</artifactId>
-            <version>${jahia.package.version}</version>
-            <type>war</type>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jahia.modules</groupId>
             <artifactId>search</artifactId>
             <version>${jahia.package.version}</version>
             <type>war</type>

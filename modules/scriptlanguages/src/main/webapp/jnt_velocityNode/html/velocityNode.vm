@@ -1,4 +1,0 @@
-
-This is an example of templating with Velocity.<br/>
-
-$currentNode.getProperty('velocityText').getValue().getString()

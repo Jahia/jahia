@@ -1,9 +1,0 @@
-Jahia Crazy Jane
-
-This module is a code sample to demonstrate how to create a quick UI to allow editors to change the layout of a page without editing the css stylesheet.
-To perform this, the module defines a bunch of fields corresponding to main css styles.
-After user input, those styles are in-lined within the page and, due to CSS inheritance mechanism, will take the lead on style declared in the sheet.
-
-This module has no pretention to be widely used in real web sites (at least as it is given, graphical results might be awful because users can override a lot of styles!).
-We advice you to use it as a demonstrator to create your own layout component if you fell the need to give some control to users.
-

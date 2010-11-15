@@ -127,7 +127,6 @@
         <module>templates-web</module>
         <module>templates-intranet</module>
         <module>templates-apps</module>
-        <module>thinkboxes</module>
         <module>topstories</module>
         <module>twitter</module>
         <module>userregistration</module>

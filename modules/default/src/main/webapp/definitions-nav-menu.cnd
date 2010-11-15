@@ -13,7 +13,7 @@
 
 [jnt:navMenu] > jnt:content, mix:title, jmix:siteComponent
  orderable
- - j:baselineNode (weakreference,picker[type='page'])
+ - j:baselineNode (weakreference,picker[type='page']) mandatory
  - j:maxDepth (long) = 2
  - j:startLevel (long) = 0
  - j:menuType (string,choicelist) = 'primary' autocreated nofulltext < 'primary','secondary'

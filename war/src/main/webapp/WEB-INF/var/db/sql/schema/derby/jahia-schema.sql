@@ -65,7 +65,7 @@
         jahia_pwd_policy_rule_id integer not null,
         rule_action char(1) not null,
         active smallint not null,
-        rule_condition varchar(1048576) not null,
+        rule_condition clob(1048576) not null,
         evaluator char(1) not null,
         last_rule smallint not null,
         name varchar(255) not null,

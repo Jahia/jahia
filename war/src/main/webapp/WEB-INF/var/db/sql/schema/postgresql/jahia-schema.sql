@@ -65,7 +65,7 @@
         jahia_pwd_policy_rule_id int4 not null,
         rule_action char(1) not null,
         active bool not null,
-        rule_condition varchar(1048576) not null,
+        rule_condition text not null,
         evaluator char(1) not null,
         last_rule bool not null,
         name varchar(255) not null,

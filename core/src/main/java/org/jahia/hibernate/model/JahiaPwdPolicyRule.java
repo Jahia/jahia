@@ -42,6 +42,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -148,6 +149,7 @@ public class JahiaPwdPolicyRule implements Serializable {
 	 * 
 	 * @return the condition
 	 */
+	@Lob
 	@Column(name = "rule_condition", nullable = false, length = 1048576)
 	public String getCondition() {
 		return condition;

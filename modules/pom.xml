@@ -101,7 +101,6 @@
         <module>location</module>
         <module>metrics</module>
         <module>news</module>
-        <module>feedimporter</module>
         <module>grid</module>
         <module>person</module>
         <module>poll</module>

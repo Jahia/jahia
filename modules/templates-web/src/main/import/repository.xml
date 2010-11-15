@@ -135,17 +135,6 @@
                                     <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="My Messages" jcr:primaryType="jnt:translation" />
                                     <currentUserDisplay j:userView="mymessages" jcr:primaryType="jnt:currentUserDisplay" />
                                 </my-messages>
-                                <my-thinkbox jcr:primaryType="jnt:contentList">
-                                    <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="My ThinkBox" jcr:primaryType="jnt:translation" />
-                                    <row column="2col115" jcr:primaryType="jnt:row">
-                                        <col1 jcr:primaryType="jnt:contentList">
-                                            <thinkBoxItemList jcr:primaryType="jnt:thinkBoxItemList" />
-                                        </col1>
-                                        <col2 jcr:primaryType="jnt:contentList">
-                                            <tagCloud jcr:primaryType="jnt:tagCloud" j:usageThreshold="1" limit="50" />
-                                        </col2>
-                                    </row>
-                                </my-thinkbox>
                             </tabularList>
                         </pagecontent>
                     </my-profile>

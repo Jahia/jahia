@@ -7,10 +7,10 @@ Basic Jahia REST API
 
 * Examples
 
- You can find an example of some REST API calls in the file modules/default/examples/jqueryfind.html. To test this
+ You can find an example of some REST API calls in the file modules/test/rest/jqueryfind.html. To test this
  file, make sure you start & configure your Jahia, and then point your browser to the following URL :
 
- http://localhost:8080/modules/default/examples/jqueryfind.html
+ http://localhost:8080/modules/test/rest/jqueryfind.html
 
 * Login
 

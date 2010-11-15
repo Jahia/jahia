@@ -91,7 +91,6 @@
         <module>cssPage</module>
         <module>default</module>
         <module>docConverter</module>
-        <module>docspace</module>
         <module>event</module>
         <module>facets</module>
         <module>faq</module>

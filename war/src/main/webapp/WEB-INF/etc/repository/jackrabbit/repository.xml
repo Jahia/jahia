@@ -76,7 +76,7 @@
 
 
 <!--
-    <Cluster id="clusterNode1">
+    <Cluster id="${cluster.node.serverId}">
    		<Journal class="@JOURNAL_CLASS@">
                <param name="dataSourceName" value="jahiaDS" />
                <param name="revision" value="${rep.home}/revisionNode"/>

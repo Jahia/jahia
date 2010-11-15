@@ -415,6 +415,9 @@ public class SettingsBean {
             settings.setFast(true);
             // If cluster is activated then try to expose some properties as system properties for JGroups
             boolean clusterActivated = getBoolean("cluster.activated",false);
+            if (System.getProperty("cluster.node.serverId") == null) {
+            	System.setProperty("cluster.node.serverId", getString("cluster.node.serverId", "jahiaServer1"));
+            }
             if(clusterActivated) {
                 // First expose tcp ip binding address
                 String tcpIpBinding = getString("cluster.tcp.start.ip_address");

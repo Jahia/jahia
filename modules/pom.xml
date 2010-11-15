@@ -99,7 +99,6 @@
         <module>forum</module>
         <module>job</module>
         <module>location</module>
-        <module>metrics</module>
         <module>news</module>
         <module>grid</module>
         <module>person</module>

@@ -1,7 +1,0 @@
-<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
-
-[jnt:topTenPages] > jnt:content, jmix:siteComponent
-
-[jnt:recommendable] > jnt:content, jmix:bindedComponent, jmix:siteComponent
- - j:nodeTypeFilter (string)
- - j:recommendationLimit (long)

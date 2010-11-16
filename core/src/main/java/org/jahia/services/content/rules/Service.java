@@ -35,6 +35,7 @@ package org.jahia.services.content.rules;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.drools.FactException;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.api.Constants;
@@ -47,11 +48,13 @@ import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.*;
 import org.jahia.services.importexport.ImportExportBaseService;
+import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.tags.TaggingService;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.utils.LanguageCodeConverters;
 import org.quartz.*;
@@ -72,13 +75,15 @@ import java.util.zip.ZipInputStream;
  *         Time: 12:04:29
  */
 public class Service extends JahiaService {
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(Service.class);
+    private static Logger logger = LoggerFactory.getLogger(Service.class);
     private static Service instance;
 
     private TaggingService taggingService;
     private JahiaSitesService sitesService;
     private SchedulerService schedulerService;
     private CacheService cacheService;
+    private JahiaUserManagerService userManagerService;
+    private JahiaPasswordPolicyService passwordPolicyService;
 
     public static Service getInstance() {
         if (instance == null) {
@@ -587,6 +592,16 @@ public class Service extends JahiaService {
         logger.info("All caches flushed.");
     }
 
+	public void storeUserPasswordHistory(String username, KnowledgeHelper drools) {
+		JahiaUser user = userManagerService.lookupUser(username);
+		if (user != null) {
+			passwordPolicyService.storePasswordHistory(user);
+		} else {
+			logger.warn("Unlable to lookup user for name: " + username
+			        + ". Skip updating user password history.");
+		}
+	}
+
     public void setTaggingService(TaggingService taggingService) {
         this.taggingService = taggingService;
     }
@@ -603,6 +618,10 @@ public class Service extends JahiaService {
         this.cacheService = cacheService;
     }
 
+	public void setUserManagerService(JahiaUserManagerService userMgrService) {
+    	this.userManagerService = userMgrService;
+    }
+    
     @Override
     public void start() throws JahiaInitializationException {
         // do nothing
@@ -612,4 +631,9 @@ public class Service extends JahiaService {
     public void stop() throws JahiaException {
         // do nothing
     }
+
+	public void setPasswordPolicyService(JahiaPasswordPolicyService passwordPolicyService) {
+    	this.passwordPolicyService = passwordPolicyService;
+    }
+
 }

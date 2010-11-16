@@ -48,6 +48,8 @@ class EvaluationContext {
 
 	private boolean userInitiated;
 
+	private String username;
+
 	/**
 	 * Initializes an instance of this class.
 	 * 
@@ -63,8 +65,24 @@ class EvaluationContext {
 	        boolean isUserInitiated) {
 		super();
 		this.user = user;
+		if (user != null) {
+			this.username = user.getUsername(); 
+		}
 		this.password = password;
 		this.userInitiated = isUserInitiated;
+	}
+
+	/**
+	 * Initializes an instance of this class.
+	 * 
+	 * @param username
+	 *            the name of the user
+	 * @param password
+	 *            the new user password
+	 */
+	public EvaluationContext(String username, String password) {
+		this(null, password, false);
+		this.username = username;
 	}
 
 	/**
@@ -96,42 +114,14 @@ class EvaluationContext {
 		return userInitiated;
 	}
 
-	/**
-	 * Sets the value of password.
-	 * 
-	 * @param password
-	 *            the password to set
-	 */
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	/**
-	 * Sets the value of user.
-	 * 
-	 * @param user
-	 *            the user to set
-	 */
-	public void setUser(JahiaUser user) {
-		this.user = user;
-	}
-
-	/**
-	 * Set to <code>true</code> if the operation was initiated by the user and
-	 * not via administration interface.
-	 * 
-	 * @param userInitiated
-	 *            set to <code>true</code> if the operation was initiated by
-	 *            the user and not via administration interface
-	 */
-	public void setUserInitiated(boolean userInitiated) {
-		this.userInitiated = userInitiated;
-	}
-
 	public String toString() {
 		return new ToStringBuilder(this).append("user", user).append(
 		        "password", password != null ? "<protected>" : "null").append(
 		        "userInitiated", userInitiated).toString();
 	}
+
+	public String getUsername() {
+    	return username;
+    }
 
 }

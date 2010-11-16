@@ -148,8 +148,8 @@
                                                     type="hidden" name="actionType" value="save"/><b><%=groupName %></b>
                                             </td>
                                         </tr>
-                                        <% if (jParams.getUser().isPermitted(new PermissionIdentity("password-policy", "global", null))) { %>
                                         <c:if test="${enforcePasswordPolicyForSite}">
+                                        <% if (jParams.getUser().isPermitted(new PermissionIdentity("password-policy", "global", null))) { %>
                                             <tr>
                                                 <td>
                                                     <label for="enforcePasswordPolicy">
@@ -167,8 +167,8 @@
                                                             </c:if>/>
                                                 </td>
                                             </tr>
-                                        </c:if>
                                         <% } %>
+                                        </c:if>
                                     </table>
                                     <br>
                                     <table class="text" border="0" cellspacing="0" cellpadding="3">

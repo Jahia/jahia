@@ -165,17 +165,7 @@
             &nbsp;<c:if test="${defaultSite}"><fmt:message key="org.jahia.admin.yes.label"/></c:if><c:if test="${!defaultSite}"><fmt:message key="label.no"/></c:if>
         </td>
     </tr>
-    <% if (jParams.getUser().isPermitted(new PermissionIdentity("password-policy", "global", null))) { %>
     <tr class="evenLine">
-        <td class="t3" >
-            <fmt:message key="org.jahia.admin.site.ManageSites.enforcePasswordPolicy.label"/>&nbsp;
-        </td>
-        <td headers="t2" class="lastCol">
-            &nbsp;<c:if test="${enforcePasswordPolicy}"><fmt:message key="org.jahia.admin.yes.label"/></c:if><c:if test="${!enforcePasswordPolicy}"><fmt:message key="label.no"/></c:if>
-        </td>
-    </tr>
-    <% } %>
-    <tr class="oddLine">
         <td class="t3" >
             <fmt:message key="org.jahia.admin.site.ManageSites.siteDesc.label"/>&nbsp;
         </td>
@@ -183,7 +173,7 @@
             &nbsp;<%=siteDescr%>
         </td>
     </tr>
-    <tr class="evenLine">
+    <tr class="oddLine">
         <td class="t3" >
             <fmt:message key="org.jahia.admin.site.ManageSites.templateSet.label"/>&nbsp;
         </td>

@@ -35,7 +35,6 @@ package org.jahia.services.pwdpolicy;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +49,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  * @author Sergiy Shyrkov
  */
 public class JahiaPasswordPolicyRule implements Serializable, Cloneable {
+
+	private static final long serialVersionUID = -3688773450875340830L;
 
 	/**
 	 * Indicates that the password will be invalidated and the user will be
@@ -71,13 +72,13 @@ public class JahiaPasswordPolicyRule implements Serializable, Cloneable {
 
 	private char action = ACTION_WARN;
 
-	private List actionParameters = new LinkedList();
+	private List<JahiaPasswordPolicyRuleParam> actionParameters = new LinkedList<JahiaPasswordPolicyRuleParam>();
 
 	private boolean active = true;
 
 	private String condition;
 
-	private List conditionParameters = new LinkedList();
+	private List<JahiaPasswordPolicyRuleParam> conditionParameters = new LinkedList<JahiaPasswordPolicyRuleParam>();
 
 	private char evaluator = EVALUATOR_JAVA;
 
@@ -135,20 +136,14 @@ public class JahiaPasswordPolicyRule implements Serializable, Cloneable {
 			throw new RuntimeException(ex);
 		}
 
-		rule.setConditionParameters(new LinkedList());
-		rule.setActionParameters(new LinkedList());
+		rule.setConditionParameters(new LinkedList<JahiaPasswordPolicyRuleParam>());
+		rule.setActionParameters(new LinkedList<JahiaPasswordPolicyRuleParam>());
 
-		for (Iterator iterator = actionParameters.iterator(); iterator
-		        .hasNext();) {
-			JahiaPasswordPolicyRuleParam param = (JahiaPasswordPolicyRuleParam) iterator
-			        .next();
-			rule.getActionParameters().add(param.clone());
+		for (JahiaPasswordPolicyRuleParam param : actionParameters) {
+			rule.getActionParameters().add((JahiaPasswordPolicyRuleParam) param.clone());
 		}
-		for (Iterator iterator = conditionParameters.iterator(); iterator
-		        .hasNext();) {
-			JahiaPasswordPolicyRuleParam param = (JahiaPasswordPolicyRuleParam) iterator
-			        .next();
-			rule.getConditionParameters().add(param.clone());
+		for (JahiaPasswordPolicyRuleParam param : conditionParameters) {
+			rule.getConditionParameters().add((JahiaPasswordPolicyRuleParam) param.clone());
 		}
 		return rule;
 	}
@@ -179,7 +174,7 @@ public class JahiaPasswordPolicyRule implements Serializable, Cloneable {
 	 * 
 	 * @return the actionParameters
 	 */
-	public List getActionParameters() {
+	public List<JahiaPasswordPolicyRuleParam> getActionParameters() {
 		return actionParameters;
 	}
 
@@ -189,15 +184,12 @@ public class JahiaPasswordPolicyRule implements Serializable, Cloneable {
 	 * 
 	 * @return the map with all action parameters, keyed by their names
 	 */
-	public Map getActionParametersValues() {
+	public Map<String, String> getActionParametersValues() {
 		if (actionParameters.size() == 0)
 			return Collections.emptyMap();
 
-		Map params = new HashMap();
-		for (Iterator iterator = actionParameters.iterator(); iterator
-		        .hasNext();) {
-			JahiaPasswordPolicyRuleParam theParam = (JahiaPasswordPolicyRuleParam) iterator
-			        .next();
+		Map<String, String> params = new HashMap<String, String>(actionParameters.size());
+		for (JahiaPasswordPolicyRuleParam theParam : actionParameters) {
 			params.put(theParam.getName(), theParam.getValue());
 		}
 
@@ -218,7 +210,7 @@ public class JahiaPasswordPolicyRule implements Serializable, Cloneable {
 	 * 
 	 * @return the conditionParameters
 	 */
-	public List getConditionParameters() {
+	public List<JahiaPasswordPolicyRuleParam> getConditionParameters() {
 		return conditionParameters;
 	}
 
@@ -228,15 +220,12 @@ public class JahiaPasswordPolicyRule implements Serializable, Cloneable {
 	 * 
 	 * @return the map with all condition parameters, keyed by their names
 	 */
-	public Map getConditionParametersValues() {
+	public Map<String, String> getConditionParametersValues() {
 		if (conditionParameters.size() == 0)
 			return Collections.emptyMap();
 
-		Map params = new HashMap();
-		for (Iterator iterator = conditionParameters.iterator(); iterator
-		        .hasNext();) {
-			JahiaPasswordPolicyRuleParam theParam = (JahiaPasswordPolicyRuleParam) iterator
-			        .next();
+		Map<String, String> params = new HashMap<String, String>(conditionParameters.size());
+		for (JahiaPasswordPolicyRuleParam theParam : conditionParameters) {
 			params.put(theParam.getName(), theParam.getValue());
 		}
 
@@ -323,7 +312,7 @@ public class JahiaPasswordPolicyRule implements Serializable, Cloneable {
 	 * @param actionParameters
 	 *            the actionParameters to set
 	 */
-	public void setActionParameters(List actionParameters) {
+	public void setActionParameters(List<JahiaPasswordPolicyRuleParam> actionParameters) {
 		this.actionParameters = actionParameters;
 	}
 
@@ -353,7 +342,7 @@ public class JahiaPasswordPolicyRule implements Serializable, Cloneable {
 	 * @param conditionParameters
 	 *            the conditionParameters to set
 	 */
-	public void setConditionParameters(List conditionParameters) {
+	public void setConditionParameters(List<JahiaPasswordPolicyRuleParam> conditionParameters) {
 		this.conditionParameters = conditionParameters;
 	}
 
@@ -407,7 +396,7 @@ public class JahiaPasswordPolicyRule implements Serializable, Cloneable {
 	 * @param parameters
 	 *            the parameters to set
 	 */
-	public void setParameters(List parameters) {
+	public void setParameters(List<JahiaPasswordPolicyRuleParam> parameters) {
 		this.conditionParameters = parameters;
 	}
 

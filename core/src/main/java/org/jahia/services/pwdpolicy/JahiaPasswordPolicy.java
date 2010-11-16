@@ -33,7 +33,6 @@
 package org.jahia.services.pwdpolicy;
 
 import java.io.Serializable;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -49,11 +48,13 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  */
 public class JahiaPasswordPolicy implements Serializable, Cloneable {
 
+	private static final long serialVersionUID = 7340082798180832549L;
+
 	private int id;
 
 	private String name;
 
-	private List rules = new LinkedList();
+	private List<JahiaPasswordPolicyRule> rules = new LinkedList<JahiaPasswordPolicyRule>();
 
 	/**
 	 * Initializes an instance of this class.
@@ -88,11 +89,9 @@ public class JahiaPasswordPolicy implements Serializable, Cloneable {
 			throw new RuntimeException(ex);
 		}
 
-		policy.setRules(new LinkedList());
-		for (Iterator iterator = rules.iterator(); iterator.hasNext();) {
-			JahiaPasswordPolicyRule rule = (JahiaPasswordPolicyRule) iterator
-			        .next();
-			policy.getRules().add(rule.clone());
+		policy.setRules(new LinkedList<JahiaPasswordPolicyRule>());
+		for (JahiaPasswordPolicyRule rule : rules) {
+			policy.getRules().add((JahiaPasswordPolicyRule) rule.clone());
 		}
 
 		return policy;
@@ -144,7 +143,7 @@ public class JahiaPasswordPolicy implements Serializable, Cloneable {
 	 * 
 	 * @return list of rules for this policy
 	 */
-	public List getRules() {
+	public List<JahiaPasswordPolicyRule> getRules() {
 		return rules;
 	}
 
@@ -178,7 +177,7 @@ public class JahiaPasswordPolicy implements Serializable, Cloneable {
 	 * @param rules
 	 *            the list of rules for this policy
 	 */
-	public void setRules(List rules) {
+	public void setRules(List<JahiaPasswordPolicyRule> rules) {
 		this.rules = rules;
 	}
 

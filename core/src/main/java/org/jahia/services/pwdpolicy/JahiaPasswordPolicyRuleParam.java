@@ -45,7 +45,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  */
 public class JahiaPasswordPolicyRuleParam implements Serializable, Cloneable {
 
-    private int id;
+    private static final long serialVersionUID = -7015454747220376620L;
+
+	private int id;
 
     private String name;
 

@@ -54,6 +54,8 @@ import org.jahia.services.pwdpolicy.PolicyEnforcementResult;
 import org.jahia.services.usermanager.*;
 import org.jahia.tools.files.FileUpload;
 import org.jahia.utils.JahiaTools;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -82,6 +84,8 @@ public class ManageUsers extends AbstractAdministrationModule {
     public static final String USER_PROPERTY_PREFIX = REQUEST_KEY_PREFIX + "property" + SEPARATOR;
 
     private static final String JSP_PATH = JahiaAdministration.JSP_PATH;
+
+	private static Logger logger = LoggerFactory.getLogger(ManageUsers.class);
 
     private JahiaUserManagerService userManager;
 
@@ -363,12 +367,8 @@ public class ManageUsers extends AbstractAdministrationModule {
             userMessage = StringUtils.capitalize(getMessage("org.jahia.admin.users.ManageUsers.onlyCharacters.label"));
             return false;
         } else if (userManager.userExists(username)) {
-            JahiaUser user = userManager.lookupUser(username);
-            String url = JahiaAdministration.composeActionURL(request,response,"users","&sub=processRegister&userSelected=" + user.getUserKey());
-
-            userMessage = getMessage("label.user");
-            userMessage += " [" + username + "] ";
-            userMessage += getMessage("org.jahia.admin.userMessage.alreadyExist.label");
+			userMessage = getMessage("label.user") + " [" + username + "] "
+			        + getMessage("org.jahia.admin.userMessage.alreadyExist.label");
             return false;
         }
         JahiaPasswordPolicyService pwdPolicyService = ServicesRegistry.getInstance().getJahiaPasswordPolicyService();
@@ -384,11 +384,7 @@ public class ManageUsers extends AbstractAdministrationModule {
                         "org.jahia.admin.userMessage.passwdNotMatch.label");
                 return false;
             }
-            PolicyEnforcementResult evalResult = pwdPolicyService.enforcePolicyOnUserCreate(new JahiaDBUser(-1,
-                                                                                                            username,
-                                                                                                            passwd,
-                                                                                                            null, null),
-                                                                                            passwd, 0);
+            PolicyEnforcementResult evalResult = pwdPolicyService.enforcePolicyOnUserCreate(username, passwd);
             if (!evalResult.isSuccess()) {
                 EngineMessages policyMsgs = evalResult.getEngineMessages();
                 policyMsgs.saveMessages(((ParamBean) jParams).getRequest());
@@ -418,14 +414,11 @@ public class ManageUsers extends AbstractAdministrationModule {
 
         JahiaUser usr = userManager.createUser(username, passwd, userProps);
         if (usr == null) {
-            userMessage = getMessage("org.jahia.admin.userMessage.unableCreateUser.label");
-            userMessage += " " + username;
+            userMessage = getMessage("org.jahia.admin.userMessage.unableCreateUser.label") + " " + username;
             return false;
         } else {
             usr = userManager.lookupUser(username);
-            userMessage = getMessage("label.user");
-            userMessage += " [" + username + "] ";
-            userMessage += getMessage("message.successfully.created");
+            userMessage = getMessage("label.user") + " [" + username + "] " + getMessage("message.successfully.created");
             isError = false;
         }
         // Lookup for home page settings and set it.
@@ -784,31 +777,50 @@ public class ManageUsers extends AbstractAdministrationModule {
             String[] lineElements = null;
             int errorsCreatingUsers = 0;
             int usersCreatedSuccessfully = 0;
+            JahiaPasswordPolicyService pwdPolicyService = ServicesRegistry.getInstance().getJahiaPasswordPolicyService();
+            JahiaUserManagerService userService = ServicesRegistry.getInstance().getJahiaUserManagerService();
+            
             while ((lineElements = csvReader.readNext()) != null) {
                 List<String> lineElementList = Arrays.asList(lineElements);
                 Properties properties = buildProperties(headerElementList, lineElementList);
                 String userName = lineElementList.get(userNamePos);
                 String password = lineElementList.get(passwordPos);
-                JahiaUser jahiaUser = userManager.createUser(userName, password, properties);
-                if (jahiaUser == null) {
-                    logger.warn("Error creating user " + userName);
-                    errorsCreatingUsers++;
+                if (userService.isUsernameSyntaxCorrect(userName)) {
+                    PolicyEnforcementResult evalResult = pwdPolicyService.enforcePolicyOnUserCreate(userName, password);
+                    if (evalResult.isSuccess()) {
+                    	JahiaUser jahiaUser = userManager.createUser(userName, password, properties);
+                    	if (jahiaUser != null) {
+                            usersCreatedSuccessfully++;
+                            logger.info("Successfully created user {}", userName);
+                    	} else {
+                            errorsCreatingUsers++;
+                            logger.warn("Error creating user {}", userName);
+                    	}
+                    } else {
+                        errorsCreatingUsers++;
+                        StringBuilder result = new StringBuilder();
+                        for (String msg : evalResult.getTextMessages()) {
+                            result.append(msg).append("\n");
+                        }
+                    	logger.warn("Skipping user {}. Following password policy rules are violated\n{}", userName, result.toString());
+                    }
                 } else {
-                    logger.info("Successfully created user " + userName);
-                    usersCreatedSuccessfully++;
-                }
+                    errorsCreatingUsers++;
+                    logger.warn("Username {} is not valid. Skipping user.", userName);
+                } 
             }
-            userMessage = Integer.toString(usersCreatedSuccessfully) + " " + getMessage("org.jahia.admin.userMessage.usersCreatedSuccessfully.label");
-            userMessage += ", ";
-            userMessage += Integer.toString(errorsCreatingUsers) + " " + getMessage("org.jahia.admin.userMessage.usersNotCreatedBecauseOfErrors.label");
+			userMessage = Integer.toString(usersCreatedSuccessfully)
+			        + " "
+			        + getMessage("org.jahia.admin.userMessage.usersCreatedSuccessfully.label")
+			        + ", "
+			        + Integer.toString(errorsCreatingUsers)
+			        + " "
+			        + getMessage("org.jahia.admin.userMessage.usersNotCreatedBecauseOfErrors.label");
             isError = false;
 
         }
 
         displayUsers( request, response, session);
     }
-
-    private static org.slf4j.Logger logger =
-             org.slf4j.LoggerFactory.getLogger(ManageUsers.class);
 
 }

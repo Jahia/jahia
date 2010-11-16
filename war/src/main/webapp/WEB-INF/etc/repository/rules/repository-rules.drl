@@ -179,3 +179,11 @@ rule "notify user (create)"
     then
         Notify new user with mail template "/notifications/templates/mail/newUser.vm"
 end
+
+rule "User password is set"
+    when
+        A property j:password has been set on a node
+			- the node has the type jnt:user
+    then
+        Store password history for user node.getName()
+end

@@ -32,26 +32,48 @@
 
 package org.jahia.services.pwdpolicy;
 
-import java.util.List;
+import java.io.Serializable;
+import java.util.Date;
+
+import org.apache.commons.collections.ComparatorUtils;
 
 /**
- * Represents a single password policy condition that will be evaluated.
+ * Represents a history entry for the user password (encrypted).
  * 
  * @author Sergiy Shyrkov
  */
-public interface PasswordPolicyRuleCondition {
+public class PasswordHistoryEntry implements Comparable<PasswordHistoryEntry>, Serializable {
 
 	/**
-	 * Evaluates the current condition and returns the result of the evaluation.
+	 * Initializes an instance of this class.
 	 * 
-	 * @param parameters
-	 *            list of {@link JahiaPasswordPolicyRuleParam} objects as
-	 *            condition parameters
-	 * @param ctx
-	 *            the evaluation context object
-	 * @return <code>true</code> if the condition is matched based on the
-	 *         current evaluation context
+	 * @param password
+	 * @param modificationDate
 	 */
-	boolean evaluate(List<JahiaPasswordPolicyRuleParam> parameters, EvaluationContext ctx);
+	public PasswordHistoryEntry(String password, Date modificationDate) {
+		super();
+		this.password = password;
+		this.modificationDate = modificationDate;
+	}
+
+	private static final long serialVersionUID = -3097158027608649414L;
+
+	private String password;
+
+	private Date modificationDate;
+
+	@SuppressWarnings("unchecked")
+	public int compareTo(PasswordHistoryEntry o) {
+		return ComparatorUtils.naturalComparator().compare(o.getModificationDate(),
+		        getModificationDate());
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public Date getModificationDate() {
+		return modificationDate;
+	}
 
 }

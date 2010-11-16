@@ -32,9 +32,9 @@
 
 package org.jahia.services.pwdpolicy;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -43,6 +43,9 @@ import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 import org.jahia.engines.EngineMessage;
 import org.jahia.engines.EngineMessages;
+import org.jahia.utils.i18n.JahiaResourceBundle;
+
+import com.ibm.icu.text.MessageFormat;
 
 /**
  * Convenient utility class for converting the password policy enforcement
@@ -60,11 +63,8 @@ final class PolicyEnforcementResultConvertor {
             PolicyEnforcementResult evalResult) {
         ActionMessages msgs = new ActionMessages();
 
-        for (Iterator msgIterator = toEngineMessages(evalResult).getMessages()
-                .iterator(); msgIterator.hasNext();) {
-            EngineMessage engineMsg = (EngineMessage) msgIterator.next();
-            msgs.add("password", new ActionMessage(engineMsg.getKey(),
-                    engineMsg.getValues()));
+        for (EngineMessage engineMsg : toEngineMessages(evalResult).getMessages()) {
+			msgs.add("password", new ActionMessage(engineMsg.getKey(), engineMsg.getValues()));
         }
 
         return msgs;
@@ -74,20 +74,18 @@ final class PolicyEnforcementResultConvertor {
             PolicyEnforcementResult evalResult) {
         EngineMessages msgs = new EngineMessages();
 
-        List rules = evalResult.getViolatedRules();
-        for (Iterator ruleIterator = rules.iterator(); ruleIterator.hasNext();) {
-            JahiaPasswordPolicyRule theRule = (JahiaPasswordPolicyRule) ruleIterator
-                    .next();
-            List params = theRule.getActionParameters();
+        List<JahiaPasswordPolicyRule> rules = evalResult.getViolatedRules();
+        for (JahiaPasswordPolicyRule theRule : rules) {
+        	List<JahiaPasswordPolicyRuleParam> params = theRule.getActionParameters();
             if (params.size() > 0) {
-                Map paramMap = theRule.getActionParametersValues();
+                Map<String, String> paramMap = theRule.getActionParametersValues();
                 String msgKey = (String) paramMap.get("message");
                 if (msgKey == null) {
                     // get the first one in the list
                     msgKey = ((JahiaPasswordPolicyRuleParam) params.get(0))
                             .getValue();
                 }
-                List arguments = new LinkedList();
+                List<String> arguments = new LinkedList<String>();
                 for (int i = 0; i < params.size() - 1; i++) {
                     arguments.add(paramMap.get("arg" + i));
                 }
@@ -97,12 +95,9 @@ final class PolicyEnforcementResultConvertor {
                 }
                 if (arguments.size() > 0) {
                     // evaluate arguments first
-                    List argValues = new LinkedList();
-                    Map condParams = theRule.getConditionParametersValues();
-                    for (Iterator iterator = arguments.iterator(); iterator
-                            .hasNext();) {
-
-                        String argParam = (String) iterator.next();
+                    List<String> argValues = new LinkedList<String>();
+                    Map<String, String> condParams = theRule.getConditionParametersValues();
+                    for (String argParam : arguments) {
                         String value = argParam;
 
                         if (argParam != null) {
@@ -130,4 +125,21 @@ final class PolicyEnforcementResultConvertor {
         return msgs;
     }
 
+    static final List<String> toText(PolicyEnforcementResult evalResult) {
+    	List<String> texts = new LinkedList<String>();
+        for (EngineMessage msg : toEngineMessages(evalResult).getMessages()) {
+        	texts.add(getMsg(msg.getKey(), msg.getValues()));
+        }
+
+        return texts;
+    }
+    
+    private static String getMsg(String key, Object[] args) {
+    	String msg = JahiaResourceBundle.getJahiaInternalResource(key, Locale.ENGLISH);
+    	if (args != null && args.length > 0 && msg != null && msg.contains("{0}")) {
+    		msg = MessageFormat.format(msg, args);
+    	}
+    	
+    	return msg;
+    }
 }

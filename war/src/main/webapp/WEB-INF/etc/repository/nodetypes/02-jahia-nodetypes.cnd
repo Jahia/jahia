@@ -247,6 +247,12 @@
  - j:defaultPhone (weakreference) < jnt:phoneNumber
  + * (jnt:phoneNumber)
 
+[jnt:passwordHistoryEntry] > nt:base, mix:created
+ - j:password (string) protected hidden indexed=no
+
+[jnt:passwordHistory] > nt:base
+ + * (jnt:passwordHistoryEntry)
+
 [jnt:user] > jnt:systemNode, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:observable
  - j:accountLocked (boolean)=false autocreated
  - j:password (string) indexed=no
@@ -282,6 +288,7 @@
  - * (string)
  + j:addresses (jnt:addresses) = jnt:addresses mandatory autocreated
  + j:phones (jnt:phoneNumbers) = jnt:phoneNumbers mandatory autocreated
+ + passwordHistory (jnt:passwordHistory) = jnt:passwordHistory mandatory autocreated
  + * (nt:base)
 
 [jnt:groupsFolder] > jnt:systemNode, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:list

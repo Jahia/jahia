@@ -111,7 +111,9 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
      * This is the method that creates a new user in the system, with all the
      * specified attributes.
      *
+     * @param name the name for the newly created user
      * @param password User password
+     * @param properties user properties
      */
     public JCRUser createUser(final String name, final String password, final Properties properties) {
         try {

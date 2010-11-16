@@ -33,7 +33,6 @@
 package org.jahia.services.pwdpolicy;
 
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -49,11 +48,11 @@ public class PolicyEnforcementResult {
 
 	static final PolicyEnforcementResult SUCCESS = new PolicyEnforcementResult();
 
-	private List invalidationRules = Collections.emptyList();
+	private List<JahiaPasswordPolicyRule> invalidationRules = Collections.emptyList();
 
-	private List violatedRules = Collections.emptyList();
+	private List<JahiaPasswordPolicyRule> violatedRules = Collections.emptyList();
 
-	private List warningRules = Collections.emptyList();
+	private List<JahiaPasswordPolicyRule> warningRules = Collections.emptyList();
 
 	/**
 	 * Initializes an instance of this class.
@@ -67,7 +66,7 @@ public class PolicyEnforcementResult {
 	 * 
 	 * @param violatedRules
 	 */
-	public PolicyEnforcementResult(List violatedRules) {
+	public PolicyEnforcementResult(List<JahiaPasswordPolicyRule> violatedRules) {
 		this();
 		this.violatedRules = violatedRules;
 		buildResult();
@@ -75,12 +74,9 @@ public class PolicyEnforcementResult {
 
 	private void buildResult() {
 		if (violatedRules.size() > 0) {
-			invalidationRules = new LinkedList();
-			warningRules = new LinkedList();
-			for (Iterator iterator = violatedRules.iterator(); iterator
-			        .hasNext();) {
-				JahiaPasswordPolicyRule rule = (JahiaPasswordPolicyRule) iterator
-				        .next();
+			invalidationRules = new LinkedList<JahiaPasswordPolicyRule>();
+			warningRules = new LinkedList<JahiaPasswordPolicyRule>();
+			for (JahiaPasswordPolicyRule rule : violatedRules) {
 				if (JahiaPasswordPolicyRule.ACTION_INVALIDATE_PASSWORD == rule
 				        .getAction()) {
 					invalidationRules.add(rule);
@@ -126,11 +122,19 @@ public class PolicyEnforcementResult {
 	}
 
 	/**
+	 * Returns the result of the evaluation as the list of plain English messages.
+	 * 
+	 * @return the result of the evaluation as the list of plain English messages
+	 */
+	public List<String> getTextMessages() {
+		return PolicyEnforcementResultConvertor.toText(this);
+	}
+	/**
 	 * Returns the invalidationRules.
 	 * 
 	 * @return the invalidationRules
 	 */
-	public List getInvalidationRules() {
+	public List<JahiaPasswordPolicyRule> getInvalidationRules() {
 		return invalidationRules;
 	}
 
@@ -139,7 +143,7 @@ public class PolicyEnforcementResult {
 	 * 
 	 * @return the violatedRules
 	 */
-	public List getViolatedRules() {
+	public List<JahiaPasswordPolicyRule> getViolatedRules() {
 		return violatedRules;
 	}
 
@@ -148,7 +152,7 @@ public class PolicyEnforcementResult {
 	 * 
 	 * @return the warningRules
 	 */
-	public List getWarningRules() {
+	public List<JahiaPasswordPolicyRule> getWarningRules() {
 		return warningRules;
 	}
 
@@ -164,7 +168,7 @@ public class PolicyEnforcementResult {
 	}
 
 	/**
-	 * Reurns <code>true</code> if none of the applied rules is violated.
+	 * Returns <code>true</code> if none of the applied rules is violated.
 	 * 
 	 * @return <code>true</code> if none of the applied rules is violated
 	 */

@@ -287,6 +287,8 @@
                 <property name="cacheService" ref="JahiaCacheService"/>
                 <property name="schedulerService" ref="SchedulerService"/>
                 <property name="sitesService" ref="JahiaSitesService"/>
+                <property name="userManagerService" ref="JahiaUserManagerService"/>
+                <property name="passwordPolicyService" ref="JahiaPasswordPolicyService"/>
             </bean>
         </property>
     </bean>

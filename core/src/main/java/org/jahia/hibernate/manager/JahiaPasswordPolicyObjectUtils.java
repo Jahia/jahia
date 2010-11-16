@@ -32,8 +32,6 @@
 
 package org.jahia.hibernate.manager;
 
-import java.util.Iterator;
-
 import org.jahia.hibernate.model.JahiaPwdPolicy;
 import org.jahia.hibernate.model.JahiaPwdPolicyRule;
 import org.jahia.hibernate.model.JahiaPwdPolicyRuleParam;
@@ -50,13 +48,10 @@ import org.jahia.services.pwdpolicy.JahiaPasswordPolicyRuleParam;
 final class JahiaPasswordPolicyObjectUtils {
 
 	static void dereferenceObjects(JahiaPwdPolicy policy) {
-		for (Iterator iterator = policy.getRules().iterator(); iterator
-		        .hasNext();) {
-			JahiaPwdPolicyRule rule = (JahiaPwdPolicyRule) iterator.next();
+		for (JahiaPwdPolicyRule rule : policy.getRules()) {
 			rule.setPolicy(null);
-			for (Iterator paramInerator = rule.getParameters().iterator(); paramInerator
-			        .hasNext();) {
-				((JahiaPwdPolicyRuleParam) paramInerator.next()).setRule(null);
+			for (JahiaPwdPolicyRuleParam param : rule.getParameters()) {
+				param.setRule(null);
 			}
 			rule.getParameters().clear();
 			rule.setParameters(null);
@@ -76,10 +71,8 @@ final class JahiaPasswordPolicyObjectUtils {
 		        policySrvObj.getName());
 
 		int position = 0;
-		for (Iterator iterator = policySrvObj.getRules().iterator(); iterator
-		        .hasNext();) {
-			JahiaPwdPolicyRule ruleDataObj = toDataObjectRule((JahiaPasswordPolicyRule) iterator
-			        .next());
+		for (JahiaPasswordPolicyRule ruleBusinessObj : policySrvObj.getRules()) {
+			JahiaPwdPolicyRule ruleDataObj = toDataObjectRule(ruleBusinessObj);
 
 			ruleDataObj.setPolicy(policy);
 			ruleDataObj.setPosition(position++);
@@ -99,19 +92,17 @@ final class JahiaPasswordPolicyObjectUtils {
 		                .getAction());
 
 		int position = 0;
-		for (Iterator iterator = ruleSrvObj.getConditionParameters().iterator(); iterator
-		        .hasNext();) {
+		for (JahiaPasswordPolicyRuleParam param : ruleSrvObj.getConditionParameters()) {
 			JahiaPwdPolicyRuleParam paramDataObj = toDataObjectParam(
-			        (JahiaPasswordPolicyRuleParam) iterator.next(),
+			        param,
 			        JahiaPwdPolicyRuleParam.TYPE_CONDITION_PARAM);
 			paramDataObj.setRule(rule);
 			paramDataObj.setPosition(position++);
 			rule.getParameters().add(paramDataObj);
 		}
-		for (Iterator iterator = ruleSrvObj.getActionParameters().iterator(); iterator
-		        .hasNext();) {
+		for (JahiaPasswordPolicyRuleParam param : ruleSrvObj.getActionParameters()) {
 			JahiaPwdPolicyRuleParam paramDataObj = toDataObjectParam(
-			        (JahiaPasswordPolicyRuleParam) iterator.next(),
+			        param,
 			        JahiaPwdPolicyRuleParam.TYPE_ACTION_PARAM);
 			paramDataObj.setRule(rule);
 			paramDataObj.setPosition(position++);
@@ -163,10 +154,8 @@ final class JahiaPasswordPolicyObjectUtils {
 		policy.setId(policyDataObj.getId());
 		policy.setName(policyDataObj.getName());
 
-		for (Iterator iterator = policyDataObj.getRules().iterator(); iterator
-		        .hasNext();) {
-			policy.getRules().add(
-			        toServiceObjectRule((JahiaPwdPolicyRule) iterator.next()));
+		for (JahiaPwdPolicyRule rule : policyDataObj.getRules()) {
+			policy.getRules().add(toServiceObjectRule(rule));
 		}
 
 		return policy;
@@ -190,10 +179,7 @@ final class JahiaPasswordPolicyObjectUtils {
 		        ruleDataObj.getEvaluator(), ruleDataObj.getCondition(),
 		        ruleDataObj.getAction());
 
-		for (Iterator iterator = ruleDataObj.getParameters().iterator(); iterator
-		        .hasNext();) {
-			JahiaPwdPolicyRuleParam ruleParamDataObj = (JahiaPwdPolicyRuleParam) iterator
-			        .next();
+		for (JahiaPwdPolicyRuleParam ruleParamDataObj : ruleDataObj.getParameters()) {
 			JahiaPasswordPolicyRuleParam paramSrvObj = toServiceObjectParam(ruleParamDataObj);
 			if (JahiaPwdPolicyRuleParam.TYPE_ACTION_PARAM == ruleParamDataObj
 			        .getType()) {

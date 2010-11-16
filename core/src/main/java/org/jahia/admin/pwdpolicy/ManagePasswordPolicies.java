@@ -33,7 +33,6 @@
 package org.jahia.admin.pwdpolicy;
 
 import java.io.IOException;
-import java.util.Iterator;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -75,8 +74,8 @@ public class ManagePasswordPolicies extends AbstractAdministrationModule {
 		JahiaPasswordPolicy pwdPolicy = service.getDefaultPolicy();
 
 		if ("save".equals(action)) {
-			for (Iterator iterator = pwdPolicy.getRules().iterator(); iterator.hasNext();) {
-	            ((JahiaPasswordPolicyRule) iterator.next()).setActive(false);
+			for (JahiaPasswordPolicyRule rule : pwdPolicy.getRules()) {
+	            rule.setActive(false);
             }
 			RequestUtils.populate(pwdPolicy, request);
 			service.updatePolicy(pwdPolicy);

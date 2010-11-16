@@ -384,7 +384,7 @@ public abstract class JahiaGroup extends JahiaBasePrincipal implements Group {
             if (userKeyList != null) {
                 for (String curUserKey : userKeyList) {
                     JahiaUser curUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(curUserKey);
-                    if (!(curUser instanceof JahiaDBUser) && (!users.contains(curUser))) {
+                    if (!(curUser instanceof JCRUser) && (!users.contains(curUser))) {
                         // this should add all users that don't come from
                         // the database provider and that aren't root.
                     users.add (curUser);

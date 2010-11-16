@@ -103,19 +103,7 @@
 
             </td>
         </tr>
-        <% if (jParams.getUser().isPermitted(new PermissionIdentity("password-policy", "global", null))) { %>
         <tr>
-            <td>
-                <label for="enforcePasswordPolicy">
-                    <fmt:message key="org.jahia.admin.site.ManageSites.enforcePasswordPolicy.label"/>&nbsp;
-                </label>
-            </td>
-            <td>
-                :&nbsp;<input class="input" type="checkbox" name="enforcePasswordPolicy" value="true" <c:if test="${enforcePasswordPolicy}">checked="checked"</c:if> id="enforcePasswordPolicy"/>
-            </td>
-        </tr>
-        <% } %>
-        <tr >
             <td>
                 <fmt:message key="org.jahia.admin.site.ManageSites.siteDesc.label"/>&nbsp;
             </td>

@@ -35,14 +35,10 @@ package org.jahia.params.valves;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
-import org.jahia.bin.Render;
-import org.jahia.engines.EngineMessage;
-import org.jahia.engines.EngineMessages;
 import org.jahia.params.ProcessingContext;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.pwdpolicy.PolicyEnforcementResult;
 import org.jahia.services.usermanager.JahiaUser;
 
 import javax.servlet.http.Cookie;
@@ -50,7 +46,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
 import java.security.SecureRandom;
-import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
 
@@ -160,27 +155,27 @@ public class CookieAuthValveImpl extends BaseAuthValve {
     }
 
     private void enforcePasswordPolicy(JahiaUser theUser, AuthValveContext authContext) {
-        PolicyEnforcementResult evalResult =
-                ServicesRegistry.getInstance().getJahiaPasswordPolicyService().enforcePolicyOnLogin(theUser);
-        if (!evalResult.isSuccess()) {
-            EngineMessages policyMsgs = evalResult.getEngineMessages();
-            EngineMessages resultMessages = new EngineMessages();
-            for (Iterator<EngineMessage> iterator = policyMsgs.getMessages().iterator(); iterator.hasNext();) {
-                resultMessages.add((EngineMessage) iterator.next());
-            }
-            if (authContext != null) {
-                authContext.getRequest().getSession().setAttribute(EngineMessages.CONTEXT_KEY, resultMessages);
-                try {
-                    String redirectUrl = null;
-                    redirectUrl = new StringBuffer(64).append(authContext.getRequest().getContextPath())
-                            .append(Render.getRenderServletPath()).append("/default/en/users").append(theUser.getName())
-                            .append(".html").toString();
-                    authContext.getResponse().sendRedirect(redirectUrl);
-                } catch (Exception ex) {
-                    logger.error("Unable to forward to the mysettings engine page", ex);
-                }
-            }
-        }
+//        PolicyEnforcementResult evalResult =
+//                ServicesRegistry.getInstance().getJahiaPasswordPolicyService().enforcePolicyOnLogin(theUser);
+//        if (!evalResult.isSuccess()) {
+//            EngineMessages policyMsgs = evalResult.getEngineMessages();
+//            EngineMessages resultMessages = new EngineMessages();
+//            for (Iterator<EngineMessage> iterator = policyMsgs.getMessages().iterator(); iterator.hasNext();) {
+//                resultMessages.add((EngineMessage) iterator.next());
+//            }
+//            if (authContext != null) {
+//                authContext.getRequest().getSession().setAttribute(EngineMessages.CONTEXT_KEY, resultMessages);
+//                try {
+//                    String redirectUrl = null;
+//                    redirectUrl = new StringBuffer(64).append(authContext.getRequest().getContextPath())
+//                            .append(Render.getRenderServletPath()).append("/default/en/users").append(theUser.getName())
+//                            .append(".html").toString();
+//                    authContext.getResponse().sendRedirect(redirectUrl);
+//                } catch (Exception ex) {
+//                    logger.error("Unable to forward to the mysettings engine page", ex);
+//                }
+//            }
+//        }
 
     }
 

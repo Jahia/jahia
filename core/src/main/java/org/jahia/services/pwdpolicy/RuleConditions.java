@@ -36,8 +36,9 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
-import org.jahia.services.usermanager.JahiaDBUser;
+import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 
 /**
  * Includes a set of conditions for the Password Policy Service.
@@ -53,7 +54,7 @@ public final class RuleConditions {
      */
     public static class ExpirationPeriodReached implements
             PasswordPolicyRuleCondition {
-        public boolean evaluate(List parameters, EvaluationContext ctx) {
+        public boolean evaluate(List<JahiaPasswordPolicyRuleParam> parameters, EvaluationContext ctx) {
 
             if (ctx.getUser() == null) {
                 throw new IllegalArgumentException(
@@ -81,7 +82,7 @@ public final class RuleConditions {
      * @author Sergiy Shyrkov
      */
     public static class ExpiresSoon implements PasswordPolicyRuleCondition {
-        public boolean evaluate(List parameters, EvaluationContext ctx) {
+        public boolean evaluate(List<JahiaPasswordPolicyRuleParam> parameters, EvaluationContext ctx) {
 
             if (ctx.getUser() == null) {
                 throw new IllegalArgumentException(
@@ -114,7 +115,7 @@ public final class RuleConditions {
      */
     public static class FirstLoginEvaluator implements
             PasswordPolicyRuleCondition {
-        public boolean evaluate(List parameters, EvaluationContext ctx) {
+        public boolean evaluate(List<JahiaPasswordPolicyRuleParam> parameters, EvaluationContext ctx) {
             if (ctx.getUser() == null) {
                 throw new IllegalArgumentException(
                         "The user object is null. Unable to evaluate the condition");
@@ -130,7 +131,7 @@ public final class RuleConditions {
      * @author Sergiy Shyrkov
      */
     public static class MaximumLength implements PasswordPolicyRuleCondition {
-        public boolean evaluate(List parameters, EvaluationContext ctx) {
+        public boolean evaluate(List<JahiaPasswordPolicyRuleParam> parameters, EvaluationContext ctx) {
             return ctx.getPassword().length() <= getParameterIntValue(
                     parameters, 0);
         }
@@ -142,7 +143,7 @@ public final class RuleConditions {
      * @author Sergiy Shyrkov
      */
     public static class MinimumLength implements PasswordPolicyRuleCondition {
-        public boolean evaluate(List parameters, EvaluationContext ctx) {
+        public boolean evaluate(List<JahiaPasswordPolicyRuleParam> parameters, EvaluationContext ctx) {
             return ctx.getPassword().length() >= getParameterIntValue(
                     parameters, 0);
         }
@@ -171,7 +172,7 @@ public final class RuleConditions {
             return foundCharCount >= requiredCount;
         }
 
-        public boolean evaluate(List parameters, EvaluationContext ctx) {
+        public boolean evaluate(List<JahiaPasswordPolicyRuleParam> parameters, EvaluationContext ctx) {
             int requiredCount = getParameterIntValue(parameters, 0);
             if (requiredCount <= 0) {
                 return true;
@@ -184,14 +185,14 @@ public final class RuleConditions {
     }
 
     /**
-     * Checks the minimum occurence of the digit characters in the password.
+     * Checks the minimum occurrence of the digit characters in the password.
      * 
      * @author Sergiy Shyrkov
      */
     public static class MinOccurrenceDigits implements
             PasswordPolicyRuleCondition {
 
-        public boolean evaluate(List parameters, EvaluationContext ctx) {
+        public boolean evaluate(List<JahiaPasswordPolicyRuleParam> parameters, EvaluationContext ctx) {
             int requiredCount = getParameterIntValue(parameters, 0);
             if (requiredCount <= 0) {
                 return true;
@@ -212,42 +213,36 @@ public final class RuleConditions {
     }
 
     /**
-     * Check pasword history in order to prevent password reuse.
+     * Check password history in order to prevent password reuse.
      * 
      * @author Sergiy Shyrkov
      */
     public static class PasswordHistory implements PasswordPolicyRuleCondition {
-        public boolean evaluate(List parameters, EvaluationContext ctx) {
+        public boolean evaluate(List<JahiaPasswordPolicyRuleParam> parameters, EvaluationContext ctx) {
 
             if (ctx.getPassword() == null || ctx.getUser() == null) {
-                throw new IllegalArgumentException(
-                        "Either password or user object is null. Unable to evaluate the condition");
+            	return true;
             }
 
             boolean success = true;
 
-            // todo implement in jcr
-//            // we can only deal with the JahiaDBUser
-//            if (ctx.getUser() instanceof JahiaDBUser) {
-//                int checkedPasswordCount = getParameterIntValue(parameters, 0);
-//
-//                List history = ((JahiaDBUser) ctx.getUser())
-//                        .getPasswordHistory();
-//
-//                String encryptedPassword = JahiaUserManagerService
-//                        .encryptPassword(ctx.getPassword());
-//                if (encryptedPassword != null) {
-//                    for (int i = 0; i < checkedPasswordCount
-//                            && i < history.size(); i++) {
-//                        UserProperty prop = (UserProperty) history.get(i);
-//                        if (prop != null && prop.getValue() != null
-//                                && encryptedPassword.equals(prop.getValue())) {
-//                            success = false;
-//                            break;
-//                        }
-//                    }
-//                }
-//            }
+            // we can only deal with the JCRUser
+            if (ctx.getUser() instanceof JCRUser) {
+                int checkedPasswordCount = getParameterIntValue(parameters, 0);
+
+                List<PasswordHistoryEntry> history = ((JCRUser) ctx.getUser()).getPasswordHistory();
+                if (!history.isEmpty()) {
+	                String encryptedPassword = JahiaUserManagerService.encryptPassword(ctx.getPassword());
+	                if (encryptedPassword != null) {
+	                    for (int i = 0; i < checkedPasswordCount && i < history.size(); i++) {
+	                        if (encryptedPassword.equals(history.get(i).getPassword())) {
+	                            success = false;
+	                            break;
+	                        }
+	                    }
+	                }
+                }
+            }
 
             return success;
         }
@@ -261,7 +256,7 @@ public final class RuleConditions {
      */
     public static class PreventUserInitiatedPasswordChange implements
             PasswordPolicyRuleCondition {
-        public boolean evaluate(List parameters, EvaluationContext ctx) {
+        public boolean evaluate(List<JahiaPasswordPolicyRuleParam> parameters, EvaluationContext ctx) {
             if (ctx.getUser() == null) {
                 throw new IllegalArgumentException(
                         "The user object is null. Unable to evaluate the condition");
@@ -279,20 +274,18 @@ public final class RuleConditions {
      */
     public static class SimilarToUsername implements
             PasswordPolicyRuleCondition {
-        public boolean evaluate(List parameters, EvaluationContext ctx) {
+        public boolean evaluate(List<JahiaPasswordPolicyRuleParam> parameters, EvaluationContext ctx) {
 
-            if (ctx.getPassword() == null || ctx.getUser() == null
-                    || ctx.getUser().getUsername() == null) {
+            if (ctx.getPassword() == null || ctx.getUsername() == null) {
                 throw new IllegalArgumentException(
-                        "Either of the required values is null: password, user or username");
+                        "Either of the required values is null: password or username");
             }
 
-            return ctx.getPassword().toLowerCase().indexOf(
-                    ctx.getUser().getUsername().toLowerCase()) == -1;
+			return ctx.getPassword().toLowerCase().indexOf(ctx.getUsername().toLowerCase()) == -1;
         }
     }
 
-    private static void checkParameterCount(List parameters,
+    private static void checkParameterCount(List<JahiaPasswordPolicyRuleParam> parameters,
             int requiredParameterCount) {
         if (parameters.size() < requiredParameterCount)
             throw new IllegalArgumentException("Found " + parameters.size()
@@ -303,15 +296,14 @@ public final class RuleConditions {
     private static long getLastPasswordChangeTimestamp(JahiaUser user) {
         long lastChangeTimestamp = 0;
         // we are only able to handle JahiaDBUser
-        if (user instanceof JahiaDBUser) {
-            lastChangeTimestamp = ((JahiaDBUser) user)
-                    .getLastPasswordChangeTimestamp();
+        if (user instanceof JCRUser) {
+            lastChangeTimestamp = ((JCRUser) user).getLastPasswordChangeTimestamp();
         }
 
         return lastChangeTimestamp;
     }
 
-    private static JahiaPasswordPolicyRuleParam getParameter(List parameters,
+    private static JahiaPasswordPolicyRuleParam getParameter(List<JahiaPasswordPolicyRuleParam> parameters,
             int position) {
 
         checkParameterCount(parameters, position + 1);
@@ -319,7 +311,7 @@ public final class RuleConditions {
         return (JahiaPasswordPolicyRuleParam) parameters.get(position);
     }
 
-    private static int getParameterIntValue(List parameters, int position) {
+    private static int getParameterIntValue(List<JahiaPasswordPolicyRuleParam> parameters, int position) {
 
         JahiaPasswordPolicyRuleParam param = getParameter(parameters, position);
         return StringUtils.isNumeric(param.getValue()) ? Integer.parseInt(param

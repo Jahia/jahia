@@ -32,36 +32,50 @@
 
 package org.jahia.services.pwdpolicy;
 
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.FastDateFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.hibernate.manager.JahiaPasswordPolicyManager;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaService;
-import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRContentUtils;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerProvider;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.services.usermanager.jcr.JCRUser;
 
 /**
- * Jahia service for managing and enforcing different password policies.
+ * Jahia service for managing and enforcing the password policy.
  * 
  * @author Sergiy Shyrkov
  */
 public class JahiaPasswordPolicyService extends JahiaService {
 
+	private static final String PASSWORD_HISTORY_NODENAME = "passwordHistory";
+	
     private static Logger logger = LoggerFactory
             .getLogger(JahiaPasswordPolicyService.class);
 
-    private static final String PROPERTY_SITE_ENFORCE_POLICY = "enforcePasswordPolicy";
-
+    private static final FastDateFormat NODENAME_FORMAT = FastDateFormat.getInstance("yyyy-MM-dd-HH-mm-ss"); 
+    
     private static JahiaPasswordPolicyService service;
     
     /**
@@ -87,15 +101,16 @@ public class JahiaPasswordPolicyService extends JahiaService {
 
     private JahiaUserManagerService userMgrService;
 
+	private boolean policyEnforcementEnabled;
+
     /**
-     * Enforce the password policy for the specified user if applicable during
-     * on user login.
+     * Enforce the password policy for the specified user if applicable.
      * 
      * @param user
      *            the current user
+     * @param username the name of the user
      * @param password
      *            the new user password in clear text
-     * @param siteId the ID of the site, where the user is created or -1, if it is unknown
      * @param isUserInitiated
      *            set to <code>true</code> if the change in the password is
      *            initiated by the user and not via administration interface.
@@ -103,55 +118,27 @@ public class JahiaPasswordPolicyService extends JahiaService {
      *            if only to evaluate periodical rules (on login)
      * @return the evaluation result
      */
-    private PolicyEnforcementResult enforcePolicy(JahiaUser user,
-            String password, int siteId, boolean isUserInitiated,
-            boolean onlyPeriodicalRules) {
+	private PolicyEnforcementResult enforcePolicy(JahiaUser user, String username, String password,
+	        boolean isUserInitiated, boolean onlyPeriodicalRules) {
 
-        return enforcePolicy(user, password, siteId, isUserInitiated, onlyPeriodicalRules, true);
-    }
+		PolicyEnforcementResult evaluationResult = PolicyEnforcementResult.SUCCESS;
+		if (user == null && isPolicyEnforcementEnabled() || isPolicyEnabled(user)) {
+			JahiaPasswordPolicy policy = getDefaultPolicy();
+			if (policy != null) {
+				evaluationResult = PolicyEvaluator.evaluate(policy,
+				        user != null ? new EvaluationContext(user, password, isUserInitiated)
+				                : new EvaluationContext(username, password), onlyPeriodicalRules);
 
-    /**
-     * Enforce the password policy for the specified user if applicable during
-     * on user login.
-     * 
-     * @param user
-     *            the current user
-     * @param password
-     *            the new user password in clear text
-     * @param siteId the ID of the site, where the user is created or -1, if it is unknown
-     * @param isUserInitiated
-     *            set to <code>true</code> if the change in the password is
-     *            initiated by the user and not via administration interface.
-     * @param onlyPeriodicalRules
-     *            if only to evaluate periodical rules (on login)
-     * @param checkIfPolicyIsEnabled perform a check if policy is enabled for the specified user and site 
-     * @return the evaluation result
-     */
-    private PolicyEnforcementResult enforcePolicy(JahiaUser user,
-            String password, int siteId, boolean isUserInitiated,
-            boolean onlyPeriodicalRules, boolean checkIfPolicyIsEnabled) {
+			} else {
+				logger.warn("Unable to get the default password policy. Skipping policy enforcement");
+			}
+		} else if (logger.isDebugEnabled()) {
+			logger.debug("Policy enforcement not enabled for user " + user.getUsername()
+			        + ". Skipping password policy enforcement.");
+		}
 
-        PolicyEnforcementResult evaluationResult = PolicyEnforcementResult.SUCCESS;
-        if (!checkIfPolicyIsEnabled
-                || (siteId > 0 && isPolicyEnabled(siteId) || isPolicyEnabled(user))) {
-            JahiaPasswordPolicy policy = getDefaultPolicy();
-            if (policy != null) {
-                evaluationResult = PolicyEvaluator.evaluate(policy,
-                        new EvaluationContext(user, password, isUserInitiated),
-                        onlyPeriodicalRules);
-
-            } else {
-                logger
-                        .warn("Unable to get the default password policy. Skipping policy enforcement");
-            }
-        } else if (logger.isDebugEnabled()) {
-            logger.debug("Policy enforcement not enabled for user "
-                    + user.getUsername()
-                    + ". Skipping password policy enforcement.");
-        }
-
-        return evaluationResult;
-    }
+		return evaluationResult;
+	}
 
     /**
      * Enforce the password policy for the specified user if applicable during
@@ -162,8 +149,7 @@ public class JahiaPasswordPolicyService extends JahiaService {
      * @return the evaluation result
      */
     public PolicyEnforcementResult enforcePolicyOnLogin(JahiaUser user) {
-
-        return enforcePolicy(user, null, -1, false, true);
+        return enforcePolicy(user, null, null, false, true);
     }
 
     /**
@@ -182,38 +168,18 @@ public class JahiaPasswordPolicyService extends JahiaService {
     public PolicyEnforcementResult enforcePolicyOnPasswordChange(
             JahiaUser user, String password, boolean isUserInitiated) {
 
-        return enforcePolicy(user, password, -1, isUserInitiated, false);
+        return enforcePolicy(user, null, password, isUserInitiated, false);
     }
 
     /**
      * Enforce the password policy for the newly created user.
      * 
-     * @param user
-     *            the current user
-     * @param password
-     *            the new user password in clear text
-     * @param siteId the ID of the site, where the user is created
-     * @return the evaluation result
-     */
-    public PolicyEnforcementResult enforcePolicyOnUserCreate(
-            JahiaUser user, String password, int siteId) {
-
-        return enforcePolicy(user, password, siteId, false, false);
-    }
-
-    /**
-     * Enforce the password policy for the newly created user.
-     * 
-     * @param user
-     *            the current user
      * @param password
      *            the new user password in clear text
      * @return the evaluation result
      */
-    public PolicyEnforcementResult enforcePolicyOnUserCreate(
-            JahiaUser user, String password) {
-
-        return enforcePolicy(user, password, -1, false, false, false);
+    public PolicyEnforcementResult enforcePolicyOnUserCreate(String username, String password) {
+        return enforcePolicy(null, username, password, false, false);
     }
 
     public JahiaPasswordPolicy getDefaultPolicy() {
@@ -233,16 +199,12 @@ public class JahiaPasswordPolicyService extends JahiaService {
     }
 
     /**
-     * Checks, if the password policy should be enforced for the specified site
-     * ID.
+     * Checks, if the global password policy enforcement is enabled.
      * 
-     * @param siteId
-     *            the ID of the site, to perform the check for
      * @return <code>true</code>, if the password policy should be enforced
-     *         for the specified site ID
      */
-    public boolean isPolicyEnabled(int siteId) {
-        return true;
+    public boolean isPolicyEnforcementEnabled() {
+        return policyEnforcementEnabled;
     }
 
     /**
@@ -255,15 +217,14 @@ public class JahiaPasswordPolicyService extends JahiaService {
      *         for the specified user (existing user)
      */
     public boolean isPolicyEnabled(JahiaUser user) {
-        if (user == null)
+        if (user == null) {
             throw new IllegalArgumentException("The specified user is null");
+        }
 
-        if (isPasswordReadOnly(user))
-            return false;
-
-        if (user.isRoot())
-            return isPolicyEnabledForRoot();
-
+        if (!isPolicyEnforcementEnabled() || isPasswordReadOnly(user)) {
+        	return false;
+        }
+        
         boolean enforcePolicy = true;
 
         // check if the policy is enabled for at least one of the user
@@ -275,8 +236,10 @@ public class JahiaPasswordPolicyService extends JahiaService {
             List<String> groups = groupMgr.getUserMembership(user);
             if (groups.size() > 0) {
                 boolean enforcePolicyAtLeastForOneGroup = false;
-                for (Iterator<String> iterator = groups.iterator(); iterator.hasNext();) {
-                    String groupName = iterator.next();
+                for (String groupName : groups) {
+                	if (JahiaGroupManagerService.USERS_GROUPNAME.equals(groupName) || JahiaGroupManagerService.GUEST_GROUPNAME.equals(groupName)) {
+                		continue;
+                	}
                     JahiaGroup group = groupMgr.lookupGroup(groupName);
                     if (group != null) {
                         String propValue = group
@@ -294,32 +257,6 @@ public class JahiaPasswordPolicyService extends JahiaService {
                 enforcePolicy = enforcePolicy && enforcePolicyAtLeastForOneGroup;
             }
         }
-        return enforcePolicy;
-    }
-
-    /**
-     * Checks, if the password policy should be enforced for the root user.
-     * 
-     * @return <code>true</code>, if the password policy should be enforced
-     *         for the root user
-     */
-    private boolean isPolicyEnabledForRoot() {
-
-        boolean enforcePolicy = false;
-        try {
-            Iterator<JahiaSite> sites = ServicesRegistry.getInstance().getJahiaSitesService().getSites();
-            while (sites.hasNext()) {
-                if (isPolicyEnabled(sites.next().getID())) {
-                    enforcePolicy = true;
-                    break;
-                }
-            }
-        } catch (JahiaException ex) {
-            logger
-                    .error("Unable to check policy enforcement for root user",
-                            ex);
-        }
-
         return enforcePolicy;
     }
 
@@ -403,4 +340,86 @@ public class JahiaPasswordPolicyService extends JahiaService {
         this.userMgrService = userMgrService;
     }
 
+	/**
+	 * Returns the (encrypted) password history map, sorted by change date
+	 * descending, i.e. the newer passwords are at the top of the list.
+	 * 
+	 * @return the (encrypted) password history list, sorted by change date
+	 *         descending, i.e. the newer passwords are at the top of the list
+	 */
+	public List<PasswordHistoryEntry> getPasswordHistory(final JahiaUser user) {
+		List<PasswordHistoryEntry> passwordHistory = Collections.emptyList();
+		if (user instanceof JCRUser) {
+			try {
+				passwordHistory = JCRTemplate.getInstance().doExecuteWithSystemSession(
+				        new JCRCallback<List<PasswordHistoryEntry>>() {
+					        public List<PasswordHistoryEntry> doInJCR(JCRSessionWrapper session)
+					                throws RepositoryException {
+						        List<PasswordHistoryEntry> pwds = Collections.emptyList();
+						        try {
+							        pwds = new LinkedList<PasswordHistoryEntry>();
+							        for (@SuppressWarnings("unchecked")
+							        Iterator<JCRNodeWrapper> iterator = ((JCRUser) user)
+							                .getNode(session).getNode(PASSWORD_HISTORY_NODENAME)
+							                .getNodes(); iterator.hasNext();) {
+								        JCRNodeWrapper historyEntryNode = (JCRNodeWrapper) iterator
+								                .next();
+								        pwds.add(new PasswordHistoryEntry(historyEntryNode
+								                .getPropertyAsString("j:password"),
+								                historyEntryNode.getProperty(Constants.JCR_CREATED)
+								                        .getDate().getTime()));
+							        }
+							        Collections.sort(pwds);
+						        } catch (PathNotFoundException e) {
+							        // ignore
+							        pwds = Collections.emptyList();
+						        }
+
+						        return pwds;
+					        }
+				        });
+			} catch (RepositoryException e) {
+				passwordHistory = Collections.emptyList();
+				logger.error("Error while retrieving a password history for user: " + user.getUsername(), e);
+			}
+		}
+
+		return passwordHistory;
+	}
+
+	/**
+	 * Returns the (encrypted) password history map, sorted by change date
+	 * descending, i.e. the newer passwords are at the top of the list.
+	 * 
+	 * @return the (encrypted) password history list, sorted by change date
+	 *         descending, i.e. the newer passwords are at the top of the list
+	 */
+	public void storePasswordHistory(final JahiaUser user) {
+		if (user instanceof JCRUser) {
+			try {
+				JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+					public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+						JCRNodeWrapper pwdHistory = ((JCRUser) user).getNode(session).getNode(
+						        PASSWORD_HISTORY_NODENAME);
+						session.checkout(pwdHistory);
+						JCRNodeWrapper entry = pwdHistory.addNode(
+						        JCRContentUtils.findAvailableNodeName(pwdHistory, "pwd-"
+						                + NODENAME_FORMAT.format(System.currentTimeMillis())),
+						        "jnt:passwordHistoryEntry");
+						entry.setProperty("j:password", user.getProperty("j:password"));
+						session.save();
+						return true;
+					}
+				});
+			} catch (RepositoryException e) {
+				logger.error(
+				        "Error while storing a password history for user: " + user.getUsername(), e);
+			}
+			userMgrService.updateCache(user);
+		}
+	}
+
+	public void setPolicyEnforcementEnabled(boolean policyEnabled) {
+    	this.policyEnforcementEnabled = policyEnabled;
+    }
 }

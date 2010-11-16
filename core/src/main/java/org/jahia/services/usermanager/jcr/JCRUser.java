@@ -33,12 +33,15 @@
 package org.jahia.services.usermanager.jcr;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.decorator.JCRUserNode;
+import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
+import org.jahia.services.pwdpolicy.PasswordHistoryEntry;
 import org.jahia.services.usermanager.*;
 
 import javax.jcr.Node;
@@ -49,17 +52,19 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.ValueFormatException;
 
+import java.util.List;
 import java.util.Properties;
 
 /**
  * Implementation of JahiaUser using the JCR API
  *
- * @author : rincevent
- * @since : JAHIA 6.1
- *        Created : 7 juil. 2009
+ * @author rincevent
+ * @since JAHIA 6.5
+ * Created : 7 juil. 2009
  */
 public class JCRUser extends JahiaBasePrincipal implements JahiaUser, JCRPrincipal {
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRUser.class);
+    private static final long serialVersionUID = 4032549320399420578L;
+	private transient static Logger logger = LoggerFactory.getLogger(JCRUser.class);
     protected static final String ROOT_USER_UUID = "b32d306a-6c74-11de-b3ef-001e4fead50b";
     private static final String PROVIDER_NAME = "jcr";
     private final String nodeUuid;
@@ -71,6 +76,7 @@ public class JCRUser extends JahiaBasePrincipal implements JahiaUser, JCRPrincip
     private Properties properties;
     private UserProperties userProperties;
     private boolean external;
+	private List<PasswordHistoryEntry> passwordHistory;
 
     public JCRUser(String nodeUuid, JCRTemplate jcrTemplate) {
         this(nodeUuid, jcrTemplate, false);
@@ -449,4 +455,33 @@ public class JCRUser extends JahiaBasePrincipal implements JahiaUser, JCRPrincip
     public boolean isExternal() {
         return external;
     }
+
+	/**
+	 * Returns the (encrypted) password history map, sorted by change date
+	 * descending, i.e. the newer passwords are at the top of the list.
+	 * 
+	 * @return the (encrypted) password history list, sorted by change date
+	 *         descending, i.e. the newer passwords are at the top of the list
+	 */
+	public List<PasswordHistoryEntry> getPasswordHistory() {
+		if (passwordHistory == null) {
+			passwordHistory = JahiaPasswordPolicyService.getInstance().getPasswordHistory(this);
+		}
+
+		return passwordHistory;
+	}
+
+	/**
+	 * Gets the timestamp of the last password change if available. Otherwise
+	 * returns <code>0</code>.
+	 * 
+	 * @return the timestamp of the last password change if available. Otherwise
+	 *         returns <code>0</code>
+	 */
+	public long getLastPasswordChangeTimestamp() {
+		List<PasswordHistoryEntry> pwdHistory = getPasswordHistory();
+
+		return pwdHistory.size() > 0 ? pwdHistory.get(0).getModificationDate().getTime() : 0;
+	}
+
 }

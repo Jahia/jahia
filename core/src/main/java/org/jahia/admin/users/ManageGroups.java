@@ -51,8 +51,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang.StringUtils;
-
 import org.jahia.bin.Jahia;
 import org.jahia.bin.JahiaAdministration;
 import org.jahia.data.JahiaData;
@@ -384,19 +382,16 @@ public class ManageGroups extends AbstractAdministrationModule {
         session.setAttribute("providerName",theGroup.getProviderName());
         //end predrag
 
-        boolean enforcePasswordPolicyForSite = true;
-        request.setAttribute(JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY
-                + "ForSite", Boolean.valueOf(enforcePasswordPolicyForSite));
-        
-        if (enforcePasswordPolicyForSite) {
-            boolean disablePasswordPolicyForGroup = StringUtils
-                    .equals(
-                            "false",
-                            theGroup
-                                    .getProperty(JahiaGroup.PROPERTY_ENFORCE_PASSWORD_POLICY));
-            request.setAttribute(JahiaGroup.PROPERTY_ENFORCE_PASSWORD_POLICY,
-                    disablePasswordPolicyForGroup ? "false" : "true");
-        }
+//        if (JahiaPasswordPolicyService.getInstance().isPolicyEnforcementEnabled()) {
+//        	request.setAttribute("enforcePasswordPolicyForSite", Boolean.TRUE);
+//            boolean disablePasswordPolicyForGroup = StringUtils
+//                    .equals(
+//                            "false",
+//                            theGroup
+//                                    .getProperty(JahiaGroup.PROPERTY_ENFORCE_PASSWORD_POLICY));
+//            request.setAttribute(JahiaGroup.PROPERTY_ENFORCE_PASSWORD_POLICY,
+//                    disablePasswordPolicyForGroup ? "false" : "true");
+//        }
 
         if ("update".equals(request.getParameter("actionType"))) {
             // let's recuperate the members of the group from the selection box
@@ -460,29 +455,29 @@ public class ManageGroups extends AbstractAdministrationModule {
         int homePageID = homePageParam != null && homePageParam.length() > 0 ? Integer.parseInt(homePageParam) : -1;
         grp.setHomepageID(homePageID);
 
-        boolean enforcePasswordPolicyForSite = true;
-        if (enforcePasswordPolicyForSite) {
-            boolean enforcePasswordPolicyForGroup = StringUtils
-                    .equals(
-                            "true",
-                            (String) request
-                                    .getParameter(JahiaGroup.PROPERTY_ENFORCE_PASSWORD_POLICY));
-
-            boolean enforePasswordPolicyOld = !StringUtils.equals("false", grp
-                    .getProperty(JahiaGroup.PROPERTY_ENFORCE_PASSWORD_POLICY));
-
-            if (enforcePasswordPolicyForGroup != enforePasswordPolicyOld) {
-                if (enforcePasswordPolicyForGroup) {
-                    grp
-                            .removeProperty(JahiaGroup.PROPERTY_ENFORCE_PASSWORD_POLICY);
-                } else {
-                    grp
-                            .setProperty(
-                                    JahiaGroup.PROPERTY_ENFORCE_PASSWORD_POLICY,
-                                    "false");
-                }
-            }
-        }
+//        boolean enforcePasswordPolicyForSite = true;
+//        if (enforcePasswordPolicyForSite) {
+//            boolean enforcePasswordPolicyForGroup = StringUtils
+//                    .equals(
+//                            "true",
+//                            (String) request
+//                                    .getParameter(JahiaGroup.PROPERTY_ENFORCE_PASSWORD_POLICY));
+//
+//            boolean enforePasswordPolicyOld = !StringUtils.equals("false", grp
+//                    .getProperty(JahiaGroup.PROPERTY_ENFORCE_PASSWORD_POLICY));
+//
+//            if (enforcePasswordPolicyForGroup != enforePasswordPolicyOld) {
+//                if (enforcePasswordPolicyForGroup) {
+//                    grp
+//                            .removeProperty(JahiaGroup.PROPERTY_ENFORCE_PASSWORD_POLICY);
+//                } else {
+//                    grp
+//                            .setProperty(
+//                                    JahiaGroup.PROPERTY_ENFORCE_PASSWORD_POLICY,
+//                                    "false");
+//                }
+//            }
+//        }
 
         // let's recuperate the members of the group from the selection box
         String[] newMembersList = (String[])request.getParameterValues("selectMember");

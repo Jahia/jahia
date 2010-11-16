@@ -66,8 +66,6 @@ public class JahiaSite implements Serializable {
 
     private static final long serialVersionUID = 5114861205251079794L;
 
-    public static final String PROPERTY_ENFORCE_PASSWORD_POLICY = "enforcePasswordPolicy";
-
     /**
      * the site id *
      */

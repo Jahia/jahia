@@ -153,7 +153,7 @@ public class MessageTag extends TagSupport {
         Locale currentLocale = null;
         if (jParams != null) {
             if (currentLocale == null) {
-                currentLocale = jParams.getLocale();
+                currentLocale = jParams.getUILocale();
             }
         } else {
             final HttpSession session = pageContext.getSession();

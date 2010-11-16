@@ -35,14 +35,11 @@ package org.jahia.params.valves;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
-import org.jahia.engines.EngineMessage;
-import org.jahia.engines.EngineMessages;
 import org.jahia.params.ProcessingContext;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
-import org.jahia.services.pwdpolicy.PolicyEnforcementResult;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -176,15 +173,15 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
     }
 
     private void enforcePasswordPolicy(JahiaUser theUser) {
-        PolicyEnforcementResult evalResult = ServicesRegistry.getInstance().getJahiaPasswordPolicyService().
-                enforcePolicyOnLogin(theUser);
-        if (!evalResult.isSuccess()) {
-            EngineMessages policyMsgs = evalResult.getEngineMessages();
-            EngineMessages resultMessages = new EngineMessages();
-            for (Object o : policyMsgs.getMessages()) {
-                resultMessages.add((EngineMessage) o);
-            }
-        }
+//        PolicyEnforcementResult evalResult = ServicesRegistry.getInstance().getJahiaPasswordPolicyService().
+//                enforcePolicyOnLogin(theUser);
+//        if (!evalResult.isSuccess()) {
+//            EngineMessages policyMsgs = evalResult.getEngineMessages();
+//            EngineMessages resultMessages = new EngineMessages();
+//            for (Object o : policyMsgs.getMessages()) {
+//                resultMessages.add((EngineMessage) o);
+//            }
+//        }
     }
 
     public void setCookieAuthConfig(CookieAuthConfig cookieAuthConfig) {

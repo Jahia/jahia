@@ -32,39 +32,38 @@
 
 package org.jahia.services.pwdpolicy;
 
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.collections.FastHashMap;
 
 /**
  * Policy rules evaluator.
  * 
  * @author Sergiy Shyrkov
  */
+@SuppressWarnings("unchecked")
 final class PolicyEvaluator {
 
-	private static final Map EVALUATORS;
+	private static final Map<Character, ConditionEvaluator> EVALUATORS;
 
 	static {
-		EVALUATORS = new HashMap(1);
-		// curretly only a single Java evaluator is supported
-		EVALUATORS.put(new Character(JahiaPasswordPolicyRule.EVALUATOR_JAVA),
+		FastHashMap evals = new FastHashMap(1);
+		// currently only a single Java evaluator is supported
+		evals.put(new Character(JahiaPasswordPolicyRule.EVALUATOR_JAVA),
 		        new JavaConditionEvaluator());
+		evals.setFast(true);
+		EVALUATORS = evals;
 	}
 
 	static PolicyEnforcementResult evaluate(JahiaPasswordPolicy policy,
 	        EvaluationContext ctx, boolean periodicalRulesOnly) {
 
 		PolicyEnforcementResult result = PolicyEnforcementResult.SUCCESS;
-		List violatedRules = new LinkedList();
+		List<JahiaPasswordPolicyRule> violatedRules = new LinkedList<JahiaPasswordPolicyRule>();
 
-		for (Iterator iterator = policy.getRules().iterator(); iterator
-		        .hasNext();) {
-			JahiaPasswordPolicyRule rule = (JahiaPasswordPolicyRule) iterator
-			        .next();
-
+		for (JahiaPasswordPolicyRule rule : policy.getRules()) {
 			if (rule.isActive() && rule.isPeriodical() == periodicalRulesOnly) {
 				if (!evaluateRule(rule, ctx)) {
 					violatedRules.add(rule);

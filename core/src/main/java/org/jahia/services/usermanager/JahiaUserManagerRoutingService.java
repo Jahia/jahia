@@ -32,7 +32,7 @@
 
  package org.jahia.services.usermanager;
 
-import org.slf4j.Logger;
+import org.apache.commons.collections.FastHashMap;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 
@@ -54,10 +54,6 @@ import java.util.*;
 
 public class JahiaUserManagerRoutingService extends JahiaUserManagerService {
 // ------------------------------ FIELDS ------------------------------
-
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger (JahiaUserManagerRoutingService.class);
-
-    // end EP
 
     static private JahiaUserManagerRoutingService mInstance = null;
 
@@ -83,8 +79,11 @@ public class JahiaUserManagerRoutingService extends JahiaUserManagerService {
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
+    @SuppressWarnings("unchecked")
     protected JahiaUserManagerRoutingService () {
-        providersTable = new HashMap<String, JahiaUserManagerProvider>();
+    	FastHashMap map = new FastHashMap(2);
+    	map.setFast(true);
+        providersTable = map;
 
         sortedProviders = new TreeSet<JahiaUserManagerProvider>(new Comparator<JahiaUserManagerProvider>() {
             public int compare (JahiaUserManagerProvider o1, JahiaUserManagerProvider o2) {

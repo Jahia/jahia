@@ -361,9 +361,6 @@ public class ManageSites extends AbstractAdministrationModule {
         request.setAttribute("warningMsg", warningMsg);
         request.setAttribute("defaultSite", defaultSite);
         request.setAttribute("newAdminOnly", Boolean.valueOf(grantedSites.size() <= 0));
-        String enforcePasswordPolicy = "true";
-        request.setAttribute(JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY,
-                enforcePasswordPolicy != null ? enforcePasswordPolicy : "true");
 
         try {
             // logger.debug(" license check ");
@@ -415,7 +412,6 @@ public class ManageSites extends AbstractAdministrationModule {
         request.getSession().setAttribute("siteAdminOption", siteAdmin);
         session.setAttribute("siteAdminOption", siteAdmin);
         String warningMsg = "";
-//        boolean enforcePasswordPolicy = (request.getParameter(JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY) != null);
         session.setAttribute(CLASS_NAME + "defaultSite", defaultSite);
 
         // create jahia site object if checks are in green light...
@@ -746,9 +742,7 @@ public class ManageSites extends AbstractAdministrationModule {
             warningMsg = StringUtils.capitalize(getMessage(
                     "org.jahia.admin.users.ManageUsers.onlyCharacters.label"));
         } else if ( userManager.lookupUser(adminUsername) != null) {
-            warningMsg = getMessage("label.user");
-            warningMsg += " [" + adminUsername + "] ";
-            warningMsg +=
+            warningMsg = getMessage("label.user") + " [" + adminUsername + "] " +
                     getMessage("org.jahia.admin.userMessage.alreadyExist.label") +
                     " ";
         } else {
@@ -756,9 +750,7 @@ public class ManageSites extends AbstractAdministrationModule {
                     ServicesRegistry.getInstance().getJahiaPasswordPolicyService();
             JahiaSite newSite = (JahiaSite) session.getAttribute(CLASS_NAME + "newJahiaSite");
             if (newSite != null) {
-                PolicyEnforcementResult evalResult = pwdPolicyService
-                        .enforcePolicyOnUserCreate(new JahiaDBUser(-1, adminUsername, adminPassword, null, null),
-                                adminPassword);
+                PolicyEnforcementResult evalResult = pwdPolicyService.enforcePolicyOnUserCreate(adminUsername, adminPassword);
                 if (!evalResult.isSuccess()) {
                     EngineMessages policyMsgs = evalResult.getEngineMessages();
                     policyMsgs.saveMessages(((ParamBean) jParams).getRequest());
@@ -1149,11 +1141,6 @@ public class ManageSites extends AbstractAdministrationModule {
 
             Boolean defaultSite = Boolean.FALSE;
 
-            String enforcePasswordPolicy = "true";
-            request.setAttribute(JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY,
-                    enforcePasswordPolicy != null ? enforcePasswordPolicy : "false");
-
-
             if (request.getAttribute("defaultSite") == null) {
                 JahiaSite defSite = getDefaultSite();
                 if (defSite != null && defSite.getSiteKey().equals(site.getSiteKey())) {
@@ -1237,10 +1224,6 @@ public class ManageSites extends AbstractAdministrationModule {
             final JCRNodeWrapper tmplPack = JCRStoreService.getInstance().getSessionFactory().getCurrentUserSession()
                     .getNode("/templateSets/" + selectedTmplSet);
 
-
-            String enforcePasswordPolicy = "true";
-            request.setAttribute(JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY,
-                    enforcePasswordPolicy != null ? enforcePasswordPolicy : "false");
 
             Boolean defaultSite = Boolean.FALSE;
             if (request.getAttribute("defaultSite") == null) {
@@ -1343,7 +1326,6 @@ public class ManageSites extends AbstractAdministrationModule {
 
         String warningMsg = "";
         boolean defaultSite = (request.getParameter("defaultSite") != null);
-//        boolean enforcePasswordPolicy = (request.getParameter(JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY) != null);
 
         boolean versioningEnabled = (request.getParameter("versioningEnabled") != null);
         boolean stagingEnabled = (request.getParameter("stagingEnabled") != null);

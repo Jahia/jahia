@@ -41,7 +41,7 @@ import javax.jcr.RepositoryException;
  * User: toto
  * Date: 17 janv. 2008
  * Time: 15:20:31
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class DeletedPropertyFact {
     private String nodePath;

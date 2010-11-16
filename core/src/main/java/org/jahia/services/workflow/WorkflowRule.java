@@ -7,7 +7,7 @@ import java.util.List;
  * User: toto
  * Date: Sep 16, 2010
  * Time: 5:37:18 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class WorkflowRule {
     private String providerKey;
@@ -71,7 +71,7 @@ public class WorkflowRule {
      * User: toto
      * Date: Sep 16, 2010
      * Time: 5:38:18 PM
-     * To change this template use File | Settings | File Templates.
+     * 
      */
     public static class Permission {
         private String path;

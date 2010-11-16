@@ -46,7 +46,7 @@ import java.security.Principal;
  * User: Serge Huber
  * Date: 30 juil. 2008
  * Time: 12:30:09
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class JahiaUserRequestWrapper extends HttpServletRequestWrapper {
 

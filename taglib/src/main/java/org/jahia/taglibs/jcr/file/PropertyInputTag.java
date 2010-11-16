@@ -51,7 +51,7 @@ import java.util.*;
  * User: toto
  * Date: 19 déc. 2007
  * Time: 18:26:37
- * To change this template use File | Settings | File Templates.
+ * 
  */
 @SuppressWarnings("serial")
 public class PropertyInputTag extends PropertyValueTag {

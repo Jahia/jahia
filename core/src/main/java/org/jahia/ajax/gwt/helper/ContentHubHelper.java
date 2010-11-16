@@ -48,7 +48,7 @@ import java.util.Map;
  * User: toto
  * Date: Sep 28, 2009
  * Time: 2:47:08 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class ContentHubHelper {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(ContentHubHelper.class);

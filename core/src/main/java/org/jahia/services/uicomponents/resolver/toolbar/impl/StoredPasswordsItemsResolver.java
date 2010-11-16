@@ -48,7 +48,7 @@ import java.util.Map;
  * User: toto
  * Date: Sep 25, 2009
  * Time: 11:49:24 AM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class StoredPasswordsItemsResolver implements ItemsResolver {
     public List<Item> getItems(JCRSiteNode site, JahiaUser user, Locale locale) {

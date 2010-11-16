@@ -43,7 +43,7 @@ import javax.jcr.RepositoryException;
  * User: toto
  * Date: Feb 8, 2010
  * Time: 5:47:58 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class PropertyIteratorImpl implements PropertyIterator {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(PropertyIteratorImpl.class);

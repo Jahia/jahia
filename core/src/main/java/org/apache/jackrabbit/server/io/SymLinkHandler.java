@@ -44,7 +44,7 @@ import javax.jcr.RepositoryException;
  * User: toto
  * Date: 14 janv. 2008
  * Time: 17:59:02
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class SymLinkHandler extends DefaultHandler implements IOHandler {
 

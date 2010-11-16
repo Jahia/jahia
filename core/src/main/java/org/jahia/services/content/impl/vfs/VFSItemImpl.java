@@ -43,7 +43,7 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
  * User: toto
  * Date: Apr 23, 2008
  * Time: 11:46:46 AM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class VFSItemImpl implements Item {
     public String getPath() throws RepositoryException {

@@ -8,7 +8,7 @@ import java.util.Date;
  * User: toto
  * Date: Oct 6, 2010
  * Time: 11:37:02 AM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class WorkflowComment implements Serializable {
     private String user;

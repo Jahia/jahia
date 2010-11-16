@@ -43,7 +43,7 @@ import java.util.List;
  * User: toto
  * Date: Jul 25, 2008
  * Time: 6:37:35 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public interface Updateable {
     public void doUpdate(JCRSessionWrapper s, List<Updateable> delayedUpdates) throws RepositoryException;

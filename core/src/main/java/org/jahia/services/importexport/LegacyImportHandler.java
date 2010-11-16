@@ -62,7 +62,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA. User: toto Date: Oct 28, 2009 Time: 2:31:18 PM To change this template use File | Settings | File Templates.
+ * Created by IntelliJ IDEA. User: toto Date: Oct 28, 2009 Time: 2:31:18 PM 
  */
 public class LegacyImportHandler extends DefaultHandler {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(LegacyImportHandler.class);

@@ -43,7 +43,7 @@ import java.util.Collection;
  * User: rincevent
  * Date: 27 août 2008
  * Time: 14:10:29
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class DummyCacheImpl implements CacheImplementation {
 

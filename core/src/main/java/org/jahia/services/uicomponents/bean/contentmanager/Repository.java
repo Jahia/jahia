@@ -42,7 +42,7 @@ import java.util.List;
  * User: ktlili
  * Date: Apr 12, 2010
  * Time: 3:03:45 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class Repository implements Serializable {
     private String key;

@@ -39,7 +39,7 @@ import java.beans.PropertyEditorSupport;
  * User: toto
  * Date: May 10, 2010
  * Time: 3:39:34 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class RepositoryPropertyEditor extends PropertyEditorSupport {
 

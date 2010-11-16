@@ -44,7 +44,7 @@ import org.jahia.hibernate.model.JahiaVersion;
  * User: toto
  * Date: 23 août 2007
  * Time: 17:36:50
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class JahiaVersionManager {
     private JahiaVersionDAO jahiaVersionDao;

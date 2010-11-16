@@ -37,7 +37,7 @@
  * User: loom
  * Date: Mar 5, 2005
  * Time: 2:13:35 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public interface URLGenerator {
 

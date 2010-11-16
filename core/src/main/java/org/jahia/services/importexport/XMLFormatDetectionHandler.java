@@ -44,7 +44,7 @@ import java.util.HashMap;
  * User: toto
  * Date: Aug 21, 2009
  * Time: 11:31:37 AM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class XMLFormatDetectionHandler extends DefaultHandler {
 

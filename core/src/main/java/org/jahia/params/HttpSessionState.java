@@ -46,7 +46,7 @@ import org.apache.commons.collections.iterators.EnumerationIterator;
  * User: loom
  * Date: Mar 6, 2005
  * Time: 3:59:01 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class HttpSessionState implements SessionState {
 

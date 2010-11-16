@@ -42,7 +42,7 @@ import java.io.IOException;
  * User: toto
  * Date: 15 févr. 2008
  * Time: 14:54:08
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class NoCloseZipInputStream extends ZipInputStream {
     public NoCloseZipInputStream(InputStream in) {

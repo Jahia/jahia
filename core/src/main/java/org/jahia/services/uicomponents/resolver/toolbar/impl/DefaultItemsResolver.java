@@ -43,7 +43,7 @@ import org.jahia.services.uicomponents.resolver.toolbar.ItemsResolver;
  * User: toto
  * Date: Sep 25, 2009
  * Time: 12:22:08 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public abstract class DefaultItemsResolver implements ItemsResolver {
     private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(DefaultItemsResolver.class);

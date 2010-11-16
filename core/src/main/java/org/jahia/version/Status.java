@@ -37,7 +37,7 @@ package org.jahia.version;
  * User: toto
  * Date: 17 sept. 2007
  * Time: 11:27:15
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class Status {
     long start = System.currentTimeMillis();

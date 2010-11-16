@@ -58,7 +58,7 @@ import java.util.*;
  * User: toto
  * Date: 20 déc. 2007
  * Time: 17:27:10
- * To change this template use File | Settings | File Templates.
+ * 
  */
 
 public class ChangedPropertyFact implements Updateable {

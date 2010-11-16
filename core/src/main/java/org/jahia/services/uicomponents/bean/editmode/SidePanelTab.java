@@ -48,7 +48,7 @@ import java.util.Map;
  * User: ktlili
  * Date: Apr 14, 2010
  * Time: 12:30:01 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class SidePanelTab implements Serializable, BeanNameAware {
     private String name;

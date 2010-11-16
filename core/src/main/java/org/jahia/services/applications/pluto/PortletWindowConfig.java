@@ -42,7 +42,7 @@ import javax.jcr.RepositoryException;
  * User: jahia
  * Date: 9 avr. 2009
  * Time: 17:34:03
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class PortletWindowConfig {
 

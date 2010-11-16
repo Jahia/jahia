@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletResponse;
  * User: toto
  * Date: May 14, 2010
  * Time: 11:18:26 AM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class AuthValveContext {
     private HttpServletRequest request;

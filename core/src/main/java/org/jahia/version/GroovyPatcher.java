@@ -45,7 +45,7 @@ import org.slf4j.Logger;
  * User: toto
  * Date: 23 août 2007
  * Time: 18:40:49
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class GroovyPatcher implements Patcher {
     private Logger logger = org.slf4j.LoggerFactory.getLogger(GroovyPatcher.class);

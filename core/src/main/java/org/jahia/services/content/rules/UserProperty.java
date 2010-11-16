@@ -37,7 +37,7 @@ package org.jahia.services.content.rules;
  * User: toto
  * Date: 14 janv. 2008
  * Time: 19:56:21
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class UserProperty {
     private User user;

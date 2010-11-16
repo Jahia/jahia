@@ -57,7 +57,7 @@ import java.util.List;
  * User: toto
  * Date: Feb 2, 2009
  * Time: 7:03:31 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class VersioningHelper {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(VersioningHelper.class);

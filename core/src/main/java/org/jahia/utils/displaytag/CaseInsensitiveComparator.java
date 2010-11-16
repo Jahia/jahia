@@ -42,7 +42,7 @@ import java.util.Locale;
  * User: hollis
  * Date: 25 avr. 2006
  * Time: 17:03:18
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class CaseInsensitiveComparator implements Comparator {
 

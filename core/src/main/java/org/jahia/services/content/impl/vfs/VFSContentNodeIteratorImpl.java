@@ -44,7 +44,7 @@ import java.util.Arrays;
  * User: toto
  * Date: Jul 24, 2008
  * Time: 4:03:31 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class VFSContentNodeIteratorImpl extends RangeIteratorImpl implements NodeIterator {
     private VFSSessionImpl session;

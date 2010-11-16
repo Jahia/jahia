@@ -53,7 +53,7 @@ import org.apache.jackrabbit.webdav.WebdavResponse;
  * User: toto
  * Date: 27 déc. 2007
  * Time: 18:44:08
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class JahiaJCRWebdavServerServlet extends JCRWebdavServerServlet {
 

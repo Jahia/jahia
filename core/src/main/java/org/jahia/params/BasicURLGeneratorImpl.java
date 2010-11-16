@@ -37,7 +37,7 @@
  * User: loom
  * Date: Mar 5, 2005
  * Time: 3:43:50 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class BasicURLGeneratorImpl implements URLGenerator {
     public String encodeURL(String url) {

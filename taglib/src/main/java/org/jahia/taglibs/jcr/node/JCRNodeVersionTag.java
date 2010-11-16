@@ -45,7 +45,7 @@ import javax.jcr.RepositoryException;
  * User: toto
  * Date: Dec 3, 2009
  * Time: 7:11:50 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class JCRNodeVersionTag extends TagSupport {
 

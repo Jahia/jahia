@@ -19,7 +19,7 @@ import java.io.IOException;
  * User: toto
  * Date: Aug 2, 2010
  * Time: 6:47:17 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class JahiaChildNodeConstraint extends ChildNodeConstraint {
 

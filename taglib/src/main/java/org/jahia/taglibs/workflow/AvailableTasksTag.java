@@ -53,7 +53,7 @@ import java.util.Locale;
  * User: toto
  * Date: Mar 17, 2010
  * Time: 8:02:06 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class AvailableTasksTag extends AbstractJahiaTag {
     private final static Logger logger = org.slf4j.LoggerFactory.getLogger(AvailableTasksTag.class);

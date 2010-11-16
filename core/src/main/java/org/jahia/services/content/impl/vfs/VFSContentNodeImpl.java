@@ -64,7 +64,7 @@ import java.math.BigDecimal;
  * User: toto
  * Date: Jul 24, 2008
  * Time: 3:54:17 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class VFSContentNodeImpl extends VFSItemImpl implements Node {
     private VFSSessionImpl session;

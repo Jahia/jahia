@@ -57,7 +57,7 @@ import java.util.*;
  * User: toto
  * Date: Jan 5, 2010
  * Time: 11:48:36 AM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class JCRSitesProvider {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRSitesProvider.class);

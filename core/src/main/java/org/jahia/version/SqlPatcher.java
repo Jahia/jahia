@@ -47,7 +47,7 @@ import org.jahia.services.SpringContextSingleton;
  * User: toto
  * Date: 29 août 2007
  * Time: 10:44:44
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class SqlPatcher implements Patcher {
     private Logger logger = org.slf4j.LoggerFactory.getLogger(SqlPatcher.class);

@@ -54,7 +54,7 @@ import java.util.*;
  * User: toto
  * Date: 23 août 2007
  * Time: 17:55:25
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class VersionService extends JahiaService {
 

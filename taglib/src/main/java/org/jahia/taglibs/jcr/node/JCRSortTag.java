@@ -48,7 +48,7 @@ import java.util.*;
  * User: toto
  * Date: Mar 25, 2010
  * Time: 8:35:48 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class JCRSortTag extends AbstractJCRTag {
 

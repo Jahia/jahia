@@ -50,7 +50,7 @@ import java.util.Calendar;
  * User: toto
  * Date: Mar 16, 2009
  * Time: 3:51:32 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class JCRVersion extends JCRNodeDecorator implements Version {
     public JCRVersion(JCRNodeWrapper node) {

@@ -50,7 +50,7 @@ import org.apache.taglibs.unstandard.UseConstantsTag;
  * User: hollis
  * Date: 13 févr. 2008
  * Time: 10:38:16
- * To change this template use File | Settings | File Templates.
+ * 
  */
 @SuppressWarnings("serial")
 public class JahiaUseConstantsTag extends UseConstantsTag {

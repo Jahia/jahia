@@ -55,7 +55,7 @@ import java.util.UUID;
  * User: toto
  * Date: Apr 23, 2008
  * Time: 11:56:11 AM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class VFSSessionImpl implements Session {
     private VFSRepositoryImpl repository;

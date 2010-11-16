@@ -49,7 +49,7 @@ import java.security.Principal;
  * User: Serge Huber
  * Date: 29 juil. 2008
  * Time: 14:48:33
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class JahiaContextRequest extends HttpServletRequestWrapper {
 

@@ -47,7 +47,7 @@ import java.net.MalformedURLException;
  * User: toto
  * Date: Apr 23, 2008
  * Time: 11:45:31 AM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class VFSContentStoreProvider extends JCRStoreProvider {
     private Repository repo;

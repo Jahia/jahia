@@ -47,7 +47,7 @@ import java.security.Principal;
  * User: toto
  * Date: 13 mars 2006
  * Time: 16:44:20
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class GuestGroup extends JCRGroup {
     private static org.slf4j.Logger logger =

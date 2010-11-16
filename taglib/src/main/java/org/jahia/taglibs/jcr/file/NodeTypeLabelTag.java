@@ -50,7 +50,7 @@ import java.io.IOException;
  * User: toto
  * Date: 19 déc. 2007
  * Time: 18:22:36
- * To change this template use File | Settings | File Templates.
+ * 
  */
 @SuppressWarnings("serial")
 public class NodeTypeLabelTag extends TagSupport {

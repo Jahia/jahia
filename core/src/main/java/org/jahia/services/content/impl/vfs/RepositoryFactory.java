@@ -43,7 +43,7 @@ import java.util.Hashtable;
  * User: toto
  * Date: Apr 23, 2008
  * Time: 11:46:12 AM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class RepositoryFactory implements ObjectFactory {
     public Object getObjectInstance(Object obj, Name name, Context nameCtx,

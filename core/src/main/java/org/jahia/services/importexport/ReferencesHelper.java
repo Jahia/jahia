@@ -49,7 +49,7 @@ import java.util.Map;
  * User: toto
  * Date: Dec 18, 2009
  * Time: 11:58:07 AM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class ReferencesHelper {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(LegacyImportHandler.class);    

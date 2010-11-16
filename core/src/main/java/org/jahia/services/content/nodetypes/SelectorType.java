@@ -41,7 +41,7 @@ import java.util.HashMap;
  * User: toto
  * Date: 14 mars 2008
  * Time: 17:06:46
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class SelectorType {
     public static final int SMALLTEXT = 1;

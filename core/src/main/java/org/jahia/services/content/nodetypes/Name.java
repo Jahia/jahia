@@ -41,7 +41,7 @@ import org.apache.commons.lang.StringUtils;
  * User: toto
  * Date: 14 mars 2008
  * Time: 18:43:40
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class Name {
     private String localName;

@@ -55,7 +55,7 @@ import java.util.*;
  * User: ktlili
  * Date: Mar 23, 2010
  * Time: 5:09:32 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class GoogleAnalyticsService extends JahiaService {
     final static Logger logger = org.slf4j.LoggerFactory.getLogger(GoogleAnalyticsService.class);

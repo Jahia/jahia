@@ -50,7 +50,7 @@ import org.jahia.services.content.nodetypes.initializers.ValueInitializer;
  * User: toto
  * Date: Apr 3, 2008
  * Time: 12:26:22 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class DynamicValueImpl implements Value {
     

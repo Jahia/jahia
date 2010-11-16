@@ -11,7 +11,7 @@ import java.util.List;
 * User: toto
 * Date: Oct 28, 2010
 * Time: 3:36:35 PM
-* To change this template use File | Settings | File Templates.
+* 
 */
 public class Template implements Serializable {
     public String view;

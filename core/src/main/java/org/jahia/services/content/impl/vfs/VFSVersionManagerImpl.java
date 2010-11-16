@@ -45,7 +45,7 @@ import javax.jcr.version.VersionManager;
  * User: loom
  * Date: Aug 12, 2010
  * Time: 5:26:34 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class VFSVersionManagerImpl implements VersionManager {
     public Version checkin(String absPath) throws VersionException, UnsupportedRepositoryOperationException, InvalidItemStateException, LockException, RepositoryException {

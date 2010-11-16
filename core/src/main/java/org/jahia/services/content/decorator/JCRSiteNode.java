@@ -48,7 +48,7 @@ import java.util.*;
  * User: toto
  * Date: Mar 30, 2010
  * Time: 12:37:45 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class JCRSiteNode extends JCRNodeDecorator {
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JCRSiteNode.class);

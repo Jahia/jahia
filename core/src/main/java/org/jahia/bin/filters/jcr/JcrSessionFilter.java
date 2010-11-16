@@ -52,7 +52,7 @@ import java.io.IOException;
  * User: toto
  * Date: 25 févr. 2008
  * Time: 12:59:04
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class JcrSessionFilter implements Filter {
     private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(JcrSessionFilter.class);

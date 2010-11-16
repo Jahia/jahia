@@ -15,7 +15,7 @@ import java.util.Map;
  * User: toto
  * Date: Aug 2, 2010
  * Time: 6:55:03 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class JahiaConstraintBuilder extends ConstraintBuilder {
 

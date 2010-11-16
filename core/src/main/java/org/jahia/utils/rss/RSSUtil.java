@@ -53,7 +53,7 @@ import java.net.URL;
  * User: ktlili
  * Date: Jan 6, 2010
  * Time: 3:59:57 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class RSSUtil {
 

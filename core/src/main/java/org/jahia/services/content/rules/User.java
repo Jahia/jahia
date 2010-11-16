@@ -48,7 +48,7 @@ import java.util.Properties;
  * User: toto
  * Date: 14 janv. 2008
  * Time: 19:55:10
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class User {
     private String username;

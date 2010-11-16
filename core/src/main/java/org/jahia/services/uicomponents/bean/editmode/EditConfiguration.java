@@ -43,7 +43,7 @@ import java.util.List;
  * User: ktlili
  * Date: Apr 14, 2010
  * Time: 12:26:47 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class EditConfiguration implements Serializable, BeanNameAware {
     private String name;

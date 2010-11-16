@@ -55,7 +55,7 @@ import java.util.Map;
  * User: toto
  * Date: Jul 1, 2010
  * Time: 3:37:11 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(TemplatesNodeChoiceListInitializer.class);

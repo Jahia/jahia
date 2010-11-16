@@ -41,7 +41,7 @@ import java.io.Serializable;
  * User: ktlili
  * Date: Apr 12, 2010
  * Time: 3:03:45 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class Column implements Serializable {
     private String key;

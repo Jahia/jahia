@@ -51,7 +51,7 @@ import java.util.Properties;
  * User: toto
  * Date: 5 juin 2006
  * Time: 17:57:36
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class UsersImportHandler extends DefaultHandler {
     private JahiaUserManagerService u;

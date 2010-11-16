@@ -41,7 +41,7 @@ import org.jahia.exceptions.JahiaException;
  * User: hollis
  * Date: 29 janv. 2008
  * Time: 12:38:58
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public interface ExpressionContextInterface {
 

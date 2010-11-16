@@ -47,7 +47,7 @@ import org.apache.taglibs.standard.tag.common.core.Util;
  * User: toto
  * Date: Dec 4, 2009
  * Time: 11:32:03 AM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class TextDiffTag extends TagSupport {
 

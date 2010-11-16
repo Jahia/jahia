@@ -55,7 +55,7 @@ import java.util.*;
  * User: toto
  * Date: 27 févr. 2006
  * Time: 12:00:21
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class JahiaLoginModule implements LoginModule {
     public static final String SYSTEM = " system ";

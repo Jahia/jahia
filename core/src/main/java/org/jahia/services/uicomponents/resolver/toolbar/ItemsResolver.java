@@ -44,7 +44,7 @@ import java.util.Locale;
  * User: toto
  * Date: Sep 25, 2009
  * Time: 11:52:01 AM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public interface ItemsResolver {
     public List<Item> getItems(JCRSiteNode site, JahiaUser user, Locale locale);

@@ -42,7 +42,7 @@ import java.io.IOException;
  * User: toto
  * Date: Dec 2, 2009
  * Time: 4:05:52 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public interface ErrorHandler {
 

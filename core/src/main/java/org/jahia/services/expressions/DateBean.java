@@ -47,7 +47,7 @@ import java.util.TimeZone;
  * Example of expressions : ${date.formattedNowDate} // returns the current formatted date.
  * ${date.format(now-2*week)}.
  * <p/>
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class DateBean {
 

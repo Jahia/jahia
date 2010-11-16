@@ -62,7 +62,7 @@ import java.util.*;
  * User: toto
  * Date: Sep 28, 2009
  * Time: 2:15:34 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class PublicationHelper {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(PublicationHelper.class);

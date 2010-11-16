@@ -50,7 +50,7 @@ import java.util.ArrayList;
  * User: toto
  * Date: Dec 8, 2008
  * Time: 2:29:11 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class JCRQueryNode extends JCRNodeDecorator {
     protected static final Logger logger = org.slf4j.LoggerFactory.getLogger(JCRNodeWrapper.class);

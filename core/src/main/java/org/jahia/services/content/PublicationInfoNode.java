@@ -9,7 +9,7 @@ import java.util.List;
 * User: toto
 * Date: Aug 26, 2010
 * Time: 5:31:55 PM
-* To change this template use File | Settings | File Templates.
+* 
 */
 public class PublicationInfoNode implements Serializable {
     private String uuid;

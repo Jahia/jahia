@@ -49,7 +49,7 @@ import java.util.Locale;
  * User: toto
  * Date: Sep 25, 2009
  * Time: 12:12:47 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class SitesItemsResolver extends DefaultItemsResolver {
     private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(SitesItemsResolver.class);

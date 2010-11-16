@@ -39,7 +39,7 @@ import ij.ImagePlus;
  * User: toto
  * Date: Oct 21, 2008
  * Time: 5:14:50 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class ImageWrapper {
     private AddedNodeFact parentNode;

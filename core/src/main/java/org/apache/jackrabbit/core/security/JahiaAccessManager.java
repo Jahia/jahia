@@ -87,7 +87,7 @@ import java.util.*;
  * User: toto
  * Date: 28 févr. 2006
  * Time: 17:58:41
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class JahiaAccessManager extends AbstractAccessControlManager implements AccessManager, AccessControlManager {
     public static final Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaAccessManager.class);

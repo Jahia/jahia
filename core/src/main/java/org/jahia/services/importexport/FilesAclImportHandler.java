@@ -71,7 +71,7 @@ import java.util.StringTokenizer;
  * User: toto
  * Date: 6 juil. 2005
  * Time: 17:31:05
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class FilesAclImportHandler extends DefaultHandler {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(FilesAclImportHandler.class);

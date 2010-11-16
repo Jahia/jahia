@@ -25,7 +25,7 @@ import java.util.*;
  * User: toto
  * Date: Sep 17, 2010
  * Time: 2:04:17 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class SchedulerHelper {
     private SchedulerService scheduler;

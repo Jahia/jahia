@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  * User: toto
  * Date: 4 janv. 2008
  * Time: 14:08:56
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class ExtendedNodeDefinition extends ExtendedItemDefinition implements NodeDefinition {
     private static final transient Logger logger = LoggerFactory.getLogger(ExtendedItemDefinition.class);

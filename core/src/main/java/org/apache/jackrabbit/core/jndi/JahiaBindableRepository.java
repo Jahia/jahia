@@ -47,7 +47,7 @@ import java.util.regex.Matcher;
  * User: toto
  * Date: Jan 19, 2009
  * Time: 4:09:38 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class JahiaBindableRepository extends BindableRepository {
     public JahiaBindableRepository(Reference reference) throws RepositoryException {

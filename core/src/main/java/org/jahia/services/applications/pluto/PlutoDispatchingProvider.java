@@ -62,7 +62,7 @@ import java.util.Map;
  * User: Serge Huber
  * Date: 15 juil. 2008
  * Time: 15:15:36
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class PlutoDispatchingProvider implements DispatchingProvider {
 

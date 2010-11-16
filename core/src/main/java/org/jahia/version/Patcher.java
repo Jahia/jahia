@@ -37,7 +37,7 @@ package org.jahia.version;
  * User: toto
  * Date: 23 août 2007
  * Time: 18:40:58
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public interface Patcher {
 

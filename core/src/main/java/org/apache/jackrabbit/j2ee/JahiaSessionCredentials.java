@@ -47,7 +47,7 @@ import java.security.Principal;
  * User: toto
  * Date: 27 déc. 2007
  * Time: 19:30:31
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class JahiaSessionCredentials extends BasicCredentialsProvider {
     public JahiaSessionCredentials(String s) {

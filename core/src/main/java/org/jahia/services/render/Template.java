@@ -41,7 +41,7 @@ import java.util.Properties;
  * User: toto
  * Date: Nov 16, 2009
  * Time: 11:05:46 AM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public interface Template {
     String getKey();

@@ -41,7 +41,7 @@ import javax.jcr.RepositoryException;
  * User: toto
  * Date: Dec 3, 2008
  * Time: 5:55:11 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class JCRFileNode extends JCRNodeDecorator {
     public JCRFileNode(JCRNodeWrapper node) throws RepositoryException {

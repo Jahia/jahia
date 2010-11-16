@@ -40,7 +40,7 @@ import org.jahia.exceptions.JahiaInitializationException;
  * User: Serge Huber
  * Date: Jul 12, 2005
  * Time: 2:33:06 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public interface CacheProvider {
 

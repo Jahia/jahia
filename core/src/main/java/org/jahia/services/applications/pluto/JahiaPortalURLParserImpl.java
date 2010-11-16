@@ -56,7 +56,7 @@ import java.util.StringTokenizer;
  * User: Serge Huber
  * Date: 28 juil. 2008
  * Time: 15:13:28
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class JahiaPortalURLParserImpl implements PortalURLParser {
     /**

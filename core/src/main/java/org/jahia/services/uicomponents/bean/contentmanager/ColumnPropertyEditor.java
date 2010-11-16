@@ -43,7 +43,7 @@ import java.beans.PropertyEditorSupport;
  * User: toto
  * Date: May 10, 2010
  * Time: 3:15:24 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class ColumnPropertyEditor extends PropertyEditorSupport {
 

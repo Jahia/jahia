@@ -59,7 +59,7 @@ import java.util.Calendar;
  * User: toto
  * Date: 19 déc. 2007
  * Time: 18:26:25
- * To change this template use File | Settings | File Templates.
+ * 
  */
 @SuppressWarnings("serial")
 public class PropertyValueTag extends TagSupport {

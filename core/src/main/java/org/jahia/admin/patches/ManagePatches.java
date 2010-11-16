@@ -49,7 +49,7 @@ import java.util.SortedMap;
  * User: toto
  * Date: 29 août 2007
  * Time: 17:37:08
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class ManagePatches extends AbstractAdministrationModule {
     

@@ -53,7 +53,7 @@ import java.util.List;
  * User: toto
  * Date: Mar 18, 2009
  * Time: 4:26:42 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class JCRVersionHistory extends JCRNodeDecorator implements VersionHistory {
     public JCRVersionHistory(JCRNodeWrapper node) {

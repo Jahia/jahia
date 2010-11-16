@@ -45,7 +45,7 @@ import org.jahia.exceptions.JahiaSiteNotFoundException;
  * User: loom
  * Date: Mar 5, 2005
  * Time: 3:46:19 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class ProcessingContextFactoryImpl implements ProcessingContextFactory {
 

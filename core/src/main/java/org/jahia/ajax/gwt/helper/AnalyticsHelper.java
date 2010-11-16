@@ -57,7 +57,7 @@ import java.util.List;
  * User: ktlili
  * Date: Mar 24, 2010
  * Time: 11:44:38 AM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class AnalyticsHelper {
     final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");

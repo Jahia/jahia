@@ -43,7 +43,7 @@ import javax.jcr.Value;
  * User: loom
  * Date: Nov 20, 2008
  * Time: 3:56:47 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class JahiaPortletPreference extends JCRNodeDecorator {
     public JahiaPortletPreference(JCRNodeWrapper node) {

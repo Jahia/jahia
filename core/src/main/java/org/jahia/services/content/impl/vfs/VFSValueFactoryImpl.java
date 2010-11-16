@@ -45,7 +45,7 @@ import java.util.Date;
  * User: loom
  * Date: Aug 12, 2010
  * Time: 3:03:58 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class VFSValueFactoryImpl implements ValueFactory {
     public Value createValue(String value) {

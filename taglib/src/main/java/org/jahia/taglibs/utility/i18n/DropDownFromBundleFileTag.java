@@ -49,7 +49,7 @@ import java.io.IOException;
  * User: rincevent
  * Date: 19 févr. 2009
  * Time: 17:46:51
- * To change this template use File | Settings | File Templates.
+ * 
  */
 @SuppressWarnings("serial")
 public class DropDownFromBundleFileTag extends AbstractJahiaTag {

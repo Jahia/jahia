@@ -45,7 +45,7 @@ import java.util.Set;
  * User: toto
  * Date: 14 janv. 2008
  * Time: 15:56:43
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public abstract class DefaultEventListener implements EventListener {
 

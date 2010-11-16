@@ -42,7 +42,7 @@ import javax.jcr.RepositoryException;
  * User: jahia
  * Date: 21 ao�t 2008
  * Time: 10:30:57
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class PageJahiaPreference extends JCRNodeDecorator {
 

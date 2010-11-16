@@ -43,7 +43,7 @@ import org.jahia.settings.SettingsBean;
  * User: rincevent
  * Date: 27 août 2008
  * Time: 14:21:22
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class DummyCacheProvider implements CacheProvider {
     public void init(SettingsBean settingsBean, CacheService cacheService) throws JahiaInitializationException {

@@ -54,7 +54,7 @@ import java.util.*;
  * User: toto
  * Date: Dec 17, 2009
  * Time: 3:02:35 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class DocumentViewExporter {
     protected static final Logger logger = org.slf4j.LoggerFactory.getLogger(DocumentViewExporter.class);

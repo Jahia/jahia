@@ -47,7 +47,7 @@ import java.io.IOException;
  * User: toto
  * Date: 27 déc. 2007
  * Time: 18:44:34
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class JahiaWebdavServlet extends SimpleWebdavServlet {
 

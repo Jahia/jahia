@@ -14,7 +14,7 @@ import java.util.GregorianCalendar;
  * User: toto
  * Date: Dec 31, 2009
  * Time: 11:46:21 AM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class JahiaNodeTypeInstanceHandler extends NodeTypeInstanceHandler {
     private Calendar created = null;

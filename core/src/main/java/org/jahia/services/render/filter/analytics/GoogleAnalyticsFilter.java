@@ -46,7 +46,7 @@ import java.util.List;
  * User: ktlili
  * Date: Mar 25, 2010
  * Time: 2:04:14 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class GoogleAnalyticsFilter extends AbstractFilter {
     private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(GoogleAnalyticsFilter.class);

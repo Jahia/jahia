@@ -47,7 +47,7 @@ import java.util.List;
  * User: david
  * Date: May 14, 2010
  * Time: 3:13:55 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class ActiveWorkflowTag extends AbstractJahiaTag {
     private final static Logger logger = org.slf4j.LoggerFactory.getLogger(AvailableTasksTag.class);

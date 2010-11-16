@@ -46,7 +46,7 @@ import java.util.List;
  * User: toto
  * Date: 18 déc. 2007
  * Time: 18:19:44
- * To change this template use File | Settings | File Templates.
+ * 
  */
 @SuppressWarnings("serial")
 public class PropertiesTag extends AbstractJahiaTag {

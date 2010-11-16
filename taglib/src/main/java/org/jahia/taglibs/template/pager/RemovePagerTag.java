@@ -43,7 +43,7 @@ import java.util.Map;
  * User: toto
  * Date: Dec 7, 2009
  * Time: 11:39:29 AM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class RemovePagerTag extends TagSupport {
     private String prefix;

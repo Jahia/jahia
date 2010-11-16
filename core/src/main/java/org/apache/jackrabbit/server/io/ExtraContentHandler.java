@@ -44,7 +44,7 @@ import org.apache.jackrabbit.webdav.DavResource;
  * User: toto
  * Date: 12 juil. 2007
  * Time: 20:38:16
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class ExtraContentHandler extends DefaultHandler implements IOHandler {
 

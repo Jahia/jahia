@@ -41,7 +41,7 @@ import java.io.Serializable;
  * User: toto
  * Date: 4 avr. 2006
  * Time: 19:03:09
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class QueuedJobMessage implements Serializable {
     Trigger trigger;

@@ -52,7 +52,7 @@ import java.util.HashMap;
  * User: toto
  * Date: Dec 3, 2008
  * Time: 5:55:00 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class JCRPortletNode extends JCRNodeDecorator {
     public JCRPortletNode(JCRNodeWrapper node) {

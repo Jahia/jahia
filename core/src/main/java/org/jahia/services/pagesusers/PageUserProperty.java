@@ -37,7 +37,7 @@ package org.jahia.services.pagesusers;
  * User: ktlili
  * Date: 22 nov. 2007
  * Time: 12:08:17
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class PageUserProperty {
     private int pageId;

@@ -46,7 +46,7 @@ import java.util.*;
  * User: toto
  * Date: Apr 23, 2008
  * Time: 11:45:50 AM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class VFSRepositoryImpl implements Repository {
 

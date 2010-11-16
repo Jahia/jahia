@@ -45,7 +45,7 @@ import javax.servlet.http.HttpServletResponse;
  * User: loom
  * Date: Mar 5, 2005
  * Time: 2:13:58 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public interface ProcessingContextFactory {
 

@@ -54,7 +54,7 @@ import java.util.List;
  * User: toto
  * Date: Mar 25, 2010
  * Time: 8:35:48 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class JCRFilterTag extends AbstractJCRTag {
     private static transient Logger logger = org.slf4j.LoggerFactory.getLogger(JCRFilterTag.class);

@@ -45,7 +45,7 @@ import java.util.List;
  * User: toto
  * Date: 15 janv. 2008
  * Time: 19:57:37
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class Group {
     private JahiaGroup group;

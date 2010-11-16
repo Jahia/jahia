@@ -44,7 +44,7 @@ import javax.jcr.AccessDeniedException;
  * User: toto
  * Date: Dec 8, 2009
  * Time: 11:54:06 AM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class TemplatePermissionCheckFilter extends AbstractFilter {
 

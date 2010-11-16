@@ -43,7 +43,7 @@ import java.util.Map;
  * User: loom
  * Date: Mar 6, 2005
  * Time: 3:53:33 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class BasicSessionState implements SessionState, Serializable {
 

@@ -46,7 +46,7 @@ import java.util.SortedSet;
  * User: toto
  * Date: Sep 28, 2009
  * Time: 7:22:55 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public interface ScriptResolver {
     public Script resolveScript(Resource resource, RenderContext context) throws TemplateNotFoundException;

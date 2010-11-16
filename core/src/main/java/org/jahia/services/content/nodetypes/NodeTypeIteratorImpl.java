@@ -44,7 +44,7 @@ import java.util.Iterator;
  * User: toto
  * Date: Sep 21, 2009
  * Time: 5:32:24 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class NodeTypeIteratorImpl extends RangeIteratorImpl implements NodeTypeIterator {
 

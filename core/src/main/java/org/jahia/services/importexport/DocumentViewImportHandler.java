@@ -61,7 +61,7 @@ import java.util.*;
  * User: toto
  * Date: 11 févr. 2008
  * Time: 16:38:38
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class DocumentViewImportHandler extends DefaultHandler {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(DocumentViewImportHandler.class);

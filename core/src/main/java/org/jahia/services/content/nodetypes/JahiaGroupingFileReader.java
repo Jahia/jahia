@@ -43,7 +43,7 @@ import java.util.ArrayList;
  * User: toto
  * Date: Apr 30, 2008
  * Time: 3:12:14 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class JahiaGroupingFileReader extends JahiaCndReader {
 

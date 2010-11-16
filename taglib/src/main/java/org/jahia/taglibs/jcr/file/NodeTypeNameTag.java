@@ -46,7 +46,7 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
  * User: toto
  * Date: 19 déc. 2007
  * Time: 18:22:36
- * To change this template use File | Settings | File Templates.
+ * 
  */
 @SuppressWarnings("serial")
 public class NodeTypeNameTag extends TagSupport {

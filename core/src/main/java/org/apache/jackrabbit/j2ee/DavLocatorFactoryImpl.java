@@ -39,7 +39,7 @@ import org.apache.jackrabbit.webdav.AbstractLocatorFactory;
  * User: toto
  * Date: 19 févr. 2008
  * Time: 16:47:37
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class DavLocatorFactoryImpl extends AbstractLocatorFactory  {
 

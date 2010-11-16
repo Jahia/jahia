@@ -50,7 +50,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * User: toto
  * Date: May 26, 2008
  * Time: 10:59:42 AM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class FilesDateImportHandler extends DefaultHandler {
     

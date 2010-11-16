@@ -39,7 +39,7 @@ import java.io.Serializable;
  * User: Rincevent
  * Date: 25 avr. 2005
  * Time: 16:47:40
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public interface CategoryBean extends Serializable {
     /**

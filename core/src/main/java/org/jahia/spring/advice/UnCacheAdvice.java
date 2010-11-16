@@ -44,7 +44,7 @@ import org.jahia.services.cache.CacheService;
  * User: Rincevent
  * Date: 20 juil. 2005
  * Time: 17:59:19
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class UnCacheAdvice implements MethodInterceptor {
     private static final transient Logger log = org.slf4j.LoggerFactory.getLogger(UnCacheAdvice.class);

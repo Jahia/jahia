@@ -52,7 +52,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * User: toto
  * Date: 4 janv. 2008
  * Time: 14:02:49
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class ExtendedPropertyDefinition extends ExtendedItemDefinition implements PropertyDefinition {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(ExtendedPropertyDefinition.class);

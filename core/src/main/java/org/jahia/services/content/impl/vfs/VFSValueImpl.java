@@ -42,7 +42,7 @@ import java.util.Calendar;
  * User: loom
  * Date: Aug 12, 2010
  * Time: 3:04:33 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class VFSValueImpl implements Value {
 

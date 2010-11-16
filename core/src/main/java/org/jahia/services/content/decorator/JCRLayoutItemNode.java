@@ -42,7 +42,7 @@ import javax.jcr.Node;
  * User: jahia
  * Date: 18 mars 2009
  * Time: 16:39:18
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class JCRLayoutItemNode extends JCRNodeDecorator {
 

@@ -39,7 +39,7 @@ import java.io.File;
  * User: toto
  * Date: 23 août 2007
  * Time: 18:41:08
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class Patch implements Comparable<Patch> {
     private File file;

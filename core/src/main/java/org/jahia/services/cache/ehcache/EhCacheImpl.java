@@ -49,7 +49,7 @@ import java.util.Iterator;
  * User: Serge Huber
  * Date: 29 mars 2007
  * Time: 17:25:50
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class EhCacheImpl implements CacheImplementation {
 

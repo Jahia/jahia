@@ -41,7 +41,7 @@ import java.util.Iterator;
 * User: toto
 * Date: Jan 25, 2010
 * Time: 1:59:57 PM
-* To change this template use File | Settings | File Templates.
+* 
 */
 public class JCREventIterator extends RangeIteratorImpl implements EventIterator {
     private JCRSessionWrapper session;

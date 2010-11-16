@@ -48,7 +48,7 @@ import java.util.HashSet;
  * User: Rincevent
  * Date: 20 juil. 2005
  * Time: 17:59:19
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class CacheAdvice implements MethodInterceptor {
     private static final transient Logger log = org.slf4j.LoggerFactory.getLogger(CacheAdvice.class.getName());

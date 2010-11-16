@@ -45,7 +45,7 @@ import java.io.IOException;
  * User: jahia
  * Date: 9 juin 2009
  * Time: 16:25:27
- * To change this template use File | Settings | File Templates.
+ * 
  */
 
 import java.io.InputStream;

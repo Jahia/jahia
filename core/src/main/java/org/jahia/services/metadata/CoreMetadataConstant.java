@@ -40,7 +40,7 @@ import java.util.HashSet;
  * User: hollis
  * Date: 26 oct. 2005
  * Time: 12:43:45
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class CoreMetadataConstant {
 

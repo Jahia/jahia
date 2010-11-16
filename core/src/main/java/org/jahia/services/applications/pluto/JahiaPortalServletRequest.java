@@ -44,7 +44,7 @@ import org.apache.pluto.container.PortletWindow;
  * User: Serge Huber
  * Date: 30 juil. 2008
  * Time: 12:27:46
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class JahiaPortalServletRequest extends HttpServletRequestWrapper {
     

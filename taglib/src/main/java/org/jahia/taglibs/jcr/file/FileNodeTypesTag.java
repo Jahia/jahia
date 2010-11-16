@@ -50,7 +50,7 @@ import java.util.List;
  * User: toto
  * Date: Apr 8, 2008
  * Time: 5:52:04 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 @SuppressWarnings("serial")
 public class FileNodeTypesTag extends AbstractJahiaTag {

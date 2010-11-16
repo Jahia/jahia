@@ -41,7 +41,7 @@ import java.util.NoSuchElementException;
  * User: toto
  * Date: Feb 8, 2010
  * Time: 5:53:46 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class EmptyPropertyIterator implements PropertyIterator {
     public Property nextProperty() {

@@ -331,11 +331,6 @@ public class FileWatcher extends Observable implements Serializable {
         m_LastCheckTime = System.currentTimeMillis();
         logger.debug("Watching directory=" + getFolderPath()   );
         File tmpFile = new File(getFolderPath());
-        if ( tmpFile == null) {
-            throw new IOException(
-                    "FileWatcher::initialize(), cannot create directory " +
-                    getFolderPath());
-        }
         if ( tmpFile.isDirectory() && !tmpFile.canWrite() ){
             logger.debug("No write access to directory " + getFolderPath() +
                     " tmpFile=" + tmpFile.toString());

@@ -115,21 +115,8 @@ public class JCRVersionService extends JahiaService {
         return new ArrayList<VersionInfo>(versionList);
     }
 
-    public Calendar setNodeCheckinDate(Node node, Calendar checkinDate) throws RepositoryException {
-        if (!node.isNodeType("jmix:versionInfo")) {
-            return null;
-        }
-//        if (node.hasProperty("j:checkinDate")) {
-//            Calendar currentDate = node.getProperty("j:checkinDate").getDate();
-//        }
-
-//        node.setProperty("j:checkinDate", checkinDate);
-        return checkinDate;
-    }
-
 
     public void checkin(Session session, JCRNodeWrapper node, Calendar checkinDate) throws RepositoryException {
-        setNodeCheckinDate(node, checkinDate);
         session.getWorkspace().getVersionManager().checkin(node.getPath());
     }
 
@@ -337,6 +324,8 @@ public class JCRVersionService extends JahiaService {
             if (destinationNodes.containsKey(child.getIdentifier())) {
                 JCRNodeWrapper node = destinationNodes.remove(child.getIdentifier());
                 synchronizeNode(child, node, session, allSubTree);
+            } else if (child.getRealNode().getParent().isNodeType(Constants.NT_FROZENNODE)) {
+                System.out.println("lost node " + child.getName());
             } else {
                 VersionHistory history;
                 try {

@@ -91,7 +91,7 @@ public class UnpublishActionItem extends BaseActionItem {
     public void handleNewLinkerSelection() {
         GWTJahiaNode gwtJahiaNode = linker.getSelectionContext().getSingleSelection();
         if (gwtJahiaNode != null) {
-            GWTJahiaPublicationInfo info = gwtJahiaNode.getPublicationInfo();
+            GWTJahiaPublicationInfo info = gwtJahiaNode.getAggregatedPublicationInfo();
             setEnabled(!gwtJahiaNode.isLanguageLocked(JahiaGWTParameters.getLanguage()) && info.isCanPublish() && (info.getStatus() == GWTJahiaPublicationInfo.PUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.MODIFIED));
             updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getName() + " - " + JahiaGWTParameters.getLanguageDisplayName());
         }

@@ -43,9 +43,6 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowType;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
@@ -53,14 +50,14 @@ import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.portlet.PortletWizardWindow;
+import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.ContentTypeWindow;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
-import org.jahia.ajax.gwt.client.widget.publication.PublicationStatusWindow;
-import org.jahia.ajax.gwt.client.widget.publication.PublicationWorkflow;
-import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
-import org.jahia.ajax.gwt.client.widget.workflow.WorkflowActionDialog;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -289,29 +286,12 @@ public class ContentActions {
         final List<GWTJahiaNode> selectedItems = linker.getSelectionContext().getMultipleSelection();
         if (selectedItems != null && selectedItems.size() > 0) {
             List<String> selectedPaths = new ArrayList<String>(selectedItems.size());
-            List<String> lockedBySystem = new LinkedList<String>();
             for (GWTJahiaNode node : selectedItems) {
-                if ((lock && !node.isLocked()) || (!lock && (node.isLocked()||(node.getLockOwner()!=null&&node.getLockOwner().equals(JahiaGWTParameters.getCurrentUser()))))) {
-                    if (!lock && node.getLockOwner() != null &&
-                        node.getLockOwner().equals( JahiaGWTParameters.SYSTEM_USER)) {
-                        lockedBySystem.add(node.getPath());
-                    }
+                if ((lock && !node.isLocked() && node.getLockOwner() == null) || (!lock && node.getLockOwner() != null && node.getLockOwner().equals(JahiaGWTParameters.getCurrentUser()))) {
                     selectedPaths.add(node.getPath());
                 }
             }
             boolean continueOperation = true;
-            if (!lockedBySystem.isEmpty()) {
-                StringBuffer lockedFiles = new StringBuffer();
-                for (String file : lockedBySystem) {
-                    lockedFiles.append("\n").append(
-                            file.contains("/") ? file.substring(file
-                                    .lastIndexOf('/') + 1) : file);
-                }
-                continueOperation = Window
-                        .confirm(Messages.get("warning.systemLock.label") + "\n"
-                                + lockedFiles.toString()
-                                + "\n\n" + Messages.get("confirm.unlock.label"));
-            }
             if (continueOperation && !selectedPaths.isEmpty()) {
                 linker.loading(lock ? Messages.get("statusbar.locking.label") : Messages.get("statusbar.unlocking.label"));
                 JahiaContentManagementService.App.getInstance().setLock(selectedPaths, lock, new BaseAsyncCallback() {

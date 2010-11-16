@@ -138,7 +138,7 @@ public class PublicationInfo implements Serializable {
             final PublicationInfoNode node = nodes.get(i);
             List<PublicationInfo> toRemove = new ArrayList<PublicationInfo>();
             for (PublicationInfo info : node.getReferences()) {
-                if (uuids.contains(info.getRoot().getUuid()) || !info.needPublication()) {
+                if (uuids.contains(info.getRoot().getUuid()) || !info.needPublication(null)) {
                     toRemove.add(info);
                 }
             }
@@ -146,14 +146,15 @@ public class PublicationInfo implements Serializable {
         }
     }
 
-    public Set<Integer> getTreeStatus() {
+    public Set<Integer> getTreeStatus(String language) {
         Set<Integer> status = new HashSet<Integer>();
         List<PublicationInfoNode> nodes = new ArrayList<PublicationInfoNode>();
         nodes.add(root);
         for (int i=0; i<nodes.size(); i++) {
             final PublicationInfoNode node = nodes.get(i);
             for (PublicationInfoNode infoNode : node.getChildren()) {
-                if (!nodes.contains(infoNode)) {
+                if (!nodes.contains(infoNode) &&
+                        (language == null || !infoNode.getPath().contains("/j:translation_") || infoNode.getPath().contains("/j:translation_"+language) )) {
                     nodes.add(infoNode);
                 }
             }
@@ -163,13 +164,13 @@ public class PublicationInfo implements Serializable {
 
     }
 
-    public boolean needPublication() {
-        Set<Integer> treeStatus = getTreeStatus();
+    public boolean needPublication(String language) {
+        Set<Integer> treeStatus = getTreeStatus(language);
         if (!treeStatus.contains(PUBLISHED) || treeStatus.size() != 1) {
             return true;
         }
         for (PublicationInfo info : getAllReferences()) {
-            final Set<Integer> subTreeStatus = info.getTreeStatus();
+            final Set<Integer> subTreeStatus = info.getTreeStatus(language);
             if (!subTreeStatus.contains(PUBLISHED) || subTreeStatus.size() != 1) {
                 return true;
             }

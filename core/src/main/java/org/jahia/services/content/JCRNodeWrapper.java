@@ -623,6 +623,8 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
 
     void unlock(String type) throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException, InvalidItemStateException, RepositoryException;
 
+    void clearAllLocks() throws RepositoryException;
+
     /**
      * Adds the mix:versionable mixin type to a file node
      */

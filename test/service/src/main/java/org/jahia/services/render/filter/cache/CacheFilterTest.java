@@ -33,14 +33,11 @@
 package org.jahia.services.render.filter.cache;
 
 import junit.framework.TestCase;
-import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
-import net.sf.ehcache.constructs.blocking.BlockingCache;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ParamBean;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.content.*;
@@ -111,7 +108,7 @@ public class CacheFilterTest extends TestCase {
             final List<PublicationInfo> infoList = service.getPublicationInfo(
                     shared.getIdentifier(), new LinkedHashSet<String>(Arrays.asList(Locale.ENGLISH.toString())),
                     true, true, true, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
-            service.publish(infoList, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,Collections.<String>emptyList());
+            service.publishByInfoList(infoList, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,Collections.<String>emptyList());
             session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
             node = session.getNode("/sites/"+site.getSiteKey()+"/home/testContent");
         } catch (Exception e) {

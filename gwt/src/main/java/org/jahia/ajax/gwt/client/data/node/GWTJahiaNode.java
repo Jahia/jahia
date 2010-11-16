@@ -36,6 +36,7 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BaseTreeModel;
 import com.extjs.gxt.ui.client.data.ListLoadConfig;
 import com.extjs.gxt.ui.client.data.SortInfo;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo;
 
@@ -107,7 +108,6 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     private boolean selectedOnLoad = false;
     private Map<String, Boolean> languageLocked = new HashMap<String, Boolean>();
     private GWTJahiaNode referencedNode;
-    private GWTJahiaPublicationInfo publicationInfo;
     private GWTJahiaWorkflowInfo workflowInfo;
 
     // in case of a folder, it allows to know if the node is selectable or not
@@ -484,12 +484,8 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         return getInheritedNodeTypes().contains("jnt:page") || getNodeTypes().contains("jnt:page");
     }
 
-    public void setPublicationInfo(GWTJahiaPublicationInfo publicationInfo) {
-        this.publicationInfo = publicationInfo;
-    }
-
-    public GWTJahiaPublicationInfo getPublicationInfo() {
-        return publicationInfo;
+    public GWTJahiaPublicationInfo getAggregatedPublicationInfo() {
+        return publicationInfos.get(JahiaGWTParameters.getLanguage());
     }
 
     public void setWorkflowInfo(GWTJahiaWorkflowInfo workflowInfo) {
@@ -523,11 +519,11 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     }
 
 
-    public void setPublicationInfos(Map<String, GWTJahiaPublicationInfo> publicationInfos) {
+    public void setAggregatedPublicationInfos(Map<String, GWTJahiaPublicationInfo> publicationInfos) {
         this.publicationInfos = publicationInfos;
     }
 
-    public Map<String, GWTJahiaPublicationInfo> getPublicationInfos() {
+    public Map<String, GWTJahiaPublicationInfo> getAggregatedPublicationInfos() {
         return publicationInfos;
     }
 

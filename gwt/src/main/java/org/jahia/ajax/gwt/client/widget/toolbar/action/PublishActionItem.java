@@ -32,8 +32,6 @@
 
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -41,19 +39,17 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflow;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowType;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.publication.PublicationStatusWindow;
+import org.jahia.ajax.gwt.client.widget.contentengine.EngineContainer;
+import org.jahia.ajax.gwt.client.widget.contentengine.EnginePanel;
 import org.jahia.ajax.gwt.client.widget.publication.PublicationWorkflow;
 import org.jahia.ajax.gwt.client.widget.workflow.WorkflowActionDialog;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -82,30 +78,7 @@ public class PublishActionItem extends BaseActionItem {
                         .getPublicationInfo(uuids, allSubTree, new BaseAsyncCallback<List<GWTJahiaPublicationInfo>>() {
                             public void onSuccess(List<GWTJahiaPublicationInfo> result) {
                                 linker.loaded();
-
-                                List<GWTJahiaPublicationInfo> filteredList = new ArrayList<GWTJahiaPublicationInfo>();
-                                for (GWTJahiaPublicationInfo info : result) {
-                                    if (info.getStatus() > GWTJahiaPublicationInfo.PUBLISHED) {
-                                        filteredList.add(info);
-                                    }
-                                }
-                                if (filteredList.isEmpty()) {
-                                    MessageBox.info(Messages.get("label.publication", "Publication"),
-                                            Messages.get("label.nothingToPublish", "Nothing to publish"), null);
-                                } else {
-                                    GWTJahiaWorkflowDefinition def =
-                                            gwtJahiaNode.getWorkflowInfo().getPossibleWorkflows()
-                                                    .get(new GWTJahiaWorkflowType("publish"));
-                                    if (def != null) {
-                                        WorkflowActionDialog wad = new WorkflowActionDialog(gwtJahiaNode, linker);
-                                        wad.setCustom(new PublicationWorkflow(filteredList, uuids, allSubTree,
-                                                gwtJahiaNode.getLanguageCode()));
-                                        wad.initStartWorkflowDialog(def);
-                                        wad.show();
-                                    } else {
-                                        new PublicationStatusWindow(linker, uuids, filteredList, allSubTree).show();
-                                    }
-                                }
+                                PublicationWorkflow.create(result, linker);
                             }
 
                             public void onApplicationFailure(Throwable caught) {
@@ -115,10 +88,10 @@ public class PublishActionItem extends BaseActionItem {
                         });
             }
         } else {
-            WorkflowActionDialog dialog = new WorkflowActionDialog(gwtJahiaNode, wf, linker);
-            dialog.setCustom(wf.getCustomWorkflowInfo());
-            dialog.initExecuteActionDialog(wf.getAvailableTasks().get(0));
-            dialog.show();
+            EngineContainer container = new EnginePanel();
+
+            new WorkflowActionDialog(wf, wf.getAvailableTasks().get(0), linker, wf.getCustomWorkflowInfo(), container);
+            container.showEngine();
         }
     }
 
@@ -146,7 +119,7 @@ public class PublishActionItem extends BaseActionItem {
                 updateTitle(wf.getAvailableTasks().get(0).getDisplayName() + " : " + gwtJahiaNode.getName());
             } else {
                 wf = null;
-                GWTJahiaPublicationInfo info = gwtJahiaNode.getPublicationInfo();
+                GWTJahiaPublicationInfo info = gwtJahiaNode.getAggregatedPublicationInfo();
 
                 setEnabled(GWTJahiaPublicationInfo.canPublish(gwtJahiaNode, info, JahiaGWTParameters.getLanguage()));
 

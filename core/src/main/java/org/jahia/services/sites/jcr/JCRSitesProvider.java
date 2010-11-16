@@ -357,7 +357,7 @@ public class JCRSitesProvider {
                         siteNode.getProperty("j:gaProfile").remove();
                     }
                     session.save();
-                    JCRPublicationService.getInstance().publish(siteNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
+                    JCRPublicationService.getInstance().publishByMainId(siteNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
                             false, new ArrayList<String>());
                     return null;
                 }

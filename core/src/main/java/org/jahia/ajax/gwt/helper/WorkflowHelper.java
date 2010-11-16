@@ -189,7 +189,11 @@ public class WorkflowHelper {
                 getUsername(wf.getUser()), wf.getNodeId());
     }
 
-    private GWTJahiaWorkflowDefinition getGWTJahiaWorkflowDefinition(WorkflowDefinition workflow) {
+    public GWTJahiaWorkflowDefinition getGWTJahiaWorkflowDefinition(String key, Locale uiLocale) {
+        return getGWTJahiaWorkflowDefinition(service.getWorkflowDefinition(StringUtils.substringBefore(key,":"), StringUtils.substringAfter(key,":"), uiLocale));
+    }
+
+    public GWTJahiaWorkflowDefinition getGWTJahiaWorkflowDefinition(WorkflowDefinition workflow) {
         GWTJahiaWorkflowDefinition w = new GWTJahiaWorkflowDefinition();
         w.setProvider(workflow.getProvider());
         w.setName(workflow.getName());
@@ -215,17 +219,28 @@ public class WorkflowHelper {
         }
     }
 
-    public void assignAndCompleteTask(String path, GWTJahiaWorkflowTask task, GWTJahiaWorkflowOutcome outcome,
-                                      JCRSessionWrapper session, List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException {
+    public void startWorkflow(List<String> uuids, GWTJahiaWorkflowDefinition def, JCRSessionWrapper session,
+                              List<GWTJahiaNodeProperty> properties, List<String> comments, Map<String, Object> args)
+        throws GWTJahiaServiceException {
+
         try {
-            JCRNodeWrapper node = session.getNode(path);
-            service.assignTask(task.getId(), task.getProvider(), session.getUser());
             HashMap<String, Object> map = getVariablesMap(properties);
-            service.completeTask(task.getId(), task.getProvider(), outcome.getName(), map,session.getUser());
+            map.putAll(args);
+            String id = service.startProcess(uuids, session, def.getId(), def.getProvider(), map);
+            for (String s : comments) {
+                service.addComment(id, def.getProvider(), s, session.getUser().getUserKey());
+            }
         } catch (RepositoryException e) {
             e.printStackTrace();
             throw new GWTJahiaServiceException(e.getMessage());
         }
+    }
+
+    public void assignAndCompleteTask(GWTJahiaWorkflowTask task, GWTJahiaWorkflowOutcome outcome,
+                                      JCRSessionWrapper session, List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException {
+        service.assignTask(task.getId(), task.getProvider(), session.getUser());
+        HashMap<String, Object> map = getVariablesMap(properties);
+        service.completeTask(task.getId(), task.getProvider(), outcome.getName(), map,session.getUser());
     }
 
     private HashMap<String, Object> getVariablesMap(List<GWTJahiaNodeProperty> properties) {
@@ -511,9 +526,6 @@ public class WorkflowHelper {
                 if (!node.isNodeType("jmix:worklfowRulesable")) {
                     node.addMixin("jmix:worklfowRulesable");
                 }
-                if (!node.isNodeType("jmix:publication")) {
-                    node.addMixin("jmix:publication");
-                }
                 session.save();
             }
             if (node.hasNode(WorkflowService.WORKFLOWRULES_NODE_NAME)) {
@@ -577,9 +589,6 @@ public class WorkflowHelper {
                     // Remove also associated workflows
                     if (node.isNodeType("jmix:worklfowRulesable")) {
                         node.removeMixin("jmix:worklfowRulesable");
-                    }
-                    if (node.isNodeType("jmix:publication")) {
-                        node.removeMixin("jmix:publication");
                     }
                 } else {
                     NodeIterator ni = wfRulesNode.getNodes();

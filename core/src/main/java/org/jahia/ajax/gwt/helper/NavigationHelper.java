@@ -39,7 +39,6 @@ import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
-import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.api.Constants;
@@ -864,7 +863,7 @@ public class NavigationHelper {
 
         if (fields.contains(GWTJahiaNode.PUBLICATION_INFO)) {
             try {
-                n.setPublicationInfo(publication.getSimplePublicationInfo(node.getIdentifier(),
+                n.setAggregatedPublicationInfos(publication.getAggregatedPublicationInfosByLanguage(node.getIdentifier(),
                         Collections.singleton(node.getSession().getLocale().toString()), node.getSession()));
             } catch (UnsupportedRepositoryOperationException e) {
                 // do nothing
@@ -878,28 +877,16 @@ public class NavigationHelper {
 
         if (fields.contains(GWTJahiaNode.PUBLICATION_INFOS)) {
             try {
-                JCRSiteNode node1 = node.getResolveSite();
-                if (node1 != null) {
-                    String[] codes = node1.getActiveLanguageCodes();
-                    Map<String, GWTJahiaPublicationInfo> infoMap = new HashMap<String, GWTJahiaPublicationInfo>();
-                    Map<String, List<GWTJahiaPublicationInfo>> infosMap =
-                            new HashMap<String, List<GWTJahiaPublicationInfo>>();
+                JCRSiteNode siteNode = node.getResolveSite();
+                if (siteNode != null) {
+                    String[] languages = siteNode.getActiveLanguageCodes();
+                    final HashSet<String> languagesAsSet = new HashSet<String>(Arrays.asList(languages));
                     JCRSessionWrapper session = node.getSession();
-                    for (String code : codes) {
-                        JCRSessionWrapper localeSession = sessionFactory
-                                .getCurrentUserSession(session.getWorkspace().getName(),
-                                        LanguageCodeConverters.languageCodeToLocale(code));
-                        GWTJahiaPublicationInfo info = publication
-                                .getSimplePublicationInfo(node.getIdentifier(), Collections.singleton(code),
-                                        localeSession);
-                        infoMap.put(code, info);
-                        List<GWTJahiaPublicationInfo> infos = publication
-                                .getPublicationInfo(Arrays.asList(node.getIdentifier()), Collections.singleton(code),
-                                        localeSession, false);
-                        infosMap.put(code, infos);
-                    }
-                    n.setPublicationInfos(infoMap);
-                    n.setFullPublicationInfos(infosMap);
+
+                    n.setAggregatedPublicationInfos(publication.getAggregatedPublicationInfosByLanguage(node.getIdentifier(),
+                            languagesAsSet, session));
+                    n.setFullPublicationInfos(publication.getFullPublicationInfosByLanguage(Arrays.asList(node.getIdentifier()), languagesAsSet,
+                                        session, false));
                 }
             } catch (UnsupportedRepositoryOperationException e) {
                 // do nothing

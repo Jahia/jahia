@@ -158,10 +158,12 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                             Button b = new Button(historyItem.<String>get("displayName"));
                             b.addSelectionListener(new SelectionListener<ButtonEvent>() {
                                 public void componentSelected(ButtonEvent ce) {
-                                    WorkflowActionDialog dialog = new WorkflowActionDialog((GWTJahiaNode) parent.get("node"), parent.getRunningWorkflow(), linker);
-                                    dialog.setCustom(parent.getRunningWorkflow().getCustomWorkflowInfo());
-                                    dialog.initExecuteActionDialog(task);
-                                    dialog.show();
+                                    EngineContainer container = new EnginePanel();
+
+                                    new WorkflowActionDialog(parent.getRunningWorkflow(), task,
+                                            linker, parent.getRunningWorkflow().getCustomWorkflowInfo(), container);
+                                    container.showEngine();
+
                                     engine.hide();
                                 }
                             });

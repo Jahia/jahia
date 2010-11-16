@@ -81,7 +81,7 @@ public class ReversePublishActionItem extends BaseActionItem implements IsSerial
         GWTJahiaNode gwtJahiaNode = linker.getSelectionContext().getSingleSelection();
 
         if (gwtJahiaNode != null) {
-            GWTJahiaPublicationInfo info = gwtJahiaNode.getPublicationInfo();
+            GWTJahiaPublicationInfo info = gwtJahiaNode.getAggregatedPublicationInfo();
 //            setEnabled(info.getStatus() == GWTJahiaPublicationInfo.LIVE_MODIFIED || info.getSubnodesStatus().contains(GWTJahiaPublicationInfo.LIVE_MODIFIED));
             setEnabled(true);
             updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getName());

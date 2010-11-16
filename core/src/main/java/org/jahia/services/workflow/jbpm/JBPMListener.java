@@ -59,12 +59,11 @@ public class JBPMListener implements EventListener {
     public void notify(EventListenerExecution execution) throws Exception {
         final List<String> ids = (List<String>) execution.getVariable("nodeIds");
         String workspace = (String) execution.getVariable("workspace");
-        Locale locale = (Locale) execution.getVariable("locale");
 
         final String executionState = execution.getState();
         final String executionId = execution.getId();
 
-        JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, locale, new JCRCallback<Boolean>() {
+        JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, null, new JCRCallback<Boolean>() {
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 for (String id : ids) {
                     final JCRNodeWrapper node = session.getNodeByUUID(id);

@@ -782,7 +782,7 @@ public class JCRStoreProvider {
 
                                         session.save();
                                         session.getWorkspace().getVersionManager().checkin(f.getPath());
-                                        publicationService.publish(userNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
+                                        publicationService.publishByMainId(userNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
                                                 true, new ArrayList<String>());
                                     } catch (RepositoryException e1) {
                                         logger.error("Cannot save", e1);

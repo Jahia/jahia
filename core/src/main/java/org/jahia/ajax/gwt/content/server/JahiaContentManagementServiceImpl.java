@@ -1007,14 +1007,28 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         contentManager.importContent(parentPath, fileKey, asynchronously);
     }
 
+    public Map<String,GWTJahiaWorkflowDefinition> getWorkflowDefinitions(List<String> workflowDefinitionIds) throws GWTJahiaServiceException {
+        Map<String,GWTJahiaWorkflowDefinition> l = new HashMap<String,GWTJahiaWorkflowDefinition>();
+        for (String wf : workflowDefinitionIds) {
+            l.put(wf, workflow.getGWTJahiaWorkflowDefinition(wf, getUILocale()));
+        }
+        return l;
+    }
+
     public void startWorkflow(String path, GWTJahiaWorkflowDefinition workflowDefinition,
                               List<GWTJahiaNodeProperty> properties, List<String> comments) throws GWTJahiaServiceException {
         workflow.startWorkflow(path, workflowDefinition, retrieveCurrentSession(), properties, comments);
     }
 
-    public void assignAndCompleteTask(String path, GWTJahiaWorkflowTask task, GWTJahiaWorkflowOutcome outcome,
+    public void startWorkflow(List<String> uuids, GWTJahiaWorkflowDefinition def,
+                              List<GWTJahiaNodeProperty> properties, List<String> comments, Map<String, Object> args) throws GWTJahiaServiceException {
+        workflow.startWorkflow(uuids, def, retrieveCurrentSession(), properties, comments, args);
+    }
+
+
+    public void assignAndCompleteTask(GWTJahiaWorkflowTask task, GWTJahiaWorkflowOutcome outcome,
                                       List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException {
-        workflow.assignAndCompleteTask(path, task, outcome, retrieveCurrentSession(), properties);
+        workflow.assignAndCompleteTask(task, outcome, retrieveCurrentSession(), properties);
     }
 
     public List<GWTJahiaWorkflowComment> addCommentToWorkflow(GWTJahiaWorkflow wf, String comment) {
@@ -1031,17 +1045,16 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
         JCRSessionWrapper session = retrieveCurrentSession();
 
-        for (GWTJahiaWorkflowHistoryItem jahiaWorkflow : res) {
-            try {
-                JCRNodeWrapper node =
-                        session.getNodeByUUID(((GWTJahiaWorkflowHistoryProcess) jahiaWorkflow).getNodeId());
-                GWTJahiaNode gwtJahiaNode = navigation.getGWTJahiaNode(node, new ArrayList<String>());
-                jahiaWorkflow.set("node", gwtJahiaNode);
-                jahiaWorkflow.setDisplayName(gwtJahiaNode.getDisplayName() + " - " + jahiaWorkflow.getDisplayName());
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-            }
-        }
+//        for (GWTJahiaWorkflowHistoryItem jahiaWorkflow : res) {
+//            try {
+//                JCRNodeWrapper node =
+//                        session.getNodeByUUID(((GWTJahiaWorkflowHistoryProcess) jahiaWorkflow).getNodeId());
+//                GWTJahiaNode gwtJahiaNode = navigation.getGWTJahiaNode(node, new ArrayList<String>());
+//                jahiaWorkflow.set("node", gwtJahiaNode);
+//            } catch (RepositoryException e) {
+//                logger.error(e.getMessage(), e);
+//            }
+//        }
 
         return res;
     }
@@ -1052,15 +1065,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @param uuids the list of node uuids to publish, will not auto publish the parents
      * @throws GWTJahiaServiceException
      */
-    public void publish(List<String> uuids, boolean allSubTree, boolean workflow, boolean reverse,
-                        List<GWTJahiaNodeProperty> properties, List<String> comments, String language) throws GWTJahiaServiceException {
-        JCRSessionWrapper session = retrieveCurrentSession();
-        String locale = session.getLocale().toString();
-        if (language != null) {
-            session = retrieveCurrentSession(LanguageCodeConverters.languageCodeToLocale(language));
-            locale = language;
-        }
-        publication.publish(uuids, locale, allSubTree, workflow, reverse, session, properties, comments);
+    public void publish(List<String> uuids, boolean workflow, boolean reverse,
+                        List<GWTJahiaNodeProperty> properties, List<String> comments) throws GWTJahiaServiceException {
+        publication.publish(uuids, workflow, retrieveCurrentSession(), properties, comments);
     }
 
     /**
@@ -1094,8 +1101,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public List<GWTJahiaPublicationInfo> getPublicationInfo(List<String> uuids, boolean allSubTree)
             throws GWTJahiaServiceException {
         final JCRSessionWrapper session = retrieveCurrentSession();
-        return publication
-                .getPublicationInfo(uuids, Collections.singleton(session.getLocale().toString()), session, allSubTree);
+        List<GWTJahiaPublicationInfo> all = publication
+                .getFullPublicationInfos(uuids, Collections.singleton(session.getLocale().toString()), session, allSubTree);
+
+        return all;
     }
 
 
@@ -1451,6 +1460,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             JCRNodeWrapper nodeWrapper = sessionWrapper.getNode(nodepath);
             final GWTJahiaNode node = navigation.getGWTJahiaNode(nodeWrapper);
             if (tryToLockNode && !nodeWrapper.isLocked() && node.isWriteable()) {
+                nodeWrapper.checkout();
                 nodeWrapper.lockAndStoreToken("engine");
             }
 

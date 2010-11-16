@@ -62,7 +62,6 @@ import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.contentengine.EditContentEnginePopupListener;
 import org.jahia.ajax.gwt.client.widget.edit.InfoLayers;
-import org.jahia.ajax.gwt.client.widget.publication.PublicationManagerEngine;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionContextMenu;
 
 import java.util.*;
@@ -419,7 +418,7 @@ public class MainModule extends Module {
                             images.add(ToolbarIconProvider.getInstance().getIcon("viewACLStatus"));
                         }
                         if (activeLayers.containsKey("publication")) {
-                            GWTJahiaPublicationInfo info = m.getNode().getPublicationInfo();
+                            GWTJahiaPublicationInfo info = m.getNode().getAggregatedPublicationInfo();
                             if (lastUnpublished == null || !m.getNode().getPath().startsWith(lastUnpublished)) {
                                 if (info.isLocked()) {
                                     images.add(ToolbarIconProvider.getInstance().getIcon("publication/locked"));

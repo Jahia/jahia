@@ -745,6 +745,7 @@
                     <property name="treeColumns">
                         <list>
                             <value>displayName,*,label.title</value>
+                            <value>locked,20</value>
                             <value>publicationInfo,20</value>
                         </list>
                     </property>
@@ -843,6 +844,7 @@
                         <list>
                             <value>icon,40</value>
                             <value>displayName,*,label.title</value>
+                            <value>locked,20</value>
                             <value>publicationInfo,20</value>
                         </list>
                     </property>
@@ -997,6 +999,7 @@
                         <list>
                             <value>icon,40</value>
                             <value>displayName,*,label.title</value>
+                            <value>locked,20</value>
                             <value>publicationInfo,20</value>
                         </list>
                     </property>
@@ -1017,6 +1020,7 @@
                         <list>
                             <value>icon,40</value>
                             <value>displayName,*,label.title</value>
+                            <value>locked,20</value>
                             <value>publicationInfo,20</value>
                         </list>
                     </property>

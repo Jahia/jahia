@@ -151,7 +151,7 @@ public class RenderTest extends TestCase {
         editSession.save();
 
         // publish it
-        jcrService.publish(stageNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true,Collections.<String>emptyList());
+        jcrService.publishByMainId(stageNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true,Collections.<String>emptyList());
         String label = "published_at_" + new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(
                 GregorianCalendar.getInstance().getTime());
         jcrVersionService.addVersionLabel(liveSession.getNodeByUUID(stageNode.getIdentifier()), label);
@@ -161,7 +161,7 @@ public class RenderTest extends TestCase {
             editSession.save();
 
             // each time the node i published, a new version should be created
-            jcrService.publish(stagedSubPage.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false,
+            jcrService.publishByMainId(stagedSubPage.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false,
                     Collections.<String>emptyList());
             label = "published_at_" + new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(
                 GregorianCalendar.getInstance().getTime());

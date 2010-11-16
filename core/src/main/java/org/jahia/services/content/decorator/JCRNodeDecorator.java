@@ -607,6 +607,10 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         node.unlock(type);
     }
 
+    public void clearAllLocks() throws RepositoryException  {
+        node.clearAllLocks();
+    }
+
     public boolean holdsLock() throws RepositoryException {
         return node.holdsLock();
     }

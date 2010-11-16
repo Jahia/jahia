@@ -423,7 +423,7 @@ public class URLFilterTest {
 
         languages.clear();
         languages.add("en");
-        ServicesRegistry.getInstance().getJCRPublicationService().publish(
+        ServicesRegistry.getInstance().getJCRPublicationService().publishByMainId(
                 pageNode.getIdentifier(), Constants.EDIT_WORKSPACE,
                 Constants.LIVE_WORKSPACE, languages, true, null);
         
@@ -459,7 +459,7 @@ public class URLFilterTest {
         }
         languages.clear();
         languages.add("fr");
-        ServicesRegistry.getInstance().getJCRPublicationService().publish(
+        ServicesRegistry.getInstance().getJCRPublicationService().publishByMainId(
                 pageNode.getIdentifier(), Constants.EDIT_WORKSPACE,
                 Constants.LIVE_WORKSPACE, languages, true, null);
         

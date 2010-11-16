@@ -98,7 +98,7 @@ public class GetFeedActionTest extends TestCase {
         node.addNode("feeds","jnt:contentList");
         session.save();
 
-        JCRPublicationService.getInstance().publish(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
+        JCRPublicationService.getInstance().publishByMainId(node.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
                 true, null);
 
         testFeed("testSDAFeed", "res:feedimporter/newsml/newsml_1_2_sda", "2_textwithphotoreference.xml");
@@ -124,7 +124,7 @@ public class GetFeedActionTest extends TestCase {
         sdaFeedNode.setProperty("url", feedURL);
 
         session.save();
-        JCRPublicationService.getInstance().publish(sdaFeedNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
+        JCRPublicationService.getInstance().publishByMainId(sdaFeedNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
                 true, null);
 
         HttpClient client = new HttpClient();

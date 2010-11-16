@@ -10,15 +10,21 @@ import java.util.List;
  * 
  */
 public class WorkflowRule {
+    private String definitionPath;
     private String providerKey;
     private String workflowDefinitionKey;
 
     private List<Permission> permissions;
 
-    public WorkflowRule(String providerKey, String workflowDefinitionKey, List<Permission> permissions) {
+    public WorkflowRule(String definitionPath, String providerKey, String workflowDefinitionKey, List<Permission> permissions) {
+        this.definitionPath = definitionPath;
         this.providerKey = providerKey;
         this.workflowDefinitionKey = workflowDefinitionKey;
         this.permissions = permissions;
+    }
+
+    public String getDefinitionPath() {
+        return definitionPath;
     }
 
     public String getProviderKey() {

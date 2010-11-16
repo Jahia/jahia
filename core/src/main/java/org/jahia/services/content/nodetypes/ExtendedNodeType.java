@@ -911,7 +911,7 @@ public class ExtendedNodeType implements NodeType {
                 if (!def.isInternationalized() && !def.isOverride()) {
                     r.add(new PropertyDefinition() {
                         public int getRequiredType() {
-                            return def.getRequiredType();
+                            return def.getRequiredType() != PropertyType.REFERENCE ? def.getRequiredType() : PropertyType.WEAKREFERENCE;
                         }
 
                         public String[] getValueConstraints() {

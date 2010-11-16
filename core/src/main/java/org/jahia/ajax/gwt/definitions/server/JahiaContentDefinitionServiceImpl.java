@@ -87,7 +87,7 @@ public class JahiaContentDefinitionServiceImpl extends JahiaRemoteService implem
         return contentDefinition.getPageTemplates(retrieveCurrentSession(), getSite());
     }
 
-    public GWTJahiaNodeType getWFFormForNodeAndNodeType(GWTJahiaNode node, String formResourceName)
+    public GWTJahiaNodeType getWFFormForNodeAndNodeType(String formResourceName)
             throws GWTJahiaServiceException {
 //        try {
 //            JCRNodeWrapper nodeWrapper = retrieveCurrentSession().getNode(node.getPath());

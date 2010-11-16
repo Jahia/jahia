@@ -20,7 +20,6 @@ import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
-import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -28,7 +27,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Iterator;
 
 /**
  * Created by IntelliJ IDEA.
@@ -89,7 +87,7 @@ public class TestCreateSiteServlet extends HttpServlet implements Controller, Se
                                 TestHelper.createSite("ACME", "localhost", TestHelper.ACME_TEMPLATES,
                                         SettingsBean.getInstance().getJahiaVarDiskPath()
                                                 + "/prepackagedSites/webtemplates65.zip", "ACME.zip");
-                                jcrService.publish(session.getRootNode().getNode("sites/ACME/home")
+                                jcrService.publishByMainId(session.getRootNode().getNode("sites/ACME/home")
                                         .getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
                                 session.save();
                             } catch (Exception e) {

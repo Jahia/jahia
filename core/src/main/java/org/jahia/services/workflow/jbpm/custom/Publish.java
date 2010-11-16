@@ -35,7 +35,6 @@ package org.jahia.services.workflow.jbpm.custom;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.PublicationInfo;
 import org.jahia.services.content.PublicationJob;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.workflow.WorkflowVariable;
@@ -57,14 +56,14 @@ public class Publish implements ExternalActivityBehaviour {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(Publish.class);
 
     public void execute(ActivityExecution execution) throws Exception {
-        List<PublicationInfo> info = (List<PublicationInfo>) execution.getVariable("publicationInfos");
+        List<String> uuids = (List<String>) execution.getVariable("nodeIds");
         String workspace = (String) execution.getVariable("workspace");
         String userKey = (String) execution.getVariable("user");
 
         JobDetail jobDetail = BackgroundJob.createJahiaJob("Publication", PublicationJob.class);
         JobDataMap jobDataMap = jobDetail.getJobDataMap();
         jobDataMap.put(BackgroundJob.JOB_USERKEY, userKey);
-        jobDataMap.put(PublicationJob.PUBLICATION_INFOS, info);
+        jobDataMap.put(PublicationJob.PUBLICATION_UUIDS, uuids);
         jobDataMap.put(PublicationJob.SOURCE, workspace);
         jobDataMap.put(PublicationJob.DESTINATION, Constants.LIVE_WORKSPACE);
         jobDataMap.put(PublicationJob.LOCK, "publication-process-" + execution.getProcessInstance().getId());

@@ -79,8 +79,8 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
             new GridCellRenderer<GWTJahiaNode>() {
                 public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1,
                                      ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
-                    if (modelData.isLocked().booleanValue()) {
-                        String lockOwner = modelData.getLockOwner();
+                    String lockOwner = modelData.getLockOwner();
+                    if (modelData.isLocked() || lockOwner != null) {
                         return lockOwner != null && lockOwner.equals(JahiaGWTParameters.SYSTEM_USER) ?
                                 "<img src='../images/icons/gwt/lock_information.png'>" :
                                 StandardIconsProvider.STANDARD_ICONS.lock().getHTML();
@@ -116,7 +116,7 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
             new GridCellRenderer<GWTJahiaNode>() {
                 public Object render(GWTJahiaNode node, String property, ColumnData config, int rowIndex, int colIndex,
                                      ListStore<GWTJahiaNode> store, Grid<GWTJahiaNode> grid) {
-                    final GWTJahiaPublicationInfo info = node.getPublicationInfo();
+                    final GWTJahiaPublicationInfo info = node.getAggregatedPublicationInfo();
                     return GWTJahiaPublicationInfo.renderPublicationStatusImage(info);
                 }
             };

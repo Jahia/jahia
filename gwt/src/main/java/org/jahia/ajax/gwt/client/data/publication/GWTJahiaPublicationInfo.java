@@ -76,8 +76,8 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
     public GWTJahiaPublicationInfo() {
     }
 
-    public GWTJahiaPublicationInfo(String path, int status, boolean canPublish) {
-        setPath(path);
+    public GWTJahiaPublicationInfo(String uuid, int status, boolean canPublish) {
+        setUuid(uuid);
         setStatus(status);
         setCanPublish(canPublish);
         setLocked(false);
@@ -99,12 +99,20 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
         set("nodetype", nodetype);
     }
 
-    public String getPath() {
-        return get("path");
+    public String getUuid() {
+        return get("uuid");
     }
 
-    public void setPath(String path) {
-        set("path", path);
+    public void setUuid(String path) {
+        set("uuid", path);
+    }
+
+    public String getI18nUuid() {
+        return get("i18nUuid");
+    }
+
+    public void setI18NUuid(String path) {
+        set("i18nUuid", path);
     }
 
     public Integer getStatus() {
@@ -131,14 +139,57 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
         set("locked", locked);
     }
 
+    public String getMainPath() {
+        return get("mainPath");
+    }
+
+    public void setMainPath(String mainTitle) {
+        set("mainPath", mainTitle);
+    }
+
+    public Integer getMainPathIndex() {
+        return get("mainPathIndex");
+    }
+
+    public void setMainPathIndex(Integer mainTitle) {
+        set("mainPathIndex", mainTitle);
+    }
+
+    public String getWorkflowGroup() {
+        return get("workflowGroup");
+    }
+
+    public void setWorkflowGroup(String workflowGroup) {
+        set("workflowGroup", workflowGroup);
+    }
+
+    public String getWorkflowTitle() {
+        return get("workflowTitle");
+    }
+
+    public void setWorkflowTitle(String workflowTitle) {
+        set("workflowTitle", workflowTitle);
+    }
+
+    public String getWorkflowDefinition() {
+        return get("workflowDefinition");
+    }
+
+    public void setWorkflowDefinition(String workflowDefinition) {
+        set("workflowDefinition", workflowDefinition);
+    }
+
+    public String getLanguage() {
+        return get("language");
+    }
+
+    public void setLanguage(String language) {
+        set("language", language);
+    }
+
     public static Object renderPublicationStatusImage(GWTJahiaPublicationInfo info) {
         if (info != null) {
-            String label;
-            if (info.isLocked()) {
-                label = "locked";
-            } else {
-                label = statusToLabel.get(info.getStatus());
-            }
+            String label= statusToLabel.get(info.getStatus());
 
             String title = Messages.get("label.publication." + label, label);
             final Image image = ToolbarIconProvider.getInstance().getIcon("publication/" + label).createImage();

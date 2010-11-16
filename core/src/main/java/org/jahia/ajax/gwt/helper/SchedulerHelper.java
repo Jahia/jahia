@@ -1,5 +1,6 @@
 package org.jahia.ajax.gwt.helper;
 
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.exceptions.JahiaException;
@@ -89,9 +90,9 @@ public class SchedulerHelper {
             final List<String> targetPaths = new ArrayList<String>();
             String fileName = jobDataMap.getString(ImportJob.FILENAME);
             if (BackgroundJob.getGroupName(PublicationJob.class).equals(jobDetail.getGroup())) {
-                List<PublicationInfo> publicationInfos = (List<PublicationInfo>) jobDataMap.get(PublicationJob.PUBLICATION_INFOS);
+                List<GWTJahiaNodeProperty> publicationInfos = (List<GWTJahiaNodeProperty>) jobDataMap.get(PublicationJob.PUBLICATION_PROPERTIES);
                 if (publicationInfos != null && publicationInfos.size() > 0) {
-                    description += " " + publicationInfos.get(0).getRoot().getPath();
+                    description += " " + publicationInfos.get(0).getValues();
                 }
             } else if (BackgroundJob.getGroupName(ImportJob.class).equals(jobDetail.getGroup())) {
                 String uri = (String) jobDataMap.get(ImportJob.URI);

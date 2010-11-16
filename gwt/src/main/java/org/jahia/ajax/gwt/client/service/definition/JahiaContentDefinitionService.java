@@ -100,7 +100,7 @@ public interface JahiaContentDefinitionService extends RemoteService {
 
     List<GWTJahiaNode> getPageTemplates() throws GWTJahiaServiceException;
 
-    GWTJahiaNodeType getWFFormForNodeAndNodeType(GWTJahiaNode node, String formResourceName)
+    GWTJahiaNodeType getWFFormForNodeAndNodeType(String formResourceName)
             throws GWTJahiaServiceException;
 
 }

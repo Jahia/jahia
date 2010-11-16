@@ -137,7 +137,7 @@ public class CrawlingPageVisitorTest {
                             TestHelper.createSite(ACMESITE_NAME, "localhost", TestHelper.ACME_TEMPLATES,
                                     SettingsBean.getInstance().getJahiaVarDiskPath()
                                             + "/prepackagedSites/webtemplates65.zip", "ACME.zip");
-                            jcrService.publish(session.getRootNode().getNode(ACME_SITECONTENT_ROOT_NODE + "/home")
+                            jcrService.publishByMainId(session.getRootNode().getNode(ACME_SITECONTENT_ROOT_NODE + "/home")
                                     .getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
                             session.save();
                         } catch (Exception e) {

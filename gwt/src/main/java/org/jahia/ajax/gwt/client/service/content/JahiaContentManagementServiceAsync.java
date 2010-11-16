@@ -178,9 +178,14 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
 
     void importContent(String parentPath, String fileKey, Boolean asynchronously, AsyncCallback async);
 
+    void getWorkflowDefinitions(List<String> workflowDefinitionIds, AsyncCallback<Map<String,GWTJahiaWorkflowDefinition>> async); 
+
     void startWorkflow(String path, GWTJahiaWorkflowDefinition workflowDefinition, List<GWTJahiaNodeProperty> properties, List<String> comments, AsyncCallback async);
 
-    void assignAndCompleteTask(String path, GWTJahiaWorkflowTask task, GWTJahiaWorkflowOutcome outcome, List<GWTJahiaNodeProperty> properties, AsyncCallback async);
+    void startWorkflow(List<String> uuids, GWTJahiaWorkflowDefinition def, 
+                              List<GWTJahiaNodeProperty> properties, List<String> comments, Map<String, Object> args, AsyncCallback async);
+
+    void assignAndCompleteTask(GWTJahiaWorkflowTask task, GWTJahiaWorkflowOutcome outcome, List<GWTJahiaNodeProperty> properties, AsyncCallback async);
 
     /**
      * Publish the specified paths.
@@ -188,7 +193,7 @@ public interface JahiaContentManagementServiceAsync extends RoleRemoteServiceAsy
      * @param uuids the list of node uuids to publish
      * @param async Local implementation of callback to react on return for asynchronous call to publish
      */
-    void publish(List<String> uuids, boolean allSubTree, boolean workflow, boolean reverse, List<GWTJahiaNodeProperty> properties, List<String> comments, String language, AsyncCallback async);
+    void publish(List<String> uuids, boolean workflow, boolean reverse, List<GWTJahiaNodeProperty> properties, List<String> comments, AsyncCallback async);
 
     /**
      * Unpublish the specified path and its subnodes.

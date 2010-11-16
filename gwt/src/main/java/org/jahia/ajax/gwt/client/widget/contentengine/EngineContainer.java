@@ -32,7 +32,10 @@
 
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
+import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.button.ButtonBar;
+import org.jahia.ajax.gwt.client.widget.Linker;
 
 /**
  * Created by IntelliJ IDEA.
@@ -44,7 +47,7 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 public interface EngineContainer {
     public ContentPanel getPanel();
 
-    public void setEngine(AbstractContentEngine engine);
+    public void setEngine(Component component, String header, ButtonBar buttonsBar, final Linker linker);
 
     public void showEngine();
 

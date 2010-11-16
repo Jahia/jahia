@@ -179,13 +179,13 @@
                 <GRANT_g_users j:privileges="jcr:read_live" j:protected="false" j:principal="g:users" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
                 <DENY_g_users j:privileges="jcr:read jcr:write_live jcr:modifyAccessControl jcr:write" j:protected="false" j:principal="g:users" j:aceType="DENY" jcr:primaryType="jnt:ace" />
             </j:acl>
-            <workflowrules jcr:primaryType="jnt:workflowRules">
+            <j:workflowRules jcr:primaryType="jnt:workflowRules">
                 <jBPM_1-step-publication j:workflow="jBPM:1-step-publication" jcr:primaryType="jnt:workflowRule">
                     <GRANT_r_editor-in-chief j:privileges="review start" j:protected="false" j:principal="r:editor-in-chief" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
                     <GRANT_r_editor j:privileges="start" j:protected="false" j:principal="r:editor" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
                     <GRANT_r_publisher j:privileges="review" j:protected="false" j:principal="r:publisher" j:aceType="GRANT" jcr:primaryType="jnt:ace" />
                 </jBPM_1-step-publication>
-            </workflowrules>
+            </j:workflowRules>
         </templates-web>
     </templateSets>
 </content>

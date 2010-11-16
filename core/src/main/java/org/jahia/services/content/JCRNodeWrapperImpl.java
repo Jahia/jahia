@@ -2121,6 +2121,41 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
     }
 
+    public void clearAllLocks() throws RepositoryException {
+        if (!isLocked()) {
+            throw new LockException("Node not locked");
+        }
+
+        if (session.getLocale() != null && !isNodeType(Constants.JAHIANT_TRANSLATION) && hasI18N(session.getLocale())) {
+            Node trans = getI18N(session.getLocale(), false);
+            if (trans.isLocked()) {
+                clearAllLocks(trans);
+            }
+        }
+
+        if (isNodeType(Constants.JAHIANT_TRANSLATION) && !getLockedLocales().isEmpty()) {
+            return;
+        }
+
+        clearAllLocks(objectNode);
+    }
+
+    private void clearAllLocks(final Node objectNode) throws RepositoryException {
+        if (objectNode.hasProperty("j:locktoken")) {
+            Property property = objectNode.getProperty("j:locktoken");
+            String token = property.getString();
+
+            objectNode.getSession().addLockToken(token);
+
+            objectNode.checkout();
+            objectNode.unlock();
+            property.remove();
+            objectNode.getProperty(Constants.JAHIA_LOCKTYPES).remove();
+
+            getSession().save();
+        }
+    }
+
     protected void checkLock() throws RepositoryException {
         if (isLocked() && !session.isSystem()) {
             List<String> owners = getLockOwners();

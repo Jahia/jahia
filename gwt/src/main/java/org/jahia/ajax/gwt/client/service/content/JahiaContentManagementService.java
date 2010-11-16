@@ -186,16 +186,21 @@ public interface JahiaContentManagementService extends RemoteService, RoleRemote
 
     public void importContent(String parentPath, String fileKey, Boolean asynchronously) throws GWTJahiaServiceException;
 
+    public Map<String,GWTJahiaWorkflowDefinition> getWorkflowDefinitions(List<String> workflowDefinitionIds) throws GWTJahiaServiceException;
+
     public void startWorkflow(String path, GWTJahiaWorkflowDefinition workflowDefinition, List<GWTJahiaNodeProperty> properties, List<String> comments) throws GWTJahiaServiceException;
 
-    public void assignAndCompleteTask(String path, GWTJahiaWorkflowTask task, GWTJahiaWorkflowOutcome outcome, List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException;
+    public void startWorkflow(List<String> uuids, GWTJahiaWorkflowDefinition def,
+                              List<GWTJahiaNodeProperty> properties, List<String> comments, Map<String, Object> args) throws GWTJahiaServiceException;
+
+    public void assignAndCompleteTask(GWTJahiaWorkflowTask task, GWTJahiaWorkflowOutcome outcome, List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException;
 
     /**
      * Publish the specified uuids.
      *
      * @param uuids the list of node uuids to publish, will not auto publish the parents
      */
-    public void publish(List<String> uuids, boolean allSubTree, boolean workflow, boolean reverse, List<GWTJahiaNodeProperty> properties, List<String> comments, String language) throws GWTJahiaServiceException;
+    public void publish(List<String> uuids, boolean workflow, boolean reverse, List<GWTJahiaNodeProperty> properties, List<String> comments) throws GWTJahiaServiceException;
 
     /**
      * Unpublish the specified path and its subnodes.

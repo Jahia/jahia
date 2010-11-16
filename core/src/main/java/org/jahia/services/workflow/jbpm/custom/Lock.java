@@ -49,7 +49,7 @@ public class Lock implements ExternalActivityBehaviour {
     private static final long serialVersionUID = 1L;
 
     public void execute(ActivityExecution execution) throws Exception {
-        List<PublicationInfo> info = (List<PublicationInfo>) execution.getVariable("publicationInfos");
+        List<String> info = (List<String>) execution.getVariable("nodeIds");
         String workspace = (String) execution.getVariable("workspace");
         JCRPublicationService.getInstance().lockForPublication(info, workspace, "publication-process-"+execution.getProcessInstance().getId());
         execution.takeDefaultTransition();

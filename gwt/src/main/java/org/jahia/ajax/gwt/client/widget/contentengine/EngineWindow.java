@@ -32,7 +32,9 @@
 
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
-import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
+import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.button.ButtonBar;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
@@ -65,11 +67,16 @@ public class EngineWindow extends Window implements EngineContainer {
         return this;
     }
 
-    public void setEngine(AbstractContentEngine engine) {
-        add(engine);
-		if (!(engine.getLinker() instanceof ManagerLinker) && (GXT.isIE7 || GXT.isIE6)) {
-			EditLinker editLinker = engine.getLinker() instanceof EditLinker ? (EditLinker) engine
-			        .getLinker() : ((SidePanelLinker) engine.getLinker()).getEditLinker();
+    public void setEngine(Component component, String header, ButtonBar buttonsBar, final Linker linker) {
+        removeAll();
+        add(component);
+        setHeading(header);
+        if (buttonsBar != null) {
+            setBottomComponent(buttonsBar);
+        }
+
+		if (!(linker instanceof ManagerLinker) && (GXT.isIE7 || GXT.isIE6)) {
+			EditLinker editLinker = linker instanceof EditLinker ? (EditLinker) linker : ((SidePanelLinker) linker).getEditLinker();
 			// resize to fit main module area
 			MainModule main = editLinker.getMainModule();
 			setSize(main.getOffsetWidth(), main.getOffsetHeight());

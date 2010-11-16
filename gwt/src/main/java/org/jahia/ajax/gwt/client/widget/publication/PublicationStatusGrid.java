@@ -53,7 +53,7 @@ import java.util.List;
  */
 public class PublicationStatusGrid extends Grid<GWTJahiaPublicationInfo> {
 
-    public PublicationStatusGrid(final List<GWTJahiaPublicationInfo> infos) {
+    public PublicationStatusGrid(final List<GWTJahiaPublicationInfo> infos, boolean checkbox) {
         super();
         GroupingStore<GWTJahiaPublicationInfo> store = new GroupingStore<GWTJahiaPublicationInfo>() ;
         store.add(infos);
@@ -61,13 +61,16 @@ public class PublicationStatusGrid extends Grid<GWTJahiaPublicationInfo> {
         store.setStoreSorter(new StoreSorter<GWTJahiaPublicationInfo>() {
             @Override public int compare(Store<GWTJahiaPublicationInfo> store,
                                          GWTJahiaPublicationInfo m1, GWTJahiaPublicationInfo m2, String property) {
-                if (property.equals("mainTitle")) {
-                    return super.compare(store, m1, m2, "mainTitleIndex");
+                if (property.equals("mainPath")) {
+                    return super.compare(store, m1, m2, "mainPathIndex");
                 }
                 return super.compare(store, m1, m2, property);
             }
         });
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
+
+//        final CheckColumnConfig checkboxConfig = new CheckColumnConfig("checked", "", 20);
+//        configs.add(checkboxConfig);
 
         ColumnConfig column = new ColumnConfig("title", Messages.get("label.path"), 450);
         configs.add(column);
@@ -89,11 +92,12 @@ public class PublicationStatusGrid extends Grid<GWTJahiaPublicationInfo> {
         });
         configs.add(column);
 
-        column = new ColumnConfig("mainTitle", Messages.get("label.parentObject", "Parent object"), 150);
+        column = new ColumnConfig("mainPath", Messages.get("label.parentObject", "Parent object"), 150);
         column.setHidden(true);
         configs.add(column);
 
-        store.groupBy("mainTitle");
+        store.groupBy("mainPath");
+
         final ColumnModel cm = new ColumnModel(configs);
 
         setStripeRows(true);
@@ -116,6 +120,7 @@ public class PublicationStatusGrid extends Grid<GWTJahiaPublicationInfo> {
         });
         setView(view);
         reconfigure(store, cm);
+//        addPlugin(checkboxConfig);
         setSelectionModel(new GridSelectionModel<GWTJahiaPublicationInfo>());
 
     }

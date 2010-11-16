@@ -64,7 +64,6 @@ import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.security.Privilege;
 import java.io.*;
-import java.security.Permissions;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -754,7 +753,15 @@ public class ContentManagerHelper {
                 missedPaths.add(new StringBuilder(node.getName()).append(": write access denied").toString());
             } else if (node.isLocked()) {
                 if (!locked) {
-                    if (node.getLockOwner() != null && !node.getLockOwner().equals(user.getUsername()) &&
+                    if (user.isAdminMember(0)) {
+                        try {
+                            node.clearAllLocks();
+                        } catch (RepositoryException e) {
+                            logger.error(e.toString(), e);
+                            missedPaths
+                                    .add(new StringBuilder(node.getName()).append(": repository exception").toString());
+                        }
+                    } else if (node.getLockOwner() != null && !node.getLockOwner().equals(user.getUsername()) &&
                             !user.isRoot()) {
                         missedPaths.add(new StringBuilder(node.getName()).append(": locked by ")
                                 .append(node.getLockOwner()).toString());
@@ -882,7 +889,7 @@ public class ContentManagerHelper {
                             ReferencesHelper.resolveCrossReferences(session, references);
                             session.save();
 
-                            JCRPublicationService.getInstance().publish(destinationNode.getNode("templates").getUUID(), "default", "live", null, true, null);
+                            JCRPublicationService.getInstance().publishByMainId(destinationNode.getNode("templates").getUUID(), "default", "live", null, true, null);
 
                             return null;
                         }

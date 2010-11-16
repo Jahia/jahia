@@ -3,10 +3,13 @@ package org.jahia.ajax.gwt.client.widget.workflow;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.user.client.rpc.IsSerializable;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Custom GUI interface for Workflow dialogs

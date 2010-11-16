@@ -142,7 +142,7 @@
 //---------------------------------------------------------
 
 [jmix:workflow] mixin
- - j:processId (string) protected multiple i18n nofulltext hidden
+ - j:processId (string) protected multiple nofulltext hidden
 
 [jnt:workflowRules] > nt:base orderable
  + * (jnt:workflowRule)
@@ -153,7 +153,8 @@
 
 
 [jmix:worklfowRulesable] mixin
-+ workflowrules (jnt:workflowRules) = jnt:workflowRules autocreated
++ j:workflowRules (jnt:workflowRules) = jnt:workflowRules autocreated
+
 //---------------------------------------------------------
 // Query
 //---------------------------------------------------------
@@ -196,16 +197,15 @@
 
 [jnt:category] > nt:base, jmix:basemetadata, mix:title, jmix:nodenameInfo, jmix:publication
 + * (jnt:category) version
-- * (reference) multiple < jnt:category
 
 //---------------------------------------------------------
 // Tags
 //---------------------------------------------------------
 
-[jnt:tag] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:publication
+[jnt:tag] > nt:base, jmix:nodenameInfo, jmix:basemetadata
  - tags (reference) multiple hidden < jnt:tag
 
-[jnt:tagList] > nt:base, jmix:nodenameInfo, jmix:list, jmix:basemetadata, jmix:publication
+[jnt:tagList] > nt:base, jmix:nodenameInfo, jmix:list, jmix:basemetadata
  + * (jnt:tag) = jnt:tag
 
 //---------------------------------------------------------
@@ -333,7 +333,7 @@
  itemtype = layout
  - j:templateNode (weakreference,choicelist[templatesNode]) mandatory < jnt:template
 
-[jnt:template] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:publication
+[jnt:template] > nt:base, jmix:nodenameInfo, jmix:basemetadata
  - j:hiddenTemplate (boolean)
  + * (jnt:template)
  + * (jnt:content)
@@ -550,14 +550,14 @@
  orderable
  + * (jmix:droppableContent) = jmix:droppableContent version
 
-[jnt:contentFolder] > jnt:content, mix:title, jmix:list
+[jnt:contentFolder] > jnt:content, mix:title, jmix:list, jmix:publication
  + * (jmix:droppableContent) = jmix:droppableContent version
  + * (jnt:contentFolder) = jnt:contentFolder version
 
 [jnt:templateSets] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:list
  + * (jnt:virtualsite)
 
-[jnt:templatesFolder] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:list, jmix:publication
+[jnt:templatesFolder] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:list
  + * (jnt:template)
 
 [jmix:autoSplitFolders] mixin extends = jnt:contentList

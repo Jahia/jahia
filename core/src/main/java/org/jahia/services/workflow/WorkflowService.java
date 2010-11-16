@@ -67,7 +67,7 @@ public class WorkflowService {
     public static final String START_ROLE = "start";
     private Map<String, List<String>> workflowTypes;
     private Map<String, String> workflowTypeByDefinition;
-    public static final String WORKFLOWRULES_NODE_NAME = "workflowrules";
+    public static final String WORKFLOWRULES_NODE_NAME = "j:workflowRules";
 
     public static WorkflowService getInstance() {
         if (instance == null) {
@@ -630,7 +630,7 @@ public class WorkflowService {
             @SuppressWarnings("unchecked")
             Map<String, List<WorkflowRule.Permission>> inheritedPerms = new ListOrderedMap();
 
-            recurseonRules(permissions, inheritedPerms, objectNode);
+            String definitionPath = recurseonRules(permissions, inheritedPerms, objectNode);
             for (Map.Entry<String, List<WorkflowRule.Permission>> s : inheritedPerms.entrySet()) {
                 if (permissions.containsKey(s.getKey())) {
                     List<WorkflowRule.Permission> l = permissions.get(s.getKey());
@@ -640,7 +640,7 @@ public class WorkflowService {
                 }
             }
             for (Map.Entry<String, List<WorkflowRule.Permission>> entry : permissions.entrySet()) {
-                rules.add(new WorkflowRule(StringUtils.substringBefore(entry.getKey(),":"), StringUtils.substringAfter(entry.getKey(),":"), entry.getValue()));
+                rules.add(new WorkflowRule(definitionPath, StringUtils.substringBefore(entry.getKey(),":"), StringUtils.substringAfter(entry.getKey(),":"), entry.getValue()));
             }
             return rules;
         } catch (RepositoryException e) {
@@ -650,8 +650,9 @@ public class WorkflowService {
     }
 
 
-    private void recurseonRules(Map<String, List<WorkflowRule.Permission>> results, Map<String, List<WorkflowRule.Permission>> inherited, Node n)
+    private String recurseonRules(Map<String, List<WorkflowRule.Permission>> results, Map<String, List<WorkflowRule.Permission>> inherited, Node n)
             throws RepositoryException {
+        String defPath = null;
         try {
             Map<String, List<WorkflowRule.Permission>> current = results;
             Set<String> changedTypes = new HashSet<String>();
@@ -660,6 +661,9 @@ public class WorkflowService {
                 if (n.hasNode(WORKFLOWRULES_NODE_NAME)) {
                     Node wfRules = n.getNode(WORKFLOWRULES_NODE_NAME);
                     NodeIterator rules = wfRules.getNodes();
+                    if (defPath == null) {
+                        defPath = n.getPath();
+                    }
                     while (rules.hasNext()) {
                         Node rule = rules.nextNode();
                         final String wfName = rule.getProperty("j:workflow").getString();
@@ -700,7 +704,7 @@ public class WorkflowService {
                         }
                         current.putAll(localResults);
                         if (rule.hasProperty("j:inherit") && !rule.getProperty("j:inherit").getBoolean()) {
-                            return;
+                            return defPath;
                         }
                     }
                 }
@@ -710,6 +714,7 @@ public class WorkflowService {
         } catch (ItemNotFoundException e) {
             logger.debug(e.getMessage(), e);
         }
+        return defPath;
     }
 
     public Workflow getWorkflow(String provider, String id, Locale locale) {

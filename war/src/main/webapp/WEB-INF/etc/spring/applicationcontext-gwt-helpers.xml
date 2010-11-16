@@ -58,6 +58,7 @@
     <bean name="PublicationHelper" class="org.jahia.ajax.gwt.helper.PublicationHelper">
         <property name="publicationService" ref="jcrPublicationService"/>
         <property name="workflowService" ref="workflowService"/>
+        <property name="workflowHelper" ref="WorkflowHelper"/>
     </bean>
 
     <bean name="WorkflowHelper" class="org.jahia.ajax.gwt.helper.WorkflowHelper">

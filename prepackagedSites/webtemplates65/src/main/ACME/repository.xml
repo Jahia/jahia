@@ -1283,13 +1283,13 @@ exercising activities with strong recurring profits. 
                 <GRANT_r_web-designer j:privileges="jcr:read jcr:read_live jcr:write" j:principal="r:web-designer" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace"></GRANT_r_web-designer>
                 <DENY_r_web-designer j:privileges="jcr:write_live jcr:modifyAccessControl" j:protected="false" j:principal="r:web-designer" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_r_web-designer>
             </j:acl>
-            <workflowrules jcr:primaryType="jnt:workflowRules">
+            <j:workflowRules jcr:primaryType="jnt:workflowRules">
                 <jBPM_1-step-publication j:workflow="jBPM:1-step-publication" jcr:primaryType="jnt:workflowRule">
                     <GRANT_r_editor-in-chief j:privileges="review start" j:protected="false" j:principal="r:editor-in-chief" j:aceType="GRANT" jcr:primaryType="jnt:ace"></GRANT_r_editor-in-chief>
                     <GRANT_r_editor j:privileges="start" j:principal="r:editor" j:protected="false" j:aceType="GRANT" jcr:primaryType="jnt:ace"></GRANT_r_editor>
                     <GRANT_r_publisher j:privileges="review" j:protected="false" j:principal="r:publisher" j:aceType="GRANT" jcr:primaryType="jnt:ace"></GRANT_r_publisher>
                 </jBPM_1-step-publication>
-            </workflowrules>
+            </j:workflowRules>
             <groups jcr:uuid="9aeb55fd-91ea-4112-8f4f-a51864426fe9" jcr:created="2010-10-25T15:48:58.726+02:00" jcr:primaryType="jnt:groupsFolder" jcr:lastModifiedBy=" system " jcr:createdBy=" system " j:fullpath="/sites/ACME/groups" jcr:lastModified="2010-10-25T15:49:05.747+02:00">
                 <users j:hidden="false" jcr:uuid="e4bc7f3d-7d43-4162-839d-4f80537882f4" j:published="true" jcr:created="2010-10-25T15:48:58.727+02:00" jcr:primaryType="jnt:group" jcr:lastModifiedBy=" system " j:external="false" j:lastPublished="2010-10-25T15:49:06.588+02:00" j:lastPublishedBy=" system root" jcr:createdBy=" system " j:fullpath="/sites/ACME/groups/users" jcr:lastModified="2010-10-25T15:49:05.747+02:00">
                     <j:members jcr:primaryType="jnt:members"></j:members>

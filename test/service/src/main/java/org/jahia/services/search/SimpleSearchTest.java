@@ -93,7 +93,7 @@ public class SimpleSearchTest {
                                                         .getJahiaVarDiskPath()
                                                         + "/prepackagedSites/webtemplates65.zip",
                                                 "ACME.zip");
-                                jcrService.publish(session.getNode(
+                                jcrService.publishByMainId(session.getNode(
                                         FIRST_SITECONTENT_ROOT_NODE + "/home")
                                         .getIdentifier(), Constants.EDIT_WORKSPACE,
                                         Constants.LIVE_WORKSPACE, null, true, null);
@@ -112,7 +112,7 @@ public class SimpleSearchTest {
                                                         .getJahiaVarDiskPath()
                                                         + "/prepackagedSites/webtemplates65.zip",
                                                 "ACME.zip");
-                                jcrService.publish(session.getNode(
+                                jcrService.publishByMainId(session.getNode(
                                         SECOND_SITECONTENT_ROOT_NODE + "/home")
                                         .getIdentifier(), Constants.EDIT_WORKSPACE,
                                         Constants.LIVE_WORKSPACE, null, true, null);

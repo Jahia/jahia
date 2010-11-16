@@ -57,7 +57,7 @@ public class ViewPublishStatusActionItem extends ViewStatusActionItem {
         boolean allPublished = true;
         for (Module module : moduleList) {
             if (module.getNode() != null) {
-                GWTJahiaPublicationInfo info = module.getNode().getPublicationInfo();
+                GWTJahiaPublicationInfo info = module.getNode().getAggregatedPublicationInfo();
                 if (info.getStatus() != GWTJahiaPublicationInfo.PUBLISHED) {
                     allPublished = false;
                     if (lastUnpublished != null && module.getNode().getPath().startsWith(lastUnpublished)) {

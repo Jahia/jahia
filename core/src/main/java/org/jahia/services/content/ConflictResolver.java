@@ -69,7 +69,7 @@ public class ConflictResolver {
     private Calendar sourceDate = null;
     private Calendar targetDate = null;
 
-    private PublicationInfo info;
+    private List<String> uuids;
 
     private List<Diff> differences;
     private List<Diff> resolvedDifferences;
@@ -87,9 +87,8 @@ public class ConflictResolver {
         }
     }
 
-
-    public void setInfo(PublicationInfo info) {
-        this.info = info;
+    public void setUuids(List<String> uuids) {
+        this.uuids = uuids;
     }
 
     public List<Diff> getDifferences() {
@@ -460,7 +459,7 @@ public class ConflictResolver {
         }
 
         public boolean apply() throws RepositoryException {
-            if ((!info.getAllUuids().contains(uuid) && sourceNode.getNode(newName).isVersioned()) || targetNode.hasNode(newName)) {
+            if (sourceNode.getNode(newName).isVersioned() || targetNode.hasNode(newName)) {
                 return true;
             }
 
@@ -469,7 +468,7 @@ public class ConflictResolver {
             String newNameParsed = getTargetName(newName);
 
             targetNode.getSession().save();
-            JCRPublicationService.getInstance().doClone(sourceNode.getNode(newNameParsed), info.getAllPublishableUuids(), sourceNode.getSession(), targetNode.getSession());
+            JCRPublicationService.getInstance().doClone(sourceNode.getNode(newNameParsed), uuids, sourceNode.getSession(), targetNode.getSession());
             return true;
         }
 

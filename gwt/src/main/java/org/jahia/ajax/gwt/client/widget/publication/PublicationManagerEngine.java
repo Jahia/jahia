@@ -53,9 +53,9 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowType;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
@@ -94,13 +94,13 @@ public class PublicationManagerEngine extends Window {
         setSize(800, 600);
         setBorders(false);
         setBodyBorder(false);
+        setModal(true);
         getHeader().setBorders(false);
         getHeader().setIcon(ToolbarIconProvider.getInstance().getIcon("siteRepository"));
 
         // tree component
         GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(Arrays.asList("/sites"), true);
-        factory.setNodeTypes(Arrays.asList("jnt:virtualsitesFolder", "jnt:virtualsite", "jmix:publication",
-                                           "jmix:worklfowRulesable"));
+        factory.setNodeTypes(Arrays.asList("jnt:virtualsitesFolder", "jnt:virtualsite", "jmix:publication"));
         factory.setFields(Arrays.asList(GWTJahiaNode.NAME, GWTJahiaNode.DISPLAY_NAME, GWTJahiaNode.PUBLICATION_INFOS,
                                         GWTJahiaNode.WORKFLOW_INFOS));
         factory.setSelectedPath(linker.getSelectionContext().getMainNode().getPath());
@@ -122,20 +122,20 @@ public class PublicationManagerEngine extends Window {
             td.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
 
             HorizontalPanel p = new HorizontalPanel();
-            final LayoutContainer ctn = new LayoutContainer();
-            ctn.addStyleName("x-grid3-check-col");
-            ctn.setWidth(16);
-            ctn.setHeight(16);
-            p.add(ctn,td);
+//            final LayoutContainer ctn = new LayoutContainer();
+//            ctn.addStyleName("x-grid3-check-col");
+//            ctn.setWidth(16);
+//            ctn.setHeight(16);
+//            p.add(ctn,td);
             p.add(new Text(language.getDisplayName()),td);
             config.setWidget(p, language.getLanguage());
-            checkboxMap.put(language.getLanguage(), ctn);
+//            checkboxMap.put(language.getLanguage(), ctn);
             columns.add(config);
         }
 
 
         ColumnModel cm = new ColumnModel(columns);
-        cm.addHeaderGroup(0, 1, new HeaderGroupConfig("Publication Info", 1, columns.size() - 1));
+//        cm.addHeaderGroup(0, 1, new HeaderGroupConfig("Publication Info", 1, columns.size() - 1));
         m_tree = factory.getTreeGrid(cm);
 
         for (ColumnConfig column : columns) {
@@ -153,6 +153,7 @@ public class PublicationManagerEngine extends Window {
         setScrollMode(Style.Scroll.AUTO);
         add(m_tree);
         ButtonBar buttonBar = new ButtonBar();
+        buttonBar.setAlignment(Style.HorizontalAlignment.CENTER);
         Button button = new Button("Start Workflow");
         buttonBar.add(button);
         setBottomComponent(buttonBar);
@@ -184,6 +185,9 @@ public class PublicationManagerEngine extends Window {
             List<GWTJahiaNode> nodes = store.getModels();
             final Map<String, GWTJahiaWorkflowDefinition> workflowDefinitionMap = new HashMap<String, GWTJahiaWorkflowDefinition>();
             Map<String, Map<String, List<GWTJahiaNode>>> workflowDefinitionMapMap = new HashMap<String, Map<String, List<GWTJahiaNode>>>();
+
+
+            List<GWTJahiaPublicationInfo> all = new ArrayList<GWTJahiaPublicationInfo>();
             for (GWTJahiaNode node : nodes) {
                 Record record = store.getRecord(node);
                 for (GWTJahiaLanguage language : languages) {
@@ -192,65 +196,19 @@ public class PublicationManagerEngine extends Window {
                         if (o != null && o instanceof Boolean) {
                             boolean checked = (Boolean) o;
                             if (checked) {
-                                Info.display("Worlfow",
-                                             "Starting worflow for node " + node.getPath() + " in language " + language.getDisplayName());
-                                final GWTJahiaWorkflowDefinition definition = node.getWorkflowInfos().get(
-                                        language.getLanguage()).getPossibleWorkflows().get(new GWTJahiaWorkflowType("publish"));
-                                Map<String, List<GWTJahiaNode>> map = workflowDefinitionMapMap.get(
-                                        definition.getName());
-                                if (map == null) {
-                                    map = new HashMap<String, List<GWTJahiaNode>>();
-                                    workflowDefinitionMapMap.put(definition.getName(), map);
-                                    workflowDefinitionMap.put(definition.getName(), definition);
+                                final List<GWTJahiaPublicationInfo> list =
+                                        node.getFullPublicationInfos().get(language.getLanguage());
+                                if (list != null) {
+                                    all.addAll(list);
                                 }
-                                List<GWTJahiaNode> nodeList = map.get(language.getLanguage());
-                                if (nodeList == null) {
-                                    nodeList = new LinkedList<GWTJahiaNode>();
-                                    map.put(language.getLanguage(), nodeList);
-                                }
-                                nodeList.add(node);
                             }
                         }
                     }
                 }
             }
-            for (String definition : workflowDefinitionMapMap.keySet()) {
-                Map<String, List<GWTJahiaNode>> map = workflowDefinitionMapMap.get(definition);
-                for (final String language : map.keySet()) {
-                    List<GWTJahiaNode> gwtJahiaNodes = map.get(language);
-                    List<String> identifiers = new LinkedList<String>();
-                    List<GWTJahiaPublicationInfo> infoList = new LinkedList<GWTJahiaPublicationInfo>();
-                    GWTJahiaNode node = gwtJahiaNodes.get(0);
-                    for (GWTJahiaNode jahiaNode : gwtJahiaNodes) {
-                        identifiers.add(jahiaNode.getUUID());
-                        infoList.addAll(jahiaNode.getFullPublicationInfos().get(language));
-                    }
 
-                    // Start publication workflow
-                    WorkflowActionDialog workflowActionDialog = new WorkflowActionDialog(node, linker);
-                    workflowActionDialog.setCustom(new PublicationWorkflow(infoList, identifiers, false, language));
-                    workflowActionDialog.initStartWorkflowDialog(workflowDefinitionMap.get(definition));
-                    workflowActionDialog.show();
-//                    WorkflowActionDialog workflowActionDialog = new WorkflowActionDialog(node,
-//                                                                                         workflowDefinitionMap.get(
-//                                                                                                 definition),
-//                                                                                         identifiers, false, linker,
-//                                                                                         language, infoList);
-                    workflowActionDialog.addWindowListener(new WindowListener() {
-                        @Override
-                        public void windowHide(WindowEvent we) {
-                            super.windowHide(we);
-                            if (!dialogList.isEmpty()) {
-                                dialogList.remove(0).show();
-                            } else {
-                                dialog.hide();
-                            }
-                        }
-                    });
-                    dialogList.add(workflowActionDialog);
-                }
-            }
-            dialogList.remove(0).show();
+            PublicationWorkflow.create(all, linker);
+            hide();
         }
     }
 
@@ -287,7 +245,7 @@ public class PublicationManagerEngine extends Window {
                                   ListStore<ModelData> store) {
 
             GWTJahiaNode node = (GWTJahiaNode) model;
-            Map<String,GWTJahiaPublicationInfo> infos = node.getPublicationInfos();
+            Map<String,GWTJahiaPublicationInfo> infos = node.getAggregatedPublicationInfos();
             if (infos != null) {
                 GWTJahiaPublicationInfo info = infos.get(getDataIndex());
 
@@ -307,6 +265,9 @@ public class PublicationManagerEngine extends Window {
                 if (res instanceof Widget) {
                     p.add((Widget) res, td);
                 }
+                if (info.isLocked()) {
+                    p.add(StandardIconsProvider.STANDARD_ICONS.lock().createImage());
+                }
                 return p;
             } else {
                 return "";
@@ -314,7 +275,7 @@ public class PublicationManagerEngine extends Window {
         }
 
         private int getState(GWTJahiaNode node) {
-            return node.getPublicationInfos() != null ? node.getPublicationInfos().get(
+            return node.getAggregatedPublicationInfos() != null ? node.getAggregatedPublicationInfos().get(
                     getDataIndex()).getStatus() : 0;
         }
 
@@ -360,10 +321,10 @@ public class PublicationManagerEngine extends Window {
                 } else {
                     boolean value = !((Boolean) r.get(getDataIndex()));
                     r.set(getDataIndex(), value);
-                    boolean b = checkboxMap.get(getDataIndex()).getStyleName().contains("x-grid3-check-col-on");
-                    if (!value && b) {
+//                    boolean b = checkboxMap.get(getDataIndex()).getStyleName().contains("x-grid3-check-col-on");
+//                    if (!value && b) {
 //                        checkboxMap.get(getDataIndex()).setValue(Boolean.FALSE);
-                    }
+//                    }
                 }
             }
         }
@@ -376,40 +337,38 @@ public class PublicationManagerEngine extends Window {
                     onMouseDown(e);
                 }
             });
-            grid.addListener(Events.HeaderClick, new Listener<GridEvent>() {
-                public void handleEvent(GridEvent e) {
-                    onHeaderClick(e);
-                }
-            });
+//            grid.addListener(Events.HeaderClick, new Listener<GridEvent>() {
+//                public void handleEvent(GridEvent e) {
+//                    onHeaderClick(e);
+//                }
+//            });
         }
 
-        private void onHeaderClick(GridEvent<ModelData> ge) {
-            ColumnConfig column = grid.getColumnModel().getColumn(ge.getColIndex());
-            if (column.getDataIndex().equals(getDataIndex())) {
-                final LayoutContainer c = checkboxMap.get(getDataIndex());
-                if (c.getStyleName().contains("x-grid3-check-col-on")) {
-                    c.removeStyleName("x-grid3-check-col-on");
-                } else {
-                    c.addStyleName("x-grid3-check-col-on");
-                }
-//                checkboxMap.get(getDataIndex()).setValue(!checkboxMap.get(getDataIndex()).getValue());
-                final ListStore<GWTJahiaNode> store = m_tree.getStore();
-                List<GWTJahiaNode> nodes = store.getModels();
-                for (GWTJahiaNode node : nodes) {
-                    Record record = store.getRecord(node);
-                    if (node.getPublicationInfos() != null) {
-                        boolean wfStatus = getStatus(node, node.getPublicationInfos().get(getDataIndex()));
-                        if (wfStatus) {
-                            if (record.get(getDataIndex()) == null) {
-                                record.set(getDataIndex(), Boolean.TRUE);
-                            } else {
-                                record.set(getDataIndex(), c.getStyleName().contains("x-grid3-check-col-on"));
-//                            record.set(getDataIndex(), checkboxMap.get(getDataIndex()).getValue());
-                            }
-                        }
-                    }
-                }
-            }
-        }
+//        private void onHeaderClick(GridEvent<ModelData> ge) {
+//            ColumnConfig column = grid.getColumnModel().getColumn(ge.getColIndex());
+//            if (column.getDataIndex().equals(getDataIndex())) {
+//                final LayoutContainer c = checkboxMap.get(getDataIndex());
+//                if (c.getStyleName().contains("x-grid3-check-col-on")) {
+//                    c.removeStyleName("x-grid3-check-col-on");
+//                } else {
+//                    c.addStyleName("x-grid3-check-col-on");
+//                }
+//                final ListStore<GWTJahiaNode> store = m_tree.getStore();
+//                List<GWTJahiaNode> nodes = store.getModels();
+//                for (GWTJahiaNode node : nodes) {
+//                    Record record = store.getRecord(node);
+//                    if (node.getAggregatedPublicationInfos() != null) {
+//                        boolean wfStatus = getStatus(node, node.getAggregatedPublicationInfos().get(getDataIndex()));
+//                        if (wfStatus) {
+//                            if (record.get(getDataIndex()) == null) {
+//                                record.set(getDataIndex(), Boolean.TRUE);
+//                            } else {
+//                                record.set(getDataIndex(), c.getStyleName().contains("x-grid3-check-col-on"));
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
     }
 }

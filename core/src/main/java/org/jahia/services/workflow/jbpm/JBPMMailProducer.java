@@ -38,7 +38,6 @@ import org.apache.velocity.tools.generic.DateTool;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
-import org.jahia.services.mail.MailService;
 import org.jahia.services.rbac.RoleIdentity;
 import org.jahia.services.rbac.jcr.RoleBasedAccessControlService;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -48,7 +47,6 @@ import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.settings.SettingsBean;
 import org.jbpm.api.Execution;
-import org.jbpm.api.JbpmException;
 import org.jbpm.api.cmd.Environment;
 import org.jbpm.pvm.internal.email.impl.AddressTemplate;
 import org.jbpm.pvm.internal.email.impl.AttachmentTemplate;
@@ -130,7 +128,7 @@ public class JBPMMailProducer extends MailProducerImpl {
                 s = addressTemplate.getUsers();
                 if (!"".equals(s)) {
                     if ("assignable".equals(s)) {
-                        emails.addAll(getAssibnables(exe, s));
+                        emails.addAll(getAssignables(exe, s));
                     } else {
                         emails.add(evaluateExpression(execution, s));
                     }
@@ -155,7 +153,7 @@ public class JBPMMailProducer extends MailProducerImpl {
                 if (addressTemplate != null) {
                     s = addressTemplate.getUsers();
                     if ("assignable".equals(s)) {
-                        emails.addAll(getAssibnables(exe, s));
+                        emails.addAll(getAssignables(exe, s));
                     } else {
                         emails.add(evaluateExpression(execution, s));
                     }
@@ -175,7 +173,7 @@ public class JBPMMailProducer extends MailProducerImpl {
                 if (addressTemplate != null) {
                     s = addressTemplate.getUsers();
                     if ("assignable".equals(s)) {
-                        emails.addAll(getAssibnables(exe, s));
+                        emails.addAll(getAssignables(exe, s));
                     } else {
                         emails.add(evaluateExpression(execution, s));
                     }
@@ -199,7 +197,7 @@ public class JBPMMailProducer extends MailProducerImpl {
         }
     }
 
-    private SortedSet<String> getAssibnables(ExecutionImpl exe, String s) throws RepositoryException {
+    private SortedSet<String> getAssignables(ExecutionImpl exe, String s) throws RepositoryException {
         SortedSet<String> emails = new TreeSet<String>();
         WorkflowDefinition def = (WorkflowDefinition) exe.getVariable("workflow");
         String id = (String) exe.getVariable("nodeId");
@@ -211,23 +209,27 @@ public class JBPMMailProducer extends MailProducerImpl {
                 Collection<Principal> members = ((JahiaGroup) principal).getMembers();
                 for (Principal member : members) {
                     if (member instanceof JahiaUser) {
-                        emails.add(((JahiaUser) member).getProperty("j:email"));
+                        final String property = ((JahiaUser) member).getProperty("j:email");
+                        if (property != null) emails.add(property);
                     }
                 }
             } else if (principal instanceof JahiaUser) {
-                emails.add(((JahiaUser) principal).getProperty("j:email"));
+                final String property = ((JahiaUser) principal).getProperty("j:email");
+                if (property != null) emails.add(property);
             } else if (principal instanceof RoleIdentity) {
                 List<JahiaPrincipal> lp = ((RoleBasedAccessControlService) SpringContextSingleton.getBean(
                         RoleBasedAccessControlService.class.getName())).getPrincipalsInRole((RoleIdentity) principal);
                 for (Principal p : lp) {
                     if (p instanceof JahiaUser) {
-                        emails.add(((JahiaUser) p).getProperty("j:email"));
+                        final String property = ((JahiaUser) p).getProperty("j:email");
+                        if (property != null) emails.add(property);
                     } else {
                         if (p instanceof JahiaGroup) {
                             Collection<Principal> members = ((JahiaGroup) p).getMembers();
                             for (Principal member : members) {
                                 if (member instanceof JahiaUser) {
-                                    emails.add(((JahiaUser) member).getProperty("j:email"));
+                                    final String property = ((JahiaUser) member).getProperty("j:email");
+                                    if (property != null) emails.add(property);
                                 }
                             }
                         }

@@ -197,7 +197,7 @@ public class VersioningTest extends TestCase {
         editSession.save();
 
         // publish it
-        jcrService.publish(stageNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,
+        jcrService.publishByMainId(stageNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,
                 languagesStringSet, true,Collections.<String>emptyList());
         String label = "published_at_" + new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(
                 GregorianCalendar.getInstance().getTime());
@@ -210,7 +210,7 @@ public class VersioningTest extends TestCase {
                 mainContent.setProperty("jcr:title", MAIN_CONTENT_TITLE + updateNumber);
                 mainContent.setProperty("body", MAIN_CONTENT_BODY + updateNumber);
                 editSession.save();
-                jcrService.publish(mainContent.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,
+                jcrService.publishByMainId(mainContent.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,
                         languagesStringSet, true,Collections.<String>emptyList());
             }
 
@@ -219,7 +219,7 @@ public class VersioningTest extends TestCase {
             editSession.save();
 
             // each time the node i published, a new version should be created
-            jcrService.publish(stagedSubPage.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,
+            jcrService.publishByMainId(stagedSubPage.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,
                     languagesStringSet, false,Collections.<String>emptyList());
             label = "published_at_" + new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(
                     GregorianCalendar.getInstance().getTime());
@@ -227,7 +227,7 @@ public class VersioningTest extends TestCase {
             editSession.checkout(stagedSubSubPage);
             stagedSubSubPage.setProperty("jcr:title", "subtitle" + i);
             editSession.save();
-            jcrService.publish(stagedSubSubPage.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,
+            jcrService.publishByMainId(stagedSubSubPage.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,
                     languagesStringSet, false,Collections.<String>emptyList());
             label = "published_at_" + new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(
                     GregorianCalendar.getInstance().getTime());
@@ -318,7 +318,7 @@ public class VersioningTest extends TestCase {
             editSession.checkout(stagedSubPage);
             stagedSubPage.setProperty("jcr:title", "my title");
             editSession.save();
-            jcrService.publish(stagedSubPage.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
+            jcrService.publishByMainId(stagedSubPage.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
                     false,Collections.<String>emptyList());
             Version baseVersion = editSession.getWorkspace().getVersionManager().getBaseVersion(
                     stagedSubPage.getPath());
@@ -656,7 +656,7 @@ public class VersioningTest extends TestCase {
         languagesStringSet.add(Locale.ENGLISH.toString());
         List<PublicationInfo> infoList = jcrPublicationService.getPublicationInfo(identifier, languagesStringSet, true,
                 true, true, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
-        jcrPublicationService.publish(infoList, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,Collections.<String>emptyList());
+        jcrPublicationService.publishByInfoList(infoList, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,Collections.<String>emptyList());
         for (PublicationInfo info : infoList) {
             jcrVersionService.addVersionLabel(info.getAllUuids(),
                     Constants.EDIT_WORKSPACE + "_" + labelForForstPublication, Constants.EDIT_WORKSPACE);

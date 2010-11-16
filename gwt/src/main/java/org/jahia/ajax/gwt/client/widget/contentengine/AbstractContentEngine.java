@@ -118,8 +118,10 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     protected void init(EngineContainer container) {
         this.container = container;
         setLayout(new FillLayout());
-        container.setEngine(this);
-        container.getPanel().setHeading(heading);
+
+        buttonBar = new ButtonBar();
+
+        container.setEngine(this, heading, buttonBar, this.getLinker());
 
         // init language switcher
         initLanguageSwitcher();
@@ -131,16 +133,9 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
 
         add(tabs);
 
-        LayoutContainer buttonsPanel = new LayoutContainer();
-        buttonsPanel.setBorders(false);
-
-        buttonBar = new ButtonBar();
         buttonBar.setAlignment(Style.HorizontalAlignment.CENTER);
 
         initFooter();
-
-        buttonsPanel.add(buttonBar);
-        container.getPanel().setBottomComponent(buttonsPanel);
 
         container.getPanel().setFooter(true);
         mask(Messages.get("label.loading","Loading..."), "x-mask-loading");

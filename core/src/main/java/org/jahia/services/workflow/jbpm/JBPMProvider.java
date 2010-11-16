@@ -617,6 +617,12 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
         final String nodeId =
                 (String) historyService.getVariable(jbpmHistoryItem.getProcessInstanceId(), "nodeId");
 
+        String title = null;
+        try {
+            title = ((List<WorkflowVariable>) executionService.getVariable(jbpmHistoryItem.getProcessInstanceId(), "jcr:title")).get(0).getValue();
+        } catch (Exception e) {
+        }
+
         final HistoryWorkflow workflow = new HistoryWorkflow(jbpmHistoryItem.getProcessInstanceId(),
                 def != null ? convertToWorkflowDefinition(def, locale) : null, def != null ? def.getName() : null,
                 getKey(), startUser, jbpmHistoryItem.getStartTime(), jbpmHistoryItem.getEndTime(),
@@ -626,6 +632,9 @@ public class JBPMProvider implements WorkflowProvider, InitializingBean {
             workflow.setDisplayName(resourceBundle.getString("name"));
         } catch (Exception e) {
             workflow.setDisplayName(workflow.getName());
+        }
+        if (title != null) {
+            workflow.setDisplayName(title + " - " + workflow.getDisplayName());
         }
         return workflow;
     }

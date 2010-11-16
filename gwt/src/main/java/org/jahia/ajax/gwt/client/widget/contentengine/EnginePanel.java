@@ -32,6 +32,8 @@
 
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
+import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem.SidePanelLinker;
@@ -62,9 +64,14 @@ public class EnginePanel extends ContentPanel implements EngineContainer {
         return this;
     }
 
-    public void setEngine(AbstractContentEngine engine) {
-        linker = engine.getLinker() instanceof EditLinker ? (EditLinker) engine.getLinker() : ((SidePanelLinker) engine.getLinker()).getEditLinker();
-        add(engine);
+    public void setEngine(Component component, String header, ButtonBar buttonsBar, final Linker linker) {
+        this.linker = linker instanceof EditLinker ? (EditLinker) linker : ((SidePanelLinker) linker).getEditLinker();
+        removeAll();
+        add(component);
+        setHeading(header);
+        if (buttonsBar != null) {
+            setBottomComponent(buttonsBar);
+        }
     }
 
     public void showEngine() {

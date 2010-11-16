@@ -48,19 +48,13 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.importexport.ImportExportBaseService;
-import org.jahia.services.importexport.ImportJob;
-import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.sites.jcr.JCRSitesProvider;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
-import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
 
 import javax.jcr.RepositoryException;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
@@ -427,7 +421,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                 JCRSessionWrapper session = sessionFactory.getCurrentUserSession(null, jParams.getLocale());
                 JCRNodeWrapper nodeWrapper = session.getNode("/sites/" + site.getSiteKey());
                 if (nodeWrapper.hasNode("templates")) {
-                    JCRPublicationService.getInstance().publish(nodeWrapper.getNode("templates").getIdentifier(),"default","live",null,true, null);
+                    JCRPublicationService.getInstance().publishByMainId(nodeWrapper.getNode("templates").getIdentifier(),"default","live",null,true, null);
                 }
             } catch (RepositoryException e) {
                 logger.warn("Error adding home node", e);

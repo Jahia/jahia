@@ -27,7 +27,7 @@ Usage
     resources="jquery.min.js,jquery-ui.core.min.js,jquery-ui.datepicker.min.js,jquery-ui.slider.min.js"/>
 +------------------------------------------------
    
-  For inline resources the body of the <<<<template:addResources/>>>> tag is utilized: 
+  For inline resources the body of the <<<\<template:addResources/>>>> tag is utilized: 
 
 +------------------------------------------------
   <template:addResources>

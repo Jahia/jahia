@@ -1,10 +1,9 @@
-
 How to setup development in various IDEs
 
-* JetBrains Intellij IDEA 9.0
+* JetBrains IntelliJ IDEA 9.0
 
- After upgrading to gwt-2.0, hosted mode wil be replaced by development mode. As usual, gwt needs to be downloaded and
-gwt facets reconfigured to use gwt 2.0. The new "development mode" allows to execute your gwt debug in any browser ,
+ After upgrading to GWT-2.0, hosted mode will be replaced by development mode. As usual, GWT needs to be downloaded and
+GWT facets reconfigured to use GWT 2.0. The new "development mode" allows to execute your gwt debug in any browser ,
 instead of the old "hosted " mode. Make sure you also review all your dependencies to make sure you are no longer
 referencing older GWT versions, as this will cause compilation issues. Also, if when setting up the facets, make sure
 you "Fix" all the GWT-user references and output path. You can do this by clicking on the "Fix" button until everything
@@ -38,7 +37,7 @@ When loading a module, it simply crashes. A workaround has been found in a Googl
 
  Here is an example of integrating this fix for the Edit mode module :
 
-----------------------------------------
++----------------------------------------
 public class EditEntryPoint {           
     public void onModuleLoad() {
         /* todo The following two lines are a hack to get development mode to work on Mac OS X, should be removed once this
@@ -55,14 +54,14 @@ public class EditEntryPoint {
         }
     }
 }
-----------------------------------------
++----------------------------------------
 
  Note the two lines :
 
-----------------------------------------
++----------------------------------------
         @SuppressWarnings("unused")
         Layout junk = new AnchorLayout();
-----------------------------------------
++----------------------------------------
 
  The second line is there to force the loading of the GXT classes and it seems that that makes it work under Mac OS ! So
 you need to do this for all the modules you wish to use development mode with under Mac OS X.

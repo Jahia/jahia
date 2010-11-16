@@ -1,7 +1,7 @@
 Jahia Crazy Jane - Web Module - Multi Language
 
  When creating a site you will be asked to associate it with at least one language, this will define the language
- you can access on your site. After the creation of the site you can go to your site adminsitration panel in the
+ you can access on your site. After the creation of the site you can go to your site administration panel in the
  administration center, to add / remove languages from your site define which ones are mandatory and which one is the
  default language.
 
@@ -43,7 +43,7 @@ Jahia Crazy Jane - Web Module - Multi Language
   In live mode a node <<MUST>> have a value in each mandatory language for each of its mandatory properties to allow it to be seen by users.
 
   So if you have two mandatory language for example (en,fr) each page you create must have a title in both languages to be published.
-  To be seen in live a page must have finish its workflow in each language, if the english workflow for my page is finished on monday.
-  And the one in french in finished on tuesday my english page will only be visible for my end users on tuesday when the french workflow is over
-  even if my page in english exist in my live repository since monday.
+  To be seen in live a page must have finish its workflow in each language, if the English workflow for my page is finished on Monday.
+  And the one in French in finished on Tuesday my English page will only be visible for my end users on Tuesday when the French workflow is over
+  even if my page in English exist in my live repository since Monday.
 

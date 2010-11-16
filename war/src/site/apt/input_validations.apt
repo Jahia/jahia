@@ -2,7 +2,7 @@ Jahia - Input validation
 
   Jahia 6.5 for now supports the most important value constraints, which can be defined in the standard CND (Compact Namespace and Node Type Definition). Built-in property editors will not allow saving values, which are violating these constraints and will guide the authors by showing, how to make valid input.
 
-  JCR definitions gives the ability to define mandatory fields, ranges and to add regex contraints. 
+  JCR definitions gives the ability to define mandatory fields, ranges and to add regex constraints. 
 
   For example, the following field is mandatory and must only contain letters :
 

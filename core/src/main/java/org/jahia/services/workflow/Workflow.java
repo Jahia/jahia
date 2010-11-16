@@ -44,14 +44,14 @@ import java.util.Set;
  * @since JAHIA 6.1
  */
 public class Workflow extends WorkflowBase {
-    private final String id;
+    private static final long serialVersionUID = 7740902280649636296L;
+	private final String id;
     private String startUser;
     private Date startTime;
     private Set<WorkflowAction> availableActions;
     private Date duedate = null;
     private WorkflowDefinition workflowDefinition;
     private Map<String, Object> variables;
-    private List<WorkflowComment> comments;
 
     public Workflow(String name, String id, String provider) {
         super(name, provider);
@@ -110,6 +110,7 @@ public class Workflow extends WorkflowBase {
         this.variables = variables;
     }
 
+    @SuppressWarnings("unchecked")
     public List<WorkflowComment> getComments() {
         return (List<WorkflowComment>) variables.get("comments");
     }

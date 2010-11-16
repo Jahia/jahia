@@ -11,7 +11,8 @@ import java.util.Date;
  * 
  */
 public class WorkflowComment implements Serializable {
-    private String user;
+    private static final long serialVersionUID = 1342490305138328122L;
+	private String user;
     private Date time;
     private String comment;
 

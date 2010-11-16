@@ -442,6 +442,7 @@ public class SocialService {
         }
 
         final Map<String, Object> args = new HashMap<String, Object>();
+        args.put("fromUser", from.getUsername());
         args.put("from", fromUserKey);
         args.put("to", toUserKey);
         args.put("connectionType", connectionType);

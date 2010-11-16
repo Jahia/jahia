@@ -100,16 +100,9 @@
 
 <c:forEach items="${tasks.nodes}" var="task"
            begin="${moduleMap.begin}" end="${moduleMap.end}" varStatus="status">
-    <c:choose>
-        <c:when test="${status.count % 2 == 0}">
-            <tr class="odd">
-        </c:when>
-        <c:otherwise>
-            <tr class="even">
-        </c:otherwise>
-    </c:choose>
+    <tr class="${status.count % 2 == 0 ? 'odd' : 'even'}">
     <td class="center" headers="Type"><img alt=""
-                                           src="${url.currentModule}/images/flag_16.png"/>
+                                           src="${url.currentModule}/images/flag_16.png" height="16" width="16"/>
     </td>
     <td headers="Title"><a
             href="${url.base}${task.path}.html">${fn:escapeXml(task.propertiesAsString['jcr:title'])}</a></td>
@@ -118,8 +111,8 @@
     </td>
     <td class="center" headers="State">
         <c:choose>
-            <c:when test="${task.properties.state.string == 'active'}">
-                <span><img alt="" src="${url.currentModule}/images/right_16.png"/></span>
+            <c:when test="${task.propertiesAsString.state == 'active'}">
+                <span><img alt="" src="${url.currentModule}/images/right_16.png" height="16" width="16"/></span>
                         <span>
                             <a href="javascript:send('${task.path}','suspended')"><fmt:message
                                     key="jnt_task.suspended"/></a>&nbsp;
@@ -129,11 +122,11 @@
                                     key="jnt_task.complete"/></a>
                         </span>
             </c:when>
-            <c:when test="${task.properties.state.string == 'finished'}">
-                <img alt="" src="${url.currentModule}/images/tick_16.png"/>
+            <c:when test="${task.propertiesAsString.state == 'finished'}">
+                <img alt="" src="${url.currentModule}/images/tick_16.png" height="16" width="16"/>
             </c:when>
-            <c:when test="${task.properties.state.string == 'suspended'}">
-                <span><img alt="" src="${url.currentModule}/images/bubble_16.png"/></span>
+            <c:when test="${task.propertiesAsString.state == 'suspended'}">
+                <span><img alt="" src="${url.currentModule}/images/bubble_16.png" height="16" width="16"/></span>
                         <span>
                             <a href="javascript:send('${task.path}','cancelled')"><fmt:message
                                     key="jnt_task.cancel"/></a>&nbsp;
@@ -141,8 +134,8 @@
                                     key="jnt_task.continue"/></a>
                         </span>
             </c:when>
-            <c:when test="${task.properties.state.string == 'canceled'}">
-                <img alt="" src="${url.currentModule}/images/warning_16.png"/>
+            <c:when test="${task.propertiesAsString.state == 'canceled'}">
+                <img alt="" src="${url.currentModule}/images/warning_16.png" height="16" width="16"/>
             </c:when>
         </c:choose>
     </td>
@@ -153,29 +146,19 @@
 <workflow:tasksForNode var="wfTasks" user="${renderContext.user}"/>
 <c:forEach items="${wfTasks}" var="task" varStatus="status">
     <jcr:node var="node" uuid="${task.variables.nodeId}"/>
-    <c:choose>
-        <c:when test="${((status.count + 1)) % 2 == 0}">
-            <tr class="odd">
-        </c:when>
-        <c:otherwise>
-            <tr class="even">
-        </c:otherwise>
-    </c:choose>
+    <tr class="${((status.count + 1)) % 2 == 0 ? 'odd' : 'even'}">
     <td class="center" headers="Type">
         <img alt="" src="${url.currentModule}/images/workflow.png"/>
     </td>
     <td headers="Title">
+		<c:if test="${'user-connection' == task.variables.workflow.key}" var="isUserConnectionRequest">
+			<c:set var="taskTitle" value="${not empty task.displayName ? task.displayName : task.name} (${task.variables.fromUser})"/>
+		</c:if>
+		<c:if test="${not isUserConnectionRequest}">
+		<c:set var="taskTitle" value="${not empty task.formResourceName and not empty task.variables['jcr:title'] ? task.variables['jcr:title'][0].value : (not empty task.displayName ? task.displayName : task.name)}"/>
+		</c:if>
         <a target="_blank"
-           href="${url.context}/cms/render/${task.variables.workspace}/${task.variables.locale}${node.path}.html">
-            <c:choose>
-                <c:when test="${not empty task.formResourceName and not empty task.variables['jcr:title']}">
-                    ${task.variables['jcr:title'][0].value}
-                </c:when>
-                <c:otherwise>
-                    ${task.name}
-                </c:otherwise>
-            </c:choose>
-        </a>
+           href="${url.context}/cms/render/${task.variables.workspace}/${task.variables.locale}${node.path}.html">${fn:escapeXml(taskTitle)}</a>
     </td>
     <td colspan="3">
         <div class="listEditToolbar">
@@ -196,6 +179,7 @@
                     </c:forEach>
                 </c:otherwise>
             </c:choose>
+            <%--
             <template:addResources>
                 <script type="text/javascript">
                     animatedcollapse.addDiv('comments${node.identifier}-${task.id}', 'fade=1,speed=100');
@@ -203,18 +187,12 @@
             </template:addResources>
             <input class="workflowaction" type="button" value="<fmt:message key="jnt_task.comments"/>"
                    onclick="animatedcollapse.toggle('comments${node.identifier}-${task.id}');$('#commentsrow${node.identifier}-${task.id}').toggleClass('hidden');"/>
+            --%>
         </div>
     </td>
     </tr>
     <c:if test="${not empty task.formResourceName}">
-        <c:choose>
-            <c:when test="${((status.count + 1)) % 2 == 0}">
-                <tr class="odd hidden" id="taskrow${node.identifier}-${task.id}">
-            </c:when>
-            <c:otherwise>
-                <tr class="even hidden" id="taskrow${node.identifier}-${task.id}">
-            </c:otherwise>
-        </c:choose>
+    	<tr class="${((status.count + 1)) % 2 == 0 ? 'odd' : 'even'} hidden" id="taskrow${node.identifier}-${task.id}">
         <td colspan="5">
             <div style="display:none;" id="task${node.identifier}-${task.id}" class="taskformdiv">
                 <c:set var="workflowTaskFormTask" value="${task}" scope="request"/>
@@ -231,6 +209,7 @@
         </td>
         </tr>
     </c:if>
+<%--     
     <c:choose>
         <c:when test="${((status.count + 1)) % 2 == 0}">
             <tr class="odd hidden" id="commentsrow${node.identifier}-${task.id}">
@@ -275,6 +254,7 @@
         </div>
     </td>
     </tr>
+--%>    
 </c:forEach>
 </tbody>
 </table>

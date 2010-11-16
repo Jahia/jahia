@@ -43,7 +43,6 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.rbac.RoleIdentity;
 import org.jahia.services.usermanager.*;
 import org.jahia.utils.LanguageCodeConverters;
@@ -409,10 +408,6 @@ public class WorkflowService {
         for (Map.Entry<String, WorkflowProvider> providerEntry : providers.entrySet()) {
             workflowActions.addAll(providerEntry.getValue().getTasksForUser(user, locale));
         }
-        Locale displayLocale = locale;
-        if (displayLocale == null) {
-            displayLocale = UserPreferencesHelper.getPreferredLocale(user);
-        }
         return workflowActions;
     }
 
@@ -630,7 +625,9 @@ public class WorkflowService {
         try {
             Collection<WorkflowRule> rules = new HashSet<WorkflowRule>();
 
+            @SuppressWarnings("unchecked")
             Map<String, List<WorkflowRule.Permission>> permissions = new ListOrderedMap();
+            @SuppressWarnings("unchecked")
             Map<String, List<WorkflowRule.Permission>> inheritedPerms = new ListOrderedMap();
 
             recurseonRules(permissions, inheritedPerms, objectNode);

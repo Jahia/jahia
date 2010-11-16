@@ -180,8 +180,8 @@ public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
 
     @Override
     public void setValue(List<GWTJahiaNode> value) {
-        super.setValue(value);
         this.value = value;
+        super.setValue(value);
     }
 
 //    @Override public void onComponentEvent(ComponentEvent ce) {

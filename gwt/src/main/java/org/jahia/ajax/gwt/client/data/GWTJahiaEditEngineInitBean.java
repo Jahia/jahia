@@ -36,9 +36,7 @@ import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -51,8 +49,10 @@ import java.util.Set;
  * To change this template use File | Settings | File Templates.
  */
 public class GWTJahiaEditEngineInitBean extends GWTJahiaGetPropertiesResult {
+    /** The serialVersionUID. */
+    private static final long serialVersionUID = 8831509358274880097L;
     private List<GWTJahiaNodeType> mixin;
-    private Map<String, List<GWTJahiaValueDisplayBean>> initializersValues;
+    private Map<String, GWTJahiaFieldInitializer> initializersValues;
     private GWTJahiaNodeACL acl;
     private Map<String, Set<String>> referencesWarnings;
 
@@ -71,11 +71,11 @@ public class GWTJahiaEditEngineInitBean extends GWTJahiaGetPropertiesResult {
         this.mixin = mixin;
     }
 
-    public Map<String, List<GWTJahiaValueDisplayBean>> getInitializersValues() {
+    public Map<String, GWTJahiaFieldInitializer> getInitializersValues() {
         return initializersValues;
     }
 
-    public void setInitializersValues(Map<String, List<GWTJahiaValueDisplayBean>> initializersValues) {
+    public void setInitializersValues(Map<String, GWTJahiaFieldInitializer> initializersValues) {
         this.initializersValues = initializersValues;
     }
 

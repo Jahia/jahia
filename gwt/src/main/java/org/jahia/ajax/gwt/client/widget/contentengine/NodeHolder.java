@@ -32,6 +32,7 @@
 
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
+import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -55,7 +56,7 @@ public interface NodeHolder {
 
     List<GWTJahiaNodeType> getMixin();
 
-    Map<String, List<GWTJahiaValueDisplayBean>> getInitializersValues();
+    Map<String, GWTJahiaFieldInitializer> getInitializersValues();
 
     GWTJahiaNode getNode();
 

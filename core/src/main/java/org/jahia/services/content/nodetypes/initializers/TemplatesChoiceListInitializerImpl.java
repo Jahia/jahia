@@ -35,7 +35,9 @@ package org.jahia.services.content.nodetypes.initializers;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.JCRPropertyWrapper;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -68,7 +70,8 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
 
         JCRNodeWrapper node = (JCRNodeWrapper) context.get("contextNode");
         ExtendedNodeType realNodeType = (ExtendedNodeType) context.get("contextType");
-
+        String propertyName = context.containsKey("dependentProperties") ? ((List<String>)context.get("dependentProperties")).get(0) : null; 
+        
         SortedSet<Template> templates = new TreeSet<Template>();
 
         try {
@@ -79,18 +82,57 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
                 param =  StringUtils.substringBefore(param, ",");
             }
             if ("subnodes".equals(param)) {
-                if (node != null && node.hasProperty("j:allowedTypes")) {
+                if (propertyName == null) {
+                    propertyName = "j:allowedTypes";
+                }
+                if (context.containsKey(propertyName)) {
+                    List<String> types = (List<String>)context.get(propertyName);
+                    for (String type : types) {
+                        nodeTypeList.add(type);
+                    }
+                } else if (node != null && node.hasProperty(propertyName)) {
+                    JCRPropertyWrapper property = node.getProperty(propertyName);
+                    if (property.isMultiple()) {
+                        Value[] types = property.getValues();
+                        for (Value type : types) {
+                            nodeTypeList.add(type.getString());
+                        }
+                    } else {
+                        nodeTypeList.add(property.getValue().getString());
+                    }
+                } else if (node != null && !"j:allowedTypes".equals(propertyName) && node.hasProperty("j:allowedTypes")) {
                     Value[] types = node.getProperty("j:allowedTypes").getValues();
                     for (Value type : types) {
                         nodeTypeList.add(type.getString());
-                    }
+                    }                    
                 }
                 param = nextParam;
             } else if ("reference".equals(param)) {
-                if (node != null && node.hasProperty("j:node")) {
+                if (propertyName == null) {
+                    propertyName = "j:node";
+                }
+                if (context.containsKey(propertyName)) {
+                    JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+                    List<String> refNodeUuids = (List<String>)context.get(propertyName);
+                    for (String refNodeUuid : refNodeUuids) {
+                        try {
+                            JCRNodeWrapper refNode = (JCRNodeWrapper) session.getNodeByUUID(refNodeUuid);
+                            nodeTypeList.addAll(refNode.getNodeTypes());
+                        } catch (Exception e) {
+                            logger.warn("Referenced node not found to retrieve its nodetype for initializer", e);
+                        }
+                    }
+                } else if (node != null && node.hasProperty(propertyName)) {
                     try {
-                        JCRNodeWrapper refnode = (JCRNodeWrapper) node.getProperty("j:node").getNode();
-                        nodeTypeList.addAll(refnode.getNodeTypes());
+                        JCRNodeWrapper refNode = (JCRNodeWrapper) node.getProperty(propertyName).getNode();
+                        nodeTypeList.addAll(refNode.getNodeTypes());
+                    } catch (ItemNotFoundException e) {
+                    }
+                } else if (node != null && !"j:node".equals(propertyName) && node.hasProperty("j:node")) {
+                    try {
+                        JCRNodeWrapper refNode = (JCRNodeWrapper) node.getProperty("j:node")
+                                .getNode();
+                        nodeTypeList.addAll(refNode.getNodeTypes());
                     } catch (ItemNotFoundException e) {
                     }
                 }
@@ -103,7 +145,7 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
                 } else {
                     parent = node.getParent();
                 }
-                    try {
+                try {
                     while (true) {
                         if (parent.isNodeType("jnt:template")) {
                             matchingParent = parent;

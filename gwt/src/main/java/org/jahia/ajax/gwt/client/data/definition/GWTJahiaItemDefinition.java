@@ -51,6 +51,7 @@ public class GWTJahiaItemDefinition implements Serializable {
     private boolean autoCreated = false;
     private boolean mandatory = false;
     private boolean hidden = false;
+    private String overrideDeclaringNodeType;    
     private String declaringNodeType;
     private String declaringNodeTypeLabel;
     private String dataType;
@@ -153,5 +154,13 @@ public class GWTJahiaItemDefinition implements Serializable {
 
     public void setDataType(String dataType) {
         this.dataType = dataType;
+    }
+
+    public String getOverrideDeclaringNodeType() {
+        return overrideDeclaringNodeType;
+    }
+
+    public void setOverrideDeclaringNodeType(String overrideDeclaringNodeType) {
+        this.overrideDeclaringNodeType = overrideDeclaringNodeType;
     }
 }

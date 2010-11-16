@@ -43,8 +43,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
+import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
-import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
@@ -76,7 +76,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
     private TabPanel tabs;
     private List<GWTJahiaNodeType> types;
     private List<GWTJahiaNodeType> mixin;
-    private Map<String, List<GWTJahiaValueDisplayBean>> initializersValues;
+    private Map<String, GWTJahiaFieldInitializer> initializersValues;
     private Map<String, GWTJahiaNodeProperty> properties = new HashMap<String, GWTJahiaNodeProperty>();
     private GWTJahiaLanguage language;
     private GWTJahiaNodeACL acl;
@@ -256,7 +256,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
         return mixin;
     }
 
-    public Map<String, List<GWTJahiaValueDisplayBean>> getInitializersValues() {
+    public Map<String, GWTJahiaFieldInitializer> getInitializersValues() {
         return initializersValues;
     }
 

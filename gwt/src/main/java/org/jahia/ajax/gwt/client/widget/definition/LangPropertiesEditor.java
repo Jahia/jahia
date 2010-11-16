@@ -44,8 +44,8 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
+import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
-import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
@@ -79,7 +79,7 @@ public class LangPropertiesEditor extends LayoutContainer {
     private List<String> dataType;
     private List<GWTJahiaNodeType> nodeTypes;
     private List<GWTJahiaNodeType> mixin;
-    private Map<String, List<GWTJahiaValueDisplayBean>> initializersValues;
+    private Map<String, GWTJahiaFieldInitializer> initializersValues;
     private Map<String, GWTJahiaNodeProperty> properties;
     private GWTJahiaNode node;
     private ComboBox<GWTJahiaLanguage> languageSwitcher;

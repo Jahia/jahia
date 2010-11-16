@@ -37,12 +37,13 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.Layout;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
+
+import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -58,7 +59,7 @@ import java.util.*;
 public class PropertiesEditor extends FormPanel {
     private List<GWTJahiaNodeType> nodeTypes = null;
     private List<GWTJahiaNodeType> mixin = null;
-    private Map<String, List<GWTJahiaValueDisplayBean>> initializersValues;
+    private Map<String, GWTJahiaFieldInitializer> initializersValues;
     private Map<String, GWTJahiaNodeProperty> currentProperties = null;
     private Map<String, GWTJahiaNodeProperty> originalProperties = null;
     private Map<String, Field<?>> fields;
@@ -93,7 +94,7 @@ public class PropertiesEditor extends FormPanel {
         this.mixin = mixin;
     }
 
-    public void setInitializersValues(Map<String, List<GWTJahiaValueDisplayBean>> initializersValues) {
+    public void setInitializersValues(Map<String, GWTJahiaFieldInitializer> initializersValues) {
         this.initializersValues = initializersValues;
     }
 
@@ -211,9 +212,9 @@ public class PropertiesEditor extends FormPanel {
 
 
             final GWTJahiaNodeProperty gwtJahiaNodeProperty = currentProperties.get(definition.getName());
-            List<GWTJahiaValueDisplayBean> values = initializersValues != null ?
-                    initializersValues.get(definition.getDeclaringNodeType() + "." + definition.getName()) : null;
-            Field<?> field = FormFieldCreator.createField(definition, gwtJahiaNodeProperty, values);
+            GWTJahiaFieldInitializer fieldInitializer = initializersValues != null ?
+                    initializersValues.get(definition.getOverrideDeclaringNodeType() + "." + definition.getName()) : null;
+            Field<?> field = FormFieldCreator.createField(definition, gwtJahiaNodeProperty, fieldInitializer != null ? fieldInitializer.getDisplayValues() : null);
             propertyDefinitions.put(gwtJahiaNodeProperty.getName(), definition);
             if (field != null) {
                 if (fieldSet == null || fieldSetGrouping &&
@@ -350,7 +351,10 @@ public class PropertiesEditor extends FormPanel {
      *
      */
     private void setExternalMixin(ComboBox<GWTJahiaValueDisplayBean> c, boolean b) {
-        String addMixin = c.getValue().get("addMixin");
+        String addMixin = null;
+        if (c.getValue() != null) {
+            addMixin = c.getValue().get("addMixin");
+        }
         if (addMixin != null && mixin != null) {
             for (GWTJahiaNodeType mix : mixin) {
                 if (mix.getName().equals(addMixin)) {
@@ -553,7 +557,11 @@ public class PropertiesEditor extends FormPanel {
      * @return
      */
     public GWTJahiaItemDefinition getGWTJahiaItemDefinition(GWTJahiaNodeProperty prop) {
-        return propertyDefinitions.get(prop.getName());
+        return getGWTJahiaItemDefinition(prop.getName());
+    }
+    
+    public GWTJahiaItemDefinition getGWTJahiaItemDefinition(String propName) {
+        return propertyDefinitions.get(propName);
     }
 
     public List<FieldSet> getOrderingListFieldSet() {

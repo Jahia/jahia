@@ -32,8 +32,6 @@
 
 package org.jahia.ajax.gwt.client.data.definition;
 
-import com.extjs.gxt.ui.client.data.BaseTreeModel;
-
 import java.io.Serializable;
 import java.util.List;
 import java.util.ArrayList;
@@ -43,6 +41,8 @@ import java.util.ArrayList;
  */
 public class GWTJahiaNodeProperty implements Serializable {
 
+    /** The serialVersionUID. */
+    private static final long serialVersionUID = 462346339035404507L;
     private boolean multiple;
     private String name;
     private List<GWTJahiaNodePropertyValue> values;

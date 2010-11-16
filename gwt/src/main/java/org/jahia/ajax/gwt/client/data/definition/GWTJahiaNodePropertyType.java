@@ -39,6 +39,9 @@ import java.io.Serializable;
  */
 public class GWTJahiaNodePropertyType implements Serializable {
     
+    /** The serialVersionUID. */
+    private static final long serialVersionUID = 668716928345969623L;
+
     /**
      * The <code>STRING</code> property type is used to store strings. It has
      * the same characteristics as the Java <code>String</code> class.

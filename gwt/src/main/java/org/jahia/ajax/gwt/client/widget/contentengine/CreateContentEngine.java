@@ -71,8 +71,6 @@ public class CreateContentEngine extends AbstractContentEngine {
     protected boolean createInParentAndMoveBefore = false;
     private Button ok;
     private Button okAndNew;
-    private String parentPath;
-
     /**
      * Open Edit content engine for a new node creation
      *
@@ -84,17 +82,12 @@ public class CreateContentEngine extends AbstractContentEngine {
      * @param createInParentAndMoveBefore
      */
     public CreateContentEngine(Linker linker, GWTJahiaNode parent, GWTJahiaNodeType type, Map<String, GWTJahiaNodeProperty> props, String targetName, boolean createInParentAndMoveBefore, EngineContainer engineContainer) {
-        super(linker.getConfig().getEngineTabs(), linker);
+        super(linker.getConfig().getEngineTabs(), linker, createInParentAndMoveBefore ? parent.getPath().substring(0, parent.getPath().lastIndexOf('/')) : parent.getPath());
         this.existingNode = false;
         this.targetNode = parent;
         this.type = type;
         if (!"*".equals(targetName)) {
             this.targetName = targetName;
-        }
-        if (createInParentAndMoveBefore) {
-            this.parentPath = parent.getPath().substring(0, parent.getPath().lastIndexOf('/'));
-        } else {
-            this.parentPath = parent.getPath();
         }
         this.createInParentAndMoveBefore = createInParentAndMoveBefore;
 
@@ -203,6 +196,7 @@ public class CreateContentEngine extends AbstractContentEngine {
                 });
 
                 fillCurrentTab();
+                
                 unmask();                
             }
 
@@ -211,8 +205,7 @@ public class CreateContentEngine extends AbstractContentEngine {
             }
         });
     }
-
-
+    
     protected class CreateSelectionListener extends SelectionListener<ButtonEvent> {
         public void componentSelected(ButtonEvent event) {
             save(true);

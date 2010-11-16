@@ -47,9 +47,11 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public class GWTJahiaCreateEngineInitBean implements Serializable {
+    /** The serialVersionUID. */
+    private static final long serialVersionUID = 2401975272536722966L;
     private List<GWTJahiaLanguage> languages;
     private List<GWTJahiaNodeType> mixin;
-    private Map<String, List<GWTJahiaValueDisplayBean>> initializersValues;
+    private Map<String, GWTJahiaFieldInitializer> initializers;
     private GWTJahiaLanguage currentLocale;
     private GWTJahiaNodeACL acl;
 
@@ -72,12 +74,12 @@ public class GWTJahiaCreateEngineInitBean implements Serializable {
         this.mixin = mixin;
     }
 
-    public Map<String, List<GWTJahiaValueDisplayBean>> getInitializersValues() {
-        return initializersValues;
+    public Map<String, GWTJahiaFieldInitializer> getInitializersValues() {
+        return initializers;
     }
 
-    public void setInitializersValues(Map<String, List<GWTJahiaValueDisplayBean>> initializersValues) {
-        this.initializersValues = initializersValues;
+    public void setInitializersValues(Map<String, GWTJahiaFieldInitializer> initializers) {
+        this.initializers = initializers;
     }
 
     public GWTJahiaLanguage getCurrentLocale() {

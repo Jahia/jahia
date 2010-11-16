@@ -33,9 +33,12 @@
 package org.jahia.ajax.gwt.helper;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Transformer;
+import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.value.*;
 import org.apache.jackrabbit.value.StringValue;
 import org.slf4j.Logger;
+import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -49,6 +52,8 @@ import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializer;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListValue;
+
+import com.google.common.collect.Lists;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
@@ -204,6 +209,7 @@ public class ContentDefinitionHelper {
                 item.setName(overrideDef.getName());
                 item.setProtected(overrideDef.isProtected());
                 item.setDeclaringNodeType(def.getDeclaringNodeType().getName());
+                item.setOverrideDeclaringNodeType(overrideDef.getDeclaringNodeType().getName());
                 if ("jcr:description".equals(def.getName())) {
                     item.setDeclaringNodeTypeLabel(def.getLabel(uiLocale));
                 } else {
@@ -626,11 +632,11 @@ public class ContentDefinitionHelper {
         return value;
     }
 
-    public Map<String, List<GWTJahiaValueDisplayBean>> getInitializersValues(List<ExtendedNodeType> items,
+    public Map<String, GWTJahiaFieldInitializer> getAllInitializersValues(List<ExtendedNodeType> items,
                                                                              ExtendedNodeType contextType, JCRNodeWrapper contextNode,
                                                                              JCRNodeWrapper contextParent,
                                                                              Locale uiLocale) throws RepositoryException {
-        Map<String, List<GWTJahiaValueDisplayBean>> results = new HashMap<String, List<GWTJahiaValueDisplayBean>>();
+        Map<String, GWTJahiaFieldInitializer> results = new HashMap<String, GWTJahiaFieldInitializer>();
 
         Map<String, Object> context = new HashMap<String, Object>();
         context.put("contextType", contextType);
@@ -638,54 +644,87 @@ public class ContentDefinitionHelper {
         context.put("contextParent", contextParent);
 
 
-        for (ExtendedPropertyDefinition epd : getChoiceListItems(items)) {
-            Map<String, String> map = epd.getSelectorOptions();
-            if (map.size() > 0) {
-                final ArrayList<GWTJahiaValueDisplayBean> displayBeans = new ArrayList<GWTJahiaValueDisplayBean>(32);
-                final Map<String, ChoiceListInitializer> initializers = choiceListInitializerService.getInitializers();
-                List<ChoiceListValue> listValues = null;
-                for (Map.Entry<String, String> entry : map.entrySet()) {
-                    if (initializers.containsKey(entry.getKey())) {
-                        listValues = initializers.get(entry.getKey())
-                                .getChoiceListValues(epd, entry.getValue(), listValues, uiLocale, context);
-                    }
-                }
-                if (listValues != null) {
-                    for (ChoiceListValue choiceListValue : listValues) {
-                        try {
-                            final GWTJahiaValueDisplayBean displayBean =
-                                    new GWTJahiaValueDisplayBean(choiceListValue.getValue().getString(),
-                                            choiceListValue.getDisplayName());
-                            final Map<String, Object> props = choiceListValue.getProperties();
-                            if (props != null) {
-                                for (Map.Entry<String, Object> objectEntry : props.entrySet()) {
-                                    if (objectEntry.getKey() == null || objectEntry.getValue() == null) {
-                                        logger.error("Null value : " + objectEntry.getKey() + " / " +
-                                                objectEntry.getValue());
-                                    } else {
-                                        displayBean.set(objectEntry.getKey(), objectEntry.getValue());
-                                    }
-                                }
-                            }
-                            displayBeans.add(displayBean);
-                        } catch (RepositoryException e) {
-                            logger.error(e.getMessage(), e);
-                        }
-                    }
-                }
-                results.put(epd.getDeclaringNodeType().getName() + "." + epd.getName(), displayBeans);
+        for (Map.Entry<String, ExtendedPropertyDefinition> item : getChoiceListItems(items).entrySet()) {
+            GWTJahiaFieldInitializer initializer = getInitializerValues(item.getValue(), context, uiLocale);
+            if (initializer != null) {
+                results.put(item.getKey(), initializer);
             }
         }
         return results;
     }
+    
+    public GWTJahiaFieldInitializer getInitializerValues(ExtendedPropertyDefinition epd,
+            ExtendedNodeType contextType, JCRNodeWrapper contextNode, JCRNodeWrapper contextParent,
+            Map<String, List<GWTJahiaNodePropertyValue>> dependentValues, Locale uiLocale) throws RepositoryException {
+        Map<String, Object> context = new HashMap<String, Object>();
+        context.put("contextType", contextType);
+        context.put("contextNode", contextNode);
+        context.put("contextParent", contextParent);
+        for (Map.Entry<String, List<GWTJahiaNodePropertyValue>> entry : dependentValues.entrySet()) {
+            context.put(entry.getKey(), CollectionUtils.collect(entry.getValue(), new Transformer() {
+                public Object transform(Object input) {
+                    return input.toString();
+                }
+            }));            
+        }
 
-    private List<ExtendedPropertyDefinition> getChoiceListItems(List<ExtendedNodeType> allTypes) {
-        List<ExtendedPropertyDefinition> items = new ArrayList<ExtendedPropertyDefinition>();
+        return getInitializerValues(epd, context, uiLocale);
+    }
+    
+    private GWTJahiaFieldInitializer getInitializerValues(ExtendedPropertyDefinition epd, Map<String, Object> context, Locale uiLocale) {
+        GWTJahiaFieldInitializer initializer = null;
+        Map<String, String> map = epd.getSelectorOptions();
+        if (map.size() > 0) {
+            final List<GWTJahiaValueDisplayBean> displayBeans = new ArrayList<GWTJahiaValueDisplayBean>(32);
+            final Map<String, ChoiceListInitializer> initializers = choiceListInitializerService.getInitializers();
+            List<String> dependentProperties = null;
+            if (map.containsKey("dependentProperties")) {
+                dependentProperties = Lists.newArrayList(StringUtils.split(map.get("dependentProperties"), ','));
+                context.put("dependentProperties", dependentProperties);
+            }
+            List<ChoiceListValue> listValues = null;
+            for (Map.Entry<String, String> entry : map.entrySet()) {
+                if (initializers.containsKey(entry.getKey())) {
+                    listValues = initializers.get(entry.getKey())
+                            .getChoiceListValues(epd, entry.getValue(), listValues, uiLocale, context);
+                } 
+            }
+            if (listValues != null) {
+                for (ChoiceListValue choiceListValue : listValues) {
+                    try {
+                        final GWTJahiaValueDisplayBean displayBean =
+                                new GWTJahiaValueDisplayBean(choiceListValue.getValue().getString(),
+                                        choiceListValue.getDisplayName());
+                        final Map<String, Object> props = choiceListValue.getProperties();
+                        if (props != null) {
+                            for (Map.Entry<String, Object> objectEntry : props.entrySet()) {
+                                if (objectEntry.getKey() == null || objectEntry.getValue() == null) {
+                                    logger.error("Null value : " + objectEntry.getKey() + " / " +
+                                            objectEntry.getValue());
+                                } else {
+                                    displayBean.set(objectEntry.getKey(), objectEntry.getValue());
+                                }
+                            }
+                        }
+                        displayBeans.add(displayBean);
+                    } catch (RepositoryException e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                }
+            }
+            initializer = new GWTJahiaFieldInitializer(displayBeans, dependentProperties);
+        }
+        return initializer;
+    }
+
+    private Map<String, ExtendedPropertyDefinition> getChoiceListItems(List<ExtendedNodeType> allTypes) {
+        Map<String, ExtendedPropertyDefinition> items = new HashMap<String, ExtendedPropertyDefinition>();
         for (ExtendedNodeType nodeType : allTypes) {
             Collection<ExtendedPropertyDefinition> c = nodeType.getPropertyDefinitionsAsMap().values();
             for (ExtendedPropertyDefinition definition : c) {
                 if (definition.getSelector() == SelectorType.CHOICELIST && !definition.getSelectorOptions().isEmpty()) {
-                    items.add(definition);
+                    items.put(definition.getDeclaringNodeType().getName() + "."
+                                    + definition.getName(), definition);
                 }
             }
         }

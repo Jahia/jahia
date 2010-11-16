@@ -50,6 +50,7 @@
  - category (weakreference,choicelist[nodes='/categories;jnt:category'])
  - multipleCategories (weakreference,choicelist[nodes='/categories;jnt:category']) multiple
  - multipleSubNodeTypes (string, choicelist[subnodetypes = 'jmix:droppableContent,jnt:file,jnt:folder']) multiple
+ - multipleSubNodeViews (string, choicelist[templates=subnodes,resourceBundle,image,dependentProperties='multipleSubNodeTypes,jcr:title']) multiple nofulltext itemtype = layout 
 
 [jnt:weakreferenceTest] > jnt:content, mix:title
 orderable

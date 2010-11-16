@@ -3,6 +3,7 @@
 <%@include file="/admin/include/header.inc" %>
 <%
     stretcherToOpen = 0; %>
+<script type="text/javascript" src="${pageContext.request.contextPath}/modules/assets/javascript/jquery.min.js"></script>
 <script type="text/javascript">
 <!--
 function testSettings() {
@@ -22,35 +23,38 @@ function testSettings() {
         if (typeof workInProgressOverlay != 'undefined') {
         	workInProgressOverlay.start();
         }
-        jahia.request('${pageContext.request.contextPath}/ajaxaction/subscription', {onSuccess: testSettingsSuccess, onFailure: testSettingsFailure,
-            parameters: {
-                action: 'testEmail',
+        
+    	$.ajax({
+            url: '${pageContext.request.contextPath}/cms/notification/testEmail',
+            type: 'POST',
+            dataType: 'text',
+            cache: false,
+            data: {
                 host: document.jahiaAdmin.host.value,
                 from: document.jahiaAdmin.from.value,
                 to: document.jahiaAdmin.to.value
-            }});
+    		},
+            success: function(data, textStatus) {
+                if (typeof workInProgressOverlay != 'undefined') {
+                    workInProgressOverlay.stop();
+                }
+            	if ("success" == textStatus) {
+                    <fmt:message key="org.jahia.admin.server.ManageServer.testSettings.success" var="msg"/>
+                    alert("${functions:escapeJavaScript(msg)}");
+                } else {
+                	<fmt:message key="org.jahia.admin.server.ManageServer.testSettings.failure" var="msg"/>
+                    alert("${functions:escapeJavaScript(msg)}");
+                }
+            },
+            error: function(xhr, textStatus, errorThrown) {
+                if (typeof workInProgressOverlay != 'undefined') {
+                    workInProgressOverlay.stop();
+                }
+                <fmt:message key="org.jahia.admin.server.ManageServer.testSettings.failure" var="msg"/>
+                alert("${functions:escapeJavaScript(msg)}" + "\n" + xhr.status + " " + xhr.statusText + "\n" + xhr.responseText);
+            }
+        });
     }
-}
-function testSettingsSuccess(text, code, statusText) {
-    if (typeof workInProgressOverlay != 'undefined') {
-        workInProgressOverlay.stop();
-    }
-	if (code == 200) {
-        <fmt:message key="org.jahia.admin.server.ManageServer.testSettings.success" var="msg"/>
-        alert("${functions:escapeJavaScript(msg)}");
-	} else if (code == 400) {
-        alert(text);
-    } else {
-    	<fmt:message key="org.jahia.admin.server.ManageServer.testSettings.failure" var="msg"/>
-        alert("${functions:escapeJavaScript(msg)}" + "\n" + code + " " + statusText + "\n" + text);
-    }
-}
-function testSettingsFailure(text, code, statusText) {
-    if (typeof workInProgressOverlay != 'undefined') {
-        workInProgressOverlay.stop();
-    }
-    <fmt:message key="org.jahia.admin.server.ManageServer.testSettings.failure" var="msg"/>
-    alert("${functions:escapeJavaScript(msg)}" + "\n'" + code + " " + statusText + "\n" + text);
 }
 //-->
 </script>
@@ -115,11 +119,11 @@ function testSettingsFailure(text, code, statusText) {
                                                 <fmt:message key="org.jahia.admin.server.ManageServer.mailServer.label"/>&nbsp;:
                                             </td>
                                             <td>
-                                                <input class="input" type="text" name="host" size="<%=inputSize%>"
+                                                <input class="input" type="text" name="host" size="70"
                                                        maxlength="250"
                                                        value="<c:out value='${jahiaMailSettings.host}'/>"/>
                                                 &nbsp;
-                                                <a href="http://jira.jahia.org/browse/JKB-20" target="_blank"><img src="${pageContext.request.contextPath}/engines/images/about.gif" alt="info"/></a>
+                                                <a href="http://jira.jahia.org/browse/JKB-20" target="_blank" style="cursor: pointer;"><img src="${pageContext.request.contextPath}/engines/images/about.gif" alt="info"  style="cursor: pointer;"/></a>
                                             </td>
                                         </tr>
                                         <tr>
@@ -154,7 +158,6 @@ function testSettingsFailure(text, code, statusText) {
                                                 </select>
                                             </td>
                                         </tr>
-                                        <%--
                                         <tr>
                                             <td colspan="2" align="right">
                                               <span class="dex-PushButton">
@@ -165,7 +168,6 @@ function testSettingsFailure(text, code, statusText) {
 
                                             </td>
                                         </tr>
-                                         --%>
                                     </table>
                                 </form>
                             </div>

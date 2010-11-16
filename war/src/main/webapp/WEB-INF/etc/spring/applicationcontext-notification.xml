@@ -102,5 +102,16 @@
             </bean>
         </property>
     </bean>
-
+    
+    <bean name="notificationMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="urlMap">
+            <map>
+                <entry key="/notification/**">
+					<bean class="org.jahia.bin.Notifications">
+						<property name="mailService" ref="MailService" />
+					</bean>
+                </entry>
+            </map>
+        </property>
+    </bean>
 </beans>

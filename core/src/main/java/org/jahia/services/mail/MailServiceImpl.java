@@ -153,7 +153,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware {
     public String getEndpointUri() {
         if (sendMailEndpointUri == null) {
             StringBuilder uri = new StringBuilder();
-            if (!settings.getHost().startsWith("smtp://") || !settings.getHost().startsWith("smtps://")) {
+            if (!settings.getHost().startsWith("smtp://") && !settings.getHost().startsWith("smtps://")) {
                 uri.append("smtp://");
             }
             uri.append(settings.getHost());
@@ -213,6 +213,11 @@ public class MailServiceImpl extends MailService implements CamelContextAware {
     @Override
     public void sendMessage(String from, String toList, String ccList, String bcclist, String subject, String textBody,
             String htmlBody) {
+        sendMessage(mailEndpointUri, from, toList, ccList, bcclist, subject, textBody, htmlBody);
+    }
+
+    public void sendMessage(String endpointUri, String from, String toList, String ccList, String bcclist, String subject, String textBody,
+            String htmlBody) {
         Map<String, Object> headers = new HashMap<String, Object>();
         headers.put("To", toList);
         if (StringUtils.isEmpty(from)) {
@@ -237,17 +242,17 @@ public class MailServiceImpl extends MailService implements CamelContextAware {
             body = textBody;
         }
         
-        camelContext.createProducerTemplate().sendBodyAndHeaders(mailEndpointUri, body, headers);
+        camelContext.createProducerTemplate().sendBodyAndHeaders(endpointUri, body, headers);
     }
-
+    
     public void setCamelContext(CamelContext camelContext) {
         this.camelContext = camelContext;
     }
 
     /**
-     * Sets the URI of the default mail sanding endpoint.
+     * Sets the URI of the default mail sending endpoint.
      * 
-     * @param mailEndpointUri the URI of the default mail sanding endpoint
+     * @param mailEndpointUri the URI of the default mail sending endpoint
      */
     public void setMailEndpointUri(String mailEndpointUri) {
         this.mailEndpointUri = mailEndpointUri;

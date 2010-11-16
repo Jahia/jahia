@@ -76,7 +76,7 @@ import java.util.zip.ZipInputStream;
  * User: toto
  * Date: Feb 12, 2009
  * Time: 4:49:40 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class TestHelper {
 

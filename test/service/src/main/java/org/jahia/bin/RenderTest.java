@@ -62,7 +62,7 @@ import java.util.Locale;
  * User: loom
  * Date: Mar 14, 2010
  * Time: 1:40:10 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class RenderTest extends TestCase {
 

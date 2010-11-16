@@ -65,7 +65,7 @@ import static org.junit.Assert.*;
  * User: toto
  * Date: Apr 19, 2010
  * Time: 5:03:27 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class FacetedQueryTest {
     private static String DEFAULT_LANGUAGE = "fr";

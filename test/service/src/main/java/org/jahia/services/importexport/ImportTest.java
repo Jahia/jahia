@@ -53,7 +53,7 @@
 // * User: toto
 // * Date: Feb 11, 2009
 // * Time: 3:07:28 PM
-// * To change this template use File | Settings | File Templates.
+// * 
 // */
 //public class ImportTest extends XMLTestCase {
 //

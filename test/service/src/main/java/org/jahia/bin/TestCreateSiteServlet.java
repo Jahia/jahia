@@ -35,7 +35,7 @@ import java.util.Iterator;
  * User: Dorth
  * Date: 9 sept. 2010
  * Time: 15:50:42
- * To change this template use File | Settings | File Templates.
+ * 
  */
 @SuppressWarnings("serial")
 public class TestCreateSiteServlet extends HttpServlet implements Controller, ServletContextAware {

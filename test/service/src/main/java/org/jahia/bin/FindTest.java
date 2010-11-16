@@ -62,7 +62,7 @@ import static org.junit.Assert.*;
  * User: loom
  * Date: Jan 29, 2010
  * Time: 7:18:29 AM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class FindTest {
 

@@ -12,7 +12,7 @@ import org.jahia.test.TestHelper;
  * User: Dorth
  * Date: 14 oct. 2010
  * Time: 14:36:01
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class TagsThisArticle extends SeleneseTestCase {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(TagsThisArticle.class);

@@ -33,7 +33,7 @@ import java.util.Locale;
  * User: loom
  * Date: Aug 20, 2010
  * Time: 3:29:57 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class VFSContentStoreProviderTest {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(VFSContentStoreProviderTest.class);

@@ -42,7 +42,7 @@ import java.util.*;
  * User: ktlili
  * Date: Jan 25, 2010
  * Time: 12:35:43 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class ResourceBundleTest extends TestCase {
 

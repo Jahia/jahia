@@ -46,7 +46,7 @@ import java.util.HashMap;
  * User: hollis
  * Date: 27 oct. 2005
  * Time: 15:21:14
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class JahiaAdminUser {
 

@@ -42,10 +42,10 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaAdminUser;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.data.JahiaData;
+import org.jahia.test.JahiaAdminUser;
 import org.jahia.test.TestHelper;
 
 import java.util.Locale;

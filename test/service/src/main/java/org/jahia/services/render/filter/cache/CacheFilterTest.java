@@ -53,8 +53,8 @@ import org.jahia.services.render.filter.BaseAttributesFilter;
 import org.jahia.services.render.filter.RenderChain;
 import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.usermanager.JahiaAdminUser;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.test.JahiaAdminUser;
 import org.jahia.test.TestHelper;
 
 import java.util.*;

@@ -39,7 +39,7 @@ import org.jahia.params.ParamBean;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaAdminUser;
+import org.jahia.test.JahiaAdminUser;
 import org.jahia.test.SurefireJUnitXMLResultFormatter;
 import org.jahia.exceptions.JahiaException;
 import org.junit.internal.requests.FilterRequest;

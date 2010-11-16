@@ -44,8 +44,8 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.usermanager.JahiaAdminUser;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.test.JahiaAdminUser;
 import org.jahia.test.TestHelper;
 
 /**

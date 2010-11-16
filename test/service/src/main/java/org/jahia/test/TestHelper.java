@@ -44,7 +44,6 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.services.usermanager.JahiaAdminUser;
 import org.jahia.services.usermanager.JahiaUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

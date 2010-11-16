@@ -45,6 +45,7 @@ import org.jahia.services.rbac.RoleIdentity;
 import org.jahia.services.rbac.jcr.RoleBasedAccessControlService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.*;
+import org.jahia.test.JahiaAdminUser;
 import org.jahia.test.TestHelper;
 import org.jbpm.api.JbpmException;
 import org.junit.After;

@@ -35,16 +35,11 @@ package org.jahia.services.render.filter.cache;
 import net.htmlparser.jericho.*;
 import net.sf.ehcache.*;
 import net.sf.ehcache.Element;
-import net.sf.ehcache.constructs.blocking.BlockingCache;
 import net.sf.ehcache.constructs.blocking.LockTimeoutException;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.render.filter.Template;
 import org.slf4j.Logger;
-import org.jahia.bin.Jahia;
-import org.jahia.params.ProcessingContext;
-import org.jahia.pipelines.PipelineException;
 import org.jahia.services.cache.CacheEntry;
-import org.jahia.services.cache.GroupCacheKey;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.render.RenderContext;
@@ -54,9 +49,11 @@ import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.RenderChain;
 import org.jahia.services.render.scripting.Script;
+import org.jahia.tools.jvm.ThreadMonitor;
 import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.RepositoryException;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -74,7 +71,7 @@ import java.util.regex.Pattern;
 public class AggregateCacheFilter extends AbstractFilter {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(AggregateCacheFilter.class);
     private ModuleCacheProvider cacheProvider;
-    private PageGeneratorQueue generatorQueue;
+    private ModuleGeneratorQueue generatorQueue;
 
     public static final Pattern ESI_INCLUDE_STARTTAG_REGEXP = Pattern.compile(
             "<!-- cache:include src=\\\"(.*)\\\" -->");
@@ -85,6 +82,12 @@ public class AggregateCacheFilter extends AbstractFilter {
     public static final Set<String> notCacheableFragment = new HashSet<String>(512);
     private static final String RESOURCES = "resources";
 //    private static final String TEMPLATE = "template";
+    
+    static private ThreadLocal<Set<CountDownLatch>> processingLatches = new ThreadLocal<Set<CountDownLatch>>();
+    static private ThreadLocal<String> acquiredSemaphore = new ThreadLocal<String>();
+    
+    private static long lastThreadDumpTime = 0L;
+    private Byte[] threadDumpCheckLock = new Byte[0];
 
     public static void clearNotCacheableFragmentCache() {
         notCacheableFragment.clear();
@@ -138,13 +141,20 @@ public class AggregateCacheFilter extends AbstractFilter {
         } else {
             if (cacheable) {
                 // Use CountLatch as not found in cache
-                CountDownLatch countDownLatch = avoidParallelProcessingOfSamePage(perUserKey);
+                CountDownLatch countDownLatch = avoidParallelProcessingOfSameModule(perUserKey);
                 if (countDownLatch == null) {
                     element = cache.get(perUserKey);
                     if (element != null && element.getValue() != null) {
                         return returnFromCache(renderContext, resource, debugEnabled, displayCacheInfo, servedFromCache,
                                 key, element, cache, perUserKey);
                     }
+                } else {
+                    Set<CountDownLatch> latches = processingLatches.get();
+                    if (latches == null) {
+                        latches = new HashSet<CountDownLatch>();
+                        processingLatches.set(latches);
+                    }
+                    latches.add(countDownLatch);
                 }
             }
             return null;
@@ -157,7 +167,7 @@ public class AggregateCacheFilter extends AbstractFilter {
         if (debugEnabled) {
             logger.debug("Content retrieved from cache for node with key: " + perUserKey);
         }
-        String cachedContent = (String) ((CacheEntry) element.getValue()).getObject();
+        String cachedContent = (String) ((CacheEntry<?>) element.getValue()).getObject();
         cachedContent = aggregateContent(cache, cachedContent, renderContext);
 
         if (renderContext.getMainResource() == resource) {
@@ -319,8 +329,8 @@ public class AggregateCacheFilter extends AbstractFilter {
                     final Element element = cache.get(mrCacheKey);
                     if (element != null && element.getValue() != null) {
                         logger.debug(cacheKey + " has been found in cache");
-                        final CacheEntry cacheEntry = (CacheEntry) element.getValue();
-                        String content = (String) cacheEntry.getObject();
+                        final CacheEntry<String> cacheEntry = (CacheEntry<String>) element.getValue();
+                        String content = cacheEntry.getObject();
                         if (logger.isDebugEnabled()) {
                             logger.debug("Document replace from : "+segment.getStartTagType()+" to "+segment.getElement().getEndTag().getEndTagType()+ " with "+content);
                         }
@@ -402,7 +412,7 @@ public class AggregateCacheFilter extends AbstractFilter {
         this.cacheProvider = cacheProvider;
     }
 
-    public void setGeneratorQueue(PageGeneratorQueue generatorQueue) {
+    public void setGeneratorQueue(ModuleGeneratorQueue generatorQueue) {
         this.generatorQueue = generatorQueue;
     }
 
@@ -500,33 +510,60 @@ public class AggregateCacheFilter extends AbstractFilter {
         String key = cacheProvider.getKeyGenerator().generate(resource, renderContext);
         String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername()).replaceAll("_mr_",
                 renderContext.getMainResource().getNode().getPath() + renderContext.getMainResource().getTemplate());
-        Map<String, CountDownLatch> countDownLatchMap = generatorQueue.getGeneratingPages();
-        synchronized (countDownLatchMap) {
-            CountDownLatch countDownLatch = countDownLatchMap.get(perUserKey);
-            if (countDownLatch != null) {
-                generatorQueue.getGeneratingPages().remove(perUserKey);
-                countDownLatch.countDown();
+        
+        if (perUserKey.equals(acquiredSemaphore.get())) {
+            generatorQueue.getAvailableProcessings().release();
+            acquiredSemaphore.set(null);
+        }
+        
+        Set<CountDownLatch> latches = processingLatches.get();
+        Map<String, CountDownLatch> countDownLatchMap = generatorQueue.getGeneratingModules();
+        CountDownLatch latch = countDownLatchMap.get(perUserKey);
+        if (latches != null && latches.contains(latch)) {
+            latch.countDown();
+            synchronized (countDownLatchMap) {
+                latches.remove(countDownLatchMap.remove(perUserKey));
             }
         }
     }
 
-    private CountDownLatch avoidParallelProcessingOfSamePage(String key) throws Exception {
+    private CountDownLatch avoidParallelProcessingOfSameModule(String key) throws Exception {
         CountDownLatch latch = null;
         boolean mustWait = true;
-        Map<String, CountDownLatch> generatingPages = generatorQueue.getGeneratingPages();
-        synchronized (generatingPages) {
-            latch = (CountDownLatch) generatingPages.get(key);
+        boolean semaphoreAcquired = false;
+        Map<String, CountDownLatch> generatingModules = generatorQueue.getGeneratingModules();
+        if (generatingModules.get(key) == null && acquiredSemaphore.get() == null) {
+            if (!generatorQueue.getAvailableProcessings().tryAcquire(generatorQueue.getModuleGenerationWaitTime(),
+                    TimeUnit.MILLISECONDS)) {
+                manageThreadDump();
+                throw new Exception(
+                        "Module generation takes too long due to maximum parallel processings reached ("
+                                + generatorQueue.getMaxModulesToGenerateInParallel() + ") - " + key);
+            } else {
+                acquiredSemaphore.set(key);
+                semaphoreAcquired = true;
+            }
+        }
+        synchronized (generatingModules) {
+            latch = (CountDownLatch) generatingModules.get(key);
             if (latch == null) {
                 latch = new CountDownLatch(1);
-                generatingPages.put(key, latch);
+                generatingModules.put(key, latch);
                 mustWait = false;
             }
         }
         if (mustWait) {
+            if (semaphoreAcquired) {
+                // another thread wanted the same module and got the latch first, so release the semaphore immediately as we must wait 
+                generatorQueue.getAvailableProcessings().release();
+                acquiredSemaphore.set(null);                
+            }
             try {
                 if (!latch.await(generatorQueue
-                        .getPageGenerationWaitTime(), TimeUnit.MILLISECONDS)) {
-                    throw new Exception("Server is overloaded");
+                        .getModuleGenerationWaitTime(), TimeUnit.MILLISECONDS)) {
+                    throw new Exception(
+                            "Module generation takes too long due to module not generated fast enough (>"
+                                    + generatorQueue.getModuleGenerationWaitTime() + " ms)- " + key);
                 }
                 latch = null;
             } catch (InterruptedException ie) {
@@ -536,4 +573,23 @@ public class AggregateCacheFilter extends AbstractFilter {
         }
         return latch;
     }
+    
+    private void manageThreadDump() {
+        boolean createDump = false;
+        long minInterval = generatorQueue
+                .getMinimumIntervalAfterLastAutoThreadDump();
+        if (minInterval > -1) {
+            long now = System.currentTimeMillis();
+            synchronized (threadDumpCheckLock) {
+                if (now > (lastThreadDumpTime + minInterval)) {
+                    createDump = true;
+                    lastThreadDumpTime = now;
+                }
+            }
+        }
+        if (createDump) {
+            ThreadMonitor tm = new ThreadMonitor();
+            tm.dumpThreadInfo();
+        }
+    }   
 }

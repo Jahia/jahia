@@ -59,7 +59,7 @@ import java.util.*;
 public class CacheFilter extends AbstractFilter {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(CacheFilter.class);
     private ModuleCacheProvider cacheProvider;
-    private PageGeneratorQueue generatorQueue;
+    private ModuleGeneratorQueue generatorQueue;
 
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         if (!(resource.getNode() instanceof JCRFrozenNodeAsRegular)) {
@@ -216,7 +216,7 @@ public class CacheFilter extends AbstractFilter {
         this.cacheProvider = cacheProvider;
     }
 
-    public void setGeneratorQueue(PageGeneratorQueue generatorQueue) {
+    public void setGeneratorQueue(ModuleGeneratorQueue generatorQueue) {
         this.generatorQueue = generatorQueue;
     }
     

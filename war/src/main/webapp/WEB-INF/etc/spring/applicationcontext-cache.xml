@@ -101,9 +101,10 @@ when we flush this entry we will flush the whole cache-->
         </property>
     </bean>-->
 
-    <bean id="pageGeneratorQueue" class="org.jahia.services.render.filter.cache.PageGeneratorQueue">
-        <property name="pageGenerationWaitTime" value="5000"/>
-        <property name="pageGenerationWaitTimeOnStartup" value="30000"/>
+    <bean id="moduleGeneratorQueue" class="org.jahia.services.render.filter.cache.ModuleGeneratorQueue">
+        <property name="maxModulesToGenerateInParallel" value="50"/>
+        <property name="moduleGenerationWaitTime" value="10000"/>
+        <property name="minimumIntervalAfterLastAutoThreadDump" value="60000"/>
     </bean>
 
     <bean id="cacheFilter" class="org.jahia.services.render.filter.cache.AggregateCacheFilter">
@@ -112,7 +113,7 @@ when we flush this entry we will flush the whole cache-->
     	<property name="skipOnTemplateTypes" value="json"/>
         <property name="skipOnConfiguration" value="include,wrapper,option"/>
         <property name="applyOnModes" value="live"/>
-        <property name="generatorQueue" ref="pageGeneratorQueue"/>
+        <property name="generatorQueue" ref="moduleGeneratorQueue"/>
     </bean>
     <bean id="mainResourceCacheFilter" class="org.jahia.services.render.filter.cache.CacheFilter" parent="cacheFilter">
         <property name="applyOnMainResource" value="true"/>

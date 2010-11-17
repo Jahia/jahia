@@ -32,9 +32,6 @@
  */
 package org.jahia.services.render.filter.cache;
 
-import org.slf4j.Logger;
-import org.jahia.services.cache.GroupCacheKey;
-import org.jahia.settings.SettingsBean;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.util.HashMap;
@@ -50,26 +47,20 @@ import java.util.concurrent.Semaphore;
  * @since : JAHIA 6.1
  *        Created : 12 oct. 2010
  */
-public class PageGeneratorQueue implements InitializingBean {
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(PageGeneratorQueue.class);
-    private Map<String,String> notCacheablePage = new ConcurrentHashMap<String, String>(2503);
-    private Map<String, CountDownLatch> generatingPages;
-    private int maxPagesToGenerateInParallel;
-    private long pageGenerationWaitTime ;
-    private long pageGenerationWaitTimeOnStartup ;
+public class ModuleGeneratorQueue implements InitializingBean {
+    private Map<String,String> notCacheableModule = new ConcurrentHashMap<String, String>(2503);
+    private Map<String, CountDownLatch> generatingModules;
+    private int maxModulesToGenerateInParallel = 50;
+    private long moduleGenerationWaitTime = 5000;
     private Semaphore availableProcessings = null;
-    private CountDownLatch firstRequestLatch = null;
+    private long minimumIntervalAfterLastAutoThreadDump = 60000; // in milliseconds    
 
-    public Map<String, String> getNotCacheablePage() {
-        return notCacheablePage;
+    public Map<String, String> getNotCacheableModule() {
+        return notCacheableModule;
     }
 
-    public Map<String, CountDownLatch> getGeneratingPages() {
-        return generatingPages;
-    }
-
-    public CountDownLatch getFirstRequestLatch() {
-        return firstRequestLatch;
+    public Map<String, CountDownLatch> getGeneratingModules() {
+        return generatingModules;
     }
 
     public Semaphore getAvailableProcessings() {
@@ -78,24 +69,17 @@ public class PageGeneratorQueue implements InitializingBean {
         synchronized (this) {
             if (availableProcessings != null)
                 return availableProcessings;
+            availableProcessings = new Semaphore(getMaxModulesToGenerateInParallel(), true);            
         }
         return availableProcessings;
     }
 
-    public int getMaxPagesToGenerateInParallel() {
-        return maxPagesToGenerateInParallel;
+    public int getMaxModulesToGenerateInParallel() {
+        return maxModulesToGenerateInParallel;
     }
 
-    public long getPageGenerationWaitTime() {
-        return pageGenerationWaitTime;
-    }
-
-    public long getPageGenerationWaitTimeOnStartup() {
-        return pageGenerationWaitTimeOnStartup;
-    }
-
-    public void setFirstRequestLatch(CountDownLatch firstRequestLatch) {
-        this.firstRequestLatch = firstRequestLatch;
+    public long getModuleGenerationWaitTime() {
+        return moduleGenerationWaitTime;
     }
 
     /**
@@ -109,18 +93,22 @@ public class PageGeneratorQueue implements InitializingBean {
      *                   as failure to set an essential property) or if initialization fails.
      */
     public void afterPropertiesSet() throws Exception {
-        generatingPages = new HashMap<String, CountDownLatch>(maxPagesToGenerateInParallel);
+        generatingModules = new HashMap<String, CountDownLatch>(maxModulesToGenerateInParallel);
     }
 
-    public void setMaxPagesToGenerateInParallel(int maxPagesToGenerateInParallel) {
-        this.maxPagesToGenerateInParallel = maxPagesToGenerateInParallel;
+    public void setMaxModulesToGenerateInParallel(int maxModulesToGenerateInParallel) {
+        this.maxModulesToGenerateInParallel = maxModulesToGenerateInParallel;
     }
 
-    public void setPageGenerationWaitTime(long pageGenerationWaitTime) {
-        this.pageGenerationWaitTime = pageGenerationWaitTime;
+    public void setModuleGenerationWaitTime(long moduleGenerationWaitTime) {
+        this.moduleGenerationWaitTime = moduleGenerationWaitTime;
     }
 
-    public void setPageGenerationWaitTimeOnStartup(long pageGenerationWaitTimeOnStartup) {
-        this.pageGenerationWaitTimeOnStartup = pageGenerationWaitTimeOnStartup;
+    public void setMinimumIntervalAfterLastAutoThreadDump(long minimumIntervalAfterLastAutoThreadDump) {
+        this.minimumIntervalAfterLastAutoThreadDump = minimumIntervalAfterLastAutoThreadDump;
+    }    
+    
+    public long getMinimumIntervalAfterLastAutoThreadDump() {
+        return minimumIntervalAfterLastAutoThreadDump;
     }
 }

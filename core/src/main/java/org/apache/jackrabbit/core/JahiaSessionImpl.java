@@ -64,17 +64,11 @@ public class JahiaSessionImpl extends XASessionImpl {
         jahiaAttributes.put(attributeName, attributeValue);
     }
 
-    /**
-     * Returns the <code>AccessManager</code> associated with this session.
-     *
-     * @return the <code>AccessManager</code> associated with this session
-     */
-    @Override
-    public AccessManager getAccessManager() {
-        JahiaAccessManager accessManager = (JahiaAccessManager) super.getAccessManager();
+    public void toggleThisSessionAsAliased() {
+        setJahiaAttributes("isAliasedUser", Boolean.TRUE);
+        JahiaAccessManager accessManager = (JahiaAccessManager)context.getAccessManager();
         if (jahiaAttributes.containsKey("isAliasedUser") && (Boolean) jahiaAttributes.get("isAliasedUser")) {
             accessManager.setAliased(true);
         }
-        return accessManager;
     }
 }

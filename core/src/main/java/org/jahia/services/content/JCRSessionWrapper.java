@@ -184,7 +184,7 @@ public class JCRSessionWrapper implements Session {
                 if (session instanceof JahiaSessionImpl && getUser() != null &&
                         sessionFactory.getCurrentAliasedUser() != null &&
                         sessionFactory.getCurrentAliasedUser().equals(getUser())) {
-                    ((JahiaSessionImpl) session).setJahiaAttributes("isAliasedUser", Boolean.TRUE);
+                    ((JahiaSessionImpl) session).toggleThisSessionAsAliased();
                 }
                 Node n = session.getNodeByIdentifier(uuid);
                 JCRNodeWrapper wrapper = provider.getNodeWrapper(n, this);
@@ -263,7 +263,7 @@ public class JCRSessionWrapper implements Session {
                 if (session instanceof JahiaSessionImpl && getUser() != null &&
                         sessionFactory.getCurrentAliasedUser() != null &&
                         sessionFactory.getCurrentAliasedUser().equals(getUser())) {
-                    ((JahiaSessionImpl) session).setJahiaAttributes("isAliasedUser", Boolean.TRUE);
+                    ((JahiaSessionImpl) session).toggleThisSessionAsAliased();
                 }
                 Item item = session.getItem(provider.getRelativeRoot() + localPath);
                 if (item.isNode()) {

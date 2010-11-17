@@ -25,7 +25,7 @@
     <title><fmt:message key="org.jahia.admin.jahiaAdministration.label"/></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-    <link rel="stylesheet" href="<%=contextPath%>/css/andromeda.css" type="text/css" />
+    <link rel="stylesheet" href="<%=contextPath%>/css/jahia65.css" type="text/css" />
     <script type="text/javascript" src="<%=contextPath%>/javascript/jahia.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/javascript/selectbox.js"></script>
 <script type="text/javascript">

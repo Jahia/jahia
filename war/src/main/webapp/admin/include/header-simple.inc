@@ -56,7 +56,7 @@
     <title><fmt:message key="org.jahia.admin.jahiaAdministration.label"/></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <internal:gwtInit/>
-    <link rel="stylesheet" href="<%=contextPath%>/css/andromeda.css" type="text/css" />
+    <link rel="stylesheet" href="<%=contextPath%>/css/jahia65.css" type="text/css" />
     <!--[if lte IE 6]>
         <style type="text/css" media="all">@import "<%=contextPath%>/css/andromeda_ie6.css";</style>
             <style type="text/css">

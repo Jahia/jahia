@@ -11,7 +11,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta name="robots" content="noindex, nofollow"/>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/andromeda.css" type="text/css"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/jahia65.css" type="text/css"/>
     <title><fmt:message key="label.error.404.title"/></title>
 
 </head>

@@ -14,7 +14,7 @@
 <% pageContext.setAttribute("devMode", Boolean.valueOf(SettingsBean.getInstance().isDevelopmentMode())); %>
 <head>
     <meta name="robots" content="noindex, nofollow"/>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/andromeda.css" type="text/css"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/jahia65.css" type="text/css"/>
     <title><fmt:message key="label.error"/></title>
 
 </head>

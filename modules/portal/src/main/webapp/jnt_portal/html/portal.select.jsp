@@ -3,7 +3,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <template:addResources type="css" resources="portal.css"/>
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.core.min.js,inettuts.js"/>
-<jcr:node path="/shared/portalComponents" var="widgets"/>
+<jcr:node path="${param['path']}" var="widgets"/>
 <div class="content clearfix">
 <div class="left">
 <h3>Corporate Portal</h3>

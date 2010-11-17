@@ -23,4 +23,5 @@
 </c:if>
 <c:if test="${not writeable}">
     Portal is only available in live
+    <template:area path="portalComponents"/>
 </c:if>

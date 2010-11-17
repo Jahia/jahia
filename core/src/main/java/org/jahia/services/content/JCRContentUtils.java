@@ -351,9 +351,10 @@ public final class JCRContentUtils {
      *
      * @param item the item to get the label for
      * @param locale current locale
+     * @param nodeTypeForSearchingLabel
      * @return the node or property display name depending on the locale
      */
-    public static String getDisplayLabel(Object item, Locale locale) {
+    public static String getDisplayLabel(Object item, Locale locale, ExtendedNodeType nodeTypeForSearchingLabel) {
         if (item != null) {
 
             try {
@@ -363,7 +364,7 @@ public final class JCRContentUtils {
                     PropertyDefinition propertyDefintion = property.getDefinition();
                     if (propertyDefintion != null && propertyDefintion instanceof ExtendedPropertyDefinition) {
                         ExtendedPropertyDefinition itemDef = (ExtendedPropertyDefinition) propertyDefintion;
-                        return itemDef.getLabel(locale);
+                        return itemDef.getLabel(locale,nodeTypeForSearchingLabel);
                     } else {
                         logger.error("PropertyDefinition doesn't implement 'org.jahia.services.content.nodetypes.ExtendedPropertyDefinition'");
                     }
@@ -372,7 +373,7 @@ public final class JCRContentUtils {
                 else if (item instanceof PropertyDefinition) {
                     if (item instanceof ExtendedPropertyDefinition) {
                         ExtendedPropertyDefinition itemDef = (ExtendedPropertyDefinition) item;
-                        return itemDef.getLabel(locale);
+                        return itemDef.getLabel(locale,nodeTypeForSearchingLabel);
                     } else {
                         logger.error("PropertyDefinition doesn't implement 'org.jahia.services.content.nodetypes.ExtendedPropertyDefinition'");
                     }

@@ -203,7 +203,7 @@ public class ContentDefinitionHelper {
                     item = prop;
                 }
                 item.setAutoCreated(overrideDef.isAutoCreated());
-                item.setLabel(def.getLabel(uiLocale));
+                item.setLabel(def.getLabel(uiLocale,nodeType));
                 item.setMandatory(overrideDef.isMandatory());
                 item.setHidden(overrideDef.isHidden());
                 item.setName(overrideDef.getName());
@@ -218,6 +218,7 @@ public class ContentDefinitionHelper {
                 item.setSelector(overrideDef.getSelector());
                 item.setSelectorOptions(new HashMap<String, String>(overrideDef.getSelectorOptions()));
                 item.setDataType(overrideDef.getItemType());
+                item.setTooltip(def.getTooltip(uiLocale, nodeType));
                 if (def.getDeclaringNodeType().getName().equals(nodeType.getName())) {
                     items.add(item);
                 } else {

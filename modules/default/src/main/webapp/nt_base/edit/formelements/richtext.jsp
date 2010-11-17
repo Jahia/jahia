@@ -21,7 +21,7 @@
                        resources="${url.context}/gwt/resources/${url.ckEditor}/ckeditor.js"/>
 <template:addResources type="javascript"
                        resources="${url.context}/gwt/resources/${url.ckEditor}/adapters/jquery.js"/>
-<label for="ckeditor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">${jcr:label(propertyDefinition,renderContext.mainResourceLocale)}</label>
+<label for="ckeditor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelInNodeType(propertyDefinition,renderContext.mainResourceLocale,type)}</label>
 <textarea rows="50" cols="40" name="${propertyDefinition.name}"
           id="newckeditor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" class="newContentCkeditorContribute"></textarea>
 <script>

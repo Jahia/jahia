@@ -74,7 +74,7 @@ public class FacetsChoiceListInitializers implements ModuleChoiceListInitializer
                 for (PropertyDefinition def : nt.getPropertyDefinitions()) {
                     ExtendedPropertyDefinition ep = (ExtendedPropertyDefinition) def;
                     if (ep.isFacetable()) {
-                        String displayName = ep.getLabel(locale);
+                        String displayName = ep.getLabel(locale,nt);
                         displayName += nt.isMixin()?"":" (" + nt.getLabel(locale) + ")";
                         String value = ep.getDeclaringNodeType().getName() + ";" + ep.getName();
                         propertyNames.add(new ChoiceListValue(displayName, new HashMap<String, Object>(),

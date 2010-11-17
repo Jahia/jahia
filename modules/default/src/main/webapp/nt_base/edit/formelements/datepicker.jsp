@@ -25,7 +25,7 @@
 <c:if test="${not empty workflowTaskFormTask}">
     <c:set var="now" value="${workflowTaskFormTask.variables[propertyDefinition.name][0].valueAsDate}"/>
 </c:if>
-<label class="left" for="datePicker${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">${jcr:label(propertyDefinition,renderContext.mainResourceLocale)}</label>
+<label class="left" for="datePicker${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelInNodeType(propertyDefinition,renderContext.mainResourceLocale,type)}</label>
 <input type="hidden" name="${propertyDefinition.name}" id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"/>
 <input type="text" id="datePicker${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" readonly="readonly"
        value="<c:if test="${not empty now}"><fmt:formatDate value="${now}" pattern="yyyy-MM-dd HH:mm:ss"/></c:if>"/>

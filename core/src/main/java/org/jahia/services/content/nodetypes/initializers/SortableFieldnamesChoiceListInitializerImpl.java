@@ -154,7 +154,7 @@ public class SortableFieldnamesChoiceListInitializerImpl extends AbstractChoiceL
 
     public String getStringRendering(RenderContext context, JCRPropertyWrapper propertyWrapper)
             throws RepositoryException {
-        return JCRContentUtils.getDisplayLabel(propertyWrapper, context.getMainResource().getLocale());
+        return JCRContentUtils.getDisplayLabel(propertyWrapper, context.getMainResource().getLocale(), propertyWrapper.getParent().getPrimaryNodeType());
     }
 
     public void setExcludedNodeTypes(Set<String> excludedNodeTypes) {

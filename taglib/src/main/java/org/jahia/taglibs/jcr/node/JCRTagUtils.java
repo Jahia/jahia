@@ -35,23 +35,18 @@ package org.jahia.taglibs.jcr.node;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.Text;
+import org.jahia.services.content.nodetypes.*;
 import org.slf4j.Logger;
-import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
-import org.jahia.services.content.nodetypes.ConstraintsHelper;
-import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.*;
-import javax.jcr.security.Privilege;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -76,7 +71,7 @@ public class JCRTagUtils {
      * @return the node or property display name depending on the locale
      */
     public static String label(Object nodeObject, Locale locale) {
-        return JCRContentUtils.getDisplayLabel(nodeObject, locale);
+        return JCRContentUtils.getDisplayLabel(nodeObject, locale, null);
     }
 
     /**
@@ -88,6 +83,10 @@ public class JCRTagUtils {
      */
     public static String label(Object nodeObject, String locale) {
         return label(nodeObject, LanguageCodeConverters.languageCodeToLocale(locale));
+    }
+
+    public static String label(ExtendedPropertyDefinition propertyDefinition, String locale, ExtendedNodeType nodeType) {
+        return JCRContentUtils.getDisplayLabel(propertyDefinition, LanguageCodeConverters.languageCodeToLocale(locale),nodeType);
     }
 
     /**

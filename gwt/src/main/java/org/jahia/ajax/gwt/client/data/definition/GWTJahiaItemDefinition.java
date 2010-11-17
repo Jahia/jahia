@@ -60,6 +60,7 @@ public class GWTJahiaItemDefinition implements Serializable {
     private Map<String,String> selectorOptions = new HashMap<String,String>();
     public static final String CONTENT = "content";
     public static final String LAYOUT = "layout";
+    private String tooltip;
 
     public GWTJahiaItemDefinition() {
     }
@@ -162,5 +163,13 @@ public class GWTJahiaItemDefinition implements Serializable {
 
     public void setOverrideDeclaringNodeType(String overrideDeclaringNodeType) {
         this.overrideDeclaringNodeType = overrideDeclaringNodeType;
+    }
+
+    public void setTooltip(String tooltip) {
+        this.tooltip = tooltip;
+    }
+
+    public String getTooltip() {
+        return tooltip;
     }
 }

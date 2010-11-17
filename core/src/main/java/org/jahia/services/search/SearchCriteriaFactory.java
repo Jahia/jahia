@@ -172,7 +172,7 @@ public class SearchCriteriaFactory {
         }
 
         NodePropertyDescriptor descriptor = new NodePropertyDescriptor(itemDef.getName(), itemDef
-                .getLabel(locale != null ? locale : Locale.ENGLISH), type);
+                .getLabel(locale != null ? locale : Locale.ENGLISH, nodeType), type);
 
         descriptor.setMultiple(propDef.isMultiple());
         if (propDef.getValueConstraints().length > 0) {

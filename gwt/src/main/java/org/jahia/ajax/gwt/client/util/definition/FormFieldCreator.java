@@ -244,6 +244,9 @@ public class FormFieldCreator {
         }
         field.setName(definition.getName());
         field.setFieldLabel(definition.getLabel());
+        if(!"".equals(definition.getTooltip())) {
+            field.setToolTip(definition.getTooltip());
+        }
         field.setReadOnly(field.isReadOnly() || definition.isProtected());
         if (field instanceof TextField) {
             TextField<?> tField = (TextField<?>) field;

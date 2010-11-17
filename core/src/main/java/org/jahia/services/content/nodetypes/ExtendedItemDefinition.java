@@ -64,6 +64,8 @@ public class ExtendedItemDefinition implements ItemDefinition {
     protected int selector = 0;
     private Map<String,String> selectorOptions = new ConcurrentHashMap<String,String>();
     private Map<Locale, String> labels = new ConcurrentHashMap<Locale, String>(1);
+    private Map<Locale, Map<String,String>> labelsByNodeType = new ConcurrentHashMap<Locale, Map<String, String>>(1);
+    private Map<Locale, Map<String,String>> tooltipsByNodeType = new ConcurrentHashMap<Locale, Map<String, String>>(1);
     private boolean override = false;
 
     public ExtendedNodeType getDeclaringNodeType() {
@@ -171,7 +173,14 @@ public class ExtendedItemDefinition implements ItemDefinition {
     }
 
     public String getResourceBundleKey() {
-        return (getDeclaringNodeType().getName() + "." + getName()).replace(':', '_');
+        return getResourceBundleKey(getDeclaringNodeType());
+    }
+
+    public String getResourceBundleKey(ExtendedNodeType nodeType) {
+        if(nodeType==null)
+            return (getDeclaringNodeType().getName() + "." + getName()).replace(':', '_');
+        else
+            return (nodeType.getName() + "." + getName()).replace(':', '_');
     }
 
     public String getLabel(Locale locale) {
@@ -182,6 +191,47 @@ public class ExtendedItemDefinition implements ItemDefinition {
                     .getInstance(Thread.currentThread().getContextClassLoader(), null)).getString(
                     getResourceBundleKey(), getName().replace(':', '_'));
             labels.put(locale, label);
+        }
+        return label;
+    }
+
+    public String getLabel(Locale locale,ExtendedNodeType nodeType) {
+        if(nodeType==null) {
+            return getLabel(locale);
+        }
+        Map<String, String> labelNodeType = labelsByNodeType.get(locale);
+        if (labelNodeType == null) {
+            labelNodeType = new HashMap<String, String>();
+            labelsByNodeType.put(locale,labelNodeType);
+        }
+        String label = labelNodeType.get(nodeType.getName());
+        if(label==null) {
+            JahiaTemplatesPackage aPackage = nodeType.getTemplatePackage();
+            label = new JahiaResourceBundle(nodeType.getResourceBundleId(), locale, aPackage!=null ? aPackage.getName(): null, JahiaTemplatesRBLoader
+                    .getInstance(Thread.currentThread().getContextClassLoader(), null)).getString(
+                    getResourceBundleKey(nodeType), getLabel(locale));
+            labelNodeType.put(nodeType.getName(), label);
+        }
+        return label;
+    }
+
+    public String getTooltip(Locale locale,ExtendedNodeType extendedNodeType) {
+        ExtendedNodeType nodeType = extendedNodeType;
+        if(nodeType==null) {
+            nodeType = getDeclaringNodeType();
+        }
+        Map<String, String> labelNodeType = tooltipsByNodeType.get(locale);
+        if (labelNodeType == null) {
+            labelNodeType = new HashMap<String, String>();
+            tooltipsByNodeType.put(locale,labelNodeType);
+        }
+        String label = labelNodeType.get(nodeType.getName());
+        if(label==null) {
+            JahiaTemplatesPackage aPackage = nodeType.getTemplatePackage();
+            label = new JahiaResourceBundle(nodeType.getResourceBundleId(), locale, aPackage!=null ? aPackage.getName(): null, JahiaTemplatesRBLoader
+                    .getInstance(Thread.currentThread().getContextClassLoader(), null)).getString(
+                    getResourceBundleKey(nodeType)+".ui.tooltip", "");
+            labelNodeType.put(nodeType.getName(), label);
         }
         return label;
     }

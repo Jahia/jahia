@@ -951,7 +951,7 @@ public class ExtendedNodeType implements NodeType {
                         }
 
                         public boolean isMandatory() {
-                            return def.isMandatory();
+                            return false;
                         }
 
                         public int getOnParentVersion() {
@@ -1008,7 +1008,7 @@ public class ExtendedNodeType implements NodeType {
                         }
 
                         public boolean isMandatory() {
-                            return !def.isAutoCreated() && def.isMandatory();
+                            return false;
                         }
 
                         public int getOnParentVersion() {

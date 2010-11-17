@@ -36,6 +36,7 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheFactory;
 
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
@@ -124,6 +125,8 @@ public class FilesCacheListener extends DefaultEventListener {
                         return null;
                     }
                 });
+            } catch (PathNotFoundException e) {
+                logger.debug("Path not found", e);
             } catch (RepositoryException e) {
                 logger.error("Error while accessing repository", e);
             }

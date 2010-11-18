@@ -39,9 +39,11 @@ import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.Field;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.FlowData;
+import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaFieldInitializer;
@@ -50,6 +52,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
@@ -83,11 +86,12 @@ public class LangPropertiesEditor extends LayoutContainer {
     private Map<String, GWTJahiaNodeProperty> properties;
     private GWTJahiaNode node;
     private ComboBox<GWTJahiaLanguage> languageSwitcher;
-    private VerticalPanel mainPanel;
+    private LayoutContainer mainPanel;
     private boolean editable = true;
     private GWTJahiaLanguage displayedLocale = null;
 
-    public LangPropertiesEditor(GWTJahiaNode node, List<String> dataType, boolean editable) {
+    public LangPropertiesEditor(GWTJahiaNode node, List<String> dataType, boolean editable,
+                                GWTJahiaLanguage displayedLanguage) {
         this.node = node;
         this.dataType = dataType;
         langPropertiesEditorMap = new HashMap<String, PropertiesEditor>();
@@ -95,18 +99,22 @@ public class LangPropertiesEditor extends LayoutContainer {
 
         setScrollMode(Style.Scroll.AUTOY);
         setBorders(false);
-        mainPanel = new VerticalPanel();
-        mainPanel.setBorders(false);
+        setLayout(new FitLayout());
+        mainPanel = new LayoutContainer();
+        mainPanel.setBorders(true);
 
-
+        if(!editable) {
+            final Label label = new Label(Messages.getWithArgs("label.edit.engine.heading.read.only", "Read {0} ({1})",
+                    new String[]{node.getName(), node.getNodeTypes().get(0)}));
+            label.setStyleAttribute("font-weight","bold");
+            mainPanel.add(label,new FlowData(10));
+        }
         // add switching form
         languageSwitcher = createLanguageSwitcher();
-        mainPanel.add(languageSwitcher);
-
-        add(mainPanel);
-
+        mainPanel.add(languageSwitcher,new FlowData(10));
         // update node info
-        loadEngine();
+        loadEngine(displayedLanguage);
+        add(mainPanel);
     }
 
 
@@ -266,8 +274,9 @@ public class LangPropertiesEditor extends LayoutContainer {
     }
 
     /**
+     * @param displayedLanguage
      */
-    private void loadEngine() {
+    private void loadEngine(final GWTJahiaLanguage displayedLanguage) {
         contentService.initializeEditEngine(node.getPath(),false, new BaseAsyncCallback<GWTJahiaEditEngineInitBean>() {
             public void onSuccess(GWTJahiaEditEngineInitBean result) {
                 node = result.getNode();
@@ -285,7 +294,14 @@ public class LangPropertiesEditor extends LayoutContainer {
 
                 mixin = result.getMixin();
                 initializersValues = result.getInitializersValues();
-                updatePropertiesComponent(null);
+                if(displayedLanguage!=null) {
+                    List<GWTJahiaLanguage> selected = new ArrayList<GWTJahiaLanguage>();
+                    selected.add(displayedLanguage);
+                    languageSwitcher.setSelection(selected);
+                    updateNodeInfo(displayedLanguage.getLanguage());
+                } else {
+                    updatePropertiesComponent(null);
+                }
             }
 
             public void onApplicationFailure(Throwable throwable) {

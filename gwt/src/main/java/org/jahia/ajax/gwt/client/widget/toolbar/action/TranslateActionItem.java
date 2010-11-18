@@ -34,7 +34,6 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.contentengine.TranslateContentEngine;
 
@@ -54,7 +53,7 @@ public class TranslateActionItem extends BaseActionItem {
             public void onSuccess() {
                 LinkerSelectionContext lh = linker.getSelectionContext();
                 if (lh.getSingleSelection() != null) {
-                    new TranslateContentEngine(lh.getSingleSelection(), linker).show();
+                    new TranslateContentEngine(lh.getSingleSelection(), linker, null, null).show();
                 }
             }
         });

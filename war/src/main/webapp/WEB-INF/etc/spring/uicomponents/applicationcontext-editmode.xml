@@ -80,7 +80,7 @@
                                     <ref bean="Toolbar.Item.Cut"/>
                                     <ref bean="Toolbar.Item.Paste"/>
                                     <ref bean="Toolbar.Item.PasteReference"/>
-                                    <ref bean="Toolbar.Item.Translate"/>
+                                    <ref bean="Toolbar.Item.TranslateMenu"/>
                                     <ref bean="Toolbar.Item.Separator"/>
                                     <ref bean="Toolbar.Item.TemplateExport"/>
                                     <ref bean="Toolbar.Item.Import"/>
@@ -141,7 +141,7 @@
                         <ref bean="Toolbar.Item.Cut"/>
                         <ref bean="Toolbar.Item.Paste"/>
                         <ref bean="Toolbar.Item.PasteReference"/>
-                        <ref bean="Toolbar.Item.Translate"/>
+                        <ref bean="Toolbar.Item.TranslateMenu"/>
                         <ref bean="Toolbar.Item.TemplateExport"/>
                         <ref bean="Toolbar.Item.Import"/>
                         <ref bean="Toolbar.Item.Lock"/>
@@ -353,7 +353,7 @@
                                     <ref bean="Toolbar.Item.Cut"/>
                                     <ref bean="Toolbar.Item.Paste"/>
                                     <ref bean="Toolbar.Item.PasteReference"/>
-                                    <ref bean="Toolbar.Item.Translate"/>
+                                    <ref bean="Toolbar.Item.TranslateMenu"/>
                                     <ref bean="Toolbar.Item.Export"/>
                                     <ref bean="Toolbar.Item.Import"/>
                                     <ref bean="Toolbar.Item.Lock"/>
@@ -601,7 +601,7 @@
                                     <ref bean="Toolbar.Item.Cut"/>
                                     <ref bean="Toolbar.Item.Paste"/>
                                     <ref bean="Toolbar.Item.PasteReference"/>
-                                    <ref bean="Toolbar.Item.Translate"/>
+                                    <ref bean="Toolbar.Item.TranslateMenu"/>
                                     <ref bean="Toolbar.Item.Separator"/>
                                     <ref bean="Toolbar.Item.Export"/>
                                     <ref bean="Toolbar.Item.Import"/>
@@ -685,7 +685,7 @@
                         <ref bean="Toolbar.Item.Cut"/>
                         <ref bean="Toolbar.Item.Paste"/>
                         <ref bean="Toolbar.Item.PasteReference"/>
-                        <ref bean="Toolbar.Item.Translate"/>
+                        <ref bean="Toolbar.Item.TranslateMenu"/>
                         <ref bean="Toolbar.Item.Export"/>
                         <ref bean="Toolbar.Item.Import"/>
                         <ref bean="Toolbar.Item.Lock"/>
@@ -784,7 +784,7 @@
                                     <ref bean="Toolbar.Item.Cut"/>
                                     <ref bean="Toolbar.Item.Paste"/>
                                     <ref bean="Toolbar.Item.PasteReference"/>
-                                    <ref bean="Toolbar.Item.Translate"/>
+                                    <ref bean="Toolbar.Item.TranslateMenu"/>
                                     <ref bean="Toolbar.Item.Export"/>
                                     <ref bean="Toolbar.Item.Import"/>
                                     <ref bean="Toolbar.Item.Lock"/>
@@ -860,7 +860,7 @@
                                     <ref bean="Toolbar.Item.Cut"/>
                                     <ref bean="Toolbar.Item.Paste"/>
                                     <ref bean="Toolbar.Item.PasteReference"/>
-                                    <ref bean="Toolbar.Item.Translate"/>
+                                    <ref bean="Toolbar.Item.TranslateMenu"/>
                                     <ref bean="Toolbar.Item.Export"/>
                                     <ref bean="Toolbar.Item.Import"/>
                                     <ref bean="Toolbar.Item.Lock"/>
@@ -1035,7 +1035,7 @@
                                     <ref bean="Toolbar.Item.Cut"/>
                                     <ref bean="Toolbar.Item.Paste"/>
                                     <ref bean="Toolbar.Item.PasteReference"/>
-                                    <ref bean="Toolbar.Item.Translate"/>
+                                    <ref bean="Toolbar.Item.TranslateMenu"/>
                                     <ref bean="Toolbar.Item.Export"/>
                                     <ref bean="Toolbar.Item.Import"/>
                                     <ref bean="Toolbar.Item.Lock"/>
@@ -1093,7 +1093,7 @@
                         <ref bean="Toolbar.Item.Cut"/>
                         <ref bean="Toolbar.Item.Paste"/>
                         <ref bean="Toolbar.Item.PasteReference"/>
-                        <ref bean="Toolbar.Item.Translate"/>
+                        <ref bean="Toolbar.Item.TranslateMenu"/>
                         <ref bean="Toolbar.Item.Export"/>
                         <ref bean="Toolbar.Item.Lock"/>
                         <ref bean="Toolbar.Item.Unlock"/>

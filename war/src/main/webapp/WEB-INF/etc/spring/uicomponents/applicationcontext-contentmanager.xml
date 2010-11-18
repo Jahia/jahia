@@ -358,6 +358,7 @@
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.EditContent"/>
+                                    <ref bean="Toolbar.Item.TranslateMenu"/>
                                     <ref bean="Toolbar.Item.Rename"/>
                                     <ref bean="Toolbar.Item.Delete"/>
                                     <ref bean="Toolbar.Item.Separator"/>
@@ -392,6 +393,7 @@
                     <list>
                         <ref bean="Toolbar.Item.NewCategory"/>
                         <ref bean="Toolbar.Item.EditContent"/>
+                        <ref bean="Toolbar.Item.TranslateMenu"/>
                         <ref bean="Toolbar.Item.Export"/>
                         <ref bean="Toolbar.Item.Import"/>
                         <ref bean="Toolbar.Item.Rename"/>

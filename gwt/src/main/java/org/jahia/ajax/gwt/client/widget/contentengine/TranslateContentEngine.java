@@ -41,6 +41,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -68,6 +69,8 @@ public class TranslateContentEngine extends Window {
     private static JahiaContentManagementServiceAsync contentService = JahiaContentManagementService.App.getInstance();
     private static JahiaContentDefinitionServiceAsync definitionService = JahiaContentDefinitionService.App.getInstance();
     private GWTJahiaNode node;
+    private final GWTJahiaLanguage srcLanguage;
+    private final GWTJahiaLanguage destLanguage;
     private Linker linker = null;
 
     private Button ok;
@@ -82,10 +85,15 @@ public class TranslateContentEngine extends Window {
      *
      * @param node   the content object to be edited
      * @param linker the edit linker for refresh purpose
+     * @param srcLanguage
+     * @param destLanguage
      */
-    public TranslateContentEngine(GWTJahiaNode node, Linker linker) {
+    public TranslateContentEngine(GWTJahiaNode node, Linker linker, GWTJahiaLanguage srcLanguage,
+                                  GWTJahiaLanguage destLanguage) {
         this.linker = linker;
         this.node = node;
+        this.srcLanguage = srcLanguage;
+        this.destLanguage = destLanguage;
 
         init();
     }
@@ -93,42 +101,26 @@ public class TranslateContentEngine extends Window {
     protected void init() {
         setLayout(new FitLayout());
         setBodyBorder(false);
-        setSize(1300, 750);
+        setSize(1024, 600);
         setClosable(true);
         setResizable(true);
         setModal(true);
         setMaximizable(true);
         setHeading(Messages.get("cm_translate " + node.getName(), "Translate " + node.getName()));
-        ContentPanel panel = new ContentPanel();
+        LayoutContainer panel = new LayoutContainer();
         panel.setLayout(new RowLayout(Style.Orientation.HORIZONTAL));
         panel.setWidth("100%");
         panel.setHeight("100%");
-        panel.setFrame(true);
-        panel.setCollapsible(false);
-        panel.setHeaderVisible(false);
 
-        sourceLangPropertiesEditor = new LangPropertiesEditor(node, Arrays.asList(GWTJahiaItemDefinition.CONTENT), false);
-        sourceLangPropertiesEditor.setSize(650, 750);
-        targetLangPropertiesEditor = new LangPropertiesEditor(node, Arrays.asList(GWTJahiaItemDefinition.CONTENT), true);
-        targetLangPropertiesEditor.setSize(650, 750);
+        sourceLangPropertiesEditor = new LangPropertiesEditor(node, Arrays.asList(GWTJahiaItemDefinition.CONTENT), false, srcLanguage);
+        sourceLangPropertiesEditor.setSize(504, 530);
+        targetLangPropertiesEditor = new LangPropertiesEditor(node, Arrays.asList(GWTJahiaItemDefinition.CONTENT), true, destLanguage);
+        targetLangPropertiesEditor.setSize(504, 530);
 
-        panel.add(sourceLangPropertiesEditor, new RowData(1, 1, new Margins(4, 0, 4, 0)));
-        panel.add(targetLangPropertiesEditor, new RowData(-1, 1, new Margins(4)));
+        panel.add(sourceLangPropertiesEditor, new RowData(504, 530, new Margins(5)));
+        panel.add(targetLangPropertiesEditor, new RowData(504, 530, new Margins(5)));
 
         add(panel);
-
-
-/*
-        // add the properties editors
-        mainComponent = new LayoutContainer();
-        mainComponent.setBorders(false);
-        mainComponent.setLayout(new BorderLayout());
-        BorderLayoutData centerData = new BorderLayoutData(Style.LayoutRegion.CENTER);
-        BorderLayoutData eastData = new BorderLayoutData(Style.LayoutRegion.EAST);
-        mainComponent.add(sourceLangPropertiesEditor, eastData);
-        mainComponent.add(targetLangPropertiesEditor, centerData);
-        //add(mainComponent);
-*/
 
         LayoutContainer buttonsPanel = new LayoutContainer();
         buttonsPanel.setBorders(false);

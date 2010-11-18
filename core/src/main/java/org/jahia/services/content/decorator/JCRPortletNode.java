@@ -77,6 +77,7 @@ public class JCRPortletNode extends JCRNodeDecorator {
             // Set the applicationReference now
             try {
                 final ApplicationBean applicationByContext = ServicesRegistry.getInstance().getApplicationsManagerService().getApplicationByContext(context);
+                getSession().checkout(this);
                 setProperty("j:applicationRef", applicationByContext.getID());
                 setProperty("j:definition", strings[1]);
                 save();

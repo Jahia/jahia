@@ -44,6 +44,7 @@ import org.jahia.services.content.nodetypes.ConstraintsHelper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.render.*;
 
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -115,10 +116,14 @@ public class TemplateHelper {
                 constraints = "";
             }
             result = new GWTRenderResult(res, new HashMap<String, Set<String>>(map), constraints);
+        } catch (PathNotFoundException e) {
+            throw new GWTJahiaServiceException("Not found");
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
+            throw new GWTJahiaServiceException("Repository exception");
         } catch (RenderException e) {
             logger.error(e.getMessage(), e);
+            throw new GWTJahiaServiceException("Render exception "+e.getMessage());
         }
         return result;
     }

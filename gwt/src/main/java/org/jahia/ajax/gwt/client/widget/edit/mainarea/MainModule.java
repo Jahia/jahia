@@ -175,11 +175,11 @@ public class MainModule extends Module {
 
     public void refresh(int flag) {
         if ((flag & Linker.REFRESH_MAIN) != 0) {
-            refresh();
+            refresh(path, template);
         }
     }
 
-    private void refresh() {
+    private void refresh(final String previousPath, final String previousTemplate) {
         JahiaContentManagementService.App.getInstance()
                 .getRenderedContent(path, null, editLinker.getLocale(), template, "gwt", moduleParams, true,
                         config.getName(), new BaseAsyncCallback<GWTRenderResult>() {
@@ -202,6 +202,13 @@ public class MainModule extends Module {
                                 switchStaticAssets(result.getStaticAssets());
                             }
 
+                            @Override public void onApplicationFailure(Throwable caught) {
+                                MainModule.this.path = previousPath;
+                                MainModule.this.template = previousTemplate;
+                                editLinker.getMainModule().unmask();
+                                editLinker.getSidePanel().refresh(Linker.REFRESH_ALL);
+                                Window.alert("Cannot get page");
+                            }
                         });
 
     }
@@ -365,6 +372,9 @@ public class MainModule extends Module {
     }
 
     public void handleNewMainSelection(String path, String template, String param) {
+        String previousPath = this.path;
+        String previousTemplate = this.template;
+
         this.path = path;
         this.template = template;
 
@@ -380,7 +390,7 @@ public class MainModule extends Module {
 
         module.mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
         setUrlMarker(path, template, param);
-        module.refresh();
+        module.refresh(previousPath, previousTemplate);
 
     }
 

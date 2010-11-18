@@ -53,7 +53,8 @@ public class ModuleGeneratorQueue implements InitializingBean {
     private int maxModulesToGenerateInParallel = 50;
     private long moduleGenerationWaitTime = 5000;
     private Semaphore availableProcessings = null;
-    private long minimumIntervalAfterLastAutoThreadDump = 60000; // in milliseconds    
+    private long minimumIntervalAfterLastAutoThreadDump = 60000; // in milliseconds
+    private boolean useLatchOnlyForPages = false;
 
     public Map<String, String> getNotCacheableModule() {
         return notCacheableModule;
@@ -110,5 +111,13 @@ public class ModuleGeneratorQueue implements InitializingBean {
     
     public long getMinimumIntervalAfterLastAutoThreadDump() {
         return minimumIntervalAfterLastAutoThreadDump;
+    }
+
+    public boolean isUseLatchOnlyForPages() {
+        return useLatchOnlyForPages;
+    }
+
+    public void setUseLatchOnlyForPages(boolean useLatchOnlyForPages) {
+        this.useLatchOnlyForPages = useLatchOnlyForPages;
     }
 }

@@ -142,7 +142,7 @@ public class AggregateCacheFilter extends AbstractFilter {
         } else {
             if (cacheable) {
                 // Use CountLatch as not found in cache
-                CountDownLatch countDownLatch = avoidParallelProcessingOfSameModule(perUserKey, renderContext.getRequest());
+                CountDownLatch countDownLatch = avoidParallelProcessingOfSameModule(perUserKey, resource.getContextConfiguration(), renderContext.getRequest());
                 if (countDownLatch == null) {
                     element = cache.get(perUserKey);
                     if (element != null && element.getValue() != null) {
@@ -528,7 +528,7 @@ public class AggregateCacheFilter extends AbstractFilter {
         }
     }
 
-    private CountDownLatch avoidParallelProcessingOfSameModule(String key, HttpServletRequest request) throws Exception {
+    private CountDownLatch avoidParallelProcessingOfSameModule(String key, String contextConfiguration, HttpServletRequest request) throws Exception {
         CountDownLatch latch = null;
         boolean mustWait = true;
         boolean semaphoreAcquired = false;
@@ -546,13 +546,17 @@ public class AggregateCacheFilter extends AbstractFilter {
                 semaphoreAcquired = true;
             }
         }
-        synchronized (generatingModules) {
-            latch = (CountDownLatch) generatingModules.get(key);
-            if (latch == null) {
-                latch = new CountDownLatch(1);
-                generatingModules.put(key, latch);
-                mustWait = false;
+        if (!generatorQueue.isUseLatchOnlyForPages() || "page".equals(contextConfiguration)) {
+            synchronized (generatingModules) {
+                latch = (CountDownLatch) generatingModules.get(key);
+                if (latch == null) {
+                    latch = new CountDownLatch(1);
+                    generatingModules.put(key, latch);
+                    mustWait = false;
+                }
             }
+        } else {
+            mustWait = false;
         }
         if (mustWait) {
             if (semaphoreAcquired) {

@@ -16,10 +16,12 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="acl" type="java.lang.String"--%>
 <template:addResources type="css" resources="tags.css"/>
+<c:set var="edit" value="${renderContext.servletPath eq '/cms/edit' || renderContext.servletPath eq '/cms/edit'}" />
+
 <c:set var="usageThreshold"
        value="${not empty currentNode.properties['j:usageThreshold'] ? currentNode.properties['j:usageThreshold'].string : 1}"/>
 <c:set var="numberOfTagsLimit"
-       value="${not empty currentNode.properties['limit'] ? currentNode.properties['limit'].string : 50}"/>       
+       value="${not empty currentNode.properties['limit'] ? currentNode.properties['limit'].string : 50}"/>
 <jcr:node var="tagsRoot" path="${renderContext.site.path}/tags"/>
 <div class="tags">
     <h3><c:if
@@ -33,26 +35,28 @@
         <query:column columnName="rep:facet(nodetype=jmix:tagged&key=j:tags&facet.mincount=${usageThreshold}&facet.limit=${numberOfTagsLimit}&facet.sort=true)" propertyName="j:tags"/>
     </query:definition>
     <jcr:jqom var="result" qomBeanName="listQuery" scope="request"/>
-    
+
     <jsp:useBean id="tagCloud" class="java.util.HashMap"/>
     <c:forEach items="${result.facetFields}" var="tags">
         <c:forEach items="${tags.values}" var="tag">
             <c:set var="totalUsages" value="${totalUsages + tag.count}"/>
-            <c:set target="${tagCloud}" property="${tag.name}" value="${tag.count}"/>            
+            <c:set target="${tagCloud}" property="${tag.name}" value="${tag.count}"/>
         </c:forEach>
     </c:forEach>
 
     <c:if test="${not empty tagCloud}">
         <ul>
             <c:forEach items="${tagCloud}" var="tag">
-                <jcr:node var="tagName" uuid="${tag.key}"/>            
+                <jcr:node var="tagName" uuid="${tag.key}"/>
                 <c:url var="facetUrl" value="${url.base}${currentNode.properties.resultPage.node.path}.html" context="/">
-                    <c:param name="src_terms[0].term" value="${tagName.name}"/>                    
+                    <c:param name="src_terms[0].term" value="${tagName.name}"/>
                     <c:param name="src_terms[0].fields.tags" value="true"/>
                     <c:param name="src_sites.values" value="${renderContext.site.siteKey}"/>
                 </c:url>
-                <li><a href="${facetUrl}" class="tag${functions:round(10 * tag.value / totalUsages)}0"
-                       title="${tagName.name} (${tag.value})">${tagName.name}</a></li>
+                <li><c:if test="${!edit}"><a href="${facetUrl}" class="tag${functions:round(10 * tag.value / totalUsages)}0"
+                                             title="${tagName.name} (${tag.value})">${tagName.name}</a></c:if>
+                    <c:if test="${edit}">${tagName.name}</c:if>
+                </li>
             </c:forEach>
         </ul>
     </c:if>

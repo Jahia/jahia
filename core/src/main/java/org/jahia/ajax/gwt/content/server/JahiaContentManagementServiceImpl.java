@@ -983,15 +983,16 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public GWTRenderResult getRenderedContent(String path, String workspace, String locale, String template,
                                               String configuration, Map<String, String> contextParams, boolean editMode,
                                               String configName) throws GWTJahiaServiceException {
+        Locale localValue = getLocale();
         if (locale != null) {
-            final Locale value = LanguageCodeConverters.languageCodeToLocale(locale);
-            if (!getLocale().equals(value)) {
-                getSession().setAttribute(ProcessingContext.SESSION_LOCALE, value);
+            localValue = LanguageCodeConverters.languageCodeToLocale(locale);
+            if (!getLocale().equals(localValue)) {
+                getSession().setAttribute(ProcessingContext.SESSION_LOCALE, localValue);
             }
         }
         return this.template
                 .getRenderedContent(path, template, configuration, contextParams, editMode, configName, getRequest(),
-                        getResponse(), retrieveCurrentSession());
+                        getResponse(), retrieveCurrentSession(workspace, localValue));
     }
 
     public String getNodeURL(String servlet, String path, Date versionDate, String versionLabel, String workspace,

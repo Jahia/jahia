@@ -63,6 +63,7 @@ public class PropertiesEditor extends FormPanel {
     private Map<String, GWTJahiaNodeProperty> currentProperties = null;
     private Map<String, GWTJahiaNodeProperty> originalProperties = null;
     private Map<String, Field<?>> fields;
+    private Map<String, FieldSet> fieldSets;
     private List<FieldSet> orderingListFieldSet = new ArrayList<FieldSet>();
     private Map<String, GWTJahiaItemDefinition> propertyDefinitions = new HashMap<String, GWTJahiaItemDefinition>();
     private boolean isMultipleEdit = false;
@@ -140,6 +141,7 @@ public class PropertiesEditor extends FormPanel {
         setButtonAlign(Style.HorizontalAlignment.CENTER);
         removeAll();
         fields = new HashMap<String, Field<?>>();
+        fieldSets = new HashMap<String, FieldSet>();
         List<String> supertypes = new ArrayList<String>();
         for (GWTJahiaNodeType nodeType : nodeTypes) {
             supertypes.addAll(nodeType.getSuperTypes());
@@ -223,6 +225,7 @@ public class PropertiesEditor extends FormPanel {
                     fieldSet.setId(definition.getDeclaringNodeTypeLabel());
                     fieldSet.setHeading(definition.getDeclaringNodeTypeLabel());
                     fieldSet.setLayout(fl);
+                    fieldSets.put(definition.getDeclaringNodeType(), fieldSet);
                     add(fieldSet);
                 }
                 if (!isWriteable || (!isI18NWriteable && !definition.isNode() && !((GWTJahiaPropertyDefinition)definition).isInternationalized())) {
@@ -286,7 +289,7 @@ public class PropertiesEditor extends FormPanel {
                         fieldSet.setCollapsible(true);
                         if (!isOrderingList) {
                             fieldSet.setCheckboxToggle(true);
-                            if (nodeTypes.contains(nodeType)) {
+                            if ((nodeTypes.contains(nodeType) && !removedTypes.contains(nodeType.getName())) || addedTypes.contains(nodeType.getName())) {
                                 fieldSet.setExpanded(true);
                             } else {
                                 fieldSet.setExpanded(false);
@@ -548,6 +551,10 @@ public class PropertiesEditor extends FormPanel {
      */
     public Map<String, Field<?>> getFieldsMap() {
         return fields;
+    }
+
+    public Map<String, FieldSet> getFieldSetsMap() {
+        return fieldSets;
     }
 
     /**

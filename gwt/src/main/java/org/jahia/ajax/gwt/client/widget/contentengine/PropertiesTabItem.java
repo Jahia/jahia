@@ -37,10 +37,12 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.form.Field;
+import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -63,6 +65,7 @@ public class PropertiesTabItem extends EditEngineTabItem {
     protected List<String> dataType;
     protected List<String> excludedTypes;
 
+    protected transient String language;
     protected transient PropertiesEditor propertiesEditor;
     protected transient Map<String, PropertiesEditor> langPropertiesEditorMap;
     protected transient boolean multiLang = false;
@@ -82,6 +85,10 @@ public class PropertiesTabItem extends EditEngineTabItem {
      */
     public PropertiesEditor getPropertiesEditor() {
         return propertiesEditor;
+    }
+
+    public Map<String, PropertiesEditor> getLangPropertiesEditorMap() {
+        return langPropertiesEditorMap;
     }
 
     /**
@@ -121,6 +128,9 @@ public class PropertiesTabItem extends EditEngineTabItem {
             tab.unmask();
             boolean addSharedLangLabel = true;
             List<GWTJahiaNodeProperty> previousNon18nProperties = null;
+            this.language = language;
+            Set<String> previousAddedTypes = null;
+            Set<String> previousRemovedTypes = null;
 
             if (propertiesEditor != null) {
                 if (propertiesEditor == getPropertiesEditorByLang(language)) {
@@ -130,6 +140,8 @@ public class PropertiesTabItem extends EditEngineTabItem {
                 propertiesEditor.setVisible(false);
                 // keep track of the old values
                 previousNon18nProperties = propertiesEditor.getProperties(false, true, false);
+                previousAddedTypes = propertiesEditor.getAddedTypes();
+                previousRemovedTypes = propertiesEditor.getRemovedTypes();
             }
             if (!isMultiLang()) {
                 setProcessed(true);
@@ -202,16 +214,26 @@ public class PropertiesTabItem extends EditEngineTabItem {
             }
 
             // synch non18n properties
-            if (isMultiLang()) {
-                if (previousNon18nProperties != null && !previousNon18nProperties.isEmpty()) {
-                    Map<String, Field<?>> fieldsMap = propertiesEditor.getFieldsMap();
-                    for (GWTJahiaNodeProperty property : previousNon18nProperties) {
-                        if (fieldsMap.containsKey(property.getName()))  {
-                            FormFieldCreator.fillValue(fieldsMap.get(property.getName()), propertiesEditor.getGWTJahiaItemDefinition(property), property);
-                        }
+            if (previousNon18nProperties != null && !previousNon18nProperties.isEmpty()) {
+                Map<String, Field<?>> fieldsMap = propertiesEditor.getFieldsMap();
+                for (GWTJahiaNodeProperty property : previousNon18nProperties) {
+                    if (fieldsMap.containsKey(property.getName()))  {
+                        FormFieldCreator.fillValue(fieldsMap.get(property.getName()), propertiesEditor.getGWTJahiaItemDefinition(property), property);
                     }
                 }
             }
+            if (previousAddedTypes != null) {
+                Map<String, FieldSet> f = propertiesEditor.getFieldSetsMap();
+                propertiesEditor.getAddedTypes().addAll(previousAddedTypes);
+                propertiesEditor.getRemovedTypes().addAll(previousRemovedTypes);
+                for (String addedType : previousAddedTypes) {
+                    f.get(addedType).expand();
+                }
+                for (String addedType : previousRemovedTypes) {
+                    f.get(addedType).collapse();
+                }
+            }
+
             propertiesEditor.setVisible(true);
 
             tab.layout();

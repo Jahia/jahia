@@ -53,6 +53,7 @@ import org.jahia.tools.jvm.ThreadMonitor;
 import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.RepositoryException;
+import javax.servlet.http.HttpServletRequest;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -141,7 +142,7 @@ public class AggregateCacheFilter extends AbstractFilter {
         } else {
             if (cacheable) {
                 // Use CountLatch as not found in cache
-                CountDownLatch countDownLatch = avoidParallelProcessingOfSameModule(perUserKey);
+                CountDownLatch countDownLatch = avoidParallelProcessingOfSameModule(perUserKey, renderContext.getRequest());
                 if (countDownLatch == null) {
                     element = cache.get(perUserKey);
                     if (element != null && element.getValue() != null) {
@@ -527,7 +528,7 @@ public class AggregateCacheFilter extends AbstractFilter {
         }
     }
 
-    private CountDownLatch avoidParallelProcessingOfSameModule(String key) throws Exception {
+    private CountDownLatch avoidParallelProcessingOfSameModule(String key, HttpServletRequest request) throws Exception {
         CountDownLatch latch = null;
         boolean mustWait = true;
         boolean semaphoreAcquired = false;
@@ -538,7 +539,8 @@ public class AggregateCacheFilter extends AbstractFilter {
                 manageThreadDump();
                 throw new Exception(
                         "Module generation takes too long due to maximum parallel processings reached ("
-                                + generatorQueue.getMaxModulesToGenerateInParallel() + ") - " + key);
+                                + generatorQueue.getMaxModulesToGenerateInParallel() + ") - " + key
+                                + " - " + request.getRequestURI());
             } else {
                 acquiredSemaphore.set(key);
                 semaphoreAcquired = true;
@@ -561,9 +563,11 @@ public class AggregateCacheFilter extends AbstractFilter {
             try {
                 if (!latch.await(generatorQueue
                         .getModuleGenerationWaitTime(), TimeUnit.MILLISECONDS)) {
+                    manageThreadDump();
                     throw new Exception(
                             "Module generation takes too long due to module not generated fast enough (>"
-                                    + generatorQueue.getModuleGenerationWaitTime() + " ms)- " + key);
+                                    + generatorQueue.getModuleGenerationWaitTime() + " ms)- " + key
+                                    + " - " + request.getRequestURI());
                 }
                 latch = null;
             } catch (InterruptedException ie) {

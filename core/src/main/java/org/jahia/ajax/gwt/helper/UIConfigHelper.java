@@ -569,6 +569,8 @@ public class UIConfigHelper {
                 GWTEditConfiguration gwtConfig = new GWTEditConfiguration();
                 gwtConfig.setName(config.getName());
                 gwtConfig.setTopToolbar(createGWTToolbar(site, jahiaUser, locale, uiLocale, request, config.getTopToolbar()));
+                gwtConfig.setSidePanelToolbar(createGWTToolbar(site, jahiaUser, locale, uiLocale, request, config.getSidePanelToolbar()));
+                gwtConfig.setMainModuleToolbar(createGWTToolbar(site, jahiaUser, locale, uiLocale, request, config.getMainModuleToolbar()));
                 gwtConfig.setContextMenu(createGWTToolbar(site, jahiaUser, locale, uiLocale, request, config.getContextMenu()));
                 gwtConfig.setTabs(createGWTSidePanelTabList(site, jahiaUser, locale, uiLocale, request, config.getTabs()));
                 gwtConfig.setEngineTabs(createGWTEngineList(site, jahiaUser, locale, uiLocale, request, config.getEngineTabs()));

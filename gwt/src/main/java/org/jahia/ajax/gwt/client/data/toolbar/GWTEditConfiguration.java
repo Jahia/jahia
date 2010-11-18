@@ -32,10 +32,6 @@
 
 package org.jahia.ajax.gwt.client.data.toolbar;
 
-import org.jahia.ajax.gwt.client.data.toolbar.GWTEngine;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -50,6 +46,8 @@ public class GWTEditConfiguration extends GWTConfiguration implements Serializab
 
     private GWTJahiaToolbar topToolbar;
     private GWTJahiaToolbar contextMenu;
+    private GWTJahiaToolbar sidePanelToolbar;
+    private GWTJahiaToolbar mainModuleToolbar;
 
     private List<GWTSidePanelTab> tabs;
 
@@ -62,6 +60,22 @@ public class GWTEditConfiguration extends GWTConfiguration implements Serializab
 
     public void setTopToolbar(GWTJahiaToolbar topToolbar) {
         this.topToolbar = topToolbar;
+    }
+
+    public GWTJahiaToolbar getSidePanelToolbar() {
+        return sidePanelToolbar;
+    }
+
+    public void setSidePanelToolbar(GWTJahiaToolbar sidePanelToolbar) {
+        this.sidePanelToolbar = sidePanelToolbar;
+    }
+
+    public GWTJahiaToolbar getMainModuleToolbar() {
+        return mainModuleToolbar;
+    }
+
+    public void setMainModuleToolbar(GWTJahiaToolbar mainModuleToolbar) {
+        this.mainModuleToolbar = mainModuleToolbar;
     }
 
     public GWTJahiaToolbar getContextMenu() {

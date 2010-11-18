@@ -49,6 +49,8 @@ public class EditConfiguration implements Serializable, BeanNameAware {
     private String name;
     
     private Toolbar topToolbar;
+    private Toolbar sidePanelToolbar;
+    private Toolbar mainModuleToolbar;
     private Toolbar contextMenu;
 
     private List<SidePanelTab> tabs;
@@ -74,6 +76,22 @@ public class EditConfiguration implements Serializable, BeanNameAware {
 
     public void setTopToolbar(Toolbar topToolbar) {
         this.topToolbar = topToolbar;
+    }
+
+    public Toolbar getSidePanelToolbar() {
+        return sidePanelToolbar;
+    }
+
+    public void setSidePanelToolbar(Toolbar sidePanelToolbar) {
+        this.sidePanelToolbar = sidePanelToolbar;
+    }
+
+    public Toolbar getMainModuleToolbar() {
+        return mainModuleToolbar;
+    }
+
+    public void setMainModuleToolbar(Toolbar mainModuleToolbar) {
+        this.mainModuleToolbar = mainModuleToolbar;
     }
 
     public Toolbar getContextMenu() {

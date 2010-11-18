@@ -63,7 +63,7 @@ public class SiteSwitcherActionItem extends BaseActionItem {
     private transient ComboBox<GWTJahiaNode> mainComponent;
     private GWTJahiaNode selectedSite;
 
-    private List<String> root = Arrays.asList("/sites");
+    private List<String> root = Arrays.asList("/sites/*");
 
     public void setRoot(List<String> root) {
         this.root = root;

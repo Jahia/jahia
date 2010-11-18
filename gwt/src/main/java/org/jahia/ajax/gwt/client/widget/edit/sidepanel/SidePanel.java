@@ -39,11 +39,15 @@ import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.SiteSwitcherActionItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,15 +62,12 @@ import java.util.List;
 public class SidePanel extends ContentPanel {
     private final List<SidePanelTabItem> tabs;
     private SidePanelTabItem templatesTabItem;
+    private GWTEditConfiguration config;
 
     public SidePanel(GWTEditConfiguration config) {
         super(new FitLayout());
+        this.config = config;
         setHeaderVisible(true);
-        getHeader().addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
-            public void componentSelected(IconButtonEvent event) {
-                refresh(EditLinker.REFRESH_ALL);
-            }
-        }));
         tabs = new ArrayList<SidePanelTabItem>();
 
         TabPanel tabPanel = new TabPanel();
@@ -81,6 +82,22 @@ public class SidePanel extends ContentPanel {
     }
 
     public void initWithLinker(EditLinker editLinker) {
+        for (GWTJahiaToolbarItem item : config.getSidePanelToolbar().getGwtToolbarItems()) {
+            final ActionItem actionItem = item.getActionItem();
+            actionItem.init(item, editLinker);
+            if (actionItem.getCustomItem() != null) {
+                getHeader().addTool(actionItem.getCustomItem());
+            } else {
+                getHeader().addTool(actionItem.getTextToolItem());
+            }
+        }
+
+        getHeader().addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
+            public void componentSelected(IconButtonEvent event) {
+                refresh(EditLinker.REFRESH_ALL);
+            }
+        }));
+
         for (SidePanelTabItem tab : tabs) {
             tab.initWithLinker(editLinker);
         }

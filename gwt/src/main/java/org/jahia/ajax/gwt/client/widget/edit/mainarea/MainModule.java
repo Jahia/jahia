@@ -37,6 +37,7 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.Header;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
@@ -52,6 +53,8 @@ import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarMenu;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
@@ -61,6 +64,8 @@ import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.contentengine.EditContentEnginePopupListener;
 import org.jahia.ajax.gwt.client.widget.edit.InfoLayers;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionContextMenu;
+import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbarMenu;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
 
 import java.util.*;
 
@@ -98,12 +103,6 @@ public class MainModule extends Module {
         head.addStyleName("x-panel-header");
         head.setStyleAttribute("z-index", "999");
         head.setStyleAttribute("position", "relative");
-        head.addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
-            public void componentSelected(IconButtonEvent event) {
-                mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
-                refresh(EditLinker.REFRESH_MAIN);
-            }
-        }));
 
         scrollContainer = new LayoutContainer(new FlowLayout());
         add(head);
@@ -118,6 +117,24 @@ public class MainModule extends Module {
 
     public void initWithLinker(EditLinker linker) {
         this.editLinker = linker;
+
+        for (GWTJahiaToolbarItem item : config.getMainModuleToolbar().getGwtToolbarItems()) {
+            final ActionItem actionItem = item.getActionItem();
+            actionItem.init(item, editLinker);
+            if (actionItem.getCustomItem() != null) {
+                head.addTool(actionItem.getCustomItem());
+            } else {
+                head.addTool(actionItem.getTextToolItem());
+            }
+        }
+        head.addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
+            public void componentSelected(IconButtonEvent event) {
+                mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
+                refresh(EditLinker.REFRESH_MAIN);
+            }
+        }));
+
+
         if ("".equals(Window.Location.getHash())) {
             display(originalHtml);
         } else {

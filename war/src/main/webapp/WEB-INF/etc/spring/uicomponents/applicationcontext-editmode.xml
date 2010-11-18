@@ -21,16 +21,6 @@
                 <property name="layout" value="button-label"/>
                 <property name="items">
                     <list>
-                        <bean id="Toolbar.ItemsGroup.SitesSwitcher"
-                              class="org.jahia.services.uicomponents.bean.toolbar.Item">
-                            <property name="actionItem">
-                                <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SiteSwitcherActionItem">
-                                    <property name="root" value="/templateSets/*"/>
-                                </bean>
-                            </property>
-                            <property name="titleKey" value="label.templateSets"/>
-                            <property name="visibility" value="$site/toolbar/site-switcher"/>
-                        </bean>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
 
                             <property name="titleKey" value="label.new"/>
@@ -57,6 +47,7 @@
                             </property>
                             <property name="visibility" value="$site/toolbar/new"/>
                         </bean>
+
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
                             <property name="actionItem">
                                 <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.DeployTemplatesActionItem"/>
@@ -64,7 +55,6 @@
                             <property name="titleKey" value="label.templatesDeploy"/>
                             <property name="visibility" value="$site/toolbar/deploy-templates"/>
                         </bean>
-                        <ref bean="Toolbar.ItemsGroup.LanguageSwitcher"/>
                         <ref bean="Toolbar.Item.Separator"/>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="titleKey" value="label.edit"/>
@@ -92,7 +82,7 @@
                                 </list>
                             </property>
                             <property name="visibility" value="$site/toolbar/edit"/>
-                        </bean>
+                        </bean>                        
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
                             <property name="actionItem">
                                 <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.GenerateWarActionItem"/>
@@ -130,6 +120,33 @@
                 <property name="visibility" value="$site/actions/edit-mode"/>
             </bean>
         </property>
+        <property name="sidePanelToolbar">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <bean id="Toolbar.ItemsGroup.SitesSwitcher"
+                              class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                            <property name="actionItem">
+                                <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SiteSwitcherActionItem">
+                                    <property name="root" value="/templateSets/*"/>
+                                </bean>
+                            </property>
+                            <property name="titleKey" value="label.templateSets"/>
+                            <property name="visibility" value="$site/toolbar/site-switcher"/>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="mainModuleToolbar">
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                    <property name="items">
+                        <list>
+                            <ref bean="Toolbar.ItemsGroup.LanguageSwitcher"/>
+                        </list>
+                    </property>
+                </bean>
+        </property>
         <property name="contextMenu">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
@@ -156,13 +173,13 @@
         <!-- edit engine -->
         <property name="engineTabs">
             <list>
-                <ref bean="Engine.Tab.Content" />
+                <ref bean="Engine.Tab.Content"/>
                 <ref bean="Engine.Tab.ContentAndLayout"/>
-                <ref bean="Engine.Tab.ListOrdering" />
-                <ref bean="Engine.Tab.Layout" />
-                <ref bean="Engine.Tab.Options" />
-                <ref bean="Engine.Tab.Rights" />
-                <ref bean="Engine.Tab.Usages" />
+                <ref bean="Engine.Tab.ListOrdering"/>
+                <ref bean="Engine.Tab.Layout"/>
+                <ref bean="Engine.Tab.Options"/>
+                <ref bean="Engine.Tab.Rights"/>
+                <ref bean="Engine.Tab.Usages"/>
             </list>
         </property>
 
@@ -560,15 +577,6 @@
                 <property name="layout" value="button-label"/>
                 <property name="items">
                     <list>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
-                            <property name="actionItem">
-                                <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SiteSwitcherActionItem">
-                                    <property name="root" value="/sites/*"/>
-                                </bean>
-                            </property>
-                            <property name="titleKey" value="label.templateSets"/>
-                            <property name="visibility" value="$site/toolbar/site-switcher"/>
-                        </bean>
                         <ref bean="Toolbar.Item.Live"/>
                         <ref bean="Toolbar.Item.Preview"/>
                         <ref bean="Toolbar.Item.Contribute"/>
@@ -585,7 +593,6 @@
                             </property>
                             <property name="visibility" value="$site/toolbar/preview-mode"/>
                         </bean>
-                        <ref bean="Toolbar.ItemsGroup.SiteLanguageSwitcher"/>
                         <ref bean="Toolbar.Item.Separator"/>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="titleKey" value="label.edit"/>
@@ -674,6 +681,33 @@
                 <property name="visibility" value="$site/actions/edit-mode"/>
             </bean>
         </property>
+        <property name="sidePanelToolbar">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                            <property name="actionItem">
+                                <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SiteSwitcherActionItem">
+                                    <property name="root" value="/sites/*"/>
+                                </bean>
+                            </property>
+                            <property name="titleKey" value="label.templateSets"/>
+                            <property name="visibility" value="$site/toolbar/site-switcher"/>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="mainModuleToolbar">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.ItemsGroup.SiteLanguageSwitcher"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+
         <property name="contextMenu">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
@@ -703,18 +737,18 @@
             <list>
                 <ref bean="Engine.Tab.Content"/>
                 <ref bean="Engine.Tab.ContentAndLayout"/>
-                <ref bean="Engine.Tab.ListOrdering" />
-                <ref bean="Engine.Tab.Layout" />
-                <ref bean="Engine.Tab.Metadata" />
-                <ref bean="Engine.Tab.Tags" />
-                <ref bean="Engine.Tab.Categories" />
-                <ref bean="Engine.Tab.Options" />
-                <ref bean="Engine.Tab.Rights" />
-                <ref bean="Engine.Tab.Usages" />
-                <ref bean="Engine.Tab.Workflow" />
-                <ref bean="Engine.Tab.History" />
-                <ref bean="Engine.Tab.Versioning" />
-                <ref bean="Engine.Tab.Seo" />
+                <ref bean="Engine.Tab.ListOrdering"/>
+                <ref bean="Engine.Tab.Layout"/>
+                <ref bean="Engine.Tab.Metadata"/>
+                <ref bean="Engine.Tab.Tags"/>
+                <ref bean="Engine.Tab.Categories"/>
+                <ref bean="Engine.Tab.Options"/>
+                <ref bean="Engine.Tab.Rights"/>
+                <ref bean="Engine.Tab.Usages"/>
+                <ref bean="Engine.Tab.Workflow"/>
+                <ref bean="Engine.Tab.History"/>
+                <ref bean="Engine.Tab.Versioning"/>
+                <ref bean="Engine.Tab.Seo"/>
                 <ref bean="Engine.Tab.Analytics"/>
             </list>
         </property>
@@ -1011,7 +1045,7 @@
                     <property name="tabItem">
                         <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.LastContentBrowseTabItem">
                             <property name="search"
-                                   value="select * from [jnt:content] as content where not content.[jcr:primaryType] = 'jnt:socialActivity' order by content.['jcr:lastModified'] desc"/>
+                                      value="select * from [jnt:content] as content where not content.[jcr:primaryType] = 'jnt:socialActivity' order by content.['jcr:lastModified'] desc"/>
                             <property name="limit" value="100"/>
                         </bean>
                     </property>
@@ -1118,7 +1152,7 @@
         <property name="id" value="content"/>
         <property name="titleKey" value="label.engineTab.content"/>
         <property name="visibility" value="$site/edit-mode/content"/>
-        <property name="tabItem" >
+        <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.ContentTabItem">
                 <property name="hideForTypes">
                     <list>
@@ -1141,7 +1175,7 @@
         <property name="id" value="content"/>
         <property name="titleKey" value="label.engineTab.content"/>
         <property name="visibility" value="$site/edit-mode/content"/>
-        <property name="tabItem" >
+        <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.ContentTabItem">
                 <property name="dataType">
                     <list>
@@ -1169,9 +1203,9 @@
         <property name="id" value="listOrdering"/>
         <property name="titleKey" value="label.engineTab.content"/>
         <property name="visibility" value="$site/edit-mode/content"/>
-        <property name="tabItem" >
+        <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.ListOrderingContentTabItem">
-                <property name="showForTypes" >
+                <property name="showForTypes">
                     <list>
                         <value>jnt:contentList</value>
                     </list>
@@ -1184,7 +1218,7 @@
         <property name="id" value="layout"/>
         <property name="titleKey" value="label.engineTab.layout"/>
         <property name="visibility" value="$site/edit-mode/layout"/>
-        <property name="tabItem" >
+        <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.LayoutTabItem">
                 <property name="hideForTypes">
                     <list>
@@ -1206,9 +1240,9 @@
         <property name="id" value="metadata"/>
         <property name="titleKey" value="label.engineTab.metadata"/>
         <property name="visibility" value="$site/edit-mode/metadata"/>
-        <property name="tabItem" >
+        <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.PropertiesTabItem">
-                <property name="dataType" >
+                <property name="dataType">
                     <list>
                         <value>metadata</value>
                     </list>
@@ -1227,9 +1261,9 @@
         <property name="id" value="options"/>
         <property name="titleKey" value="label.engineTab.options"/>
         <property name="visibility" value="$site/edit-mode/options"/>
-        <property name="tabItem" >
+        <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.PropertiesTabItem">
-                <property name="dataType" >
+                <property name="dataType">
                     <list>
                         <value>options</value>
                     </list>
@@ -1242,7 +1276,7 @@
         <property name="id" value="tags"/>
         <property name="titleKey" value="label.engineTab.tags"/>
         <property name="visibility" value="$site/edit-mode/tags"/>
-        <property name="tabItem" >
+        <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.TagsTabItem">
                 <property name="hideForTypes">
                     <list>
@@ -1259,7 +1293,7 @@
         <property name="id" value="categories"/>
         <property name="titleKey" value="label.engineTab.categories"/>
         <property name="visibility" value="$site/edit-mode/categories"/>
-        <property name="tabItem" >
+        <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.CategoriesTabItem">
                 <property name="hideForTypes">
                     <list>
@@ -1275,7 +1309,7 @@
         <property name="id" value="versioning"/>
         <property name="titleKey" value="label.engineTab.versioning"/>
         <property name="visibility" value="$site/edit-mode/versioning"/>
-        <property name="tabItem" >
+        <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.VersioningTabItem"/>
         </property>
     </bean>
@@ -1284,7 +1318,7 @@
         <property name="id" value="history"/>
         <property name="titleKey" value="label.engineTab.history"/>
         <property name="visibility" value="$site/edit-mode/history"/>
-        <property name="tabItem" >
+        <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.HistoryTabItem"/>
         </property>
     </bean>
@@ -1293,7 +1327,7 @@
         <property name="id" value="usages"/>
         <property name="titleKey" value="label.engineTab.usages"/>
         <property name="visibility" value="$site/edit-mode/usages"/>
-        <property name="tabItem" >
+        <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.UsagesTabItem"/>
         </property>
     </bean>
@@ -1302,7 +1336,7 @@
         <property name="id" value="seo"/>
         <property name="titleKey" value="label.engineTab.seo"/>
         <property name="visibility" value="$site/edit-mode/seo"/>
-        <property name="tabItem" >
+        <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.SeoTabItem"/>
         </property>
     </bean>
@@ -1311,7 +1345,7 @@
         <property name="id" value="workflow"/>
         <property name="titleKey" value="label.engineTab.workflow"/>
         <property name="visibility" value="$site/edit-mode/workflow"/>
-        <property name="tabItem" >
+        <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.WorkflowTabItem">
                 <property name="hideForTypes">
                     <list>
@@ -1326,7 +1360,7 @@
         <property name="id" value="portlets"/>
         <property name="titleKey" value="label.engineTab.portlets"/>
         <property name="visibility" value="$site/edit-mode/portlets"/>
-        <property name="tabItem" >
+        <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.PortletsTabItem"/>
         </property>
     </bean>
@@ -1335,7 +1369,7 @@
         <property name="id" value="info"/>
         <property name="titleKey" value="label.engineTab.info"/>
         <property name="visibility" value="$site/edit-mode/info"/>
-        <property name="tabItem" >
+        <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.content.InfoTabItem"/>
         </property>
     </bean>
@@ -1344,7 +1378,7 @@
         <property name="id" value="rights"/>
         <property name="titleKey" value="label.engineTab.rights"/>
         <property name="visibility" value="$site/edit-mode/rights"/>
-        <property name="tabItem" >
+        <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.RightsTabItem"/>
         </property>
     </bean>
@@ -1352,7 +1386,7 @@
     <bean id="Engine.Tab.RolePrincipals" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
         <property name="id" value="rolePrincipals"/>
         <property name="titleKey" value="label.engineTab.rolePrincipals"/>
-        <property name="tabItem" >
+        <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.RolePrincipalsTabItem"/>
         </property>
     </bean>
@@ -1365,7 +1399,7 @@
                 <property name="siteActionPermission" value="edit-mode/analytics"/>
             </bean>
         </property>
-        <property name="tabItem" >
+        <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.contentengine.AnalyticsTabItem"/>
         </property>
     </bean>

@@ -34,6 +34,10 @@ package org.jahia.ajax.gwt.client.core;
 
 import com.google.gwt.i18n.client.Dictionary;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
+import org.jahia.ajax.gwt.client.data.GWTJahiaPermission;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -158,6 +162,17 @@ public class JahiaGWTParameters {
 
     public static void setSiteKey(String newSiteKey) {
         siteKey = newSiteKey;
+    }
+
+    public static void setSite(GWTJahiaNode site) {
+        setSiteUUID(site.getSiteUUID());
+        setSiteKey(site.getSiteKey());
+        JahiaContentManagementService
+                .App.getInstance().getGrantedPermissions(new BaseAsyncCallback<List<GWTJahiaPermission>>() {
+            public void onSuccess(List<GWTJahiaPermission> result) {
+                PermissionsUtils.loadPermissions(result);
+            }
+        });
     }
 
     public static String getWorkspace() {

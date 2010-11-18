@@ -48,7 +48,6 @@ import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
-import org.jahia.ajax.gwt.client.data.GWTJahiaPermission;
 import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
@@ -56,7 +55,6 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
-import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
@@ -348,13 +346,7 @@ public class MainModule extends Module {
                     Messages.get("info_sharednode", "This is a shared node")));
         }
         if (node.getSiteUUID() != null && !JahiaGWTParameters.getSiteUUID().equals(node.getSiteUUID())) {
-            JahiaGWTParameters.setSiteUUID(node.getSiteUUID());
-            JahiaGWTParameters.setSiteKey(node.getSiteKey());
-            JahiaContentManagementService.App.getInstance().getGrantedPermissions(new BaseAsyncCallback<List<GWTJahiaPermission>>() {
-                public void onSuccess(List<GWTJahiaPermission> result) {
-                    PermissionsUtils.loadPermissions(result);
-                }
-            });
+            JahiaGWTParameters.setSite(node);
         }
     }
 

@@ -133,7 +133,7 @@ public class UrlMappingEditor extends LayoutContainer {
         column.setEditor(ce);
         configs.add(column);
 
-        final CheckColumnConfig defaultColumn = new CheckColumnConfig("default", Messages.get("label.urlmapping.default", "Default"), 55);
+        final CheckColumnConfig defaultColumn = new CheckColumnConfig("default", Messages.get("label.urlmapping.default", "Default"), 70);
         defaultColumn.setEditor(new CellEditor(new CheckBox()));
         configs.add(defaultColumn);
 

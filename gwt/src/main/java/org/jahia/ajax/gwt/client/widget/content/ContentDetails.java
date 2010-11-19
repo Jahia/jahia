@@ -72,6 +72,7 @@ import java.util.*;
  */
 public class ContentDetails extends BottomRightComponent implements NodeHolder {
     private GWTManagerConfiguration config;
+    private final ManagerLinker linker;
     private ContentPanel m_component;
     private TabPanel tabs;
     private List<GWTJahiaNodeType> types;
@@ -89,9 +90,10 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
     private Button ok;
 
 
-    public ContentDetails(GWTManagerConfiguration config) {
+    public ContentDetails(GWTManagerConfiguration config, ManagerLinker linker) {
         super();
         this.config = config;
+        this.linker = linker;
         m_component = new ContentPanel(new FitLayout());
         m_component.setBodyBorder(false);
         m_component.setBorders(true);
@@ -371,7 +373,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
             }
             // Ajax call to update values
             AsyncCallback callback = new BaseAsyncCallback() {
-                public void onApplicationFailure(Throwable throwable) {
+                public void onApplicationFailure(Throwable throwable) {                    
                     com.google.gwt.user.client.Window
                             .alert(Messages.get("saved_prop_failed", "Properties save failed\n\n") +
                                     throwable.getLocalizedMessage());
@@ -380,6 +382,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
 
                 public void onSuccess(Object o) {
                     Info.display("", Messages.get("saved_prop", "Properties saved\n\n"));
+                    linker.refreshTable();                    
                 }
             };
 

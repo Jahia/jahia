@@ -93,7 +93,7 @@ public class ContentManager extends TriPanelBrowserLayout {
 
 
         final ContentViews contentViews = new ContentViews(config);
-        final BottomRightComponent tabs = new ContentDetails(config);
+        final BottomRightComponent tabs = new ContentDetails(config,linker);
         final TopBar toolbar = new ContentToolbar(config, linker) {
 
         };

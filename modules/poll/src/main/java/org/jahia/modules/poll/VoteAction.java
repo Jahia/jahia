@@ -117,7 +117,7 @@ public class VoteAction implements Action {
         return new ActionResult(HttpServletResponse.SC_OK, null, generateJSONObject(pollNode));
     }
 
-    private JSONObject generateJSONObject(JCRNodeWrapper pollNode) throws Exception {
+    public static JSONObject generateJSONObject(JCRNodeWrapper pollNode) throws Exception {
         NodeIterator answerNodes = pollNode.getNode("answers").getNodes();
 
         Map<String, Object> props = new HashMap<String, Object>();

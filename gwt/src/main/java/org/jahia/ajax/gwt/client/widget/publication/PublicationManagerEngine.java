@@ -99,8 +99,8 @@ public class PublicationManagerEngine extends Window {
         getHeader().setIcon(ToolbarIconProvider.getInstance().getIcon("siteRepository"));
 
         // tree component
-        GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(Arrays.asList("/sites"), true);
-        factory.setNodeTypes(Arrays.asList("jnt:virtualsitesFolder", "jnt:virtualsite", "jmix:publication"));
+        GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(Arrays.asList("/sites/"+linker.getSelectionContext().getMainNode().getSiteKey()), true);
+        factory.setNodeTypes(Arrays.asList("jmix:publication"));
         factory.setFields(Arrays.asList(GWTJahiaNode.NAME, GWTJahiaNode.DISPLAY_NAME, GWTJahiaNode.PUBLICATION_INFOS,
                                         GWTJahiaNode.WORKFLOW_INFOS));
         factory.setSelectedPath(linker.getSelectionContext().getMainNode().getPath());

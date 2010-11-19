@@ -5,22 +5,28 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="social" uri="http://www.jahia.org/tags/socialLib" %>
+
+<c:set var="fromUser" value="${currentNode.properties['j:from'].node}"/>
+
 <c:set var="fields" value="${currentNode.propertiesAsString}"/>
 <c:set var="message" value="${fields['j:message']}" />
 <c:if test="${not empty fields['j:messageKey']}">
     <c:set var="message"><fmt:message key="${fields['j:messageKey']}"/></c:set>
 </c:if>
-<c:set var="imageURL" value="${url.currentModule}/images/friendbig.png"/>
-<c:if test="${not empty fields['j:picture']}">
-    <c:set var="imageNode" value="${currentNode.properties['j:picture'].node}"/>
-    <c:if test="${not empty imageNode}">
-        <c:set var="imageURL" value="${currentNode.properties['j:picture'].node.url}"/>
-    </c:if>
-</c:if>
+
 <li>
     <div class='image'>
         <div class='itemImage itemImageLeft'>
-            <img src="${imageURL}"/>
+			<jcr:nodeProperty var="picture" node="${fromUser}" name="j:picture"/>
+			<c:if test="${not empty picture}">
+	            <a href="${url.base}${fromUser.path}.html"><img
+	                    src="${picture.node.thumbnailUrls['avatar_120']}"
+	                    alt="${userNode.properties.title.string} ${userNode.properties.firstname.string} ${userNode.properties.lastname.string}"
+	                    width="64"
+	                    height="64"/></a>
+	        </c:if>
+	        <c:if test="${empty picture}"><a href="${url.base}${fromUser.path}.html">
+				<img alt="" src="${url.currentModule}/images/friendbig.png" alt="friend" border="0"/></a></c:if>
         </div>
     </div>
     <c:if test="${not empty fields['j:from']}">

@@ -14,8 +14,16 @@
 </ul>
 <div class='image'>
 	<div class='itemImage itemImageLeft'>
-    <a href="${url.base}${fromUser.path}.html"><img src="${url.currentModule}/images/friend.png"
-                                                         alt="friend" border="0"/></a>
+			<jcr:nodeProperty var="picture" node="${fromUser}" name="j:picture"/>
+			<c:if test="${not empty picture}">
+	            <a href="${url.base}${fromUser.path}.html"><img
+	                    src="${picture.node.thumbnailUrls['avatar_120']}"
+	                    alt="${userNode.properties.title.string} ${userNode.properties.firstname.string} ${userNode.properties.lastname.string}"
+	                    width="64"
+	                    height="64"/></a>
+	        </c:if>
+	        <c:if test="${empty picture}"><a href="${url.base}${fromUser.path}.html">
+				<img alt="" src="${url.currentModule}/images/friend.png" alt="friend" border="0"/></a></c:if>
 	</div>
 </div>
 <h5 class="messageSenderName">

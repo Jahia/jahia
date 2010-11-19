@@ -1,5 +1,5 @@
 /******************************************************************************
-* icon Add 
+* icon Add
 ******************************************************************************/
 #bodywrapper a.social-add {
 	width:16px;
@@ -11,7 +11,7 @@
 	display:none
 }
 /******************************************************************************
-* Title  with icon h3 
+* Title  with icon h3
 ******************************************************************************/
 #bodywrapper h3.social-title-icon {
 	color:#333;
@@ -148,6 +148,13 @@
 #bodywrapper ul.social-list a.social-list-sendmessage span {
 	display:none
 }
+
+#bodywrapper ul.social-list div.thumbnail {
+	background-color: white;
+	padding: 5px;
+	border:1px solid #B9DDFA;
+
+}
 /******************************************************************************
 * statusUpdateForm
 ******************************************************************************/
@@ -159,10 +166,10 @@
 	padding:0;
 }
 #bodywrapper .statusUpdateForm fieldset {
-	border:none	
+	border:none
 }
 #bodywrapper .statusUpdateForm legend {
-	display:none	
+	display:none
 }
 #bodywrapper .statusUpdateForm label {
 display:block
@@ -278,13 +285,13 @@ display:block
 	padding:0;
 	margin:0;
 	float:right;
-} 
+}
 #bodywrapper ul.messageActionList li{
 	display:inline;
 	background:none;
 	padding:0;
 	margin:0;
-} 
+}
 #bodywrapper ul.messageActionList a.messageActionReply {
 	width:16px;
 	height:16px;

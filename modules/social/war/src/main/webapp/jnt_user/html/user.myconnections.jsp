@@ -153,9 +153,9 @@
                         return false;
                     })))
                 );
-            
+
         });
-        
+
         $("#searchUsersSubmit").click(function() {
             // validate and process form here
             var term = $("input#searchUsersTerm").val();
@@ -281,9 +281,16 @@
             <c:set var="connectedToUser" value="${socialConnection.properties['j:connectedTo'].node}"/>
             <li id="connection-to-${connectedToUser.identifier}">
                 <div class="thumbnail">
-
-                    <a href="${url.base}${connectedToUser.path}.html"><img src="${url.currentModule}/images/friend.png"
-                                                                           alt="friend" border="0"/></a>
+					<jcr:nodeProperty var="picture" node="${connectedToUser}" name="j:picture"/>
+					<c:if test="${not empty picture}">
+			            <a href="${url.base}${connectedToUser.path}.html"><img
+			                    src="${picture.node.thumbnailUrls['avatar_60']}"
+			                    alt="${userNode.properties.title.string} ${userNode.properties.firstname.string} ${userNode.properties.lastname.string}"
+			                    width="32"
+			                    height="32"/></a>
+			        </c:if>
+			        <c:if test="${empty picture}"><a href="${url.base}${connectedToUser.path}.html">
+						<img alt="" src="${url.currentModule}/images/friend.png" alt="friend" border="0"/></a></c:if>
                 </div>
                 <a class="social-list-remove removeFriendAction" title="<fmt:message key="removeFriend"/>" href="#"
                    rel="${socialConnection.properties['j:connectedFrom'].node.identifier}:${socialConnection.properties['j:connectedTo'].node.identifier}:${socialConnection.properties['j:type'].string}"><span><fmt:message
@@ -291,7 +298,7 @@
                 <a class="social-list-sendmessage showSendMessage" title="<fmt:message key="sendMessage"/>" rel="${connectedToUser.name}"
                    href="#divSendMessage"><span><fmt:message key="sendMessage"/></span></a>
                 <h4>
-                    <a href="${usl.base}${connectedToUser.path}.html"><c:out value="${jcr:userFullName(connectedToUser)}"/></a>
+                    <a href="${url.base}${connectedToUser.path}.html"><c:out value="${jcr:userFullName(connectedToUser)}"/></a>
                 </h4>
 
                 <div class='clear'></div>

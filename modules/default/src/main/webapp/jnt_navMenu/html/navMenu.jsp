@@ -50,6 +50,7 @@
         <div id="${layoutID.string}">
     </c:if>
 </c:if>
+<c:if test="${not empty current}">
 <template:addDependency node="${current}"/>
 <c:set var="items" value="${jcr:getChildrenOfType(current,'jmix:navMenuItem')}"/>
 <c:if test="${navMenuLevel eq 1}">
@@ -119,8 +120,4 @@
 <c:if test="${navMenuLevel == 1}">
     </div>
 </c:if>
-<%
-    String n = ((JCRNodeWrapper)pageContext.findAttribute("current")).getName() ;
-    String cn = ((JCRNodeWrapper)pageContext.findAttribute("currentNode")).getName() ;
-    System.out.println("Navigation bar for "+ cn + " / " + n + " : " +(System.currentTimeMillis()-t) + "ms");
-%>
+</c:if>

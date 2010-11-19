@@ -52,6 +52,7 @@ import org.jahia.services.render.scripting.Script;
 import org.jahia.tools.jvm.ThreadMonitor;
 import org.jahia.utils.LanguageCodeConverters;
 
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 
@@ -201,7 +202,10 @@ public class AggregateCacheFilter extends AbstractFilter {
             resource.getDependencies().add(renderContext.getMainResource().getNode().getPath());
             if(script!=null && Boolean.valueOf(
                     script.getTemplate().getProperties().getProperty("cache.mainResource.flushParent", "false"))) {
-                resource.getDependencies().add(renderContext.getMainResource().getNode().getParent().getPath());
+                try {
+                    resource.getDependencies().add(renderContext.getMainResource().getNode().getParent().getPath());
+                } catch (ItemNotFoundException e) {
+                }
             }
         }
         final boolean cacheable = !notCacheableFragment.contains(key);

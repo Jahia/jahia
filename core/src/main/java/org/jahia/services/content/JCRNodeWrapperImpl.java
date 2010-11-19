@@ -147,13 +147,17 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             return resolvedParentNode;
         }
 
-        if (localPath.equals("/") || localPath.equals(provider.getRelativeRoot())) {
-            if (provider.getMountPoint().equals("/")) {
-                throw new ItemNotFoundException();
+        try {
+            if (localPath.equals("/") || localPath.equals(provider.getRelativeRoot())) {
+                if (provider.getMountPoint().equals("/")) {
+                    throw new ItemNotFoundException();
+                }
+                return (JCRNodeWrapper) session.getItem(StringUtils.substringBeforeLast(provider.getMountPoint(), "/"));
+            } else {
+                return (JCRNodeWrapper) session.getItem(StringUtils.substringBeforeLast(getPath(), "/"));
             }
-            return (JCRNodeWrapper) session.getItem(StringUtils.substringBeforeLast(provider.getMountPoint(), "/"));
-        } else {
-            return (JCRNodeWrapper) session.getItem(StringUtils.substringBeforeLast(getPath(), "/"));
+        } catch (PathNotFoundException e) {
+            throw new ItemNotFoundException(e);
         }
     }
 

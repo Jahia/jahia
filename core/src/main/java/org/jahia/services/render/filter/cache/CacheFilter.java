@@ -46,6 +46,8 @@ import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.RenderChain;
 import org.jahia.services.render.scripting.Script;
 
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.RepositoryException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -122,7 +124,10 @@ public class CacheFilter extends AbstractFilter {
                 resource.getDependencies().add(renderContext.getMainResource().getNode().getPath());
                 if(script!=null && Boolean.valueOf(
                     script.getTemplate().getProperties().getProperty("cache.mainResource.flushParent", "false"))) {
-                    resource.getDependencies().add(renderContext.getMainResource().getNode().getParent().getPath());
+                    try {
+                        resource.getDependencies().add(renderContext.getMainResource().getNode().getParent().getPath());
+                    } catch (ItemNotFoundException e) {                       
+                    }
                 }
             }
             String perUserKey = key.replaceAll("_perUser_", renderContext.getUser().getUsername()).replaceAll("_mr_",renderContext.getMainResource().getNode().getPath()+renderContext.getMainResource().getTemplate());

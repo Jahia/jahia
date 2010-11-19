@@ -322,7 +322,7 @@ public class JCRUser extends JahiaBasePrincipal implements JahiaUser, JCRPrincip
                 }
             });
         } catch (RepositoryException e) {
-            logger.warn("Error while setting user property " + key + " with value " + value, e);
+            logger.warn("Error while setting user property " + key + " with value " + value + " for user " + name, e);
         }
         return false;
     }

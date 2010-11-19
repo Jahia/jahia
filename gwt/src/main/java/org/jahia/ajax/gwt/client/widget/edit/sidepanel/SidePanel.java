@@ -35,16 +35,19 @@ package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 import com.extjs.gxt.ui.client.event.IconButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
+import org.jahia.ajax.gwt.client.widget.edit.ToolbarHeader;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.SiteSwitcherActionItem;
@@ -66,12 +69,16 @@ public class SidePanel extends ContentPanel {
 
     public SidePanel(GWTEditConfiguration config) {
         super(new FitLayout());
+        this.head = new ToolbarHeader();
+
         this.config = config;
-        setHeaderVisible(true);
+
         tabs = new ArrayList<SidePanelTabItem>();
 
         TabPanel tabPanel = new TabPanel();
-
+        tabPanel.setBorders(false);
+        tabPanel.setBodyBorder(false);
+        
         for (GWTSidePanelTab tabConfig : config.getTabs()) {
             SidePanelTabItem tabItem = tabConfig.getTabItem();
             tabs.add(tabItem);
@@ -83,16 +90,10 @@ public class SidePanel extends ContentPanel {
 
     public void initWithLinker(EditLinker editLinker) {
         for (GWTJahiaToolbarItem item : config.getSidePanelToolbar().getGwtToolbarItems()) {
-            final ActionItem actionItem = item.getActionItem();
-            actionItem.init(item, editLinker);
-            if (actionItem.getCustomItem() != null) {
-                getHeader().addTool(actionItem.getCustomItem());
-            } else {
-                getHeader().addTool(actionItem.getTextToolItem());
-            }
+            ((ToolbarHeader)head).addItem(editLinker, item);
         }
 
-        getHeader().addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
+        head.addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
             public void componentSelected(IconButtonEvent event) {
                 refresh(EditLinker.REFRESH_ALL);
             }
@@ -107,6 +108,7 @@ public class SidePanel extends ContentPanel {
         for (SidePanelTabItem tab : tabs) {
             tab.handleNewModuleSelection(selectedModule);
         }
+        ((ToolbarHeader)head).handleNewModuleSelection(selectedModule);
     }
 
     public void handleNewMainSelection(String path) {

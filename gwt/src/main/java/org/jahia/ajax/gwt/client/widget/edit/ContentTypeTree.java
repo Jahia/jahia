@@ -72,6 +72,7 @@ public class ContentTypeTree extends LayoutContainer {
 
     public ContentTypeTree(Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> types) {
         store = new TreeStore<GWTJahiaNodeType>();
+        setBorders(false);
         filldataStore(types);
         ColumnConfig name = new ColumnConfig("label", "Label", 400);
         name.setRenderer(new WidgetTreeGridCellRenderer() {

@@ -595,35 +595,6 @@
                         </bean>
                         <ref bean="Toolbar.Item.Separator"/>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
-                            <property name="titleKey" value="label.edit"/>
-                            <!-- <property name="icon" value="editAction"/>  -->
-                            <property name="items">
-                                <list>
-                                    <ref bean="Toolbar.Item.EditContent"/>
-                                    <ref bean="Toolbar.Item.Delete"/>
-                                    <ref bean="Toolbar.Item.Separator"/>
-                                    <ref bean="Toolbar.Item.EditSourceContent"/>
-                                    <ref bean="Toolbar.Item.Separator"/>
-                                    <ref bean="Toolbar.Item.Copy"/>
-                                    <ref bean="Toolbar.Item.Cut"/>
-                                    <ref bean="Toolbar.Item.Paste"/>
-                                    <ref bean="Toolbar.Item.PasteReference"/>
-                                    <ref bean="Toolbar.Item.TranslateMenu"/>
-                                    <ref bean="Toolbar.Item.Separator"/>
-                                    <ref bean="Toolbar.Item.Export"/>
-                                    <ref bean="Toolbar.Item.Import"/>
-                                    <ref bean="Toolbar.Item.Separator"/>
-                                    <ref bean="Toolbar.Item.Lock"/>
-                                    <ref bean="Toolbar.Item.Unlock"/>
-                                    <ref bean="Toolbar.Item.Separator"/>
-                                    <ref bean="Toolbar.Item.SaveAsPortalComponent"/>
-                                    <ref bean="Toolbar.Item.Separator"/>
-                                    <ref bean="Toolbar.Item.OpenInContentManager"/>
-                                </list>
-                            </property>
-                            <property name="visibility" value="$site/toolbar/edit"/>
-                        </bean>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
                             <property name="titleKey" value="label.publication"/>
                             <!-- <property name="icon" value="publicationAction"/> -->
                             <property name="items">
@@ -694,6 +665,7 @@
                             <property name="titleKey" value="label.templateSets"/>
                             <property name="visibility" value="$site/toolbar/site-switcher"/>
                         </bean>
+                        <ref bean="Toolbar.Item.Fill"/>
                     </list>
                 </property>
             </bean>
@@ -702,6 +674,35 @@
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey" value="label.edit"/>
+                            <!-- <property name="icon" value="editAction"/>  -->
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.EditContent"/>
+                                    <ref bean="Toolbar.Item.Delete"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.EditSourceContent"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.Copy"/>
+                                    <ref bean="Toolbar.Item.Cut"/>
+                                    <ref bean="Toolbar.Item.Paste"/>
+                                    <ref bean="Toolbar.Item.PasteReference"/>
+                                    <ref bean="Toolbar.Item.TranslateMenu"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.Export"/>
+                                    <ref bean="Toolbar.Item.Import"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.Lock"/>
+                                    <ref bean="Toolbar.Item.Unlock"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.SaveAsPortalComponent"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.OpenInContentManager"/>
+                                </list>
+                            </property>
+                            <property name="visibility" value="$site/toolbar/edit"/>
+                        </bean>
                         <ref bean="Toolbar.ItemsGroup.SiteLanguageSwitcher"/>
                     </list>
                 </property>

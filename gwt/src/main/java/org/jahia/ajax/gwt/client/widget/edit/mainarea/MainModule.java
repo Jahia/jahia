@@ -63,6 +63,7 @@ import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.contentengine.EditContentEnginePopupListener;
 import org.jahia.ajax.gwt.client.widget.edit.InfoLayers;
+import org.jahia.ajax.gwt.client.widget.edit.ToolbarHeader;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionContextMenu;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbarMenu;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
@@ -98,7 +99,7 @@ public class MainModule extends Module {
         this.config = config;
         this.depth = 0;
 
-        head = new Header();
+        head = new ToolbarHeader();
         head.setText("Page : " + path);
         head.addStyleName("x-panel-header");
         head.setStyleAttribute("z-index", "999");
@@ -119,14 +120,9 @@ public class MainModule extends Module {
         this.editLinker = linker;
 
         for (GWTJahiaToolbarItem item : config.getMainModuleToolbar().getGwtToolbarItems()) {
-            final ActionItem actionItem = item.getActionItem();
-            actionItem.init(item, editLinker);
-            if (actionItem.getCustomItem() != null) {
-                head.addTool(actionItem.getCustomItem());
-            } else {
-                head.addTool(actionItem.getTextToolItem());
-            }
+            ((ToolbarHeader)head).addItem(linker, item);
         }
+
         head.addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
             public void componentSelected(IconButtonEvent event) {
                 mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
@@ -142,7 +138,7 @@ public class MainModule extends Module {
             goToHashMarker(hash);
         }
 
-        sinkEvents(Event.ONCLICK + Event.ONDBLCLICK + Event.ONMOUSEOVER + Event.ONMOUSEOUT);
+        scrollContainer.sinkEvents(Event.ONCLICK + Event.ONDBLCLICK + Event.ONMOUSEOVER + Event.ONMOUSEOUT);
 
         Listener<ComponentEvent> listener = new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent ce) {
@@ -151,10 +147,10 @@ public class MainModule extends Module {
         };
 
         // on click listener
-        addListener(Events.OnClick, listener);
+        scrollContainer.addListener(Events.OnClick, listener);
 
         // on double click listener
-        addListener(Events.OnDoubleClick, new EditContentEnginePopupListener(this, editLinker));
+        scrollContainer.addListener(Events.OnDoubleClick, new EditContentEnginePopupListener(this, editLinker));
 
         if (config.getContextMenu() != null) {
             // contextMenu
@@ -165,9 +161,9 @@ public class MainModule extends Module {
                     super.beforeShow();
                 }
             };
-            setContextMenu(contextMenu);
+            scrollContainer.setContextMenu(contextMenu);
 
-            addListener(Events.ContextMenu, new Listener<ComponentEvent>() {
+            scrollContainer.addListener(Events.ContextMenu, new Listener<ComponentEvent>() {
                 public void handleEvent(ComponentEvent be) {
                     editLinker.getSelectionContext().refresh(LinkerSelectionContext.MAIN_AREA_CONTEXT_MENU);
                 }
@@ -182,7 +178,8 @@ public class MainModule extends Module {
      */
     public void makeSelected() {
         if (selectable) {
-            editLinker.onModuleSelection(MainModule.this);
+            editLinker.onModuleSelection(null);
+//            editLinker.onModuleSelection(MainModule.this);
         }
     }
 
@@ -385,6 +382,8 @@ public class MainModule extends Module {
             l.select(selectedModule);
             l.show();
         }
+        ((ToolbarHeader)head).handleNewModuleSelection(selectedModule);
+
         l.layout();
     }
 

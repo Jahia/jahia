@@ -23,12 +23,14 @@
                     <a href="${url.base}${renderContext.site.path}/my-profile.html"><fmt:message key="userProfile.link"/></a>
                 </li>
             </c:if>
-            <li class="shortcuts-edit">
-                <a href="${url.edit}"><fmt:message key="edit"/></a>
-            </li>
-            <li class="shortcuts-contribute">
-                <a href="${url.contribute}"><fmt:message key="contribute"/></a>
-            </li>
+            <c:if test="${jcr:hasPermission(currentNode, 'write')}">
+                <li class="shortcuts-edit">
+                    <a href="${url.edit}"><fmt:message key="edit"/></a>
+                </li>
+                <li class="shortcuts-contribute">
+                    <a href="${url.contribute}"><fmt:message key="contribute"/></a>
+                </li>
+            </c:if>
         </c:if>
         <li class="shortcuts-print"><a href="#"
                                        onclick="javascript:window.print();return false">

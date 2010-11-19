@@ -514,10 +514,11 @@ public class ConflictResolver {
 //            if (prunedTargetPath.contains(targetNode.getPath() + "/" + oldName)) {
 //                return true;
 //            }
-
-            final JCRNodeWrapper node = targetNode.getNode(oldName);
-            addRemovedLabel(node, node.getSession().getWorkspace().getName() + "_removed_at_"+new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(new Date()));
-            node.remove();
+            if (targetNode.hasNode(oldName)) {
+                final JCRNodeWrapper node = targetNode.getNode(oldName);
+                addRemovedLabel(node, node.getSession().getWorkspace().getName() + "_removed_at_"+new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(new Date()));
+                node.remove();
+            }
             return true;
         }
 

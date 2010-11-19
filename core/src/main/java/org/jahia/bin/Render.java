@@ -66,10 +66,7 @@ import org.springframework.web.context.ServletConfigAware;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
-import javax.jcr.Node;
-import javax.jcr.PropertyIterator;
-import javax.jcr.PropertyType;
-import javax.jcr.RepositoryException;
+import javax.jcr.*;
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -659,7 +656,9 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     resource = urlResolver.getResource(date, versionLabel);
                     renderContext.setMainResource(resource);
                     JCRSiteNode site = resource.getNode().getResolveSite();
-
+                    if(site!=null && !site.getLanguagesAsLocales().contains(urlResolver.getLocale())) {
+                        throw new PathNotFoundException("This language does not exist on this site");
+                    }
                     renderContext.setSite(site);
 //                    resource.pushWrapper("wrapper.fullpage");
 //                    resource.pushBodyWrapper();

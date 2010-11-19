@@ -34,6 +34,7 @@ package org.jahia.ajax.gwt.commons.server;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.core.SessionExpirationException;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
@@ -49,6 +50,7 @@ import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.springframework.web.context.ServletContextAware;
 
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -89,13 +91,7 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
      * @throws GWTJahiaServiceException
      */
     protected JCRSessionWrapper retrieveCurrentSession(Locale locale) throws GWTJahiaServiceException {
-        checkSession();
-        try {
-            return JCRSessionFactory.getInstance().getCurrentUserSession(getWorkspace(), locale, null);
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException("Cannot open user session");
-        }
+        return retrieveCurrentSession(getWorkspace(), locale, false);
     }
 
     /**
@@ -104,10 +100,10 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
      * @return
      * @throws GWTJahiaServiceException
      */
-    protected JCRSessionWrapper retrieveCurrentSession(String workspace, Locale locale) throws GWTJahiaServiceException {
+    protected JCRSessionWrapper retrieveCurrentSession(String workspace, Locale locale, boolean useSiteFallbackLanguage) throws GWTJahiaServiceException {
         checkSession();
         try {
-            return JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale);
+            return JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale, useSiteFallbackLanguage ? getFallbackLocale() : null);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException("Cannot open user session");
@@ -122,6 +118,27 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
     protected Locale getLocale() {
         Locale locale = LanguageCodeConverters.languageCodeToLocale(request.getParameter("lang"));
         return locale;
+    }
+
+    private Locale getFallbackLocale() throws GWTJahiaServiceException {
+        Locale fallback = null;
+
+        try {
+            if (request.getParameter("site") == null) {
+                return null;
+            }
+            JCRSiteNode site = (JCRSiteNode) JCRSessionFactory.getInstance().getCurrentUserSession(getWorkspace()).getNodeByUUID(request.getParameter("site"));
+
+            if (site.isMixLanguagesActive()) {
+                fallback = LanguageCodeConverters.getLocaleFromCode(site.getDefaultLanguage());
+            }
+            return fallback;
+        } catch (ItemNotFoundException e) {
+            return null;
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            throw new GWTJahiaServiceException("Cannot open user session");
+        }
     }
 
     /**

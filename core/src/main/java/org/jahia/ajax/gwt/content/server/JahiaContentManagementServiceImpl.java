@@ -59,7 +59,6 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.workflow.*;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryItem;
-import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryProcess;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -992,13 +991,13 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
         return this.template
                 .getRenderedContent(path, template, configuration, contextParams, editMode, configName, getRequest(),
-                        getResponse(), retrieveCurrentSession(workspace, localValue));
+                        getResponse(), retrieveCurrentSession(workspace, localValue, true));
     }
 
     public String getNodeURL(String servlet, String path, Date versionDate, String versionLabel, String workspace,
                              String locale) throws GWTJahiaServiceException {
         final JCRSessionWrapper session = retrieveCurrentSession(workspace != null ? workspace : getWorkspace(),
-                locale != null ? LanguageCodeConverters.languageCodeToLocale(locale) : getLocale());
+                locale != null ? LanguageCodeConverters.languageCodeToLocale(locale) : getLocale(), false);
         return this.navigation.getNodeURL(servlet, path, versionDate, versionLabel, session.getWorkspace().getName(),
                 session.getLocale());
     }

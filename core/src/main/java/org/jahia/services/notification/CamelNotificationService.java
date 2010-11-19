@@ -49,13 +49,14 @@ import org.apache.camel.RoutesBuilder;
 public class CamelNotificationService implements CamelContextAware {
 
     private CamelContext camelContext;
-    
+    private ProducerTemplate template;
+
     public void setCamelContext(CamelContext camelContext) {
         this.camelContext = camelContext;
+        template = camelContext.createProducerTemplate();
     }
 
     public void sendMessagesWithBodyAndHeaders(String target, Object body, Map<String, Object> headers) {
-        ProducerTemplate template = camelContext.createProducerTemplate();
         if (headers != null) {
             template.sendBodyAndHeaders(target, body, headers);
         } else {

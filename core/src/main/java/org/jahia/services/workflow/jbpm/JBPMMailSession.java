@@ -34,6 +34,7 @@ package org.jahia.services.workflow.jbpm;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
+import org.apache.camel.ProducerTemplate;
 import org.apache.camel.component.mail.MailEndpoint;
 import org.slf4j.Logger;
 import org.jahia.services.SpringContextSingleton;
@@ -53,9 +54,11 @@ import java.util.Collection;
 public class JBPMMailSession implements MailSession {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JBPMMailSession.class);
     private MailServiceImpl mailService;
+    private ProducerTemplate template;
 
     public JBPMMailSession() {
         mailService = (MailServiceImpl) SpringContextSingleton.getBean("MailService");
+        template = mailService.getCamelContext().createProducerTemplate();
     }
 
     public void send(Collection<Message> emails) {
@@ -64,7 +67,7 @@ public class JBPMMailSession implements MailSession {
                 CamelContext context = mailService.getCamelContext();
                 MailEndpoint endpoint = (MailEndpoint) context.getEndpoint(mailService.getEndpointUri());
                 Exchange exchange = endpoint.createExchange(email);
-                mailService.getCamelContext().createProducerTemplate().send("seda:mailUsers?multipleConsumers=true",
+                template.send("seda:mailUsers?multipleConsumers=true",
                         exchange);
             }
         }

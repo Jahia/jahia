@@ -66,6 +66,7 @@ import org.jahia.utils.i18n.JahiaResourceBundle;
 public class MailServiceImpl extends MailService implements CamelContextAware {
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(MailServiceImpl.class);
+    private ProducerTemplate template;
 
     /**
      * Validates entered values for mail settings.
@@ -143,7 +144,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware {
             logger.debug("Sending message: " + exchange);
         }
         try {
-            camelContext.createProducerTemplate().send(getEndpointUri(), exchange);
+            template.send(getEndpointUri(), exchange);
         } catch (RuntimeException e) {
             logger.debug(e.getMessage(), e);
         }
@@ -242,11 +243,12 @@ public class MailServiceImpl extends MailService implements CamelContextAware {
             body = textBody;
         }
         
-        camelContext.createProducerTemplate().sendBodyAndHeaders(endpointUri, body, headers);
+        template.sendBodyAndHeaders(endpointUri, body, headers);
     }
     
     public void setCamelContext(CamelContext camelContext) {
         this.camelContext = camelContext;
+        template = camelContext.createProducerTemplate();
     }
 
     /**

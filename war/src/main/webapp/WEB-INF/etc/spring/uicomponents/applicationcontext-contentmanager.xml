@@ -781,7 +781,7 @@
                 <value>icon,40,empty</value>
                 <value>displayName,240,label.title</value>
                 <value>locked,60,label.lock</value>
-                <value>size,140,label.size</value>
+                <value>primaryTypeLabel,140,label.type</value>
                 <value>mix:created.jcr:created,100</value>
                 <value>mix:created.jcr:createdBy,100</value>
             </list>

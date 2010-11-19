@@ -963,6 +963,14 @@ public class NavigationHelper {
             }
         }
 
+        if (fields.contains(GWTJahiaNode.PRIMARY_TYPE_LABEL)) {
+            try {
+                n.set(GWTJahiaNode.PRIMARY_TYPE_LABEL, node.getPrimaryNodeType().getLabel(node.getSession().getLocale()));
+            } catch (RepositoryException e) {
+                logger.error("Cannot get property " + GWTJahiaNode.PRIMARY_TYPE_LABEL + " on node " + node.getPath());
+            }
+        }
+
         if (n.isFile() && nodeTypes.contains("jmix:image")) {
             fields = new LinkedList<String>(fields);
             if (!fields.contains("j:height")) {

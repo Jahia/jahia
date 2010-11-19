@@ -80,6 +80,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     public static final String AVAILABLE_WORKKFLOWS = "j:availableWorkflows";
     public static final String WORKFLOW_INFO = "workflowInfo";
     public static final String WORKFLOW_INFOS = "workflowInfos";
+    public static final String PRIMARY_TYPE_LABEL = "primaryTypeLabel";
 
     public static final List<String> DEFAULT_FIELDS =
             Arrays.asList(ICON, TAGS, CHILDREN_INFO, "j:view", "j:width", "j:height");

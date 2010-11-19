@@ -1984,27 +1984,6 @@ public class ManageSites extends AbstractAdministrationModule {
                 }
             }
 
-            // import serverPermissions.xml
-            if (doImportServerPermissions) {
-                for (Map<Object, Object> infos : importsInfos) {
-                    File file = (File) infos.get("importFile");
-                    if (request.getParameter(file.getName() + "selected") != null) {
-                        if (infos.get("importFileName").equals("serverPermissions.xml")) {
-                            // pass the old-new site key information for server permissions
-                            jParams.setAttribute("sitePermissions_siteKeyMapping", siteKeyMapping);
-                            InputStream is = new FileInputStream(file);
-                            try {
-                                ImportExportBaseService.getInstance()
-                                        .importServerPermissions(new FileInputStream(file));
-                            } finally {
-                                IOUtils.closeQuietly(is);
-                                file.delete();
-                            }
-                        }
-                    }
-                }
-            }
-
             redirectAfterAdd(request, response, session);
         }
     }

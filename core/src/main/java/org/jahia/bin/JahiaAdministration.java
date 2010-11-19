@@ -398,7 +398,6 @@ public class JahiaAdministration extends HttpServlet {
             }
         } catch (Exception e) {
             logger.error("Error during " + operation + " operation of a new element we must flush all caches to ensure integrity between database and viewing", e);
-            ServicesRegistry.getInstance().getCacheService().flushAllCaches();
             if (isValidLoginSession(session)) {
                 displayMenu(request, response, session);
             } else {

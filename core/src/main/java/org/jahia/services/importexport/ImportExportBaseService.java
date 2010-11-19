@@ -574,8 +574,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         importSiteProperties(zis, site);
                     } else if (name.equals(CATEGORIES_XML)) {
                         catProps = importCategoriesAndGetUuidProps(zis, categoriesImportHandler);
-                    } else if (name.equals(SITE_PERMISSIONS_XML)) {
-                        importSitePermissions(site, zis);
                     } else if (name.equals(DEFINITIONS_CND)) {
                         reg = new NodeTypeRegistry();
                         try {
@@ -794,14 +792,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         CategoriesImportHandler importHandler = new CategoriesImportHandler();
         importHandler.setRootCategory(rootCategory);
         importCategoriesAndGetUuidProps(is, importHandler);
-    }
-
-    public void importServerPermissions(InputStream is) {
-//        handleImport(is, new PermissionsImportHandler("org.jahia.actions.server", "serverPermission", (Map) jParams.getAttribute("sitePermissions_siteKeyMapping")));
-    }
-
-    private void importSitePermissions(JahiaSite site, InputStream is) {
-//        handleImport(is, new PermissionsImportHandler(ManageSiteRoles.SITE_PERMISSIONS_PREFIX + site.getID(), "sitePermission", site.getID()));
     }
 
     public List<String[]> importUsers(File file) throws IOException {

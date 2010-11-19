@@ -415,16 +415,6 @@ public class Service extends JahiaService {
 
         }
 
-        // import serverPermissions.xml
-		for (Map<Object, Object> infos : importsInfos) {
-			File file = (File) infos.get("importFile");
-			if (infos.get("importFileName").equals("serverPermissions.xml")) {
-				// pass the old-new site key information for server permissions
-				ImportExportBaseService.getInstance().importServerPermissions(
-				        new FileInputStream(file));
-			}
-		}
-
     }
 
     public void incrementProperty(AddedNodeFact node, String propertyName,

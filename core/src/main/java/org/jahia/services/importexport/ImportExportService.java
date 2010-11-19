@@ -175,8 +175,6 @@ public interface ImportExportService {
 
     void importCategories(Category rootCategory, InputStream is);
 
-    void importServerPermissions(InputStream is);
-
     List<String[]> importUsers(File file) throws IOException ;
 
     List<String[]> importUsersFromZip(File file, JahiaSite site) throws IOException ;

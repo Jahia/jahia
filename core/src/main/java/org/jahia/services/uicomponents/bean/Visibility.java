@@ -229,19 +229,19 @@ public class Visibility {
             String thisUserAgent = resolveUserAgent(request);
             if (thisUserAgent != null) {
                 if ("ie".equals(userAgent)) {
-                    matches = userAgent.indexOf("MSIE") != -1;
+                    matches = thisUserAgent.indexOf("MSIE") != -1;
                 } else if ("ie6".equals(userAgent)) {
-                    matches = userAgent.indexOf("MSIE 6") != -1;
+                    matches = thisUserAgent.indexOf("MSIE 6") != -1;
                 } else if ("ie7".equals(userAgent)) {
-                    matches = userAgent.indexOf("MSIE 7") != -1;
+                    matches = thisUserAgent.indexOf("MSIE 7") != -1;
                 } else if ("ns".equals(userAgent)) {
-                    matches = userAgent.indexOf("Mozilla") != -1 && userAgent.indexOf("MSIE") == -1;
+                    matches = thisUserAgent.indexOf("Mozilla") != -1 && userAgent.indexOf("MSIE") == -1;
                 } else if ("ns4".equals(userAgent)) {
-                    matches = userAgent.indexOf("Mozilla/4") != -1 && userAgent.indexOf("MSIE") == -1;
+                    matches = thisUserAgent.indexOf("Mozilla/4") != -1 && userAgent.indexOf("MSIE") == -1;
                 } else if ("ns6".equals(userAgent)) {
-                    matches = userAgent.indexOf("Mozilla/5") != -1;
+                    matches = thisUserAgent.indexOf("Mozilla/5") != -1;
                 } else if ("opera".equals(userAgent)) {
-                    matches = userAgent.indexOf("opera") != -1;
+                    matches = thisUserAgent.indexOf("opera") != -1;
                 }
             } else {
                 return false;

@@ -1534,7 +1534,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         final JCRSessionWrapper jcrSessionWrapper = retrieveCurrentSession();
         try {
             JCRNodeWrapper n = jcrSessionWrapper.getNode(nodepath);
-            n.unlock("engine");
+            if (n.isLocked()) {
+                n.unlock("engine");
+            }
 
             dumpLocks(n);
         } catch (RepositoryException e) {

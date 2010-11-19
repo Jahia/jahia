@@ -47,19 +47,29 @@ import java.io.IOException;
  */
 public class ExceptionAppender extends AppenderSkeleton {
 
+    private boolean alreadyDumping = false;
+
     public ExceptionAppender() {
     }
 
     @Override
     protected void append(LoggingEvent event) {
+        // first let's prevent re-entry
+        if (alreadyDumping) return;
+
         if (event.getThrowableInformation() != null) {
             try {
+                alreadyDumping = true;
+                long dumpStartTime = System.currentTimeMillis();
                 File errorFile = ErrorFileDumper.dumpToFile(event.getThrowableInformation().getThrowable(), null);
                 if (errorFile != null) {
-                    System.err.println("Error dumped to file " + errorFile.getAbsolutePath());
+                    long dumpTotalTime = System.currentTimeMillis() - dumpStartTime;
+                    System.err.println("Error dumped to file " + errorFile.getAbsolutePath() + " in " + dumpTotalTime + "ms");
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+                alreadyDumping = false;
             }
         }
     }

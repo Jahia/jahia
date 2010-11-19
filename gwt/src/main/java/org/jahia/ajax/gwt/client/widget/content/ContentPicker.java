@@ -32,6 +32,10 @@
 
 package org.jahia.ajax.gwt.client.widget.content;
 
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionEvent;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionContextMenu;
 import org.jahia.ajax.gwt.client.widget.tripanel.*;
@@ -52,7 +56,7 @@ public class ContentPicker extends TriPanelBrowserLayout {
     private PickedContentView pickedContent;
 
     public ContentPicker(Map<String, String> selectorOptions, final List<GWTJahiaNode> selectedNodes, List<String> filters, List<String> mimeTypes,
-                         GWTManagerConfiguration config, boolean multiple) {
+                         final GWTManagerConfiguration config, boolean multiple) {
         super(config);
         //setWidth("714px");
         setHeight("700px");
@@ -72,6 +76,32 @@ public class ContentPicker extends TriPanelBrowserLayout {
         // construction of the UI components
         final LeftComponent tree = new ContentRepositoryTabs(config, selectedPaths);
         final ContentViews contentViews = new ContentViews(config);
+
+
+        if (multiple) {
+            contentViews.setSelectionMode(Style.SelectionMode.MULTI);
+        } else {
+            contentViews.setSelectionMode(Style.SelectionMode.SINGLE);
+        }
+        contentViews.addSelectionListener(Events.BeforeSelect, new Listener<SelectionEvent>() {
+            public void handleEvent(SelectionEvent be) {
+                GWTJahiaNode selection = (GWTJahiaNode) be.getModel();
+                if (selection != null) {
+                    boolean found = false;
+                    for (String s : config.getNodeTypes()) {
+                        if (selection.getNodeTypes().contains(s) || selection.getInheritedNodeTypes().contains(s)) {
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (!found) {
+                        be.setCancelled(true);
+                    }
+                }
+            }
+        });
+
 
         contentViews.selectNodes(selectedNodes);
 

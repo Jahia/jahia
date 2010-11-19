@@ -1,9 +1,9 @@
 package org.jahia.ajax.gwt.client.widget.content;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.*;
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.widget.selection.AbstractStoreSelectionModel;
@@ -120,6 +120,10 @@ public abstract class AbstractView extends TopRightComponent {
 
     void setVisibleSelection(List<GWTJahiaNode> visibleSelection) {
         this.visibleSelection = visibleSelection;
+    }
+
+    public AbstractStoreSelectionModel<GWTJahiaNode> getSelectionModel() {
+        return selectionModel;
     }
 
     public void setContent(final Object root) {

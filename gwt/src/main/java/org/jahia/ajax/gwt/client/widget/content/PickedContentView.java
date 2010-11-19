@@ -206,7 +206,6 @@ public class PickedContentView extends BottomRightComponent {
     }
 
     public void clear() {
-        store.removeAll();
     }
 
     /**
@@ -249,26 +248,16 @@ public class PickedContentView extends BottomRightComponent {
             return;
         }
         if (selection != null && selection.size() > 0) {
-            boolean found = false;
-            for (String s : config.getNodeTypes()) {
-                if (selection.get(0).getNodeTypes().contains(s) || selection.get(0).getInheritedNodeTypes().contains(s)) {
-                    found = true;
-                    break;
-                }
-            }
-
             // handle multiple
-            if (found) {
-                if (multiple) {
-                    for (GWTJahiaNode n : selection) {
-                        if (!store.contains(n)) {
-                            store.add(n);
-                        }
+            if (multiple) {
+                for (GWTJahiaNode n : selection) {
+                    if (!store.contains(n)) {
+                        store.add(n);
                     }
-                } else {
-                    store.removeAll();
-                    store.add(selection.get(0));
                 }
+            } else {
+                store.removeAll();
+                store.add(selection.get(0));
             }
         }
     }

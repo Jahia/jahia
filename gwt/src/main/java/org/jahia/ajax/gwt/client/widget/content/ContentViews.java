@@ -32,7 +32,9 @@
 
 package org.jahia.ajax.gwt.client.widget.content;
 
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.EventType;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.Component;
@@ -119,6 +121,18 @@ public class ContentViews extends TopRightComponent {
             newView.setVisibleSelection(visibleSelection);
 //            getLinker().handleNewSelection();
         }
+    }
+
+    public void setSelectionMode(Style.SelectionMode mode) {
+        tableView.getSelectionModel().setSelectionMode(mode);
+        thumbView.getSelectionModel().setSelectionMode(mode);
+        detailedThumbView.getSelectionModel().setSelectionMode(mode);
+    }
+
+    public void addSelectionListener(EventType eventType, Listener listener) {
+        tableView.getSelectionModel().addListener(eventType, listener);
+        thumbView.getSelectionModel().addListener(eventType, listener);
+        detailedThumbView.getSelectionModel().addListener(eventType, listener);
     }
 
     public void initWithLinker(ManagerLinker linker) {

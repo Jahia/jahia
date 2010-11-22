@@ -14,7 +14,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <utility:setBundle basename="JahiaInternalResources" useUILocale="true"/>
 <fmt:message key="org.jahia.copyright" var="i18nCopyright"/>
-<%
+    <%
 
     String  jahiaDisplayMessage  = (String) request.getAttribute("jahiaDisplayMessage");
     String  URL = (String) request.getAttribute("URL");
@@ -58,11 +58,11 @@
     <internal:gwtInit/>
     <link rel="stylesheet" href="<%=contextPath%>/css/jahia65.css" type="text/css" />
     <!--[if lte IE 6]>
-        <style type="text/css" media="all">@import "<%=contextPath%>/css/andromeda_ie6.css";</style>
-            <style type="text/css">
-			img {
-			behavior: url("<%=contextPath%>/css/pngbehavior.jsp")}
-			</style>
+    <style type="text/css" media="all">@import "<%=contextPath%>/css/jahia65_ie6.css";</style>
+    <style type="text/css">
+        img {
+            behavior: url("<%=contextPath%>/css/pngbehavior.jsp")}
+    </style>
 
 
     <![endif]-->
@@ -71,9 +71,9 @@
 
     <script type="text/javascript">
         function showWorkInProgress() {
-	        if (typeof workInProgressOverlay != 'undefined') {
-	            workInProgressOverlay.start();
-	        }
+            if (typeof workInProgressOverlay != 'undefined') {
+                workInProgressOverlay.start();
+            }
         }
     </script>
 </head>

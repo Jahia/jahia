@@ -54,6 +54,7 @@ import org.springframework.web.bind.ServletRequestUtils;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+import javax.jcr.nodetype.ConstraintViolationException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -215,7 +216,14 @@ public class DefaultPostAction implements Action {
             String key = entry.getKey();
             if (!Render.reservedParameters.contains(key)) {
                 List<String> values = entry.getValue();
-                ExtendedPropertyDefinition propertyDefinition = newNode.getApplicablePropertyDefinition(key);
+                ExtendedPropertyDefinition propertyDefinition = null;
+                try {
+                    propertyDefinition = newNode.getApplicablePropertyDefinition(key);
+                } catch (ConstraintViolationException cve) {
+                    // can happen if we don't have a property named as the key we are looking for.
+                    propertyDefinition = null;
+                    continue;
+                }                
                 if (propertyDefinition.isMultiple()) {
                     newNode.setProperty(key, values.toArray(new String[values.size()]));
                 } else if (values.get(0).length() > 0) {

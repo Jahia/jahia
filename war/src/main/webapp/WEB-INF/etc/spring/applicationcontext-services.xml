@@ -113,7 +113,7 @@
         <property name="systemSiteTitle" value="System Site"/>
         <property name="systemSiteServername" value="localhost"/>
         <property name="systemSiteDefaultLanguage" value="en"/>
-        <property name="systemSiteTemplateSetName" value="templates-intranet"/>
+        <property name="systemSiteTemplateSetName" value="templates-system"/>
     </bean>
 
     <bean id="CategoryService" parent="proxyTemplate">

@@ -12,7 +12,7 @@
         <default jcr:primaryType="jnt:folder" />
       </themes>
       <templates jcr:primaryType="jnt:templatesFolder">
-        <base jcr:mixinTypes="jmix:renderable jmix:theme" jcr:primaryType="jnt:template" j:view="templates-system" j:theme="/templateSets/templates-system/themes/default">
+        <base jcr:mixinTypes="jmix:renderable jmix:theme" jcr:primaryType="jnt:template" j:view="system" j:theme="/templateSets/templates-system/themes/default">
           <home jcr:primaryType="jnt:pageTemplate">
             <pagecontent jcr:primaryType="jnt:contentList" />
           </home>

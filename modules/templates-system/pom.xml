@@ -46,7 +46,6 @@
     <groupId>org.jahia.modules</groupId>
     <artifactId>templates-system</artifactId>
     <name>Jahia System Templates</name>
-    <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
     <description>This is the custom module (templates-system) for running on a Jahia server.</description>
     <repositories>
@@ -112,107 +111,106 @@
                 </plugins>
             </build>
         </profile>
-        <profile>
-            <id>use-import</id>
-            <activation>
-                <file>
-                    <exists>src/main/import/repository.xml</exists>
-                </file>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-assembly-plugin</artifactId>
-
-                        <executions>
-                            <execution>
-                                <id>import</id>
-                                <configuration>
-                                    <descriptors>
-                                        <descriptor>src/main/assembly/src.xml</descriptor>
-                                    </descriptors>
-                                    <attach>false</attach>
-                                    <finalName>import</finalName>
-                                </configuration>
-
-                                <phase>generate-resources</phase>
-
-                                <goals>
-                                    <goal>single</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                        <version>1.3</version>
-                        <dependencies>
-                            <dependency>
-                                <groupId>org.apache.ant</groupId>
-                                <artifactId>ant-jsch</artifactId>
-                                <version>1.7.1</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>com.jcraft</groupId>
-                                <artifactId>jsch</artifactId>
-                                <version>0.1.38</version>
-                            </dependency>
-                        </dependencies>
-
-                        <executions>
-                            <execution>
-                                <id>packaging</id>
-                                <phase>generate-resources</phase>
-                                <configuration>
-                                    <tasks>
-                                        <copy file="./target/import.zip" todir="${project.basedir}/src/main/webapp" overwrite="true"/>
-                                    </tasks>
-                                </configuration>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
     </profiles>
     <dependencies>
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
-            <version>${parent.version}</version>
+            <version>${jahia.package.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-taglib</artifactId>
-            <version>${parent.version}</version>
+            <version>${jahia.package.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
+
     <build>
         <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+
+                <executions>
+                    <execution>
+                        <id>import</id>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/src.xml</descriptor>
+                            </descriptors>
+                            <attach>false</attach>
+                            <finalName>import</finalName>
+                        </configuration>
+
+                        <phase>generate-resources</phase>
+
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.3</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.ant</groupId>
+                        <artifactId>ant-jsch</artifactId>
+                        <version>1.7.1</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.jcraft</groupId>
+                        <artifactId>jsch</artifactId>
+                        <version>0.1.38</version>
+                    </dependency>
+                </dependencies>
+
+                <executions>
+                    <execution>
+                        <id>packaging</id>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <tasks>
+                                <copy file="./target/import.zip" todir="${project.basedir}/src/main/webapp" overwrite="true"/>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <warSourceExcludes>resources/*.properties</warSourceExcludes>
+                    <webResources>
+                        <resource>
+                          <directory>${project.build.directory}/native2ascii</directory>
+                          <targetPath>resources</targetPath>
+                        </resource>
+                    </webResources>
                     <archive>
                         <manifestEntries>
 		                	<Implementation-Title>${project.name}</Implementation-Title>
 		                    <Implementation-Version>${project.version}</Implementation-Version>
-		                    <Implementation-Vendor></Implementation-Vendor>
-		                    <Implementation-Vendor-Id></Implementation-Vendor-Id>
-		                    <Implementation-URL></Implementation-URL>
+		                    <Implementation-Vendor>${jahia.manifest.vendor.name}</Implementation-Vendor>
+		                    <Implementation-Vendor-Id>${jahia.manifest.vendor.id}</Implementation-Vendor-Id>
+		                    <Implementation-URL>${jahia.manifest.vendor.url}</Implementation-URL>
 		                    <Specification-Title>${project.name}</Specification-Title>
 		                    <Specification-Version>${project.version}</Specification-Version>
-		                    <Specification-Vendor></Specification-Vendor>
+		                    <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
                             <package-name>${project.name}</package-name>
-                            <depends>Default Jahia Templates</depends>
+                            <module-type>siteLayout</module-type>
+                            <depends>Default Jahia Templates, Jahia Grid Pages</depends>
                             <root-folder>${artifactId}</root-folder>
                         </manifestEntries>
                     </archive>

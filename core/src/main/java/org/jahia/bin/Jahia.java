@@ -281,13 +281,13 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
                     JahiaAfterInitializationService.class);
             for (Object o : map.values()) {
                 JahiaAfterInitializationService initializationService = (JahiaAfterInitializationService) o;
-                initializationService.init();
+                initializationService.initAfterAllServicesAreStarted();
             }
             map = SpringContextSingleton.getInstance().getModuleContext().getBeansOfType(
                     JahiaAfterInitializationService.class);
             for (Object o : map.values()) {
                 JahiaAfterInitializationService initializationService = (JahiaAfterInitializationService) o;
-                initializationService.init();
+                initializationService.initAfterAllServicesAreStarted();
             }
             mInitiated = true;
         } catch (Exception je) {

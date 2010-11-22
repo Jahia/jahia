@@ -235,7 +235,7 @@ public class ManageSites extends AbstractAdministrationModule {
             List<JahiaSite> sortedSites = new ArrayList<JahiaSite>();
             while (siteEnum.hasNext()) {
                 JahiaSite curSite = (JahiaSite) siteEnum.next();
-                if (!curSite.getSiteKey().equals(JahiaSitesBaseService.SYTEM_SITE_KEY)) {
+                if (!curSite.getSiteKey().equals(JahiaSitesBaseService.SYSTEM_SITE_KEY)) {
                     sortedSites.add(curSite);
                 }
             }

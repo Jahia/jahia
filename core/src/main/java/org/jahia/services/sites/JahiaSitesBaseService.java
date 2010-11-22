@@ -76,7 +76,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
     public static final String SITE_CACHE_BYID = "JahiaSiteByIDCache";
     public static final String SITE_CACHE_BYNAME = "JahiaSiteByNameCache";
     public static final String SITE_CACHE_BYKEY = "JahiaSiteByKeyCache";
-    public static final String SYTEM_SITE_KEY = "systemsite";
+    public static final String SYSTEM_SITE_KEY = "systemsite";
     /**
      * The cache in memory
      */
@@ -303,7 +303,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
 
         // continue if the site is added correctly...
         if (site.getID() != -1) {
-            if (getNbSites() == 1 && !site.isDefault() && !site.getSiteKey().equals(SYTEM_SITE_KEY)) {
+            if (getNbSites() == 1 && !site.isDefault() && !site.getSiteKey().equals(SYSTEM_SITE_KEY)) {
                 setDefaultSite(site);
             }
 
@@ -512,7 +512,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                         "root");
                 sessionFactory.setCurrentUser(jahiaUser);
                 Locale selectedLocale = LanguageCodeConverters.languageCodeToLocale(systemSiteDefaultLanguage);
-                addSite(jahiaUser, systemSiteTitle, systemSiteServername, SYTEM_SITE_KEY, "", selectedLocale,
+                addSite(jahiaUser, systemSiteTitle, systemSiteServername, SYSTEM_SITE_KEY, "", selectedLocale,
                         systemSiteTemplateSetName, "noImport", null, null, false, false, null,
                         new ProcessingContextFactoryImpl().getContext(new BasicSessionState("systemsession")));
             }

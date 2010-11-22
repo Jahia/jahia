@@ -76,6 +76,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
     public static final String SITE_CACHE_BYID = "JahiaSiteByIDCache";
     public static final String SITE_CACHE_BYNAME = "JahiaSiteByNameCache";
     public static final String SITE_CACHE_BYKEY = "JahiaSiteByKeyCache";
+    public static final String SYTEM_SITE_KEY = "systemsite";
     /**
      * The cache in memory
      */
@@ -92,7 +93,6 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
     private String systemSiteDefaultLanguage = "en";
     private String systemSiteTitle = "System Site";
     private String systemSiteServername = "localhost";
-    private String systemSiteKey = "systemsite";
     private String systemSiteTemplateSetName = "templates-intranet";
 
     public void setCacheService(CacheService cacheService) {
@@ -303,7 +303,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
 
         // continue if the site is added correctly...
         if (site.getID() != -1) {
-            if (getNbSites() == 1 && !site.isDefault()) {
+            if (getNbSites() == 1 && !site.isDefault() && !site.getSiteKey().equals(SYTEM_SITE_KEY)) {
                 setDefaultSite(site);
             }
 
@@ -512,7 +512,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                         "root");
                 sessionFactory.setCurrentUser(jahiaUser);
                 Locale selectedLocale = LanguageCodeConverters.languageCodeToLocale(systemSiteDefaultLanguage);
-                addSite(jahiaUser, systemSiteTitle, systemSiteServername, systemSiteKey, "", selectedLocale,
+                addSite(jahiaUser, systemSiteTitle, systemSiteServername, SYTEM_SITE_KEY, "", selectedLocale,
                         systemSiteTemplateSetName, "noImport", null, null, false, false, null,
                         new ProcessingContextFactoryImpl().getContext(new BasicSessionState("systemsession")));
             }
@@ -525,10 +525,6 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
 
     public void setSystemSiteDefaultLanguage(String systemSiteDefaultLanguage) {
         this.systemSiteDefaultLanguage = systemSiteDefaultLanguage;
-    }
-
-    public void setSystemSiteKey(String systemSiteKey) {
-        this.systemSiteKey = systemSiteKey;
     }
 
     public void setSystemSiteServername(String systemSiteServername) {

@@ -70,6 +70,7 @@ import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.pwdpolicy.PolicyEnforcementResult;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSiteTools;
+import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.*;
@@ -234,7 +235,9 @@ public class ManageSites extends AbstractAdministrationModule {
             List<JahiaSite> sortedSites = new ArrayList<JahiaSite>();
             while (siteEnum.hasNext()) {
                 JahiaSite curSite = (JahiaSite) siteEnum.next();
-                sortedSites.add(curSite);
+                if (!curSite.getSiteKey().equals(JahiaSitesBaseService.SYTEM_SITE_KEY)) {
+                    sortedSites.add(curSite);
+                }
             }
             Locale defaultLocale = (Locale) session.getAttribute(ProcessingContext.SESSION_LOCALE);
             if (defaultLocale != null) {

@@ -32,7 +32,7 @@ CKEDITOR.plugins.add('acheck',
 			form.appendChild(submitButton);
 			
             document.body.appendChild(form);
-            window.open('', 'MyACheckAccessWin', 'scrollbars=yes,menubar=no,height=800,width=1400,resizable=yes,toolbar=no,status=no');
+            window.open('', 'ACheckAccessWin', 'scrollbars=yes,menubar=no,height=800,width=1400,resizable=yes,toolbar=no,status=no');
 
             $('#acheckForm').submit();
             },

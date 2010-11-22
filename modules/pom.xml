@@ -95,7 +95,9 @@
         <module>job</module>
         <module>location</module>
         <module>news</module>
+        <!-- 
         <module>newsletter</module>
+         -->
         <module>grid</module>
         <module>pageHit</module>
         <module>person</module>

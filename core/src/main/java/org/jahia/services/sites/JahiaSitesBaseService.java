@@ -37,6 +37,10 @@
 //
 package org.jahia.services.sites;
 
+import org.jahia.params.BasicSessionState;
+import org.jahia.params.ProcessingContextFactoryImpl;
+import org.jahia.services.JahiaAfterInitializationService;
+import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
@@ -64,7 +68,7 @@ import java.util.*;
  *
  * @author Khue ng
  */
-public class JahiaSitesBaseService extends JahiaSitesService {
+public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAfterInitializationService {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaSitesBaseService.class);
 
     protected static JahiaSitesBaseService instance = null;
@@ -85,6 +89,11 @@ public class JahiaSitesBaseService extends JahiaSitesService {
 
     protected JahiaGroupManagerService groupService;
     protected JCRSessionFactory sessionFactory;
+    private String systemSiteDefaultLanguage = "en";
+    private String systemSiteTitle = "System Site";
+    private String systemSiteServername = "localhost";
+    private String systemSiteKey = "systemsite";
+    private String systemSiteTemplateSetName = "templates-intranet";
 
     public void setCacheService(CacheService cacheService) {
         this.cacheService = cacheService;
@@ -142,7 +151,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
 
         siteCacheByID = cacheService.createCacheInstance(SITE_CACHE_BYID);
         siteCacheByName = cacheService.createCacheInstance(SITE_CACHE_BYNAME);
-        siteCacheByKey = cacheService.createCacheInstance(SITE_CACHE_BYKEY);
+        siteCacheByKey = cacheService.createCacheInstance(SITE_CACHE_BYKEY);        
     }
 
     public void stop() {
@@ -495,5 +504,42 @@ public class JahiaSitesBaseService extends JahiaSitesService {
         siteCacheByID.put("default", site);
     }
 
+    public void initAfterAllServicesAreStarted() throws JahiaInitializationException {
+        try {
+            if (getNbSites() == 0) {
 
+                final JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(
+                        "root");
+                sessionFactory.setCurrentUser(jahiaUser);
+                Locale selectedLocale = LanguageCodeConverters.languageCodeToLocale(systemSiteDefaultLanguage);
+                addSite(jahiaUser, systemSiteTitle, systemSiteServername, systemSiteKey, "", selectedLocale,
+                        systemSiteTemplateSetName, "noImport", null, null, false, false, null,
+                        new ProcessingContextFactoryImpl().getContext(new BasicSessionState("systemsession")));
+            }
+        } catch (JahiaException e) {
+            logger.error(e.getMessage(), e);
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    public void setSystemSiteDefaultLanguage(String systemSiteDefaultLanguage) {
+        this.systemSiteDefaultLanguage = systemSiteDefaultLanguage;
+    }
+
+    public void setSystemSiteKey(String systemSiteKey) {
+        this.systemSiteKey = systemSiteKey;
+    }
+
+    public void setSystemSiteServername(String systemSiteServername) {
+        this.systemSiteServername = systemSiteServername;
+    }
+
+    public void setSystemSiteTemplateSetName(String systemSiteTemplateSetName) {
+        this.systemSiteTemplateSetName = systemSiteTemplateSetName;
+    }
+
+    public void setSystemSiteTitle(String systemSiteTitle) {
+        this.systemSiteTitle = systemSiteTitle;
+    }
 }

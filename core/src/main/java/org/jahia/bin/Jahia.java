@@ -52,6 +52,10 @@ package org.jahia.bin;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.jackrabbit.core.security.JahiaAccessManager;
+import org.jahia.params.*;
+import org.jahia.services.JahiaAfterInitializationService;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.usermanager.JahiaUser;
 import org.slf4j.Logger;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.data.JahiaData;
@@ -59,9 +63,6 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.exceptions.JahiaPageNotFoundException;
 import org.jahia.exceptions.JahiaSiteNotFoundException;
-import org.jahia.params.ParamBean;
-import org.jahia.params.ProcessingContext;
-import org.jahia.params.ProcessingContextFactory;
 import org.jahia.pipelines.Pipeline;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.registries.ServicesRegistry;
@@ -81,6 +82,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -274,7 +277,18 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
             // Initialize this to make sure we call it in Jahia's context instead of a portlet's context, as
             // portlets also use Jackrabbit-stored preferences.
             JahiaAccessManager.getRepository();
-
+            Map map = SpringContextSingleton.getInstance().getContext().getBeansOfType(
+                    JahiaAfterInitializationService.class);
+            for (Object o : map.values()) {
+                JahiaAfterInitializationService initializationService = (JahiaAfterInitializationService) o;
+                initializationService.init();
+            }
+            map = SpringContextSingleton.getInstance().getModuleContext().getBeansOfType(
+                    JahiaAfterInitializationService.class);
+            for (Object o : map.values()) {
+                JahiaAfterInitializationService initializationService = (JahiaAfterInitializationService) o;
+                initializationService.init();
+            }
             mInitiated = true;
         } catch (Exception je) {
             logger.error("Error during initialization of Jahia", je);

@@ -109,6 +109,11 @@
             </bean>
         </property>
         <property name="sessionFactory" ref="jcrSessionFactory"/>
+        <property name="systemSiteKey" value="systemsite"/>
+        <property name="systemSiteTitle" value="System Site"/>
+        <property name="systemSiteServername" value="localhost"/>
+        <property name="systemSiteDefaultLanguage" value="en"/>
+        <property name="systemSiteTemplateSetName" value="templates-intranet"/>
     </bean>
 
     <bean id="CategoryService" parent="proxyTemplate">

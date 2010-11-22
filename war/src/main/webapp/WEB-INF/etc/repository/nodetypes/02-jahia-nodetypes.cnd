@@ -409,7 +409,6 @@
  - j:defaultLanguage (string) nofulltext
  - j:mixLanguage (boolean) = false
  - j:templatesSet (string) hidden
- + users (nt:base) = nt:base
  + * (nt:base)
 
 

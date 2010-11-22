@@ -98,7 +98,9 @@
         <module>job</module>
         <module>location</module>
         <module>news</module>
+        <module>newsletter</module>
         <module>grid</module>
+        <module>pageHit</module>
         <module>person</module>
         <module>poll</module>
         <module>portal</module>
@@ -128,6 +130,5 @@
         <module>userregistration</module>
 		<module>videostreaming</module>
         <module>wiki</module>
-        <module>pageHit</module>
     </modules>
 </project>

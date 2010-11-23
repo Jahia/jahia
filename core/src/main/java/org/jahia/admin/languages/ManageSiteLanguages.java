@@ -41,6 +41,8 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.sites.JahiaSitesBaseService;
+import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.LanguageCodeConverters;
 
@@ -190,7 +192,11 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
             site.getLanguages().removeAll(deletedLanguageList);
         }
         try {
-            ServicesRegistry.getInstance().getJahiaSitesService().updateSite(site);
+            JahiaSitesService service = ServicesRegistry.getInstance().getJahiaSitesService();
+            service.updateSite(site);
+            JahiaSite jahiaSite = service.getSiteByKey(JahiaSitesBaseService.SYSTEM_SITE_KEY);
+            jahiaSite.getLanguages().addAll(site.getLanguages());
+            service.updateSite(jahiaSite);
         } catch (JahiaException e) {
             logger.error(e.getMessage(), e);
         }

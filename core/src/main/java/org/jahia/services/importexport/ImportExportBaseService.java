@@ -781,6 +781,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             site.setDefaultLanguage(siteLangs.iterator().next());
             try {
                 sitesService.updateSite(site);
+                JahiaSite jahiaSite = sitesService.getSiteByKey(JahiaSitesBaseService.SYSTEM_SITE_KEY);
+                jahiaSite.getLanguages().addAll(site.getLanguages());
+                sitesService.updateSite(jahiaSite);
             } catch (JahiaException e) {
                 logger.error("Cannot update site", e);
             }

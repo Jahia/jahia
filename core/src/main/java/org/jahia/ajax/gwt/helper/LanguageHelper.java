@@ -33,6 +33,9 @@
 package org.jahia.ajax.gwt.helper;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.sites.JahiaSitesBaseService;
 import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.bin.Jahia;
@@ -81,7 +84,9 @@ public class LanguageHelper {
                     }
                 }
             } else {
-                Locale[] locales = Locale.getAvailableLocales();
+                JahiaSite siteByKey = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(
+                        JahiaSitesBaseService.SYSTEM_SITE_KEY);
+                List<Locale> locales = siteByKey.getLanguagesAsLocales();
                 final TreeSet<String> orderedLangs = new TreeSet<String>();
                 for (Locale locale : locales) {
                     orderedLangs.add(locale.getLanguage());

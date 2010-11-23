@@ -350,19 +350,21 @@ public class AggregateCacheFilter extends AbstractFilter {
                         if (cacheEntry.getProperty(RESOURCES) != null) {
                             renderContext.addStaticAsset((Map<String, Set<String>>) cacheEntry.getProperty(RESOURCES));
                         }
-//                        if (cacheEntry.getProperty(TEMPLATE) != null) {
-//                            renderContext.getRequest().setAttribute("previousTemplate", cacheEntry.getProperty(TEMPLATE));
-//                        }
                         else {logger.warn("resource not found"); }
                     } else {
                         cache.put(new Element(mrCacheKey, null));
                         logger.debug("Missing content : " + cacheKey);
+                        Map<String, Set<String>> map = renderContext.getStaticAssets();
+                        renderContext.resetStaticAssets();
                         generateContent(renderContext, outputDocument, segment, cacheKey);
+                        renderContext.addStaticAsset(map);
                     }
                 } else {
                     logger.debug("Missing content : " + mrCacheKey);
+                    Map<String, Set<String>> map = renderContext.getStaticAssets();
+                    renderContext.resetStaticAssets();
                     generateContent(renderContext, outputDocument, segment, cacheKey);
-
+                    renderContext.addStaticAsset(map);
                 }
             }
             return outputDocument.toString();

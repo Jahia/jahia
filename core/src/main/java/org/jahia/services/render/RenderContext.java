@@ -335,4 +335,7 @@ public class RenderContext {
         return staticAssetOptions;
     }
 
+    public void resetStaticAssets() {
+        this.staticAssets.clear();
+    }
 }

@@ -32,10 +32,11 @@
     <c:set var="animatedTasks" value=""/>
     <c:set var="animatedWFs" value=""/>
 
-    <table width="100%" cellspacing="0" cellpadding="5" border="0" class="evenOddTable">
+    <table width="100%" cellspacing="0" cellpadding="5" border="0" class="table">
         <thead>
         <tr>
-            <th width="5%" align="center">
+            <th width="1%">&nbsp;</th>
+            <th width="5%">
                 <c:if test="${jcr:isNodeType(currentNode.parent,'jnt:contentFolder') || jcr:isNodeType(currentNode.parent,'jnt:folder')}">
                     <a title="parent" href="${url.base}${currentNode.parent.path}.html"><img height="16" width="16"
                                                                                              border="0"
@@ -44,30 +45,26 @@
                                                                                              src="${url.currentModule}/images/icons/folder_up.png"></a>
                 </c:if>
             </th>
-            <th width="5%"><fmt:message key="label.type"/></th>
             <th width="35%"><fmt:message key="label.title"/></th>
-            <th width="5%" style="white-space: nowrap;"><fmt:message key="mix_created.jcr_created"/></th>
-            <th width="5%" style="white-space: nowrap;"><fmt:message key="mix_lastModified.jcr_lastModified"/></th>
-            <th width="5%" style="white-space: nowrap;"><fmt:message key="jmix_lastPublished.j_lastPublished"/></th>
-            <th width="20%" style="white-space: nowrap;"><fmt:message key="label.workflow"/></th>
-            <th width="5%"><fmt:message key="label.lock"/></th>
-            <th width="20%" class="lastCol"><fmt:message key="label.action"/></th>
+            <th width="15%" style="white-space: nowrap;"><fmt:message key="mix_created.jcr_created"/></th>
+            <th width="15%" style="white-space: nowrap;"><fmt:message key="mix_lastModified.jcr_lastModified"/></th>
+            <th width="15%"><fmt:message key="jmix_lastPublished.j_lastPublished"/></th>
+            <th width="15%" style="white-space: nowrap;" class="lastCol"><fmt:message key="label.workflow"/></th>
         </tr>
         </thead>
         <tbody>
         <c:forEach items="${moduleMap.currentList}" var="child" begin="${moduleMap.begin}" end="${moduleMap.end}"
                    varStatus="status">
-            <tr class="evenLine">
+            <tr class="${status.count % 2 == 0 ? 'even' : 'odd'}">
                 <td align="center">
+                    <input type="checkbox" name="${child.identifier}"/>
                 </td>
                 <td>
-                    <c:if test="${jcr:isNodeType(child, 'jnt:contentFolder')}">
-                        <img height="24" width="24" border="0" style="cursor: pointer;"
-                             src="${url.currentModule}/images/icons/folder-contenu.png"/>
+                    <c:if test="${not empty child.primaryNodeType.templatePackage.rootFolder}">
+                        <img src="${url.templatesPath}/${child.primaryNodeType.templatePackage.rootFolder}/icons/${fn:replace(fn:escapeXml(child.primaryNodeType.name),":","_")}_large.png"/>
                     </c:if>
-                    <c:if test="${!jcr:isNodeType(child, 'jnt:contentFolder')}">
-                        <img src="${url.currentModule}/icons/${fn:replace(":","_",fn:escapeXml(child.primaryNodeType.name))}.png"/>
-
+                    <c:if test="${empty child.primaryNodeType.templatePackage.rootFolder}">
+                        <img src="${url.templatesPath}/default/icons/${fn:replace(fn:escapeXml(child.primaryNodeType.name),":","_")}_large.png"/>
                     </c:if>
                 </td>
                 <td>
@@ -97,18 +94,24 @@
                     <fmt:formatDate value="${child.properties['j:lastPublished'].date.time}"
                                     pattern="yyyy-MM-dd HH:mm"/>
                 </td>
-                <td>
-                    <%@include file="../../jnt_contentList/edit/workflow.jspf" %>
-                </td>
-                <td>
-                    <c:if test="${child.locked}">
-                        <img height="16" width="16" border="0" style="cursor: pointer;" title="Locked" alt="Locked"
-                             src="${url.currentModule}/images/icons/locked.gif">
-                    </c:if>
-                </td>
                 <td class="lastCol">
-                    <%@include file="../../jnt_contentList/edit/edit.jspf" %>
+                    <workflow:activeWorkflow node="${child}" var="wfs"/>
+                    <c:forEach items="${wfs}" var="wf">
+                        ${wf.workflowDefinition.displayName}
+                    </c:forEach>
                 </td>
+                <%--<td>--%>
+                    <%--<%@include file="../../jnt_contentList/edit/workflow.jspf" %>--%>
+                <%--</td>--%>
+                <%--<td>--%>
+                    <%--<c:if test="${child.locked}">--%>
+                        <%--<img height="16" width="16" border="0" style="cursor: pointer;" title="Locked" alt="Locked"--%>
+                             <%--src="${url.currentModule}/images/icons/locked.gif">--%>
+                    <%--</c:if>--%>
+                <%--</td>--%>
+                <%--<td class="lastCol">--%>
+                    <%--<%@include file="../../jnt_contentList/edit/edit.jspf" %>--%>
+                <%--</td>--%>
             </tr>
         </c:forEach>
         </tbody>

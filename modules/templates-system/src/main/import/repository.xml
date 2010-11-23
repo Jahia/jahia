@@ -11,11 +11,12 @@
       <contents jcr:primaryType="jnt:contentFolder">
         <site_components jcr:primaryType="jnt:contentFolder" />
       </contents>
-      <files jcr:primaryType="jnt:folder" />
+      <files jcr:primaryType="jnt:folder" >
+          <themes jcr:primaryType="jnt:folder">
+            <default jcr:primaryType="jnt:folder" />
+          </themes>
+      </files>
       <portlets jcr:primaryType="jnt:portletFolder" />
-      <themes jcr:primaryType="jnt:folder">
-        <default jcr:primaryType="jnt:folder" />
-      </themes>
       <templates jcr:primaryType="jnt:templatesFolder">
         <base jcr:mixinTypes="jmix:renderable jmix:theme" jcr:primaryType="jnt:template" j:view="system" j:theme="/templateSets/templates-system/themes/default">
           <home jcr:primaryType="jnt:pageTemplate">
@@ -33,7 +34,7 @@
           <simple jcr:primaryType="jnt:pageTemplate">
             <pagecontent jcr:primaryType="jnt:contentList" />
           </simple>
-          <systemTemplate jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:content" j:hiddenTemplate="false">
+          <systemTemplate jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:content jnt:folder" j:hiddenTemplate="false">
             <pagecontent jcr:primaryType="jnt:contentList">
               <mainResourceDisplay j:mainResourceView="system" jcr:primaryType="jnt:mainResourceDisplay" />
             </pagecontent>

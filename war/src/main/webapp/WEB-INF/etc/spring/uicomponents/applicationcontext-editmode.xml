@@ -846,8 +846,7 @@
                         <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.ContentBrowseTabItem">
                             <property name="paths">
                                 <list>
-                                    <value>/shared/contents</value>
-                                    <value>$site/contents</value>
+                                    <value>$sites</value>
                                     <value>$user/contents</value>
                                 </list>
                             </property>
@@ -913,8 +912,7 @@
                         <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.FileImagesBrowseTabItem">
                             <property name="paths">
                                 <list>
-                                    <value>/shared/files</value>
-                                    <value>$site/files</value>
+                                    <value>$sites</value>
                                     <value>$user/files</value>
                                 </list>
                             </property>
@@ -969,8 +967,7 @@
                         <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.PortletBrowseTabItem">
                             <property name="paths">
                                 <list>
-                                    <value>/shared/portlets</value>
-                                    <value>$site/portlets</value>
+                                    <value>$sites</value>
                                     <value>$user/portlets</value>
                                 </list>
                             </property>

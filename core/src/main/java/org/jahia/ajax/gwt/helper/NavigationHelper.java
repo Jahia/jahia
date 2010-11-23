@@ -274,11 +274,11 @@ public class NavigationHelper {
 
     public List<GWTJahiaNode> retrieveRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes,
                                            List<String> filters, List<String> fields, List<String> selectedNodes,
-                                           List<String> openPaths, JCRSiteNode site,
+                                           List<String> openPaths, final JCRSiteNode site,
                                            JCRSessionWrapper currentUserSession, Locale uiLocale, boolean checkSubChild)
             throws GWTJahiaServiceException {
         try {
-            List<GWTJahiaNode> userNodes = new ArrayList<GWTJahiaNode>();
+            final List<GWTJahiaNode> userNodes = new ArrayList<GWTJahiaNode>();
 
             logger.debug("open paths for getRoot : " + openPaths);
 
@@ -295,9 +295,17 @@ public class NavigationHelper {
                     displayName = StringUtils.substringAfterLast(systemSiteKey, "/");
                 }
                 if (site != null && path.contains("$sites")) {
-                    final JCRNodeWrapper parent = site.getParent();
-                    path = path.replace("$sites", parent.getPath());
-                    displayName = parent.getName();
+                    JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            final JCRNodeWrapper parent = site.getParent();
+                            NodeIterator nodes = parent.getNodes();
+                            while (nodes.hasNext()) {
+                                JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) nodes.next();
+                                userNodes.add(getGWTJahiaNode(nodeWrapper));
+                            }
+                            return null;
+                        }
+                    });
                 }
                 if (path.contains("$user")) {
                     path = path.replace("$user", "/users/" + currentUserSession.getUserID());

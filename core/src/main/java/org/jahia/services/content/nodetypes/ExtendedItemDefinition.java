@@ -201,7 +201,7 @@ public class ExtendedItemDefinition implements ItemDefinition {
         }
         Map<String, String> labelNodeType = labelsByNodeType.get(locale);
         if (labelNodeType == null) {
-            labelNodeType = new HashMap<String, String>();
+            labelNodeType = new ConcurrentHashMap<String, String>();
             labelsByNodeType.put(locale,labelNodeType);
         }
         String label = labelNodeType.get(nodeType.getName());
@@ -222,7 +222,7 @@ public class ExtendedItemDefinition implements ItemDefinition {
         }
         Map<String, String> labelNodeType = tooltipsByNodeType.get(locale);
         if (labelNodeType == null) {
-            labelNodeType = new HashMap<String, String>();
+            labelNodeType = new ConcurrentHashMap<String, String>();
             tooltipsByNodeType.put(locale,labelNodeType);
         }
         String label = labelNodeType.get(nodeType.getName());

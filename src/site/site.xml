@@ -7,6 +7,11 @@
         <src>images/logo-top.png</src>
         <href>./index.html</href>
     </bannerLeft>
+    <skin>
+    <groupId>org.jahia</groupId>
+  	<artifactId>site-skin-beta</artifactId>
+  	<version>6.5-SNAPSHOT</version>
+  	</skin>
     <body>
         <menu ref="modules"/>
     </body>

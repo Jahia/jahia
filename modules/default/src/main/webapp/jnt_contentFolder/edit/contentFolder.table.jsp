@@ -73,7 +73,7 @@
                     <a href="${url.base}${child.path}.html">
                         </c:when>
                         <c:otherwise>
-                        <a href="${url.base}${child.path}.edit.edit">
+                        <a href="${url.base}${child.path}.edit">
                             </c:otherwise>
                             </c:choose>
                             <c:if test="${!empty child.properties['jcr:title'].string}">

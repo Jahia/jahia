@@ -34,11 +34,22 @@
           <simple jcr:primaryType="jnt:pageTemplate">
             <pagecontent jcr:primaryType="jnt:contentList" />
           </simple>
-          <systemTemplate jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:content jnt:folder" j:hiddenTemplate="false">
-            <pagecontent jcr:primaryType="jnt:contentList">
-                <mainResourceDisplay j:canOrderInContribution="true" jcr:mixinTypes="jmix:contributeMode" j:mainResourceView="system" j:canDeleteInContribution="true" jcr:primaryType="jnt:mainResourceDisplay" j:contributeTypes="jmix:editorialContent" j:editableInContribution="true" />
-            </pagecontent>
-          </systemTemplate>
+            <folderTemplate jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:folder jnt:contentFolder" j:hiddenTemplate="false">
+              <pagecontent jcr:primaryType="jnt:contentList">
+                <facets jcr:primaryType="jnt:facets" j:bindedComponent="/templateSets/templates-system/templates/base/folderTemplate/pagecontent/mainResourceDisplay">
+                  <fieldFacet mincount="1" field="jmix:tagged;j:tags" jcr:primaryType="jnt:fieldFacet" missing="false" facet="tags" offset="0" limit="100">
+                    <j:translation_en label="Tags" jcr:language="en" jcr:primaryType="jnt:translation" />
+                  </fieldFacet>
+                </facets>
+                <mainResourceDisplay j:canOrderInContribution="true" jcr:mixinTypes="jmix:contributeMode" j:mainResourceView="table" j:canDeleteInContribution="true" jcr:primaryType="jnt:mainResourceDisplay" j:contributeTypes="jmix:editorialContent" j:editableInContribution="true" />
+              </pagecontent>
+            </folderTemplate>
+            <contentTemplate jcr:primaryType="jnt:contentTemplate" j:hiddenTemplate="false" j:applyOn="jnt:content">
+              <pagecontent jcr:primaryType="jnt:contentList">
+                <mainResourceDisplay-table jcr:primaryType="jnt:mainResourceDisplay" j:mainResourceView="table" />
+                <mainResourceDisplay-edit jcr:primaryType="jnt:mainResourceDisplay" j:mainResourceView="edit" />
+              </pagecontent>
+            </contentTemplate>
           <my-profile jcr:primaryType="jnt:pageTemplate">
             <pagecontent jcr:primaryType="jnt:contentList">
               <tabularList jcr:primaryType="jnt:tabularList">

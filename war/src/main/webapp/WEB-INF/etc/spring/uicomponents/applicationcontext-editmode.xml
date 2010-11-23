@@ -1026,7 +1026,7 @@
                     <property name="tabItem">
                         <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.CategoryBrowseTabItem">
                             <property name="folderTypes" value="jnt:category"/>
-                            <property name="paths" value="/categories"/>
+                            <property name="paths" value="$systemsite/categories"/>
                             <property name="limit" value="500"/>
                         </bean>
                     </property>

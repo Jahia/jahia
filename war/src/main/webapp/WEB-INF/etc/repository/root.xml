@@ -94,17 +94,7 @@
                                      j:privileges="jcr:write" j:aceType="GRANT"/>
         </j:acl>
     </mounts>
-    <portletdefinitions jcr:primaryType="jnt:portletDefinitions"/>
-    <categories jcr:primaryType="jnt:category" jcr:mixinTypes="jmix:accessControlled">
-        <j:acl jcr:primaryType="jnt:acl">
-            <GRANT_jcr_write_g_administrators j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:administrators"
-                                    j:privileges="jcr:write" j:aceType="GRANT"/>
-            <GRANT_jcr_modifyAccessControl_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:administrators"
-                                    j:privileges="jcr:modifyAccessControl" j:aceType="GRANT"/>
-            <GRANT_jcr_write_live_g_administrators j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:administrators"
-                                    j:privileges="jcr:write_live" j:aceType="GRANT"/>
-        </j:acl>
-    </categories>
+    <portletdefinitions jcr:primaryType="jnt:portletDefinitions"/>    
 
     <templateSets jcr:primaryType="jnt:templateSets"/>
 

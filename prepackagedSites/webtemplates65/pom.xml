@@ -66,6 +66,28 @@
 
                 <executions>
                     <execution>
+                        <id>systemsite</id>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/systemsite.xml</descriptor>
+                            </descriptors>
+                            <attach>false</attach>
+                            <finalName>systemsite</finalName>
+                        </configuration>
+
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+
+                <executions>
+                    <execution>
                         <id>root</id>
                         <configuration>
                             <descriptors>

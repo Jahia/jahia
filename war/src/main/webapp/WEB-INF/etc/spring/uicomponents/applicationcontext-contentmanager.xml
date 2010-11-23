@@ -1697,7 +1697,7 @@
 
     <bean id="repository.category" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="categoryRepository"/>
-        <property name="paths" value="/categories"/>
+        <property name="paths" value="$systemsite/categories"/>
         <property name="titleKey"
                   value="repository.categoryRepository.label"/>
     </bean>

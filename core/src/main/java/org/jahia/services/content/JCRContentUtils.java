@@ -38,6 +38,8 @@ import org.apache.commons.lang.CharUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO9075;
 import org.apache.jackrabbit.util.Text;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.services.sites.JahiaSitesBaseService;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.decorator.JCRSiteNode;
@@ -632,4 +634,8 @@ public final class JCRContentUtils {
         return node;
     }
 
+
+    public static String getSystemSitePath() {
+        return "/sites/" + JahiaSitesBaseService.SYSTEM_SITE_KEY;        
+    }
 }

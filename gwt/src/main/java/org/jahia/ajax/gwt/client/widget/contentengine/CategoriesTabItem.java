@@ -98,7 +98,7 @@ public class CategoriesTabItem extends EditEngineTabItem {
      */
     private TreeGrid<GWTJahiaNode> createCategoriedPickerPanel() {
         GWTJahiaNodeTreeFactory treeGridFactory =
-                new GWTJahiaNodeTreeFactory(Arrays.asList("/categories"), GWTJahiaNode.DEFAULT_REFERENCE_FIELDS);
+                new GWTJahiaNodeTreeFactory(Arrays.asList("$systemsite/categories"), GWTJahiaNode.DEFAULT_REFERENCE_FIELDS);
         treeGridFactory.setNodeTypes(JCRClientUtils.CATEGORY_NODETYPES);
         ColumnConfig name = new ColumnConfig("displayName", Messages.get("label.title"), 500);
         name.setRenderer(new TreeGridCellRenderer<GWTJahiaNode>());

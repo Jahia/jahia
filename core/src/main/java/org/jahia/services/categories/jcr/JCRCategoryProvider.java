@@ -32,6 +32,8 @@
 
 package org.jahia.services.categories.jcr;
 
+import org.jahia.services.content.JCRContentUtils;
+import org.jahia.services.sites.JahiaSitesBaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
@@ -89,7 +91,7 @@ public class JCRCategoryProvider {
         try {
             JCRSessionWrapper jcrSessionWrapper = sessionFactory
                     .getCurrentUserSession();
-            rootNodeWrapper = jcrSessionWrapper.getNode("/categories");
+            rootNodeWrapper = jcrSessionWrapper.getNode(JCRContentUtils.getSystemSitePath()+"/categories");
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -105,9 +107,7 @@ public class JCRCategoryProvider {
         JCRNodeWrapper rootNodeWrapper = null;
         List<Category> rootCategories = new ArrayList<Category>();
         try {
-            JCRSessionWrapper jcrSessionWrapper = sessionFactory
-                    .getCurrentUserSession();
-            rootNodeWrapper = jcrSessionWrapper.getNode( "/categories");
+            rootNodeWrapper = (JCRNodeWrapper) getCategoriesRoot();
             for (NodeIterator it = rootNodeWrapper.getNodes(); it.hasNext();) {
                 JCRNodeWrapper rootCategoryNode = (JCRNodeWrapper) it.nextNode(); 
                 if (rootCategoryNode.isNodeType(Constants.JAHIANT_CATEGORY)) {
@@ -213,7 +213,7 @@ public class JCRCategoryProvider {
                         .getJahiaCategory()).getCategoryNode();
             }
             if (parentNodeWrapper == null) {
-                parentNodeWrapper = jcrSessionWrapper.getNode("/categories");
+                parentNodeWrapper = (JCRNodeWrapper) getCategoriesRoot();
             }
             final JCRNodeWrapper wrapper = (JCRNodeWrapper) parentNodeWrapper
                     .getNode(categoryKey);
@@ -537,7 +537,7 @@ public class JCRCategoryProvider {
                     .getJahiaCategory()).getCategoryNode();
         }
         if (parentNodeWrapper == null) {
-            parentNodeWrapper = jcrSessionWrapper.getNode("/categories");
+            parentNodeWrapper = (JCRNodeWrapper) getCategoriesRoot();
         }
         return parentNodeWrapper;
     }

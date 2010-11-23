@@ -35,6 +35,9 @@ package org.jahia.ajax.gwt.helper;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.sites.JahiaSitesBaseService;
 import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
@@ -285,6 +288,11 @@ public class NavigationHelper {
                 if (site != null && path.contains("$site/") || path.equals("$site")) {
                     path = path.replace("$site", site.getPath());
                     displayName = site.getSiteKey();
+                }
+                if (path.contains("$systemsite/") || path.equals("$systemsite")) {
+                    String systemSiteKey = JCRContentUtils.getSystemSitePath();
+                    path = path.replace("$systemsite", systemSiteKey);
+                    displayName = StringUtils.substringAfterLast(systemSiteKey, "/");
                 }
                 if (site != null && path.contains("$sites")) {
                     final JCRNodeWrapper parent = site.getParent();

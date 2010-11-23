@@ -651,4 +651,10 @@
         <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
         <function-signature>java.lang.String label(org.jahia.services.content.nodetypes.ExtendedPropertyDefinition,java.lang.String,org.jahia.services.content.nodetypes.ExtendedNodeType)</function-signature>
     </function>
+    <function>
+        <description>get the path of the system site</description>
+        <name>getSystemSitePath</name>
+        <function-class>org.jahia.services.content.JCRContentUtils</function-class>
+        <function-signature>java.lang.String getSystemSitePath()</function-signature>
+    </function>
 </taglib>

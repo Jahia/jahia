@@ -286,6 +286,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
         site.setMandatoryLanguages(site.getLanguages());
         site.setMixLanguagesActive(false);
         // check there is no site with same server name before adding
+        boolean importingSystemSite = false;
         if (getSiteByKey(site.getSiteKey()) == null) {
             siteProvider.addSite(site, site.getSiteKey(), site.getTemplatePackageName(), site.getTitle(),
                     site.getDescr(), site.getServerName(), site.getDefaultLanguage(), site.isMixLanguagesActive(), site.getLanguages(),
@@ -296,6 +297,9 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
 
             addToCache(site);
 
+        } else if (siteKey.equals(SYSTEM_SITE_KEY)) {
+            site = getSiteByKey(SYSTEM_SITE_KEY);
+            importingSystemSite = true;
         } else {
             throw new IOException("site already exists");
         }
@@ -306,33 +310,34 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
             if (getNbSites() == 1 && !site.isDefault() && !site.getSiteKey().equals(SYSTEM_SITE_KEY)) {
                 setDefaultSite(site);
             }
+            if (!importingSystemSite) {
+                JahiaGroupManagerService jgms = ServicesRegistry.getInstance().getJahiaGroupManagerService();
 
-            JahiaGroupManagerService jgms = ServicesRegistry.getInstance().getJahiaGroupManagerService();
+                updateSite(site);
 
-            updateSite(site);
+                site.setMixLanguagesActive(false);
 
-            site.setMixLanguagesActive(false);
+                // create default groups...
+                JahiaGroup usersGroup = jgms.lookupGroup(0, JahiaGroupManagerService.USERS_GROUPNAME);
+                if (usersGroup == null) {
+                    usersGroup = jgms.createGroup(0, JahiaGroupManagerService.USERS_GROUPNAME, null, false);
+                }
 
-            // create default groups...
-            JahiaGroup usersGroup = jgms.lookupGroup(0, JahiaGroupManagerService.USERS_GROUPNAME);
-            if (usersGroup == null) {
-                usersGroup = jgms.createGroup(0, JahiaGroupManagerService.USERS_GROUPNAME, null, false);
+                JahiaGroup guestGroup = jgms.lookupGroup(0, JahiaGroupManagerService.GUEST_GROUPNAME);
+                if (guestGroup == null) {
+                    guestGroup = jgms.createGroup(0, JahiaGroupManagerService.GUEST_GROUPNAME, null, false);
+                }
+
+                JahiaGroup adminGroup = jgms.lookupGroup(site.getID(),
+                        JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME);
+                if (adminGroup == null) {
+                    adminGroup = jgms.createGroup(site.getID(), JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME, null,
+                            false);
+                }
+
+                // attach superadmin user (current) to administrators group...
+                adminGroup.addMember(currentUser);
             }
-
-            JahiaGroup guestGroup = jgms.lookupGroup(0, JahiaGroupManagerService.GUEST_GROUPNAME);
-            if (guestGroup == null) {
-                guestGroup = jgms.createGroup(0, JahiaGroupManagerService.GUEST_GROUPNAME, null, false);
-            }
-
-            JahiaGroup adminGroup = jgms.lookupGroup(site.getID(), JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME);
-            if (adminGroup == null) {
-                adminGroup = jgms.createGroup(site.getID(),
-                        JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME, null, false);
-            }
-
-            // attach superadmin user (current) to administrators group...
-            adminGroup.addMember(currentUser);
-
             File initialZip = null;
             String initialZipName = null;
 

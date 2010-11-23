@@ -111,6 +111,7 @@ public class ManageSites extends AbstractAdministrationModule {
         RANK.put("users.xml", 10);
         RANK.put("serverPermissions.xml", 20);
         RANK.put("shared.zip", 30);
+        RANK.put(JahiaSitesBaseService.SYSTEM_SITE_KEY+".zip", 40);
     }
     private static final Comparator<Map<Object, Object>> IMPORTS_COMPARATOR = new Comparator<Map<Object,Object>>() {
         public int compare(Map<Object, Object> o1, Map<Object, Object> o2) {
@@ -1834,9 +1835,10 @@ public class ManageSites extends AbstractAdministrationModule {
                     importInfos.put("siteServerNameExists", Boolean.TRUE);
                 } else {
                     try {
+                        String siteKey = (String) importInfos.get("sitekey");
                         importInfos.put("siteKeyExists", Boolean.valueOf(
                                 ServicesRegistry.getInstance().getJahiaSitesService()
-                                        .getSiteByKey((String) importInfos.get("sitekey")) != null ||
+                                        .getSiteByKey(siteKey) != null && !siteKey.equals(JahiaSitesBaseService.SYSTEM_SITE_KEY) ||
                                         "".equals(importInfos.get("sitekey"))));
                         String serverName = (String) importInfos.get("siteservername");
                         importInfos.put("siteServerNameExists", Boolean.valueOf(
@@ -1861,6 +1863,7 @@ public class ManageSites extends AbstractAdministrationModule {
         List<Map<Object, Object>> importsInfos = (List<Map<Object, Object>>) session.getAttribute("importsInfos");
         Map<Object, Object> siteKeyMapping = new HashMap<Object, Object>();
         boolean stillBad = false;
+        JahiaSitesService jahiaSitesService = ServicesRegistry.getInstance().getJahiaSitesService();
         for (Map<Object, Object> infos : importsInfos) {
             File file = (File) infos.get("importFile");
             infos.put("sitekey", StringUtils.left(request.getParameter(file.getName() + "siteKey") == null ? null :
@@ -1884,12 +1887,13 @@ public class ManageSites extends AbstractAdministrationModule {
                             infos.get("importFileName").equals("users.xml")) {
 
                     } else {
-                        infos.put("siteKeyExists", Boolean.valueOf(ServicesRegistry.getInstance().getJahiaSitesService()
-                                .getSiteByKey((String) infos.get("sitekey")) != null ||
-                                "".equals(infos.get("sitekey"))));
+                        String siteKey = (String) infos.get("sitekey");
+                        infos.put("siteKeyExists", Boolean.valueOf(jahiaSitesService
+                                .getSiteByKey(siteKey) != null && !siteKey.equals(JahiaSitesBaseService.SYSTEM_SITE_KEY) ||
+                                "".equals(siteKey)));
                         String serverName = (String) infos.get("siteservername");                        
                         infos.put("siteServerNameExists", Boolean.valueOf(
-                                (ServicesRegistry.getInstance().getJahiaSitesService()
+                                (jahiaSitesService
                                         .getSite(serverName) != null  && !"localhost".equals(serverName)) ||
                                         "".equals(serverName)));
 
@@ -1974,7 +1978,7 @@ public class ManageSites extends AbstractAdministrationModule {
                         }
                         Locale defaultLocale = determineDefaultLocale(jParams, infos);
                         try {
-                                ServicesRegistry.getInstance().getJahiaSitesService()
+                                jahiaSitesService
                                         .addSite(jParams.getUser(), (String) infos.get("sitetitle"),
                                                 (String) infos.get("siteservername"), (String) infos.get("sitekey"), "",
                                                 defaultLocale, tpl, "fileImport", file,

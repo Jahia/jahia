@@ -37,6 +37,8 @@ import org.apache.commons.io.FileCleaningTracker;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.DeferredFileOutputStream;
 import org.apache.jackrabbit.commons.xml.SystemViewExporter;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.sites.JahiaSitesBaseService;
 import org.slf4j.Logger;
 import org.springframework.util.StringUtils;
 import org.apache.xerces.jaxp.SAXParserFactoryImpl;
@@ -229,8 +231,13 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         bw.write("ExportDate = " + new SimpleDateFormat(ImportExportService.DATE_FORMAT).format(new Date()) + "\n");
         bw.flush();
 
-        for (Iterator<JahiaSite> iterator = sites.iterator(); iterator.hasNext();) {
-            JahiaSite jahiaSite = iterator.next();
+        // Add system site for export
+        JahiaSite systemSite = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(JahiaSitesBaseService.SYSTEM_SITE_KEY);
+        if(!sites.contains(systemSite)) {
+            sites.add(systemSite);
+        }
+
+        for (JahiaSite jahiaSite : sites) {
             anEntry = new ZipEntry(jahiaSite.getSiteKey() + ".zip");
             zout.putNextEntry(anEntry);
             exportSite(jahiaSite, zout, params);

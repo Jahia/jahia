@@ -568,7 +568,7 @@
 //---------------------------------------------------------
 
 [jmix:contributeMode] mixin
- extends = jnt:contentList, jnt:folder, jnt:contentFolder, jnt:area
+ extends = jnt:contentList, jnt:folder, jnt:contentFolder, jnt:area, jnt:mainResourceDisplay
  - j:editableInContribution (boolean)
  - j:canOrderInContribution (boolean)
  - j:canDeleteInContribution (boolean)

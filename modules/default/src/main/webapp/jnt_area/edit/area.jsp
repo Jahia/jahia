@@ -19,7 +19,7 @@
 
         <div class="area<c:if test="${not empty currentNode.properties['j:mockupStyle']}"> ${currentNode.properties['j:mockupStyle'].string}</c:if>">
             <div class="areaTemplate">
-                <span>List : ${currentNode.name}</span>
+                <span>Area : ${currentNode.name}</span>
             </div>
             <%--<c:forEach items="${moduleMap.currentList}" var="subchild" begin="${moduleMap.begin}"--%>
                        <%--end="${moduleMap.end}">--%>
@@ -45,7 +45,7 @@
             </c:forEach>
         </c:if>
         <template:area template="${currentNode.properties['j:areaView'].string}"
-                                 path="${currentNode.name}" nodeTypes="${nodeTypes}">
+                                 path="${currentNode.name}" nodeTypes="${nodeTypes}" mockupStyle="${currentNode.properties['j:mockupStyle'].string}">
             <c:if test="${not empty currentNode.properties['j:subNodesView'].string}">
                 <template:param name="subNodesView" value="${currentNode.properties['j:subNodesView'].string}"/>
             </c:if>

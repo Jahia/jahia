@@ -36,7 +36,7 @@
           </simple>
           <systemTemplate jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:content jnt:folder" j:hiddenTemplate="false">
             <pagecontent jcr:primaryType="jnt:contentList">
-              <mainResourceDisplay j:mainResourceView="system" jcr:primaryType="jnt:mainResourceDisplay" />
+                <mainResourceDisplay j:canOrderInContribution="true" jcr:mixinTypes="jmix:contributeMode" j:mainResourceView="system" j:canDeleteInContribution="true" jcr:primaryType="jnt:mainResourceDisplay" j:contributeTypes="jmix:editorialContent" j:editableInContribution="true" />
             </pagecontent>
           </systemTemplate>
           <my-profile jcr:primaryType="jnt:pageTemplate">

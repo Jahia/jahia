@@ -32,7 +32,6 @@
 
 package org.jahia.taglibs.template.include;
 
-import org.slf4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
@@ -43,12 +42,16 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.Template;
+import org.slf4j.Logger;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Handler for the &lt;template:module/&gt; tag, used to render content objects.
@@ -89,7 +92,8 @@ public class AreaTag extends ModuleTag implements ParamParent {
             throws RepositoryException, IOException {
         if (renderContext.isEditMode()) {
             try {
-                constraints = ConstraintsHelper.getConstraints(Arrays.asList(NodeTypeRegistry.getInstance().getNodeType(areaType)));
+                constraints = ConstraintsHelper
+                        .getConstraints(Arrays.asList(NodeTypeRegistry.getInstance().getNodeType(areaType)));
             } catch (RepositoryException e) {
                 logger.error("Error when getting list constraints", e);
             }
@@ -101,7 +105,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
 
             String additionalParameters = "missingList=\"true\"";
             if (mockupStyle != null) {
-                additionalParameters += " mockupStyle=\""+mockupStyle+"\"";
+                additionalParameters += " mockupStyle=\"" + mockupStyle + "\"";
             }
 
             printModuleStart(getModuleType(renderContext), areaPath, null, "No script", additionalParameters);
@@ -129,7 +133,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
                         }
                     }
                 }
-                if(nodeAlreadyExist) {
+                if (nodeAlreadyExist) {
                     node.getSession().save();
                 }
             }
@@ -143,7 +147,8 @@ public class AreaTag extends ModuleTag implements ParamParent {
     @Override protected boolean canEdit(RenderContext renderContext) {
         if (path != null) {
             boolean stillInWrapper = false;
-            return renderContext.isEditMode() && editable && !stillInWrapper && renderContext.getRequest().getAttribute("inArea") == null;
+            return renderContext.isEditMode() && editable && !stillInWrapper &&
+                    renderContext.getRequest().getAttribute("inArea") == null;
         } else {
             return super.canEdit(renderContext);
         }
@@ -158,16 +163,17 @@ public class AreaTag extends ModuleTag implements ParamParent {
         renderContext.getRequest().removeAttribute("skipWrapper");
         renderContext.getRequest().removeAttribute("inArea");
 
-        if (path != null) {
-            try {
-                Template t = (Template)renderContext.getRequest().getAttribute("previousTemplate");
+        try {
+            if (path != null) {
+                Template t = (Template) renderContext.getRequest().getAttribute("previousTemplate");
                 templateNode = t;
 
                 if (!path.startsWith("/")) {
                     List<JCRNodeWrapper> nodes = new ArrayList<JCRNodeWrapper>();
                     if (t != null) {
                         for (Template currentTemplate : t.getNextTemplates()) {
-                            nodes.add(0,resource.getNode().getSession().getNodeByIdentifier(currentTemplate.getNode()));
+                            nodes.add(0,
+                                    resource.getNode().getSession().getNodeByIdentifier(currentTemplate.getNode()));
                         }
                     }
                     nodes.add(resource.getNode());
@@ -178,7 +184,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
                         if (!path.equals("*") && node.hasNode(path)) {
                             currentMain = resource.getNode() != node;
                             this.node = node.getNode(path);
-                            applyContributeModeOptions(currentResource.getNode(),true);
+                            applyContributeModeOptions(currentResource.getNode(), true);
                             if (currentResource.getNode().getParent().getPath().equals(this.node.getPath())) {
                                 this.node = null;
                             } else {
@@ -190,7 +196,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
                             t = t.getNext();
                         }
                     }
-                    renderContext.getRequest().setAttribute("previousTemplate",t);
+                    renderContext.getRequest().setAttribute("previousTemplate", t);
                     if (currentMain) {
                         renderContext.getRequest().setAttribute("inArea", Boolean.TRUE);
                     }
@@ -201,18 +207,19 @@ public class AreaTag extends ModuleTag implements ParamParent {
                     JCRSessionWrapper session = resource.getNode().getSession();
                     try {
                         node = (JCRNodeWrapper) session.getItem(path);
-                        applyContributeModeOptions(currentResource.getNode(),true);
+                        applyContributeModeOptions(currentResource.getNode(), true);
                     } catch (PathNotFoundException e) {
                         missingResource(renderContext, currentResource, resource);
                     }
                 }
                 renderContext.getRequest().setAttribute("skipWrapper", Boolean.TRUE);
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
+            } else {
+                renderContext.getRequest().removeAttribute("skipWrapper");
+                node = resource.getNode();
+                applyContributeModeOptions(currentResource.getNode(), true);
             }
-        } else {
-            renderContext.getRequest().removeAttribute("skipWrapper");
-            node = resource.getNode();
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -223,7 +230,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
         } finally {
             pageContext.getRequest().setAttribute("previousTemplate", templateNode);
             templateNode = null;
-            pageContext.getRequest().setAttribute("inArea",o);
+            pageContext.getRequest().setAttribute("inArea", o);
         }
     }
 }

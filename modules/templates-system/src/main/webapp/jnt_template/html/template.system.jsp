@@ -19,7 +19,6 @@
 <link rel="stylesheet" type="text/css" href="${url.currentModule}/css/print.css" media="print" />
 </head>
 <body>
-<%@ include file="../../common/declarations.jspf" %>
 <jcr:node var="rootPage" path="/sites/${renderContext.site.siteKey}/home"/>
 <div id="bodywrapper">
   <div id="header" class="colorResource1 imgResource1">

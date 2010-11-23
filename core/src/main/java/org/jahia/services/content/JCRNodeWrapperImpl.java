@@ -3181,6 +3181,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 int index = path.indexOf('/', 14);
                 return (site = (JCRSiteNode) (getSession().getNode(index == -1 ? path : path.substring(0, index))));
             }
+
+            return (site = (JCRSiteNode) (getSession().getNode(JCRContentUtils.getSystemSitePath())));
         } catch (ItemNotFoundException e) {
         }
         return null;

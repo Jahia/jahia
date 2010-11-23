@@ -2014,7 +2014,9 @@ public class ManageSites extends AbstractAdministrationModule {
         NodeIterator templates = templatesSet.getNodes();
         while (templates.hasNext()) {
             JCRNodeWrapper node = (JCRNodeWrapper) templates.next();
-            orderedTemplateSets.put(node.getName(), node);
+            if (!node.getName().equals("templates-system")) {
+                orderedTemplateSets.put(node.getName(), node);
+            }
         }
         return orderedTemplateSets;
     }

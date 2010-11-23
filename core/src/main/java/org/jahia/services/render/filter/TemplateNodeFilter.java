@@ -37,7 +37,6 @@ import org.jahia.services.content.*;
 import org.jahia.services.render.*;
 
 import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.query.Query;
@@ -119,8 +118,6 @@ public class TemplateNodeFilter extends AbstractFilter {
             JCRNodeWrapper templatesNode = null;
             if (site != null && site.hasNode("templates")) {
                 templatesNode = site.getNode("templates");
-            } else {
-                templatesNode = node.getSession().getNode("/templates");
             }
 
             if (current.isNodeType("jnt:template")) {
@@ -138,7 +135,11 @@ public class TemplateNodeFilter extends AbstractFilter {
                     template = new Template(templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
                             templateName, templateNode.getIdentifier(), template);
                 } else if (templatesNode != null) {
-                    template = addTemplates(resource, null, templatesNode);
+                    template = addTemplates(resource, templatesNode);
+                }
+
+                if (template == null) {
+                    template = addTemplates(resource, node.getSession().getNode(JCRContentUtils.getSystemSitePath() + "/templates"));
                 }
 
                 if (template != null) {
@@ -157,8 +158,7 @@ public class TemplateNodeFilter extends AbstractFilter {
         return template;
     }
 
-    private Template addTemplates(Resource resource, Template template,
-                                         JCRNodeWrapper templateNode) throws RepositoryException {
+    private Template addTemplates(Resource resource, JCRNodeWrapper templateNode) throws RepositoryException {
         String type = "contentTemplate";
         if (resource.getNode().isNodeType("jnt:page")) {
             type = "pageTemplate";
@@ -173,9 +173,10 @@ public class TemplateNodeFilter extends AbstractFilter {
                 Query.JCR_SQL2);
         QueryResult result = q.execute();
         NodeIterator ni = result.getNodes();
+        Template template = null;
         while (ni.hasNext()) {
             final JCRNodeWrapper contentTemplateNode = (JCRNodeWrapper) ni.nextNode();
-            template = addTemplate(resource, template, contentTemplateNode);
+            template = addTemplate(resource, contentTemplateNode);
             if (template != null) {
                 return template;
             }
@@ -183,7 +184,7 @@ public class TemplateNodeFilter extends AbstractFilter {
         return template;
     }
 
-    private Template addTemplate(Resource resource, Template template, JCRNodeWrapper templateNode)
+    private Template addTemplate(Resource resource, JCRNodeWrapper templateNode)
             throws RepositoryException {
         boolean ok = true;
         if (templateNode.hasProperty("j:applyOn")) {
@@ -207,11 +208,11 @@ public class TemplateNodeFilter extends AbstractFilter {
 //            }
 //        }
         if (ok) {
-            template = new Template(
+            return new Template(
                     templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
-                            null, templateNode.getIdentifier(), template);
+                            null, templateNode.getIdentifier(), null);
         }
-        return template;
+        return null;
     }
 
 }

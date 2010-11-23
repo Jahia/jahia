@@ -1805,6 +1805,8 @@ public class ManageSites extends AbstractAdministrationModule {
         }
         if (filename.endsWith(".xml")) {
             importInfos.put("type", "xml");
+        } else if (filename.endsWith("systemsite.zip")) {
+            importInfos.put("type", "files");
         } else {
             ZipEntry z;
             ZipInputStream zis2 = new ZipInputStream(new FileInputStream(i));

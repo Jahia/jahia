@@ -37,15 +37,8 @@
     </thead>
     <tbody>
     <c:forEach items="${moduleMap.currentList}" var="child" begin="${moduleMap.begin}" end="${moduleMap.end}"
-               varStatus="">
-        <c:choose>
-            <c:when test="${status.count % 2 == 0}">
-                <tr class="even">
-            </c:when>
-            <c:otherwise>
-                <tr class="odd">
-            </c:otherwise>
-        </c:choose>
+               varStatus="status">
+        <tr class="${status.count % 2 == 0 ? 'even' : 'odd'}">
         <td>
             <c:if test="${not empty child.primaryNodeType.templatePackage.rootFolder}">
                 <img src="${url.templatesPath}/${child.primaryNodeType.templatePackage.rootFolder}/icons/${fn:replace(fn:escapeXml(child.primaryNodeType.name),":","_")}_large.png"/>

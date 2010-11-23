@@ -39,7 +39,6 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -109,7 +108,7 @@ public class SiteSwitcherActionItem extends BaseActionItem {
                     @Override
                     public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
                         final GWTJahiaNode jahiaNode = event.getSelection().get(0);
-                        JahiaGWTParameters.setSite(jahiaNode);
+                        JahiaGWTParameters.setSite(jahiaNode, linker);
                         ((EditLinker) linker).getSidePanel().refresh(EditLinker.REFRESH_ALL);
                         ((EditLinker) linker).onMainSelection(jahiaNode.getPath()+"/home", null, null);
 

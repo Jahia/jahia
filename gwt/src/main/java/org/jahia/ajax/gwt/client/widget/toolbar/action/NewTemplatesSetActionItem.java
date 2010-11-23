@@ -21,7 +21,7 @@ public class NewTemplatesSetActionItem extends BaseActionItem {
                 public void onSuccess(GWTJahiaNode result) {
                     linker.loaded();
                     Info.display(Messages.get("label.information", "Information"), Messages.get("message.templateSetCreated", "Templates set successfully created"));
-                    JahiaGWTParameters.setSite(result);
+                    JahiaGWTParameters.setSite(result, linker);
                     ((EditLinker) linker).getSidePanel().refresh(EditLinker.REFRESH_ALL);
                     ((EditLinker) linker).onMainSelection(result.getPath()+"/home", null, null);
                     SiteSwitcherActionItem.refreshAllSitesList(linker);

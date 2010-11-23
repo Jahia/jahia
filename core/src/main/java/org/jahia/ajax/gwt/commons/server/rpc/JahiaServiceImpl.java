@@ -115,6 +115,8 @@ public class JahiaServiceImpl extends JahiaRemoteService implements JahiaService
                 gwtJahiaSite.setSiteId(jahiaSite.getID());
                 gwtJahiaSite.setSiteName(jahiaSite.getTitle());
                 gwtJahiaSite.setSiteKey(jahiaSite.getSiteKey());
+                gwtJahiaSite.set("templateFolder",jahiaSite.getTemplateFolder());
+                gwtJahiaSite.set("templatePackageName",jahiaSite.getTemplatePackageName());
                 returnedSites.add(gwtJahiaSite);
             }
         } catch (JahiaException e) {

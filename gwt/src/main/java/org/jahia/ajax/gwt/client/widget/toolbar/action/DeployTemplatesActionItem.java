@@ -38,6 +38,7 @@ import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaSite;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
@@ -45,44 +46,65 @@ import org.jahia.ajax.gwt.client.service.JahiaService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Toolbar action item to copy template to selected site
  */
 public class DeployTemplatesActionItem extends BaseActionItem {
+    private static List<DeployTemplatesActionItem> instances = new ArrayList<DeployTemplatesActionItem>();
 
     private transient List<GWTJahiaSite> sites;
 
+    private transient Map<String,List<GWTJahiaSite>> sitesMap = new HashMap<String, List<GWTJahiaSite>>();
+
     public void init(GWTJahiaToolbarItem gwtToolbarItem, final Linker linker) {
         super.init(gwtToolbarItem, linker);
+        instances.add(this);
         setEnabled(false);
 
         JahiaService.App.getInstance().getAvailableSites(new BaseAsyncCallback<List<GWTJahiaSite>>() {
             public void onSuccess(List<GWTJahiaSite> result) {
-                sites = result;
-                final Menu menu = new Menu();
-
-                menu.removeAll();
-
-                if (sites != null) {
-                    for (GWTJahiaSite site : sites) {
-                        MenuItem item = new MenuItem(site.getSiteKey());
-                        deploy(item, linker, "/sites/" + site.getSiteKey());
-                        menu.add(item);
+                for (GWTJahiaSite gwtJahiaSite : result) {
+                    final String key = (String) gwtJahiaSite.get("templateFolder");
+                    if (!sitesMap.containsKey(key)) {
+                        sitesMap.put(key, new ArrayList<GWTJahiaSite>());
                     }
-                    MenuItem item = new MenuItem("System");
-                    deploy(item, linker, "/");
-                    menu.add(item);
+                    sitesMap.get(key).add(gwtJahiaSite);
                 }
-                setSubMenu(menu);
-                setEnabled(true);
+
+                refreshMenu(linker);
             }
 
             public void onApplicationFailure(Throwable caught) {
 
             }
         });
+    }
+
+    public static void refreshAllMenus(final Linker linker) {
+        for (DeployTemplatesActionItem instance : instances) {
+            instance.refreshMenu(linker);
+        }
+    }
+
+    public void refreshMenu(Linker linker) {
+        final Menu menu = new Menu();
+
+        menu.removeAll();
+
+        if (sitesMap != null && sitesMap.containsKey(JahiaGWTParameters.getSiteKey())) {
+            for (GWTJahiaSite site : sitesMap.get(JahiaGWTParameters.getSiteKey())) {
+                MenuItem item = new MenuItem(site.getSiteKey());
+                deploy(item, linker, "/sites/" + site.getSiteKey());
+                menu.add(item);
+            }
+        }
+        setSubMenu(menu);
+        setEnabled(true);
     }
 
     private void deploy(MenuItem item, final Linker linker, final String destinationPath) {

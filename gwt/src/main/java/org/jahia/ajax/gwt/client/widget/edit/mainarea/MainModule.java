@@ -35,9 +35,7 @@ package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.widget.Header;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
@@ -54,7 +52,6 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarMenu;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
@@ -65,8 +62,7 @@ import org.jahia.ajax.gwt.client.widget.contentengine.EditContentEnginePopupList
 import org.jahia.ajax.gwt.client.widget.edit.InfoLayers;
 import org.jahia.ajax.gwt.client.widget.edit.ToolbarHeader;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionContextMenu;
-import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbarMenu;
-import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.DeployTemplatesActionItem;
 
 import java.util.*;
 
@@ -367,7 +363,7 @@ public class MainModule extends Module {
                     Messages.get("info_sharednode", "This is a shared node")));
         }
         if (node.getSiteUUID() != null && !JahiaGWTParameters.getSiteUUID().equals(node.getSiteUUID())) {
-            JahiaGWTParameters.setSite(node);
+            JahiaGWTParameters.setSite(node, editLinker);
         }
     }
 

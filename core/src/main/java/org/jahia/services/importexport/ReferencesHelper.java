@@ -41,6 +41,7 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 
 import javax.jcr.*;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -69,8 +70,11 @@ public class ReferencesHelper {
                 refNode.remove();
             }
         }
+        boolean resolved;
+        List<String> resolvedUUIDStringList= new LinkedList<String>();
         for (String uuid : references.keySet()) {
             final List<String> paths = references.get(uuid);
+            resolved = true;
             if (uuidMapping.containsKey(uuid)) {
                 update(paths, session, uuidMapping.get(uuid));
             } else {
@@ -91,6 +95,7 @@ public class ReferencesHelper {
                         update(paths, session, uuid);
                     }
                 } catch (PathNotFoundException e) {
+                    resolved = false;
                     // store reference for later
                     for (String path : paths) {
                         JCRNodeWrapper r = refRoot.addNode("j:reference", "jnt:reference");
@@ -101,6 +106,7 @@ public class ReferencesHelper {
                         r.setProperty("j:originalUuid", uuid);
                     }
                 } catch (ItemNotFoundException e) {
+                    resolved = false;
                     // store reference for later
                     for (String path : paths) {
                         JCRNodeWrapper r = refRoot.addNode("j:reference", "jnt:reference");
@@ -112,6 +118,12 @@ public class ReferencesHelper {
                     }
                 }
             }
+            if(resolved) {
+                resolvedUUIDStringList.add(uuid);
+            }
+        }
+        for (String uuid : resolvedUUIDStringList) {
+            references.remove(uuid);
         }
     }
 

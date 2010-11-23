@@ -21,7 +21,7 @@
         <fileSet>
             <directory>${basedir}/target</directory>
             <includes>
-                <include>shared.zip</include>
+                <include>users.zip</include>
             </includes>
             <outputDirectory></outputDirectory>
         </fileSet>

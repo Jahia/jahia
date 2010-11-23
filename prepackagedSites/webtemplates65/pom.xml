@@ -44,13 +44,13 @@
 
                 <executions>
                     <execution>
-                        <id>shared</id>
+                        <id>users</id>
                         <configuration>
                             <descriptors>
-                                <descriptor>src/main/assembly/shared.xml</descriptor>
+                                <descriptor>src/main/assembly/users.xml</descriptor>
                             </descriptors>
                             <attach>false</attach>
-                            <finalName>shared</finalName>
+                            <finalName>users</finalName>
                         </configuration>
 
                         <phase>validate</phase>

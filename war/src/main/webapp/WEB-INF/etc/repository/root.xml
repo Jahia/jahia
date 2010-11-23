@@ -4,25 +4,6 @@
          xmlns:j="http://www.jahia.org/jahia/1.0"
          xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
 
-    <shared jcr:primaryType="jnt:systemFolder" jcr:mixinTypes="jmix:accessControlled">
-
-        <j:acl jcr:primaryType="jnt:acl">
-            <GRANT_jcr_read_live_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users"
-                                    j:privileges="jcr:read_live" j:aceType="GRANT"/>
-            <GRANT_jcr_read_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users"
-                                     j:privileges="jcr:read" j:aceType="GRANT"/>
-            <GRANT_jcr_write_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users"
-                                     j:privileges="jcr:write" j:aceType="GRANT"/>
-            <!--<DENY_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="" j:aceType="DENY"/>-->
-        </j:acl>
-
-        <files jcr:primaryType="jnt:folder"/>
-        <portlets jcr:primaryType="jnt:portletFolder"/>
-        <portalComponents jcr:primaryType="jnt:contentFolder"/>
-        <contents jcr:primaryType="jnt:contentFolder"/>
-        <conversions jcr:primaryType="jnt:contentFolder"/>
-    </shared>
-
     <users jcr:primaryType="jnt:usersFolder" j:usersFolderSkeleton="user.xml">
         <ROOT_NAME_PLACEHOLDER jcr:primaryType="jnt:user" j:password="@ROOT_PASSWORD@" j:external="false" jcr:uuid="b32d306a-6c74-11de-b3ef-001e4fead50b">
             <files jcr:primaryType="jnt:folder">
@@ -97,13 +78,5 @@
     <portletdefinitions jcr:primaryType="jnt:portletDefinitions"/>    
 
     <templateSets jcr:primaryType="jnt:templateSets"/>
-
-    <templates jcr:primaryType="jnt:templatesFolder">
-        <systemTemplate jcr:primaryType="jnt:contentTemplate" j:hiddenTemplate="false" j:applyOn="jnt:content">
-            <pagecontent jcr:primaryType="jnt:contentList">
-                <mainResourceDisplay j:mainResourceView="system" jcr:primaryType="jnt:mainResourceDisplay" />
-            </pagecontent>
-        </systemTemplate>
-    </templates>
 
 </content>

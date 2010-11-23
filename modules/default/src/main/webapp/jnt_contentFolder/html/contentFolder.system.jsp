@@ -16,7 +16,7 @@
 
 <template:include template="hidden.header"/>
 
-<table width="100%" cellspacing="0" cellpadding="5" border="0" class="evenOddTable">
+<table width="100%" cellspacing="0" cellpadding="5" border="0" class="table">
     <thead>
     <tr>
         <th width="5%">
@@ -40,10 +40,10 @@
                varStatus="">
         <c:choose>
             <c:when test="${status.count % 2 == 0}">
-                <tr class="evenLine">
+                <tr class="even">
             </c:when>
             <c:otherwise>
-                <tr class="oddLine">
+                <tr class="odd">
             </c:otherwise>
         </c:choose>
         <td>

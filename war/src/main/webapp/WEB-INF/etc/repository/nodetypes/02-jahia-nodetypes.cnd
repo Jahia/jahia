@@ -386,7 +386,7 @@
 [jmix:theme] mixin
  extends = jnt:page, jnt:template
  itemtype = layout
- - j:theme (weakreference,choicelist[nodes='$currentSite/themes;jnt:folder'])
+ - j:theme (weakreference,choicelist[nodes='$currentSite/files/themes;jnt:folder'])
 
 //---------------------------------------------------------
 // Virtual sites

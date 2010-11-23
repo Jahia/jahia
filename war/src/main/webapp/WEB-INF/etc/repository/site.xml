@@ -4,7 +4,9 @@
            xmlns:j="http://www.jahia.org/jahia/1.0"
            xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
 
-    <files jcr:primaryType="jnt:folder" />
+    <files jcr:primaryType="jnt:folder" >
+        <themes jcr:primaryType="jnt:folder"/>
+    </files>
 
     <portlets jcr:primaryType="jnt:portletFolder" />
 
@@ -18,8 +20,6 @@
     </groups>    
 
     <contents jcr:primaryType="jnt:contentFolder" />
-
-    <themes jcr:primaryType="jnt:folder"/>
 
     <templates jcr:primaryType="jnt:templatesFolder"/>
 

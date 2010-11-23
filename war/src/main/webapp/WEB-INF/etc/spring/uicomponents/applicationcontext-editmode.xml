@@ -267,7 +267,7 @@
                         <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.FileImagesBrowseTabItem">
                             <property name="paths">
                                 <list>
-                                    <value>$site/themes</value>
+                                    <value>$site/files/themes</value>
                                 </list>
                             </property>
                             <property name="folderTypes">
@@ -327,6 +327,7 @@
                                 <list>
                                     <value>jmix:navMenuItem</value>
                                     <value>jnt:contentFolder</value>
+                                    <value>jnt:folder</value>
                                 </list>
                             </property>
                         </bean>
@@ -770,7 +771,7 @@
                             <property name="folderTypes">
                                 <list>
                                     <value>jmix:navMenuItem</value>
-                                    <!--<value>jnt:folder</value>-->
+                                    <value>jnt:folder</value>
                                     <value>jnt:contentFolder</value>
                                     <!--<value>jnt:portletFolder</value>-->
                                 </list>

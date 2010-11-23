@@ -11,13 +11,14 @@
       <contents jcr:primaryType="jnt:contentFolder">
         <site_components jcr:primaryType="jnt:contentFolder" />
       </contents>
-      <files jcr:primaryType="jnt:folder" />
+      <files jcr:primaryType="jnt:folder" >
+          <themes jcr:primaryType="jnt:folder">
+            <default jcr:primaryType="jnt:folder" />
+          </themes>
+      </files>
       <portlets jcr:primaryType="jnt:portletFolder" />
-      <themes jcr:primaryType="jnt:folder">
-        <default jcr:primaryType="jnt:folder" />
-      </themes>
       <templates jcr:primaryType="jnt:templatesFolder">
-        <base jcr:mixinTypes="jmix:renderable jmix:theme" jcr:primaryType="jnt:template" j:view="apps" j:theme="/templateSets/templates-system/themes/default">
+        <base jcr:mixinTypes="jmix:renderable jmix:theme" jcr:primaryType="jnt:template" j:view="apps" j:theme="/templateSets/templates-system/files/themes/default">
           <home jcr:primaryType="jnt:pageTemplate">
             <pagecontent j:skin="skins.box2style1" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
               <j:translation_en jcr:title="Links" jcr:primaryType="jnt:translation" jcr:language="en" />

@@ -16,42 +16,43 @@
                     </login-to-jahia>
                 </site_components>
             </contents>
-            <files jcr:primaryType="jnt:folder" />
-            <portlets jcr:primaryType="jnt:portletFolder" />
-            <themes jcr:primaryType="jnt:folder">
-                <default jcr:primaryType="jnt:folder" />
-                <theme-yellow jcr:primaryType="jnt:folder">
+            <files jcr:primaryType="jnt:folder" >
+                <themes jcr:primaryType="jnt:folder">
+                    <default jcr:primaryType="jnt:folder" />
                     <theme-yellow jcr:primaryType="jnt:folder">
-                        <img jcr:primaryType="jnt:folder">
-                            <bottomheader-bg.png jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file" j:height="113" j:width="13">
-                                <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                                <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                                <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                            </bottomheader-bg.png>
-                            <navbar-bg.png jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file" j:height="100" j:width="820">
-                                <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                                <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                                <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                            </navbar-bg.png>
-                        </img>
-                        <mod jcr:primaryType="jnt:folder">
-                            <shortcuts-bg-on.png jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file" j:height="38" j:width="102">
-                                <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                                <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                                <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                            </shortcuts-bg-on.png>
-                            <shortcuts-bg.png jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file" j:height="38" j:width="102">
-                                <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                                <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                                <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
-                            </shortcuts-bg.png>
-                        </mod>
+                        <theme-yellow jcr:primaryType="jnt:folder">
+                            <img jcr:primaryType="jnt:folder">
+                                <bottomheader-bg.png jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file" j:height="113" j:width="13">
+                                    <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                                    <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                                    <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                                </bottomheader-bg.png>
+                                <navbar-bg.png jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file" j:height="100" j:width="820">
+                                    <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                                    <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                                    <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                                </navbar-bg.png>
+                            </img>
+                            <mod jcr:primaryType="jnt:folder">
+                                <shortcuts-bg-on.png jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file" j:height="38" j:width="102">
+                                    <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                                    <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                                    <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                                </shortcuts-bg-on.png>
+                                <shortcuts-bg.png jcr:mixinTypes="jmix:image" jcr:primaryType="jnt:file" j:height="38" j:width="102">
+                                    <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                                    <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                                    <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource" />
+                                </shortcuts-bg.png>
+                            </mod>
+                        </theme-yellow>
+                        <theme-yellow.css jcr:primaryType="jnt:file">
+                            <jcr:content jcr:mimeType="text/css" jcr:primaryType="jnt:resource" />
+                        </theme-yellow.css>
                     </theme-yellow>
-                    <theme-yellow.css jcr:primaryType="jnt:file">
-                        <jcr:content jcr:mimeType="text/css" jcr:primaryType="jnt:resource" />
-                    </theme-yellow.css>
-                </theme-yellow>
-            </themes>
+                </themes>
+            </files>
+            <portlets jcr:primaryType="jnt:portletFolder" />
             <templates jcr:primaryType="jnt:templatesFolder">
                 <base jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:template" j:view="intranet">
                     <logo jcr:primaryType="jnt:contentList">

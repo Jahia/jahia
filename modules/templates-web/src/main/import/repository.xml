@@ -18,11 +18,12 @@
                     <side-menu j:menuType="primary" j:maxDepth="3" jcr:primaryType="jnt:navMenu" j:baselineNode="/templateSets/templates-web/home" j:startLevel="1" j:styleName="navigationN2" />
                 </site_components>
             </contents>
-            <files jcr:primaryType="jnt:folder" />
+            <files jcr:primaryType="jnt:folder" >
+                <themes jcr:primaryType="jnt:folder">
+                    <default jcr:primaryType="jnt:folder" />
+                </themes>
+            </files>
             <portlets jcr:primaryType="jnt:portletFolder" />
-            <themes jcr:primaryType="jnt:folder">
-                <default jcr:primaryType="jnt:folder" />
-            </themes>
             <templates jcr:primaryType="jnt:templatesFolder">
                 <base jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:template" j:view="web">
                     <header jcr:primaryType="jnt:contentList">

@@ -1460,6 +1460,7 @@
                 <value>jnt:page</value>
                 <value>jnt:virtualsite</value>
                 <value>jnt:contentList</value>
+                <value>jnt:contentFolder</value>
             </list>
         </property>
 

@@ -887,8 +887,13 @@ public class ManageSites extends AbstractAdministrationModule {
                     selectedLocale, (String) request.getAttribute("selectedTmplSet"),
                     (String) request.getAttribute("firstImport"), (File) request.getAttribute("fileImport"),
                     (String) request.getAttribute("fileImportName"), (Boolean) request.getAttribute("asAJob"),
-                    (Boolean) request.getAttribute("doImportServerPermissions"), (String) request.getAttribute("originatingJahiaRelease"), jParams);
+                    (Boolean) request.getAttribute("doImportServerPermissions"), (String) request.getAttribute("originatingJahiaRelease"));
             if (site != null) {
+                jParams.setSite(site);
+                jParams.setSiteID(site.getID());
+                jParams.setSiteKey(site.getSiteKey());
+                jParams.setCurrentLocale(selectedLocale);
+
                 // set as default site
                 if (defaultSite.booleanValue()) {
                     changeDefaultSite(site);
@@ -1978,11 +1983,16 @@ public class ManageSites extends AbstractAdministrationModule {
                         }
                         Locale defaultLocale = determineDefaultLocale(jParams, infos);
                         try {
-                                jahiaSitesService
-                                        .addSite(jParams.getUser(), (String) infos.get("sitetitle"),
-                                                (String) infos.get("siteservername"), (String) infos.get("sitekey"), "",
-                                                defaultLocale, tpl, "fileImport", file,
-                                                (String) infos.get("importFileName"), false, false, (String) infos.get("originatingJahiaRelease"), jParams);
+                            JahiaSite site = jahiaSitesService
+                                    .addSite(jParams.getUser(), (String) infos.get("sitetitle"),
+                                            (String) infos.get("siteservername"), (String) infos.get("sitekey"), "",
+                                            defaultLocale, tpl, "fileImport", file,
+                                            (String) infos.get("importFileName"), false, false, (String) infos.get("originatingJahiaRelease"));
+                            jParams.setSite(site);
+                            jParams.setSiteID(site.getID());
+                            jParams.setSiteKey(site.getSiteKey());
+                            jParams.setCurrentLocale(defaultLocale);
+
 
                         } catch (Exception e) {
                             logger.error("Cannot create site " + infos.get("sitetitle"), e);

@@ -37,14 +37,11 @@
 //
 package org.jahia.services.sites;
 
-import org.jahia.params.BasicSessionState;
-import org.jahia.params.ProcessingContextFactoryImpl;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
@@ -272,9 +269,8 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
 //            throws JahiaException {
 //
     public JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
-                             Locale selectedLocale,
-                             String selectTmplSet, String firstImport, File fileImport, String fileImportName,
-                             Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease, ProcessingContext jParams) throws JahiaException, IOException {
+                             Locale selectedLocale, String selectTmplSet, String firstImport, File fileImport, String fileImportName,
+                             Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease) throws JahiaException, IOException {
         JahiaSite site = new JahiaSite(-1, title, serverName, siteKey, descr, null, null);
 
         if (selectTmplSet != null) {
@@ -340,11 +336,6 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
             }
             File initialZip = null;
             String initialZipName = null;
-
-            jParams.setSite(site);
-            jParams.setSiteID(site.getID());
-            jParams.setSiteKey(site.getSiteKey());
-            jParams.setCurrentLocale(selectedLocale);
             if ("fileImport".equals(firstImport)) {
                 initialZip = fileImport;
                 initialZipName = fileImportName;
@@ -411,14 +402,14 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                 try {
                     Map<Object, Object> importInfos = new HashMap<Object, Object>();
                     importInfos.put("originatingJahiaRelease", originatingJahiaRelease);
-                    ServicesRegistry.getInstance().getImportExportService().importSiteZip(initialZip, jParams.getSite(), importInfos);
+                    ServicesRegistry.getInstance().getImportExportService().importSiteZip(initialZip, site, importInfos);
                 } catch (RepositoryException e) {
                     logger.warn("Error importing site ZIP", e);
                 }
 //                }
             } else {
                 try {
-                    JCRSessionWrapper session = sessionFactory.getCurrentUserSession(null, jParams.getLocale());
+                    JCRSessionWrapper session = sessionFactory.getCurrentUserSession(null, selectedLocale);
                     JCRNodeWrapper nodeWrapper = session.getNode("/sites/" + site.getSiteKey());
                     if (!nodeWrapper.hasNode("home")) {
                         session.checkout(nodeWrapper);
@@ -432,7 +423,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
             }
 
             try {
-                JCRSessionWrapper session = sessionFactory.getCurrentUserSession(null, jParams.getLocale());
+                JCRSessionWrapper session = sessionFactory.getCurrentUserSession(null, selectedLocale);
                 JCRNodeWrapper nodeWrapper = session.getNode("/sites/" + site.getSiteKey());
                 if (nodeWrapper.hasNode("templates")) {
                     JCRPublicationService.getInstance().publishByMainId(nodeWrapper.getNode("templates").getIdentifier(),"default","live",null,true, null);
@@ -518,8 +509,7 @@ public class JahiaSitesBaseService extends JahiaSitesService implements JahiaAft
                 sessionFactory.setCurrentUser(jahiaUser);
                 Locale selectedLocale = LanguageCodeConverters.languageCodeToLocale(systemSiteDefaultLanguage);
                 addSite(jahiaUser, systemSiteTitle, systemSiteServername, SYSTEM_SITE_KEY, "", selectedLocale,
-                        systemSiteTemplateSetName, "noImport", null, null, false, false, null,
-                        new ProcessingContextFactoryImpl().getContext(new BasicSessionState("systemsession")));
+                        systemSiteTemplateSetName, "noImport", null, null, false, false, null);
             }
         } catch (JahiaException e) {
             logger.error(e.getMessage(), e);

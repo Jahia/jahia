@@ -176,7 +176,7 @@ public class TestHelper {
             }
             site = service.addSite(admin, name, serverName, name, name, ctx.getLocale(),
                     templateSet, siteZIPFile == null ? "noImport" : "fileImport", siteZIPFile,
-                    null, false, false, null, ctx);
+                    null, false, false, null);
             ctx.setSite(site);
         } finally {
             if (sharedZIPFile != null) {

@@ -177,13 +177,10 @@ public class Service extends JahiaService {
                                         }
                                     }
                                 }
-                                ProcessingContext ctx = new ProcessingContext(System.currentTimeMillis(), null,
-                                        user.getJahiaUser(),
-                                        ProcessingContext.EDIT);
                                 sitesService.addSite(user.getJahiaUser(), infos.getProperty("sitetitle"), infos.getProperty(
                                         "siteservername"), infos.getProperty("sitekey"), infos.getProperty(
                                         "description"), locale, tpl, "importRepositoryFile", null, uri, true,
-                                        false, infos.getProperty("originatingJahiaRelease"), ctx);
+                                        false, infos.getProperty("originatingJahiaRelease"));
                             } catch (Exception e) {
                                 logger.error("Cannot create site " + infos.get("sitetitle"), e);
                             }
@@ -407,7 +404,7 @@ public class Service extends JahiaService {
                                 "fileImport", file,
                                 (String) infos.get(
                                         "importFileName"), true,
-                                false, (String) infos.get("originatingJahiaRelease"), ctx);
+                                false, (String) infos.get("originatingJahiaRelease"));
                 } catch (Exception e) {
                     logger.error("Cannot create site " + infos.get("sitetitle"), e);
                 }

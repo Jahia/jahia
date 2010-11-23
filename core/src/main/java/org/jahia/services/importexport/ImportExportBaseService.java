@@ -248,13 +248,13 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         // export shared files -->
         Set<JCRNodeWrapper> files = new HashSet<JCRNodeWrapper>();
         try {
-            files.add(session.getNode("/"));
+            files.add(session.getNode("/users"));
         } catch (RepositoryException e) {
             e.printStackTrace();
             throw new IOException(e.getMessage());
         }
 
-        zout.putNextEntry(new ZipEntry("shared.zip"));
+        zout.putNextEntry(new ZipEntry("users.zip"));
         ZipOutputStream zzout = new ZipOutputStream(zout);
         Set<String> tti = new HashSet<String>();
         tti.add(Constants.JAHIANT_VIRTUALSITE);

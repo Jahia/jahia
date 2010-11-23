@@ -42,6 +42,7 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaSite;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.JahiaService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
@@ -102,6 +103,10 @@ public class DeployTemplatesActionItem extends BaseActionItem {
                 deploy(item, linker, "/sites/" + site.getSiteKey());
                 menu.add(item);
             }
+        } else {
+            MenuItem item = new MenuItem(Messages.get("label.nosites", "No target sites"));
+            item.setEnabled(false);
+            menu.add(item);            
         }
         setSubMenu(menu);
         setEnabled(true);

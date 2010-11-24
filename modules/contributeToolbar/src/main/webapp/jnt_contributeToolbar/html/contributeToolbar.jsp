@@ -59,6 +59,13 @@
                 }
             }
 
+            function publishNodes() {
+                var uuids = getUuids();
+                if (uuids.length > 0) {
+                    $.post("${url.base}${renderContext.mainResource.node.path}.publishNodes.do", {"uuids": uuids}, null, 'json');
+                }
+            }
+
             function pasteNodes() {
                 $.post("${url.base}${renderContext.mainResource.node.path}.paste.do", {}, function(result) {
                     window.location.reload();
@@ -110,10 +117,13 @@
                     key="label.delete"/></button>
             <button id="copy-${currentNode.identifier}" onclick="copyNodes();"><fmt:message key="label.copy"/></button>
             <button id="cut-${currentNode.identifier}" onclick="cutNodes();"><fmt:message key="label.cut"/></button>
+            <button id="publish-${currentNode.identifier}" onclick="publishNodes();"><fmt:message key="label.publication"/></button>
             <button id="paste-${currentNode.identifier}" onclick="pasteNodes();" style="display:none;"><fmt:message
                     key="label.paste"/></button>
             <button id="empty-${currentNode.identifier}" onclick="emptyClipboard();" style="display:none;"><fmt:message
                     key="label.clipboard.reset"/></button>
+            <a href="${url.base}${jcr:getSystemSitePath()}/home/my-profile.html"><fmt:message
+                    key="label.goto.myTasks"/></a>
 
             <div style="display:none" id="clipboard-${currentNode.identifier}">
             </div>
@@ -127,6 +137,7 @@
             <button><fmt:message key="label.delete"/></button>
             <button><fmt:message key="label.copy"/></button>
             <button><fmt:message key="label.cut"/></button>
+            <button><fmt:message key="label.publication"/></button>
             <button><fmt:message key="label.paste"/></button>
             <button><fmt:message key="label.clipboard.reset"/></button>
         </div>

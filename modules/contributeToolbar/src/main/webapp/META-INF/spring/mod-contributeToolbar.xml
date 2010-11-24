@@ -26,4 +26,10 @@
     <bean class="org.jahia.modules.contribute.toolbar.actions.CleanClipboardAction">
         <property name="name" value="emptyclipboard"/>
     </bean>
+
+    <bean class="org.jahia.modules.contribute.toolbar.actions.MultiplePublishAction">
+        <property name="name" value="publishNodes"/>
+        <property name="workflowService" ref="workflowService"/>
+        <property name="publicationService" ref="jcrPublicationService"/>
+    </bean>
 </beans>

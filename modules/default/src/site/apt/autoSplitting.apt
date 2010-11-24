@@ -64,7 +64,7 @@ Auto-splitting nodes
     for example: <<<substring,j:isbn,3-6>>>. The <<<start-position>>> and <<<end-position>>> indexes
     are zero-based.
 
-  * <<<date>>> - name is retrieved using by applying the specified date pattern (using <<<SimpleDateFormat>>>) onto
+  * <<<date>>> - name is retrieved by applying the specified date pattern (using <<<SimpleDateFormat>>>) onto
     the value of the corresponding property.
     The syntax is:
     
@@ -86,7 +86,7 @@ Auto-splitting nodes
 
   and split folder node type <<<jnt:contentList>>>.
  
- In such a case the sub-node <report.pdf>, created in that folder by user <sergiy> on <1st or July 2010>,
+ In such a case the sub-node <report.pdf>, created in that folder by user <sergiy> of <1st or July 2010>,
  will land under:
 
 +--------------------------------------

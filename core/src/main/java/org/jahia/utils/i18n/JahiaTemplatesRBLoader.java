@@ -154,7 +154,10 @@ public class JahiaTemplatesRBLoader extends ClassLoader {
                     }
                 }
                 try {
-                    return new FileInputStream(new File(Jahia.getSettings().getClassDiskPath(), fileName));
+                	File file = new File(Jahia.getSettings().getClassDiskPath(), fileName);
+                    if (file.exists()) {
+                    	return new FileInputStream(file);
+                    }
                 } catch (FileNotFoundException e) {
                     logger.warn(e.getMessage(), e);
                 }

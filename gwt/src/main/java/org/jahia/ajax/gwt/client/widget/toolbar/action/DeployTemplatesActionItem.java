@@ -116,7 +116,7 @@ public class DeployTemplatesActionItem extends BaseActionItem {
         item.addSelectionListener(new SelectionListener<MenuEvent>() {
             @Override
             public void componentSelected(MenuEvent ce) {
-                Info.display("Deploy Templates", "Your templates are being deployed...");
+                Info.display(Messages.get("label.templatesDeploy", "Deploy Templates"), Messages.get("org.jahia.admin.site.ManageTemplates.deploymentInProgress", "Your templates are being deployed..."));
                 GWTJahiaNode node = linker.getSelectionContext().getMainNode();
                 String nodePath = node.getPath();
 
@@ -126,11 +126,11 @@ public class DeployTemplatesActionItem extends BaseActionItem {
                 JahiaContentManagementService.App.getInstance()
                         .deployTemplates(nodePath, destinationPath, new BaseAsyncCallback() {
                             public void onApplicationFailure(Throwable caught) {
-                                Info.display("Deploy Templates", "Error during your templates deployment");
+                                Info.display(Messages.get("label.templatesDeploy", "Deploy Templates"), Messages.get("org.jahia.admin.site.ManageTemplates.deploymentError", "Error during your templates deployment"));
                             }
 
                             public void onSuccess(Object result) {
-                                Info.display("Deploy Templates", "Your templates deployment is successful");
+                                Info.display(Messages.get("label.templatesDeploy", "Deploy Templates"), Messages.get("org.jahia.admin.site.ManageTemplates.templatesDeployed", "Your templates deployment is successful"));
                             }
                         });
             }

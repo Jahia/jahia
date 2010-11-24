@@ -32,14 +32,11 @@
 
 package org.jahia.ajax.gwt.client.util.icons;
 
-import com.extjs.gxt.ui.client.data.ModelIconProvider;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 /**
  * Icon provider for for different types of content objects.
@@ -67,7 +64,7 @@ public class ToolbarIconProvider {
         return new AbstractImagePrototype() {
 
             public String getUrl() {
-                return JahiaGWTParameters.getContextPath() + "/icons/" + icon + ".png";
+                return JahiaGWTParameters.getContextPath() + (icon.startsWith("/") ? icon : ("/icons/" + icon)) + (icon.contains(".") ? "" : ".png");
             }
 
             @Override
@@ -94,7 +91,7 @@ public class ToolbarIconProvider {
 
             @Override
             public String getHTML() {
-                return "<img src=\""+getUrl()+"\" width=\"16\" height=\"16\" />";
+                return "<img src=\""+getUrl()+"\" width=\"16\" height=\"16\" alt=\" \"/>";
             }
         };
     }

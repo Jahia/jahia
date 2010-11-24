@@ -44,7 +44,7 @@ import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
  * User: toto
  * Date: Aug 24, 2009
  * Time: 11:12:43 AM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class EditModeTreeGridDragSource extends TreeGridDragSource {
     public EditModeTreeGridDragSource(TreeGrid c) {

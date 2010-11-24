@@ -37,7 +37,7 @@ package org.jahia.ajax.gwt.client.data.definition;
  * User: toto
  * Date: Oct 28, 2008
  * Time: 11:21:49 AM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class GWTJahiaNodeSelectorType {
     public static final int SMALLTEXT = 1;

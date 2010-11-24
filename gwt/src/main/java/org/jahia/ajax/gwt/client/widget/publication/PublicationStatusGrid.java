@@ -49,7 +49,7 @@ import java.util.List;
  * User: toto
  * Date: Aug 4, 2010
  * Time: 6:30:03 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class PublicationStatusGrid extends Grid<GWTJahiaPublicationInfo> {
 

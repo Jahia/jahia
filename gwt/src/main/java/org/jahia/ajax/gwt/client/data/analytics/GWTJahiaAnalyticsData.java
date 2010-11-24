@@ -41,7 +41,7 @@ import java.util.Date;
  * User: ktlili
  * Date: Mar 24, 2010
  * Time: 11:31:51 AM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class GWTJahiaAnalyticsData extends BaseModelData {
    

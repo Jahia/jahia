@@ -43,7 +43,7 @@ import java.util.List;
  * User: hollis
  * Date: 20 ao�t 2008
  * Time: 12:26:53
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class GWTJahiaAjaxActionResult implements Serializable {
 

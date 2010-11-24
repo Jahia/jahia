@@ -19,7 +19,7 @@ import java.util.List;
 * User: toto
 * Date: Aug 31, 2010
 * Time: 7:35:40 PM
-* To change this template use File | Settings | File Templates.
+* 
 */
 public class ActionToolbarMenu extends Menu implements ToolbarGroup {
     protected Linker linker;

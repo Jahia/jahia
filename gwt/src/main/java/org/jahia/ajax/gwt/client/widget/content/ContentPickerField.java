@@ -61,7 +61,7 @@ import java.util.Map;
  * User: toto
  * Date: Dec 1, 2008
  * Time: 6:37:07 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
 //    protected El clear;

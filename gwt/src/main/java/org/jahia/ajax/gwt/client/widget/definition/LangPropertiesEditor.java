@@ -66,7 +66,7 @@ import java.util.*;
  * User: ktlili
  * Date: Jan 20, 2010
  * Time: 2:07:06 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class LangPropertiesEditor extends LayoutContainer {
     private static JahiaContentManagementServiceAsync contentService = JahiaContentManagementService.App.getInstance();

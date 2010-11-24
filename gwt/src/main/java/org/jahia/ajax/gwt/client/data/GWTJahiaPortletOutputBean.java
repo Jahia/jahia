@@ -41,7 +41,7 @@ import java.io.Serializable;
  * User: loom
  * Date: Dec 8, 2008
  * Time: 2:31:45 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class GWTJahiaPortletOutputBean implements Serializable {
 

@@ -42,7 +42,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
  * User: toto
  * Date: Aug 18, 2009
  * Time: 7:25:48 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class ListModule extends SimpleModule {
 

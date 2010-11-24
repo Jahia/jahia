@@ -51,7 +51,7 @@ import java.util.List;
  * User: toto
  * Date: Aug 21, 2009
  * Time: 4:12:53 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class ModuleDropTarget extends DropTarget {
 

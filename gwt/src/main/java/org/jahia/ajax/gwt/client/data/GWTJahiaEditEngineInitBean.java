@@ -46,7 +46,7 @@ import java.util.Set;
  * User: toto
  * Date: Jun 14, 2010
  * Time: 7:17:44 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class GWTJahiaEditEngineInitBean extends GWTJahiaGetPropertiesResult {
     /** The serialVersionUID. */

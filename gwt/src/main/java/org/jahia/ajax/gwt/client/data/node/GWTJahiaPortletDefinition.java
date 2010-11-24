@@ -40,7 +40,7 @@ import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
  * User: toto
  * Date: Nov 28, 2008
  * Time: 6:14:28 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class GWTJahiaPortletDefinition extends BaseModel {
 

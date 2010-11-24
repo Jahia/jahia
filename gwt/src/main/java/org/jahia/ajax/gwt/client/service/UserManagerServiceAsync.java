@@ -45,7 +45,7 @@ import java.util.List;
  * User: hollis
  * Date: 25 juil. 2008
  * Time: 12:39:05
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public interface UserManagerServiceAsync {
 

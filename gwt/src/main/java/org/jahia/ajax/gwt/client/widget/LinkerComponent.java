@@ -37,7 +37,7 @@ package org.jahia.ajax.gwt.client.widget;
  * User: ktlili
  * Date: Feb 4, 2010
  * Time: 1:01:36 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public interface LinkerComponent {
     public void refresh();

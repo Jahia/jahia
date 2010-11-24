@@ -44,7 +44,7 @@ import java.util.List;
 * User: toto
 * Date: Sep 25, 2009
 * Time: 6:59:18 PM
-* To change this template use File | Settings | File Templates.
+* 
 */
 public class RotateActionItem extends BaseActionItem   {
     public void onComponentSelection() {

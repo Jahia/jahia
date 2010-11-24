@@ -41,7 +41,7 @@ import java.io.Serializable;
  * User: toto
  * Date: Sep 11, 2008
  * Time: 2:09:18 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class GWTJahiaNodeUsage extends BaseModelData implements Serializable {
 

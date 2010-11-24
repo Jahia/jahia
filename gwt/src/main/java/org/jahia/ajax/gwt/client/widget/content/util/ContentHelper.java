@@ -43,7 +43,7 @@ import java.util.List;
  * User: ktlili
  * Date: Aug 21, 2009
  * Time: 2:01:49 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class ContentHelper {
     public static List<GWTJahiaNode> getSelectedContentNodesFromHTML() {

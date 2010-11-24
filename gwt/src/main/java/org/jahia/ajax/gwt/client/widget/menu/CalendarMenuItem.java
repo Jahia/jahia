@@ -47,7 +47,7 @@ import com.google.gwt.user.client.Element;
  * User: hollis
  * Date: 17 juil. 2008
  * Time: 14:02:05
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class CalendarMenuItem extends Item {
 

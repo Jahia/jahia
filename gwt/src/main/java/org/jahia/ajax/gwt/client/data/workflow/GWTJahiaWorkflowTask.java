@@ -43,7 +43,7 @@ import java.util.List;
  * User: toto
  * Date: Feb 4, 2010
  * Time: 4:07:38 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class GWTJahiaWorkflowTask extends BaseModelData implements Serializable {
     private List<GWTJahiaWorkflowOutcome> outcomes;

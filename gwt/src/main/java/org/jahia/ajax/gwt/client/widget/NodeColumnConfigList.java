@@ -63,7 +63,7 @@ import java.util.*;
  * User: ktlili
  * Date: Apr 22, 2010
  * Time: 2:54:17 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
     private List<GWTColumn> columnList;

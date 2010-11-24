@@ -45,7 +45,7 @@ import org.jahia.ajax.gwt.client.service.UserManagerServiceAsync;
  * User: hollis
  * Date: 23 juil. 2008
  * Time: 11:25:19
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class UserCompletionItems implements CompletionItems {
 

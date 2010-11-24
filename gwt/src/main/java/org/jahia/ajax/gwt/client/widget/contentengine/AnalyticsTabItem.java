@@ -52,7 +52,7 @@ import java.util.List;
  * User: ktlili
  * Date: Mar 24, 2010
  * Time: 11:19:54 AM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class AnalyticsTabItem extends EditEngineTabItem {
     private transient AnalyticsDataVisualizer dataVisualizer;

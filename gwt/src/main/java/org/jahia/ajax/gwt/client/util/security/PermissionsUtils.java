@@ -43,7 +43,7 @@ import java.util.List;
  * User: ktlili
  * Date: Feb 5, 2010
  * Time: 11:16:25 AM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class PermissionsUtils {
     private static List<GWTJahiaPermission> grantedPermissions = new ArrayList<GWTJahiaPermission>();

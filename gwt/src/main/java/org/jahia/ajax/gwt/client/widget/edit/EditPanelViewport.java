@@ -41,7 +41,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
  * User: ktlili
  * Date: Sep 7, 2009
  * Time: 12:22:07 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class EditPanelViewport extends Viewport {
 

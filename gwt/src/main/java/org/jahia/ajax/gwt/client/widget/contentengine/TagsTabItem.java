@@ -72,7 +72,7 @@ import java.util.*;
  * User: david
  * Date: Jun 30, 2010
  * Time: 10:04:47 AM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class TagsTabItem extends EditEngineTabItem {
     private transient String locale = "en";

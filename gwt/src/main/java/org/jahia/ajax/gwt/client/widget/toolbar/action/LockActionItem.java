@@ -45,7 +45,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
  * User: toto
  * Date: Sep 25, 2009
  * Time: 6:58:11 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class LockActionItem extends BaseActionItem   {
 

@@ -40,7 +40,7 @@ import java.util.Map;
  * User: rincevent
  * Date: 7 nov. 2008
  * Time: 16:30:09
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class GWTJahiaLanguageSwitcherBean implements Serializable{
     private Map<String, GWTJahiaLanguage> availableLanguages;

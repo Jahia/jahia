@@ -49,7 +49,7 @@ import java.util.List;
  * User: ktlili
  * Date: 31 oct. 2007
  * Time: 11:01:16
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class JahiaGWTParameters {
     public static final String SERVICE_ENTRY_POINT = "serviceEntryPoint";

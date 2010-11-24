@@ -42,7 +42,7 @@ import java.util.Collection;
  * User: toto
  * Date: Nov 5, 2008
  * Time: 2:53:01 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class GWTJahiaGroup extends BaseModelData implements GWTJahiaPrincipal {
     public GWTJahiaGroup() {

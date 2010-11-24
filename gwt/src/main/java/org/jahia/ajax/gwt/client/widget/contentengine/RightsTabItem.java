@@ -43,7 +43,7 @@ import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
  * User: toto
  * Date: Jan 6, 2010
  * Time: 7:30:49 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class RightsTabItem extends EditEngineTabItem {
     private transient AclEditor rightsEditor;

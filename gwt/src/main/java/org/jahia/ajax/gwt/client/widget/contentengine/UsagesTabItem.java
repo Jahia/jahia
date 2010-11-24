@@ -56,7 +56,7 @@ import java.util.Arrays;
  * User: toto
  * Date: Jan 6, 2010
  * Time: 7:44:45 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class UsagesTabItem extends EditEngineTabItem {
 

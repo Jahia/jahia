@@ -48,7 +48,7 @@ import java.util.List;
  * User: ktlili
  * Date: Feb 24, 2010
  * Time: 5:09:39 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class AutoCompleteComboBox extends ComboBox<GWTJahiaNode> {
 

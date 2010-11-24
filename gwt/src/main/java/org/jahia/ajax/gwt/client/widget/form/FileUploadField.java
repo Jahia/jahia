@@ -53,7 +53,7 @@ import com.google.gwt.user.client.ui.*;
  * User: toto
  * Date: Nov 26, 2008
  * Time: 2:23:02 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class FileUploadField extends AdapterField {
     public FileUploadField(String name) {

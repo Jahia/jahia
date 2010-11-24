@@ -62,7 +62,7 @@ import java.util.List;
  * User: ktlili
  * Date: Jan 20, 2010
  * Time: 1:53:30 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class TranslateContentEngine extends Window {
     public static final int BUTTON_HEIGHT = 24;

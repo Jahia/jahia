@@ -19,7 +19,7 @@ import java.util.List;
  * User: toto
  * Date: Nov 19, 2010
  * Time: 10:33:40 AM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class ToolbarHeader extends Header {
     private List<ActionItem> actionItems = new ArrayList<ActionItem>();

@@ -10,7 +10,7 @@ import org.jahia.ajax.gwt.client.widget.Linker;
  * User: loom
  * Date: Sep 21, 2010
  * Time: 12:26:09 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class JobListWindow extends Window {
 

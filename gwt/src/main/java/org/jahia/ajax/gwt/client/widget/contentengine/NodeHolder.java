@@ -49,7 +49,7 @@ import java.util.Set;
  * User: toto
  * Date: May 10, 2010
  * Time: 4:51:14 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public interface NodeHolder {
     List<GWTJahiaNodeType> getNodeTypes();

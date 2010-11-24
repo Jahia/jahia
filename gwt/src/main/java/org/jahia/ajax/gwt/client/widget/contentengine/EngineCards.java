@@ -16,7 +16,7 @@ import java.util.List;
  * User: toto
  * Date: Nov 16, 2010
  * Time: 2:11:21 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class EngineCards extends LayoutContainer implements EngineContainer {
     private Linker linker;

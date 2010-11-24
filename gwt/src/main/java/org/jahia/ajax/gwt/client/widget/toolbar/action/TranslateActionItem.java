@@ -42,7 +42,7 @@ import org.jahia.ajax.gwt.client.widget.contentengine.TranslateContentEngine;
  * User: ktlili
  * Date: Jan 20, 2010
  * Time: 1:51:18 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class TranslateActionItem extends BaseActionItem {
     public void onComponentSelection() {

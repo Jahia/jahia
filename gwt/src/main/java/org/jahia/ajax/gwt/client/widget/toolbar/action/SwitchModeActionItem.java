@@ -43,7 +43,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
  * User: ktlili
  * Date: Jan 8, 2010
  * Time: 2:09:40 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class SwitchModeActionItem extends BaseActionItem {
 

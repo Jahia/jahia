@@ -30,7 +30,7 @@ import java.util.*;
  * User: toto
  * Date: Sep 10, 2010
  * Time: 3:32:00 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class PublicationWorkflow implements CustomWorkflow {
     private List<GWTJahiaPublicationInfo> publicationInfos;

@@ -55,7 +55,7 @@ import java.util.Map;
  * User: ktlili
  * Date: Mar 24, 2010
  * Time: 2:49:24 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class AnalyticsDataVisualizer extends ContentPanel {
     private List<GWTJahiaAnalyticsData> dataList;

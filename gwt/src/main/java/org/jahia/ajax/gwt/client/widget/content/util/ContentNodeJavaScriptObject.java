@@ -39,7 +39,7 @@ import com.google.gwt.core.client.JavaScriptObject;
  * User: ktlili
  * Date: Aug 21, 2009
  * Time: 2:03:39 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class ContentNodeJavaScriptObject extends JavaScriptObject {
     protected ContentNodeJavaScriptObject() {

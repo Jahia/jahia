@@ -41,7 +41,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 * User: toto
 * Date: Sep 25, 2009
 * Time: 6:57:08 PM
-* To change this template use File | Settings | File Templates.
+* 
 */
 public class UnlockActionItem extends BaseActionItem {
     public void onComponentSelection() {

@@ -59,7 +59,7 @@ import java.util.List;
  * User: ktlili
  * Date: May 11, 2010
  * Time: 12:08:34 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class CategoryBrowseTabItem extends BrowseTabItem {
     protected int limit = 500;

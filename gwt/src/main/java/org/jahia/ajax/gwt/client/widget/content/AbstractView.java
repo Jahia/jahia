@@ -23,7 +23,7 @@ import java.util.List;
  * User: toto
  * Date: Sep 27, 2010
  * Time: 6:27:01 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public abstract class AbstractView extends TopRightComponent {
     protected ListLoader<ListLoadResult<GWTJahiaNode>> loader;

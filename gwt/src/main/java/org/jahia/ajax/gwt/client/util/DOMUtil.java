@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.Widget;
  * User: ktlili
  * Date: 24 sept. 2007
  * Time: 15:04:28
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class DOMUtil {
 

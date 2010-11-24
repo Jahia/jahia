@@ -72,7 +72,7 @@ import java.util.*;
  * User: toto
  * Date: Jan 7, 2010
  * Time: 1:57:03 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public abstract class AbstractContentEngine extends LayoutContainer implements NodeHolder {
     public static final int BUTTON_HEIGHT = 24;

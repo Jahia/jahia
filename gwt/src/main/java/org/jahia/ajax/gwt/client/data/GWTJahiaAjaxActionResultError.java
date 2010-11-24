@@ -39,7 +39,7 @@ import java.io.Serializable;
  * User: hollis
  * Date: 20 ao�t 2008
  * Time: 12:37:59
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class GWTJahiaAjaxActionResultError implements Serializable {
 

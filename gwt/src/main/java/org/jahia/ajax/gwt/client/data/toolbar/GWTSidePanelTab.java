@@ -46,7 +46,7 @@ import java.util.Map;
  * User: toto
  * Date: Apr 6, 2010
  * Time: 7:27:40 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class GWTSidePanelTab  implements Serializable {
     private String name;

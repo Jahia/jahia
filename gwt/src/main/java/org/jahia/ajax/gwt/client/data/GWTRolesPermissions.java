@@ -40,7 +40,7 @@ import java.util.List;
  * User: ktlili
  * Date: Feb 3, 2010
  * Time: 11:57:58 AM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class GWTRolesPermissions implements Serializable {
     private List<GWTJahiaRole> roles;

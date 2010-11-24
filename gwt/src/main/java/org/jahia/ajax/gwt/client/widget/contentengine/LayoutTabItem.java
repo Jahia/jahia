@@ -62,7 +62,7 @@ import java.util.Map;
  * User: toto
  * Date: Jan 6, 2010
  * Time: 7:52:00 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class LayoutTabItem extends PropertiesTabItem {
     private transient LayoutContainer ctn;

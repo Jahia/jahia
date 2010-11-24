@@ -20,7 +20,7 @@ import java.util.List;
  * User: toto
  * Date: Aug 30, 2010
  * Time: 8:16:07 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class WorkInProgressActionItem extends BaseActionItem {
 

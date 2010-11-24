@@ -41,7 +41,7 @@ import com.google.gwt.user.client.Element;
  * User: hollis
  * Date: 27 ao�t 2008
  * Time: 11:44:37
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class VersionMenu extends Menu {
 

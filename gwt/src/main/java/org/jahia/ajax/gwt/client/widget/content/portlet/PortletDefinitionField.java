@@ -48,7 +48,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
  * User: toto
  * Date: Dec 11, 2008
  * Time: 5:27:32 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class PortletDefinitionField extends TriggerField<String> {
     @Override

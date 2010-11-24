@@ -15,7 +15,7 @@ import java.util.Map;
  * User: toto
  * Date: Sep 9, 2010
  * Time: 5:29:14 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class GWTJahiaWorkflow extends BaseModelData implements Serializable {
     private List<GWTJahiaWorkflowTask> availableTasks;

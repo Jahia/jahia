@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.ClickListener;
  * User: Administrator
  * Date: 14 juil. 2008
  * Time: 22:02:38
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class IndexedToggleButton extends ToggleButton {
 

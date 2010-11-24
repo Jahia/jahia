@@ -42,7 +42,7 @@ import java.util.Map;
  * User: toto
  * Date: Feb 4, 2010
  * Time: 3:50:11 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class GWTJahiaWorkflowInfo implements Serializable {
     private Map<GWTJahiaWorkflowType, GWTJahiaWorkflowDefinition> possibleWorkflows;

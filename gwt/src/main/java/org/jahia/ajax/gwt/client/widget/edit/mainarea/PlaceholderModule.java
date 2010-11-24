@@ -59,7 +59,7 @@ import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
  * User: toto
  * Date: Aug 19, 2009
  * Time: 12:03:48 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class PlaceholderModule extends Module {
     private HorizontalPanel panel;

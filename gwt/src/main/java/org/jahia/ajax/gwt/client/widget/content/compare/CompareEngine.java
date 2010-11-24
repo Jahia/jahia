@@ -49,7 +49,7 @@ import org.jahia.ajax.gwt.client.widget.Linker;
  * User: ktlili
  * Date: Mar 2, 2010
  * Time: 9:27:04 AM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class CompareEngine extends Window {
     public static final int BUTTON_HEIGHT = 24;

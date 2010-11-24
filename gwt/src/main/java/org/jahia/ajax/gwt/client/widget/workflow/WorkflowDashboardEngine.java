@@ -43,7 +43,7 @@ import org.jahia.ajax.gwt.client.widget.contentengine.WorkflowHistoryPanel;
  * User: ktlili
  * Date: Apr 28, 2010
  * Time: 4:32:33 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class WorkflowDashboardEngine extends Window {
     private final Linker linker;

@@ -41,7 +41,7 @@ import java.util.HashMap;
  * User: toto
  * Date: Sep 11, 2008
  * Time: 4:11:31 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class GWTJahiaNodeACE implements Serializable {
 

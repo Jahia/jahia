@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * User: toto
  * Date: Sep 3, 2009
  * Time: 3:06:51 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class Selection extends LayoutContainer {
 

@@ -42,7 +42,7 @@ import java.util.Date;
  * User: ktlili
  * Date: Mar 24, 2010
  * Time: 1:36:27 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class GWTJahiaAnalyticsQuery implements Serializable {
     private String dimensions;

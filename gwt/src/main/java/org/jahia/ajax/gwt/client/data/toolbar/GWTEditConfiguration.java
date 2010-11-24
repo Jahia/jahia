@@ -40,7 +40,7 @@ import java.util.List;
  * User: toto
  * Date: Mar 29, 2010
  * Time: 4:38:09 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class GWTEditConfiguration extends GWTConfiguration implements Serializable {
 

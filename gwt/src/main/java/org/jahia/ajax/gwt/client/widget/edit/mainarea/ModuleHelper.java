@@ -52,7 +52,7 @@ import java.util.*;
  * User: toto
  * Date: Aug 19, 2009
  * Time: 12:04:41 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class ModuleHelper {
     private static List<Module> modules;

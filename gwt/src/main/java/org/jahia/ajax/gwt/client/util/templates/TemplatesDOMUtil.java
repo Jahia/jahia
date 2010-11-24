@@ -51,7 +51,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * User: ktlili
  * Date: 24 sept. 2007
  * Time: 15:04:28
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class TemplatesDOMUtil extends DOMUtil {
 

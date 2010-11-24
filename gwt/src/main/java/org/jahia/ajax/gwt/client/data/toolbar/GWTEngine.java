@@ -40,7 +40,7 @@ import java.util.List;
  * User: toto
  * Date: Apr 12, 2010
  * Time: 12:25:21 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class GWTEngine  implements Serializable {
     public static final int OPERATION_CREATE = 0;

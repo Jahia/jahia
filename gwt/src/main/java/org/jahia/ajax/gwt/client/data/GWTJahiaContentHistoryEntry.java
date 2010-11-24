@@ -10,7 +10,7 @@ import java.util.Date;
  * User: loom
  * Date: Oct 5, 2010
  * Time: 3:29:38 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class GWTJahiaContentHistoryEntry extends BaseModelData implements Serializable, Comparable {
 

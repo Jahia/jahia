@@ -39,7 +39,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
  * User: hollis
  * Date: 23 juil. 2008
  * Time: 11:31:18
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public interface CompletionItems {
 

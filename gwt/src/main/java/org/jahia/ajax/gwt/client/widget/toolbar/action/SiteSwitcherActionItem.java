@@ -54,7 +54,7 @@ import java.util.List;
  * User: toto
  * Date: Feb 4, 2010
  * Time: 4:19:51 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class SiteSwitcherActionItem extends BaseActionItem {
     private static List<SiteSwitcherActionItem> instances = new ArrayList<SiteSwitcherActionItem>();

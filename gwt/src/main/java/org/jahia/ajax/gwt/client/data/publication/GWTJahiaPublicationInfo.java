@@ -45,7 +45,7 @@ import java.util.*;
  * User: toto
  * Date: Sep 4, 2009
  * Time: 12:00:28 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class GWTJahiaPublicationInfo extends SerializableBaseModel {
 

@@ -47,7 +47,7 @@ import java.util.List;
  * User: toto
  * Date: Dec 21, 2009
  * Time: 11:12:37 AM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class ThumbsListView extends ListView<GWTJahiaNode> {
     public ThumbsListView() {

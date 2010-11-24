@@ -41,7 +41,7 @@ import java.util.Date;
  * User: toto
  * Date: Mar 16, 2009
  * Time: 5:16:40 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class GWTJahiaNodeVersion extends BaseModel {
     private String uuid;

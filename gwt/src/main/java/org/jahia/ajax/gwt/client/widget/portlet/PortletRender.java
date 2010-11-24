@@ -46,7 +46,7 @@ import org.jahia.ajax.gwt.client.service.JahiaService;
  * User: loom
  * Date: Dec 4, 2008
  * Time: 3:09:02 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class PortletRender extends HTML {
     private GWTJahiaPortletOutputBean gwtPortletOutputBean;

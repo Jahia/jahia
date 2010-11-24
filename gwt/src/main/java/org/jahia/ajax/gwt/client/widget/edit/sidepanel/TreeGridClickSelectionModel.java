@@ -14,7 +14,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 * User: toto
 * Date: Oct 27, 2010
 * Time: 2:09:55 PM
-* To change this template use File | Settings | File Templates.
+* 
 */
 class TreeGridClickSelectionModel extends TreeGridSelectionModel<GWTJahiaNode> {
     private TreeGridSelectionModel<GWTJahiaNode> rightClickSelectionModel;

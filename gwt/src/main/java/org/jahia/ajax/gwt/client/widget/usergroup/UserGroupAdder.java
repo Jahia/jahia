@@ -43,7 +43,7 @@ import java.util.List;
  * User: toto
  * Date: Nov 5, 2008
  * Time: 2:41:30 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public interface UserGroupAdder {
     public void addUsers(List<GWTJahiaUser> users);

@@ -67,7 +67,7 @@ import java.util.Map;
  * User: toto
  * Date: Aug 19, 2009
  * Time: 7:02:42 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class EditModeDNDListener extends DNDListener {
     private EditLinker editLinker;

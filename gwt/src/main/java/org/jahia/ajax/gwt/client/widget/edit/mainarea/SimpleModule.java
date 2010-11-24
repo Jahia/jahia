@@ -55,7 +55,7 @@ import org.jahia.ajax.gwt.client.widget.contentengine.EditContentEnginePopupList
  * User: toto
  * Date: Aug 19, 2009
  * Time: 12:25:19 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class SimpleModule extends Module {
     protected boolean hasDragDrop = true;

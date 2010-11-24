@@ -48,7 +48,7 @@ import java.util.List;
 * User: toto
 * Date: Sep 25, 2009
 * Time: 6:58:35 PM
-* To change this template use File | Settings | File Templates.
+* 
 */
 public class DeployPortletDefinitionActionItem extends BaseActionItem {
     public void onComponentSelection() {

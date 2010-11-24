@@ -49,7 +49,7 @@ import java.util.List;
  * User: toto
  * Date: Aug 21, 2009
  * Time: 4:23:39 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class DisplayGridDragSource extends EditModeGridDragSource {
     public DisplayGridDragSource(Grid<GWTJahiaNode> grid) {

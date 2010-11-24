@@ -42,7 +42,7 @@ import java.util.*;
  * User: toto
  * Date: Aug 26, 2008
  * Time: 7:36:01 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class GWTJahiaNodeType extends BaseModelData implements Serializable {
 

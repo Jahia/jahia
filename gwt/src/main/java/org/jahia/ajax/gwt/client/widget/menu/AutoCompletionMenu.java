@@ -43,7 +43,7 @@ import com.extjs.gxt.ui.client.widget.menu.Menu;
  * User: hollis
  * Date: 17 juil. 2008
  * Time: 14:30:29
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class AutoCompletionMenu extends Menu {
 

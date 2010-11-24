@@ -50,7 +50,7 @@ import java.util.Arrays;
 * User: toto
 * Date: Sep 25, 2009
 * Time: 6:58:58 PM
-* To change this template use File | Settings | File Templates.
+* 
 */
 public class UnpublishActionItem extends BaseActionItem {
     public void onComponentSelection() {

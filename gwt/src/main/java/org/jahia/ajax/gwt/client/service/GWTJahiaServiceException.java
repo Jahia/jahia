@@ -41,7 +41,7 @@ import java.io.Serializable;
  * User: rfelden
  * Date: 8 sept. 2008
  * Time: 16:01:21
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class GWTJahiaServiceException extends Exception implements Serializable, IsSerializable {
 

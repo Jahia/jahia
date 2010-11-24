@@ -30,7 +30,7 @@ import java.util.Set;
  * User: toto
  * Date: Sep 29, 2010
  * Time: 11:46:57 AM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class InfoLayers {
     protected Set<InfoLayer> containers = new HashSet<InfoLayer>();

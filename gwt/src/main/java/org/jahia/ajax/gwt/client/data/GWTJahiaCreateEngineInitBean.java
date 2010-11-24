@@ -44,7 +44,7 @@ import java.util.Map;
  * User: toto
  * Date: Jun 14, 2010
  * Time: 7:17:52 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class GWTJahiaCreateEngineInitBean implements Serializable {
     /** The serialVersionUID. */

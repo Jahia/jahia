@@ -63,7 +63,7 @@ import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbarLayoutContainer;
  * User: ktlili
  * Date: Mar 2, 2010
  * Time: 9:32:54 AM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class VersionViewer extends ContentPanel {
     private GWTJahiaNode currentNode;

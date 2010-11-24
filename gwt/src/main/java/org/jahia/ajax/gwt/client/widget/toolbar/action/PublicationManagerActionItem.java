@@ -46,7 +46,7 @@ import java.util.List;
  * User: ktlili
  * Date: Apr 29, 2010
  * Time: 9:41:53 AM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class PublicationManagerActionItem extends BaseActionItem{
 

@@ -41,7 +41,7 @@ import org.jahia.ajax.gwt.client.widget.content.ContentViews;
  * User: toto
  * Date: Sep 30, 2009
  * Time: 6:29:20 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class SwitchViewActionItem extends BaseActionItem {
     private String view;

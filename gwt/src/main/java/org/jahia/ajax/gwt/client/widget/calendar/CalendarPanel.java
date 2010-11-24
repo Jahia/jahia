@@ -46,7 +46,7 @@ import com.google.gwt.i18n.client.DateTimeFormat;
  * User: toto
  * Date: Dec 31, 2008
  * Time: 3:24:55 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class CalendarPanel extends LayoutContainer {
 

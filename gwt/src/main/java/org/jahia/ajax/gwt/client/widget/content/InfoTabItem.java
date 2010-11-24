@@ -50,7 +50,7 @@ import java.util.Date;
  * User: toto
  * Date: May 10, 2010
  * Time: 7:39:18 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class InfoTabItem extends EditEngineTabItem {
     private transient FlowPanel infoPanel;

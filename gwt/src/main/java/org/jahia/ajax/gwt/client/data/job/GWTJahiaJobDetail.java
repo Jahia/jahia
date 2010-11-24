@@ -11,7 +11,7 @@ import java.util.List;
  * User: toto
  * Date: Sep 17, 2010
  * Time: 2:13:35 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class GWTJahiaJobDetail extends BaseModelData implements Serializable, Comparable {
 

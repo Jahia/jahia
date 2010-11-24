@@ -39,7 +39,7 @@ import java.io.Serializable;
  * User: toto
  * Date: Aug 26, 2008
  * Time: 7:38:01 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class GWTJahiaNodeDefinition extends GWTJahiaItemDefinition implements Serializable {
     private String[] requiredPrimaryTypes;

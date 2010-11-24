@@ -42,7 +42,7 @@ import java.util.List;
  * User: toto
  * Date: May 21, 2010
  * Time: 3:56:47 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class GWTRepository implements Serializable, IsSerializable {
     private String title;

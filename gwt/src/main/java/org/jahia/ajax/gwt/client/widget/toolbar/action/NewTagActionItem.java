@@ -41,7 +41,7 @@ import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 * User: toto
 * Date: Sep 25, 2009
 * Time: 6:58:33 PM
-* To change this template use File | Settings | File Templates.
+* 
 */
 public class NewTagActionItem extends BaseActionItem  {
     public void onComponentSelection() {

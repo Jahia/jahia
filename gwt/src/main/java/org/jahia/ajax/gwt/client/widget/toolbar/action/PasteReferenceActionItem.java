@@ -58,7 +58,7 @@ import java.util.Map;
 * User: toto
 * Date: Sep 25, 2009
 * Time: 6:57:42 PM
-* To change this template use File | Settings | File Templates.
+* 
 */
 public class PasteReferenceActionItem extends BaseActionItem  {
     protected transient List<String> allowedRefs;

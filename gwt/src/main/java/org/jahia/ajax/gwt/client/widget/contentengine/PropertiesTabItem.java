@@ -59,7 +59,7 @@ import java.util.*;
  * User: toto
  * Date: Jan 6, 2010
  * Time: 6:34:40 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class PropertiesTabItem extends EditEngineTabItem {
     protected List<String> dataType;

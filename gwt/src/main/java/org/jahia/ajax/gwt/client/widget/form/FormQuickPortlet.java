@@ -39,7 +39,7 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
  * User: jahia
  * Date: 6 avr. 2009
  * Time: 11:29:25
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public abstract class FormQuickPortlet extends FormPanel {
     private String folderPath;

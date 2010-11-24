@@ -58,7 +58,7 @@ import java.util.List;
  * User: ktlili
  * Date: Aug 21, 2009
  * Time: 9:58:29 AM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class PickedContentView extends BottomRightComponent {
     private GroupingStore<GWTJahiaNode> store;

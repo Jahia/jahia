@@ -42,7 +42,7 @@ import com.extjs.gxt.ui.client.widget.Component;
  * User: toto
  * Date: Aug 21, 2009
  * Time: 3:56:35 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class EditModeDragSource extends DragSource {
     public EditModeDragSource(Component c) {

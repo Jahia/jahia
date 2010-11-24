@@ -70,7 +70,7 @@ import java.util.List;
  * User: toto
  * Date: Jan 6, 2010
  * Time: 7:44:45 PM
- * To change this template use File | Settings | File Templates.
+ * 
  */
 public class CategoriesTabItem extends EditEngineTabItem {
     private transient TreeStore<GWTJahiaNode> catStore;

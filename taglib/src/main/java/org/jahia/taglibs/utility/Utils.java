@@ -39,7 +39,8 @@ import javax.servlet.jsp.PageContext;
 
 import org.jahia.gui.GuiBean;
 import org.jahia.services.render.RenderContext;
-import org.jahia.utils.JahiaConsole;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class Utils :  provides miscellaneous methods used by the taglibs
@@ -58,6 +59,8 @@ public class Utils {
     public final static int TO_MAX = Integer.MAX_VALUE;    
     
     private final static String SEPARATOR = "_";
+    
+    private static final Logger logger = LoggerFactory.getLogger(Utils.class);
 
     /**
      * Method buildUniqueName :  builds a unique name for a field, thanks to the name
@@ -134,7 +137,7 @@ public class Utils {
         final String fullName = theClass.getName();
         final int lastDot = fullName.lastIndexOf(".");
         if (lastDot == -1) {
-            JahiaConsole.println("Utils: getShortClassName ", "The class name contains no dot.");
+            logger.error("The class name contains no dot.");
             return fullName;
         }
         return fullName.substring(lastDot + 1);

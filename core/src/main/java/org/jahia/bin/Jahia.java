@@ -71,7 +71,6 @@ import org.jahia.services.cache.CacheService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.settings.SettingsBean;
-import org.jahia.utils.JahiaConsole;
 import org.jahia.utils.Version;
 
 import javax.servlet.ServletConfig;
@@ -208,7 +207,7 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
         logger.info("Initializing Jahia...");
 
         try {
-	        JahiaConsole.startupWithTrust(getBuildNumber());
+	        startupWithTrust(getBuildNumber());
 	
 	        // get servlet basic variables, like config and context...
 	        staticServletConfig = aConfig;
@@ -271,12 +270,6 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
 
             createAuthorizationPipeline(aConfig);
 
-            /* todo let's find a cleaner way to initialize this static repository reference, maybe if we move
-             * Jackrabbit to be initialized using Spring we could initialize these dependencies using Spring
-              * injections ? */
-            // Initialize this to make sure we call it in Jahia's context instead of a portlet's context, as
-            // portlets also use Jackrabbit-stored preferences.
-            JahiaAccessManager.getRepository();
             Map map = SpringContextSingleton.getInstance().getContext().getBeansOfType(
                     JahiaAfterInitializationService.class);
             for (Object o : map.values()) {
@@ -301,7 +294,62 @@ public final class Jahia extends HttpServlet implements JahiaInterface {
         }
     } // end init
 
-    private void verifyJavaVersion(String supportedJDKVersions) throws JahiaInitializationException {
+    /**
+     * startupWithTrust
+     * AK    20.01.2001
+     */
+    private void startupWithTrust(int buildNumber) {
+        Integer buildNumberInteger = new Integer(buildNumber);
+        String buildString = buildNumberInteger.toString();
+        StringBuilder buildBuffer = new StringBuilder();
+
+        for (int i = 0; i < buildString.length(); i++) {
+            buildBuffer.append(" ");
+            buildBuffer.append(buildString.substring(i, i + 1));
+        }
+
+        String msg;
+        InputStream is = null;
+        try {
+        	is = this.getClass().getResourceAsStream("/jahia-startup-intro.txt");
+            msg = IOUtils.toString(is);
+        } catch (Exception e) {
+        	logger.warn(e.getMessage(), e);
+            msg = 
+                    "\n\n\n\n"
+                            + "                                     ____.\n"
+                            + "                         __/\\ ______|    |__/\\.     _______\n"
+                            + "              __   .____|    |       \\   |    +----+       \\\n"
+                            + "      _______|  /--|    |    |    -   \\  _    |    :    -   \\_________\n"
+                            + "     \\\\______: :---|    :    :           |    :    |         \\________>\n"
+                            + "             |__\\---\\_____________:______:    :____|____:_____\\\n"
+                            + "                                        /_____|\n"
+                            + "\n"
+                            + "      . . . s t a r t i n g   j a h i a   b u i l d  @BUILD_NUMBER@"+
+                    " . . .\n"
+                            + "\n\n"
+                            + "   Copyright 2002-2010 - Jahia Solutions Group SA http://www.jahia.com - All Rights Reserved\n"
+                            + "\n\n"
+                            + " *******************************************************************************\n"
+                            + " * The contents of this software, or the files included with this software,    *\n"
+                            + " * are subject to the GNU General Public License (GPL).                        *\n"
+                            + " * You may not use this software except in compliance with the license. You    *\n"
+                            + " * may obtain a copy of the license at http://www.jahia.com/license. See the   *\n"
+                            + " * license for the rights, obligations and limitations governing use of the    *\n"
+                            + " * contents of the software.                                                   *\n"
+                            + " *******************************************************************************\n"
+                            + "\n\n";
+		} finally {
+			IOUtils.closeQuietly(is);
+		}
+        msg = msg.replace("@BUILD_NUMBER@", buildBuffer.toString());
+
+        System.out.println (msg);
+        System.out.flush();
+    }
+
+
+	private void verifyJavaVersion(String supportedJDKVersions) throws JahiaInitializationException {
         if (supportedJDKVersions != null) {
                 Version currentJDKVersion;
                 try {

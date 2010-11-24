@@ -472,7 +472,7 @@ public class JahiaTools {
             }
             badCharFound = (!ok);
             if (badCharFound) {
-                JahiaConsole.println("JahiaTools.isAlphaValid", "--/ Bad character found in [" + name + "] at position " + Integer.toString(i));
+            	logger.error("JahiaTools.isAlphaValid", "--/ Bad character found in [" + name + "] at position " + Integer.toString(i));
             }
             i++;
         }

@@ -38,7 +38,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.taglibs.template.templatestructure.DefaultIncludeProvider;
-import org.jahia.utils.JahiaConsole;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class JSToolsTag : includes the Jahia JavaScript source file(s)
@@ -62,6 +63,8 @@ import org.jahia.utils.JahiaConsole;
  */
 @SuppressWarnings("serial")
 public class JSToolsTag extends AbstractJahiaTag {
+	
+	private static final Logger logger = LoggerFactory.getLogger(JSToolsTag.class);
 
     public int doStartTag() {
 
@@ -71,7 +74,7 @@ public class JSToolsTag extends AbstractJahiaTag {
                             (HttpServletRequest) pageContext.getRequest(),
                             getRenderContext()));
         } catch (IOException ioe) {
-            JahiaConsole.println("JSToolsTag: doStartTag ", ioe.toString());
+        	logger.error(ioe.getMessage(), ioe);
         }
         return SKIP_BODY;
     }

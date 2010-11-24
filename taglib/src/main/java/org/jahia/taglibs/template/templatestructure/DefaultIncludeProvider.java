@@ -33,7 +33,6 @@
 package org.jahia.taglibs.template.templatestructure;
 
 import org.jahia.bin.Jahia;
-import org.jahia.data.JahiaData;
 import org.jahia.services.render.RenderContext;
 
 import javax.servlet.http.HttpServletRequest;

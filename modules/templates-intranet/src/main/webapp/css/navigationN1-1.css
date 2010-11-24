@@ -1,9 +1,9 @@
-#bodywrapper.navigationN1-1  {
+bodywrapper .navigationN1-1  {
 	float: left;
 	width: 100%;
 
 }
-#bodywrapper.navigationN1-1 ul.level_1  {
+bodywrapper .navigationN1-1 ul.level_1  {
 	margin: 0; padding: 0;
 	float: left;
 	width: 100%;
@@ -13,25 +13,25 @@
 	background:#101010 url(navigationN1-1/topnav_stretch.gif) repeat-x;
 	line-height:1.2em;
 }
-#bodywrapper.navigationN1-1 ul.level_1 li {
+bodywrapper .navigationN1-1 ul.level_1 li {
 	float: left;
 	margin: 0; padding: 0;
 	border-right: 1px solid #555;
 }
-#bodywrapper.navigationN1-1 ul.level_1 li a {
+bodywrapper .navigationN1-1 ul.level_1 li a {
 	padding: 10px 15px;
 	display: block;
 	color: #f0f0f0;
 	text-decoration: none;
 }
-#bodywrapper.navigationN1-1 ul.level_1 li.selected,
-#bodywrapper.navigationN1-1 ul.level_1 li.inPath
+bodywrapper .navigationN1-1 ul.level_1 li.selected,
+bodywrapper .navigationN1-1 ul.level_1 li.inPath
  {background:#8ebde5 url(navigationN1-1/topnav_selected.gif) repeat-x; color:#333}
  
-#bodywrapper.navigationN1-1 ul.level_1 li:hover
+bodywrapper .navigationN1-1 ul.level_1 li:hover
  {background:#1376c9 url(navigationN1-1/topnav_active.gif) repeat-x;}
  
-#bodywrapper.navigationN1-1 ul.level_1 li div.box-inner {
+bodywrapper .navigationN1-1 ul.level_1 li div.box-inner {
 	float: left;
 	padding: 15px 0;
 	position: absolute;
@@ -50,18 +50,18 @@
 	border-bottom-left-radius: 5px;
 	z-index:999;
 }
-#bodywrapper.navigationN1-1 ul.level_1 li:hover div.box-inner { display: block; }
-#bodywrapper.navigationN1-1 ul.level_1 li div.box-inner a { display: inline; }
-#bodywrapper.navigationN1-1 ul.level_1 li div.box-inner a:hover {text-decoration: underline;}
-#bodywrapper.navigationN1-1 ul.level_2  {
+bodywrapper .navigationN1-1 ul.level_1 li:hover div.box-inner { display: block; }
+bodywrapper .navigationN1-1 ul.level_1 li div.box-inner a { display: inline; }
+bodywrapper .navigationN1-1 ul.level_1 li div.box-inner a:hover {text-decoration: underline;}
+bodywrapper .navigationN1-1 ul.level_2  {
 	margin: 0; padding: 0;
 	list-style: none;
 }
-#bodywrapper.navigationN1-1 ul.level_2 li {
+bodywrapper .navigationN1-1 ul.level_2 li {
 	border-right: 1px solid #fff;
 }
-#bodywrapper.navigationN1-1 ul.level_2 li:hover,
-#bodywrapper.navigationN1-1 ul.level_2 li.selected,
-#bodywrapper.navigationN1-1 ul.level_2 li.inPath {background:none;background-color:transparent;}
-#bodywrapper.navigationN1-1 ul.level_2 li.selected a{text-decoration: underline;}
+bodywrapper .navigationN1-1 ul.level_2 li:hover,
+bodywrapper .navigationN1-1 ul.level_2 li.selected,
+bodywrapper .navigationN1-1 ul.level_2 li.inPath {background:none;background-color:transparent;}
+bodywrapper .navigationN1-1 ul.level_2 li.selected a{text-decoration: underline;}
 

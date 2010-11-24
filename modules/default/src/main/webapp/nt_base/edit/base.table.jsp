@@ -34,6 +34,7 @@
     <table width="100%" cellspacing="0" cellpadding="5" border="0" class="table">
         <thead>
         <tr>
+            <th width="1%">&nbsp;</th>
             <th width="5%">
                 <c:if test="${jcr:isNodeType(currentNode.parent,'jnt:contentFolder') || jcr:isNodeType(currentNode.parent,'jnt:folder')}">
                     <a title="parent" href="${url.base}${currentNode.parent.path}.html"><img height="16" width="16"
@@ -55,7 +56,7 @@
                    <%--varStatus="status">--%>
             <tr class="even">
                 <td align="center">
-                    <%--<input type="checkbox" name="${currentNode.identifier}"/>--%>
+                    <input type="checkbox" checked="true" name="${currentNode.identifier}" disabled="true" />
                 </td>
                 <td>
                     <c:if test="${not empty currentNode.primaryNodeType.templatePackage.rootFolder}">

@@ -17,6 +17,7 @@ public class Template implements Serializable {
     public String view;
     public String node;
     public Template next;
+    private transient String appliedType;
 
     public Template(String view, String node, Template next) {
         this.view = view;

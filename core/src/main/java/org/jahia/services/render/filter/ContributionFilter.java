@@ -53,9 +53,9 @@ public class ContributionFilter extends AbstractFilter {
 
         try {
             // ugly tests to check whether or not to switch to contribution mode
-            if (node.hasProperty("j:editableInContribution")
+            if (node.isNodeType("jmix:list")
+                    && node.hasProperty("j:editableInContribution")
                     && node.getProperty("j:editableInContribution").getBoolean()
-                    && !resource.getTemplateType().equals("edit")
                     && !context.isAjaxRequest()) {
                 resource.setTemplateType("edit");
             }

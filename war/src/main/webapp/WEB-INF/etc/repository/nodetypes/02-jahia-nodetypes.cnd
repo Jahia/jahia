@@ -343,6 +343,9 @@
 [jnt:contentTemplate] > jnt:template
  - j:applyOn (string, choicelist[subnodetypes = 'jnt:content,jnt:contentList,jnt:folder,jnt:file,jnt:user,jnt:group',resourceBundle]) multiple
 
+[jnt:contributeTemplate] > jnt:template
+ - j:applyOn (string, choicelist[subnodetypes = 'jnt:content,jnt:contentList,jnt:folder,jnt:file,jnt:user,jnt:group',resourceBundle]) multiple
+
 [jmix:mockupStyle] mixin
  itemtype = layout
  - j:mockupStyle (string)

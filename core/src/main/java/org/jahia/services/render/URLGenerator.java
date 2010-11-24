@@ -116,7 +116,7 @@ public class URLGenerator {
     protected void initURL() {
         base = getContext() + context.getServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
 
-        final String resourcePath = context.getMainResource().getNode().getPath() + ".html";
+        final String resourcePath = context.getMainResource().getNode().getPath() + "." + context.getMainResource().getTemplateType();
 
         baseLive = getContext() + Render.getRenderServletPath() + "/" + Constants.LIVE_WORKSPACE + "/" + resource.getLocale();
         live = baseLive + resourcePath;
@@ -271,6 +271,8 @@ public class URLGenerator {
                 return  getContext() + Studio.getStudioServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + context.getMainResource().getNode().getPath() + ".html";
             }
             return getEdit();
+        } else if (context.isContributionMode()) {
+            return contribute;
         } else {
             return Constants.LIVE_WORKSPACE.equals(resource.getWorkspace()) ? live : preview;
         }

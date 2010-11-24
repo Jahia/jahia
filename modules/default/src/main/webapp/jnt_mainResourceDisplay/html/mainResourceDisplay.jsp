@@ -10,11 +10,12 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<c:set var="mainTemplate" value="${renderContext.mainResource.template}"/>
-<c:if test="${(not empty currentNode.properties['j:mainResourceView'].string) and
-(not (currentNode.properties['j:mainResourceView'].string eq 'default') and (empty mainTemplate or mainTemplate eq 'default'))}">
+
+<%--<c:set var="mainTemplate" value="${renderContext.mainResource.template}"/>--%>
+<%--<c:if test="${(not empty currentNode.properties['j:mainResourceView'].string) and (not (currentNode.properties['j:mainResourceView'].string eq 'default'))}">--%>
     <c:set var="mainTemplate" value="${currentNode.properties['j:mainResourceView'].string}"/>
-</c:if>
+<%--</c:if>--%>
+
 <c:choose>
     <c:when test="${not empty inWrapper and inWrapper eq false}">
         <div class="mainResourceDisplay<c:if test="${not empty currentNode.properties['j:mockupStyle']}"> ${currentNode.properties['j:mockupStyle'].string}</c:if>">

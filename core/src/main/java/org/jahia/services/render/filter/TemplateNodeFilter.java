@@ -32,6 +32,7 @@
 
 package org.jahia.services.render.filter;
 
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.slf4j.Logger;
 import org.jahia.services.content.*;
 import org.jahia.services.render.*;
@@ -39,8 +40,10 @@ import org.jahia.services.render.*;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
+import java.util.*;
 
 /**
  * WrapperFilter
@@ -163,6 +166,9 @@ public class TemplateNodeFilter extends AbstractFilter {
         if (resource.getNode().isNodeType("jnt:page")) {
             type = "pageTemplate";
         }
+        if ("edit".equals(resource.getTemplateType())) {
+            type = "contributeTemplate";
+        }
 
         String query =
                 "select * from [jnt:" + type + "] as w where isdescendantnode(w, ['" + templateNode.getPath() + "'])";
@@ -173,25 +179,50 @@ public class TemplateNodeFilter extends AbstractFilter {
                 Query.JCR_SQL2);
         QueryResult result = q.execute();
         NodeIterator ni = result.getNodes();
-        Template template = null;
+
+        SortedMap<String, Template> templates = new TreeMap<String, Template>(new Comparator<String>() {
+            public int compare(String o1, String o2) {
+                if (o1 == o2) {
+                    return 0;
+                }
+                if (o1 == null) {
+                    return 1;
+                } else if (o2 == null) {
+                    return -1;
+                }
+                try {
+                    if (NodeTypeRegistry.getInstance().getNodeType(o1).isNodeType(o2)) {
+                        return -1;
+                    } else {
+                        return 1;
+                    }
+                } catch (NoSuchNodeTypeException e) {
+                    e.printStackTrace();
+                    return 1;
+                }
+            }
+        });
         while (ni.hasNext()) {
             final JCRNodeWrapper contentTemplateNode = (JCRNodeWrapper) ni.nextNode();
-            template = addTemplate(resource, contentTemplateNode);
-            if (template != null) {
-                return template;
-            }
+            addTemplate(resource, contentTemplateNode, templates);
         }
-        return template;
+        if (templates.isEmpty()) {
+            return null;
+        } else {
+            return templates.get(templates.firstKey());
+        }
     }
 
-    private Template addTemplate(Resource resource, JCRNodeWrapper templateNode)
+    private void addTemplate(Resource resource, JCRNodeWrapper templateNode, Map<String, Template> templates)
             throws RepositoryException {
         boolean ok = true;
+        String type = null;
         if (templateNode.hasProperty("j:applyOn")) {
             ok = false;
             Value[] values = templateNode.getProperty("j:applyOn").getValues();
             for (Value value : values) {
                 if (resource.getNode().isNodeType(value.getString())) {
+                    type = value.getString();
                     ok = true;
                     break;
                 }
@@ -207,12 +238,12 @@ public class TemplateNodeFilter extends AbstractFilter {
 //                ok = templateNode.hasProperty("j:templateKey") && resource.getTemplate().equals(templateNode.getProperty("j:templateKey").getString());
 //            }
 //        }
+
         if (ok) {
-            return new Template(
+            templates.put(type,new Template(
                     templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
-                            null, templateNode.getIdentifier(), null);
+                            null, templateNode.getIdentifier(), null));
         }
-        return null;
     }
 
 }

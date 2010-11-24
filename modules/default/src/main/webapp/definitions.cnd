@@ -123,7 +123,7 @@
  - templateForLink (string, choicelist[templates,resourceBundle]) mandatory
 
 [jnt:pageFormCreation] > jnt:content, jmix:siteComponent, mix:title
- - templateNode (weakreference) mandatory
+ - templateNode (weakreference,choicelist[templatesNode]) mandatory
  - buttonLabel (string)
 
 [jnt:linkList] > jnt:content, jmix:listContent, mix:title, jmix:list

@@ -1145,9 +1145,6 @@ exercising activities with strong recurring profits. 
                     </results>
                 </pagecontent>
             </search-results>
-            <my-profile jcr:uuid="c8218610-c956-444a-9244-6226e0612527" jcr:mixinTypes="jmix:sitemap" jcr:created="2010-11-22T16:47:11.893+01:00" jcr:primaryType="jnt:page" j:displayInMenu="primary" changefreq="monthly" jcr:lastModifiedBy="" j:templateNode="/sites/ACME/templates/base/my-profile" jcr:createdBy=" system " j:fullpath="/sites/ACME/my-profile" jcr:lastModified="2010-11-22T16:47:14.779+01:00" priority="0.5">
-                <j:translation_en jcr:lastModifiedBy="" jcr:language="en" jcr:uuid="bd3a3099-acfc-4ab8-9b7c-b7de2acedf2d" jcr:title="My Profile" jcr:mixinTypes="mix:title" jcr:lastModified="2010-11-22T16:47:14.779+01:00" jcr:primaryType="jnt:translation"></j:translation_en>
-            </my-profile>
             <j:acl jcr:primaryType="jnt:acl">
                 <GRANT_r_editor j:privileges="jcr:read jcr:read_live jcr:write" j:protected="false" j:principal="r:editor" j:aceType="GRANT" jcr:primaryType="jnt:ace"></GRANT_r_editor>
                 <DENY_r_editor j:privileges="jcr:write_live jcr:modifyAccessControl" j:protected="false" j:principal="r:editor" j:aceType="DENY" jcr:primaryType="jnt:ace"></DENY_r_editor>

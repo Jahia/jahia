@@ -37,11 +37,11 @@
 
         <pluto.version>2.0.2</pluto.version>
         <spring.version>2.5.6.SEC02</spring.version>
-        <jackrabbit.version>2.2-rev1027183-patch2</jackrabbit.version>
+        <jackrabbit.version>2.2-rev1038169-patch2</jackrabbit.version>
         <lucene.version>2.4.1</lucene.version>
         <jbpm.version>4.4</jbpm.version>
         <hibernate.version>3.3.2.GA</hibernate.version>
-        <apache.tika.version>0.7</apache.tika.version>
+        <apache.tika.version>0.8</apache.tika.version>
         <camel.version>2.4.0</camel.version>
         <gwt.version>2.0.4</gwt.version>
         <clover.version>2.6.3</clover.version>

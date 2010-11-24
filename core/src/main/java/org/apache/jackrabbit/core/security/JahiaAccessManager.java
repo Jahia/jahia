@@ -50,9 +50,6 @@ import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.jaas.JahiaPrincipal;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.rbac.RoleIdentity;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
@@ -62,12 +59,9 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 
 import javax.jcr.*;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.jcr.nodetype.NodeDefinition;
 import javax.jcr.security.*;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
-import javax.naming.NamingException;
 import javax.security.auth.Subject;
 import java.security.Principal;
 import java.util.*;
@@ -604,15 +598,11 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     }
 
     public Privilege[] getPrivileges(String absPath) throws PathNotFoundException, RepositoryException {
-        return new Privilege[0];  //To change body of implemented methods use File | Settings | File Templates.
+        return new Privilege[0];  
     }
 
     public AccessControlPolicy[] getEffectivePolicies(String absPath) throws PathNotFoundException, AccessDeniedException, RepositoryException {
-        return new AccessControlPolicy[0];  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public static synchronized Repository getRepository() throws NamingException {
-        return repository;
+        return new AccessControlPolicy[0];
     }
 
     public static void setRepository(Repository arepository) {

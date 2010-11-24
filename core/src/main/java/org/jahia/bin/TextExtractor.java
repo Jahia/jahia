@@ -48,6 +48,7 @@ import org.jahia.services.textextraction.TextExtractionService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.files.FileUpload;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.view.InternalResourceView;
 
@@ -66,7 +67,7 @@ public class TextExtractor extends HttpServlet implements Controller {
 
     private TextExtractionService textExtractionService;
 
-    private String view;
+    private View view;
 
     /*
      * (non-Javadoc)
@@ -112,7 +113,7 @@ public class TextExtractor extends HttpServlet implements Controller {
             model.put("extracted", Boolean.TRUE);
             model.put("extractionTime", Long.valueOf(System.currentTimeMillis() - startTime));
 
-            return new ModelAndView(new InternalResourceView(view), model);
+            return new ModelAndView(view, model);
 
         } catch (Exception e) {
             logger.error("Error extracting text for uploaded file " + inputFile.getFieldName() + ". Cause: "
@@ -146,7 +147,7 @@ public class TextExtractor extends HttpServlet implements Controller {
      * @param view the view to set
      */
     public void setView(String view) {
-        this.view = view;
+        this.view = new InternalResourceView(view);
     }
 
 }

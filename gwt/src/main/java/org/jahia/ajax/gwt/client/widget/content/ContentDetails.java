@@ -344,7 +344,6 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                         }
                     }
 
-                    // case od contentTabItem
                     if (item instanceof ListOrderingContentTabItem) {
 
                         // if the manual ranking was activated update new ranking

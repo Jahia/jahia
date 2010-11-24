@@ -46,9 +46,9 @@ public class JahiaPasswordPolicyManager {
 	private JahiaPasswordPolicyDAO policyDao;
 
 	/**
-	 * Returns the defautl password policy.
+	 * Returns the default password policy.
 	 * 
-	 * @return the defautl password policy
+	 * @return the default password policy
 	 */
 	public JahiaPasswordPolicy getDefaultPolicy() {
 		JahiaPwdPolicy policyDataObj = policyDao.findPolicyById(0);

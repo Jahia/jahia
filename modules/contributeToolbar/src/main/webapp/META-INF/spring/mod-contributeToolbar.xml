@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+    <bean class="org.jahia.modules.contribute.toolbar.actions.MultipleDeleteAction">
+        <property name="name" value="deleteNodes"/>
+    </bean>
+
+    <bean class="org.jahia.modules.contribute.toolbar.actions.MultipleCopyAction">
+        <property name="name" value="copy"/>
+    </bean>
+
+    <bean class="org.jahia.modules.contribute.toolbar.actions.MultipleCutAction">
+        <property name="name" value="cut"/>
+    </bean>
+
+    <bean class="org.jahia.modules.contribute.toolbar.actions.MultiplePasteAction">
+        <property name="name" value="paste"/>
+    </bean>
+
+    <bean class="org.jahia.modules.contribute.toolbar.actions.CheckClipboardAction">
+        <property name="name" value="checkclipboard"/>
+    </bean>
+
+    <bean class="org.jahia.modules.contribute.toolbar.actions.CleanClipboardAction">
+        <property name="name" value="emptyclipboard"/>
+    </bean>
+</beans>

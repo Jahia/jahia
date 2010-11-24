@@ -84,7 +84,8 @@
         <module>bookmarks</module>
         <module>calendar</module>
         <module>contact</module>
-        <module>contentRetrieval</module>        
+        <module>contentRetrieval</module>
+        <module>contributeToolbar</module>
         <module>default</module>
         <module>docConverter</module>
         <module>event</module>

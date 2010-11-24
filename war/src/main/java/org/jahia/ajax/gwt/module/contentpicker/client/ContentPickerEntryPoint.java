@@ -39,7 +39,6 @@ import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.util.JahiaGWT;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.content.ContentPickerViewport;
 import org.jahia.ajax.gwt.client.widget.content.util.ContentHelper;
@@ -74,7 +73,6 @@ public class ContentPickerEntryPoint extends CommonEntryPoint {
          */
         @SuppressWarnings("unused")
         Layout junk = new AnchorLayout();
-        JahiaGWT.init();
         final RootPanel panel = RootPanel.get("contentpicker");
         if (panel != null) {
             final String jahiaContextPath = DOM.getElementAttribute(panel.getElement(), "jahiaContextPath");

@@ -32,26 +32,18 @@
 
 package org.jahia.ajax.gwt.client.util.security;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.RootPanel;
-
-import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
-import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
-import org.jahia.ajax.gwt.client.service.UserManagerService;
-import org.jahia.ajax.gwt.client.util.JahiaGWT;
 import org.jahia.ajax.gwt.client.widget.security.RolePrincipalPanel;
 import org.jahia.ajax.gwt.client.widget.security.RolesManager;
-import org.jahia.ajax.gwt.client.widget.usergroup.UserGroupAdder;
-import org.jahia.ajax.gwt.client.widget.usergroup.UserGroupSelect;
 
-import java.util.List;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.RunAsyncCallback;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.RootPanel;
 
 /**
- * Created by IntelliJ IDEA.
  * User: ktlili
  * Date: Feb 2, 2010
  * Time: 4:43:13 PM
- * To change this template use File | Settings | File Templates.
  */
 public class RoleEditor {
     public static final String PERMISSION_ROLE = "gwtpermissionrole";
@@ -70,7 +62,15 @@ public class RoleEditor {
 
         final RootPanel panel = RootPanel.get(PERMISSION_ROLE);
         if (panel != null) {
-            panel.add(new RolesManager(panel.getElement().getAttribute("config"),panel.getElement().getAttribute("siteKey")));
+            GWT.runAsync(new RunAsyncCallback() {
+                public void onFailure(Throwable reason) {
+                	Window.alert("Error loading role manager: " + reason.getMessage());
+                }
+
+                public void onSuccess() {
+                    panel.add(new RolesManager(panel.getElement().getAttribute("config"),panel.getElement().getAttribute("siteKey")));
+                }
+            });        
         }
 
     }
@@ -81,7 +81,15 @@ public class RoleEditor {
     public static void initPrincipalRole() {
         final RootPanel panel = RootPanel.get(ROLE_PRINCIPAL);
         if (panel != null) {
-            panel.add(new RolePrincipalPanel(panel.getElement().getAttribute("siteKey"), Boolean.parseBoolean(panel.getElement().getAttribute("group")), panel.getElement().getAttribute("principalKey")));
+            GWT.runAsync(new RunAsyncCallback() {
+                public void onFailure(Throwable reason) {
+                	Window.alert("Error loading role principal panel: " + reason.getMessage());
+                }
+
+                public void onSuccess() {
+                    panel.add(new RolePrincipalPanel(panel.getElement().getAttribute("siteKey"), Boolean.parseBoolean(panel.getElement().getAttribute("group")), panel.getElement().getAttribute("principalKey")));
+                }
+            });        
         }
     }
 

@@ -54,12 +54,9 @@
                     <img height="16" width="16" border="0" style="cursor: pointer;" title="Locked" alt="Supprimer"
                          src="${url.currentModule}/images/icons/locked.gif">
                 </c:if>
-                <a href="${url.base}${child.path}.html"><c:if test="${!empty child.properties['jcr:title'].string}">
-                    ${fn:escapeXml(child.properties['jcr:title'].string)}
-                </c:if>
-                    <c:if test="${empty child.properties['jcr:title'].string}">
-                        ${fn:escapeXml(child.name)}
-                    </c:if></a>
+                <a href="${url.base}${child.path}.html">
+                    ${fn:escapeXml(!empty child.propertiesAsString['jcr:title'] ? child.propertiesAsString['jcr:title'] : child.name)}
+                </a>
             </div>
         </td>
         <td>
@@ -74,7 +71,7 @@
         <td class="lastCol">
             <workflow:activeWorkflow node="${child}" var="wfs"/>
             <c:forEach items="${wfs}" var="wf">
-                ${wf.workflowDefinition.displayName}
+                ${fn:escapeXml(wf.workflowDefinition.displayName)}
             </c:forEach>
         </td>
         </tr>

@@ -16,7 +16,7 @@
 
 <template:include template="hidden.header"/>
 
-<table width="100%" cellspacing="0" cellpadding="5" border="0" class="evenOddTable">
+<table width="100%" cellspacing="0" cellpadding="5" border="0" class="table">
     <thead>
     <tr>
         <th width="5%">
@@ -37,15 +37,8 @@
     </thead>
     <tbody>
     <c:forEach items="${moduleMap.currentList}" var="child" begin="${moduleMap.begin}" end="${moduleMap.end}"
-               varStatus="">
-        <c:choose>
-            <c:when test="${status.count % 2 == 0}">
-                <tr class="evenLine">
-            </c:when>
-            <c:otherwise>
-                <tr class="oddLine">
-            </c:otherwise>
-        </c:choose>
+               varStatus="status">
+        <tr class="${status.count % 2 == 0 ? 'even' : 'odd'}">
         <td>
             <c:if test="${not empty child.primaryNodeType.templatePackage.rootFolder}">
                 <img src="${url.templatesPath}/${child.primaryNodeType.templatePackage.rootFolder}/icons/${fn:replace(fn:escapeXml(child.primaryNodeType.name),":","_")}_large.png"/>
@@ -61,12 +54,9 @@
                     <img height="16" width="16" border="0" style="cursor: pointer;" title="Locked" alt="Supprimer"
                          src="${url.currentModule}/images/icons/locked.gif">
                 </c:if>
-                <a href="${url.base}${child.path}.html"><c:if test="${!empty child.properties['jcr:title'].string}">
-                    ${fn:escapeXml(child.properties['jcr:title'].string)}
-                </c:if>
-                    <c:if test="${empty child.properties['jcr:title'].string}">
-                        ${fn:escapeXml(child.name)}
-                    </c:if></a>
+                <a href="${url.base}${child.path}.html">
+                    ${fn:escapeXml(!empty child.propertiesAsString['jcr:title'] ? child.propertiesAsString['jcr:title'] : child.name)}
+                </a>
             </div>
         </td>
         <td>
@@ -81,7 +71,7 @@
         <td class="lastCol">
             <workflow:activeWorkflow node="${child}" var="wfs"/>
             <c:forEach items="${wfs}" var="wf">
-                ${wf.workflowDefinition.displayName}
+                ${fn:escapeXml(wf.workflowDefinition.displayName)}
             </c:forEach>
         </td>
         </tr>

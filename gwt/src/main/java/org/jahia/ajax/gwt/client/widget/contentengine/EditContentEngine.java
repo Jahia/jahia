@@ -358,14 +358,13 @@ public class EditContentEngine extends AbstractContentEngine {
                         }
                     }
 
-                    // case od contentTabItem
+                    // case of contentTabItem
                     if (item instanceof ContentTabItem) {
                         if (((ContentTabItem) item).isNodeNameFieldDisplayed()) {
                             nodeName = ((ContentTabItem) item).getName().getValue();
                         }
                     }
 
-                    // case od contentTabItem
                     if (item instanceof ListOrderingContentTabItem) {
 
                         // if the manual ranking was activated update new ranking

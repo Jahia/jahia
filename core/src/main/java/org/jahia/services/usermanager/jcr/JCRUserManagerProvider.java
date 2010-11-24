@@ -56,8 +56,6 @@ import javax.jcr.query.RowIterator;
 import javax.servlet.ServletContext;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
@@ -124,18 +122,14 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                     jcrSessionWrapper.checkout(parentNodeWrapper);
                     Node userNode = parentNodeWrapper.addNode(name, Constants.JAHIANT_USER);
                     if (parentNodeWrapper.hasProperty("j:usersFolderSkeleton")) {
-                        InputStream is = null;
-                        try {
-                            is = new FileInputStream(
-                                    org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/" + parentNodeWrapper.getProperty(
-                                    "j:usersFolderSkeleton").getString());
-                            jcrSessionWrapper.importXML(parentNodeWrapper.getPath() + "/" + name, is,
-                                                      ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
-                        } catch (IOException e) {
-                            throw new RepositoryException("Could not create user due to some import issues", e);
-                        } finally {
-                            IOUtils.closeQuietly(is);
-                        }
+						String skeletons = parentNodeWrapper.getProperty("j:usersFolderSkeleton")
+						        .getString();
+                    	try {
+                    		JCRContentUtils.importSkeletons(skeletons, parentNodeWrapper.getPath() + "/" + name, jcrSessionWrapper);
+                    	} catch (Exception importEx) {
+                    		logger.error("Unable to import data using user skeletons " + skeletons, importEx);
+                            throw new RepositoryException("Could not create user due to some import issues", importEx);
+                    	}
                         JCRNodeWrapperImpl.changePermissions(userNode, "u:" + name, "rw");
                     } else {
                         JCRNodeWrapperImpl.changePermissions(userNode, "u:" + name, "rw");

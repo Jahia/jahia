@@ -35,13 +35,21 @@
  */
 package org.jahia.services;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.commons.lang.ArrayUtils;
 import org.jahia.services.templates.TemplatePackageApplicationContextLoader;
+import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.jahia.services.templates.TemplatePackageApplicationContextLoader.ContextInitializedEvent;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.io.Resource;
 
 /**
  * Spring application context holder.
@@ -51,6 +59,7 @@ import org.springframework.context.ApplicationListener;
 public class SpringContextSingleton implements ApplicationContextAware, ApplicationListener {
 
     private static SpringContextSingleton ourInstance;
+    private Map<String, Resource[]> resourcesCache;
 
     /**
      * Returns an instance of the requested bean.
@@ -93,6 +102,7 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
 
     private SpringContextSingleton() {
         super();
+        resourcesCache = new HashMap<String, Resource[]>(2);
     }
 
     /**
@@ -122,6 +132,8 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
     public void onApplicationEvent(ApplicationEvent event) {
         if (event instanceof ContextInitializedEvent) {
             this.moduleContext = ((TemplatePackageApplicationContextLoader) event.getSource()).getContext();
+        } else if (event instanceof TemplatePackageRedeployedEvent) {
+        	resourcesCache.clear();
         }
     }
 
@@ -129,4 +141,37 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
         this.context = applicationContext;
         initialized = true;
     }
+    
+	/**
+	 * Searches for Spring resource locations given the specified
+	 * (pattern-based) location. Multiple locations can be provided separated by
+	 * comma (or any delimiter, defined in
+	 * {@link org.springframework.context.ConfigurableApplicationContext#CONFIG_LOCATION_DELIMITERS}
+	 * ).
+	 * 
+	 * @param locationPatterns
+	 *            (pattern-based) location to search for resources. Multiple
+	 *            locations can be provided separated by comma (or any
+	 *            delimiter, defined in
+	 *            {@link org.springframework.context.ConfigurableApplicationContext#CONFIG_LOCATION_DELIMITERS}
+	 *            )
+	 * @return an array of {@link Resource} objects found
+	 * @throws IOException
+	 *             in case of a lookup error
+	 */
+	public Resource[] getResources(String locationPatterns) throws IOException {
+		Resource[] allResources = resourcesCache.get(locationPatterns);
+		if (allResources == null) {
+			allResources = new Resource[0];
+			for (String location : org.springframework.util.StringUtils.tokenizeToStringArray(
+			        locationPatterns, ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS)) {
+				allResources = (Resource[]) ArrayUtils.addAll(allResources,
+				        context.getResources(location.trim()));
+			}
+			resourcesCache.put(locationPatterns, allResources);
+		}
+
+		return allResources;
+	}
+
 }

@@ -38,9 +38,10 @@ import org.apache.commons.lang.CharUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO9075;
 import org.apache.jackrabbit.util.Text;
-import org.jahia.exceptions.JahiaException;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.sites.JahiaSitesBaseService;
 import org.slf4j.Logger;
+import org.springframework.core.io.Resource;
 import org.jahia.api.Constants;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -638,4 +639,41 @@ public final class JCRContentUtils {
     public static String getSystemSitePath() {
         return "/sites/" + JahiaSitesBaseService.SYSTEM_SITE_KEY;        
     }
+
+	/**
+	 * Performs import of JCR data using provided skeleton locations. This
+	 * method is used when a new virtual site or a new user is created.
+	 * 
+	 * @param skeletonLocations
+	 *            the (pattern-based) location to search for resources. Multiple
+	 *            locations can be provided separated by comma (or any
+	 *            delimiter, defined in
+	 *            {@link org.springframework.context.ConfigurableApplicationContext#CONFIG_LOCATION_DELIMITERS}
+	 *            )
+	 * @param targetPath
+	 *            target JCR path to perform import into
+	 * @param session
+	 *            the current JCR session
+	 * @throws IOException
+	 *             in case of skeleton lookup error
+	 * @throws InvalidSerializedDataException
+	 *             import related exception
+	 * @throws RepositoryException
+	 *             general JCR exception
+	 */
+	public static void importSkeletons(String skeletonLocations, String targetPath,
+	        JCRSessionWrapper session) throws IOException, InvalidSerializedDataException,
+	        RepositoryException {
+		for (Resource resource : SpringContextSingleton.getInstance().getResources(skeletonLocations)) {
+			logger.info("Importing data using skeleton {}", resource);
+			InputStream is = null;
+			try {
+				is = resource.getInputStream();
+				session.importXML(targetPath, is, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
+			} finally {
+				IOUtils.closeQuietly(is);
+			}
+		}
+	}
+
 }

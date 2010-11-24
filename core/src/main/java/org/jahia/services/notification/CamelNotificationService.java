@@ -38,6 +38,7 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.CamelContextAware;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.RoutesBuilder;
+import org.springframework.beans.factory.DisposableBean;
 
 /**
  * Notification service, based on the Apache Camel framework, for sending different kinds of notifications.
@@ -46,7 +47,7 @@ import org.apache.camel.RoutesBuilder;
  * @since JAHIA 6.5
  * Created : 28 juin 2010
  */
-public class CamelNotificationService implements CamelContextAware {
+public class CamelNotificationService implements CamelContextAware, DisposableBean {
 
     private CamelContext camelContext;
     private ProducerTemplate template;
@@ -70,5 +71,11 @@ public class CamelNotificationService implements CamelContextAware {
 
     public CamelContext getCamelContext() {
         return camelContext;
+    }
+
+	public void destroy() throws Exception {
+		if (template != null) {
+			template.stop();
+		}
     }
 }

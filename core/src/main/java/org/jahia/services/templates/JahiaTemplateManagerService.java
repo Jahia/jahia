@@ -59,6 +59,7 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.TemplatePackageApplicationContextLoader.ContextInitializedEvent;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
 import org.jdom.JDOMException;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
@@ -73,8 +74,20 @@ import javax.jcr.RepositoryException;
  */
 public class JahiaTemplateManagerService extends JahiaService implements ApplicationListener {
 
-	private static Logger logger = LoggerFactory
-            .getLogger(JahiaTemplateManagerService.class);
+    /**
+     * This event is fired when a template module is re-deployed (in runtime, not on the server startup).
+     * 
+     * @author Sergiy Shyrkov
+     */
+	public static class TemplatePackageRedeployedEvent extends ApplicationEvent {
+		private static final long serialVersionUID = 789720524077775537L;
+
+		public TemplatePackageRedeployedEvent(Object source) {
+			super(source);
+		}
+	}
+
+	private static Logger logger = LoggerFactory.getLogger(JahiaTemplateManagerService.class);
 
     private TemplatePackageDeployer templatePackageDeployer;
 
@@ -353,7 +366,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         if (event instanceof ContextInitializedEvent) {
             // perform initial imports if any
             templatePackageDeployer.performInitialImport();
-        }
+        } else if (event instanceof TemplatePackageRedeployedEvent) {
+            // flush resource bundle cache
+            JahiaTemplatesRBLoader.clearCache();
+	    }
     }
 
     public void createModule(String moduleName) {

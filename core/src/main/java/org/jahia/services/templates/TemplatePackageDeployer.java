@@ -39,15 +39,14 @@ import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.services.content.rules.RulesListener;
 import org.jahia.services.importexport.ImportExportService;
-import org.jahia.services.render.filter.cache.AggregateCacheFilter;
-import org.jahia.services.render.scripting.FileSystemScriptResolver;
+import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.jahia.settings.SettingsBean;
-import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
 import org.jahia.utils.zip.ExclusionWildcardFilter;
 import org.jahia.utils.zip.JahiaArchiveFileHandler;
 import org.jahia.utils.zip.PathFilter;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.web.context.ServletContextAware;
 
 import java.io.File;
@@ -67,7 +66,7 @@ import javax.servlet.ServletContext;
  *
  * @author Sergiy Shyrkov
  */
-class TemplatePackageDeployer implements ServletContextAware {
+class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPublisherAware {
 
     class TemplatesWatcher extends TimerTask {
         private Map<String, Long> timestamps = new HashMap<String, Long>();
@@ -163,15 +162,10 @@ class TemplatePackageDeployer implements ServletContextAware {
             }
             
             if (changed) {
-                // flush resource bundle cache
-                JahiaTemplatesRBLoader.clearCache();
-                // flush template properties cache
-                FileSystemScriptResolver.clearCache();
-                // flush not cacheable fragments cache
-                AggregateCacheFilter.clearNotCacheableFragmentCache();
-                // reload the Spring application context for modules
+            	applicationEventPublisher.publishEvent(new TemplatePackageRedeployedEvent(TemplatePackageDeployer.class.getName()));
             }
             if (reloadSpringContext) {
+                // reload the Spring application context for modules
                 templatePackageRegistry.resetBeanModules();
                 contextLoader.reload();
             }
@@ -196,6 +190,8 @@ class TemplatePackageDeployer implements ServletContextAware {
     private TemplatePackageApplicationContextLoader contextLoader;
 
     private ServletContext servletContext;
+
+	private ApplicationEventPublisher applicationEventPublisher;
     
     private boolean isValidPackage(JahiaTemplatesPackage pkg) {
         if (StringUtils.isEmpty(pkg.getName())) {
@@ -469,5 +465,9 @@ class TemplatePackageDeployer implements ServletContextAware {
 
     public void setServletContext(ServletContext servletContext) {
         this.servletContext = servletContext;
+    }
+
+	public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+		this.applicationEventPublisher = applicationEventPublisher;
     }
 }

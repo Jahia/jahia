@@ -747,7 +747,6 @@ public class JCRStoreProvider {
                 Query q = session.getWorkspace().getQueryManager().createQuery("SELECT * FROM [jnt:usersFolder]", Query.JCR_SQL2);
                 QueryResult qr = q.execute();
                 NodeIterator ni = qr.getNodes();
-                try {
                     while (ni.hasNext()) {
                         Node usersFolderNode = ni.nextNode();
                         String options = "";
@@ -768,12 +767,12 @@ public class JCRStoreProvider {
                                         session.getWorkspace().getVersionManager().checkout(f.getPath());
                                         Node userNode = f.addNode(username, Constants.JAHIANT_USER);
                                         if (usersFolderNode.hasProperty("j:usersFolderSkeleton")) {
-                                            InputStream is = new FileInputStream(org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/" + usersFolderNode.getProperty("j:usersFolderSkeleton").getString());
-                                            try {
-                                                session.importXML(f.getPath() + "/" + username, is, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
-                                            } finally {
-                                                IOUtils.closeQuietly(is);
-                                            }
+                                        	String skeletons = usersFolderNode.getProperty("j:usersFolderSkeleton").getString();
+                                        	try {
+                                        		JCRContentUtils.importSkeletons(skeletons, f.getPath() + "/" + username, session);
+                                        	} catch (Exception importEx) {
+                                        		logger.error("Unable to import data using user skeletons " + skeletons, importEx);
+                                        	}
                                         }
 
                                         userNode.setProperty(JCRUser.J_EXTERNAL, true);
@@ -791,9 +790,6 @@ public class JCRStoreProvider {
                             }
                         }
                     }
-                } catch (IOException e) {
-                    logger.error(e.getMessage(), e);
-                }
             }
         } finally {
             session.logout();

@@ -38,7 +38,11 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.*;
+import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
@@ -62,7 +66,7 @@ import java.util.*;
  *
  * @author Thomas Draier
  */
-public class FileSystemScriptResolver implements ScriptResolver {
+public class FileSystemScriptResolver implements ScriptResolver, ApplicationListener {
 
     private static final String JSP_EXTENSION = "jsp";
     private static final String PHP_EXTENSION = "php";
@@ -287,8 +291,10 @@ public class FileSystemScriptResolver implements ScriptResolver {
         }
     }
 
-    public static void clearCache() {
-        resourcesCache.clear();
-        FileSystemTemplate.clearPropertiesCache();
+	public void onApplicationEvent(ApplicationEvent event) {
+	    if (event instanceof TemplatePackageRedeployedEvent) {
+	        resourcesCache.clear();
+	        FileSystemTemplate.clearPropertiesCache();
+	    }
     }
 }

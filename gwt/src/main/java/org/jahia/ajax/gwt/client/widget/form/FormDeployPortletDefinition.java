@@ -42,7 +42,6 @@ import com.google.gwt.i18n.client.Dictionary;
 import com.google.gwt.user.client.Window;
 import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.widget.WorkInProgress;
 
 public abstract class FormDeployPortletDefinition extends FormPanel {
     private boolean doCloseParent = true;
@@ -139,10 +138,12 @@ public abstract class FormDeployPortletDefinition extends FormPanel {
             }
         });
         addButton(helpButton);
+        
+        final FormPanel form = this;
 
         addListener(Events.BeforeSubmit, new Listener<FormEvent>() {
             public void handleEvent(FormEvent formEvent) {
-                WorkInProgress.show();
+                form.mask(Messages.get("label.loading", "Loading..."));
             }
         });
         addListener(Events.Submit, new Listener<FormEvent>() {
@@ -158,7 +159,7 @@ public abstract class FormDeployPortletDefinition extends FormPanel {
                         }
                     });
                 }
-                WorkInProgress.hide();
+                form.unmask();
             }
         });
 

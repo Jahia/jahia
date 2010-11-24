@@ -563,6 +563,9 @@
  - j:splitConfig (string) mandatory
  - j:splitNodeType (string) mandatory
 
+// an item will be displayed in the Pages tab of the selector
+[jmix:visibleInPagesTree] mixin
+
 //---------------------------------------------------------
 // Template studio
 //---------------------------------------------------------

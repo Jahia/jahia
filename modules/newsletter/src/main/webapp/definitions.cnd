@@ -1,0 +1,38 @@
+<nt = 'http://www.jcp.org/jcr/nt/1.0'>
+<mix = 'http://www.jcp.org/jcr/mix/1.0'>
+<jcr = 'http://www.jcp.org/jcr/1.0'>
+<j = 'http://www.jahia.org/jahia/1.0'>
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+<jmix = 'http://www.jahia.org/jahia/mix/1.0'>
+
+//---------------------------------------------------------
+// Subscriptions
+//---------------------------------------------------------
+
+[jnt:subscription] > nt:base, mix:created, mix:lastModified
+ - j:registeredSubscriber (weakreference) nofulltext < jnt:user, jnt:group
+ - j:unregisteredSubscriberEmail (string) indexed=no
+ - j:suspended (boolean) = false nofulltext
+ - j:confirmed (boolean) = true nofulltext
+ - j:confirmationKey (string) nofulltext
+ - * (string)
+
+[jnt:subscriptions] > jnt:content
+ + * (jnt:subscription) = jnt:subscription
+ 
+[jmix:subscribable] mixin
+ + j:subscriptions (jnt:subscriptions) = jnt:subscriptions mandatory autocreated
+
+//---------------------------------------------------------
+// Newsletter
+//---------------------------------------------------------
+
+[jnt:newsletters] > jnt:content, mix:title, jmix:list, jmix:visibleInPagesTree
+ + * (jnt:newsletter)
+
+[jnt:newsletter] > jnt:content, mix:title, jmix:list, jmix:subscribable, jmix:visibleInPagesTree
+ + * (jnt:newsletterIssue)
+
+[jnt:newsletterIssue] > jnt:content, mix:title
+ - j:lastSent (date) protected nofulltext
+ - j:scheduled (date) nofulltext

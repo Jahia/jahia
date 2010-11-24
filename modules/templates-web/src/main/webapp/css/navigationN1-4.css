@@ -24,8 +24,9 @@
 	line-height: 30px;
 	padding:0 20px;
 	display: block;
-	color: #999;
+	color: #ccc;
 	background:#212121;
+	text-decoration:none;
 }
 #bodywrapper .navigationN1-4 li a:hover,
 #bodywrapper .navigationN1-4 li a:active {
@@ -36,5 +37,5 @@
 #bodywrapper .navigationN1-4 li.selected a{
 	color:#fff;
 	background:#333;
+	text-decoration:none;
 }
-

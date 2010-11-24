@@ -123,5 +123,13 @@ public class PlaceholderModule extends Module {
 
     public void setParentModule(Module parentModule) {
         this.parentModule = parentModule;
+        String headerText;
+        if (parentModule.path.contains("/")) {
+            headerText =  parentModule.path.substring(parentModule.path.lastIndexOf('/') + 1);
+        } else {
+            headerText =   parentModule.path;
+        }
+
+        html.setHTML(Messages.get("label.addTo") + headerText + " : &nbsp;");
     }
 }

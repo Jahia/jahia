@@ -10,10 +10,7 @@
 <c:set var="nodeType" value="jnt:page" />
 
 <c:set var="writeable" value="${jcr:hasPermission(currentNode,'addChildNodes') and currentResource.workspace eq 'live'}" />
-<c:if test='${not writeable}'>
-    <c:set var="disabled" value='disabled="true"' />
-</c:if>
-
+<c:if test='${writeable}'>
 <form class="pageFormCreation" method="post" action="${renderContext.mainResource.node.name}/" name="${formid}">
     <input type="hidden" name="nodeType" value="jnt:page">
     <input type="hidden" name="normalizeNodeName" value="true"/>
@@ -25,13 +22,13 @@
 
         <p><label for="title"><fmt:message key="label.title"/></label>
             <input type="text" name="jcr:title" id="title" class="field" value=""
-                   tabindex="20" ${disabled}/></p>
+                   tabindex="20"/></p>
 
 
         <p><label for="description"><fmt:message
                 key="label.description"/></label>
             <textarea name="jcr:description" id="description" cols="45" rows="3"
-                      tabindex="21"  ${disabled}></textarea></p>
+                      tabindex="21" ></textarea></p>
 
         <div>
             <input type="submit" class="button"
@@ -47,3 +44,7 @@
         </div>
     </fieldset>
 </form>
+</c:if>
+<c:if test="${not writeable}">
+    page creation form is only available in live
+</c:if>

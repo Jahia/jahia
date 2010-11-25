@@ -18,9 +18,7 @@
     Add comment
 </c:if>
 <c:set var="writeable" value="${jcr:hasPermission(currentNode,'addChildNodes') and currentResource.workspace eq 'live'}" />
-<c:if test='${not writeable}'>
-    <c:set var="disabled" value='disabled="true"' />
-</c:if>
+<c:if test='${writeable}'>
 
 <c:set var="bindedComponent" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 <c:if test="${not empty bindedComponent}">
@@ -38,14 +36,14 @@
                             <label class="left" for="comment-title"><fmt:message key="comment.title"/></label>
                             <input class="" value=""
                                    type="text" size="35" id="comment-title" name="jcr:title"
-                                   tabindex="1" ${disabled}/>
+                                   tabindex="1"/>
                         </p>
 
                         <p class="field">
                         <label class="left" for="jahia-comment-${bindedComponent.identifier}"><fmt:message key="comment.body"/></label>
                             <textarea rows="7" cols="35" id="jahia-comment-${bindedComponent.identifier}"
                                       name="content"
-                                      tabindex="2" ${disabled}></textarea>
+                                      tabindex="2" ></textarea>
                         </p>
 
                         <p>
@@ -58,3 +56,7 @@
     </form>
 </c:if>
 <template:linker property="j:bindedComponent" />
+</c:if>
+<c:if test="${not writeable}">
+    comments is only avaible in live
+</c:if>

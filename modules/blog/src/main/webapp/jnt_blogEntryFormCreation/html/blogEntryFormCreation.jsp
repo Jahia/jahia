@@ -23,57 +23,59 @@
     });
 </script>
 
-<c:set var="writeable" value="${jcr:hasPermission(currentNode,'addChildNodes') and currentResource.workspace eq 'live'}" />
+<c:set var="writeable"
+       value="${jcr:hasPermission(currentNode,'addChildNodes') and currentResource.workspace eq 'live'}"/>
 <%--<c:set var="writeable" value="${jcr:canAddSubNode(renderContext.mainResource.node,'*','jnt:blogContent')}" />--%>
-<c:if test='${not writeable}'>
-    <c:set var="disabled" value='disabled="true"' />
-</c:if>
-
-<form id="formPost" method="post" action="${renderContext.mainResource.node.name}/" name="blogPost">
-    <input type="hidden" name="nodeType" value="jnt:blogContent"/>
-    <input type="hidden" name="normalizeNodeName" value="true"/>
-    <fmt:formatDate value="${created.time}" type="date" pattern="dd" var="userCreatedDay"/>
-    <fmt:formatDate value="${created.time}" type="date" pattern="MMM" var="userCreatedMonth"/>
-    <p class="post-info"><fmt:message key="blog.label.by"/> <a href="${url.base}/users/${createdBy.string}.html">${createdBy.string}</a>
-        - <fmt:formatDate value="${created.time}" type="date" dateStyle="medium"/>
-    </p>
-    <p>
-    	<label><fmt:message key="title"/> </label>
-        <input type="text" value="" name="jcr:title" ${disabled}/>
-    </p>
-
-    <ul class="post-tags">
-        <jcr:nodeProperty node="${currentNode}" name="j:tags" var="assignedTags"/>
-        <c:forEach items="${assignedTags}" var="tag" varStatus="status">
-            <li>${tag.node.name}</li>
-        </c:forEach>
-    </ul>
-    <div class="post-content">
-        <p>
-        	<label><fmt:message key="blog.post"/> </label>
-        	<textarea name="text" rows="10" cols="70" id="editContent" ${disabled}></textarea>
+<c:if test='${writeable}'>
+    <form id="formPost" method="post" action="${renderContext.mainResource.node.name}/" name="blogPost">
+        <input type="hidden" name="nodeType" value="jnt:blogContent"/>
+        <input type="hidden" name="normalizeNodeName" value="true"/>
+        <fmt:formatDate value="${created.time}" type="date" pattern="dd" var="userCreatedDay"/>
+        <fmt:formatDate value="${created.time}" type="date" pattern="MMM" var="userCreatedMonth"/>
+        <p class="post-info"><fmt:message key="blog.label.by"/> <a
+                href="${url.base}/users/${createdBy.string}.html">${createdBy.string}</a>
+            - <fmt:formatDate value="${created.time}" type="date" dateStyle="medium"/>
         </p>
+
         <p>
-			<label> <fmt:message key="jnt_blog.tagThisBlogPost"/> :</label>
-            <input type="text" name="j:newTag" value="" ${disabled}/>
-		</p>
-        <p>
-            <fmt:message key='jnt_blog.noTitle' var="noTitle"/>
-            <input
-                    class="button"
-                    type="button"
-                    tabindex="16"
-                    value="<fmt:message key='blog.label.save'/>"
-                    ${disabled}
-                    onclick="
+            <label><fmt:message key="title"/> </label>
+            <input type="text" value="" name="jcr:title"/>
+        </p>
+
+        <ul class="post-tags">
+            <jcr:nodeProperty node="${currentNode}" name="j:tags" var="assignedTags"/>
+            <c:forEach items="${assignedTags}" var="tag" varStatus="status">
+                <li>${tag.node.name}</li>
+            </c:forEach>
+        </ul>
+        <div class="post-content">
+            <p>
+                <label><fmt:message key="blog.post"/> </label>
+                <textarea name="text" rows="10" cols="70" id="editContent"></textarea>
+            </p>
+
+            <p>
+                <label> <fmt:message key="jnt_blog.tagThisBlogPost"/> :</label>
+                <input type="text" name="j:newTag" value=""/>
+            </p>
+
+            <p>
+                <fmt:message key='jnt_blog.noTitle' var="noTitle"/>
+                <input class="button"
+                        type="button"
+                        tabindex="16"
+                        value="<fmt:message key='blog.label.save'/>"
+                        onclick="
                         if (document.blogPost.elements['jcr:title'].value == '') {
                             alert('${noTitle}');
                             return false;
                         }
                         document.blogPost.action = '${renderContext.mainResource.node.name}/blog-content/' + encodeURIComponent(document.blogPost.elements['jcr:title'].value);
-                        document.blogPost.submit();
-                    "
-                    />
-        </p>
-    </div>
-</form>
+                        document.blogPost.submit();"/>
+            </p>
+        </div>
+    </form>
+</c:if>
+<c:if test="${not writeable}">
+    blog post is only avaible in live
+</c:if>

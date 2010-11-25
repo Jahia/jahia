@@ -62,7 +62,9 @@
             function publishNodes() {
                 var uuids = getUuids();
                 if (uuids.length > 0) {
-                    $.post("${url.base}${renderContext.mainResource.node.path}.publishNodes.do", {"uuids": uuids}, null, 'json');
+                    $.post("${url.base}${renderContext.mainResource.node.path}.publishNodes.do", {"uuids": uuids}, function(result) {
+                        window.location.reload();
+                    }, 'json');
                 }
             }
 

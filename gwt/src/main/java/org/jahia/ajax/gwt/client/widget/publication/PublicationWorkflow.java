@@ -34,17 +34,14 @@ import java.util.*;
  */
 public class PublicationWorkflow implements CustomWorkflow {
     private List<GWTJahiaPublicationInfo> publicationInfos;
-    private String language;
 
     private static final long serialVersionUID = -4916142720074054130L;
-
 
     public PublicationWorkflow() {
     }
 
-    public PublicationWorkflow(List<GWTJahiaPublicationInfo> publicationInfos, String language) {
+    public PublicationWorkflow(List<GWTJahiaPublicationInfo> publicationInfos) {
         this.publicationInfos = publicationInfos;
-        this.language = language;
     }
 
     public List<TabItem> getAdditionalTabs() {
@@ -78,7 +75,7 @@ public class PublicationWorkflow implements CustomWorkflow {
                 final HashMap<String, Object> map = new HashMap<String, Object>();
                 map.put("customWorkflowInfo", PublicationWorkflow.this);
 
-                JahiaContentManagementService.App.getInstance().startWorkflow(getAllUuids(publicationInfos), wf, nodeProperties, dialog.getComments(),
+                JahiaContentManagementService.App.getInstance().startWorkflow(getAllUuids(), wf, nodeProperties, dialog.getComments(),
                         map, new BaseAsyncCallback() {
                             public void onApplicationFailure(Throwable caught) {
                                 WorkInProgressActionItem.removeStatus(status);
@@ -92,21 +89,6 @@ public class PublicationWorkflow implements CustomWorkflow {
                                 dialog.getLinker().refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES);
                             }
                 });
-
-//                JahiaContentManagementService.App.getInstance()
-//                        .publish(getAllUuids(publicationInfos), true, false, nodeProperties, dialog.getComments(), new BaseAsyncCallback() {
-//                            public void onApplicationFailure(Throwable caught) {
-//                                WorkInProgressActionItem.removeStatus(status);
-//                                Log.error("Cannot publish", caught);
-//                                com.google.gwt.user.client.Window.alert("Cannot publish " + caught.getMessage());
-//                            }
-//
-//                            public void onSuccess(Object result) {
-//                                Info.display("Publication workflow started", "Publication workflow started");
-//                                WorkInProgressActionItem.removeStatus(status);
-//                                dialog.getLinker().refresh(Linker.REFRESH_MAIN + Linker.REFRESH_PAGES);
-//                            }
-//                        });
             }
         });
         return button;
@@ -130,7 +112,7 @@ public class PublicationWorkflow implements CustomWorkflow {
                     Info.display(status, status);
                     WorkInProgressActionItem.setStatus(status);
                     JahiaContentManagementService.App.getInstance()
-                            .publish(getAllUuids(publicationInfos), false, false, nodeProperties, null,  new BaseAsyncCallback() {
+                            .publish(getAllUuids(), nodeProperties, null,  new BaseAsyncCallback() {
                                 public void onApplicationFailure(Throwable caught) {
                                     WorkInProgressActionItem.removeStatus(status);
                                     Info.display("Cannot publish", "Cannot publish");
@@ -150,6 +132,9 @@ public class PublicationWorkflow implements CustomWorkflow {
 
     }
 
+    public List<String> getAllUuids() {
+        return getAllUuids(publicationInfos);
+    }
 
     public static List<String> getAllUuids(List<GWTJahiaPublicationInfo> publicationInfos) {
         List<String> l = new ArrayList<String>();
@@ -190,7 +175,7 @@ public class PublicationWorkflow implements CustomWorkflow {
 
                     if (infoList.get(0).getWorkflowDefinition() != null) {
                         final PublicationWorkflow custom =
-                                new PublicationWorkflow(infoList, JahiaGWTParameters.getLanguage());
+                                new PublicationWorkflow(infoList);
                         new WorkflowActionDialog(infoList.get(0).getMainPath(), infoList.get(0).getWorkflowTitle(), result.get(infoList.get(0).getWorkflowDefinition()), 
                                 linker, custom, cards);
                     } else {
@@ -216,9 +201,6 @@ public class PublicationWorkflow implements CustomWorkflow {
 
         PublicationWorkflow that = (PublicationWorkflow) o;
 
-        if (language != null ? !language.equals(that.language) : that.language != null) {
-            return false;
-        }
         if (publicationInfos != null ? !publicationInfos.equals(that.publicationInfos) :
                 that.publicationInfos != null) {
             return false;
@@ -230,7 +212,6 @@ public class PublicationWorkflow implements CustomWorkflow {
     @Override
     public int hashCode() {
         int result = publicationInfos != null ? publicationInfos.hashCode() : 0;
-        result = 31 * result + (language != null ? language.hashCode() : 0);
         return result;
     }
 }

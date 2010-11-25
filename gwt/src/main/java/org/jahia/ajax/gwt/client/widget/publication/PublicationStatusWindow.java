@@ -118,7 +118,7 @@ public class PublicationStatusWindow extends LayoutContainer {
             Info.display(status,status);
             WorkInProgressActionItem.setStatus(status);
             JahiaContentManagementService.App.getInstance()
-                    .publish(uuids, false, false, null, null, new BaseAsyncCallback() {
+                    .publish(uuids, null, null, new BaseAsyncCallback() {
                         public void onApplicationFailure(Throwable caught) {
                             WorkInProgressActionItem.removeStatus(status);
                             Info.display("Cannot publish", "Cannot publish");

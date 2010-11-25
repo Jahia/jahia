@@ -67,14 +67,18 @@
                     </c:if>
                 </td>
                 <td>
+                    <c:if test="${child.locked}">
+                        <img height="16" width="16" border="0" style="cursor: pointer;" title="Locked" alt="Supprimer"
+                             src="${url.currentModule}/images/icons/locked.gif">
+                    </c:if>
                     <c:choose>
-                    <c:when test="${jcr:isNodeType(child, 'jnt:contentFolder')}">
-                    <a href="${url.base}${child.path}.html">
-                        </c:when>
-                        <c:otherwise>
+                    <c:when test="${jcr:isNodeType(child, 'jnt:contentFolder') or child.locked}">
+                        <a href="${url.base}${child.path}.html">
+                    </c:when>
+                    <c:otherwise>
                         <a href="${url.base}${child.path}.edit">
-                            </c:otherwise>
-                            </c:choose>
+                    </c:otherwise>
+                    </c:choose>
                             <c:if test="${!empty child.properties['jcr:title'].string}">
                                 ${fn:escapeXml(child.properties['jcr:title'].string)}
                             </c:if>

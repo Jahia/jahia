@@ -30,6 +30,6 @@
     <bean class="org.jahia.modules.contribute.toolbar.actions.MultiplePublishAction">
         <property name="name" value="publishNodes"/>
         <property name="workflowService" ref="workflowService"/>
-        <property name="publicationService" ref="jcrPublicationService"/>
+        <property name="publicationHelper" ref="PublicationHelper"/>
     </bean>
 </beans>

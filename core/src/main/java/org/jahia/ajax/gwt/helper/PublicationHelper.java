@@ -35,20 +35,22 @@ package org.jahia.ajax.gwt.helper;
 import org.apache.commons.collections.OrderedMap;
 import org.apache.commons.collections.map.LinkedMap;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.ajax.gwt.client.widget.publication.PublicationWorkflow;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.WorkflowRule;
 import org.jahia.services.workflow.WorkflowService;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
+import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
 import java.util.*;
@@ -315,138 +317,70 @@ public class PublicationHelper {
         return gwtInfo;
     }
 
+
+    public Map<PublicationWorkflow, WorkflowDefinition> createPublicationWorkflows(List<GWTJahiaPublicationInfo> all) {
+        final TreeMap<String, List<GWTJahiaPublicationInfo>> infosListByWorflowGroup = new TreeMap<String, List<GWTJahiaPublicationInfo>>();
+
+        Map<String,String> workflowGroupToKey = new HashMap<String, String>();
+        List<String> keys = new ArrayList<String>();
+
+        for (GWTJahiaPublicationInfo info : all) {
+            String workflowGroup = info.getWorkflowGroup();
+            if (!infosListByWorflowGroup.containsKey(workflowGroup)) {
+                infosListByWorflowGroup.put(workflowGroup, new ArrayList<GWTJahiaPublicationInfo>());
+            }
+            infosListByWorflowGroup.get(workflowGroup).add(info);
+            if (info.getWorkflowDefinition() != null) {
+                workflowGroupToKey.put(info.getWorkflowGroup(), info.getWorkflowDefinition());
+                if (!keys.contains(info.getWorkflowDefinition())) {
+                    keys.add(info.getWorkflowDefinition());
+                }
+            }
+        }
+
+        Map<PublicationWorkflow, WorkflowDefinition> result = new LinkedHashMap<PublicationWorkflow, WorkflowDefinition>();
+
+        Map<String,WorkflowDefinition> workflows = new HashMap<String,WorkflowDefinition>();
+        for (String wf : keys) {
+            WorkflowDefinition w = workflowService.getWorkflowDefinition(StringUtils.substringBefore(wf,":"), StringUtils.substringAfter(wf,":"),null);
+            workflows.put(wf, w);
+        }
+
+        for (Map.Entry<String, List<GWTJahiaPublicationInfo>> entry : infosListByWorflowGroup.entrySet()) {
+            result.put(new PublicationWorkflow(entry.getValue()),workflows.get(workflowGroupToKey.get(entry.getKey())));
+        }
+
+        return result;
+    }
+
     /**
      * Publish a list of nodes into the live workspace.
      * Referenced nodes will also be published.
      * Parent node must be published, or will be published if publishParent is true.
      *
      * @param uuids    list of uuids of the nodes to publish
-     * @param workflow @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      * @param comments
      */
-    public void publish(List<String> uuids, boolean workflow, JCRSessionWrapper session, List<GWTJahiaNodeProperty> properties, List<String> comments) throws GWTJahiaServiceException {
+    public void publish(List<String> uuids, JCRSessionWrapper session, List<GWTJahiaNodeProperty> properties, List<String> comments) throws GWTJahiaServiceException {
         try {
             // todo : if workflow started on untranslated node, translation will be created and not added into the publish tree calculated here 
 
             final String workspaceName = session.getWorkspace().getName();
-//            List<PublicationInfo> infos = publicationService.getPublicationInfos(uuids, Collections.singleton(language), true, true, allSubTree,
-//                    workspaceName, Constants.LIVE_WORKSPACE);
-            if (workflow) {
-//                Map<WorkflowRule, List<PublicationInfo>> m = new ListOrderedMap();
-//
-//                for (PublicationInfo info : infos) {
-//                    if (info.needPublication(language)) {
-//                        splitWorkflows(m, info.getRoot(), language, null, session);
-//                    }
-//                }
-//
-//                HashMap<String, Object> map = new HashMap<String, Object>();
-//                List<WorkflowVariable> values = new ArrayList<WorkflowVariable>();
-//                map.put("jcr:title", infos.get(0).getRoot().getPath());
-//                if (properties != null) {
-//                    for (GWTJahiaNodeProperty property : properties) {
-//                        List<GWTJahiaNodePropertyValue> propertyValues = property.getValues();
-//                        values = new ArrayList<WorkflowVariable>(propertyValues.size());
-//                        boolean toBeAdded = false;
-//                        for (GWTJahiaNodePropertyValue value : propertyValues) {
-//                            String s = value.getString();
-//                            if (s != null && !"".equals(s)) {
-//                                values.add(new WorkflowVariable(s, value.getType()));
-//                                toBeAdded = true;
-//                            }
-//                        }
-//                        if (toBeAdded) {
-//                            map.put(property.getName(), values);
-//                        } else {
-//                            map.put(property.getName(), new ArrayList<WorkflowVariable>());
-//                        }
-//                    }
-//                }
-//                for (Map.Entry<WorkflowRule, List<PublicationInfo>> entry : m.entrySet()) {
-//                    List<String> ids = new ArrayList<String>();
-//                    final List<PublicationInfo> localInfos = entry.getValue();
-//                    boolean needed = false;
-//                    for (PublicationInfo localInfo : localInfos) {
-//                        needed |= localInfo.needPublication(language);
-//                    }
-//                    if (needed) {
-//                        map.put("publicationInfos", localInfos);
-//                        List<GWTJahiaPublicationInfo> gwtInfos = convert(localInfos, session, language);
-//                        map.put("customWorkflowInfo", new PublicationWorkflow(gwtInfos, uuids, allSubTree, language));
-//
-//                        for (PublicationInfo node : localInfos) {
-//                            ids.add(node.getRoot().getUuid());
-//                        }
-//                        String id = workflowService.startProcess(ids, session, entry.getKey().getWorkflowDefinitionKey(), entry.getKey().getProviderKey(), map);
-//                        for (String s : comments) {
-//                            workflowService.addComment(id, entry.getKey().getProviderKey(), s, session.getUser().getUserKey());
-//                        }
-//                    }
-//                }
-            } else {
-                JobDetail jobDetail = BackgroundJob.createJahiaJob("Publication", PublicationJob.class);
-                JobDataMap jobDataMap = jobDetail.getJobDataMap();
-                jobDataMap.put(PublicationJob.PUBLICATION_PROPERTIES, properties);
-                jobDataMap.put(PublicationJob.PUBLICATION_COMMENTS, comments);
-                jobDataMap.put(PublicationJob.PUBLICATION_UUIDS, uuids);
-                jobDataMap.put(PublicationJob.SOURCE, workspaceName);
-                jobDataMap.put(PublicationJob.DESTINATION, Constants.LIVE_WORKSPACE);
 
-                ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail);
-            }
-//        } catch (RepositoryException e) {
-//            logger.error("repository exception", e);
-//            throw new GWTJahiaServiceException(e.getMessage());
+            JobDetail jobDetail = BackgroundJob.createJahiaJob("Publication", PublicationJob.class);
+            JobDataMap jobDataMap = jobDetail.getJobDataMap();
+            jobDataMap.put(PublicationJob.PUBLICATION_PROPERTIES, properties);
+            jobDataMap.put(PublicationJob.PUBLICATION_COMMENTS, comments);
+            jobDataMap.put(PublicationJob.PUBLICATION_UUIDS, uuids);
+            jobDataMap.put(PublicationJob.SOURCE, workspaceName);
+            jobDataMap.put(PublicationJob.DESTINATION, Constants.LIVE_WORKSPACE);
+
+            ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail);
         } catch (JahiaException e) {
             logger.error("repository exception", e);
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }
-
-//    public boolean splitWorkflows(Map<WorkflowRule, List<PublicationInfo>> m, PublicationInfoNode node, String language,
-//                                  WorkflowRule currentDef, JCRSessionWrapper session) throws RepositoryException {
-//        JCRNodeWrapper n = session.getNodeByUUID(node.getUuid());
-//        boolean split = false;
-//
-//        if (currentDef == null || n.hasNode(WorkflowService.WORKFLOWRULES_NODE_NAME)) {
-//            WorkflowRule rule = workflowService.getWorkflowRuleForAction(n, null, "publish", null);
-//            if (rule == null) {
-//                return false;
-//            } else {
-//                if (!rule.equals(currentDef)) {
-//                    currentDef = rule;
-//                    if (workflowService.getWorkflowRuleForAction(n, session.getUser() , "publish", null) != null) {
-//                        if (!m.containsKey(currentDef)) {
-//                            m.put(currentDef, new ArrayList<PublicationInfo>());
-//                        }
-//                        m.get(currentDef).add(new PublicationInfo(node));
-//                    }
-//
-//                    split = true;
-//                }
-//            }
-//        }
-//        List<PublicationInfoNode> childSplit = new ArrayList<PublicationInfoNode>();
-//        for (PublicationInfoNode childNode : node.getChildren()) {
-//            if (splitWorkflows(m, childNode, language, currentDef, session)) {
-//                childSplit.add(childNode);
-//            }
-//        }
-//        node.getChildren().removeAll(childSplit);
-//
-//        List<PublicationInfo> refSplit = new ArrayList<PublicationInfo>();
-//        for (PublicationInfo publicationNode : node.getReferences()) {
-//            if (publicationNode.needPublication(language)) {
-//                if (splitWorkflows(m, publicationNode.getRoot(), language, null, session)) {
-//                    refSplit.add(publicationNode);
-//                }
-//            } else {
-//                refSplit.add(publicationNode);
-//            }
-//        }
-//        node.getReferences().removeAll(refSplit);
-//        return split;
-//    }
 
 
     /**

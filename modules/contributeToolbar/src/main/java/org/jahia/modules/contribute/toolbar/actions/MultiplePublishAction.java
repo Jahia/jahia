@@ -33,6 +33,9 @@
 package org.jahia.modules.contribute.toolbar.actions;
 
 import org.apache.log4j.Logger;
+import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
+import org.jahia.ajax.gwt.client.widget.publication.PublicationWorkflow;
+import org.jahia.ajax.gwt.helper.PublicationHelper;
 import org.jahia.api.Constants;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
@@ -62,7 +65,7 @@ public class MultiplePublishAction implements Action {
     private transient static Logger logger = Logger.getLogger(MultiplePublishAction.class);
     private String name;
     private WorkflowService workflowService;
-    private JCRPublicationService publicationService;
+    private PublicationHelper publicationHelper;
 
     public String getName() {
         return name;
@@ -72,47 +75,34 @@ public class MultiplePublishAction implements Action {
         this.name = name;
     }
 
-    public void setPublicationService(JCRPublicationService publicationService) {
-        this.publicationService = publicationService;
-    }
-
     public void setWorkflowService(WorkflowService workflowService) {
         this.workflowService = workflowService;
+    }
+
+    public void setPublicationHelper(PublicationHelper publicationHelper) {
+        this.publicationHelper = publicationHelper;
     }
 
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource,
                                   Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         List<String> uuids = parameters.get("uuids");
-        assert uuids != null && uuids.size() > 0;
-        JCRSessionWrapper session = resource.getNode().getSession();
-        Map<WorkflowDefinition, List<String>> workflowDefinitionListMap = new HashMap<WorkflowDefinition, List<String>>();
+
         Set<String> locales = new LinkedHashSet<String>(Arrays.asList(
                 renderContext.getMainResourceLocale().toString()));
-        Map<String, Object> map = new HashMap<String, Object>();
-        try {
-            for (String uuid : uuids) {
-                JCRNodeWrapper node = session.getNodeByUUID(uuid);
-                Map<String, WorkflowDefinition> workflowDefinitionMap = workflowService.getPossibleWorkflows(node,
-                        renderContext.getUser(), renderContext.getMainResourceLocale());
-                WorkflowDefinition action = workflowDefinitionMap.values().iterator().next();
-                List<String> workflowUUIDS = workflowDefinitionListMap.get(action);
-                if (workflowUUIDS == null) {
-                    workflowUUIDS = new LinkedList<String>();
-                    workflowDefinitionListMap.put(action, workflowUUIDS);
-                }
-                workflowUUIDS.add(uuid);
-            }
-            for (Map.Entry<WorkflowDefinition, List<String>> definitionListEntry : workflowDefinitionListMap.entrySet()) {
-                List<PublicationInfo> infoList = publicationService.getPublicationInfos(definitionListEntry.getValue(),
-                        locales, true, true, false, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
-                map.put("publicationInfos", infoList);
-                workflowService.startProcess(definitionListEntry.getValue(),
-                        renderContext.getMainResource().getNode().getSession(), definitionListEntry.getKey().getKey(),
-                        JBPMProvider.getInstance().getKey(), map);
-            }
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-            return ActionResult.BAD_REQUEST;
+
+        JCRSessionWrapper session = resource.getNode().getSession();
+
+        List<GWTJahiaPublicationInfo> pubInfos = publicationHelper.getFullPublicationInfos(uuids, locales, session, false);
+        Map<PublicationWorkflow, WorkflowDefinition> workflows = publicationHelper.createPublicationWorkflows(pubInfos);
+
+        for (Map.Entry<PublicationWorkflow, WorkflowDefinition> entry : workflows.entrySet()) {
+            final HashMap<String, Object> map = new HashMap<String, Object>();
+            map.put("customWorkflowInfo", entry.getKey());
+
+            workflowService.startProcess(entry.getKey().getAllUuids(),
+                    session, entry.getValue().getKey(),
+                    entry.getValue().getProvider(), map);
+
         }
         return ActionResult.OK_JSON;
     }

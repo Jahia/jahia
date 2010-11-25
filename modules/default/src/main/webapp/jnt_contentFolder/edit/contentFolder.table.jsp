@@ -136,32 +136,33 @@
     <h3 class="titleaddnewcontent">
         <img title="" alt="" src="${url.currentModule}/images/add.png"/><fmt:message key="label.add.new.content"/>
     </h3>
-    <script language="JavaScript">
-        <c:forEach items="${types}" var="type" varStatus="status">
-        animatedcollapse.addDiv('add${currentNode.identifier}-${status.index}', 'fade=1,speed=700,group=newContent');
-        </c:forEach>
-        animatedcollapse.init();
-    </script>
     <c:if test="${types != null}">
-        <div class="listEditToolbar">
-            <c:forEach items="${types}" var="type" varStatus="status">
-                <jcr:nodeType name="${type.string}" var="nodeType"/>
-                <button onclick="animatedcollapse.toggle('add${currentNode.identifier}-${status.index}');"><span
-                        class="icon-contribute icon-add"></span>${jcr:label(nodeType, renderContext.mainResourceLocale)}
-                </button>
-            </c:forEach>
-        </div>
 
         <c:forEach items="${types}" var="type" varStatus="status">
-            <div style="display:none;" id="add${currentNode.identifier}-${status.index}" class="addContentContributeDiv">
+            <jcr:nodeType name="${type.string}" var="nodeType"/>
+            <a href="#add${currentNode.identifier}-${status.index}" id="addButton${currentNode.identifier}-${status.index}">
+                Add ${jcr:label(nodeType, renderContext.mainResourceLocale)}
+            </a>
+
+            <div style="display:none;"><div id="add${currentNode.identifier}-${status.index}" class="addContentContributeDiv${currentNode.identifier}" style="width:800px;">
                 <template:module node="${currentNode}" templateType="edit" template="add">
                     <template:param name="resourceNodeType" value="${type.string}"/>
-                    <template:param name="currentListURL" value="${url.current}.ajax"/>
-                    <template:param name="addContentCallbackJS"
-                                            value="$('.addContentContributeDiv').each(function(index,value){animatedcollapse.addDiv($(this).attr('id'), 'fade=1,speed=700,group=tasks');});animatedcollapse.reinit();"/>
                 </template:module>
-            </div>
-        </c:forEach>
+            </div></div>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $("#addButton${currentNode.identifier}-${status.index}").fancybox({
+                    'onComplete':function() {
+                        $(".newContentCkeditorContribute${currentNode.identifier}${fn:replace(nodeType.name,':','_')}").ckeditor();
+                    },
 
+                    'onCleanup':function() {
+                        $(".newContentCkeditorContribute${currentNode.identifier}${fn:replace(nodeType.name,':','_')}").each(function() { if ($(this).data('ckeditorInstance')) { $(this).data('ckeditorInstance').destroy()  } });
+                    }
+                })
+            });
+        </script>
+
+        </c:forEach>
     </c:if>
 </c:if>

@@ -23,7 +23,11 @@
                       scope="application"/>
 <utility:useConstants var="selectorType" className="org.jahia.services.content.nodetypes.SelectorType"
                       scope="application"/>
-<c:set var="type" value="${currentResource.resourceNodeType}"/>
+<c:set var="resourceNodeType" value="${currentResource.moduleParams.resourceNodeType}"/>
+<c:if test="${empty resourceNodeType}">
+    <c:set var="resourceNodeType" value="${param.resourceNodeType}"/>
+</c:if>
+<jcr:nodeType name="${resourceNodeType}" var="type"/>
 <c:set var="scriptTypeName" value="${fn:replace(type.name,':','_')}"/>
 <div class="FormContribute">
     <c:choose>
@@ -39,10 +43,10 @@
     </c:choose>
     <c:set var="jsNodeName" value="${fn:replace(fn:replace(currentNode.name,'-','_'),'.','_')}"/>
     <form action="${formAction}" method="post"
-    <c:if test="${!(currentResource.moduleParams.resourceNodeType eq 'jnt:file' || currentResource.moduleParams.resourceNodeType eq 'jnt:folder')}">
+    <c:if test="${!(resourceNodeType eq 'jnt:file' || resourceNodeType eq 'jnt:folder')}">
           id="${jsNodeName}${scriptTypeName}"
     </c:if>
-    <c:if test="${currentResource.moduleParams.resourceNodeType eq 'jnt:file'}">
+    <c:if test="${resourceNodeType eq 'jnt:file'}">
         enctype="multipart/form-data"
     </c:if>
             >
@@ -118,7 +122,7 @@
                     </p>
                 </c:if>
             </c:forEach>
-            <c:if test="${currentResource.moduleParams.resourceNodeType eq 'jnt:folder'}">
+            <c:if test="${resourceNodeType eq 'jnt:folder'}">
                 <p class="field"><label class="left"
                                         for="${scriptTypeName}jnt_folder">${jcr:label('jnt:folder',renderContext.mainResourceLocale)}</label>
                     <input type="text" id="${scriptTypeName}jnt_folder" name="JCRnodeName"/>
@@ -129,7 +133,7 @@
 
                 </p>
             </c:if>
-            <c:if test="${currentResource.moduleParams.resourceNodeType eq 'jnt:file'}">
+            <c:if test="${resourceNodeType eq 'jnt:file'}">
                 <p class="field">
                     <label class="left"
                                         for="${scriptTypeName}jnt_folder">${jcr:label('jnt:folder',renderContext.mainResourceLocale)}</label>
@@ -141,7 +145,7 @@
             <div class="divButton">
                 <c:choose>
                     <c:when test="${not empty currentResource.moduleParams.workflowStartForm}">
-                        <button type="submit"><span
+                        <button type="submit" onclick="form.submit()"><span
                                 class="icon-contribute icon-accept"></span>Start:&nbsp;${currentResource.moduleParams.workflowStartFormWFName}
                         </button>
                     </c:when>
@@ -154,7 +158,7 @@
                         </c:forEach>
                     </c:when>
                     <c:otherwise>
-                        <button type="submit"><span class="icon-contribute icon-accept"></span><fmt:message
+                        <button type="submit" onclick="form.submit()"><span class="icon-contribute icon-accept"></span><fmt:message
                                 key="label.add.new.content.submit"/></button>
                     </c:otherwise>
                 </c:choose>

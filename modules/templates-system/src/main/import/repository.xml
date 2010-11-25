@@ -52,6 +52,9 @@
                 <contributeToolbar jcr:primaryType="jnt:contributeToolbar" />
                 <pager pageSize="10" jcr:primaryType="jnt:pager" j:bindedComponent="/templateSets/templates-system/templates/base/contributeFolderTemplate/pagecontent/mainResourceDisplay" displayPager="true" />
                 <mainResourceDisplay j:canOrderInContribution="true" jcr:mixinTypes="jmix:contributeMode" j:mainResourceView="table" j:canDeleteInContribution="true" jcr:primaryType="jnt:mainResourceDisplay" j:contributeTypes="jmix:editorialContent" j:editableInContribution="true" />
+                <new-content-folder j:type="jnt:contentFolder" jcr:primaryType="jnt:addContent" j:bindedComponent="/templateSets/templates-system/templates/base/contributeFolderTemplate/pagecontent/mainResourceDisplay">
+                  <j:translation_en jcr:title="New content folder" jcr:primaryType="jnt:translation" jcr:language="en" />
+                </new-content-folder>
               </pagecontent>
             </contributeFolderTemplate>
             <contributeContentTemplate jcr:primaryType="jnt:contributeTemplate" j:applyOn="jnt:content" j:hiddenTemplate="false">

@@ -1,10 +1,10 @@
-#bodywrapper .FormContribute input[type="hidden"]{
+ .FormContribute input[type="hidden"]{
 	display:none !important;
 }
 /******************************************************************************
 * FormContribute
 ******************************************************************************/
-#bodywrapper .FormContribute {
+ .FormContribute {
 	background:#fff url(img/toolbar-input.png) repeat-x left top;
     color: #000;
 	-moz-border-radius: 3px;
@@ -19,7 +19,7 @@
 	margin:1em 0 0 0;
 	overflow:hidden;
 }
-#bodywrapper .FormContribute fieldset {
+ .FormContribute fieldset {
 	border:1px solid #b7cbd8;
 	margin:5px;
 	padding:5px;
@@ -27,7 +27,7 @@
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
 }
-#bodywrapper .FormContribute legend {
+ .FormContribute legend {
 	background:#fff url(img/toolbar-input.png) repeat-x left bottom;
 	border:1px solid #b7cbd8;
 	color:#000;
@@ -39,25 +39,25 @@
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
 }
-#bodywrapper .FormContribute input,
-#bodywrapper .FormContribute textarea {
+ .FormContribute input,
+ .FormContribute textarea {
 	width:97%
 }
-#bodywrapper .FormContribute p{
+ .FormContribute p{
 	clear:both;
 	margin:0.5em 0;
 	padding:0px
 }
-#bodywrapper .FormContribute .formMarginLeft{ 
+ .FormContribute .formMarginLeft{
 	margin:0.5em 0 0.5em 0;
 	padding:0;
 }
-#bodywrapper .FormContribute label.left,
-#bodywrapper .FormContribute label {
+ .FormContribute label.left,
+ .FormContribute label {
 	display:block;
 	font-weight:bold
 }
-#bodywrapper .FormContribute input, #bodywrapper .FormContribute select, #bodywrapper .FormContribute textarea {
+ .FormContribute input,  .FormContribute select,  .FormContribute textarea {
 	background:none;
 	border:1px inset #b7cbd8;
 	color:#000;
@@ -67,10 +67,10 @@
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
 }
-#bodywrapper .FormContribute input.radio, #bodywrapper .FormContribute input.checkbox {
+ .FormContribute input.radio,  .FormContribute input.checkbox {
 	width:auto;
 }
-#bodywrapper .FormContribute input.button, #bodywrapper .FormContribute button{
+ .FormContribute input.button,  .FormContribute button{
 	width:auto;
 	background:#fff url(img/toolbar-input.png) repeat-x left bottom;
     color: #000;
@@ -90,13 +90,13 @@
 	margin-bottom:5px;
 	margin-top:2px
 }
-#bodywrapper .FormContribute input.button:hover, #bodywrapper .FormContribute button:hover{
+ .FormContribute input.button:hover,  .FormContribute button:hover{
     background:#fff url(img/toolbar-input-on.png) repeat-x left bottom;
     color: #333;
 	cursor: pointer;
 	text-decoration:none;
 }
-#bodywrapper .FormContribute button img{
+ .FormContribute button img{
 	vertical-align: text-bottom;
 	margin-right:2px
 }

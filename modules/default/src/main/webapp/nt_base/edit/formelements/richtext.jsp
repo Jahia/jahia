@@ -21,15 +21,18 @@
                        resources="${url.context}/gwt/resources/${url.ckEditor}/ckeditor.js"/>
 <template:addResources type="javascript"
                        resources="${url.context}/gwt/resources/${url.ckEditor}/adapters/jquery.js"/>
+<c:set var="myid" ><%= java.lang.Math.round(java.lang.Math.random() * 1000000) %></c:set>
+
 <label for="ckeditor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelInNodeType(propertyDefinition,renderContext.mainResourceLocale,type)}</label>
 <textarea rows="50" cols="40" name="${propertyDefinition.name}"
-          id="newckeditor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" class="newContentCkeditorContribute"></textarea>
-<script>
-    $(document).ready(function() {
-        $("#newckeditor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").ckeditor({toolbar: "User"});
-    <c:if test="${not empty workflowTaskFormTask}">
-        $("#newckeditor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").val('${workflowTaskFormTask.variables[propertyDefinition.name][0].value}');
-    </c:if>
-    });
+          id="newckeditor${myid}${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" class="newContentCkeditorContribute${currentNode.identifier}${fn:replace(type.name,':','_')}"></textarea>
 
-</script>
+<%--<script>--%>
+    <%--$(document).ready(function() {--%>
+        <%--$("#newckeditor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").ckeditor({toolbar: "User"});--%>
+    <%--<c:if test="${not empty workflowTaskFormTask}">--%>
+        <%--$("#newckeditor${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").val('${workflowTaskFormTask.variables[propertyDefinition.name][0].value}');--%>
+    <%--</c:if>--%>
+    <%--});--%>
+
+<%--</script>--%>

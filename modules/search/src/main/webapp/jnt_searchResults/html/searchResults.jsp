@@ -63,7 +63,6 @@
             <c:if test="${not empty requestScope[endName]}">
                 <c:set target="${moduleMap}" property="end" value="${requestScope[endName]}"/>
             </c:if>
-            <h1>${moduleMap.begin}:${moduleMap.end}</h1>
         	<ol start="${moduleMap.begin+1}">
 				<s:resultIterator begin="${moduleMap.begin}" end="${moduleMap.end}" varStatus="status">
 					<li><%--<span>${status.index+1}.</span>--%><%@ include file="searchHit.jspf" %></li>

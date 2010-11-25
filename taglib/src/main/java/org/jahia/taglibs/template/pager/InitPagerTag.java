@@ -116,6 +116,8 @@ public class InitPagerTag extends TagSupport {
             moduleMap.put("paginationActive", true);
             moduleMap.put("totalSize", totalSize);
             pageContext.setAttribute("moduleMap",moduleMap);
+            pageContext.setAttribute("begin_"+id,begin,PageContext.REQUEST_SCOPE);
+            pageContext.setAttribute("end_"+id,end,PageContext.REQUEST_SCOPE);
         } catch (Exception e) {
             throw new JspException(e);
         }        return super.doStartTag();

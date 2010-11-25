@@ -26,13 +26,7 @@
 <ul class="genericListComment" id="${currentNode.UUID}">
     <c:set target="${moduleMap}" property="commentsList" value="${currentNode.nodes}" />
     <c:set target="${moduleMap}" property="listTotalSize" value="${fn:length(currentNode.nodes)}"/>
-    <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.init"/>
-    <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.end">
-        <template:param name="callback" value="initCuteTime();"/>
-    </template:option>
     <c:forEach items="${moduleMap.commentsList}" var="subchild" varStatus="status" begin="${moduleMap.begin}" end="${moduleMap.end}">
         <template:module node="${subchild}" template="comments"/>
     </c:forEach>
-    <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.end"/>
 </ul>
-<template:removePager id="${currentNode.identifier}"/>

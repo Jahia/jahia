@@ -42,17 +42,11 @@
         </div>
         <c:set target="${moduleMap}" property="currentList" value="${currentNode.nodes}" />
         <c:set target="${moduleMap}" property="listTotalSize" value="${fn:length(currentNode.nodes)}" />
-        <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.init"/>
-        <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.end">
-        	<template:param name="callback" value="initCuteTime();"/>
-        </template:option>
         <c:forEach items="${moduleMap.currentList}" var="subchild" varStatus="status" begin="${moduleMap.begin}" end="${moduleMap.end}">
             <div class="forum-box forum-box-style${(status.index mod 2)+1}">
                 <template:module node="${subchild}" template="default"/>
             </div>
         </c:forEach>
-        <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.end"/>
-        <template:removePager id="${currentNode.identifier}"/>
         <template:include template="newPostForm"/>
         <div class="forum-actions">
             <div class="forum-pagination">

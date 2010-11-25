@@ -55,20 +55,21 @@
 		<c:if test="${count > 0}">
 	    	<h4><fmt:message key="search.results.found"><fmt:param value="${count}"/></fmt:message></h4>
             <c:set target="${moduleMap}" property="listTotalSize" value="${count}" />
-            <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.init"/>
-            <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.end">
-                <template:param name="displaySearchParams" value="true"/>
-            </template:option>
+            <c:set var="beginName" value="begin_${currentNode.identifier}"/>
+            <c:set var="endName" value="end_${currentNode.identifier}"/>
+            <c:if test="${not empty requestScope[beginName]}">
+                <c:set target="${moduleMap}" property="begin" value="${requestScope[beginName]}"/>
+            </c:if>
+            <c:if test="${not empty requestScope[endName]}">
+                <c:set target="${moduleMap}" property="end" value="${requestScope[endName]}"/>
+            </c:if>
+            <h1>${moduleMap.begin}:${moduleMap.end}</h1>
         	<ol start="${moduleMap.begin+1}">
 				<s:resultIterator begin="${moduleMap.begin}" end="${moduleMap.end}" varStatus="status">
 					<li><%--<span>${status.index+1}.</span>--%><%@ include file="searchHit.jspf" %></li>
 				</s:resultIterator>
 	        </ol>
             <div class="clear"></div>
-            <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.end">
-                <template:param name="displaySearchParams" value="true"/>
-            </template:option>
-            <template:removePager id="${currentNode.identifier}"/>
 		</c:if>
         <c:if test="${count == 0}">
         	<h4><fmt:message key="search.results.no.results"/></h4>

@@ -50,6 +50,7 @@
                   </fieldFacet>
                 </facets>
                 <contributeToolbar jcr:primaryType="jnt:contributeToolbar" />
+                <pager pageSize="10" jcr:primaryType="jnt:pager" j:bindedComponent="/templateSets/templates-system/templates/base/contributeFolderTemplate/pagecontent/mainResourceDisplay" displayPager="true" />
                 <mainResourceDisplay j:canOrderInContribution="true" jcr:mixinTypes="jmix:contributeMode" j:mainResourceView="table" j:canDeleteInContribution="true" jcr:primaryType="jnt:mainResourceDisplay" j:contributeTypes="jmix:editorialContent" j:editableInContribution="true" />
               </pagecontent>
             </contributeFolderTemplate>

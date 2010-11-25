@@ -51,6 +51,7 @@ public class IncludeTag extends ModuleTag {
     public int doStartTag() throws JspException {
         setNode((JCRNodeWrapper) pageContext.getAttribute("currentNode", PageContext.REQUEST_SCOPE));
         setEditable(false);
+        setCheckConstraints(false);
         return EVAL_BODY_BUFFERED;
     }
 

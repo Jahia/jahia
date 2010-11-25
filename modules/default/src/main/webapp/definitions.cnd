@@ -25,9 +25,9 @@
  - secondField (string, choicelist[sortableFieldnames]) indexed=no
  - thirdField (string, choicelist[sortableFieldnames]) indexed=no
 
-[jmix:pager] mixin
- extends = jmix:list
+[jnt:pager] > jnt:content, jmix:layoutComponentContent, jmix:bindedComponent
  - pageSize (long) = 10 autocreated
+ - displayPager (boolean) = true autocreated
 
 [jmix:orderedList] mixin
  extends = jnt:contentList

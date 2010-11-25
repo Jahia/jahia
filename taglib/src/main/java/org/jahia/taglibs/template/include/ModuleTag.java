@@ -86,6 +86,8 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     protected Map<String, String> parameters = new HashMap<String, String>();
 
+    protected boolean checkConstraints = true;
+
     public String getPath() {
         return path;
     }
@@ -180,39 +182,40 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 } catch (RepositoryException e) {
                     logger.error("Error when getting list constraints", e);
                 }
-                String constrainedNodeTypes = null;
-                if (currentLevel != null) {
-                    constrainedNodeTypes = (String) pageContext
-                            .getAttribute("areaNodeTypesRestriction" + (currentLevel - 1), PageContext.REQUEST_SCOPE);
-                }
-                try {
-                    if (constrainedNodeTypes != null && !"".equals(constrainedNodeTypes.trim())) {
-                        StringTokenizer st = new StringTokenizer(constrainedNodeTypes, " ");
-                        boolean found = false;
-                        Node displayedNode = node;
-                        if (node.isNodeType("jnt:contentReference") && node.hasProperty("j:node")) {
-                            try {
-                                displayedNode = node.getProperty("j:node").getNode();
-                            } catch (ItemNotFoundException e) {
+                if (checkConstraints) {
+                    String constrainedNodeTypes = null;
+                    if (currentLevel != null) {
+                        constrainedNodeTypes = (String) pageContext.getAttribute(
+                                "areaNodeTypesRestriction" + (currentLevel - 1), PageContext.REQUEST_SCOPE);
+                    }
+                    try {
+                        if (constrainedNodeTypes != null && !"".equals(constrainedNodeTypes.trim())) {
+                            StringTokenizer st = new StringTokenizer(constrainedNodeTypes, " ");
+                            boolean found = false;
+                            Node displayedNode = node;
+                            if (node.isNodeType("jnt:contentReference") && node.hasProperty("j:node")) {
+                                try {
+                                    displayedNode = node.getProperty("j:node").getNode();
+                                } catch (ItemNotFoundException e) {
+                                    return EVAL_PAGE;
+                                }
+                            }
+                            while (st.hasMoreTokens()) {
+                                String tok = st.nextToken();
+                                if (displayedNode.isNodeType(tok) || tok.equals(resourceNodeType)) {
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            // Remove test until we find a better solution to avoid displaying unecessary nodes
+                            if (!found) {
                                 return EVAL_PAGE;
                             }
                         }
-                        while (st.hasMoreTokens()) {
-                            String tok = st.nextToken();
-                            if (displayedNode.isNodeType(tok) || tok.equals(resourceNodeType)) {
-                                found = true;
-                                break;
-                            }
-                        }
-                        // Remove test until we find a better solution to avoid displaying unecessary nodes
-                        if (!found) {
-                            return EVAL_PAGE;
-                        }
+                    } catch (RepositoryException e) {
+                        logger.error(e.getMessage(), e);
                     }
-                } catch (RepositoryException e) {
-                    logger.error(e.getMessage(), e);
                 }
-
                 if (templateType == null) {
                     templateType = currentResource.getTemplateType();
                 }
@@ -478,4 +481,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         parameters.put(name, value);
     }
 
+    public void setCheckConstraints(boolean checkConstraints) {
+        this.checkConstraints = checkConstraints;
+    }
 }

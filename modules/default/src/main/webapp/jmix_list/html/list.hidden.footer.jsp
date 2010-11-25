@@ -12,10 +12,3 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-
-
-<c:if test="${not empty moduleMap.paginationActive}">
-    <template:option node="${currentNode}" nodetype="jmix:pager" template="hidden.end"/>
-    <template:removePager id="${currentNode.identifier}"/>
-</c:if>
-

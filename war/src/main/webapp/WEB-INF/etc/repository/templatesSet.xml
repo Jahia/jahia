@@ -11,9 +11,7 @@
           j:templateNode="/templatesSet/templates/base/home" priority="0.5">
     </home>
 
-    <contents jcr:primaryType="jnt:contentFolder">
-        <site_components jcr:primaryType="jnt:contentFolder"/>
-    </contents>
+    <contents jcr:primaryType="jnt:contentFolder"/>
 
     <files jcr:primaryType="jnt:folder">
         <themes jcr:primaryType="jnt:folder">

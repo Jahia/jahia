@@ -11,14 +11,7 @@
                 <listA jcr:primaryType="jnt:contentList"/>
                 <listB jcr:primaryType="jnt:contentList"/>
             </home>
-            <contents jcr:primaryType="jnt:contentFolder">
-                <site_components jcr:primaryType="jnt:contentFolder">
-                    <login-to-jahia jcr:primaryType="jnt:loginForm">
-                        <j:translation_en jcr:title="Login to Jahia" jcr:language="en"
-                                          jcr:primaryType="jnt:translation"/>
-                    </login-to-jahia>
-                </site_components>
-            </contents>
+            <contents jcr:primaryType="jnt:contentFolder"/>
             <portlets jcr:primaryType="jnt:portletFolder"/>
             <files jcr:primaryType="jnt:folder">
                 <themes jcr:primaryType="jnt:folder">

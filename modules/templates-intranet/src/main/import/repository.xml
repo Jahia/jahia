@@ -9,13 +9,7 @@
                 <listB jcr:primaryType="jnt:contentList" />
                 <footer jcr:primaryType="jnt:contentList" />
             </home>
-            <contents jcr:primaryType="jnt:contentFolder">
-                <site_components jcr:primaryType="jnt:contentFolder">
-                    <login-to-jahia jcr:primaryType="jnt:loginForm">
-                        <j:translation_en jcr:title="Login to Jahia" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
-                    </login-to-jahia>
-                </site_components>
-            </contents>
+            <contents jcr:primaryType="jnt:contentFolder"/>
             <files jcr:primaryType="jnt:folder" >
                 <themes jcr:primaryType="jnt:folder">
                     <default jcr:primaryType="jnt:folder" />
@@ -79,7 +73,9 @@
                             <listA jcr:primaryType="jnt:area" />
                         </row1-col1>
                         <row1-col2 j:skin="skins.box5" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
-                            <login-to-jahia j:node="/templateSets/templates-intranet/contents/site_components/login-to-jahia" jcr:primaryType="jnt:contentReference" />
+                            <login-to-jahia jcr:primaryType="jnt:loginForm">
+                                <j:translation_en jcr:title="Login to Jahia" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
+                            </login-to-jahia>
                             <listB jcr:primaryType="jnt:area" />
                         </row1-col2>
                     </home>

@@ -51,10 +51,17 @@
                       scope="application"/>
 <c:if test="${!renderContext.ajaxRequest}">
     <script>
-        $(document).ready(function(){
+        $(document).ready(function() {
             initEditFields("${currentNode.identifier}");
         });
     </script>
+</c:if>
+
+<c:if test="${empty currentResource.moduleParams.contentType}">
+    <c:set var="contentType" value="content"/>
+</c:if>
+<c:if test="${not empty currentResource.moduleParams.contentType}">
+    <c:set var="contentType" value="${currentResource.moduleParams.contentType}"/>
 </c:if>
 <div class="FormContribute">
     <c:set var="type" value="${currentNode.primaryNodeType}"/>
@@ -62,60 +69,83 @@
         <c:if test="${propertyDefinition.name eq 'jcr:title'}">
             <c:set var="prop" value="${currentNode.properties[propertyDefinition.name]}"/>
             <c:set var="scriptPropName" value="${fn:replace(propertyDefinition.name,':','_')}"/>
-    <p>
-    <label>${jcr:labelInNodeType(propertyDefinition,renderContext.mainResourceLocale,type)}&nbsp;:</label>
+            <p>
+                <label>${jcr:labelInNodeType(propertyDefinition,renderContext.mainResourceLocale,type)}&nbsp;:</label>
             <span jcr:id="${propertyDefinition.name}" class="edit${currentNode.identifier}"
                   id="edit${currentNode.identifier}${scriptPropName}"
                   jcr:url="${url.base}${currentNode.path}">${prop.string}</span>
-    </p>
+            </p>
         </c:if>
     </c:forEach>
     <c:forEach items="${type.propertyDefinitions}" var="propertyDefinition">
-        <c:if test="${!propertyDefinition.multiple and propertyDefinition.contentItem and !(propertyDefinition.name eq 'jcr:title')}">
+        <c:set var="readonly" value="${propertyDefinition.protected}"/>
+        <c:if test="${!propertyDefinition.multiple and propertyDefinition.itemType eq contentType and not propertyDefinition.hidden and !(propertyDefinition.name eq 'jcr:title')}">
             <c:set var="prop" value="${currentNode.properties[propertyDefinition.name]}"/>
             <c:set var="scriptPropName" value="${fn:replace(propertyDefinition.name,':','_')}"/>
             <p>
             <label>${jcr:labelInNodeType(propertyDefinition,renderContext.mainResourceLocale,type)}&nbsp;:</label>
-            <c:choose>
-                <c:when test="${(propertyDefinition.requiredType == jcrPropertyTypes.REFERENCE || propertyDefinition.requiredType == jcrPropertyTypes.WEAKREFERENCE)}">
-                    <c:choose>
-                        <c:when test="${propertyDefinition.selector eq selectorType.FILEUPLOAD or propertyDefinition.selector eq selectorType.CONTENTPICKER}">
-                            <div class="fileSelector${currentNode.identifier}" jcr:id="${propertyDefinition.name}"
-                                 jcr:url="${url.base}${currentNode.path}" jeditabletreeselector:baseURL="${url.base}"
-                                 jeditabletreeselector:root="${renderContext.site.path}"
-                                 jeditabletreeselector:nodetypes="nt:folder,nt:file,jnt:virtualsite"
-                                 jeditabletreeselector:selectablenodetypes="nt:file" jeditabletreeselector:selectorLabel="<fmt:message key="label.show.file.picker"/>">
-                                <span><fmt:message key="label.select.file"/></span>
-                            </div>
-                            <span><fmt:message key="label.or"/></span>
+            <c:if test="${readonly}">
+                <c:choose>
+                    <c:when test="${(propertyDefinition.requiredType == jcrPropertyTypes.REFERENCE || propertyDefinition.requiredType == jcrPropertyTypes.WEAKREFERENCE)}">
+                        File
+                    </c:when>
+                    <c:when test="${propertyDefinition.requiredType == jcrPropertyTypes.DATE}">
+                        <span>
+                            <c:if test="${not empty prop}">
+                                <fmt:formatDate value="${prop.date.time}" pattern="dd, MMMM yyyy HH:mm"/>
+                            </c:if>
+                        </span>
+                    </c:when>
+                    <c:otherwise>
+                        <span>${prop.string}</span>
+                    </c:otherwise>
+                </c:choose>
+            </c:if>
+            <c:if test="${not readonly}">
+                <c:choose>
+                    <c:when test="${(propertyDefinition.requiredType == jcrPropertyTypes.REFERENCE || propertyDefinition.requiredType == jcrPropertyTypes.WEAKREFERENCE)}">
+                        <c:choose>
+                            <c:when test="${propertyDefinition.selector eq selectorType.FILEUPLOAD or propertyDefinition.selector eq selectorType.CONTENTPICKER}">
+                                <div class="fileSelector${currentNode.identifier}" jcr:id="${propertyDefinition.name}"
+                                     jcr:url="${url.base}${currentNode.path}"
+                                     jeditabletreeselector:baseURL="${url.base}"
+                                     jeditabletreeselector:root="${renderContext.site.path}"
+                                     jeditabletreeselector:nodetypes="nt:folder,nt:file,jnt:virtualsite"
+                                     jeditabletreeselector:selectablenodetypes="nt:file"
+                                     jeditabletreeselector:selectorLabel="<fmt:message key="label.show.file.picker"/>">
+                                    <span><fmt:message key="label.select.file"/></span>
+                                </div>
+                                <span><fmt:message key="label.or"/></span>
 
-                            <div class="file${currentNode.identifier}" jcr:id="${propertyDefinition.name}"
-                                 jcr:url="${url.base}${currentNode.path}">
-                                <span><fmt:message key="add.file"/></span>
-                            </div>
-                        </c:when>
-                        <c:when test="${propertyDefinition.selector eq selectorType.CHOICELIST}">
-                            <jcr:propertyInitializers var="options" nodeType="${type.name}"
-                                                      name="${propertyDefinition.name}"/>
+                                <div class="file${currentNode.identifier}" jcr:id="${propertyDefinition.name}"
+                                     jcr:url="${url.base}${currentNode.path}">
+                                    <span><fmt:message key="add.file"/></span>
+                                </div>
+                            </c:when>
+                            <c:when test="${propertyDefinition.selector eq selectorType.CHOICELIST}">
+                                <jcr:propertyInitializers var="options" nodeType="${type.name}"
+                                                          name="${propertyDefinition.name}"/>
                         <span jcr:id="${propertyDefinition.name}" class="choicelistEdit${currentNode.identifier}"
                               jcr:url="${url.base}${currentNode.path}"
                               jcr:options="{<c:forEach items="${options}" varStatus="status" var="option"><c:if test="${status.index > 0}">,</c:if>'${option.value.string}':'${option.displayName}'</c:forEach>}">${prop.string}</span>
-                        </c:when>
-                        <c:otherwise>
-                            <div class="fileSelector${currentNode.identifier}" jcr:id="${propertyDefinition.name}"
-                                 jcr:url="${url.base}${currentNode.path}" jeditabletreeselector:baseURL="${url.base}"
-                                 jeditabletreeselector:root="${renderContext.site.path}"
-                                 jeditabletreeselector:nodetypes="jnt:content,jnt:page,jnt:virtualsite"
-                                 jeditabletreeselector:selectablenodetypes="jnt:content,jntpage" jeditabletreeselector:selectorLabel="<fmt:message key="label.show.content.picker"/>">
-                                <span><fmt:message key="label.select.content"/></span>
-                            </div>
-                        </c:otherwise>
-                    </c:choose>
-                    <template:module node="${prop.node}" template="default" templateType="html"/>
-                </c:when>
-                <c:when test="${propertyDefinition.requiredType == jcrPropertyTypes.DATE}">
-                    <c:set var="dateTimePicker"
-                           value="${propertyDefinition.selector eq selectorType.DATETIMEPICKER}"/>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="fileSelector${currentNode.identifier}" jcr:id="${propertyDefinition.name}"
+                                     jcr:url="${url.base}${currentNode.path}"
+                                     jeditabletreeselector:baseURL="${url.base}"
+                                     jeditabletreeselector:root="${renderContext.site.path}"
+                                     jeditabletreeselector:nodetypes="jnt:content,jnt:page,jnt:virtualsite"
+                                     jeditabletreeselector:selectablenodetypes="jnt:content,jntpage"
+                                     jeditabletreeselector:selectorLabel="<fmt:message key="label.show.content.picker"/>">
+                                    <span><fmt:message key="label.select.content"/></span>
+                                </div>
+                            </c:otherwise>
+                        </c:choose>
+                        <template:module node="${prop.node}" template="default" templateType="html"/>
+                    </c:when>
+                    <c:when test="${propertyDefinition.requiredType == jcrPropertyTypes.DATE}">
+                        <c:set var="dateTimePicker"
+                               value="${propertyDefinition.selector eq selectorType.DATETIMEPICKER}"/>
                         <span jcr:id="${propertyDefinition.name}" class="dateEdit${currentNode.identifier}"
                               id="dateEdit${currentNode.identifier}${scriptPropName}"
                               jcr:url="${url.base}${currentNode.path}">
@@ -123,25 +153,26 @@
                                 <fmt:formatDate value="${prop.date.time}" pattern="dd, MMMM yyyy HH:mm"/>
                             </c:if>
                         </span>
-                </c:when>
-                <c:when test="${propertyDefinition.selector eq selectorType.CHOICELIST}">
-                    <jcr:propertyInitializers var="options" nodeType="${type.name}"
-                                              name="${propertyDefinition.name}"/>
+                    </c:when>
+                    <c:when test="${propertyDefinition.selector eq selectorType.CHOICELIST}">
+                        <jcr:propertyInitializers var="options" nodeType="${type.name}"
+                                                  name="${propertyDefinition.name}"/>
                         <span jcr:id="${propertyDefinition.name}" class="choicelistEdit${currentNode.identifier}"
                               jcr:url="${url.base}${currentNode.path}"
                               jcr:options="{<c:forEach items="${options}" varStatus="status" var="option"><c:if test="${status.index > 0}">,</c:if>'${option.value.string}':'${option.displayName}'</c:forEach>}">${prop.string}</span>
-                </c:when>
-                <c:when test="${propertyDefinition.selector eq selectorType.RICHTEXT}">
+                    </c:when>
+                    <c:when test="${propertyDefinition.selector eq selectorType.RICHTEXT}">
                         <span jcr:id="${propertyDefinition.name}" class="ckeditorEdit${currentNode.identifier}"
                               id="ckeditorEdit${currentNode.identifier}${scriptPropName}"
                               jcr:url="${url.base}${currentNode.path}">${prop.string}</span>
-                </c:when>
-                <c:otherwise>
+                    </c:when>
+                    <c:otherwise>
                         <span jcr:id="${propertyDefinition.name}" class="edit${currentNode.identifier}"
                               id="edit${currentNode.identifier}${scriptPropName}"
                               jcr:url="${url.base}${currentNode.path}">${prop.string}</span>
-                </c:otherwise>
-            </c:choose>
+                    </c:otherwise>
+                </c:choose>
+            </c:if>
             </p>
         </c:if>
     </c:forEach>

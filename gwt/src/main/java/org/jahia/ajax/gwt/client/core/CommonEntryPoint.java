@@ -32,13 +32,14 @@
 
 package org.jahia.ajax.gwt.client.core;
 
+import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
+
 import com.extjs.gxt.ui.client.widget.Layout;
 import com.extjs.gxt.ui.client.widget.layout.AnchorLayout;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.Timer;
-import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 
 
 /**
@@ -54,7 +55,7 @@ public class CommonEntryPoint implements EntryPoint {
     private static Timer sessionCheckTimer;
 
     JahiaContentManagementServiceAsync contentManagementService;
-
+    
     public void onModuleLoad() {
         /* todo The following two lines are a hack to get development mode to work on Mac OS X, should be removed once this
            problem is fixed.
@@ -103,4 +104,3 @@ public class CommonEntryPoint implements EntryPoint {
     }
 
 }
-

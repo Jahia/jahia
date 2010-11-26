@@ -33,13 +33,11 @@
 package org.jahia.portlets;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.portlet.PortletException;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
-import org.jahia.ajax.gwt.client.core.JahiaType;
 import org.jahia.utils.rss.RSSUtil;
 
 

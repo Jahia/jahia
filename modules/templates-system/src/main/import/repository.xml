@@ -84,6 +84,17 @@
                       <j:translation_en jcr:title="Tag" jcr:primaryType="jnt:translation" jcr:language="en" />
                     </addTag>
                   </tags>
+                  <classifications jcr:primaryType="jnt:contentList">
+                    <j:translation_en jcr:language="en" jcr:title="Classifications" jcr:primaryType="jnt:translation" />
+                      <category jcr:mixinTypes="jmix:accessControlled jmix:renderable" jcr:primaryType="jnt:categorizing" j:view="default" j:bindedComponent="/templateSets/templates-system/templates/base/contributeContentTemplate/pagecontent/mainResourceDisplay-table">
+                        <j:translation_en jcr:language="en" jcr:title="Category" jcr:primaryType="jnt:translation" />
+                        <j:acl jcr:primaryType="jnt:acl" />
+                      </category>
+                      <category-1 jcr:mixinTypes="jmix:accessControlled jmix:renderable" jcr:primaryType="jnt:categorizing" j:view="addcategory" j:bindedComponent="/templateSets/templates-system/templates/base/contributeContentTemplate/pagecontent/mainResourceDisplay-table">
+                        <j:translation_en jcr:language="en" jcr:title="Category" jcr:primaryType="jnt:translation" />
+                        <j:acl jcr:primaryType="jnt:acl" />
+                      </category-1>
+                  </classifications>
                 </tabularList>
               </pagecontent>
             </contributeContentTemplate>

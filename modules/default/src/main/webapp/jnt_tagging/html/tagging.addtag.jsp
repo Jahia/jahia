@@ -90,7 +90,7 @@
     </script>
     <c:if test="${renderContext.user.name != 'guest'}">
         <form action="${url.base}${bindedComponent.path}" method="post">
-            <label>Add tags:</label>
+            <label><fmt:message key="label.add.tags"/></label>
             <input type="hidden" name="methodToCall" value="put"/>
             <input type="hidden" name="jcr:mixinTypes" value="jmix:tagged"/>
             <input type="text" name="j:newTag" class="newTagInput" value=""/>

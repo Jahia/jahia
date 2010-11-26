@@ -32,22 +32,23 @@
 
 package org.jahia.taglibs.template.layoutmanager;
 
-import org.jahia.ajax.gwt.client.core.JahiaType;
-import org.jahia.taglibs.AbstractJahiaTag;
-
-import javax.servlet.jsp.JspWriter;
-import javax.jcr.Node;
 import java.io.IOException;
 
+import javax.jcr.Node;
+import javax.servlet.jsp.JspWriter;
+
+import org.jahia.taglibs.AbstractJahiaTag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
- * Created by Jahia.
  * User: ktlili
  * Date: 21 nov. 2007
  * Time: 11:43:22
  */
 @SuppressWarnings("serial")
 public class LayoutManagerAreaTag extends AbstractJahiaTag {
-    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(LayoutManagerAreaTag.class);
+    private static final Logger logger = LoggerFactory.getLogger(LayoutManagerAreaTag.class);
     private String width;
     private Node node;
 
@@ -55,7 +56,7 @@ public class LayoutManagerAreaTag extends AbstractJahiaTag {
         final JspWriter out = pageContext.getOut();
         try {
             //define area
-            out.print("<div uuid='"+node.getUUID()+"' id='layoutManager'\"");
+            out.print("<div uuid='"+node.getIdentifier()+"' id='layoutManager'\"");
             if (width != null) {
                 out.print(" jahia-layoutmanager-width='" + width + "'");
             }

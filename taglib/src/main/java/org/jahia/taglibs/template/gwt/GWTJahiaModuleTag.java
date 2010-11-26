@@ -32,7 +32,6 @@
 
 package org.jahia.taglibs.template.gwt;
 
-import org.jahia.ajax.gwt.client.core.JahiaType;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.taglibs.internal.gwt.GWTIncluder;
 

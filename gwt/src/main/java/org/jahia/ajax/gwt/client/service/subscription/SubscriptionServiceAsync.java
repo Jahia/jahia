@@ -30,15 +30,34 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.ajax.gwt.client.core;
+package org.jahia.ajax.gwt.client.service.subscription;
+
+import java.util.List;
+
+import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
+import org.jahia.ajax.gwt.client.widget.subscription.GWTSubscription;
+
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
- * GWT module types. 
- *
- * @author rfelden
- * @version 22 janv. 2008 - 15:22:14
+ * Subscription service definition.
+ * 
+ * @author Sergiy Shyrkov
  */
-public class JahiaType {
+public interface SubscriptionServiceAsync {
 
-    public final static String JAHIA_TYPE = "jahiatype";
+	void cancel(List<GWTSubscription> subscriptions, AsyncCallback<Void> callback);
+
+	void getSubscriptions(String uuid, PagingLoadConfig pagingConfig,
+	        AsyncCallback<PagingLoadResult<GWTSubscription>> callback);
+
+	void resume(List<GWTSubscription> subscriptions, AsyncCallback<Void> callback);
+
+	void subscribe(String uuid, List<GWTJahiaUser> subscribers, AsyncCallback<Void> callback);
+
+	void subscribe(String uuid, String subscribersFile, AsyncCallback<Void> callback);
+
+	void suspend(List<GWTSubscription> subscriptions, AsyncCallback<Void> callback);
 }

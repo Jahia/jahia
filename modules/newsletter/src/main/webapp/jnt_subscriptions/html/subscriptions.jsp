@@ -13,8 +13,5 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
-<template:include template="hidden.header"/>
-
-<h1>My subscriptions</h1>
-
-<template:include template="hidden.footer"/>
+<h1><fmt:message key="jnt_subscriptions"/></h1>
+<p><a href="#subscription-manager" onclick="jahia.openSubscriptionManager('${currentNode.parent.identifier}'); return false;"><fmt:message key="label.subscriptionManager"/></a></p>

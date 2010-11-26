@@ -44,7 +44,6 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.content.ContentManagerViewPort;
 import org.jahia.ajax.gwt.client.widget.content.ContentManager;
-import org.jahia.ajax.gwt.client.util.DOMUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -67,13 +66,13 @@ public class ContentManagerEntryPoint extends CommonEntryPoint {
         checkSession();
         final RootPanel panel = RootPanel.get("contentmanager");
         if (panel != null) {
-            final boolean embedded = DOMUtil.getRootAttrAsBoolean(panel, "embedded");
+            final boolean embedded = Boolean.valueOf(DOM.getElementAttribute(panel.getElement(), "embedded"));
             final String filtersString = DOM.getElementAttribute(panel.getElement(), "filters");
             final List<String> filters = filtersString.length() > 0 ? Arrays.asList(filtersString.split(",")) : null;
             final String mimeTypesString = DOM.getElementAttribute(panel.getElement(), "mimeTypes");
             final List<String> mimeTypes = mimeTypesString.length() > 0 ? Arrays.asList(mimeTypesString.split(",")) : null;
-            final String config = DOMUtil.getRootAttr(panel, "config");
-            final String paths = DOMUtil.getRootAttr(panel, "selectedPaths");
+            final String config = DOM.getElementAttribute(panel.getElement(), "config");
+            final String paths = DOM.getElementAttribute(panel.getElement(), "selectedPaths");
             final List<String> selectedPaths = new ArrayList<String>();
             if (paths != null && paths.length() > 0) {
                 for (String path : paths.split(",")) {

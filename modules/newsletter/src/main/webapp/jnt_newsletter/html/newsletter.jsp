@@ -36,7 +36,7 @@
         <td>
             <div class="jahia-template-gxt" jahiatype="module" id="newsletter-${issue.identifier}" type="existingNode"
                  scriptInfo="" path="${issue.path}" template="hidden.system" dragdrop="false">
-                <a href="${url.base}${issue.path}.html">
+                <a href="<c:url context='${url.base}' value='${issue.path}.html'/>">
                     ${fn:escapeXml(!empty issue.propertiesAsString['jcr:title'] ? issue.propertiesAsString['jcr:title'] : issue.name)}
 				</a>
             </div>
@@ -69,6 +69,7 @@
     </c:if>
     </tbody>
 </table>
+
 <c:if test="${moduleMap.editable and renderContext.editMode}">
     <template:module path="*"/>
 </c:if>
@@ -76,10 +77,5 @@
 <template:include template="hidden.footer"/>
 
 <c:if test="${renderContext.editMode}">
-<div class="jahia-template-gxt" jahiatype="module" id="newsletter-${issue.identifier}-3" type="existingNode"
-	scriptInfo="" path="${currentNode.path}/j:subscriptions" template="hidden.system" dragdrop="false">
-	<fieldset>
-		<legend><fmt:message key="jnt_subscriptions"/></legend>
-	</fieldset>
-</div>
+	<template:module path="j:subscriptions"/>
 </c:if>

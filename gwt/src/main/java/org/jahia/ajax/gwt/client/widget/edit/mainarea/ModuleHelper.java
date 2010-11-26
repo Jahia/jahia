@@ -38,23 +38,21 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.core.JahiaType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
-import org.jahia.ajax.gwt.client.util.templates.TemplatesDOMUtil;
 
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
  * Date: Aug 19, 2009
  * Time: 12:04:41 PM
- * 
  */
 public class ModuleHelper {
+    public final static String JAHIA_TYPE = "jahiatype";
+    
     private static List<Module> modules;
     private static Map<String, List<Module>> modulesByPath;
     private static Map<String, Module> modulesById;
@@ -63,6 +61,25 @@ public class ModuleHelper {
     private static Map<String, GWTJahiaNodeType> nodeTypes = new HashMap<String, GWTJahiaNodeType>();
     private static Map<String, List<String>> linkedContentInfo;
     private static Map<String, String> linkedContentInfoType;
+
+    /**
+     * Recursive method to retrieve all the jahia typed elements.
+     *
+     * @param parent the element to search into
+     * @return a list of jahia typed elements
+     */
+    public static List<Element> getAllJahiaTypedElementsRec(Element parent) {
+        List<Element> list = new ArrayList<Element>();
+        int nb = DOM.getChildCount(parent);
+        String type = DOM.getElementAttribute(parent, JAHIA_TYPE);
+        if (type != null && type.length() > 0) {
+            list.add(parent);
+        }
+        for (int i = 0; i < nb; i++) {
+            list.addAll(getAllJahiaTypedElementsRec(DOM.getChild(parent, i)));
+        }
+        return list;
+    }
 
     public static void initAllModules(final MainModule m, HTML html) {
         long start = System.currentTimeMillis();
@@ -78,12 +95,12 @@ public class ModuleHelper {
         linkedContentInfo = new HashMap<String, List<String>>();
         linkedContentInfoType = new HashMap<String, String>();
 
-        List<Element> el = TemplatesDOMUtil.getAllJahiaTypedElementsRec(html.getElement());
+        List<Element> el = getAllJahiaTypedElementsRec(html.getElement());
 
         Set<String> allNodetypes = new HashSet<String>();
         allNodetypes.addAll(Arrays.asList(m.getNodeTypes().split(" ")));
         for (Element divElement : el) {
-            String jahiatype = DOM.getElementAttribute(divElement, JahiaType.JAHIA_TYPE);
+            String jahiatype = DOM.getElementAttribute(divElement, JAHIA_TYPE);
             if ("module".equals(jahiatype)) {
                 String id = DOM.getElementAttribute(divElement, "id");
                 String type = DOM.getElementAttribute(divElement, "type");
@@ -164,7 +181,7 @@ public class ModuleHelper {
         Element element = module.getHtml().getElement();
         children = new HashMap<String, List<String>>();
 
-        List<Element> el = TemplatesDOMUtil.getAllJahiaTypedElementsRec(element);
+        List<Element> el = getAllJahiaTypedElementsRec(element);
         for (Element divElement : el) {
             Element currentEl = divElement;
             while (currentEl != null) {
@@ -175,7 +192,7 @@ public class ModuleHelper {
                     }
                     children.get(rootId).add(divElement.getAttribute("id"));
                     break;
-                } else if ("module".equals(currentEl.getAttribute(JahiaType.JAHIA_TYPE))) {
+                } else if ("module".equals(currentEl.getAttribute(JAHIA_TYPE))) {
                     String id = currentEl.getAttribute("id");
                     if (!children.containsKey(id)) {
                         children.put(id, new ArrayList<String>());
@@ -193,9 +210,9 @@ public class ModuleHelper {
         if (module.getHtml() == null) {
             return m;
         }
-        List<Element> el = TemplatesDOMUtil.getAllJahiaTypedElementsRec(module.getHtml().getElement());
+        List<Element> el = getAllJahiaTypedElementsRec(module.getHtml().getElement());
         for (Element divElement : el) {
-            String jahiatype = DOM.getElementAttribute(divElement, JahiaType.JAHIA_TYPE);
+            String jahiatype = DOM.getElementAttribute(divElement, JAHIA_TYPE);
             if ("module".equals(jahiatype)) {
                 String id = DOM.getElementAttribute(divElement, "id");
                 if (children.get(module.getModuleId()).contains(id)) {

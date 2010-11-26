@@ -40,10 +40,6 @@ import org.jahia.data.beans.RequestBean;
 import org.jahia.data.beans.portlets.PortletModeBean;
 import org.jahia.data.beans.portlets.PortletWindowBean;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.gui.GuiBean;
-import org.jahia.gui.HTMLToolBox;
-import org.jahia.params.ParamBean;
-import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.decorator.JCRPortletNode;
@@ -96,10 +92,6 @@ public class PortletModesTag extends TagSupport {
 
     private String namePostFix = "";
     private String name = null;
-    private RequestBean requestBean = null;
-    //private ProcessingContext processingContext = null;
-    //private GuiBean guiBean = null;
-    //private HTMLToolBox htmlToolBox = null;
     private String resourceBundle = "JahiaInternalResources";
     private String listCSSClass = "portletModes";
     private String currentCSSClass = "current";
@@ -276,10 +268,6 @@ public class PortletModesTag extends TagSupport {
         // pooling.
         namePostFix = "";
         name = null;
-        //processingContext = null;
-        requestBean = null;
-        //guiBean = null;
-        //htmlToolBox = null;
         resourceBundle = "JahiaInternalResources";
         listCSSClass = "portletModes";
         currentCSSClass = "current";
@@ -295,7 +283,7 @@ public class PortletModesTag extends TagSupport {
                                     final Locale locale,
                                     final JspWriter out)
             throws IOException {
-        final List portletModeBeansIterList = portletWindowBean.getPortletModeBeans();
+        final List<PortletModeBean> portletModeBeansIterList = portletWindowBean.getPortletModeBeans();
         // draw mode links only if there is more than 1 mode
         if (portletModeBeansIterList.size() < 2) {
             return;
@@ -304,10 +292,7 @@ public class PortletModesTag extends TagSupport {
         out.print("<ul class=\"");
         out.print(listCSSClass);
         out.print("\">\n");
-        final Iterator portletModeBeansIter = portletWindowBean.getPortletModeBeans().iterator();
-        while (portletModeBeansIter.hasNext()) {
-            final PortletModeBean curPortletModeBean = (PortletModeBean)
-                    portletModeBeansIter.next();
+        for (PortletModeBean curPortletModeBean : portletWindowBean.getPortletModeBeans()) {
             if (curPortletModeBean.getName().equals(portletWindowBean.
                     getCurrentPortletModeBean().getName())) {
                 out.print("<li class=\"");

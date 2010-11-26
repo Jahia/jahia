@@ -30,69 +30,89 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.ajax.gwt.client.util;
+package org.jahia.ajax.gwt.client.widget.subscription;
 
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.Widget;
-
+import com.extjs.gxt.ui.client.data.BaseModelData;
 
 /**
- * Created by Jahia.
- * User: ktlili
- * Date: 24 sept. 2007
- * Time: 15:04:28
+ * Represents single user subscription object.
  * 
+ * @author Sergiy Shyrkov
  */
-public class DOMUtil {
+public class GWTSubscription extends BaseModelData {
 
-    public static void setVisible(String id, boolean visible) {
-        Element wrapperEle = DOM.getElementById(id);
-        setVisibility(wrapperEle, visible);
+	private static final long serialVersionUID = 2582727046928700329L;
+
+	public String getConfirmationKey() {
+        return get("confirmationKey");
     }
 
-    private static void setVisibility(Element wrapperEle, boolean visible) {
-        String value = "display:none";
-        if (visible) {
-            value = "display:block";
-        }
-        DOM.setElementAttribute(wrapperEle, "style", value);
+    public String getEmail() {
+        return get("email");
     }
 
-    public static void setId(Widget w, String idValue) {
-        if (w != null) {
-            setId(w.getElement(), idValue);
-        }
+    public String getFirstName() {
+        return get("firstName");
     }
 
-    public static void setStyleAttribute(Widget w, String styleAttributeName, String value) {
-        if (w != null) {
-            DOM.setStyleAttribute(w.getElement(), styleAttributeName, value);
-
-        }
+    public String getId() {
+        return get("id");
     }
 
-    public static void setId(Element ele, String idValue) {
-        if (ele != null) {
-            DOM.setElementAttribute(ele, "id", idValue);
-        }
+    public String getLastName() {
+        return get("lastName");
     }
 
-    public static String getId(Element ele) {
-        if (ele != null) {
-            
-            return DOM.getElementAttribute(ele, "id");
-        }
-        return null;
+    public String getProvider() {
+        return get("provider");
     }
 
-    public static String getRootAttr(Panel panel, String name) {
-        return DOM.getElementAttribute(panel.getElement(), name);
+    public String getSubscriber() {
+        return get("subscriber");
     }
 
-    public static boolean getRootAttrAsBoolean(Panel panel, String name) {
-        String value = DOM.getElementAttribute(panel.getElement(), name);
-        return value != null && Boolean.valueOf(value);
+    public Boolean isConfirmed() {
+        return get("confirmed");
     }
+
+    public Boolean isSuspended() {
+        return get("suspended");
+    }
+
+    public void setConfirmationKey(String confirmationKey) {
+        set("confirmationKey", confirmationKey);
+    }
+
+    public void setConfirmed(Boolean confirmed) {
+        set("confirmed", confirmed);
+    }
+
+    public void setEmail(String email) {
+        set("email", email);
+    }
+
+    public void setFirstName(String firstName) {
+        set("firstName", firstName);
+    }
+
+    public void setId(String id) {
+        set("id", id);
+    }
+
+    public void setLastName(String lastName) {
+        set("lastName", lastName);
+    }
+
+    public void setProvider(String provider) {
+        set("provider", provider);
+    }
+    
+    public void setSubscriber(String subscriber) {
+        set("subscriber", subscriber);
+    }
+
+    public void setSuspended(Boolean suspended) {
+        set("suspended", suspended);
+    }
+
 }

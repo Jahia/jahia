@@ -1,0 +1,28 @@
+###############################################################################
+package org.jahia.modules.newsletter.rules
+
+#list any import classes here.
+import org.jahia.services.content.rules.*
+import org.jahia.services.content.*
+import javax.jcr.observation.Event
+import org.slf4j.Logger
+import java.util.Date
+import org.jahia.services.content.*
+
+expander rules.dsl
+
+#declare any global variables here
+global User user
+global Service service
+global Logger logger
+###############################################################################
+
+rule "Auto-split subscriptions"
+	salience 101
+	when
+		A new node "j:subscriptions" is created
+			- the node has the type jnt:subscriptions
+   then
+   		Log "Enabling auto-splitting on node " + node.getPath()
+		Enable auto-splitting for subnodes of the node into folders of type jnt:subscriptionFolder using configuration "firstChars,j:subscriber,1"
+end

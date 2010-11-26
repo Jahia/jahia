@@ -9,16 +9,20 @@
 // Subscriptions
 //---------------------------------------------------------
 
-[jnt:subscription] > nt:base, mix:created, mix:lastModified
- - j:registeredSubscriber (weakreference) nofulltext < jnt:user, jnt:group
- - j:unregisteredSubscriberEmail (string) indexed=no
- - j:suspended (boolean) = false nofulltext
- - j:confirmed (boolean) = true nofulltext
- - j:confirmationKey (string) nofulltext
+[jnt:subscription] > nt:base, mix:created, mix:lastModified, jmix:observable
+ - j:subscriber (string) mandatory nofulltext
+ - j:provider (string) nofulltext
+ - j:suspended (boolean) = false autocreated nofulltext
+ - j:confirmed (boolean) = true autocreated nofulltext
+ - j:confirmationKey (string) protected hidden nofulltext
  - * (string)
 
-[jnt:subscriptions] > jnt:content
+[jnt:subscriptionFolder] > nt:base, mix:created, mix:lastModified
  + * (jnt:subscription) = jnt:subscription
+ 
+[jnt:subscriptions] > jnt:content, jmix:list
+ + * (jnt:subscription) = jnt:subscription
+ + * (jnt:subscriptionFolder) = jnt:subscriptionFolder 
  
 [jmix:subscribable] mixin
  + j:subscriptions (jnt:subscriptions) = jnt:subscriptions mandatory autocreated

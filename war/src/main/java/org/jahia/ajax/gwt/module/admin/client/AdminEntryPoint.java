@@ -32,20 +32,20 @@
 
 package org.jahia.ajax.gwt.module.admin.client;
 
+import java.util.List;
+
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
 import org.jahia.ajax.gwt.client.data.GWTJahiaRole;
 import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
 import org.jahia.ajax.gwt.client.service.UserManagerService;
-
-import com.extjs.gxt.ui.client.widget.MessageBox;
 import org.jahia.ajax.gwt.client.util.security.RoleEditor;
 import org.jahia.ajax.gwt.client.widget.WorkInProgress;
 import org.jahia.ajax.gwt.client.widget.usergroup.UserGroupAdder;
 import org.jahia.ajax.gwt.client.widget.usergroup.UserGroupSelect;
 
-import java.util.List;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 
 /**
  * Entry point class for GWT integration into Jahia Administration.
@@ -54,7 +54,7 @@ import java.util.List;
  */
 public class AdminEntryPoint extends CommonEntryPoint {
 
-    public void onModuleLoad() {
+	public void onModuleLoad() {
         super.onModuleLoad();
         WorkInProgress.init();
         RoleEditor.init();
@@ -81,7 +81,7 @@ public class AdminEntryPoint extends CommonEntryPoint {
 
 
     /**
-     * User/group picekr
+     * User/group picker
      * @param mode
      * @param id
      * @param pattern
@@ -91,7 +91,7 @@ public class AdminEntryPoint extends CommonEntryPoint {
         if ("users".equals(mode)) viewMode = UserGroupSelect.VIEW_USERS;
         if ("groups".equals(mode)) viewMode = UserGroupSelect.VIEW_GROUPS;
 
-        UserGroupSelect ug = new UserGroupSelect(new UserGroupAdder() {
+        new UserGroupSelect(new UserGroupAdder() {
             public void addUsers(List<GWTJahiaUser> users) {
                 for (GWTJahiaUser user : users) {
                     UserManagerService.App.getInstance().getFormattedPrincipal(user.getUserKey(), 'u', pattern.split("\\|"), new BaseAsyncCallback<String[]>() {

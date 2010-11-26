@@ -32,17 +32,22 @@
 
 package org.jahia.ajax.gwt.module.edit.client;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.widget.Layout;
-import com.extjs.gxt.ui.client.widget.layout.AnchorLayout;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.edit.EditPanelViewport;
+import org.jahia.ajax.gwt.client.widget.subscription.SubscriptionManager;
+
+import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.widget.Layout;
+import com.extjs.gxt.ui.client.widget.layout.AnchorLayout;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.RunAsyncCallback;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Edit mode GWT entry point.
@@ -74,6 +79,29 @@ public class EditEntryPoint extends CommonEntryPoint {
                 }
             });
         }
+        exposeSubscriptionManager();
     }
 
+    protected native void exposeSubscriptionManager() /*-{
+	    if (!$wnd.jahia) {
+	        $wnd.jahia = new Object();
+	    }
+	    if ($wnd.jahia.openSubscriptionManager) {
+	    	return;
+	    }
+	    $wnd.jahia.openSubscriptionManager = function (sourceNode) { @org.jahia.ajax.gwt.module.edit.client.EditEntryPoint::openSubscriptionManager(Ljava/lang/String;)(sourceNode) };
+	
+	}-*/;
+
+	static void openSubscriptionManager(final String uuid) {
+		GWT.runAsync(new RunAsyncCallback() {
+			public void onSuccess() {
+				new SubscriptionManager(uuid).show();
+			}
+
+			public void onFailure(Throwable reason) {
+				Window.alert("Error: " + reason);
+			}
+		});
+	}
 }

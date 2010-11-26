@@ -39,22 +39,19 @@
 
 package org.jahia.gui;
 
-import org.slf4j.Logger;
-import org.jahia.params.ProcessingContext;
-import org.jahia.services.usermanager.JahiaUser;
+import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Enumeration;
+
+import org.jahia.params.ProcessingContext;
+import org.jahia.services.usermanager.JahiaUser;
 
 /**
  * Modified and cleaned by Xavier Lawrence
  */
 public class GuiBean {
 
-    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(GuiBean.class);
-
     private final ProcessingContext processingContext;
-    private final HTMLToolBox html;
 
     /**
      * constructor
@@ -62,12 +59,7 @@ public class GuiBean {
      */
     public GuiBean(final ProcessingContext jContext) {
         this.processingContext = jContext;
-        this.html = new HTMLToolBox(this, processingContext);
     } // end constructor
-
-    public HTMLToolBox html() {
-        return html;
-    }
 
     public ProcessingContext params() {
         return processingContext;

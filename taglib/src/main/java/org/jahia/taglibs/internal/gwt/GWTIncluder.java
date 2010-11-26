@@ -32,7 +32,7 @@
 
 package org.jahia.taglibs.internal.gwt;
 
-import org.jahia.ajax.gwt.client.core.JahiaType;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -93,7 +93,7 @@ public class GWTIncluder {
 
         final StringBuffer outBuf = new StringBuffer("<div class=\"" + css + "\" id=\"").append(id).append("\" ");
         if (jahiaType != null) {
-            outBuf.append(JahiaType.JAHIA_TYPE);
+            outBuf.append(ModuleHelper.JAHIA_TYPE);
             outBuf.append("=\"");
             outBuf.append(jahiaType);
             outBuf.append("\"");

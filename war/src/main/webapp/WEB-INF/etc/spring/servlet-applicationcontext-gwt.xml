@@ -10,7 +10,7 @@
                 /**/base.gwt=baseServiceController
                 /**/contentDefinition.gwt=contentDefinitionServiceController
                 /**/contentManager.gwt=contentManagerServiceController
-                /**/sessionManager.gwt=sessionManagerServiceController
+                /**/subscription.gwt=subscriptionServiceController
                 /**/toolbar.gwt=toolbarServiceController
                 /**/userManager.gwt=userManagerServiceController
             </value>
@@ -72,10 +72,6 @@
         <property name="uiConfigHelper" ref="UiConfigHelper"/>
     </bean>
     
-    <bean name="sessionManagerServiceController" parent="abstractServiceController">
-        <property name="remoteServiceName" value="gwtSessionManagerService"/>
-    </bean>
-
     <bean name="userManagerServiceController" parent="abstractServiceController">
         <property name="remoteServiceName" value="gwtUserManagerService"/>
     </bean>
@@ -83,5 +79,12 @@
         <property name="groupManagerService" ref="JahiaGroupManagerService"/>
         <property name="userManagerService" ref="JahiaUserManagerService"/>
         <property name="sitesService" ref="JahiaSitesService"/>
+    </bean>
+    
+    <bean name="subscriptionServiceController" parent="abstractServiceController">
+        <property name="remoteServiceName" value="gwtSubscriptionService"/>
+    </bean>
+    <bean name="gwtSubscriptionService" class="org.jahia.ajax.gwt.subscription.server.SubscriptionServiceImpl" scope="prototype">
+    	<property name="subscriptionService" ref="subscriptionService"/>
     </bean>
 </beans>

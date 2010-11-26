@@ -114,4 +114,8 @@
             </map>
         </property>
     </bean>
+    
+    <bean id="subscriptionService" class="org.jahia.services.notification.SubscriptionService">
+    	<property name="userManagerService" ref="JahiaUserManagerService"/>
+    </bean>
 </beans>

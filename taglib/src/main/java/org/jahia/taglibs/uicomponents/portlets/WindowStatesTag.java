@@ -34,11 +34,15 @@ package org.jahia.taglibs.uicomponents.portlets;
 
 import org.jahia.data.beans.RequestBean;
 import org.jahia.params.ProcessingContext;
-import org.jahia.gui.GuiBean;
-import org.jahia.gui.HTMLToolBox;
 import org.jahia.data.beans.portlets.PortletWindowBean;
+import org.jahia.data.beans.portlets.WindowStateBean;
+
 import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
+import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
@@ -105,8 +109,6 @@ public class WindowStatesTag extends TagSupport {
     private String name = null;
     private RequestBean requestBean = null;
     private ProcessingContext processingContext = null;
-    private GuiBean guiBean = null;
-    private HTMLToolBox htmlToolBox = null;
     private String resourceBundle = "JahiaInternalResources";
     private String listCSSClass = "windowStates";
     private String currentCSSClass = "current";
@@ -197,8 +199,6 @@ public class WindowStatesTag extends TagSupport {
 
         requestBean = (RequestBean) pageContext.findAttribute("currentRequest");
         processingContext = requestBean.getProcessingContext();
-        guiBean = new GuiBean(processingContext);
-        htmlToolBox = new HTMLToolBox(guiBean, processingContext);
         PortletWindowBean portletWindowBean = (PortletWindowBean) pageContext.
                                               findAttribute(name);
         if (portletWindowBean == null) {
@@ -210,7 +210,7 @@ public class WindowStatesTag extends TagSupport {
         JspWriter out = pageContext.getOut();
         try {
 
-            htmlToolBox.drawWindowStateList(portletWindowBean, namePostFix,
+            drawWindowStateList(portletWindowBean, namePostFix,
                                             resourceBundle, listCSSClass,
                                             currentCSSClass, out);
 
@@ -231,12 +231,62 @@ public class WindowStatesTag extends TagSupport {
         name = null;
         processingContext = null;
         requestBean = null;
-        guiBean = null;
-        htmlToolBox = null;
         resourceBundle = "JahiaInternalResources";
         listCSSClass = "windowStates";
         currentCSSClass = "current";
         return EVAL_PAGE;
     }
 
+
+	private void drawWindowStateList(final PortletWindowBean portletWindowBean,
+	        final String namePostFix, final String resourceBundle, final String listCSSClass,
+	        final String currentCSSClass, final JspWriter out) throws IOException {
+
+		out.print("<ul class=\"");
+		out.print(listCSSClass);
+		out.print("\">\n");
+		for (WindowStateBean curWindowStateBean : portletWindowBean.getWindowStateBeans()) {
+			if (curWindowStateBean.getName().equals(
+			        portletWindowBean.getCurrentWindowStateBean().getName())) {
+				out.print("<li class=\"");
+				out.print(currentCSSClass);
+				out.print("\">\n");
+			} else {
+				out.print("<li>");
+			}
+			final StringBuffer buff = new StringBuffer();
+			buff.append("<a class=\"")
+			        .append(curWindowStateBean.getName())
+			        .append("\" title=\"")
+			        .append(curWindowStateBean.getName())
+			        .append("\"")
+			        .append("\" href=\"")
+			        .append(curWindowStateBean.getURL())
+			        .append("\">")
+			        .append("<span>")
+			        .append(getResource(
+			                resourceBundle,
+			                "org.jahia.taglibs.html.portlets.windowstates."
+			                        + curWindowStateBean.getName() + ".label" + namePostFix))
+			        .append("</span></a>");
+			out.print(buff.toString());
+			out.println("</li>");
+		}
+		out.println("</ul>");
+	}
+
+	private String getResource(final String resourceBundle, final String resourceName) {
+		ResourceBundle res;
+		String resValue = null;
+
+		final Locale locale = processingContext.getLocale();
+		try {
+			res = ResourceBundle.getBundle(resourceBundle, locale);
+			resValue = res.getString(resourceName);
+		} catch (MissingResourceException mre) {
+			logger.warn("Error accessing resource " + resourceName + " in bundle " + resourceBundle
+			        + " for locale " + locale + ":" + mre.getMessage());
+		}
+		return resValue;
+	}
 }

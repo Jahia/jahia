@@ -116,6 +116,11 @@
               </tabularList>
             </pagecontent>
           </my-profile>
+          <newsletters jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:newsletters jnt:newsletter">
+            <pagecontent jcr:primaryType="jnt:contentList">
+              <mainResourceDisplay j:mainResourceView="table" jcr:primaryType="jnt:mainResourceDisplay" />
+            </pagecontent>
+          </newsletters>
           <header jcr:primaryType="jnt:contentList">
             <header column="1col16" jcr:primaryType="jnt:row" />
           </header>

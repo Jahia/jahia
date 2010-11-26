@@ -78,13 +78,7 @@
                     <c:otherwise>
                         <a href="${url.base}${child.path}.edit">
                     </c:otherwise>
-                    </c:choose>
-                            <c:if test="${!empty child.properties['jcr:title'].string}">
-                                ${fn:escapeXml(child.properties['jcr:title'].string)}
-                            </c:if>
-                            <c:if test="${empty child.properties['jcr:title'].string}">
-                                ${fn:escapeXml(child.name)}
-                            </c:if></a>
+                    </c:choose>${fn:escapeXml(child.displayableName)}</a>
                 </td>
                 <td>
                     <fmt:formatDate value="${child.properties['jcr:created'].date.time}" pattern="yyyy-MM-dd HH:mm"/>

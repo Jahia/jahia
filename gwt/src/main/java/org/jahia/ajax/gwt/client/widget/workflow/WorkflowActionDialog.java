@@ -68,8 +68,8 @@ import java.util.*;
 public class WorkflowActionDialog extends LayoutContainer {
 // ------------------------------ FIELDS ------------------------------
 
-    private JahiaContentManagementServiceAsync contentManagement = JahiaContentManagementService.App.getInstance();
-    private JahiaContentDefinitionServiceAsync contentDefinition = JahiaContentDefinitionService.App.getInstance();
+    private JahiaContentManagementServiceAsync contentManagement;
+    private JahiaContentDefinitionServiceAsync contentDefinition;
     private WorkflowDashboardEngine workflowDashboard;
     private TabPanel tabPanel;
     private TabItem actionTab;
@@ -110,6 +110,9 @@ public class WorkflowActionDialog extends LayoutContainer {
     }
 
     private WorkflowActionDialog(Linker linker, CustomWorkflow custom, EngineContainer container) {
+    	super();
+        contentManagement = JahiaContentManagementService.App.getInstance();
+        contentDefinition = JahiaContentDefinitionService.App.getInstance();
         this.linker = linker;
         this.custom = custom;
         tabPanel = new TabPanel();
@@ -241,7 +244,7 @@ public class WorkflowActionDialog extends LayoutContainer {
         commentsContainer.setBorders(false);
 
         if (workflow != null) {
-            JahiaContentManagementService.App.getInstance().getWorkflowComments(workflow, new BaseAsyncCallback<List<GWTJahiaWorkflowComment>>() {
+            contentManagement.getWorkflowComments(workflow, new BaseAsyncCallback<List<GWTJahiaWorkflowComment>>() {
                 public void onSuccess(List<GWTJahiaWorkflowComment> result) {
                     displayComments(result, commentsContainer);
                 }

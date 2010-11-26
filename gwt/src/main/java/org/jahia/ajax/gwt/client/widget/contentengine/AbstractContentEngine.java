@@ -77,8 +77,8 @@ import java.util.*;
 public abstract class AbstractContentEngine extends LayoutContainer implements NodeHolder {
     public static final int BUTTON_HEIGHT = 24;
 
-    protected static JahiaContentManagementServiceAsync contentService = JahiaContentManagementService.App.getInstance();
-    protected static JahiaContentDefinitionServiceAsync definitionService = JahiaContentDefinitionService.App.getInstance();
+    protected static JahiaContentManagementServiceAsync contentService;
+    protected static JahiaContentDefinitionServiceAsync definitionService;
     protected List<GWTEngineTab> config;
     protected Linker linker = null;
     protected List<GWTJahiaNodeType> nodeTypes;
@@ -113,6 +113,8 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         this.config = config;
         this.linker = linker;
         this.parentPath = parentPath;
+        contentService = JahiaContentManagementService.App.getInstance();
+        definitionService = JahiaContentDefinitionService.App.getInstance();
     }
 
     protected void init(EngineContainer container) {

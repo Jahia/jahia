@@ -46,9 +46,6 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
-import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
-import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionServiceAsync;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.definition.LangPropertiesEditor;
@@ -66,15 +63,12 @@ import java.util.List;
  */
 public class TranslateContentEngine extends Window {
     public static final int BUTTON_HEIGHT = 24;
-    private static JahiaContentManagementServiceAsync contentService = JahiaContentManagementService.App.getInstance();
-    private static JahiaContentDefinitionServiceAsync definitionService = JahiaContentDefinitionService.App.getInstance();
     private GWTJahiaNode node;
     private final GWTJahiaLanguage srcLanguage;
     private final GWTJahiaLanguage destLanguage;
     private Linker linker = null;
 
     private Button ok;
-    private LayoutContainer mainComponent;
     private LangPropertiesEditor sourceLangPropertiesEditor;
     private LangPropertiesEditor targetLangPropertiesEditor;
     protected ButtonBar buttonBar;
@@ -172,7 +166,7 @@ public class TranslateContentEngine extends Window {
 
 
             // Ajax call to update values
-            JahiaContentManagementService.App.getInstance().savePropertiesAndACL(nodes, null, targetLangPropertiesEditor.getLangPropertiesMap(), null, new BaseAsyncCallback() {
+            JahiaContentManagementService.App.getInstance().savePropertiesAndACL(nodes, null, targetLangPropertiesEditor.getLangPropertiesMap(), null, new BaseAsyncCallback<Object>() {
                 public void onApplicationFailure(Throwable throwable) {
                     com.google.gwt.user.client.Window.alert(Messages.get("saved_prop_failed", "Properties save failed\n\n") + throwable.getLocalizedMessage());
                     Log.error("failed", throwable);

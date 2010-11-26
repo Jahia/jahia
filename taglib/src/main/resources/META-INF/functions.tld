@@ -390,4 +390,16 @@
 			${functions:capitalize(field.value)}
 		</example>
 	</function>
+
+    <function>
+		<description>
+			Lookup the user by the user key (with provider prefix) or username.
+		</description>
+		<name>lookupUser</name>
+		<function-class>org.jahia.taglibs.functions.Functions</function-class>
+		<function-signature>org.jahia.services.usermanager.JahiaUser lookupUser(java.lang.String)</function-signature>
+		<example>
+			${functions:lookupUser('sergiy')} or ${functions:lookupUser('{ldap}john')}
+		</example>
+	</function>
 </taglib>

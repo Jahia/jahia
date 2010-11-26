@@ -35,10 +35,10 @@ package org.jahia.taglibs.functions;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.TextExtractor;
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.rbac.PermissionIdentity;
@@ -322,7 +322,23 @@ public class Functions {
     }
 
 
-    public static java.lang.String displayLocaleNameWith(java.util.Locale localeToDisplay,java.util.Locale localeUsedForRendering) {
+    public static java.lang.String displayLocaleNameWith(Locale localeToDisplay, Locale localeUsedForRendering) {
         return localeToDisplay.getDisplayName(localeUsedForRendering);
     }
+    
+	/**
+	 * Looks up the user by the specified user key (with provider prefix) or username.
+	 * 
+	 * @param user
+	 *            the key or the name of the user to perform lookup for
+	 * @return the user for the specified user key or name or <code>null</code> if the
+	 *         corresponding user cannot be found
+	 * @throws IllegalArgumentException in case the specified user key is <code>null</code>         
+	 */
+	public static JahiaUser lookupUser(String user) throws IllegalArgumentException {
+		if (user == null) {
+			throw new IllegalArgumentException("Specified user key is null");
+		}
+		return user.startsWith("{") ? ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(user) : ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(user);
+	}
 }

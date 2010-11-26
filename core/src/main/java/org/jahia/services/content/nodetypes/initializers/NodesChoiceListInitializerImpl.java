@@ -32,6 +32,7 @@
 
 package org.jahia.services.content.nodetypes.initializers;
 
+import org.jahia.services.content.JCRContentUtils;
 import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -81,6 +82,8 @@ public class NodesChoiceListInitializerImpl implements ChoiceListInitializer {
                     final JahiaSite defaultSite = JahiaSitesBaseService.getInstance().getDefaultSite();
                     if (defaultSite != null) {
                         site = (JCRSiteNode) sessionFactory.getCurrentUserSession().getNode("/sites/"+ defaultSite.getSiteKey());
+                    } else {
+                        site = (JCRSiteNode) sessionFactory.getCurrentUserSession().getNode(JCRContentUtils.getSystemSitePath());
                     }
                 }
                 String path = s[0];

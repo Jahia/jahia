@@ -32,19 +32,19 @@
 
 package org.jahia.taglibs.utility.session;
 
-import org.jahia.data.JahiaData;
+import java.io.IOException;
+
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspWriter;
+import javax.servlet.jsp.PageContext;
+
 import org.jahia.services.render.RenderContext;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.slf4j.Logger;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.PageContext;
-import java.io.IOException;
-
 /**
- * Simple tags that prints out the user name of the currently logged user.
+ * Simple tags that prints out the value of the specified property for currently logged in user.
+ * If the property is not specified, the output will be the username.
  *
  * @author Xavier Lawrence
  */
@@ -56,7 +56,6 @@ public class UserPropertyTag extends AbstractJahiaTag {
 
     public int doStartTag() throws JspException {
         try {
-            final HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
             RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
             final StringBuffer buff = new StringBuffer();
 

@@ -10,7 +10,6 @@
                 <logoFooter jcr:primaryType="jnt:contentList" />
                 <footer jcr:primaryType="jnt:contentList" />
             </home>
-            <contents jcr:primaryType="jnt:contentFolder"/>
             <files jcr:primaryType="jnt:folder" >
                 <themes jcr:primaryType="jnt:folder">
                     <default jcr:primaryType="jnt:folder" />
@@ -18,6 +17,12 @@
             </files>
             <portlets jcr:primaryType="jnt:portletFolder" />
             <templates jcr:primaryType="jnt:templatesFolder">
+                <contents jcr:primaryType="jnt:contentFolder">
+                    <menuAvailable jcr:primaryType="jnt:navMenuAvailableFolder">
+                        <primary jcr:primaryType="jnt:navMenuAvailable"/>
+                        <secondary jcr:primaryType="jnt:navMenuAvailable"/>
+                    </menuAvailable>
+                </contents>
                 <base jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:template" j:view="web">
                     <header jcr:primaryType="jnt:contentList">
                         <shortcuts jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:shortcuts" j:view="inline" />
@@ -26,7 +31,7 @@
                         <logo j:basenode="/templateSets/templates-web/home" jcr:primaryType="jnt:absoluteArea" />
                     </logo>
                     <topMenu jcr:primaryType="jnt:contentList">
-                        <top-menu j:menuType="primary" j:maxDepth="1" jcr:primaryType="jnt:navMenu" j:baselineNode="/templateSets/templates-web/home" j:styleName="navigationN1" />
+                        <top-menu j:menuType="/templateSets/templates-web/templates/contents/menuAvailable/primary" j:maxDepth="1" jcr:primaryType="jnt:navMenu" j:baselineNode="/templateSets/templates-web/home" j:styleName="navigationN1" />
                     </topMenu>
                     <logoFooter jcr:primaryType="jnt:contentList">
                         <logoFooter j:basenode="/templateSets/templates-web/home" jcr:primaryType="jnt:absoluteArea" />
@@ -71,7 +76,7 @@
                             <simple-search result="/templateSets/templates-web/search-results" jcr:primaryType="jnt:simpleSearchForm">
                                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Simple search" jcr:primaryType="jnt:translation" />
                             </simple-search>
-                            <side-menu j:menuType="primary" j:maxDepth="3" jcr:primaryType="jnt:navMenu" j:baselineNode="/templateSets/templates-web/home" j:startLevel="1" j:styleName="navigationN2" />
+                            <side-menu j:menuType="/templateSets/templates-web/templates/contents/menuAvailable/primary" j:maxDepth="3" jcr:primaryType="jnt:navMenu" j:baselineNode="/templateSets/templates-web/home" j:startLevel="1" j:styleName="navigationN2" />
                             <calendar startDateProperty="startDate" endDateProperty="endDate" jcr:primaryType="jnt:calendar" j:bindedComponent="/templateSets/templates-web/templates/base/events/row1-col1/events" />
                             <facets jcr:primaryType="jnt:facets" j:bindedComponent="/templateSets/templates-web/templates/base/events/row1-col1/events">
                                 <fieldFacet mincount="1" field="jnt:event;eventsType" jcr:primaryType="jnt:fieldFacet" missing="false" facet="type" offset="0" limit="100">
@@ -96,7 +101,7 @@
                             <simple-search result="/templateSets/templates-web/search-results" jcr:primaryType="jnt:simpleSearchForm">
                                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Simple search" jcr:primaryType="jnt:translation" />
                             </simple-search>
-                            <side-menu j:menuType="primary" j:maxDepth="3" jcr:primaryType="jnt:navMenu" j:baselineNode="/templateSets/templates-web/home" j:startLevel="1" j:styleName="navigationN2" />
+                            <side-menu j:menuType="/templateSets/templates-web/templates/contents/menuAvailable/primary" j:maxDepth="3" jcr:primaryType="jnt:navMenu" j:baselineNode="/templateSets/templates-web/home" j:startLevel="1" j:styleName="navigationN2" />
                             <listB jcr:primaryType="jnt:area" />
                         </row-col2>
                     </simple>

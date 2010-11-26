@@ -537,8 +537,14 @@
 //---------------------------------------------------------
 
 [jmix:navMenuItem] mixin
- itemtype = options
- - j:displayInMenu (string,choicelist) = 'primary' autocreated multiple nofulltext < 'primary','secondary'
+ itemtype = content
+ - j:displayInMenu (weakreference,choicelist[nodes='$currentSite/templates/contents/menuAvailable;jnt:navMenuAvailable']) multiple nofulltext mandatory
+
+
+[jnt:navMenuAvailableFolder] > jnt:content, jmix:droppableContent
++ * (jnt:navMenuAvailable)
+
+[jnt:navMenuAvailable] > jnt:content, mix:title
 
 [jnt:page] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata, mix:title, jmix:publication, jmix:tagged, jmix:navMenuItem, jmix:hasTemplateNode
  orderable
@@ -561,7 +567,8 @@
 
 [jnt:templatesFolder] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:list
  + * (jnt:template)
-
+ + * (jnt:contentFolder)
+ 
 [jmix:autoSplitFolders] mixin extends = jnt:contentList
  - j:splitConfig (string) mandatory
  - j:splitNodeType (string) mandatory
@@ -628,12 +635,6 @@
 //---------------------------------------------------------
 // Compatibility nodes
 //---------------------------------------------------------
-
-[jnt:container] > nt:base,  jmix:basemetadata, mix:title
-
-[jnt:containerList] > nt:base,  jmix:basemetadata
- orderable
- + * (jnt:container) version
 
 [jnt:layoutItem]  > nt:base, jmix:basemetadata
  - j:columnIndex (long)

@@ -9,7 +9,6 @@
                 <listB jcr:primaryType="jnt:contentList" />
                 <footer jcr:primaryType="jnt:contentList" />
             </home>
-            <contents jcr:primaryType="jnt:contentFolder"/>
             <files jcr:primaryType="jnt:folder" >
                 <themes jcr:primaryType="jnt:folder">
                     <default jcr:primaryType="jnt:folder" />
@@ -48,6 +47,12 @@
             </files>
             <portlets jcr:primaryType="jnt:portletFolder" />
             <templates jcr:primaryType="jnt:templatesFolder">
+                <contents jcr:primaryType="jnt:contentFolder">
+                    <menuAvailable jcr:primaryType="jnt:navMenuAvailableFolder">
+                        <primary jcr:primaryType="jnt:navMenuAvailable"/>
+                        <secondary jcr:primaryType="jnt:navMenuAvailable"/>
+                    </menuAvailable>
+                </contents>                
                 <base jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:template" j:view="intranet">
                     <logo jcr:primaryType="jnt:contentList">
                         <logo j:basenode="/templateSets/templates-intranet/home" jcr:primaryType="jnt:absoluteArea" />
@@ -56,7 +61,7 @@
                         <simpleSearchForm result="/templateSets/templates-intranet/search-results" jcr:primaryType="jnt:simpleSearchForm" />
                     </simpleSearch>
                     <topMenu jcr:primaryType="jnt:contentList">
-                        <top-menu j:menuType="primary" j:maxDepth="2" jcr:primaryType="jnt:navMenu" j:baselineNode="/templateSets/templates-intranet/home" j:styleName="navigation" />
+                        <top-menu j:menuType="/templateSets/templates-intranet/templates/contents/menuAvailable/primary" j:maxDepth="2" jcr:primaryType="jnt:navMenu" j:baselineNode="/templateSets/templates-intranet/home" j:styleName="navigation" />
                         <shortcuts jcr:primaryType="jnt:shortcuts" />
                     </topMenu>
                     <footer jcr:primaryType="jnt:contentList">

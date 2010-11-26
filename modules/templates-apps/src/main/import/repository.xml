@@ -11,7 +11,6 @@
                 <listA jcr:primaryType="jnt:contentList"/>
                 <listB jcr:primaryType="jnt:contentList"/>
             </home>
-            <contents jcr:primaryType="jnt:contentFolder"/>
             <portlets jcr:primaryType="jnt:portletFolder"/>
             <files jcr:primaryType="jnt:folder">
                 <themes jcr:primaryType="jnt:folder">
@@ -19,6 +18,12 @@
                 </themes>
             </files>
             <templates jcr:primaryType="jnt:templatesFolder">
+                <contents jcr:primaryType="jnt:contentFolder">
+                    <menuAvailable jcr:primaryType="jnt:navMenuAvailableFolder">
+                        <primary jcr:primaryType="jnt:navMenuAvailable"/>
+                        <secondary jcr:primaryType="jnt:navMenuAvailable"/>
+                    </menuAvailable>
+                </contents>
                 <base jcr:mixinTypes="jmix:renderable" j:view="apps" jcr:primaryType="jnt:template">
                     <logo jcr:primaryType="jnt:contentList"/>
                     <pagetitle jcr:primaryType="jnt:contentList"/>

@@ -11,8 +11,6 @@
           j:templateNode="/templatesSet/templates/base/home" priority="0.5">
     </home>
 
-    <contents jcr:primaryType="jnt:contentFolder"/>
-
     <files jcr:primaryType="jnt:folder">
         <themes jcr:primaryType="jnt:folder">
             <default jcr:primaryType="jnt:folder">
@@ -25,6 +23,12 @@
 
 
     <templates jcr:primaryType="jnt:templatesFolder">
+        <contents jcr:primaryType="jnt:contentFolder">
+            <menuAvailable jcr:primaryType="jnt:navMenuAvailableFolder">
+                <primary jcr:primaryType="jnt:navMenuAvailable"/>
+                <secondary jcr:primaryType="jnt:navMenuAvailable"/>
+            </menuAvailable>
+        </contents>
         <base jcr:mixinTypes="jmix:renderable jmix:theme" j:view="default" jcr:primaryType="jnt:template" j:theme="/templatesSet/files/themes/default">
             <home jcr:primaryType="jnt:pageTemplate">
                 <pagecontent jcr:primaryType="jnt:contentList"/>

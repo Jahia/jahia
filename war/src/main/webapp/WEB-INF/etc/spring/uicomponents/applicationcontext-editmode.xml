@@ -400,10 +400,15 @@
                         <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.ContentBrowseTabItem">
                             <property name="paths">
                                 <list>
-                                    <value>$site/contents</value>
+                                    <value>$site/templates/contents</value>
                                 </list>
                             </property>
-                            <property name="folderTypes" value="jnt:contentFolder"/>
+                            <property name="folderTypes">
+                                <list>
+                                    <value>jnt:contentFolder</value>
+                                    <value>jnt:navMenuAvailableFolder</value>
+                                </list>
+                            </property>
                         </bean>
                     </property>
                     <property name="treeColumns">
@@ -417,6 +422,7 @@
                                 <list>
                                     <ref bean="Toolbar.Item.NewContentFolder"/>
                                     <ref bean="Toolbar.Item.NewContent"/>
+                                    <ref bean="Toolbar.Item.NewMenuAvailable"/>
                                     <ref bean="Toolbar.Item.Rename"/>
                                     <ref bean="Toolbar.Item.Delete"/>
                                     <ref bean="Toolbar.Item.Copy"/>

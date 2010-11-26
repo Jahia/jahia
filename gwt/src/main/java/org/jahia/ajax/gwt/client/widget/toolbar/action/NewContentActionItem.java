@@ -54,7 +54,7 @@ import java.util.List;
 */
 public class NewContentActionItem extends BaseActionItem  {
     private String nodeTypes = "";
-    protected String parentTypes = "jnt:contentList";
+    protected String parentTypes = "jnt:contentList jnt:contentFolder";
     protected List<String> parentTypesAsList;
     
     public void setNodeTypes(String nodeTypes) {

@@ -750,7 +750,17 @@
         <property name="titleKey" value="label.newNewsletter"/>
         <property name="icon" value="/modules/newsletter/icons/newNewsletter"/>
     </bean>
-    
+
+    <bean id="Toolbar.Item.NewMenuAvailable" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
+                <property name="nodeTypes" value="jnt:navMenuAvailable"/>
+                <property name="parentTypes" value="jnt:navMenuAvailableFolder"/>
+            </bean>
+        </property>
+        <property name="titleKey" value="label.newAvailableMenu"/>
+        <property name="icon" value="newAvailableMenu"/>
+    </bean>    
 
     <bean id="Toolbar.Item.NewContent" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">

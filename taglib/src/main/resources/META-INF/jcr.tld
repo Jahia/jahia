@@ -614,7 +614,7 @@
         </example>
     </function>
     <function>
-        <description>Escapes illegal JCR chars</description>
+        <description>Returns node type constraints</description>
         <name>getConstraints</name>
         <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
         <function-signature>java.lang.String getConstraints(org.jahia.services.content.JCRNodeWrapper)
@@ -634,7 +634,10 @@
         </example>
     </function>
     <function>
-        <description>Escapes illegal JCR chars</description>
+        <description>
+        	Returns the full user name, including first and last name.
+        	If those are not available, returns the username.
+        </description>
         <name>userFullName</name>
         <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
         <function-signature>java.lang.String userFullName(org.jahia.services.content.JCRNodeWrapper)

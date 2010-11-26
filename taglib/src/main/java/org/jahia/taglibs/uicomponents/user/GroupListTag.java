@@ -32,7 +32,6 @@
 
 package org.jahia.taglibs.uicomponents.user;
 
-import org.slf4j.Logger;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.usermanager.JahiaGroup;

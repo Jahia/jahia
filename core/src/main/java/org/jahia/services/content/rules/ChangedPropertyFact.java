@@ -32,9 +32,9 @@
 
 package org.jahia.services.content.rules;
 
-import org.apache.tika.io.IOUtils;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.services.categories.Category;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -46,19 +46,12 @@ import org.jahia.services.content.nodetypes.SelectorType;
 import javax.jcr.*;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeType;
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
  * User: toto
- * Date: 20 déc. 2007
- * Time: 17:27:10
- * 
  */
 
 public class ChangedPropertyFact implements Updateable {
@@ -219,38 +212,16 @@ public class ChangedPropertyFact implements Updateable {
     }
 
     private Value createValue(Object objectValue, ExtendedPropertyDefinition propDef, ValueFactory factory) {
-        if (objectValue instanceof String) {
-            if (propDef.getSelector() == SelectorType.CATEGORY) {
+        if (objectValue instanceof String && propDef.getSelector() == SelectorType.CATEGORY) {
                 try {
                     return factory.createValue(Category.getCategoryPath((String) objectValue));
                 } catch (Exception e) {
                     logger.warn("Can't get category " + objectValue + ", cause " + e.getMessage());
+                    return null;
                 }
-            } else {
-                return factory.createValue((String) objectValue);
-            }
-        } else if (objectValue instanceof Long) {
-            return factory.createValue((Long) objectValue);
-        } else if (objectValue instanceof Integer) {
-            return factory.createValue(((Integer) objectValue).longValue());
-        } else if (objectValue instanceof Calendar) {
-            return factory.createValue((Calendar) objectValue);
-        } else if (objectValue instanceof Date) {
-            Calendar c = new GregorianCalendar();
-            c.setTime((Date) objectValue);
-            return factory.createValue(c);
-        } else if (objectValue instanceof byte[] || objectValue instanceof File) {
-            InputStream is = null;
-            try {
-                is = objectValue instanceof File ? new FileInputStream((File) objectValue) : new ByteArrayInputStream((byte[]) objectValue);
-                return factory.createValue(factory.createBinary(is));
-            } catch (Exception e) {
-                throw new IllegalArgumentException(e);
-            } finally {
-                IOUtils.closeQuietly(is);
-            }
+        } else {
+            return JCRContentUtils.createValue(objectValue, factory);
         }
-        return null;
     }
 
     public String getName() throws RepositoryException {

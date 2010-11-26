@@ -59,7 +59,9 @@ import javax.jcr.nodetype.PropertyDefinition;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -676,4 +678,44 @@ public final class JCRContentUtils {
 		}
 	}
 
+	/**
+	 * Creates the JCR property value, depending on the type of the
+	 * corresponding value.
+	 * 
+	 * @param objectValue
+	 *            the object value to be converted
+	 * @param factory
+	 *            the {@link ValueFactory} instance
+	 * @return the JCR property value
+	 */
+	public static Value createValue(Object objectValue, ValueFactory factory) {
+		if (objectValue instanceof String) {
+			return factory.createValue((String) objectValue);
+		} else if (objectValue instanceof Long) {
+			return factory.createValue((Long) objectValue);
+		} else if (objectValue instanceof Integer) {
+			return factory.createValue(((Integer) objectValue).longValue());
+		} else if (objectValue instanceof Calendar) {
+			return factory.createValue((Calendar) objectValue);
+		} else if (objectValue instanceof Date) {
+			Calendar c = new GregorianCalendar();
+			c.setTime((Date) objectValue);
+			return factory.createValue(c);
+		} else if (objectValue instanceof byte[] || objectValue instanceof File) {
+			InputStream is = null;
+			try {
+				is = objectValue instanceof File ? new FileInputStream((File) objectValue)
+				        : new ByteArrayInputStream((byte[]) objectValue);
+				return factory.createValue(factory.createBinary(is));
+			} catch (Exception e) {
+				throw new IllegalArgumentException(e);
+			} finally {
+				IOUtils.closeQuietly(is);
+			}
+		} else {
+			logger.warn("Do not know, how to handle value of type {}"
+			        + objectValue.getClass().getName());
+		}
+		return null;
+	}
 }

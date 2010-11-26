@@ -24,7 +24,7 @@
 <template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.ajaxupload.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.ckeditor.js"/>
-<template:addResources type="javascript" resources="datepicker.js,jquery.jeditable.datepicker.js"/>
+<template:addResources type="javascript" resources="jquery.jeditable.datepicker.js"/>
 <template:addResources type="css" resources="jquery.treeview.css,jquery.fancybox.css"/>
 <template:addResources type="javascript"
                        resources="jquery.treeview.min.js,jquery.treeview.async.jahia.js,jquery.fancybox.pack.js"/>
@@ -83,6 +83,16 @@
         <c:forEach items="${types}" var="type" varStatus="status">
         animatedcollapse.addDiv('add${currentNode.identifier}-${status.index}', 'fade=1,speed=700,group=newContent');
         </c:forEach>
+        animatedcollapse.ontoggle = function($,divobj,state){
+            if(state == 'block') {
+                // div is expanded
+                var selector = ".newContentCkeditorContribute${currentNode.identifier}"+$("#"+divobj.id).attr("jcr:nodetype");
+                $(selector).ckeditor();
+            } else {
+                var selector = ".newContentCkeditorContribute${currentNode.identifier}"+$("#"+divobj.id).attr("jcr:nodetype");
+                $(selector).each(function() { if ($(this).data('ckeditorInstance')) { $(this).data('ckeditorInstance').destroy()  } });
+            }
+        };
         animatedcollapse.init();
     </script>
     <c:if test="${types != null}">
@@ -96,7 +106,7 @@
         </div>
 
         <c:forEach items="${types}" var="type" varStatus="status">
-            <div style="display:none;" id="add${currentNode.identifier}-${status.index}" class="addContentContributeDiv">
+            <div style="display:none;" id="add${currentNode.identifier}-${status.index}" class="addContentContributeDiv" jcr:nodetype="${fn:replace(type.string,':','_')}">
                 <template:module node="${currentNode}" templateType="edit" template="add">
                     <template:param name="resourceNodeType" value="${type.string}"/>
                     <template:param name="currentListURL" value="${url.current}.ajax"/>

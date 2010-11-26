@@ -145,7 +145,7 @@
             <div class="divButton">
                 <c:choose>
                     <c:when test="${not empty currentResource.moduleParams.workflowStartForm}">
-                        <button type="submit" onclick="form.submit()"><span
+                        <button type="submit" onclick="$('#${jsNodeName}${scriptTypeName}').submit();$('#${jsNodeName}${scriptTypeName}').ajaxSubmit(options${jsNodeName}${scriptTypeName});"><span
                                 class="icon-contribute icon-accept"></span>Start:&nbsp;${currentResource.moduleParams.workflowStartFormWFName}
                         </button>
                     </c:when>
@@ -158,7 +158,7 @@
                         </c:forEach>
                     </c:when>
                     <c:otherwise>
-                        <button type="submit" onclick="form.submit()"><span class="icon-contribute icon-accept"></span><fmt:message
+                        <button type="submit" onclick="$('#${jsNodeName}${scriptTypeName}').submit();$('#${jsNodeName}${scriptTypeName}').ajaxSubmit(options${jsNodeName}${scriptTypeName});"><span class="icon-contribute icon-accept"></span><fmt:message
                                 key="label.add.new.content.submit"/></button>
                     </c:otherwise>
                 </c:choose>

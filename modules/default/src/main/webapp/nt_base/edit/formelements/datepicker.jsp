@@ -35,9 +35,7 @@
 <script>
     $("#${currentNode.name}${scriptTypeName}").submit(function() {
         var datePicked = $("#datePicker${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").val().trim().replace(" ","T");
-        if (datePicked == "") {
-            return false;
-        }
         $("#${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}").val(datePicked);
+        return false;
     });
 </script>

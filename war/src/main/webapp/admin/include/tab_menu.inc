@@ -108,18 +108,7 @@
                 Locale sessionLocale = (Locale) session.getAttribute(ProcessingContext.SESSION_UI_LOCALE);
                 String userLocale = sessionLocale != null ? UserPreferencesHelper.getPreferredLocale((JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER), sessionLocale).toString() : UserPreferencesHelper.getPreferredLocale((JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER)).toString();
             %>
-            <script type="text/javascript">
-                function doSwitchLanguage(lang) {
-                    var url = window.location.href;
-                    if (url.indexOf('switchUiLocale=') != -1) {
-                        url = url.replace(/switchUiLocale=..(_..)?/, 'switchUiLocale=' + lang);
-                    } else {
-                        url = url + (url.indexOf('?') == -1 ? '?' : '&') + 'switchUiLocale=' + lang;
-                    }
-                    window.location.href = url;
-                }
-            </script>
-            <select name="preferredLanguage" onchange="doSwitchLanguage(this.value)">
+            <select name="preferredLanguage" onchange="window.location.href='${pageContext.request.contextPath}/administration?switchUiLocale=' + this.value;">
                 <%
                     for (Locale theLocale : LanguageCodeConverters.getAvailableBundleLocalesSorted()) {%>
                 <option value="<%=theLocale.toString() %>"

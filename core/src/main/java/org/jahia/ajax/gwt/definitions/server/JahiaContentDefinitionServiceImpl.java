@@ -32,21 +32,16 @@
 
 package org.jahia.ajax.gwt.definitions.server;
 
-import com.extjs.gxt.ui.client.data.ModelData;
-import org.jahia.ajax.gwt.client.data.GWTJahiaCreateEngineInitBean;
-import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
-import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
-import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
-import org.jahia.ajax.gwt.helper.ContentDefinitionHelper;
-import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.slf4j.Logger;
-
-import javax.jcr.RepositoryException;
-import java.util.*;
+import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.ajax.gwt.client.service.definition.JahiaContentDefinitionService;
+import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
+import org.jahia.ajax.gwt.helper.ContentDefinitionHelper;
 
 /**
  * User: toto
@@ -54,7 +49,6 @@ import java.util.*;
  * Time: 6:26:11 PM
  */
 public class JahiaContentDefinitionServiceImpl extends JahiaRemoteService implements JahiaContentDefinitionService {
-    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaContentDefinitionServiceImpl.class);
 
     private ContentDefinitionHelper contentDefinition;
 

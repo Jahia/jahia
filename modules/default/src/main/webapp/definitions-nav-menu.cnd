@@ -22,7 +22,7 @@
  - j:layoutID (string) nofulltext
 
 
-[jnt:navMenuText] > jnt:text, jmix:navMenuItem
+[jnt:navMenuText] > jnt:content, mix:title, jmix:navMenuItem
  + * (jmix:navMenuItem)
 
 [jnt:navMenuQuery] > jnt:query, jmix:navMenuItem

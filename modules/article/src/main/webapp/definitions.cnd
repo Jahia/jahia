@@ -1,6 +1,9 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
-[jnt:paragraph] > jnt:mainContent
+[jnt:paragraph] > jnt:content, mix:title
+ - body (string, richtext) i18n
+ - image (weakreference, picker[type='image']) i18n
+ - align (string,choicelist[resourceBundle]) = left indexed=no < left,right,default
  - insertText (string, richtext) i18n
  - insertType (string,choicelist[resourceBundle]) = quote indexed=no < quote, exergue
  - insertPosition (string,choicelist[resourceBundle]) = left indexed=no < left, right

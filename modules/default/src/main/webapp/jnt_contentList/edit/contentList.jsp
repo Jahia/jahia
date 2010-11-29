@@ -87,7 +87,7 @@
             if(state == 'block') {
                 // div is expanded
                 var selector = ".newContentCkeditorContribute${currentNode.identifier}"+$("#"+divobj.id).attr("jcr:nodetype");
-                $(selector).ckeditor();
+                $(selector).each(function() { $(this).ckeditor() })
             } else {
                 var selector = ".newContentCkeditorContribute${currentNode.identifier}"+$("#"+divobj.id).attr("jcr:nodetype");
                 $(selector).each(function() { if ($(this).data('ckeditorInstance')) { $(this).data('ckeditorInstance').destroy()  } });

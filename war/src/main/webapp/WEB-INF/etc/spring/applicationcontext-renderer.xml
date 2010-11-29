@@ -114,7 +114,6 @@
 
                         <bean class="org.jahia.services.render.filter.TemplatePermissionCheckFilter" >
                             <property name="priority" value="28" />
-                            <property name="skipOnConfiguration" value="include,wrapper"/>
                         </bean>
                         <bean class="org.jahia.services.render.filter.TemplateAttributesFilter" >
                             <property name="priority" value="30" />

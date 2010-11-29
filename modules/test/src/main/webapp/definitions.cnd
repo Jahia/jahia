@@ -47,8 +47,8 @@
  - country (string, choicelist[country])
  - countryWithFlag (string, choicelist[country,flag])
  - sortableFieldsName (string, choicelist[sortableFieldnames]) indexed=no
- - category (weakreference,choicelist[nodes='/categories;jnt:category'])
- - multipleCategories (weakreference,choicelist[nodes='/categories;jnt:category']) multiple
+ - category (weakreference,choicelist[nodes='/sites/systemsite/categories;jnt:category'])
+ - multipleCategories (weakreference,choicelist[nodes='/sites/systemsite/categories;jnt:category']) multiple
  - multipleSubNodeTypes (string, choicelist[subnodetypes = 'jmix:droppableContent,jnt:file,jnt:folder']) multiple
  - multipleSubNodeViews (string, choicelist[templates=subnodes,resourceBundle,image,dependentProperties='multipleSubNodeTypes,jcr:title']) multiple nofulltext itemtype = layout 
 

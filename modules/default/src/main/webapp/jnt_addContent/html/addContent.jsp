@@ -25,7 +25,7 @@
         $(document).ready(function() {
             $("#addButton${currentNode.identifier}-${status.index}").fancybox({
                 'onComplete':function() {
-                    $(".newContentCkeditorContribute${target.identifier}${fn:replace(nodeType.name,':','_')}").ckeditor();
+                    $(".newContentCkeditorContribute${target.identifier}${fn:replace(nodeType.name,':','_')}").each(function() { $(this).ckeditor() })
                 },
 
                 'onCleanup':function() {

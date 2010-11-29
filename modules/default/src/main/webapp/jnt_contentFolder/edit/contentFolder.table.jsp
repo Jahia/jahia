@@ -147,7 +147,7 @@
             $(document).ready(function() {
                 $("#addButton${currentNode.identifier}-${status.index}").fancybox({
                     'onComplete':function() {
-                        $(".newContentCkeditorContribute${currentNode.identifier}${fn:replace(nodeType.name,':','_')}").ckeditor();
+                        $(".newContentCkeditorContribute${currentNode.identifier}${fn:replace(nodeType.name,':','_')}").each(function() { $(this).ckeditor() })
                     },
 
                     'onCleanup':function() {

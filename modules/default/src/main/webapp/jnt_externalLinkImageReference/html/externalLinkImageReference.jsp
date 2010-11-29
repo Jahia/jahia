@@ -10,4 +10,4 @@
 <c:if test="${not empty node}">
 <c:url var="url" value="${node.url}" context="/"/>
 </c:if>
-<a href="${linkurl.string}"${target}${linkTitle}><img src="${url}" alt="${fn:escapeXml(not empty title.string ? title.string : currentNode.name)}" /></a>
+<a href="${linkurl.string}" ${target} ${linkTitle}><img src="${url}" alt="${fn:escapeXml(not empty title.string ? title.string : currentNode.name)}" /></a>

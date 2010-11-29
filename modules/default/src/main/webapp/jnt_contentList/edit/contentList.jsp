@@ -1,3 +1,5 @@
+<%@ page import="org.jahia.services.content.nodetypes.ConstraintsHelper" %>
+<%@ page import="org.jahia.services.content.JCRNodeWrapper" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
@@ -68,17 +70,12 @@
 </div>
 <c:if test="${not renderContext.ajaxRequest}">
     <%-- include add nodes forms --%>
-    <c:choose>
-        <c:when test="${empty restrictions}">
-            <jcr:nodeProperty node="${currentNode}" name="j:contributeTypes" var="types"/>
-        </c:when>
-        <c:otherwise>
-            <c:set var="types" value="${restrictions}"/>
-        </c:otherwise>
-    </c:choose>
+    <c:set var="types" value="${jcr:getContributeTypes(currentNode, null)}"/>
+
     <h3 class="titleaddnewcontent">
         <img title="" alt="" src="${url.currentModule}/images/add.png"/><fmt:message key="label.add.new.content"/>
     </h3>
+
     <script language="JavaScript">
         <c:forEach items="${types}" var="type" varStatus="status">
         animatedcollapse.addDiv('add${currentNode.identifier}-${status.index}', 'fade=1,speed=700,group=newContent');
@@ -96,25 +93,22 @@
         animatedcollapse.init();
     </script>
     <c:if test="${types != null}">
-        <div class="listEditToolbar">
-            <c:forEach items="${types}" var="type" varStatus="status">
-                <jcr:nodeType name="${type.string}" var="nodeType"/>
-                <button onclick="animatedcollapse.toggle('add${currentNode.identifier}-${status.index}');"><span
-                        class="icon-contribute icon-add"></span>${jcr:label(nodeType, renderContext.mainResourceLocale)}
-                </button>
-            </c:forEach>
-        </div>
+        <c:forEach items="${types}" var="nodeType" varStatus="status">
+                    <a href="#add${currentNode.identifier}-${status.index}" onclick="animatedcollapse.toggle('add${currentNode.identifier}-${status.index}');"><span
+                            class="icon-contribute icon-add"></span>${jcr:label(nodeType, renderContext.mainResourceLocale)}
+                    </a> 
+        </c:forEach>
 
-        <c:forEach items="${types}" var="type" varStatus="status">
+        <c:forEach items="${types}" var="nodeType" varStatus="status">
+            <a name="add${currentNode.identifier}-${status.index}"></a>
             <div style="display:none;" id="add${currentNode.identifier}-${status.index}" class="addContentContributeDiv" jcr:nodetype="${fn:replace(type.string,':','_')}">
                 <template:module node="${currentNode}" templateType="edit" template="add">
-                    <template:param name="resourceNodeType" value="${type.string}"/>
+                    <template:param name="resourceNodeType" value="${nodeType.name}"/>
                     <template:param name="currentListURL" value="${url.current}.ajax"/>
                     <template:param name="addContentCallbackJS"
-                                            value="$('.addContentContributeDiv').each(function(index,value){animatedcollapse.addDiv($(this).attr('id'), 'fade=1,speed=700,group=tasks');});animatedcollapse.reinit();"/>
+                                    value="$('.addContentContributeDiv').each(function(index,value){animatedcollapse.addDiv($(this).attr('id'), 'fade=1,speed=700,group=tasks');});animatedcollapse.reinit();"/>
                 </template:module>
             </div>
         </c:forEach>
-
     </c:if>
 </c:if>

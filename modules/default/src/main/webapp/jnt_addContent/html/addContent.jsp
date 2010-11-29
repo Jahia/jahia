@@ -7,8 +7,11 @@
 <template:addResources type="javascript" resources="jquery.fancybox.pack.js"/>
 <template:addResources type="css" resources="jquery.fancybox.css"/>
 <c:set var="target" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
-<c:forEach items="${currentNode.properties['j:type']}" var="type" varStatus="status">
-    <jcr:nodeType name="${type.string}" var="nodeType"/>
+
+<c:set var="types" value="${jcr:getContributeTypes(target, currentNode.properties['j:type'])}"/>
+
+<c:forEach items="${types}" var="nodeType" varStatus="status">
+
     <a href="#add${currentNode.identifier}-${status.index}"  id="addButton${currentNode.identifier}-${status.index}">
         Add ${jcr:label(nodeType, renderContext.mainResourceLocale)}
     </a>
@@ -17,7 +20,7 @@
         <div id="add${currentNode.identifier}-${status.index}"
              style="width:800px;">
             <template:module node="${target}" templateType="edit" template="add">
-                <template:param name="resourceNodeType" value="${type.string}"/>
+                <template:param name="resourceNodeType" value="${nodeType.name}"/>
             </template:module>
         </div>
     </div>

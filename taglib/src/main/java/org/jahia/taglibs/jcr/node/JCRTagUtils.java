@@ -373,20 +373,36 @@ public class JCRTagUtils {
     }
 
 
-//    public static boolean canAddSubNode(JCRNodeWrapper node, String name, String type) {
-////        try {
-//            if (!node.hasPermission(Privilege.JCR_ADD_CHILD_NODES)) {
-//                return false;
-//            }
-//            return true;
-////            ExtendedNodeType nodeType = NodeTypeRegistry.getInstance().getNodeType(type);
-////            ExtendedNodeDefinition def = node.getApplicableChildNodeDefinition(name, type);
-////            return (def != null && (nodeType.isLiveContent() | def.isLiveContent()) == Constants.LIVE_WORKSPACE.equals(node.getSession().getWorkspace().getName()));
-////        } catch (RepositoryException e) {
-////            logger.error(e.getMessage(), e);
-////            return false;
-////        }
-//    }
+    public static List<ExtendedNodeType> getContributeTypes(JCRNodeWrapper node, Value[] typelistValues) throws Exception {
+        List<ExtendedNodeType> types = new ArrayList<ExtendedNodeType>();
+        if (typelistValues == null && node.hasProperty("j:contributeTypes")) {
+            typelistValues = node.getProperty("j:contributeTypes").getValues();
+        }
+        if (typelistValues != null) {
+            for (Value value : typelistValues) {
+                ExtendedNodeType t = NodeTypeRegistry.getInstance().getNodeType(value.getString());
+                if (!t.isAbstract() && !t.isMixin()) {
+                    types.add(t);
+                }
+                for (ExtendedNodeType sub : t.getSubtypesAsList()) {
+                    if (!sub.isAbstract() && !sub.isMixin()) {
+                        types.add(sub);
+                    }
+                }
+            }
+        }
 
+        String[] constraints = ConstraintsHelper.getConstraints(node).split(" ");
+        List<ExtendedNodeType> finaltypes = new ArrayList<ExtendedNodeType>();
+        for (ExtendedNodeType type : types) {
+            for (String s : constraints) {
+                if (type.isNodeType(s)) {
+                    finaltypes.add(type);
+                    continue;
+                }
+            }
+        }
+        return finaltypes;
+    }
 
 }

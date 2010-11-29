@@ -119,44 +119,35 @@
 
 <c:if test="${not renderContext.ajaxRequest}">
     <%-- include add nodes forms --%>
-    <c:choose>
-        <c:when test="${empty restrictions}">
-            <jcr:nodeProperty node="${currentNode}" name="j:contributeTypes" var="types"/>
-        </c:when>
-        <c:otherwise>
-            <c:set var="types" value="${restrictions}"/>
-        </c:otherwise>
-    </c:choose>
+    <c:set var="types" value="${jcr:getContributeTypes(currentNode, null)}"/>
+
     <h3 class="titleaddnewcontent">
         <img title="" alt="" src="${url.currentModule}/images/add.png"/><fmt:message key="label.add.new.content"/>
     </h3>
     <c:if test="${types != null}">
-
-        <c:forEach items="${types}" var="type" varStatus="status">
-            <jcr:nodeType name="${type.string}" var="nodeType"/>
+        <c:forEach items="${types}" var="nodeType" varStatus="status">
             <a href="#add${currentNode.identifier}-${status.index}" id="addButton${currentNode.identifier}-${status.index}">
                 Add ${jcr:label(nodeType, renderContext.mainResourceLocale)}
             </a>
 
             <div style="display:none;"><div id="add${currentNode.identifier}-${status.index}" class="addContentContributeDiv${currentNode.identifier}" style="width:800px;">
                 <template:module node="${currentNode}" templateType="edit" template="add">
-                    <template:param name="resourceNodeType" value="${type.string}"/>
+                    <template:param name="resourceNodeType" value="${nodeType.name}"/>
                 </template:module>
             </div></div>
-        <script type="text/javascript">
-            $(document).ready(function() {
-                $("#addButton${currentNode.identifier}-${status.index}").fancybox({
-                    'onComplete':function() {
-                        $(".newContentCkeditorContribute${currentNode.identifier}${fn:replace(nodeType.name,':','_')}").each(function() { $(this).ckeditor() })
-                    },
+            <script type="text/javascript">
+                $(document).ready(function() {
+                    $("#addButton${currentNode.identifier}-${status.index}").fancybox({
+                        'onComplete':function() {
+                            $(".newContentCkeditorContribute${currentNode.identifier}${fn:replace(nodeType.name,':','_')}").each(function() { $(this).ckeditor() })
+                        },
 
-                    'onCleanup':function() {
-                        $(".newContentCkeditorContribute${currentNode.identifier}${fn:replace(nodeType.name,':','_')}").each(function() { if ($(this).data('ckeditorInstance')) { $(this).data('ckeditorInstance').destroy()  } });
-                    }
-                })
-            });
-        </script>
-
+                        'onCleanup':function() {
+                            $(".newContentCkeditorContribute${currentNode.identifier}${fn:replace(nodeType.name,':','_')}").each(function() { if ($(this).data('ckeditorInstance')) { $(this).data('ckeditorInstance').destroy()  } });
+                        }
+                    })
+                });
+            </script>
         </c:forEach>
     </c:if>
 </c:if>

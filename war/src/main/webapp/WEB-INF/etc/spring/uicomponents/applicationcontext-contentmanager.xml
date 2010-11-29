@@ -168,7 +168,6 @@
         <property name="repositories">
             <list>
                 <ref bean="repository.websitefiles"/>
-                <ref bean="repository.sharedfiles"/>
                 <ref bean="repository.myexternalfiles"/>
                 <ref bean="repository.myfiles"/>
                 <ref bean="repository.users"/>
@@ -301,7 +300,6 @@
         <property name="repositories">
             <list>
                 <ref bean="repository.websiteportlets"/>
-                <ref bean="repository.sharedportlets"/>
                 <ref bean="repository.myportlets"/>
             </list>
         </property>
@@ -789,6 +787,151 @@
 
     </bean>
 
+    <bean id="editorialcontentmanager" parent="abstractmanager">
+        <property name="nodeTypes">
+            <list>
+                <value>jmix:editorialContent</value>
+            </list>
+        </property>
+
+        <property name="folderTypes">
+            <list>
+                <value>jnt:virtualsite</value>
+                <value>jnt:contentFolder</value>
+            </list>
+        </property>
+
+        <property name="toolbars">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey"
+                                      value="fileMenu.label"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.NewContentFolder"/>
+                                    <ref bean="Toolbar.Item.NewContent"/>
+                                </list>
+                            </property>
+                        </bean>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey" value="label.edit"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.Rename"/>
+                                    <ref bean="Toolbar.Item.Delete"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.Copy"/>
+                                    <ref bean="Toolbar.Item.Cut"/>
+                                    <ref bean="Toolbar.Item.Paste"/>
+                                    <ref bean="Toolbar.Item.PasteReference"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.SaveAsPortalComponent"/>
+                                </list>
+                            </property>
+                        </bean>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                            <property name="titleKey"
+                                      value="viewMenu.label"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.Refresh"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.ListView"/>
+                                    <ref bean="Toolbar.Item.ThumbsView"/>
+                                    <ref bean="Toolbar.Item.Detailedview"/>
+                                </list>
+                            </property>
+                        </bean>
+                        <ref bean="Toolbar.ItemsGroup.LanguageSwitcher"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="contextMenu">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                        <ref bean="Toolbar.Item.Rename"/>
+                        <ref bean="Toolbar.Item.Delete"/>
+                        <ref bean="Toolbar.Item.Copy"/>
+                        <ref bean="Toolbar.Item.Cut"/>
+                        <ref bean="Toolbar.Item.Paste"/>
+                        <ref bean="Toolbar.Item.PasteReference"/>
+                        <ref bean="Toolbar.Item.NewContentFolder"/>
+                        <ref bean="Toolbar.Item.NewContent"/>
+                        <ref bean="Toolbar.Item.Lock"/>
+                        <ref bean="Toolbar.Item.Unlock"/>
+                        <ref bean="Toolbar.Item.Export"/>
+                        <ref bean="Toolbar.Item.Import"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="displaySearchInPage" value="false"/>
+        <property name="displaySearchInContent" value="true"/>
+        <property name="displaySearchInFile" value="false"/>
+        <property name="displaySearchInTag" value="false"/>
+        <property name="searchInContent" value="true"/>
+        <property name="searchInFile" value="false"/>
+        <!-- accordion -->
+        <property name="repositories">
+            <list>
+                <ref bean="repository.sites"/>
+                <ref bean="repository.mycontent"/>
+            </list>
+        </property>
+
+        <!-- tabs -->
+        <property name="engineTabs">
+            <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
+                <ref bean="Engine.Tab.Info" />
+                <ref bean="Engine.Tab.ContentAndLayout" />
+                <ref bean="Engine.Tab.Metadata" />
+                <ref bean="Engine.Tab.Tags" />
+                <ref bean="Engine.Tab.Categories" />
+                <ref bean="Engine.Tab.Options" />
+                <ref bean="Engine.Tab.Rights" />
+                <ref bean="Engine.Tab.Usages" />
+                <ref bean="Engine.Tab.Workflow" />
+                <ref bean="Engine.Tab.Versioning" />
+                <ref bean="Engine.Tab.Seo" />
+                <ref bean="Engine.Tab.Analytics" />
+            </list>
+        </property>
+
+        <!-- table columns-->
+        <property name="treeColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <value>displayName,*,label.title</value>
+            </list>
+        </property>
+
+        <property name="tableColumns">
+            <list value-type="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                <bean class="org.jahia.services.uicomponents.bean.contentmanager.Column">
+                    <property name="key" value="providerKey"/>
+                    <property name="titleKey"
+                              value="column.provider.label"/>
+                    <property name="visibility">
+                        <bean class="org.jahia.services.uicomponents.bean.contentmanager.ProviderKeyColumnVisibility">
+                            <property name="jcrSessionFactory" ref="jcrSessionFactory"/>
+                            <property name="alsoCountDynamicProviders" value="false"/>
+                        </bean>
+                    </property>
+                </bean>
+                <value>index,23</value>
+                <value>icon,40,empty</value>
+                <value>displayName,240,label.title</value>
+                <value>locked,60,label.lock</value>
+                <value>primaryTypeLabel,140,label.type</value>
+                <value>mix:created.jcr:created,100</value>
+                <value>mix:created.jcr:createdBy,100</value>
+            </list>
+        </property>
+    </bean>
+
     <!-- sitemanager manager -->
     <bean id="sitemanager" parent="abstractmanager">
         <property name="nodeTypes" value="jnt:page"/>
@@ -1050,13 +1193,6 @@
                   value="repository.globalRepository.label"/>
     </bean>
 
-    <bean id="repository.sharedfiles" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-        <property name="key" value="sharedRepository"/>
-        <property name="paths" value="/shared/files"/>
-        <property name="titleKey"
-                  value="repository.sharedRepository.label"/>
-    </bean>
-
     <bean id="repository.myfiles" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="myRepository"/>
         <property name="paths" value="$user/files"/>
@@ -1078,13 +1214,6 @@
                   value="repository.myExternalRepository.label"/>
     </bean>
 
-    <bean id="repository.sharedportlets" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-        <property name="key" value="sharedPortletRepository"/>
-        <property name="paths" value="/shared/portlets"/>
-        <property name="titleKey"
-                  value="repository.sharedPortletRepository.label"/>
-    </bean>
-
     <bean id="repository.myportlets" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="myPortletRepository"/>
         <property name="paths" value="$user/portlets"/>
@@ -1097,13 +1226,6 @@
         <property name="paths" value="$site/portlets"/>
         <property name="titleKey"
                   value="repository.websitePortletRepository.label"/>
-    </bean>
-
-    <bean id="repository.sharedcontent" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
-        <property name="key" value="sharedContentRepository"/>
-        <property name="paths" value="/shared/content"/>
-        <property name="titleKey"
-                  value="repository.sharedRepository.label"/>
     </bean>
 
     <bean id="repository.mycontent" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">

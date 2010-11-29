@@ -92,7 +92,6 @@
         <property name="repositories">
             <list>
                 <ref bean="repository.websitefiles"/>
-                <ref bean="repository.sharedfiles"/>
                 <ref bean="repository.myexternalfiles"/>
                 <ref bean="repository.myfiles"/>
                 <ref bean="repository.users"/>
@@ -199,7 +198,6 @@
         <property name="repositories">
             <list>
                 <ref bean="repository.websitefiles"/>
-                <ref bean="repository.sharedfiles"/>
                 <ref bean="repository.myexternalfiles"/>
                 <ref bean="repository.myfiles"/>
                 <ref bean="repository.users"/>
@@ -288,7 +286,6 @@
         <property name="repositories">
             <list>
                 <ref bean="repository.websitefiles"/>
-                <ref bean="repository.sharedfiles"/>
                 <ref bean="repository.myexternalfiles"/>
                 <ref bean="repository.myfiles"/>
                 <ref bean="repository.users"/>
@@ -369,7 +366,6 @@
         <property name="repositories">
             <list>
                 <ref bean="repository.websiteportlets"/>
-                <ref bean="repository.sharedportlets"/>
                 <ref bean="repository.myportlets"/>
             </list>
         </property>
@@ -496,7 +492,6 @@
         <property name="repositories">
             <list>
                 <ref bean="repository.sites"/>
-                <ref bean="repository.sharedcontent"/>
                 <ref bean="repository.mycontent"/>
             </list>
         </property>

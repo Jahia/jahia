@@ -127,6 +127,9 @@
             <a href="${url.base}${jcr:getSystemSitePath()}/home/my-profile.html"><fmt:message
                     key="label.goto.myTasks"/></a>
 
+            <a href="${url.context}/engines/manager.jsp?conf=editorialcontentmanager&site=${renderContext.site.identifier}&selectedPaths=${currentNode.path}"><fmt:message
+                    key="label.contentmanager"/></a>
+
             <div style="display:none" id="clipboard-${currentNode.identifier}">
             </div>
             <div style="display:none" id="clipboardpreview-${currentNode.identifier}">

@@ -364,6 +364,16 @@
                                         <property name="titleKey" value="label.newExternalLink"/>
                                         <property name="icon" value="newExternalLink"/>
                                     </bean>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                                        <property name="actionItem">
+                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
+                                                <property name="nodeTypes" value="jnt:navMenuText"/>
+                                                <property name="parentTypes" value="jnt:page"/>
+                                            </bean>
+                                        </property>
+                                        <property name="titleKey" value="label.newNavMenuText"/>
+                                        <property name="icon" value="newNavMenuText"/>
+                                    </bean>
                                     <ref bean="Toolbar.Item.EditContent"/>
                                     <ref bean="Toolbar.Item.Rename"/>
                                     <ref bean="Toolbar.Item.Delete"/>
@@ -819,6 +829,16 @@
                                         </property>
                                         <property name="titleKey" value="label.newExternalLink"/>
                                         <property name="icon" value="newExternalLink"/>
+                                    </bean>
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                                        <property name="actionItem">
+                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
+                                                <property name="nodeTypes" value="jnt:navMenuText"/>
+                                                <property name="parentTypes" value="jnt:page"/>
+                                            </bean>
+                                        </property>
+                                        <property name="titleKey" value="label.newNavMenuText"/>
+                                        <property name="icon" value="newNavMenuText"/>
                                     </bean>
                                     <ref bean="Toolbar.Item.Publish"/>
                                     <ref bean="Toolbar.Item.EditContent"/>

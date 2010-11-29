@@ -75,7 +75,7 @@ public class NodesChoiceListInitializerImpl implements ChoiceListInitializer {
             }
             try {
                 JCRSiteNode site = null;
-                JCRNodeWrapper contextNode = (JCRNodeWrapper) context.get("contextNode");
+                JCRNodeWrapper contextNode = (JCRNodeWrapper) context.get("contextParent");
                 if (contextNode != null) {
                     site = contextNode.getResolveSite();
                 } else {

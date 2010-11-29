@@ -86,7 +86,7 @@ public class CheckClipboardAction implements Action {
             json.put("size", uuids.size());
             return new ActionResult(HttpServletResponse.SC_OK, null, json);
         } else {
-            return ActionResult.BAD_REQUEST;
+            return ActionResult.OK;
         }
     }
 }

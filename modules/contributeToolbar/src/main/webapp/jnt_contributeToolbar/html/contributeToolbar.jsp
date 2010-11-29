@@ -84,23 +84,20 @@
                 $.post("${url.base}${renderContext.mainResource.node.path}.checkclipboard.do", {}, function(result) {
                     $("#paste-${currentNode.identifier}").show();
                     $("#empty-${currentNode.identifier}").show();
-                    $("#clipboard-${currentNode.identifier}").html("<span>Clipboard contains " + result.size +
-                                                                   " element(s)</span>");
+                    $("#clipboard-${currentNode.identifier}").html('<fmt:message key="label.clipboard.contains"/> ' + result.size +
+                                                                   ' element(s)</span></a>');
                     $("#clipboard-${currentNode.identifier}").show();
+                    $("#clipboardpreview-${currentNode.identifier}").empty();
+
                     var paths = result.paths;
-                    $("#clipboard-${currentNode.identifier}").hover(function() {
-                        $("#clipboardpreview-${currentNode.identifier}").show();
-                        for (var i = 0; i < paths.length; i++) {
+   						for (var i = 0; i < paths.length; i++) {
                             $.get("${url.base}" + paths[i] + ".html", {}, function(result) {
                                 $("#clipboardpreview-${currentNode.identifier}").append("<div style='border:thin'>");
                                 $("#clipboardpreview-${currentNode.identifier}").append(result);
                                 $("#clipboardpreview-${currentNode.identifier}").append("</div>");
                             }, "html")
                         }
-                    }, function() {
-                        $("#clipboardpreview-${currentNode.identifier}").empty();
-                        $("#clipboardpreview-${currentNode.identifier}").hide();
-                    });
+                    $("#clipboard-${currentNode.identifier}").fancybox();
                 }, "json");
             }
 
@@ -115,26 +112,27 @@
             })
         </script>
         <div id="contributeToolbar">
-            <button id="delete-${currentNode.identifier}" onclick="deleteNodes();"><fmt:message
-                    key="label.delete"/></button>
-            <button id="copy-${currentNode.identifier}" onclick="copyNodes();"><fmt:message key="label.copy"/></button>
-            <button id="cut-${currentNode.identifier}" onclick="cutNodes();"><fmt:message key="label.cut"/></button>
-            <button id="publish-${currentNode.identifier}" onclick="publishNodes();"><fmt:message key="label.publication"/></button>
-            <button id="paste-${currentNode.identifier}" onclick="pasteNodes();" style="display:none;"><fmt:message
-                    key="label.paste"/></button>
-            <button id="empty-${currentNode.identifier}" onclick="emptyClipboard();" style="display:none;"><fmt:message
-                    key="label.clipboard.reset"/></button>
+            <a href="#" id="delete-${currentNode.identifier}" onclick="deleteNodes();"><fmt:message
+                    key="label.delete"/></a>
+            <a href="#" id="copy-${currentNode.identifier}" onclick="copyNodes();"><fmt:message key="label.copy"/></a>
+            <a href="#" id="cut-${currentNode.identifier}" onclick="cutNodes();"><fmt:message key="label.cut"/></a>
+            <a href="#" id="publish-${currentNode.identifier}" onclick="publishNodes();"><fmt:message key="label.publication"/></a>
+            <a href="#" id="paste-${currentNode.identifier}" onclick="pasteNodes();" style="display:none;"><fmt:message
+                    key="label.paste"/></a>
+            <a href="#" id="empty-${currentNode.identifier}" onclick="emptyClipboard();" style="display:none;"><fmt:message
+                    key="label.clipboard.reset"/></a>
+            <a href="#clipboardpreview-${currentNode.identifier}" id="clipboard-${currentNode.identifier}" style="display:none;"><fmt:message
+                    key="label.clipboard.contains"/></a>
             <a href="${url.base}${jcr:getSystemSitePath()}/home/my-profile.html"><fmt:message
                     key="label.goto.myTasks"/></a>
 
             <a href="${url.context}/engines/manager.jsp?conf=editorialcontentmanager&site=${renderContext.site.identifier}&selectedPaths=${currentNode.path}"><fmt:message
                     key="label.contentmanager"/></a>
 
-            <div style="display:none" id="clipboard-${currentNode.identifier}">
+            <div style="display:none;">
+            <div id="clipboardpreview-${currentNode.identifier}">
             </div>
-            <div style="display:none" id="clipboardpreview-${currentNode.identifier}">
             </div>
-
         </div>
     </c:when>
     <c:otherwise>

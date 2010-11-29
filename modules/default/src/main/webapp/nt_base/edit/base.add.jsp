@@ -152,13 +152,13 @@
                     <c:when test="${not empty currentResource.moduleParams.workflowTaskForm}">
                         <c:forEach items="${workflowTaskFormTask.outcomes}" var="outcome" varStatus="status">
                             <button type="button"
-                                    onclick="$('#outcome').val('${outcome}');$('#${jsNodeName}${scriptTypeName}').submit();"><span
+                                    onclick="$('#outcome').val('${outcome}');$('#${jsNodeName}${scriptTypeName}').ajaxSubmit(options${jsNodeName}${scriptTypeName});"><span
                                     class="icon-contribute icon-accept"></span>&nbsp;${workflowTaskFormTask.displayOutcomes[status.index]}
                             </button>
                         </c:forEach>
                     </c:when>
                     <c:otherwise>
-                        <button type="button" onclick="$('#${jsNodeName}${scriptTypeName}').submit();$('#${jsNodeName}${scriptTypeName}').ajaxSubmit(options${jsNodeName}${scriptTypeName});"><span class="icon-contribute icon-accept"></span><fmt:message
+                        <button type="button" onclick="$('#${jsNodeName}${scriptTypeName}').ajaxSubmit(options${jsNodeName}${scriptTypeName});"><span class="icon-contribute icon-accept"></span><fmt:message
                                 key="label.add.new.content.submit"/></button>
                     </c:otherwise>
                 </c:choose>

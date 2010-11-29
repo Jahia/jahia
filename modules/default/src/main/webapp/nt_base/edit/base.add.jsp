@@ -145,7 +145,7 @@
             <div class="divButton">
                 <c:choose>
                     <c:when test="${not empty currentResource.moduleParams.workflowStartForm}">
-                        <button type="submit" onclick="$('#${jsNodeName}${scriptTypeName}').ajaxSubmit(options${jsNodeName}${scriptTypeName});"><span
+                        <button type="button" onclick="$('#${jsNodeName}${scriptTypeName}').ajaxSubmit(options${jsNodeName}${scriptTypeName});"><span
                                 class="icon-contribute icon-accept"></span>Start:&nbsp;${currentResource.moduleParams.workflowStartFormWFName}
                         </button>
                     </c:when>
@@ -158,7 +158,7 @@
                         </c:forEach>
                     </c:when>
                     <c:otherwise>
-                        <button type="submit" onclick="$('#${jsNodeName}${scriptTypeName}').submit();$('#${jsNodeName}${scriptTypeName}').ajaxSubmit(options${jsNodeName}${scriptTypeName});"><span class="icon-contribute icon-accept"></span><fmt:message
+                        <button type="button" onclick="$('#${jsNodeName}${scriptTypeName}').submit();$('#${jsNodeName}${scriptTypeName}').ajaxSubmit(options${jsNodeName}${scriptTypeName});"><span class="icon-contribute icon-accept"></span><fmt:message
                                 key="label.add.new.content.submit"/></button>
                     </c:otherwise>
                 </c:choose>
@@ -186,9 +186,5 @@
                 dataType: "json",
                 clearForm: true
             };// wait for the DOM to be loaded
-            $(document).ready(function() {
-                // bind 'myForm' and provide a simple callback function
-                $('#${jsNodeName}${scriptTypeName}').ajaxForm(options${jsNodeName}${scriptTypeName});
-            });
         </script>
 </div>

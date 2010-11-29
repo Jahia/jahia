@@ -121,14 +121,10 @@
     <%-- include add nodes forms --%>
     <c:set var="types" value="${jcr:getContributeTypes(currentNode, null)}"/>
 
-    <h3 class="titleaddnewcontent">
-        <img title="" alt="" src="${url.currentModule}/images/add.png"/><fmt:message key="label.add.new.content"/>
-    </h3>
     <c:if test="${types != null}">
         <c:forEach items="${types}" var="nodeType" varStatus="status">
-            <a href="#add${currentNode.identifier}-${status.index}" id="addButton${currentNode.identifier}-${status.index}">
-                Add ${jcr:label(nodeType, renderContext.mainResourceLocale)}
-            </a>
+
+            <%-- todo: move to ajax calls --%>
 
             <div style="display:none;"><div id="add${currentNode.identifier}-${status.index}" class="addContentContributeDiv${currentNode.identifier}" style="width:800px;">
                 <template:module node="${currentNode}" templateType="edit" template="add">
@@ -137,6 +133,8 @@
             </div></div>
             <script type="text/javascript">
                 $(document).ready(function() {
+                    $("#newContent").append('<a href="#add${currentNode.identifier}-${status.index}" id="addButton${currentNode.identifier}-${status.index}">Add ${jcr:label(nodeType, renderContext.mainResourceLocale)}</a>');
+
                     $("#addButton${currentNode.identifier}-${status.index}").fancybox({
                         'onComplete':function() {
                             $(".newContentCkeditorContribute${currentNode.identifier}${fn:replace(nodeType.name,':','_')}").each(function() { $(this).ckeditor() })

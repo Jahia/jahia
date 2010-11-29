@@ -54,7 +54,6 @@
                     <j:translation_en label="Tags" jcr:language="en" jcr:primaryType="jnt:translation" />
                   </fieldFacet>
                 </facets>
-                <contributeToolbar jcr:primaryType="jnt:contributeToolbar" />
                 <pager pageSize="10" jcr:primaryType="jnt:pager" j:bindedComponent="/templateSets/templates-system/templates/base/contributeFolderTemplate/pagecontent/mainResourceDisplay" displayPager="true" />
                 <mainResourceDisplay j:canOrderInContribution="true" jcr:mixinTypes="jmix:contributeMode" j:mainResourceView="table" j:canDeleteInContribution="true" jcr:primaryType="jnt:mainResourceDisplay" j:contributeTypes="jmix:editorialContent" j:editableInContribution="true" />
                 <new-content-folder j:type="jnt:contentFolder" jcr:primaryType="jnt:addContent" j:bindedComponent="/templateSets/templates-system/templates/base/contributeFolderTemplate/pagecontent/mainResourceDisplay">
@@ -64,7 +63,6 @@
             </contributeFolderTemplate>
             <contributeContentTemplate jcr:primaryType="jnt:contributeTemplate" j:applyOn="jnt:content" j:hiddenTemplate="false">
               <pagecontent jcr:primaryType="jnt:contentList">
-                <contributeToolbar jcr:primaryType="jnt:contributeToolbar" />
                 <mainResourceDisplay-table j:mainResourceView="table" jcr:primaryType="jnt:mainResourceDisplay" />
                 <tabularList jcr:primaryType="jnt:tabularList">
                   <content jcr:primaryType="jnt:contentList">

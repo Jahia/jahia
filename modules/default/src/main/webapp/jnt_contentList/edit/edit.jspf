@@ -1,4 +1,6 @@
 <div class="listEditToolbar">
+    <input type="checkbox" name="${child.identifier}"/>
+
     <c:if test="${inSite eq 'true'}">
         <c:if test="${child.locked ne 'true'}">
             <button id="editbtn-${child.identifier}"

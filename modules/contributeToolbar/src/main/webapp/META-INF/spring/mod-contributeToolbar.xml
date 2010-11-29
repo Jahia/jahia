@@ -32,4 +32,11 @@
         <property name="workflowService" ref="workflowService"/>
         <property name="publicationHelper" ref="PublicationHelper"/>
     </bean>
+
+    <bean class="org.jahia.modules.contribute.filter.ContributeToolbarFilter">
+        <property name="renderService" ref="RenderService" />
+        <property name="priority" value="2"/>
+        <property name="applyOnModes" value="contribution" />
+        <property name="applyOnConfigurations" value="page"/>
+    </bean>
 </beans>

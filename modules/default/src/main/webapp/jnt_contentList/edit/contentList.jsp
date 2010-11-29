@@ -54,7 +54,7 @@
         <%-- only editorial contents are contribuable --%>
         <c:if test="${functions:isNodeType(child,'jmix:editorialContent')}">
             <%@include file="edit.jspf" %>
-            <%@include file="workflow.jspf" %>
+            <%--<%@include file="workflow.jspf" %>--%>
             <div id="edit-${child.identifier}">
                 <template:module templateType="html" node="${child}"/>
             </div>

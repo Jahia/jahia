@@ -122,6 +122,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
             if (!node.isNodeType("jmix:contributeMode")) {
                 ExtendedNodeType nodeType = NodeTypeRegistry.getInstance().getNodeType("jmix:contributeMode");
                 Set<String> propertyNameSet = nodeType.getPropertyDefinitionsAsMap().keySet();
+                node.checkout();
                 node.addMixin("jmix:contributeMode");
                 for (String propertyName : propertyNameSet) {
                     if (nodeWrapper.hasProperty(propertyName)) {

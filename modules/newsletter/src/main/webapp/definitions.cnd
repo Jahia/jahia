@@ -37,6 +37,6 @@
 [jnt:newsletter] > jnt:content, mix:title, jmix:list, jmix:subscribable, jmix:visibleInPagesTree
  + * (jnt:newsletterIssue)
 
-[jnt:newsletterIssue] > jnt:content, mix:title
+[jnt:newsletterIssue] > jnt:content, mix:title, jmix:observable
  - j:lastSent (date) protected nofulltext
  - j:scheduled (date) nofulltext

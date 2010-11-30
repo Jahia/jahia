@@ -13,17 +13,20 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
+<template:addResources type="javascript" resources="jquery.min.js"/>
+
 <template:include template="hidden.header"/>
 
 <table width="100%" cellspacing="0" cellpadding="5" border="0" class="table">
     <thead>
     <tr>
         <th width="5%">&nbsp;</th>
-        <th width="40%"><fmt:message key="label.title"/></th>
+        <th width="35%"><fmt:message key="label.title"/></th>
         <th width="13%" style="white-space: nowrap; text-align: center;"><fmt:message key="mix_created.jcr_created"/></th>
         <th width="15%" style="white-space: nowrap; text-align: center;"><fmt:message key="mix_lastModified.jcr_lastModified"/></th>
         <th width="12%" style="white-space: nowrap; text-align: center;"><fmt:message key="jnt_newsletterIssue.j_lastSent"/></th>
         <th width="15%" style="white-space: nowrap; text-align: center;"><fmt:message key="jnt_newsletterIssue.j_scheduled"/></th>
+        <th width="5%">&nbsp;</th>
     </tr>
     </thead>
     <tbody>
@@ -51,7 +54,7 @@
             <fmt:formatDate value="${issue.properties['j:lastSent'].date.time}" pattern="yyyy-MM-dd HH:mm"/>
         </td>
         <td align="center">
-            <div class="jahia-template-gxt" jahiatype="module" id="newsletter-${issue.identifier}-2" type="existingNode"
+            <div class="jahia-template-gxt" jahiatype="module" id="newsletter-${issue.identifier}-schedule" type="existingNode"
                  scriptInfo="" path="${issue.path}" template="hidden.system" dragdrop="false">
 				<c:choose>
 					<c:when test="${not empty issue.properties['j:scheduled']}">
@@ -60,6 +63,9 @@
             		<c:otherwise>&nbsp;</c:otherwise>
             	</c:choose>
             </div>
+        </td>
+        <td align="center">
+        	<img src="<c:url value='/icons/jnt_newsletterIssueSent.png' context='${url.currentModule}'/>" height="24" width="24" alt=" "/>
         </td>
         </tr>
     </c:forEach>
@@ -77,5 +83,8 @@
 <template:include template="hidden.footer"/>
 
 <c:if test="${renderContext.editMode}">
-	<template:module path="j:subscriptions"/>
+<p>
+	<a href="#subscription-manager" onclick="jahia.openSubscriptionManager('${currentNode.identifier}'); return false;"><img src="<c:url value='/icons/subscriptionManager.png' context='${url.currentModule}'/>" height="48" width="48" alt=" " align="middle"/></a>&nbsp;
+	<a href="#subscription-manager" onclick="jahia.openSubscriptionManager('${currentNode.identifier}'); return false;"><fmt:message key="label.subscriptionManager"/></a>
+</p>
 </c:if>

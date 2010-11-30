@@ -5,6 +5,7 @@
 [condition][]A property has been set on a node=property : ChangedPropertyFact ( propertyName : name, propertyValue : stringValues , node : node )
 [condition][]A property has been removed from a node=property : DeletedPropertyFact ( propertyName : name, node : node )
 [condition][]A property {property} has been set on a node=property : ChangedPropertyFact ( name == "{property}" , propertyValue : stringValues , propertyValueAsString : stringValue , node : node )
+[condition][]A property {property} has been removed from a node=property : DeletedPropertyFact ( name == "{property}", propertyName : name, node : node )
 [condition][]A search result hit is present=searchHit : JahiaSearchHit ( )
 [condition][]The metadata field "{name}" has been extracted=metadata : ExtractedVariable ( node == node.path, name == "{name}", {name} : value )
 [condition][]The metadata field "{name}" identified by {field} has been extracted=metadata : ExtractedVariable ( node == node.path, name == "{name}", {field} : value )
@@ -76,6 +77,7 @@
 [consequence][]Tag the {node} with the {tag}=service.addNewTag(node, {tag}, drools);
 [consequence][]Execute the rule {ruleName} at {property} for the {node}=service.executeRuleLater(node, "{property}",{ruleName}, drools);
 [consequence][]Execute the action {actionName} at {property} on the {node}=service.executeActionLater(node, "{property}",{actionName}, drools);
+[consequence][]Cancel execution of action {actionName} on the {node}=service.cancelActionExecution(node, {actionName}, drools);
 [consequence][]Publish the {node}=service.publishNode(node, drools);
 [consequence][]Start the workflow {processKey} from {provider} on the {node}=service.startWorkflowOnNode(node,{processKey},{provider}, drools);
 [consequence][]Enable auto-splitting for subnodes of the {node} into folders of type {folderNodeType} using configuration "{config}"=service.enableAutoSplitting(node, "{config}", "{folderNodeType}",drools);

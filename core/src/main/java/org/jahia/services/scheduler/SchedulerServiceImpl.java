@@ -32,17 +32,30 @@
 
 package org.jahia.services.scheduler;
 
-import org.slf4j.Logger;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
-import org.quartz.*;
+import org.quartz.Job;
+import org.quartz.JobDataMap;
+import org.quartz.JobDetail;
+import org.quartz.JobExecutionContext;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.SchedulerMetaData;
+import org.quartz.SimpleTrigger;
+import org.quartz.Trigger;
+import org.quartz.TriggerListener;
+import org.quartz.listeners.TriggerListenerSupport;
 import org.quartz.simpl.SimpleJobFactory;
 import org.quartz.spi.TriggerFiredBundle;
-
-import java.util.*;
+import org.slf4j.Logger;
 
 /**
  * @version $Id$
@@ -60,10 +73,6 @@ public class SchedulerServiceImpl extends SchedulerService {
 
     private boolean schedulerRunning = false;
 
-    //last job's time
-    public long lastJobCompletedTime = 0;
-    private JobDetail lastCompletedJobDetail = null;
-    
     private String serverId;
 
     protected SchedulerServiceImpl() {
@@ -85,8 +94,6 @@ public class SchedulerServiceImpl extends SchedulerService {
         }
         return singletonInstance;
     }
-
-    Map<String, Thread> threads = new HashMap<String, Thread>();
 
     /**
      * Initializes the servlet dispatching service with parameters loaded
@@ -114,8 +121,8 @@ public class SchedulerServiceImpl extends SchedulerService {
                     return super.newJob(triggerFiredBundle);
                 }
             });
-//            executingProcesses = new ArrayList();
-            TriggerListener triggerListener = new TriggerListener() {
+
+            TriggerListener triggerListener = new TriggerListenerSupport() {
                 public String getName() {
                     return "Jahia jobs listener";
                 }
@@ -128,8 +135,6 @@ public class SchedulerServiceImpl extends SchedulerService {
 
                         JobDetail jobDetail = jobExecutionContext.getJobDetail();
                         JobDataMap data = jobDetail.getJobDataMap();
-
-                        threads.put(jobDetail.getName(), Thread.currentThread());
 
                         data.putAsString(BackgroundJob.JOB_BEGIN, System.currentTimeMillis());//execution begin
                         data.put(BackgroundJob.JOB_STATUS, BackgroundJob.STATUS_RUNNING);//status
@@ -158,18 +163,9 @@ public class SchedulerServiceImpl extends SchedulerService {
                     }
                     return false;
                 }
-
-                public void triggerMisfired(Trigger trigger) {
-                }
-
-                public void triggerComplete(Trigger trigger, JobExecutionContext jobExecutionContext, int i) {
-                    lastJobCompletedTime = System.currentTimeMillis();
-                    lastCompletedJobDetail = jobExecutionContext.getJobDetail();
-                    logger.debug("trigger completed");
-                }
             };
 
-            TriggerListener ramTriggerListener = new TriggerListener() {
+            TriggerListener ramTriggerListener = new TriggerListenerSupport() {
                 public String getName() {
                     return "Jahia ram jobs listener";
                 }
@@ -177,8 +173,6 @@ public class SchedulerServiceImpl extends SchedulerService {
                 public void triggerFired(Trigger trigger, JobExecutionContext jobExecutionContext) {
                     JobDetail jobDetail = jobExecutionContext.getJobDetail();
                     JobDataMap data = jobDetail.getJobDataMap();
-
-                    threads.put(jobDetail.getName(), Thread.currentThread());
 
                     data.putAsString(BackgroundJob.JOB_BEGIN, System.currentTimeMillis());//execution begin
                     data.put(BackgroundJob.JOB_STATUS, BackgroundJob.STATUS_RUNNING);//status
@@ -190,16 +184,6 @@ public class SchedulerServiceImpl extends SchedulerService {
                     } catch (SchedulerException e) {
                         logger.warn("Cannot update job", e);
                     }
-                }
-
-                public boolean vetoJobExecution(Trigger trigger, JobExecutionContext jobExecutionContext) {
-                    return false;
-                }
-
-                public void triggerMisfired(Trigger trigger) {
-                }
-
-                public void triggerComplete(Trigger trigger, JobExecutionContext jobExecutionContext, int i) {
                 }
             };
 
@@ -222,9 +206,8 @@ public class SchedulerServiceImpl extends SchedulerService {
         // here we remove the zombies process
         // maybe we can flag them as stopped later?
         try {
-            List all = getAllJobsDetails();
-            for (Iterator iterator = all.iterator(); iterator.hasNext();) {
-                JobDetail jd = (JobDetail) iterator.next();
+            List<JobDetail> all = getAllJobsDetails();
+            for (JobDetail jd : all) {
                 JobDataMap data = jd.getJobDataMap();
                 //data.clearDirtyFlag();
                 if (BackgroundJob.STATUS_RUNNING.equalsIgnoreCase(data.getString(BackgroundJob.JOB_STATUS)) &&
@@ -261,9 +244,8 @@ public class SchedulerServiceImpl extends SchedulerService {
     public void stat() {
         if (logger.isDebugEnabled()) {
             try {
-                List l = getAllJobsDetails();
-                for (Iterator iterator = l.iterator(); iterator.hasNext();) {
-                    JobDetail jd = (JobDetail) iterator.next();
+                List<JobDetail> l = getAllJobsDetails();
+                for (JobDetail jd : l) {
                     JobDataMap data = jd.getJobDataMap();
                     if (!data.get("status").equals("successful")) {
                         logger.debug(jd.getName() + " -> " + data.get("status"));
@@ -446,7 +428,8 @@ public class SchedulerServiceImpl extends SchedulerService {
         }
     }
 
-    public List getCurrentlyExecutingJobs()
+    @SuppressWarnings("unchecked")
+    public List<JobExecutionContext> getCurrentlyExecutingJobs()
             throws JahiaException {
         if (!schedulerRunning) {
             logger.debug("scheduler is not running!");
@@ -460,6 +443,7 @@ public class SchedulerServiceImpl extends SchedulerService {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public List<JobExecutionContext> getCurrentlyExecutingRamJobs()
             throws JahiaException {
         if (!schedulerRunning) {
@@ -500,27 +484,17 @@ public class SchedulerServiceImpl extends SchedulerService {
      */
     public boolean deleteJob(String jobName, String groupName)
             throws JahiaException {
-        if (!groupName.equals("RetentionRuleJob")) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("try to delete job:" + jobName + " gn:" + groupName);
-            }
+        if (logger.isDebugEnabled() && !groupName.equals("RetentionRuleJob")) {
+			logger.debug("try to delete job:" + jobName + " gn:" + groupName);
         }
         if (!schedulerRunning) {
             return false;
         }
         try {
-            JobDetail jobDetail = getJobDetail(jobName, groupName);
             return scheduler.deleteJob(jobName, groupName);
         } catch (SchedulerException se) {
             logger.debug(se.getMessage(), se);
             throw getJahiaException(se);
-        }
-    }
-
-    public void interruptJob(String jobName, String groupName) throws JahiaException {
-        Thread t = threads.get(jobName);
-        if (t != null) {
-            t.interrupt();
         }
     }
 
@@ -659,12 +633,11 @@ public class SchedulerServiceImpl extends SchedulerService {
         boolean isAdminSomewhere = false;
 
         // get 1st all sitekey of sites where the user is admin member
-        List adminsites = getSiteAdminList(user);
+        List<String> adminsites = getSiteAdminList(user);
         if (!adminsites.isEmpty()) {
 
             // second we grab the jobdetails with the same sitekeys
-            for (Iterator it = all.iterator(); it.hasNext();) {
-                JobDetail jd = (JobDetail) it.next();
+            for (JobDetail jd : all) {
                 JobDataMap data = jd.getJobDataMap();
                 if (data.get("sitekey") != null && adminsites.contains(data.get("sitekey"))) {
                     list.add(jd);
@@ -677,8 +650,7 @@ public class SchedulerServiceImpl extends SchedulerService {
         // for all standard users
         // grab only own process
         list = new ArrayList<JobDetail>();
-        for (Iterator it = all.iterator(); it.hasNext();) {
-            JobDetail jd = (JobDetail) it.next();
+        for (JobDetail jd : all) {
             JobDataMap data = jd.getJobDataMap();
             if (data.get("userkey") != null && ((String) data.get("userkey")).equalsIgnoreCase(user.getUserKey())) {
                 list.add(jd);
@@ -686,109 +658,6 @@ public class SchedulerServiceImpl extends SchedulerService {
         }
         return list;
 
-    }
-
-    /**
-     * internal method to compute average data of previously(persisted) successfully executed process
-     *
-     * @throws org.jahia.exceptions.JahiaException
-     *          sthg bad happened
-     */
-    private void loadData() throws JahiaException, SchedulerException {
-
-
-        String[] process = getJobNames(Scheduler.DEFAULT_GROUP);
-        //get all process
-        List<JobDetail> all = new ArrayList<JobDetail>();
-        if (process.length > 0) {
-            for (int n = 0; n < process.length; n++) {
-                JobDetail jd = getJobDetail(process[n], Scheduler.DEFAULT_GROUP);
-                all.add(jd);
-            }
-        } else return;
-        if (all.size() == 0) return;
-        //get successfully executed only
-        List<JobDetail> p = new ArrayList<JobDetail>();
-        for (Iterator it = all.iterator(); it.hasNext();) {
-            JobDetail jd = (JobDetail) it.next();
-            JobDataMap data = jd.getJobDataMap();
-            if (data.get(BackgroundJob.JOB_STATUS) != null
-                    && ((String) data.get(BackgroundJob.JOB_STATUS)).equalsIgnoreCase(BackgroundJob.STATUS_SUCCESSFUL))
-                p.add(jd);
-        }
-        if (p.size() == 0) return;
-
-        //init vars
-        String[] groupNames = scheduler.getJobGroupNames();
-        Map<String, List<JobDetail>> types = new HashMap<String, List<JobDetail>>();
-        groupAverages = new int[groupNames.length][3];
-        //set at 0
-        for (int i = 0; i < groupNames.length; i++) {
-            for (int j = 0; j < 3; j++) {
-                groupAverages[i][j] = 0;
-            }
-        }
-        //compute average durations
-        // here looping all groups
-
-        for (int i = 0; i < groupNames.length; i++) {
-            String groupName = groupNames[i];
-            if (logger.isDebugEnabled()) {
-                logger.debug("computing " + groupName + " process....");
-            }
-            List<JobDetail> l = getAllJobsDetails(groupName);
-            types.put(groupName, l);
-
-
-            int count = 1;
-            for (Iterator it = l.iterator(); it.hasNext();) {
-                JobDetail jd = (JobDetail) it.next();
-                JobDataMap data = jd.getJobDataMap();
-                int duration = 0;
-                if (data.get(BackgroundJob.JOB_DURATION) != null) {
-                    duration = Integer.parseInt((String) data.get(BackgroundJob.JOB_DURATION));
-                }
-                if (logger.isDebugEnabled()) {
-                    logger.debug("duration found:" + duration);
-                }
-                if (groupAverages[i][0] == 0) groupAverages[i][0] = duration;
-                if (duration < groupAverages[i][0]) groupAverages[i][0] = duration; //best time
-                else if (duration > groupAverages[i][2]) groupAverages[i][2] = duration; //worse time
-                //average
-                groupAverages[i][1] = (groupAverages[i][1] / count) + (duration / count);//ignoring decimal
-                count++;
-            }
-            if (logger.isDebugEnabled()) {
-                logger.debug(groupName + " averages:" + groupAverages[i][0] + "/" + groupAverages[i][1] + "/" + groupAverages[i][2]);
-            }
-        }
-    }
-
-    /**
-     * to get an average time depending of types of jobs
-     *
-     * @param groupName the group name for which to retrieve the average times
-     * @return average time
-     */
-    public int[] getAverageTimesByGroup(String groupName) throws SchedulerException {
-        try {
-            loadData();
-        } catch (JahiaException e) {
-            logger.error("Error while loading data", e);
-        }
-        int t = 0;
-        String[] groupNames = scheduler.getJobGroupNames();
-        for (int i = 0; i < groupNames.length; i++) {
-            if (groupNames[i].equalsIgnoreCase(groupName)) t = i;
-        }
-
-        int[] r;
-        r = new int[3];
-        //System.arraycopy(groupAverages[t], 0, r, 0, 3);
-        for (int i = 0; i < 3; i++) {
-            r[i] = groupAverages[t][i];
-        }
-        return r;
     }
 
     /**
@@ -825,7 +694,7 @@ public class SchedulerServiceImpl extends SchedulerService {
      */
     private List<String> getSiteAdminList(JahiaUser user) throws JahiaException {
         List<String> adminsites = new ArrayList<String>();
-        Iterator sites = ServicesRegistry.getInstance().getJahiaSitesService().getSites();
+        Iterator<JahiaSite> sites = ServicesRegistry.getInstance().getJahiaSitesService().getSites();
         while (sites.hasNext()) {
             JahiaSite site = (JahiaSite) sites.next();
             int siteid = site.getID();
@@ -834,18 +703,8 @@ public class SchedulerServiceImpl extends SchedulerService {
         return adminsites;
     }
 
-    private int[][] groupAverages;//in-memory process averages
-
     public Scheduler getScheduler() {
         return scheduler;
-    }
-
-    public JobDetail getLastCompletedJobDetail() {
-        return lastCompletedJobDetail;
-    }
-
-    public long getLastJobCompletedTime() {
-        return lastJobCompletedTime;
     }
 
     public void setRamscheduler(Scheduler ramscheduler) {

@@ -26,3 +26,21 @@ rule "Auto-split subscriptions"
    		Log "Enabling auto-splitting on node " + node.getPath()
 		Enable auto-splitting for subnodes of the node into folders of type jnt:subscriptionFolder using configuration "firstChars,j:subscriber,1"
 end
+
+rule "Schedule as a newsletter"
+    when
+		A property j:scheduled has been set on a node
+			- the node has the type jnt:newsletterIssue
+    then
+        Log "Scheduling newsletter " + node.getPath() + " at " + propertyValueAsString
+        Execute the action "sendAsNewsletter" at j:scheduled on the node 
+end
+
+rule "Cancel newsletter scheduling"
+    when
+		A property j:scheduled has been removed from a node
+			- the node has the type jnt:newsletterIssue
+    then
+        Log "Canceling newsletter " + node.getPath()
+        Cancel execution of action "sendAsNewsletter" on the node 
+end

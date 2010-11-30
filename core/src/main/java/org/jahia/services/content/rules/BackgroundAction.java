@@ -32,15 +32,13 @@
 
 package org.jahia.services.content.rules;
 
-import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 
 /**
- * Created by IntelliJ IDEA.
+ * A action that is executed by a scheduler as a background task.
  *
- * @author : rincevent
- * @since : JAHIA 6.1
- *        Created : 21 mai 2010
+ * @author rincevent
+ * @since JAHIA 6.5
  */
 public interface BackgroundAction {
 

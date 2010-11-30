@@ -105,8 +105,6 @@ public abstract class SchedulerService extends JahiaService {
     public abstract List<JobDetail> getAllJobsDetails(String groupname)
             throws JahiaException;
 
-    public abstract void interruptJob(String jobName, String groupName) throws JahiaException;
-
     /**
      * To get a list of scheduled waiting jobdetails.<br>
      *
@@ -115,7 +113,7 @@ public abstract class SchedulerService extends JahiaService {
      * @return a list of jobdetails available for this user
      * @throws JahiaException
      */
-    public abstract List getJobsDetails(JahiaUser user, String groupname)
+    public abstract List<JobDetail> getJobsDetails(JahiaUser user, String groupname)
             throws JahiaException;
 
     /**
@@ -127,7 +125,7 @@ public abstract class SchedulerService extends JahiaService {
      * @return a list of jobdetails available for this user
      * @throws JahiaException
      */
-    public abstract List getJobsDetails(JahiaUser user, String groupname, boolean ramScheduler)
+    public abstract List<JobDetail> getJobsDetails(JahiaUser user, String groupname, boolean ramScheduler)
             throws JahiaException;
 
     /**
@@ -136,7 +134,7 @@ public abstract class SchedulerService extends JahiaService {
      * @return
      * @throws JahiaException
      */
-    public abstract List getCurrentlyExecutingJobs() throws JahiaException;
+    public abstract List<JobExecutionContext> getCurrentlyExecutingJobs() throws JahiaException;
 
     /**
      * Returns the list of currenlty executing ram jobs
@@ -156,17 +154,4 @@ public abstract class SchedulerService extends JahiaService {
 
     public abstract Scheduler getScheduler();
 
-    /**
-     * to get the last time where a job was executed
-     *
-     * @return time as long
-     */
-    public abstract long getLastJobCompletedTime();
-
-    /**
-     * to get the last executed job detail
-     *
-     * @return time as long
-     */
-    public abstract JobDetail getLastCompletedJobDetail();
 }

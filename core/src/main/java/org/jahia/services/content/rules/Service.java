@@ -479,13 +479,13 @@ public class Service extends JahiaService {
     public void executeActionLater(AddedNodeFact node, final String propertyName, final String actionToExecute, KnowledgeHelper drools)
             throws JahiaException, RepositoryException {
         final String uuid = node.getNode().getIdentifier();
-        final String jobName = "ACTION_JOB_" + uuid + actionToExecute;
+        final String jobName = ActionJob.NAME_PREFIX + uuid + actionToExecute;
         final JobDetail jobDetail = BackgroundJob.createJahiaJob(jobName, ActionJob.class);
         final JobDataMap map = jobDetail.getJobDataMap();
         map.put(ActionJob.JOB_ACTION_TO_EXECUTE, actionToExecute);
         map.put(ActionJob.JOB_NODE_UUID, uuid);
         map.put("workspace", ((String) drools.getWorkingMemory().getGlobal("workspace")));
-        schedulerService.deleteJob(jobName, "ACTIONS_JOBS");
+        schedulerService.deleteJob(jobName, ActionJob.GROUP);
         try {
             schedulerService.scheduleJob(jobDetail, getTrigger(node, propertyName, jobName));
         } catch (ParseException e) {
@@ -493,13 +493,18 @@ public class Service extends JahiaService {
         }
     }
 
+	public void cancelActionExecution(AddedNodeFact node, final String actionToCancel,
+	        KnowledgeHelper drools) throws JahiaException, RepositoryException {
+		schedulerService.deleteJob(ActionJob.NAME_PREFIX + node.getNode().getIdentifier() + actionToCancel, ActionJob.GROUP);
+	}
+
     private Trigger getTrigger(AddedNodeFact node, String propertyName, String jobName)
             throws ParseException, RepositoryException {
         final Property property = node.getNode().getProperty(propertyName);
         if (property.getType() == PropertyType.DATE) {
             return new SimpleTrigger(jobName + "TRIGGER", "RULES_JOBS", property.getDate().getTime());
         } else {
-            return new CronTrigger(jobName + "TRIGGER", "ACTIONS_JOBS", property.getString());
+            return new CronTrigger(jobName + "TRIGGER", ActionJob.GROUP, property.getString());
         }
     }
 

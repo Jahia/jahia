@@ -33,6 +33,7 @@
 package org.jahia.services.content.rules;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -45,7 +46,12 @@ import org.quartz.JobExecutionException;
 import javax.jcr.RepositoryException;
 
 public class ActionJob extends BackgroundJob {
-    private static transient Logger logger = org.slf4j.LoggerFactory.getLogger(ActionJob.class);
+	
+    public static final String GROUP = "ACTIONS_JOBS";
+    
+    public static final String NAME_PREFIX = "ACTION_JOB_"; 
+    
+	private static transient Logger logger = LoggerFactory.getLogger(ActionJob.class);
 
     public static final String JOB_NODE_UUID = "node";
     public static final String JOB_ACTION_TO_EXECUTE = "actionToExecute";

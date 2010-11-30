@@ -4,7 +4,7 @@
     <c:if test="${inSite eq 'true'}">
         <c:if test="${child.locked ne 'true'}">
             <button id="editbtn-${child.identifier}"
-                    onclick="$('#editbtn-${child.identifier}').hide();$('#quitbtn-${child.identifier}').show();jreplace('edit-${child.identifier}', '${url.base}${child.path}.edit.edit.ajax',null, 'initEditFields(\'${child.identifier}\')')">
+                    onclick="$('#editbtn-${child.identifier}').hide();$('#quitbtn-${child.identifier}').show();jreplace('edit-${child.identifier}', '${url.base}${child.path}.contribute.edit.html.ajax',null, 'initEditFields(\'${child.identifier}\')')">
                 <span class="icon-contribute icon-edit"></span><fmt:message key="label.edit"/>&nbsp;</button>
         </c:if>
         <c:if test="${child.locked eq 'true'}">

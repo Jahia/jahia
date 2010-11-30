@@ -18,7 +18,7 @@
 <c:set var="bindedComponent"
        value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 <c:if test="${not empty bindedComponent}">
-    <c:set var="separator" value="${functions:default(currentResource.moduleParams.separator, ', ')}"/>
+    <c:set var="separator" value="${functions:default(currentResource.moduleParams.separator, ' ,')}"/>
     <template:addResources type="javascript" resources="jquery.min.js"/>
     <template:addResources type="css" resources="jquery.autocomplete.css"/>
     <template:addResources type="css" resources="thickbox.css"/>
@@ -35,7 +35,7 @@
         </c:if>
         </c:forEach>
 
-        function addCategory(uuid) {
+        function addCategory(uuid, separator) {
             var isAlreadyExist = new Boolean();
             isAlreadyExist = false;
             for (i = 0; i < uuids.length; i++) {
@@ -46,20 +46,24 @@
             if ($("#categorytoadd").val() != "" && !isAlreadyExist) {
                 uuids.push($("#categorytoadd").val());
                 $.post("${url.base}${bindedComponent.path}", {"j:defaultCategory":uuids,methodToCall:"put","jcr:mixinTypes":"jmix:categorized"}, function(result) {
-                    var categorryContainer = $('#jahia-categories-' + uuid);
-                    if($(".nocategorizeditem"+uuid).length>0){
-                        $(".nocategorized"+uuid).hide();
+                    var catContainer = jQuery('#jahia-categories-' + uuid);
+                    if (jQuery(".nocategorizeditem" + uuid).length > 0) {
+                        jQuery(".nocategorizeditem" + uuid).hide();
+                        separator = '';
                     }
-                    categorryContainer.append(",");
-                    var categoryDisplay = $('<span class="categorizeditem">' + $("#category").val() + '</span>');
-                    categoryDisplay.hide();
-                    if($(".nocategorizeditem"+uuid).length>0){
-                        jQuery(".nocategorizeditem"+uuid).replaceWith(categoryDisplay);
+
+                    if (separator.length > 0 && jQuery('#jahia-categories-' + uuid + ' > span').length > 0) {
+                        catContainer.append(separator);
+                    }
+                    var catDisplay = jQuery('<span class="categorizeditem">' + $("#category").val() + '</span>');
+                    catDisplay.hide();
+                    if (jQuery(".nocategorizeditem" + uuid).length > 0) {
+                        jQuery(".nocategorizeditem" + uuid).replaceWith(catDisplay);
                     } else {
-                        categorryContainer.append(categoryDisplay);
+                        catContainer.append(catDisplay);
                     }
-                    categoryDisplay.fadeIn('fast');
-                    $("#category").val() ='';
+                    catDisplay.fadeIn('fast');
+                    $("#category").val();
                 }, "json");
             } else {
                 return false;
@@ -76,7 +80,7 @@
                              nodeTypes="jnt:category" selectableNodeTypes="jnt:category" displayIncludeChildren="false"
                              root="${jcr:getSystemSitePath()}/categories" label="${categoryLabel}" displayFieldId="category"/>
         <input type="submit" title="<fmt:message key='add'/>" value="<fmt:message key='add'/>" class="button"
-               onclick="addCategory('${bindedComponent.identifier}')">
+               onclick="addCategory('${bindedComponent.identifier}', '${separator}')">
     </c:if>
 </c:if>
 <c:if test="${renderContext.editMode}">

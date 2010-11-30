@@ -19,11 +19,11 @@
 <c:if test="${not empty bindedComponent}">
     <div class="categorythispage">
             <jcr:nodeProperty node="${bindedComponent}" name="j:defaultCategory" var="assignedCategories"/>
-            <c:set var="separator" value="${functions:default(currentResource.moduleParams.separator, ', ')}"/>
+            <c:set var="separator" value="${functions:default(currentResource.moduleParams.separator, ' ,')}"/>
             <jsp:useBean id="filteredCategories" class="java.util.LinkedHashMap"/>
         <c:forEach items="${assignedCategories}" var="category" varStatus="status">
             <c:if test="${not empty category.node}">
-                <c:set target="${filteredCategories}" property="${category.node.properties['jcr:title']}" value="${category.node.properties['jcr:title']}"/>
+                <c:set target="${filteredCategories}" property="${category.node.properties['jcr:title'].string}" value="${category.node.properties['jcr:title'].string}"/>
             </c:if>
         </c:forEach>
         <div class="categorized">
@@ -32,7 +32,7 @@
                 <c:choose>
                     <c:when test="${not empty filteredCategories}">
                         <c:forEach items="${filteredCategories}" var="category" varStatus="status">
-                            <span class="categorizeditem">${fn:escapeXml(category.value)}</span>${!status.last ? separator : ''}
+                            ${!status.first ? separator : ''}<span class="categorizeditem">${fn:escapeXml(category.value)}</span>${!status.last ? separator : ''}
                         </c:forEach>
                     </c:when>
                     <c:otherwise>

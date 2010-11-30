@@ -62,6 +62,9 @@ public class TemplateNodeFilter extends AbstractFilter {
             Template previousTemplate = null;
             if (renderContext.getRequest().getAttribute("templateSet") == null) {
                 template = pushBodyWrappers(resource, renderContext);
+                if (template == null && !renderContext.isAjaxRequest()) {
+                    throw new TemplateNotFoundException(resource.getTemplate());
+                }
                 renderContext.getRequest().setAttribute("templateSet", Boolean.TRUE);
             } else {
                 previousTemplate = (Template) renderContext.getRequest().getAttribute("previousTemplate");

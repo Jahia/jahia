@@ -375,6 +375,9 @@ public class JCRTagUtils {
 
     public static List<ExtendedNodeType> getContributeTypes(JCRNodeWrapper node, Value[] typelistValues) throws Exception {
         List<ExtendedNodeType> types = new ArrayList<ExtendedNodeType>();
+        if (node == null) {
+            return types;
+        }
         if (typelistValues == null && node.hasProperty("j:contributeTypes")) {
             typelistValues = node.getProperty("j:contributeTypes").getValues();
         }

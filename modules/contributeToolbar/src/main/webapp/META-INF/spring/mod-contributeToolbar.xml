@@ -33,6 +33,14 @@
         <property name="publicationHelper" ref="PublicationHelper"/>
     </bean>
 
+    <bean class="org.jahia.modules.contribute.filter.ListContributionFilter" >
+        <property name="renderService" ref="RenderService" />
+        <property name="priority" value="5" />
+        <property name="applyOnModes" value="contribution" />
+        <property name="applyOnNodeTypes" value="jmix:contributeMode"/>
+        <property name="skipOnConfiguration" value="page,include"/>
+    </bean>
+
     <bean class="org.jahia.modules.contribute.filter.ContributeToolbarFilter">
         <property name="renderService" ref="RenderService" />
         <property name="priority" value="2"/>

@@ -56,7 +56,7 @@
             <%@include file="edit.jspf" %>
             <%--<%@include file="workflow.jspf" %>--%>
             <div id="edit-${child.identifier}">
-                <template:module templateType="html" node="${child}"/>
+                <template:module node="${child}"/>
             </div>
             <hr/>
         </c:if>
@@ -73,7 +73,7 @@
     <c:set var="types" value="${jcr:getContributeTypes(currentNode, null)}"/>
 
     <h3 class="titleaddnewcontent">
-        <img title="" alt="" src="${url.currentModule}/images/add.png"/><fmt:message key="label.add.new.content"/>
+        <img title="" alt="" src="${url.templatesPath}/default/images/add.png"/><fmt:message key="label.add.new.content"/>
     </h3>
 
     <script language="JavaScript">
@@ -102,7 +102,7 @@
         <c:forEach items="${types}" var="nodeType" varStatus="status">
             <a name="add${currentNode.identifier}-${status.index}"></a>
             <div style="display:none;" id="add${currentNode.identifier}-${status.index}" class="addContentContributeDiv" jcr:nodetype="${fn:replace(type.string,':','_')}">
-                <template:module node="${currentNode}" templateType="edit" template="add">
+                <template:module node="${currentNode}" template="contribute.add">
                     <template:param name="resourceNodeType" value="${nodeType.name}"/>
                     <template:param name="currentListURL" value="${url.current}.ajax"/>
                     <template:param name="addContentCallbackJS"

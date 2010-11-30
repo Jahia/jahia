@@ -30,8 +30,12 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.services.render.filter;
+package org.jahia.modules.contribute.filter;
 
+import org.jahia.services.render.TemplateNotFoundException;
+import org.jahia.services.render.filter.AbstractFilter;
+import org.jahia.services.render.filter.RenderChain;
+import org.jahia.services.render.scripting.Script;
 import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
@@ -45,8 +49,8 @@ import javax.jcr.RepositoryException;
  * Date: Nov 26, 2009
  * Time: 3:28:13 PM
  */
-public class ContributionFilter extends AbstractFilter {
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(ContributionFilter.class);
+public class ListContributionFilter extends AbstractFilter {
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(ListContributionFilter.class);
 
     public String prepare(RenderContext context, Resource resource, RenderChain chain) throws Exception {
         JCRNodeWrapper node = resource.getNode();
@@ -56,8 +60,15 @@ public class ContributionFilter extends AbstractFilter {
             if (node.isNodeType("jmix:list")
                     && node.hasProperty("j:editableInContribution")
                     && node.getProperty("j:editableInContribution").getBoolean()
-                    && !context.isAjaxRequest()) {
-                resource.setTemplateType("edit");
+                    && !context.isAjaxRequest()
+                    && !resource.getTemplate().startsWith("contribute.")
+                    ) {
+                resource.setTemplate("contribute." + resource.getTemplate());
+                try {
+                    final Script script = service.resolveScript(resource, context);
+                } catch (TemplateNotFoundException e) {
+                    resource.setTemplate("contribute.default");
+                }
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

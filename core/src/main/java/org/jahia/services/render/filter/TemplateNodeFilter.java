@@ -37,6 +37,7 @@ import org.slf4j.Logger;
 import org.jahia.services.content.*;
 import org.jahia.services.render.*;
 
+import javax.jcr.AccessDeniedException;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
@@ -60,7 +61,7 @@ public class TemplateNodeFilter extends AbstractFilter {
             Template template = null;
             Template previousTemplate = null;
             if (renderContext.getRequest().getAttribute("templateSet") == null) {
-                template = pushBodyWrappers(resource);
+                template = pushBodyWrappers(resource, renderContext);
                 renderContext.getRequest().setAttribute("templateSet", Boolean.TRUE);
             } else {
                 previousTemplate = (Template) renderContext.getRequest().getAttribute("previousTemplate");
@@ -75,7 +76,7 @@ public class TemplateNodeFilter extends AbstractFilter {
                     renderContext.getRequest().setAttribute("previousTemplate", template);
                     renderContext.getRequest().setAttribute("wrappedResource", resource);
                     Resource wrapperResource = new Resource(templateNode,
-                            resource.getTemplateType().equals("edit") ? "html" : resource.getTemplateType(), template.view, Resource.CONFIGURATION_WRAPPER);
+                            resource.getTemplateType(), template.view, Resource.CONFIGURATION_WRAPPER);
                     if (service.hasTemplate(templateNode, template.view)) {
 
                         Integer currentLevel =
@@ -106,7 +107,7 @@ public class TemplateNodeFilter extends AbstractFilter {
     }
 
 
-    public Template pushBodyWrappers(Resource resource) {
+    public Template pushBodyWrappers(Resource resource, RenderContext renderContext) {
         final JCRNodeWrapper node = resource.getNode();
         String templateName = resource.getTemplate();
         if ("default".equals(templateName)) {
@@ -138,11 +139,12 @@ public class TemplateNodeFilter extends AbstractFilter {
                     template = new Template(templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
                             templateName, templateNode.getIdentifier(), template);
                 } else if (templatesNode != null) {
-                    template = addTemplates(resource, templatesNode);
+                    template = addTemplates(resource, renderContext, templatesNode);
                 }
 
                 if (template == null) {
-                    template = addTemplates(resource, node.getSession().getNode(JCRContentUtils.getSystemSitePath() + "/templates"));
+                    template = addTemplates(resource, renderContext,
+                            node.getSession().getNode(JCRContentUtils.getSystemSitePath() + "/templates"));
                 }
 
                 if (template != null) {
@@ -161,13 +163,10 @@ public class TemplateNodeFilter extends AbstractFilter {
         return template;
     }
 
-    private Template addTemplates(Resource resource, JCRNodeWrapper templateNode) throws RepositoryException {
+    private Template addTemplates(Resource resource, RenderContext renderContext, JCRNodeWrapper templateNode) throws RepositoryException {
         String type = "contentTemplate";
         if (resource.getNode().isNodeType("jnt:page")) {
             type = "pageTemplate";
-        }
-        if ("edit".equals(resource.getTemplateType())) {
-            type = "contributeTemplate";
         }
 
         String query =
@@ -204,7 +203,7 @@ public class TemplateNodeFilter extends AbstractFilter {
         });
         while (ni.hasNext()) {
             final JCRNodeWrapper contentTemplateNode = (JCRNodeWrapper) ni.nextNode();
-            addTemplate(resource, contentTemplateNode, templates);
+            addTemplate(resource, renderContext, contentTemplateNode, templates);
         }
         if (templates.isEmpty()) {
             return null;
@@ -213,7 +212,7 @@ public class TemplateNodeFilter extends AbstractFilter {
         }
     }
 
-    private void addTemplate(Resource resource, JCRNodeWrapper templateNode, Map<String, Template> templates)
+    private void addTemplate(Resource resource, RenderContext renderContext, JCRNodeWrapper templateNode, Map<String, Template> templates)
             throws RepositoryException {
         boolean ok = true;
         String type = null;
@@ -231,13 +230,24 @@ public class TemplateNodeFilter extends AbstractFilter {
                 ok = true;
             }
         }
-//        if (ok) {
-//            if (resource.getTemplate() == null || resource.getTemplate().equals("default")) {
-//                ok = !templateNode.hasProperty("j:templateKey");
-//            } else {
-//                ok = templateNode.hasProperty("j:templateKey") && resource.getTemplate().equals(templateNode.getProperty("j:templateKey").getString());
-//            }
-//        }
+        if (templateNode.hasProperty("j:requiredMode")) {
+            String req = templateNode.getProperty("j:requiredMode").getString();
+            if (renderContext.isContributionMode() && !req.equals("contribute")) {
+                return;
+            } else if (!renderContext.isContributionMode() && !req.equals("normal")) {
+                return;
+            }
+
+        }
+        if (templateNode.hasProperty("j:requiredPermissions")) {
+            Value[] values = templateNode.getProperty("j:requiredPermissions").getValues();
+            for (Value value : values) {
+                if (!resource.getNode().hasPermission("{http://www.jcp.org/jcr/1.0}" + value.getString())) {
+                    return;
+                }
+            }
+
+        }
 
         if (ok) {
             templates.put(type,new Template(

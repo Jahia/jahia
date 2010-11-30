@@ -106,8 +106,9 @@
                 var href = $this.attr('href');
                 var media = $this.attr('media');
                 if($this.attr('tagName')=='LINK'){
-					$('#'+id).remove();
-					$('head:first').append('<link id="'+id+'" href="'+href+'" type="text/css" rel="stylesheet" media="'+media+'"/>');
+					if ($('link[href="/jahia/modules/default/css/contentlist.css"]').length == 0) {
+                        $('head:first').append('<link id="staticAssetcss'+$('link').length+'" href="'+href+'" type="text/css" rel="stylesheet" media="'+media+'"/>');
+                    }
 					/*
                     $.get(getVoidUrl($this.attr('href')),[],function(css){
                         // IE needs remove and insert, no simple ajax load in container

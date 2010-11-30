@@ -60,20 +60,8 @@ public class BaseAttributesFilter extends AbstractFilter {
             chain.pushAttribute(request, "script", script);
             chain.pushAttribute(request, "scriptInfo", script.getTemplate().getInfo());
         } catch (TemplateNotFoundException e) {
-            if (resource.getTemplateType().equals("edit")) {
-                try {
-                    resource.setTemplate("default");
-                    final Script script = service.resolveScript(resource, context);
-                    chain.pushAttribute(request, "script", script);
-                    chain.pushAttribute(request, "scriptInfo", script.getTemplate().getInfo());
-                } catch (TemplateNotFoundException e1) {
-                    chain.pushAttribute(request, "script", null);
-                    chain.pushAttribute(request, "scriptInfo", null);
-                }
-            } else {
-                chain.pushAttribute(request, "script", null);
-                chain.pushAttribute(request, "scriptInfo", null);
-            }
+            chain.pushAttribute(request, "script", null);
+            chain.pushAttribute(request, "scriptInfo", null);
         }
         chain.pushAttribute(request, "workspace", node.getSession().getWorkspace().getName());
         chain.pushAttribute(request, "currentResource", resource);

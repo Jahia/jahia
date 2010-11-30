@@ -58,12 +58,6 @@
                             <property name="skipOnConfiguration" value="include,wrapper"/>
                         </bean>
 
-                        <bean class="org.jahia.services.render.filter.ContributionFilter" >
-                            <property name="priority" value="5" />
-                            <property name="applyOnModes" value="contribution" />
-                            <property name="applyOnNodeTypes" value="jmix:contributeMode"/>
-                            <property name="skipOnConfiguration" value="include,wrapper"/>
-                        </bean>
                         <bean class="org.jahia.services.render.filter.UserAgentFilter" >
                             <property name="priority" value="6" />
                             <property name="applyOnModes" value="live,preview" />

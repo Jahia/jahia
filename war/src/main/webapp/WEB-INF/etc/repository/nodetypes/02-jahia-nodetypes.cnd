@@ -335,15 +335,14 @@
 
 [jnt:template] > nt:base, jmix:nodenameInfo, jmix:basemetadata
  - j:hiddenTemplate (boolean)
+ - j:requiredMode (string, choicelist[resourceBundle]) nofulltext < 'normal', 'contribute'
+ - j:requiredPermissions (string, choicelist[resourceBundle]) nofulltext multiple < 'write', 'addChildNodes', 'modifyProperties'
  + * (jnt:template)
  + * (jnt:content)
 
 [jnt:pageTemplate] > jnt:template
 
 [jnt:contentTemplate] > jnt:template
- - j:applyOn (string, choicelist[subnodetypes = 'jnt:content,jnt:contentList,jnt:folder,jnt:file,jnt:user,jnt:group',resourceBundle]) multiple
-
-[jnt:contributeTemplate] > jnt:template
  - j:applyOn (string, choicelist[subnodetypes = 'jnt:content,jnt:contentList,jnt:folder,jnt:file,jnt:user,jnt:group',resourceBundle]) multiple
 
 [jmix:mockupStyle] mixin
@@ -585,7 +584,7 @@
  - j:editableInContribution (boolean)
  - j:canOrderInContribution (boolean)
  - j:canDeleteInContribution (boolean)
- - j:contributeTypes (string, choicelist[subnodetypes = 'jmix:editorialContent,jnt:file,jnt:folder']) multiple
+ - j:contributeTypes (string, choicelist[subnodetypes = 'jmix:editorialContent,jnt:file,jnt:folder,jnt:contentFolder']) multiple
 
 [jmix:listRestrictions] mixin
  - j:allowedTypes (string, choicelist[subnodetypes = 'jmix:droppableContent,jnt:file,jnt:folder']) multiple

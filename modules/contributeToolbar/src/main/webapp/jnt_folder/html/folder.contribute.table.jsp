@@ -133,7 +133,7 @@
 
                     <c:forTokens items="${types}" delims="," var="type" varStatus="status">
                         <div style="display:none;" id="add${currentNode.identifier}-${status.index}">
-                            <template:module node="${currentNode}" templateType="edit" template="add">
+                            <template:module node="${currentNode}" template="contribute.add">
                                 <template:param name="resourceNodeType" value="${type}"/>
                                 <template:param name="currentListURL" value="${url.current}"/>
                             </template:module>

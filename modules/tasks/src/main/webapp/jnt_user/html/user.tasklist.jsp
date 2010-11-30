@@ -196,7 +196,7 @@
         <td colspan="5">
             <div style="display:none;" id="task${node.identifier}-${task.id}" class="taskformdiv">
                 <c:set var="workflowTaskFormTask" value="${task}" scope="request"/>
-                <template:module node="${node}" templateType="edit" template="add">
+                <template:module node="${node}" template="add">
                     <template:param name="resourceNodeType" value="${task.formResourceName}"/>
                     <template:param name="workflowTaskForm" value="${task.provider}:${task.id}"/>
                     <template:param name="workflowTaskFormTaskName" value="${task.name}"/>

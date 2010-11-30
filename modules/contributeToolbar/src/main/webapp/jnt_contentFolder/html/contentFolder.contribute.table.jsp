@@ -41,7 +41,7 @@
                                                                                              border="0"
                                                                                              style="cursor: pointer;"
                                                                                              title="parent" alt="parent"
-                                                                                             src="${url.currentModule}/images/icons/folder_up.png"></a>
+                                                                                             src="${url.templatesPath}/default/images/icons/folder_up.png"></a>
                 </c:if>
             </th>
             <th width="35%"><fmt:message key="label.title"/></th>
@@ -71,14 +71,8 @@
                         <img height="16" width="16" border="0" style="cursor: pointer;" title="Locked" alt="Supprimer"
                              src="${url.currentModule}/images/icons/locked.gif">
                     </c:if>
-                    <c:choose>
-                    <c:when test="${jcr:isNodeType(child, 'jnt:contentFolder') or child.locked}">
-                        <a href="${url.base}${child.path}.html">
-                    </c:when>
-                    <c:otherwise>
-                        <a href="${url.base}${child.path}.edit">
-                    </c:otherwise>
-                    </c:choose>${fn:escapeXml(child.displayableName)}</a>
+
+                    <a href="${url.base}${child.path}.html">${fn:escapeXml(child.displayableName)}</a>
                 </td>
                 <td>
                     <fmt:formatDate value="${child.properties['jcr:created'].date.time}" pattern="yyyy-MM-dd HH:mm"/>
@@ -127,7 +121,7 @@
             <%-- todo: move to ajax calls --%>
 
             <div style="display:none;"><div id="add${currentNode.identifier}-${status.index}" class="addContentContributeDiv${currentNode.identifier}" style="width:800px;">
-                <template:module node="${currentNode}" templateType="edit" template="add">
+                <template:module node="${currentNode}" template="contribute.add">
                     <template:param name="resourceNodeType" value="${nodeType.name}"/>
                 </template:module>
             </div></div>

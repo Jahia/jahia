@@ -141,7 +141,7 @@
                                 </div>
                             </c:otherwise>
                         </c:choose>
-                        <template:module node="${prop.node}" template="default" templateType="html"/>
+                        <template:module node="${prop.node}" template="default" />
                     </c:when>
                     <c:when test="${propertyDefinition.requiredType == jcrPropertyTypes.DATE}">
                         <c:set var="dateTimePicker"

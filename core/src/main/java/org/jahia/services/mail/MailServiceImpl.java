@@ -53,6 +53,7 @@ import org.apache.camel.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.DisposableBean;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.templates.TemplateUtils;
 import org.jahia.utils.i18n.JahiaResourceBundle;
@@ -63,7 +64,7 @@ import org.jahia.utils.i18n.JahiaResourceBundle;
  * @author MAP
  * @author Serge Huber
  */
-public class MailServiceImpl extends MailService implements CamelContextAware {
+public class MailServiceImpl extends MailService implements CamelContextAware, DisposableBean {
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(MailServiceImpl.class);
     private ProducerTemplate template;
@@ -347,4 +348,9 @@ public class MailServiceImpl extends MailService implements CamelContextAware {
         }
     }
 
+	public void destroy() throws Exception {
+		if (template != null) {
+			template.stop();
+		}
+    }
 }

@@ -36,7 +36,7 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.component.mail.MailEndpoint;
-import org.slf4j.Logger;
+import org.springframework.beans.factory.DisposableBean;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.mail.MailServiceImpl;
 import org.jbpm.pvm.internal.email.spi.MailSession;
@@ -45,14 +45,13 @@ import javax.mail.Message;
 import java.util.Collection;
 
 /**
- * Created by IntelliJ IDEA.
+ * Mail session used in the jBPM processes.
  *
  * @author : rincevent
  * @since : JAHIA 6.1
  *        Created : 14 sept. 2010
  */
-public class JBPMMailSession implements MailSession {
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JBPMMailSession.class);
+public class JBPMMailSession implements MailSession, DisposableBean {
     private MailServiceImpl mailService;
     private ProducerTemplate template;
 
@@ -71,5 +70,11 @@ public class JBPMMailSession implements MailSession {
                         exchange);
             }
         }
+    }
+
+	public void destroy() throws Exception {
+		if (template != null) {
+			template.stop();
+		}
     }
 }

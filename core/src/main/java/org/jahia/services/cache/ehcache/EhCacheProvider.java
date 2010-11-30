@@ -65,7 +65,7 @@ public class EhCacheProvider implements CacheProvider {
    		cacheManager = CacheManager.create(getClass().getResource(configurationResource));
     	if (StringUtils.isNotEmpty(managedBeanServerName)) {
 	        MBeanServer mBeanServer = MBeanServerFactory.createMBeanServer(managedBeanServerName);
-	        ManagementService.registerMBeans(cacheManager, mBeanServer, false, false, false, true);
+	        ManagementService.registerMBeans(cacheManager, mBeanServer, false, false, false, true, false);
     	}
     }
 

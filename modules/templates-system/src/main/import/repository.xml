@@ -119,7 +119,7 @@
           </my-profile>
           <newsletters jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:newsletters jnt:newsletter">
             <pagecontent jcr:primaryType="jnt:contentList">
-              <mainResourceDisplay j:mainResourceView="table" jcr:primaryType="jnt:mainResourceDisplay" />
+              <mainResourceDisplay j:mainResourceView="contribute.table" jcr:primaryType="jnt:mainResourceDisplay" />
             </pagecontent>
           </newsletters>
           <header jcr:primaryType="jnt:contentList">

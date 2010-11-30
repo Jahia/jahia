@@ -16,6 +16,10 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js"/>
 <script>
+    var contributeTarget;
+    var contributeReplaceTarget;
+    var contributeReplaceUrl;
+
     /*
      $("#delete-${currentNode.identifier}").button();
      $("#copy-${currentNode.identifier}").button();
@@ -33,8 +37,8 @@
     function deleteNodes() {
         var uuids = getUuids();
         if (uuids.length > 0) {
-            $.post("${url.base}${renderContext.mainResource.node.path}.deleteNodes.do", {"uuids": uuids}, function(result) {
-                window.location.reload();
+            $.post("${url.base}"+contributeTarget+".deleteNodes.do", {"uuids": uuids}, function(result) {
+                $("#"+contributeReplaceTarget).load(contributeReplaceUrl,'',null);
             }, 'json');
         }
     }
@@ -42,7 +46,7 @@
     function copyNodes() {
         var uuids = getUuids();
         if (uuids.length > 0) {
-            $.post("${url.base}${renderContext.mainResource.node.path}.copy.do", {"uuids": uuids}, function(result) {
+            $.post("${url.base}"+contributeTarget+".copy.do", {"uuids": uuids}, function(result) {
                 showClipboard();
             }, 'json');
         }
@@ -51,7 +55,7 @@
     function cutNodes() {
         var uuids = getUuids();
         if (uuids.length > 0) {
-            $.post("${url.base}${renderContext.mainResource.node.path}.cut.do", {"uuids": uuids}, function(result) {
+            $.post("${url.base}"+contributeTarget+".cut.do", {"uuids": uuids}, function(result) {
                 showClipboard();
             }, 'json');
         }
@@ -60,20 +64,21 @@
     function publishNodes() {
         var uuids = getUuids();
         if (uuids.length > 0) {
-            $.post("${url.base}${renderContext.mainResource.node.path}.publishNodes.do", {"uuids": uuids}, function(result) {
-                window.location.reload();
+            $.post("${url.base}"+contributeTarget+".publishNodes.do", {"uuids": uuids}, function(result) {
+                $("#"+contributeReplaceTarget).load(contributeReplaceUrl,'',null);
             }, 'json');
         }
     }
 
     function pasteNodes() {
-        $.post("${url.base}${renderContext.mainResource.node.path}.paste.do", {}, function(result) {
-            window.location.reload();
+        $.post("${url.base}"+contributeTarget+".paste.do", {}, function(result) {
+            $("#"+contributeReplaceTarget).load(contributeReplaceUrl,'',null);
+            hideClipboard();
         }, 'json');
     }
 
     function emptyClipboard() {
-        $.post("${url.base}${renderContext.mainResource.node.path}.emptyclipboard.do", {}, function(result) {
+        $.post("${url.base}"+contributeTarget+".emptyclipboard.do", {}, function(result) {
             hideClipboard();
         }, 'json');
     }

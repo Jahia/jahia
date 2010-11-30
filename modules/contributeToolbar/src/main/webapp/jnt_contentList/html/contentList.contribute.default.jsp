@@ -77,6 +77,10 @@
     </h3>
 
     <script language="JavaScript">
+        var contributeTarget = "${currentNode.path}";
+        var contributeReplaceTarget = "${currentNode.UUID}";
+        var contributeReplaceUrl = "${url.base}${currentNode.path}.contribute.default.html.ajax";
+
         <c:forEach items="${types}" var="type" varStatus="status">
         animatedcollapse.addDiv('add${currentNode.identifier}-${status.index}', 'fade=1,speed=700,group=newContent');
         </c:forEach>

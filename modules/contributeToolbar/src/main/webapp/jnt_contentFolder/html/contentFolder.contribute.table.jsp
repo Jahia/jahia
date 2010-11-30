@@ -112,6 +112,11 @@
 
 
 <c:if test="${not renderContext.ajaxRequest}">
+    <script type="text/javascript">
+        var contributeTarget = "${currentNode.path}";
+        var contributeReplaceTarget = "${currentNode.UUID}";
+        var contributeReplaceUrl = "${url.base}${currentNode.path}.contribute.table.html.ajax";
+    </script>
     <%-- include add nodes forms --%>
     <c:set var="types" value="${jcr:getContributeTypes(currentNode, null)}"/>
 

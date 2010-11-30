@@ -56,7 +56,7 @@
                    varStatus="status">
             <tr class="${status.count % 2 == 0 ? 'even' : 'odd'}">
                 <td align="center">
-                    <input type="checkbox" name="${child.identifier}"/>
+                    <input type="checkbox" name="${child.identifier}" ${child.locked ? 'disabled=true':''}/>
                 </td>
                 <td>
                     <c:if test="${not empty child.primaryNodeType.templatePackage.rootFolder}">

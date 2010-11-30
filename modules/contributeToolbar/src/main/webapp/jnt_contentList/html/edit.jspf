@@ -1,5 +1,5 @@
 <div class="listEditToolbar">
-    <input type="checkbox" name="${child.identifier}"/>
+    <input type="checkbox" name="${child.identifier}" ${child.locked ? 'disabled=true':''}/>
 
     <c:if test="${inSite eq 'true'}">
         <c:if test="${child.locked ne 'true'}">

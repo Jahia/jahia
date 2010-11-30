@@ -35,6 +35,7 @@
     String passwdConfirm = (String) request.getAttribute("passwdConfirm");
     ProcessingContext jParams = ((JahiaData) request.getAttribute("org.jahia.data.JahiaData")).getProcessingContext();
     String isSuperAdminProp = (String) request.getAttribute("isSuperAdminProp");
+    pageContext.setAttribute("isSuperAdminProp", Boolean.valueOf(isSuperAdminProp != null));
     // when isPopup = true, name and firts name are not editable
     boolean isPopup = request.getParameter("isPopup") != null ? true : false;
 %>
@@ -253,6 +254,7 @@
         </select>
     </td>
 </tr>
+<c:if test="${not isSuperAdminProp}">
 <tr>
     <td align="right">
         <label for="accountLockedView"><fmt:message key="label.accountLocked"/>&nbsp;</label>
@@ -271,6 +273,7 @@
                value='<%= "true".equals(propValue) ? "true" : "false" %>'/>
     </td>
 </tr>
+</c:if>
 <% if (!JahiaPasswordPolicyService.getInstance().isPasswordReadOnly(jUser)) { %>
 <tr>
     <td align="right">

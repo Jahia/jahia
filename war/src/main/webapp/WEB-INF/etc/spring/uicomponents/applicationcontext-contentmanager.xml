@@ -741,6 +741,7 @@
         <property name="engineTabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
                 <ref bean="Engine.Tab.Info" />
+                <ref bean="Engine.Tab.Content"/>
                 <ref bean="Engine.Tab.ContentAndLayout" />
                 <ref bean="Engine.Tab.Metadata" />
                 <ref bean="Engine.Tab.Tags" />
@@ -887,6 +888,7 @@
         <property name="engineTabs">
             <list value-type="org.jahia.services.uicomponents.bean.editmode.EngineTab">
                 <ref bean="Engine.Tab.Info" />
+                <ref bean="Engine.Tab.Content" />
                 <ref bean="Engine.Tab.ContentAndLayout" />
                 <ref bean="Engine.Tab.Metadata" />
                 <ref bean="Engine.Tab.Tags" />

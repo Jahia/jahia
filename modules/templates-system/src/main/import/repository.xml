@@ -14,14 +14,14 @@
         </themes>
       </files>
       <portlets jcr:primaryType="jnt:portletFolder" />
-      <templates jcr:primaryType="jnt:templatesFolder">
-        <base jcr:mixinTypes="jmix:renderable jmix:theme" jcr:primaryType="jnt:template" j:view="system">
+        <templates jcr:primaryType="jnt:templatesFolder">
           <contents jcr:primaryType="jnt:contentFolder">
             <menuAvailable jcr:primaryType="jnt:navMenuAvailableFolder">
               <primary jcr:primaryType="jnt:navMenuAvailable"/>
               <secondary jcr:primaryType="jnt:navMenuAvailable"/>
             </menuAvailable>
           </contents>
+          <base jcr:mixinTypes="jmix:renderable jmix:theme" jcr:primaryType="jnt:template" j:view="system">
           <home jcr:primaryType="jnt:pageTemplate">
             <pagecontent j:skin="skins.box5" jcr:mixinTypes="jmix:style jmix:accessControlled jmix:skinnable" jcr:primaryType="jnt:contentList">
               <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="Links" jcr:primaryType="jnt:translation" />
@@ -45,7 +45,7 @@
                 </fieldFacet>
               </facets>
               <pager pageSize="10" jcr:primaryType="jnt:pager" j:bindedComponent="/templateSets/templates-system/templates/base/folderTemplate/pagecontent/mainResourceDisplay" displayPager="true" />
-              <mainResourceDisplay j:canOrderInContribution="true" jcr:mixinTypes="jmix:contributeMode" j:mainResourceView="table" j:canDeleteInContribution="true" jcr:primaryType="jnt:mainResourceDisplay" j:contributeTypes="jnt:contentFolder jmix:editorialContent" j:editableInContribution="true" />
+              <mainResourceDisplay j:canOrderInContribution="true" jcr:mixinTypes="jmix:contributeMode" j:mainResourceView="contribute.table" j:canDeleteInContribution="true" jcr:primaryType="jnt:mainResourceDisplay" j:contributeTypes="jnt:contentFolder jmix:editorialContent" j:editableInContribution="true" />
             </pagecontent>
             </folderTemplate>
             <editContent jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:content" j:hiddenTemplate="false" j:requiredMode="contribute" j:requiredPermissions="write">

@@ -5,6 +5,7 @@ jahia.database.driver   =  org.apache.derby.jdbc.EmbeddedDriver
 jahia.database.url      =  jdbc:derby:directory:$context/WEB-INF/var/dbdata/jahia;create=true
 jahia.database.user     =
 jahia.database.pass     =
+jahia.database.validationQuery = values(1)
 jahia.database.transactions = false
 jahia.database.schemascriptdir = sql/schema/derby
 jahia.database.popuplationscriptdir = sql/population

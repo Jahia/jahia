@@ -5,6 +5,7 @@ jahia.database.driver   =  com.mysql.jdbc.Driver
 jahia.database.url      =  jdbc:mysql://localhost/jahia?useUnicode=true&characterEncoding=UTF-8&useServerPrepStmts=false
 jahia.database.user     =  jahia
 jahia.database.pass     =  jahia
+jahia.database.validationQuery = /* ping */
 jahia.database.popuplationscriptdir = sql/population
 jahia.database.datasource = jdbc/jahia
 jahia.quartz.jdbcDelegate = org.quartz.impl.jdbcjobstore.StdJDBCDelegate

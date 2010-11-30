@@ -164,5 +164,6 @@
         <template:module node="${facet}"/>
     </c:forEach>
     <template:module path="*"/>
+    <fmt:message key="${fn:replace(currentNode.primaryNodeTypeName,':','_')}"/>
     <template:linker property="j:bindedComponent"/>
 </c:if>

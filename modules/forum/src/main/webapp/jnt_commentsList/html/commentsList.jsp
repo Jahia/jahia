@@ -40,4 +40,7 @@
         </c:otherwise>
     </c:choose>
 </c:if>
-<template:linker property="j:bindedComponent"/>
+<c:if test="${renderContext.editMode}">
+    <fmt:message key="${fn:replace(currentNode.primaryNodeTypeName,':','_')}"/>
+    <template:linker property="j:bindedComponent"/>
+</c:if>

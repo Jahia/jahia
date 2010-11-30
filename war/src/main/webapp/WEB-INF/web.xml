@@ -214,15 +214,7 @@
     </filter-mapping>
     <filter-mapping>
         <filter-name>ResponseCacheControlFilter</filter-name>
-        <url-pattern>/engines/gwtfilemanager/javascript/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>ResponseCacheControlFilter</filter-name>
         <url-pattern>/engines/images/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>ResponseCacheControlFilter</filter-name>
-        <url-pattern>/engines/jahiatools/*</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>ResponseCacheControlFilter</filter-name>
@@ -231,10 +223,6 @@
     <filter-mapping>
         <filter-name>ResponseCacheControlFilter</filter-name>
         <url-pattern>/html/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>ResponseCacheControlFilter</filter-name>
-        <url-pattern>/htmleditors/*</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>ResponseCacheControlFilter</filter-name>
@@ -247,10 +235,6 @@
     <filter-mapping>
         <filter-name>ResponseCacheControlFilter</filter-name>
         <url-pattern>/monitor/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>ResponseCacheControlFilter</filter-name>
-        <url-pattern>/processing/*</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>ResponseCacheControlFilter</filter-name>
@@ -596,11 +580,6 @@
         <servlet-class>org.jahia.bin.errors.ErrorServlet</servlet-class>
     </servlet>
 
-    <servlet>
-      <servlet-name>ViewCacheServlet</servlet-name>
-      <servlet-class>org.jahia.tools.cache.ViewCacheServlet</servlet-class>
-    </servlet>   
-
     <!-- ====================================================================== -->
     <!-- P O R T L E T   S E R V L E T S                                        -->
     <!-- ====================================================================== -->
@@ -640,19 +619,6 @@
         </init-param>
     </servlet>
     
-<!-- Apache Chemistry CMIS Servlet -->
-<!--
-    <servlet>
-        <servlet-name>cmis</servlet-name>
-        <servlet-class>org.apache.chemistry.atompub.server.servlet.CMISServlet</servlet-class>
-        <init-param>
-            <param-name>class</param-name>
-            <param-value>org.jahia.services.cmis.JcrRepositoryFactory</param-value>
-        </init-param>
-    </servlet>
--->
-<!-- End of Apache Chemistry CMIS Servlet -->
-
 <!-- Quercus PHP servlet -->
     <servlet>
       <servlet-name>Quercus Servlet</servlet-name>
@@ -777,11 +743,6 @@
     </servlet-mapping>
 
     <servlet-mapping>
-        <servlet-name>ViewCacheServlet</servlet-name>
-        <url-pattern>/viewCache</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
         <servlet-name>GWTDispatcherServlet</servlet-name>
         <url-pattern>*.gwt</url-pattern>
     </servlet-mapping>
@@ -853,13 +814,6 @@
     </servlet-mapping>
 <!-- End of Shindig servlet mappings -->
 
-<!-- Apache Chemistry CMIS Servlet mapping -->
-<!--
-    <servlet-mapping>
-        <servlet-name>cmis</servlet-name>
-        <url-pattern>/cmis/*</url-pattern>
-    </servlet-mapping>
--->
 <!-- Quercus PHP mapping -->
     <servlet-mapping>
       <servlet-name>Quercus Servlet</servlet-name>

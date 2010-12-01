@@ -52,6 +52,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.ImportSupport;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.StringResponseWrapper;
 import org.springframework.web.context.ServletContextAware;
 
@@ -153,7 +154,7 @@ public class HttpClientService implements ServletContextAware {
         if (is != null) {
             StringWriter writer = new StringWriter();
             try {
-                IOUtils.copy(is, writer);
+                IOUtils.copy(is, writer, SettingsBean.getInstance().getCharacterEncoding());
                 content = writer.toString();
             } catch (IOException e) {
                 logger.warn("Error reading content of the resource " + url + ". Cause: " + e.getMessage(), e);

@@ -1,25 +1,7 @@
 
-    alter table jahia_pwd_policy_rule_params 
-        drop 
-        foreign key FKBE451EF45A0DB19B;
-
-    alter table jahia_pwd_policy_rules 
-        drop 
-        foreign key FK2BC650026DA1D1E6;
-
     drop table if exists jahia_contenthistory;
 
     drop table if exists jahia_db_test;
-
-    drop table if exists jahia_installedpatch;
-
-    drop table if exists jahia_pwd_policies;
-
-    drop table if exists jahia_pwd_policy_rule_params;
-
-    drop table if exists jahia_pwd_policy_rules;
-
-    drop table if exists jahia_version;
 
     create table jahia_contenthistory (
         id varchar(32) not null,
@@ -37,62 +19,3 @@
         testfield varchar(255) not null,
         primary key (testfield)
     ) ENGINE=InnoDB;
-
-    create table jahia_installedpatch (
-        install_number integer not null,
-        build integer,
-        install_date datetime,
-        name varchar(100),
-        result_code integer,
-        primary key (install_number)
-    ) ENGINE=InnoDB;
-
-    create table jahia_pwd_policies (
-        jahia_pwd_policy_id integer not null,
-        name varchar(255) not null,
-        primary key (jahia_pwd_policy_id)
-    ) ENGINE=InnoDB;
-
-    create table jahia_pwd_policy_rule_params (
-        jahia_pwd_policy_rule_param_id integer not null,
-        name varchar(50) not null,
-        position_index integer not null,
-        param_type char(1) not null,
-        param_value varchar(255),
-        jahia_pwd_policy_rule_id integer not null,
-        primary key (jahia_pwd_policy_rule_param_id)
-    ) ENGINE=InnoDB;
-
-    create table jahia_pwd_policy_rules (
-        jahia_pwd_policy_rule_id integer not null,
-        rule_action char(1) not null,
-        active bit not null,
-        rule_condition longtext not null,
-        evaluator char(1) not null,
-        last_rule bit not null,
-        name varchar(255) not null,
-        periodical bit not null,
-        position_index integer not null,
-        jahia_pwd_policy_id integer not null,
-        primary key (jahia_pwd_policy_rule_id)
-    ) ENGINE=InnoDB;
-
-    create table jahia_version (
-        install_number integer not null,
-        build integer,
-        install_date datetime,
-        release_number varchar(20),
-        primary key (install_number)
-    ) ENGINE=InnoDB;
-
-    alter table jahia_pwd_policy_rule_params 
-        add index FKBE451EF45A0DB19B (jahia_pwd_policy_rule_id), 
-        add constraint FKBE451EF45A0DB19B 
-        foreign key (jahia_pwd_policy_rule_id) 
-        references jahia_pwd_policy_rules (jahia_pwd_policy_rule_id);
-
-    alter table jahia_pwd_policy_rules 
-        add index FK2BC650026DA1D1E6 (jahia_pwd_policy_id), 
-        add constraint FK2BC650026DA1D1E6 
-        foreign key (jahia_pwd_policy_id) 
-        references jahia_pwd_policies (jahia_pwd_policy_id);

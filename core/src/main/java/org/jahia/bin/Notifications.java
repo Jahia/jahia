@@ -41,54 +41,26 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.camel.CamelExecutionException;
 import org.jahia.bin.errors.DefaultErrorHandler;
-import org.jahia.exceptions.JahiaBadRequestException;
-import org.jahia.exceptions.JahiaForbiddenAccessException;
 import org.jahia.params.ProcessingContext;
-import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.mail.MailService;
 import org.jahia.services.mail.MailServiceImpl;
 import org.jahia.services.rbac.Permission;
 import org.jahia.services.rbac.PermissionIdentity;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 
 /**
  * Performs various notification-related tasks.
  * 
  * @author Sergiy Shyrkov
  */
-public class Notifications extends MultiActionController {
+public class Notifications extends JahiaMultiActionController {
 
 	private static Logger logger = LoggerFactory.getLogger(Notifications.class);
 
 	private static final Permission REQUERIED_PERMISSION = new PermissionIdentity(
 	        "global/email-settings");
-
-	/**
-	 * Simple utility method to retrieve a parameter from a request and throws
-	 * an {@link JahiaBadRequestException} (results in a 400 error) in case the
-	 * parameter is not found.
-	 * 
-	 * @param request
-	 *            The current HttpServletRequest
-	 * @param name
-	 *            The parameter name
-	 * @return A String containing the value of the given parameter
-	 * @throws JahiaBadRequestException
-	 *             in case the parameter is not found in the request
-	 */
-	public static String getParameter(final HttpServletRequest request, final String name)
-	        throws JahiaBadRequestException {
-		final String value = request.getParameter(name);
-		if (value == null) {
-			throw new JahiaBadRequestException("Missing required '" + name
-			        + "' parameter in request.");
-		}
-		return value;
-	}
 
 	private MailServiceImpl mailService;
 
@@ -105,11 +77,7 @@ public class Notifications extends MultiActionController {
 	public void testEmail(HttpServletRequest request, HttpServletResponse response)
 	        throws ServletException, IOException {
 		try {
-			JahiaUser user = JCRTemplate.getInstance().getSessionFactory().getCurrentUser();
-			if (!user.isPermitted(REQUERIED_PERMISSION)) {
-				throw new JahiaForbiddenAccessException(
-				        "You have not enough permissions to use this service");
-			}
+			checkUserAuthorized();
 
 			String host = getParameter(request, "host");
 			String from = getParameter(request, "from");
@@ -159,5 +127,10 @@ public class Notifications extends MultiActionController {
 			DefaultErrorHandler.getInstance().handle(e, request, response);
 		}
 	}
+
+	@Override
+    protected Permission getRequiredPermission() {
+	    return REQUERIED_PERMISSION;
+    }
 
 }

@@ -43,7 +43,7 @@ import javax.jcr.NamespaceRegistry;
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 
-import org.apache.axis.utils.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.id.PropertyId;
 import org.apache.jackrabbit.core.query.QueryHandlerContext;

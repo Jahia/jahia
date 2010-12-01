@@ -362,28 +362,6 @@
     </servlet>
 
     <servlet>
-        <display-name>Axis Admin Servlet</display-name>
-        <servlet-name>AdminServlet</servlet-name>
-        <servlet-class>
-            org.apache.axis.transport.http.AdminServlet
-        </servlet-class>
-        <load-on-startup>100</load-on-startup>
-    </servlet>
-
-    <servlet>
-        <display-name>SOAPMonitorService</display-name>
-        <servlet-name>SOAPMonitorService</servlet-name>
-        <servlet-class>
-            org.apache.axis.monitor.SOAPMonitorService
-        </servlet-class>
-        <init-param>
-            <param-name>SOAPMonitorPort</param-name>
-            <param-value>5001</param-value>
-        </init-param>
-        <load-on-startup>100</load-on-startup>
-    </servlet>
-
-    <servlet>
         <servlet-name>WelcomeServlet</servlet-name>
         <servlet-class>org.jahia.bin.WelcomeServlet</servlet-class>
     </servlet>
@@ -543,15 +521,6 @@
         <load-on-startup>7</load-on-startup>
     </servlet>
 
-    <!-- Axis (SOAP) Servlets -->
-    <servlet>
-        <display-name>Apache-Axis Servlet</display-name>
-        <servlet-name>AxisServlet</servlet-name>
-        <servlet-class>
-            org.apache.axis.transport.http.AxisServlet
-        </servlet-class>
-    </servlet>
-
     <servlet>
         <servlet-name>ValidateTicket</servlet-name>
         <servlet-class>org.jahia.bin.ValidateTicket</servlet-class>
@@ -680,32 +649,6 @@
     <servlet-mapping>
         <servlet-name>ValidateTicket</servlet-name>
         <url-pattern>/validateTicket</url-pattern>
-    </servlet-mapping>
-
-    <!-- Axis (SOAP) Mappings -->
-    <servlet-mapping>
-        <servlet-name>AxisServlet</servlet-name>
-        <url-pattern>/servlet/AxisServlet</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>AxisServlet</servlet-name>
-        <url-pattern>*.jws</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>AxisServlet</servlet-name>
-        <url-pattern>/services/*</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>SOAPMonitorService</servlet-name>
-        <url-pattern>/SOAPMonitor</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>AdminServlet</servlet-name>
-        <url-pattern>/servlet/AdminServlet</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>

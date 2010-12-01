@@ -20,15 +20,6 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-        <!--
-        <repository>
-            <id>jboss-maven2</id>
-            <url>http://repository.jboss.com/maven2</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        -->
         <repository>
         	<id>jboss-public</id>
         	<url>http://repository.jboss.org/nexus/content/groups/public-jboss</url>
@@ -282,11 +273,6 @@
             <groupId>antlr</groupId>
             <artifactId>antlr</artifactId>
             <version>2.7.7</version>
-        </dependency>
-        <dependency>
-            <groupId>axis</groupId>
-            <artifactId>axis</artifactId>
-            <version>1.4</version>
         </dependency>
 
         <dependency>
@@ -776,42 +762,6 @@
             <version>1.3.4-jahia6</version>
         </dependency>
 
-        <!-- jackrabbit dependencies -->
-
-        <dependency>
-            <groupId>net.java.dev.javacc</groupId>
-            <artifactId>javacc</artifactId>
-            <version>3.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-jta_1.1_spec</artifactId>
-            <version>1.1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>xmlrpc</groupId>
-            <artifactId>xmlrpc</artifactId>
-            <version>1.2</version>
-        </dependency>
-        <!-- hibernate dependent package and package for test purpose -->
-        <dependency>
-            <groupId>opensymphony</groupId>
-            <artifactId>oscache</artifactId>
-            <version>2.4</version>
-        </dependency>
-
-        <!-- Dependencies for JAMon monitoring library -->
-        <dependency>
-            <groupId>com.jamonapi</groupId>
-            <artifactId>jamon</artifactId>
-            <version>2.7</version>
-        </dependency>
-        <dependency>
-            <groupId>com.jamonapi</groupId>
-            <artifactId>fdsapi</artifactId>
-            <version>1.2</version>
-        </dependency>
-        <!-- End of dependencies for JAMon monitoring library -->
         <!-- gwt -->
         <dependency>
             <groupId>com.google.gwt</groupId>
@@ -870,12 +820,6 @@
             <version>0.1</version>
         </dependency>
 
-
-        <!--<dependency>
-            <groupId>xpp3</groupId>
-            <artifactId>xpp3</artifactId>
-            <version>1.1.4c</version>
-        </dependency>-->
 
         <!-- JSON dependencies -->
         <dependency>

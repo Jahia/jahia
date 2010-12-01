@@ -95,18 +95,6 @@
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
 
-<!-- 
-    <bean id="patchesAdministrationModule" class="org.jahia.admin.patches.ManagePatches" parent="abstractAdministrationModule">
-        <property name="urlKey" value="patches" />
-        <property name="permissionName" value="global/patches" />
-        <property name="name" value="patches" />
-        <property name="icon" value="package_view" />
-        <property name="label" value="label.patchmanagement" />
-        <property name="urlAction" value="patches" />
-        <property name="urlParams" value="" />
-    </bean>
--->    
-
     <bean id="infoAdministrationModule" class="org.jahia.admin.info.LicenseInfo" parent="abstractAdministrationModule">
         <property name="urlKey" value="info" />
         <property name="permissionName" value="global/about" />

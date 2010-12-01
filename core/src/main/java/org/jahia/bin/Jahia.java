@@ -51,11 +51,8 @@
 package org.jahia.bin;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.jahia.params.*;
 import org.jahia.services.JahiaAfterInitializationService;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.usermanager.JahiaUser;
 import org.slf4j.Logger;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.data.JahiaData;
@@ -81,7 +78,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 

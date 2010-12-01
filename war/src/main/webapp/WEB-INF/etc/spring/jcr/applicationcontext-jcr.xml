@@ -274,23 +274,15 @@
         </property>
     </bean>
 
-    <bean id="org.jahia.services.content.rules.ImageService" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.content.rules.ImageService" factory-method="getInstance"/>
-        </property>
-    </bean>
+    <bean id="org.jahia.services.content.rules.ImageService" class="org.jahia.services.content.rules.ImageService" factory-method="getInstance"/>
 
-    <bean id="org.jahia.services.content.rules.Service" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.content.rules.Service" factory-method="getInstance">
-                <property name="taggingService" ref="org.jahia.services.tags.TaggingService"/>
-                <property name="cacheService" ref="JahiaCacheService"/>
-                <property name="schedulerService" ref="SchedulerService"/>
-                <property name="sitesService" ref="JahiaSitesService"/>
-                <property name="userManagerService" ref="JahiaUserManagerService"/>
-                <property name="passwordPolicyService" ref="JahiaPasswordPolicyService"/>
-            </bean>
-        </property>
+    <bean id="org.jahia.services.content.rules.Service" class="org.jahia.services.content.rules.Service" factory-method="getInstance">
+			<property name="taggingService" ref="org.jahia.services.tags.TaggingService" />
+			<property name="cacheService" ref="JahiaCacheService" />
+			<property name="schedulerService" ref="SchedulerService" />
+			<property name="sitesService" ref="JahiaSitesService" />
+			<property name="userManagerService" ref="JahiaUserManagerService" />
+			<property name="passwordPolicyService" ref="JahiaPasswordPolicyService" />
     </bean>
 
 </beans>

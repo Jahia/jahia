@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.axis.utils.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.util.ClientUtils;
 
 /**
@@ -33,8 +33,11 @@ import org.apache.solr.client.solrj.util.ClientUtils;
  * @since solr 1.3
  */
 public class FacetField implements Serializable {
-    public static class Count implements Serializable {
-        private String _name = null;
+    private static final long serialVersionUID = 6313667516557183142L;
+
+	public static class Count implements Serializable {
+        private static final long serialVersionUID = 6023672742347285073L;
+		private String _name = null;
         private long _count = 0;
         // hang onto the FacetField for breadcrumb creation convenience
         private FacetField _ff = null;

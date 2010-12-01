@@ -5,9 +5,7 @@
 
     <bean class="org.jahia.services.render.RenderService$RenderServiceBeanPostProcessor"/>
 
-    <bean id="RenderService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.render.RenderService" parent="jahiaServiceTemplate" factory-method="getInstance">
+    <bean id="RenderService" class="org.jahia.services.render.RenderService" parent="jahiaServiceTemplate" factory-method="getInstance">
                 <property name="storeService" ref="JCRStoreService" />
                 <property name="templateManagerService" ref="JahiaTemplateManagerService" />
                 <property name="scriptResolvers">
@@ -127,9 +125,6 @@
                         </bean>
                     </list>
                 </property>
-            </bean>
-        </property>
-
     </bean>
 
     <bean id="org.jahia.services.render.filter.URLTraverser" class="org.jahia.services.render.filter.HtmlTagAttributeTraverser">

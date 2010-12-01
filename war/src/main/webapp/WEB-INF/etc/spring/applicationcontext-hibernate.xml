@@ -16,11 +16,6 @@
         <property name="annotatedClasses">
             <list>
                 <value>org.jahia.hibernate.model.JahiaDbTest</value>
-                <value>org.jahia.hibernate.model.JahiaInstalledPatch</value>
-                <value>org.jahia.hibernate.model.JahiaPwdPolicy</value>
-                <value>org.jahia.hibernate.model.JahiaPwdPolicyRule</value>
-                <value>org.jahia.hibernate.model.JahiaPwdPolicyRuleParam</value>
-                <value>org.jahia.hibernate.model.JahiaVersion</value>
                 <value>org.jahia.services.history.HistoryEntry</value>
             </list>
         </property>

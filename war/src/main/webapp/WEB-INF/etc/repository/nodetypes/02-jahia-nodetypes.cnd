@@ -253,6 +253,9 @@
 [jnt:passwordHistory] > nt:base
  + * (jnt:passwordHistoryEntry)
 
+[jnt:passwordPolicy] > nt:base
+ - j:policy (string) indexed=no
+
 [jnt:user] > jnt:systemNode, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:observable
  - j:accountLocked (boolean)=false autocreated
  - j:password (string) indexed=no

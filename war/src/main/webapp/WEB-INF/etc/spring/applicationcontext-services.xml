@@ -5,16 +5,6 @@
 
     <bean class="org.jahia.services.SpringContextSingleton" factory-method="getInstance"/>
 
-    <bean id="proxyTemplate" abstract="true"
-          class="org.springframework.aop.framework.ProxyFactoryBean">
-        <property name="interceptorNames">
-            <list>
-                <value>performanceInterceptor</value>
-            </list>
-        </property>
-        <property name="proxyTargetClass" value="true"/>
-    </bean>
-
     <bean id="jahiaServiceTemplate" class="org.jahia.services.JahiaService" abstract="true" init-method="start"
           destroy-method="stop">
         <property name="settingsBean" ref="settingsBean"/>
@@ -36,76 +26,52 @@
     </bean>
     <bean id="PortletDispatchingProvider" class="org.jahia.services.applications.pluto.PlutoDispatchingProvider"
           init-method="start" destroy-method="stop"/>
-    <bean id="DispatchingService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.applications.DispatchingServiceImpl" parent="jahiaServiceTemplate"
-                  factory-method="getInstance">
-                <property name="dispatchingProviders">
-                    <map>
-                        <entry key="portlet" value-ref="PortletDispatchingProvider"/>
-                    </map>
-                </property>
-                <property name="applicationsManager" ref="ApplicationsManagerService"/>
-            </bean>
-        </property>
-    </bean>
+	<bean id="DispatchingService" class="org.jahia.services.applications.DispatchingServiceImpl"
+		parent="jahiaServiceTemplate" factory-method="getInstance">
+		<property name="dispatchingProviders">
+			<map>
+				<entry key="portlet" value-ref="PortletDispatchingProvider" />
+			</map>
+		</property>
+		<property name="applicationsManager" ref="ApplicationsManagerService" />
+	</bean>
     <bean id="ServletContextManager" class="org.jahia.services.applications.ServletContextManager"
           factory-method="getInstance" init-method="start">
         <property name="cacheService" ref="JahiaCacheService"/>
     </bean>
-    <bean id="QueryService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.query.QueryServiceImpl" parent="jahiaServiceTemplate"
-                  factory-method="getInstance">
-            </bean>
-        </property>
-    </bean>
+	<bean id="QueryService" class="org.jahia.services.query.QueryServiceImpl"
+		parent="jahiaServiceTemplate" factory-method="getInstance" />
     <bean id="ApplicationsManagerPortletProvider"
           class="org.jahia.services.applications.pluto.ApplicationsManagerPlutoProvider" init-method="start"
           destroy-method="stop"/>
-    <bean id="ApplicationsManagerService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.applications.ApplicationsManagerServiceImpl" parent="jahiaServiceTemplate"
-                  factory-method="getInstance">
-                <property name="managerProviders">
-                    <map>
-                        <entry key="portlet" value-ref="ApplicationsManagerPortletProvider"/>
-                    </map>
-                </property>
-                <property name="jcrTemplate" ref="jcrTemplate"/>
-                <property name="cacheService" ref="JahiaCacheService"/>
-                <property name="groupManagerService" ref="JahiaGroupManagerService"/>
-                <property name="servletContextManager" ref="ServletContextManager"/>
-                <property name="plutoServices" ref="PlutoServices"/>
-            </bean>
-        </property>
-    </bean>
-    <bean id="JahiaFetcherService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.fetchers.JahiaFetcherBaseService" parent="jahiaServiceTemplate"
-                  factory-method="getInstance">
-            </bean>
-        </property>
-    </bean>
-    <bean id="JahiaFileWatcherService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.deamons.filewatcher.JahiaFileWatcherBaseService"
-                  parent="jahiaServiceTemplate" factory-method="getInstance">
-                <property name="schedulerService" ref="SchedulerService"/>
-            </bean>
-        </property>
-    </bean>
+	<bean id="ApplicationsManagerService"
+		class="org.jahia.services.applications.ApplicationsManagerServiceImpl"
+		parent="jahiaServiceTemplate" factory-method="getInstance">
+		<property name="managerProviders">
+			<map>
+				<entry key="portlet" value-ref="ApplicationsManagerPortletProvider" />
+			</map>
+		</property>
+		<property name="jcrTemplate" ref="jcrTemplate" />
+		<property name="cacheService" ref="JahiaCacheService" />
+		<property name="groupManagerService" ref="JahiaGroupManagerService" />
+		<property name="servletContextManager" ref="ServletContextManager" />
+		<property name="plutoServices" ref="PlutoServices" />
+	</bean>
+    <bean id="JahiaFetcherService" class="org.jahia.services.fetchers.JahiaFetcherBaseService" parent="jahiaServiceTemplate"
+                  factory-method="getInstance"/>
+	<bean id="JahiaFileWatcherService"
+		class="org.jahia.services.deamons.filewatcher.JahiaFileWatcherBaseService"
+		parent="jahiaServiceTemplate" factory-method="getInstance">
+		<property name="schedulerService" ref="SchedulerService" />
+	</bean>
     <bean id="JahiaSitesService" class="org.jahia.services.sites.JahiaSitesBaseService" parent="jahiaServiceTemplate"
           factory-method="getInstance" lazy-init="true">
         <property name="groupService" ref="JahiaGroupManagerService"/>
         <property name="cacheService" ref="JahiaCacheService"/>
         <property name="siteProvider">
-            <bean parent="txProxyTemplate">
-                <property name="target">
-                    <bean class="org.jahia.services.sites.jcr.JCRSitesProvider">
-                        <property name="jcrTemplate" ref="jcrTemplate"/>
-                    </bean>
-                </property>
+            <bean class="org.jahia.services.sites.jcr.JCRSitesProvider">
+                <property name="jcrTemplate" ref="jcrTemplate"/>
             </bean>
         </property>
         <property name="sessionFactory" ref="jcrSessionFactory"/>
@@ -115,38 +81,24 @@
         <property name="systemSiteTemplateSetName" value="templates-system"/>
     </bean>
 
-    <bean id="CategoryService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.categories.CategoryServiceImpl" parent="jahiaServiceTemplate"
-                  factory-method="getInstance">
-                <property name="categoryProvider" ref="org.jahia.services.categories.jcr.JCRCategoryProvider"/>
-            </bean>
-        </property>
+	<bean id="CategoryService" class="org.jahia.services.categories.CategoryServiceImpl"
+		parent="jahiaServiceTemplate" factory-method="getInstance">
+		<property name="categoryProvider"
+			ref="org.jahia.services.categories.jcr.JCRCategoryProvider" />
+	</bean>
+    
+    <bean id="org.jahia.services.categories.jcr.JCRCategoryProvider" class="org.jahia.services.categories.jcr.JCRCategoryProvider">
+		<property name="sessionFactory" ref="jcrSessionFactory"/>
     </bean>
-    <bean id="org.jahia.services.categories.jcr.JCRCategoryProvider" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.categories.jcr.JCRCategoryProvider">
-                <property name="sessionFactory" ref="jcrSessionFactory"/>
-            </bean>
-        </property>
-    </bean>
-    <bean id="org.jahia.services.tags.TaggingService" parent="txProxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.tags.TaggingService"/>
-        </property>
-    </bean>
+    
+    <bean id="org.jahia.services.tags.TaggingService" class="org.jahia.services.tags.TaggingService"/>
 
-    <bean id="ImportExportService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.importexport.ImportExportBaseService" parent="jahiaServiceTemplate"
-                  factory-method="getInstance">
-                <property name="sitesService" ref="JahiaSitesService"/>
-                <property name="jcrStoreService" ref="JCRStoreService"/>
-                <property name="fileWatcherService" ref="JahiaFileWatcherService"/>
-                <property name="categoryService" ref="CategoryService"/>
-            </bean>
-        </property>
-    </bean>
+	<bean id="ImportExportService" class="org.jahia.services.importexport.ImportExportBaseService" parent="jahiaServiceTemplate" factory-method="getInstance">
+		<property name="sitesService" ref="JahiaSitesService" />
+		<property name="jcrStoreService" ref="JCRStoreService" />
+		<property name="fileWatcherService" ref="JahiaFileWatcherService" />
+		<property name="categoryService" ref="CategoryService" />
+	</bean>
 
     <bean id="org.jahia.services.templates.TemplatePackageRegistry"
           class="org.jahia.services.templates.TemplatePackageRegistry">
@@ -172,28 +124,15 @@
         <property name="contextConfigLocation" value="modules/**/META-INF/spring/*.xml"/>
     </bean>
 
-    <bean id="VersionService" class="org.jahia.version.VersionService" parent="jahiaServiceTemplate"
-          factory-method="getInstance">
-        <property name="jahiaVersionManager" ref="org.jahia.hibernate.manager.JahiaVersionManager"/>
-        <property name="patchManager" ref="org.jahia.hibernate.manager.JahiaInstalledPatchManager"/>
-    </bean>
+	<bean id="org.jahia.services.tasks.TaskService" class="org.jahia.services.tasks.TaskService">
+		<property name="groupManager" ref="JahiaGroupManagerService" />
+	</bean>
 
-    <bean id="org.jahia.services.tasks.TaskService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.tasks.TaskService">
-                <property name="groupManager" ref="JahiaGroupManagerService"/>
-            </bean>
-        </property>
-    </bean>
-
-    <bean id="SearchService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.search.SearchServiceImpl" parent="jahiaServiceTemplate"
-                  factory-method="getInstance">
-                <property name="searchProvider" ref="org.jahia.services.search.jcr.JahiaJCRSearchProvider"/>
-            </bean>
-        </property>
-    </bean>
+	<bean id="SearchService" class="org.jahia.services.search.SearchServiceImpl"
+		parent="jahiaServiceTemplate" factory-method="getInstance">
+		<property name="searchProvider"
+			ref="org.jahia.services.search.jcr.JahiaJCRSearchProvider" />
+	</bean>
 
     <bean id="org.jahia.services.search.jcr.JahiaJCRSearchProvider"
           class="org.jahia.services.search.jcr.JahiaJCRSearchProvider">

@@ -7,11 +7,6 @@
 	<session-factory>
 		<property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property>
 		<mapping class="org.jahia.hibernate.model.JahiaDbTest" />
-		<mapping class="org.jahia.hibernate.model.JahiaInstalledPatch" />
-		<mapping class="org.jahia.hibernate.model.JahiaPwdPolicy" />
-		<mapping class="org.jahia.hibernate.model.JahiaPwdPolicyRule" />
-		<mapping class="org.jahia.hibernate.model.JahiaPwdPolicyRuleParam" />
-		<mapping class="org.jahia.hibernate.model.JahiaVersion" />
 		<mapping class="org.jahia.services.history.HistoryEntry" />
 	</session-factory>
 </hibernate-configuration>

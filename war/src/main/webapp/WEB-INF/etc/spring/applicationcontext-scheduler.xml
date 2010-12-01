@@ -65,15 +65,11 @@
             </props>
         </property>
     </bean>
-    <!-- The scheduler service is required for the file watchers to work properly -->
-    <bean id="SchedulerService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.scheduler.SchedulerServiceImpl" parent="jahiaServiceTemplate"
-                  factory-method="getInstance">
-                <property name="scheduler" ref="scheduler"/>
-                <property name="ramscheduler" ref="ramScheduler"/>
-                <property name="serverId" value="${cluster.node.serverId}"/>
-            </bean>
-        </property>
-    </bean>
+
+	<bean id="SchedulerService" class="org.jahia.services.scheduler.SchedulerServiceImpl"
+		parent="jahiaServiceTemplate" factory-method="getInstance">
+		<property name="scheduler" ref="scheduler" />
+		<property name="ramscheduler" ref="ramScheduler" />
+		<property name="serverId" value="${cluster.node.serverId}" />
+	</bean>
 </beans>

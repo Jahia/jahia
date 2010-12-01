@@ -159,11 +159,6 @@
         <priority value="info"/>
     </category>
 
-    <category name="org.jahia.spring.aop.interceptor">
-        <!-- Set this to trace to activate JAMon monitoring -->
-        <priority value="info"/>
-    </category>
-
     <category name="accessLogger" additivity="false">
         <appender-ref ref="hitAccess"/>
         <appender-ref ref="camelNotification"/>

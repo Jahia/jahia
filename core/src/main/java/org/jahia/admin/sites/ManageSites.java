@@ -2051,21 +2051,6 @@ public class ManageSites extends AbstractAdministrationModule {
 
     private void redirectAfterAdd(HttpServletRequest request, HttpServletResponse response, HttpSession session)
             throws IOException, ServletException {
-        if (session.getAttribute(CLASS_NAME + "redirectToJahia") != null) {
-            session.removeAttribute(CLASS_NAME + "redirectToJahia");
-            try {
-                List<?> l = ServicesRegistry.getInstance().getSchedulerService().getAllActiveJobsDetails();
-                if (!l.isEmpty()) {
-                    JahiaAdministration.doRedirect(request, response, session, JSP_PATH + "import_wait.jsp");
-                } else {
-                    JahiaAdministration.doRedirect(request, response, session, JSP_PATH + "site_created.jsp");
-                    //response.sendRedirect(request.getContextPath());
-                }
-            } catch (JahiaException e) {
-                logger.error("Cannot get jobs", e);
-            }
-        } else {
-            displayList(request, response, session);
-        }
+        displayList(request, response, session);
     }
 }

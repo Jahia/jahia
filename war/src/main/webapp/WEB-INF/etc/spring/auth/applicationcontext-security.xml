@@ -12,11 +12,6 @@
                 /viewCache/* = authcBasic, roles[toolManager]
                 /tools/* = authcBasic, roles[toolManager]
                 
-                /servlet/AxisServlet = authcBasic, roles[webServiceManager]
-                /services/* = authcBasic, roles[webServiceManager]
-                /SOAPMonitor = authcBasic, roles[webServiceManager]
-                *.jws = authcBasic, roles[webServiceManager]
-                
                 /precompileServlet = authcBasic, roles[templateManager]
                 
                 /modules/**/META-INF/** = authcBasic, roles[templateManager]
@@ -33,7 +28,7 @@
     <bean name="textConfigurationRealm" class="org.jahia.services.security.shiro.SpringTextConfigurationRealm">
         <property name="userDefinitions">
             <value>
-                jahia=password,toolManager,webServiceManager,templateManager
+                jahia=password,toolManager,templateManager
             </value>
         </property>
     </bean>

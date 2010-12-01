@@ -272,33 +272,6 @@
 		                    </execution>
 		                </executions>
 		            </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.groovy.maven</groupId>
-                        <artifactId>gmaven-plugin</artifactId>
-                        <dependencies>
-                            <dependency>
-                                <groupId>org.hibernate</groupId>
-                                <artifactId>hibernate-core</artifactId>
-                                <version>${hibernate.version}</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>org.jahia.server</groupId>
-                                <artifactId>jahia-impl</artifactId>
-                                <version>${jahia.package.version}</version>
-                            </dependency>
-                        </dependencies>
-                        <executions>
-                            <execution>
-                                <phase>generate-resources</phase>
-                                <goals>
-                                    <goal>execute</goal>
-                                </goals>
-                                <configuration>
-                                    <source>${pom.basedir}/tools/generateSequences.groovy</source>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
                 </plugins>
             </build>
         </profile>

@@ -19,26 +19,22 @@ if an entry have more than this value of dependencies then
 when we flush this entry we will flush the whole cache-->
         <property name="groupsSizeLimit" value="100"/>
     </bean>
-    <bean id="JahiaCacheService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.cache.CacheFactory" parent="jahiaServiceTemplate" factory-method="getInstance" init-method="start">
-                <property name="cacheProviders">
-                    <map>
-                        <entry key="DEFAULT_CACHE" value-ref="org.jahia.services.cache.CacheProvider"/>
-                        <entry key="EH_CACHE" value-ref="ehCacheProvider"/>
-                    </map>
-                </property>
-                <property name="cacheProviderForCache">
-                    <map>
-                        <entry key="SkeletonCache" value="EH_CACHE"/>
-                        <entry key="ContainerHTMLCache" value="EH_CACHE"/>
-                        <entry key="LockAlreadyAcquiredMap" value="EH_CACHE"/>
-                        <entry key="LockPrerequisitesResultMap" value="EH_CACHE"/>
-                        <entry key="WebdavCache" value="EH_CACHE"/>
-                    </map>
-                </property>
-            </bean>
-        </property>
+    <bean id="JahiaCacheService" class="org.jahia.services.cache.CacheFactory" parent="jahiaServiceTemplate" factory-method="getInstance" init-method="start">
+		<property name="cacheProviders">
+			<map>
+				<entry key="DEFAULT_CACHE" value-ref="org.jahia.services.cache.CacheProvider" />
+				<entry key="EH_CACHE" value-ref="ehCacheProvider" />
+			</map>
+		</property>
+		<property name="cacheProviderForCache">
+			<map>
+				<entry key="SkeletonCache" value="EH_CACHE" />
+				<entry key="ContainerHTMLCache" value="EH_CACHE" />
+				<entry key="LockAlreadyAcquiredMap" value="EH_CACHE" />
+				<entry key="LockPrerequisitesResultMap" value="EH_CACHE" />
+				<entry key="WebdavCache" value="EH_CACHE" />
+			</map>
+		</property>
     </bean>
 
 	<bean id="ResponseCacheControlFilter" class="org.jahia.bin.filters.ResponseCacheControlFilter">
@@ -121,6 +117,18 @@ when we flush this entry we will flush the whole cache-->
 
     <bean id="nonMainResourceCacheFilter" class="org.jahia.services.render.filter.cache.CacheFilter" parent="cacheFilter">
         <property name="skipOnMainResource" value="true"/>
+    </bean>
+
+    <bean name="cacheMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="urlMap">
+            <map>
+                <entry key="/cache/**">
+					<bean class="org.jahia.bin.CacheController">
+						<property name="cacheService" ref="JahiaCacheService"/>
+					</bean>
+                </entry>
+            </map>
+        </property>
     </bean>
 
 </beans>

@@ -32,14 +32,13 @@
 
 package org.jahia.services.importexport;
 
-import org.apache.axis.utils.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.util.ISO9075;
 import org.apache.jackrabbit.value.ValueHelper;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -50,7 +49,7 @@ import javax.jcr.*;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * Handler for export in a document view format.
  * User: toto
  * Date: Dec 17, 2009
  * Time: 3:02:35 PM

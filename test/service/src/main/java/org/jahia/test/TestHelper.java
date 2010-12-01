@@ -32,8 +32,8 @@
 
 package org.jahia.test;
 
-import org.apache.axis.utils.StringUtils;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.StringUtils;
 import org.jahia.admin.database.DatabaseScripts;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;

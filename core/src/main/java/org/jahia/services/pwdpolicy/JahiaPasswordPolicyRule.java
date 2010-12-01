@@ -82,7 +82,7 @@ public class JahiaPasswordPolicyRule implements Serializable, Cloneable {
 
 	private char evaluator = EVALUATOR_JAVA;
 
-	private int id;
+	private String id;
 
 	private boolean lastRule;
 
@@ -109,7 +109,7 @@ public class JahiaPasswordPolicyRule implements Serializable, Cloneable {
 	 * @param condition
 	 * @param action
 	 */
-	public JahiaPasswordPolicyRule(int id, String name, boolean active,
+	public JahiaPasswordPolicyRule(String id, String name, boolean active,
 	        boolean periodical, boolean lastRule, char evaluator,
 	        String condition, char action) {
 		this();
@@ -246,7 +246,7 @@ public class JahiaPasswordPolicyRule implements Serializable, Cloneable {
 	 * 
 	 * @return the rule id
 	 */
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
@@ -362,7 +362,7 @@ public class JahiaPasswordPolicyRule implements Serializable, Cloneable {
 	 * @param id
 	 *            the rule id to set
 	 */
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

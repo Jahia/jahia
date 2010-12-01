@@ -53,8 +53,8 @@ import javax.jcr.query.qom.PropertyValue;
 import javax.jcr.query.qom.StaticOperand;
 import javax.servlet.jsp.JspTagException;
 
-import org.apache.axis.utils.StringUtils;
 import org.apache.commons.collections.FastHashMap;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Creates a query constraint, using comparison.

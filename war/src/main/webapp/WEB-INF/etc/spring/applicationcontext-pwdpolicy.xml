@@ -3,17 +3,16 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
-       
-    <bean id="JahiaPasswordPolicyService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyService" parent="jahiaServiceTemplate" factory-method="getInstance">
-            	<property name="policyEnforcementEnabled" value="true"/>
-                <property name="passwordPolicyManager" ref="org.jahia.hibernate.manager.JahiaPasswordPolicyManager" />
-                <property name="defaultPasswordPolicy" ref="defaultJahiaPasswordPolicy" />
-                <property name="userManagerService" ref="JahiaUserManagerService"/>
-            </bean>
-        </property>
-    </bean>
+
+	<bean id="JahiaPasswordPolicyService" class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyService"
+		parent="jahiaServiceTemplate" factory-method="getInstance">
+		<property name="policyEnforcementEnabled" value="true" />
+		<property name="passwordPolicyManager">
+			<bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyManager"/>
+		</property>
+		<property name="defaultPasswordPolicy" ref="defaultJahiaPasswordPolicy" />
+		<property name="userManagerService" ref="JahiaUserManagerService" />
+	</bean>
 
     <bean id="defaultJahiaPasswordPolicy" class="org.jahia.services.pwdpolicy.JahiaPasswordPolicy">
         <property name="name" value="Default Password Policy"/>

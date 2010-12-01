@@ -50,7 +50,7 @@ public class JahiaPasswordPolicy implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = 7340082798180832549L;
 
-	private int id;
+	private String id;
 
 	private String name;
 
@@ -69,7 +69,7 @@ public class JahiaPasswordPolicy implements Serializable, Cloneable {
 	 * @param id
 	 * @param name
 	 */
-	public JahiaPasswordPolicy(int id, String name,
+	public JahiaPasswordPolicy(String id, String name,
 	        boolean userAllowedToChangePassword) {
 		this();
 		this.id = id;
@@ -114,7 +114,7 @@ public class JahiaPasswordPolicy implements Serializable, Cloneable {
 	 * 
 	 * @return the policy id
 	 */
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
@@ -157,7 +157,7 @@ public class JahiaPasswordPolicy implements Serializable, Cloneable {
 	 * @param id
 	 *            the policy id to set
 	 */
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

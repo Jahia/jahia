@@ -119,7 +119,6 @@
 <div id="contributeToolbar" >
 
     <div id="edit">
-		<img title="" alt="" src="${url.context}/icons/editContent.png"/>
     <a href="#" id="delete-${currentNode.identifier}" onclick="deleteNodes();"><fmt:message
             key="label.delete"/></a>
     <a href="#" id="copy-${currentNode.identifier}" onclick="copyNodes();"><fmt:message key="label.copy"/></a>

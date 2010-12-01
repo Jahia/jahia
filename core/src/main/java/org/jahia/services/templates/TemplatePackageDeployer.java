@@ -435,7 +435,7 @@ class TemplatePackageDeployer implements ServletContextAware, ApplicationEventPu
     }
 
     public void startWatchdog() {
-        long interval = 1000; // settingsBean.isDevelopmentMode() ? 5000 : SettingsBean.getInstance().getTemplatesObserverInterval();
+        long interval = settingsBean.isDevelopmentMode() ? 5000 : SettingsBean.getInstance().getTemplatesObserverInterval();
         if (interval <= 0) {
             return;
         }

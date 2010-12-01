@@ -40,6 +40,7 @@ import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
 import org.json.JSONObject;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.LinkedList;
@@ -80,7 +81,10 @@ public class CheckClipboardAction implements Action {
             json.put("uuids", uuids);
             List<String> paths = new LinkedList<String>();
             for (String uuid : uuids) {
-                paths.add(resource.getNode().getSession().getNodeByUUID(uuid).getPath());
+                try {
+                    paths.add(resource.getNode().getSession().getNodeByUUID(uuid).getPath());
+                } catch (RepositoryException e) {                    
+                }
             }
             json.put("paths",paths);
             json.put("size", uuids.size());

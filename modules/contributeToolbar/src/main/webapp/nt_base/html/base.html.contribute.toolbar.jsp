@@ -17,10 +17,7 @@
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js"/>
 <template:addResources type="css" resources="contribute-toolbar.css"/>
 <script>
-    var contributeTarget;
-    var contributeReplaceTarget;
-    var contributeReplaceUrl;
-
+    var contributeParams = new Array();
     /*
      $("#delete-${currentNode.identifier}").button();
      $("#copy-${currentNode.identifier}").button();
@@ -35,11 +32,18 @@
         return uuids;
     }
 
+    function reload() {
+        for(var i=0; i < contributeParams.length; i++ ){
+
+            $("#" + contributeParams[i].contributeReplaceTarget).load(contributeParams[i].contributeReplaceUrl, '', null);
+        }
+    }
+
     function deleteNodes() {
         var uuids = getUuids();
         if (uuids.length > 0) {
-            $.post("${url.base}"+contributeTarget+".deleteNodes.do", {"uuids": uuids}, function(result) {
-                $("#"+contributeReplaceTarget).load(contributeReplaceUrl,'',null);
+            $.post("${url.base}${renderContext.mainResource.node.path}.deleteNodes.do", {"uuids": uuids}, function(result) {
+                reload();
             }, 'json');
         }
     }
@@ -47,7 +51,7 @@
     function copyNodes() {
         var uuids = getUuids();
         if (uuids.length > 0) {
-            $.post("${url.base}"+contributeTarget+".copy.do", {"uuids": uuids}, function(result) {
+            $.post("${url.base}${renderContext.mainResource.node.path}.copy.do", {"uuids": uuids}, function(result) {
                 showClipboard();
             }, 'json');
         }
@@ -56,7 +60,7 @@
     function cutNodes() {
         var uuids = getUuids();
         if (uuids.length > 0) {
-            $.post("${url.base}"+contributeTarget+".cut.do", {"uuids": uuids}, function(result) {
+            $.post("${url.base}${renderContext.mainResource.node.path}.cut.do", {"uuids": uuids}, function(result) {
                 showClipboard();
             }, 'json');
         }
@@ -65,28 +69,28 @@
     function publishNodes() {
         var uuids = getUuids();
         if (uuids.length > 0) {
-            $.post("${url.base}"+contributeTarget+".publishNodes.do", {"uuids": uuids}, function(result) {
-                $("#"+contributeReplaceTarget).load(contributeReplaceUrl,'',null);
+            $.post("${url.base}${renderContext.mainResource.node.path}.publishNodes.do", {"uuids": uuids}, function(result) {
+                reload();
             }, 'json');
         }
     }
 
-    function pasteNodes() {
-        $.post("${url.base}"+contributeTarget+".paste.do", {}, function(result) {
-            $("#"+contributeReplaceTarget).load(contributeReplaceUrl,'',null);
+    function pasteNodes(contributeParams) {
+        $.post("${url.base}"+contributeParams.contributeTarget+".paste.do", {}, function(result) {
+            reload();
             hideClipboard();
         }, 'json');
     }
 
     function emptyClipboard() {
-        $.post("${url.base}"+contributeTarget+".emptyclipboard.do", {}, function(result) {
+        $.post("${url.base}${renderContext.mainResource.node.path}.emptyclipboard.do", {}, function(result) {
             hideClipboard();
         }, 'json');
     }
 
     function showClipboard() {
         $.post("${url.base}${renderContext.mainResource.node.path}.checkclipboard.do", {}, function(result) {
-            $("#paste-${currentNode.identifier}").show();
+            $(".pastelink").show();
             $("#empty-${currentNode.identifier}").show();
             $("#clipboard-${currentNode.identifier}").html('<fmt:message key="label.clipboard.contains"/> ' + result.size +
                                                            ' element(s)</span></a>');
@@ -105,7 +109,7 @@
     }
 
     function hideClipboard() {
-        $("#paste-${currentNode.identifier}").hide();
+        $(".pastelink").hide();
         $("#empty-${currentNode.identifier}").hide();
         $("#clipboard-${currentNode.identifier}").hide();
     }
@@ -119,27 +123,21 @@
 <div id="contributeToolbar" >
 
     <div id="edit">
-    <a href="#" id="delete-${currentNode.identifier}" onclick="deleteNodes();"><fmt:message
+    <a href="#" id="delete-${currentNode.identifier}" onclick="deleteNodes();"><img src="${url.context}/icons/delete.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; "><fmt:message
             key="label.delete"/></a>
-    <a href="#" id="copy-${currentNode.identifier}" onclick="copyNodes();"><fmt:message key="label.copy"/></a>
-    <a href="#" id="cut-${currentNode.identifier}" onclick="cutNodes();"><fmt:message key="label.cut"/></a>
-    <a href="#" id="publish-${currentNode.identifier}" onclick="publishNodes();"><fmt:message key="label.publication"/></a>
-    <a href="#" id="paste-${currentNode.identifier}" onclick="pasteNodes();" style="display:none;"><fmt:message
-            key="label.paste"/></a>
-    <a href="#" id="empty-${currentNode.identifier}" onclick="emptyClipboard();" style="display:none;"><fmt:message
+    <a href="#" id="copy-${currentNode.identifier}" onclick="copyNodes();"><img src="${url.context}/icons/copy.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; "><fmt:message key="label.copy"/></a>
+    <a href="#" id="cut-${currentNode.identifier}" onclick="cutNodes();"><img src="${url.context}/icons/cut.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; "><fmt:message key="label.copy"/></a>
+    <a href="#" id="publish-${currentNode.identifier}" onclick="publishNodes();"><img src="${url.context}/icons/publish.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; "><fmt:message key="label.publication"/></a>
+    <a href="#" id="empty-${currentNode.identifier}" onclick="emptyClipboard();" style="display:none;"><img src="${url.context}/icons/clipboard.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; "><fmt:message
             key="label.clipboard.reset"/></a>
-    <a href="#clipboardpreview-${currentNode.identifier}" id="clipboard-${currentNode.identifier}" style="display:none;"><fmt:message
+    <a href="#clipboardpreview-${currentNode.identifier}" id="clipboard-${currentNode.identifier}" style="display:none;"><img src="${url.context}/icons/clipboard.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; "><fmt:message
             key="label.clipboard.contains"/></a>
-    <a href="${url.base}${jcr:getSystemSitePath()}/home/my-profile.html"><fmt:message
+    <a href="${url.base}${jcr:getSystemSitePath()}/home/my-profile.html"><img src="${url.context}/icons/user.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; "><fmt:message
             key="label.goto.myTasks"/></a>
 
-    <a href="${url.context}/engines/manager.jsp?conf=editorialcontentmanager&site=${renderContext.site.identifier}&selectedPaths=${currentNode.path}"><fmt:message
+    <a href="${url.context}/engines/manager.jsp?conf=editorialcontentmanager&site=${renderContext.site.identifier}&selectedPaths=${currentNode.path}"><img src="${url.context}/icons/contentManager.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; "><fmt:message
             key="label.contentmanager"/></a>
     </div>
-    <div id="newContent" style="display:none" >
-		<img title="" alt="" src="${url.context}/icons/newContent.png"/>
-    </div>
-
     <div style="display:none;">
     <div id="clipboardpreview-${currentNode.identifier}">
     </div>

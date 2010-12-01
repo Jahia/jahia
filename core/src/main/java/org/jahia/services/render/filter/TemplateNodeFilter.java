@@ -56,15 +56,12 @@ public class TemplateNodeFilter extends AbstractFilter {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(TemplateNodeFilter.class);
 
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
-        if (renderContext.getRequest().getAttribute("skipWrapper") == null) {
+        if (renderContext.getRequest().getAttribute("skipWrapper") == null && !renderContext.isAjaxRequest()) {
             chain.pushAttribute(renderContext.getRequest(), "inWrapper", Boolean.TRUE);
             Template template = null;
             Template previousTemplate = null;
             if (renderContext.getRequest().getAttribute("templateSet") == null) {
                 template = pushBodyWrappers(resource, renderContext);
-                if (template == null && !renderContext.isAjaxRequest()) {
-                    throw new TemplateNotFoundException(resource.getTemplate());
-                }
                 renderContext.getRequest().setAttribute("templateSet", Boolean.TRUE);
             } else {
                 previousTemplate = (Template) renderContext.getRequest().getAttribute("previousTemplate");
@@ -73,7 +70,7 @@ public class TemplateNodeFilter extends AbstractFilter {
                 }
             }
 
-            if (template != null && !renderContext.isAjaxRequest()) {
+            if (template != null) {
                 try {
                     JCRNodeWrapper templateNode = resource.getNode().getSession().getNodeByIdentifier(template.node);
                     renderContext.getRequest().setAttribute("previousTemplate", template);
@@ -110,7 +107,7 @@ public class TemplateNodeFilter extends AbstractFilter {
     }
 
 
-    public Template pushBodyWrappers(Resource resource, RenderContext renderContext) {
+    public Template pushBodyWrappers(Resource resource, RenderContext renderContext) throws Exception{
         final JCRNodeWrapper node = resource.getNode();
         String templateName = resource.getTemplate();
         if ("default".equals(templateName)) {
@@ -158,6 +155,8 @@ public class TemplateNodeFilter extends AbstractFilter {
                                 null, templateNode.getIdentifier(), template);
                         templateNode = templateNode.getParent();
                     }
+                } else {
+                    throw new TemplateNotFoundException(resource.getTemplate());
                 }
             }
         } catch (RepositoryException e) {

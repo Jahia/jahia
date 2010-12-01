@@ -15,6 +15,8 @@
               description="The include children checkbox text." %>
 <%@ attribute name="onSelect" required="false" type="java.lang.String"
               description="The JavaScript function to be called after an item is selectd. Three paramaters are passed as arguments: node identifier, node path and display name. If the function retuns true, the value will be also set into the field value. Otherwise nothing will be done by this tag." %>
+<%@ attribute name="onClose" required="false" type="java.lang.String"
+              description="The JavaScript function to be called after window is closed." %>
 <%@ attribute name="nodeTypes" required="false" type="java.lang.String"
               description="Comma-separated list of node types to filter out the tree. [jnt:page,jnt:virtualsite]" %>
 <%@ attribute name="selectableNodeTypes" required="false" type="java.lang.String"
@@ -34,6 +36,6 @@
 <c:if test="${empty label}"><c:set var="label"><fmt:message key="selectors.pageSelector.selectPage"/></c:set></c:if>
 <c:if test="${empty includeChildrenLabel}"><c:set var="includeChildrenLabel"><fmt:message key="selectors.pageSelector.selectPage.includeChildren"/></c:set></c:if>
 <uiComponents:treeItemSelector fieldId="${fieldId}" displayFieldId="${displayFieldId}" fieldIdIncludeChildren="${fieldIdIncludeChildren}" displayIncludeChildren="${functions:default(displayIncludeChildren, 'true')}"
-	includeChildren="${functions:default(includeChildren, 'true')}" label="${label}" includeChildrenLabel="${includeChildrenLabel}" onSelect="${onSelect}"
+	includeChildren="${functions:default(includeChildren, 'true')}" label="${label}" includeChildrenLabel="${includeChildrenLabel}" onSelect="${onSelect}" onClose="${onClose}"
 	nodeTypes="${functions:default(nodeTypes, 'jnt:page,jnt:virtualsite')}" selectableNodeTypes="${functions:default(selectableNodeTypes, 'jnt:page')}"
 	root="${root}" valueType="${valueType}" fancyboxOptions="${fancyboxOptions}" treeviewOptions="${treeviewOptions}"/>

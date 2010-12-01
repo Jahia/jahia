@@ -15,6 +15,8 @@
               description="The include children checkbox text." %>
 <%@ attribute name="onSelect" required="false" type="java.lang.String"
               description="The JavaScript function to be called after an item is selectd. Three paramaters are passed as arguments: node identifier, node path and display name. If the function retuns true, the value will be also set into the field value. Otherwise nothing will be done by this tag." %>
+<%@ attribute name="onClose" required="false" type="java.lang.String"
+              description="The JavaScript function to be called after window is closed." %>
 <%@ attribute name="nodeTypes" required="false" type="java.lang.String"
               description="Comma-separated list of node types to filter out the tree. Empty by default, i.e. all nodes will be displayed." %>
 <%@ attribute name="selectableNodeTypes" required="false" type="java.lang.String"
@@ -46,7 +48,7 @@
     </template:addResources>
     <template:addResources>
         <script type="text/javascript">
-            function jahiaCreateTreeItemSelector(fieldId, displayFieldId, baseUrl, root, nodeTypes, selectableNodeTypes, valueType, onSelect, treeviewOptions, fancyboxOptions) {
+            function jahiaCreateTreeItemSelector(fieldId, displayFieldId, baseUrl, root, nodeTypes, selectableNodeTypes, valueType, onSelect, onClose, treeviewOptions, fancyboxOptions) {
                 $("#" + fieldId + "-treeItemSelectorTrigger").fancybox($.extend({
                     autoDimensions: false,
                     height: 600,
@@ -55,6 +57,10 @@
                     hideOnContentClick: false,
                     onClosed : function(){
                         $("#" + fieldId + "-treeItemSelectorTree").empty();
+
+                        if (onClose && (typeof onClose == 'function')) {
+			                    onClose();
+                        }
                     },
                     onComplete: function () {
                         var queryString = (nodeTypes.length > 0 ? "nodeTypes=" + encodeURIComponent(nodeTypes) : "") + (selectableNodeTypes.length > 0 ? "&selectableNodeTypes=" + encodeURIComponent(selectableNodeTypes) : "");
@@ -82,8 +88,7 @@
                 }, fancyboxOptions));
             }
         </script>
-    </template:addResources>
-    <c:set var="org.jahia.tags.treeItemSelector.resources" value="true" scope="request"/>
+    </template:addResources>    <c:set var="org.jahia.tags.treeItemSelector.resources" value="true" scope="request"/>
 </c:if>
 <c:set var="root" value="${functions:default(root, renderContext.site.path)}"/>
 <c:set var="displayIncludeChildren" value="${functions:default(displayIncludeChildren, 'true')}"/>
@@ -100,7 +105,7 @@
 </c:if>
 <template:addResources>
     <script type="text/javascript">
-        $(document).ready(function() { jahiaCreateTreeItemSelector("${fieldId}", "${displayFieldId}", "${url.base}", "${root}", "${nodeTypes}", "${selectableNodeTypes}", "${valueType}", ${not empty onSelect ? onSelect : 'null'}, ${not empty treeviewOptions ? treeviewOptions :  'null'}, ${not empty fancyboxOptions ? fancyboxOptions : 'null'}); });
+        $(document).ready(function() { jahiaCreateTreeItemSelector("${fieldId}", "${displayFieldId}", "${url.base}", "${root}", "${nodeTypes}", "${selectableNodeTypes}", "${valueType}", ${not empty onSelect ? onSelect : 'null'}, ${not empty onClose ? onClose : 'null'}, ${not empty treeviewOptions ? treeviewOptions :  'null'}, ${not empty fancyboxOptions ? fancyboxOptions : 'null'}); });
     </script>
 </template:addResources>
 

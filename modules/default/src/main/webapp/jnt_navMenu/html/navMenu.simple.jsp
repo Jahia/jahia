@@ -55,13 +55,14 @@
 </c:if>
 
 <%--render (id and class)--%>
-<c:if test="${!empty layoutID}">
-    <div id="${layoutID.string}">
+<c:if test="${navMenuLevel == 1}">
+    <c:if test="${!empty layoutID}">
+        <div id="${layoutID.string}">
+    </c:if>
+    <c:if test="${!empty styleName }">
+        <div class="${styleName.string}">
+    </c:if>
 </c:if>
-<c:if test="${!empty styleName}">
-    <div class="${styleName.string}">
-</c:if>
-
 
 <ul>
     <c:forEach items="${items}" var="menuItem">
@@ -78,10 +79,10 @@
             <c:when test="${startLevelValue < navMenuLevel}">
                 <c:if test="${(startLevelValue < navMenuLevel or inpath) and correctType}">
                     <li>
-                        <%--if level, path and type matches, display menu and its children--%>
+                            <%--if level, path and type matches, display menu and its children--%>
                         <template:module node="${menuItem}" template="${menuItemTemplate}" editable="false"/>
                         <c:if test="${hasChildren}">
-                            <template:include template="default">
+                            <template:include template="simple">
                                 <template:param name="base" value="${menuItem.identifier}"/>
                                 <template:param name="navMenuLevel" value="${navMenuLevel + 1}"/>
                                 <template:param name="omitFormatting" value="true"/>
@@ -92,7 +93,7 @@
             </c:when>
             <c:otherwise>
                 <c:if test="${hasChildren}">
-                    <template:include template="default">
+                    <template:include template="simple">
                         <template:param name="base" value="${menuItem.identifier}"/>
                         <template:param name="navMenuLevel" value="${navMenuLevel + 1}"/>
                         <template:param name="omitFormatting" value="true"/>
@@ -103,11 +104,12 @@
 
     </c:forEach>
 </ul>
+<c:if test="${navMenuLevel == 1}">
+    <c:if test="${!empty styleName}">
+        </div>
+    </c:if>
 
-<c:if test="${!empty styleName}">
-    </div>
-</c:if>
-
-<c:if test="${!empty layoutID}">
-    </div>
+    <c:if test="${!empty layoutID}">
+        </div>
+    </c:if>
 </c:if>

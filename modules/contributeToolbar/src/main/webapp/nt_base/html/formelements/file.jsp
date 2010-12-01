@@ -20,12 +20,13 @@
 <template:addResources type="javascript" resources="jquery.min.js,jquery.jeditable.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.ajaxupload.js"/>
 <template:addResources type="javascript" resources="jquery.ajaxfileupload.js"/>
+<template:addResources type="javascript" resources="jquery.defer.js"/>
 <label for="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">${jcr:labelInNodeType(propertyDefinition,renderContext.mainResourceLocale,type)}</label>
 <input type="hidden" name="${propertyDefinition.name}" id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"/>
 <fmt:message key="label.select.file" var="fileLabel"/>
 <ui:fileSelector fieldId="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}"
                  displayFieldId="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" valueType="identifier"
-        label="${fileLabel}"/>
+        label="${fileLabel}" onClose="$.defer( 200, function() { $.fancybox($('#${currentResource.moduleParams.fancyboxid}')); })"/>
 <span><fmt:message key="label.or"/></span>
 <div id="file${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}" jcr:id="${scriptTypeName}${fn:replace(propertyDefinition.name,':','_')}">
     <span><fmt:message key="add.file"/></span>

@@ -69,50 +69,51 @@
 
 </div>
 <c:if test="${not renderContext.ajaxRequest}">
-    <%-- include add nodes forms --%>
-    <c:set var="types" value="${jcr:getContributeTypes(currentNode, null)}"/>
+    <script type="text/javascript">
+        var contributeTarget = "${currentNode.path}";
+        var contributeReplaceTarget = "${currentNode.UUID}";
+        var contributeReplaceUrl = "${url.base}${currentNode.path}.${currentResource.template}.html.ajax";
+    </script>
 
     <h3 class="titleaddnewcontent">
         <img title="" alt="" src="${url.templatesPath}/default/images/add.png"/><fmt:message key="label.add.new.content"/>
     </h3>
 
-    <script language="JavaScript">
-        var contributeTarget = "${currentNode.path}";
-        var contributeReplaceTarget = "${currentNode.UUID}";
-        var contributeReplaceUrl = "${url.base}${currentNode.path}.contribute.default.html.ajax";
+    <c:set var="types" value="${jcr:getContributeTypes(currentNode, null)}"/>
 
-        <c:forEach items="${types}" var="type" varStatus="status">
-        animatedcollapse.addDiv('add${currentNode.identifier}-${status.index}', 'fade=1,speed=700,group=newContent');
-        </c:forEach>
-        animatedcollapse.ontoggle = function($,divobj,state){
-            if(state == 'block') {
-                // div is expanded
-                var selector = ".newContentCkeditorContribute${currentNode.identifier}"+$("#"+divobj.id).attr("jcr:nodetype");
-                $(selector).each(function() { $(this).ckeditor() })
-            } else {
-                var selector = ".newContentCkeditorContribute${currentNode.identifier}"+$("#"+divobj.id).attr("jcr:nodetype");
-                $(selector).each(function() { if ($(this).data('ckeditorInstance')) { $(this).data('ckeditorInstance').destroy()  } });
-            }
-        };
-        animatedcollapse.init();
-    </script>
     <c:if test="${types != null}">
         <c:forEach items="${types}" var="nodeType" varStatus="status">
-                    <a href="#add${currentNode.identifier}-${status.index}" onclick="animatedcollapse.toggle('add${currentNode.identifier}-${status.index}');"><span
-                            class="icon-contribute icon-add"></span>${jcr:label(nodeType, renderContext.mainResourceLocale)}
-                    </a> 
+            <a href="#add${currentNode.identifier}-${status.index}" id="addButton${currentNode.identifier}-${status.index}"><span
+                class="icon-contribute icon-add"></span>${jcr:label(nodeType, renderContext.mainResourceLocale)}
+            </a>
         </c:forEach>
 
         <c:forEach items="${types}" var="nodeType" varStatus="status">
-            <a name="add${currentNode.identifier}-${status.index}"></a>
-            <div style="display:none;" id="add${currentNode.identifier}-${status.index}" class="addContentContributeDiv" jcr:nodetype="${fn:replace(type.string,':','_')}">
+
+            <%-- todo: move to ajax calls --%>
+
+            <div style="display:none;"><div id="add${currentNode.identifier}-${status.index}" class="addContentContributeDiv${currentNode.identifier}" style="width:800px;">
                 <template:module node="${currentNode}" template="contribute.add">
+                    <template:param name="fancyboxid" value="add${currentNode.identifier}-${status.index}"/>
                     <template:param name="resourceNodeType" value="${nodeType.name}"/>
-                    <template:param name="currentListURL" value="${url.current}.ajax"/>
-                    <template:param name="addContentCallbackJS"
-                                    value="$('.addContentContributeDiv').each(function(index,value){animatedcollapse.addDiv($(this).attr('id'), 'fade=1,speed=700,group=tasks');});animatedcollapse.reinit();"/>
                 </template:module>
-            </div>
+            </div></div>
         </c:forEach>
+
+        <script type="text/javascript">
+            $(document).ready(function() {
+                <c:forEach items="${types}" var="nodeType" varStatus="status">
+                    $("#addButton${currentNode.identifier}-${status.index}").fancybox({
+                        'onComplete':function() {
+                            $(".newContentCkeditorContribute${currentNode.identifier}${fn:replace(nodeType.name,':','_')}").each(function() { $(this).ckeditor() })
+                        },
+
+                        'onCleanup':function() {
+                            $(".newContentCkeditorContribute${currentNode.identifier}${fn:replace(nodeType.name,':','_')}").each(function() { if ($(this).data('ckeditorInstance')) { $(this).data('ckeditorInstance').destroy()  } });
+                        }
+                    })
+                </c:forEach>
+            });
+        </script>
     </c:if>
 </c:if>

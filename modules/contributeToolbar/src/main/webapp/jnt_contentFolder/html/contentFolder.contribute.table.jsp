@@ -119,12 +119,22 @@
     <script type="text/javascript">
         var contributeTarget = "${currentNode.path}";
         var contributeReplaceTarget = "${currentNode.UUID}";
-        var contributeReplaceUrl = "${url.base}${currentNode.path}.contribute.table.html.ajax";
+        var contributeReplaceUrl = "${url.base}${currentNode.path}.${currentResource.template}.html.ajax";
     </script>
-    <%-- include add nodes forms --%>
+
+    <h3 class="titleaddnewcontent">
+        <img title="" alt="" src="${url.templatesPath}/default/images/add.png"/><fmt:message key="label.add.new.content"/>
+    </h3>
+
     <c:set var="types" value="${jcr:getContributeTypes(currentNode, null)}"/>
 
     <c:if test="${types != null}">
+        <c:forEach items="${types}" var="nodeType" varStatus="status">
+            <a href="#add${currentNode.identifier}-${status.index}" id="addButton${currentNode.identifier}-${status.index}"><span
+                class="icon-contribute icon-add"></span>${jcr:label(nodeType, renderContext.mainResourceLocale)}
+            </a>
+        </c:forEach>
+
         <c:forEach items="${types}" var="nodeType" varStatus="status">
 
             <%-- todo: move to ajax calls --%>
@@ -134,10 +144,11 @@
                     <template:param name="resourceNodeType" value="${nodeType.name}"/>
                 </template:module>
             </div></div>
-            <script type="text/javascript">
-                $(document).ready(function() {
-                    $("#newContent").append('<a href="#add${currentNode.identifier}-${status.index}" id="addButton${currentNode.identifier}-${status.index}">Add ${jcr:label(nodeType, renderContext.mainResourceLocale)}</a>');
+        </c:forEach>
 
+        <script type="text/javascript">
+            $(document).ready(function() {
+                <c:forEach items="${types}" var="nodeType" varStatus="status">
                     $("#addButton${currentNode.identifier}-${status.index}").fancybox({
                         'onComplete':function() {
                             $(".newContentCkeditorContribute${currentNode.identifier}${fn:replace(nodeType.name,':','_')}").each(function() { $(this).ckeditor() })
@@ -147,8 +158,8 @@
                             $(".newContentCkeditorContribute${currentNode.identifier}${fn:replace(nodeType.name,':','_')}").each(function() { if ($(this).data('ckeditorInstance')) { $(this).data('ckeditorInstance').destroy()  } });
                         }
                     })
-                });
-            </script>
-        </c:forEach>
+                </c:forEach>
+            });
+        </script>
     </c:if>
 </c:if>

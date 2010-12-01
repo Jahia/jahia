@@ -83,6 +83,18 @@
                 </tabularList>
               </pagecontent>
             </editContent>
+              <viewContent jcr:primaryType="jnt:contentTemplate" j:requiredMode="normal" j:applyOn="jnt:content">
+                <pagecontent jcr:primaryType="jnt:contentList">
+                  <mainResourceDisplay-table j:mainResourceView="contribute.table" jcr:primaryType="jnt:mainResourceDisplay" />
+                  <mainResourceDisplay j:mainResourceView="default" jcr:primaryType="jnt:mainResourceDisplay" />
+                </pagecontent>
+              </viewContent>
+              <fileTemplate jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:file">
+                <pagecontent jcr:primaryType="jnt:contentList">
+                  <mainResourceDisplay-table j:mainResourceView="contribute.table" jcr:primaryType="jnt:mainResourceDisplay" />
+                  <mainResourceDisplay j:mainResourceView="detail" jcr:primaryType="jnt:mainResourceDisplay" />
+                </pagecontent>
+              </fileTemplate>
           <my-profile jcr:primaryType="jnt:pageTemplate">
             <pagecontent jcr:primaryType="jnt:contentList">
               <tabularList jcr:primaryType="jnt:tabularList">

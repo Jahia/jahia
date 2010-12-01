@@ -36,9 +36,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.exceptions.JahiaForbiddenAccessException;
+import org.jahia.exceptions.JahiaUnauthorizedException;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.rbac.Permission;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 
 /**
@@ -92,7 +94,10 @@ public abstract class JahiaMultiActionController extends MultiActionController {
 
 	protected void checkUserAuthorized() throws JahiaForbiddenAccessException {
 		JahiaUser user = JCRTemplate.getInstance().getSessionFactory().getCurrentUser();
-		if (!user.isPermitted(getRequiredPermission())) {
+		if (JahiaUserManagerService.isGuest(user)) {
+			throw new JahiaUnauthorizedException(
+			        "You need to euthenticate yourself to use this service");
+		} else if (!user.isPermitted(getRequiredPermission())) {
 			throw new JahiaForbiddenAccessException(
 			        "You have not enough permissions to use this service");
 		}

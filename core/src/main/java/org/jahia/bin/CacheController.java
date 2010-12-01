@@ -40,6 +40,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.exceptions.JahiaBadRequestException;
+import org.jahia.exceptions.JahiaUnauthorizedException;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.rbac.Permission;
@@ -79,6 +80,8 @@ public class CacheController extends JahiaMultiActionController {
 				throw new JahiaBadRequestException("Unable to find cache for name '" + name + "'");
 			}
 			response.setStatus(HttpServletResponse.SC_OK);
+		} catch (JahiaUnauthorizedException ue) {
+			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ue.getMessage());
 		} catch (Exception e) {
 			DefaultErrorHandler.getInstance().handle(e, request, response);
 		}

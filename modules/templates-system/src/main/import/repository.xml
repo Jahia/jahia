@@ -122,6 +122,7 @@
               <mainResourceDisplay j:mainResourceView="default" jcr:primaryType="jnt:mainResourceDisplay" />
             </pagecontent>
           </newsletters>
+          <newsletter jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:newsletterIssue" />
           <header jcr:primaryType="jnt:contentList">
             <header column="1col16" jcr:primaryType="jnt:row" />
           </header>

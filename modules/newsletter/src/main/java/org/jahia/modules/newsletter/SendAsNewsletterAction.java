@@ -32,26 +32,24 @@
 
 package org.jahia.modules.newsletter;
 
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
+import org.jahia.bin.ActionResult;
+import org.jahia.bin.BaseAction;
+import org.jahia.services.content.*;
+import org.jahia.services.content.rules.BackgroundAction;
+import org.jahia.services.mail.MailService;
+import org.jahia.services.notification.HtmlExternalizationService;
+import org.jahia.services.notification.Subscription;
+import org.jahia.services.notification.SubscriptionService;
+import org.jahia.services.render.*;
+import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.utils.PaginatedList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.servlet.http.HttpServletRequest;
-
-import org.jahia.bin.ActionResult;
-import org.jahia.bin.BaseAction;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
-import org.jahia.services.content.rules.BackgroundAction;
-import org.jahia.services.render.RenderContext;
-import org.jahia.services.render.Resource;
-import org.jahia.services.render.URLResolver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.*;
 
 /**
  * An action and a background task that sends the content of the specified node as a newsletter
@@ -67,36 +65,89 @@ public class SendAsNewsletterAction extends BaseAction implements BackgroundActi
 
 	private static final Logger logger = LoggerFactory.getLogger(SendAsNewsletterAction.class);
 
-	public void executeBackgroundAction(final JCRNodeWrapper node) {
-		logger.info("Sending content of the node {} as a newsletter", node.getPath());
-		long timer = System.currentTimeMillis();
-		
-		// TODO do send the newsletter
+    private RenderService renderService;
+    private HtmlExternalizationService htmlExternalizationService;
+    private SubscriptionService subscriptionService;
+    private MailService mailService;
 
-		try {
-			JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
-				public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-					session.checkout(node);
-					node.setProperty(J_SCHEDULED, (Value) null);
-					node.setProperty(J_LAST_SENT, Calendar.getInstance());
-					session.save();
+    public void setRenderService(RenderService renderService) {
+        this.renderService = renderService;
+    }
 
-					return Boolean.TRUE;
-				}
-			});
-		} catch (RepositoryException e) {
-			logger.warn("Unable to update properties for node " + node.getPath(), e);
-		}
+    public void setHtmlExternalizationService(HtmlExternalizationService htmlExternalizationService) {
+        this.htmlExternalizationService = htmlExternalizationService;
+    }
 
-		logger.info("The content of the node {} was sent as a newsletter in {} ms", node.getPath(),
-		        System.currentTimeMillis() - timer);
-	}
+    public void setSubscriptionService(SubscriptionService subscriptionService) {
+        this.subscriptionService = subscriptionService;
+    }
 
-	public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext,
+    public void setMailService(MailService mailService) {
+        this.mailService = mailService;
+    }
+
+    public void executeBackgroundAction(JCRNodeWrapper node) {
+        // do local post on node.getPath/sendAsNewsletter.do
+    }
+
+    public ActionResult doExecute(HttpServletRequest req, final RenderContext renderContext,
             Resource resource, Map<String, List<String>> parameters, URLResolver urlResolver)
             throws Exception {
+        final JCRNodeWrapper node = resource.getNode();
+
+        logger.info("Sending content of the node {} as a newsletter", node);
+
+        long timer = System.currentTimeMillis();
 
 		// TODO do send the newsletter
+
+        try {
+
+            Map<String, String> newsletterVersions = new HashMap<String, String>();
+
+            PaginatedList<Subscription> l = subscriptionService.getSubscriptions(node.getParent().getIdentifier(), null,false,0,0);
+
+            for (Subscription subscription : l.getData()) {
+                Locale locale = LanguageCodeConverters.languageCodeToLocale(node.getResolveSite().getDefaultLanguage());
+                String user = "guest";
+                String type = "html";
+
+                final String key = locale + user + type;
+                if (!newsletterVersions.containsKey(key)) {
+                    String out = JCRTemplate.getInstance().doExecute(false, user, "live", locale, new JCRCallback<String>() {
+                        public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            try {
+                                String out = renderService.render(new Resource(node, "html", null, "page"), renderContext);
+                                out = htmlExternalizationService.externalize(out, renderContext);
+                                return out;
+                            } catch (RenderException e) {
+                                throw new RepositoryException(e);
+                            }
+                        }
+                    });
+                    newsletterVersions.put(key, out);
+                }
+                String out = newsletterVersions.get(key);
+
+                mailService.sendHtmlMessage(mailService.defaultSender(), subscription.getEmail(), null,null,node.getName(), out);
+            }
+
+            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    session.checkout(node);
+                    node.setProperty(J_SCHEDULED, (Value) null);
+                    node.setProperty(J_LAST_SENT, Calendar.getInstance());
+                    session.save();
+
+                    return Boolean.TRUE;
+                }
+            });
+        } catch (RepositoryException e) {
+            logger.warn("Unable to update properties for node " + node.getPath(), e);
+        }
+
+        logger.info("The content of the node {} was sent as a newsletter in {} ms", node.getPath(),
+                System.currentTimeMillis() - timer);
 
 	    return ActionResult.OK;
     }

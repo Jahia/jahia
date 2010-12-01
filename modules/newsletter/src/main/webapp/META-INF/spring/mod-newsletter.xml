@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+    <bean class="org.jahia.modules.newsletter.SendAsNewsletterAction">
+        <property name="name" value="sendAsNewsletter"/>
+        <property name="renderService" ref="RenderService"/>
+        <property name="htmlExternalizationService" ref="HtmlExternalizationService"/>
+        <property name="subscriptionService" ref="subscriptionService"/>
+        <property name="mailService" ref="MailService"/>
+    </bean>
+
+    <bean class="org.jahia.modules.newsletter.SubscribeAction">
+        <property name="name" value="subscribe"/>
+    </bean>
+
+</beans>

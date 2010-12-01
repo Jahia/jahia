@@ -65,7 +65,7 @@
             </div>
         </td>
         <td align="center">
-        	<img src="<c:url value='/icons/jnt_newsletterIssueSent.png' context='${url.currentModule}'/>" height="24" width="24" alt=" "/>
+        	<a class="sendNewsletter" href="#" onclick="$.post('${url.base}${issue.path}.sendAsNewsletter.do', null, null, 'json')"><img src="<c:url value='/icons/jnt_newsletterIssueSent.png' context='${url.currentModule}'/>" height="24" width="24" alt=" "/></a>
         </td>
         </tr>
     </c:forEach>

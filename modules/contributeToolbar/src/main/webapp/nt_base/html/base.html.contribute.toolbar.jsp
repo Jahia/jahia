@@ -135,7 +135,7 @@
     <a href="${url.base}${jcr:getSystemSitePath()}/home/my-profile.html"><img src="${url.context}/icons/user.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; "><fmt:message
             key="label.goto.myTasks"/></a>
 
-    <a href="${url.context}/engines/manager.jsp?conf=editorialcontentmanager&site=${renderContext.site.identifier}&selectedPaths=${currentNode.path}"><img src="${url.context}/icons/contentManager.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; "><fmt:message
+    <a href="${url.context}/engines/manager.jsp?conf=editorialcontentmanager&site=${renderContext.site.identifier}&selectedPaths=${currentNode.path}" target="_blank"><img src="${url.context}/icons/contentManager.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; "><fmt:message
             key="label.contentmanager"/></a>
     </div>
     <div style="display:none;">

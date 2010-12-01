@@ -134,9 +134,17 @@
             key="label.clipboard.contains"/></a>
     <a href="${url.base}${jcr:getSystemSitePath()}/home/my-profile.html"><img src="${url.context}/icons/user.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; "><fmt:message
             key="label.goto.myTasks"/></a>
+    <c:choose>
+    <c:when test="${jcr:isNodeType(currentNode, 'jnt:folder')}">
+    <a href="${url.context}/engines/manager.jsp?conf=filemanager&site=${renderContext.site.identifier}&selectedPaths=${currentNode.path}" target="_blank"><img src="${url.context}/icons/fileManager.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; "><fmt:message
+            key="label.filemanager"/></a>
+    </c:when>
+    <c:otherwise>
+        <a href="${url.context}/engines/manager.jsp?conf=editorialcontentmanager&site=${renderContext.site.identifier}&selectedPaths=${currentNode.path}" target="_blank"><img src="${url.context}/icons/contentManager.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; "><fmt:message
+                key="label.contentmanager"/></a>
 
-    <a href="${url.context}/engines/manager.jsp?conf=editorialcontentmanager&site=${renderContext.site.identifier}&selectedPaths=${currentNode.path}" target="_blank"><img src="${url.context}/icons/contentManager.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; "><fmt:message
-            key="label.contentmanager"/></a>
+    </c:otherwise>
+    </c:choose>
     </div>
     <div style="display:none;">
     <div id="clipboardpreview-${currentNode.identifier}">

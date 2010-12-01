@@ -26,7 +26,14 @@
  
 [jmix:subscribable] > jmix:lockable mixin
  + j:subscriptions (jnt:subscriptions) = jnt:subscriptions mandatory autocreated
- + j:allowUnregisteredUsers (boolean) = true autocreated nofulltext
+ - j:allowUnregisteredUsers (boolean) = true autocreated nofulltext
+
+[jnt:subscriptionComponent] > jnt:content, mix:title
+ - j:target (weakreference) mandatory < jmix:subscribable
+ - j:fields (string,choicelist[resourceBundle]) multiple nofulltext mandatory < 'j:firstName', 'j:lastName', 'j:comment'
+
+[jnt:newsletterSubscription] > jnt:subscriptionComponent, jmix:siteComponent
+ - j:target (weakreference,choicelist[nodes='$currentSite/newsletters;jnt:newsletter']) mandatory < jnt:newsletter
 
 //---------------------------------------------------------
 // Newsletter

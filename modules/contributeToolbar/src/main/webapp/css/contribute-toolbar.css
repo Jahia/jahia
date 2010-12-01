@@ -1,0 +1,28 @@
+#contributeToolbar {
+    height:27px;
+    width:100%;
+    background: #03399c url(img/contribute-toolbar-bg.png) no-repeat top right;
+	line-height:24px;
+}
+ #contributeToolbar a, #contributeToolbar a:link, #contributeToolbar a:visited{
+	width:auto;
+    color: #fff;
+	padding:4px;
+	vertical-align: middle;
+	display:inline;
+	font-family:Arial,Verdana,Helvetica,sans-serif;
+	font-size:11px !important;
+	line-height:16px;
+	margin-bottom:5px;
+	margin-top:2px;
+	text-decoration:none
+}
+ #contributeToolbar a:hover, #contributeToolbar a:active{
+    background:#c6dcf6 url(img/contribute-toolbar-bg-a.png) repeat-x top left;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+    color: #333;
+	cursor: pointer;
+	text-decoration:none;
+}

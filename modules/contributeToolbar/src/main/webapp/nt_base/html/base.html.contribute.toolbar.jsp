@@ -15,6 +15,7 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js"/>
+<template:addResources type="css" resources="contribute-toolbar.css"/>
 <script>
     var contributeTarget;
     var contributeReplaceTarget;
@@ -136,7 +137,7 @@
     <a href="${url.context}/engines/manager.jsp?conf=editorialcontentmanager&site=${renderContext.site.identifier}&selectedPaths=${currentNode.path}"><fmt:message
             key="label.contentmanager"/></a>
     </div>
-    <div id="newContent" >
+    <div id="newContent" style="display:none" >
 		<img title="" alt="" src="${url.context}/icons/newContent.png"/>
     </div>
 

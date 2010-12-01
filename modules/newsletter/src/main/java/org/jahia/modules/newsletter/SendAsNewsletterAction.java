@@ -32,27 +32,73 @@
 
 package org.jahia.modules.newsletter;
 
+import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
+
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+import javax.servlet.http.HttpServletRequest;
+
+import org.jahia.bin.ActionResult;
+import org.jahia.bin.BaseAction;
+import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.rules.BackgroundAction;
+import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.Resource;
+import org.jahia.services.render.URLResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Background task that sends the content of the specified node as a newsletter
+ * An action and a background task that sends the content of the specified node as a newsletter
  * to its subscribers.
  * 
  * @author Sergiy Shyrkov
  */
-public class SendAsNewsletterAction implements BackgroundAction {
+public class SendAsNewsletterAction extends BaseAction implements BackgroundAction {
+
+	private static final String J_LAST_SENT = "j:lastSent";
+
+	private static final String J_SCHEDULED = "j:scheduled";
 
 	private static final Logger logger = LoggerFactory.getLogger(SendAsNewsletterAction.class);
 
-	public String getName() {
-		return "sendAsNewsletter";
+	public void executeBackgroundAction(final JCRNodeWrapper node) {
+		logger.info("Sending content of the node {} as a newsletter", node.getPath());
+		long timer = System.currentTimeMillis();
+		
+		// TODO do send the newsletter
+
+		try {
+			JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+				public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+					session.checkout(node);
+					node.setProperty(J_SCHEDULED, (Value) null);
+					node.setProperty(J_LAST_SENT, Calendar.getInstance());
+					session.save();
+
+					return Boolean.TRUE;
+				}
+			});
+		} catch (RepositoryException e) {
+			logger.warn("Unable to update properties for node " + node.getPath(), e);
+		}
+
+		logger.info("The content of the node {} was sent as a newsletter in {} ms", node.getPath(),
+		        System.currentTimeMillis() - timer);
 	}
 
-	public void executeBackgroundAction(JCRNodeWrapper node) {
-		logger.info("Sending content of the node {} as a newsletter", node.getPath());
-	}
+	public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext,
+            Resource resource, Map<String, List<String>> parameters, URLResolver urlResolver)
+            throws Exception {
+
+		// TODO do send the newsletter
+
+	    return ActionResult.OK;
+    }
 
 }

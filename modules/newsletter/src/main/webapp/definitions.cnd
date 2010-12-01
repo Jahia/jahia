@@ -24,8 +24,9 @@
  + * (jnt:subscription) = jnt:subscription
  + * (jnt:subscriptionFolder) = jnt:subscriptionFolder 
  
-[jmix:subscribable] mixin
+[jmix:subscribable] > jmix:lockable mixin
  + j:subscriptions (jnt:subscriptions) = jnt:subscriptions mandatory autocreated
+ + j:allowUnregisteredUsers (boolean) = true autocreated nofulltext
 
 //---------------------------------------------------------
 // Newsletter
@@ -38,5 +39,6 @@
  + * (jnt:newsletterIssue)
 
 [jnt:newsletterIssue] > jnt:content, mix:title, jmix:observable
+ - j:personalized (boolean) = false autocreated nofulltext
  - j:lastSent (date) protected nofulltext
  - j:scheduled (date) nofulltext

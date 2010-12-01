@@ -73,6 +73,8 @@ import au.com.bytecode.opencsv.CSVReader;
  */
 public class SubscriptionService {
 
+	private static final String J_ALLOW_UNREGISTERED_USERS = "j:allowUnregisteredUsers";
+
 	private static final String J_CONFIRMATION_KEY = "j:confirmationKey";
 
 	private static final String J_CONFIRMED = "j:confirmed";
@@ -489,8 +491,15 @@ public class SubscriptionService {
 						return Boolean.FALSE;
 					}
 					JCRNodeWrapper subscriptionsNode = target.getNode(J_SUBSCRIPTIONS);
-					boolean checkoutDone = false;
 					String targetPath = subscriptionsNode.getPath();
+					if (target.isLocked() || subscriptionsNode.isLocked()) {
+						logger.info(
+						        "The target {} is locked and no subscriptions can be created. Skipping {} subscribers.",
+						        targetPath, subscribers.size());
+					}
+					
+					boolean allowUnregisteredUsers = target.hasProperty(J_ALLOW_UNREGISTERED_USERS) ? target.getProperty(J_ALLOW_UNREGISTERED_USERS).getBoolean() : true;
+					boolean checkoutDone = false;
 					QueryManager queryManager = session.getWorkspace().getQueryManager();
 					if (queryManager == null) {
 						logger.error("Unable to obtain QueryManager instance");
@@ -503,6 +512,11 @@ public class SubscriptionService {
 							// we deal with a registered user
 							username = StringUtils.substringAfter(subscriber.getKey(), "}");
 							provider = StringUtils.substringBetween(subscriber.getKey(), "{", "}");
+						} else if (!allowUnregisteredUsers) {
+							logger.info(
+							        "The target {} does not allow unregistered users to be subscribed. Skipping subscription for {}.",
+							        targetPath, subscriber.getKey());
+							continue;
 						}
 
 						StringBuilder q = new StringBuilder(64);

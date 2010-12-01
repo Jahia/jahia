@@ -83,7 +83,7 @@ public abstract class BaseAction implements Action {
      * @see org.jahia.bin.Action#getName()
      */
     public String getName() {
-        return name;
+        return name != null ? name : StringUtils.uncapitalize(StringUtils.substringBeforeLast(getClass().getSimpleName(), "Action"));
     }
 
     /**

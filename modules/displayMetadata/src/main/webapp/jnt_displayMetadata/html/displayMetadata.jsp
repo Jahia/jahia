@@ -25,7 +25,7 @@
 </c:if>
 <c:if test="${not empty bindedComponent}">
     <p>
-        <h3>Metadata</h3>
+        <h4>Metadatas</h4>
     </p>
     <c:if test="${props.creationdate.boolean}">
         <p>

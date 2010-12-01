@@ -164,7 +164,11 @@ public class HtmlExternalizationService {
                     styleSheetContent = rewriteCssUrls(styleSheetContent, baseUrl);
                 }
 
-                sb.append(">\n").append("/* ").append(href).append(" */\n").append(styleSheetContent)
+                sb.append(">\n");
+                if (Boolean.valueOf(request.getParameter("debug"))) {
+                	sb.append("/* ").append(href).append(" */\n");
+                }
+                sb.append(styleSheetContent)
                         .append("\n</style>");
 
                 document.replace(linkTag, sb.toString());

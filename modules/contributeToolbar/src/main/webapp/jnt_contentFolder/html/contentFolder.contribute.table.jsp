@@ -107,6 +107,10 @@
         </c:forEach>
         </tbody>
     </table>
+	<c:if test="${moduleMap.editable and renderContext.editMode}">
+		<template:module path="*"/>
+	</c:if>
+
     <template:include templateType="html" template="hidden.footer"/>
 </div>
 

@@ -1077,9 +1077,6 @@ exercising activities with strong recurring profits. 
                         </L1000351.jpg>
                     </Photos>
                 </Pictures>
-                <themes jcr:uuid="537bcbbb-d759-44a3-9d3e-99907ffbb1e5" jcr:created="2010-11-22T16:47:11.676+01:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="" jcr:createdBy=" system " j:fullpath="/sites/ACME/themes" jcr:lastModified="2010-11-22T16:47:14.779+01:00">
-                    <default jcr:uuid="4d322170-5588-4a7c-871b-35f0ce00c55b" jcr:created="2010-11-22T16:47:11.677+01:00" jcr:primaryType="jnt:folder" jcr:lastModifiedBy="" jcr:createdBy=" system " j:fullpath="/sites/ACME/themes/default" jcr:lastModified="2010-11-22T16:47:14.779+01:00"></default>
-                </themes>
             </files>
             <portlets jcr:uuid="fcf789ee-ce9e-437b-aa9c-0eb105313999" jcr:created="2010-11-22T16:47:11.675+01:00" jcr:primaryType="jnt:portletFolder" jcr:lastModifiedBy="root" jcr:createdBy=" system " j:fullpath="/sites/ACME/portlets" jcr:lastModified="2010-11-22T16:47:35.579+01:00">
                 <RSS_x0020_News jcr:uuid="9c65b8de-2392-4c00-a85d-cb782faf6edc" jcr:mixinTypes="jmix:test" jcr:created="2010-11-22T16:47:30.827+01:00" jcr:primaryType="jnt:portletFolder" jcr:lastModifiedBy="root" jcr:createdBy="root" j:fullpath="/sites/ACME/portlets/RSS News" jcr:lastModified="2010-11-22T16:47:35.579+01:00">

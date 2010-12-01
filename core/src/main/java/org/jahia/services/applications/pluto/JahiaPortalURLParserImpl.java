@@ -103,7 +103,7 @@ public class JahiaPortalURLParserImpl implements PortalURLParser {
             new String[]{"\\", "0xb"},
             new String[]{"%", "0xc"},
     };
-    private static final String PORTLET_INFO = "portletInfo";
+    public static final String PORTLET_INFO = "portletInfo";
 
     // Constructor -------------------------------------------------------------
 

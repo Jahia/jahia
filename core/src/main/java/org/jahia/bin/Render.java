@@ -35,6 +35,7 @@ package org.jahia.bin;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.applications.pluto.JahiaPortalURLParserImpl;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.errors.DefaultErrorHandler;
@@ -317,6 +318,14 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext,
                           URLResolver urlResolver) throws Exception {
+        if (req.getParameter(JahiaPortalURLParserImpl.PORTLET_INFO) != null) {
+            Resource resource = urlResolver.getResource(null, null);
+            renderContext.setMainResource(resource);
+            JCRSiteNode site = resource.getNode().getResolveSite();
+            renderContext.setSite(site);
+            doGet(req, resp, renderContext, resource, System.currentTimeMillis());
+            return;
+        }
         Map<String, List<String>> parameters = new HashMap<String, List<String>>();
         if (checkForUploadedFiles(req, resp, urlResolver.getWorkspace(), urlResolver.getLocale(), parameters)) {
             if (parameters.isEmpty()) {

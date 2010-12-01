@@ -36,6 +36,7 @@
     <bean class="org.jahia.modules.contribute.filter.ListContributionFilter" >
         <property name="renderService" ref="RenderService" />
         <property name="priority" value="5" />
+        <property name="applyOnTemplateTypes" value="html" />
         <property name="applyOnModes" value="contribution" />
         <property name="applyOnNodeTypes" value="jmix:contributeMode"/>
         <property name="skipOnConfiguration" value="page,wrapper,include"/>
@@ -44,6 +45,7 @@
     <bean class="org.jahia.modules.contribute.filter.ContributeToolbarFilter">
         <property name="renderService" ref="RenderService" />
         <property name="priority" value="2"/>
+        <property name="applyOnTemplateTypes" value="html" />
         <property name="applyOnModes" value="contribution" />
         <property name="applyOnConfigurations" value="page"/>
     </bean>

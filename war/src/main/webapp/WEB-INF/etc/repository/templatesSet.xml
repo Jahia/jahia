@@ -11,18 +11,18 @@
           j:templateNode="/templatesSet/templates/base/home" priority="0.5">
     </home>
 
-    <files jcr:primaryType="jnt:folder">
-        <themes jcr:primaryType="jnt:folder">
-            <default jcr:primaryType="jnt:folder">
-
-            </default>
-        </themes>
-    </files>
 
     <portlets jcr:primaryType="jnt:portletFolder"/>
 
 
     <templates jcr:primaryType="jnt:templatesFolder">
+        <files jcr:primaryType="jnt:folder">
+            <themes jcr:primaryType="jnt:folder">
+                <default jcr:primaryType="jnt:folder">
+
+                </default>
+            </themes>
+        </files>
         <contents jcr:primaryType="jnt:contentFolder">
             <menuAvailable jcr:primaryType="jnt:navMenuAvailableFolder">
                 <primary jcr:primaryType="jnt:navMenuAvailable"/>

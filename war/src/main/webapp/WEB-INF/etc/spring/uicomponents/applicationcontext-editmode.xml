@@ -267,7 +267,7 @@
                         <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.FileImagesBrowseTabItem">
                             <property name="paths">
                                 <list>
-                                    <value>$site/files/themes</value>
+                                    <value>$site/templates/files/themes</value>
                                 </list>
                             </property>
                             <property name="folderTypes">
@@ -467,7 +467,7 @@
                         <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.FileImagesBrowseTabItem">
                             <property name="paths">
                                 <list>
-                                    <value>$site/files</value>
+                                    <value>$site/templates/files</value>
                                 </list>
                             </property>
                             <property name="folderTypes">

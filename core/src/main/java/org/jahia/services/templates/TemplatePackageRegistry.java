@@ -80,31 +80,28 @@ class TemplatePackageRegistry {
                     logger.debug("Registering RenderFilter '" + beanName + "'");
                 }
                 templatePackageRegistry.filters.add((RenderFilter) bean);
-            } else if (bean instanceof ErrorHandler) {
+            }
+            if (bean instanceof ErrorHandler) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Registering ErrorHandler '" + beanName + "'");
                 }
                 templatePackageRegistry.errorHandlers.add((ErrorHandler) bean);
-            } else if (bean instanceof Action) {
+            }
+            if (bean instanceof Action) {
                 Action action = (Action) bean;
                 if (logger.isDebugEnabled()) {
                     logger.debug("Registering Action '" + action.getName() + "' (" + beanName + ")");
                 }
                 templatePackageRegistry.actions.put(action.getName(), action);
-                if(bean instanceof BackgroundAction) {
-                    BackgroundAction backgroundAction = (BackgroundAction) action;
-                    if (logger.isDebugEnabled()) {
-                    logger.debug("Registering Background Action '" + action.getName() + "' (" + beanName + ")");
-                }
-                templatePackageRegistry.backgroundActions.put(backgroundAction.getName(), backgroundAction);
-                }
-            } else if (bean instanceof ModuleChoiceListInitializer) {
+            }
+            if (bean instanceof ModuleChoiceListInitializer) {
                 ModuleChoiceListInitializer moduleChoiceListInitializer = (ModuleChoiceListInitializer) bean;
                 if (logger.isDebugEnabled()) {
                     logger.debug("Registering ModuleChoiceListInitializer '" + moduleChoiceListInitializer.getKey() + "' (" + beanName + ")");
                 }
                 choiceListInitializers.getInitializers().put(moduleChoiceListInitializer.getKey(),moduleChoiceListInitializer);
-            } else if(bean instanceof ModuleGlobalObject) {
+            }
+            if (bean instanceof ModuleGlobalObject) {
                 ModuleGlobalObject moduleGlobalObject = (ModuleGlobalObject) bean;
                 if (logger.isDebugEnabled()) {
                     logger.debug("Registering ModuleGlobalObject '" + beanName + "'");
@@ -116,13 +113,15 @@ class TemplatePackageRegistry {
                         }
                     }
                 }
-            } else if (bean instanceof StaticAssetMapping) {
+            } 
+            if (bean instanceof StaticAssetMapping) {
                 StaticAssetMapping mappings = (StaticAssetMapping) bean;
                 staticAssetMapping.putAll(mappings.getMapping());
                 if (logger.isDebugEnabled()) {
                     logger.debug("Registering static asset mappings '" + mappings.getMapping() + "'");
                 }
-            } else if (bean instanceof DefaultEventListener) {
+            }
+            if (bean instanceof DefaultEventListener) {
                 final DefaultEventListener eventListener = (DefaultEventListener) bean;
                 try {
                     JCRTemplate.getInstance().doExecuteWithSystemSession(null,eventListener.getWorkspace(),new JCRCallback<Object>() {
@@ -140,7 +139,8 @@ class TemplatePackageRegistry {
                 } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);
                 }
-            } else if (bean instanceof BackgroundAction) {
+            }
+            if (bean instanceof BackgroundAction) {
                 BackgroundAction backgroundAction = (BackgroundAction) bean;
                 if (logger.isDebugEnabled()) {
                     logger.debug(

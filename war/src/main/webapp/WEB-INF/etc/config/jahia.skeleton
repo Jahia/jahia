@@ -162,7 +162,7 @@ jahiaFileUploadMaxSize                                  =  104857600
 # Set to -1 to deactivate changes detection completely.
 # Note, if "developmentMode" option is set to "true", this parameter
 # is ignored and the observer is started with the interval of 5 seconds. 
-templates.observer.interval                            =   5000
+templates.observer.interval                            =   60000
 
 ######################################################################
 ### Multilingual support   ###########################################
@@ -284,9 +284,8 @@ siteURLPortOverride                                    = 0
 ######################################################################
 ### Development Mode #################################################
 ######################################################################
-# This setting can be used to deactivate development mode which flush
-# the html cache each time you change the operation mode (live/edit)
-developmentMode                                         = true
+# This setting can be used to activate/deactivate the development mode
+developmentMode                                         = false
 
 ######################################################################
 ### custom errorDocument site property  ##############################

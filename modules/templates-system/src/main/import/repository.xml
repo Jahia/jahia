@@ -45,7 +45,7 @@
                 </fieldFacet>
               </facets>
               <pager pageSize="10" jcr:primaryType="jnt:pager" j:bindedComponent="/templateSets/templates-system/templates/base/folderTemplate/pagecontent/mainResourceDisplay" displayPager="true" />
-              <mainResourceDisplay j:canOrderInContribution="true" jcr:mixinTypes="jmix:contributeMode" j:mainResourceView="contribute.table" j:canDeleteInContribution="true" jcr:primaryType="jnt:mainResourceDisplay" j:contributeTypes="jnt:contentFolder jmix:editorialContent" j:editableInContribution="true" />
+              <mainResourceDisplay j:canOrderInContribution="true" jcr:mixinTypes="jmix:contributeMode" j:mainResourceView="table" j:canDeleteInContribution="true" jcr:primaryType="jnt:mainResourceDisplay" j:contributeTypes="jnt:contentFolder jmix:editorialContent" j:editableInContribution="true" />
             </pagecontent>
             </folderTemplate>
             <editContent jcr:primaryType="jnt:contentTemplate" j:applyOn="jnt:content" j:hiddenTemplate="false" j:requiredMode="contribute" j:requiredPermissions="write">

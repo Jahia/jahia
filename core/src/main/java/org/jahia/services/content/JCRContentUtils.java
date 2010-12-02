@@ -467,7 +467,7 @@ public final class JCRContentUtils {
             }
         }
 
-        return nodeName;
+        return StringUtils.isNotEmpty(nodeName) ? nodeName : "untitled";
     }
 
     /**

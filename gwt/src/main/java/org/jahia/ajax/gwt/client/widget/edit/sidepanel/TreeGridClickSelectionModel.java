@@ -9,6 +9,8 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridSelectionModel;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
+import java.util.List;
+
 /**
 * Created by IntelliJ IDEA.
 * User: toto
@@ -31,19 +33,25 @@ class TreeGridClickSelectionModel extends TreeGridSelectionModel<GWTJahiaNode> {
     }
 
     @Override protected void handleMouseDown(GridEvent<GWTJahiaNode> e) {
-        if (!tree.getTreeView().isSelectableTarget(e.getModel(), e.getTarget())) {
-            return;
-        }
-        if (selectionMode != Style.SelectionMode.SINGLE && isSelected(listStore.getAt(e.getRowIndex()))) {
-            return;
-        }
-        if (e.isRightClick()) {
-            rightClickSelectionModel.select(e.getModel(), false);
+        if (!e.isRightClick()) {
+            super.handleMouseDown(e);           
+        } else {
+            if (!tree.getTreeView().isSelectableTarget(e.getModel(), e.getTarget())) {
+                return;
+            }
+            if (selectionMode != Style.SelectionMode.SINGLE && isSelected(listStore.getAt(e.getRowIndex()))) {
+                return;
+            }
+            if (e.isRightClick()) {
+                rightClickSelectionModel.select(e.getModel(), false);
+            }
         }
     }
 
     @Override protected void handleMouseClick(GridEvent<GWTJahiaNode> e) {
-        super.handleMouseDown(e);
+        if (!e.isRightClick()) {
+            super.handleMouseClick(e);
+        }
     }
 
     public TreeGridSelectionModel<GWTJahiaNode> getRightClickSelectionModel() {
@@ -58,4 +66,18 @@ class TreeGridClickSelectionModel extends TreeGridSelectionModel<GWTJahiaNode> {
         rightClickSelectionModel.bind(grid.getStore());
     }
 
+    @Override public void select(int start, int end, boolean keepExisting) {
+        super.select(start, end, keepExisting);
+        rightClickSelectionModel.select(start, end, keepExisting);
+    }
+
+    @Override public void select(List<GWTJahiaNode> items, boolean keepExisting) {
+        super.select(items, keepExisting);
+        rightClickSelectionModel.select(items, keepExisting);
+    }
+
+    @Override public void refresh() {
+        super.refresh();
+        rightClickSelectionModel.refresh();
+    }
 }

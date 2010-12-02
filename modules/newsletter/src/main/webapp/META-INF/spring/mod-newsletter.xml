@@ -4,15 +4,16 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
     <bean class="org.jahia.modules.newsletter.SendAsNewsletterAction">
-        <property name="name" value="sendAsNewsletter"/>
-        <property name="renderService" ref="RenderService"/>
         <property name="htmlExternalizationService" ref="HtmlExternalizationService"/>
-        <property name="subscriptionService" ref="subscriptionService"/>
+        <property name="httpClientService" ref="HttpClientService" />
         <property name="mailService" ref="MailService"/>
+        <property name="renderService" ref="RenderService"/>
+        <property name="subscriptionService" ref="subscriptionService"/>
     </bean>
 
     <bean class="org.jahia.modules.newsletter.SubscribeAction">
-        <property name="name" value="subscribe"/>
+    	<property name="allowRegistrationWithoutEmail" value="false"/>
+        <property name="subscriptionService" ref="subscriptionService"/>
     </bean>
 
 </beans>

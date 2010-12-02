@@ -34,10 +34,13 @@ package org.jahia.modules.newsletter;
 
 import org.jahia.bin.ActionResult;
 import org.jahia.bin.BaseAction;
+import org.jahia.bin.Jahia;
+import org.jahia.bin.Render;
 import org.jahia.services.content.*;
 import org.jahia.services.content.rules.BackgroundAction;
 import org.jahia.services.mail.MailService;
 import org.jahia.services.notification.HtmlExternalizationService;
+import org.jahia.services.notification.HttpClientService;
 import org.jahia.services.notification.Subscription;
 import org.jahia.services.notification.SubscriptionService;
 import org.jahia.services.render.*;
@@ -55,6 +58,7 @@ import java.util.*;
  * An action and a background task that sends the content of the specified node as a newsletter
  * to its subscribers.
  * 
+ * @author Thomas Draier
  * @author Sergiy Shyrkov
  */
 public class SendAsNewsletterAction extends BaseAction implements BackgroundAction {
@@ -65,30 +69,11 @@ public class SendAsNewsletterAction extends BaseAction implements BackgroundActi
 
 	private static final Logger logger = LoggerFactory.getLogger(SendAsNewsletterAction.class);
 
-    private RenderService renderService;
     private HtmlExternalizationService htmlExternalizationService;
-    private SubscriptionService subscriptionService;
+    private HttpClientService httpClientService;
     private MailService mailService;
-
-    public void setRenderService(RenderService renderService) {
-        this.renderService = renderService;
-    }
-
-    public void setHtmlExternalizationService(HtmlExternalizationService htmlExternalizationService) {
-        this.htmlExternalizationService = htmlExternalizationService;
-    }
-
-    public void setSubscriptionService(SubscriptionService subscriptionService) {
-        this.subscriptionService = subscriptionService;
-    }
-
-    public void setMailService(MailService mailService) {
-        this.mailService = mailService;
-    }
-
-    public void executeBackgroundAction(JCRNodeWrapper node) {
-        // do local post on node.getPath/sendAsNewsletter.do
-    }
+    private RenderService renderService;
+    private SubscriptionService subscriptionService;
 
     public ActionResult doExecute(HttpServletRequest req, final RenderContext renderContext,
             Resource resource, Map<String, List<String>> parameters, URLResolver urlResolver)
@@ -98,8 +83,6 @@ public class SendAsNewsletterAction extends BaseAction implements BackgroundActi
         logger.info("Sending content of the node {} as a newsletter", node);
 
         long timer = System.currentTimeMillis();
-
-		// TODO do send the newsletter
 
         try {
 
@@ -150,6 +133,39 @@ public class SendAsNewsletterAction extends BaseAction implements BackgroundActi
                 System.currentTimeMillis() - timer);
 
 	    return ActionResult.OK;
+    }
+
+    public void executeBackgroundAction(JCRNodeWrapper node) {
+        // do local post on node.getPath/sendAsNewsletter.do
+    	try {
+			String out = httpClientService.executePost("http://localhost:8080"+
+			        Jahia.getContextPath() + Render.getRenderServletPath() + "/default/"
+			                + node.getResolveSite().getDefaultLanguage() + node.getPath()
+			                + ".sendAsNewsletter.do", null);
+			logger.info(out);
+        } catch (Exception e) {
+        	logger.error(e.getMessage(), e);
+        }
+    }
+
+    public void setHtmlExternalizationService(HtmlExternalizationService htmlExternalizationService) {
+        this.htmlExternalizationService = htmlExternalizationService;
+    }
+
+    public void setHttpClientService(HttpClientService httpClientService) {
+    	this.httpClientService = httpClientService;
+    }
+
+    public void setMailService(MailService mailService) {
+        this.mailService = mailService;
+    }
+
+    public void setRenderService(RenderService renderService) {
+        this.renderService = renderService;
+    }
+
+	public void setSubscriptionService(SubscriptionService subscriptionService) {
+        this.subscriptionService = subscriptionService;
     }
 
 }

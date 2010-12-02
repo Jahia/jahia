@@ -93,7 +93,7 @@ public class SubscribeAction extends BaseAction {
 			if (!allowRegistrationWithoutEmail) {
 				// checking if the user has a valid e-mail address
 				String userEmail = user.getProperty("j:email");
-				if (userEmail == null || !MailService.isValidEmailAddress(email, false)) {
+				if (userEmail == null || !MailService.isValidEmailAddress(userEmail, false)) {
 					// no valid e-mail provided -> refuse
 					return new ActionResult(SC_PRECONDITION_FAILED, null, new JSONObject("{\"errorCode\":\"no-valid-email\"}"));
 				}

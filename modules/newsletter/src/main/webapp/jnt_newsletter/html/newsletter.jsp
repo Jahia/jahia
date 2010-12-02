@@ -65,7 +65,7 @@
             </div>
         </td>
         <td align="center">
-        	<a class="sendNewsletter" href="#" onclick="$.post('${url.base}${issue.path}.sendAsNewsletter.do', null, null, 'json')"><img src="<c:url value='/icons/jnt_newsletterIssueSent.png' context='${url.currentModule}'/>" height="24" width="24" alt=" "/></a>
+        	<a class="sendNewsletter" href="#" onclick="$.post('${url.base}${issue.path}.sendAsNewsletter.do', null, null, 'json'); return false;"><img src="<c:url value='/icons/jnt_newsletterIssueSent.png' context='${url.currentModule}'/>" height="24" width="24" alt=" "/></a>
         </td>
         </tr>
     </c:forEach>
@@ -87,4 +87,5 @@
 	<a href="#subscription-manager" onclick="jahia.openSubscriptionManager('${currentNode.identifier}'); return false;"><img src="<c:url value='/icons/subscriptionManager.png' context='${url.currentModule}'/>" height="48" width="48" alt=" " align="middle"/></a>&nbsp;
 	<a href="#subscription-manager" onclick="jahia.openSubscriptionManager('${currentNode.identifier}'); return false;"><fmt:message key="label.subscriptionManager"/></a>
 </p>
+<p><a href="#subscribe" onclick="$.post('${url.base}${currentNode.path}.subscribe.do', null, null, 'json'); return false;">Subscribe me</a></p>
 </c:if>

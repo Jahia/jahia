@@ -37,6 +37,7 @@ import static org.apache.commons.httpclient.HttpStatus.SC_OK;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -48,6 +49,7 @@ import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.StatusLine;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -82,22 +84,18 @@ public class HttpClientService implements ServletContextAware {
     private ServletContext servletContext;
 
     /**
-     * Connects to the specified absolute URL and reads its content as a string.
+     * Executes a request with GET method to the specified URL and reads the response content as a string.
      * 
-     * @param url the absolute URL to connect to
+     * @param url a URL to connect to
      * @return the string representation of the URL connection response
      * @throws {@link IllegalArgumentException} in case of a malformed URL
      */
-    public String getAbsoluteResourceAsString(String url) throws IllegalArgumentException {
+    public String executeGet(String url) throws IllegalArgumentException {
         if (StringUtils.isEmpty(url)) {
             throw new IllegalArgumentException("Provided URL is null");
         }
-        if (!isAbsoluteUrl(url)) {
-            throw new IllegalArgumentException("Cannot handle non-absolute URL: " + url);
-        }
-
         if (logger.isDebugEnabled()) {
-            logger.debug("Asked to get content from the URL: " + url);
+            logger.debug("Asked to get content from the URL {} using GET method", url);
         }
 
         String content = null;
@@ -130,6 +128,77 @@ public class HttpClientService implements ServletContextAware {
         }
 
         return content;
+    }
+
+    /**
+     * Executes a request with POST method to the specified URL and reads the response content as a string.
+     * 
+     * @param url a URL to connect to
+     * @param parameters the request parameter to submit
+     * @return the string representation of the URL connection response
+     * @throws {@link IllegalArgumentException} in case of a malformed URL
+     */
+    public String executePost(String url, Map<String, String> parameters) throws IllegalArgumentException {
+        if (StringUtils.isEmpty(url)) {
+            throw new IllegalArgumentException("Provided URL is null");
+        }
+        if (logger.isDebugEnabled()) {
+            logger.debug("Asked to get content from the URL {} using POST method with parameters {}", url, parameters);
+        }
+
+        String content = null;
+
+        PostMethod httpMethod = new PostMethod(url);
+        if (parameters != null && !parameters.isEmpty()) {
+        	for (Map.Entry<String, String> param : parameters.entrySet()) {
+	            httpMethod.addParameter(param.getKey(), param.getValue());
+            }
+        }
+
+        try {
+            httpClient.executeMethod(httpMethod);
+            StatusLine statusLine = httpMethod.getStatusLine();
+
+            if (statusLine != null && statusLine.getStatusCode() == SC_OK) {
+                content = httpMethod.getResponseBodyAsString();
+            } else {
+                logger.warn("Connection to URL: " + url + " failed with status " + statusLine);
+            }
+
+        } catch (HttpException e) {
+            logger.error("Unable to get the content of the URL: " + url + ". Cause: " + e.getMessage(), e);
+        } catch (IOException e) {
+            logger.error("Unable to get the content of the URL: " + url + ". Cause: " + e.getMessage(), e);
+        } finally {
+            httpMethod.releaseConnection();
+        }
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("Retrieved " + (content != null ? content.length() : 0) + " characters as a response");
+            if (logger.isTraceEnabled()) {
+                logger.trace("Content:\n" + content);
+            }
+        }
+
+        return content;
+    }
+
+    /**
+     * Connects to the specified absolute URL and reads its content as a string.
+     * 
+     * @param url the absolute URL to connect to
+     * @return the string representation of the URL connection response
+     * @throws {@link IllegalArgumentException} in case of a malformed URL
+     */
+    public String getAbsoluteResourceAsString(String url) throws IllegalArgumentException {
+        if (StringUtils.isEmpty(url)) {
+            throw new IllegalArgumentException("Provided URL is null");
+        }
+        if (!isAbsoluteUrl(url)) {
+            throw new IllegalArgumentException("Cannot handle non-absolute URL: " + url);
+        }
+
+        return executeGet(url);
     }
 
     /**
@@ -173,6 +242,13 @@ public class HttpClientService implements ServletContextAware {
         }
 
         return content;
+    }
+
+    /**
+     * @return the httpClient
+     */
+    public HttpClient getHttpClient() {
+        return httpClient;
     }
 
     /**
@@ -266,12 +342,5 @@ public class HttpClientService implements ServletContextAware {
             logger.warn("Error shutting down HttpClient. Cause: " + e.getMessage(), e);
         }
         logger.info("...done");
-    }
-
-    /**
-     * @return the httpClient
-     */
-    public HttpClient getHttpClient() {
-        return httpClient;
     }
 }

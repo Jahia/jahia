@@ -100,6 +100,9 @@ public class URLInterceptor extends RichTextInterceptor implements InitializingB
     public void beforeRemove(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition) throws VersionException, LockException, ConstraintViolationException, RepositoryException {
         if (node.isNodeType("jmix:referencesInField")) {
             NodeIterator ni = node.getNodes("j:referenceInField*");
+            if (definition.isInternationalized()) {
+                name += "_" + node.getSession().getLocale();
+            }
             while (ni.hasNext()) {
                 JCRNodeWrapper ref = (JCRNodeWrapper) ni.next();
                 if (name.equals(ref.getProperty("j:fieldName").getString())) {
@@ -137,6 +140,10 @@ public class URLInterceptor extends RichTextInterceptor implements InitializingB
     public Value beforeSetValue(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition, Value originalValue) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         String content = originalValue.getString();
 
+        if (definition.isInternationalized()) {
+            name += "_" + node.getSession().getLocale();
+        }
+
         final Map<String, Long> refs = new HashMap<String, Long>();
 
         if (logger.isDebugEnabled()) {
@@ -148,7 +155,7 @@ public class URLInterceptor extends RichTextInterceptor implements InitializingB
             while (ni.hasNext()) {
                 JCRNodeWrapper ref = (JCRNodeWrapper) ni.next();
                 if (name.equals(ref.getProperty("j:fieldName").getString())) {
-                    refs.put(ref.getProperty("j:reference").getString(), Long.valueOf(StringUtils.substringAfter(ref.getName(), "_")));
+                    refs.put(ref.getProperty("j:reference").getString(), Long.valueOf(StringUtils.substringAfterLast(ref.getName(), "_")));
                 }
             }
         }
@@ -194,7 +201,7 @@ public class URLInterceptor extends RichTextInterceptor implements InitializingB
 
             for (Map.Entry<String,Long> entry : newRefs.entrySet()) {
                 if (!refs.containsKey(entry.getKey())) {
-                    JCRNodeWrapper ref = node.addNode("j:referenceInField_"+entry.getValue(), "jnt:referenceInField");
+                    JCRNodeWrapper ref = node.addNode("j:referenceInField_"+name+"_"+entry.getValue(), "jnt:referenceInField");
                     ref.setProperty("j:fieldName",name);
                     ref.setProperty("j:reference", entry.getKey());
                 }
@@ -259,6 +266,12 @@ public class URLInterceptor extends RichTextInterceptor implements InitializingB
 
         final Map<Long, String> refs = new HashMap<Long, String>();
 
+        final ExtendedPropertyDefinition definition = (ExtendedPropertyDefinition) property.getDefinition();
+        String name = definition.getName();
+        if (definition.isInternationalized()) {
+            name += "_" + property.getSession().getLocale();
+        }
+
         JCRNodeWrapper parent = property.getParent();
         if (parent.isNodeType(Constants.JAHIANT_TRANSLATION)) {
             parent = parent.getParent();
@@ -267,8 +280,8 @@ public class URLInterceptor extends RichTextInterceptor implements InitializingB
             NodeIterator ni = parent.getNodes("j:referenceInField*");
             while (ni.hasNext()) {
                 JCRNodeWrapper ref = (JCRNodeWrapper) ni.next();
-                if (property.getDefinition().getName().equals(ref.getProperty("j:fieldName").getString())) {
-                    refs.put(Long.valueOf(StringUtils.substringAfter(ref.getName(), "_")), ref.getProperty("j:reference").getString());
+                if (name.equals(ref.getProperty("j:fieldName").getString())) {
+                    refs.put(Long.valueOf(StringUtils.substringAfterLast(ref.getName(), "_")), ref.getProperty("j:reference").getString());
                 }
             }
         }

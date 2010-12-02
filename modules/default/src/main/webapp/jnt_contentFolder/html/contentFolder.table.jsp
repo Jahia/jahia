@@ -52,7 +52,7 @@
                  scriptInfo="" path="${child.path}" template="hidden.system" dragdrop="false">
                 <c:if test="${child.locked}">
                     <img height="16" width="16" border="0" style="cursor: pointer;" title="Locked" alt="Supprimer"
-                         src="${url.currentModule}/images/icons/locked.gif">
+                         src="${url.templatesPath}/default/images/icons/locked.gif">
                 </c:if>
                 <a href="${url.base}${child.path}.html">
                     ${fn:escapeXml(!empty child.propertiesAsString['jcr:title'] ? child.propertiesAsString['jcr:title'] : child.name)}

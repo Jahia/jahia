@@ -19,7 +19,7 @@
     <title>${renderContext.mainResource.node.properties['jcr:title'].string}</title>
 </head>
 
-<body>
+<body id="body">
 
 <div id="bodywrapper"><!--start bodywrapper-->
     <template:area path="pagecontent"/>

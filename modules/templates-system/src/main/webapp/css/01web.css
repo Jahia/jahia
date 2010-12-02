@@ -297,7 +297,7 @@ body {
 	padding-left:0.5em;
 }
 /******************************************************************************
-*  Float Right Links List ordered or unordered 
+*  Float Right Links List ordered or unordered
 ******************************************************************************/
 #bodywrapper ul.FloatRightList {
 	text-align:right;
@@ -563,29 +563,29 @@ body {
 /******************************************************************************
 *  Tables
 ******************************************************************************/
-#bodywrapper .table th img{
+#body .table th img{
 	vertical-align: middle
 }
-#bodywrapper .table,
-#bodywrapper .table caption
+#body .table,
+#body .table caption
 {
     margin: auto;
 	line-height:1.9em;
 
 }
 
-#bodywrapper .table
+#body .table
 {
     border-collapse:collapse;
 	margin-bottom:1em;
 	font-size:0.85em;
 	border:none;
 }
-#bodywrapper .table, #bodywrapper .table th, #bodywrapper .table td
+#body .table, #body .table th, #body .table td
 {
 border: 1px solid #fff;
 }
-#bodywrapper .table caption
+#body .table caption
 {
 	font-weight:normal;
 	font-size:2em;
@@ -593,29 +593,29 @@ border: 1px solid #fff;
 	padding:0;
 }
 
-#bodywrapper .table th {
+#body .table th {
     color: #333;
 	white-space:nowrap;
 	background-color:#CCCCCC;
 	padding:5px;
 }
-#bodywrapper .table td
+#body .table td
 {
 	background-color:#fff;
 	padding:5px;
 }
-#bodywrapper .table tr:hover{
+#body .table tr:hover{
 	background-color:#ccc
 }
-#bodywrapper .table .odd td{background-color:#eaeaea}
-#bodywrapper .table .even td{ background-color:#fff}
-#bodywrapper .col1{}
-#bodywrapper .col2{}
-#bodywrapper .col3{}
-#bodywrapper .col4{}
+#body .table .odd td{background-color:#eaeaea}
+#body .table .even td{ background-color:#fff}
+#body .col1{}
+#body .col2{}
+#body .col3{}
+#body .col4{}
 
-#bodywrapper .table td.center,
-#bodywrapper .table th.center
+#body .table td.center,
+#body .table th.center
 {
 	text-align:center;
 }

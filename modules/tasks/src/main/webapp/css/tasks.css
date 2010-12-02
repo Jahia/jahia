@@ -1,51 +1,51 @@
-#bodywrapper .hidden {
+#tasklist .hidden {
 	display:none;
 }
-#bodywrapper .taskFormConsult label.left {
+#tasklist .taskFormConsult label.left {
 padding:0;
 }
-#bodywrapper .tableTasks caption{ 
+#tasklist .tableTasks caption{
 	display:none
 }
-#bodywrapper div.listEditToolbar {
+#tasklist div.listEditToolbar {
 	margin-bottom:0px !important;
 }
 /******************************************************************************
-*  Add  tasks Form 
+*  Add  tasks Form
 ******************************************************************************/
-#bodywrapper .taskForm input[type="text"], #bodywrapper .taskForm textarea {
-	width:50%; 
+#tasklist .taskForm input[type="text"], #tasklist .taskForm textarea {
+	width:50%;
 }
 /******************************************************************************
 *  Form comments
 ******************************************************************************/
-#bodywrapper td.tdTaskComments{
+#tasklist td.tdTaskComments{
 	background:#FFFFCC url(img/tdtaskcomments-bg.png) repeat scroll right top;
 	padding:24px !important;
 	padding-top:10px;
 	font-size:1.17em
 }
 
-#bodywrapper .Form-tasksComments p {
+#tasklist .Form-tasksComments p {
 	padding:0;
 	margin:0 0 0.2em 0;
 }
-#bodywrapper .Form-tasksComments input.field, #bodywrapper .Form-tasksComments textarea {
+#tasklist .Form-tasksComments input.field, #tasklist .Form-tasksComments textarea {
 	width:98%;
 	clear:both
 }
 /******************************************************************************
 *  Taskscomments
 ******************************************************************************/
-#bodywrapper form.Form-tasksComments{
+#tasklist form.Form-tasksComments{
 	padding-top:10px;
 }
-#bodywrapper p.TasksComment{
+#tasklist p.TasksComment{
 	font-weight:normal;
 	padding:0;
 	line-height:1.85em;
 }
-#bodywrapper .TasksCommentDate{
+#tasklist .TasksCommentDate{
 	font-size:0.8em;
 	font-weight:normal;
 	color: #666666
@@ -53,66 +53,66 @@ padding:0;
 /******************************************************************************
 *  boxtasks
 ******************************************************************************/
-#bodywrapper div.boxtasks {
+#tasklist div.boxtasks {
 	position:relative;
 	clear:both;
 }
 
-#bodywrapper div.boxtasks h3.boxtaskstitleh3 {
+#tasklist div.boxtasks h3.boxtaskstitleh3 {
 	margin:0;
 	padding:0;
 	display:inline
 }
-#bodywrapper div.boxtasks-inner {
+#tasklist div.boxtasks-inner {
 	background-color:#fff;
 	border:1px solid #cecece;
 	height:1%;
 
 }
-#bodywrapper div.boxtasks-inner p {
+#tasklist div.boxtasks-inner p {
 
 }
-#bodywrapper .boxtasks-inner .boxtasks-inner-border {
+#tasklist .boxtasks-inner .boxtasks-inner-border {
 	border:1px solid #fff;
 	height:1%;
 	background-color:#fff;
 }
 /*boxtasksshadow*/
-#bodywrapper div.boxtasksshadow {
+#tasklist div.boxtasksshadow {
 	border:1px solid #cecece;
 }
 
-#bodywrapper div.boxtasksshadow div.boxtasks-inner {
+#tasklist div.boxtasksshadow div.boxtasks-inner {
 	background-color:#fff;
 	border:1px solid #cecece;
 	margin:-2px 0 0 -2px;
 }
 /*boxtasks color*/
-#bodywrapper .boxtasksgrey .boxtasks-inner .boxtasks-inner-border {
+#tasklist .boxtasksgrey .boxtasks-inner .boxtasks-inner-border {
 	background-color:#e1e1e1
 }
-#bodywrapper .boxtasksyellow .boxtasks-inner .boxtasks-inner-border {
+#tasklist .boxtasksyellow .boxtasks-inner .boxtasks-inner-border {
 	background-color:#FCF0BA
 }
-#bodywrapper .boxtaskswhite .boxtasks-inner {
+#tasklist .boxtaskswhite .boxtasks-inner {
 	background-color:#fff
 }
-#bodywrapper .boxtaskswhite .boxtasks-inner .boxtasks-inner-border {
+#tasklist .boxtaskswhite .boxtasks-inner .boxtasks-inner-border {
 	background-color:#fff
 }
 
 /*boxtasks padding*/
-#bodywrapper .boxtaskspadding16 .boxtasks-inner .boxtasks-inner-border {
+#tasklist .boxtaskspadding16 .boxtasks-inner .boxtasks-inner-border {
 	padding:16px;
 }
 
 /*boxtasks margin*/
-#bodywrapper .boxtasksmarginbottom16{
+#tasklist .boxtasksmarginbottom16{
 	margin-bottom:16px;
 }
 
 /*boxtasks title*/
-#bodywrapper h4.boxtasks-title {
+#tasklist h4.boxtasks-title {
 	background:#666666 url(img/boxtasks-h4title.png) repeat-x top right;
 	border:1px solid #666666;
 	color:#fff;

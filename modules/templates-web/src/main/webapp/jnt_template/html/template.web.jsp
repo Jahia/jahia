@@ -20,7 +20,7 @@
     <title>${fn:escapeXml(not empty pageTitle ? pageTitle : renderContext.mainResource.node.name)}</title>
     <link rel="stylesheet" type="text/css" href="${url.currentModule}/css/print.css" media="print"/>
 </head>
-<body>
+<body id="body">
 <div id="bodywrapper">
     <!--start bodywrapper-->
     <div id="topheader" class="noprint">

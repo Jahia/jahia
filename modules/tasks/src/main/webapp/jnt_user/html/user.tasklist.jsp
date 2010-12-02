@@ -39,7 +39,7 @@
         form.submit();
     }
 </script>
-<div class="boxtasks">
+<div id="tasklist" class="boxtasks">
 <div class=" boxtasksgrey boxtaskspadding16 boxtasksmarginbottom16">
 <div class="boxtasks-inner">
 <div class="boxtasks-inner-border"><!--start boxtasks -->

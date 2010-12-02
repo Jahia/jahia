@@ -17,7 +17,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>${renderContext.mainResource.node.properties['jcr:title'].string}</title>
 </head>
-<body>
+<body id="body">
 <jcr:node var="rootPage" path="/sites/${renderContext.site.siteKey}/home"/>
 <div id="bodywrapper">
   <div id="header">

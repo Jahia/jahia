@@ -14,8 +14,8 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
-<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js"/>
-<template:addResources type="css" resources="contribute-toolbar.css"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,jquery.fancybox.pack.js"/>
+<template:addResources type="css" resources="contribute-toolbar.css,jquery.fancybox.css"/>
 <script>
     var contributeParams = new Array();
     /*
@@ -119,10 +119,27 @@
         $("#bodywrapper").attr("style","overflow:auto; height:"+ h +"px");
     }
 
+    $(document).ready(function() {
+        $(".fancylink").fancybox({
+		  'titleShow' : false,
+		  'autoDimensions' : false,
+		  'width' : 800,
+		  'height' : 600,
+		  'onComplete' : function() {
+		      animatedcollapse.init();
+		  }
+        });
+    });
+
 </script>
 <div id="contributeToolbar" >
 
     <div id="edit">
+    <a href="${url.live}" ><img src="${url.context}/icons/live.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; "><fmt:message
+            key="label.live"/></a>
+    <a href="${url.preview}" ><img src="${url.context}/icons/preview.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; "><fmt:message
+            key="label.preview"/></a>
+
     <a href="#" id="delete-${currentNode.identifier}" onclick="deleteNodes();"><img src="${url.context}/icons/delete.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; "><fmt:message
             key="label.delete"/></a>
     <a href="#" id="copy-${currentNode.identifier}" onclick="copyNodes();"><img src="${url.context}/icons/copy.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; "><fmt:message key="label.copy"/></a>
@@ -132,7 +149,7 @@
             key="label.clipboard.reset"/></a>
     <a href="#clipboardpreview-${currentNode.identifier}" id="clipboard-${currentNode.identifier}" style="display:none;"><img src="${url.context}/icons/clipboard.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; "><fmt:message
             key="label.clipboard.contains"/></a>
-    <a href="${url.base}${jcr:getSystemSitePath()}/home/my-profile.html"><img src="${url.context}/icons/user.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; "><fmt:message
+    <a href="${url.base}/users/${renderContext.user.username}.tasklist.html.ajax" class="fancylink"><img src="${url.context}/icons/user.png" width="16" height="16" alt=" " role="presentation" style="position:relative; top: 4px; "><fmt:message
             key="label.goto.myTasks"/></a>
     <c:choose>
     <c:when test="${jcr:isNodeType(currentNode, 'jnt:folder')}">
@@ -150,5 +167,12 @@
     <div id="clipboardpreview-${currentNode.identifier}">
     </div>
     </div>
+</div>
+
+<div style="display:none;">
+<div id="tasks" >
+    <%-- Just load the resources here ! --%>
+    <template:module path="/users/${renderContext.user.username}" template="tasklist" var="temp"/>
+</div>
 </div>
 

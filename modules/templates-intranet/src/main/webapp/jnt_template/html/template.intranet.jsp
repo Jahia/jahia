@@ -18,7 +18,7 @@
 <title>${renderContext.mainResource.node.properties['jcr:title'].string}</title>
 <link rel="stylesheet" type="text/css" href="${url.currentModule}/css/print.css" media="print" />
 </head>
-<body>
+<body id="body">
 <%@ include file="../../common/declarations.jspf" %>
 <jcr:node var="rootPage" path="/sites/${renderContext.site.siteKey}/home"/>
 <div id="bodywrapper">

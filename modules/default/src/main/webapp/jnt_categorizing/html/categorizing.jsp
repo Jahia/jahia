@@ -32,7 +32,7 @@
                 <c:choose>
                     <c:when test="${not empty filteredCategories}">
                         <c:forEach items="${filteredCategories}" var="category" varStatus="status">
-                            ${!status.first ? separator : ''}<span class="categorizeditem">${fn:escapeXml(category.value)}</span>${!status.last ? separator : ''}
+                            ${!status.first ? separator : ''}<span class="categorizeditem">${fn:escapeXml(category.value)}</span>
                         </c:forEach>
                     </c:when>
                     <c:otherwise>

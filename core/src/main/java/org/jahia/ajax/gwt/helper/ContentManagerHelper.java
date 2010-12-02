@@ -1049,25 +1049,23 @@ public class ContentManagerHelper {
 
     public GWTJahiaNode createTemplateSet(String key, String baseSet, JCRSessionWrapper session) throws  GWTJahiaServiceException {
         if (baseSet == null) {
-            File path = new File(SettingsBean.getInstance().getJahiaEtcDiskPath(), "/repository/templatesSet.xml");
-            if (path.exists()) {
-                InputStream is = null;
-                try {
-                    String shortName = JCRContentUtils.generateNodeName(key, 20);
-                    is = new FileInputStream(path);
-                    JCRNodeWrapper templateSet = session.getNode("/templateSets").addNode(shortName, "jnt:virtualsite");
-                    templateSet.setProperty("j:installedModules", new Value[]{session.getValueFactory().createValue(shortName)});
-                    session.importXML("/templateSets/" + shortName, is, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, true);
-                    templateSet.getNode("templates/base").setProperty("j:view", shortName);
-                    session.save();
-                    ServicesRegistry.getInstance().getJahiaTemplateManagerService().createModule(shortName);
+            String shortName = JCRContentUtils.generateNodeName(key, 50);
+            String skeletons = "WEB-INF/etc/repository/templatesSet.xml,modules/**/templatesSet-skeleton.xml,modules/**/templatesSet-skeleton-*.xml";
+            try {
+                JCRNodeWrapper templateSet = session.getNode("/templateSets").addNode(shortName, "jnt:virtualsite");
+                templateSet.setProperty("j:installedModules", new Value[]{session.getValueFactory().createValue(shortName)});
 
-                    return navigation.getGWTJahiaNode(templateSet);
-                } catch (Exception e) {
-                    throw new GWTJahiaServiceException(e);
-                } finally {
-                    org.apache.commons.io.IOUtils.closeQuietly(is);
-                }
+                JCRContentUtils.importSkeletons(skeletons, "/templateSets/" + shortName, session);
+
+                templateSet.getNode("templates/base").setProperty("j:view", shortName);
+                session.save();
+                ServicesRegistry.getInstance().getJahiaTemplateManagerService().createModule(shortName);
+
+                return navigation.getGWTJahiaNode(templateSet);
+            } catch (IOException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (RepositoryException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
         } else {
             List<GWTJahiaNode> result = copy(Arrays.asList("/templateSets/" + baseSet), "/templateSets", key, false, false, false, false, session);

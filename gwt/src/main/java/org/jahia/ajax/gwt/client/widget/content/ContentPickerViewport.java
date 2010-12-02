@@ -68,7 +68,7 @@ public class ContentPickerViewport extends Viewport {
                                  final boolean multiple, String callback) {
         setLayout(new FitLayout());
         final ContentPicker picker =
-                new ContentPicker(selectorOptions, selectedNodes, filters, mimeTypes, config, multiple);
+                new ContentPicker(selectorOptions, selectedNodes, null, filters, mimeTypes, config, multiple);
 
         // buttom component
         final Component bar = initButtonBar(jahiaContextPath,jahiaServletPath, filesServletPath, callback);

@@ -445,6 +445,7 @@
             <list>
                 <value>jnt:page</value>
                 <value>jmix:editorialContent</value>
+                <value>jnt:contentFolder</value>
             </list>
         </property>
 

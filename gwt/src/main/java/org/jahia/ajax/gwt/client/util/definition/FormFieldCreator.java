@@ -138,12 +138,13 @@ public class FormFieldCreator {
                 case GWTJahiaNodeSelectorType.COLOR:
                     break;
                 case GWTJahiaNodeSelectorType.CATEGORY:
-                    field = new ContentPickerField(definition.getSelectorOptions(), null, null,
+                    field = new ContentPickerField(definition.getSelectorOptions(),
+                            propDefinition.getValueConstraints(), null, null,
                             ManagerConfigurationFactory.CATEGORYPICKER, propDefinition.isMultiple());
                     break;
                 case GWTJahiaNodeSelectorType.PICKER:
                     field = new ContentPickerField(definition.getSelectorOptions(),
-                            getSelectorOptionAsList(definition, "filters"), getSelectorOptionAsList(definition, "mime"),
+                            propDefinition.getValueConstraints(), getSelectorOptionAsList(definition, "filters"), getSelectorOptionAsList(definition, "mime"),
                             definition.getSelectorOptions().get("type") != null ?
                                     definition.getSelectorOptions().get("type")+"picker" :
                                     ManagerConfigurationFactory.EDITORIALCONTENTPICKER, propDefinition.isMultiple());
@@ -194,7 +195,8 @@ public class FormFieldCreator {
                 default:
                     if (propDefinition.getRequiredType() == GWTJahiaNodePropertyType.REFERENCE ||
                             propDefinition.getRequiredType() == GWTJahiaNodePropertyType.WEAKREFERENCE) {
-                        field = new ContentPickerField(definition.getSelectorOptions(), getSelectorOptionAsList(definition, "filters"),
+                        field = new ContentPickerField(definition.getSelectorOptions(),
+                                propDefinition.getValueConstraints(), getSelectorOptionAsList(definition, "filters"),
                                 getSelectorOptionAsList(definition, "mime"), ManagerConfigurationFactory.EDITORIALCONTENTPICKER,
                                 propDefinition.isMultiple());
                     } else {

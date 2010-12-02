@@ -55,7 +55,8 @@ import java.util.Map;
 public class ContentPicker extends TriPanelBrowserLayout {
     private PickedContentView pickedContent;
 
-    public ContentPicker(Map<String, String> selectorOptions, final List<GWTJahiaNode> selectedNodes, List<String> filters, List<String> mimeTypes,
+    public ContentPicker(Map<String, String> selectorOptions, final List<GWTJahiaNode> selectedNodes,
+                         final List<String> types, List<String> filters, List<String> mimeTypes,
                          final GWTManagerConfiguration config, boolean multiple) {
         super(config);
         //setWidth("714px");
@@ -87,16 +88,9 @@ public class ContentPicker extends TriPanelBrowserLayout {
             public void handleEvent(SelectionEvent be) {
                 GWTJahiaNode selection = (GWTJahiaNode) be.getModel();
                 if (selection != null) {
-                    boolean found = false;
-                    for (String s : config.getNodeTypes()) {
-                        if (selection.getNodeTypes().contains(s) || selection.getInheritedNodeTypes().contains(s)) {
-                            found = true;
-                            break;
-                        }
-                    }
-
-                    if (!found) {
-                        be.setCancelled(true);
+                    checkTypes(be, selection, config.getNodeTypes());
+                    if (types != null) {
+                        checkTypes(be, selection, types);
                     }
                 }
             }
@@ -123,6 +117,20 @@ public class ContentPicker extends TriPanelBrowserLayout {
         linker.handleNewSelection();
 
         pickedContent = (PickedContentView) bottomComponents;
+    }
+
+    private void checkTypes(SelectionEvent be, GWTJahiaNode selection, final List<String> nodeTypes) {
+        boolean found = false;
+        for (String s : nodeTypes) {
+            if (selection.getNodeTypes().contains(s) || selection.getInheritedNodeTypes().contains(s)) {
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            be.setCancelled(true);
+        }
     }
 
     public List<GWTJahiaNode> getSelectedNodes() {

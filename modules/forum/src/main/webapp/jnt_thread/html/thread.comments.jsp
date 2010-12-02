@@ -24,9 +24,8 @@
 </script>
 
 <ul class="genericListComment" id="${currentNode.UUID}">
-    <c:set target="${moduleMap}" property="commentsList" value="${currentNode.nodes}" />
-    <c:set target="${moduleMap}" property="listTotalSize" value="${fn:length(currentNode.nodes)}"/>
-    <c:forEach items="${moduleMap.commentsList}" var="subchild" varStatus="status" begin="${moduleMap.begin}" end="${moduleMap.end}">
+    <c:set var="commentsList" value="${currentNode.nodes}" />
+    <c:forEach items="${commentsList}" var="subchild">
         <template:module node="${subchild}" template="comments"/>
     </c:forEach>
 </ul>

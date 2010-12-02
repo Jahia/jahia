@@ -25,7 +25,7 @@
         </div>
     </div>
 
-    <h5 class="title"><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h5>
+    <h5 class="commentTitle"><jcr:nodeProperty node="${currentNode}" name="jcr:title"/></h5>
     <jcr:nodeProperty node="${currentNode}" name="jcr:lastModified" var="lastModified"/>
     <span class="docspacedate timestamp"><fmt:formatDate value="${lastModified.time}"
                                                          pattern="yyyy/MM/dd HH:mm"/></span>

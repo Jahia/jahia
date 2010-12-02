@@ -188,13 +188,15 @@
                         </pagecontent>
                         <row-col1 j:skin="skins.box5style1" jcr:mixinTypes="jmix:skinnable" jcr:primaryType="jnt:contentList">
                             <new-blog templateNode="/templateSets/templates-intranet/templates/base/blog" buttonLabel="create" jcr:primaryType="jnt:pageFormCreation">
-                                <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="New Blog" jcr:primaryType="jnt:translation" />
+                                <j:translation_en jcr:title="New Blog" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:language="en" />
                             </new-blog>
-                            <topBlog pageSize="10" jcr:primaryType="jnt:topBlog" />
+                            <topBlog j:subNodesView="blogList" jcr:primaryType="jnt:topBlog" />
                             <list jcr:mixinTypes="jmix:renderable jmix:columns" jcr:primaryType="jnt:contentList" j:view="columns" j:columns="2">
                                 <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:title="list" jcr:primaryType="jnt:translation" />
-                                <topBlogContent pageSize="10" jcr:primaryType="jnt:topBlogContent" />
-                                <topBlogComment pageSize="10" jcr:primaryType="jnt:topBlogComment" />
+                                    <topBlogContent jcr:mixinTypes="jmix:renderable jmix:listOrdered jmix:columns jmix:accessControlled" j:subNodesView="blogList" jcr:primaryType="jnt:topBlogContent" j:view="unordered" j:className="simple">
+                                        <j:acl jcr:primaryType="jnt:acl" />
+                                    </topBlogContent>
+                                <topBlogComment jcr:mixinTypes="jmix:renderable jmix:listOrdered" j:subNodesView="blogList" jcr:primaryType="jnt:topBlogComment" j:className="simple" j:view="unordered" />
                             </list>
                         </row-col1>
                     </blog-home>
